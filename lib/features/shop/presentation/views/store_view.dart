@@ -14,6 +14,8 @@ import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/presentation/views/cart_view.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 // [Previous imports remain the same]
 
 class StoreView extends StatelessWidget {
@@ -42,8 +44,13 @@ class StoreView extends StatelessWidget {
               CartCounterIcon(
                 cartCounterIconModel: CartCounterIconModel(
                   onPressed: () {
-                    THelperFunctions.navigateToScreen(
-                        context, const CartView());
+                    final user = SupabaseService.instance.currentUser;
+                    if (user == null) {
+                      THelperFunctions.navigateToScreen(context, const LoginView());
+                    } else {
+                      THelperFunctions.navigateToScreen(
+                          context, const CartView());
+                    }
                   },
                   color: dark ? TColors.white : TColors.dark,
                 ),

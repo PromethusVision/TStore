@@ -7,6 +7,8 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/presentation/views/cart_view.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({
@@ -35,14 +37,19 @@ class HomeAppBar extends StatelessWidget {
           ],
         ),
         actions: [
-          CartCounterIcon(
-            cartCounterIconModel: CartCounterIconModel(
-              color: TColors.white,
-              onPressed: () {
-                THelperFunctions.navigateToScreen(context, const CartView());
-              },
+            CartCounterIcon(
+              cartCounterIconModel: CartCounterIconModel(
+                color: TColors.white,
+                onPressed: () {
+                  final user = SupabaseService.instance.currentUser;
+                  if (user == null) {
+                    THelperFunctions.navigateToScreen(context, const LoginView());
+                  } else {
+                    THelperFunctions.navigateToScreen(context, const CartView());
+                  }
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
