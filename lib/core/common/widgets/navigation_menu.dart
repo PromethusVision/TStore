@@ -5,6 +5,8 @@ import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 
 // lib/features/home/presentation/views/navigation_menu.dart
 class NavigationMenu extends StatelessWidget {
@@ -26,7 +28,20 @@ class NavigationMenu extends StatelessWidget {
                   : TColors.black.withValues(alpha: 0.1),
               selectedIndex: selectedIndex,
               onDestinationSelected: (int index) {
-                context.read<NavigationMenuCubit>().changeIndex(index);
+                // Allow Home (0) and Store (1) for guests
+                if (index == 0 || index == 1) {
+                  context.read<NavigationMenuCubit>().changeIndex(index);
+                  return;
+                }
+
+                // For Wishlist (2) and Profile/Settings (3) require auth
+                final user = SupabaseService.instance.currentUser;
+                if (user == null) {
+                  // send guest users to Login
+                  THelperFunctions.navigateToScreen(context, const LoginView());
+                } else {
+                  context.read<NavigationMenuCubit>().changeIndex(index);
+                }
               },
               destinations: const [
                 //home store wishlist profile
