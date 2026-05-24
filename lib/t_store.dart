@@ -4,9 +4,10 @@ import 'package:t_store/core/cubits/banner_carousel_slider_cubit_cubit/banner_ca
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/theme/theme.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
-import 'package:t_store/features/auth/presentation/views/on_boarding/on_boarding_view.dart';
+import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/brands_cubit.dart';
@@ -33,6 +34,9 @@ class TStore extends StatelessWidget {
         BlocProvider<CartCubit>(create: (_) => sl<CartCubit>()),
         BlocProvider<WishlistCubit>(create: (_) => sl<WishlistCubit>()),
 
+        // Navigation Menu
+        BlocProvider<NavigationMenuCubit>(create: (_) => NavigationMenuCubit()),
+
         // OnBoarding
         BlocProvider<OnBoardingCubit>(create: (_) => OnBoardingCubit()),
 
@@ -46,7 +50,7 @@ class TStore extends StatelessWidget {
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,
-        home: const OnBoardingView(),
+        home: const NavigationMenu(),
       ),
     );
   }
