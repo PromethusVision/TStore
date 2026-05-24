@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/section_heading_view_model.dart';
 import 'package:t_store/core/common/widgets/section_heading.dart';
+import 'package:t_store/core/common/widgets/navigation_menu.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
-import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_menu_tile_list.dart';
 
@@ -30,9 +33,16 @@ class AppSettingsSection extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {
-              THelperFunctions.navigateReplacementToScreen(
-                  context, const LoginView());
+            onPressed: () async {
+              await context.read<AuthCubit>().signOut();
+              if (!context.mounted) return;
+              // reset menu to Home
+              context.read<NavigationMenuCubit>().changeIndex(0);
+              // clear navigation stack and open NavigationMenu as root
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const NavigationMenu()),
+                (route) => false,
+              );
             },
             child: const Text("Logout"),
           ),
