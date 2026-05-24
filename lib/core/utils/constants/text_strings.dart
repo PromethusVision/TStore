@@ -4,7 +4,7 @@ class TTexts {
   static const String skip = "Skip";
   static const String done = "Done";
   static const String submit = "Submit";
-  static const String appName = "T-Store";
+  static const String appName = "Esnafta Var";
   static const String tContinue = "Continue";
   static const String viewAll = "View All";
   static const String account = "Account";
@@ -24,7 +24,7 @@ class TTexts {
   static const String onBoardingTitle3 = "Deliver at your door step";
 
   static const String onBoardingSubTitle1 =
-      "Welcome to a World of Limitless Choices - Your Perfect Product Awaits!";
+      "Aradığınız ürünü çevrenizdeki esnafta bulun.";
   static const String onBoardingSubTitle2 =
       "For Seamless Transactions, Choose Your Payment Path - Your Convenience, Our Priority!";
   static const String onBoardingSubTitle3 =
@@ -53,9 +53,9 @@ class TTexts {
   static const String resendEmailIn = "Resend email in";
 
   // -- Authentication Headings
-  static const String loginTitle = "Welcome back,";
+  static const String loginTitle = "Hoş geldiniz,";
   static const String loginSubTitle =
-      "Discover Limitless Choices and Unmatched Convenience.";
+      "Kargo beklemeden, yakındaki esnafı keşfedin.";
   static const String signUpTitle = "Let’s create your account";
   static const String forgetPasswordTitle = "Forget password";
   static const String forgetPasswordSubTitle =
@@ -72,7 +72,7 @@ class TTexts {
   static const String yourAccountCreatedTitle =
       "Your account successfully created!";
   static const String yourAccountCreatedSubTitle =
-      "Welcome to Your Ultimate Shopping Destination: Your Account is Created, Unleash the Joy of Seamless Online Shopping!";
+      "Hesabınız oluşturuldu. Mahallenizdeki ürünleri keşfetmeye başlayın.";
 
   // -- Product
   static const String popularProducts = "Popular Products";
