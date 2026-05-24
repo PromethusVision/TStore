@@ -10,25 +10,25 @@ class TTexts {
   static const String account = "Account";
 
   // views
-  static const String homeView = "Home";
+  static const String homeView = "Ana Sayfa";
   static const String cartView = "Cart";
-  static const String profileView = "Profile";
-  static const String wishlistView = "Wishlist";
+  static const String profileView = "Profil";
+  static const String wishlistView = "Favoriler";
   static const String ordersView = "Orders";
   static const String settingsView = "Settings";
-  static const String storeView = "Store";
+  static const String storeView = "Esnaf";
 
   // -- OnBoarding Texts
-  static const String onBoardingTitle1 = "Choose your product";
-  static const String onBoardingTitle2 = "Select Payment Method";
-  static const String onBoardingTitle3 = "Deliver at your door step";
+  static const String onBoardingTitle1 = "Ürününüzü bulun";
+  static const String onBoardingTitle2 = "Yakındaki esnafı seçin";
+  static const String onBoardingTitle3 = "Mağazada satın alın";
 
   static const String onBoardingSubTitle1 =
       "Aradığınız ürünü çevrenizdeki esnafta bulun.";
   static const String onBoardingSubTitle2 =
-      "For Seamless Transactions, Choose Your Payment Path - Your Convenience, Our Priority!";
+      "Ürünün bulunduğu esnafları yakından uzağa görün.";
   static const String onBoardingSubTitle3 =
-      "From Our Doorstep to Yours - Swift, Secure, and Contactless Delivery!";
+      "Yol tarifi alın, mağazaya gidin ve alışverişinizi QR ile doğrulayın.";
 
   // -- Authentication Forms
   static const String firstName = "First Name";
@@ -56,21 +56,21 @@ class TTexts {
   static const String loginTitle = "Hoş geldiniz,";
   static const String loginSubTitle =
       "Kargo beklemeden, yakındaki esnafı keşfedin.";
-  static const String signUpTitle = "Let’s create your account";
-  static const String forgetPasswordTitle = "Forget password";
+  static const String signUpTitle = "Hesabınızı oluşturalım";
+  static const String forgetPasswordTitle = "Şifremi unuttum";
   static const String forgetPasswordSubTitle =
-      "Don’t worry sometimes people can forget too, enter your email and we will send you a password reset link.";
-  static const String changeYourPasswordTitle = "Password Reset Email Sent";
+      "Endişelenmeyin, e-postanızı girin; şifre sıfırlama bağlantısı gönderelim.";
+  static const String changeYourPasswordTitle = "Şifre sıfırlama e-postası gönderildi";
   static const String changeYourPasswordSubTitle =
-      "Your Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.";
-  static const String confirmEmailTitle = "Verify your email address!";
+      "Hesap güvenliğiniz önceliğimiz. Şifrenizi güvenle değiştirmek için bağlantı gönderildi.";
+  static const String confirmEmailTitle = "E-posta adresinizi doğrulayın!";
   static const String confirmEmail = "hmdy7486@gmail.com";
   static const String confirmEmailSubTitle =
-      "Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience a World of Unrivaled Deals and Personalized Offers.";
+      "E-postanızı doğrulayın; mahallenizdeki esnafı keşfetmeye başlayın.";
   static const String emailNotReceivedMessage =
       "Didn’t get the email? Check your junk/spam or resend it.";
   static const String yourAccountCreatedTitle =
-      "Your account successfully created!";
+      "Hesabınız başarıyla oluşturuldu!";
   static const String yourAccountCreatedSubTitle =
       "Hesabınız oluşturuldu. Mahallenizdeki ürünleri keşfetmeye başlayın.";
 
@@ -78,10 +78,10 @@ class TTexts {
   static const String popularProducts = "Popular Products";
 
   // -- Home
-  static const String homeAppbarTitle = "Good day for shopping";
+  static const String homeAppbarTitle = "Yakınınızdaki ürünleri keşfedin";
   static const String homeAppbarSubTitle = "Mahmoud Hamdy";
-  static const String searchContainer = "Search in Store";
-  static const String popularCategories = "Popular Categories";
+  static const String searchContainer = "Ürün veya esnaf ara";
+  static const String popularCategories = "Popüler Kategoriler";
 // -- Categories
   static const String sport = "Sport";
   static const String cloth = "Cloth";
