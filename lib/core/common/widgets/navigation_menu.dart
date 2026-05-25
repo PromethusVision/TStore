@@ -4,6 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 
 // lib/features/home/presentation/views/navigation_menu.dart
@@ -26,6 +28,13 @@ class NavigationMenu extends StatelessWidget {
                   : TColors.black.withValues(alpha: 0.1),
               selectedIndex: selectedIndex,
               onDestinationSelected: (int index) {
+                if (index == 2 || index == 3) {
+                  final user = SupabaseService.instance.currentUser;
+                  if (user == null) {
+                    THelperFunctions.navigateToScreen(context, const LoginView());
+                    return;
+                  }
+                }
                 context.read<NavigationMenuCubit>().changeIndex(index);
               },
               destinations: const [
