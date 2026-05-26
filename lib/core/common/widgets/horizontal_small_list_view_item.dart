@@ -17,8 +17,13 @@ class HorizontalSmallListViewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     return GestureDetector(
-      onTap: () =>
-          THelperFunctions.navigateToScreen(context, const SubCategoryView()),
+      onTap: () => THelperFunctions.navigateToScreen(
+        context,
+        SubCategoryView(
+          categoryId: null,
+          title: item.title,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.only(right: TSizes.defaultSpace),
         child: Column(

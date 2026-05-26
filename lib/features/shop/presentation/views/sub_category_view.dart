@@ -10,14 +10,21 @@ import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
 class SubCategoryView extends StatelessWidget {
-  const SubCategoryView({super.key});
+  final String title;
+  final String? categoryId;
+
+  const SubCategoryView({
+    super.key,
+    required this.title,
+    this.categoryId,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel:
-            AppBarModel(hasArrowBack: true, title: const Text("Sports Shirts")),
+            AppBarModel(hasArrowBack: true, title: Text(title)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
