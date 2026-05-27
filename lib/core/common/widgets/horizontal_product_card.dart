@@ -18,110 +18,128 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 
 class HorizontalProductCard extends StatelessWidget {
-  const HorizontalProductCard({super.key});
+  const HorizontalProductCard({super.key, required this.product});
+
+  final ProductEntity product;
 
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
+    final image =
+        product.images.isNotEmpty ? product.images.first : TImages.productImage11;
+    final isNetworkImage = image.startsWith('http');
+
     return GestureDetector(
       onTap: () {
-        THelperFunctions.navigateToScreen(context, const ProductDetailsView());
+        THelperFunctions.navigateToScreen(
+          context,
+          ProductDetailsView(product: product),
+        );
       },
       child: Container(
-          width: 310,
-          padding: const EdgeInsets.all(1),
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(TSizes.productImageRadius),
-              ),
-              color: dark ? TColors.darkerGrey : TColors.lightContainer),
-          child: Row(
-            children: [
-              CircularContainer(
-                circularContainerModel: CircularContainerModel(
-                  padding: const EdgeInsets.all(TSizes.sm),
-                  height: 120,
-                  color: dark ? TColors.dark : TColors.light,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        height: 120,
-                        width: 120,
-                        child: RoundedImage(
-                          roundedImageModel: RoundedImageModel(
-                            applyImageRadius: true,
-                            backgroundColor:
-                                dark ? TColors.dark : TColors.light,
-                            image: TImages.productImage11,
-                          ),
+        width: 310,
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(TSizes.productImageRadius),
+          ),
+          color: dark ? TColors.darkerGrey : TColors.lightContainer,
+        ),
+        child: Row(
+          children: [
+            CircularContainer(
+              circularContainerModel: CircularContainerModel(
+                padding: const EdgeInsets.all(TSizes.sm),
+                height: 120,
+                color: dark ? TColors.dark : TColors.light,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: 120,
+                      width: 120,
+                      child: RoundedImage(
+                        roundedImageModel: RoundedImageModel(
+                          applyImageRadius: true,
+                          backgroundColor: dark ? TColors.dark : TColors.light,
+                          image: image,
+                          isNetworkImage: isNetworkImage,
                         ),
                       ),
-                      const Positioned(
-                        top: 12,
-                        child: SaleTag(discountPercentage: 20,),
-                      ),
+                    ),
+                    if (product.hasDiscount)
                       Positioned(
-                        top: 0,
-                        right: 0,
-                        child: CircularIcon(
-                          circularIconModel: CircularIconModel(
-                            icon: Iconsax.heart5,
-                            color: Colors.red,
-                          ),
+                        top: 12,
+                        child: SaleTag(
+                          discountPercentage: product.discountPercentage,
                         ),
                       ),
-                    ],
-                  ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: CircularIcon(
+                        circularIconModel: CircularIconModel(
+                          icon: Iconsax.heart5,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                width: 172,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: TSizes.sm, left: TSizes.sm),
-                  child: Column(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ProductTitleText(
-                            productTitleTextModel: ProductTitleTextModel(
-                              title: "Green Nike hood t-shirt for men",
+            ),
+            SizedBox(
+              width: 172,
+              child: Padding(
+                padding: const EdgeInsets.only(top: TSizes.sm, left: TSizes.sm),
+                child: Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ProductTitleText(
+                          productTitleTextModel: ProductTitleTextModel(
+                            title: product.name,
+                            smallSize: true,
+                          ),
+                        ),
+                        if (product.brandName != null &&
+                            product.brandName!.isNotEmpty) ...[
+                          const SizedBox(height: TSizes.spaceBtwItems / 2),
+                          BrandTitleWithVerification(
+                            brandTitleWithVerificationModel:
+                                BrandTitleWithVerificationModel(
+                              brandName: product.brandName!,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: ProductPriceText(
+                            productPriceTextModel: ProductPriceTextModel(
+                              price: product.price.toStringAsFixed(2),
                               smallSize: true,
                             ),
                           ),
-                          const SizedBox(
-                            height: TSizes.spaceBtwItems / 2,
-                          ),
-                          const BrandTitleWithVerification(
-                            brandTitleWithVerificationModel:
-                                BrandTitleWithVerificationModel(
-                              brandName: "Nike",
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: ProductPriceText(
-                                productPriceTextModel: ProductPriceTextModel(
-                                    price: "100.00", smallSize: true)),
-                          ),
-                          const AddToCartContainer()
-                        ],
-                      )
-                    ],
-                  ),
+                        ),
+                        const AddToCartContainer(),
+                      ],
+                    ),
+                  ],
                 ),
-              )
-            ],
-          )),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
