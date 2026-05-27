@@ -1,5 +1,26 @@
 # DEV_LOG
 
+## Guncel Oturum Ilerlemesi
+
+- Supabase categories/products/brands izinleri ve veri sorunlari cozuldu.
+- categories tablosu bos oldugu icin kategori akisi fallback listeye dusuyordu; sample categories eklendi.
+- brands tablosu icin anon/authenticated select izni verildi.
+- products tablosu bos oldugu icin sample brands/products verileri yuklendi.
+- product_count = 29 ve active_product_count = 29 dogrulandi.
+- Ana sayfa kategorileri gercek categoryId ile calisir hale geldi.
+- SubCategoryView secilen kategoriye gore gercek urunleri gostermeye basladi.
+- ProductDetailsView gercek product verisiyle aciliyor.
+- Urun detay sayfasindaki dummy ProductAttributes bolumu kaldirildi.
+- Urun detay sayfasindaki dummy aciklama / Reviews(199) bolumu kaldirildi.
+- ProductImageSlider gercek product.images / thumbnail verisiyle calisir hale geldi.
+- RatingAndShare dummy 5.0 / (23) yerine product.rating / product.reviewsCount kullanacak hale getirildi.
+- CartView gercek CartCubit state'e baglandi.
+- cart_items tablosu icin authenticated role yetkileri ve RLS policy'leri duzeltildi.
+- Sepet bosken "Sepetiniz bos" mesaji gosteriliyor.
+- Dummy Nike sepet urunleri kaldirildi.
+- Dummy "Checkout $175" butonu kaldirildi.
+- BottomAddToCart analizi yapildi; henuz gercek CartCubit.addToCart baglantisi yapilmadi.
+
 - Proje adı: Esnafta Var
 - Kod tabanı: TStore Flutter e-commerce app fork’u
 - Backend: Supabase
