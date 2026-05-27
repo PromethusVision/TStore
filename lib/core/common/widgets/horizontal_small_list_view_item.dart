@@ -17,13 +17,24 @@ class HorizontalSmallListViewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     return GestureDetector(
-      onTap: () => THelperFunctions.navigateToScreen(
-        context,
-        SubCategoryView(
-          categoryId: item.categoryId,
-          title: item.title,
-        ),
-      ),
+      onTap: () {
+        if (item.categoryId == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Kategoriler yükleniyor, lütfen tekrar deneyin.'),
+            ),
+          );
+          return;
+        }
+
+        THelperFunctions.navigateToScreen(
+          context,
+          SubCategoryView(
+            categoryId: item.categoryId,
+            title: item.title,
+          ),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.only(right: TSizes.defaultSpace),
         child: Column(
