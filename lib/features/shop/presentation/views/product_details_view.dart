@@ -56,7 +56,7 @@ class ProductDetailsView extends StatelessWidget {
                       ),
                     ],
                     const SizedBox(height: TSizes.spaceBtwSections),
-                    const RatingAndShare(),
+                    RatingAndShare(product: product),
                     ProductMetadata(product: product),
                     const SizedBox(
                       height: TSizes.spaceBtwSections,
