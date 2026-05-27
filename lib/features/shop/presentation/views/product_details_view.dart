@@ -31,7 +31,7 @@ class ProductDetailsView extends StatelessWidget {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ProductImageSlider(),
+              ProductImageSlider(product: product),
               Padding(
                 padding: const EdgeInsets.fromLTRB(TSizes.defaultSpace, 0,
                     TSizes.defaultSpace, TSizes.defaultSpace),
