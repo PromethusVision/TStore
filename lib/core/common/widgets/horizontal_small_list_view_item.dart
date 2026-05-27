@@ -20,7 +20,7 @@ class HorizontalSmallListViewItem extends StatelessWidget {
       onTap: () => THelperFunctions.navigateToScreen(
         context,
         SubCategoryView(
-          categoryId: null,
+          categoryId: item.categoryId,
           title: item.title,
         ),
       ),

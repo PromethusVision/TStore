@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 
 class HorizontalSmallListViewItemModel {
+  final String? categoryId;
   final String title;
   final String image;
   final Color textColor;
@@ -9,6 +10,7 @@ class HorizontalSmallListViewItemModel {
   final void Function()? onTap;
 
   HorizontalSmallListViewItemModel({
+    this.categoryId,
     required this.title,
     required this.image,
      this.textColor=TColors.white,
