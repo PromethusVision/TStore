@@ -28,7 +28,8 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel: AppBarModel(
-          title: Text("Cart", style: Theme.of(context).textTheme.headlineSmall),
+          title:
+              Text("Sepet", style: Theme.of(context).textTheme.headlineSmall),
           hasArrowBack: true,
         ),
       ),
