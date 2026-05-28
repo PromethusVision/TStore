@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/brand_title_with_verification_view_model.dart';
 import 'package:t_store/core/common/view_models/product_price_text_view_model.dart';
 import 'package:t_store/core/common/view_models/product_title_text_view_model.dart';
@@ -11,6 +12,7 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_entity.dart';
 
 class CartItem extends StatelessWidget {
@@ -78,7 +80,15 @@ class CartItem extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
+        IconButton(
+          onPressed: () {
+            context.read<CartCubit>().removeFromCart(item.id);
+          },
+          icon: const Icon(Icons.delete_outline),
+          color: Colors.redAccent,
+          tooltip: 'Sepetten cikar',
+        ),
       ],
     );
   }
