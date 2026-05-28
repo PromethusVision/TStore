@@ -66,9 +66,44 @@ class CartItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Adet: ${item.quantity}',
-                    style: Theme.of(context).textTheme.bodySmall,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: item.quantity > 1
+                            ? () {
+                                context
+                                    .read<CartCubit>()
+                                    .decrementQuantity(item.id);
+                              }
+                            : null,
+                        icon: const Icon(Icons.remove),
+                        iconSize: 16,
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      Text(
+                        item.quantity.toString(),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.read<CartCubit>().incrementQuantity(item.id);
+                        },
+                        icon: const Icon(Icons.add),
+                        iconSize: 16,
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ],
                   ),
                   ProductPriceText(
                     productPriceTextModel: ProductPriceTextModel(
