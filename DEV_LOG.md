@@ -1,5 +1,23 @@
 # DEV_LOG
 
+## Guncel Mimari ve Sepet Ilerlemesi
+
+- Cart item management tamamlandi.
+- Sepette tek urun silme butonu eklendi.
+- CartItem icindeki cop kutusu butonu CartCubit.removeFromCart(item.id) cagiriyor.
+- Son urun silinince CartView "Sepetiniz bos" mesaji gosteriyor.
+- Sepet quantity management tamamlandi.
+- CartItem icinde inline - / quantity / + kontrolu eklendi.
+- + butonu CartCubit.incrementQuantity(item.id) cagiriyor.
+- - butonu sadece quantity > 1 ise CartCubit.decrementQuantity(item.id) cagiriyor.
+- Quantity 1 iken - urunu silmiyor; silme isi cop kutusu butonunda kaliyor.
+- Tek esnaf sepet kurali analiz edildi.
+- Mevcut ProductEntity/products/cart_items yapisinda shopId/merchantId/storeId olmadigi goruldu.
+- brandId'nin esnaf yerine kullanilmamasi karari netlestirildi.
+- Gelecek model icin shops + shop_products + carts + cart_items + qr_sessions mimarisi onerildi.
+- DESIGN_CART_QR_MODEL.md dosyasi olusturuldu ve repo icine eklendi.
+- QR dogrulama sepetinin klasik checkout/online odeme olmadigi belgeye islendi.
+
 - Proje adı: Esnafta Var
 - Kod tabanı: TStore Flutter e-commerce app fork’u
 - Backend: Supabase

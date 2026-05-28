@@ -1,5 +1,23 @@
 # NEXT_STEPS
 
+## Guncel Sonraki Teknik Calisma
+
+- Calisma 19: SQL migration plani hazirlama.
+- Amac: DESIGN_CART_QR_MODEL.md icindeki shops, shop_products, carts, cart_items ve qr_sessions modelini mevcut calisan sistemi bozmadan kucuk migration adimlarina bolmek.
+- Ilk adimda dogrudan SQL calistirilmayacak.
+- Once migration plani analiz edilecek.
+- Mevcut calisan cart_items yapisi hemen bozulmayacak.
+- Prototip verisi korunacak.
+- shops ve shop_products icin seed/demo data plani cikarilacak.
+- cart_items eski modelden yeni carts/cart_items modeline nasil gececek analiz edilecek.
+- QR sessions tablosu en son asamada ele alinacak.
+
+## Yeni Sohbet Hatirlatmasi
+
+- Yeni sohbet penceresinde once PROJECT_BRIEF.md, DEV_LOG.md, NEXT_STEPS.md, KNOWN_ISSUES.md ve DESIGN_CART_QR_MODEL.md okunmali.
+- Kod yazmadan once aktif branch, GitHub Desktop Changes durumu ve son commit sorulmali.
+- Her iste once analiz, sonra minimum degisiklik, sonra test, sonra commit, sonra push yapilmali.
+
 - Bir sonraki oturumda önce kontrol edilecekler:
   1. GitHub Desktop current branch kontrol edilecek.
   2. GitHub Desktop Changes alanı temiz mi kontrol edilecek.
