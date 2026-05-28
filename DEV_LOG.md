@@ -1,5 +1,20 @@
 # DEV_LOG
 
+## Son Guncel Hafiza Notu
+
+- Cart item management tamamlandi.
+- Sepette tek urun silme calisiyor.
+- Sepet quantity + / - calisiyor.
+- Quantity 1 iken - urunu silmiyor; silme isi cop kutusunda kaliyor.
+- Tek esnaf sepet kurali analiz edildi.
+- Mevcut products/cart_items yapisinda shopId/merchantId/storeId olmadigi goruldu.
+- brandId'nin esnaf/magaza yerine kullanilmamasi karari netlestirildi.
+- Gelecek model icin shops + shop_products + carts + cart_items + qr_sessions mimarisi belgelendi.
+- DESIGN_CART_QR_MODEL.md olusturuldu.
+- SQL migration'a hemen gecilmemesi kararlastirildi.
+- MIGRATION_PLAN_CART_QR.md olusturuldu.
+- Ilk gercek migration'in sadece shops + shop_products eklemesi gerektigi, mevcut cart_items sisteminin hemen bozulmamasi gerektigi not edildi.
+
 ## Guncel Mimari ve Sepet Ilerlemesi
 
 - Cart item management tamamlandi.

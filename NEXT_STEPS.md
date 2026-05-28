@@ -1,5 +1,23 @@
 # NEXT_STEPS
 
+## Son Guncel Sonraki Teknik Calisma
+
+- Calisma 20: shops + shop_products SQL migration taslagi hazirlama.
+- Bu calisma dogrudan SQL calistirmakla baslamayacak.
+- Once sadece migration SQL taslagi uretilecek.
+- Ilk migration yalnizca shops ve shop_products tablolarini eklemeli.
+- Mevcut products, cart_items, add-to-cart ve CartView akisi bozulmamali.
+- qr_sessions, carts ve yeni cart_items donusumu sonraki asamalara birakilmali.
+- Supabase'e SQL uygulanmadan once kullanicidan acik onay alinmali.
+- SQL calistirmadan once GitHub Desktop Changes temiz olmali.
+- Her SQL adimindan sonra uygulama smoke test yapilmali.
+
+## Son Guncel Yeni Sohbet Hatirlatmasi
+
+- Yeni pencere acilirsa once PROJECT_BRIEF.md, DEV_LOG.md, NEXT_STEPS.md, KNOWN_ISSUES.md, DESIGN_CART_QR_MODEL.md ve MIGRATION_PLAN_CART_QR.md okunmali.
+- Kod veya SQL yazmadan once aktif branch, son commit ve GitHub Desktop Changes durumu sorulmali.
+- Her iste once analiz, sonra minimum degisiklik, sonra test, sonra commit, sonra push yapilmali.
+
 ## Guncel Sonraki Teknik Calisma
 
 - Calisma 19: SQL migration plani hazirlama.
