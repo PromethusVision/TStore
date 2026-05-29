@@ -10,6 +10,8 @@ class SupabaseTables {
   static const String categories = 'categories';
   static const String brands = 'brands';
   static const String products = 'products';
+  static const String shops = 'shops';
+  static const String shopProducts = 'shop_products';
   static const String productVariations = 'product_variations';
 
   // Shopping related
