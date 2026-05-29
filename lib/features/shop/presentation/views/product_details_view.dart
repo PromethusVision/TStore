@@ -5,6 +5,7 @@ import 'package:t_store/features/shop/presentation/widgets/bottom_add_to_cart.da
 import 'package:t_store/features/shop/presentation/widgets/checkout_button.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/rating_and_share.dart';
 
 class ProductDetailsView extends StatelessWidget {
@@ -58,6 +59,10 @@ class ProductDetailsView extends StatelessWidget {
                     const SizedBox(height: TSizes.spaceBtwSections),
                     RatingAndShare(product: product),
                     ProductMetadata(product: product),
+                    const SizedBox(
+                      height: TSizes.spaceBtwSections,
+                    ),
+                    ProductSellersSection(productId: product.id),
                     const SizedBox(
                       height: TSizes.spaceBtwSections,
                     ),
