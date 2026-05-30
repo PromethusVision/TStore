@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/cubits/banner_carousel_slider_cubit_cubit/banner_carousel_slider_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/theme/theme.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
@@ -31,7 +32,15 @@ class TStore extends StatelessWidget {
         BlocProvider<BannersCubit>(create: (_) => sl<BannersCubit>()),
 
         // Cart & Wishlist
-        BlocProvider<CartCubit>(create: (_) => sl<CartCubit>()),
+        BlocProvider<CartCubit>(
+          create: (_) {
+            final cartCubit = sl<CartCubit>();
+            if (SupabaseService.instance.currentUser != null) {
+              cartCubit.getCartItems();
+            }
+            return cartCubit;
+          },
+        ),
         BlocProvider<WishlistCubit>(create: (_) => sl<WishlistCubit>()),
 
         // OnBoarding
