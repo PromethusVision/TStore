@@ -107,7 +107,7 @@ class CartItem extends StatelessWidget {
                   ),
                   ProductPriceText(
                     productPriceTextModel: ProductPriceTextModel(
-                      price: (product?.effectivePrice ?? 0).toStringAsFixed(2),
+                      price: item.totalPrice.toStringAsFixed(2),
                       smallSize: true,
                     ),
                   ),
