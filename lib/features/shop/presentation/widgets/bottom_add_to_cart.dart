@@ -122,7 +122,7 @@ class _BottomAddToCartState extends State<BottomAddToCart> {
                       quantity: quantity,
                     );
               },
-              child: const Text("Add To Cart"),
+              child: const Text("Sepete Ekle"),
             ),
           ],
         ),
