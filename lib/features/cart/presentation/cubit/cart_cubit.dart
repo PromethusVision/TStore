@@ -131,6 +131,11 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
+  void clearLocalCart() {
+    _items = [];
+    emit(const CartLoaded([]));
+  }
+
   int get itemCount {
     if (state is CartLoaded) {
       return (state as CartLoaded).itemCount;
