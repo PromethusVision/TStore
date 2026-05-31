@@ -49,6 +49,7 @@ import 'package:t_store/features/cart/domain/repositories/cart_repository.dart';
 import 'package:t_store/features/cart/domain/repositories/cart_v2_repository.dart';
 import 'package:t_store/features/cart/domain/usecases/get_cart_items_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/get_active_cart_items_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/add_shop_product_to_cart_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/update_cart_item_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/remove_from_cart_usecase.dart';
@@ -209,6 +210,7 @@ Future<void> setupServiceLocator() async {
   // Use Cases
   sl.registerLazySingleton(() => GetCartItemsUsecase(sl()));
   sl.registerLazySingleton(() => GetActiveCartItemsV2Usecase(sl()));
+  sl.registerLazySingleton(() => AddShopProductToCartV2Usecase(sl()));
   sl.registerLazySingleton(() => AddToCartUsecase(sl()));
   sl.registerLazySingleton(() => UpdateCartItemUsecase(sl()));
   sl.registerLazySingleton(() => RemoveFromCartUsecase(sl()));
