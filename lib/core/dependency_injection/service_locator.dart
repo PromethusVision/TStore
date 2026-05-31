@@ -54,6 +54,7 @@ import 'package:t_store/features/cart/domain/usecases/update_cart_item_usecase.d
 import 'package:t_store/features/cart/domain/usecases/remove_from_cart_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/clear_cart_usecase.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 
 // Wishlist
 import 'package:t_store/features/wishlist/data/repositories/wishlist_repository_impl.dart';
@@ -221,6 +222,7 @@ Future<void> setupServiceLocator() async {
         removeFromCartUsecase: sl(),
         clearCartUsecase: sl(),
       ));
+  sl.registerFactory(() => CartV2Cubit(sl()));
 
   // ==================== Wishlist ====================
   // Repository
