@@ -44,8 +44,11 @@ import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 
 // Cart
 import 'package:t_store/features/cart/data/repositories/cart_repository_impl.dart';
+import 'package:t_store/features/cart/data/repositories/cart_v2_repository_impl.dart';
 import 'package:t_store/features/cart/domain/repositories/cart_repository.dart';
+import 'package:t_store/features/cart/domain/repositories/cart_v2_repository.dart';
 import 'package:t_store/features/cart/domain/usecases/get_cart_items_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/get_active_cart_items_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/update_cart_item_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/remove_from_cart_usecase.dart';
@@ -198,9 +201,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<CartRepository>(
     () => CartRepositoryImpl(supabaseService: sl()),
   );
+  sl.registerLazySingleton<CartV2Repository>(
+    () => CartV2RepositoryImpl(supabaseService: sl()),
+  );
 
   // Use Cases
   sl.registerLazySingleton(() => GetCartItemsUsecase(sl()));
+  sl.registerLazySingleton(() => GetActiveCartItemsV2Usecase(sl()));
   sl.registerLazySingleton(() => AddToCartUsecase(sl()));
   sl.registerLazySingleton(() => UpdateCartItemUsecase(sl()));
   sl.registerLazySingleton(() => RemoveFromCartUsecase(sl()));
