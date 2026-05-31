@@ -12,15 +12,8 @@ class ProductDetailsView extends StatelessWidget {
 
   const ProductDetailsView({
     super.key,
-    ProductEntity? product,
-  }) : product = product ?? const ProductEntity(
-          id: 'demo',
-          name: 'Demo Product',
-          price: 0,
-          categoryId: 'demo',
-          stock: 0,
-          images: const [],
-        );
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
