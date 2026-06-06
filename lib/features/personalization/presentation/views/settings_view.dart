@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/widgets/primary_header_container.dart';
@@ -8,6 +9,7 @@ import 'package:t_store/features/personalization/presentation/views/user_address
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
+import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/orders_view.dart';
 
 class SettingsView extends StatelessWidget {
@@ -102,6 +104,15 @@ class SettingsView extends StatelessWidget {
         subtitle: "Veri kullanımı ve bağlantılı hesapları yönet",
         leading: Iconsax.security_card,
       ),
+      if (kDebugMode)
+        SettingsMenuTileModel(
+          onTap: () {
+            THelperFunctions.navigateToScreen(context, const CartV2View());
+          },
+          title: "CartV2 Test",
+          subtitle: "Mağaza sepeti test ekranı",
+          leading: Iconsax.code,
+        ),
     ];
     return SafeArea(
       child: SingleChildScrollView(
