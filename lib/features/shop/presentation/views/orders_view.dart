@@ -13,7 +13,7 @@ class OrdersView extends StatelessWidget {
       appBar: CustomAppBar(
         appBarModel: AppBarModel(
             title: Text(
-          "My Orders",
+          "İşlemlerim",
           style: Theme.of(context).textTheme.headlineSmall,
         )),
       ),
