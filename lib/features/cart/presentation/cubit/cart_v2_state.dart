@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/cart/domain/entities/cart_v2_add_result.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_v2_entity.dart';
 
 abstract class CartV2State extends Equatable {
@@ -35,4 +36,35 @@ class CartV2Error extends CartV2State {
 
   @override
   List<Object?> get props => [message];
+}
+
+class CartV2ItemAdded extends CartV2State {
+  final String cartId;
+  final String shopId;
+  final String shopProductId;
+  final int quantity;
+
+  const CartV2ItemAdded({
+    required this.cartId,
+    required this.shopId,
+    required this.shopProductId,
+    required this.quantity,
+  });
+
+  @override
+  List<Object?> get props => [
+        cartId,
+        shopId,
+        shopProductId,
+        quantity,
+      ];
+}
+
+class CartV2ShopConflictState extends CartV2State {
+  final CartV2ShopConflict conflict;
+
+  const CartV2ShopConflictState(this.conflict);
+
+  @override
+  List<Object?> get props => [conflict];
 }
