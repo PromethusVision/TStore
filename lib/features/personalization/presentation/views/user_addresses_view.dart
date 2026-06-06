@@ -38,16 +38,16 @@ class UserAddressesView extends StatelessWidget {
               children: [
                 SingleAddress(
                   singleAddressModel: SingleAddressModel(
-                      name: "Mahmoud Hamdy",
-                      phoneNumber: "0123456789",
-                      address: "8th of October,Cairo,Egypt",
+                      name: "Turgut Duman",
+                      phoneNumber: "0555 123 45 67",
+                      address: "Esenler, İstanbul, Türkiye",
                       isSelected: true),
                 ),
                 SingleAddress(
                   singleAddressModel: SingleAddressModel(
-                      name: "Mahmoud Hamdy",
-                      phoneNumber: "0123456789",
-                      address: "8th of October,Cairo,Egypt",
+                      name: "Turgut Duman",
+                      phoneNumber: "0555 123 45 67",
+                      address: "Esenler, İstanbul, Türkiye",
                       isSelected: false),
                 ),
               ],
