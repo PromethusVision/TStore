@@ -34,7 +34,7 @@ class ProfileInformationSection extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {},
-                child: const Text("Change Profile Picture"),
+                child: const Text("Profil Fotoğrafını Değiştir"),
               ),
             ],
           ),
@@ -42,7 +42,7 @@ class ProfileInformationSection extends StatelessWidget {
         const SpaceBetweenSectionsWithDivider(),
         SectionHeading(
             sectionHeadingModel: SectionHeadingModel(
-                title: "Profile Information", showActionButton: false)),
+                title: "Profil Bilgileri", showActionButton: false)),
         const SizedBox(
           height: TSizes.spaceBtwItems / 1.5,
         ),

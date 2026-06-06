@@ -19,7 +19,7 @@ class PersonalInformationSection extends StatelessWidget {
       children: [
         SectionHeading(
             sectionHeadingModel: SectionHeadingModel(
-                title: "Personal Information", showActionButton: false)),
+                title: "Kişisel Bilgiler", showActionButton: false)),
         const SizedBox(
           height: TSizes.spaceBtwItems / 1.5,
         ),

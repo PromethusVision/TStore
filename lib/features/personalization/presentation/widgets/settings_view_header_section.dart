@@ -32,8 +32,8 @@ class SettingsViewHeaderSection extends StatelessWidget {
         const SizedBox(height: TSizes.spaceBtwSections),
         UserProfileTile(
           userProfileTileModel: UserProfileTileModel(
-              title: "Mahmoud Hamdy",
-              subtitle: "hmdy7486@gmail.com",
+              title: "Turgut Duman",
+              subtitle: "turgut.duman@example.com",
               onTap: () => THelperFunctions.navigateToScreen(
                   context, const ProfileView()),
               trailing: Iconsax.edit,

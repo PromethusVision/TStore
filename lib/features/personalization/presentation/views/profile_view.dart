@@ -15,43 +15,43 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<ProfileEntityTileModel> profileInformation = [
       ProfileEntityTileModel(
-        title: "Name",
-        value: "John Doe",
+        title: "Ad Soyad",
+        value: "Turgut Duman",
         onTap: () {},
       ),
       const ProfileEntityTileModel(
-        title: "Username",
-        value: "Elashwah Hamdi",
+        title: "Kullanıcı Adı",
+        value: "turgutduman",
       ),
     ];
     final List<ProfileEntityTileModel> personalInformation = [
       ProfileEntityTileModel(
         trailing: Iconsax.copy,
-        title: "User ID",
-        value: "21-02064",
+        title: "Kullanıcı ID",
+        value: "EV-0001",
         onTap: () {},
       ),
       const ProfileEntityTileModel(
-        title: "Email",
-        value: "hmdy7486@gmail.com",
+        title: "E-posta",
+        value: "turgut.duman@example.com",
       ),
       const ProfileEntityTileModel(
-        title: "Phone Number",
-        value: "+201019793768",
+        title: "Telefon Numarası",
+        value: "+90 555 123 45 67",
       ),
       const ProfileEntityTileModel(
-        title: "Gender",
-        value: "Male",
+        title: "Cinsiyet",
+        value: "Erkek",
       ),
       const ProfileEntityTileModel(
-        title: "Date Of Birth",
-        value: "13/01/2003",
+        title: "Doğum Tarihi",
+        value: "01/01/1990",
       ),
     ];
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel:
-            AppBarModel(title: const Text("Profile"), hasArrowBack: true),
+            AppBarModel(title: const Text("Profil"), hasArrowBack: true),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -67,7 +67,7 @@ class ProfileView extends StatelessWidget {
               TextButton(
                   onPressed: () {},
                   child: const Text(
-                    "Delete Account",
+                    "Hesabı Sil",
                     style: TextStyle(color: TColors.error),
                   )),
               const SizedBox(
