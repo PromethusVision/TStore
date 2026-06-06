@@ -131,7 +131,7 @@ class _SellerTile extends StatelessWidget {
               runSpacing: TSizes.xs,
               children: [
                 Text(
-                  'Mağaza fiyatı: \$${shopProduct.price.toStringAsFixed(2)}',
+                  'Mağaza fiyatı: ₺${shopProduct.price.toStringAsFixed(2)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 if (rating > 0)
