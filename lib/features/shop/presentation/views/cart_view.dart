@@ -55,7 +55,34 @@ class _CartViewState extends State<CartView> {
                 );
               }
 
-              return CartItemsList(items: state.items);
+              return Column(
+                children: [
+                  Expanded(child: CartItemsList(items: state.items)),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  Container(
+                    padding: const EdgeInsets.all(TSizes.md),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+                      border: Border.all(
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Sepet Toplamı',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          '\$${state.totalPrice.toStringAsFixed(2)}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
             }
 
             return const SizedBox.shrink();
