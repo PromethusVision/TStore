@@ -27,7 +27,7 @@ class UserAddressesView extends StatelessWidget {
           appBarModel: AppBarModel(
               hasArrowBack: true,
               title: Text(
-                "Addresses",
+                "Adreslerim",
                 style: Theme.of(context).textTheme.headlineSmall,
               ))),
       body: SafeArea(

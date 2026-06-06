@@ -12,7 +12,7 @@ class AddNewAddressesView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel: AppBarModel(
-            title: const Text("Add New Address"), hasArrowBack: true),
+            title: const Text("Yeni Adres Ekle"), hasArrowBack: true),
       ),
       body: const SafeArea(
         child: SingleChildScrollView(

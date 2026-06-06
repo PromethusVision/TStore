@@ -14,7 +14,7 @@ class NewAddressForm extends StatelessWidget {
         TextFormField(
           decoration: const InputDecoration(
             prefixIcon: Icon(Iconsax.user),
-            labelText: "Name",
+            labelText: "Ad Soyad",
           ),
         ),
         const SizedBox(
@@ -23,7 +23,7 @@ class NewAddressForm extends StatelessWidget {
         TextFormField(
           decoration: const InputDecoration(
             prefixIcon: Icon(Iconsax.mobile),
-            labelText: "Phone Number",
+            labelText: "Telefon Numarası",
           ),
         ),
         const SizedBox(
@@ -35,7 +35,7 @@ class NewAddressForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Iconsax.building_31),
-                  labelText: "Street",
+                  labelText: "Adres",
                 ),
               ),
             ),
@@ -46,7 +46,7 @@ class NewAddressForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Iconsax.code),
-                  labelText: "Postal Code",
+                  labelText: "Posta Kodu",
                 ),
               ),
             ),
@@ -61,7 +61,7 @@ class NewAddressForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Iconsax.building),
-                  labelText: "City",
+                  labelText: "Şehir",
                 ),
               ),
             ),
@@ -72,7 +72,7 @@ class NewAddressForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Iconsax.activity),
-                  labelText: "State",
+                  labelText: "İlçe / Bölge",
                 ),
               ),
             ),
@@ -84,7 +84,7 @@ class NewAddressForm extends StatelessWidget {
         TextFormField(
           decoration: const InputDecoration(
             prefixIcon: Icon(Iconsax.global),
-            labelText: "Country",
+            labelText: "Ülke",
           ),
         ),
         const SizedBox(
@@ -94,7 +94,7 @@ class NewAddressForm extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {},
-            child: const Text("Save"),
+            child: const Text("Kaydet"),
           ),
         ),
       ],
