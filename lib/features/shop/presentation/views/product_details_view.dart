@@ -37,7 +37,7 @@ class ProductDetailsView extends StatelessWidget {
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems),
                     Text(
-                      '\$${product.effectivePrice.toStringAsFixed(2)}',
+                      '₺${product.effectivePrice.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     if (product.description != null &&
