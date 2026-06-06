@@ -59,14 +59,14 @@ class SettingsView extends StatelessWidget {
           //navigateToScreen UserAddressesView
           THelperFunctions.navigateToScreen(context, const UserAddressesView());
         },
-        title: "My Addresses",
-        subtitle: "Set Shopping Delivery Address",
+        title: "Adreslerim",
+        subtitle: "Adres ve konum bilgilerini düzenle",
         leading: Iconsax.safe_home,
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "My Cart",
-        subtitle: "Add, Remove Products And Move To Checkout",
+        title: "Sepetim",
+        subtitle: "Mağazada doğrulamak için ürünlerini hazırla",
         leading: Iconsax.shopping_cart,
       ),
       SettingsMenuTileModel(
@@ -74,8 +74,8 @@ class SettingsView extends StatelessWidget {
           //navigateToScreen UserAddressesView
           THelperFunctions.navigateToScreen(context, const OrdersView());
         },
-        title: "My Orders",
-        subtitle: "In-Progress And Completed Orders",
+        title: "İşlemlerim",
+        subtitle: "Devam eden ve tamamlanan alışveriş kayıtların",
         leading: Iconsax.bag,
       ),
       SettingsMenuTileModel(
