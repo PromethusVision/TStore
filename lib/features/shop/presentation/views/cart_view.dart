@@ -75,7 +75,7 @@ class _CartViewState extends State<CartView> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          '\$${state.totalPrice.toStringAsFixed(2)}',
+                          '₺${state.totalPrice.toStringAsFixed(2)}',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
