@@ -23,7 +23,7 @@ class AppSettingsSection extends StatelessWidget {
       children: [
         SectionHeading(
           sectionHeadingModel: SectionHeadingModel(
-            title: "App Settings",
+            title: "Uygulama Ayarları",
             showActionButton: false,
           ),
         ),
@@ -46,7 +46,7 @@ class AppSettingsSection extends StatelessWidget {
                 (route) => false,
               );
             },
-            child: const Text("Logout"),
+            child: const Text("Çıkış Yap"),
           ),
         ),
       ],

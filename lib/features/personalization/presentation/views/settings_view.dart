@@ -18,14 +18,14 @@ class SettingsView extends StatelessWidget {
     final List<SettingsMenuTileModel> appSettingsTiles = [
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Upload Data",
-        subtitle: "Upload Your Data To Server",
+        title: "Veri Yükleme",
+        subtitle: "Verilerini sunucuya yükle",
         leading: Iconsax.document_upload,
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Geolocation",
-        subtitle: "Set Recommendation Based On Location",
+        title: "Konum",
+        subtitle: "Konuma göre önerileri düzenle",
         leading: Iconsax.document_download,
         trailing: Switch(
           value: true,
@@ -34,8 +34,8 @@ class SettingsView extends StatelessWidget {
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Safe Mode",
-        subtitle: "Search Result Is Safe For All Ages",
+        title: "Güvenli Mod",
+        subtitle: "Arama sonuçlarını güvenli tut",
         leading: Iconsax.security_user,
         trailing: Switch(
           value: false,
@@ -44,8 +44,8 @@ class SettingsView extends StatelessWidget {
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "HD Image Quality",
-        subtitle: "Set Image Quality To High Quality",
+        title: "HD Görsel Kalitesi",
+        subtitle: "Görsel kalitesini yüksek olarak ayarla",
         leading: Iconsax.image,
         trailing: Switch(
           value: true,
@@ -80,26 +80,26 @@ class SettingsView extends StatelessWidget {
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Bank Account",
-        subtitle: "WithDraw Balance To Registered Bank Account",
+        title: "Banka Hesabı",
+        subtitle: "Kayıtlı banka hesabı bilgilerini yönet",
         leading: Iconsax.bank,
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "My Coupons",
-        subtitle: "List Of All Discounted Coupons",
+        title: "Kuponlarım",
+        subtitle: "İndirim ve kampanya kuponlarını görüntüle",
         leading: Iconsax.discount_shape,
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Notifications",
-        subtitle: "Set Any Kind Of Notifications Message",
+        title: "Bildirimler",
+        subtitle: "Bildirim tercihlerini düzenle",
         leading: Iconsax.notification,
       ),
       SettingsMenuTileModel(
         onTap: () {},
-        title: "Account Privacy",
-        subtitle: "Manage Data Usage And Connected Accounts",
+        title: "Hesap Gizliliği",
+        subtitle: "Veri kullanımı ve bağlantılı hesapları yönet",
         leading: Iconsax.security_card,
       ),
     ];

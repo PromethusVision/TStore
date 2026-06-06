@@ -7,7 +7,7 @@ class TTexts {
   static const String appName = "Esnafta Var";
   static const String tContinue = "Continue";
   static const String viewAll = "View All";
-  static const String account = "Account";
+  static const String account = "Hesap";
 
   // views
   static const String homeView = "Ana Sayfa";

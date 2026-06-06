@@ -17,7 +17,7 @@ class AccountSettingsSection extends StatelessWidget {
       children: [
         SectionHeading(
             sectionHeadingModel: SectionHeadingModel(
-          title: "Account Settings",
+          title: "Hesap Ayarları",
           showActionButton: false,
         )),
         SettingsMenuTileList(settingsMenuTiles: accountSettingsTiles),
