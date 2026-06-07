@@ -214,4 +214,78 @@ class CartV2RepositoryImpl implements CartV2Repository {
       return Left(e.toString());
     }
   }
+
+  @override
+  Future<Either<String, CartV2AddResult>> replaceActiveCartWithShopProduct({
+    required String shopProductId,
+    required int quantity,
+  }) async {
+    try {
+      if (_userId.isEmpty) {
+        return const Left('Lutfen once giris yapin');
+      }
+
+      if (quantity <= 0) {
+        return const Left('Adet 1 veya daha buyuk olmali');
+      }
+
+      final shopProductResponse = await supabaseService.client
+          .from(SupabaseTables.shopProducts)
+          .select()
+          .eq('id', shopProductId)
+          .eq('is_active', true)
+          .eq('is_available', true)
+          .maybeSingle();
+
+      if (shopProductResponse == null) {
+        return const Left('Urun bu esnafta satista degil');
+      }
+
+      final shopProduct = ShopProductModel.fromJson(shopProductResponse);
+      final activeCartResult = await getActiveCart();
+
+      return activeCartResult.fold<Future<Either<String, CartV2AddResult>>>(
+        (error) async => Left(error),
+        (activeCart) async {
+          if (activeCart != null) {
+            await supabaseService.client
+                .from(SupabaseTables.carts)
+                .update({'status': 'cancelled'})
+                .eq('id', activeCart.id)
+                .eq('user_id', _userId)
+                .eq('status', 'active');
+          }
+
+          final cartResponse = await supabaseService.client
+              .from(SupabaseTables.carts)
+              .insert({
+                'user_id': _userId,
+                'shop_id': shopProduct.shopId,
+                'status': 'active',
+              })
+              .select()
+              .single();
+
+          final cart = CartV2Model.fromJson(cartResponse);
+
+          await supabaseService.client.from(SupabaseTables.cartItemsV2).insert({
+            'cart_id': cart.id,
+            'shop_product_id': shopProductId,
+            'quantity': quantity,
+          }).select().single();
+
+          return Right(
+            CartV2AddSuccess(
+              cartId: cart.id,
+              shopId: shopProduct.shopId,
+              shopProductId: shopProductId,
+              quantity: quantity,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
 }

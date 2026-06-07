@@ -16,4 +16,9 @@ abstract class CartV2Repository {
     required String shopProductId,
     required int quantity,
   });
+
+  Future<Either<String, CartV2AddResult>> replaceActiveCartWithShopProduct({
+    required String shopProductId,
+    required int quantity,
+  });
 }
