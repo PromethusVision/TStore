@@ -21,4 +21,15 @@ abstract class CartV2Repository {
     required String shopProductId,
     required int quantity,
   });
+
+  Future<Either<String, Unit>> updateCartItemQuantity({
+    required String cartItemId,
+    required int quantity,
+  });
+
+  Future<Either<String, Unit>> removeCartItem({
+    required String cartItemId,
+  });
+
+  Future<Either<String, Unit>> cancelActiveCart();
 }

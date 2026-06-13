@@ -288,4 +288,124 @@ class CartV2RepositoryImpl implements CartV2Repository {
       return Left(e.toString());
     }
   }
+
+  @override
+  Future<Either<String, Unit>> updateCartItemQuantity({
+    required String cartItemId,
+    required int quantity,
+  }) async {
+    try {
+      if (_userId.isEmpty) {
+        return const Left('Lutfen once giris yapin');
+      }
+
+      if (cartItemId.trim().isEmpty) {
+        return const Left('Sepet urunu bulunamadi');
+      }
+
+      if (quantity <= 0) {
+        return const Left('Adet 1 veya daha buyuk olmali');
+      }
+
+      final activeCartResult = await getActiveCart();
+
+      return activeCartResult.fold<Future<Either<String, Unit>>>(
+        (error) async => Left(error),
+        (activeCart) async {
+          if (activeCart == null) {
+            return const Left('Aktif magaza sepeti bulunamadi');
+          }
+
+          final response = await supabaseService.client
+              .from(SupabaseTables.cartItemsV2)
+              .update({'quantity': quantity})
+              .eq('id', cartItemId)
+              .eq('cart_id', activeCart.id)
+              .select()
+              .maybeSingle();
+
+          if (response == null) {
+            return const Left('Sepet urunu bulunamadi');
+          }
+
+          return const Right(unit);
+        },
+      );
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, Unit>> removeCartItem({
+    required String cartItemId,
+  }) async {
+    try {
+      if (_userId.isEmpty) {
+        return const Left('Lutfen once giris yapin');
+      }
+
+      if (cartItemId.trim().isEmpty) {
+        return const Left('Sepet urunu bulunamadi');
+      }
+
+      final activeCartResult = await getActiveCart();
+
+      return activeCartResult.fold<Future<Either<String, Unit>>>(
+        (error) async => Left(error),
+        (activeCart) async {
+          if (activeCart == null) {
+            return const Left('Aktif magaza sepeti bulunamadi');
+          }
+
+          final response = await supabaseService.client
+              .from(SupabaseTables.cartItemsV2)
+              .delete()
+              .eq('id', cartItemId)
+              .eq('cart_id', activeCart.id)
+              .select()
+              .maybeSingle();
+
+          if (response == null) {
+            return const Left('Sepet urunu bulunamadi');
+          }
+
+          return const Right(unit);
+        },
+      );
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, Unit>> cancelActiveCart() async {
+    try {
+      if (_userId.isEmpty) {
+        return const Left('Lutfen once giris yapin');
+      }
+
+      final activeCartResult = await getActiveCart();
+
+      return activeCartResult.fold<Future<Either<String, Unit>>>(
+        (error) async => Left(error),
+        (activeCart) async {
+          if (activeCart == null) {
+            return const Right(unit);
+          }
+
+          await supabaseService.client
+              .from(SupabaseTables.carts)
+              .update({'status': 'cancelled'})
+              .eq('id', activeCart.id)
+              .eq('user_id', _userId)
+              .eq('status', 'active');
+
+          return const Right(unit);
+        },
+      );
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
 }
