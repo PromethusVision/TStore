@@ -227,7 +227,7 @@ Future<void> setupServiceLocator() async {
         removeFromCartUsecase: sl(),
         clearCartUsecase: sl(),
       ));
-  sl.registerFactory(() => CartV2Cubit(sl(), sl()));
+  sl.registerFactory(() => CartV2Cubit(sl(), sl(), sl()));
 
   // ==================== Wishlist ====================
   // Repository
