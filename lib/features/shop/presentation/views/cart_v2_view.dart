@@ -2,20 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
-import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_v2_entity.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 
-class CartV2View extends StatelessWidget {
+class CartV2View extends StatefulWidget {
   const CartV2View({super.key});
 
   @override
+  State<CartV2View> createState() => _CartV2ViewState();
+}
+
+class _CartV2ViewState extends State<CartV2View> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CartV2Cubit>().getActiveCartItems();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<CartV2Cubit>()..getActiveCartItems(),
-      child: Scaffold(
+    return Scaffold(
         appBar: CustomAppBar(
           appBarModel: AppBarModel(
             title: Text(
@@ -80,7 +88,6 @@ class CartV2View extends StatelessWidget {
             },
           ),
         ),
-      ),
     );
   }
 }
