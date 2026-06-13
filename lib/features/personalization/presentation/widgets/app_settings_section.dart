@@ -8,6 +8,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_menu_tile_list.dart';
 
@@ -38,6 +39,7 @@ class AppSettingsSection extends StatelessWidget {
               await context.read<AuthCubit>().signOut();
               if (!context.mounted) return;
               context.read<CartCubit>().clearLocalCart();
+              context.read<CartV2Cubit>().clearLocalCart();
               // reset menu to Home
               context.read<NavigationMenuCubit>().changeIndex(0);
               // clear navigation stack and open NavigationMenu as root
