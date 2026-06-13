@@ -2,7 +2,9 @@ import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
@@ -22,6 +24,7 @@ class ProductSellersSection extends StatefulWidget {
 
 class _ProductSellersSectionState extends State<ProductSellersSection> {
   late final Future<Either<String, List<ShopProductEntity>>> _future;
+  static bool _isConflictDialogOpen = false;
 
   @override
   void initState() {
@@ -34,6 +37,11 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CartV2Cubit, CartV2State>(
+        listenWhen: (previous, current) {
+          return current is CartV2ItemAdded ||
+              current is CartV2Error ||
+              current is CartV2ShopConflictState;
+        },
         listener: (context, state) {
           if (state is CartV2ItemAdded) {
             ScaffoldMessenger.of(context)
@@ -107,14 +115,16 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     );
   }
 
-  void _showShopConflictDialog(
+  Future<void> _showShopConflictDialog(
     BuildContext context,
     CartV2ShopConflictState state,
-  ) {
-    final cubit = context.read<CartV2Cubit>();
+  ) async {
+    if (_isConflictDialogOpen) return;
+
+    _isConflictDialogOpen = true;
     final conflict = state.conflict;
 
-    showDialog<void>(
+    await showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
@@ -130,7 +140,8 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                cubit.replaceActiveCartWithShopProduct(
+                if (!mounted) return;
+                context.read<CartV2Cubit>().replaceActiveCartWithShopProduct(
                   shopProductId: conflict.shopProductId,
                   quantity: conflict.quantity,
                 );
@@ -143,6 +154,10 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         );
       },
     );
+
+    if (mounted) {
+      _isConflictDialogOpen = false;
+    }
   }
 }
 
@@ -209,12 +224,7 @@ class _SellerTile extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: canAddToCart
                   ? OutlinedButton(
-                      onPressed: () {
-                        context.read<CartV2Cubit>().addShopProductToCart(
-                              shopProductId: shopProduct.id,
-                              quantity: 1,
-                            );
-                      },
+                      onPressed: () => _handleAddToCart(context),
                       child: const Text('Bu Esnaftan Sepete Ekle'),
                     )
                   : Text(
@@ -226,6 +236,22 @@ class _SellerTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleAddToCart(BuildContext context) {
+    final user = SupabaseService.instance.currentUser;
+
+    if (user == null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LoginView()),
+      );
+      return;
+    }
+
+    context.read<CartV2Cubit>().addShopProductToCart(
+          shopProductId: shopProduct.id,
+          quantity: 1,
+        );
   }
 }
 
