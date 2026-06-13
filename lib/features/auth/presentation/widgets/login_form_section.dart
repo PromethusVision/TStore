@@ -12,7 +12,6 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
-import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/shop/presentation/controller/shop_cubit.dart';
 
@@ -57,7 +56,6 @@ class _LoginFormSectionState extends State<LoginFormSection> {
             type: SnackBarType.success,
           );
 
-          context.read<CartCubit>().getCartItems();
           context.read<CartV2Cubit>().getActiveCartItems();
 
           THelperFunctions.navigateReplacementToScreen(
