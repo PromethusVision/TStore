@@ -34,9 +34,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CartV2Cubit>(
-      create: (_) => sl<CartV2Cubit>(),
-      child: BlocListener<CartV2Cubit, CartV2State>(
+    return BlocListener<CartV2Cubit, CartV2State>(
         listener: (context, state) {
           if (state is CartV2ItemAdded) {
             ScaffoldMessenger.of(context)
@@ -107,7 +105,6 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
             );
           },
         ),
-      ),
     );
   }
 
