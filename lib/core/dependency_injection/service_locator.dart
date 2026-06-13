@@ -51,6 +51,9 @@ import 'package:t_store/features/cart/domain/usecases/get_cart_items_usecase.dar
 import 'package:t_store/features/cart/domain/usecases/get_active_cart_items_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/add_shop_product_to_cart_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/replace_active_cart_with_shop_product_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/update_cart_item_quantity_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/remove_cart_item_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/cancel_active_cart_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/update_cart_item_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/remove_from_cart_usecase.dart';
@@ -214,6 +217,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => AddShopProductToCartV2Usecase(sl()));
   sl.registerLazySingleton(
       () => ReplaceActiveCartWithShopProductV2Usecase(sl()));
+  sl.registerLazySingleton(() => UpdateCartItemQuantityV2Usecase(sl()));
+  sl.registerLazySingleton(() => RemoveCartItemV2Usecase(sl()));
+  sl.registerLazySingleton(() => CancelActiveCartV2Usecase(sl()));
   sl.registerLazySingleton(() => AddToCartUsecase(sl()));
   sl.registerLazySingleton(() => UpdateCartItemUsecase(sl()));
   sl.registerLazySingleton(() => RemoveFromCartUsecase(sl()));
