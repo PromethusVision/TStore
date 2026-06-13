@@ -27,7 +27,21 @@ class CartV2View extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(TSizes.defaultSpace),
-          child: BlocBuilder<CartV2Cubit, CartV2State>(
+          child: BlocConsumer<CartV2Cubit, CartV2State>(
+            listenWhen: (previous, current) => current is CartV2Error,
+            listener: (context, state) {
+              if (state is CartV2Error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+            },
+            buildWhen: (previous, current) {
+              if (current is CartV2Error && previous is CartV2Loaded) {
+                return false;
+              }
+              return true;
+            },
             builder: (context, state) {
               if (state is CartV2Initial || state is CartV2Loading) {
                 return const Center(child: CircularProgressIndicator());
@@ -56,6 +70,8 @@ class CartV2View extends StatelessWidget {
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems),
                     _CartV2TotalBox(totalAmount: state.totalAmount),
+                    const SizedBox(height: TSizes.spaceBtwItems),
+                    const _CancelActiveCartButton(),
                   ],
                 );
               }
@@ -91,9 +107,21 @@ class _CartV2ItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            shop?.name ?? 'Bilinmeyen esnaf',
-            style: Theme.of(context).textTheme.titleMedium,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  shop?.name ?? 'Bilinmeyen esnaf',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Kaldır',
+                onPressed: () => _confirmRemoveItem(context),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ],
           ),
           const SizedBox(height: TSizes.xs),
           Text(
@@ -110,13 +138,85 @@ class _CartV2ItemCard extends StatelessWidget {
             label: 'Mağaza fiyatı',
             value: '₺${shopPrice.toStringAsFixed(2)}',
           ),
-          _CartV2InfoRow(
-            label: 'Adet',
-            value: item.quantity.toString(),
-          ),
+          _CartV2QuantityRow(item: item),
           _CartV2InfoRow(
             label: 'Satır toplamı',
             value: '₺${item.totalPrice.toStringAsFixed(2)}',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmRemoveItem(BuildContext context) async {
+    final cubit = context.read<CartV2Cubit>();
+    final shouldRemove = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Ürünü sepetten kaldır'),
+          content: const Text(
+            'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Kaldır'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldRemove == true) {
+      cubit.removeItem(item.id);
+    }
+  }
+}
+
+class _CartV2QuantityRow extends StatelessWidget {
+  const _CartV2QuantityRow({required this.item});
+
+  final CartItemV2Entity item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: TSizes.xs),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Adet', style: Theme.of(context).textTheme.bodyMedium),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: 'Azalt',
+                onPressed: item.quantity <= 1
+                    ? null
+                    : () {
+                        context
+                            .read<CartV2Cubit>()
+                            .decrementItemQuantity(item);
+                      },
+                icon: const Icon(Icons.remove),
+              ),
+              Text(
+                item.quantity.toString(),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              IconButton(
+                tooltip: 'Artır',
+                onPressed: () {
+                  context.read<CartV2Cubit>().incrementItemQuantity(item);
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
           ),
         ],
       ),
@@ -175,6 +275,50 @@ class _CartV2TotalBox extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _CancelActiveCartButton extends StatelessWidget {
+  const _CancelActiveCartButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: () => _confirmCancelCart(context),
+        child: const Text('Mağaza Sepetini İptal Et'),
+      ),
+    );
+  }
+
+  Future<void> _confirmCancelCart(BuildContext context) async {
+    final cubit = context.read<CartV2Cubit>();
+    final shouldCancel = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Mağaza sepetini iptal et'),
+          content: const Text(
+            'Bu mağaza sepeti iptal edilecek. Ürünler aktif sepetten kaldırılmış sayılacak.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('İptal Et'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldCancel == true) {
+      cubit.cancelActiveCart();
+    }
   }
 }
 
