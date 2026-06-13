@@ -10,6 +10,7 @@ import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/brands_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
@@ -39,6 +40,15 @@ class TStore extends StatelessWidget {
               cartCubit.getCartItems();
             }
             return cartCubit;
+          },
+        ),
+        BlocProvider<CartV2Cubit>(
+          create: (_) {
+            final cartV2Cubit = sl<CartV2Cubit>();
+            if (SupabaseService.instance.currentUser != null) {
+              cartV2Cubit.getActiveCartItems();
+            }
+            return cartV2Cubit;
           },
         ),
         BlocProvider<WishlistCubit>(create: (_) => sl<WishlistCubit>()),

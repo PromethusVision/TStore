@@ -168,4 +168,8 @@ class CartV2Cubit extends Cubit<CartV2State> {
       (_) async => getActiveCartItems(),
     );
   }
+
+  void clearLocalCart() {
+    emit(const CartV2Loaded([]));
+  }
 }
