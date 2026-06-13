@@ -6,7 +6,7 @@ import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
-import 'package:t_store/features/shop/presentation/views/cart_view.dart';
+import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 
@@ -45,7 +45,7 @@ class HomeAppBar extends StatelessWidget {
                   if (user == null) {
                     THelperFunctions.navigateToScreen(context, const LoginView());
                   } else {
-                    THelperFunctions.navigateToScreen(context, const CartView());
+                    THelperFunctions.navigateToScreen(context, const CartV2View());
                   }
                 },
               ),

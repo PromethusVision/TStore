@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/view_models/cart_counter_icon_view_model.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
-import 'package:t_store/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:t_store/features/cart/presentation/cubit/cart_state.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 
 class CartCounterIcon extends StatelessWidget {
   const CartCounterIcon({
@@ -14,9 +14,9 @@ class CartCounterIcon extends StatelessWidget {
   final CartCounterIconModel cartCounterIconModel;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
+    return BlocBuilder<CartV2Cubit, CartV2State>(
       builder: (context, state) {
-        final count = state is CartLoaded
+        final count = state is CartV2Loaded
             ? state.itemCount
             : cartCounterIconModel.count ?? 0;
 

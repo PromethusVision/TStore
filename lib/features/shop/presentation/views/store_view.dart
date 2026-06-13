@@ -13,7 +13,7 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
-import 'package:t_store/features/shop/presentation/views/cart_view.dart';
+import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 // [Previous imports remain the same]
@@ -49,7 +49,7 @@ class StoreView extends StatelessWidget {
                       THelperFunctions.navigateToScreen(context, const LoginView());
                     } else {
                       THelperFunctions.navigateToScreen(
-                          context, const CartView());
+                          context, const CartV2View());
                     }
                   },
                   color: dark ? TColors.white : TColors.dark,
