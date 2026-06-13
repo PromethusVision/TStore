@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart' hide State;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -41,7 +40,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 const SnackBar(
-                  content: Text('V2 mağaza sepetine eklendi'),
+                  content: Text('Ürün mağaza sepetine eklendi'),
                 ),
               );
           } else if (state is CartV2Error) {
@@ -121,7 +120,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         return AlertDialog(
           title: const Text('Sepetinizde başka bir esnafa ait ürünler var'),
           content: const Text(
-            'Bu ürünü eklemek için mevcut mağaza sepeti iptal edilip yeni esnafla devam edilecek.',
+            'Bu ürünü eklemek için mevcut mağaza sepetiniz iptal edilip bu esnafla devam edilecek.',
           ),
           actions: [
             TextButton(
@@ -136,7 +135,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                   quantity: conflict.quantity,
                 );
               },
-              child: const Text('Sepeti temizle ve devam et'),
+              child: const Text(
+                'Mevcut mağaza sepetini iptal et ve devam et',
+              ),
             ),
           ],
         );
@@ -156,6 +157,7 @@ class _SellerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final shop = shopProduct.shop;
     final rating = shop?.rating ?? 0;
+    final canAddToCart = shopProduct.isActive && shopProduct.isAvailable;
 
     return Card(
       margin: EdgeInsets.zero,
@@ -202,21 +204,24 @@ class _SellerTile extends StatelessWidget {
                   ),
               ],
             ),
-            if (kDebugMode) ...[
-              const SizedBox(height: TSizes.sm),
-              Align(
-                alignment: Alignment.centerRight,
-                child: OutlinedButton(
-                  onPressed: () {
-                    context.read<CartV2Cubit>().addShopProductToCart(
-                          shopProductId: shopProduct.id,
-                          quantity: 1,
-                        );
-                  },
-                  child: const Text('V2 Test Sepete Ekle'),
-                ),
-              ),
-            ],
+            const SizedBox(height: TSizes.sm),
+            Align(
+              alignment: Alignment.centerRight,
+              child: canAddToCart
+                  ? OutlinedButton(
+                      onPressed: () {
+                        context.read<CartV2Cubit>().addShopProductToCart(
+                              shopProductId: shopProduct.id,
+                              quantity: 1,
+                            );
+                      },
+                      child: const Text('Bu Esnaftan Sepete Ekle'),
+                    )
+                  : Text(
+                      'Şu an rafta yok',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+            ),
           ],
         ),
       ),
