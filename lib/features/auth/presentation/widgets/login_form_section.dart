@@ -7,13 +7,11 @@ import 'package:t_store/core/enums/status.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
-import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
-import 'package:t_store/features/shop/presentation/controller/shop_cubit.dart';
 
 class LoginFormSection extends StatefulWidget {
   const LoginFormSection({super.key});
@@ -60,16 +58,8 @@ class _LoginFormSectionState extends State<LoginFormSection> {
 
           THelperFunctions.navigateReplacementToScreen(
             context,
-            MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => sl<NavigationMenuCubit>(),
-                ),
-                BlocProvider(
-                  create: (context) => sl<ShopCubit>()
-                    ..getSortedProducts(sortBy: 'rating', sortType: "desc"),
-                ),
-              ],
+            BlocProvider(
+              create: (_) => NavigationMenuCubit(),
               child: const NavigationMenu(),
             ),
           );
