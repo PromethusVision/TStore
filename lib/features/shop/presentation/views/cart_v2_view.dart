@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_v2_entity.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
+import 'package:t_store/features/cart/presentation/widgets/cart_qr_session_bottom_sheet.dart';
 
 class CartV2View extends StatefulWidget {
   const CartV2View({super.key});
@@ -79,6 +82,14 @@ class _CartV2ViewState extends State<CartV2View> {
                     const SizedBox(height: TSizes.spaceBtwItems),
                     _CartV2TotalBox(totalAmount: state.totalAmount),
                     const SizedBox(height: TSizes.spaceBtwItems),
+                    _ShowInStoreButton(
+                      cartId: state.items.first.cartId,
+                      shopName: state.items.first.shopProduct?.shop?.name ??
+                          'Bilinmeyen esnaf',
+                      itemCount: state.itemCount,
+                      totalAmount: state.totalAmount,
+                    ),
+                    const SizedBox(height: TSizes.spaceBtwItems),
                     const _CancelActiveCartButton(),
                   ],
                 );
@@ -88,6 +99,49 @@ class _CartV2ViewState extends State<CartV2View> {
             },
           ),
         ),
+    );
+  }
+}
+
+class _ShowInStoreButton extends StatelessWidget {
+  final String cartId;
+  final String shopName;
+  final int itemCount;
+  final double totalAmount;
+
+  const _ShowInStoreButton({
+    required this.cartId,
+    required this.shopName,
+    required this.itemCount,
+    required this.totalAmount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => _showQrSessionBottomSheet(context),
+        child: const Text('Mağazada Göster'),
+      ),
+    );
+  }
+
+  Future<void> _showQrSessionBottomSheet(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return BlocProvider(
+          create: (_) => sl<QrSessionCubit>(),
+          child: CartQrSessionBottomSheet(
+            cartId: cartId,
+            shopName: shopName,
+            itemCount: itemCount,
+            totalAmount: totalAmount,
+          ),
+        );
+      },
     );
   }
 }

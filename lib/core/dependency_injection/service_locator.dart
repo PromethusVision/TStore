@@ -44,14 +44,18 @@ import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 
 // Cart
 import 'package:t_store/features/cart/data/repositories/cart_v2_repository_impl.dart';
+import 'package:t_store/features/cart/data/repositories/qr_session_repository_impl.dart';
 import 'package:t_store/features/cart/domain/repositories/cart_v2_repository.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 import 'package:t_store/features/cart/domain/usecases/get_active_cart_items_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/add_shop_product_to_cart_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/replace_active_cart_with_shop_product_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/update_cart_item_quantity_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/remove_cart_item_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/cancel_active_cart_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/create_qr_session_usecase.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
 
 // Wishlist
 import 'package:t_store/features/wishlist/data/repositories/wishlist_repository_impl.dart';
@@ -211,6 +215,20 @@ Future<void> setupServiceLocator() async {
 
   // Cubit
   sl.registerFactory(() => CartV2Cubit(sl(), sl(), sl(), sl(), sl(), sl()));
+
+  // ==================== QR Sessions ====================
+  // Repository
+  sl.registerLazySingleton<QrSessionRepository>(
+    () => QrSessionRepositoryImpl(supabaseService: sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => CreateQrSessionUsecase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => QrSessionCubit(createQrSessionUsecase: sl()),
+  );
 
   // ==================== Wishlist ====================
   // Repository
