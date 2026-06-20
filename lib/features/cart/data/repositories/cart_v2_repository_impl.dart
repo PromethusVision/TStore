@@ -151,15 +151,30 @@ class CartV2RepositoryImpl implements CartV2Repository {
           }
 
           if (activeCart.shopId != shopProduct.shopId) {
-            return Right(
-              CartV2ShopConflict(
-                existingCartId: activeCart.id,
-                existingShopId: activeCart.shopId,
-                newShopId: shopProduct.shopId,
-                shopProductId: shopProductId,
-                quantity: quantity,
-              ),
-            );
+            final activeCartItems = await supabaseService.client
+                .from(SupabaseTables.cartItemsV2)
+                .select('id')
+                .eq('cart_id', activeCart.id)
+                .limit(1);
+
+            if ((activeCartItems as List).isNotEmpty) {
+              return Right(
+                CartV2ShopConflict(
+                  existingCartId: activeCart.id,
+                  existingShopId: activeCart.shopId,
+                  newShopId: shopProduct.shopId,
+                  shopProductId: shopProductId,
+                  quantity: quantity,
+                ),
+              );
+            }
+
+            await supabaseService.client
+                .from(SupabaseTables.carts)
+                .update({'shop_id': shopProduct.shopId})
+                .eq('id', activeCart.id)
+                .eq('user_id', _userId)
+                .eq('status', 'active');
           }
 
           final existingItem = await supabaseService.client
