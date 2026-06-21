@@ -9,6 +9,7 @@ import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
+import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
 class ProductSellersSection extends StatefulWidget {
   final String productId;
@@ -188,9 +189,21 @@ class _SellerTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    shop?.name ?? 'Bilinmeyen esnaf',
-                    style: Theme.of(context).textTheme.titleSmall,
+                  child: InkWell(
+                    onTap:
+                        shop == null ? null : () => _openShopProfile(context),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            shop?.name ?? 'Bilinmeyen esnaf',
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        if (shop != null)
+                          const Icon(Icons.chevron_right, size: 18),
+                      ],
+                    ),
                   ),
                 ),
                 if (shopProduct.isAvailable) const _AvailabilityChip(),
@@ -235,6 +248,15 @@ class _SellerTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _openShopProfile(BuildContext context) {
+    final shop = shopProduct.shop;
+    if (shop == null) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)),
     );
   }
 
