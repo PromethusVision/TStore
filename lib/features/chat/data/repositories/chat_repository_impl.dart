@@ -12,6 +12,9 @@ class ChatRepositoryImpl implements ChatRepository {
 
   ChatRepositoryImpl({required this.supabaseService});
 
+  static const String _messageSelect =
+      'id, sender_id, receiver_id, content, message_type, is_read, created_at';
+
   String get _userId => supabaseService.currentUser?.id ?? '';
 
   @override
@@ -30,7 +33,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
       final response = await supabaseService.client
           .from(SupabaseTables.chatMessages)
-          .select('*, sender:profiles!sender_id(full_name, avatar_url)')
+          .select(_messageSelect)
           .or('and(sender_id.eq.$_userId,receiver_id.eq.$otherUserId),and(sender_id.eq.$otherUserId,receiver_id.eq.$_userId)')
           .order('created_at', ascending: false)
           .range(from, to);
@@ -64,7 +67,7 @@ class ChatRepositoryImpl implements ChatRepository {
             'content': content,
             'message_type': messageType.name,
           })
-          .select('*, sender:profiles!sender_id(full_name, avatar_url)')
+          .select(_messageSelect)
           .single();
 
       return Right(ChatMessageModel.fromJson(response));
@@ -119,11 +122,10 @@ class ChatRepositoryImpl implements ChatRepository {
         .eq('receiver_id', _userId)
         .listen((data) async {
           for (final item in data) {
-            // Fetch with sender info
             try {
               final response = await supabaseService.client
                   .from(SupabaseTables.chatMessages)
-                  .select('*, sender:profiles!sender_id(full_name, avatar_url)')
+                  .select(_messageSelect)
                   .eq('id', item['id'])
                   .single();
               _messagesController?.add(ChatMessageModel.fromJson(response));

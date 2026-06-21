@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
@@ -76,6 +79,11 @@ class _ShopInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasDirections = _hasDirections;
+    final ownerUserId = shop.ownerUserId?.trim();
+    final currentUser = SupabaseService.instance.currentUser;
+    final hasOwnerUserId = ownerUserId != null && ownerUserId.isNotEmpty;
+    final isOwnShop = currentUser != null && currentUser.id == ownerUserId;
+    final canShowMessageButton = hasOwnerUserId && !isOwnShop;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,6 +110,17 @@ class _ShopInfoSection extends StatelessWidget {
           _InfoLine(label: 'Telefon', value: shop.phone!),
         if (shop.openingHours.isNotEmpty)
           _InfoLine(label: 'Çalışma saatleri', value: _formatOpeningHours()),
+        if (canShowMessageButton) ...[
+          const SizedBox(height: TSizes.spaceBtwItems),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => _openChat(context, ownerUserId!),
+              icon: const Icon(Icons.message_outlined),
+              label: const Text('Esnafa Yaz'),
+            ),
+          ),
+        ],
         if (hasDirections) ...[
           const SizedBox(height: TSizes.spaceBtwItems),
           SizedBox(
@@ -149,6 +168,23 @@ class _ShopInfoSection extends StatelessWidget {
         const SnackBar(content: Text('Yol tarifi açılamadı')),
       );
     }
+  }
+
+  void _openChat(BuildContext context, String ownerUserId) {
+    final user = SupabaseService.instance.currentUser;
+
+    if (user == null) {
+      THelperFunctions.navigateToScreen(context, const LoginView());
+      return;
+    }
+
+    THelperFunctions.navigateToScreen(
+      context,
+      ChatView(
+        receiverId: ownerUserId,
+        receiverName: shop.name,
+      ),
+    );
   }
 }
 
