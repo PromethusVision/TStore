@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
+import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 
 abstract class ChatRepository {
   Future<Either<String, List<ChatMessageEntity>>> getMessages({
@@ -21,4 +22,6 @@ abstract class ChatRepository {
   Stream<ChatMessageEntity> get messagesStream;
 
   Future<Either<String, int>> getUnreadCount();
+
+  Future<Either<String, List<ChatThreadEntity>>> getConversations();
 }

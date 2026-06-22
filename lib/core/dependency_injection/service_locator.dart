@@ -101,6 +101,7 @@ import 'package:t_store/features/personalization/presentation/cubit/profile_cubi
 // Chat
 import 'package:t_store/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 
 // Notifications
@@ -330,6 +331,7 @@ Future<void> setupServiceLocator() async {
 
   // Cubit
   sl.registerFactory(() => ChatCubit(repository: sl()));
+  sl.registerFactory(() => ChatConversationsCubit(repository: sl()));
 
   // ==================== Notifications ====================
   // Repository

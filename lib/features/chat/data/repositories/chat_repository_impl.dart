@@ -4,6 +4,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/features/chat/data/models/chat_message_model.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
+import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
@@ -153,5 +154,68 @@ class ChatRepositoryImpl implements ChatRepository {
     } catch (e) {
       return Left(e.toString());
     }
+  }
+
+  @override
+  Future<Either<String, List<ChatThreadEntity>>> getConversations() async {
+    try {
+      if (_userId.isEmpty) {
+        return const Left('Lütfen önce giriş yapın');
+      }
+
+      final response = await supabaseService.client
+          .from(SupabaseTables.chatMessages)
+          .select(_messageSelect)
+          .or('sender_id.eq.$_userId,receiver_id.eq.$_userId')
+          .order('created_at', ascending: false);
+
+      final messages = (response as List)
+          .map(
+            (json) => ChatMessageModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      final groupedMessages = <String, List<ChatMessageEntity>>{};
+      for (final message in messages) {
+        final otherUserId =
+            message.senderId == _userId ? message.receiverId : message.senderId;
+        groupedMessages.putIfAbsent(otherUserId, () => []).add(message);
+      }
+
+      final threads = groupedMessages.entries.map((entry) {
+        final threadMessages = entry.value;
+        final latestMessage = threadMessages.first;
+        final unreadCount = threadMessages
+            .where((message) =>
+                message.receiverId == _userId && message.isRead == false)
+            .length;
+
+        return ChatThreadEntity(
+          otherUserId: entry.key,
+          displayName: _buildDisplayName(entry.key),
+          lastMessage: latestMessage.content,
+          lastMessageAt: latestMessage.createdAt,
+          unreadCount: unreadCount,
+        );
+      }).toList()
+        ..sort((a, b) {
+          final aDate =
+              a.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          final bDate =
+              b.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          return bDate.compareTo(aDate);
+        });
+
+      return Right(threads);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  String _buildDisplayName(String otherUserId) {
+    final shortId = otherUserId.length > 8
+        ? otherUserId.substring(0, 8)
+        : otherUserId;
+    return 'Konuşma $shortId';
   }
 }

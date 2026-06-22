@@ -2,8 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/widgets/primary_header_container.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/user_addresses_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
@@ -64,6 +67,18 @@ class SettingsView extends StatelessWidget {
         title: "Adreslerim",
         subtitle: "Adres ve konum bilgilerini düzenle",
         leading: Iconsax.safe_home,
+      ),
+      SettingsMenuTileModel(
+        onTap: () {
+          final currentUser = SupabaseService.instance.currentUser;
+          THelperFunctions.navigateToScreen(
+            context,
+            currentUser == null ? const LoginView() : const ConversationsView(),
+          );
+        },
+        title: "Mesajlarım",
+        subtitle: "Geçmiş konuşmalarını görüntüle",
+        leading: Iconsax.direct,
       ),
       SettingsMenuTileModel(
         onTap: () {},
