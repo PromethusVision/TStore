@@ -21,6 +21,7 @@ class ChatView extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<ChatCubit>()
         ..startListening()
+        ..markAllAsRead(receiverId)
         ..getMessages(receiverId, refresh: true),
       child: _ChatViewBody(
         receiverId: receiverId,

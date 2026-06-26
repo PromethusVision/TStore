@@ -115,8 +115,8 @@ class _ConversationTile extends StatelessWidget {
           ],
         ],
       ),
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => ChatView(
               receiverId: thread.otherUserId,
@@ -124,6 +124,9 @@ class _ConversationTile extends StatelessWidget {
             ),
           ),
         );
+        if (!context.mounted) return;
+
+        await context.read<ChatConversationsCubit>().refreshConversations();
       },
     );
   }
