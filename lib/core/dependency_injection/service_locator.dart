@@ -331,7 +331,12 @@ Future<void> setupServiceLocator() async {
 
   // Cubit
   sl.registerFactory(() => ChatCubit(repository: sl()));
-  sl.registerFactory(() => ChatConversationsCubit(repository: sl()));
+  sl.registerFactory(
+    () => ChatConversationsCubit(
+      repository: sl(),
+      shopRepository: sl(),
+    ),
+  );
 
   // ==================== Notifications ====================
   // Repository
