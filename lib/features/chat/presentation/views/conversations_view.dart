@@ -96,6 +96,8 @@ class _ConversationTile extends StatelessWidget {
           Text(
             _formatDate(thread.lastMessageAt),
             style: Theme.of(context).textTheme.labelSmall,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           if (thread.unreadCount > 0) ...[
             const SizedBox(height: 4),
@@ -137,10 +139,9 @@ class _ConversationTile extends StatelessWidget {
     final local = value.toLocal();
     final day = local.day.toString().padLeft(2, '0');
     final month = local.month.toString().padLeft(2, '0');
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
+    final year = local.year.toString().padLeft(4, '0');
 
-    return '$day.$month $hour:$minute';
+    return '$day.$month.$year';
   }
 }
 

@@ -187,12 +187,57 @@ class _MessageList extends StatelessWidget {
         final message = messages[index];
         final isMine =
             currentUserId != null && message.senderId == currentUserId;
+        final showDateHeader = _shouldShowDateHeader(index);
 
-        return _MessageBubble(
-          message: message,
-          isMine: isMine,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (showDateHeader) _DateHeader(date: message.createdAt!),
+            _MessageBubble(
+              message: message,
+              isMine: isMine,
+            ),
+          ],
         );
       },
+    );
+  }
+
+  bool _shouldShowDateHeader(int index) {
+    final date = messages[index].createdAt;
+    if (date == null) return false;
+
+    if (index == messages.length - 1) return true;
+
+    final previousVisibleDate = messages[index + 1].createdAt;
+    if (previousVisibleDate == null) return true;
+
+    return !_isSameDay(date, previousVisibleDate);
+  }
+}
+
+class _DateHeader extends StatelessWidget {
+  final DateTime date;
+
+  const _DateHeader({required this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          _formatFullDate(date),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+        ),
+      ),
     );
   }
 }
@@ -238,7 +283,7 @@ class _MessageBubble extends StatelessWidget {
             if (message.createdAt != null) ...[
               const SizedBox(height: 4),
               Text(
-                _formatMessageTime(message.createdAt!),
+                _formatTime(message.createdAt!),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: textColor.withOpacity(0.72),
                     ),
@@ -249,14 +294,32 @@ class _MessageBubble extends StatelessWidget {
       ),
     );
   }
+}
 
-  String _formatMessageTime(DateTime value) {
-    final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
+String _formatFullDate(DateTime value) {
+  final local = value.toLocal();
+  final day = local.day.toString().padLeft(2, '0');
+  final month = local.month.toString().padLeft(2, '0');
+  final year = local.year.toString().padLeft(4, '0');
 
-    return '$hour:$minute';
-  }
+  return '$day.$month.$year';
+}
+
+String _formatTime(DateTime value) {
+  final local = value.toLocal();
+  final hour = local.hour.toString().padLeft(2, '0');
+  final minute = local.minute.toString().padLeft(2, '0');
+
+  return '$hour:$minute';
+}
+
+bool _isSameDay(DateTime a, DateTime b) {
+  final localA = a.toLocal();
+  final localB = b.toLocal();
+
+  return localA.year == localB.year &&
+      localA.month == localB.month &&
+      localA.day == localB.day;
 }
 
 class _MessageInput extends StatelessWidget {
