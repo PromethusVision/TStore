@@ -304,14 +304,16 @@ class _ShopProductsSection extends StatelessWidget {
         }
 
         if (snapshot.hasError || !snapshot.hasData) {
-          return const Text('Mağaza ürünleri yüklenemedi.');
+          return const Text(
+            'Mağaza ürünleri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+          );
         }
 
         return snapshot.data!.fold(
           (error) => Text(error),
           (shopProducts) {
             if (shopProducts.isEmpty) {
-              return const Text('Bu mağazada henüz ürün görünmüyor.');
+              return const Text('Bu mağazada şu an listelenen ürün yok.');
             }
 
             return ListView.separated(
@@ -345,7 +347,27 @@ class _ShopProductTile extends StatelessWidget {
       child: ListTile(
         contentPadding: const EdgeInsets.all(TSizes.sm),
         title: Text(product?.name ?? 'Ürün bilgisi yok'),
-        subtitle: Text('Mağaza fiyatı: ₺${shopProduct.price.toStringAsFixed(2)}'),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: TSizes.xs),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '₺${shopProduct.price.toStringAsFixed(2)}',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: TSizes.xs),
+              Text(
+                product == null
+                    ? 'Ürün detayı şu an görüntülenemiyor'
+                    : 'Detayları görüntüle',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+        ),
         trailing: const Icon(Icons.chevron_right),
         onTap: product == null ? null : () => _openProductDetails(context, product),
       ),
