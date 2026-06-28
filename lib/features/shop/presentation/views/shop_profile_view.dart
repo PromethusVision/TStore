@@ -92,24 +92,40 @@ class _ShopInfoSection extends StatelessWidget {
           shop.name,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        if (shop.description != null && shop.description!.isNotEmpty) ...[
-          const SizedBox(height: TSizes.spaceBtwItems),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        if (_hasText(shop.description))
           Text(
-            shop.description!,
+            shop.description!.trim(),
             style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
+          )
+        else
+          const _MissingInfoText('Bu mağaza için açıklama eklenmemiş.'),
         const SizedBox(height: TSizes.spaceBtwItems),
         _InfoLine(
           label: 'Puan',
           value: shop.rating > 0 ? shop.rating.toStringAsFixed(1) : 'Yeni',
         ),
-        if (shop.address != null && shop.address!.isNotEmpty)
-          _InfoLine(label: 'Adres', value: shop.address!),
-        if (shop.phone != null && shop.phone!.isNotEmpty)
-          _InfoLine(label: 'Telefon', value: shop.phone!),
-        if (shop.openingHours.isNotEmpty)
-          _InfoLine(label: 'Çalışma saatleri', value: _formatOpeningHours()),
+        _InfoLine(
+          label: 'Adres',
+          value: _hasText(shop.address)
+              ? shop.address!.trim()
+              : 'Adres bilgisi eklenmemiş.',
+          isMissing: !_hasText(shop.address),
+        ),
+        _InfoLine(
+          label: 'Telefon',
+          value: _hasText(shop.phone)
+              ? shop.phone!.trim()
+              : 'Telefon bilgisi eklenmemiş.',
+          isMissing: !_hasText(shop.phone),
+        ),
+        _InfoLine(
+          label: 'Çalışma saatleri',
+          value: shop.openingHours.isNotEmpty
+              ? _formatOpeningHours()
+              : 'Çalışma saatleri eklenmemiş.',
+          isMissing: shop.openingHours.isEmpty,
+        ),
         if (canShowMessageButton) ...[
           const SizedBox(height: TSizes.spaceBtwItems),
           SizedBox(
@@ -147,6 +163,8 @@ class _ShopInfoSection extends StatelessWidget {
         .map((entry) => '${entry.key}: ${entry.value}')
         .join('\n');
   }
+
+  bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 
   Future<void> _openDirections(BuildContext context) async {
     final query = shop.latitude != null && shop.longitude != null
@@ -191,10 +209,12 @@ class _ShopInfoSection extends StatelessWidget {
 class _InfoLine extends StatelessWidget {
   final String label;
   final String value;
+  final bool isMissing;
 
   const _InfoLine({
     required this.label,
     required this.value,
+    this.isMissing = false,
   });
 
   @override
@@ -205,9 +225,32 @@ class _InfoLine extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.labelMedium),
-          Text(value, style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: isMissing
+                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                      : null,
+                ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _MissingInfoText extends StatelessWidget {
+  final String text;
+
+  const _MissingInfoText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
     );
   }
 }
