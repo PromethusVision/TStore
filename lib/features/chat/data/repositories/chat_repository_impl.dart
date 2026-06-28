@@ -10,6 +10,7 @@ import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 class ChatRepositoryImpl implements ChatRepository {
   final SupabaseService supabaseService;
   StreamController<ChatMessageEntity>? _messagesController;
+  StreamSubscription? _messagesRealtimeSubscription;
 
   ChatRepositoryImpl({required this.supabaseService});
 
@@ -114,27 +115,44 @@ class ChatRepositoryImpl implements ChatRepository {
       return Stream.empty();
     }
 
+    _cancelMessagesRealtimeSubscription();
     _messagesController?.close();
-    _messagesController = StreamController<ChatMessageEntity>.broadcast();
+    _messagesController = StreamController<ChatMessageEntity>.broadcast(
+      onCancel: _disposeMessagesStream,
+    );
 
-    supabaseService.client
+    _messagesRealtimeSubscription = supabaseService.client
         .from(SupabaseTables.chatMessages)
         .stream(primaryKey: ['id'])
         .eq('receiver_id', _userId)
         .listen((data) async {
           for (final item in data) {
             try {
+              if (_messagesController?.isClosed ?? true) return;
+
               final response = await supabaseService.client
                   .from(SupabaseTables.chatMessages)
                   .select(_messageSelect)
                   .eq('id', item['id'])
                   .single();
+              if (_messagesController?.isClosed ?? true) return;
+
               _messagesController?.add(ChatMessageModel.fromJson(response));
             } catch (_) {}
           }
         });
 
     return _messagesController!.stream;
+  }
+
+  void _cancelMessagesRealtimeSubscription() {
+    _messagesRealtimeSubscription?.cancel();
+    _messagesRealtimeSubscription = null;
+  }
+
+  void _disposeMessagesStream() {
+    _cancelMessagesRealtimeSubscription();
+    _messagesController = null;
   }
 
   @override
