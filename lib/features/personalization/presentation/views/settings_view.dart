@@ -1,11 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/widgets/primary_header_container.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/user_addresses_view.dart';
@@ -20,6 +24,27 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = SupabaseService.instance.currentUser != null;
+
+    if (!isLoggedIn) {
+      return _buildSettingsContent(context, isLoggedIn: false);
+    }
+
+    return BlocProvider(
+      create: (_) => sl<ChatUnreadCubit>()..loadUnreadCount(),
+      child: Builder(
+        builder: (context) => _buildSettingsContent(
+          context,
+          isLoggedIn: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsContent(
+    BuildContext context, {
+    required bool isLoggedIn,
+  }) {
     final List<SettingsMenuTileModel> appSettingsTiles = [
       SettingsMenuTileModel(
         onTap: () {},
@@ -69,16 +94,23 @@ class SettingsView extends StatelessWidget {
         leading: Iconsax.safe_home,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          final currentUser = SupabaseService.instance.currentUser;
-          THelperFunctions.navigateToScreen(
-            context,
-            currentUser == null ? const LoginView() : const ConversationsView(),
+        onTap: () async {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ConversationsView()),
           );
+          if (!context.mounted) return;
+
+          await context.read<ChatUnreadCubit>().refreshUnreadCount();
         },
         title: "Mesajlarım",
         subtitle: "Geçmiş konuşmalarını görüntüle",
         leading: Iconsax.direct,
+        trailing: isLoggedIn ? const _UnreadBadge() : null,
       ),
       SettingsMenuTileModel(
         onTap: () {},
@@ -153,6 +185,48 @@ class SettingsView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UnreadBadge extends StatelessWidget {
+  const _UnreadBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChatUnreadCubit, ChatUnreadState>(
+      builder: (context, state) {
+        if (state is! ChatUnreadLoaded || state.count <= 0) {
+          return const SizedBox.shrink();
+        }
+
+        final label = state.count > 99 ? '99+' : state.count.toString();
+
+        return UnconstrainedBox(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 24,
+                constraints: const BoxConstraints(minWidth: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

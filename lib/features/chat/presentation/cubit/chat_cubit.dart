@@ -14,14 +14,17 @@ class ChatCubit extends Cubit<ChatState> {
   int _currentPage = 0;
   static const int _limit = 50;
   String? _currentOtherUserId;
+  bool _hasLoadedCurrentConversation = false;
 
   void startListening() {
     _messagesSubscription?.cancel();
     _messagesSubscription = repository.messagesStream.listen((message) {
       if (_currentOtherUserId != null &&
+          _hasLoadedCurrentConversation &&
           (message.senderId == _currentOtherUserId ||
               message.receiverId == _currentOtherUserId)) {
-        _messages = [message, ..._messages];
+        if (!_addMessageIfNew(message)) return;
+
         emit(NewMessageReceived(message));
         emit(ChatLoaded(messages: _messages));
       }
@@ -34,6 +37,7 @@ class ChatCubit extends Cubit<ChatState> {
     if (refresh) {
       _currentPage = 0;
       _messages = [];
+      _hasLoadedCurrentConversation = false;
     }
 
     if (_currentPage == 0) {
@@ -47,9 +51,13 @@ class ChatCubit extends Cubit<ChatState> {
     );
 
     result.fold(
-      (error) => emit(ChatError(error)),
+      (error) {
+        _hasLoadedCurrentConversation = true;
+        emit(ChatError(error));
+      },
       (messages) {
-        _messages = [..._messages, ...messages];
+        _mergeMessages(messages);
+        _hasLoadedCurrentConversation = true;
         _currentPage++;
         emit(ChatLoaded(
           messages: _messages,
@@ -83,7 +91,7 @@ class ChatCubit extends Cubit<ChatState> {
     result.fold(
       (error) => emit(ChatError(error)),
       (message) {
-        _messages = [message, ..._messages];
+        _addMessageIfNew(message);
         emit(MessageSent(message));
         emit(ChatLoaded(messages: _messages));
       },
@@ -96,6 +104,32 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> markAllAsRead(String senderId) async {
     await repository.markAllAsRead(senderId);
+  }
+
+  bool _addMessageIfNew(ChatMessageEntity message) {
+    if (_messages.any((item) => item.id == message.id)) return false;
+
+    _messages = [message, ..._messages]..sort(_compareNewestFirst);
+    return true;
+  }
+
+  void _mergeMessages(List<ChatMessageEntity> messages) {
+    final messageById = <String, ChatMessageEntity>{};
+
+    for (final message in [..._messages, ...messages]) {
+      messageById[message.id] = message;
+    }
+
+    _messages = messageById.values.toList()..sort(_compareNewestFirst);
+  }
+
+  int _compareNewestFirst(ChatMessageEntity a, ChatMessageEntity b) {
+    final aDate = a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    final bDate = b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    final dateCompare = bDate.compareTo(aDate);
+
+    if (dateCompare != 0) return dateCompare;
+    return b.id.compareTo(a.id);
   }
 
   @override

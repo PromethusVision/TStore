@@ -103,6 +103,7 @@ import 'package:t_store/features/chat/data/repositories/chat_repository_impl.dar
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 
 // Notifications
 import 'package:t_store/features/notifications/data/repositories/notification_repository_impl.dart';
@@ -331,6 +332,7 @@ Future<void> setupServiceLocator() async {
 
   // Cubit
   sl.registerFactory(() => ChatCubit(repository: sl()));
+  sl.registerFactory(() => ChatUnreadCubit(chatRepository: sl()));
   sl.registerFactory(
     () => ChatConversationsCubit(
       repository: sl(),

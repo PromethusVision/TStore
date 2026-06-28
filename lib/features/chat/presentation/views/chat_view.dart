@@ -48,6 +48,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
+  bool _didJumpToInitialMessages = false;
 
   @override
   void dispose() {
@@ -69,7 +70,10 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
           listener: (context, state) {
             if (state is ChatLoaded) {
               _replaceMessages(state.messages);
-              _scrollToBottom();
+              if (!_didJumpToInitialMessages) {
+                _didJumpToInitialMessages = true;
+                _jumpToBottom();
+              }
             }
 
             if (state is MessageSent) {
@@ -130,6 +134,14 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOut,
       );
+    });
+  }
+
+  void _jumpToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+
+      _scrollController.jumpTo(0);
     });
   }
 
