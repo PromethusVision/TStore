@@ -82,6 +82,9 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
             }
 
             if (state is NewMessageReceived) {
+              if (state.message.senderId == widget.receiverId) {
+                context.read<ChatCubit>().markAllAsRead(widget.receiverId);
+              }
               _scrollToBottom();
             }
 
