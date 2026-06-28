@@ -46,11 +46,13 @@ class _ChatViewBody extends StatefulWidget {
 
 class _ChatViewBodyState extends State<_ChatViewBody> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
 
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -67,10 +69,16 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
           listener: (context, state) {
             if (state is ChatLoaded) {
               _replaceMessages(state.messages);
+              _scrollToBottom();
             }
 
             if (state is MessageSent) {
               _messageController.clear();
+              _scrollToBottom();
+            }
+
+            if (state is NewMessageReceived) {
+              _scrollToBottom();
             }
 
             if (state is ChatError) {
@@ -91,6 +99,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                       : _MessageList(
                           messages: _messages,
                           currentUserId: currentUserId,
+                          scrollController: _scrollController,
                         ),
                 ),
                 _MessageInput(
@@ -112,6 +121,18 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
       ..addAll(messages);
   }
 
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
   void _sendMessage(BuildContext context) {
     final content = _messageController.text.trim();
     if (content.isEmpty) return;
@@ -126,21 +147,24 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
 class _MessageList extends StatelessWidget {
   final List<ChatMessageEntity> messages;
   final String? currentUserId;
+  final ScrollController scrollController;
 
   const _MessageList({
     required this.messages,
     required this.currentUserId,
+    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
       return const Center(
-        child: Text('Henuz mesaj yok.'),
+        child: Text('Henüz mesaj yok.'),
       );
     }
 
     return ListView.builder(
+      controller: scrollController,
       reverse: true,
       padding: const EdgeInsets.all(16),
       itemCount: messages.length,
@@ -188,12 +212,35 @@ class _MessageBubble extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(
-          message.content,
-          style: TextStyle(color: textColor),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              message.content,
+              style: TextStyle(color: textColor),
+            ),
+            if (message.createdAt != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                _formatMessageTime(message.createdAt!),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: textColor.withOpacity(0.72),
+                    ),
+              ),
+            ],
+          ],
         ),
       ),
     );
+  }
+
+  String _formatMessageTime(DateTime value) {
+    final local = value.toLocal();
+    final hour = local.hour.toString().padLeft(2, '0');
+    final minute = local.minute.toString().padLeft(2, '0');
+
+    return '$hour:$minute';
   }
 }
 
