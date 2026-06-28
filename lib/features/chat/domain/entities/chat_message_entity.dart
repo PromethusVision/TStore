@@ -64,31 +64,3 @@ class ChatMessageEntity extends Equatable {
     );
   }
 }
-
-class ChatConversationEntity extends Equatable {
-  final String oderId; // Use order ID as conversation identifier
-  final String userId;
-  final String supportId;
-  final ChatMessageEntity? lastMessage;
-  final int unreadCount;
-  final DateTime? updatedAt;
-
-  const ChatConversationEntity({
-    required this.oderId,
-    required this.userId,
-    required this.supportId,
-    this.lastMessage,
-    this.unreadCount = 0,
-    this.updatedAt,
-  });
-
-  @override
-  List<Object?> get props => [
-        oderId,
-        userId,
-        supportId,
-        lastMessage,
-        unreadCount,
-        updatedAt,
-      ];
-}

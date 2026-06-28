@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
+import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
@@ -294,25 +295,25 @@ void main() {
     });
   });
 
-  group('ChatConversationEntity', () {
+  group('ChatThreadEntity', () {
     test('equality works correctly', () {
-      final conversation1 = ChatConversationEntity(
-        oderId: 'order-1',
-        userId: 'user-1',
-        supportId: 'support-1',
+      final thread1 = ChatThreadEntity(
+        otherUserId: 'user-2',
+        displayName: 'Test Shop',
+        lastMessage: 'Hello',
+        lastMessageAt: DateTime(2024, 1, 15),
         unreadCount: 5,
-        updatedAt: DateTime(2024, 1, 15),
       );
 
-      final conversation2 = ChatConversationEntity(
-        oderId: 'order-1',
-        userId: 'user-1',
-        supportId: 'support-1',
+      final thread2 = ChatThreadEntity(
+        otherUserId: 'user-2',
+        displayName: 'Test Shop',
+        lastMessage: 'Hello',
+        lastMessageAt: DateTime(2024, 1, 15),
         unreadCount: 5,
-        updatedAt: DateTime(2024, 1, 15),
       );
 
-      expect(conversation1, equals(conversation2));
+      expect(thread1, equals(thread2));
     });
   });
 
