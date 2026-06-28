@@ -80,10 +80,13 @@ class _ShopInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasDirections = _hasDirections;
     final ownerUserId = shop.ownerUserId?.trim();
+    final phone = shop.phone?.trim() ?? '';
     final currentUser = SupabaseService.instance.currentUser;
     final hasOwnerUserId = ownerUserId != null && ownerUserId.isNotEmpty;
+    final hasPhone = phone.isNotEmpty;
     final isOwnShop = currentUser != null && currentUser.id == ownerUserId;
     final canShowMessageButton = hasOwnerUserId && !isOwnShop;
+    final hasActions = canShowMessageButton || hasPhone || hasDirections;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,30 +109,36 @@ class _ShopInfoSection extends StatelessWidget {
         ),
         if (shop.address != null && shop.address!.isNotEmpty)
           _InfoLine(label: 'Adres', value: shop.address!),
-        if (shop.phone != null && shop.phone!.isNotEmpty)
-          _InfoLine(label: 'Telefon', value: shop.phone!),
+        if (hasPhone) _InfoLine(label: 'Telefon', value: phone),
         if (shop.openingHours.isNotEmpty)
           _InfoLine(label: 'Çalışma saatleri', value: _formatOpeningHours()),
-        if (canShowMessageButton) ...[
+        if (hasActions) ...[
           const SizedBox(height: TSizes.spaceBtwItems),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => _openChat(context, ownerUserId!),
-              icon: const Icon(Icons.message_outlined),
-              label: const Text('Esnafa Yaz'),
-            ),
-          ),
-        ],
-        if (hasDirections) ...[
-          const SizedBox(height: TSizes.spaceBtwItems),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _openDirections(context),
-              icon: const Icon(Icons.directions_outlined),
-              label: const Text('Yol Tarifi Al'),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (canShowMessageButton)
+                FilledButton.icon(
+                  onPressed: () => _openChat(context, ownerUserId!),
+                  icon: const Icon(Icons.message_outlined),
+                  label: const Text('Esnafa Yaz'),
+                ),
+              if (canShowMessageButton && (hasPhone || hasDirections))
+                const SizedBox(height: TSizes.sm),
+              if (hasPhone)
+                OutlinedButton.icon(
+                  onPressed: () => _openPhoneCall(context, phone),
+                  icon: const Icon(Icons.call_outlined),
+                  label: const Text('Ara'),
+                ),
+              if (hasPhone && hasDirections) const SizedBox(height: TSizes.sm),
+              if (hasDirections)
+                OutlinedButton.icon(
+                  onPressed: () => _openDirections(context),
+                  icon: const Icon(Icons.directions_outlined),
+                  label: const Text('Yol Tarifi Al'),
+                ),
+            ],
           ),
         ],
       ],
@@ -166,6 +175,25 @@ class _ShopInfoSection extends StatelessWidget {
     if (!didLaunch && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Yol tarifi açılamadı')),
+      );
+    }
+  }
+
+  Future<void> _openPhoneCall(BuildContext context, String phone) async {
+    try {
+      final uri = Uri(scheme: 'tel', path: phone);
+      final didLaunch = await launchUrl(uri);
+
+      if (!didLaunch && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Telefon araması başlatılamadı')),
+        );
+      }
+    } catch (_) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Telefon araması başlatılamadı')),
       );
     }
   }
