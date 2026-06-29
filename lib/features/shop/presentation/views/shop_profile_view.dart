@@ -91,9 +91,18 @@ class _ShopInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          shop.name,
-          style: Theme.of(context).textTheme.headlineSmall,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _ShopAvatar(shopName: shop.name),
+            const SizedBox(width: TSizes.spaceBtwItems),
+            Expanded(
+              child: Text(
+                shop.name,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: TSizes.spaceBtwItems),
         if (_hasText(shop.description))
@@ -232,6 +241,46 @@ class _ShopInfoSection extends StatelessWidget {
         receiverName: shop.name,
       ),
     );
+  }
+}
+
+class _ShopAvatar extends StatelessWidget {
+  final String shopName;
+
+  const _ShopAvatar({required this.shopName});
+
+  @override
+  Widget build(BuildContext context) {
+    final initials = _initialsFromName(shopName);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircleAvatar(
+      radius: 32,
+      backgroundColor: colorScheme.primaryContainer,
+      foregroundColor: colorScheme.onPrimaryContainer,
+      child: initials == null
+          ? const Icon(Icons.storefront_outlined, size: 30)
+          : Text(
+              initials,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+    );
+  }
+
+  String? _initialsFromName(String value) {
+    final words = value
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((word) => word.isNotEmpty)
+        .toList();
+
+    if (words.isEmpty) return null;
+
+    final initials = words.take(2).map((word) => word[0].toUpperCase()).join();
+    return initials.isEmpty ? null : initials;
   }
 }
 
