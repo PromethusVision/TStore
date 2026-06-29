@@ -87,36 +87,64 @@ class _ShopInfoSection extends StatelessWidget {
     final isOwnShop = currentUser != null && currentUser.id == ownerUserId;
     final canShowMessageButton = hasOwnerUserId && !isOwnShop;
     final hasActions = canShowMessageButton || hasPhone || hasDirections;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _ShopAvatar(shopName: shop.name),
-            const SizedBox(width: TSizes.spaceBtwItems),
-            Expanded(
-              child: Text(
-                shop.name,
-                style: Theme.of(context).textTheme.headlineSmall,
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(TSizes.md),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest.withOpacity(0.45),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: colorScheme.outlineVariant),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _ShopAvatar(shopName: shop.name),
+                  const SizedBox(width: TSizes.spaceBtwItems),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          shop.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: TSizes.xs),
+                        Wrap(
+                          spacing: TSizes.xs,
+                          runSpacing: TSizes.xs,
+                          children: [
+                            _RatingChip(rating: shop.rating),
+                            if (shop.isActive) const _ActiveShopChip(),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: TSizes.spaceBtwItems),
+              if (_hasText(shop.description))
+                Text(
+                  shop.description!.trim(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                )
+              else
+                const _MissingInfoText('Bu mağaza için açıklama eklenmemiş.'),
+            ],
+          ),
         ),
         const SizedBox(height: TSizes.spaceBtwItems),
-        if (_hasText(shop.description))
-          Text(
-            shop.description!.trim(),
-            style: Theme.of(context).textTheme.bodyMedium,
-          )
-        else
-          const _MissingInfoText('Bu mağaza için açıklama eklenmemiş.'),
-        const SizedBox(height: TSizes.spaceBtwItems),
-        _InfoLine(
-          label: 'Puan',
-          value: shop.rating > 0 ? shop.rating.toStringAsFixed(1) : 'Yeni',
-        ),
         _InfoLine(
           label: 'Adres',
           value: _hasText(shop.address)
@@ -281,6 +309,53 @@ class _ShopAvatar extends StatelessWidget {
 
     final initials = words.take(2).map((word) => word[0].toUpperCase()).join();
     return initials.isEmpty ? null : initials;
+  }
+}
+
+class _RatingChip extends StatelessWidget {
+  final double rating;
+
+  const _RatingChip({required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final text = rating > 0 ? rating.toStringAsFixed(1) : 'Yeni';
+
+    return Chip(
+      avatar: Icon(
+        Icons.star_rounded,
+        size: 18,
+        color: colorScheme.primary,
+      ),
+      label: Text(text),
+      visualDensity: VisualDensity.compact,
+      side: BorderSide(color: colorScheme.outlineVariant),
+      backgroundColor: colorScheme.surface,
+      padding: EdgeInsets.zero,
+    );
+  }
+}
+
+class _ActiveShopChip extends StatelessWidget {
+  const _ActiveShopChip();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Chip(
+      avatar: Icon(
+        Icons.verified_outlined,
+        size: 17,
+        color: colorScheme.primary,
+      ),
+      label: const Text('Aktif Mağaza'),
+      visualDensity: VisualDensity.compact,
+      side: BorderSide(color: colorScheme.outlineVariant),
+      backgroundColor: colorScheme.surface,
+      padding: EdgeInsets.zero,
+    );
   }
 }
 
