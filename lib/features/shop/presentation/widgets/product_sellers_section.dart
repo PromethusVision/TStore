@@ -79,14 +79,20 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
             }
 
             if (snapshot.hasError || !snapshot.hasData) {
-              return const Text('Esnaf bilgileri yüklenemedi');
+              return const Text(
+                'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+              );
             }
 
             return snapshot.data!.fold(
-              (_) => const Text('Esnaf bilgileri yüklenemedi'),
+              (_) => const Text(
+                'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+              ),
               (shopProducts) {
                 if (shopProducts.isEmpty) {
-                  return const Text('Bu ürünü satan esnaf bulunamadı');
+                  return const Text(
+                    'Bu ürünü satan esnaf henüz listelenmiyor.',
+                  );
                 }
 
                 return Column(
@@ -174,6 +180,7 @@ class _SellerTile extends StatelessWidget {
     final shop = shopProduct.shop;
     final rating = shop?.rating ?? 0;
     final canAddToCart = shopProduct.isActive && shopProduct.isAvailable;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       margin: EdgeInsets.zero,
@@ -190,23 +197,54 @@ class _SellerTile extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
                     onTap:
                         shop == null ? null : () => _openShopProfile(context),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            shop?.name ?? 'Bilinmeyen esnaf',
-                            style: Theme.of(context).textTheme.titleSmall,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  shop?.name ?? 'Bilinmeyen esnaf',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                if (shop != null) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    'Mağaza profilini görüntüle',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: colorScheme.primary,
+                                        ),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
-                        ),
-                        if (shop != null)
-                          const Icon(Icons.chevron_right, size: 18),
-                      ],
+                          if (shop != null)
+                            Icon(
+                              Icons.chevron_right,
+                              size: 20,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                if (shopProduct.isAvailable) const _AvailabilityChip(),
+                shopProduct.isAvailable
+                    ? const _AvailabilityChip()
+                    : const _UnavailableChip(),
               ],
             ),
             if (shop?.address != null && shop!.address!.isNotEmpty) ...[
@@ -218,18 +256,11 @@ class _SellerTile extends StatelessWidget {
             ],
             const SizedBox(height: TSizes.sm),
             Wrap(
-              spacing: TSizes.spaceBtwItems,
+              spacing: TSizes.sm,
               runSpacing: TSizes.xs,
               children: [
-                Text(
-                  'Mağaza fiyatı: ₺${shopProduct.price.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                if (rating > 0)
-                  Text(
-                    'Puan: ${rating.toStringAsFixed(1)}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                _PriceChip(price: shopProduct.price),
+                if (rating > 0) _RatingChip(rating: rating),
               ],
             ),
             const SizedBox(height: TSizes.sm),
@@ -296,6 +327,101 @@ class _AvailabilityChip extends StatelessWidget {
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: Colors.green.shade700,
             ),
+      ),
+    );
+  }
+}
+
+class _UnavailableChip extends StatelessWidget {
+  const _UnavailableChip();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.sm,
+        vertical: TSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        'Rafta yok',
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+      ),
+    );
+  }
+}
+
+class _PriceChip extends StatelessWidget {
+  final double price;
+
+  const _PriceChip({required this.price});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.sm,
+        vertical: TSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        '₺${price.toStringAsFixed(2)}',
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w700,
+            ),
+      ),
+    );
+  }
+}
+
+class _RatingChip extends StatelessWidget {
+  final double rating;
+
+  const _RatingChip({required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.sm,
+        vertical: TSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.star_rounded,
+            size: 16,
+            color: Colors.amber.shade700,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            rating.toStringAsFixed(1),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
       ),
     );
   }
