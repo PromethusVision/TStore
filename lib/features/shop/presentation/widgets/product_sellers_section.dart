@@ -179,6 +179,8 @@ class _SellerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final shop = shopProduct.shop;
     final rating = shop?.rating ?? 0;
+    final hasCoordinates = shop?.latitude != null && shop?.longitude != null;
+    final hasAddress = shop?.address != null && shop!.address!.trim().isNotEmpty;
     final canAddToCart = shopProduct.isActive && shopProduct.isAvailable;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -261,6 +263,8 @@ class _SellerTile extends StatelessWidget {
               children: [
                 _PriceChip(price: shopProduct.price),
                 if (rating > 0) _RatingChip(rating: rating),
+                if (hasCoordinates || hasAddress)
+                  _LocationHintChip(hasCoordinates: hasCoordinates),
               ],
             ),
             const SizedBox(height: TSizes.sm),
@@ -416,6 +420,49 @@ class _RatingChip extends StatelessWidget {
           const SizedBox(width: 3),
           Text(
             rating.toStringAsFixed(1),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LocationHintChip extends StatelessWidget {
+  final bool hasCoordinates;
+
+  const _LocationHintChip({required this.hasCoordinates});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final text =
+        hasCoordinates ? 'Konum bilgisi mevcut' : 'Adres bilgisi mevcut';
+
+    // TODO: Kullanıcı konumu bağlanınca gerçek yaklaşık mesafe burada gösterilecek.
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.sm,
+        vertical: TSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on_outlined,
+            size: 15,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            text,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
