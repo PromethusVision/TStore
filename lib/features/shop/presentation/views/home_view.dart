@@ -188,7 +188,7 @@ class _HomeViewState extends State<HomeView> {
                 padding: const EdgeInsets.all(16.0),
                 child: SectionHeading(
                   sectionHeadingModel: SectionHeadingModel(
-                    title: "Top Rated Products",
+                    title: "Öne Çıkan Ürünler",
                     showActionButton: true,
                     textColor: TColors.primary,
                     actionButtonOnPressed: () {
@@ -197,7 +197,7 @@ class _HomeViewState extends State<HomeView> {
                         const AllProductsView(),
                       );
                     },
-                    actionButtonTitle: "View All",
+                    actionButtonTitle: "Tümünü Gör",
                   ),
                 ),
               ),
@@ -211,7 +211,7 @@ class _HomeViewState extends State<HomeView> {
                         child: Column(
                           children: [
                             Text(
-                              state.message,
+                              'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
@@ -225,7 +225,7 @@ class _HomeViewState extends State<HomeView> {
                                       refresh: true,
                                     );
                               },
-                              child: const Text('Retry'),
+                              child: const Text('Tekrar Dene'),
                             ),
                           ],
                         ),
@@ -237,7 +237,7 @@ class _HomeViewState extends State<HomeView> {
                       return const Center(
                         child: Padding(
                           padding: EdgeInsets.all(TSizes.defaultSpace),
-                          child: Text('No products found'),
+                          child: Text('Ürün bulunamadı.'),
                         ),
                       );
                     }

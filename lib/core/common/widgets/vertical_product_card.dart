@@ -6,7 +6,6 @@ import 'package:t_store/core/common/view_models/circular_icon_view_model.dart';
 import 'package:t_store/core/common/view_models/product_price_text_view_model.dart';
 import 'package:t_store/core/common/view_models/product_title_text_view_model.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
-import 'package:t_store/core/common/widgets/add_to_cart_container.dart';
 import 'package:t_store/core/common/widgets/brand_title_with_verification.dart';
 import 'package:t_store/core/common/widgets/circular_container.dart';
 import 'package:t_store/core/common/widgets/circular_icon.dart';
@@ -15,6 +14,7 @@ import 'package:t_store/core/common/widgets/product_title_text.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/common/widgets/sale_tag.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
+import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/shadow_styles.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
@@ -27,6 +27,9 @@ class VerticalProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
+    final displayImage = _displayImage;
+    final isNetworkImage = _isNetworkImage(displayImage);
+
     return GestureDetector(
       onTap: () {
         THelperFunctions.navigateToScreen(
@@ -55,10 +58,10 @@ class VerticalProductCard extends StatelessWidget {
                     children: [
                       RoundedImage(
                         roundedImageModel: RoundedImageModel(
-                            isNetworkImage: true,
+                            isNetworkImage: isNetworkImage,
                             backgroundColor:
                                 dark ? TColors.dark : TColors.light,
-                            image: product.images.first,
+                            image: displayImage,
                             onTap: () {},
                             applyImageRadius: true),
                       ),
@@ -92,7 +95,8 @@ class VerticalProductCard extends StatelessWidget {
                     children: [
                       ProductTitleText(
                         productTitleTextModel: ProductTitleTextModel(
-                            title: product.name,),
+                          title: product.name,
+                        ),
                       ),
                       const SizedBox(
                         height: TSizes.spaceBtwItems / 2,
@@ -108,18 +112,76 @@ class VerticalProductCard extends StatelessWidget {
                           Expanded(
                             child: ProductPriceText(
                               productPriceTextModel: ProductPriceTextModel(
-                                price: product.price.toString(),
+                                price: product.effectivePrice.toStringAsFixed(2),
                                 maxLines: 1,
                                 smallSize: true,
                               ),
                             ),
                           ),
-                          const AddToCartContainer()
+                          const _DetailsBadge(),
                         ],
                       ),
                     ]))
           ],
         ),
+      ),
+    );
+  }
+
+  String get _displayImage {
+    for (final image in product.images) {
+      if (image.trim().isNotEmpty) return image.trim();
+    }
+
+    final thumbnail = product.thumbnail;
+    if (thumbnail != null && thumbnail.trim().isNotEmpty) {
+      return thumbnail.trim();
+    }
+
+    return TImages.productImage13;
+  }
+
+  bool _isNetworkImage(String image) {
+    return image.startsWith('http://') || image.startsWith('https://');
+  }
+}
+
+class _DetailsBadge extends StatelessWidget {
+  const _DetailsBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = THelperFunctions.isDarkMode(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.sm,
+        vertical: TSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: dark ? TColors.dark : TColors.primary.withOpacity(0.08),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(TSizes.cardRadiusMd),
+          bottomRight: Radius.circular(TSizes.productImageRadius),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Detay',
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: dark ? TColors.white : TColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(width: 2),
+          Icon(
+            Icons.chevron_right,
+            size: 16,
+            color: dark ? TColors.white : TColors.primary,
+          ),
+        ],
       ),
     );
   }

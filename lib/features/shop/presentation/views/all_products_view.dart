@@ -34,7 +34,7 @@ class _AllProductsViewState extends State<AllProductsView> {
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel:
-            AppBarModel(title: const Text("All Products"), hasArrowBack: true),
+            AppBarModel(title: const Text("Tüm Ürünler"), hasArrowBack: true),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -51,7 +51,7 @@ class _AllProductsViewState extends State<AllProductsView> {
                     child: Column(
                       children: [
                         Text(
-                          state.message,
+                          'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: TSizes.spaceBtwItems),
@@ -61,7 +61,7 @@ class _AllProductsViewState extends State<AllProductsView> {
                                 .read<ProductsCubit>()
                                 .getProducts(refresh: true);
                           },
-                          child: const Text('Retry'),
+                          child: const Text('Tekrar Dene'),
                         ),
                       ],
                     ),
@@ -70,7 +70,7 @@ class _AllProductsViewState extends State<AllProductsView> {
 
                 if (state is ProductsLoaded) {
                   if (state.products.isEmpty) {
-                    return const Center(child: Text('No products found'));
+                    return const Center(child: Text('Ürün bulunamadı.'));
                   }
 
                   return GridLayout(
