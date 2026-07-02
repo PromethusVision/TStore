@@ -194,7 +194,7 @@ class _HomeViewState extends State<HomeView> {
                 padding: const EdgeInsets.all(16.0),
                 child: SectionHeading(
                   sectionHeadingModel: SectionHeadingModel(
-                    title: "Tüm Ürünler",
+                    title: "Popüler Ürünler",
                     showActionButton: true,
                     textColor: TColors.primary,
                     actionButtonOnPressed: () {
@@ -203,7 +203,7 @@ class _HomeViewState extends State<HomeView> {
                         const AllProductsView(),
                       );
                     },
-                    actionButtonTitle: "Tümünü Gör",
+                    actionButtonTitle: "Tüm Ürünler",
                   ),
                 ),
               ),
