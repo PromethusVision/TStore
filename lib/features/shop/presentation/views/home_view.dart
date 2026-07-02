@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:t_store/core/common/view_models/grid_layout_view_model.dart';
+import 'package:t_store/core/common/view_models/search_container_view_model.dart';
 import 'package:t_store/core/common/view_models/section_heading_view_model.dart';
+import 'package:t_store/core/common/widgets/primary_header_container.dart';
+import 'package:t_store/core/common/widgets/search_container.dart';
 import 'package:t_store/core/common/widgets/section_heading.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/widgets/grid_layout.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
-import 'package:t_store/features/shop/presentation/widgets/home_header_section.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_app_bar.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
 
 class HomeViewShimmer extends StatelessWidget {
@@ -180,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const HomeHeaderSection(),
+              _HomeSearchHeaderSection(onSearchTap: _openAllProductsSearch),
               const SizedBox(height: TSizes.spaceBtwSections),
               const PromoBannerCarouselSlider(),
               const SizedBox(height: TSizes.spaceBtwSections),
@@ -188,7 +194,7 @@ class _HomeViewState extends State<HomeView> {
                 padding: const EdgeInsets.all(16.0),
                 child: SectionHeading(
                   sectionHeadingModel: SectionHeadingModel(
-                    title: "Öne Çıkan Ürünler",
+                    title: "Tüm Ürünler",
                     showActionButton: true,
                     textColor: TColors.primary,
                     actionButtonOnPressed: () {
@@ -264,6 +270,67 @@ class _HomeViewState extends State<HomeView> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _openAllProductsSearch() {
+    debugPrint('HOME_SEARCH_SINGLE_TAP');
+    THelperFunctions.navigateToScreen(
+      context,
+      const AllProductsView(
+        autoFocusSearch: true,
+        isSearchMode: true,
+      ),
+    );
+  }
+}
+
+class _HomeSearchHeaderSection extends StatelessWidget {
+  const _HomeSearchHeaderSection({
+    required this.onSearchTap,
+  });
+
+  final VoidCallback onSearchTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final sectionHeadingModel = SectionHeadingModel(
+      showActionButton: false,
+      title: TTexts.popularCategories,
+      textColor: TColors.white,
+    );
+    final searchContainerModel = SearchContainerModel(
+      icon: Iconsax.search_normal,
+      title: TTexts.searchContainer,
+      showBackground: true,
+      showBorder: true,
+    );
+
+    return PrimaryHeaderContainer(
+      child: Column(
+        children: [
+          const HomeAppBar(),
+          const SizedBox(height: TSizes.spaceBtwSections),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onSearchTap,
+            child: SearchContainer(searchContainerModel: searchContainerModel),
+          ),
+          const SizedBox(height: TSizes.spaceBtwSections),
+          Padding(
+            padding: const EdgeInsets.only(left: TSizes.defaultSpace),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SectionHeading(sectionHeadingModel: sectionHeadingModel),
+                const SizedBox(height: TSizes.spaceBtwSections),
+                const HomeCategories(),
+                const SizedBox(height: TSizes.spaceBtwSections),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
