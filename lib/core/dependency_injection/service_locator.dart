@@ -22,8 +22,10 @@ import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 // Shops
 import 'package:t_store/features/shop/data/repositories/shop_repository_impl.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
+import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
+import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
 
 // Categories
 import 'package:t_store/features/shop/data/repositories/category_repository_impl.dart';
@@ -163,8 +165,12 @@ Future<void> setupServiceLocator() async {
   );
 
   // Use Cases
+  sl.registerLazySingleton(() => GetMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
+
+  // Cubit
+  sl.registerFactory(() => MyShopCubit(getMyShopUsecase: sl()));
 
   // ==================== Categories ====================
   // Repository

@@ -17,6 +17,7 @@ import 'package:t_store/features/personalization/presentation/widgets/account_se
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
+import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 import 'package:t_store/features/shop/presentation/views/orders_view.dart';
 
 class SettingsView extends StatelessWidget {
@@ -111,6 +112,19 @@ class SettingsView extends StatelessWidget {
         subtitle: "Geçmiş konuşmalarını görüntüle",
         leading: Iconsax.direct,
         trailing: isLoggedIn ? const _UnreadBadge() : null,
+      ),
+      SettingsMenuTileModel(
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(context, const MyShopView());
+        },
+        title: "Mağazam",
+        subtitle: "Mağaza bilgilerini görüntüle",
+        leading: Icons.storefront_outlined,
       ),
       SettingsMenuTileModel(
         onTap: () {},

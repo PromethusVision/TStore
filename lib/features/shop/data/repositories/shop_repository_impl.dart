@@ -35,6 +35,32 @@ class ShopRepositoryImpl implements ShopRepository {
   }
 
   @override
+  Future<Either<String, ShopEntity?>> getMyShop() async {
+    try {
+      final user = supabaseService.currentUser;
+      if (user == null) {
+        return const Right(null);
+      }
+
+      final response = await supabaseService.client
+          .from(SupabaseTables.shops)
+          .select()
+          .eq('owner_user_id', user.id)
+          .order('created_at', ascending: true)
+          .limit(1);
+
+      final rows = response as List;
+      if (rows.isEmpty) {
+        return const Right(null);
+      }
+
+      return Right(ShopModel.fromJson(rows.first as Map<String, dynamic>));
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
   Future<Either<String, List<ShopProductEntity>>> getShopProducts() async {
     try {
       final response = await supabaseService.client
