@@ -78,7 +78,6 @@ class _AllProductsViewState extends State<AllProductsView> {
                 textInputAction: TextInputAction.search,
                 autofocus: widget.autoFocusSearch,
                 onTap: () {
-                  debugPrint('ALL_PRODUCTS_SEARCH_TAPPED');
                   if (!_searchFocusNode.hasFocus) {
                     _searchFocusNode.requestFocus();
                   }
@@ -98,7 +97,6 @@ class _AllProductsViewState extends State<AllProductsView> {
                   ),
                 ),
                 onChanged: (value) {
-                  debugPrint('ALL_PRODUCTS_SEARCH_CHANGED: $value');
                   _onSearchChanged(value);
                 },
               ),
@@ -178,7 +176,6 @@ class _AllProductsViewState extends State<AllProductsView> {
 
   void _clearSearch() {
     _searchController.clear();
-    debugPrint('ALL_PRODUCTS_SEARCH_CHANGED: ');
     setState(() {});
     context.read<ProductsCubit>().getProducts(refresh: true);
   }

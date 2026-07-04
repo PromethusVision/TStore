@@ -275,7 +275,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _openAllProductsSearch() {
-    debugPrint('HOME_SEARCH_SINGLE_TAP');
     THelperFunctions.navigateToScreen(
       context,
       const AllProductsView(
