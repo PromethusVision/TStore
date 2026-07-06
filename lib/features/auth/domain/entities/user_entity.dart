@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class UserEntity extends Equatable {
+  static const String customerRole = 'customer';
+  static const String merchantRole = 'merchant';
+  static const String adminRole = 'admin';
+
   final String id;
   final String email;
   final String? fullName;
@@ -8,6 +12,7 @@ class UserEntity extends Equatable {
   final String? avatarUrl;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String role;
 
   const UserEntity({
     required this.id,
@@ -17,7 +22,16 @@ class UserEntity extends Equatable {
     this.avatarUrl,
     this.createdAt,
     this.updatedAt,
+    this.role = customerRole,
   });
+
+  bool get isCustomer => role == customerRole;
+
+  bool get isMerchant => role == merchantRole;
+
+  bool get isAdmin => role == adminRole;
+
+  bool get canManageShop => isMerchant || isAdmin;
 
   @override
   List<Object?> get props => [
@@ -28,6 +42,7 @@ class UserEntity extends Equatable {
         avatarUrl,
         createdAt,
         updatedAt,
+        role,
       ];
 
   UserEntity copyWith({
@@ -38,6 +53,7 @@ class UserEntity extends Equatable {
     String? avatarUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? role,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -47,6 +63,7 @@ class UserEntity extends Equatable {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      role: role ?? this.role,
     );
   }
 }

@@ -9,6 +9,7 @@ class UserModel extends UserEntity {
     super.avatarUrl,
     super.createdAt,
     super.updatedAt,
+    super.role,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +25,7 @@ class UserModel extends UserEntity {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : null,
+      role: _normalizeRole(json['role'] as String?),
     );
   }
 
@@ -48,6 +50,18 @@ class UserModel extends UserEntity {
       avatarUrl: entity.avatarUrl,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      role: entity.role,
     );
+  }
+
+  static String _normalizeRole(String? role) {
+    switch (role) {
+      case UserEntity.customerRole:
+      case UserEntity.merchantRole:
+      case UserEntity.adminRole:
+        return role!;
+      default:
+        return UserEntity.customerRole;
+    }
   }
 }
