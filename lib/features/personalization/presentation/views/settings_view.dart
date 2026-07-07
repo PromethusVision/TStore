@@ -7,6 +7,8 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
@@ -20,15 +22,42 @@ import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 import 'package:t_store/features/shop/presentation/views/orders_view.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || SupabaseService.instance.currentUser == null) return;
+
+      final authCubit = context.read<AuthCubit>();
+      final authState = authCubit.state;
+      if (authState is! AuthAuthenticated && authState is! AuthLoading) {
+        authCubit.checkAuthStatus();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = SupabaseService.instance.currentUser != null;
+    final authState = context.watch<AuthCubit>().state;
+    final canManageShop =
+        authState is AuthAuthenticated && authState.user.canManageShop;
 
     if (!isLoggedIn) {
-      return _buildSettingsContent(context, isLoggedIn: false);
+      return _buildSettingsContent(
+        context,
+        isLoggedIn: false,
+        canManageShop: false,
+      );
     }
 
     return BlocProvider(
@@ -37,6 +66,7 @@ class SettingsView extends StatelessWidget {
         builder: (context) => _buildSettingsContent(
           context,
           isLoggedIn: true,
+          canManageShop: canManageShop,
         ),
       ),
     );
@@ -45,6 +75,7 @@ class SettingsView extends StatelessWidget {
   Widget _buildSettingsContent(
     BuildContext context, {
     required bool isLoggedIn,
+    required bool canManageShop,
   }) {
     final List<SettingsMenuTileModel> appSettingsTiles = [
       SettingsMenuTileModel(
@@ -120,10 +151,21 @@ class SettingsView extends StatelessWidget {
             return;
           }
 
-          THelperFunctions.navigateToScreen(context, const MyShopView());
+          if (canManageShop) {
+            THelperFunctions.navigateToScreen(context, const MyShopView());
+            return;
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Esnaf başvurusu yakında eklenecek.'),
+            ),
+          );
         },
-        title: "Mağazam",
-        subtitle: "Mağaza bilgilerini görüntüle",
+        title: canManageShop ? "Mağazam" : "Esnaf Ol",
+        subtitle: canManageShop
+            ? "Mağaza bilgilerini görüntüle"
+            : "Esnaf başvurusu yakında eklenecek",
         leading: Icons.storefront_outlined,
       ),
       SettingsMenuTileModel(
