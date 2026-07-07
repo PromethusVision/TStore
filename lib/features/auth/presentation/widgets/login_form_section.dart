@@ -12,9 +12,15 @@ import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
+import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 
 class LoginFormSection extends StatefulWidget {
-  const LoginFormSection({super.key});
+  final bool isMerchantLogin;
+
+  const LoginFormSection({
+    super.key,
+    this.isMerchantLogin = false,
+  });
 
   @override
   State<LoginFormSection> createState() => _LoginFormSectionState();
@@ -48,6 +54,32 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
+          if (widget.isMerchantLogin) {
+            if (state.user.canManageShop) {
+              THelperFunctions.showSnackBar(
+                context: context,
+                message: 'Esnaf girişi başarılı',
+                type: SnackBarType.success,
+              );
+
+              context.read<CartV2Cubit>().getActiveCartItems();
+
+              THelperFunctions.navigateReplacementToScreen(
+                context,
+                const MyShopView(),
+              );
+              return;
+            }
+
+            THelperFunctions.showSnackBar(
+              context: context,
+              message:
+                  'Bu hesap esnaf hesabı değil. Esnaf başvurusu yakında eklenecek.',
+              type: SnackBarType.warning,
+            );
+            return;
+          }
+
           THelperFunctions.showSnackBar(
             context: context,
             message: 'مرحباً بعودتك',

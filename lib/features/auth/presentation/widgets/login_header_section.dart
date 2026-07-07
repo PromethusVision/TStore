@@ -5,8 +5,11 @@ import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 
 class LoginHeaderSection extends StatelessWidget {
+  final bool isMerchantLogin;
+
   const LoginHeaderSection({
     super.key,
+    this.isMerchantLogin = false,
   });
 
   @override
@@ -20,14 +23,16 @@ class LoginHeaderSection extends StatelessWidget {
           image: AssetImage(dark ? TImages.lightAppLogo : TImages.darkAppLogo),
         ),
         Text(
-          TTexts.loginTitle,
+          isMerchantLogin ? 'Esnaf Girişi' : TTexts.loginTitle,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(
           height: TSizes.sm,
         ),
         Text(
-          TTexts.loginSubTitle,
+          isMerchantLogin
+              ? 'Esnaf hesabınızla mağazanızı yönetin.'
+              : TTexts.loginSubTitle,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ],

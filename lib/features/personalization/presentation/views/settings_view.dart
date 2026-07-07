@@ -156,10 +156,9 @@ class _SettingsViewState extends State<SettingsView> {
             return;
           }
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Esnaf başvurusu yakında eklenecek.'),
-            ),
+          THelperFunctions.navigateToScreen(
+            context,
+            const LoginView(isMerchantLogin: true),
           );
         },
         title: canManageShop ? "Mağazam" : "Esnaf Ol",
