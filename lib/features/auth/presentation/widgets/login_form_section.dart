@@ -49,6 +49,48 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     }
   }
 
+  Future<void> _showWrongMerchantAccountDialog() async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Esnaf hesabı değil'),
+          content: const Text(
+            'Bu hesap esnaf hesabı değil. Müşteri olarak devam edebilir '
+            'veya çıkış yapıp esnaf hesabınızla tekrar giriş yapabilirsiniz.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                if (!mounted) return;
+
+                context.read<AuthCubit>().signOut();
+              },
+              child: const Text('Çıkış yap'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                if (!mounted) return;
+
+                context.read<CartV2Cubit>().getActiveCartItems();
+                THelperFunctions.navigateReplacementToScreen(
+                  context,
+                  BlocProvider(
+                    create: (_) => NavigationMenuCubit(),
+                    child: const NavigationMenu(),
+                  ),
+                );
+              },
+              child: const Text('Müşteri olarak devam et'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -71,12 +113,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
               return;
             }
 
-            THelperFunctions.showSnackBar(
-              context: context,
-              message:
-                  'Bu hesap esnaf hesabı değil. Esnaf başvurusu yakında eklenecek.',
-              type: SnackBarType.warning,
-            );
+            _showWrongMerchantAccountDialog();
             return;
           }
 
