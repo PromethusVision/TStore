@@ -7,6 +7,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_state.dart';
+import 'package:t_store/features/shop/presentation/views/my_shop_form_view.dart';
 
 class MyShopView extends StatelessWidget {
   const MyShopView({super.key});
@@ -25,6 +26,14 @@ class MyShopView extends StatelessWidget {
         body: SafeArea(
           child: BlocBuilder<MyShopCubit, MyShopState>(
             builder: (context, state) {
+              if (state is MyShopSaveFailure) {
+                final previousShop = state.previousShop;
+                if (previousShop != null) {
+                  return _MyShopDetails(shop: previousShop);
+                }
+                return _buildEmptyState(context);
+              }
+
               if (state is MyShopLoading || state is MyShopInitial) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -39,21 +48,7 @@ class MyShopView extends StatelessWidget {
               }
 
               if (state is MyShopEmpty) {
-                return _MyShopMessage(
-                  title: 'Henüz mağazanız yok',
-                  message:
-                      'Mağaza oluşturma akışı yakında buradan yönetilecek.',
-                  actionLabel: 'Mağaza oluştur',
-                  onAction: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Mağaza oluşturma bir sonraki adımda eklenecek.',
-                        ),
-                      ),
-                    );
-                  },
-                );
+                return _buildEmptyState(context);
               }
 
               if (state is MyShopLoaded) {
@@ -67,6 +62,28 @@ class MyShopView extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildEmptyState(BuildContext context) {
+  return _MyShopMessage(
+    title: 'Henüz mağazanız yok',
+    message: 'Mağaza bilgilerinizi ekleyerek mağazanızı oluşturmaya başlayın.',
+    actionLabel: 'Mağaza oluştur',
+    onAction: () => _openMyShopForm(context),
+  );
+}
+
+void _openMyShopForm(BuildContext context, {ShopEntity? shop}) {
+  final myShopCubit = context.read<MyShopCubit>();
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => BlocProvider.value(
+        value: myShopCubit,
+        child: MyShopFormView(shop: shop),
+      ),
+    ),
+  );
 }
 
 class _MyShopDetails extends StatelessWidget {
@@ -87,7 +104,9 @@ class _MyShopDetails extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(TSizes.md),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withOpacity(0.45),
+              color: colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.45,
+              ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: colorScheme.outlineVariant),
             ),
@@ -110,9 +129,7 @@ class _MyShopDetails extends StatelessWidget {
                         children: [
                           Text(
                             shop.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
+                            style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.w700),
                           ),
                           const SizedBox(height: TSizes.xs),
@@ -145,10 +162,10 @@ class _MyShopDetails extends StatelessWidget {
                     'Bu mağaza için açıklama eklenmemiş.',
                   ),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: _hasText(shop.description)
-                            ? null
-                            : colorScheme.onSurfaceVariant,
-                      ),
+                    color: _hasText(shop.description)
+                        ? null
+                        : colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -175,13 +192,7 @@ class _MyShopDetails extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Düzenleme bir sonraki adımda eklenecek.'),
-                  ),
-                );
-              },
+              onPressed: () => _openMyShopForm(context, shop: shop),
               icon: const Icon(Icons.edit_outlined),
               label: const Text('Düzenle'),
             ),
@@ -210,10 +221,7 @@ class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-  });
+  const _InfoChip({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -253,10 +261,10 @@ class _InfoLine extends StatelessWidget {
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isMissing
-                      ? Theme.of(context).colorScheme.onSurfaceVariant
-                      : null,
-                ),
+              color: isMissing
+                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                  : null,
+            ),
           ),
         ],
       ),
@@ -294,24 +302,20 @@ class _MyShopMessage extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: TSizes.sm),
             Text(
               message,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: TSizes.spaceBtwItems),
-            FilledButton(
-              onPressed: onAction,
-              child: Text(actionLabel),
-            ),
+            FilledButton(onPressed: onAction, child: Text(actionLabel)),
           ],
         ),
       ),
