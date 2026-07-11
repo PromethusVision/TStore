@@ -178,7 +178,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => MyShopCubit(getMyShopUsecase: sl()));
+  sl.registerFactory(
+    () => MyShopCubit(
+      getMyShopUsecase: sl(),
+      createMyShopUsecase: sl(),
+      updateMyShopUsecase: sl(),
+    ),
+  );
 
   // ==================== Categories ====================
   // Repository
