@@ -61,6 +61,88 @@ class ShopRepositoryImpl implements ShopRepository {
   }
 
   @override
+  Future<Either<String, ShopEntity>> createMyShop({
+    required String name,
+    String? description,
+    String? phone,
+    String? address,
+    Map<String, dynamic>? openingHours,
+  }) async {
+    try {
+      final user = supabaseService.currentUser;
+      if (user == null) {
+        return const Left('Magaza olusturmak icin oturum acmalisiniz.');
+      }
+
+      final payload = <String, dynamic>{
+        'owner_user_id': user.id,
+        'name': name.trim(),
+        'description': _trimToNull(description),
+        'phone': _trimToNull(phone),
+        'address': _trimToNull(address),
+        'opening_hours': Map<String, dynamic>.from(
+          openingHours ?? const <String, dynamic>{},
+        ),
+      };
+
+      final response = await supabaseService.client
+          .from(SupabaseTables.shops)
+          .insert(payload)
+          .select()
+          .single();
+
+      return Right(ShopModel.fromJson(response));
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, ShopEntity>> updateMyShop({
+    required String shopId,
+    required String name,
+    String? description,
+    String? phone,
+    String? address,
+    Map<String, dynamic>? openingHours,
+  }) async {
+    try {
+      final user = supabaseService.currentUser;
+      if (user == null) {
+        return const Left('Magaza guncellemek icin oturum acmalisiniz.');
+      }
+
+      final payload = <String, dynamic>{
+        'name': name.trim(),
+        'description': _trimToNull(description),
+        'phone': _trimToNull(phone),
+        'address': _trimToNull(address),
+        'opening_hours': Map<String, dynamic>.from(
+          openingHours ?? const <String, dynamic>{},
+        ),
+      };
+
+      final response = await supabaseService.client
+          .from(SupabaseTables.shops)
+          .update(payload)
+          .eq('id', shopId)
+          .eq('owner_user_id', user.id)
+          .select()
+          .maybeSingle();
+
+      if (response == null) {
+        return const Left(
+          'Guncellenecek magaza bulunamadi veya bu magaza icin yetkiniz yok.',
+        );
+      }
+
+      return Right(ShopModel.fromJson(response));
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
   Future<Either<String, List<ShopProductEntity>>> getShopProducts() async {
     try {
       final response = await supabaseService.client
@@ -71,8 +153,9 @@ class ShopRepositoryImpl implements ShopRepository {
           .order('created_at', ascending: false);
 
       final shopProducts = (response as List)
-          .map((json) =>
-              ShopProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return Right(shopProducts);
@@ -95,8 +178,9 @@ class ShopRepositoryImpl implements ShopRepository {
           .order('created_at', ascending: false);
 
       final shopProducts = (response as List)
-          .map((json) =>
-              ShopProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return Right(shopProducts);
@@ -119,13 +203,19 @@ class ShopRepositoryImpl implements ShopRepository {
           .order('created_at', ascending: false);
 
       final shopProducts = (response as List)
-          .map((json) =>
-              ShopProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return Right(shopProducts);
     } catch (e) {
       return Left(e.toString());
     }
+  }
+
+  static String? _trimToNull(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
   }
 }

@@ -22,9 +22,11 @@ import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 // Shops
 import 'package:t_store/features/shop/data/repositories/shop_repository_impl.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
+import 'package:t_store/features/shop/domain/usecases/create_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/update_my_shop_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
 
 // Categories
@@ -132,13 +134,15 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetCurrentUserUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => AuthCubit(
-        signInUsecase: sl(),
-        signUpUsecase: sl(),
-        signOutUsecase: sl(),
-        resetPasswordUsecase: sl(),
-        getCurrentUserUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => AuthCubit(
+      signInUsecase: sl(),
+      signUpUsecase: sl(),
+      signOutUsecase: sl(),
+      resetPasswordUsecase: sl(),
+      getCurrentUserUsecase: sl(),
+    ),
+  );
 
   // ==================== Products ====================
   // Repository
@@ -152,11 +156,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => SearchProductsUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => ProductsCubit(
-        getProductsUsecase: sl(),
-        getProductByIdUsecase: sl(),
-        searchProductsUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => ProductsCubit(
+      getProductsUsecase: sl(),
+      getProductByIdUsecase: sl(),
+      searchProductsUsecase: sl(),
+    ),
+  );
 
   // ==================== Shops ====================
   // Repository
@@ -166,6 +172,8 @@ Future<void> setupServiceLocator() async {
 
   // Use Cases
   sl.registerLazySingleton(() => GetMyShopUsecase(sl()));
+  sl.registerLazySingleton(() => CreateMyShopUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
 
@@ -218,7 +226,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetActiveCartItemsV2Usecase(sl()));
   sl.registerLazySingleton(() => AddShopProductToCartV2Usecase(sl()));
   sl.registerLazySingleton(
-      () => ReplaceActiveCartWithShopProductV2Usecase(sl()));
+    () => ReplaceActiveCartWithShopProductV2Usecase(sl()),
+  );
   sl.registerLazySingleton(() => UpdateCartItemQuantityV2Usecase(sl()));
   sl.registerLazySingleton(() => RemoveCartItemV2Usecase(sl()));
   sl.registerLazySingleton(() => CancelActiveCartV2Usecase(sl()));
@@ -236,9 +245,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => CreateQrSessionUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(
-    () => QrSessionCubit(createQrSessionUsecase: sl()),
-  );
+  sl.registerFactory(() => QrSessionCubit(createQrSessionUsecase: sl()));
 
   // ==================== Wishlist ====================
   // Repository
@@ -252,11 +259,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => RemoveFromWishlistUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => WishlistCubit(
-        getWishlistUsecase: sl(),
-        addToWishlistUsecase: sl(),
-        removeFromWishlistUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => WishlistCubit(
+      getWishlistUsecase: sl(),
+      addToWishlistUsecase: sl(),
+      removeFromWishlistUsecase: sl(),
+    ),
+  );
 
   // ==================== Orders ====================
   // Repository
@@ -271,12 +280,14 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => CancelOrderUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => OrdersCubit(
-        getOrdersUsecase: sl(),
-        getOrderByIdUsecase: sl(),
-        createOrderUsecase: sl(),
-        cancelOrderUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => OrdersCubit(
+      getOrdersUsecase: sl(),
+      getOrderByIdUsecase: sl(),
+      createOrderUsecase: sl(),
+      cancelOrderUsecase: sl(),
+    ),
+  );
 
   // ==================== Addresses ====================
   // Repository
@@ -291,12 +302,14 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => DeleteAddressUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => AddressesCubit(
-        getAddressesUsecase: sl(),
-        addAddressUsecase: sl(),
-        updateAddressUsecase: sl(),
-        deleteAddressUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => AddressesCubit(
+      getAddressesUsecase: sl(),
+      addAddressUsecase: sl(),
+      updateAddressUsecase: sl(),
+      deleteAddressUsecase: sl(),
+    ),
+  );
 
   // ==================== Reviews ====================
   // Repository
@@ -309,10 +322,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => AddReviewUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => ReviewsCubit(
-        getProductReviewsUsecase: sl(),
-        addReviewUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => ReviewsCubit(getProductReviewsUsecase: sl(), addReviewUsecase: sl()),
+  );
 
   // ==================== Profile ====================
   // Repository
@@ -325,10 +337,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => UpdateProfileUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => ProfileCubit(
-        getProfileUsecase: sl(),
-        updateProfileUsecase: sl(),
-      ));
+  sl.registerFactory(
+    () => ProfileCubit(getProfileUsecase: sl(), updateProfileUsecase: sl()),
+  );
 
   // ==================== Chat ====================
   // Repository
@@ -340,10 +351,7 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(() => ChatCubit(repository: sl()));
   sl.registerFactory(() => ChatUnreadCubit(chatRepository: sl()));
   sl.registerFactory(
-    () => ChatConversationsCubit(
-      repository: sl(),
-      shopRepository: sl(),
-    ),
+    () => ChatConversationsCubit(repository: sl(), shopRepository: sl()),
   );
 
   // ==================== Notifications ====================

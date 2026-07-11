@@ -7,6 +7,23 @@ abstract class ShopRepository {
 
   Future<Either<String, ShopEntity?>> getMyShop();
 
+  Future<Either<String, ShopEntity>> createMyShop({
+    required String name,
+    String? description,
+    String? phone,
+    String? address,
+    Map<String, dynamic>? openingHours,
+  });
+
+  Future<Either<String, ShopEntity>> updateMyShop({
+    required String shopId,
+    required String name,
+    String? description,
+    String? phone,
+    String? address,
+    Map<String, dynamic>? openingHours,
+  });
+
   Future<Either<String, List<ShopProductEntity>>> getShopProducts();
 
   Future<Either<String, List<ShopProductEntity>>> getShopProductsByProduct(
