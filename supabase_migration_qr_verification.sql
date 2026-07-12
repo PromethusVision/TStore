@@ -15,11 +15,16 @@
 -- - It does not DROP/TRUNCATE any table or delete existing rows.
 -- - Existing active QR rows without a snapshot are marked cancelled because
 --   their historical price and contents cannot be verified safely.
+-- - Lock acquisition and individual statements have bounded wait times; any
+--   timeout aborts this transaction before a partial migration can commit.
 -- - Run this file only after the profiles role, shops/shop_products, carts v2,
 --   and qr_sessions migrations have completed.
 -- =============================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '5min';
 
 -- ====================
 -- Preconditions
