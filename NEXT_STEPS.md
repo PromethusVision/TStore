@@ -2,13 +2,12 @@
 
 ## Sıradaki En Küçük Güvenli İş
 
-- Kasada QR doğrulama kodu ve güvenli migration yerelde hazırlandı ve otomatik testleri geçti.
-- Kod değişiklikleri kontrollü bir commit olarak kaydedildi ve özellik dalı origin'e gönderildi.
-- Ardından doğru Supabase projesi ve yedek durumu doğrulanarak `supabase_migration_qr_verification.sql` çalıştırılmalı.
-- Migration sırasında eski, sabit ürün/fiyat kaydı bulunmayan aktif QR'lar iptal edilir; mevcut ürün, sepet veya mağaza verisi silinmez.
+- Kasada QR doğrulama kodu, güvenlik koruması ve canlı migration tamamlandı.
+- Canlı geçiş öncesi yedek alındı; migration sonrası veri ve yetki kontrolleri geçti.
+- Eski, sabit ürün/fiyat kaydı bulunmayan 11 aktif QR iptal edildi; mevcut ürün, sepet veya mağaza verisi silinmedi.
 - Migration sonrasında iki ayrı gerçek hesapla müşteri QR oluşturma → esnaf QR okutma → esnaf onayı → müşteride tamamlanma akışı test edilmeli.
 - Kamera testi için mümkünse iki fiziksel telefon kullanılmalı.
-- Canlı migration uygulanana kadar yeni QR doğrulama ekranı çalışır kabul edilmemeli.
+- İki telefon testi geçene kadar yeni QR doğrulama akışı ticari kullanıma hazır kabul edilmemeli.
 
 ## Son Guncel Sonraki Teknik Calisma
 
