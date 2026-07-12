@@ -12,7 +12,7 @@
 - Web derlemesi `--no-tree-shake-icons` ile geçti. Normal web paketlemesinde QR değişikliğinden bağımsız eski bir ikon değeri sorunu sürüyor.
 - Android APK doğrulaması, bilgisayarda geçerli JDK/Android Studio Java yolu bulunmadığı için tamamlanamadı.
 - `supabase_migration_qr_verification.sql` henüz canlı Supabase projesinde çalıştırılmadı.
-- Değişiklikler henüz commit veya push edilmedi.
+- Değişiklikler `767e433` commitine kaydedildi ve `feature/qr-purchase-verification` dalında origin'e gönderildi.
 
 ## Son Guncel Hafiza Notu
 
