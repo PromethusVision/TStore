@@ -11,6 +11,8 @@ class QrSessionEntity extends Equatable {
   final DateTime? usedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int? itemCount;
+  final double? totalAmount;
 
   const QrSessionEntity({
     required this.id,
@@ -23,21 +25,25 @@ class QrSessionEntity extends Equatable {
     this.usedAt,
     required this.createdAt,
     required this.updatedAt,
+    this.itemCount,
+    this.totalAmount,
   });
 
   bool get isActive => status == 'active' && expiresAt.isAfter(DateTime.now());
 
   @override
   List<Object?> get props => [
-        id,
-        sessionToken,
-        userId,
-        cartId,
-        shopId,
-        status,
-        expiresAt,
-        usedAt,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    sessionToken,
+    userId,
+    cartId,
+    shopId,
+    status,
+    expiresAt,
+    usedAt,
+    createdAt,
+    updatedAt,
+    itemCount,
+    totalAmount,
+  ];
 }

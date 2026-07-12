@@ -58,9 +58,13 @@ import 'package:t_store/features/cart/domain/usecases/replace_active_cart_with_s
 import 'package:t_store/features/cart/domain/usecases/update_cart_item_quantity_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/remove_cart_item_v2_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/cancel_active_cart_v2_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/confirm_qr_verification_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/create_qr_session_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/get_qr_session_status_usecase.dart';
+import 'package:t_store/features/cart/domain/usecases/get_qr_verification_usecase.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/qr_verification_cubit.dart';
 
 // Wishlist
 import 'package:t_store/features/wishlist/data/repositories/wishlist_repository_impl.dart';
@@ -249,9 +253,23 @@ Future<void> setupServiceLocator() async {
 
   // Use Cases
   sl.registerLazySingleton(() => CreateQrSessionUsecase(sl()));
+  sl.registerLazySingleton(() => GetQrSessionStatusUsecase(sl()));
+  sl.registerLazySingleton(() => GetQrVerificationUsecase(sl()));
+  sl.registerLazySingleton(() => ConfirmQrVerificationUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => QrSessionCubit(createQrSessionUsecase: sl()));
+  sl.registerFactory(
+    () => QrSessionCubit(
+      createQrSessionUsecase: sl(),
+      getQrSessionStatusUsecase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => QrVerificationCubit(
+      getQrVerificationUsecase: sl(),
+      confirmQrVerificationUsecase: sl(),
+    ),
+  );
 
   // ==================== Wishlist ====================
   // Repository

@@ -59,12 +59,16 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
           left: TSizes.defaultSpace,
           right: TSizes.defaultSpace,
           top: TSizes.defaultSpace,
-          bottom: MediaQuery.of(context).viewInsets.bottom + TSizes.defaultSpace,
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom + TSizes.defaultSpace,
         ),
         child: BlocConsumer<QrSessionCubit, QrSessionState>(
           listener: (context, state) {
             if (state is QrSessionCreated) {
               _startTimer();
+            }
+            if (state is QrSessionCompleted) {
+              _timer?.cancel();
             }
           },
           builder: (context, state) {
@@ -76,10 +80,14 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
               return _QrSessionFailureView(
                 message: state.message,
                 onRetry: () {
-                  context
-                      .read<QrSessionCubit>()
-                      .createQrSession(widget.cartId);
+                  context.read<QrSessionCubit>().createQrSession(widget.cartId);
                 },
+              );
+            }
+
+            if (state is QrSessionCompleted) {
+              return _QrSessionCompletedView(
+                onClose: () => Navigator.of(context).pop(),
               );
             }
 
@@ -87,13 +95,11 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
               return _QrSessionContent(
                 session: state.session,
                 shopName: widget.shopName,
-                itemCount: widget.itemCount,
-                totalAmount: widget.totalAmount,
+                itemCount: state.session.itemCount ?? widget.itemCount,
+                totalAmount: state.session.totalAmount ?? widget.totalAmount,
                 remaining: state.session.expiresAt.difference(_now),
                 onRefresh: () {
-                  context
-                      .read<QrSessionCubit>()
-                      .createQrSession(widget.cartId);
+                  context.read<QrSessionCubit>().createQrSession(widget.cartId);
                 },
               );
             }
@@ -102,6 +108,43 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _QrSessionCompletedView extends StatelessWidget {
+  const _QrSessionCompletedView({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.check_circle,
+          size: 72,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        Text(
+          'Alışveriş tamamlandı',
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.sm),
+        Text(
+          'Esnaf alışverişinizi doğruladı. Bu kayıt daha sonra yorum ve puan işlemlerinde kullanılabilecek.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.spaceBtwSections),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(onPressed: onClose, child: const Text('Tamam')),
+        ),
+      ],
     );
   }
 }
@@ -122,10 +165,7 @@ class _QrSessionFailureView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  const _QrSessionFailureView({
-    required this.message,
-    required this.onRetry,
-  });
+  const _QrSessionFailureView({required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -204,18 +244,21 @@ class _QrSessionContent extends StatelessWidget {
             value: isExpired ? 'Süresi doldu' : _formatRemaining(remaining),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(TSizes.sm),
-              color: Colors.white,
-              child: QrImageView(
-                data: session.sessionToken,
-                version: QrVersions.auto,
-                size: 220,
-                backgroundColor: Colors.white,
+          if (!isExpired)
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(TSizes.sm),
+                color: Colors.white,
+                child: QrImageView(
+                  data: session.sessionToken,
+                  version: QrVersions.auto,
+                  size: 220,
+                  backgroundColor: Colors.white,
+                ),
               ),
-            ),
-          ),
+            )
+          else
+            const Icon(Icons.timer_off_outlined, size: 72),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             'Bu QR ödeme değildir.',
@@ -255,10 +298,7 @@ class _QrInfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _QrInfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _QrInfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

@@ -12,6 +12,8 @@ class QrSessionModel extends QrSessionEntity {
     super.usedAt,
     required super.createdAt,
     required super.updatedAt,
+    super.itemCount,
+    super.totalAmount,
   });
 
   factory QrSessionModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,8 @@ class QrSessionModel extends QrSessionEntity {
       usedAt: _toNullableDateTime(json['used_at']),
       createdAt: _toDateTime(json['created_at']),
       updatedAt: _toDateTime(json['updated_at']),
+      itemCount: _toNullableInt(json['item_count']),
+      totalAmount: _toNullableDouble(json['total_amount']),
     );
   }
 
@@ -41,6 +45,8 @@ class QrSessionModel extends QrSessionEntity {
       'used_at': usedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      'item_count': itemCount,
+      'total_amount': totalAmount,
     };
   }
 
@@ -56,6 +62,8 @@ class QrSessionModel extends QrSessionEntity {
       usedAt: entity.usedAt,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      itemCount: entity.itemCount,
+      totalAmount: entity.totalAmount,
     );
   }
 
@@ -68,5 +76,17 @@ class QrSessionModel extends QrSessionEntity {
     if (value == null) return null;
     if (value is DateTime) return value;
     return DateTime.tryParse(value.toString());
+  }
+
+  static int? _toNullableInt(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toInt();
+    return int.tryParse(value.toString());
+  }
+
+  static double? _toNullableDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString());
   }
 }

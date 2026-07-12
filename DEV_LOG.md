@@ -1,5 +1,19 @@
 # DEV_LOG
 
+## 2026-07-12 - Kasada QR Doğrulama (Yerel Uygulama Hazır)
+
+- Müşterinin mağaza sepetinden oluşturduğu QR için ürün, adet ve fiyatların değişmez kopyasını hazırlayan güvenli migration yazıldı.
+- Esnafın yalnız kendi aktif mağazasına ait QR'ı okutması, ürünleri ve toplamı görmesi ve alışverişi tek seferlik doğrulaması uygulamaya eklendi.
+- Doğrulama sonrasında müşteri QR ekranında "Alışveriş tamamlandı" sonucu gösteriliyor.
+- Süresi dolmuş, iptal edilmiş, kullanılmış veya başka mağazaya ait QR güvenli biçimde reddediliyor.
+- Doğrulanmış alışveriş kanıtı, mağaza/sepet kayıtları daha sonra değişse bile korunacak bağımsız bir kayda dönüştürüldü.
+- Kamera izni ve QR okuyucu Android, iOS, macOS ve web için projeye bağlandı.
+- 23 yeni QR testi ile birlikte toplam 218 birim ve giriş akışı testi geçti.
+- Web derlemesi `--no-tree-shake-icons` ile geçti. Normal web paketlemesinde QR değişikliğinden bağımsız eski bir ikon değeri sorunu sürüyor.
+- Android APK doğrulaması, bilgisayarda geçerli JDK/Android Studio Java yolu bulunmadığı için tamamlanamadı.
+- `supabase_migration_qr_verification.sql` henüz canlı Supabase projesinde çalıştırılmadı.
+- Değişiklikler henüz commit veya push edilmedi.
+
 ## Son Guncel Hafiza Notu
 
 - Cart item management tamamlandi.

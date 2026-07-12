@@ -26,6 +26,8 @@
 	<string>$(PRODUCT_COPYRIGHT)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
+	<key>NSCameraUsageDescription</key>
+	<string>QR kodunu okutarak mağaza alışverişini doğrulayabilmeniz için kamera erişimi gereklidir.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

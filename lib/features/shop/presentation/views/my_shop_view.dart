@@ -4,6 +4,7 @@ import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/cart/presentation/views/merchant_qr_scanner_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_state.dart';
@@ -195,6 +196,27 @@ class _MyShopDetails extends StatelessWidget {
               onPressed: () => _openMyShopForm(context, shop: shop),
               icon: const Icon(Icons.edit_outlined),
               label: const Text('Düzenle'),
+            ),
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: shop.isActive
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const MerchantQrScannerView(),
+                        ),
+                      );
+                    }
+                  : null,
+              icon: const Icon(Icons.qr_code_scanner_outlined),
+              label: Text(
+                shop.isActive
+                    ? 'Kasada QR Doğrula'
+                    : 'QR için mağazayı aktifleştirin',
+              ),
             ),
           ),
         ],

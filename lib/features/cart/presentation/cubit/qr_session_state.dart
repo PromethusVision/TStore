@@ -21,6 +21,8 @@ class QrSessionCreated extends QrSessionState {
   List<Object?> get props => [session];
 }
 
+class QrSessionCompleted extends QrSessionState {}
+
 class QrSessionFailure extends QrSessionState {
   final String message;
 
