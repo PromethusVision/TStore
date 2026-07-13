@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
+import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
@@ -14,6 +15,9 @@ import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart
 class MockGetShopsUsecase extends Mock implements GetShopsUsecase {}
 
 class MockShopRepository extends Mock implements ShopRepository {}
+
+class MockCustomerLocationService extends Mock
+    implements CustomerLocationService {}
 
 void main() {
   const shops = <ShopEntity>[
@@ -71,13 +75,19 @@ void main() {
 
   group('NearbyShopsCubit', () {
     late MockGetShopsUsecase getShopsUsecase;
+    late MockCustomerLocationService customerLocationService;
 
     setUp(() {
       getShopsUsecase = MockGetShopsUsecase();
+      customerLocationService = MockCustomerLocationService();
+      when(() => customerLocationService.cachedCoordinates).thenReturn(null);
     });
 
     test('başlangıç durumu NearbyShopsInitial olur', () async {
-      final cubit = NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
 
       expect(cubit.state, const NearbyShopsInitial());
 
@@ -90,7 +100,10 @@ void main() {
         when(
           () => getShopsUsecase(const NoParams()),
         ).thenAnswer((_) async => const Right(shops));
-        return NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+        return NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
       },
       act: (cubit) => cubit.loadShops(),
       expect: () => const <NearbyShopsState>[
@@ -108,7 +121,10 @@ void main() {
         when(() => getShopsUsecase(const NoParams())).thenAnswer(
           (_) async => const Right<String, List<ShopEntity>>(<ShopEntity>[]),
         );
-        return NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+        return NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
       },
       act: (cubit) => cubit.loadShops(),
       expect: () => const <NearbyShopsState>[
@@ -124,7 +140,10 @@ void main() {
           (_) async =>
               const Left<String, List<ShopEntity>>('Mağazalar alınamadı'),
         );
-        return NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+        return NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
       },
       act: (cubit) => cubit.loadShops(),
       expect: () => const <NearbyShopsState>[
@@ -146,7 +165,10 @@ void main() {
           }
           return const Right<String, List<ShopEntity>>(shops);
         });
-        return NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+        return NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
       },
       act: (cubit) async {
         await cubit.loadShops();
@@ -168,7 +190,10 @@ void main() {
       when(
         () => getShopsUsecase(const NoParams()),
       ).thenAnswer((_) => completer.future);
-      final cubit = NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
 
       final loadFuture = cubit.loadShops();
       await Future<void>.delayed(Duration.zero);
@@ -190,7 +215,10 @@ void main() {
         invocation++;
         return invocation == 1 ? firstRequest.future : secondRequest.future;
       });
-      final cubit = NearbyShopsCubit(getShopsUsecase: getShopsUsecase);
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
 
       final firstLoad = cubit.loadShops();
       await Future<void>.delayed(Duration.zero);
@@ -207,5 +235,256 @@ void main() {
       verify(() => getShopsUsecase(const NoParams())).called(2);
       await cubit.close();
     });
+
+    test(
+      'konum alındığında gerçek mesafeye göre sıralar ve eksik konumları sona bırakır',
+      () async {
+        const distanceShops = <ShopEntity>[
+          ShopEntity(id: 'without-location', name: 'Konumsuz Mağaza'),
+          ShopEntity(
+            id: 'far-shop',
+            name: 'Uzak Mağaza',
+            latitude: 41.1,
+            longitude: 29,
+          ),
+          ShopEntity(
+            id: 'invalid-shop',
+            name: 'Geçersiz Konumlu Mağaza',
+            latitude: 95,
+            longitude: 29,
+          ),
+          ShopEntity(
+            id: 'near-shop',
+            name: 'Yakın Mağaza',
+            latitude: 41.001,
+            longitude: 29,
+          ),
+        ];
+        when(
+          () => getShopsUsecase(const NoParams()),
+        ).thenAnswer((_) async => const Right(distanceShops));
+        when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+          (_) async => const CustomerLocationResult.success(
+            CustomerCoordinates(latitude: 41, longitude: 29),
+          ),
+        );
+        final cubit = NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
+
+        await cubit.loadShops();
+        await cubit.useCurrentLocation();
+
+        final state = cubit.state as NearbyShopsLoaded;
+        expect(state.locationStatus, NearbyLocationStatus.ready);
+        expect(
+          state.shops.map((shop) => shop.id),
+          orderedEquals(const [
+            'near-shop',
+            'far-shop',
+            'without-location',
+            'invalid-shop',
+          ]),
+        );
+        expect(state.distanceForShop('near-shop'), closeTo(111.2, 1));
+        expect(state.distanceForShop('far-shop'), greaterThan(11000));
+        expect(state.distanceForShop('without-location'), isNull);
+        expect(state.distanceForShop('invalid-shop'), isNull);
+        verify(() => customerLocationService.getCurrentLocation()).called(1);
+
+        await cubit.close();
+      },
+    );
+
+    const failureCases = <CustomerLocationFailure, NearbyLocationStatus>{
+      CustomerLocationFailure.permissionDenied:
+          NearbyLocationStatus.permissionDenied,
+      CustomerLocationFailure.servicesDisabled:
+          NearbyLocationStatus.servicesDisabled,
+      CustomerLocationFailure.timedOut: NearbyLocationStatus.timedOut,
+      CustomerLocationFailure.unavailable: NearbyLocationStatus.unavailable,
+    };
+
+    for (final failureCase in failureCases.entries) {
+      test(
+        '${failureCase.key.name} durumunda mağaza listesini kullanılabilir tutar',
+        () async {
+          when(
+            () => getShopsUsecase(const NoParams()),
+          ).thenAnswer((_) async => const Right(shops));
+          when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+            (_) async => CustomerLocationResult.failed(failureCase.key),
+          );
+          final cubit = NearbyShopsCubit(
+            getShopsUsecase: getShopsUsecase,
+            customerLocationService: customerLocationService,
+          );
+
+          await cubit.loadShops();
+          await cubit.useCurrentLocation();
+
+          expect(
+            cubit.state,
+            NearbyShopsLoaded(shops, locationStatus: failureCase.value),
+          );
+          verify(() => customerLocationService.getCurrentLocation()).called(1);
+          await cubit.close();
+        },
+      );
+    }
+
+    test('hızlı tekrar isteğinde konumu yalnızca bir kez alır', () async {
+      final locationRequest = Completer<CustomerLocationResult>();
+      when(
+        () => getShopsUsecase(const NoParams()),
+      ).thenAnswer((_) async => const Right(shops));
+      when(
+        () => customerLocationService.getCurrentLocation(),
+      ).thenAnswer((_) => locationRequest.future);
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
+      await cubit.loadShops();
+
+      final firstRequest = cubit.useCurrentLocation();
+      final secondRequest = cubit.useCurrentLocation();
+
+      expect(
+        (cubit.state as NearbyShopsLoaded).locationStatus,
+        NearbyLocationStatus.requesting,
+      );
+      await secondRequest;
+      verify(() => customerLocationService.getCurrentLocation()).called(1);
+
+      locationRequest.complete(
+        const CustomerLocationResult.success(
+          CustomerCoordinates(latitude: 41, longitude: 29),
+        ),
+      );
+      await firstRequest;
+      await cubit.useCurrentLocation();
+
+      expect(
+        (cubit.state as NearbyShopsLoaded).locationStatus,
+        NearbyLocationStatus.ready,
+      );
+      verifyNever(() => customerLocationService.getCurrentLocation());
+      await cubit.close();
+    });
+
+    test('konum alınırken mağaza yenileme ikinci istek başlatmaz', () async {
+      final locationRequest = Completer<CustomerLocationResult>();
+      when(
+        () => getShopsUsecase(const NoParams()),
+      ).thenAnswer((_) async => const Right(shops));
+      when(
+        () => customerLocationService.getCurrentLocation(),
+      ).thenAnswer((_) => locationRequest.future);
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
+      await cubit.loadShops();
+
+      final pendingLocation = cubit.useCurrentLocation();
+      await cubit.loadShops();
+
+      expect(
+        (cubit.state as NearbyShopsLoaded).locationStatus,
+        NearbyLocationStatus.requesting,
+      );
+      verify(() => getShopsUsecase(const NoParams())).called(1);
+      verify(() => customerLocationService.getCurrentLocation()).called(1);
+
+      locationRequest.complete(
+        const CustomerLocationResult.success(
+          CustomerCoordinates(latitude: 41, longitude: 29),
+        ),
+      );
+      await pendingLocation;
+
+      expect(
+        (cubit.state as NearbyShopsLoaded).locationStatus,
+        NearbyLocationStatus.ready,
+      );
+      verifyNever(() => customerLocationService.getCurrentLocation());
+      await cubit.close();
+    });
+
+    test(
+      'aynı oturumdaki bellekteki konumu yeniden izin istemeden kullanır',
+      () async {
+        const cachedCoordinates = CustomerCoordinates(
+          latitude: 41,
+          longitude: 29,
+        );
+        when(
+          () => customerLocationService.cachedCoordinates,
+        ).thenReturn(cachedCoordinates);
+        when(
+          () => getShopsUsecase(const NoParams()),
+        ).thenAnswer((_) async => const Right(shops));
+        final cubit = NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
+
+        await cubit.loadShops();
+
+        final state = cubit.state as NearbyShopsLoaded;
+        expect(state.locationStatus, NearbyLocationStatus.ready);
+        expect(state.distanceForShop('shop-1'), isNotNull);
+        verifyNever(() => customerLocationService.getCurrentLocation());
+        await cubit.close();
+      },
+    );
+
+    test(
+      'mağazalar yenilendiğinde bellekteki konumla tekrar sıralar',
+      () async {
+        const refreshShops = <ShopEntity>[
+          ShopEntity(
+            id: 'far-shop',
+            name: 'Uzak Mağaza',
+            latitude: 41.1,
+            longitude: 29,
+          ),
+          ShopEntity(
+            id: 'near-shop',
+            name: 'Yakın Mağaza',
+            latitude: 41.001,
+            longitude: 29,
+          ),
+        ];
+        when(
+          () => getShopsUsecase(const NoParams()),
+        ).thenAnswer((_) async => const Right(refreshShops));
+        when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+          (_) async => const CustomerLocationResult.success(
+            CustomerCoordinates(latitude: 41, longitude: 29),
+          ),
+        );
+        final cubit = NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
+
+        await cubit.loadShops();
+        await cubit.useCurrentLocation();
+        await cubit.loadShops();
+
+        final state = cubit.state as NearbyShopsLoaded;
+        expect(state.locationStatus, NearbyLocationStatus.ready);
+        expect(
+          state.shops.map((shop) => shop.id),
+          orderedEquals(const ['near-shop', 'far-shop']),
+        );
+        verify(() => getShopsUsecase(const NoParams())).called(2);
+        verify(() => customerLocationService.getCurrentLocation()).called(1);
+        await cubit.close();
+      },
+    );
   });
 }

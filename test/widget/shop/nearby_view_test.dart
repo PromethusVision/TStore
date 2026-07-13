@@ -45,6 +45,7 @@ void main() {
     cartV2Cubit = MockCartV2Cubit();
 
     when(() => nearbyShopsCubit.loadShops()).thenAnswer((_) async {});
+    when(() => nearbyShopsCubit.useCurrentLocation()).thenAnswer((_) async {});
     when(() => nearbyShopsCubit.close()).thenAnswer((_) async {});
     whenListen(
       cartV2Cubit,
@@ -67,8 +68,14 @@ void main() {
     );
   }
 
-  Widget buildNearbyView() {
+  Widget buildNearbyView({TextScaler? textScaler}) {
     return MaterialApp(
+      builder: textScaler == null
+          ? null
+          : (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+              child: child!,
+            ),
       home: BlocProvider<CartV2Cubit>.value(
         value: cartV2Cubit,
         child: const NearbyView(),
@@ -78,10 +85,11 @@ void main() {
 
   Future<void> pumpNearbyView(
     WidgetTester tester,
-    NearbyShopsState state,
-  ) async {
+    NearbyShopsState state, {
+    TextScaler? textScaler,
+  }) async {
     stubNearbyState(state);
-    await tester.pumpWidget(buildNearbyView());
+    await tester.pumpWidget(buildNearbyView(textScaler: textScaler));
     await tester.pump();
   }
 
@@ -159,13 +167,10 @@ void main() {
     testWidgets('shows the customer-friendly empty state', (tester) async {
       await pumpNearbyView(tester, const NearbyShopsEmpty());
 
-      expect(
-        find.text('Yakınında gösterilebilecek mağaza bulunamadı.'),
-        findsOneWidget,
-      );
+      expect(find.text('Gösterilebilecek mağaza bulunamadı.'), findsOneWidget);
       expect(
         find.text(
-          'Konumunu veya arama kriterlerini değiştirerek tekrar deneyebilirsin.',
+          'Şu anda aktif bir mağaza görünmüyor. Daha sonra tekrar deneyebilirsin.',
         ),
         findsOneWidget,
       );
@@ -213,6 +218,152 @@ void main() {
       expect(find.text('Puan 4.6'), findsOneWidget);
       expect(find.text('Mağazayı Gör'), findsOneWidget);
       expect(find.byType(CartCounterIcon), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('does not request location when the nearby tab opens', (
+      tester,
+    ) async {
+      await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
+
+      expect(find.text('En yakın mağazaları öne çıkar'), findsOneWidget);
+      expect(find.text('Konumunu kullanalım mı?'), findsNothing);
+      verifyNever(() => nearbyShopsCubit.useCurrentLocation());
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('explains privacy before asking for location', (tester) async {
+      await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
+
+      await tester.tap(find.byKey(const Key('nearby-location-action')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Konumunu kullanalım mı?'), findsOneWidget);
+      expect(
+        find.textContaining('konumunu bir kez kullanırız'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('hesabına kaydetmeyiz'), findsOneWidget);
+      expect(find.textContaining('arka planda takip etmeyiz'), findsOneWidget);
+      verifyNever(() => nearbyShopsCubit.useCurrentLocation());
+
+      await tester.tap(find.byKey(const Key('nearby-location-cancel')));
+      await tester.pumpAndSettle();
+
+      verifyNever(() => nearbyShopsCubit.useCurrentLocation());
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('requests location only after the user confirms', (
+      tester,
+    ) async {
+      await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
+
+      await tester.tap(find.byKey(const Key('nearby-location-action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('nearby-location-confirm')));
+      await tester.pumpAndSettle();
+
+      verify(() => nearbyShopsCubit.useCurrentLocation()).called(1);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('keeps the shop visible while location is being requested', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.requesting),
+      );
+
+      expect(find.text('Konumun alınıyor'), findsOneWidget);
+      expect(find.byKey(const Key('nearby-location-progress')), findsOneWidget);
+      expect(find.text('Mahalle Kahvecisi'), findsOneWidget);
+      expect(find.byKey(const Key('nearby-location-action')), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('shows only a real supplied distance after location succeeds', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded(
+          [completeShop],
+          locationStatus: NearbyLocationStatus.ready,
+          distanceMetersByShopId: {'shop-1': 1250},
+        ),
+      );
+
+      expect(find.text('Yakına göre sıralandı'), findsOneWidget);
+      expect(find.text('Yaklaşık 1,3 km'), findsOneWidget);
+      expect(find.text('Konum bilgisi mevcut'), findsNothing);
+      expect(find.byKey(const Key('nearby-location-action')), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('does not invent a minimum distance for the same location', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded(
+          [completeShop],
+          locationStatus: NearbyLocationStatus.ready,
+          distanceMetersByShopId: {'shop-1': 0},
+        ),
+      );
+
+      expect(find.text("10 m'den az"), findsOneWidget);
+      expect(find.text('Yaklaşık 10 m'), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets(
+      'labels a shop without coordinates instead of guessing distance',
+      (tester) async {
+        const shopWithoutCoordinates = ShopEntity(
+          id: 'shop-without-coordinates',
+          name: 'Mahalle Manavı',
+          address: 'Esenler, İstanbul',
+        );
+
+        await pumpNearbyView(
+          tester,
+          const NearbyShopsLoaded([
+            shopWithoutCoordinates,
+          ], locationStatus: NearbyLocationStatus.ready),
+        );
+
+        expect(find.text('Konumun alındı'), findsOneWidget);
+        expect(find.text('Mesafe bilgisi yok'), findsOneWidget);
+        expect(find.textContaining('Yaklaşık '), findsNothing);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+    );
+
+    testWidgets('keeps shops available after location permission is denied', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.permissionDenied),
+      );
+
+      expect(find.text('Konum izni verilmedi'), findsOneWidget);
+      expect(find.text('Mahalle Kahvecisi'), findsOneWidget);
+      expect(find.text('Tekrar Kontrol Et'), findsOneWidget);
+      expect(find.textContaining('site ayarlarından konumu'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
     });
@@ -288,6 +439,35 @@ void main() {
       expect(tester.takeException(), isNull);
 
       tester.view.physicalSize = const Size(1280, 800);
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('keeps long location guidance scrollable with large text', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(320, 568);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.permissionDenied),
+        textScaler: const TextScaler.linear(2),
+      );
+
+      expect(find.text('Konum izni verilmedi'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.drag(
+        find.byKey(const Key('nearby-shop-list')),
+        const Offset(0, -250),
+      );
       await tester.pump();
       expect(tester.takeException(), isNull);
 

@@ -91,28 +91,18 @@ class _NearbyContent extends StatelessWidget {
                     if (state is NearbyShopsEmpty) {
                       return const _NearbyMessage(
                         icon: Icons.storefront_outlined,
-                        title: 'Yakınında gösterilebilecek mağaza bulunamadı.',
+                        title: 'Gösterilebilecek mağaza bulunamadı.',
                         message:
-                            'Konumunu veya arama kriterlerini değiştirerek tekrar deneyebilirsin.',
+                            'Şu anda aktif bir mağaza görünmüyor. Daha sonra tekrar deneyebilirsin.',
                       );
                     }
 
                     if (state is NearbyShopsLoaded) {
-                      return RefreshIndicator(
+                      return _LoadedNearbyShops(
+                        state: state,
+                        onLocationRequested: () =>
+                            _showLocationExplanation(context),
                         onRefresh: context.read<NearbyShopsCubit>().loadShops,
-                        child: ListView.separated(
-                          key: const Key('nearby-shop-list'),
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.only(
-                            bottom: TSizes.defaultSpace,
-                          ),
-                          itemCount: state.shops.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: TSizes.spaceBtwItems),
-                          itemBuilder: (context, index) {
-                            return _NearbyShopCard(shop: state.shops[index]);
-                          },
-                        ),
                       );
                     }
 
@@ -137,18 +127,236 @@ class _NearbyContent extends StatelessWidget {
 
     THelperFunctions.navigateToScreen(context, const CartV2View());
   }
+
+  Future<void> _showLocationExplanation(BuildContext context) async {
+    final shouldUseLocation = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.location_on_outlined),
+        title: const Text('Konumunu kullanalım mı?'),
+        content: const Text(
+          'Yakınındaki mağazaları bulmak için cihazının konumunu bir kez '
+          'kullanırız. Konumunu hesabına kaydetmeyiz, mağazalarla paylaşmayız '
+          've arka planda takip etmeyiz.',
+        ),
+        actions: [
+          TextButton(
+            key: const Key('nearby-location-cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Şimdi Değil'),
+          ),
+          FilledButton(
+            key: const Key('nearby-location-confirm'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Konumumu Kullan'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldUseLocation != true || !context.mounted) return;
+    await context.read<NearbyShopsCubit>().useCurrentLocation();
+  }
+}
+
+class _LoadedNearbyShops extends StatelessWidget {
+  final NearbyShopsLoaded state;
+  final VoidCallback onLocationRequested;
+  final Future<void> Function() onRefresh;
+
+  const _LoadedNearbyShops({
+    required this.state,
+    required this.onLocationRequested,
+    required this.onRefresh,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView.separated(
+        key: const Key('nearby-shop-list'),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.only(bottom: TSizes.defaultSpace),
+        itemCount: state.shops.length + 1,
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: TSizes.spaceBtwItems),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _NearbyLocationCard(
+              status: state.locationStatus,
+              hasDistances: state.distanceMetersByShopId.isNotEmpty,
+              onLocationRequested: onLocationRequested,
+            );
+          }
+
+          final shop = state.shops[index - 1];
+          return _NearbyShopCard(
+            shop: shop,
+            distanceMeters: state.distanceForShop(shop.id),
+            locationReady: state.locationStatus == NearbyLocationStatus.ready,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _NearbyLocationCard extends StatelessWidget {
+  final NearbyLocationStatus status;
+  final bool hasDistances;
+  final VoidCallback onLocationRequested;
+
+  const _NearbyLocationCard({
+    required this.status,
+    required this.hasDistances,
+    required this.onLocationRequested,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final content = _contentForStatus();
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      key: const Key('nearby-location-card'),
+      margin: EdgeInsets.zero,
+      color: colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(TSizes.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(content.icon, color: colorScheme.primary),
+            const SizedBox(width: TSizes.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    content.title,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: TSizes.xs),
+                  Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      content.message,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  if (status == NearbyLocationStatus.requesting) ...[
+                    const SizedBox(height: TSizes.sm),
+                    const LinearProgressIndicator(
+                      key: Key('nearby-location-progress'),
+                    ),
+                  ] else if (content.actionLabel != null) ...[
+                    const SizedBox(height: TSizes.sm),
+                    FilledButton.icon(
+                      key: const Key('nearby-location-action'),
+                      onPressed: onLocationRequested,
+                      icon: const Icon(Icons.my_location_outlined, size: 18),
+                      label: Text(content.actionLabel!),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _NearbyLocationCardContent _contentForStatus() {
+    return switch (status) {
+      NearbyLocationStatus.idle => const _NearbyLocationCardContent(
+        icon: Icons.near_me_outlined,
+        title: 'En yakın mağazaları öne çıkar',
+        message:
+            'Konumunu kullanarak mağazaları yakından uzağa sıralayabiliriz.',
+        actionLabel: 'Konumumu Kullan',
+      ),
+      NearbyLocationStatus.requesting => const _NearbyLocationCardContent(
+        icon: Icons.my_location_outlined,
+        title: 'Konumun alınıyor',
+        message: 'Mağaza listesini açık tutuyoruz. Bu işlem kısa sürebilir.',
+      ),
+      NearbyLocationStatus.ready => _NearbyLocationCardContent(
+        icon: Icons.check_circle_outline,
+        title: hasDistances ? 'Yakına göre sıralandı' : 'Konumun alındı',
+        message: hasDistances
+            ? 'Konumunu yalnızca bu sıralama için kullandık; kaydetmedik ve paylaşmadık.'
+            : 'Mağazaların mesafe bilgisi henüz hazır değil. Konumunu kaydetmedik.',
+      ),
+      NearbyLocationStatus.permissionDenied => const _NearbyLocationCardContent(
+        icon: Icons.location_off_outlined,
+        title: 'Konum izni verilmedi',
+        message:
+            'Mağazaları ada göre göstermeye devam ediyoruz. İzin vermek '
+            'istersen Chrome adres çubuğundaki site ayarlarından konumu açabilirsin.',
+        actionLabel: 'Tekrar Kontrol Et',
+      ),
+      NearbyLocationStatus.servicesDisabled => const _NearbyLocationCardContent(
+        icon: Icons.location_disabled_outlined,
+        title: 'Cihaz konumu kapalı',
+        message:
+            'Mağazaları ada göre göstermeye devam ediyoruz. Cihaz konumunu '
+            'açtıktan sonra yeniden deneyebilirsin.',
+        actionLabel: 'Tekrar Dene',
+      ),
+      NearbyLocationStatus.timedOut => const _NearbyLocationCardContent(
+        icon: Icons.timer_off_outlined,
+        title: 'Konum alınamadı',
+        message:
+            'İşlem beklenenden uzun sürdü. Mağazaları göstermeye devam ediyoruz.',
+        actionLabel: 'Tekrar Dene',
+      ),
+      NearbyLocationStatus.unavailable => const _NearbyLocationCardContent(
+        icon: Icons.wrong_location_outlined,
+        title: 'Konum şu anda kullanılamıyor',
+        message:
+            'Mağazaları ada göre göstermeye devam ediyoruz. Biraz sonra yeniden deneyebilirsin.',
+        actionLabel: 'Tekrar Dene',
+      ),
+    };
+  }
+}
+
+class _NearbyLocationCardContent {
+  final IconData icon;
+  final String title;
+  final String message;
+  final String? actionLabel;
+
+  const _NearbyLocationCardContent({
+    required this.icon,
+    required this.title,
+    required this.message,
+    this.actionLabel,
+  });
 }
 
 class _NearbyShopCard extends StatelessWidget {
   final ShopEntity shop;
+  final double? distanceMeters;
+  final bool locationReady;
 
-  const _NearbyShopCard({required this.shop});
+  const _NearbyShopCard({
+    required this.shop,
+    required this.distanceMeters,
+    required this.locationReady,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final hasAddress = _hasText(shop.address);
-    final hasCoordinates = shop.latitude != null && shop.longitude != null;
+    final hasCoordinates = _hasValidCoordinates(shop);
 
     return Card(
       key: ValueKey('nearby-shop-${shop.id}'),
@@ -205,13 +413,26 @@ class _NearbyShopCard extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwItems),
               Text(shop.description!.trim()),
             ],
+            if (distanceMeters != null) ...[
+              const SizedBox(height: TSizes.spaceBtwItems),
+              _ShopInfoLine(
+                icon: Icons.near_me_outlined,
+                text: _formatDistance(distanceMeters!),
+              ),
+            ] else if (locationReady) ...[
+              const SizedBox(height: TSizes.spaceBtwItems),
+              const _ShopInfoLine(
+                icon: Icons.location_searching_outlined,
+                text: 'Mesafe bilgisi yok',
+              ),
+            ],
             if (hasAddress) ...[
               const SizedBox(height: TSizes.spaceBtwItems),
               _ShopInfoLine(
                 icon: Icons.location_on_outlined,
                 text: shop.address!.trim(),
               ),
-            ] else if (hasCoordinates) ...[
+            ] else if (hasCoordinates && !locationReady) ...[
               const SizedBox(height: TSizes.spaceBtwItems),
               const _ShopInfoLine(
                 icon: Icons.location_on_outlined,
@@ -255,6 +476,36 @@ class _NearbyShopCard extends StatelessWidget {
 
   static bool _hasText(String? value) {
     return value != null && value.trim().isNotEmpty;
+  }
+
+  static bool _hasValidCoordinates(ShopEntity shop) {
+    final latitude = shop.latitude;
+    final longitude = shop.longitude;
+
+    return latitude != null &&
+        longitude != null &&
+        latitude.isFinite &&
+        longitude.isFinite &&
+        latitude >= -90 &&
+        latitude <= 90 &&
+        longitude >= -180 &&
+        longitude <= 180;
+  }
+
+  static String _formatDistance(double distanceMeters) {
+    if (distanceMeters < 10) {
+      return "10 m'den az";
+    }
+
+    if (distanceMeters < 1000) {
+      final roundedMeters = (distanceMeters / 10).round() * 10;
+      return 'Yaklaşık $roundedMeters m';
+    }
+
+    final kilometers = (distanceMeters / 1000)
+        .toStringAsFixed(1)
+        .replaceAll('.', ',');
+    return 'Yaklaşık $kilometers km';
   }
 
   static String _formatOpeningHours(Map<String, dynamic> openingHours) {

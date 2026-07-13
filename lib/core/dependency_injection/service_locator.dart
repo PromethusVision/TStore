@@ -20,8 +20,10 @@ import 'package:t_store/features/shop/domain/usecases/search_products_usecase.da
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 
 // Shops
+import 'package:t_store/features/shop/data/services/geolocator_customer_location_service.dart';
 import 'package:t_store/features/shop/data/repositories/shop_repository_impl.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
+import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/create_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
@@ -183,6 +185,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => UpdateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
+  sl.registerLazySingleton<CustomerLocationService>(
+    GeolocatorCustomerLocationService.new,
+  );
 
   // Cubit
   sl.registerFactory(
@@ -192,7 +197,10 @@ Future<void> setupServiceLocator() async {
       updateMyShopUsecase: sl(),
     ),
   );
-  sl.registerFactory(() => NearbyShopsCubit(getShopsUsecase: sl()));
+  sl.registerFactory(
+    () =>
+        NearbyShopsCubit(getShopsUsecase: sl(), customerLocationService: sl()),
+  );
 
   // ==================== Categories ====================
   // Repository
