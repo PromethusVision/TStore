@@ -1,12 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/common/view_models/grid_layout_view_model.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
-import 'package:t_store/features/auth/presentation/widgets/grid_layout.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
@@ -47,12 +47,16 @@ class _AllProductsContent extends StatefulWidget {
 }
 
 class _AllProductsContentState extends State<_AllProductsContent> {
+  static const double _loadMoreThreshold = 400;
+
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_handleScroll);
 
     if (widget.autoFocusSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -67,6 +71,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
   @override
   void dispose() {
+    _scrollController
+      ..removeListener(_handleScroll)
+      ..dispose();
     _searchFocusNode.dispose();
     _searchController.dispose();
     super.dispose();
@@ -153,8 +160,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                         );
                       }
 
-                      return SingleChildScrollView(
-                        child: _ProductsGrid(products: state.products),
+                      return _ProductsScrollView(
+                        controller: _scrollController,
+                        products: state.products,
                       );
                     }
 
@@ -163,8 +171,13 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                         return const Center(child: Text('Ürün bulunamadı.'));
                       }
 
-                      return SingleChildScrollView(
-                        child: _ProductsGrid(products: state.products),
+                      return _ProductsScrollView(
+                        controller: _scrollController,
+                        products: state.products,
+                        footer: _ProductsLoadMoreFooter(
+                          state: state,
+                          onRetry: _retryLoadMore,
+                        ),
                       );
                     }
 
@@ -182,6 +195,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   void _onSearchChanged(String value) {
     final query = value.trim();
     setState(() {});
+    _scrollToTop();
 
     if (query.isEmpty) {
       context.read<ProductsCubit>().getProducts(refresh: true);
@@ -194,6 +208,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   void _clearSearch() {
     _searchController.clear();
     setState(() {});
+    _scrollToTop();
     context.read<ProductsCubit>().getProducts(refresh: true);
   }
 
@@ -201,29 +216,117 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     final query = _searchController.text.trim();
 
     if (query.isEmpty) {
+      _scrollToTop();
       context.read<ProductsCubit>().getProducts(refresh: true);
       return;
     }
 
     context.read<ProductsCubit>().searchProducts(query);
   }
+
+  void _handleScroll() {
+    if (!_scrollController.hasClients ||
+        _scrollController.position.extentAfter > _loadMoreThreshold ||
+        _searchController.text.trim().isNotEmpty) {
+      return;
+    }
+
+    final productsCubit = context.read<ProductsCubit>();
+    final state = productsCubit.state;
+    if (state is! ProductsLoaded ||
+        state.hasReachedMax ||
+        state.isLoadingMore ||
+        state.loadMoreError != null) {
+      return;
+    }
+
+    unawaited(productsCubit.loadMoreProducts());
+  }
+
+  void _retryLoadMore() {
+    if (_searchController.text.trim().isNotEmpty) return;
+    unawaited(context.read<ProductsCubit>().loadMoreProducts());
+  }
+
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
 }
 
-class _ProductsGrid extends StatelessWidget {
+class _ProductsScrollView extends StatelessWidget {
+  final ScrollController controller;
   final List<ProductEntity> products;
+  final Widget? footer;
 
-  const _ProductsGrid({required this.products});
+  const _ProductsScrollView({
+    required this.controller,
+    required this.products,
+    this.footer,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GridLayout(
-      gridLayoutModel: GridLayoutModel(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return VerticalProductCard(product: products[index]);
-        },
-        mainAxisExtent: 288,
-      ),
+    return CustomScrollView(
+      controller: controller,
+      slivers: [
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: TSizes.gridViewSpacing,
+            crossAxisSpacing: TSizes.gridViewSpacing,
+            mainAxisExtent: 288,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) => VerticalProductCard(product: products[index]),
+            childCount: products.length,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: footer ?? const SizedBox(height: TSizes.defaultSpace),
+        ),
+      ],
     );
+  }
+}
+
+class _ProductsLoadMoreFooter extends StatelessWidget {
+  final ProductsLoaded state;
+  final VoidCallback onRetry;
+
+  const _ProductsLoadMoreFooter({required this.state, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isLoadingMore) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems),
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
+
+    if (state.loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: TSizes.spaceBtwItems),
+        child: Column(
+          children: [
+            const Text(
+              'Diğer ürünler yüklenemedi.',
+              textAlign: TextAlign.center,
+            ),
+            TextButton(onPressed: onRetry, child: const Text('Tekrar Dene')),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox(height: TSizes.defaultSpace);
   }
 }

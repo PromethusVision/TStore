@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,6 +56,7 @@ void main() {
     when(
       () => localProductsCubit.searchProducts(any()),
     ).thenAnswer((_) async {});
+    when(() => localProductsCubit.loadMoreProducts()).thenAnswer((_) async {});
     when(() => localProductsCubit.close()).thenAnswer((_) async {});
 
     sl.registerFactory<ProductsCubit>(() => localProductsCubit);
@@ -70,6 +73,29 @@ void main() {
         child: const AllProductsView(),
       ),
     );
+  }
+
+  void stubLocalState(ProductsState state) {
+    whenListen(
+      localProductsCubit,
+      const Stream<ProductsState>.empty(),
+      initialState: state,
+    );
+  }
+
+  List<ProductEntity> createProducts(int count) {
+    return List.generate(
+      count,
+      (index) => featuredProduct.copyWith(
+        id: 'product-$index',
+        name: 'Product $index',
+      ),
+    );
+  }
+
+  Future<void> scrollToEnd(WidgetTester tester) async {
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -4000));
+    await tester.pump();
   }
 
   testWidgets(
@@ -98,6 +124,128 @@ void main() {
       verify(() => localProductsCubit.searchProducts('kahve')).called(1);
       verifyNever(() => parentProductsCubit.searchProducts(any()));
       expect(parentProductsCubit.state, same(parentFeaturedState));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'loads the next page when a loaded product list approaches the end',
+    (tester) async {
+      final loadMoreCompleter = Completer<void>();
+      stubLocalState(
+        ProductsLoaded(
+          products: createProducts(12),
+          hasReachedMax: false,
+          currentPage: 1,
+        ),
+      );
+      when(
+        () => localProductsCubit.loadMoreProducts(),
+      ).thenAnswer((_) => loadMoreCompleter.future);
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+      await scrollToEnd(tester);
+
+      verify(() => localProductsCubit.loadMoreProducts()).called(1);
+
+      loadMoreCompleter.complete();
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'does not start another page request while the first one is unfinished',
+    (tester) async {
+      final loadMoreCompleter = Completer<void>();
+      final loadedState = ProductsLoaded(
+        products: createProducts(12),
+        hasReachedMax: false,
+        currentPage: 1,
+      );
+      stubLocalState(loadedState);
+      when(() => localProductsCubit.loadMoreProducts()).thenAnswer((_) {
+        when(
+          () => localProductsCubit.state,
+        ).thenReturn(loadedState.copyWith(isLoadingMore: true));
+        return loadMoreCompleter.future;
+      });
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+      await scrollToEnd(tester);
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, 300));
+      await tester.pump();
+      await scrollToEnd(tester);
+
+      verify(() => localProductsCubit.loadMoreProducts()).called(1);
+
+      loadMoreCompleter.complete();
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'does not load another page after the product list reaches its end',
+    (tester) async {
+      stubLocalState(
+        ProductsLoaded(
+          products: createProducts(12),
+          hasReachedMax: true,
+          currentPage: 1,
+        ),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+      await scrollToEnd(tester);
+
+      verifyNever(() => localProductsCubit.loadMoreProducts());
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets('does not paginate search results', (tester) async {
+    stubLocalState(
+      ProductsSearchResult(products: createProducts(12), query: 'kahve'),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+    await scrollToEnd(tester);
+
+    verifyNever(() => localProductsCubit.loadMoreProducts());
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets(
+    'keeps products visible and retries after loading the next page fails',
+    (tester) async {
+      stubLocalState(
+        ProductsLoaded(
+          products: createProducts(12),
+          hasReachedMax: false,
+          currentPage: 1,
+          loadMoreError: 'More products could not be loaded',
+        ),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
+      expect(find.text('Product 0'), findsOneWidget);
+      await scrollToEnd(tester);
+      expect(find.text('Tekrar Dene'), findsOneWidget);
+
+      await tester.tap(find.text('Tekrar Dene'));
+      await tester.pump();
+
+      verify(() => localProductsCubit.loadMoreProducts()).called(1);
 
       await tester.pumpWidget(const SizedBox.shrink());
     },

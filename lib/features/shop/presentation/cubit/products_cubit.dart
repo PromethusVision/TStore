@@ -55,7 +55,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     if (!_canHandle(requestId)) return;
 
     result.fold((error) => emit(ProductsError(error)), (products) {
-      _allProducts = [..._allProducts, ...products];
+      _mergeProducts(products);
       _currentPage++;
       emit(
         ProductsLoaded(
@@ -74,18 +74,46 @@ class ProductsCubit extends Cubit<ProductsState> {
     String? sortBy,
     bool ascending = true,
   }) async {
-    if (state is ProductsLoaded) {
-      final currentState = state as ProductsLoaded;
-      if (currentState.hasReachedMax) return;
+    final currentState = state;
+    if (currentState is! ProductsLoaded ||
+        currentState.hasReachedMax ||
+        currentState.isLoadingMore) {
+      return;
+    }
 
-      await getProducts(
+    final requestId = _startRequest();
+    emit(currentState.copyWith(isLoadingMore: true, clearLoadMoreError: true));
+
+    final result = await getProductsUsecase(
+      GetProductsParams(
+        page: _currentPage,
+        limit: _limit,
         categoryId: categoryId,
         brandId: brandId,
         isFeatured: isFeatured,
         sortBy: sortBy,
         ascending: ascending,
-      );
-    }
+      ),
+    );
+
+    if (!_canHandle(requestId)) return;
+
+    result.fold(
+      (error) => emit(
+        currentState.copyWith(isLoadingMore: false, loadMoreError: error),
+      ),
+      (products) {
+        _mergeProducts(products);
+        _currentPage++;
+        emit(
+          ProductsLoaded(
+            products: _allProducts,
+            hasReachedMax: products.length < _limit,
+            currentPage: _currentPage,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> getProductById(String id) async {
@@ -134,5 +162,12 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   bool _canHandle(int requestId) {
     return !isClosed && requestId == _activeRequestId;
+  }
+
+  void _mergeProducts(List<ProductEntity> products) {
+    _allProducts = <String, ProductEntity>{
+      for (final product in _allProducts) product.id: product,
+      for (final product in products) product.id: product,
+    }.values.toList();
   }
 }

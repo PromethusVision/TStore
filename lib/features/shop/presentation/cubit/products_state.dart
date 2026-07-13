@@ -16,25 +16,42 @@ class ProductsLoaded extends ProductsState {
   final List<ProductEntity> products;
   final bool hasReachedMax;
   final int currentPage;
+  final bool isLoadingMore;
+  final String? loadMoreError;
 
   const ProductsLoaded({
     required this.products,
     this.hasReachedMax = false,
     this.currentPage = 0,
+    this.isLoadingMore = false,
+    this.loadMoreError,
   });
 
   @override
-  List<Object?> get props => [products, hasReachedMax, currentPage];
+  List<Object?> get props => [
+    products,
+    hasReachedMax,
+    currentPage,
+    isLoadingMore,
+    loadMoreError,
+  ];
 
   ProductsLoaded copyWith({
     List<ProductEntity>? products,
     bool? hasReachedMax,
     int? currentPage,
+    bool? isLoadingMore,
+    String? loadMoreError,
+    bool clearLoadMoreError = false,
   }) {
     return ProductsLoaded(
       products: products ?? this.products,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       currentPage: currentPage ?? this.currentPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      loadMoreError: clearLoadMoreError
+          ? null
+          : loadMoreError ?? this.loadMoreError,
     );
   }
 }
@@ -76,10 +93,7 @@ class ProductsSearchResult extends ProductsState {
   final List<ProductEntity> products;
   final String query;
 
-  const ProductsSearchResult({
-    required this.products,
-    required this.query,
-  });
+  const ProductsSearchResult({required this.products, required this.query});
 
   @override
   List<Object?> get props => [products, query];

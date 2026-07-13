@@ -395,6 +395,207 @@ void main() {
 
     group('loadMoreProducts', () {
       blocTest<ProductsCubit, ProductsState>(
+        'requests page 1 and appends it to existing products',
+        build: () {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'first-$index'),
+          );
+          final secondPage = [
+            testProducts.last.copyWith(id: 'second-0'),
+            testProducts.last.copyWith(id: 'second-1'),
+          ];
+          var requestCount = 0;
+
+          when(() => mockGetProductsUsecase(any())).thenAnswer((_) async {
+            requestCount++;
+            return requestCount == 1 ? Right(firstPage) : Right(secondPage);
+          });
+
+          return productsCubit;
+        },
+        act: (cubit) async {
+          await cubit.getProducts(refresh: true);
+          await cubit.loadMoreProducts();
+        },
+        expect: () {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'first-$index'),
+          );
+          final secondPage = [
+            testProducts.last.copyWith(id: 'second-0'),
+            testProducts.last.copyWith(id: 'second-1'),
+          ];
+
+          return [
+            ProductsLoading(),
+            ProductsLoaded(
+              products: firstPage,
+              hasReachedMax: false,
+              currentPage: 1,
+            ),
+            ProductsLoaded(
+              products: firstPage,
+              hasReachedMax: false,
+              currentPage: 1,
+              isLoadingMore: true,
+            ),
+            ProductsLoaded(
+              products: [...firstPage, ...secondPage],
+              hasReachedMax: true,
+              currentPage: 2,
+            ),
+          ];
+        },
+        verify: (_) {
+          final captured = verify(
+            () => mockGetProductsUsecase(captureAny()),
+          ).captured.cast<GetProductsParams>();
+
+          expect(captured.map((params) => params.page), [0, 1]);
+          expect(captured.map((params) => params.limit), [20, 20]);
+        },
+      );
+
+      test(
+        'does not start a second load-more request while one is pending',
+        () async {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'first-$index'),
+          );
+          final secondPage = [testProducts.last.copyWith(id: 'second-0')];
+          final secondPageCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+          var requestCount = 0;
+
+          when(() => mockGetProductsUsecase(any())).thenAnswer((_) {
+            requestCount++;
+            if (requestCount == 1) {
+              return Future.value(Right(firstPage));
+            }
+            return secondPageCompleter.future;
+          });
+
+          await productsCubit.getProducts(refresh: true);
+          final pendingLoadMore = productsCubit.loadMoreProducts();
+          await Future<void>.delayed(Duration.zero);
+
+          final loadingState = productsCubit.state as ProductsLoaded;
+          expect(loadingState.isLoadingMore, true);
+
+          await productsCubit.loadMoreProducts();
+          verify(() => mockGetProductsUsecase(any())).called(2);
+
+          secondPageCompleter.complete(Right(secondPage));
+          await pendingLoadMore;
+
+          final loadedState = productsCubit.state as ProductsLoaded;
+          expect(loadedState.products, [...firstPage, ...secondPage]);
+          expect(loadedState.currentPage, 2);
+          expect(loadedState.isLoadingMore, false);
+        },
+      );
+
+      test(
+        'keeps existing products when loading the next page fails',
+        () async {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'first-$index'),
+          );
+          var requestCount = 0;
+
+          when(() => mockGetProductsUsecase(any())).thenAnswer((_) async {
+            requestCount++;
+            if (requestCount == 1) return Right(firstPage);
+            return const Left('Next page failed');
+          });
+
+          await productsCubit.getProducts(refresh: true);
+          await productsCubit.loadMoreProducts();
+
+          final state = productsCubit.state as ProductsLoaded;
+          expect(state.products, firstPage);
+          expect(state.currentPage, 1);
+          expect(state.hasReachedMax, false);
+          expect(state.isLoadingMore, false);
+          expect(state.loadMoreError, 'Next page failed');
+        },
+      );
+
+      test(
+        'retries the same page after an error and appends it on success',
+        () async {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'first-$index'),
+          );
+          final secondPage = [
+            testProducts.last.copyWith(id: 'second-0'),
+            testProducts.last.copyWith(id: 'second-1'),
+          ];
+          var requestCount = 0;
+
+          when(() => mockGetProductsUsecase(any())).thenAnswer((_) async {
+            requestCount++;
+            if (requestCount == 1) return Right(firstPage);
+            if (requestCount == 2) return const Left('Temporary failure');
+            return Right(secondPage);
+          });
+
+          await productsCubit.getProducts(refresh: true);
+          await productsCubit.loadMoreProducts();
+          await productsCubit.loadMoreProducts();
+
+          final captured = verify(
+            () => mockGetProductsUsecase(captureAny()),
+          ).captured.cast<GetProductsParams>();
+          final state = productsCubit.state as ProductsLoaded;
+
+          expect(captured.map((params) => params.page), [0, 1, 1]);
+          expect(state.products, [...firstPage, ...secondPage]);
+          expect(state.currentPage, 2);
+          expect(state.hasReachedMax, true);
+          expect(state.isLoadingMore, false);
+          expect(state.loadMoreError, isNull);
+        },
+      );
+
+      test(
+        'does not duplicate a product id returned on a later page',
+        () async {
+          final firstPage = List.generate(
+            20,
+            (index) => testProducts.first.copyWith(id: 'product-$index'),
+          );
+          final repeatedProduct = testProducts.last.copyWith(id: 'product-5');
+          final newProduct = testProducts.last.copyWith(id: 'product-20');
+          var requestCount = 0;
+
+          when(() => mockGetProductsUsecase(any())).thenAnswer((_) async {
+            requestCount++;
+            return requestCount == 1
+                ? Right(firstPage)
+                : Right([repeatedProduct, newProduct]);
+          });
+
+          await productsCubit.getProducts(refresh: true);
+          await productsCubit.loadMoreProducts();
+
+          final state = productsCubit.state as ProductsLoaded;
+          expect(state.products, hasLength(21));
+          expect(
+            state.products.where((product) => product.id == 'product-5'),
+            hasLength(1),
+          );
+          expect(state.currentPage, 2);
+          expect(state.hasReachedMax, true);
+        },
+      );
+
+      blocTest<ProductsCubit, ProductsState>(
         'does nothing when hasReachedMax is true',
         build: () => productsCubit,
         seed: () => ProductsLoaded(
