@@ -4,13 +4,14 @@ import 'package:t_store/core/common/view_models/grid_layout_view_model.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/presentation/widgets/grid_layout.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 
-class AllProductsView extends StatefulWidget {
+class AllProductsView extends StatelessWidget {
   const AllProductsView({
     super.key,
     this.autoFocusSearch = false,
@@ -21,18 +22,37 @@ class AllProductsView extends StatefulWidget {
   final bool isSearchMode;
 
   @override
-  State<AllProductsView> createState() => _AllProductsViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<ProductsCubit>(
+      create: (_) => sl<ProductsCubit>(),
+      child: _AllProductsContent(
+        autoFocusSearch: autoFocusSearch,
+        isSearchMode: isSearchMode,
+      ),
+    );
+  }
 }
 
-class _AllProductsViewState extends State<AllProductsView> {
+class _AllProductsContent extends StatefulWidget {
+  const _AllProductsContent({
+    required this.autoFocusSearch,
+    required this.isSearchMode,
+  });
+
+  final bool autoFocusSearch;
+  final bool isSearchMode;
+
+  @override
+  State<_AllProductsContent> createState() => _AllProductsContentState();
+}
+
+class _AllProductsContentState extends State<_AllProductsContent> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    final productsCubit = context.read<ProductsCubit>();
-    final state = productsCubit.state;
 
     if (widget.autoFocusSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,10 +62,7 @@ class _AllProductsViewState extends State<AllProductsView> {
       });
     }
 
-    if (state is ProductsInitial ||
-        (state is ProductsLoaded && state.products.isEmpty)) {
-      productsCubit.getProducts(refresh: true);
-    }
+    context.read<ProductsCubit>().getProducts(refresh: true);
   }
 
   @override
@@ -203,9 +220,7 @@ class _ProductsGrid extends StatelessWidget {
       gridLayoutModel: GridLayoutModel(
         itemCount: products.length,
         itemBuilder: (context, index) {
-          return VerticalProductCard(
-            product: products[index],
-          );
+          return VerticalProductCard(product: products[index]);
         },
         mainAxisExtent: 288,
       ),

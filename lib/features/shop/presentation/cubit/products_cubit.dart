@@ -18,6 +18,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   List<ProductEntity> _allProducts = [];
   int _currentPage = 0;
+  int _activeRequestId = 0;
   static const int _limit = 20;
 
   Future<void> getProducts({
@@ -28,6 +29,8 @@ class ProductsCubit extends Cubit<ProductsState> {
     bool ascending = true,
     bool refresh = false,
   }) async {
+    final requestId = _startRequest();
+
     if (refresh) {
       _currentPage = 0;
       _allProducts = [];
@@ -37,28 +40,31 @@ class ProductsCubit extends Cubit<ProductsState> {
       emit(ProductsLoading());
     }
 
-    final result = await getProductsUsecase(GetProductsParams(
-      page: _currentPage,
-      limit: _limit,
-      categoryId: categoryId,
-      brandId: brandId,
-      isFeatured: isFeatured,
-      sortBy: sortBy,
-      ascending: ascending,
-    ));
+    final result = await getProductsUsecase(
+      GetProductsParams(
+        page: _currentPage,
+        limit: _limit,
+        categoryId: categoryId,
+        brandId: brandId,
+        isFeatured: isFeatured,
+        sortBy: sortBy,
+        ascending: ascending,
+      ),
+    );
 
-    result.fold(
-      (error) => emit(ProductsError(error)),
-      (products) {
-        _allProducts = [..._allProducts, ...products];
-        _currentPage++;
-        emit(ProductsLoaded(
+    if (!_canHandle(requestId)) return;
+
+    result.fold((error) => emit(ProductsError(error)), (products) {
+      _allProducts = [..._allProducts, ...products];
+      _currentPage++;
+      emit(
+        ProductsLoaded(
           products: _allProducts,
           hasReachedMax: products.length < _limit,
           currentPage: _currentPage,
-        ));
-      },
-    );
+        ),
+      );
+    });
   }
 
   Future<void> loadMoreProducts({
@@ -83,9 +89,12 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<void> getProductById(String id) async {
+    final requestId = _startRequest();
     emit(ProductDetailLoading());
 
     final result = await getProductByIdUsecase(id);
+
+    if (!_canHandle(requestId)) return;
 
     result.fold(
       (error) => emit(ProductDetailError(error)),
@@ -94,8 +103,10 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<void> searchProducts(String query) async {
+    final requestId = _startRequest();
+
     if (query.isEmpty) {
-      emit(ProductsInitial());
+      if (!isClosed) emit(ProductsInitial());
       return;
     }
 
@@ -103,18 +114,25 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     final result = await searchProductsUsecase(query);
 
+    if (!_canHandle(requestId)) return;
+
     result.fold(
       (error) => emit(ProductsError(error)),
-      (products) => emit(ProductsSearchResult(
-        products: products,
-        query: query,
-      )),
+      (products) =>
+          emit(ProductsSearchResult(products: products, query: query)),
     );
   }
 
   void resetProducts() {
+    _startRequest();
     _currentPage = 0;
     _allProducts = [];
-    emit(ProductsInitial());
+    if (!isClosed) emit(ProductsInitial());
+  }
+
+  int _startRequest() => ++_activeRequestId;
+
+  bool _canHandle(int requestId) {
+    return !isClosed && requestId == _activeRequestId;
   }
 }

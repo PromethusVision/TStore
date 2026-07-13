@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -84,8 +86,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductsLoading, ProductsLoaded] when getProducts succeeds',
         build: () {
-          when(() => mockGetProductsUsecase(any()))
-              .thenAnswer((_) async => Right(testProducts));
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) async => Right(testProducts));
           return productsCubit;
         },
         act: (cubit) => cubit.getProducts(),
@@ -102,8 +105,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductsLoading, ProductsError] when getProducts fails',
         build: () {
-          when(() => mockGetProductsUsecase(any()))
-              .thenAnswer((_) async => const Left('Failed to fetch products'));
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) async => const Left('Failed to fetch products'));
           return productsCubit;
         },
         act: (cubit) => cubit.getProducts(),
@@ -117,10 +121,13 @@ void main() {
         'emits [ProductsLoading, ProductsLoaded] with hasReachedMax=false when more products available',
         build: () {
           // Return exactly 20 products to indicate more may be available
-          final manyProducts =
-              List.generate(20, (i) => testProducts.first.copyWith(id: 'p$i'));
-          when(() => mockGetProductsUsecase(any()))
-              .thenAnswer((_) async => Right(manyProducts));
+          final manyProducts = List.generate(
+            20,
+            (i) => testProducts.first.copyWith(id: 'p$i'),
+          );
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) async => Right(manyProducts));
           return productsCubit;
         },
         act: (cubit) => cubit.getProducts(),
@@ -137,8 +144,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'passes filter parameters to usecase',
         build: () {
-          when(() => mockGetProductsUsecase(any()))
-              .thenAnswer((_) async => Right(testProducts));
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) async => Right(testProducts));
           return productsCubit;
         },
         act: (cubit) => cubit.getProducts(
@@ -149,9 +157,9 @@ void main() {
           ascending: false,
         ),
         verify: (_) {
-          final captured = verify(() => mockGetProductsUsecase(captureAny()))
-              .captured
-              .first as GetProductsParams;
+          final captured =
+              verify(() => mockGetProductsUsecase(captureAny())).captured.first
+                  as GetProductsParams;
           expect(captured.categoryId, 'cat-1');
           expect(captured.brandId, 'brand-1');
           expect(captured.isFeatured, true);
@@ -163,8 +171,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'resets pagination when refresh is true',
         build: () {
-          when(() => mockGetProductsUsecase(any()))
-              .thenAnswer((_) async => Right(testProducts));
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) async => Right(testProducts));
           return productsCubit;
         },
         seed: () => ProductsLoaded(
@@ -174,9 +183,9 @@ void main() {
         ),
         act: (cubit) => cubit.getProducts(refresh: true),
         verify: (_) {
-          final captured = verify(() => mockGetProductsUsecase(captureAny()))
-              .captured
-              .first as GetProductsParams;
+          final captured =
+              verify(() => mockGetProductsUsecase(captureAny())).captured.first
+                  as GetProductsParams;
           expect(captured.page, 0);
         },
       );
@@ -186,8 +195,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductDetailLoading, ProductDetailLoaded] when getProductById succeeds',
         build: () {
-          when(() => mockGetProductByIdUsecase('product-1'))
-              .thenAnswer((_) async => Right(testProducts.first));
+          when(
+            () => mockGetProductByIdUsecase('product-1'),
+          ).thenAnswer((_) async => Right(testProducts.first));
           return productsCubit;
         },
         act: (cubit) => cubit.getProductById('product-1'),
@@ -200,8 +210,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductDetailLoading, ProductDetailError] when getProductById fails',
         build: () {
-          when(() => mockGetProductByIdUsecase('non-existent'))
-              .thenAnswer((_) async => const Left('Product not found'));
+          when(
+            () => mockGetProductByIdUsecase('non-existent'),
+          ).thenAnswer((_) async => const Left('Product not found'));
           return productsCubit;
         },
         act: (cubit) => cubit.getProductById('non-existent'),
@@ -216,8 +227,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductsSearching, ProductsSearchResult] when search succeeds',
         build: () {
-          when(() => mockSearchProductsUsecase('Test'))
-              .thenAnswer((_) async => Right(testProducts));
+          when(
+            () => mockSearchProductsUsecase('Test'),
+          ).thenAnswer((_) async => Right(testProducts));
           return productsCubit;
         },
         act: (cubit) => cubit.searchProducts('Test'),
@@ -237,8 +249,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits [ProductsSearching, ProductsError] when search fails',
         build: () {
-          when(() => mockSearchProductsUsecase('Test'))
-              .thenAnswer((_) async => const Left('Search failed'));
+          when(
+            () => mockSearchProductsUsecase('Test'),
+          ).thenAnswer((_) async => const Left('Search failed'));
           return productsCubit;
         },
         act: (cubit) => cubit.searchProducts('Test'),
@@ -251,8 +264,9 @@ void main() {
       blocTest<ProductsCubit, ProductsState>(
         'emits empty search result when no products match',
         build: () {
-          when(() => mockSearchProductsUsecase('NonExistent'))
-              .thenAnswer((_) async => const Right([]));
+          when(
+            () => mockSearchProductsUsecase('NonExistent'),
+          ).thenAnswer((_) async => const Right([]));
           return productsCubit;
         },
         act: (cubit) => cubit.searchProducts('NonExistent'),
@@ -260,6 +274,112 @@ void main() {
           ProductsSearching(),
           const ProductsSearchResult(products: [], query: 'NonExistent'),
         ],
+      );
+    });
+
+    group('request ordering and lifecycle', () {
+      test(
+        'does not let a delayed product load overwrite a newer search result',
+        () async {
+          final productsCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+          final searchCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+          final searchProducts = [testProducts.last];
+          final emittedStates = <ProductsState>[];
+          final subscription = productsCubit.stream.listen(emittedStates.add);
+
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) => productsCompleter.future);
+          when(
+            () => mockSearchProductsUsecase('new search'),
+          ).thenAnswer((_) => searchCompleter.future);
+
+          final productsRequest = productsCubit.getProducts(refresh: true);
+          final searchRequest = productsCubit.searchProducts('new search');
+
+          searchCompleter.complete(Right(searchProducts));
+          await searchRequest;
+
+          productsCompleter.complete(Right(testProducts));
+          await productsRequest;
+          await Future<void>.delayed(Duration.zero);
+
+          expect(
+            productsCubit.state,
+            ProductsSearchResult(products: searchProducts, query: 'new search'),
+          );
+          expect(emittedStates.whereType<ProductsLoaded>(), isEmpty);
+
+          await subscription.cancel();
+        },
+      );
+
+      test(
+        'does not let a delayed old search overwrite a newer search result',
+        () async {
+          final oldSearchCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+          final newSearchCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+          final oldSearchProducts = [testProducts.first];
+          final newSearchProducts = [testProducts.last];
+          final emittedStates = <ProductsState>[];
+          final subscription = productsCubit.stream.listen(emittedStates.add);
+
+          when(
+            () => mockSearchProductsUsecase('old search'),
+          ).thenAnswer((_) => oldSearchCompleter.future);
+          when(
+            () => mockSearchProductsUsecase('new search'),
+          ).thenAnswer((_) => newSearchCompleter.future);
+
+          final oldSearchRequest = productsCubit.searchProducts('old search');
+          final newSearchRequest = productsCubit.searchProducts('new search');
+
+          newSearchCompleter.complete(Right(newSearchProducts));
+          await newSearchRequest;
+
+          oldSearchCompleter.complete(Right(oldSearchProducts));
+          await oldSearchRequest;
+          await Future<void>.delayed(Duration.zero);
+
+          expect(
+            productsCubit.state,
+            ProductsSearchResult(
+              products: newSearchProducts,
+              query: 'new search',
+            ),
+          );
+          expect(emittedStates.whereType<ProductsSearchResult>(), [
+            ProductsSearchResult(
+              products: newSearchProducts,
+              query: 'new search',
+            ),
+          ]);
+
+          await subscription.cancel();
+        },
+      );
+
+      test(
+        'pending product request completes without error after cubit is closed',
+        () async {
+          final productsCompleter =
+              Completer<Either<String, List<ProductEntity>>>();
+
+          when(
+            () => mockGetProductsUsecase(any()),
+          ).thenAnswer((_) => productsCompleter.future);
+
+          final productsRequest = productsCubit.getProducts(refresh: true);
+          await productsCubit.close();
+
+          productsCompleter.complete(Right(testProducts));
+
+          await expectLater(productsRequest, completes);
+        },
       );
     });
 
