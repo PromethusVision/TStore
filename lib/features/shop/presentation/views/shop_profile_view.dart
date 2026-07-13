@@ -12,15 +12,25 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+typedef ShopProfileUrlLauncher =
+    Future<bool> Function(Uri uri, LaunchMode mode);
+
+typedef ShopProfileCurrentUserIdProvider = String? Function();
+
 class ShopProfileView extends StatefulWidget {
   final ShopEntity shop;
+  final ShopProfileUrlLauncher? urlLauncher;
+  final ShopProfileCurrentUserIdProvider? currentUserIdProvider;
 
   const ShopProfileView({
     super.key,
     required this.shop,
+    this.urlLauncher,
+    this.currentUserIdProvider,
   });
 
   @override
@@ -41,13 +51,13 @@ class _ShopProfileViewState extends State<ShopProfileView> {
   @override
   Widget build(BuildContext context) {
     final shop = widget.shop;
+    final currentUserIdProvider =
+        widget.currentUserIdProvider ?? _currentShopProfileUserId;
+    final urlLauncher = widget.urlLauncher ?? _launchShopProfileUrl;
 
     return Scaffold(
       appBar: CustomAppBar(
-        appBarModel: AppBarModel(
-          title: Text(shop.name),
-          hasArrowBack: true,
-        ),
+        appBarModel: AppBarModel(title: Text(shop.name), hasArrowBack: true),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -55,7 +65,11 @@ class _ShopProfileViewState extends State<ShopProfileView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ShopInfoSection(shop: shop),
+              _ShopInfoSection(
+                shop: shop,
+                currentUserIdProvider: currentUserIdProvider,
+                urlLauncher: urlLauncher,
+              ),
               const SizedBox(height: TSizes.spaceBtwSections),
               Text(
                 'Bu mağazadaki ürünler',
@@ -71,20 +85,37 @@ class _ShopProfileViewState extends State<ShopProfileView> {
   }
 }
 
+Future<bool> _launchShopProfileUrl(Uri uri, LaunchMode mode) {
+  return launchUrl(uri, mode: mode);
+}
+
+String? _currentShopProfileUserId() {
+  return SupabaseService.instance.currentUser?.id;
+}
+
 class _ShopInfoSection extends StatelessWidget {
   final ShopEntity shop;
+  final ShopProfileCurrentUserIdProvider currentUserIdProvider;
+  final ShopProfileUrlLauncher urlLauncher;
 
-  const _ShopInfoSection({required this.shop});
+  const _ShopInfoSection({
+    required this.shop,
+    required this.currentUserIdProvider,
+    required this.urlLauncher,
+  });
 
   @override
   Widget build(BuildContext context) {
     final hasDirections = _hasDirections;
     final ownerUserId = shop.ownerUserId?.trim();
-    final phone = shop.phone?.trim();
-    final currentUser = SupabaseService.instance.currentUser;
+    final phoneTarget = _phoneTarget;
+    final normalizedCurrentUserId = currentUserIdProvider()?.trim();
     final hasOwnerUserId = ownerUserId != null && ownerUserId.isNotEmpty;
-    final hasPhone = phone != null && phone.isNotEmpty;
-    final isOwnShop = currentUser != null && currentUser.id == ownerUserId;
+    final hasPhone = phoneTarget != null;
+    final isOwnShop =
+        normalizedCurrentUserId != null &&
+        normalizedCurrentUserId.isNotEmpty &&
+        normalizedCurrentUserId == ownerUserId;
     final canShowMessageButton = hasOwnerUserId && !isOwnShop;
     final hasActions = canShowMessageButton || hasPhone || hasDirections;
     final colorScheme = Theme.of(context).colorScheme;
@@ -114,9 +145,7 @@ class _ShopInfoSection extends StatelessWidget {
                       children: [
                         Text(
                           shop.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
+                          style: Theme.of(context).textTheme.headlineSmall
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: TSizes.xs),
@@ -173,7 +202,8 @@ class _ShopInfoSection extends StatelessWidget {
             children: [
               if (canShowMessageButton)
                 FilledButton.icon(
-                  onPressed: () => _openChat(context, ownerUserId!),
+                  key: const Key('shop-profile-message-action'),
+                  onPressed: () => _openChat(context, ownerUserId),
                   icon: const Icon(Icons.message_outlined),
                   label: const Text('Esnafa Yaz'),
                 ),
@@ -181,13 +211,15 @@ class _ShopInfoSection extends StatelessWidget {
                 const SizedBox(height: TSizes.sm),
               if (hasPhone)
                 OutlinedButton.icon(
-                  onPressed: () => _openPhoneCall(context, phone),
+                  key: const Key('shop-profile-call-action'),
+                  onPressed: () => _openPhoneCall(context, phoneTarget),
                   icon: const Icon(Icons.call_outlined),
                   label: const Text('Ara'),
                 ),
               if (hasPhone && hasDirections) const SizedBox(height: TSizes.sm),
               if (hasDirections)
                 OutlinedButton.icon(
+                  key: const Key('shop-profile-directions-action'),
                   onPressed: () => _openDirections(context),
                   icon: const Icon(Icons.directions_outlined),
                   label: const Text('Yol Tarifi Al'),
@@ -200,9 +232,29 @@ class _ShopInfoSection extends StatelessWidget {
   }
 
   bool get _hasDirections {
-    final hasCoordinates = shop.latitude != null && shop.longitude != null;
-    final hasAddress = shop.address != null && shop.address!.trim().isNotEmpty;
-    return hasCoordinates || hasAddress;
+    return _directionsQuery != null;
+  }
+
+  String? get _directionsQuery {
+    if (CustomerProximityHelper.hasValidCoordinates(
+      shop.latitude,
+      shop.longitude,
+    )) {
+      return '${shop.latitude},${shop.longitude}';
+    }
+
+    final address = shop.address?.trim();
+    return address == null || address.isEmpty ? null : address;
+  }
+
+  String? get _phoneTarget {
+    final rawPhone = shop.phone?.trim();
+    if (rawPhone == null || rawPhone.isEmpty) return null;
+
+    final digits = rawPhone.replaceAll(RegExp(r'\D'), '');
+    if (digits.isEmpty) return null;
+
+    return rawPhone.startsWith('+') ? '+$digits' : digits;
   }
 
   String _formatOpeningHours() {
@@ -214,60 +266,56 @@ class _ShopInfoSection extends StatelessWidget {
   bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 
   Future<void> _openDirections(BuildContext context) async {
-    final query = shop.latitude != null && shop.longitude != null
-        ? '${shop.latitude},${shop.longitude}'
-        : shop.address!.trim();
+    final query = _directionsQuery;
+    if (query == null) return;
 
-    final uri = Uri.https(
-      'www.google.com',
-      '/maps/search/',
-      {
-        'api': '1',
-        'query': query,
-      },
-    );
+    final uri = Uri.https('www.google.com', '/maps/search/', {
+      'api': '1',
+      'query': query,
+    });
 
-    final didLaunch = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!didLaunch && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Yol tarifi açılamadı')),
-      );
+    try {
+      final didLaunch = await urlLauncher(uri, LaunchMode.externalApplication);
+      if (!didLaunch && context.mounted) {
+        _showActionError(context, 'Yol tarifi açılamadı');
+      }
+    } catch (_) {
+      if (!context.mounted) return;
+      _showActionError(context, 'Yol tarifi açılamadı');
     }
   }
 
   Future<void> _openPhoneCall(BuildContext context, String phone) async {
     try {
       final uri = Uri(scheme: 'tel', path: phone);
-      final didLaunch = await launchUrl(uri);
+      final didLaunch = await urlLauncher(uri, LaunchMode.platformDefault);
 
       if (!didLaunch && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Telefon araması başlatılamadı')),
-        );
+        _showActionError(context, 'Telefon araması başlatılamadı');
       }
     } catch (_) {
       if (!context.mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Telefon araması başlatılamadı')),
-      );
+      _showActionError(context, 'Telefon araması başlatılamadı');
     }
   }
 
-  void _openChat(BuildContext context, String ownerUserId) {
-    final user = SupabaseService.instance.currentUser;
+  void _showActionError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
 
-    if (user == null) {
+  void _openChat(BuildContext context, String ownerUserId) {
+    final normalizedCurrentUserId = currentUserIdProvider()?.trim();
+    if (normalizedCurrentUserId == null || normalizedCurrentUserId.isEmpty) {
       THelperFunctions.navigateToScreen(context, const LoginView());
       return;
     }
 
     THelperFunctions.navigateToScreen(
       context,
-      ChatView(
-        receiverId: ownerUserId,
-        receiverName: shop.name,
-      ),
+      ChatView(receiverId: ownerUserId, receiverName: shop.name),
     );
   }
 }
@@ -291,9 +339,9 @@ class _ShopAvatar extends StatelessWidget {
           : Text(
               initials,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w700,
+              ),
             ),
     );
   }
@@ -323,11 +371,7 @@ class _RatingChip extends StatelessWidget {
     final text = rating > 0 ? rating.toStringAsFixed(1) : 'Yeni';
 
     return Chip(
-      avatar: Icon(
-        Icons.star_rounded,
-        size: 18,
-        color: colorScheme.primary,
-      ),
+      avatar: Icon(Icons.star_rounded, size: 18, color: colorScheme.primary),
       label: Text(text),
       visualDensity: VisualDensity.compact,
       side: BorderSide(color: colorScheme.outlineVariant),
@@ -381,10 +425,10 @@ class _InfoLine extends StatelessWidget {
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isMissing
-                      ? Theme.of(context).colorScheme.onSurfaceVariant
-                      : null,
-                ),
+              color: isMissing
+                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                  : null,
+            ),
           ),
         ],
       ),
@@ -402,8 +446,8 @@ class _MissingInfoText extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
@@ -433,25 +477,22 @@ class _ShopProductsSection extends StatelessWidget {
           );
         }
 
-        return snapshot.data!.fold(
-          (error) => Text(error),
-          (shopProducts) {
-            if (shopProducts.isEmpty) {
-              return const Text('Bu mağazada şu an listelenen ürün yok.');
-            }
+        return snapshot.data!.fold((error) => Text(error), (shopProducts) {
+          if (shopProducts.isEmpty) {
+            return const Text('Bu mağazada şu an listelenen ürün yok.');
+          }
 
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: shopProducts.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: TSizes.spaceBtwItems),
-              itemBuilder: (context, index) {
-                return _ShopProductTile(shopProduct: shopProducts[index]);
-              },
-            );
-          },
-        );
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: shopProducts.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(height: TSizes.spaceBtwItems),
+            itemBuilder: (context, index) {
+              return _ShopProductTile(shopProduct: shopProducts[index]);
+            },
+          );
+        });
       },
     );
   }
@@ -486,14 +527,16 @@ class _ShopProductTile extends StatelessWidget {
                     ? 'Ürün detayı şu an görüntülenemiyor'
                     : 'Detayları görüntüle',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: product == null ? null : () => _openProductDetails(context, product),
+        onTap: product == null
+            ? null
+            : () => _openProductDetails(context, product),
       ),
     );
   }
