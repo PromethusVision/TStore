@@ -24,6 +24,7 @@ class ProductSellersSection extends StatefulWidget {
 
 class _ProductSellersSectionState extends State<ProductSellersSection> {
   late final Future<Either<String, List<ShopProductEntity>>> _future;
+  _SellerSortOption? _selectedSortOption;
   static bool _isConflictDialogOpen = false;
 
   @override
@@ -91,14 +92,36 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               final coordinates =
                   sl<CustomerLocationService>().cachedCoordinates;
               final locationReady = coordinates?.isValid ?? false;
-              final rankedSellers = _rankSellers(shopProducts, coordinates);
+              final effectiveSort =
+                  _selectedSortOption ??
+                  (locationReady ? _SellerSortOption.nearest : null);
+              final rankedSellers = _sortSellers(
+                shopProducts,
+                coordinates,
+                effectiveSort,
+              );
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Bu ürünü satan esnaflar',
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: TSizes.sm,
+                    runSpacing: TSizes.sm,
+                    children: [
+                      Text(
+                        'Bu ürünü satan esnaflar',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      _SellerSortMenu(
+                        selectedOption: effectiveSort,
+                        locationReady: locationReady,
+                        onSelected: (option) {
+                          setState(() => _selectedSortOption = option);
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
                   ListView.separated(
@@ -125,9 +148,10 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     );
   }
 
-  List<_RankedSeller> _rankSellers(
+  List<_RankedSeller> _sortSellers(
     List<ShopProductEntity> shopProducts,
     CustomerCoordinates? coordinates,
+    _SellerSortOption? sortOption,
   ) {
     final rankedSellers = <_RankedSeller>[];
 
@@ -151,27 +175,56 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
       );
     }
 
-    if (coordinates == null || !coordinates.isValid) {
+    if (sortOption == null) {
       return rankedSellers;
     }
 
     rankedSellers.sort((first, second) {
-      final firstDistance = first.distanceMeters;
-      final secondDistance = second.distanceMeters;
+      final comparison = switch (sortOption) {
+        _SellerSortOption.cheapest => _compareFiniteValues(
+          first.shopProduct.price,
+          second.shopProduct.price,
+          ascending: true,
+        ),
+        _SellerSortOption.mostExpensive => _compareFiniteValues(
+          first.shopProduct.price,
+          second.shopProduct.price,
+          ascending: false,
+        ),
+        _SellerSortOption.highestRated => _compareFiniteValues(
+          first.shopProduct.shop?.rating,
+          second.shopProduct.shop?.rating,
+          ascending: false,
+        ),
+        _SellerSortOption.nearest => _compareFiniteValues(
+          first.distanceMeters,
+          second.distanceMeters,
+          ascending: true,
+        ),
+      };
 
-      if (firstDistance == null && secondDistance == null) {
-        return first.originalIndex.compareTo(second.originalIndex);
-      }
-      if (firstDistance == null) return 1;
-      if (secondDistance == null) return -1;
-
-      final distanceComparison = firstDistance.compareTo(secondDistance);
-      return distanceComparison != 0
-          ? distanceComparison
+      return comparison != 0
+          ? comparison
           : first.originalIndex.compareTo(second.originalIndex);
     });
 
     return rankedSellers;
+  }
+
+  int _compareFiniteValues(
+    double? first,
+    double? second, {
+    required bool ascending,
+  }) {
+    final firstIsValid = first != null && first.isFinite;
+    final secondIsValid = second != null && second.isFinite;
+
+    if (!firstIsValid && !secondIsValid) return 0;
+    if (!firstIsValid) return 1;
+    if (!secondIsValid) return -1;
+
+    final comparison = first.compareTo(second);
+    return ascending ? comparison : -comparison;
   }
 
   Future<void> _showShopConflictDialog(
@@ -531,6 +584,113 @@ class _LocationHintChip extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+enum _SellerSortOption { cheapest, mostExpensive, highestRated, nearest }
+
+extension on _SellerSortOption {
+  String get label => switch (this) {
+    _SellerSortOption.cheapest => 'Fiyata göre en ucuz',
+    _SellerSortOption.mostExpensive => 'Fiyata göre en pahalı',
+    _SellerSortOption.highestRated => 'En yüksek puan',
+    _SellerSortOption.nearest => 'En yakın',
+  };
+
+  String get buttonLabel => switch (this) {
+    _SellerSortOption.cheapest => 'En ucuz',
+    _SellerSortOption.mostExpensive => 'En pahalı',
+    _SellerSortOption.highestRated => 'Puan',
+    _SellerSortOption.nearest => 'En yakın',
+  };
+
+  IconData get icon => switch (this) {
+    _SellerSortOption.cheapest => Icons.arrow_downward_outlined,
+    _SellerSortOption.mostExpensive => Icons.arrow_upward_outlined,
+    _SellerSortOption.highestRated => Icons.star_outline_rounded,
+    _SellerSortOption.nearest => Icons.near_me_outlined,
+  };
+
+  Key get menuKey => switch (this) {
+    _SellerSortOption.cheapest => const Key('product-seller-sort-cheapest'),
+    _SellerSortOption.mostExpensive => const Key(
+      'product-seller-sort-most-expensive',
+    ),
+    _SellerSortOption.highestRated => const Key(
+      'product-seller-sort-highest-rated',
+    ),
+    _SellerSortOption.nearest => const Key('product-seller-sort-nearest'),
+  };
+}
+
+class _SellerSortMenu extends StatelessWidget {
+  final _SellerSortOption? selectedOption;
+  final bool locationReady;
+  final ValueChanged<_SellerSortOption> onSelected;
+
+  const _SellerSortMenu({
+    required this.selectedOption,
+    required this.locationReady,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tooltip = selectedOption == null
+        ? 'Satıcıları sırala'
+        : 'Satıcıları sırala: ${selectedOption!.label}';
+
+    return MenuAnchor(
+      menuChildren: _SellerSortOption.values
+          .map((option) {
+            final locationUnavailable =
+                option == _SellerSortOption.nearest && !locationReady;
+
+            return MenuItemButton(
+              key: option.menuKey,
+              onPressed: locationUnavailable ? null : () => onSelected(option),
+              leadingIcon: Icon(option.icon),
+              trailingIcon: selectedOption == option
+                  ? const Icon(Icons.check_rounded)
+                  : null,
+              child: locationUnavailable
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(option.label),
+                        Text(
+                          'Konum gerekli',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    )
+                  : Text(option.label),
+            );
+          })
+          .toList(growable: false),
+      builder: (context, controller, child) {
+        return Tooltip(
+          message: tooltip,
+          child: OutlinedButton.icon(
+            key: const Key('product-seller-sort-button'),
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: const Icon(Icons.swap_vert_rounded),
+            label: Text(selectedOption?.buttonLabel ?? 'Sırala'),
+          ),
+        );
+      },
     );
   }
 }

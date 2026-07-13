@@ -35,18 +35,21 @@ void main() {
     double? latitude,
     double? longitude,
     String? address,
+    double price = 99,
+    double rating = 0,
   }) {
     return ShopProductEntity(
       id: id,
       shopId: 'shop-$id',
       productId: 'product-1',
-      price: 99,
+      price: price,
       shop: ShopEntity(
         id: 'shop-$id',
         name: name,
         latitude: latitude,
         longitude: longitude,
         address: address,
+        rating: rating,
       ),
     );
   }
@@ -107,6 +110,13 @@ void main() {
         .map((key) => key.value)
         .where((value) => value.startsWith('product-seller-'))
         .toList(growable: false);
+  }
+
+  Future<void> selectSort(WidgetTester tester, String optionKey) async {
+    await tester.tap(find.byKey(const Key('product-seller-sort-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key(optionKey)));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('konum yokken satıcı sırasını ve mevcut ipuçlarını korur', (
@@ -172,6 +182,149 @@ void main() {
     expect(find.text('Yaklaşık 110 m'), findsOneWidget);
     expect(find.text('Yaklaşık 1,1 km'), findsOneWidget);
     expect(find.text('Mesafe bilgisi yok'), findsNWidgets(2));
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('product-seller-sort-button')),
+        matching: find.text('En yakın'),
+      ),
+      findsOneWidget,
+    );
+    verifyNever(() => customerLocationService.getCurrentLocation());
+  });
+
+  testWidgets('sıralama menüsünü sektör standardı seçeneklerle açar', (
+    tester,
+  ) async {
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'one', name: 'Birinci Esnaf')]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('product-seller-sort-button')),
+        matching: find.text('Sırala'),
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const Key('product-seller-sort-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Fiyata göre en ucuz'), findsOneWidget);
+    expect(find.text('Fiyata göre en pahalı'), findsOneWidget);
+    expect(find.text('En yüksek puan'), findsOneWidget);
+    expect(find.text('En yakın'), findsOneWidget);
+    expect(find.text('Konum gerekli'), findsOneWidget);
+    expect(
+      tester
+          .widget<MenuItemButton>(
+            find.byKey(const Key('product-seller-sort-nearest')),
+          )
+          .onPressed,
+      isNull,
+    );
+    verifyNever(() => customerLocationService.getCurrentLocation());
+  });
+
+  testWidgets('fiyat ve puan seçenekleri satıcıları kararlı biçimde sıralar', (
+    tester,
+  ) async {
+    final sellers = [
+      seller(id: 'middle', name: 'Orta Fiyat', price: 20, rating: 4.5),
+      seller(id: 'cheap', name: 'En Ucuz', price: 10, rating: 4),
+      seller(id: 'top', name: 'Yüksek Puan', price: 20, rating: 4.9),
+    ];
+    when(
+      () => shopRepository.getShopProductsByProduct('product-1'),
+    ).thenAnswer((_) async => Right(sellers));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await selectSort(tester, 'product-seller-sort-cheapest');
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const [
+        'product-seller-cheap',
+        'product-seller-middle',
+        'product-seller-top',
+      ]),
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('product-seller-sort-button')),
+        matching: find.text('En ucuz'),
+      ),
+      findsOneWidget,
+    );
+
+    await selectSort(tester, 'product-seller-sort-most-expensive');
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const [
+        'product-seller-middle',
+        'product-seller-top',
+        'product-seller-cheap',
+      ]),
+    );
+
+    await selectSort(tester, 'product-seller-sort-highest-rated');
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const [
+        'product-seller-top',
+        'product-seller-middle',
+        'product-seller-cheap',
+      ]),
+    );
+  });
+
+  testWidgets('konum hazırken başka sıralamadan en yakına döner', (
+    tester,
+  ) async {
+    cachedCoordinates = const CustomerCoordinates(latitude: 41, longitude: 29);
+    final sellers = [
+      seller(
+        id: 'near-expensive',
+        name: 'Yakın Esnaf',
+        latitude: 41.001,
+        longitude: 29,
+        price: 100,
+      ),
+      seller(
+        id: 'far-cheap',
+        name: 'Uzak Esnaf',
+        latitude: 41.02,
+        longitude: 29,
+        price: 50,
+      ),
+    ];
+    when(
+      () => shopRepository.getShopProductsByProduct('product-1'),
+    ).thenAnswer((_) async => Right(sellers));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await selectSort(tester, 'product-seller-sort-cheapest');
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const [
+        'product-seller-far-cheap',
+        'product-seller-near-expensive',
+      ]),
+    );
+
+    await selectSort(tester, 'product-seller-sort-nearest');
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const [
+        'product-seller-near-expensive',
+        'product-seller-far-cheap',
+      ]),
+    );
     verifyNever(() => customerLocationService.getCurrentLocation());
   });
 
