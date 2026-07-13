@@ -1,11 +1,10 @@
-import 'dart:math' as math;
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 
 class NearbyShopsCubit extends Cubit<NearbyShopsState> {
   final GetShopsUsecase getShopsUsecase;
@@ -96,7 +95,11 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
 
     for (var index = 0; index < shops.length; index++) {
       final shop = shops[index];
-      final distance = _distanceToShop(shop, customerCoordinates);
+      final distance = CustomerProximityHelper.distanceInMeters(
+        from: customerCoordinates,
+        latitude: shop.latitude,
+        longitude: shop.longitude,
+      );
 
       if (distance != null) {
         distances[shop.id] = distance;
@@ -129,49 +132,6 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
       distanceMetersByShopId: Map<String, double>.unmodifiable(distances),
     );
   }
-
-  static double? _distanceToShop(
-    ShopEntity shop,
-    CustomerCoordinates customerCoordinates,
-  ) {
-    final latitude = shop.latitude;
-    final longitude = shop.longitude;
-
-    if (latitude == null ||
-        longitude == null ||
-        !latitude.isFinite ||
-        !longitude.isFinite ||
-        latitude < -90 ||
-        latitude > 90 ||
-        longitude < -180 ||
-        longitude > 180) {
-      return null;
-    }
-
-    const earthRadiusMeters = 6371000.0;
-    final latitudeDelta = _toRadians(latitude - customerCoordinates.latitude);
-    final longitudeDelta = _toRadians(
-      longitude - customerCoordinates.longitude,
-    );
-    final firstLatitude = _toRadians(customerCoordinates.latitude);
-    final secondLatitude = _toRadians(latitude);
-
-    final haversine =
-        math.pow(math.sin(latitudeDelta / 2), 2).toDouble() +
-        math.cos(firstLatitude) *
-            math.cos(secondLatitude) *
-            math.pow(math.sin(longitudeDelta / 2), 2).toDouble();
-    final normalizedHaversine = haversine.clamp(0.0, 1.0).toDouble();
-
-    return 2 *
-        earthRadiusMeters *
-        math.atan2(
-          math.sqrt(normalizedHaversine),
-          math.sqrt(1 - normalizedHaversine),
-        );
-  }
-
-  static double _toRadians(double degrees) => degrees * math.pi / 180;
 
   static NearbyLocationStatus _statusForFailure(
     CustomerLocationFailure? failure,

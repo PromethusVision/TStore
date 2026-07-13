@@ -13,6 +13,7 @@ import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
@@ -356,7 +357,10 @@ class _NearbyShopCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final hasAddress = _hasText(shop.address);
-    final hasCoordinates = _hasValidCoordinates(shop);
+    final hasCoordinates = CustomerProximityHelper.hasValidCoordinates(
+      shop.latitude,
+      shop.longitude,
+    );
 
     return Card(
       key: ValueKey('nearby-shop-${shop.id}'),
@@ -417,7 +421,7 @@ class _NearbyShopCard extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwItems),
               _ShopInfoLine(
                 icon: Icons.near_me_outlined,
-                text: _formatDistance(distanceMeters!),
+                text: CustomerProximityHelper.formatDistance(distanceMeters!),
               ),
             ] else if (locationReady) ...[
               const SizedBox(height: TSizes.spaceBtwItems),
@@ -476,36 +480,6 @@ class _NearbyShopCard extends StatelessWidget {
 
   static bool _hasText(String? value) {
     return value != null && value.trim().isNotEmpty;
-  }
-
-  static bool _hasValidCoordinates(ShopEntity shop) {
-    final latitude = shop.latitude;
-    final longitude = shop.longitude;
-
-    return latitude != null &&
-        longitude != null &&
-        latitude.isFinite &&
-        longitude.isFinite &&
-        latitude >= -90 &&
-        latitude <= 90 &&
-        longitude >= -180 &&
-        longitude <= 180;
-  }
-
-  static String _formatDistance(double distanceMeters) {
-    if (distanceMeters < 10) {
-      return "10 m'den az";
-    }
-
-    if (distanceMeters < 1000) {
-      final roundedMeters = (distanceMeters / 10).round() * 10;
-      return 'Yaklaşık $roundedMeters m';
-    }
-
-    final kilometers = (distanceMeters / 1000)
-        .toStringAsFixed(1)
-        .replaceAll('.', ',');
-    return 'Yaklaşık $kilometers km';
   }
 
   static String _formatOpeningHours(Map<String, dynamic> openingHours) {

@@ -8,16 +8,15 @@ import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
+import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
 class ProductSellersSection extends StatefulWidget {
   final String productId;
 
-  const ProductSellersSection({
-    super.key,
-    required this.productId,
-  });
+  const ProductSellersSection({super.key, required this.productId});
 
   @override
   State<ProductSellersSection> createState() => _ProductSellersSectionState();
@@ -38,88 +37,141 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CartV2Cubit, CartV2State>(
-        listenWhen: (previous, current) {
-          return current is CartV2ItemAdded ||
-              current is CartV2Error ||
-              current is CartV2ShopConflictState;
-        },
-        listener: (context, state) {
-          if (state is CartV2ItemAdded) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Ürün mağaza sepetine eklendi'),
-                ),
-              );
-          } else if (state is CartV2Error) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-          } else if (state is CartV2ShopConflictState) {
-            _showShopConflictDialog(context, state);
-          }
-        },
-        child: FutureBuilder<Either<String, List<ShopProductEntity>>>(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems),
-                  child: SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-              );
-            }
-
-            if (snapshot.hasError || !snapshot.hasData) {
-              return const Text(
-                'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-              );
-            }
-
-            return snapshot.data!.fold(
-              (_) => const Text(
-                'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-              ),
-              (shopProducts) {
-                if (shopProducts.isEmpty) {
-                  return const Text(
-                    'Bu ürünü satan esnaf henüz listelenmiyor.',
-                  );
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bu ürünü satan esnaflar',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: shopProducts.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: TSizes.spaceBtwItems),
-                      itemBuilder: (context, index) {
-                        return _SellerTile(shopProduct: shopProducts[index]);
-                      },
-                    ),
-                  ],
-                );
-              },
+      listenWhen: (previous, current) {
+        return current is CartV2ItemAdded ||
+            current is CartV2Error ||
+            current is CartV2ShopConflictState;
+      },
+      listener: (context, state) {
+        if (state is CartV2ItemAdded) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(content: Text('Ürün mağaza sepetine eklendi')),
             );
-          },
-        ),
+        } else if (state is CartV2Error) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(state.message)));
+        } else if (state is CartV2ShopConflictState) {
+          _showShopConflictDialog(context, state);
+        }
+      },
+      child: FutureBuilder<Either<String, List<ShopProductEntity>>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems),
+                child: SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.hasError || !snapshot.hasData) {
+            return const Text(
+              'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+            );
+          }
+
+          return snapshot.data!.fold(
+            (_) => const Text(
+              'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+            ),
+            (shopProducts) {
+              if (shopProducts.isEmpty) {
+                return const Text('Bu ürünü satan esnaf henüz listelenmiyor.');
+              }
+
+              final coordinates =
+                  sl<CustomerLocationService>().cachedCoordinates;
+              final locationReady = coordinates?.isValid ?? false;
+              final rankedSellers = _rankSellers(shopProducts, coordinates);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bu ürünü satan esnaflar',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: rankedSellers.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: TSizes.spaceBtwItems),
+                    itemBuilder: (context, index) {
+                      final rankedSeller = rankedSellers[index];
+                      return _SellerTile(
+                        shopProduct: rankedSeller.shopProduct,
+                        distanceMeters: rankedSeller.distanceMeters,
+                        locationReady: locationReady,
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
+  }
+
+  List<_RankedSeller> _rankSellers(
+    List<ShopProductEntity> shopProducts,
+    CustomerCoordinates? coordinates,
+  ) {
+    final rankedSellers = <_RankedSeller>[];
+
+    for (var index = 0; index < shopProducts.length; index++) {
+      final shopProduct = shopProducts[index];
+      final shop = shopProduct.shop;
+      final distance = coordinates == null || !coordinates.isValid
+          ? null
+          : CustomerProximityHelper.distanceInMeters(
+              from: coordinates,
+              latitude: shop?.latitude,
+              longitude: shop?.longitude,
+            );
+
+      rankedSellers.add(
+        _RankedSeller(
+          shopProduct: shopProduct,
+          originalIndex: index,
+          distanceMeters: distance,
+        ),
+      );
+    }
+
+    if (coordinates == null || !coordinates.isValid) {
+      return rankedSellers;
+    }
+
+    rankedSellers.sort((first, second) {
+      final firstDistance = first.distanceMeters;
+      final secondDistance = second.distanceMeters;
+
+      if (firstDistance == null && secondDistance == null) {
+        return first.originalIndex.compareTo(second.originalIndex);
+      }
+      if (firstDistance == null) return 1;
+      if (secondDistance == null) return -1;
+
+      final distanceComparison = firstDistance.compareTo(secondDistance);
+      return distanceComparison != 0
+          ? distanceComparison
+          : first.originalIndex.compareTo(second.originalIndex);
+    });
+
+    return rankedSellers;
   }
 
   Future<void> _showShopConflictDialog(
@@ -153,9 +205,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                   quantity: conflict.quantity,
                 );
               },
-              child: const Text(
-                'Mevcut mağaza sepetini iptal et ve devam et',
-              ),
+              child: const Text('Mevcut mağaza sepetini iptal et ve devam et'),
             ),
           ],
         );
@@ -170,25 +220,32 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
 
 class _SellerTile extends StatelessWidget {
   final ShopProductEntity shopProduct;
+  final double? distanceMeters;
+  final bool locationReady;
 
   const _SellerTile({
     required this.shopProduct,
+    required this.distanceMeters,
+    required this.locationReady,
   });
 
   @override
   Widget build(BuildContext context) {
     final shop = shopProduct.shop;
     final rating = shop?.rating ?? 0;
-    final hasCoordinates = shop?.latitude != null && shop?.longitude != null;
-    final hasAddress = shop?.address != null && shop!.address!.trim().isNotEmpty;
+    final hasCoordinates = CustomerProximityHelper.hasValidCoordinates(
+      shop?.latitude,
+      shop?.longitude,
+    );
+    final hasAddress =
+        shop?.address != null && shop!.address!.trim().isNotEmpty;
     final canAddToCart = shopProduct.isActive && shopProduct.isAvailable;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
+      key: ValueKey('product-seller-${shopProduct.id}'),
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
         padding: const EdgeInsets.all(TSizes.md),
         child: Column(
@@ -200,8 +257,9 @@ class _SellerTile extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap:
-                        shop == null ? null : () => _openShopProfile(context),
+                    onTap: shop == null
+                        ? null
+                        : () => _openShopProfile(context),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
                       child: Row(
@@ -213,21 +271,15 @@ class _SellerTile extends StatelessWidget {
                               children: [
                                 Text(
                                   shop?.name ?? 'Bilinmeyen esnaf',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall
+                                  style: Theme.of(context).textTheme.titleSmall
                                       ?.copyWith(fontWeight: FontWeight.w700),
                                 ),
                                 if (shop != null) ...[
                                   const SizedBox(height: 2),
                                   Text(
                                     'Mağaza profilini görüntüle',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: colorScheme.primary,
-                                        ),
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(color: colorScheme.primary),
                                   ),
                                 ],
                               ],
@@ -251,10 +303,7 @@ class _SellerTile extends StatelessWidget {
             ),
             if (shop?.address != null && shop!.address!.isNotEmpty) ...[
               const SizedBox(height: TSizes.xs),
-              Text(
-                shop.address!,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              Text(shop.address!, style: Theme.of(context).textTheme.bodySmall),
             ],
             const SizedBox(height: TSizes.sm),
             Wrap(
@@ -263,8 +312,12 @@ class _SellerTile extends StatelessWidget {
               children: [
                 _PriceChip(price: shopProduct.price),
                 if (rating > 0) _RatingChip(rating: rating),
-                if (hasCoordinates || hasAddress)
-                  _LocationHintChip(hasCoordinates: hasCoordinates),
+                if (locationReady || hasCoordinates || hasAddress)
+                  _LocationHintChip(
+                    hasCoordinates: hasCoordinates,
+                    distanceMeters: distanceMeters,
+                    locationReady: locationReady,
+                  ),
               ],
             ),
             const SizedBox(height: TSizes.sm),
@@ -290,25 +343,25 @@ class _SellerTile extends StatelessWidget {
     final shop = shopProduct.shop;
     if (shop == null) return;
 
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)));
   }
 
   void _handleAddToCart(BuildContext context) {
     final user = SupabaseService.instance.currentUser;
 
     if (user == null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const LoginView()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const LoginView()));
       return;
     }
 
     context.read<CartV2Cubit>().addShopProductToCart(
-          shopProductId: shopProduct.id,
-          quantity: 1,
-        );
+      shopProductId: shopProduct.id,
+      quantity: 1,
+    );
   }
 }
 
@@ -328,9 +381,9 @@ class _AvailabilityChip extends StatelessWidget {
       ),
       child: Text(
         'Rafta var',
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.green.shade700,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall?.copyWith(color: Colors.green.shade700),
       ),
     );
   }
@@ -354,9 +407,9 @@ class _UnavailableChip extends StatelessWidget {
       ),
       child: Text(
         'Rafta yok',
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
       ),
     );
   }
@@ -383,9 +436,9 @@ class _PriceChip extends StatelessWidget {
       child: Text(
         '₺${price.toStringAsFixed(2)}',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: colorScheme.onPrimaryContainer,
-              fontWeight: FontWeight.w700,
-            ),
+          color: colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -412,18 +465,14 @@ class _RatingChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.star_rounded,
-            size: 16,
-            color: Colors.amber.shade700,
-          ),
+          Icon(Icons.star_rounded, size: 16, color: Colors.amber.shade700),
           const SizedBox(width: 3),
           Text(
             rating.toStringAsFixed(1),
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -433,16 +482,26 @@ class _RatingChip extends StatelessWidget {
 
 class _LocationHintChip extends StatelessWidget {
   final bool hasCoordinates;
+  final double? distanceMeters;
+  final bool locationReady;
 
-  const _LocationHintChip({required this.hasCoordinates});
+  const _LocationHintChip({
+    required this.hasCoordinates,
+    required this.distanceMeters,
+    required this.locationReady,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final text =
-        hasCoordinates ? 'Konum bilgisi mevcut' : 'Adres bilgisi mevcut';
+    final text = distanceMeters != null
+        ? CustomerProximityHelper.formatDistance(distanceMeters!)
+        : locationReady
+        ? 'Mesafe bilgisi yok'
+        : hasCoordinates
+        ? 'Konum bilgisi mevcut'
+        : 'Adres bilgisi mevcut';
 
-    // TODO: Kullanıcı konumu bağlanınca gerçek yaklaşık mesafe burada gösterilecek.
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: TSizes.sm,
@@ -461,15 +520,29 @@ class _LocationHintChip extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: 3),
-          Text(
-            text,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
+          Flexible(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
+}
+
+class _RankedSeller {
+  final ShopProductEntity shopProduct;
+  final int originalIndex;
+  final double? distanceMeters;
+
+  const _RankedSeller({
+    required this.shopProduct,
+    required this.originalIndex,
+    required this.distanceMeters,
+  });
 }
