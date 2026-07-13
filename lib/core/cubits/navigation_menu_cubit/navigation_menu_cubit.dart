@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/shop/presentation/views/home_view.dart';
-import 'package:t_store/features/shop/presentation/views/store_view.dart';
+import 'package:t_store/features/shop/presentation/views/nearby_view.dart';
 import 'package:t_store/features/shop/presentation/views/wishlist_view.dart';
 
 part 'navigation_menu_state.dart';
@@ -16,15 +16,13 @@ class NavigationMenuCubit extends Cubit<NavigationMenuState> {
 
   final screensList = [
     const HomeView(),
-    const StoreView(),
+    const NearbyView(),
     const WishlistView(),
     const SettingsView(),
   ];
   void changeIndex(int index) {
     selectedIndex = index;
-    emit(NavigationMenuChanged(
-      selectedIndex: selectedIndex,
-    ));
+    emit(NavigationMenuChanged(selectedIndex: selectedIndex));
   }
 
   Widget getScreen() {

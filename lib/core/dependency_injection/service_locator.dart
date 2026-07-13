@@ -24,10 +24,12 @@ import 'package:t_store/features/shop/data/repositories/shop_repository_impl.dar
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/usecases/create_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/update_my_shop_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 
 // Categories
 import 'package:t_store/features/shop/data/repositories/category_repository_impl.dart';
@@ -176,6 +178,7 @@ Future<void> setupServiceLocator() async {
 
   // Use Cases
   sl.registerLazySingleton(() => GetMyShopUsecase(sl()));
+  sl.registerLazySingleton(() => GetShopsUsecase(sl()));
   sl.registerLazySingleton(() => CreateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => UpdateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
@@ -189,6 +192,7 @@ Future<void> setupServiceLocator() async {
       updateMyShopUsecase: sl(),
     ),
   );
+  sl.registerFactory(() => NearbyShopsCubit(getShopsUsecase: sl()));
 
   // ==================== Categories ====================
   // Repository

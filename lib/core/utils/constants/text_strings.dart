@@ -16,7 +16,7 @@ class TTexts {
   static const String wishlistView = "Favoriler";
   static const String ordersView = "Orders";
   static const String settingsView = "Settings";
-  static const String storeView = "Esnaf";
+  static const String nearbyView = "Yakındakiler";
 
   // -- OnBoarding Texts
   static const String onBoardingTitle1 = "Ürününüzü bulun";
@@ -60,7 +60,8 @@ class TTexts {
   static const String forgetPasswordTitle = "Şifremi unuttum";
   static const String forgetPasswordSubTitle =
       "Endişelenmeyin, e-postanızı girin; şifre sıfırlama bağlantısı gönderelim.";
-  static const String changeYourPasswordTitle = "Şifre sıfırlama e-postası gönderildi";
+  static const String changeYourPasswordTitle =
+      "Şifre sıfırlama e-postası gönderildi";
   static const String changeYourPasswordSubTitle =
       "Hesap güvenliğiniz önceliğimiz. Şifrenizi güvenle değiştirmek için bağlantı gönderildi.";
   static const String confirmEmailTitle = "E-posta adresinizi doğrulayın!";
@@ -82,7 +83,7 @@ class TTexts {
   static const String homeAppbarSubTitle = "Mahmoud Hamdy";
   static const String searchContainer = "Ürün veya esnaf ara";
   static const String popularCategories = "Popüler Kategoriler";
-// -- Categories
+  // -- Categories
   static const String sport = "Sport";
   static const String cloth = "Cloth";
   static const String shoes = "Shoes";
@@ -93,7 +94,7 @@ class TTexts {
   static const String accessories = "Accessories";
   static const String electronics = "Electronics";
   static const String jewellers = "Jewellers";
-//list of categories
+  //list of categories
   static const List<String> categories = [
     "beauty",
     "fragrances",
@@ -118,7 +119,7 @@ class TTexts {
     "womens-dresses",
     "womens-jewellery",
     "womens-shoes",
-    "womens-watches"
+    "womens-watches",
   ];
   static const String applePay = 'Apple Pay';
   static const String googlePay = 'Google Pay';
