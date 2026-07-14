@@ -35,11 +35,14 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || SupabaseService.instance.currentUser == null) return;
+      final currentUser = SupabaseService.instance.currentUser;
+      if (!mounted || currentUser == null) return;
 
       final authCubit = context.read<AuthCubit>();
       final authState = authCubit.state;
-      if (authState is! AuthAuthenticated && authState is! AuthLoading) {
+      final hasCurrentProfile =
+          authState is AuthAuthenticated && authState.user.id == currentUser.id;
+      if (!hasCurrentProfile && authState is! AuthLoading) {
         authCubit.checkAuthStatus();
       }
     });
@@ -47,10 +50,13 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = SupabaseService.instance.currentUser != null;
+    final currentUserId = SupabaseService.instance.currentUser?.id;
+    final isLoggedIn = currentUserId != null;
     final authState = context.watch<AuthCubit>().state;
     final canManageShop =
-        authState is AuthAuthenticated && authState.user.canManageShop;
+        authState is AuthAuthenticated &&
+        authState.user.id == currentUserId &&
+        authState.user.canManageShop;
 
     if (!isLoggedIn) {
       return _buildSettingsContent(
@@ -89,30 +95,21 @@ class _SettingsViewState extends State<SettingsView> {
         title: "Konum",
         subtitle: "Konuma göre önerileri düzenle",
         leading: Iconsax.document_download,
-        trailing: Switch(
-          value: true,
-          onChanged: (value) {},
-        ),
+        trailing: Switch(value: true, onChanged: (value) {}),
       ),
       SettingsMenuTileModel(
         onTap: () {},
         title: "Güvenli Mod",
         subtitle: "Arama sonuçlarını güvenli tut",
         leading: Iconsax.security_user,
-        trailing: Switch(
-          value: false,
-          onChanged: (value) {},
-        ),
+        trailing: Switch(value: false, onChanged: (value) {}),
       ),
       SettingsMenuTileModel(
         onTap: () {},
         title: "HD Görsel Kalitesi",
         subtitle: "Görsel kalitesini yüksek olarak ayarla",
         leading: Iconsax.image,
-        trailing: Switch(
-          value: true,
-          onChanged: (value) {},
-        ),
+        trailing: Switch(value: true, onChanged: (value) {}),
       ),
     ];
     final List<SettingsMenuTileModel> accountSettingsTiles = [
@@ -132,9 +129,9 @@ class _SettingsViewState extends State<SettingsView> {
             return;
           }
 
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const ConversationsView()),
-          );
+          await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const ConversationsView()));
           if (!context.mounted) return;
 
           await context.read<ChatUnreadCubit>().refreshUnreadCount();
@@ -220,20 +217,21 @@ class _SettingsViewState extends State<SettingsView> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const PrimaryHeaderContainer(child: SettingsViewHeaderSection()),
+            PrimaryHeaderContainer(
+              child: SettingsViewHeaderSection(
+                currentUserId: SupabaseService.instance.currentUser?.id,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(TSizes.defaultSpace),
               child: Column(
                 children: [
                   AccountSettingsSection(
-                      accountSettingsTiles: accountSettingsTiles),
-                  const SizedBox(
-                    height: TSizes.spaceBtwSections,
+                    accountSettingsTiles: accountSettingsTiles,
                   ),
+                  const SizedBox(height: TSizes.spaceBtwSections),
                   AppSettingsSection(appSettingsTiles: appSettingsTiles),
-                  const SizedBox(
-                    height: TSizes.spaceBtwItems,
-                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
                 ],
               ),
             ),
@@ -273,9 +271,9 @@ class _UnreadBadge extends StatelessWidget {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],

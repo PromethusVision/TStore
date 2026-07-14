@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/usecases/usecase.dart';
+import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
@@ -27,39 +28,29 @@ class AuthCubit extends Cubit<AuthState> {
 
     final result = await getCurrentUserUsecase(const NoParams());
 
-    result.fold(
-      (error) => emit(AuthUnauthenticated()),
-      (user) {
-        if (user != null) {
-          emit(AuthAuthenticated(user));
-        } else {
-          emit(AuthUnauthenticated());
-        }
-      },
-    );
+    result.fold((error) => emit(AuthUnauthenticated()), (user) {
+      if (user != null) {
+        emit(AuthAuthenticated(user));
+      } else {
+        emit(AuthUnauthenticated());
+      }
+    });
   }
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     emit(AuthLoading());
 
-    final result = await signInUsecase(SignInParams(
-      email: email,
-      password: password,
-    ));
-
-    result.fold(
-      (error) {
-        if (error.contains('تأكيد بريدك')) {
-          emit(AuthEmailConfirmationRequired(email));
-        } else {
-          emit(AuthError(error));
-        }
-      },
-      (user) => emit(AuthAuthenticated(user)),
+    final result = await signInUsecase(
+      SignInParams(email: email, password: password),
     );
+
+    result.fold((error) {
+      if (error.contains('تأكيد بريدك')) {
+        emit(AuthEmailConfirmationRequired(email));
+      } else {
+        emit(AuthError(error));
+      }
+    }, (user) => emit(AuthAuthenticated(user)));
   }
 
   Future<void> signUp({
@@ -70,12 +61,14 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
 
-    final result = await signUpUsecase(SignUpParams(
-      email: email,
-      password: password,
-      fullName: fullName,
-      phone: phone,
-    ));
+    final result = await signUpUsecase(
+      SignUpParams(
+        email: email,
+        password: password,
+        fullName: fullName,
+        phone: phone,
+      ),
+    );
 
     result.fold(
       (error) => emit(AuthError(error)),
@@ -108,6 +101,13 @@ class AuthCubit extends Cubit<AuthState> {
   void clearError() {
     if (state is AuthError) {
       emit(AuthUnauthenticated());
+    }
+  }
+
+  void syncUserProfile(UserEntity user) {
+    final currentState = state;
+    if (currentState is AuthAuthenticated && currentState.user.id == user.id) {
+      emit(AuthAuthenticated(user));
     }
   }
 }
