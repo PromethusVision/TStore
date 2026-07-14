@@ -92,6 +92,35 @@ void main() {
     await sl.reset();
   });
 
+  testWidgets('boş sepet müşteriye nasıl ürün ekleyeceğini anlatır', (
+    tester,
+  ) async {
+    whenListen(
+      cartV2Cubit,
+      const Stream<CartV2State>.empty(),
+      initialState: const CartV2Loaded([]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Henüz mağaza sepetinde ürün yok'), findsOneWidget);
+    expect(
+      find.text(
+        'Ürün detayından bir mağaza seçip sepete eklediğinde '
+        'ürünlerin burada görünecek.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('QR penceresi kapanınca aktif sepeti yeniden yükler', (
     tester,
   ) async {

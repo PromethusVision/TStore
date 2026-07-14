@@ -397,7 +397,8 @@ class _CartV2EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: TSizes.spaceBtwItems),
             Text(
-              'Bu alan ileride mağazada doğrulanacak sepetini gösterecek.',
+              'Ürün detayından bir mağaza seçip sepete eklediğinde '
+              'ürünlerin burada görünecek.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -22,26 +21,36 @@ import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 import 'package:t_store/features/shop/presentation/views/orders_view.dart';
 
+typedef SettingsCurrentUserIdProvider = String? Function();
+
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key});
+  const SettingsView({super.key, this.currentUserIdProvider});
+
+  final SettingsCurrentUserIdProvider? currentUserIdProvider;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  String? get _currentUserId {
+    final currentUserIdProvider = widget.currentUserIdProvider;
+    if (currentUserIdProvider != null) return currentUserIdProvider();
+    return SupabaseService.instance.currentUser?.id;
+  }
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentUser = SupabaseService.instance.currentUser;
-      if (!mounted || currentUser == null) return;
+      final currentUserId = _currentUserId;
+      if (!mounted || currentUserId == null) return;
 
       final authCubit = context.read<AuthCubit>();
       final authState = authCubit.state;
       final hasCurrentProfile =
-          authState is AuthAuthenticated && authState.user.id == currentUser.id;
+          authState is AuthAuthenticated && authState.user.id == currentUserId;
       if (!hasCurrentProfile && authState is! AuthLoading) {
         authCubit.checkAuthStatus();
       }
@@ -50,7 +59,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId = SupabaseService.instance.currentUser?.id;
+    final currentUserId = _currentUserId;
     final isLoggedIn = currentUserId != null;
     final authState = context.watch<AuthCubit>().state;
     final canManageShop =
@@ -63,6 +72,7 @@ class _SettingsViewState extends State<SettingsView> {
         context,
         isLoggedIn: false,
         canManageShop: false,
+        currentUserId: null,
       );
     }
 
@@ -73,6 +83,7 @@ class _SettingsViewState extends State<SettingsView> {
           context,
           isLoggedIn: true,
           canManageShop: canManageShop,
+          currentUserId: currentUserId,
         ),
       ),
     );
@@ -82,6 +93,7 @@ class _SettingsViewState extends State<SettingsView> {
     BuildContext context, {
     required bool isLoggedIn,
     required bool canManageShop,
+    required String? currentUserId,
   }) {
     final List<SettingsMenuTileModel> appSettingsTiles = [
       SettingsMenuTileModel(
@@ -165,7 +177,14 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.storefront_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () {},
+        onTap: () {
+          if (_currentUserId == null) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(context, const CartV2View());
+        },
         title: "Sepetim",
         subtitle: "Mağazada doğrulamak için ürünlerini hazırla",
         leading: Iconsax.shopping_cart,
@@ -203,24 +222,13 @@ class _SettingsViewState extends State<SettingsView> {
         subtitle: "Veri kullanımı ve bağlantılı hesapları yönet",
         leading: Iconsax.security_card,
       ),
-      if (kDebugMode)
-        SettingsMenuTileModel(
-          onTap: () {
-            THelperFunctions.navigateToScreen(context, const CartV2View());
-          },
-          title: "CartV2 Test",
-          subtitle: "Mağaza sepeti test ekranı",
-          leading: Iconsax.code,
-        ),
     ];
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: [
             PrimaryHeaderContainer(
-              child: SettingsViewHeaderSection(
-                currentUserId: SupabaseService.instance.currentUser?.id,
-              ),
+              child: SettingsViewHeaderSection(currentUserId: currentUserId),
             ),
             Padding(
               padding: const EdgeInsets.all(TSizes.defaultSpace),
