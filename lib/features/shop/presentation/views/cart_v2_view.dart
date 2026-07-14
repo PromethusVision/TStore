@@ -27,78 +27,79 @@ class _CartV2ViewState extends State<CartV2View> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
-          appBarModel: AppBarModel(
-            title: Text(
-              'Mağaza Sepeti',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            hasArrowBack: true,
+      appBar: CustomAppBar(
+        appBarModel: AppBarModel(
+          title: Text(
+            'Mağaza Sepeti',
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
+          hasArrowBack: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(TSizes.defaultSpace),
-          child: BlocConsumer<CartV2Cubit, CartV2State>(
-            listenWhen: (previous, current) => current is CartV2Error,
-            listener: (context, state) {
-              if (state is CartV2Error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
-              }
-            },
-            buildWhen: (previous, current) {
-              if (current is CartV2Error && previous is CartV2Loaded) {
-                return false;
-              }
-              return true;
-            },
-            builder: (context, state) {
-              if (state is CartV2Initial || state is CartV2Loading) {
-                return const Center(child: CircularProgressIndicator());
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(TSizes.defaultSpace),
+        child: BlocConsumer<CartV2Cubit, CartV2State>(
+          listenWhen: (previous, current) => current is CartV2Error,
+          listener: (context, state) {
+            if (state is CartV2Error) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
+          buildWhen: (previous, current) {
+            if (current is CartV2Error && previous is CartV2Loaded) {
+              return false;
+            }
+            return true;
+          },
+          builder: (context, state) {
+            if (state is CartV2Initial || state is CartV2Loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is CartV2Error) {
+              return _CartV2ErrorState(message: state.message);
+            }
+
+            if (state is CartV2Loaded) {
+              if (state.isEmpty) {
+                return const _CartV2EmptyState();
               }
 
-              if (state is CartV2Error) {
-                return _CartV2ErrorState(message: state.message);
-              }
-
-              if (state is CartV2Loaded) {
-                if (state.isEmpty) {
-                  return const _CartV2EmptyState();
-                }
-
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return _CartV2ItemCard(item: state.items[index]);
-                        },
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: TSizes.spaceBtwItems),
-                        itemCount: state.items.length,
-                      ),
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        return _CartV2ItemCard(item: state.items[index]);
+                      },
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: TSizes.spaceBtwItems),
+                      itemCount: state.items.length,
                     ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    _CartV2TotalBox(totalAmount: state.totalAmount),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    _ShowInStoreButton(
-                      cartId: state.items.first.cartId,
-                      shopName: state.items.first.shopProduct?.shop?.name ??
-                          'Bilinmeyen esnaf',
-                      itemCount: state.itemCount,
-                      totalAmount: state.totalAmount,
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    const _CancelActiveCartButton(),
-                  ],
-                );
-              }
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  _CartV2TotalBox(totalAmount: state.totalAmount),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  _ShowInStoreButton(
+                    cartId: state.items.first.cartId,
+                    shopName:
+                        state.items.first.shopProduct?.shop?.name ??
+                        'Bilinmeyen esnaf',
+                    itemCount: state.itemCount,
+                    totalAmount: state.totalAmount,
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  const _CancelActiveCartButton(),
+                ],
+              );
+            }
 
-              return const SizedBox.shrink();
-            },
-          ),
+            return const SizedBox.shrink();
+          },
         ),
+      ),
     );
   }
 }
@@ -143,6 +144,9 @@ class _ShowInStoreButton extends StatelessWidget {
         );
       },
     );
+
+    if (!context.mounted) return;
+    await context.read<CartV2Cubit>().getActiveCartItems();
   }
 }
 
@@ -260,9 +264,7 @@ class _CartV2QuantityRow extends StatelessWidget {
                 onPressed: item.quantity <= 1
                     ? null
                     : () {
-                        context
-                            .read<CartV2Cubit>()
-                            .decrementItemQuantity(item);
+                        context.read<CartV2Cubit>().decrementItemQuantity(item);
                       },
                 icon: const Icon(Icons.remove),
               ),
@@ -286,10 +288,7 @@ class _CartV2QuantityRow extends StatelessWidget {
 }
 
 class _CartV2InfoRow extends StatelessWidget {
-  const _CartV2InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _CartV2InfoRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -325,10 +324,7 @@ class _CartV2TotalBox extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Sepet Toplamı',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Sepet Toplamı', style: Theme.of(context).textTheme.titleMedium),
           Text(
             '₺${totalAmount.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.titleMedium,

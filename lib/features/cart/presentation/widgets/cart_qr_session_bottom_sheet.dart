@@ -39,16 +39,28 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _stopTimer();
     super.dispose();
   }
 
   void _startTimer() {
-    _timer ??= Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) {
-        setState(() => _now = DateTime.now());
+    _stopTimer();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+
+      final now = DateTime.now();
+      final state = context.read<QrSessionCubit>().state;
+      if (state is QrSessionCreated && !state.session.expiresAt.isAfter(now)) {
+        _stopTimer();
       }
+
+      setState(() => _now = now);
     });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
   }
 
   @override
@@ -67,8 +79,8 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             if (state is QrSessionCreated) {
               _startTimer();
             }
-            if (state is QrSessionCompleted) {
-              _timer?.cancel();
+            if (state is QrSessionCompleted || state is QrSessionFailure) {
+              _stopTimer();
             }
           },
           builder: (context, state) {
@@ -122,20 +134,16 @@ class _QrSessionCompletedView extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          Icons.check_circle,
-          size: 72,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        Icon(Icons.check_circle, size: 72, color: Colors.green.shade600),
         const SizedBox(height: TSizes.spaceBtwItems),
         Text(
-          'Alışveriş tamamlandı',
+          'Alışveriş onaylandı',
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: TSizes.sm),
         Text(
-          'Esnaf alışverişinizi doğruladı. Bu kayıt daha sonra yorum ve puan işlemlerinde kullanılabilecek.',
+          'Esnaf alışverişinizi doğruladı. Sepetiniz başarıyla tamamlandı.',
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
@@ -261,13 +269,13 @@ class _QrSessionContent extends StatelessWidget {
             const Icon(Icons.timer_off_outlined, size: 72),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
-            'Bu QR ödeme değildir.',
+            'Alışverişi doğrula',
             style: Theme.of(context).textTheme.titleSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.xs),
           Text(
-            'Rezervasyon veya stok garantisi sağlamaz. Mağaza kasasında göster.',
+            'QR kodunu esnafa okut. Onay verildiğinde bu ekran otomatik güncellenir. Rezervasyon veya stok garantisi sağlamaz.',
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),

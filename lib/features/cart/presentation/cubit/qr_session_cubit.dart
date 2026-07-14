@@ -90,6 +90,18 @@ class QrSessionCubit extends Cubit<QrSessionState> {
   void _startStatusPolling() {
     _stopStatusPolling();
     _statusTimer = Timer.periodic(statusCheckInterval, (_) {
+      final activeSession = _activeSession;
+      if (activeSession == null) {
+        _stopStatusPolling();
+        return;
+      }
+
+      if (!activeSession.expiresAt.isAfter(DateTime.now())) {
+        _stopStatusPolling();
+        unawaited(checkSessionStatus(activeSession.id));
+        return;
+      }
+
       unawaited(checkSessionStatus());
     });
   }
