@@ -13,6 +13,7 @@ class ShopModel extends ShopEntity {
     super.openingHours,
     super.isActive,
     super.rating,
+    super.ratingCount,
     super.createdAt,
     super.updatedAt,
   });
@@ -30,6 +31,7 @@ class ShopModel extends ShopEntity {
       openingHours: _toMap(json['opening_hours']),
       isActive: json['is_active'] as bool? ?? true,
       rating: _toDouble(json['rating']),
+      ratingCount: _toInt(json['rating_count']),
       createdAt: _toNullableDateTime(json['created_at']),
       updatedAt: _toNullableDateTime(json['updated_at']),
     );
@@ -48,6 +50,7 @@ class ShopModel extends ShopEntity {
       'opening_hours': openingHours,
       'is_active': isActive,
       'rating': rating,
+      'rating_count': ratingCount,
     };
   }
 
@@ -64,6 +67,7 @@ class ShopModel extends ShopEntity {
       openingHours: entity.openingHours,
       isActive: entity.isActive,
       rating: entity.rating,
+      ratingCount: entity.ratingCount,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );
@@ -71,6 +75,11 @@ class ShopModel extends ShopEntity {
 
   static double _toDouble(dynamic value) {
     return _toNullableDouble(value) ?? 0.0;
+  }
+
+  static int _toInt(dynamic value) {
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 
   static double? _toNullableDouble(dynamic value) {

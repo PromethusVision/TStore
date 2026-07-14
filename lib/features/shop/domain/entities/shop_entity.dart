@@ -12,6 +12,7 @@ class ShopEntity extends Equatable {
   final Map<String, dynamic> openingHours;
   final bool isActive;
   final double rating;
+  final int ratingCount;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -27,26 +28,28 @@ class ShopEntity extends Equatable {
     this.openingHours = const {},
     this.isActive = true,
     this.rating = 0.0,
+    this.ratingCount = 0,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
   List<Object?> get props => [
-        id,
-        ownerUserId,
-        name,
-        description,
-        address,
-        latitude,
-        longitude,
-        phone,
-        openingHours,
-        isActive,
-        rating,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    ownerUserId,
+    name,
+    description,
+    address,
+    latitude,
+    longitude,
+    phone,
+    openingHours,
+    isActive,
+    rating,
+    ratingCount,
+    createdAt,
+    updatedAt,
+  ];
 
   ShopEntity copyWith({
     String? id,
@@ -60,6 +63,7 @@ class ShopEntity extends Equatable {
     Map<String, dynamic>? openingHours,
     bool? isActive,
     double? rating,
+    int? ratingCount,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -75,6 +79,7 @@ class ShopEntity extends Equatable {
       openingHours: openingHours ?? this.openingHours,
       isActive: isActive ?? this.isActive,
       rating: rating ?? this.rating,
+      ratingCount: ratingCount ?? this.ratingCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

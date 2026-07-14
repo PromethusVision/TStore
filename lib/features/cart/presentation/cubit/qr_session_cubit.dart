@@ -64,9 +64,10 @@ class QrSessionCubit extends Cubit<QrSessionState> {
 
       result.fold((_) {}, (status) {
         if (status == 'used') {
+          final completedSessionId = _activeSession?.id ?? targetSessionId;
           _stopStatusPolling();
           _activeSession = null;
-          emit(QrSessionCompleted());
+          emit(QrSessionCompleted(sessionId: completedSessionId));
           return;
         }
 

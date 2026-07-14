@@ -131,7 +131,7 @@ void main() {
       expect: () => [
         QrSessionLoading(),
         QrSessionCreated(activeSession),
-        QrSessionCompleted(),
+        const QrSessionCompleted(sessionId: 'session-1'),
       ],
       verify: (_) {
         final params =

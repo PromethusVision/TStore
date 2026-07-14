@@ -28,6 +28,7 @@ class SupabaseTables {
 
   // Reviews
   static const String reviews = 'reviews';
+  static const String shopRatings = 'shop_ratings';
 
   // Marketing
   static const String banners = 'banners';
@@ -65,6 +66,7 @@ class SupabaseColumns {
   static const String isFeatured = 'is_featured';
   static const String isActive = 'is_active';
   static const String rating = 'rating';
+  static const String ratingCount = 'rating_count';
   static const String reviewsCount = 'reviews_count';
 
   // Order related

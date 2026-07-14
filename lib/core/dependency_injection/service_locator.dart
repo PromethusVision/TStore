@@ -98,10 +98,14 @@ import 'package:t_store/features/personalization/presentation/cubit/addresses_cu
 
 // Reviews
 import 'package:t_store/features/reviews/data/repositories/review_repository_impl.dart';
+import 'package:t_store/features/reviews/data/repositories/shop_rating_repository_impl.dart';
 import 'package:t_store/features/reviews/domain/repositories/review_repository.dart';
+import 'package:t_store/features/reviews/domain/repositories/shop_rating_repository.dart';
 import 'package:t_store/features/reviews/domain/usecases/get_product_reviews_usecase.dart';
 import 'package:t_store/features/reviews/domain/usecases/add_review_usecase.dart';
+import 'package:t_store/features/reviews/domain/usecases/submit_shop_rating_usecase.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
+import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 
 // Profile
 import 'package:t_store/features/personalization/data/repositories/profile_repository_impl.dart';
@@ -352,15 +356,20 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ReviewRepository>(
     () => ReviewRepositoryImpl(supabaseService: sl()),
   );
+  sl.registerLazySingleton<ShopRatingRepository>(
+    () => ShopRatingRepositoryImpl(supabaseService: sl()),
+  );
 
   // Use Cases
   sl.registerLazySingleton(() => GetProductReviewsUsecase(sl()));
   sl.registerLazySingleton(() => AddReviewUsecase(sl()));
+  sl.registerLazySingleton(() => SubmitShopRatingUsecase(sl()));
 
   // Cubit
   sl.registerFactory(
     () => ReviewsCubit(getProductReviewsUsecase: sl(), addReviewUsecase: sl()),
   );
+  sl.registerFactory(() => ShopRatingCubit(submitShopRatingUsecase: sl()));
 
   // ==================== Profile ====================
   // Repository

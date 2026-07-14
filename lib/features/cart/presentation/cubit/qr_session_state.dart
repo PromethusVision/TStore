@@ -21,7 +21,14 @@ class QrSessionCreated extends QrSessionState {
   List<Object?> get props => [session];
 }
 
-class QrSessionCompleted extends QrSessionState {}
+class QrSessionCompleted extends QrSessionState {
+  final String sessionId;
+
+  const QrSessionCompleted({required this.sessionId});
+
+  @override
+  List<Object?> get props => [sessionId];
+}
 
 class QrSessionFailure extends QrSessionState {
   final String message;
