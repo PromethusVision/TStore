@@ -32,6 +32,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
     required super.totalAmount,
     required super.confirmedAt,
     required super.items,
+    super.customerRating,
   });
 
   factory VerifiedPurchaseModel.fromJson(Map<String, dynamic> json) {
@@ -63,6 +64,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
       totalAmount: _toDouble(json['total_amount']),
       confirmedAt: _toDateTime(json['confirmed_at']),
       items: items,
+      customerRating: _toCustomerRating(json['shop_ratings']),
     );
   }
 }
@@ -86,4 +88,18 @@ double _toDouble(dynamic value) {
 DateTime _toDateTime(dynamic value) {
   if (value is DateTime) return value;
   return DateTime.parse(value.toString());
+}
+
+int? _toCustomerRating(dynamic value) {
+  dynamic rating;
+  if (value is List && value.isNotEmpty) {
+    final first = value.first;
+    if (first is Map) rating = first['rating'];
+  } else if (value is Map) {
+    rating = value['rating'];
+  }
+
+  if (rating == null) return null;
+  final parsed = _toInt(rating);
+  return parsed >= 1 && parsed <= 5 ? parsed : null;
 }

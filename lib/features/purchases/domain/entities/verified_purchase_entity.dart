@@ -37,6 +37,7 @@ class VerifiedPurchaseEntity extends Equatable {
   final double totalAmount;
   final DateTime confirmedAt;
   final List<VerifiedPurchaseItemEntity> items;
+  final int? customerRating;
 
   const VerifiedPurchaseEntity({
     required this.id,
@@ -47,6 +48,7 @@ class VerifiedPurchaseEntity extends Equatable {
     required this.totalAmount,
     required this.confirmedAt,
     required this.items,
+    this.customerRating,
   });
 
   @override
@@ -59,5 +61,6 @@ class VerifiedPurchaseEntity extends Equatable {
     totalAmount,
     confirmedAt,
     items,
+    customerRating,
   ];
 }

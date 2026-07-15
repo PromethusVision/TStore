@@ -5,6 +5,8 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
+import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
+import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
 
 class PurchasesView extends StatelessWidget {
   const PurchasesView({super.key, this.purchaseHistoryCubit});
@@ -211,9 +213,227 @@ class _PurchaseCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: TSizes.sm),
+            if (purchase.customerRating != null)
+              Row(
+                children: [
+                  Icon(Icons.star_rounded, color: Colors.amber.shade700),
+                  const SizedBox(width: TSizes.xs),
+                  Text(
+                    '${purchase.customerRating}/5 puan verdiniz',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              )
+            else
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  key: const Key('purchase-shop-rating-open-action'),
+                  onPressed: () => _openShopRating(context),
+                  icon: const Icon(Icons.star_outline_rounded),
+                  label: const Text('Esnafa Puan Ver'),
+                ),
+              ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _openShopRating(BuildContext context) async {
+    final didRate = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (_) => BlocProvider(
+        create: (_) => sl<ShopRatingCubit>(),
+        child: _PurchaseShopRatingSheet(purchase: purchase),
+      ),
+    );
+
+    if (didRate == true && context.mounted) {
+      await context.read<PurchaseHistoryCubit>().loadPurchases();
+    }
+  }
+}
+
+class _PurchaseShopRatingSheet extends StatefulWidget {
+  const _PurchaseShopRatingSheet({required this.purchase});
+
+  final VerifiedPurchaseEntity purchase;
+
+  @override
+  State<_PurchaseShopRatingSheet> createState() =>
+      _PurchaseShopRatingSheetState();
+}
+
+class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
+  static const List<String> _ratingLabels = [
+    '',
+    'Çok kötü',
+    'Kötü',
+    'Orta',
+    'İyi',
+    'Çok iyi',
+  ];
+
+  int _selectedRating = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ShopRatingCubit, ShopRatingState>(
+      builder: (context, state) {
+        final isSubmitting = state is ShopRatingSubmitting;
+        final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              TSizes.defaultSpace,
+              TSizes.defaultSpace,
+              TSizes.defaultSpace,
+              TSizes.defaultSpace + bottomInset,
+            ),
+            child: state is ShopRatingSuccess
+                ? _RatingSuccessContent(
+                    rating: state.rating.rating,
+                    onClose: () => Navigator.of(context).pop(true),
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.star_outline_rounded,
+                        size: 48,
+                        color: Colors.amber.shade700,
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwItems),
+                      Text(
+                        '${widget.purchase.shopName} için puanınızı seçin',
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: TSizes.sm),
+                      Text(
+                        'Bu doğrulanmış alışveriş için yalnızca bir kez puan verebilirsiniz.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwItems),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(5, (index) {
+                          final rating = index + 1;
+                          final isSelected = rating <= _selectedRating;
+                          return IconButton(
+                            key: Key('purchase-shop-rating-star-$rating'),
+                            tooltip: '$rating yıldız',
+                            onPressed: isSubmitting
+                                ? null
+                                : () =>
+                                      setState(() => _selectedRating = rating),
+                            icon: Icon(
+                              isSelected
+                                  ? Icons.star_rounded
+                                  : Icons.star_border_rounded,
+                              color: Colors.amber.shade700,
+                            ),
+                          );
+                        }),
+                      ),
+                      if (_selectedRating > 0)
+                        Text(
+                          _ratingLabels[_selectedRating],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      if (state is ShopRatingFailure) ...[
+                        const SizedBox(height: TSizes.sm),
+                        Text(
+                          state.message,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          key: const Key('purchase-shop-rating-submit-action'),
+                          onPressed: isSubmitting || _selectedRating == 0
+                              ? null
+                              : () => context
+                                    .read<ShopRatingCubit>()
+                                    .submitRating(
+                                      qrSessionId:
+                                          widget.purchase.sourceQrSessionId,
+                                      rating: _selectedRating,
+                                    ),
+                          child: isSubmitting
+                              ? const SizedBox.square(
+                                  dimension: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text('Puanı Gönder'),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: isSubmitting
+                            ? null
+                            : () => Navigator.of(context).pop(false),
+                        child: const Text('Vazgeç'),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _RatingSuccessContent extends StatelessWidget {
+  const _RatingSuccessContent({required this.rating, required this.onClose});
+
+  final int rating;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.star_rounded, size: 64, color: Colors.amber.shade700),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        Text(
+          'Puanınız kaydedildi',
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.sm),
+        Text(
+          '$rating/5 puan verdiniz. Teşekkür ederiz.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.spaceBtwSections),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            key: const Key('purchase-shop-rating-success-close'),
+            onPressed: onClose,
+            child: const Text('Tamam'),
+          ),
+        ),
+      ],
     );
   }
 }
