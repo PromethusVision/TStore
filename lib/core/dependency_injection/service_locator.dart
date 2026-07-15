@@ -87,6 +87,12 @@ import 'package:t_store/features/orders/domain/usecases/create_order_usecase.dar
 import 'package:t_store/features/orders/domain/usecases/cancel_order_usecase.dart';
 import 'package:t_store/features/orders/presentation/cubit/orders_cubit.dart';
 
+// Verified purchases
+import 'package:t_store/features/purchases/data/repositories/purchase_history_repository_impl.dart';
+import 'package:t_store/features/purchases/domain/repositories/purchase_history_repository.dart';
+import 'package:t_store/features/purchases/domain/usecases/get_verified_purchases_usecase.dart';
+import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
+
 // Addresses
 import 'package:t_store/features/personalization/data/repositories/address_repository_impl.dart';
 import 'package:t_store/features/personalization/domain/repositories/address_repository.dart';
@@ -327,6 +333,15 @@ Future<void> setupServiceLocator() async {
       createOrderUsecase: sl(),
       cancelOrderUsecase: sl(),
     ),
+  );
+
+  // ==================== Verified purchases ====================
+  sl.registerLazySingleton<PurchaseHistoryRepository>(
+    () => PurchaseHistoryRepositoryImpl(supabaseService: sl()),
+  );
+  sl.registerLazySingleton(() => GetVerifiedPurchasesUsecase(sl()));
+  sl.registerFactory(
+    () => PurchaseHistoryCubit(getVerifiedPurchasesUsecase: sl()),
   );
 
   // ==================== Addresses ====================

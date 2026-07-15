@@ -17,6 +17,7 @@ import 'package:t_store/features/personalization/presentation/views/profile_view
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
+import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 typedef SettingsCurrentUserIdProvider = String? Function();
 
@@ -112,7 +113,14 @@ class _SettingsViewState extends State<SettingsView> {
         trailing: isLoggedIn ? const _UnreadBadge() : null,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Alışverişlerim'),
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(context, const PurchasesView());
+        },
         title: "Alışverişlerim",
         subtitle: "Doğrulanan alışverişlerini görüntüle",
         leading: Icons.receipt_long_outlined,

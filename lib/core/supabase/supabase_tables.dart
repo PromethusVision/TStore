@@ -20,6 +20,8 @@ class SupabaseTables {
   static const String carts = 'carts';
   static const String cartItemsV2 = 'cart_items_v2';
   static const String qrSessions = 'qr_sessions';
+  static const String verifiedTransactions = 'verified_transactions';
+  static const String verifiedTransactionItems = 'verified_transaction_items';
   static const String coupons = 'coupons';
 
   // Orders related

@@ -13,6 +13,9 @@ import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart'
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
+import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
+import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
+import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -20,6 +23,9 @@ class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
 class MockChatUnreadCubit extends MockCubit<ChatUnreadState>
     implements ChatUnreadCubit {}
+
+class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
+    implements PurchaseHistoryCubit {}
 
 void main() {
   const user = UserEntity(
@@ -32,6 +38,7 @@ void main() {
   late MockAuthCubit loginAuthCubit;
   late MockCartV2Cubit cartV2Cubit;
   late MockChatUnreadCubit chatUnreadCubit;
+  late MockPurchaseHistoryCubit purchaseHistoryCubit;
 
   setUp(() async {
     await sl.reset();
@@ -40,6 +47,7 @@ void main() {
     loginAuthCubit = MockAuthCubit();
     cartV2Cubit = MockCartV2Cubit();
     chatUnreadCubit = MockChatUnreadCubit();
+    purchaseHistoryCubit = MockPurchaseHistoryCubit();
 
     whenListen(
       cartV2Cubit,
@@ -57,6 +65,14 @@ void main() {
     when(() => chatUnreadCubit.close()).thenAnswer((_) async {});
 
     whenListen(
+      purchaseHistoryCubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: const PurchaseHistoryLoaded([]),
+    );
+    when(() => purchaseHistoryCubit.loadPurchases()).thenAnswer((_) async {});
+    when(() => purchaseHistoryCubit.close()).thenAnswer((_) async {});
+
+    whenListen(
       loginAuthCubit,
       const Stream<AuthState>.empty(),
       initialState: AuthInitial(),
@@ -64,6 +80,7 @@ void main() {
     when(() => loginAuthCubit.close()).thenAnswer((_) async {});
 
     sl.registerFactory<ChatUnreadCubit>(() => chatUnreadCubit);
+    sl.registerFactory<PurchaseHistoryCubit>(() => purchaseHistoryCubit);
     sl.registerFactory<AuthCubit>(() => loginAuthCubit);
   });
 
@@ -141,6 +158,27 @@ void main() {
       }
     },
   );
+
+  testWidgets('Alışverişlerim yeni müşteri geçmişi ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Alışverişlerim'));
+    await tester.tap(find.text('Alışverişlerim'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PurchasesView), findsOneWidget);
+    expect(find.text('İade Taleplerim'), findsOneWidget);
+    expect(find.text('İade Talebi Oluştur'), findsOneWidget);
+    verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
+  });
 
   testWidgets('Hesap Bilgilerim mevcut profil ekranını açar', (tester) async {
     await tester.pumpWidget(
