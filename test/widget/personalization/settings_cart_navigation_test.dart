@@ -15,6 +15,7 @@ import 'package:t_store/features/personalization/presentation/views/profile_view
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
+import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -195,6 +196,26 @@ void main() {
 
     expect(find.byType(ProfileView), findsOneWidget);
     expect(find.text('customer@example.com'), findsOneWidget);
+  });
+
+  testWidgets('Değerlendirmelerim gerçek müşteri puanları ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Değerlendirmelerim'));
+    await tester.tap(find.text('Değerlendirmelerim'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CustomerRatingsView), findsOneWidget);
+    expect(find.text('Henüz değerlendirme yapmadınız'), findsOneWidget);
+    verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (

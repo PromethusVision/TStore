@@ -26,7 +26,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
             'total_amount, confirmed_at, '
             'verified_transaction_items('
             'id, shop_product_id, product_name, quantity, unit_price, '
-            'line_total), shop_ratings(rating)',
+            'line_total), shop_ratings(rating, created_at)',
           )
           .eq('customer_user_id', user.id)
           .order('confirmed_at', ascending: false);

@@ -12,7 +12,7 @@ void main() {
       'total_amount': 150.5,
       'confirmed_at': '2026-07-15T10:30:00Z',
       'shop_ratings': [
-        {'rating': 4},
+        {'rating': 4, 'created_at': '2026-07-16T09:15:00Z'},
       ],
       'verified_transaction_items': [
         {
@@ -32,6 +32,7 @@ void main() {
     expect(purchase.items.single.productName, 'Deneme Ürünü');
     expect(purchase.items.single.quantity, 2);
     expect(purchase.customerRating, 4);
+    expect(purchase.customerRatedAt, DateTime.utc(2026, 7, 16, 9, 15));
   });
 
   test('puan verilmemiş alışverişte müşteri puanı boş kalır', () {

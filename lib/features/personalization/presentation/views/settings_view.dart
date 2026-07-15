@@ -17,6 +17,7 @@ import 'package:t_store/features/personalization/presentation/views/profile_view
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
+import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 typedef SettingsCurrentUserIdProvider = String? Function();
@@ -138,7 +139,17 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.history_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Değerlendirmelerim'),
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(
+            context,
+            const CustomerRatingsView(),
+          );
+        },
         title: "Değerlendirmelerim",
         subtitle: "Mağazalara verdiğin puanları görüntüle",
         leading: Icons.star_outline,

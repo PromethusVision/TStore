@@ -33,6 +33,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
     required super.confirmedAt,
     required super.items,
     super.customerRating,
+    super.customerRatedAt,
   });
 
   factory VerifiedPurchaseModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +56,8 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
         })
         .toList(growable: false);
 
+    final ratingJson = _customerRatingJson(json['shop_ratings']);
+
     return VerifiedPurchaseModel(
       id: _requiredString(json, 'id'),
       sourceQrSessionId: _requiredString(json, 'source_qr_session_id'),
@@ -64,7 +67,8 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
       totalAmount: _toDouble(json['total_amount']),
       confirmedAt: _toDateTime(json['confirmed_at']),
       items: items,
-      customerRating: _toCustomerRating(json['shop_ratings']),
+      customerRating: _toCustomerRating(ratingJson),
+      customerRatedAt: _toCustomerRatedAt(ratingJson),
     );
   }
 }
@@ -90,16 +94,24 @@ DateTime _toDateTime(dynamic value) {
   return DateTime.parse(value.toString());
 }
 
-int? _toCustomerRating(dynamic value) {
-  dynamic rating;
-  if (value is List && value.isNotEmpty) {
-    final first = value.first;
-    if (first is Map) rating = first['rating'];
-  } else if (value is Map) {
-    rating = value['rating'];
-  }
+Map<String, dynamic>? _customerRatingJson(dynamic value) {
+  dynamic ratingJson;
+  if (value is List && value.isNotEmpty) ratingJson = value.first;
+  if (value is Map) ratingJson = value;
+  if (ratingJson is! Map) return null;
+  return Map<String, dynamic>.from(ratingJson);
+}
 
+int? _toCustomerRating(Map<String, dynamic>? ratingJson) {
+  final rating = ratingJson?['rating'];
   if (rating == null) return null;
   final parsed = _toInt(rating);
   return parsed >= 1 && parsed <= 5 ? parsed : null;
+}
+
+DateTime? _toCustomerRatedAt(Map<String, dynamic>? ratingJson) {
+  final value = ratingJson?['created_at'];
+  if (value == null) return null;
+  if (value is DateTime) return value;
+  return DateTime.tryParse(value.toString());
 }
