@@ -7,13 +7,12 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
-import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
+import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
-import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -95,14 +94,55 @@ void main() {
     );
   }
 
-  Future<void> tapCartTile(WidgetTester tester) async {
-    await tester.ensureVisible(find.text('Sepetim'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Sepetim'));
-    await tester.pumpAndSettle();
-  }
+  testWidgets(
+    'hesap ekranında sektör standardındaki müşteri seçeneklerini gösterir',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          authState: const AuthAuthenticated(user),
+          currentUserId: user.id,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-  testWidgets('Sepetim seçeneği güncel müşteri sepetini açar', (tester) async {
+      for (final visibleOption in [
+        'Mesajlarım',
+        'Alışverişlerim',
+        'Kuponlarım',
+        'Son Görüntülediklerim',
+        'Değerlendirmelerim',
+        'Bildirimlerim',
+        'Kayıtlı Konumlarım',
+        'Hesap Bilgilerim',
+        'Yardım ve Destek',
+        'Gizlilik ve İzinler',
+      ]) {
+        expect(find.text(visibleOption), findsOneWidget);
+      }
+
+      expect(find.text('Çıkış Yap'), findsOneWidget);
+      expect(find.text('Sepetim'), findsNothing);
+
+      for (final hiddenOption in [
+        'Adreslerim',
+        'Esnaf Ol',
+        'Mağazam',
+        'İşlemlerim',
+        'Banka Hesabı',
+        'Bildirimler',
+        'Hesap Gizliliği',
+        'Uygulama Ayarları',
+        'Veri Yükleme',
+        'Konum',
+        'Güvenli Mod',
+        'HD Görsel Kalitesi',
+      ]) {
+        expect(find.text(hiddenOption), findsNothing);
+      }
+    },
+  );
+
+  testWidgets('Hesap Bilgilerim mevcut profil ekranını açar', (tester) async {
     await tester.pumpWidget(
       buildSubject(
         authState: const AuthAuthenticated(user),
@@ -111,27 +151,29 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('CartV2 Test'), findsNothing);
+    await tester.ensureVisible(find.text('Hesap Bilgilerim'));
+    await tester.tap(find.text('Hesap Bilgilerim'));
+    await tester.pumpAndSettle();
 
-    await tapCartTile(tester);
-
-    expect(find.byType(CartV2View), findsOneWidget);
-    expect(find.text('Mağaza Sepeti'), findsOneWidget);
-    verify(() => cartV2Cubit.getActiveCartItems()).called(1);
+    expect(find.byType(ProfileView), findsOneWidget);
+    expect(find.text('customer@example.com'), findsOneWidget);
   });
 
-  testWidgets('oturumu olmayan kullanıcıyı sepetten önce girişe yönlendirir', (
+  testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (
     tester,
   ) async {
     await tester.pumpWidget(
-      buildSubject(authState: AuthUnauthenticated(), currentUserId: null),
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
     );
     await tester.pumpAndSettle();
 
-    await tapCartTile(tester);
+    await tester.ensureVisible(find.text('Kuponlarım'));
+    await tester.tap(find.text('Kuponlarım'));
+    await tester.pump();
 
-    expect(find.byType(LoginView), findsOneWidget);
-    expect(find.byType(CartV2View), findsNothing);
-    verifyNever(() => cartV2Cubit.getActiveCartItems());
+    expect(find.text('Kuponlarım bölümü hazırlanıyor.'), findsOneWidget);
   });
 }

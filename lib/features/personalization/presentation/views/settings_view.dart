@@ -13,13 +13,10 @@ import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart'
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
-import 'package:t_store/features/personalization/presentation/views/user_addresses_view.dart';
+import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
-import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
-import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
-import 'package:t_store/features/shop/presentation/views/orders_view.dart';
 
 typedef SettingsCurrentUserIdProvider = String? Function();
 
@@ -61,17 +58,11 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     final currentUserId = _currentUserId;
     final isLoggedIn = currentUserId != null;
-    final authState = context.watch<AuthCubit>().state;
-    final canManageShop =
-        authState is AuthAuthenticated &&
-        authState.user.id == currentUserId &&
-        authState.user.canManageShop;
 
     if (!isLoggedIn) {
       return _buildSettingsContent(
         context,
         isLoggedIn: false,
-        canManageShop: false,
         currentUserId: null,
       );
     }
@@ -82,7 +73,6 @@ class _SettingsViewState extends State<SettingsView> {
         builder: (context) => _buildSettingsContent(
           context,
           isLoggedIn: true,
-          canManageShop: canManageShop,
           currentUserId: currentUserId,
         ),
       ),
@@ -92,48 +82,16 @@ class _SettingsViewState extends State<SettingsView> {
   Widget _buildSettingsContent(
     BuildContext context, {
     required bool isLoggedIn,
-    required bool canManageShop,
     required String? currentUserId,
   }) {
-    final List<SettingsMenuTileModel> appSettingsTiles = [
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Veri Yükleme",
-        subtitle: "Verilerini sunucuya yükle",
-        leading: Iconsax.document_upload,
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Konum",
-        subtitle: "Konuma göre önerileri düzenle",
-        leading: Iconsax.document_download,
-        trailing: Switch(value: true, onChanged: (value) {}),
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Güvenli Mod",
-        subtitle: "Arama sonuçlarını güvenli tut",
-        leading: Iconsax.security_user,
-        trailing: Switch(value: false, onChanged: (value) {}),
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "HD Görsel Kalitesi",
-        subtitle: "Görsel kalitesini yüksek olarak ayarla",
-        leading: Iconsax.image,
-        trailing: Switch(value: true, onChanged: (value) {}),
-      ),
-    ];
+    void showComingSoon(String title) {
+      THelperFunctions.showSnackBar(
+        context: context,
+        message: '$title bölümü hazırlanıyor.',
+      );
+    }
+
     final List<SettingsMenuTileModel> accountSettingsTiles = [
-      SettingsMenuTileModel(
-        onTap: () {
-          //navigateToScreen UserAddressesView
-          THelperFunctions.navigateToScreen(context, const UserAddressesView());
-        },
-        title: "Adreslerim",
-        subtitle: "Adres ve konum bilgilerini düzenle",
-        leading: Iconsax.safe_home,
-      ),
       SettingsMenuTileModel(
         onTap: () async {
           if (!isLoggedIn) {
@@ -154,73 +112,79 @@ class _SettingsViewState extends State<SettingsView> {
         trailing: isLoggedIn ? const _UnreadBadge() : null,
       ),
       SettingsMenuTileModel(
+        onTap: () => showComingSoon('Alışverişlerim'),
+        title: "Alışverişlerim",
+        subtitle: "Doğrulanan alışverişlerini görüntüle",
+        leading: Icons.receipt_long_outlined,
+      ),
+      SettingsMenuTileModel(
+        onTap: () => showComingSoon('Kuponlarım'),
+        title: "Kuponlarım",
+        subtitle: "Kullanabileceğin kuponları görüntüle",
+        leading: Icons.local_offer_outlined,
+      ),
+      SettingsMenuTileModel(
+        onTap: () => showComingSoon('Son Görüntülediklerim'),
+        title: "Son Görüntülediklerim",
+        subtitle: "İncelediğin ürünlere yeniden ulaş",
+        leading: Icons.history_outlined,
+      ),
+      SettingsMenuTileModel(
+        onTap: () => showComingSoon('Değerlendirmelerim'),
+        title: "Değerlendirmelerim",
+        subtitle: "Mağazalara verdiğin puanları görüntüle",
+        leading: Icons.star_outline,
+      ),
+      SettingsMenuTileModel(
+        onTap: () => showComingSoon('Bildirimlerim'),
+        title: "Bildirimlerim",
+        subtitle: "Kampanya ve alışveriş bildirimlerini görüntüle",
+        leading: Icons.notifications_none,
+      ),
+      SettingsMenuTileModel(
+        onTap: () => showComingSoon('Kayıtlı Konumlarım'),
+        title: "Kayıtlı Konumlarım",
+        subtitle: "Kaydettiğin konumları yönet",
+        leading: Icons.location_on_outlined,
+      ),
+      SettingsMenuTileModel(
         onTap: () {
           if (!isLoggedIn) {
             THelperFunctions.navigateToScreen(context, const LoginView());
             return;
           }
 
-          if (canManageShop) {
-            THelperFunctions.navigateToScreen(context, const MyShopView());
+          final authState = context.read<AuthCubit>().state;
+          if (authState is AuthAuthenticated &&
+              authState.user.id == currentUserId) {
+            THelperFunctions.navigateToScreen(
+              context,
+              ProfileView(user: authState.user),
+            );
             return;
           }
 
-          THelperFunctions.navigateToScreen(
-            context,
-            const LoginView(isMerchantLogin: true),
+          context.read<AuthCubit>().checkAuthStatus();
+          THelperFunctions.showSnackBar(
+            context: context,
+            message: 'Hesap bilgilerin yükleniyor. Lütfen tekrar dene.',
           );
         },
-        title: canManageShop ? "Mağazam" : "Esnaf Ol",
-        subtitle: canManageShop
-            ? "Mağaza bilgilerini görüntüle"
-            : "Esnaf başvurusu yakında eklenecek",
-        leading: Icons.storefront_outlined,
+        title: "Hesap Bilgilerim",
+        subtitle: "Kişisel bilgilerini görüntüle ve düzenle",
+        leading: Icons.person_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (_currentUserId == null) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(context, const CartV2View());
-        },
-        title: "Sepetim",
-        subtitle: "Mağazada doğrulamak için ürünlerini hazırla",
-        leading: Iconsax.shopping_cart,
+        onTap: () => showComingSoon('Yardım ve Destek'),
+        title: "Yardım ve Destek",
+        subtitle: "Sık sorulan sorular ve destek",
+        leading: Icons.help_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          //navigateToScreen UserAddressesView
-          THelperFunctions.navigateToScreen(context, const OrdersView());
-        },
-        title: "İşlemlerim",
-        subtitle: "Devam eden ve tamamlanan alışveriş kayıtların",
-        leading: Iconsax.bag,
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Banka Hesabı",
-        subtitle: "Kayıtlı banka hesabı bilgilerini yönet",
-        leading: Iconsax.bank,
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Kuponlarım",
-        subtitle: "İndirim ve kampanya kuponlarını görüntüle",
-        leading: Iconsax.discount_shape,
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Bildirimler",
-        subtitle: "Bildirim tercihlerini düzenle",
-        leading: Iconsax.notification,
-      ),
-      SettingsMenuTileModel(
-        onTap: () {},
-        title: "Hesap Gizliliği",
-        subtitle: "Veri kullanımı ve bağlantılı hesapları yönet",
-        leading: Iconsax.security_card,
+        onTap: () => showComingSoon('Gizlilik ve İzinler'),
+        title: "Gizlilik ve İzinler",
+        subtitle: "Gizlilik tercihlerini ve izinlerini yönet",
+        leading: Icons.privacy_tip_outlined,
       ),
     ];
     return SafeArea(
@@ -238,7 +202,7 @@ class _SettingsViewState extends State<SettingsView> {
                     accountSettingsTiles: accountSettingsTiles,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
-                  AppSettingsSection(appSettingsTiles: appSettingsTiles),
+                  const AppSettingsSection(),
                   const SizedBox(height: TSizes.spaceBtwItems),
                 ],
               ),
@@ -258,7 +222,7 @@ class _UnreadBadge extends StatelessWidget {
     return BlocBuilder<ChatUnreadCubit, ChatUnreadState>(
       builder: (context, state) {
         if (state is! ChatUnreadLoaded || state.count <= 0) {
-          return const SizedBox.shrink();
+          return const Icon(Icons.chevron_right);
         }
 
         final label = state.count > 99 ? '99+' : state.count.toString();
@@ -284,6 +248,8 @@ class _UnreadBadge extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right),
             ],
           ),
         );
