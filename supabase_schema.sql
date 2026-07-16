@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS cart_items CASCADE;
 DROP TABLE IF EXISTS wishlist CASCADE;
 DROP TABLE IF EXISTS addresses CASCADE;
+DROP TABLE IF EXISTS customer_saved_locations CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS brands CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
@@ -100,6 +101,19 @@ CREATE TABLE IF NOT EXISTS addresses (
   is_default BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ==================== CUSTOMER SAVED LOCATIONS ====================
+CREATE TABLE IF NOT EXISTS customer_saved_locations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL CHECK (char_length(btrim(name)) BETWEEN 1 AND 50),
+  address_text TEXT NOT NULL CHECK (char_length(btrim(address_text)) BETWEEN 1 AND 200),
+  latitude DOUBLE PRECISION NOT NULL CHECK (latitude BETWEEN -90 AND 90),
+  longitude DOUBLE PRECISION NOT NULL CHECK (longitude BETWEEN -180 AND 180),
+  is_default BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 -- ==================== WISHLIST ====================
@@ -237,12 +251,19 @@ CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_reviews_product ON reviews(product_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_customer_saved_locations_user_created ON customer_saved_locations(user_id, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_customer_saved_locations_one_default ON customer_saved_locations(user_id) WHERE is_default = true;
 CREATE INDEX IF NOT EXISTS idx_chat_sender ON chat_messages(sender_id);
 CREATE INDEX IF NOT EXISTS idx_chat_receiver ON chat_messages(receiver_id);
 
 -- ==================== ROW LEVEL SECURITY ====================
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE addresses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE customer_saved_locations ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE customer_saved_locations FROM anon;
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON TABLE customer_saved_locations
+  TO authenticated;
 ALTER TABLE wishlist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cart_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
@@ -266,6 +287,12 @@ CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (
 
 -- Addresses
 CREATE POLICY "Users can manage own addresses" ON addresses FOR ALL USING (auth.uid() = user_id);
+
+-- Customer Saved Locations
+CREATE POLICY "Customers can view own saved locations" ON customer_saved_locations FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Customers can create own saved locations" ON customer_saved_locations FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Customers can update own saved locations" ON customer_saved_locations FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Customers can delete own saved locations" ON customer_saved_locations FOR DELETE USING (auth.uid() = user_id);
 
 -- Wishlist
 CREATE POLICY "Users can manage own wishlist" ON wishlist FOR ALL USING (auth.uid() = user_id);
@@ -322,6 +349,7 @@ CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON products FOR EACH ROW
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER update_cart_updated_at BEFORE UPDATE ON cart_items FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER update_addresses_updated_at BEFORE UPDATE ON addresses FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_customer_saved_locations_updated_at BEFORE UPDATE ON customer_saved_locations FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON reviews FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- Auto-create profile on user signup
@@ -342,6 +370,70 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- Keep the selected customer location consistent in one transaction.
+CREATE OR REPLACE FUNCTION set_default_customer_saved_location(p_location_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM customer_saved_locations
+    WHERE id = p_location_id AND user_id = auth.uid()
+  ) THEN
+    RETURN false;
+  END IF;
+
+  UPDATE customer_saved_locations
+  SET is_default = false
+  WHERE user_id = auth.uid() AND is_default = true;
+
+  UPDATE customer_saved_locations
+  SET is_default = true
+  WHERE id = p_location_id AND user_id = auth.uid();
+
+  RETURN true;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_customer_saved_location(p_location_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+DECLARE
+  deleted_was_default BOOLEAN;
+BEGIN
+  DELETE FROM customer_saved_locations
+  WHERE id = p_location_id AND user_id = auth.uid()
+  RETURNING is_default INTO deleted_was_default;
+
+  IF NOT FOUND THEN
+    RETURN false;
+  END IF;
+
+  IF deleted_was_default THEN
+    UPDATE customer_saved_locations
+    SET is_default = true
+    WHERE id = (
+      SELECT id FROM customer_saved_locations
+      WHERE user_id = auth.uid()
+      ORDER BY created_at DESC
+      LIMIT 1
+    );
+  END IF;
+
+  RETURN true;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION set_default_customer_saved_location(UUID) FROM PUBLIC;
+REVOKE ALL ON FUNCTION delete_customer_saved_location(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION set_default_customer_saved_location(UUID) TO authenticated;
+GRANT EXECUTE ON FUNCTION delete_customer_saved_location(UUID) TO authenticated;
 
 -- Update product rating after review
 CREATE OR REPLACE FUNCTION update_product_rating()

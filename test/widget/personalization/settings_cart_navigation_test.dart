@@ -14,6 +14,9 @@ import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart'
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
+import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
+import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
@@ -41,6 +44,10 @@ class MockRecentlyViewedProductsCubit
 class MockNotificationsCubit extends MockCubit<NotificationsState>
     implements NotificationsCubit {}
 
+class MockCustomerSavedLocationsCubit
+    extends MockCubit<CustomerSavedLocationsState>
+    implements CustomerSavedLocationsCubit {}
+
 void main() {
   const user = UserEntity(
     id: 'customer-1',
@@ -55,6 +62,7 @@ void main() {
   late MockPurchaseHistoryCubit purchaseHistoryCubit;
   late MockRecentlyViewedProductsCubit recentlyViewedProductsCubit;
   late MockNotificationsCubit notificationsCubit;
+  late MockCustomerSavedLocationsCubit customerSavedLocationsCubit;
 
   setUp(() async {
     await sl.reset();
@@ -66,6 +74,7 @@ void main() {
     purchaseHistoryCubit = MockPurchaseHistoryCubit();
     recentlyViewedProductsCubit = MockRecentlyViewedProductsCubit();
     notificationsCubit = MockNotificationsCubit();
+    customerSavedLocationsCubit = MockCustomerSavedLocationsCubit();
 
     whenListen(
       cartV2Cubit,
@@ -114,6 +123,16 @@ void main() {
     when(() => notificationsCubit.close()).thenAnswer((_) async {});
 
     whenListen(
+      customerSavedLocationsCubit,
+      const Stream<CustomerSavedLocationsState>.empty(),
+      initialState: const CustomerSavedLocationsLoaded(locations: []),
+    );
+    when(
+      () => customerSavedLocationsCubit.loadLocations(),
+    ).thenAnswer((_) async {});
+    when(() => customerSavedLocationsCubit.close()).thenAnswer((_) async {});
+
+    whenListen(
       loginAuthCubit,
       const Stream<AuthState>.empty(),
       initialState: AuthInitial(),
@@ -126,6 +145,9 @@ void main() {
       () => recentlyViewedProductsCubit,
     );
     sl.registerFactory<NotificationsCubit>(() => notificationsCubit);
+    sl.registerFactory<CustomerSavedLocationsCubit>(
+      () => customerSavedLocationsCubit,
+    );
     sl.registerFactory<AuthCubit>(() => loginAuthCubit);
   });
 
@@ -300,6 +322,26 @@ void main() {
     expect(find.byType(CustomerNotificationsView), findsOneWidget);
     expect(find.text('Henüz bildirimin yok'), findsOneWidget);
     verify(() => notificationsCubit.getNotifications(refresh: true)).called(1);
+  });
+
+  testWidgets('Kayıtlı Konumlarım gerçek müşteri konumları ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Kayıtlı Konumlarım'));
+    await tester.tap(find.text('Kayıtlı Konumlarım'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CustomerSavedLocationsView), findsOneWidget);
+    expect(find.text('Henüz kayıtlı konumun yok'), findsOneWidget);
+    verify(() => customerSavedLocationsCubit.loadLocations()).called(1);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (

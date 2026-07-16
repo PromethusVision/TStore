@@ -99,12 +99,15 @@ import 'package:t_store/features/purchases/presentation/cubit/purchase_history_c
 
 // Addresses
 import 'package:t_store/features/personalization/data/repositories/address_repository_impl.dart';
+import 'package:t_store/features/personalization/data/repositories/customer_saved_location_repository_impl.dart';
 import 'package:t_store/features/personalization/domain/repositories/address_repository.dart';
+import 'package:t_store/features/personalization/domain/repositories/customer_saved_location_repository.dart';
 import 'package:t_store/features/personalization/domain/usecases/get_addresses_usecase.dart';
 import 'package:t_store/features/personalization/domain/usecases/add_address_usecase.dart';
 import 'package:t_store/features/personalization/domain/usecases/update_address_usecase.dart';
 import 'package:t_store/features/personalization/domain/usecases/delete_address_usecase.dart';
 import 'package:t_store/features/personalization/presentation/cubit/addresses_cubit.dart';
+import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 
 // Reviews
 import 'package:t_store/features/reviews/data/repositories/review_repository_impl.dart';
@@ -363,6 +366,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<AddressRepository>(
     () => AddressRepositoryImpl(supabaseService: sl()),
   );
+  sl.registerLazySingleton<CustomerSavedLocationRepository>(
+    () => CustomerSavedLocationRepositoryImpl(supabaseService: sl()),
+  );
 
   // Use Cases
   sl.registerLazySingleton(() => GetAddressesUsecase(sl()));
@@ -377,6 +383,12 @@ Future<void> setupServiceLocator() async {
       addAddressUsecase: sl(),
       updateAddressUsecase: sl(),
       deleteAddressUsecase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => CustomerSavedLocationsCubit(
+      repository: sl(),
+      customerLocationService: sl(),
     ),
   );
 

@@ -15,6 +15,7 @@ import 'package:t_store/features/chat/presentation/views/conversations_view.dart
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
@@ -183,7 +184,17 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.notifications_none,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Kayıtlı Konumlarım'),
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(
+            context,
+            const CustomerSavedLocationsView(),
+          );
+        },
         title: "Kayıtlı Konumlarım",
         subtitle: "Kaydettiğin konumları yönet",
         leading: Icons.location_on_outlined,

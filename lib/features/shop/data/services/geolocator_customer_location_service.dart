@@ -23,9 +23,11 @@ class GeolocatorCustomerLocationService implements CustomerLocationService {
   CustomerCoordinates? get cachedCoordinates => _cachedCoordinates;
 
   @override
-  Future<CustomerLocationResult> getCurrentLocation() async {
+  Future<CustomerLocationResult> getCurrentLocation({
+    bool forceRefresh = false,
+  }) async {
     final cachedCoordinates = _cachedCoordinates;
-    if (cachedCoordinates != null) {
+    if (!forceRefresh && cachedCoordinates != null) {
       return CustomerLocationResult.success(cachedCoordinates);
     }
 

@@ -5,6 +5,7 @@ class SupabaseTables {
   // User related
   static const String profiles = 'profiles';
   static const String addresses = 'addresses';
+  static const String customerSavedLocations = 'customer_saved_locations';
 
   // Products related
   static const String categories = 'categories';

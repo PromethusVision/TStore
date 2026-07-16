@@ -46,5 +46,7 @@ class CustomerLocationResult extends Equatable {
 abstract class CustomerLocationService {
   CustomerCoordinates? get cachedCoordinates;
 
-  Future<CustomerLocationResult> getCurrentLocation();
+  Future<CustomerLocationResult> getCurrentLocation({
+    bool forceRefresh = false,
+  });
 }

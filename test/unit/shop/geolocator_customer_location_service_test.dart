@@ -26,6 +26,22 @@ void main() {
     expect(invocationCount, 1);
   });
 
+  test('istenirse önbellek yerine güncel konumu yeniden alır', () async {
+    var invocationCount = 0;
+    final service = GeolocatorCustomerLocationService(
+      coordinatesLoader: () async {
+        invocationCount++;
+        return coordinates;
+      },
+    );
+
+    await service.getCurrentLocation();
+    final refreshed = await service.getCurrentLocation(forceRefresh: true);
+
+    expect(refreshed, const CustomerLocationResult.success(coordinates));
+    expect(invocationCount, 2);
+  });
+
   test('izin reddini teknik ayrıntı taşımadan bildirir', () async {
     final service = GeolocatorCustomerLocationService(
       coordinatesLoader: () =>
