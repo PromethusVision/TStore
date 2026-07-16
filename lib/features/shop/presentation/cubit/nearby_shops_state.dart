@@ -11,6 +11,8 @@ enum NearbyLocationStatus {
   unavailable,
 }
 
+enum NearbyLocationSource { device, savedLocation }
+
 abstract class NearbyShopsState extends Equatable {
   const NearbyShopsState();
 
@@ -30,11 +32,15 @@ class NearbyShopsLoaded extends NearbyShopsState {
   final List<ShopEntity> shops;
   final NearbyLocationStatus locationStatus;
   final Map<String, double> distanceMetersByShopId;
+  final NearbyLocationSource? locationSource;
+  final String? locationLabel;
 
   const NearbyShopsLoaded(
     this.shops, {
     this.locationStatus = NearbyLocationStatus.idle,
     this.distanceMetersByShopId = const <String, double>{},
+    this.locationSource,
+    this.locationLabel,
   });
 
   double? distanceForShop(String shopId) => distanceMetersByShopId[shopId];
@@ -43,17 +49,27 @@ class NearbyShopsLoaded extends NearbyShopsState {
     List<ShopEntity>? shops,
     NearbyLocationStatus? locationStatus,
     Map<String, double>? distanceMetersByShopId,
+    NearbyLocationSource? locationSource,
+    String? locationLabel,
   }) {
     return NearbyShopsLoaded(
       shops ?? this.shops,
       locationStatus: locationStatus ?? this.locationStatus,
       distanceMetersByShopId:
           distanceMetersByShopId ?? this.distanceMetersByShopId,
+      locationSource: locationSource ?? this.locationSource,
+      locationLabel: locationLabel ?? this.locationLabel,
     );
   }
 
   @override
-  List<Object?> get props => [shops, locationStatus, distanceMetersByShopId];
+  List<Object?> get props => [
+    shops,
+    locationStatus,
+    distanceMetersByShopId,
+    locationSource,
+    locationLabel,
+  ];
 }
 
 class NearbyShopsEmpty extends NearbyShopsState {

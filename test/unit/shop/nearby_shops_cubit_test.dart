@@ -81,6 +81,9 @@ void main() {
       getShopsUsecase = MockGetShopsUsecase();
       customerLocationService = MockCustomerLocationService();
       when(() => customerLocationService.cachedCoordinates).thenReturn(null);
+      when(
+        () => customerLocationService.getPreferredLocation(),
+      ).thenAnswer((_) async => null);
     });
 
     test('başlangıç durumu NearbyShopsInitial olur', () async {
@@ -93,6 +96,53 @@ void main() {
 
       await cubit.close();
     });
+
+    test(
+      'ana konum varsa izin istemeden mağazaları bu konuma göre sıralar',
+      () async {
+        const preferredLocation = CustomerPreferredLocation(
+          name: 'Ev',
+          coordinates: CustomerCoordinates(latitude: 41, longitude: 29),
+        );
+        const distanceShops = <ShopEntity>[
+          ShopEntity(
+            id: 'far-shop',
+            name: 'Uzak Mağaza',
+            latitude: 41.1,
+            longitude: 29,
+          ),
+          ShopEntity(
+            id: 'near-shop',
+            name: 'Yakın Mağaza',
+            latitude: 41.001,
+            longitude: 29,
+          ),
+        ];
+        when(
+          () => getShopsUsecase(const NoParams()),
+        ).thenAnswer((_) async => const Right(distanceShops));
+        when(
+          () => customerLocationService.getPreferredLocation(),
+        ).thenAnswer((_) async => preferredLocation);
+        final cubit = NearbyShopsCubit(
+          getShopsUsecase: getShopsUsecase,
+          customerLocationService: customerLocationService,
+        );
+
+        await cubit.loadShops();
+
+        final state = cubit.state as NearbyShopsLoaded;
+        expect(state.locationStatus, NearbyLocationStatus.ready);
+        expect(state.locationSource, NearbyLocationSource.savedLocation);
+        expect(state.locationLabel, 'Ev');
+        expect(
+          state.shops.map((shop) => shop.id),
+          orderedEquals(const ['near-shop', 'far-shop']),
+        );
+        verifyNever(() => customerLocationService.getCurrentLocation());
+        await cubit.close();
+      },
+    );
 
     blocTest<NearbyShopsCubit, NearbyShopsState>(
       'başarılı sonuçta yükleniyor ve mağaza listesi durumlarını yayınlar',

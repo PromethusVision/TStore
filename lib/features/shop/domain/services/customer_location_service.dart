@@ -18,6 +18,21 @@ class CustomerCoordinates extends Equatable {
   List<Object?> get props => [latitude, longitude];
 }
 
+class CustomerPreferredLocation extends Equatable {
+  final String name;
+  final CustomerCoordinates coordinates;
+
+  const CustomerPreferredLocation({
+    required this.name,
+    required this.coordinates,
+  });
+
+  bool get isValid => name.trim().isNotEmpty && coordinates.isValid;
+
+  @override
+  List<Object?> get props => [name, coordinates];
+}
+
 enum CustomerLocationFailure {
   permissionDenied,
   servicesDisabled,
@@ -45,6 +60,8 @@ class CustomerLocationResult extends Equatable {
 
 abstract class CustomerLocationService {
   CustomerCoordinates? get cachedCoordinates;
+
+  Future<CustomerPreferredLocation?> getPreferredLocation();
 
   Future<CustomerLocationResult> getCurrentLocation({
     bool forceRefresh = false,

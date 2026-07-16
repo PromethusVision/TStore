@@ -187,6 +187,8 @@ class _LoadedNearbyShops extends StatelessWidget {
             return _NearbyLocationCard(
               status: state.locationStatus,
               hasDistances: state.distanceMetersByShopId.isNotEmpty,
+              locationSource: state.locationSource,
+              locationLabel: state.locationLabel,
               onLocationRequested: onLocationRequested,
             );
           }
@@ -206,11 +208,15 @@ class _LoadedNearbyShops extends StatelessWidget {
 class _NearbyLocationCard extends StatelessWidget {
   final NearbyLocationStatus status;
   final bool hasDistances;
+  final NearbyLocationSource? locationSource;
+  final String? locationLabel;
   final VoidCallback onLocationRequested;
 
   const _NearbyLocationCard({
     required this.status,
     required this.hasDistances,
+    required this.locationSource,
+    required this.locationLabel,
     required this.onLocationRequested,
   });
 
@@ -274,6 +280,18 @@ class _NearbyLocationCard extends StatelessWidget {
   }
 
   _NearbyLocationCardContent _contentForStatus() {
+    if (status == NearbyLocationStatus.ready &&
+        locationSource == NearbyLocationSource.savedLocation &&
+        locationLabel?.trim().isNotEmpty == true) {
+      return _NearbyLocationCardContent(
+        icon: Icons.bookmark_added_outlined,
+        title: '${locationLabel!.trim()} konumuna göre sıralandı',
+        message: hasDistances
+            ? 'Ana konumunu mağazaları yakından uzağa sıralamak için kullandık; mağazalarla paylaşmadık.'
+            : 'Ana konumun seçildi ancak mağazaların mesafe bilgisi henüz hazır değil.',
+      );
+    }
+
     return switch (status) {
       NearbyLocationStatus.idle => const _NearbyLocationCardContent(
         icon: Icons.near_me_outlined,

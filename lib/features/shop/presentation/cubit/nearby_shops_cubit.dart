@@ -31,9 +31,27 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
 
     if (isClosed || requestId != _activeRequestId) return;
 
-    result.fold((error) => emit(NearbyShopsError(error)), (shops) {
+    await result.fold((error) async => emit(NearbyShopsError(error)), (
+      shops,
+    ) async {
       if (shops.isEmpty) {
         emit(const NearbyShopsEmpty());
+        return;
+      }
+
+      final preferredLocation = await customerLocationService
+          .getPreferredLocation();
+      if (isClosed || requestId != _activeRequestId) return;
+
+      if (preferredLocation != null && preferredLocation.isValid) {
+        emit(
+          _buildLocationReadyState(
+            shops,
+            preferredLocation.coordinates,
+            locationSource: NearbyLocationSource.savedLocation,
+            locationLabel: preferredLocation.name.trim(),
+          ),
+        );
         return;
       }
 
@@ -41,7 +59,11 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
       emit(
         coordinates == null
             ? NearbyShopsLoaded(shops)
-            : _buildLocationReadyState(shops, coordinates),
+            : _buildLocationReadyState(
+                shops,
+                coordinates,
+                locationSource: NearbyLocationSource.device,
+              ),
       );
     });
   }
@@ -74,7 +96,13 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
     final coordinates = result.coordinates;
     if (result.isSuccess && coordinates != null && coordinates.isValid) {
       _lastCoordinates = coordinates;
-      emit(_buildLocationReadyState(latestState.shops, coordinates));
+      emit(
+        _buildLocationReadyState(
+          latestState.shops,
+          coordinates,
+          locationSource: NearbyLocationSource.device,
+        ),
+      );
       return;
     }
 
@@ -88,8 +116,10 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
 
   NearbyShopsLoaded _buildLocationReadyState(
     List<ShopEntity> shops,
-    CustomerCoordinates customerCoordinates,
-  ) {
+    CustomerCoordinates customerCoordinates, {
+    required NearbyLocationSource locationSource,
+    String? locationLabel,
+  }) {
     final rankedShops = <_RankedShop>[];
     final distances = <String, double>{};
 
@@ -130,6 +160,8 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
       rankedShops.map((rankedShop) => rankedShop.shop).toList(growable: false),
       locationStatus: NearbyLocationStatus.ready,
       distanceMetersByShopId: Map<String, double>.unmodifiable(distances),
+      locationSource: locationSource,
+      locationLabel: locationLabel,
     );
   }
 

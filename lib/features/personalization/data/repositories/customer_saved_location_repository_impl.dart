@@ -41,6 +41,26 @@ class CustomerSavedLocationRepositoryImpl
   }
 
   @override
+  Future<Either<String, CustomerSavedLocationEntity?>>
+  getDefaultLocation() async {
+    try {
+      if (_userId.isEmpty) return const Left('not_authenticated');
+
+      final response = await supabaseService.client
+          .from(SupabaseTables.customerSavedLocations)
+          .select()
+          .eq('user_id', _userId)
+          .eq('is_default', true)
+          .maybeSingle();
+
+      if (response == null) return const Right(null);
+      return Right(CustomerSavedLocationModel.fromJson(response));
+    } catch (error) {
+      return Left(error.toString());
+    }
+  }
+
+  @override
   Future<Either<String, CustomerSavedLocationEntity>> addLocation({
     required String name,
     required String addressText,

@@ -4,23 +4,41 @@ import 'package:geolocator/geolocator.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 
 typedef CustomerCoordinatesLoader = Future<CustomerCoordinates> Function();
+typedef CustomerPreferredLocationLoader =
+    Future<CustomerPreferredLocation?> Function();
 
 class GeolocatorCustomerLocationService implements CustomerLocationService {
   static const Duration defaultTimeout = Duration(seconds: 30);
 
   final CustomerCoordinatesLoader _coordinatesLoader;
+  final CustomerPreferredLocationLoader? _preferredLocationLoader;
   final Duration timeout;
   Future<CustomerCoordinates>? _activeCoordinatesRequest;
   CustomerCoordinates? _cachedCoordinates;
 
   GeolocatorCustomerLocationService({
     CustomerCoordinatesLoader? coordinatesLoader,
+    CustomerPreferredLocationLoader? preferredLocationLoader,
     this.timeout = defaultTimeout,
   }) : _coordinatesLoader =
-           coordinatesLoader ?? (() => _loadCoordinates(timeout));
+           coordinatesLoader ?? (() => _loadCoordinates(timeout)),
+       _preferredLocationLoader = preferredLocationLoader;
 
   @override
   CustomerCoordinates? get cachedCoordinates => _cachedCoordinates;
+
+  @override
+  Future<CustomerPreferredLocation?> getPreferredLocation() async {
+    final loader = _preferredLocationLoader;
+    if (loader == null) return null;
+
+    try {
+      final location = await loader();
+      return location?.isValid == true ? location : null;
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   Future<CustomerLocationResult> getCurrentLocation({

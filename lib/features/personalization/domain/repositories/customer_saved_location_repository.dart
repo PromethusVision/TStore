@@ -4,6 +4,8 @@ import 'package:t_store/features/personalization/domain/entities/customer_saved_
 abstract class CustomerSavedLocationRepository {
   Future<Either<String, List<CustomerSavedLocationEntity>>> getLocations();
 
+  Future<Either<String, CustomerSavedLocationEntity?>> getDefaultLocation();
+
   Future<Either<String, CustomerSavedLocationEntity>> addLocation({
     required String name,
     required String addressText,

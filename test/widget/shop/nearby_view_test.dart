@@ -308,6 +308,28 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     });
 
+    testWidgets('ana konumla sıralandığını adıyla açıkça gösterir', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded(
+          [completeShop],
+          locationStatus: NearbyLocationStatus.ready,
+          distanceMetersByShopId: {'shop-1': 1250},
+          locationSource: NearbyLocationSource.savedLocation,
+          locationLabel: 'Ev',
+        ),
+      );
+
+      expect(find.text('Ev konumuna göre sıralandı'), findsOneWidget);
+      expect(find.textContaining('Ana konumunu mağazaları'), findsOneWidget);
+      expect(find.textContaining('mağazalarla paylaşmadık'), findsOneWidget);
+      expect(find.byKey(const Key('nearby-location-action')), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
     testWidgets('does not invent a minimum distance for the same location', (
       tester,
     ) async {

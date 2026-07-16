@@ -8,6 +8,39 @@ import 'package:t_store/features/shop/domain/services/customer_location_service.
 void main() {
   const coordinates = CustomerCoordinates(latitude: 41.043, longitude: 28.876);
 
+  test('geçerli ana konumu cihaz izni istemeden döndürür', () async {
+    const preferredLocation = CustomerPreferredLocation(
+      name: 'Ev',
+      coordinates: coordinates,
+    );
+    var deviceRequestCount = 0;
+    final service = GeolocatorCustomerLocationService(
+      preferredLocationLoader: () async => preferredLocation,
+      coordinatesLoader: () async {
+        deviceRequestCount++;
+        return coordinates;
+      },
+    );
+
+    final result = await service.getPreferredLocation();
+
+    expect(result, preferredLocation);
+    expect(deviceRequestCount, 0);
+  });
+
+  test('ana konum yüklenemezse cihaz konumu akışını bozmaz', () async {
+    final service = GeolocatorCustomerLocationService(
+      preferredLocationLoader: () => throw StateError('database details'),
+      coordinatesLoader: () async => coordinates,
+    );
+
+    expect(await service.getPreferredLocation(), isNull);
+    expect(
+      await service.getCurrentLocation(),
+      const CustomerLocationResult.success(coordinates),
+    );
+  });
+
   test('geçerli koordinatı güvenli sonuç olarak döndürür', () async {
     var invocationCount = 0;
     final service = GeolocatorCustomerLocationService(

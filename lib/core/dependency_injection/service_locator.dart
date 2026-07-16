@@ -213,7 +213,24 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
   sl.registerLazySingleton<CustomerLocationService>(
-    GeolocatorCustomerLocationService.new,
+    () => GeolocatorCustomerLocationService(
+      preferredLocationLoader: () async {
+        final result = await sl<CustomerSavedLocationRepository>()
+            .getDefaultLocation();
+        return result.fold(
+          (_) => null,
+          (location) => location == null
+              ? null
+              : CustomerPreferredLocation(
+                  name: location.name,
+                  coordinates: CustomerCoordinates(
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  ),
+                ),
+        );
+      },
+    ),
   );
 
   // Cubit
