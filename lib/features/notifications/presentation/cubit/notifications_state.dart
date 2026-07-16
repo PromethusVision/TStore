@@ -16,25 +16,42 @@ class NotificationsLoaded extends NotificationsState {
   final List<NotificationEntity> notifications;
   final int unreadCount;
   final bool hasReachedMax;
+  final bool isLoadingMore;
+  final String? loadMoreError;
 
   const NotificationsLoaded({
     required this.notifications,
     this.unreadCount = 0,
     this.hasReachedMax = false,
+    this.isLoadingMore = false,
+    this.loadMoreError,
   });
 
   @override
-  List<Object?> get props => [notifications, unreadCount, hasReachedMax];
+  List<Object?> get props => [
+    notifications,
+    unreadCount,
+    hasReachedMax,
+    isLoadingMore,
+    loadMoreError,
+  ];
 
   NotificationsLoaded copyWith({
     List<NotificationEntity>? notifications,
     int? unreadCount,
     bool? hasReachedMax,
+    bool? isLoadingMore,
+    String? loadMoreError,
+    bool clearLoadMoreError = false,
   }) {
     return NotificationsLoaded(
       notifications: notifications ?? this.notifications,
       unreadCount: unreadCount ?? this.unreadCount,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      loadMoreError: clearLoadMoreError
+          ? null
+          : loadMoreError ?? this.loadMoreError,
     );
   }
 }

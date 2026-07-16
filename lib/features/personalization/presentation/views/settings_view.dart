@@ -12,6 +12,7 @@ import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
+import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
@@ -166,7 +167,17 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.star_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Bildirimlerim'),
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(
+            context,
+            const CustomerNotificationsView(),
+          );
+        },
         title: "Bildirimlerim",
         subtitle: "Kampanya ve alışveriş bildirimlerini görüntüle",
         leading: Icons.notifications_none,

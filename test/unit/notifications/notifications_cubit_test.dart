@@ -112,7 +112,9 @@ void main() {
         act: (cubit) => cubit.getNotifications(),
         expect: () => [
           NotificationsLoading(),
-          const NotificationsError('Failed to load notifications'),
+          const NotificationsError(
+            'Bildirimlerin şu anda yüklenemiyor. Lütfen tekrar dene.',
+          ),
         ],
       );
 

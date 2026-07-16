@@ -11,6 +11,9 @@ import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
+import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
+import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
@@ -35,6 +38,9 @@ class MockRecentlyViewedProductsCubit
     extends MockCubit<RecentlyViewedProductsState>
     implements RecentlyViewedProductsCubit {}
 
+class MockNotificationsCubit extends MockCubit<NotificationsState>
+    implements NotificationsCubit {}
+
 void main() {
   const user = UserEntity(
     id: 'customer-1',
@@ -48,6 +54,7 @@ void main() {
   late MockChatUnreadCubit chatUnreadCubit;
   late MockPurchaseHistoryCubit purchaseHistoryCubit;
   late MockRecentlyViewedProductsCubit recentlyViewedProductsCubit;
+  late MockNotificationsCubit notificationsCubit;
 
   setUp(() async {
     await sl.reset();
@@ -58,6 +65,7 @@ void main() {
     chatUnreadCubit = MockChatUnreadCubit();
     purchaseHistoryCubit = MockPurchaseHistoryCubit();
     recentlyViewedProductsCubit = MockRecentlyViewedProductsCubit();
+    notificationsCubit = MockNotificationsCubit();
 
     whenListen(
       cartV2Cubit,
@@ -93,6 +101,19 @@ void main() {
     when(() => recentlyViewedProductsCubit.close()).thenAnswer((_) async {});
 
     whenListen(
+      notificationsCubit,
+      const Stream<NotificationsState>.empty(),
+      initialState: const NotificationsLoaded(
+        notifications: [],
+        hasReachedMax: true,
+      ),
+    );
+    when(
+      () => notificationsCubit.getNotifications(refresh: any(named: 'refresh')),
+    ).thenAnswer((_) async {});
+    when(() => notificationsCubit.close()).thenAnswer((_) async {});
+
+    whenListen(
       loginAuthCubit,
       const Stream<AuthState>.empty(),
       initialState: AuthInitial(),
@@ -104,6 +125,7 @@ void main() {
     sl.registerFactory<RecentlyViewedProductsCubit>(
       () => recentlyViewedProductsCubit,
     );
+    sl.registerFactory<NotificationsCubit>(() => notificationsCubit);
     sl.registerFactory<AuthCubit>(() => loginAuthCubit);
   });
 
@@ -258,6 +280,26 @@ void main() {
     expect(find.byType(RecentlyViewedProductsView), findsOneWidget);
     expect(find.text('Henüz görüntülediğin ürün yok'), findsOneWidget);
     verify(() => recentlyViewedProductsCubit.load(user.id)).called(1);
+  });
+
+  testWidgets('Bildirimlerim gerçek müşteri bildirimleri ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Bildirimlerim'));
+    await tester.tap(find.text('Bildirimlerim'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CustomerNotificationsView), findsOneWidget);
+    expect(find.text('Henüz bildirimin yok'), findsOneWidget);
+    verify(() => notificationsCubit.getNotifications(refresh: true)).called(1);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (
