@@ -19,6 +19,7 @@ import 'package:t_store/features/personalization/presentation/widgets/app_settin
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
+import 'package:t_store/features/shop/presentation/views/recently_viewed_products_view.dart';
 
 typedef SettingsCurrentUserIdProvider = String? Function();
 
@@ -133,7 +134,17 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.local_offer_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Son Görüntülediklerim'),
+        onTap: () {
+          if (!isLoggedIn || currentUserId == null) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(
+            context,
+            RecentlyViewedProductsView(customerId: currentUserId),
+          );
+        },
         title: "Son Görüntülediklerim",
         subtitle: "İncelediğin ürünlere yeniden ulaş",
         leading: Icons.history_outlined,

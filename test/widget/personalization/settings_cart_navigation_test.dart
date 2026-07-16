@@ -17,6 +17,9 @@ import 'package:t_store/features/purchases/presentation/cubit/purchase_history_c
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
+import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_state.dart';
+import 'package:t_store/features/shop/presentation/views/recently_viewed_products_view.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -27,6 +30,10 @@ class MockChatUnreadCubit extends MockCubit<ChatUnreadState>
 
 class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
     implements PurchaseHistoryCubit {}
+
+class MockRecentlyViewedProductsCubit
+    extends MockCubit<RecentlyViewedProductsState>
+    implements RecentlyViewedProductsCubit {}
 
 void main() {
   const user = UserEntity(
@@ -40,6 +47,7 @@ void main() {
   late MockCartV2Cubit cartV2Cubit;
   late MockChatUnreadCubit chatUnreadCubit;
   late MockPurchaseHistoryCubit purchaseHistoryCubit;
+  late MockRecentlyViewedProductsCubit recentlyViewedProductsCubit;
 
   setUp(() async {
     await sl.reset();
@@ -49,6 +57,7 @@ void main() {
     cartV2Cubit = MockCartV2Cubit();
     chatUnreadCubit = MockChatUnreadCubit();
     purchaseHistoryCubit = MockPurchaseHistoryCubit();
+    recentlyViewedProductsCubit = MockRecentlyViewedProductsCubit();
 
     whenListen(
       cartV2Cubit,
@@ -74,6 +83,16 @@ void main() {
     when(() => purchaseHistoryCubit.close()).thenAnswer((_) async {});
 
     whenListen(
+      recentlyViewedProductsCubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([]),
+    );
+    when(
+      () => recentlyViewedProductsCubit.load(any()),
+    ).thenAnswer((_) async {});
+    when(() => recentlyViewedProductsCubit.close()).thenAnswer((_) async {});
+
+    whenListen(
       loginAuthCubit,
       const Stream<AuthState>.empty(),
       initialState: AuthInitial(),
@@ -82,6 +101,9 @@ void main() {
 
     sl.registerFactory<ChatUnreadCubit>(() => chatUnreadCubit);
     sl.registerFactory<PurchaseHistoryCubit>(() => purchaseHistoryCubit);
+    sl.registerFactory<RecentlyViewedProductsCubit>(
+      () => recentlyViewedProductsCubit,
+    );
     sl.registerFactory<AuthCubit>(() => loginAuthCubit);
   });
 
@@ -216,6 +238,26 @@ void main() {
     expect(find.byType(CustomerRatingsView), findsOneWidget);
     expect(find.text('Henüz değerlendirme yapmadınız'), findsOneWidget);
     verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
+  });
+
+  testWidgets('Son Görüntülediklerim gerçek ürün geçmişi ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Son Görüntülediklerim'));
+    await tester.tap(find.text('Son Görüntülediklerim'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecentlyViewedProductsView), findsOneWidget);
+    expect(find.text('Henüz görüntülediğin ürün yok'), findsOneWidget);
+    verify(() => recentlyViewedProductsCubit.load(user.id)).called(1);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (

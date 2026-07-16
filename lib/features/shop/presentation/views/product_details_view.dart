@@ -1,60 +1,119 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/presentation/widgets/bottom_add_to_cart.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/rating_and_share.dart';
 
-class ProductDetailsView extends StatelessWidget {
+typedef ProductDetailsCurrentUserIdProvider = String? Function();
+
+class ProductDetailsView extends StatefulWidget {
   final ProductEntity product;
+  final RecentlyViewedProductsStorage? recentlyViewedProductsStorage;
+  final ProductDetailsCurrentUserIdProvider? currentUserIdProvider;
 
   const ProductDetailsView({
     super.key,
     required this.product,
+    this.recentlyViewedProductsStorage,
+    this.currentUserIdProvider,
   });
+
+  @override
+  State<ProductDetailsView> createState() => _ProductDetailsViewState();
+}
+
+class _ProductDetailsViewState extends State<ProductDetailsView> {
+  @override
+  void initState() {
+    super.initState();
+    _recordProductView();
+  }
+
+  void _recordProductView() {
+    final customerId =
+        (widget.currentUserIdProvider?.call() ??
+                SupabaseService.instance.currentUser?.id)
+            ?.trim();
+    if (customerId == null || customerId.isEmpty) return;
+
+    final storage =
+        widget.recentlyViewedProductsStorage ??
+        (sl.isRegistered<RecentlyViewedProductsStorage>()
+            ? sl<RecentlyViewedProductsStorage>()
+            : null);
+    if (storage == null) return;
+
+    unawaited(
+      _recordSafely(
+        storage: storage,
+        customerId: customerId,
+        productId: widget.product.id,
+      ),
+    );
+  }
+
+  Future<void> _recordSafely({
+    required RecentlyViewedProductsStorage storage,
+    required String customerId,
+    required String productId,
+  }) async {
+    try {
+      await storage.recordProduct(customerId: customerId, productId: productId);
+    } catch (_) {
+      // Görüntüleme geçmişi temel ürün deneyimini engellememelidir.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomAddToCart(product: product),
-        body: SafeArea(
-          child: SingleChildScrollView(
-              child: Column(
+      bottomNavigationBar: BottomAddToCart(product: widget.product),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProductImageSlider(product: product),
+              ProductImageSlider(product: widget.product),
               Padding(
-                padding: const EdgeInsets.fromLTRB(TSizes.defaultSpace, 0,
-                    TSizes.defaultSpace, TSizes.defaultSpace),
+                padding: const EdgeInsets.fromLTRB(
+                  TSizes.defaultSpace,
+                  0,
+                  TSizes.defaultSpace,
+                  TSizes.defaultSpace,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _ProductInfoCard(product: product),
+                    _ProductInfoCard(product: widget.product),
                     const SizedBox(height: TSizes.spaceBtwSections),
-                    RatingAndShare(product: product),
-                    ProductMetadata(product: product),
-                    const SizedBox(
-                      height: TSizes.spaceBtwSections,
-                    ),
+                    RatingAndShare(product: widget.product),
+                    ProductMetadata(product: widget.product),
+                    const SizedBox(height: TSizes.spaceBtwSections),
                     Text(
                       'Bu ürünü mağaza sepetine eklemek için aşağıdaki esnaflardan seçim yapın.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems),
-                    ProductSellersSection(productId: product.id),
-                    const SizedBox(
-                      height: TSizes.spaceBtwSections,
-                    ),
+                    ProductSellersSection(productId: widget.product.id),
+                    const SizedBox(height: TSizes.spaceBtwSections),
                   ],
                 ),
-              )
+              ),
             ],
-          )),
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -82,9 +141,9 @@ class _ProductInfoCard extends StatelessWidget {
         children: [
           Text(
             product.name,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           Container(
@@ -99,19 +158,19 @@ class _ProductInfoCard extends StatelessWidget {
             child: Text(
               '₺${product.effectivePrice.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w800,
-                  ),
+                color: colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             hasDescription ? description : 'Bu ürün için açıklama eklenmemiş.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: hasDescription
-                      ? colorScheme.onSurface
-                      : colorScheme.onSurfaceVariant,
-                ),
+              color: hasDescription
+                  ? colorScheme.onSurface
+                  : colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),

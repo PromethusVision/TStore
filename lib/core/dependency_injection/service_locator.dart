@@ -13,11 +13,15 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 
 // Products
 import 'package:t_store/features/shop/data/repositories/product_repository_impl.dart';
+import 'package:t_store/features/shop/data/services/shared_preferences_recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/repositories/product_repository.dart';
+import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_product_by_id_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_products_by_ids_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/search_products_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_cubit.dart';
 
 // Shops
 import 'package:t_store/features/shop/data/services/geolocator_customer_location_service.dart';
@@ -171,7 +175,11 @@ Future<void> setupServiceLocator() async {
   // Use Cases
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));
   sl.registerLazySingleton(() => GetProductByIdUsecase(sl()));
+  sl.registerLazySingleton(() => GetProductsByIdsUsecase(sl()));
   sl.registerLazySingleton(() => SearchProductsUsecase(sl()));
+  sl.registerLazySingleton<RecentlyViewedProductsStorage>(
+    SharedPreferencesRecentlyViewedProductsStorage.new,
+  );
 
   // Cubit
   sl.registerFactory(
@@ -179,6 +187,12 @@ Future<void> setupServiceLocator() async {
       getProductsUsecase: sl(),
       getProductByIdUsecase: sl(),
       searchProductsUsecase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => RecentlyViewedProductsCubit(
+      storage: sl(),
+      getProductsByIdsUsecase: sl(),
     ),
   );
 
