@@ -109,4 +109,63 @@ void main() {
     expect(cubit.state, const RecentlyViewedProductsLoaded([]));
     await cubit.close();
   });
+
+  test(
+    'tek ürünü kaldırır ve geri alındığında eski sırasına yerleştirir',
+    () async {
+      when(
+        () => storage.getProductIds('customer-1'),
+      ).thenAnswer((_) async => ['p1', 'p2']);
+      when(
+        () => getProductsByIdsUsecase(['p1', 'p2']),
+      ).thenAnswer((_) async => const Right([firstProduct, secondProduct]));
+      when(
+        () => storage.removeProduct(customerId: 'customer-1', productId: 'p1'),
+      ).thenAnswer((_) async {});
+      when(
+        () => storage.restoreProduct(
+          customerId: 'customer-1',
+          productId: 'p1',
+          position: 0,
+        ),
+      ).thenAnswer((_) async {});
+      final cubit = buildCubit();
+      await cubit.load('customer-1');
+
+      final removal = await cubit.removeProduct('customer-1', 'p1');
+
+      expect(removal?.product, firstProduct);
+      expect(removal?.originalPosition, 0);
+      expect(cubit.state, const RecentlyViewedProductsLoaded([secondProduct]));
+
+      final didRestore = await cubit.restoreProduct('customer-1', removal!);
+
+      expect(didRestore, isTrue);
+      expect(
+        cubit.state,
+        const RecentlyViewedProductsLoaded([firstProduct, secondProduct]),
+      );
+      await cubit.close();
+    },
+  );
+
+  test('kaldırma kaydedilemezse mevcut listeyi korur', () async {
+    when(
+      () => storage.getProductIds('customer-1'),
+    ).thenAnswer((_) async => ['p1']);
+    when(
+      () => getProductsByIdsUsecase(['p1']),
+    ).thenAnswer((_) async => const Right([firstProduct]));
+    when(
+      () => storage.removeProduct(customerId: 'customer-1', productId: 'p1'),
+    ).thenThrow(Exception('kayıt hatası'));
+    final cubit = buildCubit();
+    await cubit.load('customer-1');
+
+    final removal = await cubit.removeProduct('customer-1', 'p1');
+
+    expect(removal, isNull);
+    expect(cubit.state, const RecentlyViewedProductsLoaded([firstProduct]));
+    await cubit.close();
+  });
 }

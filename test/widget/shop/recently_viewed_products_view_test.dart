@@ -120,4 +120,43 @@ void main() {
 
     verify(() => cubit.clear('customer-1')).called(1);
   });
+
+  testWidgets('tek ürünü menüden kaldırır ve geri alma seçeneği sunar', (
+    tester,
+  ) async {
+    const removal = RecentlyViewedProductRemoval(
+      product: firstProduct,
+      originalPosition: 0,
+    );
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+    when(
+      () => cubit.removeProduct('customer-1', firstProduct.id),
+    ).thenAnswer((_) async => removal);
+    when(
+      () => cubit.restoreProduct('customer-1', removal),
+    ).thenAnswer((_) async => true);
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Ürün işlemleri'));
+    await tester.pumpAndSettle();
+    expect(find.text('Geçmişten kaldır'), findsOneWidget);
+
+    await tester.tap(find.text('Geçmişten kaldır'));
+    await tester.pumpAndSettle();
+
+    verify(() => cubit.removeProduct('customer-1', firstProduct.id)).called(1);
+    expect(find.text('Kahve Makinesi geçmişten kaldırıldı.'), findsOneWidget);
+    expect(find.text('Geri Al'), findsOneWidget);
+
+    await tester.tap(find.text('Geri Al'));
+    await tester.pumpAndSettle();
+
+    verify(() => cubit.restoreProduct('customer-1', removal)).called(1);
+  });
 }

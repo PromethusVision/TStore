@@ -8,5 +8,16 @@ abstract class RecentlyViewedProductsStorage {
     required String productId,
   });
 
+  Future<void> removeProduct({
+    required String customerId,
+    required String productId,
+  });
+
+  Future<void> restoreProduct({
+    required String customerId,
+    required String productId,
+    required int position,
+  });
+
   Future<void> clear(String customerId);
 }

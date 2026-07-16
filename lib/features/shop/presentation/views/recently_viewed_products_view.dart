@@ -107,6 +107,7 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
               itemBuilder: (context, index) => _RecentlyViewedProductCard(
                 product: products[index],
                 onTap: () => _openProduct(context, products[index]),
+                onRemove: () => _removeProduct(context, products[index]),
               ),
             ),
           );
@@ -170,16 +171,54 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
       );
     }
   }
+
+  Future<void> _removeProduct(
+    BuildContext context,
+    ProductEntity product,
+  ) async {
+    final cubit = context.read<RecentlyViewedProductsCubit>();
+    final removal = await cubit.removeProduct(customerId, product.id);
+    if (!context.mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+    if (removal == null) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Ürün geçmişten şu anda kaldırılamadı.')),
+      );
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('${product.name} geçmişten kaldırıldı.'),
+        action: SnackBarAction(
+          label: 'Geri Al',
+          onPressed: () async {
+            final didRestore = await cubit.restoreProduct(customerId, removal);
+            if (!didRestore && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ürün geçmişe geri eklenemedi.')),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
 }
+
+enum _RecentlyViewedProductAction { remove }
 
 class _RecentlyViewedProductCard extends StatelessWidget {
   const _RecentlyViewedProductCard({
     required this.product,
     required this.onTap,
+    required this.onRemove,
   });
 
   final ProductEntity product;
   final VoidCallback onTap;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +285,41 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: TSizes.sm),
-                Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+                PopupMenuButton<_RecentlyViewedProductAction>(
+                  tooltip: 'Ürün işlemleri',
+                  onSelected: (action) {
+                    if (action == _RecentlyViewedProductAction.remove) {
+                      onRemove();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: _RecentlyViewedProductAction.remove,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete_outline,
+                            color: colorScheme.error,
+                            size: 20,
+                          ),
+                          const SizedBox(width: TSizes.sm),
+                          Flexible(
+                            child: Text(
+                              'Geçmişten kaldır',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: colorScheme.error),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),

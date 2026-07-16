@@ -49,4 +49,20 @@ void main() {
       expect(await storage.getProductIds('customer-2'), ['p2']);
     },
   );
+
+  test('tek ürünü kaldırır ve önceki konumuna geri getirir', () async {
+    await storage.recordProduct(customerId: 'customer-1', productId: 'p1');
+    await storage.recordProduct(customerId: 'customer-1', productId: 'p2');
+    await storage.recordProduct(customerId: 'customer-1', productId: 'p3');
+
+    await storage.removeProduct(customerId: 'customer-1', productId: 'p2');
+    expect(await storage.getProductIds('customer-1'), ['p3', 'p1']);
+
+    await storage.restoreProduct(
+      customerId: 'customer-1',
+      productId: 'p2',
+      position: 1,
+    );
+    expect(await storage.getProductIds('customer-1'), ['p3', 'p2', 'p1']);
+  });
 }
