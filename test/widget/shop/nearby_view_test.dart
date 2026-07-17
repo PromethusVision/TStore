@@ -68,7 +68,10 @@ void main() {
     );
   }
 
-  Widget buildNearbyView({TextScaler? textScaler}) {
+  Widget buildNearbyView({
+    TextScaler? textScaler,
+    Future<void> Function()? onChangeLocationRequested,
+  }) {
     return MaterialApp(
       builder: textScaler == null
           ? null
@@ -78,7 +81,7 @@ void main() {
             ),
       home: BlocProvider<CartV2Cubit>.value(
         value: cartV2Cubit,
-        child: const NearbyView(),
+        child: NearbyView(onChangeLocationRequested: onChangeLocationRequested),
       ),
     );
   }
@@ -87,9 +90,15 @@ void main() {
     WidgetTester tester,
     NearbyShopsState state, {
     TextScaler? textScaler,
+    Future<void> Function()? onChangeLocationRequested,
   }) async {
     stubNearbyState(state);
-    await tester.pumpWidget(buildNearbyView(textScaler: textScaler));
+    await tester.pumpWidget(
+      buildNearbyView(
+        textScaler: textScaler,
+        onChangeLocationRequested: onChangeLocationRequested,
+      ),
+    );
     await tester.pump();
   }
 
@@ -304,6 +313,7 @@ void main() {
       expect(find.text('Yaklaşık 1,3 km'), findsOneWidget);
       expect(find.text('Konum bilgisi mevcut'), findsNothing);
       expect(find.byKey(const Key('nearby-location-action')), findsNothing);
+      expect(find.byKey(const Key('nearby-change-location')), findsNothing);
 
       await tester.pumpWidget(const SizedBox.shrink());
     });
@@ -326,9 +336,45 @@ void main() {
       expect(find.textContaining('Ana konumunu mağazaları'), findsOneWidget);
       expect(find.textContaining('mağazalarla paylaşmadık'), findsOneWidget);
       expect(find.byKey(const Key('nearby-location-action')), findsNothing);
+      expect(find.text('Konumu Değiştir'), findsOneWidget);
+      expect(find.byKey(const Key('nearby-change-location')), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
     });
+
+    testWidgets(
+      'reloads nearby shops after the customer changes the saved location',
+      (tester) async {
+        var locationChangeCompleted = false;
+
+        await pumpNearbyView(
+          tester,
+          const NearbyShopsLoaded(
+            [completeShop],
+            locationStatus: NearbyLocationStatus.ready,
+            distanceMetersByShopId: {'shop-1': 1250},
+            locationSource: NearbyLocationSource.savedLocation,
+            locationLabel: 'Ev',
+          ),
+          onChangeLocationRequested: () async {
+            locationChangeCompleted = true;
+          },
+        );
+
+        clearInteractions(nearbyShopsCubit);
+        when(() => nearbyShopsCubit.loadShops()).thenAnswer((_) async {
+          expect(locationChangeCompleted, isTrue);
+        });
+
+        await tester.tap(find.byKey(const Key('nearby-change-location')));
+        await tester.pumpAndSettle();
+
+        expect(locationChangeCompleted, isTrue);
+        verify(() => nearbyShopsCubit.loadShops()).called(1);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+    );
 
     testWidgets('does not invent a minimum distance for the same location', (
       tester,
@@ -495,5 +541,38 @@ void main() {
 
       await tester.pumpWidget(const SizedBox.shrink());
     });
+
+    testWidgets(
+      'keeps the saved location shortcut usable on a narrow large-text screen',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(320, 568);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await pumpNearbyView(
+          tester,
+          const NearbyShopsLoaded(
+            [completeShop],
+            locationStatus: NearbyLocationStatus.ready,
+            distanceMetersByShopId: {'shop-1': 1250},
+            locationSource: NearbyLocationSource.savedLocation,
+            locationLabel: 'Çok Uzun İsimli Ana Konumum',
+          ),
+          textScaler: const TextScaler.linear(2),
+        );
+
+        expect(find.text('Konumu Değiştir'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+
+        await tester.ensureVisible(
+          find.byKey(const Key('nearby-change-location')),
+        );
+        await tester.pump();
+        expect(tester.takeException(), isNull);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+    );
   });
 }

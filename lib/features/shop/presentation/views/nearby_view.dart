@@ -10,6 +10,7 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
@@ -18,19 +19,25 @@ import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
 class NearbyView extends StatelessWidget {
-  const NearbyView({super.key});
+  final Future<void> Function()? onChangeLocationRequested;
+
+  const NearbyView({super.key, this.onChangeLocationRequested});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<NearbyShopsCubit>()..loadShops(),
-      child: const _NearbyContent(),
+      child: _NearbyContent(
+        onChangeLocationRequested: onChangeLocationRequested,
+      ),
     );
   }
 }
 
 class _NearbyContent extends StatelessWidget {
-  const _NearbyContent();
+  final Future<void> Function()? onChangeLocationRequested;
+
+  const _NearbyContent({this.onChangeLocationRequested});
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +110,8 @@ class _NearbyContent extends StatelessWidget {
                         state: state,
                         onLocationRequested: () =>
                             _showLocationExplanation(context),
+                        onSavedLocationRequested: () =>
+                            _openSavedLocations(context),
                         onRefresh: context.read<NearbyShopsCubit>().loadShops,
                       );
                     }
@@ -158,16 +167,34 @@ class _NearbyContent extends StatelessWidget {
     if (shouldUseLocation != true || !context.mounted) return;
     await context.read<NearbyShopsCubit>().useCurrentLocation();
   }
+
+  Future<void> _openSavedLocations(BuildContext context) async {
+    final callback = onChangeLocationRequested;
+    if (callback != null) {
+      await callback();
+    } else {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const CustomerSavedLocationsView(),
+        ),
+      );
+    }
+
+    if (!context.mounted) return;
+    await context.read<NearbyShopsCubit>().loadShops();
+  }
 }
 
 class _LoadedNearbyShops extends StatelessWidget {
   final NearbyShopsLoaded state;
   final VoidCallback onLocationRequested;
+  final VoidCallback onSavedLocationRequested;
   final Future<void> Function() onRefresh;
 
   const _LoadedNearbyShops({
     required this.state,
     required this.onLocationRequested,
+    required this.onSavedLocationRequested,
     required this.onRefresh,
   });
 
@@ -190,6 +217,7 @@ class _LoadedNearbyShops extends StatelessWidget {
               locationSource: state.locationSource,
               locationLabel: state.locationLabel,
               onLocationRequested: onLocationRequested,
+              onSavedLocationRequested: onSavedLocationRequested,
             );
           }
 
@@ -211,6 +239,7 @@ class _NearbyLocationCard extends StatelessWidget {
   final NearbyLocationSource? locationSource;
   final String? locationLabel;
   final VoidCallback onLocationRequested;
+  final VoidCallback onSavedLocationRequested;
 
   const _NearbyLocationCard({
     required this.status,
@@ -218,12 +247,17 @@ class _NearbyLocationCard extends StatelessWidget {
     required this.locationSource,
     required this.locationLabel,
     required this.onLocationRequested,
+    required this.onSavedLocationRequested,
   });
 
   @override
   Widget build(BuildContext context) {
     final content = _contentForStatus();
     final colorScheme = Theme.of(context).colorScheme;
+    final canChangeSavedLocation =
+        status == NearbyLocationStatus.ready &&
+        locationSource == NearbyLocationSource.savedLocation &&
+        locationLabel?.trim().isNotEmpty == true;
 
     return Card(
       key: const Key('nearby-location-card'),
@@ -268,6 +302,31 @@ class _NearbyLocationCard extends StatelessWidget {
                       onPressed: onLocationRequested,
                       icon: const Icon(Icons.my_location_outlined, size: 18),
                       label: Text(content.actionLabel!),
+                    ),
+                  ] else if (canChangeSavedLocation) ...[
+                    const SizedBox(height: TSizes.xs),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        key: const Key('nearby-change-location'),
+                        onPressed: onSavedLocationRequested,
+                        style: TextButton.styleFrom(
+                          alignment: Alignment.centerRight,
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.edit_location_alt_outlined, size: 18),
+                            SizedBox(width: TSizes.xs),
+                            Expanded(
+                              child: Text(
+                                'Konumu Değiştir',
+                                textAlign: TextAlign.end,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ],
@@ -411,7 +470,6 @@ class _NearbyShopCard extends StatelessWidget {
                       if (shop.rating > 0) ...[
                         const SizedBox(height: TSizes.xs),
                         Row(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.star_rounded,
@@ -419,9 +477,11 @@ class _NearbyShopCard extends StatelessWidget {
                               color: colorScheme.primary,
                             ),
                             const SizedBox(width: TSizes.xs),
-                            Text(
-                              'Puan ${shop.rating.toStringAsFixed(1)}',
-                              style: Theme.of(context).textTheme.bodySmall,
+                            Expanded(
+                              child: Text(
+                                'Puan ${shop.rating.toStringAsFixed(1)}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
                             ),
                           ],
                         ),
