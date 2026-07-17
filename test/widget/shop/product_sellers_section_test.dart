@@ -86,7 +86,10 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject({TextScaler? textScaler}) {
+  Widget buildSubject({
+    TextScaler? textScaler,
+    Future<void> Function()? onChangeLocationRequested,
+  }) {
     return MaterialApp(
       builder: textScaler == null
           ? null
@@ -98,7 +101,10 @@ void main() {
         body: SingleChildScrollView(
           child: BlocProvider<CartV2Cubit>.value(
             value: cartV2Cubit,
-            child: const ProductSellersSection(productId: 'product-1'),
+            child: ProductSellersSection(
+              productId: 'product-1',
+              onChangeLocationRequested: onChangeLocationRequested,
+            ),
           ),
         ),
       ),
@@ -158,9 +164,97 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('product-seller-change-location')),
+      findsOneWidget,
+    );
     verify(() => customerLocationService.getPreferredLocation()).called(1);
     verifyNever(() => customerLocationService.getCurrentLocation());
   });
+
+  testWidgets(
+    'konum değişikliğinden dönünce etiketi ve satıcı sırasını yeniler',
+    (tester) async {
+      const home = CustomerPreferredLocation(
+        name: 'Ev',
+        coordinates: CustomerCoordinates(latitude: 41, longitude: 29),
+      );
+      const work = CustomerPreferredLocation(
+        name: 'İş',
+        coordinates: CustomerCoordinates(latitude: 41.02, longitude: 29),
+      );
+      CustomerPreferredLocation? activeLocation = home;
+      var changeCount = 0;
+      when(
+        () => customerLocationService.getPreferredLocation(),
+      ).thenAnswer((_) async => activeLocation);
+      final sellers = [
+        seller(
+          id: 'home',
+          name: 'Eve Yakın Esnaf',
+          latitude: 41.001,
+          longitude: 29,
+        ),
+        seller(
+          id: 'work',
+          name: 'İşe Yakın Esnaf',
+          latitude: 41.019,
+          longitude: 29,
+        ),
+      ];
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer((_) async => Right(sellers));
+
+      await tester.pumpWidget(
+        buildSubject(
+          onChangeLocationRequested: () async {
+            changeCount++;
+            activeLocation = changeCount == 1 ? work : null;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        displayedSellerIds(tester),
+        orderedEquals(const ['product-seller-home', 'product-seller-work']),
+      );
+      expect(
+        find.text('Ev konumuna göre mesafeler gösteriliyor'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const Key('product-seller-change-location')));
+      await tester.pumpAndSettle();
+
+      expect(
+        displayedSellerIds(tester),
+        orderedEquals(const ['product-seller-work', 'product-seller-home']),
+      );
+      expect(
+        find.text('İş konumuna göre mesafeler gösteriliyor'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const Key('product-seller-change-location')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('product-seller-change-location')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('product-seller-sort-button')),
+          matching: find.text('Sırala'),
+        ),
+        findsOneWidget,
+      );
+      verify(() => customerLocationService.getPreferredLocation()).called(3);
+      verifyNever(() => customerLocationService.getCurrentLocation());
+    },
+  );
 
   testWidgets('konum yokken satıcı sırasını ve mevcut ipuçlarını korur', (
     tester,
@@ -452,6 +546,12 @@ void main() {
       ]),
     );
     cachedCoordinates = const CustomerCoordinates(latitude: 41, longitude: 29);
+    when(() => customerLocationService.getPreferredLocation()).thenAnswer(
+      (_) async => const CustomerPreferredLocation(
+        name: 'Çok Uzun Kayıtlı Ana Konum Adı',
+        coordinates: CustomerCoordinates(latitude: 41, longitude: 29),
+      ),
+    );
 
     tester.view.physicalSize = const Size(320, 900);
     tester.view.devicePixelRatio = 1;
@@ -464,6 +564,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('product-seller-long')), findsOneWidget);
+    expect(
+      find.byKey(const Key('product-seller-change-location')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 }

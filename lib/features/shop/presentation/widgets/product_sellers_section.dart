@@ -9,6 +9,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
@@ -17,8 +18,13 @@ import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart'
 
 class ProductSellersSection extends StatefulWidget {
   final String productId;
+  final Future<void> Function()? onChangeLocationRequested;
 
-  const ProductSellersSection({super.key, required this.productId});
+  const ProductSellersSection({
+    super.key,
+    required this.productId,
+    this.onChangeLocationRequested,
+  });
 
   @override
   State<ProductSellersSection> createState() => _ProductSellersSectionState();
@@ -135,6 +141,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                     const SizedBox(height: TSizes.sm),
                     _PreferredLocationNotice(
                       locationName: preferredLocation.name,
+                      onChangeLocation: _openSavedLocations,
                     ),
                   ],
                   const SizedBox(height: TSizes.spaceBtwItems),
@@ -164,9 +171,39 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
 
   Future<void> _loadPreferredLocation() async {
     final location = await _customerLocationService.getPreferredLocation();
-    if (!mounted || location == null || !location.isValid) return;
+    if (!mounted) return;
 
-    setState(() => _preferredLocation = location);
+    final nextLocation = location?.isValid == true ? location : null;
+    final hasDeviceLocation =
+        _customerLocationService.cachedCoordinates?.isValid ?? false;
+    final shouldClearNearest =
+        nextLocation == null &&
+        !hasDeviceLocation &&
+        _selectedSortOption == _SellerSortOption.nearest;
+    if (_preferredLocation == nextLocation && !shouldClearNearest) return;
+
+    setState(() {
+      _preferredLocation = nextLocation;
+      if (shouldClearNearest) {
+        _selectedSortOption = null;
+      }
+    });
+  }
+
+  Future<void> _openSavedLocations() async {
+    final onChangeLocationRequested = widget.onChangeLocationRequested;
+    if (onChangeLocationRequested != null) {
+      await onChangeLocationRequested();
+    } else {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const CustomerSavedLocationsView(),
+        ),
+      );
+    }
+
+    if (!mounted) return;
+    await _loadPreferredLocation();
   }
 
   List<_RankedSeller> _sortSellers(
@@ -611,8 +648,12 @@ class _LocationHintChip extends StatelessWidget {
 
 class _PreferredLocationNotice extends StatelessWidget {
   final String locationName;
+  final VoidCallback onChangeLocation;
 
-  const _PreferredLocationNotice({required this.locationName});
+  const _PreferredLocationNotice({
+    required this.locationName,
+    required this.onChangeLocation,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -631,21 +672,35 @@ class _PreferredLocationNotice extends StatelessWidget {
           color: colorScheme.primaryContainer.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(TSizes.cardRadiusSm),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.bookmark_added_outlined,
-              size: 18,
-              color: colorScheme.onPrimaryContainer,
-            ),
-            const SizedBox(width: TSizes.sm),
-            Expanded(
-              child: Text(
-                '$normalizedName konumuna göre mesafeler gösteriliyor',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            Row(
+              children: [
+                Icon(
+                  Icons.bookmark_added_outlined,
+                  size: 18,
                   color: colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w600,
                 ),
+                const SizedBox(width: TSizes.sm),
+                Expanded(
+                  child: Text(
+                    '$normalizedName konumuna göre mesafeler gösteriliyor',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                key: const Key('product-seller-change-location'),
+                onPressed: onChangeLocation,
+                icon: const Icon(Icons.edit_location_alt_outlined, size: 18),
+                label: const Text('Konumu Değiştir'),
               ),
             ),
           ],
