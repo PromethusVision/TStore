@@ -8,6 +8,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -20,6 +21,9 @@ class MockSignUpUsecase extends Mock implements SignUpUsecase {}
 class MockSignOutUsecase extends Mock implements SignOutUsecase {}
 
 class MockResetPasswordUsecase extends Mock implements ResetPasswordUsecase {}
+
+class MockResendConfirmationUsecase extends Mock
+    implements ResendConfirmationUsecase {}
 
 class MockGetCurrentUserUsecase extends Mock implements GetCurrentUserUsecase {}
 
@@ -36,6 +40,7 @@ void main() {
   late MockSignUpUsecase mockSignUpUsecase;
   late MockSignOutUsecase mockSignOutUsecase;
   late MockResetPasswordUsecase mockResetPasswordUsecase;
+  late MockResendConfirmationUsecase mockResendConfirmationUsecase;
   late MockGetCurrentUserUsecase mockGetCurrentUserUsecase;
 
   setUpAll(() {
@@ -49,6 +54,7 @@ void main() {
     mockSignUpUsecase = MockSignUpUsecase();
     mockSignOutUsecase = MockSignOutUsecase();
     mockResetPasswordUsecase = MockResetPasswordUsecase();
+    mockResendConfirmationUsecase = MockResendConfirmationUsecase();
     mockGetCurrentUserUsecase = MockGetCurrentUserUsecase();
 
     authCubit = AuthCubit(
@@ -56,6 +62,7 @@ void main() {
       signUpUsecase: mockSignUpUsecase,
       signOutUsecase: mockSignOutUsecase,
       resetPasswordUsecase: mockResetPasswordUsecase,
+      resendConfirmationUsecase: mockResendConfirmationUsecase,
       getCurrentUserUsecase: mockGetCurrentUserUsecase,
     );
   });
@@ -120,9 +127,9 @@ void main() {
 
       test('user receives error state with invalid credentials', () async {
         // Arrange
-        when(() => mockSignInUsecase(any())).thenAnswer(
-          (_) async => const Left('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
-        );
+        when(
+          () => mockSignInUsecase(any()),
+        ).thenAnswer((_) async => const Left('E-posta veya şifre hatalı.'));
 
         // Act
         await authCubit.signIn(email: testEmail, password: 'wrong');
@@ -130,7 +137,7 @@ void main() {
         // Assert
         expect(authCubit.state, isA<AuthError>());
         final state = authCubit.state as AuthError;
-        expect(state.message, contains('غير صحيحة'));
+        expect(state.message, contains('şifre hatalı'));
       });
 
       test(
@@ -138,7 +145,8 @@ void main() {
         () async {
           // Arrange
           when(() => mockSignInUsecase(any())).thenAnswer(
-            (_) async => const Left('يرجى تأكيد بريدك الإلكتروني أولاً'),
+            (_) async =>
+                const Left('E-posta adresinizi doğrulamanız gerekiyor.'),
           );
 
           // Act

@@ -10,7 +10,7 @@ import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart'
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/legal/legal_document_views.dart';
-import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/auth/presentation/views/signup/verify_email_view.dart';
 
 import 'terms_and_privacy_agreement.dart';
 
@@ -81,15 +81,11 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthEmailConfirmationRequired) {
-          THelperFunctions.showSnackBar(
-            context: context,
-            message: 'Doğrulama bağlantısı ${state.email} adresine gönderildi.',
-            type: SnackBarType.success,
-          );
-
-          THelperFunctions.navigateReplacementToScreen(
-            context,
-            const LoginView(),
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute<void>(
+              builder: (_) => VerifyEmailView(email: state.email),
+            ),
+            (_) => false,
           );
         } else if (state is AuthError) {
           THelperFunctions.showSnackBar(

@@ -38,19 +38,19 @@ class TTexts {
   static const String newPassword = "Yeni Şifre";
   static const String username = "Username";
   static const String phoneNo = "Telefon Numarası";
-  static const String rememberMe = "Remember Me";
-  static const String forgetPassword = "Forget Password?";
-  static const String signIn = "Sign In";
+  static const String rememberMe = "Beni Hatırla";
+  static const String forgetPassword = "Şifremi Unuttum";
+  static const String signIn = "Giriş Yap";
   static const String createAccount = "Hesap Oluştur";
   static const String loading = "İşleniyor...";
-  static const String orSignInWith = "Or  Sign In With";
+  static const String orSignInWith = "veya şununla giriş yap";
   static const String orSignUpWith = "or sign up with";
   static const String iAgreeTo = "I agree to";
   static const String privacyPolicy = "Privacy Policy";
   static const String termsOfUse = "Terms of use";
   static const String verificationCode = "verificationCode";
-  static const String resendEmail = "Resend Email";
-  static const String resendEmailIn = "Resend email in";
+  static const String resendEmail = "E-postayı Yeniden Gönder";
+  static const String resendEmailIn = "Yeniden gönder";
 
   // -- Authentication Headings
   static const String loginTitle = "Hoş geldiniz,";
@@ -64,12 +64,11 @@ class TTexts {
       "Şifre sıfırlama e-postası gönderildi";
   static const String changeYourPasswordSubTitle =
       "Hesap güvenliğiniz önceliğimiz. Şifrenizi güvenle değiştirmek için bağlantı gönderildi.";
-  static const String confirmEmailTitle = "E-posta adresinizi doğrulayın!";
-  static const String confirmEmail = "hmdy7486@gmail.com";
+  static const String confirmEmailTitle = "E-posta adresinizi doğrulayın";
   static const String confirmEmailSubTitle =
       "E-postanızı doğrulayın; mahallenizdeki esnafı keşfetmeye başlayın.";
   static const String emailNotReceivedMessage =
-      "Didn’t get the email? Check your junk/spam or resend it.";
+      "E-postayı göremiyorsanız spam veya gereksiz klasörünü kontrol edin.";
   static const String yourAccountCreatedTitle =
       "Hesabınız başarıyla oluşturuldu!";
   static const String yourAccountCreatedSubTitle =

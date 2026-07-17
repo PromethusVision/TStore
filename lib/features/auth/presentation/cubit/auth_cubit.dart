@@ -5,6 +5,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 
@@ -13,6 +14,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SignUpUsecase signUpUsecase;
   final SignOutUsecase signOutUsecase;
   final ResetPasswordUsecase resetPasswordUsecase;
+  final ResendConfirmationUsecase resendConfirmationUsecase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
 
   AuthCubit({
@@ -20,6 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.signUpUsecase,
     required this.signOutUsecase,
     required this.resetPasswordUsecase,
+    required this.resendConfirmationUsecase,
     required this.getCurrentUserUsecase,
   }) : super(AuthInitial());
 
@@ -45,7 +48,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
 
     result.fold((error) {
-      if (error.contains('تأكيد بريدك')) {
+      if (error.contains('doğrulamanız gerekiyor')) {
         emit(AuthEmailConfirmationRequired(email));
       } else {
         emit(AuthError(error));
@@ -99,6 +102,19 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (error) => emit(AuthError(error)),
       (_) => emit(AuthPasswordResetSent(email)),
+    );
+  }
+
+  Future<void> resendConfirmation(String email) async {
+    if (state is AuthLoading) return;
+
+    emit(AuthLoading());
+
+    final result = await resendConfirmationUsecase(email);
+
+    result.fold(
+      (error) => emit(AuthError(error)),
+      (_) => emit(AuthConfirmationResent(email)),
     );
   }
 

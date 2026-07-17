@@ -63,4 +63,42 @@ void main() {
       );
     },
   );
+
+  test('unconfirmed email error is returned in Turkish', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.signIn(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      ),
+    ).thenThrow(const AuthException('Email not confirmed'));
+
+    final result = await repository.signIn(
+      email: 'customer@example.com',
+      password: 'Strong1!',
+    );
+
+    expect(
+      result.fold((error) => error, (_) => ''),
+      'E-posta adresinizi doğrulamanız gerekiyor.',
+    );
+  });
+
+  test('resend rate limit is not mistaken for an invalid email', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.resendConfirmation('customer@example.com'),
+    ).thenThrow(const AuthException('Email rate limit exceeded'));
+
+    final result = await repository.resendConfirmation('customer@example.com');
+
+    expect(
+      result.fold((error) => error, (_) => ''),
+      'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.',
+    );
+  });
 }

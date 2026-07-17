@@ -9,6 +9,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -266,6 +267,38 @@ void main() {
       final result = await usecase(testEmail);
 
       // Assert
+      expect(result, const Left(errorMessage));
+    });
+  });
+
+  group('ResendConfirmationUsecase', () {
+    late ResendConfirmationUsecase usecase;
+
+    setUp(() {
+      usecase = ResendConfirmationUsecase(mockRepository);
+    });
+
+    const testEmail = 'test@example.com';
+
+    test('resends the confirmation email', () async {
+      when(
+        () => mockRepository.resendConfirmation(testEmail),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await usecase(testEmail);
+
+      expect(result.isRight(), true);
+      verify(() => mockRepository.resendConfirmation(testEmail)).called(1);
+    });
+
+    test('returns the resend error', () async {
+      const errorMessage = 'Çok fazla deneme yapıldı.';
+      when(
+        () => mockRepository.resendConfirmation(testEmail),
+      ).thenAnswer((_) async => const Left(errorMessage));
+
+      final result = await usecase(testEmail);
+
       expect(result, const Left(errorMessage));
     });
   });

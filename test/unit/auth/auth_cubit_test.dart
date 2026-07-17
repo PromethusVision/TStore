@@ -9,6 +9,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -21,6 +22,9 @@ class MockSignUpUsecase extends Mock implements SignUpUsecase {}
 class MockSignOutUsecase extends Mock implements SignOutUsecase {}
 
 class MockResetPasswordUsecase extends Mock implements ResetPasswordUsecase {}
+
+class MockResendConfirmationUsecase extends Mock
+    implements ResendConfirmationUsecase {}
 
 class MockGetCurrentUserUsecase extends Mock implements GetCurrentUserUsecase {}
 
@@ -37,6 +41,7 @@ void main() {
   late MockSignUpUsecase mockSignUpUsecase;
   late MockSignOutUsecase mockSignOutUsecase;
   late MockResetPasswordUsecase mockResetPasswordUsecase;
+  late MockResendConfirmationUsecase mockResendConfirmationUsecase;
   late MockGetCurrentUserUsecase mockGetCurrentUserUsecase;
 
   setUpAll(() {
@@ -50,6 +55,7 @@ void main() {
     mockSignUpUsecase = MockSignUpUsecase();
     mockSignOutUsecase = MockSignOutUsecase();
     mockResetPasswordUsecase = MockResetPasswordUsecase();
+    mockResendConfirmationUsecase = MockResendConfirmationUsecase();
     mockGetCurrentUserUsecase = MockGetCurrentUserUsecase();
 
     authCubit = AuthCubit(
@@ -57,6 +63,7 @@ void main() {
       signUpUsecase: mockSignUpUsecase,
       signOutUsecase: mockSignOutUsecase,
       resetPasswordUsecase: mockResetPasswordUsecase,
+      resendConfirmationUsecase: mockResendConfirmationUsecase,
       getCurrentUserUsecase: mockGetCurrentUserUsecase,
     );
   });
@@ -149,9 +156,10 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'emits [AuthLoading, AuthEmailConfirmationRequired] when email not confirmed',
         build: () {
-          when(
-            () => mockSignInUsecase(any()),
-          ).thenAnswer((_) async => const Left('يرجى تأكيد بريدك الإلكتروني'));
+          when(() => mockSignInUsecase(any())).thenAnswer(
+            (_) async =>
+                const Left('E-posta adresinizi doğrulamanız gerekiyor.'),
+          );
           return authCubit;
         },
         act: (cubit) => cubit.signIn(email: testEmail, password: testPassword),
@@ -284,6 +292,46 @@ void main() {
         },
         act: (cubit) => cubit.resetPassword(testEmail),
         expect: () => [AuthLoading(), const AuthError('Email not found')],
+      );
+    });
+
+    group('resendConfirmation', () {
+      blocTest<AuthCubit, AuthState>(
+        'emits success after confirmation email is resent',
+        build: () {
+          when(
+            () => mockResendConfirmationUsecase(testEmail),
+          ).thenAnswer((_) async => const Right(null));
+          return authCubit;
+        },
+        act: (cubit) => cubit.resendConfirmation(testEmail),
+        expect: () => [AuthLoading(), const AuthConfirmationResent(testEmail)],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'emits error when confirmation email cannot be resent',
+        build: () {
+          when(
+            () => mockResendConfirmationUsecase(testEmail),
+          ).thenAnswer((_) async => const Left('Çok fazla deneme yapıldı.'));
+          return authCubit;
+        },
+        act: (cubit) => cubit.resendConfirmation(testEmail),
+        expect: () => [
+          AuthLoading(),
+          const AuthError('Çok fazla deneme yapıldı.'),
+        ],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'ignores a second resend while an auth request is loading',
+        build: () => authCubit,
+        seed: AuthLoading.new,
+        act: (cubit) => cubit.resendConfirmation(testEmail),
+        expect: () => <AuthState>[],
+        verify: (_) {
+          verifyNever(() => mockResendConfirmationUsecase(any()));
+        },
       );
     });
 

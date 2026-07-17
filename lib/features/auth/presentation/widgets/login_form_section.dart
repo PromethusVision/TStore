@@ -11,16 +11,14 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
+import 'package:t_store/features/auth/presentation/views/signup/verify_email_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 
 class LoginFormSection extends StatefulWidget {
   final bool isMerchantLogin;
 
-  const LoginFormSection({
-    super.key,
-    this.isMerchantLogin = false,
-  });
+  const LoginFormSection({super.key, this.isMerchantLogin = false});
 
   @override
   State<LoginFormSection> createState() => _LoginFormSectionState();
@@ -43,9 +41,9 @@ class _LoginFormSectionState extends State<LoginFormSection> {
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthCubit>().signIn(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-          );
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
     }
   }
 
@@ -119,7 +117,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
 
           THelperFunctions.showSnackBar(
             context: context,
-            message: 'مرحباً بعودتك',
+            message: 'Tekrar hoş geldiniz.',
             type: SnackBarType.success,
           );
 
@@ -139,17 +137,19 @@ class _LoginFormSectionState extends State<LoginFormSection> {
             type: SnackBarType.error,
           );
         } else if (state is AuthEmailConfirmationRequired) {
-          THelperFunctions.showSnackBar(
-            context: context,
-            message: 'يرجى تأكيد بريدك الإلكتروني: ${state.email}',
-            type: SnackBarType.warning,
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute<void>(
+              builder: (_) => VerifyEmailView(email: state.email),
+            ),
+            (_) => false,
           );
         }
       },
       builder: (context, state) {
         return Padding(
-          padding:
-              const EdgeInsets.symmetric(vertical: TSizes.spaceBtwSections),
+          padding: const EdgeInsets.symmetric(
+            vertical: TSizes.spaceBtwSections,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -163,7 +163,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'E-posta adresinizi girin.';
                     }
                     return null;
                   },
@@ -188,7 +188,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Şifrenizi girin.';
                     }
                     return null;
                   },

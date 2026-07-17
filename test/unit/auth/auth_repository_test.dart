@@ -62,10 +62,7 @@ void main() {
               email: testEmail,
               password: 'wrongpassword',
             ),
-          ).thenAnswer(
-            (_) async =>
-                const Left('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
-          );
+          ).thenAnswer((_) async => const Left('E-posta veya şifre hatalı.'));
 
           // Act
           final result = await mockRepository.signIn(
@@ -76,7 +73,7 @@ void main() {
           // Assert
           expect(result.isLeft(), true);
           result.fold(
-            (error) => expect(error, contains('غير صحيحة')),
+            (error) => expect(error, contains('şifre hatalı')),
             (user) => fail('Expected Left but got Right'),
           );
         },
@@ -87,7 +84,7 @@ void main() {
         when(
           () => mockRepository.signIn(email: testEmail, password: testPassword),
         ).thenAnswer(
-          (_) async => const Left('يرجى تأكيد بريدك الإلكتروني أولاً'),
+          (_) async => const Left('E-posta adresinizi doğrulamanız gerekiyor.'),
         );
 
         // Act
@@ -99,7 +96,7 @@ void main() {
         // Assert
         expect(result.isLeft(), true);
         result.fold(
-          (error) => expect(error, contains('تأكيد بريدك')),
+          (error) => expect(error, contains('doğrulamanız gerekiyor')),
           (user) => fail('Expected Left but got Right'),
         );
       });

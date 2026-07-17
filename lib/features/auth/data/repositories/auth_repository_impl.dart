@@ -237,23 +237,23 @@ class AuthRepositoryImpl implements AuthRepository {
   String _getAuthErrorMessage(String message) {
     final lowerMessage = message.toLowerCase();
 
+    if (lowerMessage.contains('rate limit')) {
+      return 'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
+    }
     if (lowerMessage.contains('invalid login credentials')) {
-      return 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+      return 'E-posta veya şifre hatalı.';
     }
     if (lowerMessage.contains('email not confirmed')) {
-      return 'يرجى تأكيد بريدك الإلكتروني أولاً';
+      return 'E-posta adresinizi doğrulamanız gerekiyor.';
     }
     if (lowerMessage.contains('user already registered')) {
-      return 'هذا البريد الإلكتروني مسجل بالفعل';
+      return 'Bu e-posta adresiyle daha önce hesap oluşturulmuş.';
     }
     if (lowerMessage.contains('password')) {
-      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      return 'Şifre güvenlik şartlarını karşılamıyor.';
     }
     if (lowerMessage.contains('email')) {
-      return 'يرجى إدخال بريد إلكتروني صحيح';
-    }
-    if (lowerMessage.contains('rate limit')) {
-      return 'تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً';
+      return 'Geçerli bir e-posta adresi girin.';
     }
 
     return message;
