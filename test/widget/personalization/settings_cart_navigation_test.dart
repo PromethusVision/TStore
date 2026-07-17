@@ -7,6 +7,7 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
@@ -16,6 +17,7 @@ import 'package:t_store/features/notifications/presentation/cubit/notifications_
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_coupons_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
 import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
@@ -392,9 +394,7 @@ void main() {
     expect(find.text('Gizliliğin ve kontrolün sende'), findsOneWidget);
   });
 
-  testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (
-    tester,
-  ) async {
+  testWidgets('Kuponlarım müşteri kuponları ekranını açar', (tester) async {
     await tester.pumpWidget(
       buildSubject(
         authState: const AuthAuthenticated(user),
@@ -405,8 +405,25 @@ void main() {
 
     await tester.ensureVisible(find.text('Kuponlarım'));
     await tester.tap(find.text('Kuponlarım'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('Kuponlarım bölümü hazırlanıyor.'), findsOneWidget);
+    expect(find.byType(CustomerCouponsView), findsOneWidget);
+    expect(find.text('Henüz kullanılabilir kuponun yok'), findsOneWidget);
+  });
+
+  testWidgets('giriş yapmayan müşteriyi kuponlardan önce girişe yönlendirir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(authState: AuthUnauthenticated(), currentUserId: null),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Kuponlarım'));
+    await tester.tap(find.text('Kuponlarım'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+    expect(find.byType(CustomerCouponsView), findsNothing);
   });
 }

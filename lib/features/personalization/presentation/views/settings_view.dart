@@ -14,6 +14,7 @@ import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart'
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_coupons_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
 import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
@@ -96,13 +97,6 @@ class _SettingsViewState extends State<SettingsView> {
     required bool isLoggedIn,
     required String? currentUserId,
   }) {
-    void showComingSoon(String title) {
-      THelperFunctions.showSnackBar(
-        context: context,
-        message: '$title bölümü hazırlanıyor.',
-      );
-    }
-
     final List<SettingsMenuTileModel> accountSettingsTiles = [
       SettingsMenuTileModel(
         onTap: () async {
@@ -137,7 +131,17 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.receipt_long_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Kuponlarım'),
+        onTap: () {
+          if (!isLoggedIn) {
+            THelperFunctions.navigateToScreen(context, const LoginView());
+            return;
+          }
+
+          THelperFunctions.navigateToScreen(
+            context,
+            const CustomerCouponsView(),
+          );
+        },
         title: "Kuponlarım",
         subtitle: "Kullanabileceğin kuponları görüntüle",
         leading: Icons.local_offer_outlined,
