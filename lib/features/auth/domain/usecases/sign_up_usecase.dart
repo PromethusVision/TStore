@@ -14,6 +14,8 @@ class SignUpUsecase implements UseCase<UserEntity, SignUpParams> {
       email: params.email,
       password: params.password,
       fullName: params.fullName,
+      privacyNoticeVersion: params.privacyNoticeVersion,
+      termsOfUseVersion: params.termsOfUseVersion,
       phone: params.phone,
     );
   }
@@ -23,12 +25,16 @@ class SignUpParams {
   final String email;
   final String password;
   final String fullName;
+  final String privacyNoticeVersion;
+  final String termsOfUseVersion;
   final String? phone;
 
   SignUpParams({
     required this.email,
     required this.password,
     required this.fullName,
+    required this.privacyNoticeVersion,
+    required this.termsOfUseVersion,
     this.phone,
   });
 }

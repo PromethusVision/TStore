@@ -4,8 +4,6 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:t_store/features/auth/presentation/widgets/divider_widget.dart';
-import 'package:t_store/features/auth/presentation/widgets/sign_in_methods_section.dart';
 import 'package:t_store/features/auth/presentation/widgets/sign_up_form_section.dart';
 
 class SignUpView extends StatelessWidget {
@@ -31,10 +29,6 @@ class SignUpView extends StatelessWidget {
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
                   const SignUpFormSection(),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  const DividerWidget(text: TTexts.orSignUpWith),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  const SignInMethodsSection(),
                 ],
               ),
             ),

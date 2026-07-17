@@ -31,18 +31,18 @@ class TTexts {
       "Yol tarifi alın, mağazaya gidin ve alışverişinizi QR ile doğrulayın.";
 
   // -- Authentication Forms
-  static const String firstName = "First Name";
-  static const String lastName = "Last Name";
-  static const String email = "E-Mail";
-  static const String password = "Password";
-  static const String newPassword = "New Password";
+  static const String firstName = "Ad";
+  static const String lastName = "Soyad";
+  static const String email = "E-posta";
+  static const String password = "Şifre";
+  static const String newPassword = "Yeni Şifre";
   static const String username = "Username";
-  static const String phoneNo = "Phone Number";
+  static const String phoneNo = "Telefon Numarası";
   static const String rememberMe = "Remember Me";
   static const String forgetPassword = "Forget Password?";
   static const String signIn = "Sign In";
-  static const String createAccount = "Create Account";
-  static const String loading = "Loading";
+  static const String createAccount = "Hesap Oluştur";
+  static const String loading = "İşleniyor...";
   static const String orSignInWith = "Or  Sign In With";
   static const String orSignUpWith = "or sign up with";
   static const String iAgreeTo = "I agree to";

@@ -31,11 +31,13 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       // Return basic user info if no profile exists
-      return Right(UserEntity(
-        id: user.id,
-        email: user.email ?? '',
-        fullName: user.userMetadata?['full_name'] as String?,
-      ));
+      return Right(
+        UserEntity(
+          id: user.id,
+          email: user.email ?? '',
+          fullName: user.userMetadata?['full_name'] as String?,
+        ),
+      );
     } catch (e) {
       return Left(e.toString());
     }
@@ -67,10 +69,9 @@ class AuthRepositoryImpl implements AuthRepository {
         return Right(UserModel.fromJson(profileData));
       }
 
-      return Right(UserEntity(
-        id: response.user!.id,
-        email: response.user!.email ?? email,
-      ));
+      return Right(
+        UserEntity(id: response.user!.id, email: response.user!.email ?? email),
+      );
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
@@ -83,6 +84,8 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
     required String fullName,
+    required String privacyNoticeVersion,
+    required String termsOfUseVersion,
     String? phone,
   }) async {
     try {
@@ -92,6 +95,10 @@ class AuthRepositoryImpl implements AuthRepository {
         data: {
           'full_name': fullName,
           'phone': phone,
+          'privacy_notice_acknowledged': true,
+          'privacy_notice_version': privacyNoticeVersion,
+          'terms_of_use_accepted': true,
+          'terms_of_use_version': termsOfUseVersion,
         },
       );
 
@@ -99,12 +106,14 @@ class AuthRepositoryImpl implements AuthRepository {
         return const Left('فشل إنشاء الحساب');
       }
 
-      return Right(UserEntity(
-        id: response.user!.id,
-        email: email,
-        fullName: fullName,
-        phone: phone,
-      ));
+      return Right(
+        UserEntity(
+          id: response.user!.id,
+          email: email,
+          fullName: fullName,
+          phone: phone,
+        ),
+      );
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {

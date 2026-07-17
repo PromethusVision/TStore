@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
+import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
@@ -75,31 +76,37 @@ void main() {
     );
 
     group('Complete Sign Up Flow', () {
-      test('user can sign up and receive email confirmation requirement',
-          () async {
-        // Arrange - Setup sign up to succeed
-        when(() => mockSignUpUsecase(any()))
-            .thenAnswer((_) async => Right(testUser));
+      test(
+        'user can sign up and receive email confirmation requirement',
+        () async {
+          // Arrange - Setup sign up to succeed
+          when(
+            () => mockSignUpUsecase(any()),
+          ).thenAnswer((_) async => Right(testUser));
 
-        // Act
-        await authCubit.signUp(
-          email: testEmail,
-          password: testPassword,
-          fullName: testFullName,
-        );
+          // Act
+          await authCubit.signUp(
+            email: testEmail,
+            password: testPassword,
+            fullName: testFullName,
+            privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+            termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+          );
 
-        // Assert - User should get email confirmation required state
-        expect(authCubit.state, isA<AuthEmailConfirmationRequired>());
-        final state = authCubit.state as AuthEmailConfirmationRequired;
-        expect(state.email, testEmail);
-      });
+          // Assert - User should get email confirmation required state
+          expect(authCubit.state, isA<AuthEmailConfirmationRequired>());
+          final state = authCubit.state as AuthEmailConfirmationRequired;
+          expect(state.email, testEmail);
+        },
+      );
     });
 
     group('Complete Sign In Flow', () {
       test('user can sign in and become authenticated', () async {
         // Arrange
-        when(() => mockSignInUsecase(any()))
-            .thenAnswer((_) async => Right(testUser));
+        when(
+          () => mockSignInUsecase(any()),
+        ).thenAnswer((_) async => Right(testUser));
 
         // Act
         await authCubit.signIn(email: testEmail, password: testPassword);
@@ -114,7 +121,8 @@ void main() {
       test('user receives error state with invalid credentials', () async {
         // Arrange
         when(() => mockSignInUsecase(any())).thenAnswer(
-            (_) async => const Left('البريد الإلكتروني أو كلمة المرور غير صحيحة'));
+          (_) async => const Left('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
+        );
 
         // Act
         await authCubit.signIn(email: testEmail, password: 'wrong');
@@ -126,27 +134,31 @@ void main() {
       });
 
       test(
-          'user receives email confirmation required when email not confirmed',
-          () async {
-        // Arrange
-        when(() => mockSignInUsecase(any())).thenAnswer(
-            (_) async => const Left('يرجى تأكيد بريدك الإلكتروني أولاً'));
+        'user receives email confirmation required when email not confirmed',
+        () async {
+          // Arrange
+          when(() => mockSignInUsecase(any())).thenAnswer(
+            (_) async => const Left('يرجى تأكيد بريدك الإلكتروني أولاً'),
+          );
 
-        // Act
-        await authCubit.signIn(email: testEmail, password: testPassword);
+          // Act
+          await authCubit.signIn(email: testEmail, password: testPassword);
 
-        // Assert
-        expect(authCubit.state, isA<AuthEmailConfirmationRequired>());
-      });
+          // Assert
+          expect(authCubit.state, isA<AuthEmailConfirmationRequired>());
+        },
+      );
     });
 
     group('Complete Sign Out Flow', () {
       test('authenticated user can sign out', () async {
         // Arrange - First sign in
-        when(() => mockSignInUsecase(any()))
-            .thenAnswer((_) async => Right(testUser));
-        when(() => mockSignOutUsecase(any()))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          () => mockSignInUsecase(any()),
+        ).thenAnswer((_) async => Right(testUser));
+        when(
+          () => mockSignOutUsecase(any()),
+        ).thenAnswer((_) async => const Right(null));
 
         // Act - Sign in first
         await authCubit.signIn(email: testEmail, password: testPassword);
@@ -163,8 +175,9 @@ void main() {
     group('Password Reset Flow', () {
       test('user can request password reset', () async {
         // Arrange
-        when(() => mockResetPasswordUsecase(testEmail))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          () => mockResetPasswordUsecase(testEmail),
+        ).thenAnswer((_) async => const Right(null));
 
         // Act
         await authCubit.resetPassword(testEmail);
@@ -177,8 +190,11 @@ void main() {
 
       test('user receives error when rate limited', () async {
         // Arrange
-        when(() => mockResetPasswordUsecase(testEmail)).thenAnswer((_) async =>
-            const Left('تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً'));
+        when(() => mockResetPasswordUsecase(testEmail)).thenAnswer(
+          (_) async => const Left(
+            'تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً',
+          ),
+        );
 
         // Act
         await authCubit.resetPassword(testEmail);
@@ -193,8 +209,9 @@ void main() {
     group('Auth Status Check Flow', () {
       test('returns authenticated when user is logged in', () async {
         // Arrange
-        when(() => mockGetCurrentUserUsecase(any()))
-            .thenAnswer((_) async => Right(testUser));
+        when(
+          () => mockGetCurrentUserUsecase(any()),
+        ).thenAnswer((_) async => Right(testUser));
 
         // Act
         await authCubit.checkAuthStatus();
@@ -205,8 +222,9 @@ void main() {
 
       test('returns unauthenticated when no user logged in', () async {
         // Arrange
-        when(() => mockGetCurrentUserUsecase(any()))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          () => mockGetCurrentUserUsecase(any()),
+        ).thenAnswer((_) async => const Right(null));
 
         // Act
         await authCubit.checkAuthStatus();
@@ -217,8 +235,9 @@ void main() {
 
       test('returns unauthenticated on error', () async {
         // Arrange
-        when(() => mockGetCurrentUserUsecase(any()))
-            .thenAnswer((_) async => const Left('Session expired'));
+        when(
+          () => mockGetCurrentUserUsecase(any()),
+        ).thenAnswer((_) async => const Left('Session expired'));
 
         // Act
         await authCubit.checkAuthStatus();
@@ -229,21 +248,24 @@ void main() {
     });
 
     group('Error Recovery Flow', () {
-      test('user can clear error and return to unauthenticated state',
-          () async {
-        // Arrange - Get into error state
-        when(() => mockSignInUsecase(any()))
-            .thenAnswer((_) async => const Left('Some error'));
+      test(
+        'user can clear error and return to unauthenticated state',
+        () async {
+          // Arrange - Get into error state
+          when(
+            () => mockSignInUsecase(any()),
+          ).thenAnswer((_) async => const Left('Some error'));
 
-        await authCubit.signIn(email: testEmail, password: 'wrong');
-        expect(authCubit.state, isA<AuthError>());
+          await authCubit.signIn(email: testEmail, password: 'wrong');
+          expect(authCubit.state, isA<AuthError>());
 
-        // Act
-        authCubit.clearError();
+          // Act
+          authCubit.clearError();
 
-        // Assert
-        expect(authCubit.state, isA<AuthUnauthenticated>());
-      });
+          // Assert
+          expect(authCubit.state, isA<AuthUnauthenticated>());
+        },
+      );
     });
   });
 }

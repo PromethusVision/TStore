@@ -57,6 +57,8 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
     required String fullName,
+    required String privacyNoticeVersion,
+    required String termsOfUseVersion,
     String? phone,
   }) async {
     emit(AuthLoading());
@@ -66,6 +68,8 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         password: password,
         fullName: fullName,
+        privacyNoticeVersion: privacyNoticeVersion,
+        termsOfUseVersion: termsOfUseVersion,
         phone: phone,
       ),
     );

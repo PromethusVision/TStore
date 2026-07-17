@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
+import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
@@ -174,6 +175,8 @@ void main() {
           email: testEmail,
           password: testPassword,
           fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
         ),
         expect: () => [
           AuthLoading(),
@@ -193,6 +196,8 @@ void main() {
           email: testEmail,
           password: testPassword,
           fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
         ),
         expect: () => [
           AuthLoading(),
@@ -213,12 +218,19 @@ void main() {
           password: testPassword,
           fullName: testFullName,
           phone: '+1234567890',
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
         ),
         verify: (_) {
           final captured =
               verify(() => mockSignUpUsecase(captureAny())).captured.first
                   as SignUpParams;
           expect(captured.phone, '+1234567890');
+          expect(
+            captured.privacyNoticeVersion,
+            LegalDocumentVersions.privacyNotice,
+          );
+          expect(captured.termsOfUseVersion, LegalDocumentVersions.termsOfUse);
         },
       );
     });
