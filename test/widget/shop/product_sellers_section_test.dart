@@ -65,6 +65,9 @@ void main() {
     when(
       () => customerLocationService.cachedCoordinates,
     ).thenAnswer((_) => cachedCoordinates);
+    when(
+      () => customerLocationService.getPreferredLocation(),
+    ).thenAnswer((_) async => null);
     whenListen(
       cartV2Cubit,
       const Stream<CartV2State>.empty(),
@@ -118,6 +121,46 @@ void main() {
     await tester.tap(find.byKey(Key(optionKey)));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('ana konumla satıcıları izin istemeden yakından uzağa sıralar', (
+    tester,
+  ) async {
+    const preferredLocation = CustomerPreferredLocation(
+      name: 'Ev',
+      coordinates: CustomerCoordinates(latitude: 41, longitude: 29),
+    );
+    when(
+      () => customerLocationService.getPreferredLocation(),
+    ).thenAnswer((_) async => preferredLocation);
+    final sellers = [
+      seller(id: 'far', name: 'Uzak Esnaf', latitude: 41.02, longitude: 29),
+      seller(id: 'near', name: 'Yakın Esnaf', latitude: 41.001, longitude: 29),
+    ];
+    when(
+      () => shopRepository.getShopProductsByProduct('product-1'),
+    ).thenAnswer((_) async => Right(sellers));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const ['product-seller-near', 'product-seller-far']),
+    );
+    expect(
+      find.text('Ev konumuna göre mesafeler gösteriliyor'),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('product-seller-sort-button')),
+        matching: find.text('En yakın'),
+      ),
+      findsOneWidget,
+    );
+    verify(() => customerLocationService.getPreferredLocation()).called(1);
+    verifyNever(() => customerLocationService.getCurrentLocation());
+  });
 
   testWidgets('konum yokken satıcı sırasını ve mevcut ipuçlarını korur', (
     tester,

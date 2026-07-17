@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,15 +26,19 @@ class ProductSellersSection extends StatefulWidget {
 
 class _ProductSellersSectionState extends State<ProductSellersSection> {
   late final Future<Either<String, List<ShopProductEntity>>> _future;
+  late final CustomerLocationService _customerLocationService;
+  CustomerPreferredLocation? _preferredLocation;
   _SellerSortOption? _selectedSortOption;
   static bool _isConflictDialogOpen = false;
 
   @override
   void initState() {
     super.initState();
+    _customerLocationService = sl<CustomerLocationService>();
     _future = sl<GetShopProductsByProductUsecase>()(
       GetShopProductsByProductParams(productId: widget.productId),
     );
+    unawaited(_loadPreferredLocation());
   }
 
   @override
@@ -89,8 +95,10 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                 return const Text('Bu ürünü satan esnaf henüz listelenmiyor.');
               }
 
+              final preferredLocation = _preferredLocation;
               final coordinates =
-                  sl<CustomerLocationService>().cachedCoordinates;
+                  preferredLocation?.coordinates ??
+                  _customerLocationService.cachedCoordinates;
               final locationReady = coordinates?.isValid ?? false;
               final effectiveSort =
                   _selectedSortOption ??
@@ -123,6 +131,12 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                       ),
                     ],
                   ),
+                  if (preferredLocation != null) ...[
+                    const SizedBox(height: TSizes.sm),
+                    _PreferredLocationNotice(
+                      locationName: preferredLocation.name,
+                    ),
+                  ],
                   const SizedBox(height: TSizes.spaceBtwItems),
                   ListView.separated(
                     shrinkWrap: true,
@@ -146,6 +160,13 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         },
       ),
     );
+  }
+
+  Future<void> _loadPreferredLocation() async {
+    final location = await _customerLocationService.getPreferredLocation();
+    if (!mounted || location == null || !location.isValid) return;
+
+    setState(() => _preferredLocation = location);
   }
 
   List<_RankedSeller> _sortSellers(
@@ -583,6 +604,52 @@ class _LocationHintChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PreferredLocationNotice extends StatelessWidget {
+  final String locationName;
+
+  const _PreferredLocationNotice({required this.locationName});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final normalizedName = locationName.trim();
+
+    return Semantics(
+      label: '$normalizedName ana konumuna göre mesafeler gösteriliyor',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: TSizes.sm,
+          vertical: TSizes.sm,
+        ),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(TSizes.cardRadiusSm),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.bookmark_added_outlined,
+              size: 18,
+              color: colorScheme.onPrimaryContainer,
+            ),
+            const SizedBox(width: TSizes.sm),
+            Expanded(
+              child: Text(
+                '$normalizedName konumuna göre mesafeler gösteriliyor',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
