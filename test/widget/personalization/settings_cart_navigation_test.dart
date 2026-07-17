@@ -18,6 +18,7 @@ import 'package:t_store/features/personalization/presentation/cubit/customer_sav
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
+import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
@@ -173,7 +174,11 @@ void main() {
       ],
       child: MaterialApp(
         home: Scaffold(
-          body: SettingsView(currentUserIdProvider: () => currentUserId),
+          body: SettingsView(
+            currentUserIdProvider: () => currentUserId,
+            locationPermissionLoader: () async =>
+                CustomerLocationPermissionStatus.notAllowed,
+          ),
         ),
       ),
     );
@@ -366,6 +371,25 @@ void main() {
 
     expect(find.byType(PurchasesView), findsOneWidget);
     verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
+  });
+
+  testWidgets('Gizlilik ve İzinler müşteri gizlilik ekranını açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Gizlilik ve İzinler'));
+    await tester.tap(find.text('Gizlilik ve İzinler'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PrivacyAndPermissionsView), findsOneWidget);
+    expect(find.text('Gizliliğin ve kontrolün sende'), findsOneWidget);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (

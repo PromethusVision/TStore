@@ -16,6 +16,7 @@ import 'package:t_store/features/notifications/presentation/views/customer_notif
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
+import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
@@ -27,9 +28,14 @@ import 'package:t_store/features/shop/presentation/views/recently_viewed_product
 typedef SettingsCurrentUserIdProvider = String? Function();
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key, this.currentUserIdProvider});
+  const SettingsView({
+    super.key,
+    this.currentUserIdProvider,
+    this.locationPermissionLoader,
+  });
 
   final SettingsCurrentUserIdProvider? currentUserIdProvider;
+  final CustomerLocationPermissionLoader? locationPermissionLoader;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -275,7 +281,14 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.help_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Gizlilik ve İzinler'),
+        onTap: () {
+          THelperFunctions.navigateToScreen(
+            context,
+            PrivacyAndPermissionsView(
+              locationPermissionLoader: widget.locationPermissionLoader,
+            ),
+          );
+        },
         title: "Gizlilik ve İzinler",
         subtitle: "Gizlilik tercihlerini ve izinlerini yönet",
         leading: Icons.privacy_tip_outlined,
