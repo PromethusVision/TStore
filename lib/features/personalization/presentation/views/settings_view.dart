@@ -14,8 +14,9 @@ import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart'
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
-import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
+import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
@@ -227,7 +228,48 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.person_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () => showComingSoon('Yardım ve Destek'),
+        onTap: () {
+          THelperFunctions.navigateToScreen(
+            context,
+            HelpAndSupportView(
+              onOpenPurchases: () {
+                if (!isLoggedIn) {
+                  THelperFunctions.navigateToScreen(context, const LoginView());
+                  return;
+                }
+
+                THelperFunctions.navigateToScreen(
+                  context,
+                  const PurchasesView(),
+                );
+              },
+              onOpenMessages: () async {
+                if (!isLoggedIn) {
+                  THelperFunctions.navigateToScreen(context, const LoginView());
+                  return;
+                }
+
+                await Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ConversationsView()),
+                );
+                if (!context.mounted) return;
+
+                await context.read<ChatUnreadCubit>().refreshUnreadCount();
+              },
+              onOpenSavedLocations: () {
+                if (!isLoggedIn) {
+                  THelperFunctions.navigateToScreen(context, const LoginView());
+                  return;
+                }
+
+                THelperFunctions.navigateToScreen(
+                  context,
+                  const CustomerSavedLocationsView(),
+                );
+              },
+            ),
+          );
+        },
         title: "Yardım ve Destek",
         subtitle: "Sık sorulan sorular ve destek",
         leading: Icons.help_outline,

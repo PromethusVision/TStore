@@ -17,6 +17,7 @@ import 'package:t_store/features/notifications/presentation/views/customer_notif
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
@@ -342,6 +343,29 @@ void main() {
     expect(find.byType(CustomerSavedLocationsView), findsOneWidget);
     expect(find.text('Henüz kayıtlı konumun yok'), findsOneWidget);
     verify(() => customerSavedLocationsCubit.loadLocations()).called(1);
+  });
+
+  testWidgets('Yardım ve Destek müşteri yardım merkezini açar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Yardım ve Destek'));
+    await tester.tap(find.text('Yardım ve Destek'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HelpAndSupportView), findsOneWidget);
+    expect(find.text('Nasıl yardımcı olabiliriz?'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('help-purchases-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PurchasesView), findsOneWidget);
+    verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
   });
 
   testWidgets('hazırlanan seçenekler kullanıcıya açık bilgi verir', (
