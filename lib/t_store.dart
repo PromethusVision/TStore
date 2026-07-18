@@ -9,12 +9,15 @@ import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
+import 'package:t_store/features/auth/presentation/widgets/password_recovery_listener.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/brands_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
+
+final tStoreNavigatorKey = GlobalKey<NavigatorState>();
 
 class TStore extends StatelessWidget {
   const TStore({super.key});
@@ -53,13 +56,20 @@ class TStore extends StatelessWidget {
         BlocProvider<BannerCarouselSliderCubit>(
             create: (_) => BannerCarouselSliderCubit()),
       ],
-      child: MaterialApp(
-        title: TTexts.appName,
-        themeMode: ThemeMode.system,
-        theme: TAppTheme.lightTheme,
-        darkTheme: TAppTheme.darkTheme,
-        debugShowCheckedModeBanner: false,
-        home: const NavigationMenu(),
+      child: PasswordRecoveryListener(
+        authStateChanges: SupabaseService.instance.authStateChanges,
+        navigatorKey: tStoreNavigatorKey,
+        initialPasswordRecoveryStatus:
+            SupabaseService.instance.initialPasswordRecoveryStatus,
+        child: MaterialApp(
+          navigatorKey: tStoreNavigatorKey,
+          title: TTexts.appName,
+          themeMode: ThemeMode.system,
+          theme: TAppTheme.lightTheme,
+          darkTheme: TAppTheme.darkTheme,
+          debugShowCheckedModeBanner: false,
+          home: const NavigationMenu(),
+        ),
       ),
     );
   }

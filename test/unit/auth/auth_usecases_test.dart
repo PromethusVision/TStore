@@ -10,6 +10,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -258,7 +259,7 @@ void main() {
 
     test('should return error when email is not found', () async {
       // Arrange
-      const errorMessage = 'Email not found';
+      const errorMessage = 'E-posta gönderilemedi.';
       when(
         () => mockRepository.resetPassword(testEmail),
       ).thenAnswer((_) async => const Left(errorMessage));
@@ -298,6 +299,38 @@ void main() {
       ).thenAnswer((_) async => const Left(errorMessage));
 
       final result = await usecase(testEmail);
+
+      expect(result, const Left(errorMessage));
+    });
+  });
+
+  group('UpdatePasswordUsecase', () {
+    late UpdatePasswordUsecase usecase;
+
+    setUp(() {
+      usecase = UpdatePasswordUsecase(mockRepository);
+    });
+
+    const newPassword = 'NewStrong1!';
+
+    test('updates the current recovery session password', () async {
+      when(
+        () => mockRepository.updatePassword(newPassword),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await usecase(newPassword);
+
+      expect(result.isRight(), true);
+      verify(() => mockRepository.updatePassword(newPassword)).called(1);
+    });
+
+    test('returns the password update error', () async {
+      const errorMessage = 'Şifre güvenlik şartlarını karşılamıyor.';
+      when(
+        () => mockRepository.updatePassword(newPassword),
+      ).thenAnswer((_) async => const Left(errorMessage));
+
+      final result = await usecase(newPassword);
 
       expect(result, const Left(errorMessage));
     });

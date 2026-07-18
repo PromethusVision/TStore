@@ -156,9 +156,7 @@ void main() {
             termsOfUseVersion: LegalDocumentVersions.termsOfUse,
             phone: null,
           ),
-        ).thenAnswer(
-          (_) async => const Left('هذا البريد الإلكتروني مسجل بالفعل'),
-        );
+        ).thenAnswer((_) async => const Left('Bu e-posta zaten kayıtlı.'));
 
         // Act
         final result = await mockRepository.signUp(
@@ -172,7 +170,7 @@ void main() {
         // Assert
         expect(result.isLeft(), true);
         result.fold(
-          (error) => expect(error, contains('مسجل بالفعل')),
+          (error) => expect(error, contains('zaten kayıtlı')),
           (user) => fail('Expected Left but got Right'),
         );
       });
@@ -188,9 +186,7 @@ void main() {
             termsOfUseVersion: LegalDocumentVersions.termsOfUse,
             phone: null,
           ),
-        ).thenAnswer(
-          (_) async => const Left('كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
-        );
+        ).thenAnswer((_) async => const Left('Şifre en az 6 karakter olmalı.'));
 
         // Act
         final result = await mockRepository.signUp(
@@ -204,7 +200,7 @@ void main() {
         // Assert
         expect(result.isLeft(), true);
         result.fold(
-          (error) => expect(error, contains('كلمة المرور')),
+          (error) => expect(error, contains('Şifre')),
           (user) => fail('Expected Left but got Right'),
         );
       });
@@ -259,11 +255,9 @@ void main() {
 
       test('should return error when rate limit exceeded', () async {
         // Arrange
-        when(() => mockRepository.resetPassword(testEmail)).thenAnswer(
-          (_) async => const Left(
-            'تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً',
-          ),
-        );
+        when(
+          () => mockRepository.resetPassword(testEmail),
+        ).thenAnswer((_) async => const Left('Çok fazla deneme yapıldı.'));
 
         // Act
         final result = await mockRepository.resetPassword(testEmail);
@@ -271,7 +265,7 @@ void main() {
         // Assert
         expect(result.isLeft(), true);
         result.fold(
-          (error) => expect(error, contains('المحاولات المسموحة')),
+          (error) => expect(error, contains('Çok fazla')),
           (_) => fail('Expected Left but got Right'),
         );
       });

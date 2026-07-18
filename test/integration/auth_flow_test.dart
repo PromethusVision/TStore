@@ -9,6 +9,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -24,6 +25,8 @@ class MockResetPasswordUsecase extends Mock implements ResetPasswordUsecase {}
 
 class MockResendConfirmationUsecase extends Mock
     implements ResendConfirmationUsecase {}
+
+class MockUpdatePasswordUsecase extends Mock implements UpdatePasswordUsecase {}
 
 class MockGetCurrentUserUsecase extends Mock implements GetCurrentUserUsecase {}
 
@@ -41,6 +44,7 @@ void main() {
   late MockSignOutUsecase mockSignOutUsecase;
   late MockResetPasswordUsecase mockResetPasswordUsecase;
   late MockResendConfirmationUsecase mockResendConfirmationUsecase;
+  late MockUpdatePasswordUsecase mockUpdatePasswordUsecase;
   late MockGetCurrentUserUsecase mockGetCurrentUserUsecase;
 
   setUpAll(() {
@@ -55,6 +59,7 @@ void main() {
     mockSignOutUsecase = MockSignOutUsecase();
     mockResetPasswordUsecase = MockResetPasswordUsecase();
     mockResendConfirmationUsecase = MockResendConfirmationUsecase();
+    mockUpdatePasswordUsecase = MockUpdatePasswordUsecase();
     mockGetCurrentUserUsecase = MockGetCurrentUserUsecase();
 
     authCubit = AuthCubit(
@@ -63,6 +68,7 @@ void main() {
       signOutUsecase: mockSignOutUsecase,
       resetPasswordUsecase: mockResetPasswordUsecase,
       resendConfirmationUsecase: mockResendConfirmationUsecase,
+      updatePasswordUsecase: mockUpdatePasswordUsecase,
       getCurrentUserUsecase: mockGetCurrentUserUsecase,
     );
   });
@@ -198,11 +204,9 @@ void main() {
 
       test('user receives error when rate limited', () async {
         // Arrange
-        when(() => mockResetPasswordUsecase(testEmail)).thenAnswer(
-          (_) async => const Left(
-            'تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً',
-          ),
-        );
+        when(
+          () => mockResetPasswordUsecase(testEmail),
+        ).thenAnswer((_) async => const Left('Çok fazla deneme yapıldı.'));
 
         // Act
         await authCubit.resetPassword(testEmail);
@@ -210,7 +214,18 @@ void main() {
         // Assert
         expect(authCubit.state, isA<AuthError>());
         final state = authCubit.state as AuthError;
-        expect(state.message, contains('المحاولات المسموحة'));
+        expect(state.message, contains('Çok fazla'));
+      });
+
+      test('user can set a new password after opening recovery link', () async {
+        const newPassword = 'NewStrong1!';
+        when(
+          () => mockUpdatePasswordUsecase(newPassword),
+        ).thenAnswer((_) async => const Right(null));
+
+        await authCubit.updatePassword(newPassword);
+
+        expect(authCubit.state, isA<AuthPasswordUpdated>());
       });
     });
 

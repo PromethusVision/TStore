@@ -41,6 +41,8 @@ class AuthPasswordResetSent extends AuthState {
   List<Object?> get props => [email];
 }
 
+class AuthPasswordUpdated extends AuthState {}
+
 class AuthEmailConfirmationRequired extends AuthState {
   final String email;
 

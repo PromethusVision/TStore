@@ -10,6 +10,7 @@ import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -25,6 +26,8 @@ class MockResetPasswordUsecase extends Mock implements ResetPasswordUsecase {}
 
 class MockResendConfirmationUsecase extends Mock
     implements ResendConfirmationUsecase {}
+
+class MockUpdatePasswordUsecase extends Mock implements UpdatePasswordUsecase {}
 
 class MockGetCurrentUserUsecase extends Mock implements GetCurrentUserUsecase {}
 
@@ -42,6 +45,7 @@ void main() {
   late MockSignOutUsecase mockSignOutUsecase;
   late MockResetPasswordUsecase mockResetPasswordUsecase;
   late MockResendConfirmationUsecase mockResendConfirmationUsecase;
+  late MockUpdatePasswordUsecase mockUpdatePasswordUsecase;
   late MockGetCurrentUserUsecase mockGetCurrentUserUsecase;
 
   setUpAll(() {
@@ -56,6 +60,7 @@ void main() {
     mockSignOutUsecase = MockSignOutUsecase();
     mockResetPasswordUsecase = MockResetPasswordUsecase();
     mockResendConfirmationUsecase = MockResendConfirmationUsecase();
+    mockUpdatePasswordUsecase = MockUpdatePasswordUsecase();
     mockGetCurrentUserUsecase = MockGetCurrentUserUsecase();
 
     authCubit = AuthCubit(
@@ -64,6 +69,7 @@ void main() {
       signOutUsecase: mockSignOutUsecase,
       resetPasswordUsecase: mockResetPasswordUsecase,
       resendConfirmationUsecase: mockResendConfirmationUsecase,
+      updatePasswordUsecase: mockUpdatePasswordUsecase,
       getCurrentUserUsecase: mockGetCurrentUserUsecase,
     );
   });
@@ -287,11 +293,64 @@ void main() {
         build: () {
           when(
             () => mockResetPasswordUsecase(testEmail),
-          ).thenAnswer((_) async => const Left('Email not found'));
+          ).thenAnswer((_) async => const Left('E-posta gönderilemedi.'));
           return authCubit;
         },
         act: (cubit) => cubit.resetPassword(testEmail),
-        expect: () => [AuthLoading(), const AuthError('Email not found')],
+        expect: () => [
+          AuthLoading(),
+          const AuthError('E-posta gönderilemedi.'),
+        ],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'ignores a second reset request while loading',
+        build: () => authCubit,
+        seed: AuthLoading.new,
+        act: (cubit) => cubit.resetPassword(testEmail),
+        expect: () => <AuthState>[],
+        verify: (_) {
+          verifyNever(() => mockResetPasswordUsecase(any()));
+        },
+      );
+    });
+
+    group('updatePassword', () {
+      const newPassword = 'NewStrong1!';
+
+      blocTest<AuthCubit, AuthState>(
+        'emits success when the recovery password is updated',
+        build: () {
+          when(
+            () => mockUpdatePasswordUsecase(newPassword),
+          ).thenAnswer((_) async => const Right(null));
+          return authCubit;
+        },
+        act: (cubit) => cubit.updatePassword(newPassword),
+        expect: () => [AuthLoading(), AuthPasswordUpdated()],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'emits error when the recovery password cannot be updated',
+        build: () {
+          when(
+            () => mockUpdatePasswordUsecase(newPassword),
+          ).thenAnswer((_) async => const Left('Bağlantı geçersiz.'));
+          return authCubit;
+        },
+        act: (cubit) => cubit.updatePassword(newPassword),
+        expect: () => [AuthLoading(), const AuthError('Bağlantı geçersiz.')],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'ignores a second password update while loading',
+        build: () => authCubit,
+        seed: AuthLoading.new,
+        act: (cubit) => cubit.updatePassword(newPassword),
+        expect: () => <AuthState>[],
+        verify: (_) {
+          verifyNever(() => mockUpdatePasswordUsecase(any()));
+        },
       );
     });
 

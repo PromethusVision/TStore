@@ -10,17 +10,17 @@ class ForgetPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const Padding(
-        padding: EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ForgetPasswordHeaderSection(),
-            SizedBox(
-              height: TSizes.spaceBtwSections,
-            ),
-            ForgetPasswordFormSection(),
-          ],
+      body: const SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(TSizes.defaultSpace),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ForgetPasswordHeaderSection(),
+              SizedBox(height: TSizes.spaceBtwSections),
+              ForgetPasswordFormSection(),
+            ],
+          ),
         ),
       ),
     );

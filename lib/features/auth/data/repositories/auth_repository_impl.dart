@@ -55,7 +55,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (response.user == null) {
-        return const Left('فشل تسجيل الدخول');
+        return const Left('Giriş yapılamadı. Lütfen tekrar deneyin.');
       }
 
       // Get profile
@@ -103,7 +103,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (response.user == null) {
-        return const Left('فشل إنشاء الحساب');
+        return const Left('Hesap oluşturulamadı. Lütfen tekrar deneyin.');
       }
 
       return Right(
@@ -239,6 +239,16 @@ class AuthRepositoryImpl implements AuthRepository {
 
     if (lowerMessage.contains('rate limit')) {
       return 'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
+    }
+    if (lowerMessage.contains('session missing') ||
+        lowerMessage.contains('not authenticated') ||
+        lowerMessage.contains('jwt expired') ||
+        lowerMessage.contains('invalid token')) {
+      return 'Şifre yenileme bağlantısı geçersiz veya süresi dolmuş. '
+          'Lütfen yeni bir bağlantı isteyin.';
+    }
+    if (lowerMessage.contains('same password')) {
+      return 'Yeni şifreniz önceki şifrenizden farklı olmalıdır.';
     }
     if (lowerMessage.contains('invalid login credentials')) {
       return 'E-posta veya şifre hatalı.';

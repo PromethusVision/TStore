@@ -1,10 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 
+enum PasswordRecoveryLaunchStatus { none, verified, invalid }
+
 /// Supabase Service - Singleton class for Supabase operations
 class SupabaseService {
+  static const _passwordRecoveryAction = 'password_recovery';
+  static const _authActionQueryParameter = 'auth_action';
+
   static SupabaseService? _instance;
   static SupabaseClient? _client;
+  static PasswordRecoveryLaunchStatus _initialPasswordRecoveryStatus =
+      PasswordRecoveryLaunchStatus.none;
 
   SupabaseService._();
 
@@ -15,6 +23,8 @@ class SupabaseService {
 
   /// Initialize Supabase - Call this in main()
   static Future<void> initialize() async {
+    final launchUri = Uri.base;
+
     await Supabase.initialize(
       url: SupabaseConfig.supabaseUrl,
       anonKey: SupabaseConfig.supabaseAnonKey,
@@ -26,6 +36,18 @@ class SupabaseService {
       ),
     );
     _client = Supabase.instance.client;
+
+    _initialPasswordRecoveryStatus = await resolvePasswordRecoveryLaunch(
+      uri: launchUri,
+      verifyToken: (tokenHash) async {
+        final response = await _client!.auth.verifyOTP(
+          tokenHash: tokenHash,
+          type: OtpType.recovery,
+        );
+        return response.session != null;
+      },
+    );
+
   }
 
   /// Get Supabase Client
@@ -45,8 +67,66 @@ class SupabaseService {
   /// Get current session
   Session? get currentSession => client.auth.currentSession;
 
+  /// Result of validating a password recovery email at app startup.
+  PasswordRecoveryLaunchStatus get initialPasswordRecoveryStatus =>
+      _initialPasswordRecoveryStatus;
+
   /// Auth state changes stream
   Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
+
+  @visibleForTesting
+  static bool isPasswordRecoveryLaunchUri(Uri uri) {
+    return uri.queryParameters[_authActionQueryParameter] ==
+        _passwordRecoveryAction;
+  }
+
+  @visibleForTesting
+  static Future<PasswordRecoveryLaunchStatus> resolvePasswordRecoveryLaunch({
+    required Uri uri,
+    required Future<bool> Function(String tokenHash) verifyToken,
+  }) async {
+    if (!isPasswordRecoveryLaunchUri(uri)) {
+      return PasswordRecoveryLaunchStatus.none;
+    }
+
+    final tokenHash = uri.queryParameters['token_hash'];
+    final type = uri.queryParameters['type'];
+    if (tokenHash == null ||
+        tokenHash.trim().isEmpty ||
+        type != 'recovery') {
+      return PasswordRecoveryLaunchStatus.invalid;
+    }
+
+    try {
+      final verified = await verifyToken(tokenHash);
+      return verified
+          ? PasswordRecoveryLaunchStatus.verified
+          : PasswordRecoveryLaunchStatus.invalid;
+    } catch (_) {
+      return PasswordRecoveryLaunchStatus.invalid;
+    }
+  }
+
+  @visibleForTesting
+  static String passwordRecoveryRedirectFor({
+    required Uri appUri,
+    required bool isWeb,
+  }) {
+    if (!isWeb) {
+      return 'io.supabase.tstore://login-callback/'
+          '?$_authActionQueryParameter=$_passwordRecoveryAction';
+    }
+
+    return Uri(
+      scheme: appUri.scheme,
+      host: appUri.host,
+      port: appUri.hasPort ? appUri.port : null,
+      path: '/',
+      queryParameters: const {
+        _authActionQueryParameter: _passwordRecoveryAction,
+      },
+    ).toString();
+  }
 
   // ============== AUTH METHODS ==============
 
@@ -105,7 +185,12 @@ class SupabaseService {
 
   /// Reset password
   Future<void> resetPassword(String email) async {
-    await client.auth.resetPasswordForEmail(email);
+    final redirectTo = passwordRecoveryRedirectFor(
+      appUri: Uri.base,
+      isWeb: kIsWeb,
+    );
+
+    await client.auth.resetPasswordForEmail(email, redirectTo: redirectTo);
   }
 
   /// Update password

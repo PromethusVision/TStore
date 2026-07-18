@@ -101,4 +101,24 @@ void main() {
       'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.',
     );
   });
+
+  test(
+    'expired recovery session is returned as a safe Turkish error',
+    () async {
+      final supabaseService = MockSupabaseService();
+      final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+      when(
+        () => supabaseService.updatePassword('NewStrong1!'),
+      ).thenThrow(const AuthException('Auth session missing!'));
+
+      final result = await repository.updatePassword('NewStrong1!');
+
+      expect(
+        result.fold((error) => error, (_) => ''),
+        'Şifre yenileme bağlantısı geçersiz veya süresi dolmuş. '
+        'Lütfen yeni bir bağlantı isteyin.',
+      );
+    },
+  );
 }

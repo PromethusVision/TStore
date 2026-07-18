@@ -1,0 +1,1 @@
+void replaceCurrentBrowserUrl(String path) {}
