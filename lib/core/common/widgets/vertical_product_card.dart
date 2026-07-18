@@ -22,8 +22,19 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 
 class VerticalProductCard extends StatelessWidget {
-  const VerticalProductCard({super.key, required this.product});
+  const VerticalProductCard({
+    super.key,
+    required this.product,
+    this.showFavoriteAction = false,
+    this.favoriteActionLoading = false,
+    this.onFavoritePressed,
+  });
+
   final ProductEntity product;
+  final bool showFavoriteAction;
+  final bool favoriteActionLoading;
+  final VoidCallback? onFavoritePressed;
+
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
@@ -41,87 +52,115 @@ class VerticalProductCard extends StatelessWidget {
         width: 180,
         padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
-            boxShadow: [TShadowStyle.verticalProductCardShadow],
-            borderRadius: const BorderRadius.all(
-              Radius.circular(TSizes.productImageRadius),
-            ),
-            color: dark ? TColors.darkerGrey : TColors.white),
+          boxShadow: [TShadowStyle.verticalProductCardShadow],
+          borderRadius: const BorderRadius.all(
+            Radius.circular(TSizes.productImageRadius),
+          ),
+          color: dark ? TColors.darkerGrey : TColors.white,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CircularContainer(
               circularContainerModel: CircularContainerModel(
-                  padding: const EdgeInsets.all(TSizes.sm),
-                  height: 180,
-                  color: dark ? TColors.dark : TColors.light,
-                  child: Stack(
-                    children: [
-                      RoundedImage(
-                        roundedImageModel: RoundedImageModel(
-                            isNetworkImage: isNetworkImage,
-                            backgroundColor:
-                                dark ? TColors.dark : TColors.light,
-                            image: displayImage,
-                            onTap: () {},
-                            applyImageRadius: true),
+                padding: const EdgeInsets.all(TSizes.sm),
+                height: 180,
+                color: dark ? TColors.dark : TColors.light,
+                child: Stack(
+                  children: [
+                    RoundedImage(
+                      roundedImageModel: RoundedImageModel(
+                        isNetworkImage: isNetworkImage,
+                        backgroundColor: dark ? TColors.dark : TColors.light,
+                        image: displayImage,
+                        onTap: () {},
+                        applyImageRadius: true,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                    ),
+                    Row(
+                      children: [
+                        if (product.hasDiscount)
                           SaleTag(
                             discountPercentage: product.discountPercentage,
                           ),
-                          CircularIcon(
-                            circularIconModel: CircularIconModel(
-                              height: TSizes.iconLg * 1.2,
-                              width: TSizes.iconLg * 1.2,
-                              iconSize: TSizes.iconMd,
-                              icon: Iconsax.heart5,
-                              color: Colors.red,
-                              backgroundColor:
-                                  dark ? TColors.darkerGrey : TColors.white,
-                              onPressed: () {},
-                            ),
+                        const Spacer(),
+                        if (showFavoriteAction)
+                          Tooltip(
+                            message: 'Favorilerden çıkar',
+                            child: favoriteActionLoading
+                                ? Container(
+                                    key: Key(
+                                      'favorite-action-loading-${product.id}',
+                                    ),
+                                    width: TSizes.iconLg * 1.2,
+                                    height: TSizes.iconLg * 1.2,
+                                    padding: const EdgeInsets.all(TSizes.sm),
+                                    decoration: BoxDecoration(
+                                      color: dark
+                                          ? TColors.darkerGrey
+                                          : TColors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : CircularIcon(
+                                    key: Key('favorite-action-${product.id}'),
+                                    circularIconModel: CircularIconModel(
+                                      height: TSizes.iconLg * 1.2,
+                                      width: TSizes.iconLg * 1.2,
+                                      iconSize: TSizes.iconMd,
+                                      icon: Iconsax.heart5,
+                                      color: Colors.red,
+                                      backgroundColor: dark
+                                          ? TColors.darkerGrey
+                                          : TColors.white,
+                                      onPressed: onFavoritePressed,
+                                    ),
+                                  ),
                           ),
-                        ],
-                      ),
-                    ],
-                  )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
             Padding(
-                padding: const EdgeInsets.only(left: TSizes.sm),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.only(left: TSizes.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProductTitleText(
+                    productTitleTextModel: ProductTitleTextModel(
+                      title: product.name,
+                    ),
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems / 2),
+                  BrandTitleWithVerification(
+                    brandTitleWithVerificationModel:
+                        BrandTitleWithVerificationModel(
+                          brandName: product.brandName ?? '',
+                        ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ProductTitleText(
-                        productTitleTextModel: ProductTitleTextModel(
-                          title: product.name,
+                      Expanded(
+                        child: ProductPriceText(
+                          productPriceTextModel: ProductPriceTextModel(
+                            price: product.effectivePrice.toStringAsFixed(2),
+                            maxLines: 1,
+                            smallSize: true,
+                          ),
                         ),
                       ),
-                      const SizedBox(
-                        height: TSizes.spaceBtwItems / 2,
-                      ),
-                      BrandTitleWithVerification(
-                          brandTitleWithVerificationModel:
-                              BrandTitleWithVerificationModel(
-                        brandName: product.brandName ?? '',
-                      )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: ProductPriceText(
-                              productPriceTextModel: ProductPriceTextModel(
-                                price: product.effectivePrice.toStringAsFixed(2),
-                                maxLines: 1,
-                                smallSize: true,
-                              ),
-                            ),
-                          ),
-                          const _DetailsBadge(),
-                        ],
-                      ),
-                    ]))
+                      const _DetailsBadge(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -159,7 +198,7 @@ class _DetailsBadge extends StatelessWidget {
         vertical: TSizes.xs,
       ),
       decoration: BoxDecoration(
-        color: dark ? TColors.dark : TColors.primary.withOpacity(0.08),
+        color: dark ? TColors.dark : TColors.primary.withValues(alpha: 0.08),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(TSizes.cardRadiusMd),
           bottomRight: Radius.circular(TSizes.productImageRadius),
@@ -171,9 +210,9 @@ class _DetailsBadge extends StatelessWidget {
           Text(
             'Detay',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: dark ? TColors.white : TColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: dark ? TColors.white : TColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(width: 2),
           Icon(
