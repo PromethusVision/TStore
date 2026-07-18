@@ -52,6 +52,8 @@ void main() {
     when(() => navigationCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => cartCubit.clearLocalCart()).thenReturn(null);
     when(() => wishlistCubit.clearLocalWishlist()).thenReturn(null);
+    when(() => cartCubit.getActiveCartItems()).thenAnswer((_) async {});
+    when(() => wishlistCubit.getWishlist()).thenAnswer((_) async {});
     when(() => navigationCubit.changeIndex(0)).thenReturn(null);
   });
 
@@ -62,6 +64,7 @@ void main() {
   Future<void> pumpApp(
     WidgetTester tester, {
     required bool initiallyAuthenticated,
+    String? initialUserId,
   }) async {
     await tester.pumpWidget(
       MultiBlocProvider(
@@ -76,6 +79,7 @@ void main() {
           navigatorKey: navigatorKey,
           scaffoldMessengerKey: scaffoldMessengerKey,
           initiallyAuthenticated: initiallyAuthenticated,
+          initialUserId: initialUserId,
           signedOutDestinationBuilder: (_) =>
               const Scaffold(body: Center(child: Text('Ana sayfa'))),
           child: MaterialApp(
@@ -97,7 +101,11 @@ void main() {
         () => authCubit.state,
       ).thenReturn(const AuthAuthenticated(authenticatedUser));
       when(() => authCubit.handleSignedOutEvent()).thenReturn(false);
-      await pumpApp(tester, initiallyAuthenticated: true);
+      await pumpApp(
+        tester,
+        initiallyAuthenticated: true,
+        initialUserId: authenticatedUser.id,
+      );
 
       authStateController.add(
         const supabase.AuthState(supabase.AuthChangeEvent.signedOut, null),
@@ -127,7 +135,11 @@ void main() {
       () => authCubit.state,
     ).thenReturn(const AuthAuthenticated(authenticatedUser));
     when(() => authCubit.handleSignedOutEvent()).thenReturn(true);
-    await pumpApp(tester, initiallyAuthenticated: true);
+    await pumpApp(
+      tester,
+      initiallyAuthenticated: true,
+      initialUserId: authenticatedUser.id,
+    );
 
     authStateController.add(
       const supabase.AuthState(supabase.AuthChangeEvent.signedOut, null),
@@ -144,6 +156,53 @@ void main() {
     verify(() => cartCubit.clearLocalCart()).called(1);
     verify(() => wishlistCubit.clearLocalWishlist()).called(1);
     verify(() => navigationCubit.changeIndex(0)).called(1);
+  });
+
+  testWidgets('switching customer account clears previous local data', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      initiallyAuthenticated: true,
+      initialUserId: authenticatedUser.id,
+    );
+
+    authStateController.add(
+      supabase.AuthState(
+        supabase.AuthChangeEvent.signedIn,
+        _sessionFor('customer-2'),
+      ),
+    );
+    await tester.pump();
+
+    verify(() => cartCubit.clearLocalCart()).called(1);
+    verify(() => wishlistCubit.clearLocalWishlist()).called(1);
+    verify(() => cartCubit.getActiveCartItems()).called(1);
+    verify(() => wishlistCubit.getWishlist()).called(1);
+    verify(() => navigationCubit.changeIndex(0)).called(1);
+    verifyNever(() => authCubit.handleSignedOutEvent());
+  });
+
+  testWidgets('refreshing the same customer session keeps local data', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      initiallyAuthenticated: true,
+      initialUserId: authenticatedUser.id,
+    );
+
+    authStateController.add(
+      supabase.AuthState(
+        supabase.AuthChangeEvent.tokenRefreshed,
+        _sessionFor(authenticatedUser.id),
+      ),
+    );
+    await tester.pump();
+
+    verifyNever(() => cartCubit.clearLocalCart());
+    verifyNever(() => wishlistCubit.clearLocalWishlist());
+    verifyNever(() => navigationCubit.changeIndex(0));
   });
 
   testWidgets('signed out event for a guest stays silent', (tester) async {
@@ -167,4 +226,18 @@ void main() {
     verify(() => wishlistCubit.clearLocalWishlist()).called(1);
     verify(() => navigationCubit.changeIndex(0)).called(1);
   });
+}
+
+supabase.Session _sessionFor(String userId) {
+  return supabase.Session(
+    accessToken: 'test-access-token',
+    tokenType: 'bearer',
+    user: supabase.User(
+      id: userId,
+      appMetadata: const {},
+      userMetadata: const {},
+      aud: 'authenticated',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    ),
+  );
 }

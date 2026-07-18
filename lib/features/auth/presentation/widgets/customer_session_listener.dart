@@ -16,6 +16,7 @@ class CustomerSessionListener extends StatefulWidget {
     required this.navigatorKey,
     required this.scaffoldMessengerKey,
     required this.initiallyAuthenticated,
+    required this.initialUserId,
     required this.signedOutDestinationBuilder,
     required this.child,
   });
@@ -24,6 +25,7 @@ class CustomerSessionListener extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
   final bool initiallyAuthenticated;
+  final String? initialUserId;
   final WidgetBuilder signedOutDestinationBuilder;
   final Widget child;
 
@@ -35,12 +37,14 @@ class CustomerSessionListener extends StatefulWidget {
 class _CustomerSessionListenerState extends State<CustomerSessionListener> {
   StreamSubscription<supabase.AuthState>? _subscription;
   late bool _hadAuthenticatedSession;
+  String? _activeUserId;
   bool _handlingSignedOut = false;
 
   @override
   void initState() {
     super.initState();
     _hadAuthenticatedSession = widget.initiallyAuthenticated;
+    _activeUserId = widget.initialUserId;
     _listenForSessionChanges();
   }
 
@@ -71,9 +75,15 @@ class _CustomerSessionListenerState extends State<CustomerSessionListener> {
       return;
     }
 
-    if (authState.session != null) {
-      _hadAuthenticatedSession = true;
-    }
+    final userId = authState.session?.user.id.trim();
+    if (userId == null || userId.isEmpty) return;
+
+    _hadAuthenticatedSession = true;
+    if (_activeUserId == userId) return;
+
+    _activeUserId = userId;
+    _clearLocalCustomerData();
+    _loadCustomerData();
   }
 
   void _handleSignedOut() {
@@ -85,10 +95,9 @@ class _CustomerSessionListenerState extends State<CustomerSessionListener> {
         _hadAuthenticatedSession || authCubit.state is AuthAuthenticated;
     final wasUserInitiated = authCubit.handleSignedOutEvent();
 
-    context.read<CartV2Cubit>().clearLocalCart();
-    context.read<WishlistCubit>().clearLocalWishlist();
-    context.read<NavigationMenuCubit>().changeIndex(0);
+    _clearLocalCustomerData();
     _hadAuthenticatedSession = false;
+    _activeUserId = null;
 
     if (wasUserInitiated || !hadAuthenticatedSession) {
       _handlingSignedOut = false;
@@ -128,6 +137,17 @@ class _CustomerSessionListenerState extends State<CustomerSessionListener> {
       });
       _handlingSignedOut = false;
     });
+  }
+
+  void _clearLocalCustomerData() {
+    context.read<CartV2Cubit>().clearLocalCart();
+    context.read<WishlistCubit>().clearLocalWishlist();
+    context.read<NavigationMenuCubit>().changeIndex(0);
+  }
+
+  void _loadCustomerData() {
+    unawaited(context.read<CartV2Cubit>().getActiveCartItems());
+    unawaited(context.read<WishlistCubit>().getWishlist());
   }
 
   @override

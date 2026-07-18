@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -304,6 +306,38 @@ void main() {
         expect(wishlistCubit.state, WishlistLoaded(const []));
         verify(() => mockGetWishlistUsecase(any())).called(1);
         verifyNoMoreInteractions(mockGetWishlistUsecase);
+      });
+
+      test('ignores an old load result after local data is cleared', () async {
+        final result = Completer<Either<String, List<WishlistItemEntity>>>();
+        when(
+          () => mockGetWishlistUsecase(any()),
+        ).thenAnswer((_) => result.future);
+
+        final loadRequest = wishlistCubit.getWishlist();
+        wishlistCubit.clearLocalWishlist();
+        result.complete(Right(testWishlistItems));
+        await loadRequest;
+
+        expect(wishlistCubit.itemCount, 0);
+        expect(wishlistCubit.isInWishlist('product-1'), isFalse);
+        expect(wishlistCubit.state, WishlistLoaded(const []));
+      });
+
+      test('ignores an old add result after local data is cleared', () async {
+        final result = Completer<Either<String, WishlistItemEntity>>();
+        when(
+          () => mockAddToWishlistUsecase('product-1'),
+        ).thenAnswer((_) => result.future);
+
+        final addRequest = wishlistCubit.addToWishlist('product-1');
+        wishlistCubit.clearLocalWishlist();
+        result.complete(Right(testWishlistItems.first));
+        await addRequest;
+
+        expect(wishlistCubit.itemCount, 0);
+        expect(wishlistCubit.state, WishlistLoaded(const []));
+        verifyNever(() => mockGetWishlistUsecase(any()));
       });
     });
   });

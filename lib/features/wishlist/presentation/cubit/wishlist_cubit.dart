@@ -10,6 +10,7 @@ class WishlistCubit extends Cubit<WishlistState> {
   final GetWishlistUsecase getWishlistUsecase;
   final AddToWishlistUsecase addToWishlistUsecase;
   final RemoveFromWishlistUsecase removeFromWishlistUsecase;
+  int _dataGeneration = 0;
 
   WishlistCubit({
     required this.getWishlistUsecase,
@@ -21,9 +22,11 @@ class WishlistCubit extends Cubit<WishlistState> {
   Set<String> _productIds = {};
 
   Future<void> getWishlist() async {
+    final dataGeneration = _dataGeneration;
     emit(WishlistLoading());
 
     final result = await getWishlistUsecase(const NoParams());
+    if (!_canApply(dataGeneration)) return;
 
     result.fold((error) => emit(WishlistError(error)), (items) {
       _items = items;
@@ -33,7 +36,9 @@ class WishlistCubit extends Cubit<WishlistState> {
   }
 
   Future<void> addToWishlist(String productId) async {
+    final dataGeneration = _dataGeneration;
     final result = await addToWishlistUsecase(productId);
+    if (!_canApply(dataGeneration)) return;
 
     result.fold((error) => emit(WishlistError(error)), (item) {
       emit(WishlistItemAdded(item));
@@ -42,7 +47,9 @@ class WishlistCubit extends Cubit<WishlistState> {
   }
 
   Future<void> removeFromWishlist(String productId) async {
+    final dataGeneration = _dataGeneration;
     final result = await removeFromWishlistUsecase(productId);
+    if (!_canApply(dataGeneration)) return;
 
     result.fold((error) => emit(WishlistError(error)), (_) {
       emit(WishlistItemRemoved(productId));
@@ -63,10 +70,15 @@ class WishlistCubit extends Cubit<WishlistState> {
   }
 
   void clearLocalWishlist() {
+    _dataGeneration += 1;
     _items = [];
     _productIds = {};
     emit(WishlistLoaded(const []));
   }
 
   int get itemCount => _items.length;
+
+  bool _canApply(int dataGeneration) {
+    return !isClosed && dataGeneration == _dataGeneration;
+  }
 }

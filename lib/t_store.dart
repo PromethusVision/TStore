@@ -69,6 +69,7 @@ class TStore extends StatelessWidget {
           navigatorKey: tStoreNavigatorKey,
           scaffoldMessengerKey: tStoreScaffoldMessengerKey,
           initiallyAuthenticated: SupabaseService.instance.currentUser != null,
+          initialUserId: SupabaseService.instance.currentUser?.id,
           signedOutDestinationBuilder: (_) => const NavigationMenu(),
           child: MaterialApp(
             navigatorKey: tStoreNavigatorKey,
