@@ -292,6 +292,53 @@ void main() {
         act: (cubit) => cubit.signOut(),
         expect: () => [AuthLoading(), const AuthError('Sign out failed')],
       );
+
+      test('marks a successful sign out event as user initiated', () async {
+        when(
+          () => mockSignOutUsecase(any()),
+        ).thenAnswer((_) async => const Right(null));
+
+        await authCubit.signOut();
+
+        expect(authCubit.handleSignedOutEvent(), isTrue);
+        expect(authCubit.handleSignedOutEvent(), isFalse);
+        expect(authCubit.state, AuthUnauthenticated());
+      });
+
+      test('does not mark a failed sign out as user initiated', () async {
+        when(
+          () => mockSignOutUsecase(any()),
+        ).thenAnswer((_) async => const Left('Sign out failed'));
+
+        await authCubit.signOut();
+
+        expect(authCubit.handleSignedOutEvent(), isFalse);
+        expect(authCubit.state, AuthUnauthenticated());
+      });
+
+      test('synchronizes an external signed out event', () {
+        expect(authCubit.handleSignedOutEvent(), isFalse);
+        expect(authCubit.state, AuthUnauthenticated());
+      });
+
+      test(
+        'ignores a second sign out while the first one is loading',
+        () async {
+          final result = Completer<Either<String, void>>();
+          when(
+            () => mockSignOutUsecase(any()),
+          ).thenAnswer((_) => result.future);
+
+          final firstRequest = authCubit.signOut();
+          await authCubit.signOut();
+
+          verify(() => mockSignOutUsecase(any())).called(1);
+
+          result.complete(const Right(null));
+          await firstRequest;
+          expect(authCubit.state, AuthUnauthenticated());
+        },
+      );
     });
 
     group('resetPassword', () {

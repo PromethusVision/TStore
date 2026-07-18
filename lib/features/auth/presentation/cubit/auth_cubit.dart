@@ -11,6 +11,8 @@ import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.d
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
+  static const Duration _userInitiatedSignOutWindow = Duration(seconds: 5);
+
   final SignInUsecase signInUsecase;
   final SignUpUsecase signUpUsecase;
   final SignOutUsecase signOutUsecase;
@@ -18,6 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ResendConfirmationUsecase resendConfirmationUsecase;
   final UpdatePasswordUsecase updatePasswordUsecase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
+  DateTime? _userInitiatedSignOutAt;
 
   AuthCubit({
     required this.signInUsecase,
@@ -89,14 +92,31 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signOut() async {
+    if (state is AuthLoading) return;
+
+    _userInitiatedSignOutAt = DateTime.now();
     emit(AuthLoading());
 
     final result = await signOutUsecase(const NoParams());
 
-    result.fold(
-      (error) => emit(AuthError(error)),
-      (_) => emit(AuthUnauthenticated()),
-    );
+    result.fold((error) {
+      _userInitiatedSignOutAt = null;
+      emit(AuthError(error));
+    }, (_) => emit(AuthUnauthenticated()));
+  }
+
+  bool handleSignedOutEvent() {
+    final requestedAt = _userInitiatedSignOutAt;
+    final isUserInitiated =
+        requestedAt != null &&
+        DateTime.now().difference(requestedAt) <= _userInitiatedSignOutWindow;
+
+    _userInitiatedSignOutAt = null;
+    if (state is! AuthUnauthenticated) {
+      emit(AuthUnauthenticated());
+    }
+
+    return isUserInitiated;
   }
 
   Future<void> resetPassword(String email) async {
