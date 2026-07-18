@@ -7,6 +7,7 @@ import 'package:t_store/core/enums/status.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/core/utils/validators/validation.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
@@ -39,9 +40,11 @@ class _LoginFormSectionState extends State<LoginFormSection> {
   }
 
   void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
+    if (context.read<AuthCubit>().state is AuthLoading) return;
+
+    if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().signIn(
-        email: _emailController.text.trim(),
+        email: _emailController.text.trim().toLowerCase(),
         password: _passwordController.text.trim(),
       );
     }
@@ -155,23 +158,27 @@ class _LoginFormSectionState extends State<LoginFormSection> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('login-email'),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Iconsax.direct_right),
                     labelText: TTexts.email,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'E-posta adresinizi girin.';
-                    }
-                    return null;
-                  },
+                  validator: (value) => TValidator.validateEmail(value?.trim()),
                 ),
                 const SizedBox(height: TSizes.spaceBtwInputFields),
                 TextFormField(
+                  key: const Key('login-password'),
                   controller: _passwordController,
                   obscureText: _obscurePassword,
+                  autofillHints: const [AutofillHints.password],
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: state is AuthLoading
+                      ? null
+                      : (_) => _handleLogin(),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
@@ -225,6 +232,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
+                    key: const Key('login-submit'),
                     onPressed: state is AuthLoading
                         ? null
                         : () {

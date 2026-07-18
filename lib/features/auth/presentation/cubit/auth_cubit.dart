@@ -44,6 +44,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signIn({required String email, required String password}) async {
+    if (state is AuthLoading) return;
+
     emit(AuthLoading());
 
     final result = await signInUsecase(

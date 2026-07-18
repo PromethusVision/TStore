@@ -86,6 +86,96 @@ void main() {
     );
   });
 
+  test('invalid credentials are returned without technical details', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.signIn(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      ),
+    ).thenThrow(const AuthException('Invalid login credentials'));
+
+    final result = await repository.signIn(
+      email: 'customer@example.com',
+      password: 'wrong-password',
+    );
+
+    expect(
+      result.fold((error) => error, (_) => ''),
+      'E-posta veya şifre hatalı.',
+    );
+  });
+
+  test('connection failure is returned as a safe Turkish message', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.signIn(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      ),
+    ).thenThrow(Exception('ClientException: Failed to fetch secret-host'));
+
+    final result = await repository.signIn(
+      email: 'customer@example.com',
+      password: 'Strong1!',
+    );
+
+    final message = result.fold((error) => error, (_) => '');
+    expect(message, 'İnternet bağlantınızı kontrol edip tekrar deneyin.');
+    expect(message, isNot(contains('secret-host')));
+  });
+
+  test(
+    'service failure is returned as an actionable Turkish message',
+    () async {
+      final supabaseService = MockSupabaseService();
+      final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+      when(
+        () => supabaseService.signIn(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenThrow(const AuthException('Internal server error'));
+
+      final result = await repository.signIn(
+        email: 'customer@example.com',
+        password: 'Strong1!',
+      );
+
+      expect(
+        result.fold((error) => error, (_) => ''),
+        'Giriş hizmeti şu anda yanıt vermiyor. '
+        'Lütfen kısa süre sonra tekrar deneyin.',
+      );
+    },
+  );
+
+  test('unexpected sign in failure never exposes its details', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.signIn(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      ),
+    ).thenThrow(StateError('database-password-was-visible'));
+
+    final result = await repository.signIn(
+      email: 'customer@example.com',
+      password: 'Strong1!',
+    );
+
+    final message = result.fold((error) => error, (_) => '');
+    expect(message, 'Giriş yapılamadı. Lütfen tekrar deneyin.');
+    expect(message, isNot(contains('database-password-was-visible')));
+  });
+
   test('resend rate limit is not mistaken for an invalid email', () async {
     final supabaseService = MockSupabaseService();
     final repository = AuthRepositoryImpl(supabaseService: supabaseService);

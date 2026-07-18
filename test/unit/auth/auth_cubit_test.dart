@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -174,6 +176,23 @@ void main() {
           const AuthEmailConfirmationRequired(testEmail),
         ],
       );
+
+      test('ignores a second sign in while the first one is loading', () async {
+        final result = Completer<Either<String, UserEntity>>();
+        when(() => mockSignInUsecase(any())).thenAnswer((_) => result.future);
+
+        final firstRequest = authCubit.signIn(
+          email: testEmail,
+          password: testPassword,
+        );
+        await authCubit.signIn(email: testEmail, password: testPassword);
+
+        verify(() => mockSignInUsecase(any())).called(1);
+
+        result.complete(Right(testUser));
+        await firstRequest;
+        expect(authCubit.state, AuthAuthenticated(testUser));
+      });
     });
 
     group('signUp', () {

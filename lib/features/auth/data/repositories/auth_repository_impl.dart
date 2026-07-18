@@ -73,9 +73,14 @@ class AuthRepositoryImpl implements AuthRepository {
         UserEntity(id: response.user!.id, email: response.user!.email ?? email),
       );
     } on AuthException catch (e) {
-      return Left(_getAuthErrorMessage(e.message));
+      return Left(
+        _getAuthErrorMessage(
+          e.message,
+          fallbackMessage: 'Giriş yapılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     } catch (e) {
-      return Left(e.toString());
+      return Left(_getSignInErrorMessage(e));
     }
   }
 
@@ -234,11 +239,35 @@ class AuthRepositoryImpl implements AuthRepository {
     });
   }
 
-  String _getAuthErrorMessage(String message) {
+  String _getSignInErrorMessage(Object error) {
+    final lowerMessage = error.toString().toLowerCase();
+
+    if (_isConnectionError(lowerMessage)) {
+      return 'İnternet bağlantınızı kontrol edip tekrar deneyin.';
+    }
+    if (_isServiceUnavailableError(lowerMessage)) {
+      return 'Giriş hizmeti şu anda yanıt vermiyor. '
+          'Lütfen kısa süre sonra tekrar deneyin.';
+    }
+
+    return 'Giriş yapılamadı. Lütfen tekrar deneyin.';
+  }
+
+  String _getAuthErrorMessage(
+    String message, {
+    String fallbackMessage = 'İşlem tamamlanamadı. Lütfen tekrar deneyin.',
+  }) {
     final lowerMessage = message.toLowerCase();
 
     if (lowerMessage.contains('rate limit')) {
       return 'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
+    }
+    if (_isConnectionError(lowerMessage)) {
+      return 'İnternet bağlantınızı kontrol edip tekrar deneyin.';
+    }
+    if (_isServiceUnavailableError(lowerMessage)) {
+      return 'Giriş hizmeti şu anda yanıt vermiyor. '
+          'Lütfen kısa süre sonra tekrar deneyin.';
     }
     if (lowerMessage.contains('session missing') ||
         lowerMessage.contains('not authenticated') ||
@@ -266,6 +295,26 @@ class AuthRepositoryImpl implements AuthRepository {
       return 'Geçerli bir e-posta adresi girin.';
     }
 
-    return message;
+    return fallbackMessage;
+  }
+
+  bool _isConnectionError(String lowerMessage) {
+    return lowerMessage.contains('network') ||
+        lowerMessage.contains('socketexception') ||
+        lowerMessage.contains('failed host lookup') ||
+        lowerMessage.contains('failed to fetch') ||
+        lowerMessage.contains('xmlhttprequest') ||
+        lowerMessage.contains('clientexception') ||
+        lowerMessage.contains('connection reset') ||
+        lowerMessage.contains('connection refused') ||
+        lowerMessage.contains('timed out') ||
+        lowerMessage.contains('timeout');
+  }
+
+  bool _isServiceUnavailableError(String lowerMessage) {
+    return lowerMessage.contains('service unavailable') ||
+        lowerMessage.contains('temporarily unavailable') ||
+        lowerMessage.contains('internal server error') ||
+        lowerMessage.contains('bad gateway');
   }
 }
