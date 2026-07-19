@@ -257,6 +257,7 @@ class _HomeViewState extends State<HomeView> {
                           itemBuilder: (context, index) {
                             return VerticalProductCard(
                               product: state.products[index],
+                              showFavoriteAction: true,
                             );
                           },
                           mainAxisExtent: 288,

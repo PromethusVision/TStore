@@ -16,10 +16,12 @@ class AllProductsView extends StatelessWidget {
     super.key,
     this.autoFocusSearch = false,
     this.isSearchMode = false,
+    this.currentUserIdProvider,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
+  final String? Function()? currentUserIdProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class AllProductsView extends StatelessWidget {
       child: _AllProductsContent(
         autoFocusSearch: autoFocusSearch,
         isSearchMode: isSearchMode,
+        currentUserIdProvider: currentUserIdProvider,
       ),
     );
   }
@@ -37,10 +40,12 @@ class _AllProductsContent extends StatefulWidget {
   const _AllProductsContent({
     required this.autoFocusSearch,
     required this.isSearchMode,
+    this.currentUserIdProvider,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
+  final String? Function()? currentUserIdProvider;
 
   @override
   State<_AllProductsContent> createState() => _AllProductsContentState();
@@ -163,6 +168,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                       return _ProductsScrollView(
                         controller: _scrollController,
                         products: state.products,
+                        currentUserIdProvider: widget.currentUserIdProvider,
                       );
                     }
 
@@ -174,6 +180,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                       return _ProductsScrollView(
                         controller: _scrollController,
                         products: state.products,
+                        currentUserIdProvider: widget.currentUserIdProvider,
                         footer: _ProductsLoadMoreFooter(
                           state: state,
                           onRetry: _retryLoadMore,
@@ -258,11 +265,13 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 class _ProductsScrollView extends StatelessWidget {
   final ScrollController controller;
   final List<ProductEntity> products;
+  final String? Function()? currentUserIdProvider;
   final Widget? footer;
 
   const _ProductsScrollView({
     required this.controller,
     required this.products,
+    this.currentUserIdProvider,
     this.footer,
   });
 
@@ -279,7 +288,11 @@ class _ProductsScrollView extends StatelessWidget {
             mainAxisExtent: 288,
           ),
           delegate: SliverChildBuilderDelegate(
-            (context, index) => VerticalProductCard(product: products[index]),
+            (context, index) => VerticalProductCard(
+              product: products[index],
+              showFavoriteAction: true,
+              currentUserIdProvider: currentUserIdProvider,
+            ),
             childCount: products.length,
           ),
         ),

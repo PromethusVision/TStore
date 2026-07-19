@@ -20,6 +20,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 class VerticalProductCard extends StatelessWidget {
   const VerticalProductCard({
@@ -28,12 +29,14 @@ class VerticalProductCard extends StatelessWidget {
     this.showFavoriteAction = false,
     this.favoriteActionLoading = false,
     this.onFavoritePressed,
+    this.currentUserIdProvider,
   });
 
   final ProductEntity product;
   final bool showFavoriteAction;
   final bool favoriteActionLoading;
   final VoidCallback? onFavoritePressed;
+  final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,10 @@ class VerticalProductCard extends StatelessWidget {
       onTap: () {
         THelperFunctions.navigateToScreen(
           context,
-          ProductDetailsView(product: product),
+          ProductDetailsView(
+            product: product,
+            currentUserIdProvider: currentUserIdProvider,
+          ),
         );
       },
       child: Container(
@@ -85,41 +91,56 @@ class VerticalProductCard extends StatelessWidget {
                           ),
                         const Spacer(),
                         if (showFavoriteAction)
-                          Tooltip(
-                            message: 'Favorilerden çıkar',
-                            child: favoriteActionLoading
-                                ? Container(
-                                    key: Key(
-                                      'favorite-action-loading-${product.id}',
-                                    ),
-                                    width: TSizes.iconLg * 1.2,
-                                    height: TSizes.iconLg * 1.2,
-                                    padding: const EdgeInsets.all(TSizes.sm),
-                                    decoration: BoxDecoration(
-                                      color: dark
-                                          ? TColors.darkerGrey
-                                          : TColors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : CircularIcon(
-                                    key: Key('favorite-action-${product.id}'),
-                                    circularIconModel: CircularIconModel(
-                                      height: TSizes.iconLg * 1.2,
+                          if (favoriteActionLoading ||
+                              onFavoritePressed != null)
+                            Tooltip(
+                              message: 'Favorilerden çıkar',
+                              child: favoriteActionLoading
+                                  ? Container(
+                                      key: Key(
+                                        'favorite-action-loading-${product.id}',
+                                      ),
                                       width: TSizes.iconLg * 1.2,
-                                      iconSize: TSizes.iconMd,
-                                      icon: Iconsax.heart5,
-                                      color: Colors.red,
-                                      backgroundColor: dark
-                                          ? TColors.darkerGrey
-                                          : TColors.white,
-                                      onPressed: onFavoritePressed,
+                                      height: TSizes.iconLg * 1.2,
+                                      padding: const EdgeInsets.all(TSizes.sm),
+                                      decoration: BoxDecoration(
+                                        color: dark
+                                            ? TColors.darkerGrey
+                                            : TColors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : CircularIcon(
+                                      key: Key('favorite-action-${product.id}'),
+                                      circularIconModel: CircularIconModel(
+                                        height: TSizes.iconLg * 1.2,
+                                        width: TSizes.iconLg * 1.2,
+                                        iconSize: TSizes.iconMd,
+                                        icon: Iconsax.heart5,
+                                        color: Colors.red,
+                                        backgroundColor: dark
+                                            ? TColors.darkerGrey
+                                            : TColors.white,
+                                        onPressed: onFavoritePressed,
+                                      ),
                                     ),
-                                  ),
-                          ),
+                            )
+                          else
+                            ProductFavoriteButton(
+                              productId: product.id,
+                              keyPrefix:
+                                  'vertical-product-card-favorite-${product.id}',
+                              currentUserIdProvider: currentUserIdProvider,
+                              height: TSizes.iconLg * 1.2,
+                              width: TSizes.iconLg * 1.2,
+                              iconSize: TSizes.iconMd,
+                              backgroundColor: dark
+                                  ? TColors.darkerGrey
+                                  : TColors.white,
+                            ),
                       ],
                     ),
                   ],

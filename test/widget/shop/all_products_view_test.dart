@@ -10,13 +10,19 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
+import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
+import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
 
 class MockProductsCubit extends MockCubit<ProductsState>
     implements ProductsCubit {}
 
+class MockWishlistCubit extends MockCubit<WishlistState>
+    implements WishlistCubit {}
+
 void main() {
   late MockProductsCubit parentProductsCubit;
   late MockProductsCubit localProductsCubit;
+  late MockWishlistCubit wishlistCubit;
   late ProductsLoaded parentFeaturedState;
 
   const featuredProduct = ProductEntity(
@@ -34,6 +40,7 @@ void main() {
 
     parentProductsCubit = MockProductsCubit();
     localProductsCubit = MockProductsCubit();
+    wishlistCubit = MockWishlistCubit();
     parentFeaturedState = const ProductsLoaded(
       products: [featuredProduct],
       hasReachedMax: true,
@@ -58,6 +65,12 @@ void main() {
     ).thenAnswer((_) async {});
     when(() => localProductsCubit.loadMoreProducts()).thenAnswer((_) async {});
     when(() => localProductsCubit.close()).thenAnswer((_) async {});
+    whenListen(
+      wishlistCubit,
+      const Stream<WishlistState>.empty(),
+      initialState: WishlistLoaded(const []),
+    );
+    when(() => wishlistCubit.isInWishlist(any())).thenReturn(false);
 
     sl.registerFactory<ProductsCubit>(() => localProductsCubit);
   });
@@ -68,9 +81,12 @@ void main() {
 
   Widget buildSubject() {
     return MaterialApp(
-      home: BlocProvider<ProductsCubit>.value(
-        value: parentProductsCubit,
-        child: const AllProductsView(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<ProductsCubit>.value(value: parentProductsCubit),
+          BlocProvider<WishlistCubit>.value(value: wishlistCubit),
+        ],
+        child: AllProductsView(currentUserIdProvider: () => null),
       ),
     );
   }
@@ -95,7 +111,7 @@ void main() {
 
   Future<void> scrollToEnd(WidgetTester tester) async {
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -4000));
-    await tester.pump();
+    await tester.pumpAndSettle();
   }
 
   testWidgets(
