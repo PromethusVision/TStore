@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/view_models/brand_title_with_verification_view_model.dart';
 import 'package:t_store/core/common/view_models/circular_container_view_model.dart';
-import 'package:t_store/core/common/view_models/circular_icon_view_model.dart';
 import 'package:t_store/core/common/view_models/product_price_text_view_model.dart';
 import 'package:t_store/core/common/view_models/product_title_text_view_model.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/add_to_cart_container.dart';
 import 'package:t_store/core/common/widgets/brand_title_with_verification.dart';
 import 'package:t_store/core/common/widgets/circular_container.dart';
-import 'package:t_store/core/common/widgets/circular_icon.dart';
 import 'package:t_store/core/common/widgets/product_price_text.dart';
 import 'package:t_store/core/common/widgets/product_title_text.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
@@ -20,24 +17,34 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 class HorizontalProductCard extends StatelessWidget {
-  const HorizontalProductCard({super.key, required this.product});
+  const HorizontalProductCard({
+    super.key,
+    required this.product,
+    this.currentUserIdProvider,
+  });
 
   final ProductEntity product;
+  final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
 
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
-    final image =
-        product.images.isNotEmpty ? product.images.first : TImages.productImage11;
+    final image = product.images.isNotEmpty
+        ? product.images.first
+        : TImages.productImage11;
     final isNetworkImage = image.startsWith('http');
 
     return GestureDetector(
       onTap: () {
         THelperFunctions.navigateToScreen(
           context,
-          ProductDetailsView(product: product),
+          ProductDetailsView(
+            product: product,
+            currentUserIdProvider: currentUserIdProvider,
+          ),
         );
       },
       child: Container(
@@ -80,11 +87,11 @@ class HorizontalProductCard extends StatelessWidget {
                     Positioned(
                       top: 0,
                       right: 0,
-                      child: CircularIcon(
-                        circularIconModel: CircularIconModel(
-                          icon: Iconsax.heart5,
-                          color: Colors.red,
-                        ),
+                      child: ProductFavoriteButton(
+                        productId: product.id,
+                        keyPrefix:
+                            'horizontal-product-card-favorite-${product.id}',
+                        currentUserIdProvider: currentUserIdProvider,
                       ),
                     ),
                   ],
@@ -112,8 +119,8 @@ class HorizontalProductCard extends StatelessWidget {
                           BrandTitleWithVerification(
                             brandTitleWithVerificationModel:
                                 BrandTitleWithVerificationModel(
-                              brandName: product.brandName!,
-                            ),
+                                  brandName: product.brandName!,
+                                ),
                           ),
                         ],
                       ],
