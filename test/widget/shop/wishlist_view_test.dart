@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/shop/presentation/views/wishlist_view.dart';
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
@@ -154,6 +155,33 @@ void main() {
       find.byKey(const Key('favorite-action-loading-product-1')),
       findsOneWidget,
     );
+
+    removal.complete();
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('kaldırma beklerken ikinci dokunma ürün kartını açmaz', (
+    tester,
+  ) async {
+    final removal = Completer<void>();
+    when(
+      () => wishlistCubit.removeFromWishlist(product.id),
+    ).thenAnswer((_) => removal.future);
+
+    await tester.pumpWidget(buildSubject(WishlistLoaded(const [wishlistItem])));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('favorite-action-product-1')));
+    await tester.pump();
+
+    final loading = find.byKey(const Key('favorite-action-loading-product-1'));
+    expect(loading, findsOneWidget);
+
+    await tester.tap(loading);
+    await tester.pump();
+
+    verify(() => wishlistCubit.removeFromWishlist(product.id)).called(1);
+    expect(find.byType(ProductDetailsView), findsNothing);
 
     removal.complete();
     await tester.pumpAndSettle();

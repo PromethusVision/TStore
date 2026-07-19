@@ -96,21 +96,27 @@ class VerticalProductCard extends StatelessWidget {
                             Tooltip(
                               message: 'Favorilerden çıkar',
                               child: favoriteActionLoading
-                                  ? Container(
+                                  ? GestureDetector(
                                       key: Key(
                                         'favorite-action-loading-${product.id}',
                                       ),
-                                      width: TSizes.iconLg * 1.2,
-                                      height: TSizes.iconLg * 1.2,
-                                      padding: const EdgeInsets.all(TSizes.sm),
-                                      decoration: BoxDecoration(
-                                        color: dark
-                                            ? TColors.darkerGrey
-                                            : TColors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 2,
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {},
+                                      child: Container(
+                                        width: TSizes.iconLg * 1.2,
+                                        height: TSizes.iconLg * 1.2,
+                                        padding: const EdgeInsets.all(
+                                          TSizes.sm,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: dark
+                                              ? TColors.darkerGrey
+                                              : TColors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                       ),
                                     )
                                   : CircularIcon(
