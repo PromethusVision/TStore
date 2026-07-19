@@ -65,12 +65,16 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
                 state is WishlistLoading);
 
         if (isFavoriteLoading) {
-          return _FavoriteLoadingIndicator(
+          return GestureDetector(
             key: Key('${widget.keyPrefix}-loading'),
-            height: widget.height,
-            width: widget.width,
-            backgroundColor: widget.backgroundColor,
-            dark: dark,
+            behavior: HitTestBehavior.opaque,
+            onTap: () {},
+            child: _FavoriteLoadingIndicator(
+              height: widget.height,
+              width: widget.width,
+              backgroundColor: widget.backgroundColor,
+              dark: dark,
+            ),
           );
         }
 
@@ -176,7 +180,6 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
 
 class _FavoriteLoadingIndicator extends StatelessWidget {
   const _FavoriteLoadingIndicator({
-    super.key,
     required this.dark,
     this.height,
     this.width,

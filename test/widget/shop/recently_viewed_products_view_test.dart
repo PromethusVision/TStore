@@ -1,15 +1,26 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_state.dart';
 import 'package:t_store/features/shop/presentation/views/recently_viewed_products_view.dart';
+import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
+import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
+import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
+import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
 
 class MockRecentlyViewedProductsCubit
     extends MockCubit<RecentlyViewedProductsState>
     implements RecentlyViewedProductsCubit {}
+
+class MockWishlistCubit extends MockCubit<WishlistState>
+    implements WishlistCubit {}
 
 void main() {
   const firstProduct = ProductEntity(
@@ -31,19 +42,41 @@ void main() {
   );
 
   late MockRecentlyViewedProductsCubit cubit;
+  late MockWishlistCubit wishlistCubit;
+  late StreamController<WishlistState> wishlistStateController;
+  late bool isFavorite;
 
   setUp(() {
     cubit = MockRecentlyViewedProductsCubit();
+    wishlistCubit = MockWishlistCubit();
+    wishlistStateController = StreamController<WishlistState>.broadcast();
+    isFavorite = false;
+
     when(() => cubit.load(any())).thenAnswer((_) async {});
     when(() => cubit.close()).thenAnswer((_) async {});
+    when(() => wishlistCubit.getWishlist()).thenAnswer((_) async {});
+    when(() => wishlistCubit.toggleWishlist(any())).thenAnswer((_) async {});
+    when(() => wishlistCubit.isInWishlist(any())).thenAnswer((_) => isFavorite);
+    whenListen(
+      wishlistCubit,
+      wishlistStateController.stream,
+      initialState: WishlistLoaded(const []),
+    );
+  });
+
+  tearDown(() async {
+    await wishlistStateController.close();
   });
 
   Widget buildSubject({VoidCallback? onExplore}) {
-    return MaterialApp(
-      home: RecentlyViewedProductsView(
-        customerId: 'customer-1',
-        recentlyViewedProductsCubit: cubit,
-        onExplore: onExplore,
+    return BlocProvider<WishlistCubit>.value(
+      value: wishlistCubit,
+      child: MaterialApp(
+        home: RecentlyViewedProductsView(
+          customerId: 'customer-1',
+          recentlyViewedProductsCubit: cubit,
+          onExplore: onExplore,
+        ),
       ),
     );
   }
@@ -69,7 +102,100 @@ void main() {
     expect(find.text('₺499,90'), findsOneWidget);
     expect(find.text('Örnek Marka'), findsOneWidget);
     expect(find.text('Ürünü İncele'), findsNWidgets(2));
+    expect(find.byTooltip('Favorilere ekle'), findsNWidgets(2));
     verify(() => cubit.load('customer-1')).called(1);
+  });
+
+  testWidgets('ürünü kalpten favorilere ekler ve kartı açmaz', (tester) async {
+    const wishlistItem = WishlistItemEntity(
+      id: 'wishlist-p1',
+      userId: 'customer-1',
+      productId: 'p1',
+      product: firstProduct,
+    );
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+    when(() => wishlistCubit.toggleWishlist(firstProduct.id)).thenAnswer((
+      _,
+    ) async {
+      isFavorite = true;
+      wishlistStateController.add(WishlistLoaded(const [wishlistItem]));
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('recently-viewed-favorite-p1-action')),
+    );
+    await tester.pumpAndSettle();
+
+    verify(() => wishlistCubit.toggleWishlist(firstProduct.id)).called(1);
+    expect(find.byIcon(Iconsax.heart5), findsOneWidget);
+    expect(find.text('Ürün favorilere eklendi.'), findsOneWidget);
+    expect(find.byType(ProductDetailsView), findsNothing);
+    verifyNever(() => cubit.removeProduct(any(), any()));
+  });
+
+  testWidgets('favori beklerken ikinci dokunma ürün kartını açmaz', (
+    tester,
+  ) async {
+    final operation = Completer<void>();
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+    when(
+      () => wishlistCubit.toggleWishlist(firstProduct.id),
+    ).thenAnswer((_) => operation.future);
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('recently-viewed-favorite-p1-action')),
+    );
+    await tester.pump();
+
+    final loading = find.byKey(
+      const Key('recently-viewed-favorite-p1-loading'),
+    );
+    expect(loading, findsOneWidget);
+
+    await tester.tap(loading);
+    await tester.pump();
+
+    verify(() => wishlistCubit.toggleWishlist(firstProduct.id)).called(1);
+    expect(find.byType(ProductDetailsView), findsNothing);
+
+    operation.complete();
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('dar ekranda favori ve ürün işlemlerini taşırmadan gösterir', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Favorilere ekle'), findsOneWidget);
+    expect(find.byTooltip('Ürün işlemleri'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('boş durumda ürün keşfine yönlendiren eylemi gösterir', (

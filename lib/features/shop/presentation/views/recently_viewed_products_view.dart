@@ -7,6 +7,7 @@ import 'package:t_store/features/shop/presentation/cubit/recently_viewed_product
 import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 class RecentlyViewedProductsView extends StatelessWidget {
   const RecentlyViewedProductsView({
@@ -106,6 +107,7 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
                   const SizedBox(height: TSizes.spaceBtwItems),
               itemBuilder: (context, index) => _RecentlyViewedProductCard(
                 product: products[index],
+                customerId: customerId,
                 onTap: () => _openProduct(context, products[index]),
                 onRemove: () => _removeProduct(context, products[index]),
               ),
@@ -212,11 +214,13 @@ enum _RecentlyViewedProductAction { remove }
 class _RecentlyViewedProductCard extends StatelessWidget {
   const _RecentlyViewedProductCard({
     required this.product,
+    required this.customerId,
     required this.onTap,
     required this.onRemove,
   });
 
   final ProductEntity product;
+  final String customerId;
   final VoidCallback onTap;
   final VoidCallback onRemove;
 
@@ -285,40 +289,55 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: TSizes.sm),
-                PopupMenuButton<_RecentlyViewedProductAction>(
-                  tooltip: 'Ürün işlemleri',
-                  onSelected: (action) {
-                    if (action == _RecentlyViewedProductAction.remove) {
-                      onRemove();
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: _RecentlyViewedProductAction.remove,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.delete_outline,
-                            color: colorScheme.error,
-                            size: 20,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ProductFavoriteButton(
+                      productId: product.id,
+                      keyPrefix: 'recently-viewed-favorite-${product.id}',
+                      currentUserIdProvider: () => customerId,
+                      height: 40,
+                      width: 40,
+                      iconSize: 22,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
+                    ),
+                    const SizedBox(height: TSizes.xs),
+                    PopupMenuButton<_RecentlyViewedProductAction>(
+                      tooltip: 'Ürün işlemleri',
+                      onSelected: (action) {
+                        if (action == _RecentlyViewedProductAction.remove) {
+                          onRemove();
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: _RecentlyViewedProductAction.remove,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete_outline,
+                                color: colorScheme.error,
+                                size: 20,
+                              ),
+                              const SizedBox(width: TSizes.sm),
+                              Flexible(
+                                child: Text(
+                                  'Geçmişten kaldır',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: colorScheme.error),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: TSizes.sm),
-                          Flexible(
-                            child: Text(
-                              'Geçmişten kaldır',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: colorScheme.error),
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
                 ),
               ],
             ),
