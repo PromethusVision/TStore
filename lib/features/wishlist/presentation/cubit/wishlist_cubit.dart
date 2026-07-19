@@ -40,10 +40,13 @@ class WishlistCubit extends Cubit<WishlistState> {
     final result = await addToWishlistUsecase(productId);
     if (!_canApply(dataGeneration)) return;
 
-    result.fold((error) => emit(WishlistError(error)), (item) {
-      emit(WishlistItemAdded(item));
-      getWishlist();
-    });
+    await result.fold<Future<void>>(
+      (error) async => emit(WishlistError(error)),
+      (item) async {
+        emit(WishlistItemAdded(item));
+        await getWishlist();
+      },
+    );
   }
 
   Future<void> removeFromWishlist(String productId) async {
@@ -51,10 +54,13 @@ class WishlistCubit extends Cubit<WishlistState> {
     final result = await removeFromWishlistUsecase(productId);
     if (!_canApply(dataGeneration)) return;
 
-    result.fold((error) => emit(WishlistError(error)), (_) {
-      emit(WishlistItemRemoved(productId));
-      getWishlist();
-    });
+    await result.fold<Future<void>>(
+      (error) async => emit(WishlistError(error)),
+      (_) async {
+        emit(WishlistItemRemoved(productId));
+        await getWishlist();
+      },
+    );
   }
 
   Future<void> toggleWishlist(String productId) async {

@@ -38,9 +38,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   }
 
   void _recordProductView() {
+    final currentUserIdProvider = widget.currentUserIdProvider;
     final customerId =
-        (widget.currentUserIdProvider?.call() ??
-                SupabaseService.instance.currentUser?.id)
+        (currentUserIdProvider != null
+                ? currentUserIdProvider()
+                : SupabaseService.instance.currentUser?.id)
             ?.trim();
     if (customerId == null || customerId.isEmpty) return;
 
@@ -81,7 +83,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProductImageSlider(product: widget.product),
+              ProductImageSlider(
+                product: widget.product,
+                currentUserIdProvider: widget.currentUserIdProvider,
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   TSizes.defaultSpace,
@@ -132,7 +137,7 @@ class _ProductInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(TSizes.md),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.45),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: colorScheme.outlineVariant),
       ),

@@ -161,6 +161,35 @@ void main() {
         act: (cubit) => cubit.addToWishlist('product-1'),
         expect: () => [const WishlistError('Failed to add to wishlist')],
       );
+
+      test(
+        'ekleme tamamlanmadan önce güncel favori listesini bekler',
+        () async {
+          final refreshedWishlist =
+              Completer<Either<String, List<WishlistItemEntity>>>();
+          when(
+            () => mockAddToWishlistUsecase('product-1'),
+          ).thenAnswer((_) async => Right(testWishlistItems.first));
+          when(
+            () => mockGetWishlistUsecase(any()),
+          ).thenAnswer((_) => refreshedWishlist.future);
+
+          var operationCompleted = false;
+          final operation = wishlistCubit
+              .addToWishlist('product-1')
+              .then((_) => operationCompleted = true);
+          await Future<void>.delayed(Duration.zero);
+
+          expect(wishlistCubit.state, WishlistLoading());
+          expect(operationCompleted, isFalse);
+
+          refreshedWishlist.complete(Right(testWishlistItems));
+          await operation;
+
+          expect(operationCompleted, isTrue);
+          expect(wishlistCubit.state, WishlistLoaded(testWishlistItems));
+        },
+      );
     });
 
     group('removeFromWishlist', () {
@@ -193,6 +222,35 @@ void main() {
         },
         act: (cubit) => cubit.removeFromWishlist('product-1'),
         expect: () => [const WishlistError('Failed to remove')],
+      );
+
+      test(
+        'çıkarma tamamlanmadan önce güncel favori listesini bekler',
+        () async {
+          final refreshedWishlist =
+              Completer<Either<String, List<WishlistItemEntity>>>();
+          when(
+            () => mockRemoveFromWishlistUsecase('product-1'),
+          ).thenAnswer((_) async => const Right(null));
+          when(
+            () => mockGetWishlistUsecase(any()),
+          ).thenAnswer((_) => refreshedWishlist.future);
+
+          var operationCompleted = false;
+          final operation = wishlistCubit
+              .removeFromWishlist('product-1')
+              .then((_) => operationCompleted = true);
+          await Future<void>.delayed(Duration.zero);
+
+          expect(wishlistCubit.state, WishlistLoading());
+          expect(operationCompleted, isFalse);
+
+          refreshedWishlist.complete(Right([testWishlistItems[1]]));
+          await operation;
+
+          expect(operationCompleted, isTrue);
+          expect(wishlistCubit.state, WishlistLoaded([testWishlistItems[1]]));
+        },
       );
     });
 
