@@ -61,6 +61,9 @@ void main() {
       initialState: const AuthAuthenticated(user),
     );
     when(() => authCubit.syncUserProfile(any())).thenReturn(null);
+    when(
+      () => authCubit.deleteCurrentCustomerAccount(),
+    ).thenAnswer((_) async => 'Hesap silinemedi.');
 
     profileCubit = ProfileCubit(
       getProfileUsecase: getProfileUsecase,

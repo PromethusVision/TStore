@@ -4,6 +4,7 @@ import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/delete_customer_account_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
@@ -16,6 +17,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SignInUsecase signInUsecase;
   final SignUpUsecase signUpUsecase;
   final SignOutUsecase signOutUsecase;
+  final DeleteCustomerAccountUsecase deleteCustomerAccountUsecase;
   final ResetPasswordUsecase resetPasswordUsecase;
   final ResendConfirmationUsecase resendConfirmationUsecase;
   final UpdatePasswordUsecase updatePasswordUsecase;
@@ -26,6 +28,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.signInUsecase,
     required this.signUpUsecase,
     required this.signOutUsecase,
+    required this.deleteCustomerAccountUsecase,
     required this.resetPasswordUsecase,
     required this.resendConfirmationUsecase,
     required this.updatePasswordUsecase,
@@ -103,6 +106,29 @@ class AuthCubit extends Cubit<AuthState> {
       _userInitiatedSignOutAt = null;
       emit(AuthError(error));
     }, (_) => emit(AuthUnauthenticated()));
+  }
+
+  Future<String?> deleteCurrentCustomerAccount() async {
+    if (state is AuthLoading) {
+      return 'Devam eden işlem tamamlandıktan sonra tekrar deneyin.';
+    }
+
+    final previousState = state;
+    _userInitiatedSignOutAt = DateTime.now();
+    emit(AuthLoading());
+
+    final result = await deleteCustomerAccountUsecase(const NoParams());
+    return result.fold(
+      (error) {
+        _userInitiatedSignOutAt = null;
+        emit(previousState);
+        return error;
+      },
+      (_) {
+        emit(AuthUnauthenticated());
+        return null;
+      },
+    );
   }
 
   bool handleSignedOutEvent() {

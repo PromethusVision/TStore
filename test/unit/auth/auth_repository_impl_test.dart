@@ -211,4 +211,58 @@ void main() {
       );
     },
   );
+
+  test('account deletion calls the protected customer operation', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.deleteCurrentCustomerAccount(),
+    ).thenAnswer((_) async {});
+
+    final result = await repository.deleteCurrentCustomerAccount();
+
+    expect(result.isRight(), isTrue);
+    verify(() => supabaseService.deleteCurrentCustomerAccount()).called(1);
+  });
+
+  test(
+    'merchant deletion denial is returned without technical details',
+    () async {
+      final supabaseService = MockSupabaseService();
+      final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+      when(() => supabaseService.deleteCurrentCustomerAccount()).thenThrow(
+        const PostgrestException(
+          message: 'Only customer accounts can be deleted here',
+          code: '42501',
+        ),
+      );
+
+      final result = await repository.deleteCurrentCustomerAccount();
+      final message = result.fold((error) => error, (_) => '');
+
+      expect(
+        message,
+        'Bu hesap müşteri uygulamasından silinemez. '
+        'Lütfen destek ekibiyle iletişime geçin.',
+      );
+      expect(message, isNot(contains('42501')));
+    },
+  );
+
+  test('unexpected deletion failure never exposes backend details', () async {
+    final supabaseService = MockSupabaseService();
+    final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+    when(
+      () => supabaseService.deleteCurrentCustomerAccount(),
+    ).thenThrow(StateError('service-role-secret-was-visible'));
+
+    final result = await repository.deleteCurrentCustomerAccount();
+    final message = result.fold((error) => error, (_) => '');
+
+    expect(message, 'Hesabınız silinemedi. Lütfen daha sonra tekrar deneyin.');
+    expect(message, isNot(contains('service-role-secret-was-visible')));
+  });
 }

@@ -47,13 +47,14 @@ class SupabaseService {
         return response.session != null;
       },
     );
-
   }
 
   /// Get Supabase Client
   SupabaseClient get client {
     if (_client == null) {
-      throw Exception('Supabase not initialized. Call SupabaseService.initialize() first.');
+      throw Exception(
+        'Supabase not initialized. Call SupabaseService.initialize() first.',
+      );
     }
     return _client!;
   }
@@ -91,9 +92,7 @@ class SupabaseService {
 
     final tokenHash = uri.queryParameters['token_hash'];
     final type = uri.queryParameters['type'];
-    if (tokenHash == null ||
-        tokenHash.trim().isEmpty ||
-        type != 'recovery') {
+    if (tokenHash == null || tokenHash.trim().isEmpty || type != 'recovery') {
       return PasswordRecoveryLaunchStatus.invalid;
     }
 
@@ -183,6 +182,12 @@ class SupabaseService {
     await client.auth.signOut();
   }
 
+  /// Permanently delete the signed-in customer and clear the local session.
+  Future<void> deleteCurrentCustomerAccount() async {
+    await client.rpc<void>('delete_current_customer_account');
+    await client.auth.signOut(scope: SignOutScope.local);
+  }
+
   /// Reset password
   Future<void> resetPassword(String email) async {
     final redirectTo = passwordRecoveryRedirectFor(
@@ -195,9 +200,7 @@ class SupabaseService {
 
   /// Update password
   Future<UserResponse> updatePassword(String newPassword) async {
-    return await client.auth.updateUser(
-      UserAttributes(password: newPassword),
-    );
+    return await client.auth.updateUser(UserAttributes(password: newPassword));
   }
 
   /// Update user data
@@ -207,20 +210,13 @@ class SupabaseService {
     Map<String, dynamic>? data,
   }) async {
     return await client.auth.updateUser(
-      UserAttributes(
-        email: email,
-        password: password,
-        data: data,
-      ),
+      UserAttributes(email: email, password: password, data: data),
     );
   }
 
   /// Resend confirmation email
   Future<ResendResponse> resendConfirmation(String email) async {
-    return await client.auth.resend(
-      type: OtpType.signup,
-      email: email,
-    );
+    return await client.auth.resend(type: OtpType.signup, email: email);
   }
 
   // ============== DATABASE METHODS ==============
@@ -264,7 +260,11 @@ class SupabaseService {
 
   /// Get single record by ID
   Future<Map<String, dynamic>?> getById(String table, String id) async {
-    final response = await client.from(table).select().eq('id', id).maybeSingle();
+    final response = await client
+        .from(table)
+        .select()
+        .eq('id', id)
+        .maybeSingle();
     return response;
   }
 
@@ -283,7 +283,12 @@ class SupabaseService {
     String id,
     Map<String, dynamic> data,
   ) async {
-    final response = await client.from(table).update(data).eq('id', id).select().single();
+    final response = await client
+        .from(table)
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single();
     return response;
   }
 
@@ -302,10 +307,7 @@ class SupabaseService {
   }
 
   /// Delete with filter
-  Future<void> deleteWhere(
-    String table,
-    Map<String, dynamic> filters,
-  ) async {
+  Future<void> deleteWhere(String table, Map<String, dynamic> filters) async {
     var query = client.from(table).delete();
     filters.forEach((key, value) {
       query = query.eq(key, value);
@@ -322,7 +324,9 @@ class SupabaseService {
     List<int> fileBytes, {
     String? contentType,
   }) async {
-    await client.storage.from(bucket).uploadBinary(
+    await client.storage
+        .from(bucket)
+        .uploadBinary(
           path,
           fileBytes as dynamic,
           fileOptions: FileOptions(contentType: contentType),
@@ -356,11 +360,13 @@ class SupabaseService {
       event: PostgresChangeEvent.insert,
       schema: 'public',
       table: table,
-      filter: filter != null ? PostgresChangeFilter(
-        type: PostgresChangeFilterType.eq,
-        column: filter.keys.first,
-        value: filter.values.first,
-      ) : null,
+      filter: filter != null
+          ? PostgresChangeFilter(
+              type: PostgresChangeFilterType.eq,
+              column: filter.keys.first,
+              value: filter.values.first,
+            )
+          : null,
       callback: onInsert,
     );
 

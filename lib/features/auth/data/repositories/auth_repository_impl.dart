@@ -173,6 +173,46 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<String, void>> deleteCurrentCustomerAccount() async {
+    try {
+      await supabaseService.deleteCurrentCustomerAccount();
+      return const Right(null);
+    } on PostgrestException catch (e) {
+      final message = e.message.toLowerCase();
+
+      if (e.code == '42501' ||
+          message.contains('only customer accounts can be deleted')) {
+        return const Left(
+          'Bu hesap müşteri uygulamasından silinemez. '
+          'Lütfen destek ekibiyle iletişime geçin.',
+        );
+      }
+      if (e.code == '28000' ||
+          message.contains('authentication required') ||
+          message.contains('jwt')) {
+        return const Left(
+          'Oturumunuz sona erdi. Lütfen yeniden giriş yapıp tekrar deneyin.',
+        );
+      }
+      if (_isConnectionError(message)) {
+        return const Left('İnternet bağlantınızı kontrol edip tekrar deneyin.');
+      }
+
+      return const Left(
+        'Hesabınız silinemedi. Lütfen daha sonra tekrar deneyin.',
+      );
+    } catch (e) {
+      final message = e.toString().toLowerCase();
+      if (_isConnectionError(message)) {
+        return const Left('İnternet bağlantınızı kontrol edip tekrar deneyin.');
+      }
+      return const Left(
+        'Hesabınız silinemedi. Lütfen daha sonra tekrar deneyin.',
+      );
+    }
+  }
+
+  @override
   Future<Either<String, void>> resetPassword(String email) async {
     try {
       await supabaseService.resetPassword(email);

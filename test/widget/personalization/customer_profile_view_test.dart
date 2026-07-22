@@ -16,6 +16,9 @@ void main() {
 
   setUp(() {
     authCubit = MockAuthCubit();
+    when(
+      () => authCubit.deleteCurrentCustomerAccount(),
+    ).thenAnswer((_) async => 'Hesap silinemedi.');
   });
 
   Widget buildHeader({

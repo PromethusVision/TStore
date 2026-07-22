@@ -33,6 +33,9 @@ abstract class AuthRepository {
   /// Sign out
   Future<Either<String, void>> signOut();
 
+  /// Permanently delete the signed-in customer account
+  Future<Either<String, void>> deleteCurrentCustomerAccount();
+
   /// Reset password
   Future<Either<String, void>> resetPassword(String email);
 

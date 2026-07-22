@@ -10,6 +10,7 @@ import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart'
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/delete_customer_account_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
@@ -23,6 +24,9 @@ class MockSignInUsecase extends Mock implements SignInUsecase {}
 class MockSignUpUsecase extends Mock implements SignUpUsecase {}
 
 class MockSignOutUsecase extends Mock implements SignOutUsecase {}
+
+class MockDeleteCustomerAccountUsecase extends Mock
+    implements DeleteCustomerAccountUsecase {}
 
 class MockResetPasswordUsecase extends Mock implements ResetPasswordUsecase {}
 
@@ -45,6 +49,7 @@ void main() {
   late MockSignInUsecase mockSignInUsecase;
   late MockSignUpUsecase mockSignUpUsecase;
   late MockSignOutUsecase mockSignOutUsecase;
+  late MockDeleteCustomerAccountUsecase mockDeleteCustomerAccountUsecase;
   late MockResetPasswordUsecase mockResetPasswordUsecase;
   late MockResendConfirmationUsecase mockResendConfirmationUsecase;
   late MockUpdatePasswordUsecase mockUpdatePasswordUsecase;
@@ -60,6 +65,7 @@ void main() {
     mockSignInUsecase = MockSignInUsecase();
     mockSignUpUsecase = MockSignUpUsecase();
     mockSignOutUsecase = MockSignOutUsecase();
+    mockDeleteCustomerAccountUsecase = MockDeleteCustomerAccountUsecase();
     mockResetPasswordUsecase = MockResetPasswordUsecase();
     mockResendConfirmationUsecase = MockResendConfirmationUsecase();
     mockUpdatePasswordUsecase = MockUpdatePasswordUsecase();
@@ -69,6 +75,7 @@ void main() {
       signInUsecase: mockSignInUsecase,
       signUpUsecase: mockSignUpUsecase,
       signOutUsecase: mockSignOutUsecase,
+      deleteCustomerAccountUsecase: mockDeleteCustomerAccountUsecase,
       resetPasswordUsecase: mockResetPasswordUsecase,
       resendConfirmationUsecase: mockResendConfirmationUsecase,
       updatePasswordUsecase: mockUpdatePasswordUsecase,
@@ -339,6 +346,60 @@ void main() {
           expect(authCubit.state, AuthUnauthenticated());
         },
       );
+    });
+
+    group('deleteCurrentCustomerAccount', () {
+      blocTest<AuthCubit, AuthState>(
+        'deletes the customer and ends the local authenticated state',
+        build: () {
+          when(
+            () => mockDeleteCustomerAccountUsecase(any()),
+          ).thenAnswer((_) async => const Right(null));
+          return authCubit;
+        },
+        seed: () => AuthAuthenticated(testUser),
+        act: (cubit) => cubit.deleteCurrentCustomerAccount(),
+        expect: () => [AuthLoading(), AuthUnauthenticated()],
+        verify: (cubit) {
+          expect(cubit.handleSignedOutEvent(), isTrue);
+        },
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'restores the authenticated customer when deletion fails',
+        build: () {
+          when(
+            () => mockDeleteCustomerAccountUsecase(any()),
+          ).thenAnswer((_) async => const Left('Hesap silinemedi.'));
+          return authCubit;
+        },
+        seed: () => AuthAuthenticated(testUser),
+        act: (cubit) async {
+          final error = await cubit.deleteCurrentCustomerAccount();
+          expect(error, 'Hesap silinemedi.');
+        },
+        expect: () => [AuthLoading(), AuthAuthenticated(testUser)],
+      );
+
+      test('does not submit a second deletion while one is running', () async {
+        final result = Completer<Either<String, void>>();
+        when(
+          () => mockDeleteCustomerAccountUsecase(any()),
+        ).thenAnswer((_) => result.future);
+        authCubit.emit(AuthAuthenticated(testUser));
+
+        final firstRequest = authCubit.deleteCurrentCustomerAccount();
+        final secondError = await authCubit.deleteCurrentCustomerAccount();
+
+        expect(
+          secondError,
+          'Devam eden işlem tamamlandıktan sonra tekrar deneyin.',
+        );
+        verify(() => mockDeleteCustomerAccountUsecase(any())).called(1);
+
+        result.complete(const Right(null));
+        await firstRequest;
+      });
     });
 
     group('resetPassword', () {

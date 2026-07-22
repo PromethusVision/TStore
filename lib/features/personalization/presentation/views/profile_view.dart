@@ -3,16 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
 import 'package:t_store/core/common/widgets/app_bar.dart';
+import 'package:t_store/core/common/widgets/navigation_menu.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/personalization/presentation/cubit/profile_cubit.dart';
 import 'package:t_store/features/personalization/presentation/view_models/profile_entity_tile_model.dart';
+import 'package:t_store/features/personalization/presentation/widgets/account_deletion_confirmation_dialog.dart';
 import 'package:t_store/features/personalization/presentation/widgets/edit_profile_bottom_sheet.dart';
 import 'package:t_store/features/personalization/presentation/widgets/personal_information_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/profile_information_section.dart';
+import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
+import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key, required this.user});
@@ -50,6 +56,44 @@ class _ProfileViewState extends State<ProfileView> {
       _user = updatedUser;
     });
     context.read<AuthCubit>().syncUserProfile(updatedUser);
+  }
+
+  Future<void> _openAccountDeletionConfirmation() async {
+    final deleted = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AccountDeletionConfirmationDialog(
+        onConfirm: context.read<AuthCubit>().deleteCurrentCustomerAccount,
+      ),
+    );
+    if (!mounted || deleted != true) return;
+
+    if (sl.isRegistered<RecentlyViewedProductsStorage>()) {
+      try {
+        await sl<RecentlyViewedProductsStorage>().clear(_user.id);
+      } catch (_) {
+        // Account deletion has already succeeded. Local history cleanup must
+        // never trap the customer on a deleted account screen.
+      }
+    }
+    if (!mounted) return;
+
+    context.read<CartV2Cubit>().clearLocalCart();
+    context.read<WishlistCubit>().clearLocalWishlist();
+    context.read<NavigationMenuCubit>().changeIndex(0);
+
+    final messenger = ScaffoldMessenger.of(context);
+    Navigator.of(context).pushAndRemoveUntil<void>(
+      MaterialPageRoute<void>(builder: (_) => const NavigationMenu()),
+      (_) => false,
+    );
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Hesabınız ve kişisel bilgileriniz silindi.'),
+        ),
+      );
   }
 
   @override
@@ -97,7 +141,8 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 const SpaceBetweenSectionsWithDivider(),
                 TextButton(
-                  onPressed: () {},
+                  key: const Key('delete-account-button'),
+                  onPressed: _openAccountDeletionConfirmation,
                   child: const Text(
                     "Hesabı Sil",
                     style: TextStyle(color: TColors.error),

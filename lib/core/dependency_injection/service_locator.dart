@@ -7,6 +7,7 @@ import 'package:t_store/features/auth/domain/repositories/auth_repository.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:t_store/features/auth/domain/usecases/delete_customer_account_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/resend_confirmation_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/update_password_usecase.dart';
@@ -157,6 +158,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => SignInUsecase(sl()));
   sl.registerLazySingleton(() => SignUpUsecase(sl()));
   sl.registerLazySingleton(() => SignOutUsecase(sl()));
+  sl.registerLazySingleton(() => DeleteCustomerAccountUsecase(sl()));
   sl.registerLazySingleton(() => ResetPasswordUsecase(sl()));
   sl.registerLazySingleton(() => ResendConfirmationUsecase(sl()));
   sl.registerLazySingleton(() => UpdatePasswordUsecase(sl()));
@@ -168,6 +170,7 @@ Future<void> setupServiceLocator() async {
       signInUsecase: sl(),
       signUpUsecase: sl(),
       signOutUsecase: sl(),
+      deleteCustomerAccountUsecase: sl(),
       resetPasswordUsecase: sl(),
       resendConfirmationUsecase: sl(),
       updatePasswordUsecase: sl(),
