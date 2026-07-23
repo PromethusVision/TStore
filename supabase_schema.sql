@@ -271,6 +271,7 @@ ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+GRANT SELECT, UPDATE ON TABLE public.notifications TO authenticated;
 
 -- Products, Categories, Brands, Banners - Public Read
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;

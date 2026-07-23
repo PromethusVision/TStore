@@ -21,6 +21,8 @@ void main() {
     when(
       () => notificationsCubit.loadMoreNotifications(),
     ).thenAnswer((_) async {});
+    when(() => notificationsCubit.markAsRead(any())).thenAnswer((_) async {});
+    when(() => notificationsCubit.markAllAsRead()).thenAnswer((_) async {});
     when(() => notificationsCubit.close()).thenAnswer((_) async {});
   });
 
@@ -76,11 +78,104 @@ void main() {
     expect(find.text('Alışveriş'), findsOneWidget);
     expect(find.text('Kampanya'), findsOneWidget);
     expect(find.text('Yeni'), findsOneWidget);
+    expect(find.text('Tümünü oku'), findsOneWidget);
     expect(find.text('16.07.2026 • 14:05'), findsOneWidget);
     expect(find.text('15.07.2026 • 09:30'), findsOneWidget);
     verify(() => notificationsCubit.getNotifications(refresh: true)).called(1);
     verifyNever(() => notificationsCubit.markAllAsRead());
     verifyNever(() => notificationsCubit.deleteAllNotifications());
+  });
+
+  testWidgets('yeni bildirime dokununca okundu işlemini başlatır', (
+    tester,
+  ) async {
+    const notification = NotificationEntity(
+      id: 'notification-1',
+      userId: 'customer-1',
+      title: 'Yeni mesajın var',
+      body: 'Mağaza mesajına yanıt verdi.',
+      type: NotificationType.chat,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('notification-card-notification-1')));
+    await tester.pump();
+
+    verify(() => notificationsCubit.markAsRead('notification-1')).called(1);
+  });
+
+  testWidgets('tümünü oku butonu toplu işlemi başlatır', (tester) async {
+    const notification = NotificationEntity(
+      id: 'notification-1',
+      userId: 'customer-1',
+      title: 'Yeni bildirim',
+      body: 'Bildirim açıklaması',
+      type: NotificationType.system,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('mark-all-notifications-read-button')),
+    );
+    await tester.pump();
+
+    verify(() => notificationsCubit.markAllAsRead()).called(1);
+  });
+
+  testWidgets('işlem sürerken bildirim ve toplu buton devre dışıdır', (
+    tester,
+  ) async {
+    const notification = NotificationEntity(
+      id: 'notification-1',
+      userId: 'customer-1',
+      title: 'Yeni bildirim',
+      body: 'Bildirim açıklaması',
+      type: NotificationType.system,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+          markingAsReadIds: {'notification-1'},
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const Key('notification-read-progress')), findsOneWidget);
+    final button = tester.widget<TextButton>(
+      find.byKey(const Key('mark-all-notifications-read-button')),
+    );
+    expect(button.onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key('notification-card-notification-1')));
+    await tester.pump();
+
+    verifyNever(() => notificationsCubit.markAsRead(any()));
+    verifyNever(() => notificationsCubit.markAllAsRead());
   });
 
   testWidgets('boş durumda anlaşılır bilgi ve yenileme sunar', (tester) async {

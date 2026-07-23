@@ -119,29 +119,114 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> markAsRead(String notificationId) async {
-    await repository.markAsRead(notificationId);
-    _notifications = _notifications.map((n) {
-      if (n.id == notificationId && !n.isRead) {
-        _unreadCount--;
-        return n.copyWith(isRead: true);
-      }
-      return n;
-    }).toList();
+    final currentState = state;
+    if (currentState is! NotificationsLoaded ||
+        currentState.isMarkingAllAsRead ||
+        currentState.markingAsReadIds.contains(notificationId)) {
+      return;
+    }
+
+    final notificationIndex = _notifications.indexWhere(
+      (notification) => notification.id == notificationId,
+    );
+    if (notificationIndex == -1 || _notifications[notificationIndex].isRead) {
+      return;
+    }
+
+    final markingIds = {...currentState.markingAsReadIds, notificationId};
     emit(
-      NotificationsLoaded(
-        notifications: _notifications,
-        unreadCount: _unreadCount,
+      currentState.copyWith(
+        markingAsReadIds: markingIds,
+        clearActionError: true,
       ),
+    );
+
+    final result = await repository.markAsRead(notificationId);
+    result.fold(
+      (_) {
+        final latestState = state;
+        if (latestState is NotificationsLoaded) {
+          emit(
+            latestState.copyWith(
+              markingAsReadIds: {...latestState.markingAsReadIds}
+                ..remove(notificationId),
+              actionError: 'Bildirim güncellenemedi. Lütfen tekrar deneyin.',
+            ),
+          );
+        }
+      },
+      (_) {
+        _notifications = _notifications.map((notification) {
+          if (notification.id == notificationId && !notification.isRead) {
+            return notification.copyWith(isRead: true);
+          }
+          return notification;
+        }).toList();
+        if (_unreadCount > 0) {
+          _unreadCount--;
+        }
+
+        final latestState = state;
+        if (latestState is NotificationsLoaded) {
+          emit(
+            latestState.copyWith(
+              notifications: _notifications,
+              unreadCount: _unreadCount,
+              markingAsReadIds: {...latestState.markingAsReadIds}
+                ..remove(notificationId),
+              clearActionError: true,
+            ),
+          );
+        }
+      },
     );
   }
 
   Future<void> markAllAsRead() async {
-    await repository.markAllAsRead();
-    _notifications = _notifications
-        .map((n) => n.copyWith(isRead: true))
-        .toList();
-    _unreadCount = 0;
-    emit(NotificationsLoaded(notifications: _notifications, unreadCount: 0));
+    final currentState = state;
+    if (currentState is! NotificationsLoaded ||
+        currentState.unreadCount == 0 ||
+        currentState.isMarkingAllAsRead ||
+        currentState.markingAsReadIds.isNotEmpty) {
+      return;
+    }
+
+    emit(
+      currentState.copyWith(isMarkingAllAsRead: true, clearActionError: true),
+    );
+
+    final result = await repository.markAllAsRead();
+    result.fold(
+      (_) {
+        final latestState = state;
+        if (latestState is NotificationsLoaded) {
+          emit(
+            latestState.copyWith(
+              isMarkingAllAsRead: false,
+              actionError: 'Bildirimler güncellenemedi. Lütfen tekrar deneyin.',
+            ),
+          );
+        }
+      },
+      (_) {
+        _notifications = _notifications
+            .map((notification) => notification.copyWith(isRead: true))
+            .toList();
+        _unreadCount = 0;
+
+        final latestState = state;
+        if (latestState is NotificationsLoaded) {
+          emit(
+            latestState.copyWith(
+              notifications: _notifications,
+              unreadCount: 0,
+              isMarkingAllAsRead: false,
+              clearActionError: true,
+            ),
+          );
+        }
+      },
+    );
   }
 
   Future<void> deleteNotification(String notificationId) async {

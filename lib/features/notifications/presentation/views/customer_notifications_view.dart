@@ -65,75 +65,144 @@ class _CustomerNotificationsContentState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Bildirimlerim')),
-      body: BlocBuilder<NotificationsCubit, NotificationsState>(
-        builder: (context, state) {
-          if (state is NotificationsInitial || state is NotificationsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return BlocListener<NotificationsCubit, NotificationsState>(
+      listenWhen: (previous, current) {
+        if (current is! NotificationsLoaded || current.actionError == null) {
+          return false;
+        }
+        return previous is! NotificationsLoaded ||
+            previous.actionError != current.actionError;
+      },
+      listener: (context, state) {
+        final message = (state as NotificationsLoaded).actionError;
+        if (message == null) return;
 
-          if (state is NotificationsError) {
-            return _NotificationStatus(
-              icon: Icons.notifications_off_outlined,
-              title: 'Bildirimlerin yüklenemedi',
-              description: state.message,
-              actionLabel: 'Tekrar Dene',
-              onAction: () => context
-                  .read<NotificationsCubit>()
-                  .getNotifications(refresh: true),
-            );
-          }
-
-          if (state is! NotificationsLoaded) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state.notifications.isEmpty) {
-            return _NotificationStatus(
-              icon: Icons.notifications_none,
-              title: 'Henüz bildirimin yok',
-              description:
-                  'Alışveriş, mesaj ve kampanya bildirimlerin burada görünecek.',
-              actionLabel: 'Yenile',
-              onAction: () => context
-                  .read<NotificationsCubit>()
-                  .getNotifications(refresh: true),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () => context
-                .read<NotificationsCubit>()
-                .getNotifications(refresh: true),
-            child: ListView.separated(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(TSizes.defaultSpace),
-              itemCount: state.notifications.length + 1,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(height: TSizes.spaceBtwItems),
-              itemBuilder: (context, index) {
-                if (index == state.notifications.length) {
-                  return _NotificationsListFooter(state: state);
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(message)));
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Bildirimlerim'),
+          actions: [
+            BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, state) {
+                if (state is! NotificationsLoaded || state.unreadCount == 0) {
+                  return const SizedBox.shrink();
                 }
 
-                return _NotificationCard(
-                  notification: state.notifications[index],
+                return Padding(
+                  padding: const EdgeInsets.only(right: TSizes.sm),
+                  child: TextButton.icon(
+                    key: const Key('mark-all-notifications-read-button'),
+                    onPressed:
+                        state.isMarkingAllAsRead ||
+                            state.markingAsReadIds.isNotEmpty
+                        ? null
+                        : () => context
+                              .read<NotificationsCubit>()
+                              .markAllAsRead(),
+                    icon: state.isMarkingAllAsRead
+                        ? const SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.done_all_rounded),
+                    label: const Text('Tümünü oku'),
+                  ),
                 );
               },
             ),
-          );
-        },
+          ],
+        ),
+        body: BlocBuilder<NotificationsCubit, NotificationsState>(
+          builder: (context, state) {
+            if (state is NotificationsInitial ||
+                state is NotificationsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is NotificationsError) {
+              return _NotificationStatus(
+                icon: Icons.notifications_off_outlined,
+                title: 'Bildirimlerin yüklenemedi',
+                description: state.message,
+                actionLabel: 'Tekrar Dene',
+                onAction: () => context
+                    .read<NotificationsCubit>()
+                    .getNotifications(refresh: true),
+              );
+            }
+
+            if (state is! NotificationsLoaded) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state.notifications.isEmpty) {
+              return _NotificationStatus(
+                icon: Icons.notifications_none,
+                title: 'Henüz bildirimin yok',
+                description:
+                    'Alışveriş, mesaj ve kampanya bildirimlerin burada görünecek.',
+                actionLabel: 'Yenile',
+                onAction: () => context
+                    .read<NotificationsCubit>()
+                    .getNotifications(refresh: true),
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () => context
+                  .read<NotificationsCubit>()
+                  .getNotifications(refresh: true),
+              child: ListView.separated(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(TSizes.defaultSpace),
+                itemCount: state.notifications.length + 1,
+                separatorBuilder: (_, _) =>
+                    const SizedBox(height: TSizes.spaceBtwItems),
+                itemBuilder: (context, index) {
+                  if (index == state.notifications.length) {
+                    return _NotificationsListFooter(state: state);
+                  }
+
+                  return _NotificationCard(
+                    notification: state.notifications[index],
+                    isMarkingAsRead: state.markingAsReadIds.contains(
+                      state.notifications[index].id,
+                    ),
+                    onMarkAsRead:
+                        state.notifications[index].isRead ||
+                            state.isMarkingAllAsRead ||
+                            state.markingAsReadIds.contains(
+                              state.notifications[index].id,
+                            )
+                        ? null
+                        : () => context.read<NotificationsCubit>().markAsRead(
+                            state.notifications[index].id,
+                          ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 class _NotificationCard extends StatelessWidget {
-  const _NotificationCard({required this.notification});
+  const _NotificationCard({
+    required this.notification,
+    required this.isMarkingAsRead,
+    required this.onMarkAsRead,
+  });
 
   final NotificationEntity notification;
+  final bool isMarkingAsRead;
+  final VoidCallback? onMarkAsRead;
 
   @override
   Widget build(BuildContext context) {
@@ -144,108 +213,128 @@ class _NotificationCard extends StatelessWidget {
     final createdAt = notification.createdAt;
 
     return Semantics(
+      button: !notification.isRead,
+      enabled: onMarkAsRead != null,
       label:
           '${notification.isRead ? 'Okunmuş' : 'Yeni'} bildirim: ${notification.title}',
-      child: Container(
-        padding: const EdgeInsets.all(TSizes.md),
-        decoration: BoxDecoration(
-          color: notification.isRead
-              ? colorScheme.surface
-              : colorScheme.primaryContainer.withValues(alpha: 0.35),
+      hint: notification.isRead ? null : 'Okundu olarak işaretlemek için dokun',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: Key('notification-card-${notification.id}'),
+          onTap: onMarkAsRead,
           borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
-          border: Border.all(
-            color: notification.isRead
-                ? colorScheme.outlineVariant
-                : colorScheme.primary.withValues(alpha: 0.35),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                typePresentation.icon,
-                color: colorScheme.onPrimaryContainer,
+          child: Ink(
+            padding: const EdgeInsets.all(TSizes.md),
+            decoration: BoxDecoration(
+              color: notification.isRead
+                  ? colorScheme.surface
+                  : colorScheme.primaryContainer.withValues(alpha: 0.35),
+              borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
+              border: Border.all(
+                color: notification.isRead
+                    ? colorScheme.outlineVariant
+                    : colorScheme.primary.withValues(alpha: 0.35),
               ),
             ),
-            const SizedBox(width: TSizes.spaceBtwItems),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    typePresentation.icon,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: TSizes.spaceBtwItems),
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          notification.title,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              notification.title,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          if (isMarkingAsRead) ...[
+                            const SizedBox(width: TSizes.sm),
+                            const SizedBox.square(
+                              key: Key('notification-read-progress'),
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ] else if (!notification.isRead) ...[
+                            const SizedBox(width: TSizes.sm),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: TSizes.sm,
+                                vertical: TSizes.xs,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                'Yeni',
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: colorScheme.onPrimary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: TSizes.xs),
+                      Text(
+                        notification.body,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      if (!notification.isRead) ...[
-                        const SizedBox(width: TSizes.sm),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: TSizes.sm,
-                            vertical: TSizes.xs,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primary,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            'Yeni',
-                            style: Theme.of(context).textTheme.labelSmall
+                      const SizedBox(height: TSizes.sm),
+                      Wrap(
+                        spacing: TSizes.sm,
+                        runSpacing: TSizes.xs,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            typePresentation.label,
+                            style: Theme.of(context).textTheme.labelMedium
                                 ?.copyWith(
-                                  color: colorScheme.onPrimary,
-                                  fontWeight: FontWeight.w700,
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
                                 ),
                           ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: TSizes.xs),
-                  Text(
-                    notification.body,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.sm),
-                  Wrap(
-                    spacing: TSizes.sm,
-                    runSpacing: TSizes.xs,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        typePresentation.label,
-                        style: Theme.of(context).textTheme.labelMedium
-                            ?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.w600,
+                          if (createdAt != null)
+                            Text(
+                              _formatDate(createdAt),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
                             ),
+                        ],
                       ),
-                      if (createdAt != null)
-                        Text(
-                          _formatDate(createdAt),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
-                        ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

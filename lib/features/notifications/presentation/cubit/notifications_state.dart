@@ -18,6 +18,9 @@ class NotificationsLoaded extends NotificationsState {
   final bool hasReachedMax;
   final bool isLoadingMore;
   final String? loadMoreError;
+  final Set<String> markingAsReadIds;
+  final bool isMarkingAllAsRead;
+  final String? actionError;
 
   const NotificationsLoaded({
     required this.notifications,
@@ -25,6 +28,9 @@ class NotificationsLoaded extends NotificationsState {
     this.hasReachedMax = false,
     this.isLoadingMore = false,
     this.loadMoreError,
+    this.markingAsReadIds = const {},
+    this.isMarkingAllAsRead = false,
+    this.actionError,
   });
 
   @override
@@ -34,6 +40,9 @@ class NotificationsLoaded extends NotificationsState {
     hasReachedMax,
     isLoadingMore,
     loadMoreError,
+    markingAsReadIds,
+    isMarkingAllAsRead,
+    actionError,
   ];
 
   NotificationsLoaded copyWith({
@@ -43,6 +52,10 @@ class NotificationsLoaded extends NotificationsState {
     bool? isLoadingMore,
     String? loadMoreError,
     bool clearLoadMoreError = false,
+    Set<String>? markingAsReadIds,
+    bool? isMarkingAllAsRead,
+    String? actionError,
+    bool clearActionError = false,
   }) {
     return NotificationsLoaded(
       notifications: notifications ?? this.notifications,
@@ -52,6 +65,9 @@ class NotificationsLoaded extends NotificationsState {
       loadMoreError: clearLoadMoreError
           ? null
           : loadMoreError ?? this.loadMoreError,
+      markingAsReadIds: markingAsReadIds ?? this.markingAsReadIds,
+      isMarkingAllAsRead: isMarkingAllAsRead ?? this.isMarkingAllAsRead,
+      actionError: clearActionError ? null : actionError ?? this.actionError,
     );
   }
 }

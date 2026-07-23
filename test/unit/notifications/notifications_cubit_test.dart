@@ -56,11 +56,13 @@ void main() {
     notificationsStreamController =
         StreamController<NotificationEntity>.broadcast();
 
-    when(() => mockNotificationRepository.notificationsStream)
-        .thenAnswer((_) => notificationsStreamController.stream);
+    when(
+      () => mockNotificationRepository.notificationsStream,
+    ).thenAnswer((_) => notificationsStreamController.stream);
 
-    notificationsCubit =
-        NotificationsCubit(repository: mockNotificationRepository);
+    notificationsCubit = NotificationsCubit(
+      repository: mockNotificationRepository,
+    );
   });
 
   tearDown(() {
@@ -81,12 +83,13 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'emits [NotificationsLoading, NotificationsLoaded] when getNotifications succeeds',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
           return notificationsCubit;
         },
         act: (cubit) => cubit.getNotifications(),
@@ -102,11 +105,10 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'emits [NotificationsLoading, NotificationsError] when getNotifications fails',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer(
-              (_) async => const Left('Failed to load notifications'));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => const Left('Failed to load notifications'));
           return notificationsCubit;
         },
         act: (cubit) => cubit.getNotifications(),
@@ -121,12 +123,13 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'emits [NotificationsLoading, NotificationsLoaded] with empty list when no notifications',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => const Right([]));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(0));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => const Right([]));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(0));
           return notificationsCubit;
         },
         act: (cubit) => cubit.getNotifications(),
@@ -141,19 +144,23 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'refresh resets pagination and loads fresh notifications',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
           return notificationsCubit;
         },
         act: (cubit) => cubit.getNotifications(refresh: true),
         expect: () => [
           NotificationsLoading(),
-          isA<NotificationsLoaded>()
-              .having((s) => s.notifications.length, 'notifications count', 3),
+          isA<NotificationsLoaded>().having(
+            (s) => s.notifications.length,
+            'notifications count',
+            3,
+          ),
         ],
       );
     });
@@ -162,14 +169,16 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'updates notification to read and decrements unread count',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
-          when(() => mockNotificationRepository.markAsRead('notif-1'))
-              .thenAnswer((_) async => const Right(null));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.markAsRead('notif-1'),
+          ).thenAnswer((_) async => const Right(null));
           return notificationsCubit;
         },
         act: (cubit) async {
@@ -177,24 +186,87 @@ void main() {
           await cubit.markAsRead('notif-1');
         },
         verify: (_) {
-          verify(() => mockNotificationRepository.markAsRead('notif-1'))
-              .called(1);
+          verify(
+            () => mockNotificationRepository.markAsRead('notif-1'),
+          ).called(1);
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(
+            state.notifications
+                .firstWhere((item) => item.id == 'notif-1')
+                .isRead,
+            isTrue,
+          );
+          expect(state.unreadCount, 1);
+          expect(state.markingAsReadIds, isEmpty);
+          expect(state.actionError, isNull);
         },
       );
+
+      test('keeps notification unread when update fails', () async {
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.markAsRead('notif-1'),
+        ).thenAnswer((_) async => const Left('connection failed'));
+
+        await notificationsCubit.getNotifications();
+        await notificationsCubit.markAsRead('notif-1');
+
+        final state = notificationsCubit.state as NotificationsLoaded;
+        expect(
+          state.notifications.firstWhere((item) => item.id == 'notif-1').isRead,
+          isFalse,
+        );
+        expect(state.unreadCount, 2);
+        expect(state.markingAsReadIds, isEmpty);
+        expect(
+          state.actionError,
+          'Bildirim güncellenemedi. Lütfen tekrar deneyin.',
+        );
+      });
+
+      test('ignores a second tap while notification is updating', () async {
+        final response = Completer<Either<String, void>>();
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.markAsRead('notif-1'),
+        ).thenAnswer((_) => response.future);
+
+        await notificationsCubit.getNotifications();
+        final firstTap = notificationsCubit.markAsRead('notif-1');
+        final secondTap = notificationsCubit.markAsRead('notif-1');
+
+        verify(
+          () => mockNotificationRepository.markAsRead('notif-1'),
+        ).called(1);
+        response.complete(const Right(null));
+        await Future.wait([firstTap, secondTap]);
+      });
     });
 
     group('markAllAsRead', () {
       blocTest<NotificationsCubit, NotificationsState>(
         'marks all notifications as read and sets unread count to 0',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
-          when(() => mockNotificationRepository.markAllAsRead())
-              .thenAnswer((_) async => const Right(null));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.markAllAsRead(),
+          ).thenAnswer((_) async => const Right(null));
           return notificationsCubit;
         },
         act: (cubit) async {
@@ -203,22 +275,74 @@ void main() {
         },
         verify: (_) {
           verify(() => mockNotificationRepository.markAllAsRead()).called(1);
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(state.notifications.every((item) => item.isRead), isTrue);
+          expect(state.unreadCount, 0);
+          expect(state.isMarkingAllAsRead, isFalse);
+          expect(state.actionError, isNull);
         },
       );
+
+      test('keeps unread notifications when bulk update fails', () async {
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.markAllAsRead(),
+        ).thenAnswer((_) async => const Left('connection failed'));
+
+        await notificationsCubit.getNotifications();
+        await notificationsCubit.markAllAsRead();
+
+        final state = notificationsCubit.state as NotificationsLoaded;
+        expect(state.unreadCount, 2);
+        expect(state.notifications.where((item) => !item.isRead), hasLength(2));
+        expect(state.isMarkingAllAsRead, isFalse);
+        expect(
+          state.actionError,
+          'Bildirimler güncellenemedi. Lütfen tekrar deneyin.',
+        );
+      });
+
+      test('ignores a second bulk action while update is running', () async {
+        final response = Completer<Either<String, void>>();
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.markAllAsRead(),
+        ).thenAnswer((_) => response.future);
+
+        await notificationsCubit.getNotifications();
+        final firstTap = notificationsCubit.markAllAsRead();
+        final secondTap = notificationsCubit.markAllAsRead();
+
+        verify(() => mockNotificationRepository.markAllAsRead()).called(1);
+        response.complete(const Right(null));
+        await Future.wait([firstTap, secondTap]);
+      });
     });
 
     group('deleteNotification', () {
       blocTest<NotificationsCubit, NotificationsState>(
         'removes notification from list',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
-          when(() => mockNotificationRepository.deleteNotification('notif-1'))
-              .thenAnswer((_) async => const Right(null));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.deleteNotification('notif-1'),
+          ).thenAnswer((_) async => const Right(null));
           return notificationsCubit;
         },
         act: (cubit) async {
@@ -226,8 +350,9 @@ void main() {
           await cubit.deleteNotification('notif-1');
         },
         verify: (_) {
-          verify(() => mockNotificationRepository.deleteNotification('notif-1'))
-              .called(1);
+          verify(
+            () => mockNotificationRepository.deleteNotification('notif-1'),
+          ).called(1);
         },
       );
     });
@@ -236,14 +361,16 @@ void main() {
       blocTest<NotificationsCubit, NotificationsState>(
         'clears all notifications',
         build: () {
-          when(() => mockNotificationRepository.getNotifications(
-                page: 0,
-                limit: 20,
-              )).thenAnswer((_) async => Right(testNotifications));
-          when(() => mockNotificationRepository.getUnreadCount())
-              .thenAnswer((_) async => const Right(2));
-          when(() => mockNotificationRepository.deleteAllNotifications())
-              .thenAnswer((_) async => const Right(null));
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.deleteAllNotifications(),
+          ).thenAnswer((_) async => const Right(null));
           return notificationsCubit;
         },
         act: (cubit) async {
@@ -251,8 +378,9 @@ void main() {
           await cubit.deleteAllNotifications();
         },
         verify: (_) {
-          verify(() => mockNotificationRepository.deleteAllNotifications())
-              .called(1);
+          verify(
+            () => mockNotificationRepository.deleteAllNotifications(),
+          ).called(1);
           final state = notificationsCubit.state as NotificationsLoaded;
           expect(state.notifications, isEmpty);
           expect(state.unreadCount, 0);
@@ -285,10 +413,7 @@ void main() {
 
     test('copyWith creates a new instance with updated values', () {
       final original = testNotifications.first;
-      final updated = original.copyWith(
-        title: 'Updated Title',
-        isRead: true,
-      );
+      final updated = original.copyWith(title: 'Updated Title', isRead: true);
 
       expect(updated.id, original.id);
       expect(updated.userId, original.userId);
@@ -336,10 +461,7 @@ void main() {
         hasReachedMax: false,
       );
 
-      final updated = state.copyWith(
-        unreadCount: 0,
-        hasReachedMax: true,
-      );
+      final updated = state.copyWith(unreadCount: 0, hasReachedMax: true);
 
       expect(updated.notifications, testNotifications);
       expect(updated.unreadCount, 0);
