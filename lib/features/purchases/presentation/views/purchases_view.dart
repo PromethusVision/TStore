@@ -9,22 +9,29 @@ import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.da
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
 
 class PurchasesView extends StatelessWidget {
-  const PurchasesView({super.key, this.purchaseHistoryCubit});
+  const PurchasesView({
+    super.key,
+    this.purchaseHistoryCubit,
+    this.initialPurchaseId,
+  });
 
   final PurchaseHistoryCubit? purchaseHistoryCubit;
+  final String? initialPurchaseId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
           (purchaseHistoryCubit ?? sl<PurchaseHistoryCubit>())..loadPurchases(),
-      child: const _PurchasesScaffold(),
+      child: _PurchasesScaffold(initialPurchaseId: initialPurchaseId),
     );
   }
 }
 
 class _PurchasesScaffold extends StatelessWidget {
-  const _PurchasesScaffold();
+  const _PurchasesScaffold({required this.initialPurchaseId});
+
+  final String? initialPurchaseId;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +49,11 @@ class _PurchasesScaffold extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            _PurchaseHistoryTab(),
-            _ReturnRequestsTab(),
-            _CreateReturnRequestTab(),
+            _PurchaseHistoryTab(initialPurchaseId: initialPurchaseId),
+            const _ReturnRequestsTab(),
+            const _CreateReturnRequestTab(),
           ],
         ),
       ),
@@ -55,7 +62,9 @@ class _PurchasesScaffold extends StatelessWidget {
 }
 
 class _PurchaseHistoryTab extends StatelessWidget {
-  const _PurchaseHistoryTab();
+  const _PurchaseHistoryTab({required this.initialPurchaseId});
+
+  final String? initialPurchaseId;
 
   @override
   Widget build(BuildContext context) {
@@ -88,19 +97,132 @@ class _PurchaseHistoryTab extends StatelessWidget {
           );
         }
 
+        final targetedPurchaseIndex = initialPurchaseId == null
+            ? -1
+            : purchases.indexWhere(
+                (purchase) => purchase.id == initialPurchaseId,
+              );
+        final targetedPurchase = targetedPurchaseIndex == -1
+            ? null
+            : purchases[targetedPurchaseIndex];
+        final visiblePurchases = targetedPurchase == null
+            ? purchases
+            : [
+                targetedPurchase,
+                ...purchases.where(
+                  (purchase) => purchase.id != targetedPurchase.id,
+                ),
+              ];
+        final showMissingTargetMessage =
+            initialPurchaseId != null && targetedPurchase == null;
+
         return RefreshIndicator(
           onRefresh: context.read<PurchaseHistoryCubit>().loadPurchases,
           child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(TSizes.defaultSpace),
-            itemCount: purchases.length,
+            itemCount:
+                visiblePurchases.length + (showMissingTargetMessage ? 1 : 0),
             separatorBuilder: (_, _) =>
                 const SizedBox(height: TSizes.spaceBtwItems),
-            itemBuilder: (context, index) =>
-                _PurchaseCard(purchase: purchases[index]),
+            itemBuilder: (context, index) {
+              if (showMissingTargetMessage && index == 0) {
+                return const _MissingTargetPurchaseMessage();
+              }
+
+              final purchaseIndex = showMissingTargetMessage
+                  ? index - 1
+                  : index;
+              final purchase = visiblePurchases[purchaseIndex];
+              final isTargeted = purchase.id == targetedPurchase?.id;
+
+              return Column(
+                key: isTargeted
+                    ? Key('highlighted-purchase-${purchase.id}')
+                    : null,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (isTargeted) ...[
+                    _TargetPurchaseLabel(shopName: purchase.shopName),
+                    const SizedBox(height: TSizes.sm),
+                  ],
+                  _PurchaseCard(purchase: purchase),
+                ],
+              );
+            },
           ),
         );
       },
+    );
+  }
+}
+
+class _TargetPurchaseLabel extends StatelessWidget {
+  const _TargetPurchaseLabel({required this.shopName});
+
+  final String shopName;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TSizes.md,
+        vertical: TSizes.sm,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.notifications_active_outlined,
+            color: colorScheme.onPrimaryContainer,
+          ),
+          const SizedBox(width: TSizes.sm),
+          Expanded(
+            child: Text(
+              'Bildirimdeki alışveriş: $shopName',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MissingTargetPurchaseMessage extends StatelessWidget {
+  const _MissingTargetPurchaseMessage();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      key: const Key('missing-notification-purchase-message'),
+      padding: const EdgeInsets.all(TSizes.md),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline),
+          SizedBox(width: TSizes.sm),
+          Expanded(
+            child: Text(
+              'Bildirimdeki alışveriş artık bulunamıyor. Diğer alışverişlerin gösteriliyor.',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

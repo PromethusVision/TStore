@@ -91,6 +91,78 @@ void main() {
     expect(find.text('Esnafa Puan Ver'), findsOneWidget);
   });
 
+  testWidgets('bildirimdeki alışverişi listenin başında belirginleştirir', (
+    tester,
+  ) async {
+    final targetedPurchase = VerifiedPurchaseEntity(
+      id: 'purchase-2',
+      sourceQrSessionId: 'session-2',
+      shopId: 'shop-2',
+      shopName: 'Semt Kırtasiyesi',
+      itemCount: 1,
+      totalAmount: 45,
+      confirmedAt: DateTime.utc(2026, 7, 16, 11),
+      items: const [
+        VerifiedPurchaseItemEntity(
+          id: 'item-2',
+          shopProductId: 'shop-product-2',
+          productName: 'Defter',
+          quantity: 1,
+          unitPrice: 45,
+          lineTotal: 45,
+        ),
+      ],
+    );
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: PurchaseHistoryLoaded([purchase, targetedPurchase]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialPurchaseId: 'purchase-2',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('highlighted-purchase-purchase-2')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Bildirimdeki alışveriş: Semt Kırtasiyesi'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('missing-notification-purchase-message')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('bulunamayan bildirim alışverişinde diğer kayıtları korur', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialPurchaseId: 'missing-purchase',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('missing-notification-purchase-message')),
+      findsOneWidget,
+    );
+    expect(find.text('Mahalle Marketi'), findsOneWidget);
+  });
+
   testWidgets('puan seçimini doğrulanmış alışveriş kimliğiyle gönderir', (
     tester,
   ) async {

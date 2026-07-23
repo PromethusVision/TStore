@@ -23,20 +23,29 @@ class NotificationEntity extends Equatable {
     this.createdAt,
   });
 
-  String? get actionId => data?['action_id'] as String?;
-  String? get actionType => data?['action_type'] as String?;
+  String? get actionId => _stringData('action_id');
+  String? get actionType => _stringData('action_type');
+  String? get actionName => _stringData('action_name');
+
+  String? _stringData(String key) {
+    final value = data?[key];
+    if (value is! String) return null;
+
+    final normalized = value.trim();
+    return normalized.isEmpty ? null : normalized;
+  }
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        title,
-        body,
-        type,
-        data,
-        isRead,
-        createdAt,
-      ];
+    id,
+    userId,
+    title,
+    body,
+    type,
+    data,
+    isRead,
+    createdAt,
+  ];
 
   NotificationEntity copyWith({
     String? id,

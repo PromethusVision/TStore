@@ -400,6 +400,34 @@ void main() {
       expect(notification.actionType, 'order_detail');
     });
 
+    test('actionName returns a trimmed value from data', () {
+      const notification = NotificationEntity(
+        id: 'notif-1',
+        userId: 'user-1',
+        title: 'Test',
+        body: 'Test body',
+        type: NotificationType.chat,
+        data: {'action_name': '  Mahalle Marketi  '},
+      );
+
+      expect(notification.actionName, 'Mahalle Marketi');
+    });
+
+    test('invalid or empty action data returns null safely', () {
+      const notification = NotificationEntity(
+        id: 'notif-1',
+        userId: 'user-1',
+        title: 'Test',
+        body: 'Test body',
+        type: NotificationType.chat,
+        data: {'action_id': 42, 'action_type': '  ', 'action_name': null},
+      );
+
+      expect(notification.actionId, isNull);
+      expect(notification.actionType, isNull);
+      expect(notification.actionName, isNull);
+    });
+
     test('actionId returns null when data is null', () {
       const notification = NotificationEntity(
         id: 'notif-1',

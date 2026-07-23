@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
@@ -12,6 +13,24 @@ import 'package:t_store/features/purchases/presentation/views/purchases_view.dar
 
 typedef CustomerNotificationDestinationBuilder =
     Widget? Function(NotificationEntity notification);
+
+Widget? buildCustomerNotificationDestination(NotificationEntity notification) {
+  return switch (notification.type) {
+    NotificationType.order => PurchasesView(
+      initialPurchaseId: notification.actionType == 'order_detail'
+          ? notification.actionId
+          : null,
+    ),
+    NotificationType.chat =>
+      notification.actionType == 'chat_detail' && notification.actionId != null
+          ? ChatView(
+              receiverId: notification.actionId!,
+              receiverName: notification.actionName ?? notification.title,
+            )
+          : const ConversationsView(),
+    NotificationType.promotion || NotificationType.system => null,
+  };
+}
 
 class CustomerNotificationsView extends StatelessWidget {
   const CustomerNotificationsView({
@@ -98,11 +117,7 @@ class _CustomerNotificationsContentState
       return destinationBuilder(notification);
     }
 
-    return switch (notification.type) {
-      NotificationType.order => const PurchasesView(),
-      NotificationType.chat => const ConversationsView(),
-      NotificationType.promotion || NotificationType.system => null,
-    };
+    return buildCustomerNotificationDestination(notification);
   }
 
   String? _interactionHint(

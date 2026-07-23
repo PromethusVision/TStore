@@ -4,10 +4,13 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/features/chat/presentation/views/chat_view.dart';
+import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
+import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 class MockNotificationsCubit extends MockCubit<NotificationsState>
     implements NotificationsCubit {}
@@ -26,6 +29,60 @@ class RecordingNavigatorObserver extends NavigatorObserver {
 
 void main() {
   late MockNotificationsCubit notificationsCubit;
+
+  test('bağlantılı alışveriş bildirimini ilgili alışverişe hazırlar', () {
+    const notification = NotificationEntity(
+      id: 'notification-order',
+      userId: 'customer-1',
+      title: 'Alışverişin doğrulandı',
+      body: 'Doğrulanan alışverişini görüntüle.',
+      type: NotificationType.order,
+      data: {'action_type': 'order_detail', 'action_id': 'purchase-42'},
+    );
+
+    final destination = buildCustomerNotificationDestination(notification);
+
+    expect(destination, isA<PurchasesView>());
+    expect((destination! as PurchasesView).initialPurchaseId, 'purchase-42');
+  });
+
+  test('bağlantılı mesaj bildirimini ilgili konuşmaya hazırlar', () {
+    const notification = NotificationEntity(
+      id: 'notification-chat',
+      userId: 'customer-1',
+      title: 'Yeni mesajın var',
+      body: 'Mahalle Marketi mesajına yanıt verdi.',
+      type: NotificationType.chat,
+      data: {
+        'action_type': 'chat_detail',
+        'action_id': 'shop-owner-42',
+        'action_name': 'Mahalle Marketi',
+      },
+    );
+
+    final destination = buildCustomerNotificationDestination(notification);
+    final chatDestination = destination! as ChatView;
+
+    expect(destination, isA<ChatView>());
+    expect(chatDestination.receiverId, 'shop-owner-42');
+    expect(chatDestination.receiverName, 'Mahalle Marketi');
+  });
+
+  test('eksik bağlantılı mesaj bildirimini mesaj listesine yönlendirir', () {
+    const notification = NotificationEntity(
+      id: 'notification-chat',
+      userId: 'customer-1',
+      title: 'Yeni mesajın var',
+      body: 'Yeni bir mesaj aldın.',
+      type: NotificationType.chat,
+      data: {'action_type': 'chat_detail'},
+    );
+
+    expect(
+      buildCustomerNotificationDestination(notification),
+      isA<ConversationsView>(),
+    );
+  });
 
   setUp(() {
     notificationsCubit = MockNotificationsCubit();
