@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +11,18 @@ import 'package:t_store/features/notifications/presentation/views/customer_notif
 
 class MockNotificationsCubit extends MockCubit<NotificationsState>
     implements NotificationsCubit {}
+
+class RecordingNavigatorObserver extends NavigatorObserver {
+  int notificationPushCount = 0;
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    if (route.settings.name?.startsWith('customer-notification-') ?? false) {
+      notificationPushCount++;
+    }
+  }
+}
 
 void main() {
   late MockNotificationsCubit notificationsCubit;
@@ -26,7 +40,11 @@ void main() {
     when(() => notificationsCubit.close()).thenAnswer((_) async {});
   });
 
-  Widget buildSubject(NotificationsState state) {
+  Widget buildSubject(
+    NotificationsState state, {
+    CustomerNotificationDestinationBuilder? destinationBuilder,
+    List<NavigatorObserver> navigatorObservers = const [],
+  }) {
     whenListen(
       notificationsCubit,
       const Stream<NotificationsState>.empty(),
@@ -34,7 +52,11 @@ void main() {
     );
 
     return MaterialApp(
-      home: CustomerNotificationsView(notificationsCubit: notificationsCubit),
+      navigatorObservers: navigatorObservers,
+      home: CustomerNotificationsView(
+        notificationsCubit: notificationsCubit,
+        notificationDestinationBuilder: destinationBuilder,
+      ),
     );
   }
 
@@ -86,15 +108,15 @@ void main() {
     verifyNever(() => notificationsCubit.deleteAllNotifications());
   });
 
-  testWidgets('yeni bildirime dokununca okundu işlemini başlatır', (
+  testWidgets('genel bildirime dokununca yalnızca okundu işlemini başlatır', (
     tester,
   ) async {
     const notification = NotificationEntity(
       id: 'notification-1',
       userId: 'customer-1',
-      title: 'Yeni mesajın var',
-      body: 'Mağaza mesajına yanıt verdi.',
-      type: NotificationType.chat,
+      title: 'Yeni bilgilendirme',
+      body: 'Uygulama bilgisi güncellendi.',
+      type: NotificationType.system,
     );
 
     await tester.pumpWidget(
@@ -112,6 +134,121 @@ void main() {
     await tester.pump();
 
     verify(() => notificationsCubit.markAsRead('notification-1')).called(1);
+    expect(find.text('Bildirimlerim'), findsOneWidget);
+  });
+
+  testWidgets('alışveriş bildirimi okundu yapılırken hedef ekranı açar', (
+    tester,
+  ) async {
+    final markAsReadCompleter = Completer<void>();
+    when(
+      () => notificationsCubit.markAsRead('notification-order'),
+    ).thenAnswer((_) => markAsReadCompleter.future);
+    const notification = NotificationEntity(
+      id: 'notification-order',
+      userId: 'customer-1',
+      title: 'Alışverişin doğrulandı',
+      body: 'Doğrulanan alışverişini görüntüle.',
+      type: NotificationType.order,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+        ),
+        destinationBuilder: (notification) =>
+            notification.type == NotificationType.order
+            ? const Scaffold(body: Text('Alışveriş hedefi'))
+            : null,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('notification-card-notification-order')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Alışveriş hedefi'), findsOneWidget);
+    verify(() => notificationsCubit.markAsRead('notification-order')).called(1);
+
+    markAsReadCompleter.complete();
+  });
+
+  testWidgets(
+    'okunmuş mesaj bildirimi yeniden okundu yapmadan mesajları açar',
+    (tester) async {
+      const notification = NotificationEntity(
+        id: 'notification-chat',
+        userId: 'customer-1',
+        title: 'Yeni mesajın var',
+        body: 'Mağaza mesajına yanıt verdi.',
+        type: NotificationType.chat,
+        isRead: true,
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          const NotificationsLoaded(
+            notifications: [notification],
+            hasReachedMax: true,
+          ),
+          destinationBuilder: (notification) =>
+              notification.type == NotificationType.chat
+              ? const Scaffold(body: Text('Mesaj hedefi'))
+              : null,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.byKey(const Key('notification-card-notification-chat')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mesaj hedefi'), findsOneWidget);
+      verifyNever(() => notificationsCubit.markAsRead(any()));
+    },
+  );
+
+  testWidgets('çift dokunmada hedef ekranı yalnızca bir kez açar', (
+    tester,
+  ) async {
+    final navigatorObserver = RecordingNavigatorObserver();
+    const notification = NotificationEntity(
+      id: 'notification-order',
+      userId: 'customer-1',
+      title: 'Alışverişin doğrulandı',
+      body: 'Doğrulanan alışverişini görüntüle.',
+      type: NotificationType.order,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+        ),
+        destinationBuilder: (_) =>
+            const Scaffold(body: Text('Alışveriş hedefi')),
+        navigatorObservers: [navigatorObserver],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final card = tester.widget<InkWell>(
+      find.byKey(const Key('notification-card-notification-order')),
+    );
+    card.onTap!();
+    card.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(navigatorObserver.notificationPushCount, 1);
+    verify(() => notificationsCubit.markAsRead('notification-order')).called(1);
   });
 
   testWidgets('tümünü oku butonu toplu işlemi başlatır', (tester) async {

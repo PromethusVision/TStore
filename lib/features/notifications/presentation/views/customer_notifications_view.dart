@@ -1,15 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
+import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
+
+typedef CustomerNotificationDestinationBuilder =
+    Widget? Function(NotificationEntity notification);
 
 class CustomerNotificationsView extends StatelessWidget {
-  const CustomerNotificationsView({super.key, this.notificationsCubit});
+  const CustomerNotificationsView({
+    super.key,
+    this.notificationsCubit,
+    this.notificationDestinationBuilder,
+  });
 
   final NotificationsCubit? notificationsCubit;
+  final CustomerNotificationDestinationBuilder? notificationDestinationBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +29,19 @@ class CustomerNotificationsView extends StatelessWidget {
       create: (_) =>
           (notificationsCubit ?? sl<NotificationsCubit>())
             ..getNotifications(refresh: true),
-      child: const _CustomerNotificationsContent(),
+      child: _CustomerNotificationsContent(
+        notificationDestinationBuilder: notificationDestinationBuilder,
+      ),
     );
   }
 }
 
 class _CustomerNotificationsContent extends StatefulWidget {
-  const _CustomerNotificationsContent();
+  const _CustomerNotificationsContent({
+    required this.notificationDestinationBuilder,
+  });
+
+  final CustomerNotificationDestinationBuilder? notificationDestinationBuilder;
 
   @override
   State<_CustomerNotificationsContent> createState() =>
@@ -33,6 +51,7 @@ class _CustomerNotificationsContent extends StatefulWidget {
 class _CustomerNotificationsContentState
     extends State<_CustomerNotificationsContent> {
   late final ScrollController _scrollController;
+  final Set<String> _openingNotificationIds = {};
 
   @override
   void initState() {
@@ -60,6 +79,80 @@ class _CustomerNotificationsContentState
         !state.hasReachedMax &&
         !state.isLoadingMore) {
       cubit.loadMoreNotifications();
+    }
+  }
+
+  bool _canOpenDestination(NotificationEntity notification) {
+    final destinationBuilder = widget.notificationDestinationBuilder;
+    if (destinationBuilder != null) {
+      return destinationBuilder(notification) != null;
+    }
+
+    return notification.type == NotificationType.order ||
+        notification.type == NotificationType.chat;
+  }
+
+  Widget? _buildDestination(NotificationEntity notification) {
+    final destinationBuilder = widget.notificationDestinationBuilder;
+    if (destinationBuilder != null) {
+      return destinationBuilder(notification);
+    }
+
+    return switch (notification.type) {
+      NotificationType.order => const PurchasesView(),
+      NotificationType.chat => const ConversationsView(),
+      NotificationType.promotion || NotificationType.system => null,
+    };
+  }
+
+  String? _interactionHint(
+    NotificationEntity notification,
+    bool canOpenDestination,
+  ) {
+    if (canOpenDestination && !notification.isRead) {
+      return 'Okundu yapıp ilgili ekranı açmak için dokun';
+    }
+    if (canOpenDestination) {
+      return 'İlgili ekranı açmak için dokun';
+    }
+    if (!notification.isRead) {
+      return 'Okundu olarak işaretlemek için dokun';
+    }
+    return null;
+  }
+
+  Future<void> _handleNotificationTap(NotificationEntity notification) async {
+    if (_openingNotificationIds.contains(notification.id)) return;
+
+    final destination = _buildDestination(notification);
+    if (notification.isRead && destination == null) return;
+
+    setState(() => _openingNotificationIds.add(notification.id));
+
+    final cubit = context.read<NotificationsCubit>();
+    final markAsReadFuture = notification.isRead
+        ? Future<void>.value()
+        : cubit.markAsRead(notification.id);
+
+    try {
+      if (destination == null) {
+        await markAsReadFuture;
+        return;
+      }
+
+      unawaited(markAsReadFuture);
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          settings: RouteSettings(
+            name: 'customer-notification-${notification.type.name}',
+          ),
+          builder: (_) => destination,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _openingNotificationIds.remove(notification.id));
+      }
     }
   }
 
@@ -167,21 +260,26 @@ class _CustomerNotificationsContentState
                     return _NotificationsListFooter(state: state);
                   }
 
+                  final notification = state.notifications[index];
+                  final canOpenDestination = _canOpenDestination(notification);
+                  final isProcessing =
+                      state.isMarkingAllAsRead ||
+                      state.markingAsReadIds.contains(notification.id) ||
+                      _openingNotificationIds.contains(notification.id);
+                  final canTap =
+                      !isProcessing &&
+                      (!notification.isRead || canOpenDestination);
+
                   return _NotificationCard(
-                    notification: state.notifications[index],
-                    isMarkingAsRead: state.markingAsReadIds.contains(
-                      state.notifications[index].id,
+                    notification: notification,
+                    isProcessing: isProcessing,
+                    interactionHint: _interactionHint(
+                      notification,
+                      canOpenDestination,
                     ),
-                    onMarkAsRead:
-                        state.notifications[index].isRead ||
-                            state.isMarkingAllAsRead ||
-                            state.markingAsReadIds.contains(
-                              state.notifications[index].id,
-                            )
-                        ? null
-                        : () => context.read<NotificationsCubit>().markAsRead(
-                            state.notifications[index].id,
-                          ),
+                    onTap: canTap
+                        ? () => _handleNotificationTap(notification)
+                        : null,
                   );
                 },
               ),
@@ -196,13 +294,15 @@ class _CustomerNotificationsContentState
 class _NotificationCard extends StatelessWidget {
   const _NotificationCard({
     required this.notification,
-    required this.isMarkingAsRead,
-    required this.onMarkAsRead,
+    required this.isProcessing,
+    required this.interactionHint,
+    required this.onTap,
   });
 
   final NotificationEntity notification;
-  final bool isMarkingAsRead;
-  final VoidCallback? onMarkAsRead;
+  final bool isProcessing;
+  final String? interactionHint;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -213,16 +313,16 @@ class _NotificationCard extends StatelessWidget {
     final createdAt = notification.createdAt;
 
     return Semantics(
-      button: !notification.isRead,
-      enabled: onMarkAsRead != null,
+      button: interactionHint != null,
+      enabled: onTap != null,
       label:
           '${notification.isRead ? 'Okunmuş' : 'Yeni'} bildirim: ${notification.title}',
-      hint: notification.isRead ? null : 'Okundu olarak işaretlemek için dokun',
+      hint: interactionHint,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           key: Key('notification-card-${notification.id}'),
-          onTap: onMarkAsRead,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
           child: Ink(
             padding: const EdgeInsets.all(TSizes.md),
@@ -268,7 +368,7 @@ class _NotificationCard extends StatelessWidget {
                                   ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
-                          if (isMarkingAsRead) ...[
+                          if (isProcessing) ...[
                             const SizedBox(width: TSizes.sm),
                             const SizedBox.square(
                               key: Key('notification-read-progress'),
