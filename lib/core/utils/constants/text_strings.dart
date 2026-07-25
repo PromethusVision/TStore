@@ -79,7 +79,7 @@ class TTexts {
 
   // -- Home
   static const String homeAppbarTitle = "Yakınınızdaki ürünleri keşfedin";
-  static const String homeAppbarSubTitle = "Mahmoud Hamdy";
+  static const String homeAppbarSubTitle = "Hoş geldiniz";
   static const String searchContainer = "Ürün veya esnaf ara";
   static const String popularCategories = "Popüler Kategoriler";
   // -- Categories
