@@ -93,6 +93,13 @@ class TTexts {
   static const String accessories = "Accessories";
   static const String electronics = "Electronics";
   static const String jewellers = "Jewellers";
+  static const List<String> homeCategoryTitles = [
+    "Elektronik",
+    "Giyim",
+    "Ayakkabı",
+    "Mobilya",
+    "Aksesuar",
+  ];
   //list of categories
   static const List<String> categories = [
     "beauty",

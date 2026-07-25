@@ -5,11 +5,11 @@
 
 -- ==================== CATEGORIES ====================
 INSERT INTO categories (id, name, description, image_url, sort_order, is_active) VALUES
-  ('c1000000-0000-0000-0000-000000000001', 'Electronics', 'Smartphones, Laptops, Headphones, and Gadgets', 'https://i.imgur.com/ZANVnHE.jpeg', 1, true),
-  ('c1000000-0000-0000-0000-000000000002', 'Clothes', 'T-Shirts, Hoodies, Jackets, and Fashion', 'https://i.imgur.com/QkIa5tT.jpeg', 2, true),
-  ('c1000000-0000-0000-0000-000000000003', 'Shoes', 'Sneakers, Boots, Heels, and Sandals', 'https://i.imgur.com/qNOjJje.jpeg', 3, true),
-  ('c1000000-0000-0000-0000-000000000004', 'Furniture', 'Sofas, Tables, Chairs, and Home Decor', 'https://i.imgur.com/Qphac99.jpeg', 4, true),
-  ('c1000000-0000-0000-0000-000000000005', 'Accessories', 'Bags, Watches, Jewelry, and More', 'https://i.imgur.com/BG8J0Fj.jpg', 5, true);
+  ('c1000000-0000-0000-0000-000000000001', 'Elektronik', 'Telefon, bilgisayar, kulaklık ve elektronik ürünler', 'https://i.imgur.com/ZANVnHE.jpeg', 1, true),
+  ('c1000000-0000-0000-0000-000000000002', 'Giyim', 'Giyim ve moda ürünleri', 'https://i.imgur.com/QkIa5tT.jpeg', 2, true),
+  ('c1000000-0000-0000-0000-000000000003', 'Ayakkabı', 'Spor ayakkabı, bot, topuklu ayakkabı ve sandalet', 'https://i.imgur.com/qNOjJje.jpeg', 3, true),
+  ('c1000000-0000-0000-0000-000000000004', 'Mobilya', 'Mobilya ve ev dekorasyonu', 'https://i.imgur.com/Qphac99.jpeg', 4, true),
+  ('c1000000-0000-0000-0000-000000000005', 'Aksesuar', 'Çanta, saat, takı ve aksesuarlar', 'https://i.imgur.com/BG8J0Fj.jpg', 5, true);
 
 -- ==================== BRANDS ====================
 INSERT INTO brands (id, name, description, logo_url, is_featured, is_active) VALUES
