@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/notifications/data/models/notification_model.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
@@ -21,7 +22,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final from = page * limit;
@@ -35,13 +36,19 @@ class NotificationRepositoryImpl implements NotificationRepository {
           .range(from, to);
 
       final notifications = (response as List)
-          .map((json) =>
-              NotificationModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => NotificationModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return Right(notifications);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Bildirimler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -56,7 +63,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Bildirim güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -71,7 +83,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Bildirimler güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -86,7 +103,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Bildirim silinemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -100,7 +122,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Bildirimler silinemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -119,7 +146,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       return Right((response as List).length);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Okunmamış bildirim sayısı alınamadı.',
+        ),
+      );
     }
   }
 

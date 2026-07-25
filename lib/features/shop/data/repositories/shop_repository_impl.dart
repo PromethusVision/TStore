@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/shop/data/models/shop_model.dart';
 import 'package:t_store/features/shop/data/models/shop_product_model.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
@@ -30,7 +31,12 @@ class ShopRepositoryImpl implements ShopRepository {
 
       return Right(shops);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağazalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -160,7 +166,12 @@ class ShopRepositoryImpl implements ShopRepository {
 
       return Right(shopProducts);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağaza ürünleri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -185,7 +196,12 @@ class ShopRepositoryImpl implements ShopRepository {
 
       return Right(shopProducts);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürünü satan mağazalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -210,7 +226,12 @@ class ShopRepositoryImpl implements ShopRepository {
 
       return Right(shopProducts);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağaza ürünleri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 

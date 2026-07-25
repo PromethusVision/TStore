@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/shop/data/models/category_model.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/category_repository.dart';
@@ -25,7 +26,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
       return Right(categories);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kategoriler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -40,7 +46,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
       return Right(CategoryModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kategori bilgisi yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -60,13 +71,19 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
       return Right(categories);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kategoriler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
   @override
   Future<Either<String, List<CategoryEntity>>> getSubCategories(
-      String parentId) async {
+    String parentId,
+  ) async {
     try {
       final response = await supabaseService.client
           .from(SupabaseTables.categories)
@@ -81,7 +98,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
       return Right(categories);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Alt kategoriler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/shop/data/models/product_model.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/product_repository.dart';
@@ -52,7 +53,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürünler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -67,7 +73,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(ProductModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürün bilgisi yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -90,7 +101,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürünler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -112,7 +128,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Arama tamamlanamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -134,7 +155,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kategori ürünleri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -156,7 +182,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Marka ürünleri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -177,7 +208,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Öne çıkan ürünler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

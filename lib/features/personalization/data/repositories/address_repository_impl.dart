@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/personalization/data/models/address_model.dart';
 import 'package:t_store/features/personalization/domain/entities/address_entity.dart';
 import 'package:t_store/features/personalization/domain/repositories/address_repository.dart';
@@ -16,7 +17,7 @@ class AddressRepositoryImpl implements AddressRepository {
   Future<Either<String, List<AddressEntity>>> getAddresses() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -32,7 +33,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return Right(addresses);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Adresleriniz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -47,7 +53,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return Right(AddressModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Adres bilgisi yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -65,7 +76,7 @@ class AddressRepositoryImpl implements AddressRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       // If this is default, unset other defaults
@@ -95,7 +106,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return Right(AddressModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Adresiniz kaydedilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -140,7 +156,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return Right(AddressModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Adresiniz güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -155,7 +176,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Adresiniz silinemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -176,7 +202,12 @@ class AddressRepositoryImpl implements AddressRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ana adresiniz güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

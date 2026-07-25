@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/cart/data/models/cart_item_v2_model.dart';
 import 'package:t_store/features/cart/data/models/cart_v2_model.dart';
 import 'package:t_store/features/cart/domain/entities/cart_v2_add_result.dart';
@@ -23,7 +24,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
   Future<Either<String, CartV2Entity?>> getActiveCart() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -39,7 +40,12 @@ class CartV2RepositoryImpl implements CartV2Repository {
 
       return Right(CartV2Model.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Sepetiniz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -49,7 +55,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
   ) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -59,14 +65,17 @@ class CartV2RepositoryImpl implements CartV2Repository {
           .order('created_at', ascending: false);
 
       final items = (response as List)
-          .map(
-            (json) => CartItemV2Model.fromJson(json as Map<String, dynamic>),
-          )
+          .map((json) => CartItemV2Model.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Right(items);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Sepet ürünleri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -92,11 +101,11 @@ class CartV2RepositoryImpl implements CartV2Repository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       if (quantity <= 0) {
-        return const Left('Adet 1 veya daha buyuk olmali');
+        return const Left('Ürün adedi en az 1 olmalıdır.');
       }
 
       final shopProductResponse = await supabaseService.client
@@ -108,7 +117,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
           .maybeSingle();
 
       if (shopProductResponse == null) {
-        return const Left('Urun bu esnafta satista degil');
+        return const Left('Bu ürün seçtiğiniz mağazada satışta değil.');
       }
 
       final shopProduct = ShopProductModel.fromJson(shopProductResponse);
@@ -226,7 +235,12 @@ class CartV2RepositoryImpl implements CartV2Repository {
         },
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürün sepete eklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -237,11 +251,11 @@ class CartV2RepositoryImpl implements CartV2Repository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       if (quantity <= 0) {
-        return const Left('Adet 1 veya daha buyuk olmali');
+        return const Left('Ürün adedi en az 1 olmalıdır.');
       }
 
       final shopProductResponse = await supabaseService.client
@@ -253,7 +267,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
           .maybeSingle();
 
       if (shopProductResponse == null) {
-        return const Left('Urun bu esnafta satista degil');
+        return const Left('Bu ürün seçtiğiniz mağazada satışta değil.');
       }
 
       final shopProduct = ShopProductModel.fromJson(shopProductResponse);
@@ -283,11 +297,15 @@ class CartV2RepositoryImpl implements CartV2Repository {
 
           final cart = CartV2Model.fromJson(cartResponse);
 
-          await supabaseService.client.from(SupabaseTables.cartItemsV2).insert({
-            'cart_id': cart.id,
-            'shop_product_id': shopProductId,
-            'quantity': quantity,
-          }).select().single();
+          await supabaseService.client
+              .from(SupabaseTables.cartItemsV2)
+              .insert({
+                'cart_id': cart.id,
+                'shop_product_id': shopProductId,
+                'quantity': quantity,
+              })
+              .select()
+              .single();
 
           return Right(
             CartV2AddSuccess(
@@ -300,7 +318,12 @@ class CartV2RepositoryImpl implements CartV2Repository {
         },
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Sepet değiştirilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -311,15 +334,15 @@ class CartV2RepositoryImpl implements CartV2Repository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       if (cartItemId.trim().isEmpty) {
-        return const Left('Sepet urunu bulunamadi');
+        return const Left('Sepet ürünü bulunamadı.');
       }
 
       if (quantity <= 0) {
-        return const Left('Adet 1 veya daha buyuk olmali');
+        return const Left('Ürün adedi en az 1 olmalıdır.');
       }
 
       final activeCartResult = await getActiveCart();
@@ -328,7 +351,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
         (error) async => Left(error),
         (activeCart) async {
           if (activeCart == null) {
-            return const Left('Aktif magaza sepeti bulunamadi');
+            return const Left('Aktif mağaza sepeti bulunamadı.');
           }
 
           final response = await supabaseService.client
@@ -340,14 +363,19 @@ class CartV2RepositoryImpl implements CartV2Repository {
               .maybeSingle();
 
           if (response == null) {
-            return const Left('Sepet urunu bulunamadi');
+            return const Left('Sepet ürünü bulunamadı.');
           }
 
           return const Right(unit);
         },
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürün adedi güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -357,11 +385,11 @@ class CartV2RepositoryImpl implements CartV2Repository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       if (cartItemId.trim().isEmpty) {
-        return const Left('Sepet urunu bulunamadi');
+        return const Left('Sepet ürünü bulunamadı.');
       }
 
       final activeCartResult = await getActiveCart();
@@ -370,7 +398,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
         (error) async => Left(error),
         (activeCart) async {
           if (activeCart == null) {
-            return const Left('Aktif magaza sepeti bulunamadi');
+            return const Left('Aktif mağaza sepeti bulunamadı.');
           }
 
           final response = await supabaseService.client
@@ -382,14 +410,19 @@ class CartV2RepositoryImpl implements CartV2Repository {
               .maybeSingle();
 
           if (response == null) {
-            return const Left('Sepet urunu bulunamadi');
+            return const Left('Sepet ürünü bulunamadı.');
           }
 
           return const Right(unit);
         },
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Ürün sepetten kaldırılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -397,7 +430,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
   Future<Either<String, Unit>> cancelActiveCart() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lutfen once giris yapin');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final activeCartResult = await getActiveCart();
@@ -420,7 +453,12 @@ class CartV2RepositoryImpl implements CartV2Repository {
         },
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Sepet temizlenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

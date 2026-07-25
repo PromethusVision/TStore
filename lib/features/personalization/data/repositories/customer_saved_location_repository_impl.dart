@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/personalization/data/models/customer_saved_location_model.dart';
 import 'package:t_store/features/personalization/domain/entities/customer_saved_location_entity.dart';
 import 'package:t_store/features/personalization/domain/repositories/customer_saved_location_repository.dart';
@@ -17,7 +18,9 @@ class CustomerSavedLocationRepositoryImpl
   Future<Either<String, List<CustomerSavedLocationEntity>>>
   getLocations() async {
     try {
-      if (_userId.isEmpty) return const Left('not_authenticated');
+      if (_userId.isEmpty) {
+        return const Left(CustomerErrorMessage.signInRequired);
+      }
 
       final response = await supabaseService.client
           .from(SupabaseTables.customerSavedLocations)
@@ -36,7 +39,12 @@ class CustomerSavedLocationRepositoryImpl
 
       return Right(locations);
     } catch (error) {
-      return Left(error.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          error,
+          fallback: 'Kayıtlı konumlarınız yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -44,7 +52,9 @@ class CustomerSavedLocationRepositoryImpl
   Future<Either<String, CustomerSavedLocationEntity?>>
   getDefaultLocation() async {
     try {
-      if (_userId.isEmpty) return const Left('not_authenticated');
+      if (_userId.isEmpty) {
+        return const Left(CustomerErrorMessage.signInRequired);
+      }
 
       final response = await supabaseService.client
           .from(SupabaseTables.customerSavedLocations)
@@ -56,7 +66,12 @@ class CustomerSavedLocationRepositoryImpl
       if (response == null) return const Right(null);
       return Right(CustomerSavedLocationModel.fromJson(response));
     } catch (error) {
-      return Left(error.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          error,
+          fallback: 'Ana konumunuz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -69,7 +84,9 @@ class CustomerSavedLocationRepositoryImpl
     required bool isDefault,
   }) async {
     try {
-      if (_userId.isEmpty) return const Left('not_authenticated');
+      if (_userId.isEmpty) {
+        return const Left(CustomerErrorMessage.signInRequired);
+      }
 
       final response = await supabaseService.client
           .from(SupabaseTables.customerSavedLocations)
@@ -86,41 +103,64 @@ class CustomerSavedLocationRepositoryImpl
 
       return Right(CustomerSavedLocationModel.fromJson(response));
     } catch (error) {
-      return Left(error.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          error,
+          fallback: 'Konumunuz kaydedilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
   @override
   Future<Either<String, void>> setDefaultLocation(String locationId) async {
     try {
-      if (_userId.isEmpty) return const Left('not_authenticated');
+      if (_userId.isEmpty) {
+        return const Left(CustomerErrorMessage.signInRequired);
+      }
 
       final response = await supabaseService.client.rpc(
         'set_default_customer_saved_location',
         params: {'p_location_id': locationId},
       );
-      if (response != true) return const Left('location_not_found');
+      if (response != true) {
+        return const Left(CustomerErrorMessage.notFound);
+      }
 
       return const Right(null);
     } catch (error) {
-      return Left(error.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          error,
+          fallback: 'Ana konumunuz güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
   @override
   Future<Either<String, void>> deleteLocation(String locationId) async {
     try {
-      if (_userId.isEmpty) return const Left('not_authenticated');
+      if (_userId.isEmpty) {
+        return const Left(CustomerErrorMessage.signInRequired);
+      }
 
       final response = await supabaseService.client.rpc(
         'delete_customer_saved_location',
         params: {'p_location_id': locationId},
       );
-      if (response != true) return const Left('location_not_found');
+      if (response != true) {
+        return const Left(CustomerErrorMessage.notFound);
+      }
 
       return const Right(null);
     } catch (error) {
-      return Left(error.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          error,
+          fallback: 'Konumunuz silinemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

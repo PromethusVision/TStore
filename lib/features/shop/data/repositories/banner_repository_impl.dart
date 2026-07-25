@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/shop/data/models/banner_model.dart';
 import 'package:t_store/features/shop/domain/entities/banner_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/banner_repository.dart';
@@ -24,7 +25,12 @@ class BannerRepositoryImpl implements BannerRepository {
 
       return Right(banners);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kampanyalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -47,7 +53,12 @@ class BannerRepositoryImpl implements BannerRepository {
 
       return Right(banners);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Kampanyalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

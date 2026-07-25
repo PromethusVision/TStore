@@ -57,31 +57,31 @@ class ProductEntity extends Equatable {
   bool get isInStock => stock > 0;
 
   String get availabilityStatus {
-    if (stock <= 0) return 'غير متوفر';
-    if (stock <= 5) return 'كمية محدودة';
-    return 'متوفر';
+    if (stock <= 0) return 'Stokta yok';
+    if (stock <= 5) return 'Sınırlı stok';
+    return 'Stokta var';
   }
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        description,
-        price,
-        salePrice,
-        categoryId,
-        brandId,
-        stock,
-        images,
-        thumbnail,
-        rating,
-        reviewsCount,
-        isFeatured,
-        isActive,
-        attributes,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    name,
+    description,
+    price,
+    salePrice,
+    categoryId,
+    brandId,
+    stock,
+    images,
+    thumbnail,
+    rating,
+    reviewsCount,
+    isFeatured,
+    isActive,
+    attributes,
+    createdAt,
+    updatedAt,
+  ];
 
   ProductEntity copyWith({
     String? id,

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/orders/data/models/order_model.dart';
 import 'package:t_store/features/orders/domain/entities/order_entity.dart';
 import 'package:t_store/features/orders/domain/repositories/order_repository.dart';
@@ -16,7 +17,7 @@ class OrderRepositoryImpl implements OrderRepository {
   Future<Either<String, List<OrderEntity>>> getOrders() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -31,7 +32,12 @@ class OrderRepositoryImpl implements OrderRepository {
 
       return Right(orders);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Alışverişleriniz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -46,7 +52,12 @@ class OrderRepositoryImpl implements OrderRepository {
 
       return Right(OrderModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Alışveriş bilgisi yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -62,7 +73,7 @@ class OrderRepositoryImpl implements OrderRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       // Get address for snapshot
@@ -110,15 +121,19 @@ class OrderRepositoryImpl implements OrderRepository {
       final orderId = orderResponse['id'] as String;
 
       // Create order items
-      final orderItems = items.map((item) => {
-            'order_id': orderId,
-            'product_id': item.productId,
-            'product_name': item.productName,
-            'product_image': item.productImage,
-            'price': item.price,
-            'quantity': item.quantity,
-            'selected_attributes': item.selectedAttributes,
-          }).toList();
+      final orderItems = items
+          .map(
+            (item) => {
+              'order_id': orderId,
+              'product_id': item.productId,
+              'product_name': item.productName,
+              'product_image': item.productImage,
+              'price': item.price,
+              'quantity': item.quantity,
+              'selected_attributes': item.selectedAttributes,
+            },
+          )
+          .toList();
 
       await supabaseService.client
           .from(SupabaseTables.orderItems)
@@ -127,7 +142,12 @@ class OrderRepositoryImpl implements OrderRepository {
       // Get full order with items
       return await getOrderById(orderId);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Alışveriş oluşturulamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -143,7 +163,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
       final status = orderCheck['status'] as String;
       if (status != 'pending' && status != 'confirmed') {
-        return const Left('لا يمكن إلغاء هذا الطلب');
+        return const Left('Bu alışveriş artık iptal edilemez.');
       }
 
       await supabaseService.client
@@ -153,7 +173,12 @@ class OrderRepositoryImpl implements OrderRepository {
 
       return await getOrderById(orderId);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Alışveriş iptal edilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

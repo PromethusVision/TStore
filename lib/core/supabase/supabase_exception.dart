@@ -6,11 +6,7 @@ class SupabaseException implements Exception {
   final String? code;
   final dynamic originalError;
 
-  SupabaseException({
-    required this.message,
-    this.code,
-    this.originalError,
-  });
+  SupabaseException({required this.message, this.code, this.originalError});
 
   /// Create from AuthException
   factory SupabaseException.fromAuthException(AuthException e) {
@@ -49,7 +45,7 @@ class SupabaseException implements Exception {
       return SupabaseException.fromStorageException(e);
     } else {
       return SupabaseException(
-        message: e.toString(),
+        message: 'İşlem tamamlanamadı. Lütfen tekrar deneyin.',
         originalError: e,
       );
     }
@@ -60,46 +56,46 @@ class SupabaseException implements Exception {
     final lowerMessage = message.toLowerCase();
 
     if (lowerMessage.contains('invalid login credentials')) {
-      return 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+      return 'E-posta veya şifre hatalı.';
     }
     if (lowerMessage.contains('email not confirmed')) {
-      return 'يرجى تأكيد بريدك الإلكتروني أولاً';
+      return 'E-posta adresinizi doğrulamanız gerekiyor.';
     }
     if (lowerMessage.contains('user already registered')) {
-      return 'هذا البريد الإلكتروني مسجل بالفعل';
+      return 'Bu e-posta adresiyle daha önce hesap oluşturulmuş.';
     }
     if (lowerMessage.contains('password')) {
-      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      return 'Şifre güvenlik şartlarını karşılamıyor.';
     }
     if (lowerMessage.contains('email')) {
-      return 'يرجى إدخال بريد إلكتروني صحيح';
+      return 'Geçerli bir e-posta adresi girin.';
     }
     if (lowerMessage.contains('rate limit')) {
-      return 'تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً';
+      return 'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
     }
     if (lowerMessage.contains('network')) {
-      return 'خطأ في الاتصال. يرجى التحقق من الإنترنت';
+      return 'İnternet bağlantınızı kontrol edip tekrar deneyin.';
     }
 
-    return message;
+    return 'Kimlik doğrulama işlemi tamamlanamadı. Lütfen tekrar deneyin.';
   }
 
   /// Get user-friendly database error message
   static String _getDatabaseErrorMessage(String message, String? code) {
     if (code == '23505') {
-      return 'هذا العنصر موجود بالفعل';
+      return 'Bu kayıt zaten mevcut.';
     }
     if (code == '23503') {
-      return 'لا يمكن حذف هذا العنصر لأنه مرتبط ببيانات أخرى';
+      return 'Bu kayıt başka bilgilerle bağlantılı olduğu için silinemiyor.';
     }
     if (code == 'PGRST116') {
-      return 'العنصر غير موجود';
+      return 'Aradığınız kayıt bulunamadı.';
     }
     if (code == '42501') {
-      return 'ليس لديك صلاحية للقيام بهذا الإجراء';
+      return 'Bu işlem için yetkiniz bulunmuyor.';
     }
 
-    return message;
+    return 'Bilgiler işlenemedi. Lütfen tekrar deneyin.';
   }
 
   /// Get user-friendly storage error message
@@ -107,16 +103,16 @@ class SupabaseException implements Exception {
     final lowerMessage = message.toLowerCase();
 
     if (lowerMessage.contains('not found')) {
-      return 'الملف غير موجود';
+      return 'Dosya bulunamadı.';
     }
     if (lowerMessage.contains('too large')) {
-      return 'حجم الملف كبير جداً';
+      return 'Dosya boyutu çok büyük.';
     }
     if (lowerMessage.contains('invalid')) {
-      return 'نوع الملف غير مدعوم';
+      return 'Bu dosya türü desteklenmiyor.';
     }
 
-    return message;
+    return 'Dosya işlemi tamamlanamadı. Lütfen tekrar deneyin.';
   }
 
   @override

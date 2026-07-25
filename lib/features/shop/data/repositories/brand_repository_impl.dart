@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/shop/data/models/brand_model.dart';
 import 'package:t_store/features/shop/domain/entities/brand_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/brand_repository.dart';
@@ -25,7 +26,12 @@ class BrandRepositoryImpl implements BrandRepository {
 
       return Right(brands);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Markalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -40,7 +46,12 @@ class BrandRepositoryImpl implements BrandRepository {
 
       return Right(BrandModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Marka bilgisi yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -60,7 +71,12 @@ class BrandRepositoryImpl implements BrandRepository {
 
       return Right(brands);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Öne çıkan markalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

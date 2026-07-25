@@ -14,30 +14,25 @@ class LocationHelper {
   static LocationSettings getPlatformSpecificSettings() {
     if (Platform.isAndroid) {
       LoggerHelper.info("Using Android-specific location settings");
-      return AndroidSettings(
-        accuracy: LocationAccuracy.best,
-      );
+      return AndroidSettings(accuracy: LocationAccuracy.best);
     } else if (Platform.isIOS) {
       LoggerHelper.info("Using iOS-specific location settings");
-      return AppleSettings(
-        accuracy: LocationAccuracy.best,
-      );
+      return AppleSettings(accuracy: LocationAccuracy.best);
     } else {
       LoggerHelper.info("Using default location settings");
-      return const LocationSettings(
-        accuracy: LocationAccuracy.best,
-      );
+      return const LocationSettings(accuracy: LocationAccuracy.best);
     }
   }
 
   static Future<String?> getAddressFromCurrentLocation(
-      BuildContext context) async {
+    BuildContext context,
+  ) async {
     try {
-      LoggerHelper.info("بدء التحقق من أذونات الموقع...");
+      LoggerHelper.info('Konum izinleri kontrol ediliyor...');
 
       var status = await Permission.location.status;
       if (!status.isGranted) {
-        LoggerHelper.warning("لم يتم منح إذن الموقع. جارٍ طلب الإذن...");
+        LoggerHelper.warning('Konum izni verilmemiş. İzin isteniyor...');
 
         bool shouldRequestPermission =
             await THelperFunctions.showPermissionDialog(context);
@@ -45,10 +40,11 @@ class LocationHelper {
         if (shouldRequestPermission) {
           status = await Permission.location.request();
           if (!status.isGranted) {
-            LoggerHelper.error("تم رفض إذن الموقع.");
+            LoggerHelper.error('Konum izni reddedildi.');
 
             if (status.isPermanentlyDenied) {
-              bool shouldOpenSettings = await showGeneralDialog<bool>(
+              bool shouldOpenSettings =
+                  await showGeneralDialog<bool>(
                     context: context,
                     barrierDismissible: false,
                     transitionDuration: const Duration(milliseconds: 300),
@@ -61,13 +57,16 @@ class LocationHelper {
                           ),
                           title: const Row(
                             children: [
-                              Icon(Icons.location_disabled,
-                                  color: primaryRed, size: 28),
+                              Icon(
+                                Icons.location_disabled,
+                                color: primaryRed,
+                                size: 28,
+                              ),
                               SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  'إذن الموقع مطلوب',
-                                  textAlign: TextAlign.right,
+                                  'Konum izni gerekiyor',
+                                  textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -80,8 +79,8 @@ class LocationHelper {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Text(
-                                'لقد قمت برفض إذن الموقع بشكل دائم. يرجى تفعيله من إعدادات التطبيق للمتابعة.',
-                                textAlign: TextAlign.right,
+                                'Konum izni kapalı. Devam etmek için uygulama ayarlarından izni açın.',
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: secondaryPurple,
@@ -113,10 +112,11 @@ class LocationHelper {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
+                                        vertical: 12,
+                                      ),
                                     ),
                                     child: const Text(
-                                      'إلغاء',
+                                      'Vazgeç',
                                       style: TextStyle(
                                         color: accentRedText,
                                         fontWeight: FontWeight.bold,
@@ -135,17 +135,21 @@ class LocationHelper {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
+                                        vertical: 12,
+                                      ),
                                     ),
                                     child: const Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.settings,
-                                            color: Colors.white, size: 18),
+                                        Icon(
+                                          Icons.settings,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
                                         SizedBox(width: 8),
                                         Text(
-                                          'فتح الإعدادات',
+                                          'Ayarları Aç',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -162,8 +166,12 @@ class LocationHelper {
                               ],
                             ),
                           ],
-                          actionsPadding:
-                              const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                          actionsPadding: const EdgeInsets.fromLTRB(
+                            24,
+                            0,
+                            24,
+                            24,
+                          ),
                         ),
                       );
                     },
@@ -181,10 +189,10 @@ class LocationHelper {
         }
       }
 
-      LoggerHelper.info("التحقق من تفعيل خدمات الموقع...");
+      LoggerHelper.info('Konum hizmetleri kontrol ediliyor...');
 
       if (!await Geolocator.isLocationServiceEnabled()) {
-        LoggerHelper.error("خدمات الموقع معطلة.");
+        LoggerHelper.error('Konum hizmetleri kapalı.');
         bool shouldOpenSettings =
             await THelperFunctions.showLocationServiceDialog(context);
         if (!shouldOpenSettings ||
@@ -193,7 +201,7 @@ class LocationHelper {
         }
       }
 
-      LoggerHelper.info("جارٍ تحديد الموقع الحالي...");
+      LoggerHelper.info('Mevcut konum belirleniyor...');
 
       // Show loading indicator
       showDialog(
@@ -227,7 +235,7 @@ class LocationHelper {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'جارٍ تحديد موقعك...',
+                    'Konumunuz belirleniyor...',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -255,9 +263,10 @@ class LocationHelper {
         Navigator.of(context).pop();
 
         LoggerHelper.debug(
-            "تم تحديد الموقع: خط العرض ${position.latitude}, خط الطول ${position.longitude}");
+          'Konum belirlendi: enlem ${position.latitude}, boylam ${position.longitude}',
+        );
 
-        LoggerHelper.info("جارٍ تحويل الإحداثيات إلى عنوان...");
+        LoggerHelper.info('Konum bilgisi adrese dönüştürülüyor...');
 
         List<Placemark> placemarks = await placemarkFromCoordinates(
           position.latitude,
@@ -267,12 +276,12 @@ class LocationHelper {
         if (placemarks.isNotEmpty) {
           Placemark place = placemarks.first;
           // Create a more detailed address string
-          List<String?> addressComponents = [
-            place.locality,
-            place.administrativeArea,
-          ]
-              .where((component) => component != null && component.isNotEmpty)
-              .toList();
+          List<String?> addressComponents =
+              [place.locality, place.administrativeArea]
+                  .where(
+                    (component) => component != null && component.isNotEmpty,
+                  )
+                  .toList();
 
           String address = addressComponents
               .join(', ')
@@ -283,9 +292,9 @@ class LocationHelper {
           THelperFunctions.showSnackBar(
             type: SnackBarType.success,
             context: context,
-            message: 'تم تحديد موقعك بنجاح',
+            message: 'Konumunuz başarıyla belirlendi.',
           );
-          LoggerHelper.info("تم العثور على العنوان: $address");
+          LoggerHelper.info('Adres bulundu: $address');
           return address;
         }
 
@@ -301,20 +310,25 @@ class LocationHelper {
           THelperFunctions.showSnackBar(
             type: SnackBarType.error,
             context: context,
-            message: 'حدث خطاء في تحديد الموقع. يرجى المحاولة مرة أخرى.',
+            message: 'Konumunuz belirlenemedi. Lütfen tekrar deneyin.',
           );
         }
 
-        LoggerHelper.error("حدث خطأ غير متوقع", e);
+        LoggerHelper.error(
+          'Konum belirlenirken beklenmeyen bir hata oluştu.',
+          e,
+        );
         return null;
       }
     } on PlatformException catch (e) {
-      LoggerHelper.error("حدث خطأ في النظام", e.message);
+      LoggerHelper.error(
+        'Konum işlemi sırasında sistem hatası oluştu.',
+        e.message,
+      );
       THelperFunctions.showSnackBar(
         type: SnackBarType.error,
         context: context,
-        message:
-            e.message ?? 'حدث خطأ أثناء تحديد الموقع. يرجى المحاولة مرة أخرى.',
+        message: 'Konumunuz belirlenemedi. Lütfen tekrar deneyin.',
       );
       return null;
     }

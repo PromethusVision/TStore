@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/auth/data/models/user_model.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/personalization/domain/repositories/profile_repository.dart';
@@ -18,7 +19,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Either<String, UserEntity>> getProfile() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -45,7 +46,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return Right(UserModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Hesap bilgileriniz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -56,7 +62,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final updateData = <String, dynamic>{};
@@ -76,7 +82,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return Right(UserModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Hesap bilgileriniz güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -84,7 +95,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Either<String, String>> uploadAvatar(File imageFile) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final fileName = 'avatar_$_userId.${imageFile.path.split('.').last}';
@@ -95,10 +106,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
           .uploadBinary(
             fileName,
             bytes,
-            fileOptions: const FileOptions(
-              cacheControl: '3600',
-              upsert: true,
-            ),
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
           );
 
       final avatarUrl = supabaseService.client.storage
@@ -113,7 +121,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return Right(avatarUrl);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Profil fotoğrafı yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -121,7 +134,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Either<String, void>> deleteAvatar() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       // Remove avatar URL from profile
@@ -132,16 +145,22 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       // Try to delete file from storage
       try {
-        await supabaseService.client.storage
-            .from('avatars')
-            .remove(['avatar_$_userId.jpg', 'avatar_$_userId.png']);
+        await supabaseService.client.storage.from('avatars').remove([
+          'avatar_$_userId.jpg',
+          'avatar_$_userId.png',
+        ]);
       } catch (_) {
         // Ignore storage errors
       }
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Profil fotoğrafı kaldırılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 }

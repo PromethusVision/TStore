@@ -12,11 +12,11 @@ class SharedPreferencesException implements Exception {
 class SharedPreferencesExceptionHelper {
   static String handleException(dynamic error) {
     if (error is FormatException) {
-      return "خطأ في تنسيق البيانات المخزنة";
+      return 'Kaydedilen bilgiler okunamadı.';
     } else if (error is TypeError) {
-      return "خطأ في نوع البيانات المخزنة";
+      return 'Kaydedilen bilgiler geçersiz.';
     } else {
-      return "حدث خطأ غير متوقع أثناء الوصول للبيانات المحلية";
+      return 'Cihazdaki bilgilere erişilemedi. Lütfen tekrar deneyin.';
     }
   }
 }

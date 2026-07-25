@@ -7,35 +7,35 @@ class PlatformExceptionHelper {
 
     switch (exception.code) {
       case 'PERMISSION_DENIED':
-        return "تم رفض الإذن. يرجى السماح للتطبيق بالوصول.";
+        return 'İzin verilmedi. Lütfen uygulama iznini etkinleştirin.';
       case 'PERMISSION_DENIED_NEVER_ASK':
-        return "تم رفض الإذن نهائيًا. يمكنك تفعيل الإذن من الإعدادات.";
+        return 'İzin kapalı. Ayarlar bölümünden etkinleştirebilirsiniz.';
       case 'LOCATION_SERVICES_DISABLED':
-        return "خدمات الموقع معطلة. يرجى تفعيل الموقع والمحاولة مرة أخرى.";
+        return 'Konum hizmetleri kapalı. Konumu açıp tekrar deneyin.';
       case 'NETWORK_ERROR':
-        return "خطأ في الشبكة. تأكد من اتصالك بالإنترنت.";
+        return 'İnternet bağlantınızı kontrol edip tekrar deneyin.';
       case 'IO_ERROR':
-        return "خطأ في الإدخال/الإخراج. حاول مرة أخرى لاحقًا.";
+        return 'İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.';
       case 'UNAVAILABLE':
-        return "الخدمة غير متاحة حاليًا. حاول لاحقًا.";
+        return 'Hizmet şu anda kullanılamıyor. Lütfen daha sonra deneyin.';
       case 'ACTIVITY_NOT_FOUND':
-        return "لا يمكن فتح التطبيق المطلوب. تأكد من وجوده.";
+        return 'Gerekli uygulama açılamadı.';
       case 'INVALID_ARGUMENT':
-        return "تم تمرير بيانات غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.";
+        return 'Girilen bilgileri kontrol edip tekrar deneyin.';
       case 'TIMEOUT':
-        return "انتهت المهلة. يرجى المحاولة مرة أخرى.";
+        return 'İşlem zaman aşımına uğradı. Lütfen tekrar deneyin.';
       case 'SIGN_IN_FAILED':
-        return "فشل تسجيل الدخول. تحقق من بياناتك وحاول مرة أخرى.";
+        return 'Giriş yapılamadı. Bilgilerinizi kontrol edip tekrar deneyin.';
       case 'USER_CANCELLED':
-        return "تم إلغاء العملية من قبل المستخدم.";
+        return 'İşlem iptal edildi.';
       case 'STORAGE_FULL':
-        return "الذاكرة ممتلئة. يرجى تحرير بعض المساحة والمحاولة مرة أخرى.";
+        return 'Cihaz depolama alanı dolu. Biraz yer açıp tekrar deneyin.';
       case 'INTERNAL_ERROR':
-        return "حدث خطأ داخلي. حاول مرة أخرى لاحقًا.";
+        return 'İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.';
       case 'UNKNOWN_ERROR':
-        return "خطأ غير معروف. حاول لاحقًا.";
+        return 'İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.';
       default:
-        return "حدث خطأ غير متوقع: ${exception.code}. حاول مرة أخرى.";
+        return 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
     }
   }
 }

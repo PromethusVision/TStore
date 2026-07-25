@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/reviews/data/models/review_model.dart';
 import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
 import 'package:t_store/features/reviews/domain/repositories/review_repository.dart';
@@ -35,7 +36,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       return Right(reviews);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirmeler yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -49,7 +55,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       // Check if user already reviewed
@@ -61,7 +67,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
           .maybeSingle();
 
       if (existing != null) {
-        return const Left('لقد قمت بتقييم هذا المنتج مسبقاً');
+        return const Left('Bu ürünü daha önce değerlendirdiniz.');
       }
 
       // Check if user has purchased this product
@@ -83,7 +89,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       return Right(ReviewModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirmeniz kaydedilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -111,7 +122,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       return Right(ReviewModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirmeniz güncellenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -126,27 +142,37 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirmeniz silinemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
   @override
   Future<Either<String, ProductReviewStats>> getProductReviewStats(
-      String productId) async {
+    String productId,
+  ) async {
     try {
       final response = await supabaseService.client
           .from(SupabaseTables.reviews)
           .select('rating')
           .eq('product_id', productId);
 
-      final ratings = (response as List).map((e) => e['rating'] as int).toList();
+      final ratings = (response as List)
+          .map((e) => e['rating'] as int)
+          .toList();
 
       if (ratings.isEmpty) {
-        return const Right(ProductReviewStats(
-          averageRating: 0,
-          totalReviews: 0,
-          ratingDistribution: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
-        ));
+        return const Right(
+          ProductReviewStats(
+            averageRating: 0,
+            totalReviews: 0,
+            ratingDistribution: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
+          ),
+        );
       }
 
       final average = ratings.reduce((a, b) => a + b) / ratings.length;
@@ -155,13 +181,20 @@ class ReviewRepositoryImpl implements ReviewRepository {
         distribution[rating] = (distribution[rating] ?? 0) + 1;
       }
 
-      return Right(ProductReviewStats(
-        averageRating: average,
-        totalReviews: ratings.length,
-        ratingDistribution: distribution,
-      ));
+      return Right(
+        ProductReviewStats(
+          averageRating: average,
+          totalReviews: ratings.length,
+          ratingDistribution: distribution,
+        ),
+      );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirme özeti yüklenemedi.',
+        ),
+      );
     }
   }
 
@@ -181,7 +214,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       return Right(response != null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Değerlendirme durumu kontrol edilemedi.',
+        ),
+      );
     }
   }
 

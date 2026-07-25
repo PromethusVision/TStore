@@ -4,21 +4,21 @@ class DioExceptionHelper {
   static String handleDioError(DioException dioException) {
     switch (dioException.type) {
       case DioExceptionType.connectionTimeout:
-        return "انتهت مهلة الاتصال. يرجى التحقق من اتصالك بالإنترنت.";
+        return 'Bağlantı zaman aşımına uğradı. İnternetinizi kontrol edin.';
       case DioExceptionType.sendTimeout:
-        return "استغرق إرسال الطلب وقتًا طويلًا. تحقق من الإنترنت.";
+        return 'İstek gönderilemedi. İnternetinizi kontrol edin.';
       case DioExceptionType.receiveTimeout:
-        return "الخادم استغرق وقتًا طويلًا للرد. حاول لاحقًا.";
+        return 'Hizmet yanıt vermedi. Lütfen daha sonra tekrar deneyin.';
       case DioExceptionType.badResponse:
         return _handleBadResponse(dioException.response);
       case DioExceptionType.cancel:
-        return "تم إلغاء الطلب. حاول مرة أخرى.";
+        return 'İşlem iptal edildi. Lütfen tekrar deneyin.';
       case DioExceptionType.unknown:
-        return dioException.message!.contains("SocketException")
-            ? "يبدو أنك غير متصل بالإنترنت. تحقق من الاتصال."
-            : "حدث خطأ غير متوقع. حاول مرة أخرى.";
+        return dioException.message?.contains('SocketException') ?? false
+            ? 'İnternet bağlantınızı kontrol edip tekrar deneyin.'
+            : 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
       default:
-        return "حدث خطأ غير متوقع. حاول مرة أخرى.";
+        return 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
     }
   }
 
@@ -26,21 +26,21 @@ class DioExceptionHelper {
     if (response != null) {
       switch (response.statusCode) {
         case 400:
-          return "طلب غير صحيح. تحقق من المدخلات.";
+          return 'Girilen bilgileri kontrol edip tekrar deneyin.';
         case 401:
-          return "غير مصرح. تأكد من بيانات الدخول.";
+          return 'Oturumunuz sona ermiş olabilir. Lütfen yeniden giriş yapın.';
         case 403:
-          return "تم رفض الوصول.";
+          return 'Bu işlem için yetkiniz bulunmuyor.';
         case 404:
-          return "المورد غير موجود.";
+          return 'Aradığınız kayıt bulunamadı.';
         case 500:
-          return "خطأ في الخادم. حاول لاحقًا.";
+          return 'Hizmet şu anda yanıt vermiyor. Lütfen daha sonra deneyin.';
         case 503:
-          return "الخدمة غير متاحة. حاول لاحقًا.";
+          return 'Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra deneyin.';
         default:
-          return "خطأ غير متوقع: ${response.statusCode}. حاول مرة أخرى.";
+          return 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
       }
     }
-    return "حدث خطأ غير متوقع من الخادم. حاول لاحقًا.";
+    return 'Hizmet şu anda yanıt vermiyor. Lütfen daha sonra deneyin.';
   }
 }

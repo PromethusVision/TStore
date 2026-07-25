@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/auth/data/models/user_model.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/repositories/auth_repository.dart';
@@ -39,7 +40,12 @@ class AuthRepositoryImpl implements AuthRepository {
         ),
       );
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Hesap bilgileriniz yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -122,7 +128,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Hesap oluşturulamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -134,7 +145,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Google ile giriş başlatılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -146,7 +162,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Facebook ile giriş başlatılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -158,7 +179,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Apple ile giriş başlatılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -168,7 +194,12 @@ class AuthRepositoryImpl implements AuthRepository {
       await supabaseService.signOut();
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Çıkış yapılamadı. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -220,7 +251,13 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback:
+              'Şifre yenileme bağlantısı gönderilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -232,7 +269,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -244,7 +286,12 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthException catch (e) {
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Doğrulama e-postası gönderilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
+import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/chat/data/models/chat_message_model.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
@@ -27,7 +28,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final from = page * limit;
@@ -36,17 +37,26 @@ class ChatRepositoryImpl implements ChatRepository {
       final response = await supabaseService.client
           .from(SupabaseTables.chatMessages)
           .select(_messageSelect)
-          .or('and(sender_id.eq.$_userId,receiver_id.eq.$otherUserId),and(sender_id.eq.$otherUserId,receiver_id.eq.$_userId)')
+          .or(
+            'and(sender_id.eq.$_userId,receiver_id.eq.$otherUserId),and(sender_id.eq.$otherUserId,receiver_id.eq.$_userId)',
+          )
           .order('created_at', ascending: false)
           .range(from, to);
 
       final messages = (response as List)
-          .map((json) => ChatMessageModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ChatMessageModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return Right(messages);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mesajlar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -58,7 +68,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }) async {
     try {
       if (_userId.isEmpty) {
-        return const Left('يرجى تسجيل الدخول أولاً');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -74,7 +84,12 @@ class ChatRepositoryImpl implements ChatRepository {
 
       return Right(ChatMessageModel.fromJson(response));
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mesaj gönderilemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 
@@ -89,7 +104,12 @@ class ChatRepositoryImpl implements ChatRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mesaj okundu olarak işaretlenemedi.',
+        ),
+      );
     }
   }
 
@@ -105,7 +125,12 @@ class ChatRepositoryImpl implements ChatRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mesajlar okundu olarak işaretlenemedi.',
+        ),
+      );
     }
   }
 
@@ -170,7 +195,12 @@ class ChatRepositoryImpl implements ChatRepository {
 
       return Right((response as List).length);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Okunmamış mesaj sayısı alınamadı.',
+        ),
+      );
     }
   }
 
@@ -178,7 +208,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<Either<String, List<ChatThreadEntity>>> getConversations() async {
     try {
       if (_userId.isEmpty) {
-        return const Left('Lütfen önce giriş yapın');
+        return const Left(CustomerErrorMessage.signInRequired);
       }
 
       final response = await supabaseService.client
@@ -195,38 +225,46 @@ class ChatRepositoryImpl implements ChatRepository {
 
       final groupedMessages = <String, List<ChatMessageEntity>>{};
       for (final message in messages) {
-        final otherUserId =
-            message.senderId == _userId ? message.receiverId : message.senderId;
+        final otherUserId = message.senderId == _userId
+            ? message.receiverId
+            : message.senderId;
         groupedMessages.putIfAbsent(otherUserId, () => []).add(message);
       }
 
-      final threads = groupedMessages.entries.map((entry) {
-        final threadMessages = entry.value;
-        final latestMessage = threadMessages.first;
-        final unreadCount = threadMessages
-            .where((message) =>
-                message.receiverId == _userId && message.isRead == false)
-            .length;
+      final threads =
+          groupedMessages.entries.map((entry) {
+            final threadMessages = entry.value;
+            final latestMessage = threadMessages.first;
+            final unreadCount = threadMessages
+                .where(
+                  (message) =>
+                      message.receiverId == _userId && message.isRead == false,
+                )
+                .length;
 
-        return ChatThreadEntity(
-          otherUserId: entry.key,
-          displayName: _buildDisplayName(entry.key),
-          lastMessage: latestMessage.content,
-          lastMessageAt: latestMessage.createdAt,
-          unreadCount: unreadCount,
-        );
-      }).toList()
-        ..sort((a, b) {
-          final aDate =
-              a.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
-          final bDate =
-              b.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
-          return bDate.compareTo(aDate);
-        });
+            return ChatThreadEntity(
+              otherUserId: entry.key,
+              displayName: _buildDisplayName(entry.key),
+              lastMessage: latestMessage.content,
+              lastMessageAt: latestMessage.createdAt,
+              unreadCount: unreadCount,
+            );
+          }).toList()..sort((a, b) {
+            final aDate =
+                a.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+            final bDate =
+                b.lastMessageAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+            return bDate.compareTo(aDate);
+          });
 
       return Right(threads);
     } catch (e) {
-      return Left(e.toString());
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Konuşmalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
     }
   }
 

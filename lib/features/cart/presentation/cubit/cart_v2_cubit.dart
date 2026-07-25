@@ -76,7 +76,7 @@ class CartV2Cubit extends Cubit<CartV2State> {
         return;
       }
 
-      emit(const CartV2Error('Beklenmeyen sepet sonucu'));
+      emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
     });
   }
 
@@ -114,7 +114,7 @@ class CartV2Cubit extends Cubit<CartV2State> {
         return;
       }
 
-      emit(const CartV2Error('Beklenmeyen sepet sonucu'));
+      emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
     });
   }
 
@@ -143,7 +143,7 @@ class CartV2Cubit extends Cubit<CartV2State> {
 
   Future<void> decrementItemQuantity(CartItemV2Entity item) async {
     if (item.quantity <= 1) {
-      emit(const CartV2Error('Adet 1 veya daha buyuk olmali'));
+      emit(const CartV2Error('Ürün adedi en az 1 olmalıdır.'));
       return;
     }
 
