@@ -53,10 +53,12 @@ class _AllProductsContent extends StatefulWidget {
 
 class _AllProductsContentState extends State<_AllProductsContent> {
   static const double _loadMoreThreshold = 400;
+  static const Duration _searchDebounceDuration = Duration(milliseconds: 350);
 
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _scrollController
       ..removeListener(_handleScroll)
       ..dispose();
@@ -201,6 +204,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
   void _onSearchChanged(String value) {
     final query = value.trim();
+    _searchDebounce?.cancel();
     setState(() {});
     _scrollToTop();
 
@@ -209,10 +213,14 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       return;
     }
 
-    context.read<ProductsCubit>().searchProducts(query);
+    _searchDebounce = Timer(_searchDebounceDuration, () {
+      if (!mounted || _searchController.text.trim() != query) return;
+      unawaited(context.read<ProductsCubit>().searchProducts(query));
+    });
   }
 
   void _clearSearch() {
+    _searchDebounce?.cancel();
     _searchController.clear();
     setState(() {});
     _scrollToTop();
@@ -220,6 +228,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   }
 
   void _reloadProducts() {
+    _searchDebounce?.cancel();
     final query = _searchController.text.trim();
 
     if (query.isEmpty) {

@@ -129,13 +129,17 @@ void main() {
   );
 
   testWidgets(
-    'searches with the local cubit without changing the parent product state',
+    'searches after the debounce with the local cubit without changing the parent product state',
     (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
       await tester.enterText(find.byType(TextFormField), 'kahve');
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 349));
+
+      verifyNever(() => localProductsCubit.searchProducts(any()));
+
+      await tester.pump(const Duration(milliseconds: 1));
 
       verify(() => localProductsCubit.searchProducts('kahve')).called(1);
       verifyNever(() => parentProductsCubit.searchProducts(any()));
@@ -144,6 +148,63 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );
+
+  testWidgets('rapid typing sends only the latest search query', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextFormField), 'k');
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.enterText(find.byType(TextFormField), 'ka');
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.enterText(find.byType(TextFormField), 'kahve');
+    await tester.pump(const Duration(milliseconds: 349));
+
+    verifyNever(() => localProductsCubit.searchProducts(any()));
+
+    await tester.pump(const Duration(milliseconds: 1));
+
+    verify(() => localProductsCubit.searchProducts('kahve')).called(1);
+    verifyNever(() => localProductsCubit.searchProducts('k'));
+    verifyNever(() => localProductsCubit.searchProducts('ka'));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets(
+    'clearing search cancels the pending query and reloads products',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextFormField), 'kahve');
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.tap(find.byTooltip('Aramayı temizle'));
+      await tester.pump(const Duration(milliseconds: 350));
+
+      verifyNever(() => localProductsCubit.searchProducts(any()));
+      verify(() => localProductsCubit.getProducts(refresh: true)).called(2);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets('leaving the screen cancels the pending search query', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextFormField), 'kahve');
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 350));
+
+    verifyNever(() => localProductsCubit.searchProducts(any()));
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'loads the next page when a loaded product list approaches the end',
