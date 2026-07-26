@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +13,7 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
@@ -77,6 +79,7 @@ void main() {
   Widget buildSubject({
     required WishlistState initialState,
     String? currentUserId = 'customer-1',
+    ProductEntity? displayedProduct,
   }) {
     whenListen(
       wishlistCubit,
@@ -92,7 +95,7 @@ void main() {
             child: SizedBox(
               height: 128,
               child: HorizontalProductCard(
-                product: product,
+                product: displayedProduct ?? product,
                 currentUserIdProvider: () => currentUserId,
               ),
             ),
@@ -198,5 +201,35 @@ void main() {
     verifyNever(() => wishlistCubit.toggleWishlist(any()));
     verifyNever(() => wishlistCubit.getWishlist());
     expect(find.byType(LoginView), findsOneWidget);
+  });
+
+  testWidgets('bozuk ürün görselinde güvenli ürün yedeğini kullanır', (
+    tester,
+  ) async {
+    final brokenProduct = product.copyWith(
+      images: const ['https://example.com/missing-product.jpg'],
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        initialState: WishlistLoaded(const []),
+        displayedProduct: brokenProduct,
+      ),
+    );
+    await tester.pump();
+
+    final imageFinder = find.byType(CachedNetworkImage);
+    final image = tester.widget<CachedNetworkImage>(imageFinder);
+    final fallback = image.errorWidget!(
+      tester.element(imageFinder),
+      image.imageUrl,
+      Exception('Görsel yüklenemedi'),
+    );
+
+    expect(fallback, isA<ProductImageFallback>());
+    expect(
+      fallback.key,
+      const Key('horizontal-product-image-fallback-product-1'),
+    );
   });
 }

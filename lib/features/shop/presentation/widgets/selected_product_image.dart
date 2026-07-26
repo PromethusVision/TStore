@@ -3,12 +3,10 @@ import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 
 class SelectedProductImage extends StatelessWidget {
-  const SelectedProductImage({
-    super.key,
-    required this.image,
-  });
+  const SelectedProductImage({super.key, required this.image});
 
   final String image;
 
@@ -17,21 +15,26 @@ class SelectedProductImage extends StatelessWidget {
     final displayImage = image.trim().isEmpty ? TImages.productImage13 : image;
 
     return SizedBox(
-        height: 400,
-        child: Padding(
-          padding: const EdgeInsets.all(TSizes.productImageRadius * 3),
-          child: Center(
-            child: RoundedImage(
-              roundedImageModel: RoundedImageModel(
-                image: displayImage,
-                width: 300,
-                height: 300,
-                backgroundColor: Colors.transparent,
-                isNetworkImage: _isNetworkImage(displayImage),
+      height: 400,
+      child: Padding(
+        padding: const EdgeInsets.all(TSizes.productImageRadius * 3),
+        child: Center(
+          child: RoundedImage(
+            roundedImageModel: RoundedImageModel(
+              image: displayImage,
+              width: 300,
+              height: 300,
+              backgroundColor: Colors.transparent,
+              isNetworkImage: _isNetworkImage(displayImage),
+              errorWidget: const ProductImageFallback(
+                key: Key('selected-product-image-fallback'),
+                iconSize: 52,
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   bool _isNetworkImage(String image) {

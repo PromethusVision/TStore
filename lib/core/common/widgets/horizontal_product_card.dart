@@ -16,6 +16,7 @@ import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
@@ -32,9 +33,7 @@ class HorizontalProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
-    final image = product.images.isNotEmpty
-        ? product.images.first
-        : TImages.productImage11;
+    final image = _displayImage;
     final isNetworkImage = image.startsWith('http');
 
     return GestureDetector(
@@ -74,6 +73,12 @@ class HorizontalProductCard extends StatelessWidget {
                           backgroundColor: dark ? TColors.dark : TColors.light,
                           image: image,
                           isNetworkImage: isNetworkImage,
+                          errorWidget: ProductImageFallback(
+                            key: Key(
+                              'horizontal-product-image-fallback-${product.id}',
+                            ),
+                            iconSize: 28,
+                          ),
                         ),
                       ),
                     ),
@@ -148,5 +153,18 @@ class HorizontalProductCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String get _displayImage {
+    for (final image in product.images) {
+      if (image.trim().isNotEmpty) return image.trim();
+    }
+
+    final thumbnail = product.thumbnail;
+    if (thumbnail != null && thumbnail.trim().isNotEmpty) {
+      return thumbnail.trim();
+    }
+
+    return TImages.productImage11;
   }
 }

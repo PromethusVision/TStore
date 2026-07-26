@@ -19,6 +19,7 @@ import 'package:t_store/core/utils/constants/shadow_styles.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
@@ -81,6 +82,11 @@ class VerticalProductCard extends StatelessWidget {
                         image: displayImage,
                         onTap: () {},
                         applyImageRadius: true,
+                        errorWidget: ProductImageFallback(
+                          key: Key(
+                            'vertical-product-image-fallback-${product.id}',
+                          ),
+                        ),
                       ),
                     ),
                     Row(

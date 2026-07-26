@@ -14,9 +14,10 @@ class RoundedImageModel {
   final void Function()? onTap;
   final double borderRadius;
   final Color? overlayColor;
+  final Widget? errorWidget;
 
   RoundedImageModel({
-     this.overlayColor,
+    this.overlayColor,
     required this.image,
     this.height,
     this.width,
@@ -28,5 +29,6 @@ class RoundedImageModel {
     this.isNetworkImage = false,
     this.onTap,
     this.borderRadius = TSizes.md,
+    this.errorWidget,
   });
 }
