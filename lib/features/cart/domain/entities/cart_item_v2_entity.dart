@@ -25,16 +25,21 @@ class CartItemV2Entity extends Equatable {
     return shopProduct!.price * quantity;
   }
 
+  bool get isPurchaseVerifiable =>
+      quantity > 0 &&
+      shopProduct?.isCustomerPurchasable == true &&
+      shopProduct?.product?.isActive == true;
+
   @override
   List<Object?> get props => [
-        id,
-        cartId,
-        shopProductId,
-        quantity,
-        createdAt,
-        updatedAt,
-        shopProduct,
-      ];
+    id,
+    cartId,
+    shopProductId,
+    quantity,
+    createdAt,
+    updatedAt,
+    shopProduct,
+  ];
 
   CartItemV2Entity copyWith({
     String? id,

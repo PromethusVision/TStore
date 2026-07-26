@@ -363,7 +363,7 @@ class _QrSessionContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Mağazada Göster',
+            'Alışverişi doğrula',
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
@@ -400,12 +400,6 @@ class _QrSessionContent extends StatelessWidget {
           else
             const Icon(Icons.timer_off_outlined, size: 72),
           const SizedBox(height: TSizes.spaceBtwItems),
-          Text(
-            'Alışverişi doğrula',
-            style: Theme.of(context).textTheme.titleSmall,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: TSizes.xs),
           Text(
             'QR kodunu esnafa okut. Onay verildiğinde bu ekran otomatik güncellenir. Rezervasyon veya stok garantisi sağlamaz.',
             style: Theme.of(context).textTheme.bodySmall,

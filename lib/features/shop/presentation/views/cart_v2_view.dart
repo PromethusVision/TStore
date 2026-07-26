@@ -18,6 +18,8 @@ class CartV2View extends StatefulWidget {
 }
 
 class _CartV2ViewState extends State<CartV2View> {
+  bool _isPreparingPurchaseVerification = false;
+
   @override
   void initState() {
     super.initState();
@@ -83,12 +85,8 @@ class _CartV2ViewState extends State<CartV2View> {
                   _CartV2TotalBox(totalAmount: state.totalAmount),
                   const SizedBox(height: TSizes.spaceBtwItems),
                   _ShowInStoreButton(
-                    cartId: state.items.first.cartId,
-                    shopName:
-                        state.items.first.shopProduct?.shop?.name ??
-                        'Bilinmeyen esnaf',
-                    itemCount: state.itemCount,
-                    totalAmount: state.totalAmount,
+                    isPreparing: _isPreparingPurchaseVerification,
+                    onPressed: _preparePurchaseVerification,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
                   const _CancelActiveCartButton(),
@@ -102,33 +100,54 @@ class _CartV2ViewState extends State<CartV2View> {
       ),
     );
   }
-}
 
-class _ShowInStoreButton extends StatelessWidget {
-  final String cartId;
-  final String shopName;
-  final int itemCount;
-  final double totalAmount;
+  Future<void> _preparePurchaseVerification() async {
+    if (_isPreparingPurchaseVerification) return;
 
-  const _ShowInStoreButton({
-    required this.cartId,
-    required this.shopName,
-    required this.itemCount,
-    required this.totalAmount,
-  });
+    setState(() => _isPreparingPurchaseVerification = true);
+    final cartCubit = context.read<CartV2Cubit>();
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () => _showQrSessionBottomSheet(context),
-        child: const Text('Mağazada Göster'),
-      ),
-    );
+    try {
+      await cartCubit.getActiveCartItems();
+      if (!mounted) return;
+
+      final refreshedState = cartCubit.state;
+      if (refreshedState is! CartV2Loaded) return;
+
+      if (refreshedState.isEmpty) {
+        _showVerificationBlockedMessage(
+          'Mağaza sepetiniz boş. Alışverişi doğrulamak için ürün ekleyin.',
+        );
+        return;
+      }
+
+      final canVerifyPurchase = refreshedState.items.every(
+        (item) => item.isPurchaseVerifiable,
+      );
+      if (!canVerifyPurchase) {
+        _showVerificationBlockedMessage(
+          'Sepetteki ürünlerden biri artık satışta değil veya mağaza '
+          'alışverişe kapalı. Sepetinizi güncelleyip tekrar deneyin.',
+        );
+        return;
+      }
+
+      setState(() => _isPreparingPurchaseVerification = false);
+      await _showQrSessionBottomSheet(refreshedState);
+    } finally {
+      if (mounted && _isPreparingPurchaseVerification) {
+        setState(() => _isPreparingPurchaseVerification = false);
+      }
+    }
   }
 
-  Future<void> _showQrSessionBottomSheet(BuildContext context) async {
+  void _showVerificationBlockedMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _showQrSessionBottomSheet(CartV2Loaded state) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -136,17 +155,44 @@ class _ShowInStoreButton extends StatelessWidget {
         return BlocProvider(
           create: (_) => sl<QrSessionCubit>(),
           child: CartQrSessionBottomSheet(
-            cartId: cartId,
-            shopName: shopName,
-            itemCount: itemCount,
-            totalAmount: totalAmount,
+            cartId: state.items.first.cartId,
+            shopName:
+                state.items.first.shopProduct?.shop?.name ?? 'Bilinmeyen esnaf',
+            itemCount: state.itemCount,
+            totalAmount: state.totalAmount,
           ),
         );
       },
     );
 
-    if (!context.mounted) return;
+    if (!mounted) return;
     await context.read<CartV2Cubit>().getActiveCartItems();
+  }
+}
+
+class _ShowInStoreButton extends StatelessWidget {
+  final bool isPreparing;
+  final VoidCallback onPressed;
+
+  const _ShowInStoreButton({
+    required this.isPreparing,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: isPreparing ? null : onPressed,
+        child: isPreparing
+            ? const SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Text('Alışverişi doğrula'),
+      ),
+    );
   }
 }
 
@@ -344,7 +390,7 @@ class _CancelActiveCartButton extends StatelessWidget {
       width: double.infinity,
       child: OutlinedButton(
         onPressed: () => _confirmCancelCart(context),
-        child: const Text('Mağaza Sepetini İptal Et'),
+        child: const Text('Mağaza sepetini boşalt'),
       ),
     );
   }
@@ -355,9 +401,10 @@ class _CancelActiveCartButton extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Mağaza sepetini iptal et'),
+          title: const Text('Mağaza sepetini boşalt'),
           content: const Text(
-            'Bu mağaza sepeti iptal edilecek. Ürünler aktif sepetten kaldırılmış sayılacak.',
+            'Bu mağaza sepetindeki tüm ürünler kaldırılacak. '
+            'Bu işlem geri alınamaz.',
           ),
           actions: [
             TextButton(
@@ -366,7 +413,7 @@ class _CancelActiveCartButton extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('İptal Et'),
+              child: const Text('Sepeti boşalt'),
             ),
           ],
         );
