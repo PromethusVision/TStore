@@ -19,6 +19,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
 
   static const String _cartItemSelect =
       '*, shop_products(*, products(*, categories(name), brands(name)), shops(*))';
+  static const String _purchasableShopProductSelect = '*, shops!inner(*)';
 
   @override
   Future<Either<String, CartV2Entity?>> getActiveCart() async {
@@ -110,7 +111,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
 
       final shopProductResponse = await supabaseService.client
           .from(SupabaseTables.shopProducts)
-          .select()
+          .select(_purchasableShopProductSelect)
           .eq('id', shopProductId)
           .eq('is_active', true)
           .eq('is_available', true)
@@ -121,6 +122,10 @@ class CartV2RepositoryImpl implements CartV2Repository {
       }
 
       final shopProduct = ShopProductModel.fromJson(shopProductResponse);
+      if (!shopProduct.isCustomerPurchasable) {
+        return const Left('Bu mağaza şu anda alışverişe açık değil.');
+      }
+
       final activeCartResult = await getActiveCart();
 
       return activeCartResult.fold<Future<Either<String, CartV2AddResult>>>(
@@ -260,7 +265,7 @@ class CartV2RepositoryImpl implements CartV2Repository {
 
       final shopProductResponse = await supabaseService.client
           .from(SupabaseTables.shopProducts)
-          .select()
+          .select(_purchasableShopProductSelect)
           .eq('id', shopProductId)
           .eq('is_active', true)
           .eq('is_available', true)
@@ -271,6 +276,10 @@ class CartV2RepositoryImpl implements CartV2Repository {
       }
 
       final shopProduct = ShopProductModel.fromJson(shopProductResponse);
+      if (!shopProduct.isCustomerPurchasable) {
+        return const Left('Bu mağaza şu anda alışverişe açık değil.');
+      }
+
       final activeCartResult = await getActiveCart();
 
       return activeCartResult.fold<Future<Either<String, CartV2AddResult>>>(

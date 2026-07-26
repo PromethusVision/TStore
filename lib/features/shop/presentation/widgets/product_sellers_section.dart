@@ -98,7 +98,11 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               isRetrying: _isRetryInProgress,
             ),
             (shopProducts) {
-              if (shopProducts.isEmpty) {
+              final customerVisibleShopProducts = shopProducts
+                  .where((shopProduct) => shopProduct.shop?.isActive == true)
+                  .toList(growable: false);
+
+              if (customerVisibleShopProducts.isEmpty) {
                 return const Text('Bu ürünü satan esnaf henüz listelenmiyor.');
               }
 
@@ -111,7 +115,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                   _selectedSortOption ??
                   (locationReady ? _SellerSortOption.nearest : null);
               final rankedSellers = _sortSellers(
-                shopProducts,
+                customerVisibleShopProducts,
                 coordinates,
                 effectiveSort,
               );
@@ -419,7 +423,7 @@ class _SellerTile extends StatelessWidget {
     );
     final hasAddress =
         shop?.address != null && shop!.address!.trim().isNotEmpty;
-    final canAddToCart = shopProduct.isActive && shopProduct.isAvailable;
+    final canAddToCart = shopProduct.isCustomerPurchasable;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -437,7 +441,7 @@ class _SellerTile extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap: shop == null
+                    onTap: shop?.isActive != true
                         ? null
                         : () => _openShopProfile(context),
                     child: Padding(
@@ -529,6 +533,8 @@ class _SellerTile extends StatelessWidget {
   }
 
   void _handleAddToCart(BuildContext context) {
+    if (shopProduct.shop?.isActive != true) return;
+
     final user = SupabaseService.instance.currentUser;
 
     if (user == null) {

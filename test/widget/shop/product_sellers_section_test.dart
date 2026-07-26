@@ -37,6 +37,7 @@ void main() {
     String? address,
     double price = 99,
     double rating = 0,
+    bool shopIsActive = true,
   }) {
     return ShopProductEntity(
       id: id,
@@ -50,6 +51,7 @@ void main() {
         longitude: longitude,
         address: address,
         rating: rating,
+        isActive: shopIsActive,
       ),
     );
   }
@@ -530,6 +532,62 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('product-sellers-retry')), findsOneWidget);
+  });
+
+  testWidgets('eksik veya pasif mağazaları müşteriye satıcı olarak göstermez', (
+    tester,
+  ) async {
+    final missingShop = ShopProductEntity(
+      id: 'missing-shop',
+      shopId: 'shop-missing',
+      productId: 'product-1',
+      price: 79,
+    );
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([
+        seller(id: 'active', name: 'Aktif Esnaf'),
+        seller(id: 'inactive', name: 'Pasif Esnaf', shopIsActive: false),
+        missingShop,
+      ]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      displayedSellerIds(tester),
+      orderedEquals(const ['product-seller-active']),
+    );
+    expect(find.text('Aktif Esnaf'), findsOneWidget);
+    expect(find.text('Pasif Esnaf'), findsNothing);
+    expect(find.text('Bilinmeyen esnaf'), findsNothing);
+    expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
+  });
+
+  testWidgets('tüm satıcı kayıtları geçersizse güvenli boş durumu gösterir', (
+    tester,
+  ) async {
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([
+        seller(id: 'inactive', name: 'Pasif Esnaf', shopIsActive: false),
+        const ShopProductEntity(
+          id: 'missing-shop',
+          shopId: 'shop-missing',
+          productId: 'product-1',
+          price: 79,
+        ),
+      ]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Bu ürünü satan esnaf henüz listelenmiyor.'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('product-seller-sort-button')), findsNothing);
+    expect(find.text('Bu Esnaftan Sepete Ekle'), findsNothing);
   });
 
   testWidgets('hata sonrası tekrar deneyince satıcıları yükler', (

@@ -35,21 +35,24 @@ class ShopProductEntity extends Equatable {
 
   double get displayPrice => price;
 
+  bool get isCustomerPurchasable =>
+      isActive && isAvailable && shop?.isActive == true;
+
   @override
   List<Object?> get props => [
-        id,
-        shopId,
-        productId,
-        price,
-        isAvailable,
-        description,
-        images,
-        isActive,
-        createdAt,
-        updatedAt,
-        product,
-        shop,
-      ];
+    id,
+    shopId,
+    productId,
+    price,
+    isAvailable,
+    description,
+    images,
+    isActive,
+    createdAt,
+    updatedAt,
+    product,
+    shop,
+  ];
 
   ShopProductEntity copyWith({
     String? id,
