@@ -22,19 +22,26 @@ void main() {
   late MockQrSessionCubit qrSessionCubit;
   late MockShopRatingCubit shopRatingCubit;
 
-  final activeSession = QrSessionEntity(
-    id: 'session-1',
-    sessionToken: 'token-1',
-    userId: 'customer-1',
-    cartId: 'cart-1',
-    shopId: 'shop-1',
-    status: 'active',
-    expiresAt: DateTime.utc(2099, 1, 1),
-    createdAt: DateTime.utc(2098, 12, 1),
-    updatedAt: DateTime.utc(2098, 12, 1),
-    itemCount: 2,
-    totalAmount: 249.90,
-  );
+  QrSessionEntity buildSession({
+    int? itemCount = 2,
+    double? totalAmount = 249.90,
+  }) {
+    return QrSessionEntity(
+      id: 'session-1',
+      sessionToken: 'token-1',
+      userId: 'customer-1',
+      cartId: 'cart-1',
+      shopId: 'shop-1',
+      status: 'active',
+      expiresAt: DateTime.utc(2099, 1, 1),
+      createdAt: DateTime.utc(2098, 12, 1),
+      updatedAt: DateTime.utc(2098, 12, 1),
+      itemCount: itemCount,
+      totalAmount: totalAmount,
+    );
+  }
+
+  final activeSession = buildSession();
 
   setUp(() async {
     await sl.reset();
@@ -87,6 +94,42 @@ void main() {
     );
   }
 
+  Widget buildModalSubject(
+    QrSessionState initialState, {
+    double totalAmount = 249.90,
+  }) {
+    whenListen(
+      qrSessionCubit,
+      const Stream<QrSessionState>.empty(),
+      initialState: initialState,
+    );
+
+    return MaterialApp(
+      home: Scaffold(
+        body: Builder(
+          builder: (context) {
+            return FilledButton(
+              key: const Key('open-qr-sheet'),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                builder: (_) => BlocProvider<QrSessionCubit>.value(
+                  value: qrSessionCubit,
+                  child: CartQrSessionBottomSheet(
+                    cartId: 'cart-1',
+                    shopName: 'Mahalle Mağazası',
+                    itemCount: 1,
+                    totalAmount: totalAmount,
+                  ),
+                ),
+              ),
+              child: const Text('QR ekranını aç'),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   testWidgets('QR ekranı alışverişi doğrulama yönlendirmesini gösterir', (
     tester,
   ) async {
@@ -122,6 +165,84 @@ void main() {
     expect(find.text('QR tutarı güncellendi'), findsNothing);
   });
 
+  testWidgets('eksik QR özeti kodu gizler ve çift yeniden denemeyi engeller', (
+    tester,
+  ) async {
+    final incompleteSession = buildSession(itemCount: null, totalAmount: null);
+
+    await tester.pumpWidget(buildSubject(QrSessionCreated(incompleteSession)));
+    await tester.pump();
+
+    expect(find.text('QR bilgileri doğrulanamadı'), findsOneWidget);
+    expect(find.text('Yeniden dene'), findsOneWidget);
+    expect(find.text('Sepete dön'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+
+    final retryAction = find.byKey(
+      const Key('qr-invalid-snapshot-retry-action'),
+    );
+    await tester.tap(retryAction);
+    await tester.tap(retryAction);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(2);
+  });
+
+  testWidgets('geçersiz QR toplamında kodu göstermez', (tester) async {
+    final invalidTotalSession = buildSession(totalAmount: double.nan);
+
+    await tester.pumpWidget(
+      buildSubject(QrSessionCreated(invalidTotalSession)),
+    );
+    await tester.pump();
+
+    expect(find.text('QR bilgileri doğrulanamadı'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+    expect(find.text('QR tutarı güncellendi'), findsNothing);
+  });
+
+  testWidgets('sıfır toplamlı geçerli QR özetini kabul eder', (tester) async {
+    final zeroTotalSession = buildSession(totalAmount: 0);
+
+    await tester.pumpWidget(
+      buildSubject(QrSessionCreated(zeroTotalSession), totalAmount: 0),
+    );
+    await tester.pump();
+
+    expect(find.text('QR bilgileri doğrulanamadı'), findsNothing);
+    expect(find.text('TL 0.00'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('geçersiz QR özetinde sepete dön pencereyi kapatır', (
+    tester,
+  ) async {
+    final incompleteSession = buildSession(itemCount: 0);
+
+    await tester.pumpWidget(
+      buildModalSubject(QrSessionCreated(incompleteSession)),
+    );
+    await tester.tap(find.byKey(const Key('open-qr-sheet')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('QR bilgileri doğrulanamadı'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('qr-invalid-snapshot-back-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('QR bilgileri doğrulanamadı'), findsNothing);
+    expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+  });
+
   testWidgets('sunucu toplamı değişince QR onaya kadar gizlenir', (
     tester,
   ) async {
@@ -155,37 +276,8 @@ void main() {
   });
 
   testWidgets('güncel QR tutarı reddedilince pencere kapanır', (tester) async {
-    whenListen(
-      qrSessionCubit,
-      const Stream<QrSessionState>.empty(),
-      initialState: QrSessionCreated(activeSession),
-    );
-
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Builder(
-            builder: (context) {
-              return FilledButton(
-                key: const Key('open-qr-sheet'),
-                onPressed: () => showModalBottomSheet<void>(
-                  context: context,
-                  builder: (_) => BlocProvider<QrSessionCubit>.value(
-                    value: qrSessionCubit,
-                    child: const CartQrSessionBottomSheet(
-                      cartId: 'cart-1',
-                      shopName: 'Mahalle Mağazası',
-                      itemCount: 1,
-                      totalAmount: 100,
-                    ),
-                  ),
-                ),
-                child: const Text('QR ekranını aç'),
-              );
-            },
-          ),
-        ),
-      ),
+      buildModalSubject(QrSessionCreated(activeSession), totalAmount: 100),
     );
 
     await tester.tap(find.byKey(const Key('open-qr-sheet')));

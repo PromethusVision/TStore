@@ -34,6 +34,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   Timer? _timer;
   DateTime _now = DateTime.now();
   String? _confirmedUpdatedTotalSessionId;
+  bool _isRetryingInvalidSnapshot = false;
 
   @override
   void initState() {
@@ -67,6 +68,24 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
     _timer = null;
   }
 
+  void _retryInvalidSnapshot() {
+    if (_isRetryingInvalidSnapshot) return;
+
+    _stopTimer();
+    setState(() => _isRetryingInvalidSnapshot = true);
+    context.read<QrSessionCubit>().createQrSession(widget.cartId);
+  }
+
+  bool _hasValidSnapshotSummary(QrSessionEntity session) {
+    final itemCount = session.itemCount;
+    final totalAmount = session.totalAmount;
+    return itemCount != null &&
+        itemCount > 0 &&
+        totalAmount != null &&
+        totalAmount.isFinite &&
+        totalAmount >= 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,9 +100,15 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
         child: BlocConsumer<QrSessionCubit, QrSessionState>(
           listener: (context, state) {
             if (state is QrSessionCreated) {
-              _startTimer();
+              _isRetryingInvalidSnapshot = false;
+              if (_hasValidSnapshotSummary(state.session)) {
+                _startTimer();
+              } else {
+                _stopTimer();
+              }
             }
             if (state is QrSessionCompleted || state is QrSessionFailure) {
+              _isRetryingInvalidSnapshot = false;
               _stopTimer();
             }
           },
@@ -113,10 +138,17 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             }
 
             if (state is QrSessionCreated) {
-              final sessionTotal =
-                  state.session.totalAmount ?? widget.totalAmount;
+              if (!_hasValidSnapshotSummary(state.session)) {
+                return _QrSessionInvalidSnapshotView(
+                  isRetrying: _isRetryingInvalidSnapshot,
+                  onRetry: _retryInvalidSnapshot,
+                  onBack: () => Navigator.of(context).pop(),
+                );
+              }
+
+              final sessionItemCount = state.session.itemCount!;
+              final sessionTotal = state.session.totalAmount!;
               final requiresUpdatedTotalConfirmation =
-                  state.session.totalAmount != null &&
                   (sessionTotal - widget.totalAmount).abs() > 0.005 &&
                   _confirmedUpdatedTotalSessionId != state.session.id;
 
@@ -136,7 +168,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
               return _QrSessionContent(
                 session: state.session,
                 shopName: widget.shopName,
-                itemCount: state.session.itemCount ?? widget.itemCount,
+                itemCount: sessionItemCount,
                 totalAmount: sessionTotal,
                 remaining: state.session.expiresAt.difference(_now),
                 onRefresh: () {
@@ -148,6 +180,65 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+}
+
+class _QrSessionInvalidSnapshotView extends StatelessWidget {
+  const _QrSessionInvalidSnapshotView({
+    required this.isRetrying,
+    required this.onRetry,
+    required this.onBack,
+  });
+
+  final bool isRetrying;
+  final VoidCallback onRetry;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(
+            Icons.shield_outlined,
+            size: 56,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          Text(
+            'QR bilgileri doğrulanamadı',
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: TSizes.sm),
+          Text(
+            'Sunucudan gelen ürün adedi veya toplam bilgisi eksik ya da geçersiz. '
+            'Güvenliğiniz için QR kodu gösterilmedi.',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          FilledButton(
+            key: const Key('qr-invalid-snapshot-retry-action'),
+            onPressed: isRetrying ? null : onRetry,
+            child: isRetrying
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Yeniden dene'),
+          ),
+          const SizedBox(height: TSizes.sm),
+          OutlinedButton(
+            key: const Key('qr-invalid-snapshot-back-action'),
+            onPressed: isRetrying ? null : onBack,
+            child: const Text('Sepete dön'),
+          ),
+        ],
       ),
     );
   }
