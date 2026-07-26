@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
-import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/colors.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
@@ -50,28 +48,61 @@ class HomeAppBar extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final isAuthenticated = state is AuthAuthenticated;
-        return CustomAppBar(
-          appBarModel: AppBarModel(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  TTexts.homeAppbarTitle,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelMedium!.apply(color: TColors.grey),
+        return SizedBox(
+          key: const Key('customer-home-header'),
+          height: 48,
+          child: Row(
+            children: [
+              Expanded(
+                child: Semantics(
+                  label:
+                      'Esnafta Var müşteri ana sayfası, ${_customerDisplayName(state)}',
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Temporary code-rendered wordmark until the official
+                      // Esnafta Var logo asset is delivered.
+                      Text.rich(
+                        key: Key('home-wordmark'),
+                        TextSpan(
+                          style: TextStyle(
+                            fontSize: 24,
+                            height: 1,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.7,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Esnafta',
+                              style: TextStyle(
+                                color: CustomerHomeV1Tokens.petrol,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Var',
+                              style: TextStyle(
+                                color: CustomerHomeV1Tokens.coral,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: CustomerHomeV1Tokens.space4),
+                      Text(
+                        'Kargo Bekleme, Esnafta Var!',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  _customerDisplayName(state),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineSmall!.apply(color: TColors.white),
-                ),
-              ],
-            ),
-            actions: [
+              ),
               _buildNotificationAction(
                 context,
                 isAuthenticated: isAuthenticated,
@@ -159,19 +190,59 @@ class _NotificationIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = IconButton(
-      key: const Key('home-notifications-button'),
-      tooltip: 'Bildirimler',
-      onPressed: onPressed,
-      icon: const Icon(Iconsax.notification, color: TColors.white),
+    final button = Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      child: InkWell(
+        key: const Key('home-notifications-button'),
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: const Icon(
+            Iconsax.notification,
+            color: CustomerHomeV1Tokens.petrol,
+            size: 21,
+          ),
+        ),
+      ),
     );
 
-    if (unreadCount <= 0) return icon;
+    if (unreadCount <= 0) return button;
 
-    return Badge(
-      key: const Key('home-notifications-badge'),
-      label: Text(unreadCount > 99 ? '99+' : unreadCount.toString()),
-      child: icon,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        button,
+        Positioned(
+          key: const Key('home-notifications-badge'),
+          right: -2,
+          top: -3,
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: CustomerHomeV1Tokens.coral,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              unreadCount > 99 ? '99+' : unreadCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 8,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

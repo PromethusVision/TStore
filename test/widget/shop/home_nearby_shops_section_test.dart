@@ -46,7 +46,7 @@ void main() {
     await tester.pumpWidget(buildSubject(const NearbyShopsLoading()));
 
     expect(find.byKey(const Key('home-nearby-loading')), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Yakındaki Mağazalar'), findsOneWidget);
   });
 
   testWidgets('boş durumu sahte mağaza oluşturmadan gösterir', (tester) async {
@@ -91,9 +91,9 @@ void main() {
     expect(find.byKey(const Key('home-nearby-loaded')), findsOneWidget);
     expect(find.text('Ev konumuna göre'), findsOneWidget);
     expect(find.text('Nihat Manav'), findsOneWidget);
-    expect(find.textContaining('Puan 4.8'), findsOneWidget);
-    expect(find.textContaining('Yaklaşık 200 m'), findsOneWidget);
-    expect(find.textContaining('Fevzi Çakmak Mahallesi'), findsOneWidget);
+    expect(find.text('4.8'), findsOneWidget);
+    expect(find.text('≈ 200 m'), findsOneWidget);
+    expect(tester.takeException(), isNull);
 
     await tester.tap(find.byKey(const Key('home-shop-shop-1')));
     await tester.pumpAndSettle();

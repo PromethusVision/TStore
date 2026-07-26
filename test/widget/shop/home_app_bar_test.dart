@@ -54,7 +54,7 @@ void main() {
     );
   }
 
-  testWidgets('giriş yapan müşterinin gerçek adını gösterir', (tester) async {
+  testWidgets('onaylı wordmark ve sloganı gösterir', (tester) async {
     const user = UserEntity(
       id: 'customer-1',
       email: 'ayse@example.com',
@@ -68,27 +68,40 @@ void main() {
       ),
     );
 
-    expect(find.text('Ayşe Yılmaz'), findsOneWidget);
+    expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
+    expect(find.text('Kargo Bekleme, Esnafta Var!'), findsOneWidget);
+    expect(find.text('Ayşe Yılmaz'), findsNothing);
     expect(find.text('Eski Oturum Adı'), findsNothing);
-    expect(find.text('Mahmoud Hamdy'), findsNothing);
   });
 
-  testWidgets('oturumdaki adı güvenli yedek olarak gösterir', (tester) async {
+  testWidgets('oturumdaki gerçek adı erişilebilir başlıkta korur', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
     await tester.pumpWidget(
       buildAppBar(authState: AuthInitial(), sessionFullName: 'Mehmet Demir'),
     );
 
-    expect(find.text('Mehmet Demir'), findsOneWidget);
-    expect(find.text(TTexts.homeAppbarSubTitle), findsNothing);
+    expect(find.bySemanticsLabel(RegExp('Mehmet Demir')), findsOneWidget);
+    expect(find.text('Mehmet Demir'), findsNothing);
+    semantics.dispose();
   });
 
-  testWidgets('ad bulunmadığında karşılama metnini gösterir', (tester) async {
+  testWidgets('ad bulunmadığında erişilebilir karşılama bilgisini korur', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
     await tester.pumpWidget(
       buildAppBar(authState: AuthUnauthenticated(), sessionFullName: ''),
     );
 
-    expect(find.text(TTexts.homeAppbarSubTitle), findsOneWidget);
-    expect(find.text('Mahmoud Hamdy'), findsNothing);
+    expect(
+      find.bySemanticsLabel(RegExp(TTexts.homeAppbarSubTitle)),
+      findsOneWidget,
+    );
+    semantics.dispose();
   });
 
   testWidgets('bildirim rozetini gösterir ve üst sepet ikonunu kaldırır', (

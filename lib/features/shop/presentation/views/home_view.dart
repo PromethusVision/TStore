@@ -1,167 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:t_store/core/common/view_models/grid_layout_view_model.dart';
-import 'package:t_store/core/common/view_models/search_container_view_model.dart';
-import 'package:t_store/core/common/view_models/section_heading_view_model.dart';
-import 'package:t_store/core/common/widgets/primary_header_container.dart';
-import 'package:t_store/core/common/widgets/search_container.dart';
-import 'package:t_store/core/common/widgets/section_heading.dart';
-import 'package:t_store/core/common/widgets/vertical_product_card.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/colors.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
-import 'package:t_store/core/utils/constants/text_strings.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
-import 'package:t_store/features/auth/presentation/widgets/grid_layout.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
-import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_app_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_location_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_nearby_shops_section.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_products_section.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
-
-class HomeViewShimmer extends StatelessWidget {
-  const HomeViewShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
-    return Shimmer.fromColors(
-      baseColor: dark ? Colors.grey[850]! : Colors.grey[300]!,
-      highlightColor: dark ? Colors.grey[700]! : Colors.grey[100]!,
-      child: Column(
-        children: [
-          // Header Section Shimmer
-          Container(
-            height: 60,
-            padding: const EdgeInsets.all(TSizes.md),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
-            ),
-          ),
-          const SizedBox(height: TSizes.spaceBtwSections),
-
-          // Banner Carousel Shimmer
-          Container(
-            height: 180,
-            margin: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
-            ),
-          ),
-          const SizedBox(height: TSizes.spaceBtwSections),
-
-          // Section Heading Shimmer
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: TSizes.defaultSpace,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(width: 120, height: 20, color: Colors.white),
-                Container(width: 80, height: 20, color: Colors.white),
-              ],
-            ),
-          ),
-          const SizedBox(height: TSizes.spaceBtwItems),
-
-          // Grid Layout Shimmer
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: TSizes.defaultSpace,
-            ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: TSizes.gridViewSpacing,
-              crossAxisSpacing: TSizes.gridViewSpacing,
-              mainAxisExtent: 288,
-            ),
-            itemCount: 4,
-            itemBuilder: (_, _) => Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(TSizes.productImageRadius),
-              ),
-              child: Column(
-                children: [
-                  // Product Image Shimmer
-                  Expanded(
-                    flex: 6,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          TSizes.productImageRadius,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Product Details Shimmer
-                  Expanded(
-                    flex: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(TSizes.sm),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 20,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(height: TSizes.spaceBtwItems / 2),
-                          Container(
-                            width: 100,
-                            height: 16,
-                            color: Colors.white,
-                          ),
-                          const Spacer(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 20,
-                                color: Colors.white,
-                              ),
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -174,7 +30,6 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    // Load featured products on init
     context.read<ProductsCubit>().getProducts(
       isFeatured: true,
       sortBy: 'rating',
@@ -202,118 +57,14 @@ class _HomeViewState extends State<HomeView> {
       ],
       child: Builder(
         builder: (contentContext) => Scaffold(
+          backgroundColor: CustomerHomeV1Tokens.cream,
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _HomeSearchHeaderSection(onSearchTap: _openAllProductsSearch),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      TSizes.defaultSpace,
-                      TSizes.spaceBtwItems,
-                      TSizes.defaultSpace,
-                      0,
-                    ),
-                    child: HomeLocationBar(
-                      isAuthenticated:
-                          SupabaseService.instance.currentUser != null,
-                      onTap: () => _openSavedLocations(contentContext),
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  const PromoBannerCarouselSlider(),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: TSizes.defaultSpace,
-                    ),
-                    child: HomeNearbyShopsSection(
-                      onViewAll: () => contentContext
-                          .read<NavigationMenuCubit>()
-                          .changeIndex(1),
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SectionHeading(
-                      sectionHeadingModel: SectionHeadingModel(
-                        title: "Popüler Ürünler",
-                        showActionButton: true,
-                        textColor: TColors.primary,
-                        actionButtonOnPressed: () {
-                          THelperFunctions.navigateToScreen(
-                            context,
-                            const AllProductsView(),
-                          );
-                        },
-                        actionButtonTitle: "Tüm Ürünler",
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwItems),
-                  BlocBuilder<ProductsCubit, ProductsState>(
-                    builder: (context, state) {
-                      if (state is ProductsError) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(TSizes.defaultSpace),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: TSizes.spaceBtwItems),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context.read<ProductsCubit>().getProducts(
-                                      isFeatured: true,
-                                      sortBy: 'rating',
-                                      ascending: false,
-                                      refresh: true,
-                                    );
-                                  },
-                                  child: const Text('Tekrar Dene'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      if (state is ProductsLoaded) {
-                        if (state.products.isEmpty) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(TSizes.defaultSpace),
-                              child: Text('Ürün bulunamadı.'),
-                            ),
-                          );
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: GridLayout(
-                            gridLayoutModel: GridLayoutModel(
-                              itemCount: state.products.length > 4
-                                  ? 4
-                                  : state.products.length,
-                              itemBuilder: (context, index) {
-                                return VerticalProductCard(
-                                  product: state.products[index],
-                                  showFavoriteAction: true,
-                                );
-                              },
-                              mainAxisExtent: 288,
-                            ),
-                          ),
-                        );
-                      }
-                      return const HomeViewShimmer();
-                    },
-                  ),
-                ],
-              ),
+            bottom: false,
+            child: CustomerHomeV1Content(
+              onSearchTap: () => _openAllProductsSearch(contentContext),
+              onLocationTap: () => _openSavedLocations(contentContext),
+              onNearbyViewAll: () =>
+                  contentContext.read<NavigationMenuCubit>().changeIndex(1),
             ),
           ),
         ),
@@ -339,7 +90,7 @@ class _HomeViewState extends State<HomeView> {
     await context.read<NearbyShopsCubit>().loadShops();
   }
 
-  void _openAllProductsSearch() {
+  void _openAllProductsSearch(BuildContext context) {
     THelperFunctions.navigateToScreen(
       context,
       const AllProductsView(autoFocusSearch: true, isSearchMode: true),
@@ -347,50 +98,77 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class _HomeSearchHeaderSection extends StatelessWidget {
-  const _HomeSearchHeaderSection({required this.onSearchTap});
+class CustomerHomeV1Content extends StatelessWidget {
+  const CustomerHomeV1Content({
+    super.key,
+    required this.onSearchTap,
+    required this.onLocationTap,
+    required this.onNearbyViewAll,
+    this.isAuthenticatedOverride,
+    this.categoryDestinationBuilder,
+    this.productDestinationBuilder,
+    this.shopDestinationBuilder,
+  });
 
   final VoidCallback onSearchTap;
+  final VoidCallback onLocationTap;
+  final VoidCallback onNearbyViewAll;
+  final bool? isAuthenticatedOverride;
+  final HomeCategoryDestinationBuilder? categoryDestinationBuilder;
+  final HomeProductDestinationBuilder? productDestinationBuilder;
+  final HomeShopDestinationBuilder? shopDestinationBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final sectionHeadingModel = SectionHeadingModel(
-      showActionButton: false,
-      title: TTexts.popularCategories,
-      textColor: TColors.white,
-    );
-    final searchContainerModel = SearchContainerModel(
-      icon: Iconsax.search_normal,
-      title: TTexts.searchContainer,
-      showBackground: true,
-      showBorder: true,
-    );
-
-    return PrimaryHeaderContainer(
-      child: Column(
-        children: [
-          const HomeAppBar(),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onSearchTap,
-            child: SearchContainer(searchContainerModel: searchContainerModel),
+    final isAuthenticated =
+        isAuthenticatedOverride ?? _hasAuthenticatedSession();
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 430),
+        child: SingleChildScrollView(
+          key: const Key('customer-home-scroll'),
+          padding: const EdgeInsets.fromLTRB(
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space8,
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space24,
           ),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          Padding(
-            padding: const EdgeInsets.only(left: TSizes.defaultSpace),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SectionHeading(sectionHeadingModel: sectionHeadingModel),
-                const SizedBox(height: TSizes.spaceBtwSections),
-                const HomeCategories(),
-                const SizedBox(height: TSizes.spaceBtwSections),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HomeAppBar(),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              HomeLocationBar(
+                isAuthenticated: isAuthenticated,
+                onTap: onLocationTap,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              HomeSearchBar(onTap: onSearchTap),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              HomeCategories(destinationBuilder: categoryDestinationBuilder),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              const PromoBannerCarouselSlider(),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              HomeProductsSection(
+                destinationBuilder: productDestinationBuilder,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              HomeNearbyShopsSection(
+                onViewAll: onNearbyViewAll,
+                shopDestinationBuilder: shopDestinationBuilder,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
+  }
+
+  bool _hasAuthenticatedSession() {
+    try {
+      return SupabaseService.instance.currentUser != null;
+    } catch (_) {
+      return false;
+    }
   }
 }

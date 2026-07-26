@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/personalization/domain/entities/customer_saved_location_entity.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
@@ -36,25 +37,92 @@ class HomeLocationBar extends StatelessWidget {
             ? 'Konum yüklenemedi, tekrar denemek için dokun'
             : 'Yakınındaki mağazaları görmek için dokun';
 
-        return Card(
+        return Material(
           key: const Key('home-location-bar'),
-          margin: EdgeInsets.zero,
-          child: ListTile(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          child: InkWell(
             onTap: onTap,
-            leading: const Icon(Icons.location_on_outlined),
-            title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text(
-              detail,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 56),
+              padding: const EdgeInsets.symmetric(
+                horizontal: CustomerHomeV1Tokens.space12,
+                vertical: CustomerHomeV1Tokens.space8,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  CustomerHomeV1Tokens.radius16,
+                ),
+                border: Border.all(color: CustomerHomeV1Tokens.border),
+                boxShadow: CustomerHomeV1Tokens.softShadow,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: CustomerHomeV1Tokens.petrol,
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius12,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.location_on_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: CustomerHomeV1Tokens.space12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.navy,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          detail,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.muted,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: CustomerHomeV1Tokens.space8),
+                  if (isLoading)
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: CustomerHomeV1Tokens.petrol,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  else
+                    const Icon(
+                      Icons.keyboard_arrow_right_rounded,
+                      color: CustomerHomeV1Tokens.petrol,
+                      size: 22,
+                    ),
+                ],
+              ),
             ),
-            trailing: isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.chevron_right),
           ),
         );
       },

@@ -129,25 +129,26 @@ void main() {
         );
         await tester.pump();
 
-        final destinations = tester
-            .widgetList<NavigationDestination>(
-              find.byType(NavigationDestination),
-            )
-            .toList();
-
+        const labels = [
+          'Ana Sayfa',
+          'Yakındakiler',
+          'Sepet',
+          'Favoriler',
+          'Profil',
+        ];
+        final horizontalPositions = <double>[];
+        for (final label in labels) {
+          final finder = find.text(label);
+          expect(finder, findsOneWidget);
+          horizontalPositions.add(tester.getCenter(finder).dx);
+        }
         expect(
-          destinations.map((destination) => destination.label),
-          orderedEquals(const [
-            'Ana Sayfa',
-            'Yakındakiler',
-            'Sepet',
-            'Favoriler',
-            'Profil',
-          ]),
+          horizontalPositions,
+          orderedEquals(horizontalPositions.toList()..sort()),
         );
         expect(find.text('Esnaf'), findsNothing);
 
-        await tester.tap(find.text('Yakındakiler'));
+        await tester.tap(find.byKey(const Key('customer-nav-nearby')));
         await tester.pump();
 
         verify(() => navigationCubit.changeIndex(1)).called(1);

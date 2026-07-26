@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
@@ -68,7 +68,7 @@ void main() {
   }
 
   testWidgets(
-    'canlı İngilizce kategori adlarını Türkçe ve doğru simgelerle gösterir',
+    'canlı İngilizce kategori adlarını Türkçe ve tutarlı simgelerle gösterir',
     (tester) async {
       await pumpCategories(
         tester,
@@ -80,11 +80,11 @@ void main() {
         expect(find.text(category.name), findsNothing);
       }
 
-      final displayedAssets = tester
-          .widgetList<Image>(find.byType(Image))
-          .map((image) => (image.image as AssetImage).assetName)
-          .toList();
-      expect(displayedAssets, containsAllInOrder(TImages.homeCategoryIcons));
+      expect(find.byIcon(Icons.shopping_basket_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.eco_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.bakery_dining_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.lunch_dining_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.spa_rounded), findsOneWidget);
     },
   );
 
@@ -99,9 +99,10 @@ void main() {
 
     await pumpCategories(tester, state: const CategoriesLoaded([category]));
 
-    final image = tester.widget<Image>(find.byType(Image));
-    expect(image.image, isA<NetworkImage>());
-    expect((image.image as NetworkImage).url, category.imageUrl);
+    final image = tester.widget<CachedNetworkImage>(
+      find.byType(CachedNetworkImage),
+    );
+    expect(image.imageUrl, category.imageUrl);
   });
 
   testWidgets('yüklenirken sahte kategori göstermez', (tester) async {
