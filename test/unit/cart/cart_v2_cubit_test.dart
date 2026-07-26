@@ -80,6 +80,21 @@ void main() {
   tearDown(() => cartCubit.close());
 
   test(
+    'refreshes cart without replacing visible content with loading',
+    () async {
+      when(
+        () => getActiveCartItemsUsecase(any()),
+      ).thenAnswer((_) async => const Right([oldCartItem]));
+
+      final loadRequest = cartCubit.getActiveCartItems(showLoading: false);
+
+      expect(cartCubit.state, isA<CartV2Initial>());
+      await loadRequest;
+      expect(cartCubit.state, const CartV2Loaded([oldCartItem]));
+    },
+  );
+
+  test(
     'ignores an old cart load after local customer data is cleared',
     () async {
       final result = Completer<Either<String, List<CartItemV2Entity>>>();

@@ -92,6 +92,9 @@ void main() {
       initialState: const CartV2Loaded([cartItem]),
     );
     when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {});
+    when(
+      () => cartV2Cubit.getActiveCartItems(showLoading: false),
+    ).thenAnswer((_) async {});
     when(() => cartV2Cubit.cancelActiveCart()).thenAnswer((_) async {});
     when(() => cartV2Cubit.removeItem(any())).thenAnswer((_) async {});
 
@@ -145,6 +148,23 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('satın alınabilir ürünlerde normal sepet toplamını gösterir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sepet Toplamı'), findsOneWidget);
+    expect(find.text('Toplam güncellenmeli'), findsNothing);
   });
 
   testWidgets('QR penceresi kapanınca aktif sepeti yeniden yükler', (
@@ -250,6 +270,14 @@ void main() {
 
     expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsOneWidget);
     expect(find.text('Sepetten kaldır'), findsOneWidget);
+    expect(find.text('Sepet Toplamı'), findsNothing);
+    expect(find.text('Toplam güncellenmeli'), findsOneWidget);
+    expect(
+      find.text(
+        'Satın alınamayan ürünü kaldırdığınızda güncel toplam gösterilecek.',
+      ),
+      findsOneWidget,
+    );
     expect(
       tester
           .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.remove))
@@ -263,6 +291,8 @@ void main() {
       isNull,
     );
 
+    await tester.ensureVisible(find.text('Sepetten kaldır'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Sepetten kaldır'));
     await tester.pumpAndSettle();
 
@@ -271,6 +301,137 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(() => cartV2Cubit.removeItem('item-inactive')).called(1);
+  });
+
+  testWidgets('satın alınamayan ürünü sepeti kapatmadan yeniden kontrol eder', (
+    tester,
+  ) async {
+    final refreshRequest = Completer<void>();
+    when(
+      () => cartV2Cubit.getActiveCartItems(showLoading: false),
+    ).thenAnswer((_) => refreshRequest.future);
+    whenListen(
+      cartV2Cubit,
+      const Stream<CartV2State>.empty(),
+      initialState: const CartV2Loaded([inactiveCartItem]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final refreshButton = find.widgetWithText(TextButton, 'Yeniden kontrol et');
+    await tester.drag(find.byType(ListView), const Offset(0, -200));
+    await tester.pumpAndSettle();
+    await tester.tap(refreshButton);
+    await tester.pump();
+
+    expect(find.text('Kontrol ediliyor…'), findsOneWidget);
+    expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsOneWidget);
+    expect(
+      tester
+          .widget<TextButton>(
+            find.widgetWithText(TextButton, 'Kontrol ediliyor…'),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester
+          .widget<TextButton>(
+            find.widgetWithText(TextButton, 'Sepetten kaldır'),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    refreshRequest.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Yeniden kontrol et'), findsOneWidget);
+    expect(find.text('Ürün durumu henüz değişmedi.'), findsOneWidget);
+    verify(() => cartV2Cubit.getActiveCartItems(showLoading: false)).called(1);
+  });
+
+  testWidgets('yeniden uygun olan ürünü normal sepete döndürür', (
+    tester,
+  ) async {
+    final stateController = StreamController<CartV2State>();
+    addTearDown(stateController.close);
+    whenListen(
+      cartV2Cubit,
+      stateController.stream,
+      initialState: const CartV2Loaded([inactiveCartItem]),
+    );
+    when(() => cartV2Cubit.getActiveCartItems(showLoading: false)).thenAnswer((
+      _,
+    ) async {
+      when(() => cartV2Cubit.state).thenReturn(const CartV2Loaded([cartItem]));
+      stateController.add(const CartV2Loaded([cartItem]));
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(ListView), const Offset(0, -200));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Yeniden kontrol et'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+
+    expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsNothing);
+    expect(find.text('Sepet Toplamı'), findsOneWidget);
+  });
+
+  testWidgets('yenileme hatasında mevcut sepet ürününü ekranda tutar', (
+    tester,
+  ) async {
+    final stateController = StreamController<CartV2State>();
+    addTearDown(stateController.close);
+    whenListen(
+      cartV2Cubit,
+      stateController.stream,
+      initialState: const CartV2Loaded([inactiveCartItem]),
+    );
+    when(() => cartV2Cubit.getActiveCartItems(showLoading: false)).thenAnswer((
+      _,
+    ) async {
+      stateController.add(const CartV2Error('Sepet yenilenemedi.'));
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(ListView), const Offset(0, -200));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Yeniden kontrol et'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsOneWidget);
+    expect(find.text('Sepet yenilenemedi.'), findsOneWidget);
+    expect(find.text('Yeniden kontrol et'), findsOneWidget);
   });
 
   testWidgets('hızlı çift dokunma ikinci QR hazırlığını başlatmaz', (

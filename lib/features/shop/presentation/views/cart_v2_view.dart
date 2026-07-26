@@ -19,6 +19,7 @@ class CartV2View extends StatefulWidget {
 
 class _CartV2ViewState extends State<CartV2View> {
   bool _isPreparingPurchaseVerification = false;
+  bool _isRefreshingUnavailableItem = false;
 
   @override
   void initState() {
@@ -74,7 +75,12 @@ class _CartV2ViewState extends State<CartV2View> {
                   Expanded(
                     child: ListView.separated(
                       itemBuilder: (context, index) {
-                        return _CartV2ItemCard(item: state.items[index]);
+                        return _CartV2ItemCard(
+                          item: state.items[index],
+                          isRefreshingAvailability:
+                              _isRefreshingUnavailableItem,
+                          onRefreshAvailability: _refreshUnavailableItem,
+                        );
                       },
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: TSizes.spaceBtwItems),
@@ -82,7 +88,12 @@ class _CartV2ViewState extends State<CartV2View> {
                     ),
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
-                  _CartV2TotalBox(totalAmount: state.totalAmount),
+                  _CartV2TotalBox(
+                    totalAmount: state.totalAmount,
+                    requiresRefresh: state.items.any(
+                      (item) => !item.isPurchaseVerifiable,
+                    ),
+                  ),
                   const SizedBox(height: TSizes.spaceBtwItems),
                   _ShowInStoreButton(
                     isPreparing: _isPreparingPurchaseVerification,
@@ -141,6 +152,46 @@ class _CartV2ViewState extends State<CartV2View> {
     }
   }
 
+  Future<void> _refreshUnavailableItem(String cartItemId) async {
+    if (_isRefreshingUnavailableItem) return;
+
+    setState(() => _isRefreshingUnavailableItem = true);
+    final cartCubit = context.read<CartV2Cubit>();
+
+    try {
+      await cartCubit.getActiveCartItems(showLoading: false);
+      if (!mounted) return;
+
+      final refreshedState = cartCubit.state;
+      if (refreshedState is! CartV2Loaded) return;
+
+      final refreshedItems = refreshedState.items.where(
+        (item) => item.id == cartItemId,
+      );
+      if (refreshedItems.isEmpty) {
+        _showAvailabilityMessage('Ürün artık sepetinizde bulunmuyor.');
+        return;
+      }
+
+      if (refreshedItems.first.isPurchaseVerifiable) {
+        _showAvailabilityMessage('Ürün yeniden satın alınabilir durumda.');
+        return;
+      }
+
+      _showAvailabilityMessage('Ürün durumu henüz değişmedi.');
+    } finally {
+      if (mounted) {
+        setState(() => _isRefreshingUnavailableItem = false);
+      }
+    }
+  }
+
+  void _showAvailabilityMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   void _showVerificationBlockedMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -197,9 +248,15 @@ class _ShowInStoreButton extends StatelessWidget {
 }
 
 class _CartV2ItemCard extends StatelessWidget {
-  const _CartV2ItemCard({required this.item});
+  const _CartV2ItemCard({
+    required this.item,
+    required this.isRefreshingAvailability,
+    required this.onRefreshAvailability,
+  });
 
   final CartItemV2Entity item;
+  final bool isRefreshingAvailability;
+  final ValueChanged<String> onRefreshAvailability;
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +296,9 @@ class _CartV2ItemCard extends StatelessWidget {
               if (!isUnavailable)
                 IconButton(
                   tooltip: 'Kaldır',
-                  onPressed: () => _confirmRemoveItem(context),
+                  onPressed: isRefreshingAvailability
+                      ? null
+                      : () => _confirmRemoveItem(context),
                   icon: const Icon(Icons.delete_outline),
                 ),
             ],
@@ -259,7 +318,10 @@ class _CartV2ItemCard extends StatelessWidget {
             label: 'Mağaza fiyatı',
             value: '₺${shopPrice.toStringAsFixed(2)}',
           ),
-          _CartV2QuantityRow(item: item, isEnabled: !isUnavailable),
+          _CartV2QuantityRow(
+            item: item,
+            isEnabled: !isUnavailable && !isRefreshingAvailability,
+          ),
           _CartV2InfoRow(
             label: 'Satır toplamı',
             value: '₺${item.totalPrice.toStringAsFixed(2)}',
@@ -270,7 +332,11 @@ class _CartV2ItemCard extends StatelessWidget {
               message:
                   item.purchaseBlockReason ??
                   'Bu ürün şu anda satın alınamıyor.',
-              onRemove: () => _confirmRemoveItem(context),
+              isRefreshing: isRefreshingAvailability,
+              onRefresh: () => onRefreshAvailability(item.id),
+              onRemove: isRefreshingAvailability
+                  ? null
+                  : () => _confirmRemoveItem(context),
             ),
           ],
         ],
@@ -311,11 +377,15 @@ class _CartV2ItemCard extends StatelessWidget {
 class _UnavailableCartItemNotice extends StatelessWidget {
   const _UnavailableCartItemNotice({
     required this.message,
+    required this.isRefreshing,
+    required this.onRefresh,
     required this.onRemove,
   });
 
   final String message;
-  final VoidCallback onRemove;
+  final bool isRefreshing;
+  final VoidCallback onRefresh;
+  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -354,14 +424,31 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                 ),
               ],
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: onRemove,
-                icon: const Icon(Icons.delete_outline),
-                label: const Text('Sepetten kaldır'),
-                style: TextButton.styleFrom(foregroundColor: colorScheme.error),
-              ),
+            Wrap(
+              alignment: WrapAlignment.end,
+              runAlignment: WrapAlignment.end,
+              children: [
+                TextButton.icon(
+                  onPressed: isRefreshing ? null : onRefresh,
+                  icon: isRefreshing
+                      ? const SizedBox.square(
+                          dimension: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.refresh),
+                  label: Text(
+                    isRefreshing ? 'Kontrol ediliyor…' : 'Yeniden kontrol et',
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: onRemove,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Sepetten kaldır'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -439,28 +526,77 @@ class _CartV2InfoRow extends StatelessWidget {
 }
 
 class _CartV2TotalBox extends StatelessWidget {
-  const _CartV2TotalBox({required this.totalAmount});
+  const _CartV2TotalBox({
+    required this.totalAmount,
+    required this.requiresRefresh,
+  });
 
   final double totalAmount;
+  final bool requiresRefresh;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(TSizes.md),
       decoration: BoxDecoration(
+        color: requiresRefresh
+            ? colorScheme.errorContainer.withValues(alpha: 0.22)
+            : null,
         borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
-        border: Border.all(color: Theme.of(context).dividerColor),
+        border: Border.all(
+          color: requiresRefresh
+              ? colorScheme.error.withValues(alpha: 0.55)
+              : Theme.of(context).dividerColor,
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Sepet Toplamı', style: Theme.of(context).textTheme.titleMedium),
-          Text(
-            '₺${totalAmount.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ],
-      ),
+      child: requiresRefresh
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: TSizes.iconMd,
+                  color: colorScheme.error,
+                ),
+                const SizedBox(width: TSizes.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Toplam güncellenmeli',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: colorScheme.onErrorContainer),
+                      ),
+                      const SizedBox(height: TSizes.xs),
+                      Text(
+                        'Satın alınamayan ürünü kaldırdığınızda güncel toplam '
+                        'gösterilecek.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Sepet Toplamı',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  '₺${totalAmount.toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
     );
   }
 }

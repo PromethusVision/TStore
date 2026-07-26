@@ -29,9 +29,11 @@ class CartV2Cubit extends Cubit<CartV2State> {
     this.cancelActiveCartV2Usecase,
   ) : super(CartV2Initial());
 
-  Future<void> getActiveCartItems() async {
+  Future<void> getActiveCartItems({bool showLoading = true}) async {
     final dataGeneration = _dataGeneration;
-    emit(CartV2Loading());
+    if (showLoading) {
+      emit(CartV2Loading());
+    }
 
     final result = await getActiveCartItemsV2Usecase(const NoParams());
     if (!_canApply(dataGeneration)) return;
