@@ -31,19 +31,18 @@ class ProductSellersSection extends StatefulWidget {
 }
 
 class _ProductSellersSectionState extends State<ProductSellersSection> {
-  late final Future<Either<String, List<ShopProductEntity>>> _future;
+  late Future<Either<String, List<ShopProductEntity>>> _future;
   late final CustomerLocationService _customerLocationService;
   CustomerPreferredLocation? _preferredLocation;
   _SellerSortOption? _selectedSortOption;
+  bool _isRetryInProgress = false;
   static bool _isConflictDialogOpen = false;
 
   @override
   void initState() {
     super.initState();
     _customerLocationService = sl<CustomerLocationService>();
-    _future = sl<GetShopProductsByProductUsecase>()(
-      GetShopProductsByProductParams(productId: widget.productId),
-    );
+    _future = _fetchSellers();
     unawaited(_loadPreferredLocation());
   }
 
@@ -87,14 +86,16 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
           }
 
           if (snapshot.hasError || !snapshot.hasData) {
-            return const Text(
-              'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+            return _SellersErrorState(
+              onRetry: _retrySellers,
+              isRetrying: _isRetryInProgress,
             );
           }
 
           return snapshot.data!.fold(
-            (_) => const Text(
-              'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+            (_) => _SellersErrorState(
+              onRetry: _retrySellers,
+              isRetrying: _isRetryInProgress,
             ),
             (shopProducts) {
               if (shopProducts.isEmpty) {
@@ -149,7 +150,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: rankedSellers.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         const SizedBox(height: TSizes.spaceBtwItems),
                     itemBuilder: (context, index) {
                       final rankedSeller = rankedSellers[index];
@@ -167,6 +168,34 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         },
       ),
     );
+  }
+
+  Future<Either<String, List<ShopProductEntity>>> _fetchSellers() {
+    return sl<GetShopProductsByProductUsecase>()(
+      GetShopProductsByProductParams(productId: widget.productId),
+    );
+  }
+
+  void _retrySellers() {
+    if (_isRetryInProgress) return;
+
+    final nextFuture = _fetchSellers();
+    setState(() {
+      _isRetryInProgress = true;
+      _future = nextFuture;
+    });
+
+    unawaited(
+      nextFuture.then<void>(
+        (_) => _finishRetry(),
+        onError: (_, _) => _finishRetry(),
+      ),
+    );
+  }
+
+  void _finishRetry() {
+    if (!mounted) return;
+    setState(() => _isRetryInProgress = false);
   }
 
   Future<void> _loadPreferredLocation() async {
@@ -329,6 +358,46 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   }
 }
 
+class _SellersErrorState extends StatelessWidget {
+  final VoidCallback onRetry;
+  final bool isRetrying;
+
+  const _SellersErrorState({required this.onRetry, required this.isRetrying});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(TSizes.md),
+      decoration: BoxDecoration(
+        color: colorScheme.errorContainer.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.error.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.cloud_off_outlined, color: colorScheme.error),
+          const SizedBox(height: TSizes.sm),
+          const Text(
+            'Satıcı bilgileri yüklenemedi. Lütfen tekrar deneyin.',
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: TSizes.sm),
+          OutlinedButton.icon(
+            key: const Key('product-sellers-retry'),
+            onPressed: isRetrying ? null : onRetry,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Tekrar Dene'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SellerTile extends StatelessWidget {
   final ShopProductEntity shopProduct;
   final double? distanceMeters;
@@ -487,7 +556,7 @@ class _AvailabilityChip extends StatelessWidget {
         vertical: TSizes.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.12),
+        color: Colors.green.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

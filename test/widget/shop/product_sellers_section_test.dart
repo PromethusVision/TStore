@@ -526,9 +526,89 @@ void main() {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
     expect(
-      find.text(
-        'Satıcı bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-      ),
+      find.text('Satıcı bilgileri yüklenemedi. Lütfen tekrar deneyin.'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('product-sellers-retry')), findsOneWidget);
+  });
+
+  testWidgets('hata sonrası tekrar deneyince satıcıları yükler', (
+    tester,
+  ) async {
+    var requestCount = 0;
+    final retryResult = Completer<Either<String, List<ShopProductEntity>>>();
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) {
+        requestCount++;
+        if (requestCount == 1) {
+          return Future.value(const Left('Bağlantı hatası'));
+        }
+        return retryResult.future;
+      },
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Satıcı bilgileri yüklenemedi. Lütfen tekrar deneyin.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const Key('product-sellers-retry')));
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    retryResult.complete(
+      Right([
+        seller(
+          id: 'recovered',
+          name: 'Yeniden Yüklenen Esnaf',
+          latitude: 41.001,
+          longitude: 29,
+        ),
+      ]),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('product-seller-recovered')),
+      findsOneWidget,
+    );
+    expect(find.text('Yeniden Yüklenen Esnaf'), findsOneWidget);
+    expect(requestCount, 2);
+  });
+
+  testWidgets('hızlı tekrar dokunma ikinci bir satıcı sorgusu başlatmaz', (
+    tester,
+  ) async {
+    var requestCount = 0;
+    final retryResult = Completer<Either<String, List<ShopProductEntity>>>();
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) {
+        requestCount++;
+        if (requestCount == 1) {
+          return Future.value(const Left('Bağlantı hatası'));
+        }
+        return retryResult.future;
+      },
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final retryButton = find.byKey(const Key('product-sellers-retry'));
+    await tester.tap(retryButton);
+    await tester.tap(retryButton);
+    await tester.pump();
+
+    expect(requestCount, 2);
+
+    retryResult.complete(const Right([]));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Bu ürünü satan esnaf henüz listelenmiyor.'),
       findsOneWidget,
     );
   });
