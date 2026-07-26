@@ -33,6 +33,7 @@ class CartQrSessionBottomSheet extends StatefulWidget {
 class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   Timer? _timer;
   DateTime _now = DateTime.now();
+  String? _confirmedUpdatedTotalSessionId;
 
   @override
   void initState() {
@@ -112,11 +113,31 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             }
 
             if (state is QrSessionCreated) {
+              final sessionTotal =
+                  state.session.totalAmount ?? widget.totalAmount;
+              final requiresUpdatedTotalConfirmation =
+                  state.session.totalAmount != null &&
+                  (sessionTotal - widget.totalAmount).abs() > 0.005 &&
+                  _confirmedUpdatedTotalSessionId != state.session.id;
+
+              if (requiresUpdatedTotalConfirmation) {
+                return _QrSessionTotalChangeView(
+                  previousTotal: widget.totalAmount,
+                  currentTotal: sessionTotal,
+                  onCancel: () => Navigator.of(context).pop(),
+                  onContinue: () {
+                    setState(
+                      () => _confirmedUpdatedTotalSessionId = state.session.id,
+                    );
+                  },
+                );
+              }
+
               return _QrSessionContent(
                 session: state.session,
                 shopName: widget.shopName,
                 itemCount: state.session.itemCount ?? widget.itemCount,
-                totalAmount: state.session.totalAmount ?? widget.totalAmount,
+                totalAmount: sessionTotal,
                 remaining: state.session.expiresAt.difference(_now),
                 onRefresh: () {
                   context.read<QrSessionCubit>().createQrSession(widget.cartId);
@@ -127,6 +148,107 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+}
+
+class _QrSessionTotalChangeView extends StatelessWidget {
+  const _QrSessionTotalChangeView({
+    required this.previousTotal,
+    required this.currentTotal,
+    required this.onCancel,
+    required this.onContinue,
+  });
+
+  final double previousTotal;
+  final double currentTotal;
+  final VoidCallback onCancel;
+  final VoidCallback onContinue;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(
+            Icons.price_check_outlined,
+            size: 56,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          Text(
+            'QR tutarı güncellendi',
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: TSizes.sm),
+          Text(
+            'QR hazırlanırken mağazadaki güncel fiyat sepetinize yansıdı. '
+            'Kodu göstermeden önce yeni tutarı kontrol edin.',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          _QrTotalChangeRow(label: 'Az önceki toplam', amount: previousTotal),
+          const SizedBox(height: TSizes.sm),
+          _QrTotalChangeRow(
+            label: 'QR toplamı',
+            amount: currentTotal,
+            isHighlighted: true,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          FilledButton(
+            key: const Key('qr-total-change-continue-action'),
+            onPressed: onContinue,
+            child: const Text('Güncel tutarla devam et'),
+          ),
+          const SizedBox(height: TSizes.sm),
+          OutlinedButton(
+            key: const Key('qr-total-change-cancel-action'),
+            onPressed: onCancel,
+            child: const Text('Vazgeç'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QrTotalChangeRow extends StatelessWidget {
+  const _QrTotalChangeRow({
+    required this.label,
+    required this.amount,
+    this.isHighlighted = false,
+  });
+
+  final String label;
+  final double amount;
+  final bool isHighlighted;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = isHighlighted
+        ? Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)
+        : Theme.of(context).textTheme.bodyMedium;
+
+    return Container(
+      padding: const EdgeInsets.all(TSizes.md),
+      decoration: BoxDecoration(
+        color: isHighlighted
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+      ),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: textStyle)),
+          Text('₺${amount.toStringAsFixed(2)}', style: textStyle),
+        ],
       ),
     );
   }
@@ -387,6 +509,7 @@ class _QrSessionContent extends StatelessWidget {
           if (!isExpired)
             Center(
               child: Container(
+                key: const Key('purchase-verification-qr-code'),
                 padding: const EdgeInsets.all(TSizes.sm),
                 color: Colors.white,
                 child: QrImageView(

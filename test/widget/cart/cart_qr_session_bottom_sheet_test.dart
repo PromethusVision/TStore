@@ -62,7 +62,10 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject(QrSessionState initialState) {
+  Widget buildSubject(
+    QrSessionState initialState, {
+    double totalAmount = 249.90,
+  }) {
     whenListen(
       qrSessionCubit,
       const Stream<QrSessionState>.empty(),
@@ -73,11 +76,11 @@ void main() {
       home: Scaffold(
         body: BlocProvider<QrSessionCubit>.value(
           value: qrSessionCubit,
-          child: const CartQrSessionBottomSheet(
+          child: CartQrSessionBottomSheet(
             cartId: 'cart-1',
             shopName: 'Mahalle Mağazası',
             itemCount: 1,
-            totalAmount: 100,
+            totalAmount: totalAmount,
           ),
         ),
       ),
@@ -98,8 +101,109 @@ void main() {
     );
     expect(find.text('2'), findsOneWidget);
     expect(find.text('TL 249.90'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+    expect(find.text('QR tutarı güncellendi'), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('QR hazırlanırken yüklenme durumunu gösterir', (tester) async {
+    await tester.pumpWidget(buildSubject(QrSessionLoading()));
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+    expect(find.text('QR tutarı güncellendi'), findsNothing);
+  });
+
+  testWidgets('sunucu toplamı değişince QR onaya kadar gizlenir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(QrSessionCreated(activeSession), totalAmount: 100),
+    );
+    await tester.pump();
+
+    expect(find.text('QR tutarı güncellendi'), findsOneWidget);
+    expect(find.text('Az önceki toplam'), findsOneWidget);
+    expect(find.text('₺100.00'), findsOneWidget);
+    expect(find.text('QR toplamı'), findsOneWidget);
+    expect(find.text('₺249.90'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+
+    await tester.tap(find.byKey(const Key('qr-total-change-continue-action')));
+    await tester.tap(find.byKey(const Key('qr-total-change-continue-action')));
+    await tester.pump();
+
+    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    expect(find.text('TL 249.90'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
+  });
+
+  testWidgets('güncel QR tutarı reddedilince pencere kapanır', (tester) async {
+    whenListen(
+      qrSessionCubit,
+      const Stream<QrSessionState>.empty(),
+      initialState: QrSessionCreated(activeSession),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) {
+              return FilledButton(
+                key: const Key('open-qr-sheet'),
+                onPressed: () => showModalBottomSheet<void>(
+                  context: context,
+                  builder: (_) => BlocProvider<QrSessionCubit>.value(
+                    value: qrSessionCubit,
+                    child: const CartQrSessionBottomSheet(
+                      cartId: 'cart-1',
+                      shopName: 'Mahalle Mağazası',
+                      itemCount: 1,
+                      totalAmount: 100,
+                    ),
+                  ),
+                ),
+                child: const Text('QR ekranını aç'),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('open-qr-sheet')));
+    await tester.pumpAndSettle();
+    expect(find.text('QR tutarı güncellendi'), findsOneWidget);
+
+    final cancelAction = find.byKey(const Key('qr-total-change-cancel-action'));
+    await tester.ensureVisible(cancelAction);
+    await tester.pumpAndSettle();
+    await tester.tap(cancelAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+    expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
   });
 
   testWidgets('esnaf onayından sonra yeşil onay durumu gösterir', (
