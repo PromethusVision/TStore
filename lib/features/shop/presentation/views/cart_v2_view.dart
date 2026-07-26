@@ -207,13 +207,22 @@ class _CartV2ItemCard extends StatelessWidget {
     final shop = shopProduct?.shop;
     final product = shopProduct?.product;
     final shopPrice = shopProduct?.price ?? 0;
+    final isUnavailable = !item.isPurchaseVerifiable;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(TSizes.md),
       decoration: BoxDecoration(
+        color: isUnavailable
+            ? colorScheme.errorContainer.withValues(alpha: 0.22)
+            : null,
         borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
-        border: Border.all(color: Theme.of(context).dividerColor),
+        border: Border.all(
+          color: isUnavailable
+              ? colorScheme.error.withValues(alpha: 0.55)
+              : Theme.of(context).dividerColor,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,11 +236,12 @@ class _CartV2ItemCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              IconButton(
-                tooltip: 'Kaldır',
-                onPressed: () => _confirmRemoveItem(context),
-                icon: const Icon(Icons.delete_outline),
-              ),
+              if (!isUnavailable)
+                IconButton(
+                  tooltip: 'Kaldır',
+                  onPressed: () => _confirmRemoveItem(context),
+                  icon: const Icon(Icons.delete_outline),
+                ),
             ],
           ),
           const SizedBox(height: TSizes.xs),
@@ -249,11 +259,20 @@ class _CartV2ItemCard extends StatelessWidget {
             label: 'Mağaza fiyatı',
             value: '₺${shopPrice.toStringAsFixed(2)}',
           ),
-          _CartV2QuantityRow(item: item),
+          _CartV2QuantityRow(item: item, isEnabled: !isUnavailable),
           _CartV2InfoRow(
             label: 'Satır toplamı',
             value: '₺${item.totalPrice.toStringAsFixed(2)}',
           ),
+          if (isUnavailable) ...[
+            const SizedBox(height: TSizes.spaceBtwItems),
+            _UnavailableCartItemNotice(
+              message:
+                  item.purchaseBlockReason ??
+                  'Bu ürün şu anda satın alınamıyor.',
+              onRemove: () => _confirmRemoveItem(context),
+            ),
+          ],
         ],
       ),
     );
@@ -289,10 +308,73 @@ class _CartV2ItemCard extends StatelessWidget {
   }
 }
 
+class _UnavailableCartItemNotice extends StatelessWidget {
+  const _UnavailableCartItemNotice({
+    required this.message,
+    required this.onRemove,
+  });
+
+  final String message;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Semantics(
+      container: true,
+      label: 'Satın alınamayan ürün',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(TSizes.sm),
+        decoration: BoxDecoration(
+          color: colorScheme.surface.withValues(alpha: 0.72),
+          borderRadius: BorderRadius.circular(TSizes.borderRadiusMd),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: TSizes.iconSm,
+                  color: colorScheme.error,
+                ),
+                const SizedBox(width: TSizes.sm),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onErrorContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: onRemove,
+                icon: const Icon(Icons.delete_outline),
+                label: const Text('Sepetten kaldır'),
+                style: TextButton.styleFrom(foregroundColor: colorScheme.error),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _CartV2QuantityRow extends StatelessWidget {
-  const _CartV2QuantityRow({required this.item});
+  const _CartV2QuantityRow({required this.item, this.isEnabled = true});
 
   final CartItemV2Entity item;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +389,7 @@ class _CartV2QuantityRow extends StatelessWidget {
             children: [
               IconButton(
                 tooltip: 'Azalt',
-                onPressed: item.quantity <= 1
+                onPressed: !isEnabled || item.quantity <= 1
                     ? null
                     : () {
                         context.read<CartV2Cubit>().decrementItemQuantity(item);
@@ -320,9 +402,11 @@ class _CartV2QuantityRow extends StatelessWidget {
               ),
               IconButton(
                 tooltip: 'Artır',
-                onPressed: () {
-                  context.read<CartV2Cubit>().incrementItemQuantity(item);
-                },
+                onPressed: isEnabled
+                    ? () {
+                        context.read<CartV2Cubit>().incrementItemQuantity(item);
+                      }
+                    : null,
                 icon: const Icon(Icons.add),
               ),
             ],

@@ -30,6 +30,29 @@ class CartItemV2Entity extends Equatable {
       shopProduct?.isCustomerPurchasable == true &&
       shopProduct?.product?.isActive == true;
 
+  String? get purchaseBlockReason {
+    if (quantity <= 0) {
+      return 'Bu ürünün adedi geçersiz. Ürünü sepetten kaldırın.';
+    }
+
+    final currentShopProduct = shopProduct;
+    if (currentShopProduct == null || currentShopProduct.product == null) {
+      return 'Bu ürünün güncel satış bilgisine ulaşılamıyor.';
+    }
+
+    if (currentShopProduct.shop?.isActive != true) {
+      return 'Bu mağaza şu anda alışverişe kapalı.';
+    }
+
+    if (!currentShopProduct.isActive ||
+        !currentShopProduct.isAvailable ||
+        !currentShopProduct.product!.isActive) {
+      return 'Bu ürün artık bu mağazada satışta değil.';
+    }
+
+    return null;
+  }
+
   @override
   List<Object?> get props => [
     id,

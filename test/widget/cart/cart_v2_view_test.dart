@@ -57,6 +57,28 @@ void main() {
     ),
   );
 
+  const inactiveCartItem = CartItemV2Entity(
+    id: 'item-inactive',
+    cartId: 'cart-1',
+    shopProductId: 'shop-product-inactive',
+    quantity: 2,
+    shopProduct: ShopProductEntity(
+      id: 'shop-product-inactive',
+      shopId: 'shop-1',
+      productId: 'product-1',
+      price: 125,
+      shop: ShopEntity(id: 'shop-1', name: 'Kapalı Mağaza', isActive: false),
+      product: ProductEntity(
+        id: 'product-1',
+        name: 'Test Ürünü',
+        price: 125,
+        categoryId: 'category-1',
+        stock: 5,
+        images: [],
+      ),
+    ),
+  );
+
   setUp(() async {
     await sl.reset();
 
@@ -71,6 +93,7 @@ void main() {
     );
     when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {});
     when(() => cartV2Cubit.cancelActiveCart()).thenAnswer((_) async {});
+    when(() => cartV2Cubit.removeItem(any())).thenAnswer((_) async {});
 
     whenListen(
       qrSessionCubit,
@@ -180,27 +203,6 @@ void main() {
   testWidgets('geçersiz sepet ürünü için QR oluşturmayı engeller', (
     tester,
   ) async {
-    const inactiveCartItem = CartItemV2Entity(
-      id: 'item-inactive',
-      cartId: 'cart-1',
-      shopProductId: 'shop-product-inactive',
-      quantity: 1,
-      shopProduct: ShopProductEntity(
-        id: 'shop-product-inactive',
-        shopId: 'shop-1',
-        productId: 'product-1',
-        price: 125,
-        shop: ShopEntity(id: 'shop-1', name: 'Kapalı Mağaza', isActive: false),
-        product: ProductEntity(
-          id: 'product-1',
-          name: 'Test Ürünü',
-          price: 125,
-          categoryId: 'category-1',
-          stock: 5,
-          images: [],
-        ),
-      ),
-    );
     whenListen(
       cartV2Cubit,
       const Stream<CartV2State>.empty(),
@@ -225,6 +227,50 @@ void main() {
       findsOneWidget,
     );
     verifyNever(() => qrSessionCubit.createQrSession(any()));
+  });
+
+  testWidgets('satın alınamayan ürünü açıkça işaretler ve güvenle kaldırır', (
+    tester,
+  ) async {
+    whenListen(
+      cartV2Cubit,
+      const Stream<CartV2State>.empty(),
+      initialState: const CartV2Loaded([inactiveCartItem]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsOneWidget);
+    expect(find.text('Sepetten kaldır'), findsOneWidget);
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.remove))
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.add))
+          .onPressed,
+      isNull,
+    );
+
+    await tester.tap(find.text('Sepetten kaldır'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ürünü sepetten kaldır'), findsOneWidget);
+    await tester.tap(find.text('Kaldır'));
+    await tester.pumpAndSettle();
+
+    verify(() => cartV2Cubit.removeItem('item-inactive')).called(1);
   });
 
   testWidgets('hızlı çift dokunma ikinci QR hazırlığını başlatmaz', (

@@ -50,11 +50,20 @@ void main() {
 
   test('aktif mağaza ve ürün için alışveriş doğrulanabilir', () {
     expect(cartItem().isPurchaseVerifiable, isTrue);
+    expect(cartItem().purchaseBlockReason, isNull);
   });
 
   test('pasif mağaza veya mağaza ürünü doğrulamayı engeller', () {
     expect(cartItem(shopIsActive: false).isPurchaseVerifiable, isFalse);
+    expect(
+      cartItem(shopIsActive: false).purchaseBlockReason,
+      'Bu mağaza şu anda alışverişe kapalı.',
+    );
     expect(cartItem(shopProductIsActive: false).isPurchaseVerifiable, isFalse);
+    expect(
+      cartItem(shopProductIsActive: false).purchaseBlockReason,
+      'Bu ürün artık bu mağazada satışta değil.',
+    );
     expect(
       cartItem(shopProductIsAvailable: false).isPurchaseVerifiable,
       isFalse,
@@ -64,10 +73,18 @@ void main() {
   test('pasif veya eksik ürün doğrulamayı engeller', () {
     expect(cartItem(productIsActive: false).isPurchaseVerifiable, isFalse);
     expect(cartItem(includeProduct: false).isPurchaseVerifiable, isFalse);
+    expect(
+      cartItem(includeProduct: false).purchaseBlockReason,
+      'Bu ürünün güncel satış bilgisine ulaşılamıyor.',
+    );
     expect(cartItem(includeShopProduct: false).isPurchaseVerifiable, isFalse);
   });
 
   test('geçersiz ürün adedi doğrulamayı engeller', () {
     expect(cartItem(quantity: 0).isPurchaseVerifiable, isFalse);
+    expect(
+      cartItem(quantity: 0).purchaseBlockReason,
+      'Bu ürünün adedi geçersiz. Ürünü sepetten kaldırın.',
+    );
   });
 }
