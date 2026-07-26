@@ -117,6 +117,7 @@ class _CartV2ViewState extends State<CartV2View> {
 
     setState(() => _isPreparingPurchaseVerification = true);
     final cartCubit = context.read<CartV2Cubit>();
+    final previousState = cartCubit.state;
 
     try {
       await cartCubit.getActiveCartItems();
@@ -143,6 +144,15 @@ class _CartV2ViewState extends State<CartV2View> {
         return;
       }
 
+      if (previousState is CartV2Loaded &&
+          _hasCartPricingChanged(previousState, refreshedState)) {
+        final shouldContinue = await _confirmUpdatedCartTotal(
+          previousState: previousState,
+          refreshedState: refreshedState,
+        );
+        if (!mounted || !shouldContinue) return;
+      }
+
       setState(() => _isPreparingPurchaseVerification = false);
       await _showQrSessionBottomSheet(refreshedState);
     } finally {
@@ -150,6 +160,85 @@ class _CartV2ViewState extends State<CartV2View> {
         setState(() => _isPreparingPurchaseVerification = false);
       }
     }
+  }
+
+  bool _hasCartPricingChanged(
+    CartV2Loaded previousState,
+    CartV2Loaded refreshedState,
+  ) {
+    if (previousState.items.length != refreshedState.items.length) {
+      return true;
+    }
+
+    final previousItemsById = {
+      for (final item in previousState.items) item.id: item,
+    };
+
+    for (final refreshedItem in refreshedState.items) {
+      final previousItem = previousItemsById[refreshedItem.id];
+      if (previousItem == null ||
+          previousItem.quantity != refreshedItem.quantity) {
+        return true;
+      }
+
+      final previousPrice = previousItem.shopProduct?.price;
+      final refreshedPrice = refreshedItem.shopProduct?.price;
+      if (previousPrice == null ||
+          refreshedPrice == null ||
+          (previousPrice - refreshedPrice).abs() > 0.005) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _confirmUpdatedCartTotal({
+    required CartV2Loaded previousState,
+    required CartV2Loaded refreshedState,
+  }) async {
+    final shouldContinue = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          icon: const Icon(Icons.price_change_outlined),
+          title: const Text('Sepet tutarı güncellendi'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Mağazadaki güncel fiyatlar sepetinize yansıtıldı. '
+                'Devam etmeden önce yeni tutarı kontrol edin.',
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              _CartTotalComparisonRow(
+                label: 'Önceki toplam',
+                amount: previousState.totalAmount,
+              ),
+              const SizedBox(height: TSizes.sm),
+              _CartTotalComparisonRow(
+                label: 'Güncel toplam',
+                amount: refreshedState.totalAmount,
+                isHighlighted: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Güncel tutarla devam et'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return shouldContinue == true;
   }
 
   Future<void> _refreshUnavailableItem(String cartItemId) async {
@@ -218,6 +307,37 @@ class _CartV2ViewState extends State<CartV2View> {
 
     if (!mounted) return;
     await context.read<CartV2Cubit>().getActiveCartItems();
+  }
+}
+
+class _CartTotalComparisonRow extends StatelessWidget {
+  const _CartTotalComparisonRow({
+    required this.label,
+    required this.amount,
+    this.isHighlighted = false,
+  });
+
+  final String label;
+  final double amount;
+  final bool isHighlighted;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = isHighlighted
+        ? Theme.of(context).textTheme.titleMedium
+        : Theme.of(context).textTheme.bodyMedium;
+
+    return Row(
+      children: [
+        Expanded(child: Text(label, style: textStyle)),
+        Text(
+          '₺${amount.toStringAsFixed(2)}',
+          style: textStyle?.copyWith(
+            fontWeight: isHighlighted ? FontWeight.w700 : null,
+          ),
+        ),
+      ],
+    );
   }
 }
 

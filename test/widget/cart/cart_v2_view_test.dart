@@ -181,13 +181,114 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Alışverişi doğrula'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Alışveriş onaylandı'), findsOneWidget);
 
     await tester.tap(find.text('Tamam'));
     await tester.pumpAndSettle();
 
     verify(() => cartV2Cubit.getActiveCartItems()).called(3);
+  });
+
+  testWidgets('fiyat değişince onay almadan QR açmaz', (tester) async {
+    final stateController = StreamController<CartV2State>();
+    addTearDown(stateController.close);
+    final repricedItem = cartItem.copyWith(
+      shopProduct: cartItem.shopProduct!.copyWith(price: 140),
+    );
+    var loadCount = 0;
+
+    whenListen(
+      cartV2Cubit,
+      stateController.stream,
+      initialState: const CartV2Loaded([cartItem]),
+    );
+    when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {
+      loadCount++;
+      if (loadCount != 2) return;
+
+      when(() => cartV2Cubit.state).thenReturn(CartV2Loaded([repricedItem]));
+      stateController.add(CartV2Loaded([repricedItem]));
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alışverişi doğrula'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Sepet tutarı güncellendi'), findsOneWidget);
+    expect(find.text('Önceki toplam'), findsOneWidget);
+    expect(find.text('₺250.00'), findsOneWidget);
+    expect(find.text('Güncel toplam'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('₺280.00'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Güncel tutarla devam et'), findsOneWidget);
+    verifyNever(() => qrSessionCubit.createQrSession(any()));
+
+    await tester.tap(find.text('Güncel tutarla devam et'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Alışveriş onaylandı'), findsOneWidget);
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
+  });
+
+  testWidgets('güncel tutar reddedilince doğrulamayı durdurur', (tester) async {
+    final stateController = StreamController<CartV2State>();
+    addTearDown(stateController.close);
+    final repricedItem = cartItem.copyWith(
+      shopProduct: cartItem.shopProduct!.copyWith(price: 140),
+    );
+    var loadCount = 0;
+
+    whenListen(
+      cartV2Cubit,
+      stateController.stream,
+      initialState: const CartV2Loaded([cartItem]),
+    );
+    when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {
+      loadCount++;
+      if (loadCount != 2) return;
+
+      when(() => cartV2Cubit.state).thenReturn(CartV2Loaded([repricedItem]));
+      stateController.add(CartV2Loaded([repricedItem]));
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alışverişi doğrula'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.text('Vazgeç'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sepet tutarı güncellendi'), findsNothing);
+    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    verifyNever(() => qrSessionCubit.createQrSession(any()));
   });
 
   testWidgets('sepet boşaltma metinlerini ve onayını doğru gösterir', (
