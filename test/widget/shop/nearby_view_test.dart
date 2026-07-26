@@ -104,7 +104,7 @@ void main() {
 
   group('customer navigation', () {
     testWidgets(
-      'keeps the four customer labels in order and opens nearby at index 1',
+      'keeps the five customer labels in order and opens nearby at index 1',
       (tester) async {
         final navigationCubit = MockNavigationMenuCubit();
         whenListen(
@@ -119,11 +119,12 @@ void main() {
         when(() => navigationCubit.changeIndex(any())).thenAnswer((_) {});
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<NavigationMenuCubit>.value(
-              value: navigationCubit,
-              child: const NavigationMenu(),
-            ),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<NavigationMenuCubit>.value(value: navigationCubit),
+              BlocProvider<CartV2Cubit>.value(value: cartV2Cubit),
+            ],
+            child: const MaterialApp(home: NavigationMenu()),
           ),
         );
         await tester.pump();
@@ -139,6 +140,7 @@ void main() {
           orderedEquals(const [
             'Ana Sayfa',
             'Yakındakiler',
+            'Sepet',
             'Favoriler',
             'Profil',
           ]),

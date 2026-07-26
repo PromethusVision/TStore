@@ -50,35 +50,55 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   @override
   Widget build(BuildContext context) {
-    const List<String> categoriesTitles = TTexts.homeCategoryTitles;
-    const List<String> categoriesImages = TImages.homeCategoryIcons;
-
-    final fallbackItems = List.generate(
-      categoriesImages.length,
-      (index) => HorizontalSmallListViewItemModel(
-        title: categoriesTitles[index],
-        image: categoriesImages[index],
-      ),
-    );
-
     return SizedBox(
       height: 100,
       child: BlocBuilder<CategoriesCubit, CategoriesState>(
         builder: (context, state) {
-          if (state is CategoriesLoaded && state.categories.isNotEmpty) {
+          if (state is CategoriesLoading || state is CategoriesInitial) {
+            return const Center(
+              child: SizedBox(
+                key: Key('home-categories-loading'),
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            );
+          }
+
+          if (state is CategoriesError) {
+            return Center(
+              child: TextButton(
+                key: const Key('home-categories-retry'),
+                onPressed: context.read<CategoriesCubit>().getCategories,
+                child: const Text('Kategorileri Tekrar Yükle'),
+              ),
+            );
+          }
+
+          if (state is CategoriesLoaded) {
+            if (state.categories.isEmpty) {
+              return const Center(
+                child: Text('Şu anda gösterilecek kategori bulunamadı.'),
+              );
+            }
+
             final items = List.generate(state.categories.length, (index) {
               final category = state.categories[index];
+              final imageUrl = category.imageUrl?.trim() ?? '';
               return HorizontalSmallListViewItemModel(
                 categoryId: category.id,
                 title: _localizedTitle(category.name),
-                image: _categoryIcon(category.name, index),
+                image: imageUrl.isNotEmpty
+                    ? imageUrl
+                    : _categoryIcon(category.name, index),
+                isNetworkImage: imageUrl.isNotEmpty,
               );
             });
 
             return HorizontalSmallListView(items: items);
           }
 
-          return HorizontalSmallListView(items: fallbackItems);
+          return const SizedBox.shrink();
         },
       ),
     );

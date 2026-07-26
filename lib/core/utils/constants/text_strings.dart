@@ -11,7 +11,7 @@ class TTexts {
 
   // views
   static const String homeView = "Ana Sayfa";
-  static const String cartView = "Cart";
+  static const String cartView = "Sepet";
   static const String profileView = "Profil";
   static const String wishlistView = "Favoriler";
   static const String ordersView = "Orders";

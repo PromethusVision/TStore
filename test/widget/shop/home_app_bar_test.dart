@@ -2,30 +2,35 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
-import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
-import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_app_bar.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
-class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
+class MockNotificationsCubit extends MockCubit<NotificationsState>
+    implements NotificationsCubit {}
 
 void main() {
   late MockAuthCubit authCubit;
-  late MockCartV2Cubit cartV2Cubit;
+  late MockNotificationsCubit notificationsCubit;
 
   setUp(() {
     authCubit = MockAuthCubit();
-    cartV2Cubit = MockCartV2Cubit();
+    notificationsCubit = MockNotificationsCubit();
 
     whenListen(
-      cartV2Cubit,
-      const Stream<CartV2State>.empty(),
-      initialState: const CartV2Loaded([]),
+      notificationsCubit,
+      const Stream<NotificationsState>.empty(),
+      initialState: const NotificationsLoaded(
+        notifications: [],
+        unreadCount: 3,
+      ),
     );
   });
 
@@ -36,13 +41,15 @@ void main() {
       initialState: authState,
     );
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthCubit>.value(value: authCubit),
-        BlocProvider<CartV2Cubit>.value(value: cartV2Cubit),
-      ],
+    return BlocProvider<AuthCubit>.value(
+      value: authCubit,
       child: MaterialApp(
-        home: Scaffold(body: HomeAppBar(sessionFullName: sessionFullName)),
+        home: Scaffold(
+          body: HomeAppBar(
+            sessionFullName: sessionFullName,
+            notificationsCubit: notificationsCubit,
+          ),
+        ),
       ),
     );
   }
@@ -82,5 +89,24 @@ void main() {
 
     expect(find.text(TTexts.homeAppbarSubTitle), findsOneWidget);
     expect(find.text('Mahmoud Hamdy'), findsNothing);
+  });
+
+  testWidgets('bildirim rozetini gösterir ve üst sepet ikonunu kaldırır', (
+    tester,
+  ) async {
+    const user = UserEntity(
+      id: 'customer-1',
+      email: 'ayse@example.com',
+      fullName: 'Ayşe Yılmaz',
+    );
+
+    await tester.pumpWidget(
+      buildAppBar(authState: const AuthAuthenticated(user)),
+    );
+
+    expect(find.byKey(const Key('home-notifications-button')), findsOneWidget);
+    expect(find.byKey(const Key('home-notifications-badge')), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.byType(CartCounterIcon), findsNothing);
   });
 }

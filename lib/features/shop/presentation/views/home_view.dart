@@ -9,16 +9,25 @@ import 'package:t_store/core/common/widgets/primary_header_container.dart';
 import 'package:t_store/core/common/widgets/search_container.dart';
 import 'package:t_store/core/common/widgets/section_heading.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/auth/presentation/widgets/grid_layout.dart';
+import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
+import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_app_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_location_bar.dart';
+import 'package:t_store/features/shop/presentation/widgets/home_nearby_shops_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
 
 class HomeViewShimmer extends StatelessWidget {
@@ -56,21 +65,14 @@ class HomeViewShimmer extends StatelessWidget {
 
           // Section Heading Shimmer
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+            padding: const EdgeInsets.symmetric(
+              horizontal: TSizes.defaultSpace,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 120,
-                  height: 20,
-                  color: Colors.white,
-                ),
-                Container(
-                  width: 80,
-                  height: 20,
-                  color: Colors.white,
-                ),
+                Container(width: 120, height: 20, color: Colors.white),
+                Container(width: 80, height: 20, color: Colors.white),
               ],
             ),
           ),
@@ -80,8 +82,9 @@ class HomeViewShimmer extends StatelessWidget {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            padding:
-                const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+            padding: const EdgeInsets.symmetric(
+              horizontal: TSizes.defaultSpace,
+            ),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: TSizes.gridViewSpacing,
@@ -102,8 +105,9 @@ class HomeViewShimmer extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius:
-                            BorderRadius.circular(TSizes.productImageRadius),
+                        borderRadius: BorderRadius.circular(
+                          TSizes.productImageRadius,
+                        ),
                       ),
                     ),
                   ),
@@ -172,124 +176,179 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     // Load featured products on init
     context.read<ProductsCubit>().getProducts(
-          isFeatured: true,
-          sortBy: 'rating',
-          ascending: false,
-          refresh: true,
-        );
+      isFeatured: true,
+      sortBy: 'rating',
+      ascending: false,
+      refresh: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _HomeSearchHeaderSection(onSearchTap: _openAllProductsSearch),
-              const SizedBox(height: TSizes.spaceBtwSections),
-              const PromoBannerCarouselSlider(),
-              const SizedBox(height: TSizes.spaceBtwSections),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SectionHeading(
-                  sectionHeadingModel: SectionHeadingModel(
-                    title: "Popüler Ürünler",
-                    showActionButton: true,
-                    textColor: TColors.primary,
-                    actionButtonOnPressed: () {
-                      THelperFunctions.navigateToScreen(
-                        context,
-                        const AllProductsView(),
-                      );
-                    },
-                    actionButtonTitle: "Tüm Ürünler",
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CustomerSavedLocationsCubit>(
+          create: (_) {
+            final cubit = sl<CustomerSavedLocationsCubit>();
+            if (SupabaseService.instance.currentUser != null) {
+              cubit.loadLocations();
+            }
+            return cubit;
+          },
+        ),
+        BlocProvider<NearbyShopsCubit>(
+          create: (_) => sl<NearbyShopsCubit>()..loadShops(),
+        ),
+      ],
+      child: Builder(
+        builder: (contentContext) => Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _HomeSearchHeaderSection(onSearchTap: _openAllProductsSearch),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      TSizes.defaultSpace,
+                      TSizes.spaceBtwItems,
+                      TSizes.defaultSpace,
+                      0,
+                    ),
+                    child: HomeLocationBar(
+                      isAuthenticated:
+                          SupabaseService.instance.currentUser != null,
+                      onTap: () => _openSavedLocations(contentContext),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              BlocBuilder<ProductsCubit, ProductsState>(
-                builder: (context, state) {
-                  if (state is ProductsError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(TSizes.defaultSpace),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: TSizes.spaceBtwItems),
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<ProductsCubit>().getProducts(
+                  const SizedBox(height: TSizes.spaceBtwSections),
+                  const PromoBannerCarouselSlider(),
+                  const SizedBox(height: TSizes.spaceBtwSections),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: TSizes.defaultSpace,
+                    ),
+                    child: HomeNearbyShopsSection(
+                      onViewAll: () => contentContext
+                          .read<NavigationMenuCubit>()
+                          .changeIndex(1),
+                    ),
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwSections),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SectionHeading(
+                      sectionHeadingModel: SectionHeadingModel(
+                        title: "Popüler Ürünler",
+                        showActionButton: true,
+                        textColor: TColors.primary,
+                        actionButtonOnPressed: () {
+                          THelperFunctions.navigateToScreen(
+                            context,
+                            const AllProductsView(),
+                          );
+                        },
+                        actionButtonTitle: "Tüm Ürünler",
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  BlocBuilder<ProductsCubit, ProductsState>(
+                    builder: (context, state) {
+                      if (state is ProductsError) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(TSizes.defaultSpace),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: TSizes.spaceBtwItems),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<ProductsCubit>().getProducts(
                                       isFeatured: true,
                                       sortBy: 'rating',
                                       ascending: false,
                                       refresh: true,
                                     );
-                              },
-                              child: const Text('Tekrar Dene'),
+                                  },
+                                  child: const Text('Tekrar Dene'),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is ProductsLoaded) {
-                    if (state.products.isEmpty) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(TSizes.defaultSpace),
-                          child: Text('Ürün bulunamadı.'),
-                        ),
-                      );
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GridLayout(
-                        gridLayoutModel: GridLayoutModel(
-                          itemCount: state.products.length > 4
-                              ? 4
-                              : state.products.length,
-                          itemBuilder: (context, index) {
-                            return VerticalProductCard(
-                              product: state.products[index],
-                              showFavoriteAction: true,
-                            );
-                          },
-                          mainAxisExtent: 288,
-                        ),
-                      ),
-                    );
-                  }
-                  return const HomeViewShimmer();
-                },
+                          ),
+                        );
+                      }
+                      if (state is ProductsLoaded) {
+                        if (state.products.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(TSizes.defaultSpace),
+                              child: Text('Ürün bulunamadı.'),
+                            ),
+                          );
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: GridLayout(
+                            gridLayoutModel: GridLayoutModel(
+                              itemCount: state.products.length > 4
+                                  ? 4
+                                  : state.products.length,
+                              itemBuilder: (context, index) {
+                                return VerticalProductCard(
+                                  product: state.products[index],
+                                  showFavoriteAction: true,
+                                );
+                              },
+                              mainAxisExtent: 288,
+                            ),
+                          ),
+                        );
+                      }
+                      return const HomeViewShimmer();
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Future<void> _openSavedLocations(BuildContext context) async {
+    if (SupabaseService.instance.currentUser == null) {
+      THelperFunctions.navigateToScreen(context, const LoginView());
+      return;
+    }
+
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => const CustomerSavedLocationsView(),
+      ),
+    );
+
+    if (!context.mounted) return;
+    await context.read<CustomerSavedLocationsCubit>().loadLocations();
+    if (!context.mounted) return;
+    await context.read<NearbyShopsCubit>().loadShops();
+  }
+
   void _openAllProductsSearch() {
     THelperFunctions.navigateToScreen(
       context,
-      const AllProductsView(
-        autoFocusSearch: true,
-        isSearchMode: true,
-      ),
+      const AllProductsView(autoFocusSearch: true, isSearchMode: true),
     );
   }
 }
 
 class _HomeSearchHeaderSection extends StatelessWidget {
-  const _HomeSearchHeaderSection({
-    required this.onSearchTap,
-  });
+  const _HomeSearchHeaderSection({required this.onSearchTap});
 
   final VoidCallback onSearchTap;
 

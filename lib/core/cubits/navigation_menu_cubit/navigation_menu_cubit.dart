@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/shop/presentation/views/home_view.dart';
+import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/nearby_view.dart';
 import 'package:t_store/features/shop/presentation/views/wishlist_view.dart';
 
@@ -17,6 +18,7 @@ class NavigationMenuCubit extends Cubit<NavigationMenuState> {
   final screensList = [
     const HomeView(),
     const NearbyView(),
+    const CartV2View(),
     const WishlistView(),
     const SettingsView(),
   ];

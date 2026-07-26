@@ -88,27 +88,50 @@ void main() {
     },
   );
 
-  testWidgets('yüklenirken Türkçe yedek kategorileri gösterir', (tester) async {
-    await pumpCategories(tester, state: CategoriesLoading());
-
-    expectTurkishCategoryTitles();
-  });
-
-  testWidgets('boş sonuçta Türkçe yedek kategorileri gösterir', (tester) async {
-    await pumpCategories(tester, state: const CategoriesLoaded([]));
-
-    expectTurkishCategoryTitles();
-  });
-
-  testWidgets('hata durumunda güvenli Türkçe yedeği gösterip yeniden dener', (
+  testWidgets('gerçek kategori görseli varsa ağ adresini kullanır', (
     tester,
   ) async {
+    const category = CategoryEntity(
+      id: 'market',
+      name: 'Market',
+      imageUrl: 'https://example.com/market.png',
+    );
+
+    await pumpCategories(tester, state: const CategoriesLoaded([category]));
+
+    final image = tester.widget<Image>(find.byType(Image));
+    expect(image.image, isA<NetworkImage>());
+    expect((image.image as NetworkImage).url, category.imageUrl);
+  });
+
+  testWidgets('yüklenirken sahte kategori göstermez', (tester) async {
+    await pumpCategories(tester, state: CategoriesLoading());
+
+    expect(find.byKey(const Key('home-categories-loading')), findsOneWidget);
+    expect(find.text(TTexts.homeCategoryTitles.first), findsNothing);
+  });
+
+  testWidgets('boş sonucu açıkça gösterir', (tester) async {
+    await pumpCategories(tester, state: const CategoriesLoaded([]));
+
+    expect(
+      find.text('Şu anda gösterilecek kategori bulunamadı.'),
+      findsOneWidget,
+    );
+    expect(find.text(TTexts.homeCategoryTitles.first), findsNothing);
+  });
+
+  testWidgets('hata durumunda yeniden deneme sunar', (tester) async {
     await pumpCategories(
       tester,
       state: const CategoriesError('Kategoriler yüklenemedi.'),
     );
+    clearInteractions(categoriesCubit);
 
-    expectTurkishCategoryTitles();
+    expect(find.text('Kategorileri Tekrar Yükle'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('home-categories-retry')));
+    await tester.pump();
+
     verify(() => categoriesCubit.getCategories()).called(1);
   });
 }

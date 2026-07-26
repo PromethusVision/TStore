@@ -10,10 +10,7 @@ import 'package:t_store/core/utils/constants/colors.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
 class BannerCarouselSlider extends StatelessWidget {
-  const BannerCarouselSlider({
-    super.key,
-    required this.images,
-  });
+  const BannerCarouselSlider({super.key, required this.images});
   final List<String> images;
   @override
   Widget build(BuildContext context) {
@@ -33,6 +30,9 @@ class BannerCarouselSlider extends StatelessWidget {
                 (index) => RoundedImage(
                   roundedImageModel: RoundedImageModel(
                     image: images[index],
+                    isNetworkImage: _isNetworkImage(images[index]),
+                    applyImageRadius: true,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -41,24 +41,31 @@ class BannerCarouselSlider extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: List.generate(
-                  images.length,
-                  (index) => CircularContainer(
-                        circularContainerModel: CircularContainerModel(
-                          margin: const EdgeInsets.only(right: TSizes.sm),
-                          width: 40,
-                          height: 5,
-                          color: index ==
-                                  context
-                                      .read<BannerCarouselSliderCubit>()
-                                      .selectedIndex
-                              ? TColors.primary
-                              : TColors.grey,
-                        ),
-                      )),
-            )
+                images.length,
+                (index) => CircularContainer(
+                  circularContainerModel: CircularContainerModel(
+                    margin: const EdgeInsets.only(right: TSizes.sm),
+                    width: 40,
+                    height: 5,
+                    color:
+                        index ==
+                            context
+                                .read<BannerCarouselSliderCubit>()
+                                .selectedIndex
+                        ? TColors.primary
+                        : TColors.grey,
+                  ),
+                ),
+              ),
+            ),
           ],
         );
       },
     );
+  }
+
+  bool _isNetworkImage(String image) {
+    final uri = Uri.tryParse(image);
+    return uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
   }
 }

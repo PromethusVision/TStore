@@ -44,7 +44,7 @@ void main() {
 
   setUp(() {
     wishlistCubit = MockWishlistCubit();
-    navigationCubit = NavigationMenuCubit()..changeIndex(2);
+    navigationCubit = NavigationMenuCubit()..changeIndex(3);
     when(() => wishlistCubit.getWishlist()).thenAnswer((_) async {});
     when(
       () => wishlistCubit.removeFromWishlist(any()),
