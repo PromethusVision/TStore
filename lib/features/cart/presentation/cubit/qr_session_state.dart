@@ -34,6 +34,10 @@ class QrSessionCancelled extends QrSessionState {
   const QrSessionCancelled();
 }
 
+class QrSessionExpired extends QrSessionState {
+  const QrSessionExpired();
+}
+
 class QrSessionFailure extends QrSessionState {
   final String message;
 

@@ -89,11 +89,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
         if (status == 'expired') {
           _stopStatusPolling();
           _activeSession = null;
-          emit(
-            const QrSessionFailure(
-              'QR kodunun süresi doldu. Yeni bir kod oluşturun.',
-            ),
-          );
+          emit(const QrSessionExpired());
         }
       });
     } finally {

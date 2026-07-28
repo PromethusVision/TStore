@@ -356,8 +356,9 @@ void main() {
     await tester.pumpWidget(buildSubject(QrSessionCreated(expiredSession)));
     await tester.pump();
 
-    expect(find.text('Süresi doldu'), findsOneWidget);
-    expect(find.text('Yeniden Oluştur'), findsOneWidget);
+    expect(find.text('QR süresi doldu'), findsOneWidget);
+    expect(find.text('Yeni QR oluştur'), findsOneWidget);
+    expect(find.text('QR oturumu oluşturulamadı'), findsNothing);
     expect(
       find.byKey(const Key('purchase-verification-qr-code')),
       findsNothing,
@@ -371,6 +372,29 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(tester.widget<ElevatedButton>(refreshAction).onPressed, isNull);
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(2);
+  });
+
+  testWidgets('sunucunun süresi doldu cevabı aynı güvenli ekranı gösterir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(const QrSessionExpired()));
+    await tester.pump();
+
+    expect(find.text('QR süresi doldu'), findsOneWidget);
+    expect(
+      find.text(
+        'Güvenliğiniz için bu QR artık kullanılamaz. '
+        'Güncel sepetiniz için yeni bir QR oluşturun.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Yeni QR oluştur'), findsOneWidget);
+    expect(find.text('Yeniden Dene'), findsNothing);
+    expect(find.text('QR oturumu oluşturulamadı'), findsNothing);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
   });
 
   testWidgets('yenilenen QR değişmiş sepet için tekrar onay ister', (

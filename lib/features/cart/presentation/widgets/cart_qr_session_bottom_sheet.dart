@@ -111,7 +111,8 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             if (state is QrSessionCreated) {
               _isRetryingInvalidSnapshot = false;
               _isRefreshingExpiredSession = false;
-              if (_hasValidSnapshotSummary(state.session)) {
+              if (_hasValidSnapshotSummary(state.session) &&
+                  state.session.expiresAt.isAfter(DateTime.now())) {
                 _startTimer();
               } else {
                 _stopTimer();
@@ -119,6 +120,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             }
             if (state is QrSessionCompleted ||
                 state is QrSessionCancelled ||
+                state is QrSessionExpired ||
                 state is QrSessionFailure) {
               _isRetryingInvalidSnapshot = false;
               _isRefreshingExpiredSession = false;
@@ -145,6 +147,13 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
               );
             }
 
+            if (state is QrSessionExpired) {
+              return _QrSessionExpiredView(
+                isRefreshing: _isRefreshingExpiredSession,
+                onRefresh: _refreshExpiredSession,
+              );
+            }
+
             if (state is QrSessionCompleted) {
               return BlocProvider<ShopRatingCubit>(
                 create: (_) => sl<ShopRatingCubit>(),
@@ -157,6 +166,13 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
             }
 
             if (state is QrSessionCreated) {
+              if (!state.session.expiresAt.isAfter(_now)) {
+                return _QrSessionExpiredView(
+                  isRefreshing: _isRefreshingExpiredSession,
+                  onRefresh: _refreshExpiredSession,
+                );
+              }
+
               if (!_hasValidSnapshotSummary(state.session)) {
                 return _QrSessionInvalidSnapshotView(
                   isRetrying: _isRetryingInvalidSnapshot,
@@ -198,8 +214,6 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                 itemCount: sessionItemCount,
                 totalAmount: sessionTotal,
                 remaining: state.session.expiresAt.difference(_now),
-                isRefreshing: _isRefreshingExpiredSession,
-                onRefresh: _refreshExpiredSession,
               );
             }
 
@@ -644,14 +658,63 @@ class _QrSessionCancelledView extends StatelessWidget {
   }
 }
 
+class _QrSessionExpiredView extends StatelessWidget {
+  const _QrSessionExpiredView({
+    required this.isRefreshing,
+    required this.onRefresh,
+  });
+
+  final bool isRefreshing;
+  final VoidCallback onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.timer_off_outlined,
+          size: 64,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        Text(
+          'QR süresi doldu',
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.sm),
+        Text(
+          'Güvenliğiniz için bu QR artık kullanılamaz. '
+          'Güncel sepetiniz için yeni bir QR oluşturun.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            key: const Key('qr-expired-refresh-action'),
+            onPressed: isRefreshing ? null : onRefresh,
+            child: isRefreshing
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Yeni QR oluştur'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _QrSessionContent extends StatelessWidget {
   final QrSessionEntity session;
   final String shopName;
   final int itemCount;
   final double totalAmount;
   final Duration remaining;
-  final bool isRefreshing;
-  final VoidCallback onRefresh;
 
   const _QrSessionContent({
     required this.session,
@@ -659,14 +722,10 @@ class _QrSessionContent extends StatelessWidget {
     required this.itemCount,
     required this.totalAmount,
     required this.remaining,
-    required this.isRefreshing,
-    required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isExpired = remaining.inSeconds <= 0;
-
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -689,49 +748,27 @@ class _QrSessionContent extends StatelessWidget {
             label: 'Sepet toplamı',
             value: 'TL ${totalAmount.toStringAsFixed(2)}',
           ),
-          _QrInfoRow(
-            label: 'Kalan süre',
-            value: isExpired ? 'Süresi doldu' : _formatRemaining(remaining),
-          ),
+          _QrInfoRow(label: 'Kalan süre', value: _formatRemaining(remaining)),
           const SizedBox(height: TSizes.spaceBtwItems),
-          if (!isExpired)
-            Center(
-              child: Container(
-                key: const Key('purchase-verification-qr-code'),
-                padding: const EdgeInsets.all(TSizes.sm),
-                color: Colors.white,
-                child: QrImageView(
-                  data: session.sessionToken,
-                  version: QrVersions.auto,
-                  size: 220,
-                  backgroundColor: Colors.white,
-                ),
+          Center(
+            child: Container(
+              key: const Key('purchase-verification-qr-code'),
+              padding: const EdgeInsets.all(TSizes.sm),
+              color: Colors.white,
+              child: QrImageView(
+                data: session.sessionToken,
+                version: QrVersions.auto,
+                size: 220,
+                backgroundColor: Colors.white,
               ),
-            )
-          else
-            const Icon(Icons.timer_off_outlined, size: 72),
+            ),
+          ),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             'QR kodunu esnafa okut. Onay verildiğinde bu ekran otomatik güncellenir. Rezervasyon veya stok garantisi sağlamaz.',
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-          if (isExpired) ...[
-            const SizedBox(height: TSizes.spaceBtwItems),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                key: const Key('qr-expired-refresh-action'),
-                onPressed: isRefreshing ? null : onRefresh,
-                child: isRefreshing
-                    ? const SizedBox.square(
-                        dimension: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Yeniden Oluştur'),
-              ),
-            ),
-          ],
         ],
       ),
     );

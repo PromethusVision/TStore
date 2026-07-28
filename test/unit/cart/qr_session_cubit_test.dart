@@ -202,7 +202,7 @@ void main() {
     );
 
     blocTest<QrSessionCubit, QrSessionState>(
-      'asks for a new QR when polling returns expired',
+      'emits the dedicated expired state when polling returns expired',
       build: () {
         when(
           () => mockCreateQrSessionUsecase(any()),
@@ -219,9 +219,7 @@ void main() {
       expect: () => [
         QrSessionLoading(),
         QrSessionCreated(activeSession),
-        const QrSessionFailure(
-          'QR kodunun süresi doldu. Yeni bir kod oluşturun.',
-        ),
+        const QrSessionExpired(),
       ],
       verify: (_) {
         verify(() => mockGetQrSessionStatusUsecase(any())).called(1);
