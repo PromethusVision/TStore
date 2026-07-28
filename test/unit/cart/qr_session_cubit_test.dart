@@ -202,6 +202,68 @@ void main() {
     );
 
     blocTest<QrSessionCubit, QrSessionState>(
+      'keeps the QR visible while status checks fail and clears the warning '
+      'after recovery',
+      build: () {
+        var requestCount = 0;
+        when(
+          () => mockCreateQrSessionUsecase(any()),
+        ).thenAnswer((_) async => Right(activeSession));
+        when(() => mockGetQrSessionStatusUsecase(any())).thenAnswer((_) async {
+          requestCount++;
+          if (requestCount <= 2) {
+            return const Left('QR durumu kontrol edilemedi.');
+          }
+          return const Right('active');
+        });
+        return qrSessionCubit;
+      },
+      act: (cubit) async {
+        await cubit.createQrSession('cart-1');
+        await cubit.checkSessionStatus();
+        await cubit.checkSessionStatus();
+        await cubit.checkSessionStatus();
+      },
+      expect: () => [
+        QrSessionLoading(),
+        QrSessionCreated(activeSession),
+        QrSessionCreated(activeSession, isStatusCheckDelayed: true),
+        QrSessionCreated(activeSession),
+      ],
+      verify: (_) {
+        verify(() => mockGetQrSessionStatusUsecase(any())).called(3);
+      },
+    );
+
+    blocTest<QrSessionCubit, QrSessionState>(
+      'can complete the QR after a delayed status check',
+      build: () {
+        var requestCount = 0;
+        when(
+          () => mockCreateQrSessionUsecase(any()),
+        ).thenAnswer((_) async => Right(activeSession));
+        when(() => mockGetQrSessionStatusUsecase(any())).thenAnswer((_) async {
+          requestCount++;
+          return requestCount == 1
+              ? const Left('QR durumu kontrol edilemedi.')
+              : const Right('used');
+        });
+        return qrSessionCubit;
+      },
+      act: (cubit) async {
+        await cubit.createQrSession('cart-1');
+        await cubit.checkSessionStatus();
+        await cubit.checkSessionStatus();
+      },
+      expect: () => [
+        QrSessionLoading(),
+        QrSessionCreated(activeSession),
+        QrSessionCreated(activeSession, isStatusCheckDelayed: true),
+        const QrSessionCompleted(sessionId: 'session-1'),
+      ],
+    );
+
+    blocTest<QrSessionCubit, QrSessionState>(
       'emits the dedicated expired state when polling returns expired',
       build: () {
         when(

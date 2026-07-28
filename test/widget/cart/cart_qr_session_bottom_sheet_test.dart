@@ -151,9 +151,57 @@ void main() {
       find.byKey(const Key('purchase-verification-qr-code')),
       findsOneWidget,
     );
+    expect(find.byKey(const Key('qr-status-check-warning')), findsNothing);
     expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('durum kontrolü gecikince QR kalır ve bağlantı uyarısı görünür', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(QrSessionCreated(activeSession, isStatusCheckDelayed: true)),
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Bağlantı zayıf. Onay durumu yeniden kontrol ediliyor.'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('qr-status-check-warning')), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+  });
+
+  testWidgets('bağlantı düzelince uyarı kalkar ve QR ekranda kalır', (
+    tester,
+  ) async {
+    final stateController = StreamController<QrSessionState>();
+    addTearDown(stateController.close);
+
+    await tester.pumpWidget(
+      buildSubject(
+        QrSessionCreated(activeSession, isStatusCheckDelayed: true),
+        stateStream: stateController.stream,
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const Key('qr-status-check-warning')), findsOneWidget);
+
+    stateController.add(QrSessionCreated(activeSession));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byKey(const Key('qr-status-check-warning')), findsNothing);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('QR hazırlanırken yüklenme durumunu gösterir', (tester) async {

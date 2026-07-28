@@ -14,11 +14,12 @@ class QrSessionLoading extends QrSessionState {}
 
 class QrSessionCreated extends QrSessionState {
   final QrSessionEntity session;
+  final bool isStatusCheckDelayed;
 
-  const QrSessionCreated(this.session);
+  const QrSessionCreated(this.session, {this.isStatusCheckDelayed = false});
 
   @override
-  List<Object?> get props => [session];
+  List<Object?> get props => [session, isStatusCheckDelayed];
 }
 
 class QrSessionCompleted extends QrSessionState {

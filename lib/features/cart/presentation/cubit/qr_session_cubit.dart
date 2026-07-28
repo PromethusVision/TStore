@@ -70,28 +70,47 @@ class QrSessionCubit extends Cubit<QrSessionState> {
 
       if (isClosed || _activeSession?.id != targetSessionId) return;
 
-      result.fold((_) {}, (status) {
-        if (status == 'used') {
-          final completedSessionId = _activeSession?.id ?? targetSessionId;
-          _stopStatusPolling();
-          _activeSession = null;
-          emit(QrSessionCompleted(sessionId: completedSessionId));
-          return;
-        }
+      result.fold(
+        (_) {
+          final activeSession = _activeSession;
+          if (activeSession != null) {
+            emit(QrSessionCreated(activeSession, isStatusCheckDelayed: true));
+          }
+        },
+        (status) {
+          if (status == 'active') {
+            final activeSession = _activeSession;
+            final currentState = state;
+            if (activeSession != null &&
+                currentState is QrSessionCreated &&
+                currentState.isStatusCheckDelayed) {
+              emit(QrSessionCreated(activeSession));
+            }
+            return;
+          }
 
-        if (status == 'cancelled') {
-          _stopStatusPolling();
-          _activeSession = null;
-          emit(const QrSessionCancelled());
-          return;
-        }
+          if (status == 'used') {
+            final completedSessionId = _activeSession?.id ?? targetSessionId;
+            _stopStatusPolling();
+            _activeSession = null;
+            emit(QrSessionCompleted(sessionId: completedSessionId));
+            return;
+          }
 
-        if (status == 'expired') {
-          _stopStatusPolling();
-          _activeSession = null;
-          emit(const QrSessionExpired());
-        }
-      });
+          if (status == 'cancelled') {
+            _stopStatusPolling();
+            _activeSession = null;
+            emit(const QrSessionCancelled());
+            return;
+          }
+
+          if (status == 'expired') {
+            _stopStatusPolling();
+            _activeSession = null;
+            emit(const QrSessionExpired());
+          }
+        },
+      );
     } finally {
       _isCheckingStatus = false;
     }

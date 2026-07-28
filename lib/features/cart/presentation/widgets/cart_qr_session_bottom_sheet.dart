@@ -214,6 +214,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                 itemCount: sessionItemCount,
                 totalAmount: sessionTotal,
                 remaining: state.session.expiresAt.difference(_now),
+                isStatusCheckDelayed: state.isStatusCheckDelayed,
               );
             }
 
@@ -715,6 +716,7 @@ class _QrSessionContent extends StatelessWidget {
   final int itemCount;
   final double totalAmount;
   final Duration remaining;
+  final bool isStatusCheckDelayed;
 
   const _QrSessionContent({
     required this.session,
@@ -722,6 +724,7 @@ class _QrSessionContent extends StatelessWidget {
     required this.itemCount,
     required this.totalAmount,
     required this.remaining,
+    required this.isStatusCheckDelayed,
   });
 
   @override
@@ -750,6 +753,32 @@ class _QrSessionContent extends StatelessWidget {
           ),
           _QrInfoRow(label: 'Kalan süre', value: _formatRemaining(remaining)),
           const SizedBox(height: TSizes.spaceBtwItems),
+          if (isStatusCheckDelayed) ...[
+            Container(
+              key: const Key('qr-status-check-warning'),
+              padding: const EdgeInsets.all(TSizes.sm),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(TSizes.cardRadiusSm),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.wifi_off_rounded,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  const SizedBox(width: TSizes.sm),
+                  Expanded(
+                    child: Text(
+                      'Bağlantı zayıf. Onay durumu yeniden kontrol ediliyor.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: TSizes.spaceBtwItems),
+          ],
           Center(
             child: Container(
               key: const Key('purchase-verification-qr-code'),
