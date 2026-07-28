@@ -78,6 +78,7 @@ void main() {
     int itemCount = 2,
     double totalAmount = 249.90,
     Stream<QrSessionState> stateStream = const Stream<QrSessionState>.empty(),
+    ValueChanged<String>? onViewPurchases,
   }) {
     whenListen(qrSessionCubit, stateStream, initialState: initialState);
 
@@ -90,6 +91,7 @@ void main() {
             shopName: 'Mahalle Mağazası',
             itemCount: itemCount,
             totalAmount: totalAmount,
+            onViewPurchases: onViewPurchases ?? (_) {},
           ),
         ),
       ),
@@ -122,6 +124,7 @@ void main() {
                     shopName: 'Mahalle Mağazası',
                     itemCount: itemCount,
                     totalAmount: totalAmount,
+                    onViewPurchases: (_) {},
                   ),
                 ),
               ),
@@ -515,7 +518,32 @@ void main() {
     final successIcon = tester.widget<Icon>(find.byIcon(Icons.check_circle));
     expect(successIcon.color, Colors.green.shade600);
     expect(find.text('Esnafa puan ver'), findsOneWidget);
+    expect(find.text('Alışverişlerimde gör'), findsOneWidget);
   });
+
+  testWidgets(
+    'alışveriş geçmişi düğmesi oturum kimliğini yalnız bir kez gönderir',
+    (tester) async {
+      final openedSessionIds = <String>[];
+
+      await tester.pumpWidget(
+        buildSubject(
+          const QrSessionCompleted(sessionId: 'session-1'),
+          onViewPurchases: openedSessionIds.add,
+        ),
+      );
+      await tester.pump();
+
+      final action = find.byKey(const Key('view-completed-purchase-action'));
+      await tester.tap(action);
+      await tester.tap(action);
+      await tester.pump();
+
+      expect(openedSessionIds, ['session-1']);
+      expect(find.text('Alışverişlerim açılıyor…'), findsOneWidget);
+      expect(tester.widget<FilledButton>(action).onPressed, isNull);
+    },
+  );
 
   testWidgets('doğrulanmış alışveriş için beş yıldız gönderir', (tester) async {
     await tester.pumpWidget(

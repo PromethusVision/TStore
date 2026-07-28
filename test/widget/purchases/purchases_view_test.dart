@@ -143,6 +143,34 @@ void main() {
     );
   });
 
+  testWidgets(
+    'QR ile yeni onaylanan alışverişi oturum kimliğiyle öne çıkarır',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PurchasesView(
+            purchaseHistoryCubit: cubit,
+            initialQrSessionId: 'session-1',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('highlighted-purchase-purchase-1')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Az önce onaylanan alışveriş: Mahalle Marketi'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('missing-notification-purchase-message')),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('bulunamayan bildirim alışverişinde diğer kayıtları korur', (
     tester,
   ) async {

@@ -13,25 +13,34 @@ class PurchasesView extends StatelessWidget {
     super.key,
     this.purchaseHistoryCubit,
     this.initialPurchaseId,
+    this.initialQrSessionId,
   });
 
   final PurchaseHistoryCubit? purchaseHistoryCubit;
   final String? initialPurchaseId;
+  final String? initialQrSessionId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
           (purchaseHistoryCubit ?? sl<PurchaseHistoryCubit>())..loadPurchases(),
-      child: _PurchasesScaffold(initialPurchaseId: initialPurchaseId),
+      child: _PurchasesScaffold(
+        initialPurchaseId: initialPurchaseId,
+        initialQrSessionId: initialQrSessionId,
+      ),
     );
   }
 }
 
 class _PurchasesScaffold extends StatelessWidget {
-  const _PurchasesScaffold({required this.initialPurchaseId});
+  const _PurchasesScaffold({
+    required this.initialPurchaseId,
+    required this.initialQrSessionId,
+  });
 
   final String? initialPurchaseId;
+  final String? initialQrSessionId;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +60,10 @@ class _PurchasesScaffold extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _PurchaseHistoryTab(initialPurchaseId: initialPurchaseId),
+            _PurchaseHistoryTab(
+              initialPurchaseId: initialPurchaseId,
+              initialQrSessionId: initialQrSessionId,
+            ),
             const _ReturnRequestsTab(),
             const _CreateReturnRequestTab(),
           ],
@@ -62,9 +74,13 @@ class _PurchasesScaffold extends StatelessWidget {
 }
 
 class _PurchaseHistoryTab extends StatelessWidget {
-  const _PurchaseHistoryTab({required this.initialPurchaseId});
+  const _PurchaseHistoryTab({
+    required this.initialPurchaseId,
+    required this.initialQrSessionId,
+  });
 
   final String? initialPurchaseId;
+  final String? initialQrSessionId;
 
   @override
   Widget build(BuildContext context) {
@@ -97,11 +113,16 @@ class _PurchaseHistoryTab extends StatelessWidget {
           );
         }
 
-        final targetedPurchaseIndex = initialPurchaseId == null
-            ? -1
-            : purchases.indexWhere(
-                (purchase) => purchase.id == initialPurchaseId,
-              );
+        final isRecentQrPurchase =
+            initialPurchaseId == null && initialQrSessionId != null;
+        final hasTarget =
+            initialPurchaseId != null || initialQrSessionId != null;
+        final targetedPurchaseIndex = purchases.indexWhere((purchase) {
+          if (initialPurchaseId != null) {
+            return purchase.id == initialPurchaseId;
+          }
+          return purchase.sourceQrSessionId == initialQrSessionId;
+        });
         final targetedPurchase = targetedPurchaseIndex == -1
             ? null
             : purchases[targetedPurchaseIndex];
@@ -113,8 +134,7 @@ class _PurchaseHistoryTab extends StatelessWidget {
                   (purchase) => purchase.id != targetedPurchase.id,
                 ),
               ];
-        final showMissingTargetMessage =
-            initialPurchaseId != null && targetedPurchase == null;
+        final showMissingTargetMessage = hasTarget && targetedPurchase == null;
 
         return RefreshIndicator(
           onRefresh: context.read<PurchaseHistoryCubit>().loadPurchases,
@@ -143,7 +163,10 @@ class _PurchaseHistoryTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (isTargeted) ...[
-                    _TargetPurchaseLabel(shopName: purchase.shopName),
+                    _TargetPurchaseLabel(
+                      shopName: purchase.shopName,
+                      isRecentQrPurchase: isRecentQrPurchase,
+                    ),
                     const SizedBox(height: TSizes.sm),
                   ],
                   _PurchaseCard(purchase: purchase),
@@ -158,9 +181,13 @@ class _PurchaseHistoryTab extends StatelessWidget {
 }
 
 class _TargetPurchaseLabel extends StatelessWidget {
-  const _TargetPurchaseLabel({required this.shopName});
+  const _TargetPurchaseLabel({
+    required this.shopName,
+    required this.isRecentQrPurchase,
+  });
 
   final String shopName;
+  final bool isRecentQrPurchase;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +211,9 @@ class _TargetPurchaseLabel extends StatelessWidget {
           const SizedBox(width: TSizes.sm),
           Expanded(
             child: Text(
-              'Bildirimdeki alışveriş: $shopName',
+              isRecentQrPurchase
+                  ? 'Az önce onaylanan alışveriş: $shopName'
+                  : 'Bildirimdeki alışveriş: $shopName',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.w700,

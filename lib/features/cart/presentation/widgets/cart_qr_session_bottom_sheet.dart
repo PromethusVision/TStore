@@ -16,6 +16,7 @@ class CartQrSessionBottomSheet extends StatefulWidget {
   final String shopName;
   final int itemCount;
   final double totalAmount;
+  final ValueChanged<String> onViewPurchases;
 
   const CartQrSessionBottomSheet({
     super.key,
@@ -23,6 +24,7 @@ class CartQrSessionBottomSheet extends StatefulWidget {
     required this.shopName,
     required this.itemCount,
     required this.totalAmount,
+    required this.onViewPurchases,
   });
 
   @override
@@ -161,6 +163,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                   sessionId: state.sessionId,
                   shopName: widget.shopName,
                   onClose: () => Navigator.of(context).pop(),
+                  onViewPurchases: widget.onViewPurchases,
                 ),
               );
             }
@@ -418,11 +421,13 @@ class _QrSessionCompletedView extends StatefulWidget {
     required this.sessionId,
     required this.shopName,
     required this.onClose,
+    required this.onViewPurchases,
   });
 
   final String sessionId;
   final String shopName;
   final VoidCallback onClose;
+  final ValueChanged<String> onViewPurchases;
 
   @override
   State<_QrSessionCompletedView> createState() =>
@@ -440,10 +445,18 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
   ];
 
   bool _showRatingForm = false;
+  bool _isOpeningPurchases = false;
   int _selectedRating = 0;
 
   void _selectRating(int rating) {
     setState(() => _selectedRating = rating);
+  }
+
+  void _openPurchases() {
+    if (_isOpeningPurchases) return;
+
+    setState(() => _isOpeningPurchases = true);
+    widget.onViewPurchases(widget.sessionId);
   }
 
   @override
@@ -554,14 +567,25 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                   onPressed: isSubmitting ? null : widget.onClose,
                   child: const Text('Şimdi değil'),
                 ),
-              ] else
+              ] else ...[
                 SizedBox(
                   width: double.infinity,
-                  child: FilledButton(
-                    onPressed: widget.onClose,
-                    child: const Text('Tamam'),
+                  child: FilledButton.icon(
+                    key: const Key('view-completed-purchase-action'),
+                    onPressed: _isOpeningPurchases ? null : _openPurchases,
+                    icon: const Icon(Icons.receipt_long_outlined),
+                    label: Text(
+                      _isOpeningPurchases
+                          ? 'Alışverişlerim açılıyor…'
+                          : 'Alışverişlerimde gör',
+                    ),
                   ),
                 ),
+                TextButton(
+                  onPressed: _isOpeningPurchases ? null : widget.onClose,
+                  child: const Text('Tamam'),
+                ),
+              ],
             ],
           ),
         );

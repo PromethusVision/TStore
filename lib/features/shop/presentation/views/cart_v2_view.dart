@@ -9,6 +9,7 @@ import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
 import 'package:t_store/features/cart/presentation/widgets/cart_qr_session_bottom_sheet.dart';
+import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 class CartV2View extends StatefulWidget {
   const CartV2View({super.key});
@@ -288,10 +289,10 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _showQrSessionBottomSheet(CartV2Loaded state) async {
-    await showModalBottomSheet<void>(
+    final completedQrSessionId = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
-      builder: (_) {
+      builder: (sheetContext) {
         return BlocProvider(
           create: (_) => sl<QrSessionCubit>(),
           child: CartQrSessionBottomSheet(
@@ -300,6 +301,8 @@ class _CartV2ViewState extends State<CartV2View> {
                 state.items.first.shopProduct?.shop?.name ?? 'Bilinmeyen esnaf',
             itemCount: state.itemCount,
             totalAmount: state.totalAmount,
+            onViewPurchases: (sessionId) =>
+                Navigator.of(sheetContext).pop(sessionId),
           ),
         );
       },
@@ -307,6 +310,13 @@ class _CartV2ViewState extends State<CartV2View> {
 
     if (!mounted) return;
     await context.read<CartV2Cubit>().getActiveCartItems();
+    if (!mounted || completedQrSessionId == null) return;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PurchasesView(initialQrSessionId: completedQrSessionId),
+      ),
+    );
   }
 }
 

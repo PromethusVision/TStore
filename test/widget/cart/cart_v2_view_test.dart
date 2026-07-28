@@ -11,6 +11,9 @@ import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/qr_session_state.dart';
+import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
+import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
+import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -26,10 +29,14 @@ class MockQrSessionCubit extends MockCubit<QrSessionState>
 class MockShopRatingCubit extends MockCubit<ShopRatingState>
     implements ShopRatingCubit {}
 
+class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
+    implements PurchaseHistoryCubit {}
+
 void main() {
   late MockCartV2Cubit cartV2Cubit;
   late MockQrSessionCubit qrSessionCubit;
   late MockShopRatingCubit shopRatingCubit;
+  late MockPurchaseHistoryCubit purchaseHistoryCubit;
 
   const cartItem = CartItemV2Entity(
     id: 'item-1',
@@ -79,12 +86,33 @@ void main() {
     ),
   );
 
+  final verifiedPurchase = VerifiedPurchaseEntity(
+    id: 'purchase-1',
+    sourceQrSessionId: 'session-1',
+    shopId: 'shop-1',
+    shopName: 'Mahalle Mağazası',
+    itemCount: 2,
+    totalAmount: 250,
+    confirmedAt: DateTime.utc(2026, 7, 28, 10),
+    items: const [
+      VerifiedPurchaseItemEntity(
+        id: 'verified-item-1',
+        shopProductId: 'shop-product-1',
+        productName: 'Test Ürünü',
+        quantity: 2,
+        unitPrice: 125,
+        lineTotal: 250,
+      ),
+    ],
+  );
+
   setUp(() async {
     await sl.reset();
 
     cartV2Cubit = MockCartV2Cubit();
     qrSessionCubit = MockQrSessionCubit();
     shopRatingCubit = MockShopRatingCubit();
+    purchaseHistoryCubit = MockPurchaseHistoryCubit();
 
     whenListen(
       cartV2Cubit,
@@ -113,8 +141,17 @@ void main() {
     );
     when(() => shopRatingCubit.close()).thenAnswer((_) async {});
 
+    whenListen(
+      purchaseHistoryCubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: PurchaseHistoryLoaded([verifiedPurchase]),
+    );
+    when(() => purchaseHistoryCubit.loadPurchases()).thenAnswer((_) async {});
+    when(() => purchaseHistoryCubit.close()).thenAnswer((_) async {});
+
     sl.registerFactory<QrSessionCubit>(() => qrSessionCubit);
     sl.registerFactory<ShopRatingCubit>(() => shopRatingCubit);
+    sl.registerFactory<PurchaseHistoryCubit>(() => purchaseHistoryCubit);
   });
 
   tearDown(() async {
@@ -190,6 +227,56 @@ void main() {
 
     verify(() => cartV2Cubit.getActiveCartItems()).called(3);
   });
+
+  testWidgets(
+    'onaylanan alışverişi sepet yenilendikten sonra geçmişte öne çıkarır',
+    (tester) async {
+      var loadCount = 0;
+      final postVerificationRefresh = Completer<void>();
+      when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) {
+        loadCount++;
+        if (loadCount == 3) return postVerificationRefresh.future;
+        return Future<void>.value();
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Alışverişi doğrula'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.ensureVisible(find.text('Alışverişlerimde gör'));
+      await tester.tap(find.text('Alışverişlerimde gör'));
+      await tester.pump();
+
+      expect(loadCount, 3);
+      expect(
+        find.text('Az önce onaylanan alışveriş: Mahalle Mağazası'),
+        findsNothing,
+      );
+
+      postVerificationRefresh.complete();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Az önce onaylanan alışveriş: Mahalle Mağazası'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('highlighted-purchase-purchase-1')),
+        findsOneWidget,
+      );
+      verify(() => purchaseHistoryCubit.loadPurchases()).called(1);
+      verify(() => cartV2Cubit.getActiveCartItems()).called(3);
+    },
+  );
 
   testWidgets('fiyat değişince onay almadan QR açmaz', (tester) async {
     final stateController = StreamController<CartV2State>();
