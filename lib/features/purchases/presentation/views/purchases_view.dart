@@ -102,7 +102,12 @@ class _PurchaseHistoryTab extends StatelessWidget {
         }
 
         final purchases = (state as PurchaseHistoryLoaded).purchases;
-        if (purchases.isEmpty) {
+        final isRecentQrPurchase =
+            initialPurchaseId == null && initialQrSessionId != null;
+        final hasTarget =
+            initialPurchaseId != null || initialQrSessionId != null;
+
+        if (purchases.isEmpty && !hasTarget) {
           return _CenteredState(
             icon: Icons.shopping_bag_outlined,
             title: 'Henüz doğrulanmış alışverişin yok',
@@ -113,10 +118,6 @@ class _PurchaseHistoryTab extends StatelessWidget {
           );
         }
 
-        final isRecentQrPurchase =
-            initialPurchaseId == null && initialQrSessionId != null;
-        final hasTarget =
-            initialPurchaseId != null || initialQrSessionId != null;
         final targetedPurchaseIndex = purchases.indexWhere((purchase) {
           if (initialPurchaseId != null) {
             return purchase.id == initialPurchaseId;
@@ -147,7 +148,10 @@ class _PurchaseHistoryTab extends StatelessWidget {
                 const SizedBox(height: TSizes.spaceBtwItems),
             itemBuilder: (context, index) {
               if (showMissingTargetMessage && index == 0) {
-                return const _MissingTargetPurchaseMessage();
+                return _MissingTargetPurchaseMessage(
+                  isRecentQrPurchase: isRecentQrPurchase,
+                  onRetry: context.read<PurchaseHistoryCubit>().loadPurchases,
+                );
               }
 
               final purchaseIndex = showMissingTargetMessage
@@ -227,29 +231,60 @@ class _TargetPurchaseLabel extends StatelessWidget {
 }
 
 class _MissingTargetPurchaseMessage extends StatelessWidget {
-  const _MissingTargetPurchaseMessage();
+  const _MissingTargetPurchaseMessage({
+    required this.isRecentQrPurchase,
+    required this.onRetry,
+  });
+
+  final bool isRecentQrPurchase;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      key: const Key('missing-notification-purchase-message'),
+      key: Key(
+        isRecentQrPurchase
+            ? 'missing-recent-qr-purchase-message'
+            : 'missing-notification-purchase-message',
+      ),
       padding: const EdgeInsets.all(TSizes.md),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
       ),
-      child: const Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(Icons.info_outline),
-          SizedBox(width: TSizes.sm),
-          Expanded(
-            child: Text(
-              'Bildirimdeki alışveriş artık bulunamıyor. Diğer alışverişlerin gösteriliyor.',
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.info_outline),
+              const SizedBox(width: TSizes.sm),
+              Expanded(
+                child: Text(
+                  isRecentQrPurchase
+                      ? 'Az önce onaylanan alışveriş henüz listede görünmüyor. '
+                            'Birkaç saniye sonra yeniden kontrol edebilirsin.'
+                      : 'Bildirimdeki alışveriş artık bulunamıyor. '
+                            'Diğer alışverişlerin gösteriliyor.',
+                ),
+              ),
+            ],
           ),
+          if (isRecentQrPurchase) ...[
+            const SizedBox(height: TSizes.sm),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const Key('retry-recent-qr-purchase-action'),
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Yeniden kontrol et'),
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -170,6 +172,128 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'QR alışverişi henüz yoksa doğru açıklamayı ve yeniden kontrolü gösterir',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PurchasesView(
+            purchaseHistoryCubit: cubit,
+            initialQrSessionId: 'missing-session',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('missing-recent-qr-purchase-message')),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining(
+          'Az önce onaylanan alışveriş henüz listede görünmüyor.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Yeniden kontrol et'), findsOneWidget);
+      expect(
+        find.byKey(const Key('missing-notification-purchase-message')),
+        findsNothing,
+      );
+      expect(find.text('Mahalle Marketi'), findsOneWidget);
+    },
+  );
+
+  testWidgets('boş listede de QR alışverişi için kurtarma seçeneğini korur', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: const PurchaseHistoryLoaded([]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialQrSessionId: 'missing-session',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('missing-recent-qr-purchase-message')),
+      findsOneWidget,
+    );
+    expect(find.text('Henüz doğrulanmış alışverişin yok'), findsNothing);
+  });
+
+  testWidgets('yeniden kontrolde gelen QR alışverişini otomatik öne çıkarır', (
+    tester,
+  ) async {
+    final stateController = StreamController<PurchaseHistoryState>();
+    addTearDown(stateController.close);
+    final recentPurchase = VerifiedPurchaseEntity(
+      id: 'purchase-recent',
+      sourceQrSessionId: 'session-recent',
+      shopId: 'shop-2',
+      shopName: 'Semt Kırtasiyesi',
+      itemCount: 1,
+      totalAmount: 45,
+      confirmedAt: DateTime.utc(2026, 7, 29, 10),
+      items: const [
+        VerifiedPurchaseItemEntity(
+          id: 'item-recent',
+          shopProductId: 'shop-product-2',
+          productName: 'Defter',
+          quantity: 1,
+          unitPrice: 45,
+          lineTotal: 45,
+        ),
+      ],
+    );
+    var loadCount = 0;
+    whenListen(
+      cubit,
+      stateController.stream,
+      initialState: PurchaseHistoryLoaded([purchase]),
+    );
+    when(() => cubit.loadPurchases()).thenAnswer((_) async {
+      loadCount++;
+      if (loadCount != 2) return;
+      stateController.add(PurchaseHistoryLoaded([purchase, recentPurchase]));
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialQrSessionId: 'session-recent',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('retry-recent-qr-purchase-action')));
+    await tester.pumpAndSettle();
+
+    expect(loadCount, 2);
+    expect(
+      find.byKey(const Key('highlighted-purchase-purchase-recent')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Az önce onaylanan alışveriş: Semt Kırtasiyesi'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('missing-recent-qr-purchase-message')),
+      findsNothing,
+    );
+  });
 
   testWidgets('bulunamayan bildirim alışverişinde diğer kayıtları korur', (
     tester,

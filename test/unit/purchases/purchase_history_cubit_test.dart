@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,4 +60,20 @@ void main() {
       const PurchaseHistoryError('Alışverişler yüklenemedi.'),
     ],
   );
+
+  test('yükleme sürerken ikinci isteği başlatmaz', () async {
+    final request = Completer<Either<String, List<VerifiedPurchaseEntity>>>();
+    when(() => usecase(const NoParams())).thenAnswer((_) => request.future);
+    final cubit = PurchaseHistoryCubit(getVerifiedPurchasesUsecase: usecase);
+    addTearDown(cubit.close);
+
+    final firstLoad = cubit.loadPurchases();
+    final secondLoad = cubit.loadPurchases();
+
+    verify(() => usecase(const NoParams())).called(1);
+    request.complete(Right([purchase]));
+    await Future.wait([firstLoad, secondLoad]);
+
+    expect(cubit.state, PurchaseHistoryLoaded([purchase]));
+  });
 }

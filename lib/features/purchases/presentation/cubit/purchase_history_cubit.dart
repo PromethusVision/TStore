@@ -10,6 +10,8 @@ class PurchaseHistoryCubit extends Cubit<PurchaseHistoryState> {
     : super(PurchaseHistoryInitial());
 
   Future<void> loadPurchases() async {
+    if (state is PurchaseHistoryLoading) return;
+
     emit(PurchaseHistoryLoading());
 
     final result = await getVerifiedPurchasesUsecase(const NoParams());
