@@ -33,8 +33,9 @@ class CartQrSessionBottomSheet extends StatefulWidget {
 class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   Timer? _timer;
   DateTime _now = DateTime.now();
-  String? _confirmedUpdatedTotalSessionId;
+  String? _confirmedUpdatedSummarySessionId;
   bool _isRetryingInvalidSnapshot = false;
+  bool _isRefreshingExpiredSession = false;
 
   @override
   void initState() {
@@ -76,6 +77,14 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
     context.read<QrSessionCubit>().createQrSession(widget.cartId);
   }
 
+  void _refreshExpiredSession() {
+    if (_isRefreshingExpiredSession) return;
+
+    _stopTimer();
+    setState(() => _isRefreshingExpiredSession = true);
+    context.read<QrSessionCubit>().createQrSession(widget.cartId);
+  }
+
   bool _hasValidSnapshotSummary(QrSessionEntity session) {
     final itemCount = session.itemCount;
     final totalAmount = session.totalAmount;
@@ -101,14 +110,18 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
           listener: (context, state) {
             if (state is QrSessionCreated) {
               _isRetryingInvalidSnapshot = false;
+              _isRefreshingExpiredSession = false;
               if (_hasValidSnapshotSummary(state.session)) {
                 _startTimer();
               } else {
                 _stopTimer();
               }
             }
-            if (state is QrSessionCompleted || state is QrSessionFailure) {
+            if (state is QrSessionCompleted ||
+                state is QrSessionCancelled ||
+                state is QrSessionFailure) {
               _isRetryingInvalidSnapshot = false;
+              _isRefreshingExpiredSession = false;
               _stopTimer();
             }
           },
@@ -123,6 +136,12 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                 onRetry: () {
                   context.read<QrSessionCubit>().createQrSession(widget.cartId);
                 },
+              );
+            }
+
+            if (state is QrSessionCancelled) {
+              return _QrSessionCancelledView(
+                onBackToCart: () => Navigator.of(context).pop(),
               );
             }
 
@@ -148,18 +167,26 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
 
               final sessionItemCount = state.session.itemCount!;
               final sessionTotal = state.session.totalAmount!;
-              final requiresUpdatedTotalConfirmation =
-                  (sessionTotal - widget.totalAmount).abs() > 0.005 &&
-                  _confirmedUpdatedTotalSessionId != state.session.id;
+              final itemCountChanged = sessionItemCount != widget.itemCount;
+              final totalChanged =
+                  (sessionTotal - widget.totalAmount).abs() > 0.005;
+              final requiresUpdatedSummaryConfirmation =
+                  (itemCountChanged || totalChanged) &&
+                  _confirmedUpdatedSummarySessionId != state.session.id;
 
-              if (requiresUpdatedTotalConfirmation) {
-                return _QrSessionTotalChangeView(
+              if (requiresUpdatedSummaryConfirmation) {
+                return _QrSessionSummaryChangeView(
+                  previousItemCount: widget.itemCount,
+                  currentItemCount: sessionItemCount,
                   previousTotal: widget.totalAmount,
                   currentTotal: sessionTotal,
+                  itemCountChanged: itemCountChanged,
+                  totalChanged: totalChanged,
                   onCancel: () => Navigator.of(context).pop(),
                   onContinue: () {
                     setState(
-                      () => _confirmedUpdatedTotalSessionId = state.session.id,
+                      () =>
+                          _confirmedUpdatedSummarySessionId = state.session.id,
                     );
                   },
                 );
@@ -171,9 +198,8 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                 itemCount: sessionItemCount,
                 totalAmount: sessionTotal,
                 remaining: state.session.expiresAt.difference(_now),
-                onRefresh: () {
-                  context.read<QrSessionCubit>().createQrSession(widget.cartId);
-                },
+                isRefreshing: _isRefreshingExpiredSession,
+                onRefresh: _refreshExpiredSession,
               );
             }
 
@@ -244,16 +270,24 @@ class _QrSessionInvalidSnapshotView extends StatelessWidget {
   }
 }
 
-class _QrSessionTotalChangeView extends StatelessWidget {
-  const _QrSessionTotalChangeView({
+class _QrSessionSummaryChangeView extends StatelessWidget {
+  const _QrSessionSummaryChangeView({
+    required this.previousItemCount,
+    required this.currentItemCount,
     required this.previousTotal,
     required this.currentTotal,
+    required this.itemCountChanged,
+    required this.totalChanged,
     required this.onCancel,
     required this.onContinue,
   });
 
+  final int previousItemCount;
+  final int currentItemCount;
   final double previousTotal;
   final double currentTotal;
+  final bool itemCountChanged;
+  final bool totalChanged;
   final VoidCallback onCancel;
   final VoidCallback onContinue;
 
@@ -265,42 +299,61 @@ class _QrSessionTotalChangeView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Icon(
-            Icons.price_check_outlined,
+            Icons.fact_check_outlined,
             size: 56,
             color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
-            'QR tutarı güncellendi',
+            'Sepet bilgileri güncellendi',
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.sm),
           Text(
-            'QR hazırlanırken mağazadaki güncel fiyat sepetinize yansıdı. '
-            'Kodu göstermeden önce yeni tutarı kontrol edin.',
+            'QR hazırlanırken ürün adedi veya toplam tutar değişti. '
+            'Kodu göstermeden önce güncel sepeti kontrol edin.',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
-          _QrTotalChangeRow(label: 'Az önceki toplam', amount: previousTotal),
-          const SizedBox(height: TSizes.sm),
-          _QrTotalChangeRow(
-            label: 'QR toplamı',
-            amount: currentTotal,
-            isHighlighted: true,
-          ),
+          if (itemCountChanged) ...[
+            _QrSummaryChangeRow(
+              label: 'Az önceki ürün adedi',
+              value: previousItemCount.toString(),
+            ),
+            const SizedBox(height: TSizes.sm),
+            _QrSummaryChangeRow(
+              label: 'Güncel ürün adedi',
+              value: currentItemCount.toString(),
+              isHighlighted: true,
+            ),
+          ],
+          if (itemCountChanged && totalChanged)
+            const SizedBox(height: TSizes.spaceBtwItems),
+          if (totalChanged) ...[
+            _QrSummaryChangeRow(
+              label: 'Az önceki toplam',
+              value: '₺${previousTotal.toStringAsFixed(2)}',
+            ),
+            const SizedBox(height: TSizes.sm),
+            _QrSummaryChangeRow(
+              label: 'Güncel toplam',
+              value: '₺${currentTotal.toStringAsFixed(2)}',
+              isHighlighted: true,
+            ),
+          ],
           const SizedBox(height: TSizes.spaceBtwItems),
           FilledButton(
-            key: const Key('qr-total-change-continue-action'),
+            key: const Key('qr-summary-change-continue-action'),
             onPressed: onContinue,
-            child: const Text('Güncel tutarla devam et'),
+            child: const Text('Güncel sepetle devam et'),
           ),
           const SizedBox(height: TSizes.sm),
           OutlinedButton(
-            key: const Key('qr-total-change-cancel-action'),
+            key: const Key('qr-summary-change-cancel-action'),
             onPressed: onCancel,
-            child: const Text('Vazgeç'),
+            child: const Text('Sepete dön'),
           ),
         ],
       ),
@@ -308,15 +361,15 @@ class _QrSessionTotalChangeView extends StatelessWidget {
   }
 }
 
-class _QrTotalChangeRow extends StatelessWidget {
-  const _QrTotalChangeRow({
+class _QrSummaryChangeRow extends StatelessWidget {
+  const _QrSummaryChangeRow({
     required this.label,
-    required this.amount,
+    required this.value,
     this.isHighlighted = false,
   });
 
   final String label;
-  final double amount;
+  final String value;
   final bool isHighlighted;
 
   @override
@@ -338,7 +391,7 @@ class _QrTotalChangeRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(label, style: textStyle)),
-          Text('₺${amount.toStringAsFixed(2)}', style: textStyle),
+          Text(value, style: textStyle),
         ],
       ),
     );
@@ -549,12 +602,55 @@ class _QrSessionFailureView extends StatelessWidget {
   }
 }
 
+class _QrSessionCancelledView extends StatelessWidget {
+  const _QrSessionCancelledView({required this.onBackToCart});
+
+  final VoidCallback onBackToCart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.sync_problem_outlined,
+          size: 56,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        Text(
+          'QR iptal edildi',
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.sm),
+        Text(
+          'Sepetiniz değiştiği için eski QR artık geçerli değil. '
+          'Güncel sepetinizi kontrol edin.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: TSizes.spaceBtwItems),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            key: const Key('qr-cancelled-back-to-cart-action'),
+            onPressed: onBackToCart,
+            child: const Text('Sepete dön ve güncelle'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _QrSessionContent extends StatelessWidget {
   final QrSessionEntity session;
   final String shopName;
   final int itemCount;
   final double totalAmount;
   final Duration remaining;
+  final bool isRefreshing;
   final VoidCallback onRefresh;
 
   const _QrSessionContent({
@@ -563,6 +659,7 @@ class _QrSessionContent extends StatelessWidget {
     required this.itemCount,
     required this.totalAmount,
     required this.remaining,
+    required this.isRefreshing,
     required this.onRefresh,
   });
 
@@ -624,8 +721,14 @@ class _QrSessionContent extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: onRefresh,
-                child: const Text('Yeniden Oluştur'),
+                key: const Key('qr-expired-refresh-action'),
+                onPressed: isRefreshing ? null : onRefresh,
+                child: isRefreshing
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Yeniden Oluştur'),
               ),
             ),
           ],

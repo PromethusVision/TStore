@@ -101,6 +101,43 @@ void main() {
       ],
     );
 
+    test('ignores a second QR creation while the first is running', () async {
+      final createCompleter = Completer<Either<String, QrSessionEntity>>();
+      when(
+        () => mockCreateQrSessionUsecase(any()),
+      ).thenAnswer((_) => createCompleter.future);
+
+      final firstRequest = qrSessionCubit.createQrSession('cart-1');
+      await Future<void>.delayed(Duration.zero);
+      final secondRequest = qrSessionCubit.createQrSession('cart-1');
+      await secondRequest;
+
+      verify(() => mockCreateQrSessionUsecase(any())).called(1);
+
+      createCompleter.complete(Right(activeSession));
+      await firstRequest;
+
+      expect(qrSessionCubit.state, QrSessionCreated(activeSession));
+    });
+
+    test('allows retry after QR creation fails', () async {
+      var requestCount = 0;
+      when(() => mockCreateQrSessionUsecase(any())).thenAnswer((_) async {
+        requestCount++;
+        return requestCount == 1
+            ? const Left('QR oluşturulamadı')
+            : Right(activeSession);
+      });
+
+      await qrSessionCubit.createQrSession('cart-1');
+      expect(qrSessionCubit.state, const QrSessionFailure('QR oluşturulamadı'));
+
+      await qrSessionCubit.createQrSession('cart-1');
+
+      expect(qrSessionCubit.state, QrSessionCreated(activeSession));
+      verify(() => mockCreateQrSessionUsecase(any())).called(2);
+    });
+
     test('keeps item count and total amount returned by the server', () async {
       when(
         () => mockCreateQrSessionUsecase(any()),
@@ -164,37 +201,57 @@ void main() {
       },
     );
 
-    for (final status in ['expired', 'cancelled']) {
-      blocTest<QrSessionCubit, QrSessionState>(
-        'asks for a new QR when polling returns $status',
-        build: () {
-          when(
-            () => mockCreateQrSessionUsecase(any()),
-          ).thenAnswer((_) async => Right(activeSession));
-          when(
-            () => mockGetQrSessionStatusUsecase(any()),
-          ).thenAnswer((_) async => Right(status));
-          return qrSessionCubit;
-        },
-        act: (cubit) async {
-          await cubit.createQrSession('cart-1');
-          await cubit.checkSessionStatus();
-        },
-        expect: () => [
-          QrSessionLoading(),
-          QrSessionCreated(activeSession),
-          isA<QrSessionFailure>().having(
-            (state) => state.message,
-            'message',
-            isNotEmpty,
-          ),
-        ],
-        verify: (cubit) {
-          expect(cubit.state, isA<QrSessionFailure>());
-          verify(() => mockGetQrSessionStatusUsecase(any())).called(1);
-        },
-      );
-    }
+    blocTest<QrSessionCubit, QrSessionState>(
+      'asks for a new QR when polling returns expired',
+      build: () {
+        when(
+          () => mockCreateQrSessionUsecase(any()),
+        ).thenAnswer((_) async => Right(activeSession));
+        when(
+          () => mockGetQrSessionStatusUsecase(any()),
+        ).thenAnswer((_) async => const Right('expired'));
+        return qrSessionCubit;
+      },
+      act: (cubit) async {
+        await cubit.createQrSession('cart-1');
+        await cubit.checkSessionStatus();
+      },
+      expect: () => [
+        QrSessionLoading(),
+        QrSessionCreated(activeSession),
+        const QrSessionFailure(
+          'QR kodunun süresi doldu. Yeni bir kod oluşturun.',
+        ),
+      ],
+      verify: (_) {
+        verify(() => mockGetQrSessionStatusUsecase(any())).called(1);
+      },
+    );
+
+    blocTest<QrSessionCubit, QrSessionState>(
+      'returns to the cart when polling reports a cancelled QR',
+      build: () {
+        when(
+          () => mockCreateQrSessionUsecase(any()),
+        ).thenAnswer((_) async => Right(activeSession));
+        when(
+          () => mockGetQrSessionStatusUsecase(any()),
+        ).thenAnswer((_) async => const Right('cancelled'));
+        return qrSessionCubit;
+      },
+      act: (cubit) async {
+        await cubit.createQrSession('cart-1');
+        await cubit.checkSessionStatus();
+      },
+      expect: () => [
+        QrSessionLoading(),
+        QrSessionCreated(activeSession),
+        const QrSessionCancelled(),
+      ],
+      verify: (_) {
+        verify(() => mockGetQrSessionStatusUsecase(any())).called(1);
+      },
+    );
 
     test('closing during a status check is safe', () async {
       final statusCompleter = Completer<Either<String, String>>();

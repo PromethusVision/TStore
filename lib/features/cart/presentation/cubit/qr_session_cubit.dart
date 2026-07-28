@@ -13,6 +13,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
 
   Timer? _statusTimer;
   QrSessionEntity? _activeSession;
+  bool _isCreatingSession = false;
   bool _isCheckingStatus = false;
   int _operationId = 0;
 
@@ -23,26 +24,33 @@ class QrSessionCubit extends Cubit<QrSessionState> {
   }) : super(QrSessionInitial());
 
   Future<void> createQrSession(String cartId) async {
+    if (_isCreatingSession || isClosed) return;
+
+    _isCreatingSession = true;
     final operationId = ++_operationId;
     _stopStatusPolling();
     _activeSession = null;
-    emit(QrSessionLoading());
+    try {
+      emit(QrSessionLoading());
 
-    final result = await createQrSessionUsecase(
-      CreateQrSessionParams(cartId: cartId),
-    );
+      final result = await createQrSessionUsecase(
+        CreateQrSessionParams(cartId: cartId),
+      );
 
-    if (isClosed || operationId != _operationId) return;
+      if (isClosed || operationId != _operationId) return;
 
-    result.fold((error) => emit(QrSessionFailure(error)), (session) {
-      _activeSession = session;
-      emit(QrSessionCreated(session));
+      result.fold((error) => emit(QrSessionFailure(error)), (session) {
+        _activeSession = session;
+        emit(QrSessionCreated(session));
 
-      if (session.status == 'active' &&
-          session.expiresAt.isAfter(DateTime.now())) {
-        _startStatusPolling();
-      }
-    });
+        if (session.status == 'active' &&
+            session.expiresAt.isAfter(DateTime.now())) {
+          _startStatusPolling();
+        }
+      });
+    } finally {
+      _isCreatingSession = false;
+    }
   }
 
   Future<void> checkSessionStatus([String? sessionId]) async {
@@ -71,14 +79,19 @@ class QrSessionCubit extends Cubit<QrSessionState> {
           return;
         }
 
-        if (status == 'expired' || status == 'cancelled') {
+        if (status == 'cancelled') {
+          _stopStatusPolling();
+          _activeSession = null;
+          emit(const QrSessionCancelled());
+          return;
+        }
+
+        if (status == 'expired') {
           _stopStatusPolling();
           _activeSession = null;
           emit(
-            QrSessionFailure(
-              status == 'expired'
-                  ? 'QR kodunun süresi doldu. Yeni bir kod oluşturun.'
-                  : 'Sepet değiştiği için QR kodu iptal edildi. Yeni bir kod oluşturun.',
+            const QrSessionFailure(
+              'QR kodunun süresi doldu. Yeni bir kod oluşturun.',
             ),
           );
         }

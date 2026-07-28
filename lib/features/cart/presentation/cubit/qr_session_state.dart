@@ -30,6 +30,10 @@ class QrSessionCompleted extends QrSessionState {
   List<Object?> get props => [sessionId];
 }
 
+class QrSessionCancelled extends QrSessionState {
+  const QrSessionCancelled();
+}
+
 class QrSessionFailure extends QrSessionState {
   final String message;
 

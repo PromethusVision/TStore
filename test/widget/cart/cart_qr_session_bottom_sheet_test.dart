@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,17 +25,19 @@ void main() {
   late MockShopRatingCubit shopRatingCubit;
 
   QrSessionEntity buildSession({
+    String id = 'session-1',
     int? itemCount = 2,
     double? totalAmount = 249.90,
+    DateTime? expiresAt,
   }) {
     return QrSessionEntity(
-      id: 'session-1',
-      sessionToken: 'token-1',
+      id: id,
+      sessionToken: 'token-$id',
       userId: 'customer-1',
       cartId: 'cart-1',
       shopId: 'shop-1',
       status: 'active',
-      expiresAt: DateTime.utc(2099, 1, 1),
+      expiresAt: expiresAt ?? DateTime.utc(2099, 1, 1),
       createdAt: DateTime.utc(2098, 12, 1),
       updatedAt: DateTime.utc(2098, 12, 1),
       itemCount: itemCount,
@@ -71,13 +75,11 @@ void main() {
 
   Widget buildSubject(
     QrSessionState initialState, {
+    int itemCount = 2,
     double totalAmount = 249.90,
+    Stream<QrSessionState> stateStream = const Stream<QrSessionState>.empty(),
   }) {
-    whenListen(
-      qrSessionCubit,
-      const Stream<QrSessionState>.empty(),
-      initialState: initialState,
-    );
+    whenListen(qrSessionCubit, stateStream, initialState: initialState);
 
     return MaterialApp(
       home: Scaffold(
@@ -86,7 +88,7 @@ void main() {
           child: CartQrSessionBottomSheet(
             cartId: 'cart-1',
             shopName: 'Mahalle Mağazası',
-            itemCount: 1,
+            itemCount: itemCount,
             totalAmount: totalAmount,
           ),
         ),
@@ -96,6 +98,7 @@ void main() {
 
   Widget buildModalSubject(
     QrSessionState initialState, {
+    int itemCount = 2,
     double totalAmount = 249.90,
   }) {
     whenListen(
@@ -117,7 +120,7 @@ void main() {
                   child: CartQrSessionBottomSheet(
                     cartId: 'cart-1',
                     shopName: 'Mahalle Mağazası',
-                    itemCount: 1,
+                    itemCount: itemCount,
                     totalAmount: totalAmount,
                   ),
                 ),
@@ -148,7 +151,7 @@ void main() {
       find.byKey(const Key('purchase-verification-qr-code')),
       findsOneWidget,
     );
-    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -162,7 +165,7 @@ void main() {
       find.byKey(const Key('purchase-verification-qr-code')),
       findsNothing,
     );
-    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
   });
 
   testWidgets('eksik QR özeti kodu gizler ve çift yeniden denemeyi engeller', (
@@ -205,7 +208,7 @@ void main() {
       find.byKey(const Key('purchase-verification-qr-code')),
       findsNothing,
     );
-    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
   });
 
   testWidgets('sıfır toplamlı geçerli QR özetini kabul eder', (tester) async {
@@ -251,21 +254,26 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('QR tutarı güncellendi'), findsOneWidget);
+    expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
     expect(find.text('Az önceki toplam'), findsOneWidget);
     expect(find.text('₺100.00'), findsOneWidget);
-    expect(find.text('QR toplamı'), findsOneWidget);
+    expect(find.text('Güncel toplam'), findsOneWidget);
     expect(find.text('₺249.90'), findsOneWidget);
+    expect(find.text('Az önceki ürün adedi'), findsNothing);
     expect(
       find.byKey(const Key('purchase-verification-qr-code')),
       findsNothing,
     );
 
-    await tester.tap(find.byKey(const Key('qr-total-change-continue-action')));
-    await tester.tap(find.byKey(const Key('qr-total-change-continue-action')));
+    await tester.tap(
+      find.byKey(const Key('qr-summary-change-continue-action')),
+    );
+    await tester.tap(
+      find.byKey(const Key('qr-summary-change-continue-action')),
+    );
     await tester.pump();
 
-    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
     expect(find.text('Alışverişi doğrula'), findsOneWidget);
     expect(find.text('TL 249.90'), findsOneWidget);
     expect(
@@ -275,27 +283,145 @@ void main() {
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 
-  testWidgets('güncel QR tutarı reddedilince pencere kapanır', (tester) async {
+  testWidgets('sunucu ürün adedi değişince toplam aynı olsa da QR gizlenir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(QrSessionCreated(activeSession), itemCount: 1),
+    );
+    await tester.pump();
+
+    expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
+    expect(find.text('Az önceki ürün adedi'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Güncel ürün adedi'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
+    expect(find.text('Az önceki toplam'), findsNothing);
+    expect(find.text('Güncel toplam'), findsNothing);
+    expect(find.text('Güncel sepetle devam et'), findsOneWidget);
+    expect(find.text('Sepete dön'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+
+    await tester.tap(
+      find.byKey(const Key('qr-summary-change-continue-action')),
+    );
+    await tester.pump();
+
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
+    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
+  });
+
+  testWidgets('güncel QR sepeti reddedilince pencere kapanır', (tester) async {
     await tester.pumpWidget(
       buildModalSubject(QrSessionCreated(activeSession), totalAmount: 100),
     );
 
     await tester.tap(find.byKey(const Key('open-qr-sheet')));
     await tester.pumpAndSettle();
-    expect(find.text('QR tutarı güncellendi'), findsOneWidget);
+    expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
 
-    final cancelAction = find.byKey(const Key('qr-total-change-cancel-action'));
+    final cancelAction = find.byKey(
+      const Key('qr-summary-change-cancel-action'),
+    );
     await tester.ensureVisible(cancelAction);
     await tester.pumpAndSettle();
     await tester.tap(cancelAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('QR tutarı güncellendi'), findsNothing);
+    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
     expect(
       find.byKey(const Key('purchase-verification-qr-code')),
       findsNothing,
     );
     expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+  });
+
+  testWidgets('süresi dolan QR gizlenir ve çift yenileme isteği engellenir', (
+    tester,
+  ) async {
+    final expiredSession = buildSession(
+      id: 'expired-session',
+      expiresAt: DateTime.utc(2000, 1, 1),
+    );
+
+    await tester.pumpWidget(buildSubject(QrSessionCreated(expiredSession)));
+    await tester.pump();
+
+    expect(find.text('Süresi doldu'), findsOneWidget);
+    expect(find.text('Yeniden Oluştur'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+
+    final refreshAction = find.byKey(const Key('qr-expired-refresh-action'));
+    await tester.tap(refreshAction);
+    await tester.tap(refreshAction);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(tester.widget<ElevatedButton>(refreshAction).onPressed, isNull);
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(2);
+  });
+
+  testWidgets('yenilenen QR değişmiş sepet için tekrar onay ister', (
+    tester,
+  ) async {
+    final stateController = StreamController<QrSessionState>();
+    addTearDown(stateController.close);
+    final expiredSession = buildSession(
+      id: 'expired-session',
+      expiresAt: DateTime.utc(2000, 1, 1),
+    );
+    final refreshedSession = buildSession(
+      id: 'refreshed-session',
+      itemCount: 3,
+      totalAmount: 299.90,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        QrSessionCreated(expiredSession),
+        stateStream: stateController.stream,
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('qr-expired-refresh-action')));
+    stateController.add(QrSessionCreated(refreshedSession));
+    await tester.pump();
+
+    expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
+    expect(find.text('Az önceki ürün adedi'), findsOneWidget);
+    expect(find.text('Güncel ürün adedi'), findsOneWidget);
+    expect(find.text('Az önceki toplam'), findsOneWidget);
+    expect(find.text('Güncel toplam'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+
+    await tester.tap(
+      find.byKey(const Key('qr-summary-change-continue-action')),
+    );
+    await tester.pump();
+
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('TL 299.90'), findsOneWidget);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsOneWidget,
+    );
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(2);
   });
 
   testWidgets('esnaf onayından sonra yeşil onay durumu gösterir', (
@@ -390,5 +516,43 @@ void main() {
     await tester.pump();
 
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(2);
+  });
+
+  testWidgets('iptal edilen QR kodu gizler ve yeniden deneme sunmaz', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(const QrSessionCancelled()));
+    await tester.pump();
+
+    expect(find.text('QR iptal edildi'), findsOneWidget);
+    expect(
+      find.text(
+        'Sepetiniz değiştiği için eski QR artık geçerli değil. '
+        'Güncel sepetinizi kontrol edin.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Sepete dön ve güncelle'), findsOneWidget);
+    expect(find.text('Yeniden Dene'), findsNothing);
+    expect(
+      find.byKey(const Key('purchase-verification-qr-code')),
+      findsNothing,
+    );
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
+  });
+
+  testWidgets('iptal edilen QR ekranından sepete dönüş pencereyi kapatır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildModalSubject(const QrSessionCancelled()));
+    await tester.tap(find.byKey(const Key('open-qr-sheet')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('qr-cancelled-back-to-cart-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('QR iptal edildi'), findsNothing);
+    expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+    verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 }
