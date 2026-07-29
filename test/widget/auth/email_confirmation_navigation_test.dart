@@ -74,4 +74,73 @@ void main() {
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
+
+  testWidgets('message intent is carried from sign up to email verification', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    addTearDown(authCubit.close);
+    whenListen(
+      authCubit,
+      Stream<AuthState>.value(const AuthEmailConfirmationRequired(email)),
+      initialState: AuthInitial(),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        authCubit: authCubit,
+        child: const SingleChildScrollView(
+          child: SignUpFormSection(returnToCallerAfterCustomerLogin: true),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    final verificationView = tester.widget<VerifyEmailView>(
+      find.byType(VerifyEmailView),
+    );
+    expect(verificationView.returnToCallerAfterCustomerLogin, isTrue);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('unconfirmed special login returns to its waiting login screen', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    addTearDown(authCubit.close);
+    whenListen(
+      authCubit,
+      Stream<AuthState>.value(const AuthEmailConfirmationRequired(email)),
+      initialState: AuthInitial(),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        authCubit: authCubit,
+        child: const SingleChildScrollView(
+          child: LoginFormSection(returnToCallerAfterCustomerLogin: true),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    final verificationView = tester.widget<VerifyEmailView>(
+      find.byType(VerifyEmailView),
+    );
+    expect(verificationView.returnToCallerAfterCustomerLogin, isTrue);
+
+    await tester.ensureVisible(
+      find.byKey(const Key('verify-email-back-to-login')),
+    );
+    await tester.tap(find.byKey(const Key('verify-email-back-to-login')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyEmailView), findsNothing);
+    expect(find.byType(LoginFormSection), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
 }

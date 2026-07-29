@@ -15,7 +15,12 @@ import 'package:t_store/features/auth/presentation/views/signup/verify_email_vie
 import 'terms_and_privacy_agreement.dart';
 
 class SignUpFormSection extends StatefulWidget {
-  const SignUpFormSection({super.key});
+  const SignUpFormSection({
+    super.key,
+    this.returnToCallerAfterCustomerLogin = false,
+  });
+
+  final bool returnToCallerAfterCustomerLogin;
 
   @override
   State<SignUpFormSection> createState() => _SignUpFormSectionState();
@@ -81,10 +86,20 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthEmailConfirmationRequired) {
+          final verificationView = VerifyEmailView(
+            email: state.email,
+            returnToCallerAfterCustomerLogin:
+                widget.returnToCallerAfterCustomerLogin,
+          );
+          if (widget.returnToCallerAfterCustomerLogin) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute<void>(builder: (_) => verificationView),
+            );
+            return;
+          }
+
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute<void>(
-              builder: (_) => VerifyEmailView(email: state.email),
-            ),
+            MaterialPageRoute<void>(builder: (_) => verificationView),
             (_) => false,
           );
         } else if (state is AuthError) {

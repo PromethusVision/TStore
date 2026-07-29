@@ -150,10 +150,20 @@ class _LoginFormSectionState extends State<LoginFormSection> {
             type: SnackBarType.error,
           );
         } else if (state is AuthEmailConfirmationRequired) {
+          final verificationView = VerifyEmailView(
+            email: state.email,
+            returnToCallerAfterCustomerLogin:
+                widget.returnToCallerAfterCustomerLogin,
+          );
+          if (widget.returnToCallerAfterCustomerLogin) {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute<void>(builder: (_) => verificationView));
+            return;
+          }
+
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute<void>(
-              builder: (_) => VerifyEmailView(email: state.email),
-            ),
+            MaterialPageRoute<void>(builder: (_) => verificationView),
             (_) => false,
           );
         }
@@ -261,7 +271,10 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                     onPressed: () {
                       THelperFunctions.navigateToScreen(
                         context,
-                        const SignUpView(),
+                        SignUpView(
+                          returnToCallerAfterCustomerLogin:
+                              widget.returnToCallerAfterCustomerLogin,
+                        ),
                       );
                     },
                     child: const Text(TTexts.createAccount),

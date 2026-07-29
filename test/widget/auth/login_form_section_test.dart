@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
 import 'package:t_store/features/auth/presentation/widgets/login_form_section.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -29,6 +31,9 @@ void main() {
 
   tearDown(() async {
     await authCubit.close();
+    if (sl.isRegistered<AuthCubit>()) {
+      await sl.unregister<AuthCubit>();
+    }
   });
 
   Widget buildSubject() {
@@ -113,5 +118,38 @@ void main() {
       find.text('İnternet bağlantınızı kontrol edip tekrar deneyin.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('message intent is carried to the create account screen', (
+    tester,
+  ) async {
+    final signUpAuthCubit = MockAuthCubit();
+    whenListen(
+      signUpAuthCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => signUpAuthCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => signUpAuthCubit);
+
+    await tester.pumpWidget(
+      BlocProvider<AuthCubit>.value(
+        value: authCubit,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: LoginFormSection(returnToCallerAfterCustomerLogin: true),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.ensureVisible(find.text('Hesap Oluştur'));
+    await tester.tap(find.text('Hesap Oluştur'));
+    await tester.pumpAndSettle();
+
+    final signUpView = tester.widget<SignUpView>(find.byType(SignUpView));
+    expect(signUpView.returnToCallerAfterCustomerLogin, isTrue);
   });
 }

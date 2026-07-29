@@ -7,7 +7,9 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/widgets/sign_up_form_section.dart';
 
 class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+  const SignUpView({super.key, this.returnToCallerAfterCustomerLogin = false});
+
+  final bool returnToCallerAfterCustomerLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,10 @@ class SignUpView extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
-                  const SignUpFormSection(),
+                  SignUpFormSection(
+                    returnToCallerAfterCustomerLogin:
+                        returnToCallerAfterCustomerLogin,
+                  ),
                 ],
               ),
             ),

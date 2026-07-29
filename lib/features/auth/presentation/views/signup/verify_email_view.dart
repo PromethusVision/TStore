@@ -16,10 +16,12 @@ class VerifyEmailView extends StatefulWidget {
     super.key,
     required this.email,
     this.resendCooldownSeconds = 60,
+    this.returnToCallerAfterCustomerLogin = false,
   });
 
   final String email;
   final int resendCooldownSeconds;
+  final bool returnToCallerAfterCustomerLogin;
 
   @override
   State<VerifyEmailView> createState() => _VerifyEmailViewState();
@@ -65,6 +67,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   }
 
   void _goToLogin() {
+    if (widget.returnToCallerAfterCustomerLogin &&
+        Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute<void>(builder: (_) => const LoginView()),
       (_) => false,

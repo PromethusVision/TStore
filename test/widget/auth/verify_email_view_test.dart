@@ -42,6 +42,36 @@ void main() {
     );
   }
 
+  Widget buildReturnSubject() {
+    return BlocProvider<AuthCubit>.value(
+      value: authCubit,
+      child: MaterialApp(
+        home: Builder(
+          builder: (context) {
+            return Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  key: const Key('open-special-verification'),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const VerifyEmailView(
+                          email: email,
+                          returnToCallerAfterCustomerLogin: true,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Önceki giriş ekranı'),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   testWidgets('shows the real email and never claims verification succeeded', (
     tester,
   ) async {
@@ -167,6 +197,25 @@ void main() {
     expect(find.byType(VerifyEmailView), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('special verification returns to the preserved login route', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildReturnSubject());
+    await tester.tap(find.byKey(const Key('open-special-verification')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyEmailView), findsOneWidget);
+    await tester.ensureVisible(
+      find.byKey(const Key('verify-email-back-to-login')),
+    );
+    await tester.tap(find.byKey(const Key('verify-email-back-to-login')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VerifyEmailView), findsNothing);
+    expect(find.text('Önceki giriş ekranı'), findsOneWidget);
+    expect(find.byType(LoginView), findsNothing);
   });
 
   testWidgets('does not overflow on a narrow screen', (tester) async {
