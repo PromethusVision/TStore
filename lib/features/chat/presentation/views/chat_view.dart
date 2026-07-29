@@ -6,26 +6,36 @@ import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
 
+typedef ChatCurrentUserIdProvider = String? Function();
+
 class ChatView extends StatelessWidget {
   final String receiverId;
   final String receiverName;
+  final String? initialDraft;
+  final ChatCubit? chatCubit;
+  final ChatCurrentUserIdProvider? currentUserIdProvider;
 
   const ChatView({
     super.key,
     required this.receiverId,
     required this.receiverName,
+    this.initialDraft,
+    this.chatCubit,
+    this.currentUserIdProvider,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<ChatCubit>()
+      create: (_) => (chatCubit ?? sl<ChatCubit>())
         ..startListening()
         ..markAllAsRead(receiverId)
         ..getMessages(receiverId, refresh: true),
       child: _ChatViewBody(
         receiverId: receiverId,
         receiverName: receiverName,
+        initialDraft: initialDraft,
+        currentUserIdProvider: currentUserIdProvider,
       ),
     );
   }
@@ -34,10 +44,14 @@ class ChatView extends StatelessWidget {
 class _ChatViewBody extends StatefulWidget {
   final String receiverId;
   final String receiverName;
+  final String? initialDraft;
+  final ChatCurrentUserIdProvider? currentUserIdProvider;
 
   const _ChatViewBody({
     required this.receiverId,
     required this.receiverName,
+    required this.initialDraft,
+    required this.currentUserIdProvider,
   });
 
   @override
@@ -45,10 +59,18 @@ class _ChatViewBody extends StatefulWidget {
 }
 
 class _ChatViewBodyState extends State<_ChatViewBody> {
-  final TextEditingController _messageController = TextEditingController();
+  late final TextEditingController _messageController;
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
   bool _didJumpToInitialMessages = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController(
+      text: widget.initialDraft?.trim() ?? '',
+    );
+  }
 
   @override
   void dispose() {
@@ -59,12 +81,13 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId = SupabaseService.instance.currentUser?.id;
+    final currentUserIdProvider = widget.currentUserIdProvider;
+    final currentUserId = currentUserIdProvider != null
+        ? currentUserIdProvider()
+        : SupabaseService.instance.currentUser?.id;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.receiverName),
-      ),
+      appBar: AppBar(title: Text(widget.receiverName)),
       body: SafeArea(
         child: BlocConsumer<ChatCubit, ChatState>(
           listener: (context, state) {
@@ -153,9 +176,9 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
     if (content.isEmpty) return;
 
     context.read<ChatCubit>().sendMessage(
-          receiverId: widget.receiverId,
-          content: content,
-        );
+      receiverId: widget.receiverId,
+      content: content,
+    );
   }
 }
 
@@ -173,9 +196,7 @@ class _MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
-      return const Center(
-        child: Text('Henüz mesaj yok.'),
-      );
+      return const Center(child: Text('Henüz mesaj yok.'));
     }
 
     return ListView.builder(
@@ -193,10 +214,7 @@ class _MessageList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (showDateHeader) _DateHeader(date: message.createdAt!),
-            _MessageBubble(
-              message: message,
-              isMine: isMine,
-            ),
+            _MessageBubble(message: message, isMine: isMine),
           ],
         );
       },
@@ -234,8 +252,8 @@ class _DateHeader extends StatelessWidget {
         child: Text(
           _formatFullDate(date),
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );
@@ -246,10 +264,7 @@ class _MessageBubble extends StatelessWidget {
   final ChatMessageEntity message;
   final bool isMine;
 
-  const _MessageBubble({
-    required this.message,
-    required this.isMine,
-  });
+  const _MessageBubble({required this.message, required this.isMine});
 
   @override
   Widget build(BuildContext context) {
@@ -276,17 +291,14 @@ class _MessageBubble extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              message.content,
-              style: TextStyle(color: textColor),
-            ),
+            Text(message.content, style: TextStyle(color: textColor)),
             if (message.createdAt != null) ...[
               const SizedBox(height: 4),
               Text(
                 _formatTime(message.createdAt!),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: textColor.withOpacity(0.72),
-                    ),
+                  color: textColor.withValues(alpha: 0.72),
+                ),
               ),
             ],
           ],
@@ -343,6 +355,7 @@ class _MessageInput extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
+                key: const Key('chat-message-input'),
                 controller: controller,
                 minLines: 1,
                 maxLines: 4,
@@ -355,6 +368,7 @@ class _MessageInput extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             IconButton.filled(
+              key: const Key('chat-message-send-action'),
               onPressed: isSending ? null : onSend,
               icon: isSending
                   ? const SizedBox(

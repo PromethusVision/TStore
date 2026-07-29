@@ -109,7 +109,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems),
-                    ProductSellersSection(productId: widget.product.id),
+                    ProductSellersSection(
+                      productId: widget.product.id,
+                      productName: widget.product.name,
+                      currentUserIdProvider: widget.currentUserIdProvider,
+                    ),
                     const SizedBox(height: TSizes.spaceBtwSections),
                   ],
                 ),

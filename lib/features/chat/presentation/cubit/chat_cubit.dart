@@ -15,6 +15,7 @@ class ChatCubit extends Cubit<ChatState> {
   static const int _limit = 50;
   String? _currentOtherUserId;
   bool _hasLoadedCurrentConversation = false;
+  bool _isSendingMessage = false;
 
   void startListening() {
     _messagesSubscription?.cancel();
@@ -59,10 +60,12 @@ class ChatCubit extends Cubit<ChatState> {
         _mergeMessages(messages);
         _hasLoadedCurrentConversation = true;
         _currentPage++;
-        emit(ChatLoaded(
-          messages: _messages,
-          hasReachedMax: messages.length < _limit,
-        ));
+        emit(
+          ChatLoaded(
+            messages: _messages,
+            hasReachedMax: messages.length < _limit,
+          ),
+        );
       },
     );
   }
@@ -80,22 +83,26 @@ class ChatCubit extends Cubit<ChatState> {
     required String content,
     MessageType messageType = MessageType.text,
   }) async {
+    if (_isSendingMessage) return;
+
+    _isSendingMessage = true;
     emit(MessageSending());
 
-    final result = await repository.sendMessage(
-      receiverId: receiverId,
-      content: content,
-      messageType: messageType,
-    );
+    try {
+      final result = await repository.sendMessage(
+        receiverId: receiverId,
+        content: content,
+        messageType: messageType,
+      );
 
-    result.fold(
-      (error) => emit(ChatError(error)),
-      (message) {
+      result.fold((error) => emit(ChatError(error)), (message) {
         _addMessageIfNew(message);
         emit(MessageSent(message));
         emit(ChatLoaded(messages: _messages));
-      },
-    );
+      });
+    } finally {
+      _isSendingMessage = false;
+    }
   }
 
   Future<void> markAsRead(String messageId) async {

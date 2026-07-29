@@ -59,8 +59,9 @@ void main() {
     mockChatRepository = MockChatRepository();
     messagesStreamController = StreamController<ChatMessageEntity>.broadcast();
 
-    when(() => mockChatRepository.messagesStream)
-        .thenAnswer((_) => messagesStreamController.stream);
+    when(
+      () => mockChatRepository.messagesStream,
+    ).thenAnswer((_) => messagesStreamController.stream);
 
     chatCubit = ChatCubit(repository: mockChatRepository);
   });
@@ -79,11 +80,13 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'emits [ChatLoading, ChatLoaded] when getMessages succeeds',
         build: () {
-          when(() => mockChatRepository.getMessages(
-                otherUserId: testOtherUserId,
-                page: 0,
-                limit: 50,
-              )).thenAnswer((_) async => Right(testMessages));
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right(testMessages));
           return chatCubit;
         },
         act: (cubit) => cubit.getMessages(testOtherUserId),
@@ -98,11 +101,13 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'emits [ChatLoading, ChatError] when getMessages fails',
         build: () {
-          when(() => mockChatRepository.getMessages(
-                otherUserId: testOtherUserId,
-                page: 0,
-                limit: 50,
-              )).thenAnswer((_) async => const Left('Failed to load messages'));
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => const Left('Failed to load messages'));
           return chatCubit;
         },
         act: (cubit) => cubit.getMessages(testOtherUserId),
@@ -115,11 +120,13 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'emits [ChatLoading, ChatLoaded] with empty list when no messages',
         build: () {
-          when(() => mockChatRepository.getMessages(
-                otherUserId: testOtherUserId,
-                page: 0,
-                limit: 50,
-              )).thenAnswer((_) async => const Right([]));
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => const Right([]));
           return chatCubit;
         },
         act: (cubit) => cubit.getMessages(testOtherUserId),
@@ -134,18 +141,23 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'refresh resets pagination and loads fresh messages',
         build: () {
-          when(() => mockChatRepository.getMessages(
-                otherUserId: testOtherUserId,
-                page: 0,
-                limit: 50,
-              )).thenAnswer((_) async => Right(testMessages));
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right(testMessages));
           return chatCubit;
         },
         act: (cubit) => cubit.getMessages(testOtherUserId, refresh: true),
         expect: () => [
           ChatLoading(),
-          isA<ChatLoaded>()
-              .having((s) => s.messages.length, 'messages count', 2),
+          isA<ChatLoaded>().having(
+            (s) => s.messages.length,
+            'messages count',
+            2,
+          ),
         ],
       );
     });
@@ -154,11 +166,13 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'emits [MessageSending, MessageSent, ChatLoaded] when sendMessage succeeds',
         build: () {
-          when(() => mockChatRepository.sendMessage(
-                receiverId: testOtherUserId,
-                content: 'New message',
-                messageType: MessageType.text,
-              )).thenAnswer((_) async => Right(newMessage));
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'New message',
+              messageType: MessageType.text,
+            ),
+          ).thenAnswer((_) async => Right(newMessage));
           return chatCubit;
         },
         act: (cubit) => cubit.sendMessage(
@@ -168,19 +182,24 @@ void main() {
         expect: () => [
           MessageSending(),
           MessageSent(newMessage),
-          isA<ChatLoaded>()
-              .having((s) => s.messages.length, 'messages count', 1),
+          isA<ChatLoaded>().having(
+            (s) => s.messages.length,
+            'messages count',
+            1,
+          ),
         ],
       );
 
       blocTest<ChatCubit, ChatState>(
         'emits [MessageSending, ChatError] when sendMessage fails',
         build: () {
-          when(() => mockChatRepository.sendMessage(
-                receiverId: testOtherUserId,
-                content: 'New message',
-                messageType: MessageType.text,
-              )).thenAnswer((_) async => const Left('Failed to send message'));
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'New message',
+              messageType: MessageType.text,
+            ),
+          ).thenAnswer((_) async => const Left('Failed to send message'));
           return chatCubit;
         },
         act: (cubit) => cubit.sendMessage(
@@ -196,12 +215,16 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'sends image message type correctly',
         build: () {
-          final imageMessage = newMessage.copyWith(messageType: MessageType.image);
-          when(() => mockChatRepository.sendMessage(
-                receiverId: testOtherUserId,
-                content: 'image.jpg',
-                messageType: MessageType.image,
-              )).thenAnswer((_) async => Right(imageMessage));
+          final imageMessage = newMessage.copyWith(
+            messageType: MessageType.image,
+          );
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'image.jpg',
+              messageType: MessageType.image,
+            ),
+          ).thenAnswer((_) async => Right(imageMessage));
           return chatCubit;
         },
         act: (cubit) => cubit.sendMessage(
@@ -210,19 +233,56 @@ void main() {
           messageType: MessageType.image,
         ),
         verify: (_) {
-          verify(() => mockChatRepository.sendMessage(
-                receiverId: testOtherUserId,
-                content: 'image.jpg',
-                messageType: MessageType.image,
-              )).called(1);
+          verify(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'image.jpg',
+              messageType: MessageType.image,
+            ),
+          ).called(1);
+        },
+      );
+
+      test(
+        'hızlı ikinci gönderimi ilk işlem tamamlanana kadar yok sayar',
+        () async {
+          final sendResult = Completer<Either<String, ChatMessageEntity>>();
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'Tek mesaj',
+              messageType: MessageType.text,
+            ),
+          ).thenAnswer((_) => sendResult.future);
+
+          final firstSend = chatCubit.sendMessage(
+            receiverId: testOtherUserId,
+            content: 'Tek mesaj',
+          );
+          final secondSend = chatCubit.sendMessage(
+            receiverId: testOtherUserId,
+            content: 'Tek mesaj',
+          );
+
+          verify(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'Tek mesaj',
+              messageType: MessageType.text,
+            ),
+          ).called(1);
+
+          sendResult.complete(Right(newMessage));
+          await Future.wait([firstSend, secondSend]);
         },
       );
     });
 
     group('markAsRead', () {
       test('calls repository markAsRead', () async {
-        when(() => mockChatRepository.markAsRead('msg-1'))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          () => mockChatRepository.markAsRead('msg-1'),
+        ).thenAnswer((_) async => const Right(null));
 
         await chatCubit.markAsRead('msg-1');
 
@@ -232,13 +292,15 @@ void main() {
 
     group('markAllAsRead', () {
       test('calls repository markAllAsRead', () async {
-        when(() => mockChatRepository.markAllAsRead(testOtherUserId))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          () => mockChatRepository.markAllAsRead(testOtherUserId),
+        ).thenAnswer((_) async => const Right(null));
 
         await chatCubit.markAllAsRead(testOtherUserId);
 
-        verify(() => mockChatRepository.markAllAsRead(testOtherUserId))
-            .called(1);
+        verify(
+          () => mockChatRepository.markAllAsRead(testOtherUserId),
+        ).called(1);
       });
     });
   });
@@ -319,10 +381,7 @@ void main() {
 
   group('ChatLoaded', () {
     test('copyWith creates a new instance with updated values', () {
-      final state = ChatLoaded(
-        messages: testMessages,
-        hasReachedMax: false,
-      );
+      final state = ChatLoaded(messages: testMessages, hasReachedMax: false);
 
       final updated = state.copyWith(hasReachedMax: true);
 

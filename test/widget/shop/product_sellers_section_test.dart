@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
@@ -23,6 +26,8 @@ class MockCustomerLocationService extends Mock
 
 class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
+
 void main() {
   late MockShopRepository shopRepository;
   late MockCustomerLocationService customerLocationService;
@@ -38,6 +43,7 @@ void main() {
     double price = 99,
     double rating = 0,
     bool shopIsActive = true,
+    String? ownerUserId = 'owner-1',
   }) {
     return ShopProductEntity(
       id: id,
@@ -46,6 +52,7 @@ void main() {
       price: price,
       shop: ShopEntity(
         id: 'shop-$id',
+        ownerUserId: ownerUserId,
         name: name,
         latitude: latitude,
         longitude: longitude,
@@ -91,6 +98,8 @@ void main() {
   Widget buildSubject({
     TextScaler? textScaler,
     Future<void> Function()? onChangeLocationRequested,
+    ProductSellerCurrentUserIdProvider? currentUserIdProvider,
+    ProductSellerChatDestinationBuilder? chatDestinationBuilder,
   }) {
     return MaterialApp(
       builder: textScaler == null
@@ -105,7 +114,11 @@ void main() {
             value: cartV2Cubit,
             child: ProductSellersSection(
               productId: 'product-1',
+              productName: 'Deneme Ürünü',
               onChangeLocationRequested: onChangeLocationRequested,
+              currentUserIdProvider:
+                  currentUserIdProvider ?? () => 'customer-1',
+              chatDestinationBuilder: chatDestinationBuilder,
             ),
           ),
         ),
@@ -561,6 +574,79 @@ void main() {
     expect(find.text('Aktif Esnaf'), findsOneWidget);
     expect(find.text('Pasif Esnaf'), findsNothing);
     expect(find.text('Bilinmeyen esnaf'), findsNothing);
+    expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
+  });
+
+  testWidgets('satıcıya ürün adıyla düzenlenebilir mesaj taslağı açar', (
+    tester,
+  ) async {
+    String? receiverId;
+    String? receiverName;
+    String? initialDraft;
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        chatDestinationBuilder: (id, name, draft) {
+          receiverId = id;
+          receiverName = name;
+          initialDraft = draft;
+          return const Scaffold(body: Text('Mesaj ekranı'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mesaj ekranı'), findsOneWidget);
+    expect(receiverId, 'owner-1');
+    expect(receiverName, 'Mahalle Marketi');
+    expect(initialDraft, 'Merhaba, "Deneme Ürünü" mağazanızda mevcut mu?');
+  });
+
+  testWidgets('giriş yapmayan müşteriyi mesajdan önce girişe yönlendirir', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+  });
+
+  testWidgets('mağaza sahibine kendi mağazasına mesaj butonu göstermez', (
+    tester,
+  ) async {
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(currentUserIdProvider: () => 'owner-1'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('product-seller-message-active')),
+      findsNothing,
+    );
     expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
   });
 

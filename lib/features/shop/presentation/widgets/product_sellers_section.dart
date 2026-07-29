@@ -9,6 +9,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
@@ -16,14 +17,28 @@ import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_produ
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
+typedef ProductSellerCurrentUserIdProvider = String? Function();
+typedef ProductSellerChatDestinationBuilder =
+    Widget Function(
+      String receiverId,
+      String receiverName,
+      String initialDraft,
+    );
+
 class ProductSellersSection extends StatefulWidget {
   final String productId;
+  final String productName;
   final Future<void> Function()? onChangeLocationRequested;
+  final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
+  final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
 
   const ProductSellersSection({
     super.key,
     required this.productId,
+    required this.productName,
     this.onChangeLocationRequested,
+    this.currentUserIdProvider,
+    this.chatDestinationBuilder,
   });
 
   @override
@@ -160,8 +175,11 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                       final rankedSeller = rankedSellers[index];
                       return _SellerTile(
                         shopProduct: rankedSeller.shopProduct,
+                        productName: widget.productName,
                         distanceMeters: rankedSeller.distanceMeters,
                         locationReady: locationReady,
+                        currentUserIdProvider: widget.currentUserIdProvider,
+                        chatDestinationBuilder: widget.chatDestinationBuilder,
                       );
                     },
                   ),
@@ -404,13 +422,19 @@ class _SellersErrorState extends StatelessWidget {
 
 class _SellerTile extends StatelessWidget {
   final ShopProductEntity shopProduct;
+  final String productName;
   final double? distanceMeters;
   final bool locationReady;
+  final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
+  final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
 
   const _SellerTile({
     required this.shopProduct,
+    required this.productName,
     required this.distanceMeters,
     required this.locationReady,
+    required this.currentUserIdProvider,
+    required this.chatDestinationBuilder,
   });
 
   @override
@@ -424,6 +448,12 @@ class _SellerTile extends StatelessWidget {
     final hasAddress =
         shop?.address != null && shop!.address!.trim().isNotEmpty;
     final canAddToCart = shopProduct.isCustomerPurchasable;
+    final ownerUserId = shop?.ownerUserId?.trim();
+    final currentUserId = _currentUserId;
+    final canMessage =
+        ownerUserId != null &&
+        ownerUserId.isNotEmpty &&
+        currentUserId != ownerUserId;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -505,17 +535,32 @@ class _SellerTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: TSizes.sm),
-            Align(
-              alignment: Alignment.centerRight,
-              child: canAddToCart
-                  ? OutlinedButton(
-                      onPressed: () => _handleAddToCart(context),
-                      child: const Text('Bu Esnaftan Sepete Ekle'),
-                    )
-                  : Text(
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: TSizes.sm,
+              runSpacing: TSizes.xs,
+              children: [
+                if (canMessage)
+                  TextButton.icon(
+                    key: Key('product-seller-message-${shopProduct.id}'),
+                    onPressed: () => _openChat(context, ownerUserId),
+                    icon: const Icon(Icons.message_outlined),
+                    label: const Text('Esnafa Yaz'),
+                  ),
+                if (canAddToCart)
+                  OutlinedButton(
+                    onPressed: () => _handleAddToCart(context),
+                    child: const Text('Bu Esnaftan Sepete Ekle'),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: TSizes.sm),
+                    child: Text(
                       'Şu an rafta yok',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
+                  ),
+              ],
             ),
           ],
         ),
@@ -530,6 +575,44 @@ class _SellerTile extends StatelessWidget {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)));
+  }
+
+  String? get _currentUserId {
+    final provider = currentUserIdProvider;
+    final userId = provider != null
+        ? provider()
+        : SupabaseService.instance.currentUser?.id;
+    final normalizedUserId = userId?.trim();
+    return normalizedUserId == null || normalizedUserId.isEmpty
+        ? null
+        : normalizedUserId;
+  }
+
+  void _openChat(BuildContext context, String ownerUserId) {
+    if (_currentUserId == null) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const LoginView()));
+      return;
+    }
+
+    final shop = shopProduct.shop;
+    if (shop == null) return;
+
+    final normalizedProductName = productName.trim();
+    final productReference = normalizedProductName.isEmpty
+        ? 'bu ürün'
+        : '"$normalizedProductName"';
+    final initialDraft = 'Merhaba, $productReference mağazanızda mevcut mu?';
+    final destination =
+        chatDestinationBuilder?.call(ownerUserId, shop.name, initialDraft) ??
+        ChatView(
+          receiverId: ownerUserId,
+          receiverName: shop.name,
+          initialDraft: initialDraft,
+        );
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => destination));
   }
 
   void _handleAddToCart(BuildContext context) {
