@@ -18,8 +18,13 @@ import 'package:t_store/features/shop/presentation/views/my_shop_view.dart';
 
 class LoginFormSection extends StatefulWidget {
   final bool isMerchantLogin;
+  final bool returnToCallerAfterCustomerLogin;
 
-  const LoginFormSection({super.key, this.isMerchantLogin = false});
+  const LoginFormSection({
+    super.key,
+    this.isMerchantLogin = false,
+    this.returnToCallerAfterCustomerLogin = false,
+  });
 
   @override
   State<LoginFormSection> createState() => _LoginFormSectionState();
@@ -125,6 +130,11 @@ class _LoginFormSectionState extends State<LoginFormSection> {
           );
 
           context.read<CartV2Cubit>().getActiveCartItems();
+
+          if (widget.returnToCallerAfterCustomerLogin) {
+            Navigator.of(context).pop(true);
+            return;
+          }
 
           THelperFunctions.navigateReplacementToScreen(
             context,

@@ -588,11 +588,30 @@ class _SellerTile extends StatelessWidget {
         : normalizedUserId;
   }
 
-  void _openChat(BuildContext context, String ownerUserId) {
+  Future<void> _openChat(BuildContext context, String ownerUserId) async {
     if (_currentUserId == null) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const LoginView()));
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) =>
+              const LoginView(returnToCallerAfterCustomerLogin: true),
+        ),
+      );
+      if (!context.mounted || signedIn != true) return;
+    }
+
+    final currentUserId = _currentUserId;
+    if (currentUserId == null) return;
+
+    if (currentUserId == ownerUserId) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Bu mağazaya kendi hesabınızla mesaj gönderemezsiniz.',
+            ),
+          ),
+        );
       return;
     }
 

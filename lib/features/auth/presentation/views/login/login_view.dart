@@ -12,10 +12,12 @@ import 'package:t_store/features/auth/presentation/widgets/sign_in_methods_secti
 
 class LoginView extends StatelessWidget {
   final bool isMerchantLogin;
+  final bool returnToCallerAfterCustomerLogin;
 
   const LoginView({
     super.key,
     this.isMerchantLogin = false,
+    this.returnToCallerAfterCustomerLogin = false,
   });
 
   @override
@@ -31,24 +33,28 @@ class LoginView extends StatelessWidget {
               child: Column(
                 children: [
                   LoginHeaderSection(isMerchantLogin: isMerchantLogin),
-                  LoginFormSection(isMerchantLogin: isMerchantLogin),
+                  LoginFormSection(
+                    isMerchantLogin: isMerchantLogin,
+                    returnToCallerAfterCustomerLogin:
+                        returnToCallerAfterCustomerLogin,
+                  ),
                   TextButton(
                     onPressed: () {
                       THelperFunctions.navigateReplacementToScreen(
                         context,
-                        LoginView(isMerchantLogin: !isMerchantLogin),
+                        LoginView(
+                          isMerchantLogin: !isMerchantLogin,
+                          returnToCallerAfterCustomerLogin:
+                              returnToCallerAfterCustomerLogin,
+                        ),
                       );
                     },
                     child: Text(
                       isMerchantLogin ? 'Normal girişe dön' : 'Esnaf Girişi',
                     ),
                   ),
-                  const DividerWidget(
-                    text: TTexts.orSignInWith,
-                  ),
-                  const SizedBox(
-                    height: TSizes.spaceBtwSections,
-                  ),
+                  const DividerWidget(text: TTexts.orSignInWith),
+                  const SizedBox(height: TSizes.spaceBtwSections),
                   const SignInMethodsSection(),
                 ],
               ),

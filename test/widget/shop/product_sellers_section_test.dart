@@ -9,6 +9,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
@@ -82,6 +83,7 @@ void main() {
       const Stream<CartV2State>.empty(),
       initialState: CartV2Initial(),
     );
+    when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {});
 
     sl.registerLazySingleton<GetShopProductsByProductUsecase>(
       () => GetShopProductsByProductUsecase(shopRepository),
@@ -101,17 +103,17 @@ void main() {
     ProductSellerCurrentUserIdProvider? currentUserIdProvider,
     ProductSellerChatDestinationBuilder? chatDestinationBuilder,
   }) {
-    return MaterialApp(
-      builder: textScaler == null
-          ? null
-          : (context, child) => MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaler: textScaler),
-              child: child!,
-            ),
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: BlocProvider<CartV2Cubit>.value(
-            value: cartV2Cubit,
+    return BlocProvider<CartV2Cubit>.value(
+      value: cartV2Cubit,
+      child: MaterialApp(
+        builder: textScaler == null
+            ? null
+            : (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                child: child!,
+              ),
+        home: Scaffold(
+          body: SingleChildScrollView(
             child: ProductSellersSection(
               productId: 'product-1',
               productName: 'Deneme Ürünü',
@@ -629,6 +631,143 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(LoginView), findsOneWidget);
+    expect(
+      tester
+          .widget<LoginView>(find.byType(LoginView))
+          .returnToCallerAfterCustomerLogin,
+      isTrue,
+    );
+  });
+
+  testWidgets(
+    'giriş sonrası aynı satıcının mesajına taslağı koruyarak devam eder',
+    (tester) async {
+      final authCubit = MockAuthCubit();
+      final authStates = StreamController<AuthState>();
+      addTearDown(authStates.close);
+      var currentUserId = '';
+      String? receiverId;
+      String? initialDraft;
+
+      whenListen(authCubit, authStates.stream, initialState: AuthInitial());
+      when(() => authCubit.close()).thenAnswer((_) async {});
+      sl.registerFactory<AuthCubit>(() => authCubit);
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer(
+        (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          currentUserIdProvider: () =>
+              currentUserId.isEmpty ? null : currentUserId,
+          chatDestinationBuilder: (id, name, draft) {
+            receiverId = id;
+            initialDraft = draft;
+            return const Scaffold(body: Text('Mesaj ekranı'));
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('product-seller-message-active')));
+      await tester.pumpAndSettle();
+
+      currentUserId = 'customer-1';
+      authStates.add(
+        const AuthAuthenticated(
+          UserEntity(id: 'customer-1', email: 'customer@example.com'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mesaj ekranı'), findsOneWidget);
+      expect(receiverId, 'owner-1');
+      expect(initialDraft, 'Merhaba, "Deneme Ürünü" mağazanızda mevcut mu?');
+      verify(() => cartV2Cubit.getActiveCartItems()).called(1);
+    },
+  );
+
+  testWidgets('girişten vazgeçilirse ürün ekranında kalır', (tester) async {
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        currentUserIdProvider: () => null,
+        chatDestinationBuilder: (_, _, _) =>
+            const Scaffold(body: Text('Mesaj ekranı')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsNothing);
+    expect(find.text('Mesaj ekranı'), findsNothing);
+    expect(
+      find.byKey(const Key('product-seller-message-active')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('girişte mağaza sahibi hesabı seçilirse kendi mesajını açmaz', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    final authStates = StreamController<AuthState>();
+    addTearDown(authStates.close);
+    var currentUserId = '';
+
+    whenListen(authCubit, authStates.stream, initialState: AuthInitial());
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        currentUserIdProvider: () =>
+            currentUserId.isEmpty ? null : currentUserId,
+        chatDestinationBuilder: (_, _, _) =>
+            const Scaffold(body: Text('Mesaj ekranı')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pumpAndSettle();
+
+    currentUserId = 'owner-1';
+    authStates.add(
+      const AuthAuthenticated(
+        UserEntity(
+          id: 'owner-1',
+          email: 'owner@example.com',
+          role: UserEntity.merchantRole,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mesaj ekranı'), findsNothing);
+    expect(
+      find.text('Bu mağazaya kendi hesabınızla mesaj gönderemezsiniz.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('mağaza sahibine kendi mağazasına mesaj butonu göstermez', (
