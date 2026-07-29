@@ -33,6 +33,7 @@ import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/create_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
@@ -217,6 +218,7 @@ Future<void> setupServiceLocator() async {
   // Use Cases
   sl.registerLazySingleton(() => GetMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopsUsecase(sl()));
+  sl.registerLazySingleton(() => GetShopByIdUsecase(sl()));
   sl.registerLazySingleton(() => CreateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => UpdateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));

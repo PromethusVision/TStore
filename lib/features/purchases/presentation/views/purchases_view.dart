@@ -9,6 +9,9 @@ import 'package:t_store/features/purchases/presentation/cubit/purchase_history_c
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
+import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
 class PurchasesView extends StatelessWidget {
   const PurchasesView({
@@ -16,11 +19,15 @@ class PurchasesView extends StatelessWidget {
     this.purchaseHistoryCubit,
     this.initialPurchaseId,
     this.initialQrSessionId,
+    this.getShopByIdUsecase,
+    this.shopProfileBuilder,
   });
 
   final PurchaseHistoryCubit? purchaseHistoryCubit;
   final String? initialPurchaseId;
   final String? initialQrSessionId;
+  final GetShopByIdUsecase? getShopByIdUsecase;
+  final Widget Function(ShopEntity shop)? shopProfileBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +37,8 @@ class PurchasesView extends StatelessWidget {
       child: _PurchasesScaffold(
         initialPurchaseId: initialPurchaseId,
         initialQrSessionId: initialQrSessionId,
+        getShopByIdUsecase: getShopByIdUsecase,
+        shopProfileBuilder: shopProfileBuilder,
       ),
     );
   }
@@ -39,10 +48,14 @@ class _PurchasesScaffold extends StatelessWidget {
   const _PurchasesScaffold({
     required this.initialPurchaseId,
     required this.initialQrSessionId,
+    required this.getShopByIdUsecase,
+    required this.shopProfileBuilder,
   });
 
   final String? initialPurchaseId;
   final String? initialQrSessionId;
+  final GetShopByIdUsecase? getShopByIdUsecase;
+  final Widget Function(ShopEntity shop)? shopProfileBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +78,8 @@ class _PurchasesScaffold extends StatelessWidget {
             _PurchaseHistoryTab(
               initialPurchaseId: initialPurchaseId,
               initialQrSessionId: initialQrSessionId,
+              getShopByIdUsecase: getShopByIdUsecase,
+              shopProfileBuilder: shopProfileBuilder,
             ),
             const _ReturnRequestsTab(),
             const _CreateReturnRequestTab(),
@@ -79,10 +94,14 @@ class _PurchaseHistoryTab extends StatefulWidget {
   const _PurchaseHistoryTab({
     required this.initialPurchaseId,
     required this.initialQrSessionId,
+    required this.getShopByIdUsecase,
+    required this.shopProfileBuilder,
   });
 
   final String? initialPurchaseId;
   final String? initialQrSessionId;
+  final GetShopByIdUsecase? getShopByIdUsecase;
+  final Widget Function(ShopEntity shop)? shopProfileBuilder;
 
   @override
   State<_PurchaseHistoryTab> createState() => _PurchaseHistoryTabState();
@@ -273,7 +292,11 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
                     ),
                     const SizedBox(height: TSizes.sm),
                   ],
-                  _PurchaseCard(purchase: purchase),
+                  _PurchaseCard(
+                    purchase: purchase,
+                    getShopByIdUsecase: widget.getShopByIdUsecase,
+                    shopProfileBuilder: widget.shopProfileBuilder,
+                  ),
                 ],
               );
             },
@@ -403,14 +426,28 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
   }
 }
 
-class _PurchaseCard extends StatelessWidget {
-  const _PurchaseCard({required this.purchase});
+class _PurchaseCard extends StatefulWidget {
+  const _PurchaseCard({
+    required this.purchase,
+    required this.getShopByIdUsecase,
+    required this.shopProfileBuilder,
+  });
 
   final VerifiedPurchaseEntity purchase;
+  final GetShopByIdUsecase? getShopByIdUsecase;
+  final Widget Function(ShopEntity shop)? shopProfileBuilder;
+
+  @override
+  State<_PurchaseCard> createState() => _PurchaseCardState();
+}
+
+class _PurchaseCardState extends State<_PurchaseCard> {
+  bool _isOpeningShop = false;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final purchase = widget.purchase;
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -524,21 +561,73 @@ class _PurchaseCard extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
-            else
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  key: const Key('purchase-shop-rating-open-action'),
-                  onPressed: () => _openShopRating(context),
-                  icon: const Icon(Icons.star_outline_rounded),
-                  label: const Text('Esnafa Puan Ver'),
-                ),
               ),
+            if (purchase.customerRating != null)
+              const SizedBox(height: TSizes.sm),
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: TSizes.sm,
+              runSpacing: TSizes.xs,
+              children: [
+                OutlinedButton.icon(
+                  key: Key('purchase-shop-profile-open-${purchase.id}'),
+                  onPressed: _isOpeningShop ? null : _openShopProfile,
+                  icon: _isOpeningShop
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.storefront_outlined),
+                  label: Text(
+                    _isOpeningShop ? 'Mağaza açılıyor' : 'Mağazayı Gör',
+                  ),
+                ),
+                if (purchase.customerRating == null)
+                  TextButton.icon(
+                    key: const Key('purchase-shop-rating-open-action'),
+                    onPressed: () => _openShopRating(context),
+                    icon: const Icon(Icons.star_outline_rounded),
+                    label: const Text('Esnafa Puan Ver'),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _openShopProfile() async {
+    if (_isOpeningShop) return;
+
+    setState(() => _isOpeningShop = true);
+    final getShopByIdUsecase =
+        widget.getShopByIdUsecase ?? sl<GetShopByIdUsecase>();
+    final result = await getShopByIdUsecase(widget.purchase.shopId);
+
+    if (!mounted) return;
+    setState(() => _isOpeningShop = false);
+
+    result.fold(_showMessage, (shop) {
+      if (shop == null) {
+        _showMessage('Bu mağaza şu anda görüntülenemiyor.');
+        return;
+      }
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) =>
+              widget.shopProfileBuilder?.call(shop) ??
+              ShopProfileView(shop: shop),
+        ),
+      );
+    });
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _openShopRating(BuildContext context) async {
@@ -549,7 +638,7 @@ class _PurchaseCard extends StatelessWidget {
       enableDrag: false,
       builder: (_) => BlocProvider(
         create: (_) => sl<ShopRatingCubit>(),
-        child: _PurchaseShopRatingSheet(purchase: purchase),
+        child: _PurchaseShopRatingSheet(purchase: widget.purchase),
       ),
     );
 

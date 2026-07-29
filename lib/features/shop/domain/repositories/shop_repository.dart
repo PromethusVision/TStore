@@ -5,6 +5,8 @@ import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 abstract class ShopRepository {
   Future<Either<String, List<ShopEntity>>> getShops();
 
+  Future<Either<String, ShopEntity?>> getShopById(String shopId);
+
   Future<Either<String, ShopEntity?>> getMyShop();
 
   Future<Either<String, ShopEntity>> createMyShop({

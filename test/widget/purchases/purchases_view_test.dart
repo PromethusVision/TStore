@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -12,6 +13,8 @@ import 'package:t_store/features/purchases/presentation/views/purchases_view.dar
 import 'package:t_store/features/reviews/domain/entities/shop_rating_entity.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 
 class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
     implements PurchaseHistoryCubit {}
@@ -19,7 +22,15 @@ class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
 class MockShopRatingCubit extends MockCubit<ShopRatingState>
     implements ShopRatingCubit {}
 
+class MockGetShopByIdUsecase extends Mock implements GetShopByIdUsecase {}
+
 void main() {
+  const shop = ShopEntity(
+    id: 'shop-1',
+    name: 'Mahalle Marketi',
+    address: 'Esenler, İstanbul',
+  );
+
   final purchase = VerifiedPurchaseEntity(
     id: 'purchase-1',
     sourceQrSessionId: 'session-1',
@@ -42,11 +53,13 @@ void main() {
 
   late MockPurchaseHistoryCubit cubit;
   late MockShopRatingCubit shopRatingCubit;
+  late MockGetShopByIdUsecase getShopByIdUsecase;
 
   setUp(() async {
     await sl.reset();
     cubit = MockPurchaseHistoryCubit();
     shopRatingCubit = MockShopRatingCubit();
+    getShopByIdUsecase = MockGetShopByIdUsecase();
     whenListen(
       cubit,
       const Stream<PurchaseHistoryState>.empty(),
@@ -68,8 +81,12 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(() => shopRatingCubit.close()).thenAnswer((_) async {});
+    when(
+      () => getShopByIdUsecase(any()),
+    ).thenAnswer((_) async => const Right(shop));
 
     sl.registerFactory<ShopRatingCubit>(() => shopRatingCubit);
+    sl.registerLazySingleton<GetShopByIdUsecase>(() => getShopByIdUsecase);
   });
 
   tearDown(() async {
@@ -91,7 +108,81 @@ void main() {
     expect(find.text('Deneme Ürünü'), findsOneWidget);
     expect(find.text('Toplam: 150,50 TL'), findsOneWidget);
     expect(find.text('Onaylandı'), findsOneWidget);
+    expect(find.text('Mağazayı Gör'), findsOneWidget);
     expect(find.text('Esnafa Puan Ver'), findsOneWidget);
+  });
+
+  testWidgets('mağazayı gör bağlantısı doğru mağaza profilini açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          shopProfileBuilder: (selectedShop) =>
+              Scaffold(body: Text('Profil: ${selectedShop.name}')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('purchase-shop-profile-open-purchase-1')),
+    );
+    await tester.pumpAndSettle();
+
+    verify(() => getShopByIdUsecase('shop-1')).called(1);
+    expect(find.text('Profil: Mahalle Marketi'), findsOneWidget);
+  });
+
+  testWidgets('mağaza yüklenirken art arda dokunmayı engeller', (tester) async {
+    final completer = Completer<Either<String, ShopEntity?>>();
+    when(() => getShopByIdUsecase(any())).thenAnswer((_) => completer.future);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          shopProfileBuilder: (_) =>
+              const Scaffold(body: Text('Mağaza profili')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final action = find.byKey(
+      const Key('purchase-shop-profile-open-purchase-1'),
+    );
+    await tester.tap(action);
+    await tester.pump();
+    await tester.tap(action);
+    await tester.pump();
+
+    verify(() => getShopByIdUsecase('shop-1')).called(1);
+    expect(find.text('Mağaza açılıyor'), findsOneWidget);
+
+    completer.complete(const Right(shop));
+    await tester.pump();
+  });
+
+  testWidgets('görüntülenemeyen mağaza için anlaşılır uyarı gösterir', (
+    tester,
+  ) async {
+    when(
+      () => getShopByIdUsecase(any()),
+    ).thenAnswer((_) async => const Right(null));
+
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('purchase-shop-profile-open-purchase-1')),
+    );
+    await tester.pump();
+
+    expect(find.text('Bu mağaza şu anda görüntülenemiyor.'), findsOneWidget);
   });
 
   testWidgets('bildirimdeki alışverişi listenin başında belirginleştirir', (

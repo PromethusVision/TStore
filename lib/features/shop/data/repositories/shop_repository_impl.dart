@@ -41,6 +41,31 @@ class ShopRepositoryImpl implements ShopRepository {
   }
 
   @override
+  Future<Either<String, ShopEntity?>> getShopById(String shopId) async {
+    try {
+      final response = await supabaseService.client
+          .from(SupabaseTables.shops)
+          .select()
+          .eq('id', shopId)
+          .eq('is_active', true)
+          .maybeSingle();
+
+      if (response == null) {
+        return const Right(null);
+      }
+
+      return Right(ShopModel.fromJson(response));
+    } catch (e) {
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağaza bilgileri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<String, ShopEntity?>> getMyShop() async {
     try {
       final user = supabaseService.currentUser;
