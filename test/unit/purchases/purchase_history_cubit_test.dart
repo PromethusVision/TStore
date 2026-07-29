@@ -76,4 +76,51 @@ void main() {
 
     expect(cubit.state, PurchaseHistoryLoaded([purchase]));
   });
+
+  test(
+    'sessiz yenilemede yükleme ekranına geçmeden listeyi günceller',
+    () async {
+      when(
+        () => usecase(const NoParams()),
+      ).thenAnswer((_) async => Right([purchase]));
+      final cubit = PurchaseHistoryCubit(getVerifiedPurchasesUsecase: usecase);
+      addTearDown(cubit.close);
+      final emittedStates = <PurchaseHistoryState>[];
+      final subscription = cubit.stream.listen(emittedStates.add);
+      addTearDown(subscription.cancel);
+
+      await cubit.refreshPurchasesSilently();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(emittedStates, [
+        PurchaseHistoryLoaded([purchase]),
+      ]);
+      expect(emittedStates.whereType<PurchaseHistoryLoading>(), isEmpty);
+    },
+  );
+
+  test(
+    'sessiz yenileme hatasında mevcut alışverişleri ekranda korur',
+    () async {
+      var requestCount = 0;
+      when(() => usecase(const NoParams())).thenAnswer((_) async {
+        requestCount++;
+        if (requestCount == 1) return Right([purchase]);
+        return const Left('Geçici bağlantı sorunu.');
+      });
+      final cubit = PurchaseHistoryCubit(getVerifiedPurchasesUsecase: usecase);
+      addTearDown(cubit.close);
+
+      await cubit.loadPurchases();
+      final emittedStates = <PurchaseHistoryState>[];
+      final subscription = cubit.stream.listen(emittedStates.add);
+      addTearDown(subscription.cancel);
+
+      await cubit.refreshPurchasesSilently();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state, PurchaseHistoryLoaded([purchase]));
+      expect(emittedStates, isEmpty);
+    },
+  );
 }

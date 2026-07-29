@@ -53,6 +53,7 @@ void main() {
       initialState: PurchaseHistoryLoaded([purchase]),
     );
     when(() => cubit.loadPurchases()).thenAnswer((_) async {});
+    when(() => cubit.refreshPurchasesSilently()).thenAnswer((_) async {});
     when(() => cubit.close()).thenAnswer((_) async {});
 
     whenListen(
@@ -196,6 +197,10 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(
+        find.textContaining('otomatik olarak yeniden kontrol ediyoruz'),
+        findsOneWidget,
+      );
       expect(find.text('Yeniden kontrol et'), findsOneWidget);
       expect(
         find.byKey(const Key('missing-notification-purchase-message')),
@@ -229,6 +234,136 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Henüz doğrulanmış alışverişin yok'), findsNothing);
+  });
+
+  testWidgets(
+    'eksik QR alışverişini kısa süre sonra otomatik yenileyip öne çıkarır',
+    (tester) async {
+      final stateController = StreamController<PurchaseHistoryState>();
+      addTearDown(stateController.close);
+      final recentPurchase = VerifiedPurchaseEntity(
+        id: 'purchase-automatic',
+        sourceQrSessionId: 'session-automatic',
+        shopId: 'shop-2',
+        shopName: 'Semt Kırtasiyesi',
+        itemCount: 1,
+        totalAmount: 45,
+        confirmedAt: DateTime.utc(2026, 7, 29, 10),
+        items: const [
+          VerifiedPurchaseItemEntity(
+            id: 'item-automatic',
+            shopProductId: 'shop-product-2',
+            productName: 'Defter',
+            quantity: 1,
+            unitPrice: 45,
+            lineTotal: 45,
+          ),
+        ],
+      );
+      whenListen(
+        cubit,
+        stateController.stream,
+        initialState: PurchaseHistoryLoaded([purchase]),
+      );
+      when(() => cubit.refreshPurchasesSilently()).thenAnswer((_) async {
+        stateController.add(PurchaseHistoryLoaded([purchase, recentPurchase]));
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PurchasesView(
+            purchaseHistoryCubit: cubit,
+            initialQrSessionId: 'session-automatic',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+
+      verify(() => cubit.refreshPurchasesSilently()).called(1);
+      expect(
+        find.byKey(const Key('highlighted-purchase-purchase-automatic')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Az önce onaylanan alışveriş: Semt Kırtasiyesi'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('missing-recent-qr-purchase-message')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets('eksik QR alışverişini en fazla üç kez otomatik kontrol eder', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialQrSessionId: 'missing-session',
+        ),
+      ),
+    );
+    await tester.pump();
+
+    for (var attempt = 0; attempt < 4; attempt++) {
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump();
+    }
+
+    verify(() => cubit.refreshPurchasesSilently()).called(3);
+    expect(
+      find.byKey(const Key('missing-recent-qr-purchase-message')),
+      findsOneWidget,
+    );
+    expect(find.text('Yeniden kontrol et'), findsOneWidget);
+  });
+
+  testWidgets('bildirim hedefi için otomatik kontrol başlatmaz', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialPurchaseId: 'missing-purchase',
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.pump(const Duration(seconds: 8));
+    await tester.pump();
+
+    verifyNever(() => cubit.refreshPurchasesSilently());
+    expect(
+      find.byKey(const Key('missing-notification-purchase-message')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('ekran kapanınca bekleyen otomatik kontrolü iptal eder', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PurchasesView(
+          purchaseHistoryCubit: cubit,
+          initialQrSessionId: 'missing-session',
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
+    await tester.pump(const Duration(seconds: 3));
+
+    verifyNever(() => cubit.refreshPurchasesSilently());
   });
 
   testWidgets('yeniden kontrolde gelen QR alışverişini otomatik öne çıkarır', (

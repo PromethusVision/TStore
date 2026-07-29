@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -73,7 +75,7 @@ class _PurchasesScaffold extends StatelessWidget {
   }
 }
 
-class _PurchaseHistoryTab extends StatelessWidget {
+class _PurchaseHistoryTab extends StatefulWidget {
   const _PurchaseHistoryTab({
     required this.initialPurchaseId,
     required this.initialQrSessionId,
@@ -83,8 +85,93 @@ class _PurchaseHistoryTab extends StatelessWidget {
   final String? initialQrSessionId;
 
   @override
+  State<_PurchaseHistoryTab> createState() => _PurchaseHistoryTabState();
+}
+
+class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
+  static const _automaticRetryDelay = Duration(seconds: 2);
+  static const _maximumAutomaticRetryAttempts = 3;
+
+  Timer? _automaticRetryTimer;
+  int _automaticRetryAttempts = 0;
+  bool _automaticRefreshInProgress = false;
+
+  bool get _isRecentQrPurchase =>
+      widget.initialPurchaseId == null && widget.initialQrSessionId != null;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _handleAutomaticRetry(context.read<PurchaseHistoryCubit>().state);
+    });
+  }
+
+  @override
+  void dispose() {
+    _automaticRetryTimer?.cancel();
+    super.dispose();
+  }
+
+  bool _containsTarget(List<VerifiedPurchaseEntity> purchases) {
+    return purchases.any(
+      (purchase) => purchase.sourceQrSessionId == widget.initialQrSessionId,
+    );
+  }
+
+  void _handleAutomaticRetry(PurchaseHistoryState state) {
+    if (!_isRecentQrPurchase || state is! PurchaseHistoryLoaded) return;
+
+    if (_containsTarget(state.purchases)) {
+      _automaticRetryTimer?.cancel();
+      _automaticRetryTimer = null;
+      return;
+    }
+
+    _scheduleAutomaticRetry();
+  }
+
+  void _scheduleAutomaticRetry() {
+    if (_automaticRetryTimer != null ||
+        _automaticRefreshInProgress ||
+        _automaticRetryAttempts >= _maximumAutomaticRetryAttempts) {
+      return;
+    }
+
+    _automaticRetryTimer = Timer(
+      _automaticRetryDelay,
+      _refreshMissingQrPurchase,
+    );
+  }
+
+  Future<void> _refreshMissingQrPurchase() async {
+    _automaticRetryTimer = null;
+    if (!mounted) return;
+
+    final cubit = context.read<PurchaseHistoryCubit>();
+    final currentState = cubit.state;
+    if (currentState is! PurchaseHistoryLoaded ||
+        _containsTarget(currentState.purchases)) {
+      return;
+    }
+
+    _automaticRefreshInProgress = true;
+    _automaticRetryAttempts++;
+    try {
+      await cubit.refreshPurchasesSilently();
+    } finally {
+      _automaticRefreshInProgress = false;
+    }
+
+    if (!mounted) return;
+    _handleAutomaticRetry(cubit.state);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PurchaseHistoryCubit, PurchaseHistoryState>(
+    return BlocConsumer<PurchaseHistoryCubit, PurchaseHistoryState>(
+      listener: (_, state) => _handleAutomaticRetry(state),
       builder: (context, state) {
         if (state is PurchaseHistoryInitial ||
             state is PurchaseHistoryLoading) {
@@ -103,9 +190,11 @@ class _PurchaseHistoryTab extends StatelessWidget {
 
         final purchases = (state as PurchaseHistoryLoaded).purchases;
         final isRecentQrPurchase =
-            initialPurchaseId == null && initialQrSessionId != null;
+            widget.initialPurchaseId == null &&
+            widget.initialQrSessionId != null;
         final hasTarget =
-            initialPurchaseId != null || initialQrSessionId != null;
+            widget.initialPurchaseId != null ||
+            widget.initialQrSessionId != null;
 
         if (purchases.isEmpty && !hasTarget) {
           return _CenteredState(
@@ -119,10 +208,10 @@ class _PurchaseHistoryTab extends StatelessWidget {
         }
 
         final targetedPurchaseIndex = purchases.indexWhere((purchase) {
-          if (initialPurchaseId != null) {
-            return purchase.id == initialPurchaseId;
+          if (widget.initialPurchaseId != null) {
+            return purchase.id == widget.initialPurchaseId;
           }
-          return purchase.sourceQrSessionId == initialQrSessionId;
+          return purchase.sourceQrSessionId == widget.initialQrSessionId;
         });
         final targetedPurchase = targetedPurchaseIndex == -1
             ? null
@@ -266,7 +355,8 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
                 child: Text(
                   isRecentQrPurchase
                       ? 'Az önce onaylanan alışveriş henüz listede görünmüyor. '
-                            'Birkaç saniye sonra yeniden kontrol edebilirsin.'
+                            'Kısa süre içinde otomatik olarak yeniden kontrol '
+                            'ediyoruz. İstersen şimdi de kontrol edebilirsin.'
                       : 'Bildirimdeki alışveriş artık bulunamıyor. '
                             'Diğer alışverişlerin gösteriliyor.',
                 ),
