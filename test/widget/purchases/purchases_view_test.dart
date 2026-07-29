@@ -185,20 +185,18 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(
         find.byKey(const Key('missing-recent-qr-purchase-message')),
         findsOneWidget,
       );
       expect(
-        find.textContaining(
-          'Az önce onaylanan alışveriş henüz listede görünmüyor.',
-        ),
+        find.textContaining('Az önce onaylanan alışveriş kontrol ediliyor.'),
         findsOneWidget,
       );
       expect(
-        find.textContaining('otomatik olarak yeniden kontrol ediyoruz'),
+        find.byKey(const Key('automatic-purchase-check-progress')),
         findsOneWidget,
       );
       expect(find.text('Yeniden kontrol et'), findsOneWidget);
@@ -321,6 +319,14 @@ void main() {
       find.byKey(const Key('missing-recent-qr-purchase-message')),
       findsOneWidget,
     );
+    expect(
+      find.textContaining('Alışveriş kaydı henüz görünmüyor.'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('automatic-purchase-check-progress')),
+      findsNothing,
+    );
     expect(find.text('Yeniden kontrol et'), findsOneWidget);
   });
 
@@ -344,6 +350,10 @@ void main() {
     expect(
       find.byKey(const Key('missing-notification-purchase-message')),
       findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('automatic-purchase-check-progress')),
+      findsNothing,
     );
   });
 

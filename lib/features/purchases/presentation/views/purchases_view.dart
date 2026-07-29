@@ -99,6 +99,10 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
   bool get _isRecentQrPurchase =>
       widget.initialPurchaseId == null && widget.initialQrSessionId != null;
 
+  bool get _automaticRetryCompleted =>
+      _automaticRetryAttempts >= _maximumAutomaticRetryAttempts &&
+      !_automaticRefreshInProgress;
+
   @override
   void initState() {
     super.initState();
@@ -165,7 +169,13 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
     }
 
     if (!mounted) return;
-    _handleAutomaticRetry(cubit.state);
+    final refreshedState = cubit.state;
+    _handleAutomaticRetry(refreshedState);
+    if (refreshedState is PurchaseHistoryLoaded &&
+        !_containsTarget(refreshedState.purchases) &&
+        _automaticRetryCompleted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -239,6 +249,7 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
               if (showMissingTargetMessage && index == 0) {
                 return _MissingTargetPurchaseMessage(
                   isRecentQrPurchase: isRecentQrPurchase,
+                  automaticCheckCompleted: _automaticRetryCompleted,
                   onRetry: context.read<PurchaseHistoryCubit>().loadPurchases,
                 );
               }
@@ -322,10 +333,12 @@ class _TargetPurchaseLabel extends StatelessWidget {
 class _MissingTargetPurchaseMessage extends StatelessWidget {
   const _MissingTargetPurchaseMessage({
     required this.isRecentQrPurchase,
+    required this.automaticCheckCompleted,
     required this.onRetry,
   });
 
   final bool isRecentQrPurchase;
+  final bool automaticCheckCompleted;
   final VoidCallback onRetry;
 
   @override
@@ -354,9 +367,11 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
               Expanded(
                 child: Text(
                   isRecentQrPurchase
-                      ? 'Az önce onaylanan alışveriş henüz listede görünmüyor. '
-                            'Kısa süre içinde otomatik olarak yeniden kontrol '
-                            'ediyoruz. İstersen şimdi de kontrol edebilirsin.'
+                      ? automaticCheckCompleted
+                            ? 'Alışveriş kaydı henüz görünmüyor. Yeniden kontrol '
+                                  'et ile tekrar bakabilirsin.'
+                            : 'Az önce onaylanan alışveriş kontrol ediliyor. '
+                                  'Birkaç saniye bekleyebilirsin.'
                       : 'Bildirimdeki alışveriş artık bulunamıyor. '
                             'Diğer alışverişlerin gösteriliyor.',
                 ),
@@ -365,6 +380,13 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
           ),
           if (isRecentQrPurchase) ...[
             const SizedBox(height: TSizes.sm),
+            if (!automaticCheckCompleted) ...[
+              const LinearProgressIndicator(
+                key: Key('automatic-purchase-check-progress'),
+                minHeight: 3,
+              ),
+              const SizedBox(height: TSizes.xs),
+            ],
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton.icon(
