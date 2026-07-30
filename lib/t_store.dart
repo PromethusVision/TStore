@@ -12,6 +12,7 @@ import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding
 import 'package:t_store/features/auth/presentation/widgets/customer_session_listener.dart';
 import 'package:t_store/features/auth/presentation/widgets/password_recovery_listener.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
+import 'package:t_store/features/chat/presentation/widgets/pending_product_chat_listener.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/brands_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
@@ -71,15 +72,22 @@ class TStore extends StatelessWidget {
           initiallyAuthenticated: SupabaseService.instance.currentUser != null,
           initialUserId: SupabaseService.instance.currentUser?.id,
           signedOutDestinationBuilder: (_) => const NavigationMenu(),
-          child: MaterialApp(
+          child: PendingProductChatListener(
             navigatorKey: tStoreNavigatorKey,
             scaffoldMessengerKey: tStoreScaffoldMessengerKey,
-            title: TTexts.appName,
-            themeMode: ThemeMode.system,
-            theme: TAppTheme.lightTheme,
-            darkTheme: TAppTheme.darkTheme,
-            debugShowCheckedModeBanner: false,
-            home: const NavigationMenu(),
+            enabled:
+                SupabaseService.instance.initialPasswordRecoveryStatus ==
+                PasswordRecoveryLaunchStatus.none,
+            child: MaterialApp(
+              navigatorKey: tStoreNavigatorKey,
+              scaffoldMessengerKey: tStoreScaffoldMessengerKey,
+              title: TTexts.appName,
+              themeMode: ThemeMode.system,
+              theme: TAppTheme.lightTheme,
+              darkTheme: TAppTheme.darkTheme,
+              debugShowCheckedModeBanner: false,
+              home: const NavigationMenu(),
+            ),
           ),
         ),
       ),

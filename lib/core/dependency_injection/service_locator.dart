@@ -133,7 +133,9 @@ import 'package:t_store/features/personalization/presentation/cubit/profile_cubi
 
 // Chat
 import 'package:t_store/features/chat/data/repositories/chat_repository_impl.dart';
+import 'package:t_store/features/chat/data/services/shared_preferences_pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
+import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
@@ -459,6 +461,9 @@ Future<void> setupServiceLocator() async {
   // Repository
   sl.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(supabaseService: sl()),
+  );
+  sl.registerLazySingleton<PendingProductChatStorage>(
+    SharedPreferencesPendingProductChatStorage.new,
   );
 
   // Cubit

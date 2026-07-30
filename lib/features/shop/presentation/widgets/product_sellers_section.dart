@@ -9,6 +9,7 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
@@ -31,6 +32,7 @@ class ProductSellersSection extends StatefulWidget {
   final Future<void> Function()? onChangeLocationRequested;
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
+  final PendingProductChatStorage? pendingProductChatStorage;
 
   const ProductSellersSection({
     super.key,
@@ -39,6 +41,7 @@ class ProductSellersSection extends StatefulWidget {
     this.onChangeLocationRequested,
     this.currentUserIdProvider,
     this.chatDestinationBuilder,
+    this.pendingProductChatStorage,
   });
 
   @override
@@ -180,6 +183,8 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                         locationReady: locationReady,
                         currentUserIdProvider: widget.currentUserIdProvider,
                         chatDestinationBuilder: widget.chatDestinationBuilder,
+                        pendingProductChatStorage:
+                            widget.pendingProductChatStorage,
                       );
                     },
                   ),
@@ -427,6 +432,7 @@ class _SellerTile extends StatelessWidget {
   final bool locationReady;
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
+  final PendingProductChatStorage? pendingProductChatStorage;
 
   const _SellerTile({
     required this.shopProduct,
@@ -435,6 +441,7 @@ class _SellerTile extends StatelessWidget {
     required this.locationReady,
     required this.currentUserIdProvider,
     required this.chatDestinationBuilder,
+    required this.pendingProductChatStorage,
   });
 
   @override
@@ -588,21 +595,51 @@ class _SellerTile extends StatelessWidget {
         : normalizedUserId;
   }
 
+  PendingProductChatStorage get _pendingProductChatStorage =>
+      pendingProductChatStorage ?? sl<PendingProductChatStorage>();
+
   Future<void> _openChat(BuildContext context, String ownerUserId) async {
+    final shop = shopProduct.shop;
+    if (shop == null) return;
+
+    final normalizedProductName = productName.trim();
+    final productReference = normalizedProductName.isEmpty
+        ? 'bu ürün'
+        : '"$normalizedProductName"';
+    final initialDraft = 'Merhaba, $productReference mağazanızda mevcut mu?';
+    final pendingIntent = PendingProductChatIntent(
+      receiverId: ownerUserId,
+      receiverName: shop.name,
+      initialDraft: initialDraft,
+      createdAt: DateTime.now(),
+    );
+    var pendingIntentWasSaved = false;
+
     if (_currentUserId == null) {
+      pendingIntentWasSaved = await _savePendingIntent(pendingIntent);
       final signedIn = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (_) =>
               const LoginView(returnToCallerAfterCustomerLogin: true),
         ),
       );
-      if (!context.mounted || signedIn != true) return;
+      if (!context.mounted) return;
+      if (signedIn != true) {
+        if (pendingIntentWasSaved) {
+          await _clearPendingIntent();
+        }
+        return;
+      }
     }
 
     final currentUserId = _currentUserId;
     if (currentUserId == null) return;
 
     if (currentUserId == ownerUserId) {
+      if (pendingIntentWasSaved) {
+        await _clearPendingIntent();
+      }
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -615,14 +652,11 @@ class _SellerTile extends StatelessWidget {
       return;
     }
 
-    final shop = shopProduct.shop;
-    if (shop == null) return;
+    if (pendingIntentWasSaved) {
+      await _clearPendingIntent();
+    }
+    if (!context.mounted) return;
 
-    final normalizedProductName = productName.trim();
-    final productReference = normalizedProductName.isEmpty
-        ? 'bu ürün'
-        : '"$normalizedProductName"';
-    final initialDraft = 'Merhaba, $productReference mağazanızda mevcut mu?';
     final destination =
         chatDestinationBuilder?.call(ownerUserId, shop.name, initialDraft) ??
         ChatView(
@@ -632,6 +666,21 @@ class _SellerTile extends StatelessWidget {
         );
 
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => destination));
+  }
+
+  Future<bool> _savePendingIntent(PendingProductChatIntent intent) async {
+    try {
+      await _pendingProductChatStorage.save(intent);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _clearPendingIntent() async {
+    try {
+      await _pendingProductChatStorage.clear();
+    } catch (_) {}
   }
 
   void _handleAddToCart(BuildContext context) {

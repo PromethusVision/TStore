@@ -13,6 +13,7 @@ import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
@@ -29,10 +30,36 @@ class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
+class MemoryPendingProductChatStorage implements PendingProductChatStorage {
+  PendingProductChatIntent? pending;
+  int saveCount = 0;
+  int clearCount = 0;
+  bool throwOnSave = false;
+
+  @override
+  Future<void> clear() async {
+    clearCount++;
+    pending = null;
+  }
+
+  @override
+  Future<PendingProductChatIntent?> getPending() async => pending;
+
+  @override
+  Future<void> save(PendingProductChatIntent intent) async {
+    saveCount++;
+    if (throwOnSave) {
+      throw StateError('Yerel kayıt kullanılamıyor');
+    }
+    pending = intent;
+  }
+}
+
 void main() {
   late MockShopRepository shopRepository;
   late MockCustomerLocationService customerLocationService;
   late MockCartV2Cubit cartV2Cubit;
+  late MemoryPendingProductChatStorage pendingChatStorage;
   CustomerCoordinates? cachedCoordinates;
 
   ShopProductEntity seller({
@@ -70,6 +97,7 @@ void main() {
     shopRepository = MockShopRepository();
     customerLocationService = MockCustomerLocationService();
     cartV2Cubit = MockCartV2Cubit();
+    pendingChatStorage = MemoryPendingProductChatStorage();
     cachedCoordinates = null;
 
     when(
@@ -90,6 +118,9 @@ void main() {
     );
     sl.registerLazySingleton<CustomerLocationService>(
       () => customerLocationService,
+    );
+    sl.registerLazySingleton<PendingProductChatStorage>(
+      () => pendingChatStorage,
     );
   });
 
@@ -637,6 +668,13 @@ void main() {
           .returnToCallerAfterCustomerLogin,
       isTrue,
     );
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.pending?.receiverId, 'owner-1');
+    expect(pendingChatStorage.pending?.receiverName, 'Mahalle Marketi');
+    expect(
+      pendingChatStorage.pending?.initialDraft,
+      'Merhaba, "Deneme Ürünü" mağazanızda mevcut mu?',
+    );
   });
 
   testWidgets(
@@ -684,6 +722,9 @@ void main() {
       expect(find.text('Mesaj ekranı'), findsOneWidget);
       expect(receiverId, 'owner-1');
       expect(initialDraft, 'Merhaba, "Deneme Ürünü" mağazanızda mevcut mu?');
+      expect(pendingChatStorage.saveCount, 1);
+      expect(pendingChatStorage.clearCount, 1);
+      expect(pendingChatStorage.pending, isNull);
       verify(() => cartV2Cubit.getActiveCartItems()).called(1);
     },
   );
@@ -722,6 +763,9 @@ void main() {
       find.byKey(const Key('product-seller-message-active')),
       findsOneWidget,
     );
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.clearCount, 1);
+    expect(pendingChatStorage.pending, isNull);
   });
 
   testWidgets('girişte mağaza sahibi hesabı seçilirse kendi mesajını açmaz', (
@@ -768,6 +812,35 @@ void main() {
       find.text('Bu mağazaya kendi hesabınızla mesaj gönderemezsiniz.'),
       findsOneWidget,
     );
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.clearCount, 1);
+    expect(pendingChatStorage.pending, isNull);
+  });
+
+  testWidgets('yerel kayıt başarısız olsa da giriş ekranını açar', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    pendingChatStorage.throwOnSave = true;
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.pending, isNull);
   });
 
   testWidgets('mağaza sahibine kendi mağazasına mesaj butonu göstermez', (
