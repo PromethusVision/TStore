@@ -8,9 +8,14 @@ import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
+import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
+import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
+import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_app_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_location_bar.dart';
@@ -54,6 +59,9 @@ class _HomeViewState extends State<HomeView> {
         BlocProvider<NearbyShopsCubit>(
           create: (_) => sl<NearbyShopsCubit>()..loadShops(),
         ),
+        BlocProvider<CustomerSearchCubit>(
+          create: (_) => sl<CustomerSearchCubit>(),
+        ),
       ],
       child: Builder(
         builder: (contentContext) => Scaffold(
@@ -61,7 +69,9 @@ class _HomeViewState extends State<HomeView> {
           body: SafeArea(
             bottom: false,
             child: CustomerHomeV1Content(
-              onSearchTap: () => _openAllProductsSearch(contentContext),
+              searchCubit: contentContext.read<CustomerSearchCubit>(),
+              onSearchSubmitted: (query) =>
+                  _openAllProductsSearch(contentContext, query),
               onLocationTap: () => _openSavedLocations(contentContext),
               onNearbyViewAll: () =>
                   contentContext.read<NavigationMenuCubit>().changeIndex(1),
@@ -90,10 +100,14 @@ class _HomeViewState extends State<HomeView> {
     await context.read<NearbyShopsCubit>().loadShops();
   }
 
-  void _openAllProductsSearch(BuildContext context) {
+  void _openAllProductsSearch(BuildContext context, String query) {
     THelperFunctions.navigateToScreen(
       context,
-      const AllProductsView(autoFocusSearch: true, isSearchMode: true),
+      AllProductsView(
+        autoFocusSearch: true,
+        isSearchMode: true,
+        initialQuery: query,
+      ),
     );
   }
 }
@@ -101,18 +115,20 @@ class _HomeViewState extends State<HomeView> {
 class CustomerHomeV1Content extends StatelessWidget {
   const CustomerHomeV1Content({
     super.key,
-    required this.onSearchTap,
+    required this.onSearchSubmitted,
     required this.onLocationTap,
     required this.onNearbyViewAll,
+    this.searchCubit,
     this.isAuthenticatedOverride,
     this.categoryDestinationBuilder,
     this.productDestinationBuilder,
     this.shopDestinationBuilder,
   });
 
-  final VoidCallback onSearchTap;
+  final HomeSearchQuerySubmitted onSearchSubmitted;
   final VoidCallback onLocationTap;
   final VoidCallback onNearbyViewAll;
+  final CustomerSearchCubit? searchCubit;
   final bool? isAuthenticatedOverride;
   final HomeCategoryDestinationBuilder? categoryDestinationBuilder;
   final HomeProductDestinationBuilder? productDestinationBuilder;
@@ -143,7 +159,44 @@ class CustomerHomeV1Content extends StatelessWidget {
                 onTap: onLocationTap,
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space8),
-              HomeSearchBar(onTap: onSearchTap),
+              HomeSearchBar(
+                searchCubit: searchCubit ?? context.read<CustomerSearchCubit>(),
+                onQuerySubmitted: onSearchSubmitted,
+                onProductSelected: (product) =>
+                    Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            productDestinationBuilder?.call(product) ??
+                            ProductDetailsView(product: product),
+                      ),
+                    ),
+                onCategorySelected: (category) {
+                  final localizedTitle =
+                      CustomerCategoryPresentationHelper.localizedTitle(
+                        category.name,
+                      );
+                  Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) =>
+                          categoryDestinationBuilder?.call(
+                            category,
+                            localizedTitle,
+                          ) ??
+                          SubCategoryView(
+                            title: localizedTitle,
+                            categoryId: category.id,
+                          ),
+                    ),
+                  );
+                },
+                onShopSelected: (shop) => Navigator.of(context).push<void>(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        shopDestinationBuilder?.call(shop) ??
+                        ShopProfileView(shop: shop),
+                  ),
+                ),
+              ),
               const SizedBox(height: CustomerHomeV1Tokens.space12),
               HomeCategories(destinationBuilder: categoryDestinationBuilder),
               const SizedBox(height: CustomerHomeV1Tokens.space12),

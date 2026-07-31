@@ -28,6 +28,7 @@ class AllProductsView extends StatelessWidget {
     super.key,
     this.autoFocusSearch = false,
     this.isSearchMode = false,
+    this.initialQuery = '',
     this.currentUserIdProvider,
     this.recentSearchesStorage,
     this.customerSearchCubit,
@@ -37,6 +38,7 @@ class AllProductsView extends StatelessWidget {
 
   final bool autoFocusSearch;
   final bool isSearchMode;
+  final String initialQuery;
   final String? Function()? currentUserIdProvider;
   final RecentProductSearchesStorage? recentSearchesStorage;
   final CustomerSearchCubit? customerSearchCubit;
@@ -48,6 +50,7 @@ class AllProductsView extends StatelessWidget {
     final content = _AllProductsContent(
       autoFocusSearch: autoFocusSearch,
       isSearchMode: isSearchMode,
+      initialQuery: initialQuery,
       currentUserIdProvider: currentUserIdProvider,
       recentSearchesStorage:
           recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
@@ -78,6 +81,7 @@ class _AllProductsContent extends StatefulWidget {
   const _AllProductsContent({
     required this.autoFocusSearch,
     required this.isSearchMode,
+    required this.initialQuery,
     required this.recentSearchesStorage,
     this.currentUserIdProvider,
     this.categoryDestinationBuilder,
@@ -86,6 +90,7 @@ class _AllProductsContent extends StatefulWidget {
 
   final bool autoFocusSearch;
   final bool isSearchMode;
+  final String initialQuery;
   final String? Function()? currentUserIdProvider;
   final RecentProductSearchesStorage recentSearchesStorage;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
@@ -112,6 +117,13 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     _scrollController.addListener(_handleScroll);
     unawaited(_loadRecentSearches());
 
+    final initialQuery = widget.initialQuery.trim();
+    if (initialQuery.isNotEmpty) {
+      _searchController
+        ..text = initialQuery
+        ..selection = TextSelection.collapsed(offset: initialQuery.length);
+    }
+
     if (widget.autoFocusSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -120,7 +132,15 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       });
     }
 
-    context.read<ProductsCubit>().getProducts(refresh: true);
+    if (widget.isSearchMode && initialQuery.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _runSearch(initialQuery);
+        }
+      });
+    } else {
+      context.read<ProductsCubit>().getProducts(refresh: true);
+    }
   }
 
   @override

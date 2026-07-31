@@ -138,7 +138,7 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject({bool isSearchMode = false}) {
+  Widget buildSubject({bool isSearchMode = false, String initialQuery = ''}) {
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -148,6 +148,7 @@ void main() {
         child: AllProductsView(
           currentUserIdProvider: () => null,
           isSearchMode: isSearchMode,
+          initialQuery: initialQuery,
           recentSearchesStorage: recentSearchesStorage,
           customerSearchCubit: customerSearchCubit,
           categoryDestinationBuilder: (category) => Scaffold(
@@ -240,6 +241,21 @@ void main() {
     expect(find.text('Son Aramalar'), findsOneWidget);
     expect(find.text('kahve'), findsOneWidget);
     expect(find.text('ekmek'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('starts a unified search with the query received from home', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(isSearchMode: true, initialQuery: 'elektronik'),
+    );
+    await tester.pump();
+
+    expect(find.widgetWithText(TextFormField, 'elektronik'), findsOneWidget);
+    verify(() => customerSearchCubit.search('elektronik')).called(1);
+    verifyNever(() => localProductsCubit.getProducts(refresh: true));
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

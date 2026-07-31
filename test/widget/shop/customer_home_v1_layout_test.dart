@@ -14,6 +14,8 @@ import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_state.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
@@ -32,6 +34,9 @@ class MockHomeLayoutCategoriesCubit extends MockCubit<CategoriesState>
 class MockHomeLayoutProductsCubit extends MockCubit<ProductsState>
     implements ProductsCubit {}
 
+class MockHomeLayoutCustomerSearchCubit extends MockCubit<CustomerSearchState>
+    implements CustomerSearchCubit {}
+
 class MockHomeLayoutLocationsCubit
     extends MockCubit<CustomerSavedLocationsState>
     implements CustomerSavedLocationsCubit {}
@@ -44,6 +49,7 @@ void main() {
   late MockHomeLayoutBannersCubit bannersCubit;
   late MockHomeLayoutCategoriesCubit categoriesCubit;
   late MockHomeLayoutProductsCubit productsCubit;
+  late MockHomeLayoutCustomerSearchCubit customerSearchCubit;
   late MockHomeLayoutLocationsCubit locationsCubit;
   late MockHomeLayoutNearbyCubit nearbyCubit;
 
@@ -52,6 +58,7 @@ void main() {
     bannersCubit = MockHomeLayoutBannersCubit();
     categoriesCubit = MockHomeLayoutCategoriesCubit();
     productsCubit = MockHomeLayoutProductsCubit();
+    customerSearchCubit = MockHomeLayoutCustomerSearchCubit();
     locationsCubit = MockHomeLayoutLocationsCubit();
     nearbyCubit = MockHomeLayoutNearbyCubit();
 
@@ -88,6 +95,13 @@ void main() {
       initialState: const ProductsLoaded(products: []),
     );
     whenListen(
+      customerSearchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: CustomerSearchInitial(),
+    );
+    when(() => customerSearchCubit.search(any())).thenAnswer((_) async {});
+    when(() => customerSearchCubit.reset()).thenReturn(null);
+    whenListen(
       locationsCubit,
       const Stream<CustomerSavedLocationsState>.empty(),
       initialState: const CustomerSavedLocationsLoaded(locations: []),
@@ -120,8 +134,9 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             body: CustomerHomeV1Content(
+              searchCubit: customerSearchCubit,
               isAuthenticatedOverride: false,
-              onSearchTap: () {},
+              onSearchSubmitted: (_) {},
               onLocationTap: () {},
               onNearbyViewAll: () {},
             ),
