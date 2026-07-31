@@ -5,6 +5,7 @@ import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_categories_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/search_products_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
@@ -13,6 +14,7 @@ import 'package:t_store/features/shop/presentation/helpers/customer_category_pre
 class CustomerSearchCubit extends Cubit<CustomerSearchState> {
   CustomerSearchCubit({
     required this.searchProductsUsecase,
+    required this.getProductsUsecase,
     required this.getCategoriesUsecase,
     required this.getShopsUsecase,
   }) : super(CustomerSearchInitial());
@@ -22,6 +24,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
   static const int _maximumShopCount = 8;
 
   final SearchProductsUsecase searchProductsUsecase;
+  final GetProductsUsecase getProductsUsecase;
   final GetCategoriesUsecase getCategoriesUsecase;
   final GetShopsUsecase getShopsUsecase;
 
@@ -54,13 +57,15 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
 
     if (isClosed || requestId != _activeRequestId) return;
 
-    var failedSectionCount = 0;
+    var productsFailed = false;
+    var categoriesFailed = false;
+    var shopsFailed = false;
     var products = <ProductEntity>[];
     var categories = <CategoryEntity>[];
     var shops = <ShopEntity>[];
 
     productsResult.fold(
-      (_) => failedSectionCount++,
+      (_) => productsFailed = true,
       (items) => products = _ranked(
         items,
         query: normalizedQuery,
@@ -68,7 +73,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         limit: _maximumProductCount,
       ),
     );
-    categoriesResult.fold((_) => failedSectionCount++, (items) {
+    categoriesResult.fold((_) => categoriesFailed = true, (items) {
       _categoriesCache = items;
       categories = _ranked(
         items.where(
@@ -85,7 +90,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         limit: _maximumCategoryCount,
       );
     });
-    shopsResult.fold((_) => failedSectionCount++, (items) {
+    shopsResult.fold((_) => shopsFailed = true, (items) {
       _shopsCache = items;
       shops = _ranked(
         items.where(
@@ -96,6 +101,30 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         limit: _maximumShopCount,
       );
     });
+
+    if (categories.isNotEmpty) {
+      final categoryProductsResult = await getProductsUsecase(
+        GetProductsParams(
+          categoryId: categories.first.id,
+          limit: _maximumProductCount,
+          sortBy: 'created_at',
+          ascending: false,
+        ),
+      );
+
+      if (isClosed || requestId != _activeRequestId) return;
+
+      categoryProductsResult.fold((_) {}, (items) {
+        productsFailed = false;
+        products = _mergeProducts(products, items);
+      });
+    }
+
+    final failedSectionCount = [
+      productsFailed,
+      categoriesFailed,
+      shopsFailed,
+    ].where((failed) => failed).length;
 
     if (failedSectionCount == 3) {
       emit(
@@ -117,6 +146,22 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
             : null,
       ),
     );
+  }
+
+  List<ProductEntity> _mergeProducts(
+    List<ProductEntity> directMatches,
+    List<ProductEntity> categoryMatches,
+  ) {
+    final productsById = <String, ProductEntity>{};
+    for (final product in directMatches) {
+      productsById[product.id] = product;
+    }
+    for (final product in categoryMatches) {
+      productsById.putIfAbsent(product.id, () => product);
+    }
+    return productsById.values
+        .take(_maximumProductCount)
+        .toList(growable: false);
   }
 
   void reset() {

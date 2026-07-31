@@ -7,6 +7,7 @@ import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_categories_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/search_products_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
@@ -14,12 +15,15 @@ import 'package:t_store/features/shop/presentation/cubit/customer_search_state.d
 
 class MockSearchProductsUsecase extends Mock implements SearchProductsUsecase {}
 
+class MockGetProductsUsecase extends Mock implements GetProductsUsecase {}
+
 class MockGetCategoriesUsecase extends Mock implements GetCategoriesUsecase {}
 
 class MockGetShopsUsecase extends Mock implements GetShopsUsecase {}
 
 void main() {
   late MockSearchProductsUsecase searchProductsUsecase;
+  late MockGetProductsUsecase getProductsUsecase;
   late MockGetCategoriesUsecase getCategoriesUsecase;
   late MockGetShopsUsecase getShopsUsecase;
 
@@ -50,10 +54,12 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(const NoParams());
+    registerFallbackValue(GetProductsParams());
   });
 
   setUp(() {
     searchProductsUsecase = MockSearchProductsUsecase();
+    getProductsUsecase = MockGetProductsUsecase();
     getCategoriesUsecase = MockGetCategoriesUsecase();
     getShopsUsecase = MockGetShopsUsecase();
   });
@@ -61,6 +67,7 @@ void main() {
   CustomerSearchCubit buildCubit() {
     return CustomerSearchCubit(
       searchProductsUsecase: searchProductsUsecase,
+      getProductsUsecase: getProductsUsecase,
       getCategoriesUsecase: getCategoriesUsecase,
       getShopsUsecase: getShopsUsecase,
     );
@@ -76,6 +83,9 @@ void main() {
     when(
       () => getShopsUsecase(any()),
     ).thenAnswer((_) async => const Right([shop, inactiveShop]));
+    when(
+      () => getProductsUsecase(any()),
+    ).thenAnswer((_) async => const Right([]));
   }
 
   blocTest<CustomerSearchCubit, CustomerSearchState>(
@@ -97,6 +107,74 @@ void main() {
       verify(() => getCategoriesUsecase(any())).called(1);
       verify(() => getShopsUsecase(any())).called(1);
     },
+  );
+
+  blocTest<CustomerSearchCubit, CustomerSearchState>(
+    'kategori adı arandığında o kategorideki ürünleri de getirir',
+    setUp: () {
+      when(
+        () => searchProductsUsecase(any()),
+      ).thenAnswer((_) async => const Right([]));
+      when(
+        () => getCategoriesUsecase(any()),
+      ).thenAnswer((_) async => const Right([category]));
+      when(
+        () => getShopsUsecase(any()),
+      ).thenAnswer((_) async => const Right([]));
+      when(
+        () => getProductsUsecase(any()),
+      ).thenAnswer((_) async => const Right([product]));
+    },
+    build: buildCubit,
+    act: (cubit) => cubit.search('market'),
+    expect: () => [
+      const CustomerSearchLoading('market'),
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [product],
+        categories: [category],
+        shops: [],
+      ),
+    ],
+    verify: (_) {
+      final params =
+          verify(() => getProductsUsecase(captureAny())).captured.single
+              as GetProductsParams;
+      expect(params.categoryId, category.id);
+      expect(params.page, 0);
+      expect(params.limit, 30);
+      expect(params.sortBy, 'created_at');
+      expect(params.ascending, isFalse);
+    },
+  );
+
+  blocTest<CustomerSearchCubit, CustomerSearchState>(
+    'doğrudan ve kategori sonuçlarındaki aynı ürünü tek kez gösterir',
+    setUp: () {
+      when(
+        () => searchProductsUsecase(any()),
+      ).thenAnswer((_) async => const Right([product]));
+      when(
+        () => getCategoriesUsecase(any()),
+      ).thenAnswer((_) async => const Right([category]));
+      when(
+        () => getShopsUsecase(any()),
+      ).thenAnswer((_) async => const Right([]));
+      when(
+        () => getProductsUsecase(any()),
+      ).thenAnswer((_) async => const Right([product]));
+    },
+    build: buildCubit,
+    act: (cubit) => cubit.search('market'),
+    expect: () => [
+      const CustomerSearchLoading('market'),
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [product],
+        categories: [category],
+        shops: [],
+      ),
+    ],
   );
 
   blocTest<CustomerSearchCubit, CustomerSearchState>(

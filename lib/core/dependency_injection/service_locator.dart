@@ -279,6 +279,7 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(
     () => CustomerSearchCubit(
       searchProductsUsecase: sl(),
+      getProductsUsecase: sl(),
       getCategoriesUsecase: sl(),
       getShopsUsecase: sl(),
     ),
