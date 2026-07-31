@@ -16,8 +16,10 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 
 // Products
 import 'package:t_store/features/shop/data/repositories/product_repository_impl.dart';
+import 'package:t_store/features/shop/data/services/shared_preferences_recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/data/services/shared_preferences_recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/repositories/product_repository.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_product_by_id_usecase.dart';
@@ -194,6 +196,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => SearchProductsUsecase(sl()));
   sl.registerLazySingleton<RecentlyViewedProductsStorage>(
     SharedPreferencesRecentlyViewedProductsStorage.new,
+  );
+  sl.registerLazySingleton<RecentProductSearchesStorage>(
+    SharedPreferencesRecentProductSearchesStorage.new,
   );
 
   // Cubit

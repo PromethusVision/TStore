@@ -8,6 +8,7 @@ import 'package:t_store/core/common/widgets/vertical_product_card.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 
@@ -17,11 +18,13 @@ class AllProductsView extends StatelessWidget {
     this.autoFocusSearch = false,
     this.isSearchMode = false,
     this.currentUserIdProvider,
+    this.recentSearchesStorage,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
   final String? Function()? currentUserIdProvider;
+  final RecentProductSearchesStorage? recentSearchesStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,8 @@ class AllProductsView extends StatelessWidget {
         autoFocusSearch: autoFocusSearch,
         isSearchMode: isSearchMode,
         currentUserIdProvider: currentUserIdProvider,
+        recentSearchesStorage:
+            recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
       ),
     );
   }
@@ -40,12 +45,14 @@ class _AllProductsContent extends StatefulWidget {
   const _AllProductsContent({
     required this.autoFocusSearch,
     required this.isSearchMode,
+    required this.recentSearchesStorage,
     this.currentUserIdProvider,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
   final String? Function()? currentUserIdProvider;
+  final RecentProductSearchesStorage recentSearchesStorage;
 
   @override
   State<_AllProductsContent> createState() => _AllProductsContentState();
@@ -59,11 +66,14 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   final FocusNode _searchFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   Timer? _searchDebounce;
+  List<String> _recentSearches = const [];
+  String? _lastRequestedQuery;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScroll);
+    unawaited(_loadRecentSearches());
 
     if (widget.autoFocusSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -131,10 +141,21 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                 onChanged: (value) {
                   _onSearchChanged(value);
                 },
+                onFieldSubmitted: _submitSearch,
               ),
+              if (_shouldShowRecentSearches) ...[
+                const SizedBox(height: TSizes.spaceBtwItems),
+                _RecentSearchesSection(
+                  queries: _recentSearches,
+                  onSelected: _selectRecentSearch,
+                  onRemoved: _removeRecentSearch,
+                  onClear: _clearRecentSearches,
+                ),
+              ],
               const SizedBox(height: TSizes.spaceBtwItems),
               Expanded(
-                child: BlocBuilder<ProductsCubit, ProductsState>(
+                child: BlocConsumer<ProductsCubit, ProductsState>(
+                  listener: _handleProductsState,
                   builder: (context, state) {
                     if (state is ProductsLoading ||
                         state is ProductsInitial ||
@@ -209,19 +230,29 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     _scrollToTop();
 
     if (query.isEmpty) {
+      _lastRequestedQuery = null;
       context.read<ProductsCubit>().getProducts(refresh: true);
       return;
     }
 
     _searchDebounce = Timer(_searchDebounceDuration, () {
       if (!mounted || _searchController.text.trim() != query) return;
-      unawaited(context.read<ProductsCubit>().searchProducts(query));
+      _runSearch(query);
     });
+  }
+
+  void _submitSearch(String value) {
+    final query = value.trim();
+    _searchDebounce?.cancel();
+    if (query.isEmpty) return;
+
+    _runSearch(query);
   }
 
   void _clearSearch() {
     _searchDebounce?.cancel();
     _searchController.clear();
+    _lastRequestedQuery = null;
     setState(() {});
     _scrollToTop();
     context.read<ProductsCubit>().getProducts(refresh: true);
@@ -237,7 +268,83 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       return;
     }
 
-    context.read<ProductsCubit>().searchProducts(query);
+    _runSearch(query);
+  }
+
+  void _runSearch(String query) {
+    final productsCubit = context.read<ProductsCubit>();
+    if (_lastRequestedQuery == query &&
+        productsCubit.state is ProductsSearching) {
+      return;
+    }
+
+    _lastRequestedQuery = query;
+    unawaited(productsCubit.searchProducts(query));
+  }
+
+  void _handleProductsState(BuildContext context, ProductsState state) {
+    if (state is! ProductsSearchResult) return;
+
+    final currentQuery = _searchController.text.trim();
+    if (currentQuery.isEmpty || state.query.trim() != currentQuery) return;
+
+    unawaited(_recordRecentSearch(currentQuery));
+  }
+
+  bool get _shouldShowRecentSearches =>
+      widget.isSearchMode &&
+      _searchController.text.trim().isEmpty &&
+      _recentSearches.isNotEmpty;
+
+  Future<void> _loadRecentSearches() async {
+    try {
+      final queries = await widget.recentSearchesStorage.getQueries();
+      if (!mounted) return;
+
+      setState(() => _recentSearches = queries);
+    } catch (_) {
+      // Arama geçmişi ana ürün arama akışını engellememelidir.
+    }
+  }
+
+  Future<void> _recordRecentSearch(String query) async {
+    try {
+      await widget.recentSearchesStorage.recordQuery(query);
+      await _loadRecentSearches();
+    } catch (_) {
+      // Yerel kayıt başarısız olsa bile arama sonucu kullanılabilir kalır.
+    }
+  }
+
+  void _selectRecentSearch(String query) {
+    _searchDebounce?.cancel();
+    _searchController
+      ..text = query
+      ..selection = TextSelection.collapsed(offset: query.length);
+    setState(() {});
+    _scrollToTop();
+    _searchFocusNode.requestFocus();
+    _runSearch(query);
+  }
+
+  Future<void> _removeRecentSearch(String query) async {
+    try {
+      await widget.recentSearchesStorage.removeQuery(query);
+      await _loadRecentSearches();
+    } catch (_) {
+      // Tek bir geçmiş kaydı silinemese de ürün araması çalışmaya devam eder.
+    }
+  }
+
+  Future<void> _clearRecentSearches() async {
+    try {
+      await widget.recentSearchesStorage.clear();
+      if (!mounted) return;
+
+      setState(() => _recentSearches = const []);
+    } catch (_) {
+      // Geçmiş temizleme hatası ana arama deneyimini engellememelidir.
+    }
   }
 
   void _handleScroll() {
@@ -268,6 +375,64 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(0);
     }
+  }
+}
+
+class _RecentSearchesSection extends StatelessWidget {
+  const _RecentSearchesSection({
+    required this.queries,
+    required this.onSelected,
+    required this.onRemoved,
+    required this.onClear,
+  });
+
+  final List<String> queries;
+  final ValueChanged<String> onSelected;
+  final ValueChanged<String> onRemoved;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      label: 'Son aramalar',
+      child: Column(
+        key: const Key('recent-product-searches-section'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Son Aramalar',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              TextButton(
+                key: const Key('clear-recent-product-searches'),
+                onPressed: onClear,
+                child: const Text('Tümünü Temizle'),
+              ),
+            ],
+          ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final query in queries)
+                InputChip(
+                  key: ValueKey('recent-product-search-$query'),
+                  avatar: const Icon(Icons.history, size: 18),
+                  label: Text(query),
+                  onPressed: () => onSelected(query),
+                  onDeleted: () => onRemoved(query),
+                  deleteButtonTooltipMessage: '$query aramasını sil',
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 

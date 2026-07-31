@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
@@ -19,10 +20,50 @@ class MockProductsCubit extends MockCubit<ProductsState>
 class MockWishlistCubit extends MockCubit<WishlistState>
     implements WishlistCubit {}
 
+class InMemoryRecentProductSearchesStorage
+    implements RecentProductSearchesStorage {
+  InMemoryRecentProductSearchesStorage([List<String> initialQueries = const []])
+    : queries = [...initialQueries];
+
+  final List<String> queries;
+
+  @override
+  Future<void> clear() async => queries.clear();
+
+  @override
+  Future<List<String>> getQueries() async => List.unmodifiable(queries);
+
+  @override
+  Future<void> recordQuery(String query) async {
+    final normalizedQuery = query.trim();
+    if (normalizedQuery.isEmpty) return;
+
+    queries
+      ..removeWhere(
+        (item) => item.toLowerCase() == normalizedQuery.toLowerCase(),
+      )
+      ..insert(0, normalizedQuery);
+    if (queries.length > RecentProductSearchesStorage.maximumQueryCount) {
+      queries.removeRange(
+        RecentProductSearchesStorage.maximumQueryCount,
+        queries.length,
+      );
+    }
+  }
+
+  @override
+  Future<void> removeQuery(String query) async {
+    queries.removeWhere(
+      (item) => item.toLowerCase() == query.trim().toLowerCase(),
+    );
+  }
+}
+
 void main() {
   late MockProductsCubit parentProductsCubit;
   late MockProductsCubit localProductsCubit;
   late MockWishlistCubit wishlistCubit;
+  late InMemoryRecentProductSearchesStorage recentSearchesStorage;
   late ProductsLoaded parentFeaturedState;
 
   const featuredProduct = ProductEntity(
@@ -41,6 +82,7 @@ void main() {
     parentProductsCubit = MockProductsCubit();
     localProductsCubit = MockProductsCubit();
     wishlistCubit = MockWishlistCubit();
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage();
     parentFeaturedState = const ProductsLoaded(
       products: [featuredProduct],
       hasReachedMax: true,
@@ -79,14 +121,18 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject() {
+  Widget buildSubject({bool isSearchMode = false}) {
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
           BlocProvider<ProductsCubit>.value(value: parentProductsCubit),
           BlocProvider<WishlistCubit>.value(value: wishlistCubit),
         ],
-        child: AllProductsView(currentUserIdProvider: () => null),
+        child: AllProductsView(
+          currentUserIdProvider: () => null,
+          isSearchMode: isSearchMode,
+          recentSearchesStorage: recentSearchesStorage,
+        ),
       ),
     );
   }
@@ -148,6 +194,129 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );
+
+  testWidgets('shows the most recent searches in search mode', (tester) async {
+    recentSearchesStorage.queries.addAll(['kahve', 'ekmek']);
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('recent-product-searches-section')),
+      findsOneWidget,
+    );
+    expect(find.text('Son Aramalar'), findsOneWidget);
+    expect(find.text('kahve'), findsOneWidget);
+    expect(find.text('ekmek'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('runs a recent search immediately when it is selected', (
+    tester,
+  ) async {
+    recentSearchesStorage.queries.add('kahve');
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+    await tester.tap(find.text('kahve'));
+    await tester.pump();
+
+    expect(find.widgetWithText(TextFormField, 'kahve'), findsOneWidget);
+    verify(() => localProductsCubit.searchProducts('kahve')).called(1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('removes one recent search and clears the remaining history', (
+    tester,
+  ) async {
+    recentSearchesStorage.queries.addAll(['kahve', 'ekmek']);
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('kahve aramasını sil'));
+    await tester.pump();
+
+    expect(find.text('kahve'), findsNothing);
+    expect(find.text('ekmek'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('clear-recent-product-searches')));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('recent-product-searches-section')),
+      findsNothing,
+    );
+    expect(recentSearchesStorage.queries, isEmpty);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets(
+    'stores a completed search and shows it after clearing the field',
+    (tester) async {
+      final states = StreamController<ProductsState>();
+      whenListen(
+        localProductsCubit,
+        states.stream,
+        initialState: ProductsInitial(),
+      );
+      when(() => localProductsCubit.searchProducts('kahve')).thenAnswer((
+        _,
+      ) async {
+        states.add(const ProductsSearchResult(products: [], query: 'kahve'));
+      });
+
+      await tester.pumpWidget(buildSubject(isSearchMode: true));
+      await tester.pump();
+      await tester.enterText(find.byType(TextFormField), 'kahve');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      expect(recentSearchesStorage.queries, ['kahve']);
+
+      await tester.tap(find.byTooltip('Aramayı temizle'));
+      await tester.pump();
+
+      expect(find.text('Son Aramalar'), findsOneWidget);
+      expect(find.text('kahve'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await states.close();
+    },
+  );
+
+  testWidgets('does not submit the same search twice while it is loading', (
+    tester,
+  ) async {
+    final states = StreamController<ProductsState>();
+    final pendingSearch = Completer<void>();
+    whenListen(
+      localProductsCubit,
+      states.stream,
+      initialState: ProductsInitial(),
+    );
+    when(() => localProductsCubit.searchProducts('kahve')).thenAnswer((_) {
+      states.add(ProductsSearching());
+      return pendingSearch.future;
+    });
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'kahve');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+    await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pump();
+
+    verify(() => localProductsCubit.searchProducts('kahve')).called(1);
+
+    pendingSearch.complete();
+    await tester.pumpWidget(const SizedBox.shrink());
+    await states.close();
+  });
 
   testWidgets('rapid typing sends only the latest search query', (
     tester,
