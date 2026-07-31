@@ -20,6 +20,11 @@ class ChatUnreadCubit extends Cubit<ChatUnreadState> {
     await _loadUnreadCount(showLoading: false, preserveLoadedState: true);
   }
 
+  void resetUnreadCount() {
+    if (state == const ChatUnreadLoaded(0)) return;
+    emit(const ChatUnreadLoaded(0));
+  }
+
   Future<void> _loadUnreadCount({
     required bool showLoading,
     required bool preserveLoadedState,

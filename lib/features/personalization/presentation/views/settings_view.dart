@@ -36,11 +36,13 @@ class SettingsView extends StatefulWidget {
     this.currentUserIdProvider,
     this.locationPermissionLoader,
     this.unreadAutoRefreshInterval = const Duration(seconds: 15),
+    this.useInheritedChatUnreadCubit = false,
   });
 
   final SettingsCurrentUserIdProvider? currentUserIdProvider;
   final CustomerLocationPermissionLoader? locationPermissionLoader;
   final Duration unreadAutoRefreshInterval;
+  final bool useInheritedChatUnreadCubit;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -84,17 +86,22 @@ class _SettingsViewState extends State<SettingsView> {
       );
     }
 
+    final content = Builder(
+      builder: (context) => _buildSettingsContent(
+        context,
+        isLoggedIn: true,
+        currentUserId: currentUserId,
+      ),
+    );
+    if (widget.useInheritedChatUnreadCubit) {
+      return content;
+    }
+
     return BlocProvider(
       create: (_) => sl<ChatUnreadCubit>()..loadUnreadCount(),
       child: _UnreadCountAutoRefresh(
         interval: widget.unreadAutoRefreshInterval,
-        child: Builder(
-          builder: (context) => _buildSettingsContent(
-            context,
-            isLoggedIn: true,
-            currentUserId: currentUserId,
-          ),
-        ),
+        child: content,
       ),
     );
   }

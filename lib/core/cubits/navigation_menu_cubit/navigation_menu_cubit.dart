@@ -20,7 +20,7 @@ class NavigationMenuCubit extends Cubit<NavigationMenuState> {
     const NearbyView(),
     const CartV2View(),
     const WishlistView(),
-    const SettingsView(),
+    const SettingsView(useInheritedChatUnreadCubit: true),
   ];
   void changeIndex(int index) {
     selectedIndex = index;

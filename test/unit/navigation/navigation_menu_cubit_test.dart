@@ -24,6 +24,10 @@ void main() {
 
     cubit.changeIndex(4);
     expect(cubit.getScreen(), isA<SettingsView>());
+    expect(
+      (cubit.getScreen() as SettingsView).useInheritedChatUnreadCubit,
+      isTrue,
+    );
 
     expect(cubit.screensList, hasLength(5));
     await cubit.close();

@@ -20,6 +20,7 @@ void main() {
     required CartV2State cartState,
     required ValueChanged<int> onSelected,
     int selectedIndex = 0,
+    int unreadMessageCount = 0,
   }) {
     whenListen(
       cartCubit,
@@ -34,6 +35,7 @@ void main() {
           bottomNavigationBar: CustomerBottomNavigation(
             selectedIndex: selectedIndex,
             onSelected: onSelected,
+            unreadMessageCount: unreadMessageCount,
           ),
         ),
       ),
@@ -57,6 +59,7 @@ void main() {
     expect(find.text('Sepet'), findsOneWidget);
     expect(find.text('Favoriler'), findsOneWidget);
     expect(find.text('Profil'), findsOneWidget);
+    expect(find.byKey(const Key('customer-nav-profile-badge')), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -85,5 +88,34 @@ void main() {
     await tester.pump();
 
     expect(selectedIndex, 2);
+  });
+
+  testWidgets('okunmamış mesaj sayısını Profil simgesinde gösterir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        cartState: const CartV2Loaded([]),
+        unreadMessageCount: 7,
+        onSelected: (_) {},
+      ),
+    );
+
+    expect(find.byKey(const Key('customer-nav-profile-badge')), findsOneWidget);
+    expect(find.text('7'), findsOneWidget);
+  });
+
+  testWidgets('yüksek okunmamış mesaj sayısını 99+ olarak sınırlar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        cartState: const CartV2Loaded([]),
+        unreadMessageCount: 125,
+        onSelected: (_) {},
+      ),
+    );
+
+    expect(find.text('99+'), findsOneWidget);
   });
 }

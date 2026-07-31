@@ -88,4 +88,16 @@ void main() {
     await firstLoad;
     expect(cubit.state, const ChatUnreadLoaded(4));
   });
+
+  test('oturum kapandığında okunmamış mesaj sayısını sıfırlar', () async {
+    when(
+      () => repository.getUnreadCount(),
+    ).thenAnswer((_) async => const Right(4));
+    await cubit.loadUnreadCount();
+
+    cubit.resetUnreadCount();
+
+    expect(cubit.state, const ChatUnreadLoaded(0));
+    verify(() => repository.getUnreadCount()).called(1);
+  });
 }

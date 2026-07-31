@@ -9,6 +9,8 @@ import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart';
@@ -21,6 +23,9 @@ class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
 class MockNavigationMenuCubit extends MockCubit<NavigationMenuState>
     implements NavigationMenuCubit {}
+
+class MockChatUnreadCubit extends MockCubit<ChatUnreadState>
+    implements ChatUnreadCubit {}
 
 void main() {
   late MockNearbyShopsCubit nearbyShopsCubit;
@@ -107,6 +112,7 @@ void main() {
       'keeps the five customer labels in order and opens nearby at index 1',
       (tester) async {
         final navigationCubit = MockNavigationMenuCubit();
+        final chatUnreadCubit = MockChatUnreadCubit();
         whenListen(
           navigationCubit,
           const Stream<NavigationMenuState>.empty(),
@@ -117,6 +123,14 @@ void main() {
           () => navigationCubit.getScreen(),
         ).thenReturn(const SizedBox(key: Key('navigation-body')));
         when(() => navigationCubit.changeIndex(any())).thenAnswer((_) {});
+        whenListen(
+          chatUnreadCubit,
+          const Stream<ChatUnreadState>.empty(),
+          initialState: const ChatUnreadLoaded(0),
+        );
+        when(
+          () => chatUnreadCubit.refreshUnreadCountSilently(),
+        ).thenAnswer((_) async {});
 
         await tester.pumpWidget(
           MultiBlocProvider(
@@ -124,7 +138,12 @@ void main() {
               BlocProvider<NavigationMenuCubit>.value(value: navigationCubit),
               BlocProvider<CartV2Cubit>.value(value: cartV2Cubit),
             ],
-            child: const MaterialApp(home: NavigationMenu()),
+            child: MaterialApp(
+              home: NavigationMenu(
+                chatUnreadCubit: chatUnreadCubit,
+                currentUserIdProvider: () => null,
+              ),
+            ),
           ),
         );
         await tester.pump();

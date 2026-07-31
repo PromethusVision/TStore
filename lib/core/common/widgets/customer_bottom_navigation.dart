@@ -11,10 +11,12 @@ class CustomerBottomNavigation extends StatelessWidget {
     super.key,
     required this.selectedIndex,
     required this.onSelected,
+    this.unreadMessageCount = 0,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onSelected;
+  final int unreadMessageCount;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,8 @@ class CustomerBottomNavigation extends StatelessWidget {
                 selectedIcon: Iconsax.user5,
                 selected: selectedIndex == 4,
                 onTap: () => onSelected(4),
+                badgeCount: unreadMessageCount,
+                badgeKey: const Key('customer-nav-profile-badge'),
               ),
             ],
           ),
@@ -82,6 +86,8 @@ class _NavigationItem extends StatelessWidget {
     required this.selectedIcon,
     required this.selected,
     required this.onTap,
+    this.badgeCount = 0,
+    this.badgeKey,
   });
 
   final Key itemKey;
@@ -90,6 +96,8 @@ class _NavigationItem extends StatelessWidget {
   final IconData selectedIcon;
   final bool selected;
   final VoidCallback onTap;
+  final int badgeCount;
+  final Key? badgeKey;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +108,7 @@ class _NavigationItem extends StatelessWidget {
       child: Semantics(
         selected: selected,
         button: true,
-        label: label,
+        label: badgeCount > 0 ? '$label, $badgeCount okunmamış mesaj' : label,
         child: InkResponse(
           key: itemKey,
           onTap: onTap,
@@ -108,7 +116,40 @@ class _NavigationItem extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(selected ? selectedIcon : icon, color: color, size: 22),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(selected ? selectedIcon : icon, color: color, size: 22),
+                  if (badgeCount > 0)
+                    Positioned(
+                      key: badgeKey,
+                      top: -8,
+                      right: -12,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 17,
+                          minHeight: 17,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: CustomerHomeV1Tokens.coral,
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radiusPill,
+                          ),
+                        ),
+                        child: Text(
+                          badgeCount > 99 ? '99+' : badgeCount.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               const SizedBox(height: 4),
               Text(
                 label,
