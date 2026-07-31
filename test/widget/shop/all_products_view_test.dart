@@ -288,6 +288,68 @@ void main() {
     },
   );
 
+  testWidgets('offers search editing and all products after an empty result', (
+    tester,
+  ) async {
+    final states = StreamController<ProductsState>();
+    whenListen(
+      localProductsCubit,
+      states.stream,
+      initialState: ProductsInitial(),
+    );
+    when(() => localProductsCubit.searchProducts('olmayan')).thenAnswer((
+      _,
+    ) async {
+      states.add(const ProductsSearchResult(products: [], query: 'olmayan'));
+    });
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'olmayan');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+
+    expect(
+      find.text('"olmayan" i\u00e7in \u00fcr\u00fcn bulamad\u0131k.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Daha k\u0131sa veya farkl\u0131 bir kelimeyle yeniden '
+        'arayabilirsiniz.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('edit-empty-product-search')), findsOneWidget);
+    expect(
+      find.byKey(const Key('show-all-products-after-empty-search')),
+      findsOneWidget,
+    );
+
+    final editableText = tester.widget<EditableText>(find.byType(EditableText));
+    editableText.focusNode.unfocus();
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('edit-empty-product-search')));
+    await tester.pump();
+
+    expect(editableText.focusNode.hasFocus, isTrue);
+    expect(editableText.controller.selection.start, 0);
+    expect(editableText.controller.selection.end, 'olmayan'.length);
+    verify(() => localProductsCubit.searchProducts('olmayan')).called(1);
+
+    await tester.tap(
+      find.byKey(const Key('show-all-products-after-empty-search')),
+    );
+    await tester.pump();
+
+    expect(editableText.controller.text, isEmpty);
+    verify(() => localProductsCubit.getProducts(refresh: true)).called(2);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await states.close();
+  });
+
   testWidgets('does not submit the same search twice while it is loading', (
     tester,
   ) async {

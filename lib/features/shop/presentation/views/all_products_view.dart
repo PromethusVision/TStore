@@ -184,8 +184,10 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
                     if (state is ProductsSearchResult) {
                       if (state.products.isEmpty) {
-                        return const Center(
-                          child: Text('Aradığınız ürün bulunamadı.'),
+                        return _EmptySearchResult(
+                          query: state.query,
+                          onEditSearch: _editSearch,
+                          onShowAllProducts: _clearSearch,
                         );
                       }
 
@@ -256,6 +258,15 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     setState(() {});
     _scrollToTop();
     context.read<ProductsCubit>().getProducts(refresh: true);
+  }
+
+  void _editSearch() {
+    _searchDebounce?.cancel();
+    _searchController.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: _searchController.text.length,
+    );
+    _searchFocusNode.requestFocus();
   }
 
   void _reloadProducts() {
@@ -375,6 +386,76 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(0);
     }
+  }
+}
+
+class _EmptySearchResult extends StatelessWidget {
+  const _EmptySearchResult({
+    required this.query,
+    required this.onEditSearch,
+    required this.onShowAllProducts,
+  });
+
+  final String query;
+  final VoidCallback onEditSearch;
+  final VoidCallback onShowAllProducts;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalizedQuery = query.trim();
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: TSizes.defaultSpace),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.search_off_rounded,
+                size: 56,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              Text(
+                normalizedQuery.isEmpty
+                    ? 'Aradığınız ürün bulunamadı.'
+                    : '"$normalizedQuery" için ürün bulamadık.',
+                key: const Key('empty-search-result-title'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems / 2),
+              Text(
+                'Daha kısa veya farklı bir kelimeyle yeniden arayabilirsiniz.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: TSizes.spaceBtwSections),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  key: const Key('edit-empty-product-search'),
+                  onPressed: onEditSearch,
+                  icon: const Icon(Icons.edit_outlined),
+                  label: const Text('Aramayı Düzenle'),
+                ),
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems / 2),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  key: const Key('show-all-products-after-empty-search'),
+                  onPressed: onShowAllProducts,
+                  child: const Text('Tüm Ürünleri Göster'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
