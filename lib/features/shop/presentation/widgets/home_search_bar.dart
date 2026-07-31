@@ -6,6 +6,7 @@ import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
@@ -23,6 +24,7 @@ class HomeSearchBar extends StatefulWidget {
     required this.onProductSelected,
     required this.onCategorySelected,
     required this.onShopSelected,
+    this.recentSearchesStorage,
     this.debounceDuration = const Duration(milliseconds: 350),
     this.minimumQueryLength = 2,
   });
@@ -32,6 +34,7 @@ class HomeSearchBar extends StatefulWidget {
   final HomeSearchProductSelected onProductSelected;
   final HomeSearchCategorySelected onCategorySelected;
   final HomeSearchShopSelected onShopSelected;
+  final RecentProductSearchesStorage? recentSearchesStorage;
   final Duration debounceDuration;
   final int minimumQueryLength;
 
@@ -46,14 +49,23 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   String _query = '';
   bool _isDebouncing = false;
   bool _navigationLocked = false;
+  bool _isLoadingRecentSearches = false;
+  bool _recentSearchesLoadInProgress = false;
+  List<String> _recentSearches = const [];
 
   bool get _shouldShowSuggestions =>
       _focusNode.hasFocus && _query.length >= widget.minimumQueryLength;
+
+  bool get _shouldShowRecentSearches =>
+      _focusNode.hasFocus &&
+      _query.isEmpty &&
+      (_isLoadingRecentSearches || _recentSearches.isNotEmpty);
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_handleFocusChanged);
+    unawaited(_loadRecentSearches());
   }
 
   @override
@@ -150,25 +162,32 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
           AnimatedSize(
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeOut,
-            child: _shouldShowSuggestions
+            child: _shouldShowSuggestions || _shouldShowRecentSearches
                 ? Padding(
                     padding: const EdgeInsets.only(
                       top: CustomerHomeV1Tokens.space8,
                     ),
-                    child:
-                        BlocBuilder<CustomerSearchCubit, CustomerSearchState>(
-                          bloc: widget.searchCubit,
-                          builder: (context, state) => _SuggestionsCard(
-                            state: state,
-                            query: _query,
-                            isDebouncing: _isDebouncing,
-                            onRetry: () => _runSearch(_query),
-                            onViewAll: () => _submitQuery(_query),
-                            onProductSelected: _selectProduct,
-                            onCategorySelected: _selectCategory,
-                            onShopSelected: _selectShop,
+                    child: _query.isEmpty
+                        ? _RecentSearchesCard(
+                            isLoading: _isLoadingRecentSearches,
+                            queries: _recentSearches,
+                            onSelected: _selectRecentSearch,
+                            onRemoved: _removeRecentSearch,
+                            onClear: _clearRecentSearches,
+                          )
+                        : BlocBuilder<CustomerSearchCubit, CustomerSearchState>(
+                            bloc: widget.searchCubit,
+                            builder: (context, state) => _SuggestionsCard(
+                              state: state,
+                              query: _query,
+                              isDebouncing: _isDebouncing,
+                              onRetry: () => _runSearch(_query),
+                              onViewAll: () => _submitQuery(_query),
+                              onProductSelected: _selectProduct,
+                              onCategorySelected: _selectCategory,
+                              onShopSelected: _selectShop,
+                            ),
                           ),
-                        ),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -178,6 +197,9 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   }
 
   void _handleFocusChanged() {
+    if (_focusNode.hasFocus && _query.isEmpty) {
+      unawaited(_loadRecentSearches());
+    }
     if (mounted) setState(() {});
   }
 
@@ -191,6 +213,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         _query = query;
         _isDebouncing = false;
       });
+      if (query.isEmpty) unawaited(_loadRecentSearches());
       return;
     }
 
@@ -221,6 +244,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
       _isDebouncing = false;
     });
     _focusNode.requestFocus();
+    unawaited(_loadRecentSearches());
   }
 
   void _submitQuery(String value) {
@@ -230,6 +254,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     _debounce?.cancel();
     _navigationLocked = true;
     _focusNode.unfocus();
+    unawaited(_recordCurrentQuery(query));
     widget.onQuerySubmitted(query);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _navigationLocked = false;
@@ -240,6 +265,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     if (_navigationLocked) return;
     _navigationLocked = true;
     _focusNode.unfocus();
+    unawaited(_recordCurrentQuery(_query));
     widget.onProductSelected(product);
     _unlockNavigationNextFrame();
   }
@@ -248,6 +274,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     if (_navigationLocked) return;
     _navigationLocked = true;
     _focusNode.unfocus();
+    unawaited(_recordCurrentQuery(_query));
     widget.onCategorySelected(category);
     _unlockNavigationNextFrame();
   }
@@ -256,6 +283,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     if (_navigationLocked) return;
     _navigationLocked = true;
     _focusNode.unfocus();
+    unawaited(_recordCurrentQuery(_query));
     widget.onShopSelected(shop);
     _unlockNavigationNextFrame();
   }
@@ -264,6 +292,183 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _navigationLocked = false;
     });
+  }
+
+  Future<void> _loadRecentSearches() async {
+    final storage = widget.recentSearchesStorage;
+    if (storage == null || _recentSearchesLoadInProgress) return;
+
+    _recentSearchesLoadInProgress = true;
+    if (mounted) setState(() => _isLoadingRecentSearches = true);
+    try {
+      final queries = await storage.getQueries();
+      if (!mounted) return;
+      setState(() {
+        _recentSearches = queries
+            .take(RecentProductSearchesStorage.maximumQueryCount)
+            .toList(growable: false);
+      });
+    } catch (_) {
+      // Yerel arama geçmişi ana arama akışını engellememelidir.
+    } finally {
+      _recentSearchesLoadInProgress = false;
+      if (mounted) setState(() => _isLoadingRecentSearches = false);
+    }
+  }
+
+  Future<void> _recordCurrentQuery(String value) async {
+    final storage = widget.recentSearchesStorage;
+    final query = value.trim();
+    if (storage == null || query.isEmpty) return;
+
+    try {
+      await storage.recordQuery(query);
+    } catch (_) {
+      // Yerel kayıt başarısız olsa bile arama ve yönlendirme çalışmaya devam eder.
+    }
+  }
+
+  void _selectRecentSearch(String query) {
+    _debounce?.cancel();
+    _controller
+      ..text = query
+      ..selection = TextSelection.collapsed(offset: query.length);
+    setState(() {
+      _query = query;
+      _isDebouncing = false;
+    });
+    unawaited(_recordCurrentQuery(query));
+    _runSearch(query);
+  }
+
+  Future<void> _removeRecentSearch(String query) async {
+    final storage = widget.recentSearchesStorage;
+    if (storage == null) return;
+
+    try {
+      await storage.removeQuery(query);
+      if (!mounted) return;
+      setState(() {
+        _recentSearches = _recentSearches
+            .where((item) => item.toLowerCase() != query.toLowerCase())
+            .toList(growable: false);
+      });
+    } catch (_) {
+      // Tek bir kayıt silinemese de arama alanı kullanılabilir kalmalıdır.
+    }
+  }
+
+  Future<void> _clearRecentSearches() async {
+    final storage = widget.recentSearchesStorage;
+    if (storage == null) return;
+
+    try {
+      await storage.clear();
+      if (!mounted) return;
+      setState(() => _recentSearches = const []);
+    } catch (_) {
+      // Geçmiş temizlenemese de ana arama akışı çalışmaya devam etmelidir.
+    }
+  }
+}
+
+class _RecentSearchesCard extends StatelessWidget {
+  const _RecentSearchesCard({
+    required this.isLoading,
+    required this.queries,
+    required this.onSelected,
+    required this.onRemoved,
+    required this.onClear,
+  });
+
+  final bool isLoading;
+  final List<String> queries;
+  final ValueChanged<String> onSelected;
+  final ValueChanged<String> onRemoved;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      key: const Key('home-recent-searches'),
+      color: Colors.white,
+      elevation: 8,
+      shadowColor: Colors.black.withValues(alpha: 0.16),
+      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      clipBehavior: Clip.antiAlias,
+      child: isLoading && queries.isEmpty
+          ? const _SuggestionStatus(
+              key: Key('home-recent-searches-loading'),
+              icon: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              message: 'Son aramalar yükleniyor...',
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 8, 2),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.history_rounded,
+                        size: 20,
+                        color: CustomerHomeV1Tokens.petrol,
+                      ),
+                      const SizedBox(width: CustomerHomeV1Tokens.space8),
+                      Expanded(
+                        child: Text(
+                          'Son Aramalar',
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      TextButton(
+                        key: const Key('clear-home-recent-searches'),
+                        onPressed: onClear,
+                        child: const Text('Tümünü temizle'),
+                      ),
+                    ],
+                  ),
+                ),
+                for (var index = 0; index < queries.length; index++)
+                  InkWell(
+                    key: ValueKey('home-recent-search-$index'),
+                    onTap: () => onSelected(queries[index]),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.history_rounded,
+                            size: 19,
+                            color: CustomerHomeV1Tokens.muted,
+                          ),
+                          const SizedBox(width: CustomerHomeV1Tokens.space12),
+                          Expanded(
+                            child: Text(
+                              queries[index],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            key: ValueKey('remove-home-recent-search-$index'),
+                            tooltip: '${queries[index]} aramasını sil',
+                            onPressed: () => onRemoved(queries[index]),
+                            icon: const Icon(Icons.close_rounded, size: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 4),
+              ],
+            ),
+    );
   }
 }
 

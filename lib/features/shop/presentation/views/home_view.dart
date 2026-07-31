@@ -8,6 +8,7 @@ import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
@@ -70,6 +71,7 @@ class _HomeViewState extends State<HomeView> {
             bottom: false,
             child: CustomerHomeV1Content(
               searchCubit: contentContext.read<CustomerSearchCubit>(),
+              recentSearchesStorage: sl<RecentProductSearchesStorage>(),
               onSearchSubmitted: (query) =>
                   _openAllProductsSearch(contentContext, query),
               onLocationTap: () => _openSavedLocations(contentContext),
@@ -119,6 +121,7 @@ class CustomerHomeV1Content extends StatelessWidget {
     required this.onLocationTap,
     required this.onNearbyViewAll,
     this.searchCubit,
+    this.recentSearchesStorage,
     this.isAuthenticatedOverride,
     this.categoryDestinationBuilder,
     this.productDestinationBuilder,
@@ -129,6 +132,7 @@ class CustomerHomeV1Content extends StatelessWidget {
   final VoidCallback onLocationTap;
   final VoidCallback onNearbyViewAll;
   final CustomerSearchCubit? searchCubit;
+  final RecentProductSearchesStorage? recentSearchesStorage;
   final bool? isAuthenticatedOverride;
   final HomeCategoryDestinationBuilder? categoryDestinationBuilder;
   final HomeProductDestinationBuilder? productDestinationBuilder;
@@ -161,6 +165,7 @@ class CustomerHomeV1Content extends StatelessWidget {
               const SizedBox(height: CustomerHomeV1Tokens.space8),
               HomeSearchBar(
                 searchCubit: searchCubit ?? context.read<CustomerSearchCubit>(),
+                recentSearchesStorage: recentSearchesStorage,
                 onQuerySubmitted: onSearchSubmitted,
                 onProductSelected: (product) =>
                     Navigator.of(context).push<void>(

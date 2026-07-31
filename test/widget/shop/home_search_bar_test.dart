@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart';
@@ -14,12 +15,51 @@ import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart'
 class MockHomeSearchCubit extends MockCubit<CustomerSearchState>
     implements CustomerSearchCubit {}
 
+class InMemoryRecentProductSearchesStorage
+    implements RecentProductSearchesStorage {
+  InMemoryRecentProductSearchesStorage({
+    List<String> initialQueries = const [],
+    this.pendingQueries,
+  }) : queries = List<String>.from(initialQueries);
+
+  final List<String> queries;
+  final Future<List<String>>? pendingQueries;
+
+  @override
+  Future<List<String>> getQueries() async {
+    if (pendingQueries != null) return pendingQueries!;
+    return List<String>.from(queries);
+  }
+
+  @override
+  Future<void> recordQuery(String query) async {
+    queries
+      ..removeWhere((item) => item.toLowerCase() == query.toLowerCase())
+      ..insert(0, query);
+    if (queries.length > RecentProductSearchesStorage.maximumQueryCount) {
+      queries.removeRange(
+        RecentProductSearchesStorage.maximumQueryCount,
+        queries.length,
+      );
+    }
+  }
+
+  @override
+  Future<void> removeQuery(String query) async {
+    queries.removeWhere((item) => item.toLowerCase() == query.toLowerCase());
+  }
+
+  @override
+  Future<void> clear() async => queries.clear();
+}
+
 void main() {
   late MockHomeSearchCubit searchCubit;
   late List<String> submittedQueries;
   late List<ProductEntity> selectedProducts;
   late List<CategoryEntity> selectedCategories;
   late List<ShopEntity> selectedShops;
+  late InMemoryRecentProductSearchesStorage recentSearchesStorage;
 
   const product = ProductEntity(
     id: 'product-1',
@@ -42,6 +82,7 @@ void main() {
     selectedProducts = [];
     selectedCategories = [];
     selectedShops = [];
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage();
 
     whenListen(
       searchCubit,
@@ -52,13 +93,14 @@ void main() {
     when(() => searchCubit.reset()).thenReturn(null);
   });
 
-  Widget buildSubject() {
+  Widget buildSubject({RecentProductSearchesStorage? storage}) {
     return MaterialApp(
       home: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: HomeSearchBar(
             searchCubit: searchCubit,
+            recentSearchesStorage: storage ?? recentSearchesStorage,
             debounceDuration: const Duration(milliseconds: 350),
             onQuerySubmitted: submittedQueries.add,
             onProductSelected: selectedProducts.add,
@@ -69,6 +111,87 @@ void main() {
       ),
     );
   }
+
+  testWidgets('boş alana dokununca son aramaları gösterir', (tester) async {
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage(
+      initialQueries: ['elektronik', 'kahve'],
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('home-recent-searches')), findsOneWidget);
+    expect(find.text('Son Aramalar'), findsOneWidget);
+    expect(find.text('elektronik'), findsOneWidget);
+    expect(find.text('kahve'), findsOneWidget);
+  });
+
+  testWidgets('son aramayı seçince alanı doldurup önerileri arar', (
+    tester,
+  ) async {
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage(
+      initialQueries: ['elektronik'],
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('elektronik'));
+    await tester.pump();
+
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller?.text,
+      'elektronik',
+    );
+    verify(() => searchCubit.search('elektronik')).called(1);
+    expect(find.byKey(const Key('home-recent-searches')), findsNothing);
+  });
+
+  testWidgets('son aramalar yüklenirken bekleme durumunu gösterir', (
+    tester,
+  ) async {
+    final queriesCompleter = Completer<List<String>>();
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage(
+      pendingQueries: queriesCompleter.future,
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('home-recent-searches-loading')),
+      findsOneWidget,
+    );
+
+    queriesCompleter.complete(['ekmek']);
+    await tester.pumpAndSettle();
+    expect(find.text('ekmek'), findsOneWidget);
+  });
+
+  testWidgets('tek son aramayı ve tüm geçmişi silebilir', (tester) async {
+    recentSearchesStorage = InMemoryRecentProductSearchesStorage(
+      initialQueries: ['elektronik', 'kahve'],
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('remove-home-recent-search-0')));
+    await tester.pumpAndSettle();
+    expect(find.text('elektronik'), findsNothing);
+    expect(recentSearchesStorage.queries, ['kahve']);
+
+    await tester.tap(find.byKey(const Key('clear-home-recent-searches')));
+    await tester.pumpAndSettle();
+    expect(recentSearchesStorage.queries, isEmpty);
+    expect(find.byKey(const Key('home-recent-searches')), findsNothing);
+  });
 
   testWidgets('dokununca aynı ekranda yazı alanını etkinleştirir', (
     tester,
@@ -270,8 +393,10 @@ void main() {
 
     await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pump();
 
     expect(submittedQueries, ['kahve']);
+    expect(recentSearchesStorage.queries, ['kahve']);
   });
 
   testWidgets('temizleme düğmesi sorguyu ve önerileri kapatır', (tester) async {
