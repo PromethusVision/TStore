@@ -36,6 +36,14 @@ void main() {
     expect(await storage.getPending(), intent());
   });
 
+  test('hazır mesaj olmadan yalnızca sohbet hedefini saklar', () async {
+    final blankDraftIntent = intent(initialDraft: '');
+
+    await storage.save(blankDraftIntent);
+
+    expect(await storage.getPending(), blankDraftIntent);
+  });
+
   test('yirmi dört saatten eski mesaj hedefini siler', () async {
     await storage.save(
       intent(

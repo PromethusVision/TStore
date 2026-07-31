@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -63,6 +65,8 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
   bool _didJumpToInitialMessages = false;
+  bool _isLoadingMore = false;
+  bool _hasReachedMax = false;
 
   @override
   void initState() {
@@ -70,11 +74,13 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
     _messageController = TextEditingController(
       text: widget.initialDraft?.trim() ?? '',
     );
+    _scrollController.addListener(_handleScroll);
   }
 
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.removeListener(_handleScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -93,6 +99,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
           listener: (context, state) {
             if (state is ChatLoaded) {
               _replaceMessages(state.messages);
+              _hasReachedMax = state.hasReachedMax;
               if (!_didJumpToInitialMessages) {
                 _didJumpToInitialMessages = true;
                 _jumpToBottom();
@@ -130,6 +137,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                           messages: _messages,
                           currentUserId: currentUserId,
                           scrollController: _scrollController,
+                          isLoadingMore: _isLoadingMore,
                         ),
                 ),
                 _MessageInput(
@@ -180,17 +188,46 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
       content: content,
     );
   }
+
+  void _handleScroll() {
+    if (!_scrollController.hasClients || _isLoadingMore || _hasReachedMax) {
+      return;
+    }
+
+    final position = _scrollController.position;
+    if (position.maxScrollExtent <= 0 ||
+        position.pixels < position.maxScrollExtent - 160) {
+      return;
+    }
+
+    unawaited(_loadMoreMessages());
+  }
+
+  Future<void> _loadMoreMessages() async {
+    if (_isLoadingMore || _hasReachedMax || !mounted) return;
+
+    setState(() => _isLoadingMore = true);
+    try {
+      await context.read<ChatCubit>().loadMoreMessages(widget.receiverId);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
+      }
+    }
+  }
 }
 
 class _MessageList extends StatelessWidget {
   final List<ChatMessageEntity> messages;
   final String? currentUserId;
   final ScrollController scrollController;
+  final bool isLoadingMore;
 
   const _MessageList({
     required this.messages,
     required this.currentUserId,
     required this.scrollController,
+    required this.isLoadingMore,
   });
 
   @override
@@ -199,25 +236,61 @@ class _MessageList extends StatelessWidget {
       return const Center(child: Text('Henüz mesaj yok.'));
     }
 
-    return ListView.builder(
-      controller: scrollController,
-      reverse: true,
-      padding: const EdgeInsets.all(16),
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        final message = messages[index];
-        final isMine =
-            currentUserId != null && message.senderId == currentUserId;
-        final showDateHeader = _shouldShowDateHeader(index);
+    return Stack(
+      children: [
+        ListView.builder(
+          controller: scrollController,
+          reverse: true,
+          padding: const EdgeInsets.all(16),
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            final message = messages[index];
+            final isMine =
+                currentUserId != null && message.senderId == currentUserId;
+            final showDateHeader = _shouldShowDateHeader(index);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (showDateHeader) _DateHeader(date: message.createdAt!),
-            _MessageBubble(message: message, isMine: isMine),
-          ],
-        );
-      },
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showDateHeader) _DateHeader(date: message.createdAt!),
+                _MessageBubble(message: message, isMine: isMine),
+              ],
+            );
+          },
+        ),
+        if (isLoadingMore)
+          Positioned(
+            top: 8,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Center(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    shape: BoxShape.circle,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x26000000),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Padding(
+                    key: Key('chat-load-more-progress'),
+                    padding: EdgeInsets.all(8),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

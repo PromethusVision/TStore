@@ -7,6 +7,7 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
@@ -16,6 +17,27 @@ import 'package:url_launcher/url_launcher.dart';
 class MockShopRepository extends Mock implements ShopRepository {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
+
+class MemoryPendingProductChatStorage implements PendingProductChatStorage {
+  PendingProductChatIntent? pending;
+  int saveCount = 0;
+  int clearCount = 0;
+
+  @override
+  Future<void> clear() async {
+    clearCount++;
+    pending = null;
+  }
+
+  @override
+  Future<PendingProductChatIntent?> getPending() async => pending;
+
+  @override
+  Future<void> save(PendingProductChatIntent intent) async {
+    saveCount++;
+    pending = intent;
+  }
+}
 
 void main() {
   late MockShopRepository shopRepository;
@@ -64,6 +86,8 @@ void main() {
     ShopEntity shop = completeShop,
     ShopProfileUrlLauncher? urlLauncher,
     ShopProfileCurrentUserIdProvider? currentUserIdProvider,
+    ShopProfileChatDestinationBuilder? chatDestinationBuilder,
+    PendingProductChatStorage? pendingProductChatStorage,
     TextScaler? textScaler,
   }) {
     return MaterialApp(
@@ -77,6 +101,8 @@ void main() {
         shop: shop,
         urlLauncher: urlLauncher ?? successfulLauncher,
         currentUserIdProvider: currentUserIdProvider ?? () => 'customer-1',
+        chatDestinationBuilder: chatDestinationBuilder,
+        pendingProductChatStorage: pendingProductChatStorage,
       ),
     );
   }
@@ -176,6 +202,7 @@ void main() {
   testWidgets(
     'giriş yapmayan müşteriyi mesajlaşmadan önce girişe yönlendirir',
     (tester) async {
+      final pendingChatStorage = MemoryPendingProductChatStorage();
       final authCubit = MockAuthCubit();
       whenListen(
         authCubit,
@@ -185,14 +212,108 @@ void main() {
       when(() => authCubit.close()).thenAnswer((_) async {});
       sl.registerFactory<AuthCubit>(() => authCubit);
 
-      await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+      await tester.pumpWidget(
+        buildSubject(
+          currentUserIdProvider: () => null,
+          pendingProductChatStorage: pendingChatStorage,
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('shop-profile-message-action')));
       await tester.pumpAndSettle();
 
       expect(find.byType(LoginView), findsOneWidget);
+      expect(
+        tester
+            .widget<LoginView>(find.byType(LoginView))
+            .returnToCallerAfterCustomerLogin,
+        isTrue,
+      );
+      expect(pendingChatStorage.pending?.receiverId, 'owner-1');
+      expect(
+        pendingChatStorage.pending?.receiverName,
+        'Mahalle Teknoloji Mağazası',
+      );
+      expect(pendingChatStorage.pending?.initialDraft, isEmpty);
     },
   );
+
+  testWidgets('giriş sonrası doğru mağazanın boş sohbet ekranına devam eder', (
+    tester,
+  ) async {
+    final pendingChatStorage = MemoryPendingProductChatStorage();
+    final authCubit = MockAuthCubit();
+    var currentUserId = '';
+    String? openedReceiverId;
+    String? openedReceiverName;
+
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+
+    await tester.pumpWidget(
+      buildSubject(
+        currentUserIdProvider: () =>
+            currentUserId.isEmpty ? null : currentUserId,
+        pendingProductChatStorage: pendingChatStorage,
+        chatDestinationBuilder: (receiverId, receiverName) {
+          openedReceiverId = receiverId;
+          openedReceiverName = receiverName;
+          return const Scaffold(body: Text('Boş sohbet ekranı'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shop-profile-message-action')));
+    await tester.pumpAndSettle();
+
+    currentUserId = 'customer-1';
+    Navigator.of(tester.element(find.byType(LoginView))).pop(true);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Boş sohbet ekranı'), findsOneWidget);
+    expect(openedReceiverId, 'owner-1');
+    expect(openedReceiverName, 'Mahalle Teknoloji Mağazası');
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.clearCount, 1);
+    expect(pendingChatStorage.pending, isNull);
+  });
+
+  testWidgets('girişten vazgeçilirse bekleyen mağaza sohbetini temizler', (
+    tester,
+  ) async {
+    final pendingChatStorage = MemoryPendingProductChatStorage();
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+
+    await tester.pumpWidget(
+      buildSubject(
+        currentUserIdProvider: () => null,
+        pendingProductChatStorage: pendingChatStorage,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shop-profile-message-action')));
+    await tester.pumpAndSettle();
+
+    Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsNothing);
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.clearCount, 1);
+    expect(pendingChatStorage.pending, isNull);
+  });
 
   testWidgets('mağaza sahibine kendi mağazasına mesaj butonu göstermez', (
     tester,

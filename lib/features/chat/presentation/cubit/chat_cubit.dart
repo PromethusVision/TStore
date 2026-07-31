@@ -16,6 +16,8 @@ class ChatCubit extends Cubit<ChatState> {
   String? _currentOtherUserId;
   bool _hasLoadedCurrentConversation = false;
   bool _isSendingMessage = false;
+  bool _isLoadingMessages = false;
+  bool _hasReachedMax = false;
 
   void startListening() {
     _messagesSubscription?.cancel();
@@ -27,55 +29,67 @@ class ChatCubit extends Cubit<ChatState> {
         if (!_addMessageIfNew(message)) return;
 
         emit(NewMessageReceived(message));
-        emit(ChatLoaded(messages: _messages));
+        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
       }
     });
   }
 
   Future<void> getMessages(String otherUserId, {bool refresh = false}) async {
+    if (_isLoadingMessages) return;
+
+    _isLoadingMessages = true;
     _currentOtherUserId = otherUserId;
 
     if (refresh) {
       _currentPage = 0;
       _messages = [];
       _hasLoadedCurrentConversation = false;
+      _hasReachedMax = false;
     }
 
-    if (_currentPage == 0) {
+    final isInitialPage = _currentPage == 0;
+    if (isInitialPage) {
       emit(ChatLoading());
     }
 
-    final result = await repository.getMessages(
-      otherUserId: otherUserId,
-      page: _currentPage,
-      limit: _limit,
-    );
+    try {
+      final result = await repository.getMessages(
+        otherUserId: otherUserId,
+        page: _currentPage,
+        limit: _limit,
+      );
 
-    result.fold(
-      (error) {
-        _hasLoadedCurrentConversation = true;
-        emit(ChatError(error));
-      },
-      (messages) {
-        _mergeMessages(messages);
-        _hasLoadedCurrentConversation = true;
-        _currentPage++;
-        emit(
-          ChatLoaded(
-            messages: _messages,
-            hasReachedMax: messages.length < _limit,
-          ),
-        );
-      },
-    );
+      result.fold(
+        (error) {
+          _hasLoadedCurrentConversation = true;
+          emit(ChatError(error));
+          if (!isInitialPage) {
+            emit(
+              ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax),
+            );
+          }
+        },
+        (messages) {
+          _mergeMessages(messages);
+          _hasLoadedCurrentConversation = true;
+          _hasReachedMax = messages.length < _limit;
+          _currentPage++;
+          emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+        },
+      );
+    } finally {
+      _isLoadingMessages = false;
+    }
   }
 
   Future<void> loadMoreMessages(String otherUserId) async {
-    if (state is ChatLoaded) {
-      final currentState = state as ChatLoaded;
-      if (currentState.hasReachedMax) return;
-      await getMessages(otherUserId);
+    if (_isLoadingMessages ||
+        _hasReachedMax ||
+        _currentOtherUserId != otherUserId) {
+      return;
     }
+
+    await getMessages(otherUserId);
   }
 
   Future<void> sendMessage({
@@ -98,7 +112,7 @@ class ChatCubit extends Cubit<ChatState> {
       result.fold((error) => emit(ChatError(error)), (message) {
         _addMessageIfNew(message);
         emit(MessageSent(message));
-        emit(ChatLoaded(messages: _messages));
+        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
       });
     } finally {
       _isSendingMessage = false;

@@ -55,6 +55,22 @@ void main() {
     senderName: 'Test User',
   );
 
+  List<ChatMessageEntity> messagePage({
+    required int start,
+    required int count,
+  }) {
+    return List.generate(count, (index) {
+      final number = start + index;
+      return ChatMessageEntity(
+        id: 'page-message-$number',
+        senderId: number.isEven ? testUserId : testOtherUserId,
+        receiverId: number.isEven ? testOtherUserId : testUserId,
+        content: 'Mesaj $number',
+        createdAt: DateTime(2024, 1, 20).subtract(Duration(minutes: number)),
+      );
+    });
+  }
+
   setUp(() {
     mockChatRepository = MockChatRepository();
     messagesStreamController = StreamController<ChatMessageEntity>.broadcast();
@@ -160,6 +176,116 @@ void main() {
           ),
         ],
       );
+
+      test('yukarı kaydırmada sonraki mesaj sayfasını birleştirir', () async {
+        final firstPage = messagePage(start: 0, count: 50);
+        final secondPage = messagePage(start: 50, count: 2);
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 0,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => Right(firstPage));
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 1,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => Right(secondPage));
+
+        await chatCubit.getMessages(testOtherUserId, refresh: true);
+        await chatCubit.loadMoreMessages(testOtherUserId);
+
+        final state = chatCubit.state as ChatLoaded;
+        expect(state.messages, hasLength(52));
+        expect(state.hasReachedMax, isTrue);
+        verify(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 1,
+            limit: 50,
+          ),
+        ).called(1);
+      });
+
+      test(
+        'devam eden eski mesaj isteği sırasında ikinci isteği engeller',
+        () async {
+          final firstPage = messagePage(start: 0, count: 50);
+          final secondPageResult =
+              Completer<Either<String, List<ChatMessageEntity>>>();
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right(firstPage));
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 1,
+              limit: 50,
+            ),
+          ).thenAnswer((_) => secondPageResult.future);
+
+          await chatCubit.getMessages(testOtherUserId, refresh: true);
+          final firstLoadMore = chatCubit.loadMoreMessages(testOtherUserId);
+          final secondLoadMore = chatCubit.loadMoreMessages(testOtherUserId);
+
+          verify(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 1,
+              limit: 50,
+            ),
+          ).called(1);
+
+          secondPageResult.complete(Right(messagePage(start: 50, count: 1)));
+          await Future.wait([firstLoadMore, secondLoadMore]);
+        },
+      );
+
+      test('eski mesaj yükleme hatasında mevcut konuşmayı korur', () async {
+        final firstPage = messagePage(start: 0, count: 50);
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 0,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => Right(firstPage));
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 1,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => const Left('Eski mesajlar yüklenemedi'));
+
+        await chatCubit.getMessages(testOtherUserId, refresh: true);
+        final statesExpectation = expectLater(
+          chatCubit.stream,
+          emitsInOrder([
+            const ChatError('Eski mesajlar yüklenemedi'),
+            isA<ChatLoaded>()
+                .having((state) => state.messages, 'messages', hasLength(50))
+                .having(
+                  (state) => state.hasReachedMax,
+                  'hasReachedMax',
+                  isFalse,
+                ),
+          ]),
+        );
+
+        await chatCubit.loadMoreMessages(testOtherUserId);
+        await statesExpectation;
+
+        final state = chatCubit.state as ChatLoaded;
+        expect(state.messages, hasLength(50));
+      });
     });
 
     group('sendMessage', () {

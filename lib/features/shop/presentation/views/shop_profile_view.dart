@@ -7,6 +7,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
@@ -20,17 +21,23 @@ typedef ShopProfileUrlLauncher =
     Future<bool> Function(Uri uri, LaunchMode mode);
 
 typedef ShopProfileCurrentUserIdProvider = String? Function();
+typedef ShopProfileChatDestinationBuilder =
+    Widget Function(String receiverId, String receiverName);
 
 class ShopProfileView extends StatefulWidget {
   final ShopEntity shop;
   final ShopProfileUrlLauncher? urlLauncher;
   final ShopProfileCurrentUserIdProvider? currentUserIdProvider;
+  final ShopProfileChatDestinationBuilder? chatDestinationBuilder;
+  final PendingProductChatStorage? pendingProductChatStorage;
 
   const ShopProfileView({
     super.key,
     required this.shop,
     this.urlLauncher,
     this.currentUserIdProvider,
+    this.chatDestinationBuilder,
+    this.pendingProductChatStorage,
   });
 
   @override
@@ -69,6 +76,8 @@ class _ShopProfileViewState extends State<ShopProfileView> {
                 shop: shop,
                 currentUserIdProvider: currentUserIdProvider,
                 urlLauncher: urlLauncher,
+                chatDestinationBuilder: widget.chatDestinationBuilder,
+                pendingProductChatStorage: widget.pendingProductChatStorage,
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
               Text(
@@ -97,11 +106,15 @@ class _ShopInfoSection extends StatelessWidget {
   final ShopEntity shop;
   final ShopProfileCurrentUserIdProvider currentUserIdProvider;
   final ShopProfileUrlLauncher urlLauncher;
+  final ShopProfileChatDestinationBuilder? chatDestinationBuilder;
+  final PendingProductChatStorage? pendingProductChatStorage;
 
   const _ShopInfoSection({
     required this.shop,
     required this.currentUserIdProvider,
     required this.urlLauncher,
+    required this.chatDestinationBuilder,
+    required this.pendingProductChatStorage,
   });
 
   @override
@@ -306,17 +319,87 @@ class _ShopInfoSection extends StatelessWidget {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _openChat(BuildContext context, String ownerUserId) {
-    final normalizedCurrentUserId = currentUserIdProvider()?.trim();
-    if (normalizedCurrentUserId == null || normalizedCurrentUserId.isEmpty) {
-      THelperFunctions.navigateToScreen(context, const LoginView());
+  PendingProductChatStorage get _pendingChatStorage =>
+      pendingProductChatStorage ?? sl<PendingProductChatStorage>();
+
+  Future<void> _openChat(BuildContext context, String ownerUserId) async {
+    final pendingIntent = PendingProductChatIntent(
+      receiverId: ownerUserId,
+      receiverName: shop.name,
+      initialDraft: '',
+      createdAt: DateTime.now(),
+    );
+    var pendingIntentWasSaved = false;
+    var currentUserId = _currentUserId;
+
+    if (currentUserId == null) {
+      pendingIntentWasSaved = await _savePendingIntent(pendingIntent);
+      if (!context.mounted) return;
+
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) =>
+              const LoginView(returnToCallerAfterCustomerLogin: true),
+        ),
+      );
+      if (!context.mounted) return;
+
+      if (signedIn != true) {
+        if (pendingIntentWasSaved) {
+          await _clearPendingIntent();
+        }
+        return;
+      }
+      currentUserId = _currentUserId;
+    }
+
+    if (currentUserId == null) return;
+
+    if (currentUserId == ownerUserId) {
+      if (pendingIntentWasSaved) {
+        await _clearPendingIntent();
+      }
+      if (!context.mounted) return;
+      _showActionError(
+        context,
+        'Bu maÄŸazaya kendi hesabÄ±nÄ±zla mesaj gÃ¶nderemezsiniz.',
+      );
       return;
     }
 
-    THelperFunctions.navigateToScreen(
+    if (pendingIntentWasSaved) {
+      await _clearPendingIntent();
+    }
+    if (!context.mounted) return;
+
+    final destination =
+        chatDestinationBuilder?.call(ownerUserId, shop.name) ??
+        ChatView(receiverId: ownerUserId, receiverName: shop.name);
+    await Navigator.of(
       context,
-      ChatView(receiverId: ownerUserId, receiverName: shop.name),
-    );
+    ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+  }
+
+  String? get _currentUserId {
+    final normalizedCurrentUserId = currentUserIdProvider()?.trim();
+    return normalizedCurrentUserId == null || normalizedCurrentUserId.isEmpty
+        ? null
+        : normalizedCurrentUserId;
+  }
+
+  Future<bool> _savePendingIntent(PendingProductChatIntent intent) async {
+    try {
+      await _pendingChatStorage.save(intent);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _clearPendingIntent() async {
+    try {
+      await _pendingChatStorage.clear();
+    } catch (_) {}
   }
 }
 

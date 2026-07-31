@@ -105,7 +105,6 @@ class SharedPreferencesPendingProductChatStorage
         intent.receiverId.length <= _maximumReceiverIdLength &&
         intent.receiverName.isNotEmpty &&
         intent.receiverName.length <= _maximumReceiverNameLength &&
-        intent.initialDraft.isNotEmpty &&
         intent.initialDraft.length <= _maximumDraftLength;
   }
 
