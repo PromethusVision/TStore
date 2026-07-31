@@ -40,6 +40,7 @@ import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/update_my_shop_usecase.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/my_shop_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 
@@ -275,6 +276,13 @@ Future<void> setupServiceLocator() async {
 
   // Cubit
   sl.registerFactory(() => CategoriesCubit(getCategoriesUsecase: sl()));
+  sl.registerFactory(
+    () => CustomerSearchCubit(
+      searchProductsUsecase: sl(),
+      getCategoriesUsecase: sl(),
+      getShopsUsecase: sl(),
+    ),
+  );
 
   // ==================== Brands ====================
   // Repository

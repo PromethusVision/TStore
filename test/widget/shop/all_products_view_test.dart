@@ -6,8 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
@@ -19,6 +23,9 @@ class MockProductsCubit extends MockCubit<ProductsState>
 
 class MockWishlistCubit extends MockCubit<WishlistState>
     implements WishlistCubit {}
+
+class MockCustomerSearchCubit extends MockCubit<CustomerSearchState>
+    implements CustomerSearchCubit {}
 
 class InMemoryRecentProductSearchesStorage
     implements RecentProductSearchesStorage {
@@ -62,6 +69,7 @@ class InMemoryRecentProductSearchesStorage
 void main() {
   late MockProductsCubit parentProductsCubit;
   late MockProductsCubit localProductsCubit;
+  late MockCustomerSearchCubit customerSearchCubit;
   late MockWishlistCubit wishlistCubit;
   late InMemoryRecentProductSearchesStorage recentSearchesStorage;
   late ProductsLoaded parentFeaturedState;
@@ -81,6 +89,7 @@ void main() {
 
     parentProductsCubit = MockProductsCubit();
     localProductsCubit = MockProductsCubit();
+    customerSearchCubit = MockCustomerSearchCubit();
     wishlistCubit = MockWishlistCubit();
     recentSearchesStorage = InMemoryRecentProductSearchesStorage();
     parentFeaturedState = const ProductsLoaded(
@@ -108,6 +117,14 @@ void main() {
     when(() => localProductsCubit.loadMoreProducts()).thenAnswer((_) async {});
     when(() => localProductsCubit.close()).thenAnswer((_) async {});
     whenListen(
+      customerSearchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: CustomerSearchInitial(),
+    );
+    when(() => customerSearchCubit.search(any())).thenAnswer((_) async {});
+    when(() => customerSearchCubit.reset()).thenReturn(null);
+    when(() => customerSearchCubit.close()).thenAnswer((_) async {});
+    whenListen(
       wishlistCubit,
       const Stream<WishlistState>.empty(),
       initialState: WishlistLoaded(const []),
@@ -132,6 +149,13 @@ void main() {
           currentUserIdProvider: () => null,
           isSearchMode: isSearchMode,
           recentSearchesStorage: recentSearchesStorage,
+          customerSearchCubit: customerSearchCubit,
+          categoryDestinationBuilder: (category) => Scaffold(
+            appBar: AppBar(),
+            body: Text('Kategori: ${category.name}'),
+          ),
+          shopDestinationBuilder: (shop) =>
+              Scaffold(appBar: AppBar(), body: Text('Mağaza: ${shop.name}')),
         ),
       ),
     );
@@ -141,6 +165,14 @@ void main() {
     whenListen(
       localProductsCubit,
       const Stream<ProductsState>.empty(),
+      initialState: state,
+    );
+  }
+
+  void stubCustomerSearchState(CustomerSearchState state) {
+    whenListen(
+      customerSearchCubit,
+      const Stream<CustomerSearchState>.empty(),
       initialState: state,
     );
   }
@@ -223,7 +255,7 @@ void main() {
     await tester.pump();
 
     expect(find.widgetWithText(TextFormField, 'kahve'), findsOneWidget);
-    verify(() => localProductsCubit.searchProducts('kahve')).called(1);
+    verify(() => customerSearchCubit.search('kahve')).called(1);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -257,16 +289,21 @@ void main() {
   testWidgets(
     'stores a completed search and shows it after clearing the field',
     (tester) async {
-      final states = StreamController<ProductsState>();
+      final states = StreamController<CustomerSearchState>();
       whenListen(
-        localProductsCubit,
+        customerSearchCubit,
         states.stream,
-        initialState: ProductsInitial(),
+        initialState: CustomerSearchInitial(),
       );
-      when(() => localProductsCubit.searchProducts('kahve')).thenAnswer((
-        _,
-      ) async {
-        states.add(const ProductsSearchResult(products: [], query: 'kahve'));
+      when(() => customerSearchCubit.search('kahve')).thenAnswer((_) async {
+        states.add(
+          const CustomerSearchLoaded(
+            query: 'kahve',
+            products: [],
+            categories: [],
+            shops: [],
+          ),
+        );
       });
 
       await tester.pumpWidget(buildSubject(isSearchMode: true));
@@ -291,16 +328,21 @@ void main() {
   testWidgets('offers search editing and all products after an empty result', (
     tester,
   ) async {
-    final states = StreamController<ProductsState>();
+    final states = StreamController<CustomerSearchState>();
     whenListen(
-      localProductsCubit,
+      customerSearchCubit,
       states.stream,
-      initialState: ProductsInitial(),
+      initialState: CustomerSearchInitial(),
     );
-    when(() => localProductsCubit.searchProducts('olmayan')).thenAnswer((
-      _,
-    ) async {
-      states.add(const ProductsSearchResult(products: [], query: 'olmayan'));
+    when(() => customerSearchCubit.search('olmayan')).thenAnswer((_) async {
+      states.add(
+        const CustomerSearchLoaded(
+          query: 'olmayan',
+          products: [],
+          categories: [],
+          shops: [],
+        ),
+      );
     });
 
     await tester.pumpWidget(buildSubject(isSearchMode: true));
@@ -309,15 +351,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 350));
     await tester.pump();
 
+    expect(find.text('"olmayan" için sonuç bulamadık.'), findsOneWidget);
     expect(
-      find.text('"olmayan" i\u00e7in \u00fcr\u00fcn bulamad\u0131k.'),
-      findsOneWidget,
-    );
-    expect(
-      find.text(
-        'Daha k\u0131sa veya farkl\u0131 bir kelimeyle yeniden '
-        'arayabilirsiniz.',
-      ),
+      find.text('Ürün, kategori veya mağaza adıyla yeniden arayabilirsiniz.'),
       findsOneWidget,
     );
     expect(find.byKey(const Key('edit-empty-product-search')), findsOneWidget);
@@ -336,7 +372,7 @@ void main() {
     expect(editableText.focusNode.hasFocus, isTrue);
     expect(editableText.controller.selection.start, 0);
     expect(editableText.controller.selection.end, 'olmayan'.length);
-    verify(() => localProductsCubit.searchProducts('olmayan')).called(1);
+    verify(() => customerSearchCubit.search('olmayan')).called(1);
 
     await tester.tap(
       find.byKey(const Key('show-all-products-after-empty-search')),
@@ -350,18 +386,101 @@ void main() {
     await states.close();
   });
 
+  testWidgets(
+    'shows category shop and product sections and opens their destinations',
+    (tester) async {
+      const category = CategoryEntity(id: 'market', name: 'Grocery');
+      const shop = ShopEntity(
+        id: 'shop-1',
+        name: 'Mahalle Market',
+        address: 'Esenler, İstanbul',
+        rating: 4.8,
+        ratingCount: 24,
+      );
+      stubCustomerSearchState(
+        const CustomerSearchLoaded(
+          query: 'market',
+          products: [featuredProduct],
+          categories: [category],
+          shops: [shop],
+        ),
+      );
+
+      await tester.pumpWidget(buildSubject(isSearchMode: true));
+      await tester.pump();
+      await tester.enterText(find.byType(TextFormField), 'market');
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('customer-search-category-section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-search-shop-section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-search-product-section')),
+        findsOneWidget,
+      );
+      expect(find.text('Market'), findsOneWidget);
+      expect(find.text('Mahalle Market'), findsOneWidget);
+      expect(find.text('Populer Urun'), findsOneWidget);
+      expect(find.textContaining('km'), findsNothing);
+
+      await tester.tap(
+        find.byKey(const Key('customer-search-category-market')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Kategori: Grocery'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('customer-search-shop-shop-1')));
+      await tester.pumpAndSettle();
+      expect(find.text('Mağaza: Mahalle Market'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets('keeps successful sections visible after a partial error', (
+    tester,
+  ) async {
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [featuredProduct],
+        categories: [],
+        shops: [],
+        warningMessage:
+            'Bazı sonuçlar yüklenemedi. Diğer sonuçlar gösteriliyor.',
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject(isSearchMode: true));
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pump();
+
+    expect(find.byKey(const Key('customer-search-warning')), findsOneWidget);
+    expect(find.text('Populer Urun'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('does not submit the same search twice while it is loading', (
     tester,
   ) async {
-    final states = StreamController<ProductsState>();
+    final states = StreamController<CustomerSearchState>();
     final pendingSearch = Completer<void>();
     whenListen(
-      localProductsCubit,
+      customerSearchCubit,
       states.stream,
-      initialState: ProductsInitial(),
+      initialState: CustomerSearchInitial(),
     );
-    when(() => localProductsCubit.searchProducts('kahve')).thenAnswer((_) {
-      states.add(ProductsSearching());
+    when(() => customerSearchCubit.search('kahve')).thenAnswer((_) {
+      states.add(const CustomerSearchLoading('kahve'));
       return pendingSearch.future;
     });
 
@@ -373,7 +492,7 @@ void main() {
     await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pump();
 
-    verify(() => localProductsCubit.searchProducts('kahve')).called(1);
+    verify(() => customerSearchCubit.search('kahve')).called(1);
 
     pendingSearch.complete();
     await tester.pumpWidget(const SizedBox.shrink());

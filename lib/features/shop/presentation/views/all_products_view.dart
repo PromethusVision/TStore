@@ -7,10 +7,21 @@ import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
+import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
+import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
+import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
+import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
+
+typedef CustomerCategoryDestinationBuilder =
+    Widget Function(CategoryEntity category);
+typedef CustomerShopDestinationBuilder = Widget Function(ShopEntity shop);
 
 class AllProductsView extends StatelessWidget {
   const AllProductsView({
@@ -19,24 +30,46 @@ class AllProductsView extends StatelessWidget {
     this.isSearchMode = false,
     this.currentUserIdProvider,
     this.recentSearchesStorage,
+    this.customerSearchCubit,
+    this.categoryDestinationBuilder,
+    this.shopDestinationBuilder,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
   final String? Function()? currentUserIdProvider;
   final RecentProductSearchesStorage? recentSearchesStorage;
+  final CustomerSearchCubit? customerSearchCubit;
+  final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
+  final CustomerShopDestinationBuilder? shopDestinationBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ProductsCubit>(
-      create: (_) => sl<ProductsCubit>(),
-      child: _AllProductsContent(
-        autoFocusSearch: autoFocusSearch,
-        isSearchMode: isSearchMode,
-        currentUserIdProvider: currentUserIdProvider,
-        recentSearchesStorage:
-            recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
-      ),
+    final content = _AllProductsContent(
+      autoFocusSearch: autoFocusSearch,
+      isSearchMode: isSearchMode,
+      currentUserIdProvider: currentUserIdProvider,
+      recentSearchesStorage:
+          recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
+      categoryDestinationBuilder: categoryDestinationBuilder,
+      shopDestinationBuilder: shopDestinationBuilder,
+    );
+
+    if (!isSearchMode) {
+      return BlocProvider<ProductsCubit>(
+        create: (_) => sl<ProductsCubit>(),
+        child: content,
+      );
+    }
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ProductsCubit>(create: (_) => sl<ProductsCubit>()),
+        BlocProvider<CustomerSearchCubit>(
+          create: (_) => customerSearchCubit ?? sl<CustomerSearchCubit>(),
+        ),
+      ],
+      child: content,
     );
   }
 }
@@ -47,12 +80,16 @@ class _AllProductsContent extends StatefulWidget {
     required this.isSearchMode,
     required this.recentSearchesStorage,
     this.currentUserIdProvider,
+    this.categoryDestinationBuilder,
+    this.shopDestinationBuilder,
   });
 
   final bool autoFocusSearch;
   final bool isSearchMode;
   final String? Function()? currentUserIdProvider;
   final RecentProductSearchesStorage recentSearchesStorage;
+  final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
+  final CustomerShopDestinationBuilder? shopDestinationBuilder;
 
   @override
   State<_AllProductsContent> createState() => _AllProductsContentState();
@@ -99,7 +136,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.isSearchMode ? 'Ürün Ara' : 'Tüm Ürünler';
+    final title = widget.isSearchMode ? 'Ara' : 'Tüm Ürünler';
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -125,7 +162,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                   }
                 },
                 decoration: InputDecoration(
-                  hintText: 'Tüm ürünlerde ara',
+                  hintText: widget.isSearchMode
+                      ? 'Ürün, kategori veya mağaza ara'
+                      : 'Tüm ürünlerde ara',
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: _searchController.text.trim().isEmpty
                       ? null
@@ -154,75 +193,102 @@ class _AllProductsContentState extends State<_AllProductsContent> {
               ],
               const SizedBox(height: TSizes.spaceBtwItems),
               Expanded(
-                child: BlocConsumer<ProductsCubit, ProductsState>(
-                  listener: _handleProductsState,
-                  builder: (context, state) {
-                    if (state is ProductsLoading ||
-                        state is ProductsInitial ||
-                        state is ProductsSearching) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (state is ProductsError) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: TSizes.spaceBtwItems),
-                            ElevatedButton(
-                              onPressed: _reloadProducts,
-                              child: const Text('Tekrar Dene'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    if (state is ProductsSearchResult) {
-                      if (state.products.isEmpty) {
-                        return _EmptySearchResult(
-                          query: state.query,
-                          onEditSearch: _editSearch,
-                          onShowAllProducts: _clearSearch,
-                        );
-                      }
-
-                      return _ProductsScrollView(
-                        controller: _scrollController,
-                        products: state.products,
-                        currentUserIdProvider: widget.currentUserIdProvider,
-                      );
-                    }
-
-                    if (state is ProductsLoaded) {
-                      if (state.products.isEmpty) {
-                        return const Center(child: Text('Ürün bulunamadı.'));
-                      }
-
-                      return _ProductsScrollView(
-                        controller: _scrollController,
-                        products: state.products,
-                        currentUserIdProvider: widget.currentUserIdProvider,
-                        footer: _ProductsLoadMoreFooter(
-                          state: state,
-                          onRetry: _retryLoadMore,
-                        ),
-                      );
-                    }
-
-                    return const SizedBox.shrink();
-                  },
-                ),
+                child:
+                    widget.isSearchMode &&
+                        _searchController.text.trim().isNotEmpty
+                    ? BlocBuilder<CustomerSearchCubit, CustomerSearchState>(
+                        builder: _buildCustomerSearchState,
+                      )
+                    : BlocConsumer<ProductsCubit, ProductsState>(
+                        listener: _handleProductsState,
+                        builder: _buildProductsState,
+                      ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildCustomerSearchState(
+    BuildContext context,
+    CustomerSearchState state,
+  ) {
+    if (state is CustomerSearchInitial || state is CustomerSearchLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state is CustomerSearchError) {
+      return _SearchError(message: state.message, onRetry: _reloadProducts);
+    }
+
+    if (state is CustomerSearchLoaded) {
+      if (state.isEmpty) {
+        return _EmptySearchResult(
+          query: state.query,
+          onEditSearch: _editSearch,
+          onShowAllProducts: _clearSearch,
+          isUnifiedSearch: true,
+        );
+      }
+
+      return _CustomerSearchResultsView(
+        controller: _scrollController,
+        state: state,
+        currentUserIdProvider: widget.currentUserIdProvider,
+        categoryDestinationBuilder: widget.categoryDestinationBuilder,
+        shopDestinationBuilder: widget.shopDestinationBuilder,
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildProductsState(BuildContext context, ProductsState state) {
+    if (state is ProductsLoading ||
+        state is ProductsInitial ||
+        state is ProductsSearching) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state is ProductsError) {
+      return _SearchError(
+        message: 'Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+        onRetry: _reloadProducts,
+      );
+    }
+
+    if (state is ProductsSearchResult) {
+      if (state.products.isEmpty) {
+        return _EmptySearchResult(
+          query: state.query,
+          onEditSearch: _editSearch,
+          onShowAllProducts: _clearSearch,
+        );
+      }
+
+      return _ProductsScrollView(
+        controller: _scrollController,
+        products: state.products,
+        currentUserIdProvider: widget.currentUserIdProvider,
+      );
+    }
+
+    if (state is ProductsLoaded) {
+      if (state.products.isEmpty) {
+        return const Center(child: Text('Ürün bulunamadı.'));
+      }
+
+      return _ProductsScrollView(
+        controller: _scrollController,
+        products: state.products,
+        currentUserIdProvider: widget.currentUserIdProvider,
+        footer: _ProductsLoadMoreFooter(state: state, onRetry: _retryLoadMore),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   void _onSearchChanged(String value) {
@@ -233,6 +299,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
     if (query.isEmpty) {
       _lastRequestedQuery = null;
+      if (widget.isSearchMode) {
+        context.read<CustomerSearchCubit>().reset();
+      }
       context.read<ProductsCubit>().getProducts(refresh: true);
       return;
     }
@@ -257,6 +326,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     _lastRequestedQuery = null;
     setState(() {});
     _scrollToTop();
+    if (widget.isSearchMode) {
+      context.read<CustomerSearchCubit>().reset();
+    }
     context.read<ProductsCubit>().getProducts(refresh: true);
   }
 
@@ -283,6 +355,18 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   }
 
   void _runSearch(String query) {
+    if (widget.isSearchMode) {
+      final customerSearchCubit = context.read<CustomerSearchCubit>();
+      if (_lastRequestedQuery == query &&
+          customerSearchCubit.state is CustomerSearchLoading) {
+        return;
+      }
+
+      _lastRequestedQuery = query;
+      unawaited(_searchCustomerResults(customerSearchCubit, query));
+      return;
+    }
+
     final productsCubit = context.read<ProductsCubit>();
     if (_lastRequestedQuery == query &&
         productsCubit.state is ProductsSearching) {
@@ -300,6 +384,19 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     if (currentQuery.isEmpty || state.query.trim() != currentQuery) return;
 
     unawaited(_recordRecentSearch(currentQuery));
+  }
+
+  Future<void> _searchCustomerResults(
+    CustomerSearchCubit cubit,
+    String query,
+  ) async {
+    await cubit.search(query);
+    if (!mounted || _searchController.text.trim() != query) return;
+
+    final state = cubit.state;
+    if (state is CustomerSearchLoaded && state.query.trim() == query) {
+      await _recordRecentSearch(query);
+    }
   }
 
   bool get _shouldShowRecentSearches =>
@@ -389,16 +486,292 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   }
 }
 
+class _SearchError extends StatelessWidget {
+  const _SearchError({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          ElevatedButton(
+            key: const Key('retry-customer-search'),
+            onPressed: onRetry,
+            child: const Text('Tekrar Dene'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CustomerSearchResultsView extends StatelessWidget {
+  const _CustomerSearchResultsView({
+    required this.controller,
+    required this.state,
+    this.currentUserIdProvider,
+    this.categoryDestinationBuilder,
+    this.shopDestinationBuilder,
+  });
+
+  final ScrollController controller;
+  final CustomerSearchLoaded state;
+  final String? Function()? currentUserIdProvider;
+  final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
+  final CustomerShopDestinationBuilder? shopDestinationBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      key: const Key('customer-search-results'),
+      controller: controller,
+      slivers: [
+        if (state.warningMessage != null)
+          SliverToBoxAdapter(
+            child: Container(
+              key: const Key('customer-search-warning'),
+              margin: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
+              padding: const EdgeInsets.all(TSizes.md),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline),
+                  const SizedBox(width: TSizes.sm),
+                  Expanded(child: Text(state.warningMessage!)),
+                ],
+              ),
+            ),
+          ),
+        if (state.categories.isNotEmpty) ...[
+          const SliverToBoxAdapter(
+            child: _SearchSectionTitle(
+              key: Key('customer-search-category-section'),
+              title: 'Kategoriler',
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: TSizes.spaceBtwSections),
+              child: Wrap(
+                spacing: TSizes.sm,
+                runSpacing: TSizes.sm,
+                children: [
+                  for (final category in state.categories)
+                    ActionChip(
+                      key: ValueKey('customer-search-category-${category.id}'),
+                      avatar: const Icon(Icons.category_outlined, size: 18),
+                      label: Text(
+                        CustomerCategoryPresentationHelper.localizedTitle(
+                          category.name,
+                        ),
+                      ),
+                      onPressed: () => _openCategory(context, category),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+        if (state.shops.isNotEmpty) ...[
+          const SliverToBoxAdapter(
+            child: _SearchSectionTitle(
+              key: Key('customer-search-shop-section'),
+              title: 'Mağazalar',
+            ),
+          ),
+          SliverList.separated(
+            itemCount: state.shops.length,
+            separatorBuilder: (_, _) =>
+                const SizedBox(height: TSizes.spaceBtwItems / 2),
+            itemBuilder: (context, index) {
+              final shop = state.shops[index];
+              return _CustomerSearchShopCard(
+                key: ValueKey('customer-search-shop-${shop.id}'),
+                shop: shop,
+                onTap: () => _openShop(context, shop),
+              );
+            },
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: TSizes.spaceBtwSections),
+          ),
+        ],
+        if (state.products.isNotEmpty) ...[
+          const SliverToBoxAdapter(
+            child: _SearchSectionTitle(
+              key: Key('customer-search-product-section'),
+              title: 'Ürünler',
+            ),
+          ),
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: TSizes.gridViewSpacing,
+              crossAxisSpacing: TSizes.gridViewSpacing,
+              mainAxisExtent: 288,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => VerticalProductCard(
+                product: state.products[index],
+                showFavoriteAction: true,
+                currentUserIdProvider: currentUserIdProvider,
+              ),
+              childCount: state.products.length,
+            ),
+          ),
+        ],
+        const SliverToBoxAdapter(child: SizedBox(height: TSizes.defaultSpace)),
+      ],
+    );
+  }
+
+  void _openCategory(BuildContext context, CategoryEntity category) {
+    final destination =
+        categoryDestinationBuilder?.call(category) ??
+        SubCategoryView(
+          title: CustomerCategoryPresentationHelper.localizedTitle(
+            category.name,
+          ),
+          categoryId: category.id,
+        );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => destination));
+  }
+
+  void _openShop(BuildContext context, ShopEntity shop) {
+    final destination =
+        shopDestinationBuilder?.call(shop) ??
+        ShopProfileView(
+          shop: shop,
+          currentUserIdProvider: currentUserIdProvider,
+        );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => destination));
+  }
+}
+
+class _SearchSectionTitle extends StatelessWidget {
+  const _SearchSectionTitle({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
+      child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+    );
+  }
+}
+
+class _CustomerSearchShopCard extends StatelessWidget {
+  const _CustomerSearchShopCard({
+    super.key,
+    required this.shop,
+    required this.onTap,
+  });
+
+  final ShopEntity shop;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final address = shop.address?.trim();
+
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(TSizes.md),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.storefront_outlined,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(width: TSizes.spaceBtwItems),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      shop.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      address == null || address.isEmpty
+                          ? 'Adres bilgisi paylaşılmamış'
+                          : address,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    if (shop.ratingCount > 0) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${shop.rating.toStringAsFixed(1)} '
+                            '(${shop.ratingCount})',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptySearchResult extends StatelessWidget {
   const _EmptySearchResult({
     required this.query,
     required this.onEditSearch,
     required this.onShowAllProducts,
+    this.isUnifiedSearch = false,
   });
 
   final String query;
   final VoidCallback onEditSearch;
   final VoidCallback onShowAllProducts;
+  final bool isUnifiedSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -420,7 +793,11 @@ class _EmptySearchResult extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwItems),
               Text(
                 normalizedQuery.isEmpty
-                    ? 'Aradığınız ürün bulunamadı.'
+                    ? isUnifiedSearch
+                          ? 'Aradığınız sonuç bulunamadı.'
+                          : 'Aradığınız ürün bulunamadı.'
+                    : isUnifiedSearch
+                    ? '"$normalizedQuery" için sonuç bulamadık.'
                     : '"$normalizedQuery" için ürün bulamadık.',
                 key: const Key('empty-search-result-title'),
                 textAlign: TextAlign.center,
@@ -428,7 +805,9 @@ class _EmptySearchResult extends StatelessWidget {
               ),
               const SizedBox(height: TSizes.spaceBtwItems / 2),
               Text(
-                'Daha kısa veya farklı bir kelimeyle yeniden arayabilirsiniz.',
+                isUnifiedSearch
+                    ? 'Ürün, kategori veya mağaza adıyla yeniden arayabilirsiniz.'
+                    : 'Daha kısa veya farklı bir kelimeyle yeniden arayabilirsiniz.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
