@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -33,10 +35,12 @@ class SettingsView extends StatefulWidget {
     super.key,
     this.currentUserIdProvider,
     this.locationPermissionLoader,
+    this.unreadAutoRefreshInterval = const Duration(seconds: 15),
   });
 
   final SettingsCurrentUserIdProvider? currentUserIdProvider;
   final CustomerLocationPermissionLoader? locationPermissionLoader;
+  final Duration unreadAutoRefreshInterval;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -82,11 +86,14 @@ class _SettingsViewState extends State<SettingsView> {
 
     return BlocProvider(
       create: (_) => sl<ChatUnreadCubit>()..loadUnreadCount(),
-      child: Builder(
-        builder: (context) => _buildSettingsContent(
-          context,
-          isLoggedIn: true,
-          currentUserId: currentUserId,
+      child: _UnreadCountAutoRefresh(
+        interval: widget.unreadAutoRefreshInterval,
+        child: Builder(
+          builder: (context) => _buildSettingsContent(
+            context,
+            isLoggedIn: true,
+            currentUserId: currentUserId,
+          ),
         ),
       ),
     );
@@ -110,7 +117,7 @@ class _SettingsViewState extends State<SettingsView> {
           ).push(MaterialPageRoute(builder: (_) => const ConversationsView()));
           if (!context.mounted) return;
 
-          await context.read<ChatUnreadCubit>().refreshUnreadCount();
+          await context.read<ChatUnreadCubit>().refreshUnreadCountSilently();
         },
         title: "Mesajlarım",
         subtitle: "Geçmiş konuşmalarını görüntüle",
@@ -264,7 +271,9 @@ class _SettingsViewState extends State<SettingsView> {
                 );
                 if (!context.mounted) return;
 
-                await context.read<ChatUnreadCubit>().refreshUnreadCount();
+                await context
+                    .read<ChatUnreadCubit>()
+                    .refreshUnreadCountSilently();
               },
               onOpenSavedLocations: () {
                 if (!isLoggedIn) {
@@ -322,6 +331,75 @@ class _SettingsViewState extends State<SettingsView> {
         ),
       ),
     );
+  }
+}
+
+class _UnreadCountAutoRefresh extends StatefulWidget {
+  const _UnreadCountAutoRefresh({required this.interval, required this.child});
+
+  final Duration interval;
+  final Widget child;
+
+  @override
+  State<_UnreadCountAutoRefresh> createState() =>
+      _UnreadCountAutoRefreshState();
+}
+
+class _UnreadCountAutoRefreshState extends State<_UnreadCountAutoRefresh>
+    with WidgetsBindingObserver {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _stopTimer();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshAndRestart());
+      return;
+    }
+
+    _stopTimer();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(widget.interval, (_) {
+      unawaited(_refreshIfVisible());
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  Future<void> _refreshAndRestart() async {
+    _stopTimer();
+    await _refreshIfVisible();
+    if (!mounted) return;
+
+    _startTimer();
+  }
+
+  Future<void> _refreshIfVisible() async {
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? true)) return;
+
+    await context.read<ChatUnreadCubit>().refreshUnreadCountSilently();
   }
 }
 

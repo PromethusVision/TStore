@@ -93,6 +93,9 @@ void main() {
       initialState: const ChatUnreadLoaded(0),
     );
     when(() => chatUnreadCubit.loadUnreadCount()).thenAnswer((_) async {});
+    when(
+      () => chatUnreadCubit.refreshUnreadCountSilently(),
+    ).thenAnswer((_) async {});
     when(() => chatUnreadCubit.close()).thenAnswer((_) async {});
 
     whenListen(
@@ -162,6 +165,7 @@ void main() {
   Widget buildSubject({
     required AuthState authState,
     required String? currentUserId,
+    Duration unreadAutoRefreshInterval = const Duration(seconds: 15),
   }) {
     whenListen(
       authCubit,
@@ -180,6 +184,7 @@ void main() {
             currentUserIdProvider: () => currentUserId,
             locationPermissionLoader: () async =>
                 CustomerLocationPermissionStatus.notAllowed,
+            unreadAutoRefreshInterval: unreadAutoRefreshInterval,
           ),
         ),
       ),
@@ -425,5 +430,49 @@ void main() {
 
     expect(find.byType(LoginView), findsOneWidget);
     expect(find.byType(CustomerCouponsView), findsNothing);
+  });
+
+  testWidgets('profil açıkken okunmamış mesaj sayısını sessizce yeniler', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+        unreadAutoRefreshInterval: const Duration(seconds: 1),
+      ),
+    );
+    await tester.pump();
+
+    verify(() => chatUnreadCubit.loadUnreadCount()).called(1);
+    clearInteractions(chatUnreadCubit);
+
+    await tester.pump(const Duration(seconds: 1));
+
+    verify(() => chatUnreadCubit.refreshUnreadCountSilently()).called(1);
+  });
+
+  testWidgets('uygulama arka plandayken mesaj sayısını yenilemez', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+        unreadAutoRefreshInterval: const Duration(seconds: 1),
+      ),
+    );
+    await tester.pump();
+    clearInteractions(chatUnreadCubit);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump(const Duration(seconds: 2));
+
+    verifyNever(() => chatUnreadCubit.refreshUnreadCountSilently());
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+
+    verify(() => chatUnreadCubit.refreshUnreadCountSilently()).called(1);
   });
 }
