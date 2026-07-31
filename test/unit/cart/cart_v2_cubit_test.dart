@@ -138,4 +138,28 @@ void main() {
       verifyNever(() => getActiveCartItemsUsecase(any()));
     },
   );
+
+  test(
+    'ignores a repeated add request while the first one is pending',
+    () async {
+      final result = Completer<Either<String, CartV2AddResult>>();
+      when(() => addShopProductUsecase(any())).thenAnswer((_) => result.future);
+
+      final firstRequest = cartCubit.addShopProductToCart(
+        shopProductId: 'shop-product-1',
+        quantity: 1,
+      );
+      final repeatedRequest = cartCubit.addShopProductToCart(
+        shopProductId: 'shop-product-1',
+        quantity: 1,
+      );
+
+      verify(() => addShopProductUsecase(any())).called(1);
+
+      result.complete(const Left('Bağlantı hatası'));
+      await Future.wait([firstRequest, repeatedRequest]);
+
+      expect(cartCubit.state, const CartV2Error('Bağlantı hatası'));
+    },
+  );
 }

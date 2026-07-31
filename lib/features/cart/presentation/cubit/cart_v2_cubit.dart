@@ -19,6 +19,7 @@ class CartV2Cubit extends Cubit<CartV2State> {
   final RemoveCartItemV2Usecase removeCartItemV2Usecase;
   final CancelActiveCartV2Usecase cancelActiveCartV2Usecase;
   int _dataGeneration = 0;
+  bool _isAddShopProductRequestInProgress = false;
 
   CartV2Cubit(
     this.getActiveCartItemsV2Usecase,
@@ -48,38 +49,45 @@ class CartV2Cubit extends Cubit<CartV2State> {
     required String shopProductId,
     required int quantity,
   }) async {
-    final dataGeneration = _dataGeneration;
-    final result = await addShopProductToCartV2Usecase(
-      AddShopProductToCartV2Params(
-        shopProductId: shopProductId,
-        quantity: quantity,
-      ),
-    );
-    if (!_canApply(dataGeneration)) return;
+    if (_isAddShopProductRequestInProgress) return;
 
-    await result.fold((error) async => emit(CartV2Error(error)), (
-      addResult,
-    ) async {
-      if (addResult is CartV2AddSuccess) {
-        emit(
-          CartV2ItemAdded(
-            cartId: addResult.cartId,
-            shopId: addResult.shopId,
-            shopProductId: addResult.shopProductId,
-            quantity: addResult.quantity,
-          ),
-        );
-        await getActiveCartItems();
-        return;
-      }
+    _isAddShopProductRequestInProgress = true;
+    try {
+      final dataGeneration = _dataGeneration;
+      final result = await addShopProductToCartV2Usecase(
+        AddShopProductToCartV2Params(
+          shopProductId: shopProductId,
+          quantity: quantity,
+        ),
+      );
+      if (!_canApply(dataGeneration)) return;
 
-      if (addResult is CartV2ShopConflict) {
-        emit(CartV2ShopConflictState(addResult));
-        return;
-      }
+      await result.fold((error) async => emit(CartV2Error(error)), (
+        addResult,
+      ) async {
+        if (addResult is CartV2AddSuccess) {
+          emit(
+            CartV2ItemAdded(
+              cartId: addResult.cartId,
+              shopId: addResult.shopId,
+              shopProductId: addResult.shopProductId,
+              quantity: addResult.quantity,
+            ),
+          );
+          await getActiveCartItems();
+          return;
+        }
 
-      emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
-    });
+        if (addResult is CartV2ShopConflict) {
+          emit(CartV2ShopConflictState(addResult));
+          return;
+        }
+
+        emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
+      });
+    } finally {
+      _isAddShopProductRequestInProgress = false;
+    }
   }
 
   Future<void> replaceActiveCartWithShopProduct({
