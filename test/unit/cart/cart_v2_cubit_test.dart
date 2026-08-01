@@ -38,6 +38,12 @@ class FakeNoParams extends Fake implements NoParams {}
 class FakeAddShopProductToCartV2Params extends Fake
     implements AddShopProductToCartV2Params {}
 
+class FakeUpdateCartItemQuantityV2Params extends Fake
+    implements UpdateCartItemQuantityV2Params {}
+
+class FakeRemoveCartItemV2Params extends Fake
+    implements RemoveCartItemV2Params {}
+
 void main() {
   late MockGetActiveCartItemsV2Usecase getActiveCartItemsUsecase;
   late MockAddShopProductToCartV2Usecase addShopProductUsecase;
@@ -57,6 +63,8 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeNoParams());
     registerFallbackValue(FakeAddShopProductToCartV2Params());
+    registerFallbackValue(FakeUpdateCartItemQuantityV2Params());
+    registerFallbackValue(FakeRemoveCartItemV2Params());
   });
 
   setUp(() {
@@ -155,6 +163,55 @@ void main() {
       );
 
       verify(() => addShopProductUsecase(any())).called(1);
+
+      result.complete(const Left('Bağlantı hatası'));
+      await Future.wait([firstRequest, repeatedRequest]);
+
+      expect(cartCubit.state, const CartV2Error('Bağlantı hatası'));
+    },
+  );
+
+  test('ignores repeated quantity updates while one is pending', () async {
+    final result = Completer<Either<String, Unit>>();
+    when(() => updateQuantityUsecase(any())).thenAnswer((_) => result.future);
+
+    final firstRequest = cartCubit.incrementItemQuantity(oldCartItem);
+    final repeatedRequest = cartCubit.incrementItemQuantity(oldCartItem);
+
+    verify(() => updateQuantityUsecase(any())).called(1);
+
+    result.complete(const Left('Bağlantı hatası'));
+    await Future.wait([firstRequest, repeatedRequest]);
+
+    expect(cartCubit.state, const CartV2Error('Bağlantı hatası'));
+  });
+
+  test('blocks item removal while a quantity update is pending', () async {
+    final result = Completer<Either<String, Unit>>();
+    when(() => updateQuantityUsecase(any())).thenAnswer((_) => result.future);
+
+    final updateRequest = cartCubit.incrementItemQuantity(oldCartItem);
+    final removeRequest = cartCubit.removeItem(oldCartItem.id);
+
+    verify(() => updateQuantityUsecase(any())).called(1);
+    verifyNever(() => removeCartItemUsecase(any()));
+
+    result.complete(const Left('Bağlantı hatası'));
+    await Future.wait([updateRequest, removeRequest]);
+  });
+
+  test(
+    'ignores repeated cart clearing while the first one is pending',
+    () async {
+      final result = Completer<Either<String, Unit>>();
+      when(
+        () => cancelActiveCartUsecase(any()),
+      ).thenAnswer((_) => result.future);
+
+      final firstRequest = cartCubit.cancelActiveCart();
+      final repeatedRequest = cartCubit.cancelActiveCart();
+
+      verify(() => cancelActiveCartUsecase(any())).called(1);
 
       result.complete(const Left('Bağlantı hatası'));
       await Future.wait([firstRequest, repeatedRequest]);

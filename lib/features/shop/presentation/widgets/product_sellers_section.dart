@@ -555,9 +555,9 @@ class _SellerTile extends StatelessWidget {
                     label: const Text('Esnafa Yaz'),
                   ),
                 if (canAddToCart)
-                  OutlinedButton(
-                    onPressed: () => _handleAddToCart(context),
-                    child: const Text('Bu Esnaftan Sepete Ekle'),
+                  _SellerAddToCartButton(
+                    shopProductId: shopProduct.id,
+                    onPressed: () => _startAddToCart(context),
                   )
                 else
                   Padding(
@@ -683,22 +683,84 @@ class _SellerTile extends StatelessWidget {
     } catch (_) {}
   }
 
-  void _handleAddToCart(BuildContext context) {
-    if (shopProduct.shop?.isActive != true) return;
+  Future<void>? _startAddToCart(BuildContext context) {
+    if (shopProduct.shop?.isActive != true) return null;
 
-    final user = SupabaseService.instance.currentUser;
-
-    if (user == null) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const LoginView()));
-      return;
+    if (_currentUserId == null) {
+      unawaited(
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const LoginView())),
+      );
+      return null;
     }
 
-    context.read<CartV2Cubit>().addShopProductToCart(
+    return context.read<CartV2Cubit>().addShopProductToCart(
       shopProductId: shopProduct.id,
       quantity: 1,
     );
+  }
+}
+
+class _SellerAddToCartButton extends StatefulWidget {
+  const _SellerAddToCartButton({
+    required this.shopProductId,
+    required this.onPressed,
+  });
+
+  final String shopProductId;
+  final Future<void>? Function() onPressed;
+
+  @override
+  State<_SellerAddToCartButton> createState() => _SellerAddToCartButtonState();
+}
+
+class _SellerAddToCartButtonState extends State<_SellerAddToCartButton> {
+  bool _isAdding = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      key: ValueKey('product-seller-add-${widget.shopProductId}'),
+      onPressed: _isAdding ? null : _handlePressed,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(
+            opacity: _isAdding ? 0 : 1,
+            child: const Text('Bu Esnaftan Sepete Ekle'),
+          ),
+          if (_isAdding)
+            const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  key: Key('product-seller-add-progress'),
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(width: TSizes.sm),
+                Text('Sepete ekleniyor…'),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handlePressed() async {
+    if (_isAdding) return;
+
+    final operation = widget.onPressed();
+    if (operation == null) return;
+
+    setState(() => _isAdding = true);
+    try {
+      await operation;
+    } finally {
+      if (mounted) setState(() => _isAdding = false);
+    }
   }
 }
 

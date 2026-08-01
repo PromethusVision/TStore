@@ -21,6 +21,12 @@ class CartV2View extends StatefulWidget {
 class _CartV2ViewState extends State<CartV2View> {
   bool _isPreparingPurchaseVerification = false;
   bool _isRefreshingUnavailableItem = false;
+  bool _isClearingCart = false;
+  bool _isCartConfirmationOpen = false;
+  final Map<String, _CartItemPendingAction> _pendingItemActions = {};
+
+  bool get _isCartMutationInProgress =>
+      _isClearingCart || _pendingItemActions.isNotEmpty;
 
   @override
   void initState() {
@@ -76,11 +82,19 @@ class _CartV2ViewState extends State<CartV2View> {
                   Expanded(
                     child: ListView.separated(
                       itemBuilder: (context, index) {
+                        final item = state.items[index];
                         return _CartV2ItemCard(
-                          item: state.items[index],
+                          item: item,
+                          pendingAction: _pendingItemActions[item.id],
+                          isCartInteractionBlocked: _isCartMutationInProgress,
                           isRefreshingAvailability:
                               _isRefreshingUnavailableItem,
                           onRefreshAvailability: _refreshUnavailableItem,
+                          onIncrement: () =>
+                              _updateItemQuantity(item, shouldIncrement: true),
+                          onDecrement: () =>
+                              _updateItemQuantity(item, shouldIncrement: false),
+                          onRemove: () => _confirmAndRemoveItem(item),
                         );
                       },
                       separatorBuilder: (context, index) =>
@@ -98,10 +112,19 @@ class _CartV2ViewState extends State<CartV2View> {
                   const SizedBox(height: TSizes.spaceBtwItems),
                   _ShowInStoreButton(
                     isPreparing: _isPreparingPurchaseVerification,
+                    isEnabled:
+                        !_isCartMutationInProgress &&
+                        !_isRefreshingUnavailableItem,
                     onPressed: _preparePurchaseVerification,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
-                  const _CancelActiveCartButton(),
+                  _CancelActiveCartButton(
+                    isClearing: _isClearingCart,
+                    isEnabled:
+                        _pendingItemActions.isEmpty &&
+                        !_isRefreshingUnavailableItem,
+                    onPressed: _confirmAndClearCart,
+                  ),
                 ],
               );
             }
@@ -113,8 +136,122 @@ class _CartV2ViewState extends State<CartV2View> {
     );
   }
 
+  Future<void> _updateItemQuantity(
+    CartItemV2Entity item, {
+    required bool shouldIncrement,
+  }) async {
+    await _runCartItemAction(
+      itemId: item.id,
+      action: _CartItemPendingAction.updatingQuantity,
+      request: () => shouldIncrement
+          ? context.read<CartV2Cubit>().incrementItemQuantity(item)
+          : context.read<CartV2Cubit>().decrementItemQuantity(item),
+    );
+  }
+
+  Future<void> _confirmAndRemoveItem(CartItemV2Entity item) async {
+    if (_isCartConfirmationOpen || _isCartMutationInProgress) return;
+
+    _isCartConfirmationOpen = true;
+    bool shouldRemove;
+    try {
+      shouldRemove =
+          await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) {
+              return AlertDialog(
+                title: const Text('Ürünü sepetten kaldır'),
+                content: const Text(
+                  'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: const Text('Vazgeç'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: const Text('Kaldır'),
+                  ),
+                ],
+              );
+            },
+          ) ==
+          true;
+    } finally {
+      _isCartConfirmationOpen = false;
+    }
+
+    if (!mounted || !shouldRemove) return;
+    await _runCartItemAction(
+      itemId: item.id,
+      action: _CartItemPendingAction.removing,
+      request: () => context.read<CartV2Cubit>().removeItem(item.id),
+    );
+  }
+
+  Future<void> _confirmAndClearCart() async {
+    if (_isCartConfirmationOpen || _isCartMutationInProgress) return;
+
+    _isCartConfirmationOpen = true;
+    bool shouldClear;
+    try {
+      shouldClear =
+          await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) {
+              return AlertDialog(
+                title: const Text('Mağaza sepetini boşalt'),
+                content: const Text(
+                  'Bu mağaza sepetindeki tüm ürünler kaldırılacak. '
+                  'Bu işlem geri alınamaz.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: const Text('Vazgeç'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: const Text('Sepeti boşalt'),
+                  ),
+                ],
+              );
+            },
+          ) ==
+          true;
+    } finally {
+      _isCartConfirmationOpen = false;
+    }
+
+    if (!mounted || !shouldClear) return;
+    setState(() => _isClearingCart = true);
+    try {
+      await context.read<CartV2Cubit>().cancelActiveCart();
+    } finally {
+      if (mounted) setState(() => _isClearingCart = false);
+    }
+  }
+
+  Future<void> _runCartItemAction({
+    required String itemId,
+    required _CartItemPendingAction action,
+    required Future<void> Function() request,
+  }) async {
+    if (_isCartMutationInProgress) return;
+
+    setState(() => _pendingItemActions[itemId] = action);
+    try {
+      await request();
+    } finally {
+      if (mounted) {
+        setState(() => _pendingItemActions.remove(itemId));
+      }
+    }
+  }
+
   Future<void> _preparePurchaseVerification() async {
-    if (_isPreparingPurchaseVerification) return;
+    if (_isPreparingPurchaseVerification || _isCartMutationInProgress) return;
 
     setState(() => _isPreparingPurchaseVerification = true);
     final cartCubit = context.read<CartV2Cubit>();
@@ -243,7 +380,7 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _refreshUnavailableItem(String cartItemId) async {
-    if (_isRefreshingUnavailableItem) return;
+    if (_isRefreshingUnavailableItem || _isCartMutationInProgress) return;
 
     setState(() => _isRefreshingUnavailableItem = true);
     final cartCubit = context.read<CartV2Cubit>();
@@ -353,10 +490,12 @@ class _CartTotalComparisonRow extends StatelessWidget {
 
 class _ShowInStoreButton extends StatelessWidget {
   final bool isPreparing;
+  final bool isEnabled;
   final VoidCallback onPressed;
 
   const _ShowInStoreButton({
     required this.isPreparing,
+    required this.isEnabled,
     required this.onPressed,
   });
 
@@ -365,7 +504,7 @@ class _ShowInStoreButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: isPreparing ? null : onPressed,
+        onPressed: isPreparing || !isEnabled ? null : onPressed,
         child: isPreparing
             ? const SizedBox.square(
                 dimension: 20,
@@ -380,13 +519,23 @@ class _ShowInStoreButton extends StatelessWidget {
 class _CartV2ItemCard extends StatelessWidget {
   const _CartV2ItemCard({
     required this.item,
+    required this.pendingAction,
+    required this.isCartInteractionBlocked,
     required this.isRefreshingAvailability,
     required this.onRefreshAvailability,
+    required this.onIncrement,
+    required this.onDecrement,
+    required this.onRemove,
   });
 
   final CartItemV2Entity item;
+  final _CartItemPendingAction? pendingAction;
+  final bool isCartInteractionBlocked;
   final bool isRefreshingAvailability;
   final ValueChanged<String> onRefreshAvailability;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -423,12 +572,25 @@ class _CartV2ItemCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (!isUnavailable)
+              if (pendingAction == _CartItemPendingAction.removing)
+                const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: TSizes.sm),
+                    Text('Kaldırılıyor…'),
+                  ],
+                )
+              else if (!isUnavailable)
                 IconButton(
                   tooltip: 'Kaldır',
-                  onPressed: isRefreshingAvailability
+                  onPressed:
+                      isRefreshingAvailability || isCartInteractionBlocked
                       ? null
-                      : () => _confirmRemoveItem(context),
+                      : onRemove,
                   icon: const Icon(Icons.delete_outline),
                 ),
             ],
@@ -450,7 +612,14 @@ class _CartV2ItemCard extends StatelessWidget {
           ),
           _CartV2QuantityRow(
             item: item,
-            isEnabled: !isUnavailable && !isRefreshingAvailability,
+            isEnabled:
+                !isUnavailable &&
+                !isRefreshingAvailability &&
+                !isCartInteractionBlocked,
+            isUpdating:
+                pendingAction == _CartItemPendingAction.updatingQuantity,
+            onIncrement: onIncrement,
+            onDecrement: onDecrement,
           ),
           _CartV2InfoRow(
             label: 'Satır toplamı',
@@ -464,43 +633,14 @@ class _CartV2ItemCard extends StatelessWidget {
                   'Bu ürün şu anda satın alınamıyor.',
               isRefreshing: isRefreshingAvailability,
               onRefresh: () => onRefreshAvailability(item.id),
-              onRemove: isRefreshingAvailability
+              onRemove: isRefreshingAvailability || isCartInteractionBlocked
                   ? null
-                  : () => _confirmRemoveItem(context),
+                  : onRemove,
             ),
           ],
         ],
       ),
     );
-  }
-
-  Future<void> _confirmRemoveItem(BuildContext context) async {
-    final cubit = context.read<CartV2Cubit>();
-    final shouldRemove = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Ürünü sepetten kaldır'),
-          content: const Text(
-            'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Vazgeç'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Kaldır'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (shouldRemove == true) {
-      cubit.removeItem(item.id);
-    }
   }
 }
 
@@ -588,10 +728,19 @@ class _UnavailableCartItemNotice extends StatelessWidget {
 }
 
 class _CartV2QuantityRow extends StatelessWidget {
-  const _CartV2QuantityRow({required this.item, this.isEnabled = true});
+  const _CartV2QuantityRow({
+    required this.item,
+    required this.isUpdating,
+    required this.onIncrement,
+    required this.onDecrement,
+    this.isEnabled = true,
+  });
 
   final CartItemV2Entity item;
   final bool isEnabled;
+  final bool isUpdating;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
 
   @override
   Widget build(BuildContext context) {
@@ -601,33 +750,40 @@ class _CartV2QuantityRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text('Adet', style: Theme.of(context).textTheme.bodyMedium),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                tooltip: 'Azalt',
-                onPressed: !isEnabled || item.quantity <= 1
-                    ? null
-                    : () {
-                        context.read<CartV2Cubit>().decrementItemQuantity(item);
-                      },
-                icon: const Icon(Icons.remove),
-              ),
-              Text(
-                item.quantity.toString(),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              IconButton(
-                tooltip: 'Artır',
-                onPressed: isEnabled
-                    ? () {
-                        context.read<CartV2Cubit>().incrementItemQuantity(item);
-                      }
-                    : null,
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
+          if (isUpdating)
+            const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox.square(
+                  dimension: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(width: TSizes.sm),
+                Text('Güncelleniyor…'),
+              ],
+            )
+          else
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: 'Azalt',
+                  onPressed: !isEnabled || item.quantity <= 1
+                      ? null
+                      : onDecrement,
+                  icon: const Icon(Icons.remove),
+                ),
+                Text(
+                  item.quantity.toString(),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                IconButton(
+                  tooltip: 'Artır',
+                  onPressed: isEnabled ? onIncrement : null,
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -732,49 +888,41 @@ class _CartV2TotalBox extends StatelessWidget {
 }
 
 class _CancelActiveCartButton extends StatelessWidget {
-  const _CancelActiveCartButton();
+  const _CancelActiveCartButton({
+    required this.isClearing,
+    required this.isEnabled,
+    required this.onPressed,
+  });
+
+  final bool isClearing;
+  final bool isEnabled;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
-        onPressed: () => _confirmCancelCart(context),
-        child: const Text('Mağaza sepetini boşalt'),
+        onPressed: isClearing || !isEnabled ? null : onPressed,
+        child: isClearing
+            ? const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  SizedBox(width: TSizes.sm),
+                  Text('Sepet boşaltılıyor…'),
+                ],
+              )
+            : const Text('Mağaza sepetini boşalt'),
       ),
     );
   }
-
-  Future<void> _confirmCancelCart(BuildContext context) async {
-    final cubit = context.read<CartV2Cubit>();
-    final shouldCancel = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Mağaza sepetini boşalt'),
-          content: const Text(
-            'Bu mağaza sepetindeki tüm ürünler kaldırılacak. '
-            'Bu işlem geri alınamaz.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Vazgeç'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Sepeti boşalt'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (shouldCancel == true) {
-      cubit.cancelActiveCart();
-    }
-  }
 }
+
+enum _CartItemPendingAction { updatingQuantity, removing }
 
 class _CartV2EmptyState extends StatelessWidget {
   const _CartV2EmptyState();

@@ -20,6 +20,7 @@ class CartV2Cubit extends Cubit<CartV2State> {
   final CancelActiveCartV2Usecase cancelActiveCartV2Usecase;
   int _dataGeneration = 0;
   bool _isAddShopProductRequestInProgress = false;
+  bool _isCartMutationRequestInProgress = false;
 
   CartV2Cubit(
     this.getActiveCartItemsV2Usecase,
@@ -132,19 +133,21 @@ class CartV2Cubit extends Cubit<CartV2State> {
     required String cartItemId,
     required int quantity,
   }) async {
-    final dataGeneration = _dataGeneration;
-    final result = await updateCartItemQuantityV2Usecase(
-      UpdateCartItemQuantityV2Params(
-        cartItemId: cartItemId,
-        quantity: quantity,
-      ),
-    );
-    if (!_canApply(dataGeneration)) return;
+    await _runExclusiveCartMutation(() async {
+      final dataGeneration = _dataGeneration;
+      final result = await updateCartItemQuantityV2Usecase(
+        UpdateCartItemQuantityV2Params(
+          cartItemId: cartItemId,
+          quantity: quantity,
+        ),
+      );
+      if (!_canApply(dataGeneration)) return;
 
-    await result.fold(
-      (error) async => emit(CartV2Error(error)),
-      (_) async => getActiveCartItems(),
-    );
+      await result.fold(
+        (error) async => emit(CartV2Error(error)),
+        (_) async => getActiveCartItems(showLoading: false),
+      );
+    });
   }
 
   Future<void> incrementItemQuantity(CartItemV2Entity item) async {
@@ -161,27 +164,31 @@ class CartV2Cubit extends Cubit<CartV2State> {
   }
 
   Future<void> removeItem(String cartItemId) async {
-    final dataGeneration = _dataGeneration;
-    final result = await removeCartItemV2Usecase(
-      RemoveCartItemV2Params(cartItemId: cartItemId),
-    );
-    if (!_canApply(dataGeneration)) return;
+    await _runExclusiveCartMutation(() async {
+      final dataGeneration = _dataGeneration;
+      final result = await removeCartItemV2Usecase(
+        RemoveCartItemV2Params(cartItemId: cartItemId),
+      );
+      if (!_canApply(dataGeneration)) return;
 
-    await result.fold(
-      (error) async => emit(CartV2Error(error)),
-      (_) async => getActiveCartItems(),
-    );
+      await result.fold(
+        (error) async => emit(CartV2Error(error)),
+        (_) async => getActiveCartItems(showLoading: false),
+      );
+    });
   }
 
   Future<void> cancelActiveCart() async {
-    final dataGeneration = _dataGeneration;
-    final result = await cancelActiveCartV2Usecase(const NoParams());
-    if (!_canApply(dataGeneration)) return;
+    await _runExclusiveCartMutation(() async {
+      final dataGeneration = _dataGeneration;
+      final result = await cancelActiveCartV2Usecase(const NoParams());
+      if (!_canApply(dataGeneration)) return;
 
-    await result.fold(
-      (error) async => emit(CartV2Error(error)),
-      (_) async => getActiveCartItems(),
-    );
+      await result.fold(
+        (error) async => emit(CartV2Error(error)),
+        (_) async => getActiveCartItems(showLoading: false),
+      );
+    });
   }
 
   void clearLocalCart() {
@@ -191,5 +198,18 @@ class CartV2Cubit extends Cubit<CartV2State> {
 
   bool _canApply(int dataGeneration) {
     return !isClosed && dataGeneration == _dataGeneration;
+  }
+
+  Future<void> _runExclusiveCartMutation(
+    Future<void> Function() request,
+  ) async {
+    if (_isCartMutationRequestInProgress) return;
+
+    _isCartMutationRequestInProgress = true;
+    try {
+      await request();
+    } finally {
+      _isCartMutationRequestInProgress = false;
+    }
   }
 }

@@ -125,6 +125,12 @@ void main() {
     ).thenAnswer((_) async {});
     when(() => cartV2Cubit.cancelActiveCart()).thenAnswer((_) async {});
     when(() => cartV2Cubit.removeItem(any())).thenAnswer((_) async {});
+    when(
+      () => cartV2Cubit.incrementItemQuantity(cartItem),
+    ).thenAnswer((_) async {});
+    when(
+      () => cartV2Cubit.decrementItemQuantity(cartItem),
+    ).thenAnswer((_) async {});
 
     whenListen(
       qrSessionCubit,
@@ -407,6 +413,115 @@ void main() {
 
     verify(() => cartV2Cubit.cancelActiveCart()).called(1);
   });
+
+  testWidgets(
+    'adet güncellenirken geri bildirim gösterir ve tekrar dokunmayı engeller',
+    (tester) async {
+      final updateRequest = Completer<void>();
+      when(
+        () => cartV2Cubit.incrementItemQuantity(cartItem),
+      ).thenAnswer((_) => updateRequest.future);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final incrementButton = find.widgetWithIcon(IconButton, Icons.add);
+      await tester.tap(incrementButton);
+      await tester.tap(incrementButton);
+      await tester.pump();
+
+      expect(find.text('Güncelleniyor…'), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Icons.add), findsNothing);
+      expect(find.widgetWithIcon(IconButton, Icons.remove), findsNothing);
+      verify(() => cartV2Cubit.incrementItemQuantity(cartItem)).called(1);
+
+      updateRequest.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Güncelleniyor…'), findsNothing);
+      expect(find.widgetWithIcon(IconButton, Icons.add), findsOneWidget);
+    },
+  );
+
+  testWidgets('ürün kaldırılırken işlem durumunu gösterir', (tester) async {
+    final removeRequest = Completer<void>();
+    when(
+      () => cartV2Cubit.removeItem('item-1'),
+    ).thenAnswer((_) => removeRequest.future);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.delete_outline));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kaldır'));
+    await tester.pump();
+
+    expect(find.text('Kaldırılıyor…'), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.delete_outline), findsNothing);
+    verify(() => cartV2Cubit.removeItem('item-1')).called(1);
+
+    removeRequest.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kaldırılıyor…'), findsNothing);
+    expect(
+      find.widgetWithIcon(IconButton, Icons.delete_outline),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'sepet boşaltılırken geri bildirim gösterir ve tekrarını engeller',
+    (tester) async {
+      final clearRequest = Completer<void>();
+      when(
+        () => cartV2Cubit.cancelActiveCart(),
+      ).thenAnswer((_) => clearRequest.future);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sepeti boşalt'));
+      await tester.pump();
+
+      expect(find.text('Sepet boşaltılıyor…'), findsOneWidget);
+      final clearButton = tester.widget<OutlinedButton>(
+        find.widgetWithText(OutlinedButton, 'Sepet boşaltılıyor…'),
+      );
+      expect(clearButton.onPressed, isNull);
+      verify(() => cartV2Cubit.cancelActiveCart()).called(1);
+
+      clearRequest.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sepet boşaltılıyor…'), findsNothing);
+      expect(find.text('Mağaza sepetini boşalt'), findsOneWidget);
+    },
+  );
 
   testWidgets('geçersiz sepet ürünü için QR oluşturmayı engeller', (
     tester,

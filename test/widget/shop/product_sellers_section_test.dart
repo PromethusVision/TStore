@@ -112,6 +112,12 @@ void main() {
       initialState: CartV2Initial(),
     );
     when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {});
+    when(
+      () => cartV2Cubit.addShopProductToCart(
+        shopProductId: any(named: 'shopProductId'),
+        quantity: any(named: 'quantity'),
+      ),
+    ).thenAnswer((_) async {});
 
     sl.registerLazySingleton<GetShopProductsByProductUsecase>(
       () => GetShopProductsByProductUsecase(shopRepository),
@@ -608,6 +614,80 @@ void main() {
     expect(find.text('Pasif Esnaf'), findsNothing);
     expect(find.text('Bilinmeyen esnaf'), findsNothing);
     expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
+  });
+
+  testWidgets(
+    'sepet ekleme sürerken geri bildirim gösterir ve tekrar dokunmayı engeller',
+    (tester) async {
+      final addRequest = Completer<void>();
+      when(
+        () => cartV2Cubit.addShopProductToCart(
+          shopProductId: 'active',
+          quantity: 1,
+        ),
+      ).thenAnswer((_) => addRequest.future);
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer(
+        (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final addButton = find.byKey(const ValueKey('product-seller-add-active'));
+      await tester.tap(addButton);
+      await tester.pump();
+
+      expect(find.text('Sepete ekleniyor…'), findsOneWidget);
+      expect(
+        find.byKey(const Key('product-seller-add-progress')),
+        findsOneWidget,
+      );
+      expect(tester.widget<OutlinedButton>(addButton).onPressed, isNull);
+      verify(
+        () => cartV2Cubit.addShopProductToCart(
+          shopProductId: 'active',
+          quantity: 1,
+        ),
+      ).called(1);
+
+      addRequest.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
+      expect(tester.widget<OutlinedButton>(addButton).onPressed, isNotNull);
+    },
+  );
+
+  testWidgets('giriş yapmayan müşteriyi sepetten önce girişe yönlendirir', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('product-seller-add-active')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+    expect(find.text('Sepete ekleniyor…'), findsNothing);
+    verifyNever(
+      () => cartV2Cubit.addShopProductToCart(
+        shopProductId: any(named: 'shopProductId'),
+        quantity: any(named: 'quantity'),
+      ),
+    );
   });
 
   testWidgets('satıcıya ürün adıyla düzenlenebilir mesaj taslağı açar', (
