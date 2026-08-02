@@ -25,10 +25,14 @@ class HorizontalProductCard extends StatelessWidget {
     super.key,
     required this.product,
     this.currentUserIdProvider,
+    this.priceLabel,
+    this.showCatalogDiscount = true,
   });
 
   final ProductEntity product;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final String? priceLabel;
+  final bool showCatalogDiscount;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +86,7 @@ class HorizontalProductCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (product.hasDiscount)
+                    if (showCatalogDiscount && product.hasDiscount)
                       Positioned(
                         top: 12,
                         child: SaleTag(
@@ -135,12 +139,23 @@ class HorizontalProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          child: ProductPriceText(
-                            productPriceTextModel: ProductPriceTextModel(
-                              price: product.price.toStringAsFixed(2),
-                              smallSize: true,
-                            ),
-                          ),
+                          child: priceLabel == null
+                              ? ProductPriceText(
+                                  productPriceTextModel: ProductPriceTextModel(
+                                    price: product.price.toStringAsFixed(2),
+                                    smallSize: true,
+                                  ),
+                                )
+                              : Text(
+                                  priceLabel!,
+                                  key: Key(
+                                    'horizontal-product-price-${product.id}',
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.labelLarge
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
                         ),
                         const AddToCartContainer(),
                       ],
