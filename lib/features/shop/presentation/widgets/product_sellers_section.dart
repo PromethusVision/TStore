@@ -17,8 +17,11 @@ import 'package:t_store/features/shop/domain/services/customer_location_service.
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
 
 typedef ProductSellerCurrentUserIdProvider = String? Function();
+typedef ProductSellerPriceSummaryChanged =
+    void Function(ProductSellerPriceSummary summary);
 typedef ProductSellerChatDestinationBuilder =
     Widget Function(
       String receiverId,
@@ -31,6 +34,7 @@ class ProductSellersSection extends StatefulWidget {
   final String productName;
   final Future<void> Function()? onChangeLocationRequested;
   final VoidCallback? onBrowseOtherProducts;
+  final ProductSellerPriceSummaryChanged? onPriceSummaryChanged;
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
@@ -41,6 +45,7 @@ class ProductSellersSection extends StatefulWidget {
     required this.productName,
     this.onChangeLocationRequested,
     this.onBrowseOtherProducts,
+    this.onPriceSummaryChanged,
     this.currentUserIdProvider,
     this.chatDestinationBuilder,
     this.pendingProductChatStorage,
@@ -118,9 +123,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               isRetrying: _isRetryInProgress,
             ),
             (shopProducts) {
-              final customerVisibleShopProducts = shopProducts
-                  .where((shopProduct) => shopProduct.shop?.isActive == true)
-                  .toList(growable: false);
+              final customerVisibleShopProducts = _customerVisibleSellers(
+                shopProducts,
+              );
 
               if (customerVisibleShopProducts.isEmpty) {
                 return _SellersEmptyState(
@@ -209,14 +214,64 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   }
 
   Future<Either<String, List<ShopProductEntity>>> _fetchSellers() {
-    return sl<GetShopProductsByProductUsecase>()(
+    final request = sl<GetShopProductsByProductUsecase>()(
       GetShopProductsByProductParams(productId: widget.productId),
     );
+
+    unawaited(
+      request.then<void>(
+        _notifyPriceSummary,
+        onError: (_, _) => _notifyPriceSummaryError(),
+      ),
+    );
+    return request;
+  }
+
+  void _notifyPriceSummary(Either<String, List<ShopProductEntity>> result) {
+    if (!mounted) return;
+    final summary = result.fold(
+      (_) => const ProductSellerPriceSummary.error(),
+      _priceSummaryFor,
+    );
+    widget.onPriceSummaryChanged?.call(summary);
+  }
+
+  void _notifyPriceSummaryError() {
+    if (!mounted) return;
+    widget.onPriceSummaryChanged?.call(const ProductSellerPriceSummary.error());
+  }
+
+  ProductSellerPriceSummary _priceSummaryFor(
+    List<ShopProductEntity> shopProducts,
+  ) {
+    final prices =
+        _customerVisibleSellers(shopProducts)
+            .map((shopProduct) => shopProduct.price)
+            .where((price) => price.isFinite && price >= 0)
+            .toList(growable: false)
+          ..sort();
+    if (prices.isEmpty) return const ProductSellerPriceSummary.empty();
+
+    return ProductSellerPriceSummary.available(
+      minimumPrice: prices.first,
+      maximumPrice: prices.last,
+    );
+  }
+
+  List<ShopProductEntity> _customerVisibleSellers(
+    List<ShopProductEntity> shopProducts,
+  ) {
+    return shopProducts
+        .where((shopProduct) => shopProduct.isCustomerPurchasable)
+        .toList(growable: false);
   }
 
   void _retrySellers() {
     if (_isRetryInProgress) return;
 
+    widget.onPriceSummaryChanged?.call(
+      const ProductSellerPriceSummary.loading(),
+    );
     final nextFuture = _fetchSellers();
     setState(() {
       _isRetryInProgress = true;

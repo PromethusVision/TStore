@@ -19,6 +19,7 @@ import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
 
 class MockShopRepository extends Mock implements ShopRepository {}
@@ -138,6 +139,7 @@ void main() {
     TextScaler? textScaler,
     Future<void> Function()? onChangeLocationRequested,
     VoidCallback? onBrowseOtherProducts,
+    ProductSellerPriceSummaryChanged? onPriceSummaryChanged,
     ProductSellerCurrentUserIdProvider? currentUserIdProvider,
     ProductSellerChatDestinationBuilder? chatDestinationBuilder,
   }) {
@@ -157,6 +159,7 @@ void main() {
               productName: 'Deneme Ürünü',
               onChangeLocationRequested: onChangeLocationRequested,
               onBrowseOtherProducts: onBrowseOtherProducts,
+              onPriceSummaryChanged: onPriceSummaryChanged,
               currentUserIdProvider:
                   currentUserIdProvider ?? () => 'customer-1',
               chatDestinationBuilder: chatDestinationBuilder,
@@ -473,6 +476,41 @@ void main() {
       ]),
     );
   });
+
+  testWidgets(
+    'yalnız satın alınabilir mağazaların gerçek fiyat aralığını iletir',
+    (tester) async {
+      final summaries = <ProductSellerPriceSummary>[];
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer(
+        (_) async => Right([
+          seller(id: 'expensive', name: 'Pahalı Mağaza', price: 1399.99),
+          seller(id: 'cheap', name: 'Uygun Mağaza', price: 1299.99),
+          seller(
+            id: 'inactive',
+            name: 'Pasif Mağaza',
+            price: 999.99,
+            shopIsActive: false,
+          ),
+        ]),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(onPriceSummaryChanged: summaries.add),
+      );
+      await tester.pumpAndSettle();
+
+      expect(summaries, isNotEmpty);
+      expect(
+        summaries.last,
+        const ProductSellerPriceSummary.available(
+          minimumPrice: 1299.99,
+          maximumPrice: 1399.99,
+        ),
+      );
+    },
+  );
 
   testWidgets('konum hazırken başka sıralamadan en yakına döner', (
     tester,

@@ -8,6 +8,7 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/rating_and_share.dart';
 
@@ -30,6 +31,9 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
+  ProductSellerPriceSummary _sellerPriceSummary =
+      const ProductSellerPriceSummary.loading();
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +77,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     }
   }
 
+  void _updateSellerPriceSummary(ProductSellerPriceSummary summary) {
+    if (!mounted || _sellerPriceSummary == summary) return;
+    setState(() => _sellerPriceSummary = summary);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +104,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _ProductInfoCard(product: widget.product),
+                    _ProductInfoCard(
+                      product: widget.product,
+                      sellerPriceSummary: _sellerPriceSummary,
+                    ),
                     const SizedBox(height: TSizes.spaceBtwSections),
                     RatingAndShare(product: widget.product),
                     ProductMetadata(product: widget.product),
@@ -104,6 +116,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       productId: widget.product.id,
                       productName: widget.product.name,
                       currentUserIdProvider: widget.currentUserIdProvider,
+                      onPriceSummaryChanged: _updateSellerPriceSummary,
                       onBrowseOtherProducts: () {
                         Navigator.of(context).maybePop();
                       },
@@ -122,8 +135,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
 class _ProductInfoCard extends StatelessWidget {
   final ProductEntity product;
+  final ProductSellerPriceSummary sellerPriceSummary;
 
-  const _ProductInfoCard({required this.product});
+  const _ProductInfoCard({
+    required this.product,
+    required this.sellerPriceSummary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -149,23 +166,7 @@ class _ProductInfoCard extends StatelessWidget {
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: TSizes.md,
-              vertical: TSizes.sm,
-            ),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              '₺${product.effectivePrice.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
+          ProductSellerPriceSummaryView(summary: sellerPriceSummary),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             hasDescription ? description : 'Bu ürün için açıklama eklenmemiş.',
