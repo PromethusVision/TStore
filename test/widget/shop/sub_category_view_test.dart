@@ -79,6 +79,9 @@ void main() {
           categoryId: 'category-1',
           currentUserIdProvider: () => null,
           shopProductsLoader: shopProductsLoader,
+          productDestinationBuilder: (selectedProduct) => Scaffold(
+            body: Center(child: Text('Detay: ${selectedProduct.id}')),
+          ),
         ),
       ),
     );
@@ -152,10 +155,84 @@ void main() {
       expect(find.text('1.299,99 TL’den'), findsOneWidget);
       expect(find.text('999,99 TL’den'), findsNothing);
       expect(find.byType(SaleTag), findsNothing);
+      expect(find.byKey(const Key('category-summary')), findsOneWidget);
+      expect(find.text('21 ürün gösteriliyor'), findsOneWidget);
+      expect(find.byKey(const Key('category-products-grid')), findsOneWidget);
+      expect(
+        find.byKey(const Key('category-product-product-0')),
+        findsOneWidget,
+      );
 
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );
+
+  testWidgets('ürün kartının tamamı ürün detayına gider', (tester) async {
+    stubProductsState(
+      const ProductsLoaded(
+        products: [product],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(shopProductsLoader: (_) async => const Right([])),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('category-product-product-0')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Detay: product-0'), findsOneWidget);
+  });
+
+  testWidgets('yükleme durumu profesyonel iskelet görünümünü gösterir', (
+    tester,
+  ) async {
+    stubProductsState(ProductsLoading());
+
+    await tester.pumpWidget(
+      buildSubject(shopProductsLoader: (_) async => const Right([])),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const Key('category-products-loading')), findsOneWidget);
+    expect(find.text('Market'), findsWidgets);
+  });
+
+  testWidgets('boş kategori açıklayıcı boş durumu gösterir', (tester) async {
+    stubProductsState(
+      const ProductsLoaded(products: [], hasReachedMax: true, currentPage: 1),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(shopProductsLoader: (_) async => const Right([])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('category-products-empty')), findsOneWidget);
+    expect(find.text('Bu kategoride ürün bulunamadı'), findsOneWidget);
+  });
+
+  testWidgets('hata durumu yeniden deneme seçeneği sunar', (tester) async {
+    stubProductsState(const ProductsError('Bağlantı hatası'));
+
+    await tester.pumpWidget(
+      buildSubject(shopProductsLoader: (_) async => const Right([])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('category-products-error')), findsOneWidget);
+    expect(find.text('Kategori ürünleri yüklenemedi'), findsOneWidget);
+
+    await tester.tap(find.text('Tekrar Dene'));
+    await tester.pump();
+
+    verify(
+      () => productsCubit.getProducts(categoryId: 'category-1', refresh: true),
+    ).called(2);
+  });
 
   testWidgets('ürünler fiyat yüklenirken veya hata olduğunda görünür kalır', (
     tester,
