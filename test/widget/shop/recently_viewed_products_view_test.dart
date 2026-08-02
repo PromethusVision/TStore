@@ -68,7 +68,10 @@ void main() {
     await wishlistStateController.close();
   });
 
-  Widget buildSubject({VoidCallback? onExplore}) {
+  Widget buildSubject({
+    VoidCallback? onExplore,
+    RecentlyViewedProductDestinationBuilder? productDestinationBuilder,
+  }) {
     return BlocProvider<WishlistCubit>.value(
       value: wishlistCubit,
       child: MaterialApp(
@@ -76,10 +79,28 @@ void main() {
           customerId: 'customer-1',
           recentlyViewedProductsCubit: cubit,
           onExplore: onExplore,
+          productDestinationBuilder: productDestinationBuilder,
         ),
       ),
     );
   }
+
+  testWidgets('yüklenirken markalı başlığı ve iskelet kartları gösterir', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoading(),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    expect(find.byKey(const Key('recently-viewed-header')), findsOneWidget);
+    expect(find.byKey(const Key('recently-viewed-loading')), findsOneWidget);
+    verify(() => cubit.load('customer-1')).called(1);
+  });
 
   testWidgets('ürünleri kayıt sırasıyla ve güncel bilgileriyle gösterir', (
     tester,
@@ -103,7 +124,72 @@ void main() {
     expect(find.text('Örnek Marka'), findsOneWidget);
     expect(find.text('Ürünü İncele'), findsNWidgets(2));
     expect(find.byTooltip('Favorilere ekle'), findsNWidgets(2));
+    expect(
+      find.byKey(const Key('recently-viewed-customer-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('recently-viewed-products-list')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('recently-viewed-product-p1')), findsOneWidget);
     verify(() => cubit.load('customer-1')).called(1);
+  });
+
+  testWidgets('hata durumunda yeniden deneme sunar', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsError(
+        'Son görüntülediğin ürünler şu anda yüklenemiyor.',
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('recently-viewed-error')), findsOneWidget);
+    expect(find.text('Ürün geçmişin yüklenemedi'), findsOneWidget);
+
+    await tester.tap(find.text('Tekrar Dene'));
+    await tester.pump();
+
+    verify(() => cubit.load('customer-1')).called(2);
+  });
+
+  testWidgets('ürün kartı detay hedefini açar ve dönüşte geçmişi yeniler', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) => Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              key: const Key('product-detail-back'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Ürün detay hedefi'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('recently-viewed-product-p1')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ürün detay hedefi'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('product-detail-back')));
+    await tester.pumpAndSettle();
+
+    verify(() => cubit.load('customer-1')).called(2);
   });
 
   testWidgets('ürünü kalpten favorilere ekler ve kartı açmaz', (tester) async {
@@ -220,6 +306,24 @@ void main() {
     await tester.pump();
 
     expect(didRequestExplore, isTrue);
+  });
+
+  testWidgets('aşağı çekerek ürün geçmişini yeniler', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    unawaited(
+      tester.state<RefreshIndicatorState>(find.byType(RefreshIndicator)).show(),
+    );
+    await tester.pumpAndSettle();
+
+    verify(() => cubit.load('customer-1')).called(2);
   });
 
   testWidgets('geçmişi yalnızca kullanıcı onayından sonra temizler', (
