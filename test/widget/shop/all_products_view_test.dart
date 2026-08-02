@@ -790,6 +790,242 @@ void main() {
   });
 
   testWidgets(
+    'normal product list requests one page and shows the real starting price',
+    (tester) async {
+      final products = createProducts(20);
+      products[0] = products[0].copyWith(price: 150, salePrice: 100);
+      final requestedPages = <List<String>>[];
+      stubLocalState(
+        ProductsLoaded(
+          products: products,
+          hasReachedMax: false,
+          currentPage: 1,
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          shopProductsLoader: (productIds) async {
+            requestedPages.add([...productIds]);
+            return const Right([
+              ShopProductEntity(
+                id: 'listing-expensive',
+                shopId: 'shop-1',
+                productId: 'product-0',
+                price: 1399.99,
+                shop: ShopEntity(id: 'shop-1', name: 'Birinci Mağaza'),
+              ),
+              ShopProductEntity(
+                id: 'listing-cheap',
+                shopId: 'shop-2',
+                productId: 'product-0',
+                price: 1299.99,
+                shop: ShopEntity(id: 'shop-2', name: 'İkinci Mağaza'),
+              ),
+              ShopProductEntity(
+                id: 'listing-inactive',
+                shopId: 'shop-3',
+                productId: 'product-0',
+                price: 999.99,
+                shop: ShopEntity(
+                  id: 'shop-3',
+                  name: 'Pasif Mağaza',
+                  isActive: false,
+                ),
+              ),
+            ]);
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(requestedPages, hasLength(1));
+      expect(
+        requestedPages.single,
+        orderedEquals(products.map((product) => product.id)),
+      );
+      expect(find.text('1.299,99 TL’den'), findsOneWidget);
+      expect(find.text('999,99 TL’den'), findsNothing);
+      expect(find.byType(SaleTag), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'normal product list requests only new products after pagination',
+    (tester) async {
+      final states = StreamController<ProductsState>();
+      final firstPage = createProducts(20);
+      final secondPage = List.generate(
+        20,
+        (index) => featuredProduct.copyWith(
+          id: 'product-${index + 20}',
+          name: 'Product ${index + 20}',
+        ),
+      );
+      final requestedPages = <List<String>>[];
+      final firstState = ProductsLoaded(
+        products: firstPage,
+        hasReachedMax: false,
+        currentPage: 1,
+      );
+      whenListen(localProductsCubit, states.stream, initialState: firstState);
+
+      await tester.pumpWidget(
+        buildSubject(
+          shopProductsLoader: (productIds) async {
+            requestedPages.add([...productIds]);
+            return Right([
+              ShopProductEntity(
+                id: 'listing-${productIds.first}',
+                shopId: 'shop-1',
+                productId: productIds.first,
+                price: productIds.first == 'product-0' ? 120 : 220,
+                shop: const ShopEntity(id: 'shop-1', name: 'Mahalle Mağazası'),
+              ),
+            ]);
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      states.add(
+        ProductsLoaded(
+          products: [...firstPage, ...secondPage],
+          hasReachedMax: true,
+          currentPage: 2,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(requestedPages, hasLength(2));
+      expect(
+        requestedPages.first,
+        orderedEquals(firstPage.map((product) => product.id)),
+      );
+      expect(
+        requestedPages.last,
+        orderedEquals(secondPage.map((product) => product.id)),
+      );
+      expect(find.text('120,00 TL’den'), findsOneWidget);
+
+      states.add(
+        ProductsLoaded(
+          products: [...firstPage, ...secondPage],
+          hasReachedMax: true,
+          currentPage: 2,
+          isLoadingMore: true,
+        ),
+      );
+      await tester.pump();
+      expect(requestedPages, hasLength(2));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await states.close();
+    },
+  );
+
+  testWidgets('normal products stay visible while seller prices load or fail', (
+    tester,
+  ) async {
+    final priceResult = Completer<Either<String, List<ShopProductEntity>>>();
+    stubLocalState(
+      const ProductsLoaded(
+        products: [featuredProduct],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(shopProductsLoader: (_) => priceResult.future),
+    );
+    await tester.pump();
+
+    expect(find.text('Fiyat yükleniyor'), findsOneWidget);
+    expect(find.text('Populer Urun'), findsOneWidget);
+
+    priceResult.complete(const Left('Bağlantı hatası'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mağaza fiyatını gör'), findsOneWidget);
+    expect(find.text('Populer Urun'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets(
+    'late normal-list price response cannot overwrite a reordered result',
+    (tester) async {
+      final states = StreamController<ProductsState>();
+      final products = createProducts(2);
+      final oldPrice = Completer<Either<String, List<ShopProductEntity>>>();
+      final newPrice = Completer<Either<String, List<ShopProductEntity>>>();
+      whenListen(
+        localProductsCubit,
+        states.stream,
+        initialState: ProductsLoaded(
+          products: products,
+          hasReachedMax: true,
+          currentPage: 1,
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          shopProductsLoader: (productIds) => productIds.first == 'product-0'
+              ? oldPrice.future
+              : newPrice.future,
+        ),
+      );
+      await tester.pump();
+
+      states.add(
+        ProductsLoaded(
+          products: products.reversed.toList(growable: false),
+          hasReachedMax: true,
+          currentPage: 1,
+        ),
+      );
+      await tester.pump();
+
+      newPrice.complete(
+        const Right([
+          ShopProductEntity(
+            id: 'new-listing',
+            shopId: 'shop-2',
+            productId: 'product-0',
+            price: 200,
+            shop: ShopEntity(id: 'shop-2', name: 'Yeni Mağaza'),
+          ),
+        ]),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('200,00 TL’den'), findsOneWidget);
+
+      oldPrice.complete(
+        const Right([
+          ShopProductEntity(
+            id: 'old-listing',
+            shopId: 'shop-1',
+            productId: 'product-0',
+            price: 100,
+            shop: ShopEntity(id: 'shop-1', name: 'Eski Mağaza'),
+          ),
+        ]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('200,00 TL’den'), findsOneWidget);
+      expect(find.text('100,00 TL’den'), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await states.close();
+    },
+  );
+
+  testWidgets(
     'loads the next page when a loaded product list approaches the end',
     (tester) async {
       final loadMoreCompleter = Completer<void>();

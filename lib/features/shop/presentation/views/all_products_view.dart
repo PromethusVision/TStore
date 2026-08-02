@@ -305,6 +305,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         controller: _scrollController,
         products: state.products,
         currentUserIdProvider: widget.currentUserIdProvider,
+        shopProductsLoader: widget.shopProductsLoader,
       );
     }
 
@@ -317,6 +318,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         controller: _scrollController,
         products: state.products,
         currentUserIdProvider: widget.currentUserIdProvider,
+        shopProductsLoader: widget.shopProductsLoader,
         footer: _ProductsLoadMoreFooter(state: state, onRetry: _retryLoadMore),
       );
     }
@@ -729,7 +731,7 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
         final minimumPrices =
             snapshot.data?.fold(
               (_) => const <String, double>{},
-              _minimumPricesFor,
+              _minimumPurchasablePrices,
             ) ??
             const <String, double>{};
         final isPriceLoading =
@@ -748,7 +750,7 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
               product: product,
               showFavoriteAction: true,
               currentUserIdProvider: widget.currentUserIdProvider,
-              priceLabel: _priceLabel(
+              priceLabel: _sellerPriceLabel(
                 product.id,
                 minimumPrices,
                 isPriceLoading,
@@ -777,51 +779,53 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
     }
   }
 
-  Map<String, double> _minimumPricesFor(List<ShopProductEntity> shopProducts) {
-    final minimumPrices = <String, double>{};
-    for (final shopProduct in shopProducts) {
-      final price = shopProduct.price;
-      if (!shopProduct.isCustomerPurchasable || !price.isFinite || price < 0) {
-        continue;
-      }
-      final currentMinimum = minimumPrices[shopProduct.productId];
-      if (currentMinimum == null || price < currentMinimum) {
-        minimumPrices[shopProduct.productId] = price;
-      }
-    }
-    return minimumPrices;
-  }
-
-  String _priceLabel(
-    String productId,
-    Map<String, double> minimumPrices,
-    bool isPriceLoading,
-  ) {
-    if (isPriceLoading) return 'Fiyat yükleniyor';
-    final price = minimumPrices[productId];
-    if (price == null) return 'Mağaza fiyatını gör';
-    return '${_formatPrice(price)} TL’den';
-  }
-
-  String _formatPrice(double price) {
-    final parts = price.toStringAsFixed(2).split('.');
-    final integerDigits = parts.first;
-    final buffer = StringBuffer();
-    for (var index = 0; index < integerDigits.length; index++) {
-      if (index > 0 && (integerDigits.length - index) % 3 == 0) {
-        buffer.write('.');
-      }
-      buffer.write(integerDigits[index]);
-    }
-    return '$buffer,${parts.last}';
-  }
-
   String _productIdsKey(List<ProductEntity> products) {
     return products
         .take(_SearchResultProductGrid.maximumPricedProductCount)
         .map((product) => product.id)
         .join('|');
   }
+}
+
+Map<String, double> _minimumPurchasablePrices(
+  List<ShopProductEntity> shopProducts,
+) {
+  final minimumPrices = <String, double>{};
+  for (final shopProduct in shopProducts) {
+    final price = shopProduct.price;
+    if (!shopProduct.isCustomerPurchasable || !price.isFinite || price < 0) {
+      continue;
+    }
+    final currentMinimum = minimumPrices[shopProduct.productId];
+    if (currentMinimum == null || price < currentMinimum) {
+      minimumPrices[shopProduct.productId] = price;
+    }
+  }
+  return minimumPrices;
+}
+
+String _sellerPriceLabel(
+  String productId,
+  Map<String, double> minimumPrices,
+  bool isPriceLoading,
+) {
+  if (isPriceLoading) return 'Fiyat yükleniyor';
+  final price = minimumPrices[productId];
+  if (price == null) return 'Mağaza fiyatını gör';
+  return '${_formatTurkishPrice(price)} TL’den';
+}
+
+String _formatTurkishPrice(double price) {
+  final parts = price.toStringAsFixed(2).split('.');
+  final integerDigits = parts.first;
+  final buffer = StringBuffer();
+  for (var index = 0; index < integerDigits.length; index++) {
+    if (index > 0 && (integerDigits.length - index) % 3 == 0) {
+      buffer.write('.');
+    }
+    buffer.write(integerDigits[index]);
+  }
+  return '$buffer,${parts.last}';
 }
 
 class _SearchSectionTitle extends StatelessWidget {
@@ -1059,23 +1063,65 @@ class _RecentSearchesSection extends StatelessWidget {
   }
 }
 
-class _ProductsScrollView extends StatelessWidget {
+class _ProductsScrollView extends StatefulWidget {
+  static const int priceBatchSize = 20;
+
   final ScrollController controller;
   final List<ProductEntity> products;
   final String? Function()? currentUserIdProvider;
+  final SearchResultsShopProductsLoader? shopProductsLoader;
   final Widget? footer;
 
   const _ProductsScrollView({
     required this.controller,
     required this.products,
     this.currentUserIdProvider,
+    this.shopProductsLoader,
     this.footer,
   });
 
   @override
+  State<_ProductsScrollView> createState() => _ProductsScrollViewState();
+}
+
+class _ProductsScrollViewState extends State<_ProductsScrollView> {
+  final Map<String, double> _minimumPrices = <String, double>{};
+  final Set<String> _requestedProductIds = <String>{};
+  final Set<String> _loadingProductIds = <String>{};
+  var _requestGeneration = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _requestMissingPrices();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ProductsScrollView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final oldProductIds = oldWidget.products
+        .map((product) => product.id)
+        .toList(growable: false);
+    final productIds = widget.products
+        .map((product) => product.id)
+        .toList(growable: false);
+    final isAppend =
+        productIds.length >= oldProductIds.length &&
+        _hasPrefix(productIds, oldProductIds);
+    if (oldWidget.shopProductsLoader != widget.shopProductsLoader ||
+        !isAppend) {
+      _requestGeneration++;
+      _minimumPrices.clear();
+      _requestedProductIds.clear();
+      _loadingProductIds.clear();
+    }
+    _requestMissingPrices();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      controller: controller,
+      controller: widget.controller,
       slivers: [
         SliverGrid(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1084,20 +1130,92 @@ class _ProductsScrollView extends StatelessWidget {
             crossAxisSpacing: TSizes.gridViewSpacing,
             mainAxisExtent: 288,
           ),
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => VerticalProductCard(
-              product: products[index],
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final product = widget.products[index];
+            return VerticalProductCard(
+              product: product,
               showFavoriteAction: true,
-              currentUserIdProvider: currentUserIdProvider,
-            ),
-            childCount: products.length,
-          ),
+              currentUserIdProvider: widget.currentUserIdProvider,
+              priceLabel: _sellerPriceLabel(
+                product.id,
+                _minimumPrices,
+                _loadingProductIds.contains(product.id),
+              ),
+              showCatalogDiscount: false,
+            );
+          }, childCount: widget.products.length),
         ),
         SliverToBoxAdapter(
-          child: footer ?? const SizedBox(height: TSizes.defaultSpace),
+          child: widget.footer ?? const SizedBox(height: TSizes.defaultSpace),
         ),
       ],
     );
+  }
+
+  void _requestMissingPrices() {
+    final missingProductIds = widget.products
+        .map((product) => product.id)
+        .where((productId) => _requestedProductIds.add(productId))
+        .toList(growable: false);
+    if (missingProductIds.isEmpty) return;
+
+    _loadingProductIds.addAll(missingProductIds);
+    final generation = _requestGeneration;
+    for (
+      var start = 0;
+      start < missingProductIds.length;
+      start += _ProductsScrollView.priceBatchSize
+    ) {
+      final proposedEnd = start + _ProductsScrollView.priceBatchSize;
+      final end = proposedEnd < missingProductIds.length
+          ? proposedEnd
+          : missingProductIds.length;
+      unawaited(
+        _loadPrices(
+          missingProductIds.sublist(start, end),
+          generation: generation,
+        ),
+      );
+    }
+  }
+
+  Future<void> _loadPrices(
+    List<String> productIds, {
+    required int generation,
+  }) async {
+    Either<String, List<ShopProductEntity>> result;
+    try {
+      final loader = widget.shopProductsLoader;
+      result = loader != null
+          ? await loader(List.unmodifiable(productIds))
+          : await sl<GetShopProductsByProductIdsUsecase>()(
+              GetShopProductsByProductIdsParams(productIds: productIds),
+            );
+    } catch (_) {
+      result = const Left('Mağaza fiyatları yüklenemedi.');
+    }
+
+    if (!mounted || generation != _requestGeneration) return;
+    final requestedIds = productIds.toSet();
+    final loadedPrices = result.fold(
+      (_) => const <String, double>{},
+      _minimumPurchasablePrices,
+    );
+    setState(() {
+      _loadingProductIds.removeAll(productIds);
+      for (final entry in loadedPrices.entries) {
+        if (requestedIds.contains(entry.key)) {
+          _minimumPrices[entry.key] = entry.value;
+        }
+      }
+    });
+  }
+
+  bool _hasPrefix(List<String> productIds, List<String> prefix) {
+    for (var index = 0; index < prefix.length; index++) {
+      if (productIds[index] != prefix[index]) return false;
+    }
+    return true;
   }
 }
 
