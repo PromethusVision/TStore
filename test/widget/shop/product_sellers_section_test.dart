@@ -137,6 +137,7 @@ void main() {
   Widget buildSubject({
     TextScaler? textScaler,
     Future<void> Function()? onChangeLocationRequested,
+    VoidCallback? onBrowseOtherProducts,
     ProductSellerCurrentUserIdProvider? currentUserIdProvider,
     ProductSellerChatDestinationBuilder? chatDestinationBuilder,
   }) {
@@ -155,6 +156,7 @@ void main() {
               productId: 'product-1',
               productName: 'Deneme Ürünü',
               onChangeLocationRequested: onChangeLocationRequested,
+              onBrowseOtherProducts: onBrowseOtherProducts,
               currentUserIdProvider:
                   currentUserIdProvider ?? () => 'customer-1',
               chatDestinationBuilder: chatDestinationBuilder,
@@ -553,16 +555,26 @@ void main() {
   testWidgets('boş ve hatalı satıcı sonuçlarını güvenli biçimde gösterir', (
     tester,
   ) async {
+    var browseRequestCount = 0;
     when(
       () => shopRepository.getShopProductsByProduct('product-1'),
     ).thenAnswer((_) async => const Right([]));
 
-    await tester.pumpWidget(buildSubject());
+    await tester.pumpWidget(
+      buildSubject(onBrowseOtherProducts: () => browseRequestCount++),
+    );
     await tester.pumpAndSettle();
     expect(
-      find.text('Bu ürünü satan esnaf henüz listelenmiyor.'),
+      find.text('Bu ürün şu anda aktif mağazalarda bulunamadı'),
       findsOneWidget,
     );
+    expect(find.byKey(const Key('product-sellers-empty')), findsOneWidget);
+    expect(
+      find.byKey(const Key('product-sellers-browse-products')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const Key('product-sellers-browse-products')));
+    expect(browseRequestCount, 1);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
@@ -961,7 +973,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Bu ürünü satan esnaf henüz listelenmiyor.'),
+      find.text('Bu ürün şu anda aktif mağazalarda bulunamadı'),
       findsOneWidget,
     );
     expect(find.byKey(const Key('product-seller-sort-button')), findsNothing);
@@ -1044,7 +1056,7 @@ void main() {
     retryResult.complete(const Right([]));
     await tester.pumpAndSettle();
     expect(
-      find.text('Bu ürünü satan esnaf henüz listelenmiyor.'),
+      find.text('Bu ürün şu anda aktif mağazalarda bulunamadı'),
       findsOneWidget,
     );
   });

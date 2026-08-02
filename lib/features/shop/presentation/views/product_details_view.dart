@@ -6,7 +6,6 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
-import 'package:t_store/features/shop/presentation/widgets/bottom_add_to_cart.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
@@ -77,7 +76,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAddToCart(product: widget.product),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -102,17 +100,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     RatingAndShare(product: widget.product),
                     ProductMetadata(product: widget.product),
                     const SizedBox(height: TSizes.spaceBtwSections),
-                    Text(
-                      'Bu ürünü mağaza sepetine eklemek için aşağıdaki esnaflardan seçim yapın.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
                     ProductSellersSection(
                       productId: widget.product.id,
                       productName: widget.product.name,
                       currentUserIdProvider: widget.currentUserIdProvider,
+                      onBrowseOtherProducts: () {
+                        Navigator.of(context).maybePop();
+                      },
                     ),
                     const SizedBox(height: TSizes.spaceBtwSections),
                   ],

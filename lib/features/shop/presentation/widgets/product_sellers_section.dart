@@ -30,6 +30,7 @@ class ProductSellersSection extends StatefulWidget {
   final String productId;
   final String productName;
   final Future<void> Function()? onChangeLocationRequested;
+  final VoidCallback? onBrowseOtherProducts;
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
@@ -39,6 +40,7 @@ class ProductSellersSection extends StatefulWidget {
     required this.productId,
     required this.productName,
     this.onChangeLocationRequested,
+    this.onBrowseOtherProducts,
     this.currentUserIdProvider,
     this.chatDestinationBuilder,
     this.pendingProductChatStorage,
@@ -121,7 +123,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                   .toList(growable: false);
 
               if (customerVisibleShopProducts.isEmpty) {
-                return const Text('Bu ürünü satan esnaf henüz listelenmiyor.');
+                return _SellersEmptyState(
+                  onBrowseOtherProducts: widget.onBrowseOtherProducts,
+                );
               }
 
               final preferredLocation = _preferredLocation;
@@ -159,6 +163,13 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                         },
                       ),
                     ],
+                  ),
+                  const SizedBox(height: TSizes.xs),
+                  Text(
+                    'Mağazaları karşılaştırıp sepetine eklemek istediğin satıcıyı seçebilirsin.',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (preferredLocation != null) ...[
                     const SizedBox(height: TSizes.sm),
@@ -382,6 +393,59 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     if (mounted) {
       _isConflictDialogOpen = false;
     }
+  }
+}
+
+class _SellersEmptyState extends StatelessWidget {
+  final VoidCallback? onBrowseOtherProducts;
+
+  const _SellersEmptyState({required this.onBrowseOtherProducts});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      key: const Key('product-sellers-empty'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(TSizes.lg),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.storefront_outlined, size: 32, color: colorScheme.primary),
+          const SizedBox(height: TSizes.sm),
+          Text(
+            'Bu ürün şu anda aktif mağazalarda bulunamadı',
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: TSizes.xs),
+          Text(
+            'Yeni satıcılar eklendiğinde burada görünecek. Bu sırada diğer ürünlere göz atabilirsin.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          if (onBrowseOtherProducts != null) ...[
+            const SizedBox(height: TSizes.md),
+            FilledButton.tonalIcon(
+              key: const Key('product-sellers-browse-products'),
+              onPressed: onBrowseOtherProducts,
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Ürünlere dön'),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 
