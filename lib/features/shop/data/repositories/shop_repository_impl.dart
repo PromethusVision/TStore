@@ -231,6 +231,43 @@ class ShopRepositoryImpl implements ShopRepository {
   }
 
   @override
+  Future<Either<String, List<ShopProductEntity>>> getShopProductsByProductIds(
+    List<String> productIds,
+  ) async {
+    final uniqueProductIds = productIds
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    if (uniqueProductIds.isEmpty) return const Right([]);
+
+    try {
+      final response = await supabaseService.client
+          .from(SupabaseTables.shopProducts)
+          .select(_shopProductSelect)
+          .eq('is_active', true)
+          .eq('is_available', true)
+          .inFilter('product_id', uniqueProductIds)
+          .order('created_at', ascending: false);
+
+      final shopProducts = (response as List)
+          .map(
+            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      return Right(shopProducts);
+    } catch (e) {
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağaza fiyatları yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<String, List<ShopProductEntity>>> getShopProductsByShop(
     String shopId,
   ) async {

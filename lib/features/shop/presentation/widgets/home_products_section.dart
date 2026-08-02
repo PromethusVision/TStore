@@ -1,8 +1,12 @@
+import 'package:dartz/dartz.dart' hide State;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_ids_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
@@ -10,16 +14,22 @@ import 'package:t_store/features/shop/presentation/views/product_details_view.da
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 typedef HomeProductDestinationBuilder = Widget Function(ProductEntity product);
+typedef HomeShopProductsLoader =
+    Future<Either<String, List<ShopProductEntity>>> Function(
+      List<String> productIds,
+    );
 
 class HomeProductsSection extends StatelessWidget {
   const HomeProductsSection({
     super.key,
     this.destinationBuilder,
     this.currentUserIdProvider,
+    this.shopProductsLoader,
   });
 
   final HomeProductDestinationBuilder? destinationBuilder;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final HomeShopProductsLoader? shopProductsLoader;
 
   @override
   Widget build(BuildContext context) {
@@ -63,35 +73,11 @@ class HomeProductsSection extends StatelessWidget {
                 message: 'Yeni ürünler eklendiğinde burada görünecek.',
               )
             else if (state is ProductsLoaded)
-              SizedBox(
-                key: const Key('home-products-loaded'),
-                height: 190,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: state.products.length > 8
-                      ? 8
-                      : state.products.length,
-                  separatorBuilder: (_, _) =>
-                      const SizedBox(width: CustomerHomeV1Tokens.space8),
-                  itemBuilder: (context, index) {
-                    final product = state.products[index];
-                    return HomeProductCard(
-                      product: product,
-                      currentUserIdProvider: currentUserIdProvider,
-                      onTap: () => Navigator.of(context).push<void>(
-                        MaterialPageRoute<void>(
-                          builder: (_) =>
-                              destinationBuilder?.call(product) ??
-                              ProductDetailsView(
-                                product: product,
-                                currentUserIdProvider: currentUserIdProvider,
-                              ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              _HomeProductCards(
+                products: state.products.take(8).toList(growable: false),
+                destinationBuilder: destinationBuilder,
+                currentUserIdProvider: currentUserIdProvider,
+                shopProductsLoader: shopProductsLoader,
               )
             else
               const SizedBox.shrink(),
@@ -102,16 +88,137 @@ class HomeProductsSection extends StatelessWidget {
   }
 }
 
+class _HomeProductCards extends StatefulWidget {
+  final List<ProductEntity> products;
+  final HomeProductDestinationBuilder? destinationBuilder;
+  final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final HomeShopProductsLoader? shopProductsLoader;
+
+  const _HomeProductCards({
+    required this.products,
+    required this.destinationBuilder,
+    required this.currentUserIdProvider,
+    required this.shopProductsLoader,
+  });
+
+  @override
+  State<_HomeProductCards> createState() => _HomeProductCardsState();
+}
+
+class _HomeProductCardsState extends State<_HomeProductCards> {
+  late Future<Either<String, List<ShopProductEntity>>> _shopProductsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _shopProductsFuture = _loadShopProducts();
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeProductCards oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_productIdsKey(oldWidget.products) != _productIdsKey(widget.products)) {
+      _shopProductsFuture = _loadShopProducts();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Either<String, List<ShopProductEntity>>>(
+      future: _shopProductsFuture,
+      builder: (context, snapshot) {
+        final isPriceLoading =
+            snapshot.connectionState == ConnectionState.waiting;
+        final minimumPrices =
+            snapshot.data?.fold(
+              (_) => const <String, double>{},
+              _minimumPricesFor,
+            ) ??
+            const <String, double>{};
+
+        return SizedBox(
+          key: const Key('home-products-loaded'),
+          height: 190,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: widget.products.length,
+            separatorBuilder: (_, _) =>
+                const SizedBox(width: CustomerHomeV1Tokens.space8),
+            itemBuilder: (context, index) {
+              final product = widget.products[index];
+              return HomeProductCard(
+                product: product,
+                minimumShopPrice: minimumPrices[product.id],
+                isPriceLoading: isPriceLoading,
+                currentUserIdProvider: widget.currentUserIdProvider,
+                onTap: () => Navigator.of(context).push<void>(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        widget.destinationBuilder?.call(product) ??
+                        ProductDetailsView(
+                          product: product,
+                          currentUserIdProvider: widget.currentUserIdProvider,
+                        ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<Either<String, List<ShopProductEntity>>> _loadShopProducts() async {
+    final productIds = widget.products
+        .map((product) => product.id)
+        .toList(growable: false);
+    try {
+      final loader = widget.shopProductsLoader;
+      if (loader != null) return await loader(productIds);
+      return await sl<GetShopProductsByProductIdsUsecase>()(
+        GetShopProductsByProductIdsParams(productIds: productIds),
+      );
+    } catch (_) {
+      return const Left('Mağaza fiyatları yüklenemedi.');
+    }
+  }
+
+  Map<String, double> _minimumPricesFor(List<ShopProductEntity> shopProducts) {
+    final minimumPrices = <String, double>{};
+    for (final shopProduct in shopProducts) {
+      final price = shopProduct.price;
+      if (!shopProduct.isCustomerPurchasable || !price.isFinite || price < 0) {
+        continue;
+      }
+      final currentMinimum = minimumPrices[shopProduct.productId];
+      if (currentMinimum == null || price < currentMinimum) {
+        minimumPrices[shopProduct.productId] = price;
+      }
+    }
+    return minimumPrices;
+  }
+
+  String _productIdsKey(List<ProductEntity> products) {
+    return products.map((product) => product.id).join('|');
+  }
+}
+
 class HomeProductCard extends StatelessWidget {
   const HomeProductCard({
     super.key,
     required this.product,
     required this.onTap,
+    this.minimumShopPrice,
+    this.isPriceLoading = false,
     this.currentUserIdProvider,
   });
 
   final ProductEntity product;
   final VoidCallback onTap;
+  final double? minimumShopPrice;
+  final bool isPriceLoading;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
 
   @override
@@ -142,31 +249,6 @@ class HomeProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     _ProductImage(product: product),
-                    if (product.hasDiscount)
-                      Positioned(
-                        left: 6,
-                        top: 6,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: CustomerHomeV1Tokens.green,
-                            borderRadius: BorderRadius.circular(
-                              CustomerHomeV1Tokens.radiusPill,
-                            ),
-                          ),
-                          child: Text(
-                            '%${product.discountPercentage.round()} indirim',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 7,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
                     Positioned(
                       right: 5,
                       top: 5,
@@ -214,7 +296,7 @@ class HomeProductCard extends StatelessWidget {
                       ],
                       const Spacer(),
                       Text(
-                        _priceText(product.effectivePrice),
+                        _priceLabel,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -234,6 +316,13 @@ class HomeProductCard extends StatelessWidget {
     );
   }
 
+  String get _priceLabel {
+    if (isPriceLoading) return 'Fiyat yükleniyor';
+    final price = minimumShopPrice;
+    if (price == null) return 'Mağaza fiyatını gör';
+    return '${_priceText(price)}’den';
+  }
+
   String? get _secondaryText {
     final brandName = product.brandName?.trim() ?? '';
     if (brandName.isNotEmpty) return brandName;
@@ -242,7 +331,16 @@ class HomeProductCard extends StatelessWidget {
   }
 
   String _priceText(double price) {
-    return '${price.toStringAsFixed(2).replaceAll('.', ',')} TL';
+    final parts = price.toStringAsFixed(2).split('.');
+    final integerDigits = parts.first;
+    final buffer = StringBuffer();
+    for (var index = 0; index < integerDigits.length; index++) {
+      if (index > 0 && (integerDigits.length - index) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(integerDigits[index]);
+    }
+    return '$buffer,${parts.last} TL';
   }
 }
 

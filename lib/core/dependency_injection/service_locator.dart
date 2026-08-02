@@ -38,6 +38,7 @@ import 'package:t_store/features/shop/domain/usecases/get_my_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_ids_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/update_my_shop_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
@@ -230,6 +231,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => CreateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => UpdateMyShopUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByProductUsecase(sl()));
+  sl.registerLazySingleton(() => GetShopProductsByProductIdsUsecase(sl()));
   sl.registerLazySingleton(() => GetShopProductsByShopUsecase(sl()));
   sl.registerLazySingleton<CustomerLocationService>(
     () => GeolocatorCustomerLocationService(

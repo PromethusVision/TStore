@@ -32,6 +32,10 @@ abstract class ShopRepository {
     String productId,
   );
 
+  Future<Either<String, List<ShopProductEntity>>> getShopProductsByProductIds(
+    List<String> productIds,
+  );
+
   Future<Either<String, List<ShopProductEntity>>> getShopProductsByShop(
     String shopId,
   );
