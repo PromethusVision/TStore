@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_ids_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
@@ -15,6 +19,10 @@ typedef HomeSearchQuerySubmitted = void Function(String query);
 typedef HomeSearchProductSelected = void Function(ProductEntity product);
 typedef HomeSearchCategorySelected = void Function(CategoryEntity category);
 typedef HomeSearchShopSelected = void Function(ShopEntity shop);
+typedef HomeSearchShopProductsLoader =
+    Future<Either<String, List<ShopProductEntity>>> Function(
+      List<String> productIds,
+    );
 
 class HomeSearchBar extends StatefulWidget {
   const HomeSearchBar({
@@ -25,6 +33,7 @@ class HomeSearchBar extends StatefulWidget {
     required this.onCategorySelected,
     required this.onShopSelected,
     this.recentSearchesStorage,
+    this.shopProductsLoader,
     this.debounceDuration = const Duration(milliseconds: 350),
     this.minimumQueryLength = 2,
   });
@@ -35,6 +44,7 @@ class HomeSearchBar extends StatefulWidget {
   final HomeSearchCategorySelected onCategorySelected;
   final HomeSearchShopSelected onShopSelected;
   final RecentProductSearchesStorage? recentSearchesStorage;
+  final HomeSearchShopProductsLoader? shopProductsLoader;
   final Duration debounceDuration;
   final int minimumQueryLength;
 
@@ -186,6 +196,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                               onProductSelected: _selectProduct,
                               onCategorySelected: _selectCategory,
                               onShopSelected: _selectShop,
+                              shopProductsLoader: widget.shopProductsLoader,
                             ),
                           ),
                   )
@@ -472,7 +483,7 @@ class _RecentSearchesCard extends StatelessWidget {
   }
 }
 
-class _SuggestionsCard extends StatelessWidget {
+class _SuggestionsCard extends StatefulWidget {
   const _SuggestionsCard({
     required this.state,
     required this.query,
@@ -482,6 +493,7 @@ class _SuggestionsCard extends StatelessWidget {
     required this.onProductSelected,
     required this.onCategorySelected,
     required this.onShopSelected,
+    required this.shopProductsLoader,
   });
 
   static const int _maximumProductSuggestions = 3;
@@ -496,9 +508,66 @@ class _SuggestionsCard extends StatelessWidget {
   final HomeSearchProductSelected onProductSelected;
   final HomeSearchCategorySelected onCategorySelected;
   final HomeSearchShopSelected onShopSelected;
+  final HomeSearchShopProductsLoader? shopProductsLoader;
+
+  @override
+  State<_SuggestionsCard> createState() => _SuggestionsCardState();
+}
+
+class _SuggestionsCardState extends State<_SuggestionsCard> {
+  Future<Either<String, List<ShopProductEntity>>>? _shopProductsFuture;
+  String _requestedProductIdsKey = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshShopProducts();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SuggestionsCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final productIdsKey = _productIds.join('|');
+    if (productIdsKey != _requestedProductIdsKey ||
+        oldWidget.shopProductsLoader != widget.shopProductsLoader) {
+      _refreshShopProducts();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final future = _shopProductsFuture;
+    if (future == null) {
+      return _buildCard(
+        context,
+        minimumPrices: const {},
+        isPriceLoading: false,
+      );
+    }
+
+    return FutureBuilder<Either<String, List<ShopProductEntity>>>(
+      future: future,
+      builder: (context, snapshot) {
+        final minimumPrices =
+            snapshot.data?.fold(
+              (_) => const <String, double>{},
+              _minimumPricesFor,
+            ) ??
+            const <String, double>{};
+        return _buildCard(
+          context,
+          minimumPrices: minimumPrices,
+          isPriceLoading: snapshot.connectionState == ConnectionState.waiting,
+        );
+      },
+    );
+  }
+
+  Widget _buildCard(
+    BuildContext context, {
+    required Map<String, double> minimumPrices,
+    required bool isPriceLoading,
+  }) {
     return Material(
       key: const Key('home-search-suggestions'),
       color: Colors.white,
@@ -508,17 +577,25 @@ class _SuggestionsCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 360),
-        child: _buildContent(context),
+        child: _buildContent(
+          context,
+          minimumPrices: minimumPrices,
+          isPriceLoading: isPriceLoading,
+        ),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    if (isDebouncing ||
-        state is CustomerSearchInitial ||
-        state is CustomerSearchLoading ||
-        state is CustomerSearchLoaded &&
-            (state as CustomerSearchLoaded).query != query) {
+  Widget _buildContent(
+    BuildContext context, {
+    required Map<String, double> minimumPrices,
+    required bool isPriceLoading,
+  }) {
+    if (widget.isDebouncing ||
+        widget.state is CustomerSearchInitial ||
+        widget.state is CustomerSearchLoading ||
+        widget.state is CustomerSearchLoaded &&
+            (widget.state as CustomerSearchLoaded).query != widget.query) {
       return const _SuggestionStatus(
         key: Key('home-search-suggestions-loading'),
         icon: SizedBox(
@@ -530,35 +607,35 @@ class _SuggestionsCard extends StatelessWidget {
       );
     }
 
-    if (state is CustomerSearchError) {
+    if (widget.state is CustomerSearchError) {
       return _SuggestionStatus(
         key: const Key('home-search-suggestions-error'),
         icon: const Icon(Icons.cloud_off_outlined),
         message: 'Öneriler yüklenemedi.',
         actionLabel: 'Tekrar Dene',
-        onAction: onRetry,
+        onAction: widget.onRetry,
       );
     }
 
-    final loaded = state as CustomerSearchLoaded;
+    final loaded = widget.state as CustomerSearchLoaded;
     if (loaded.isEmpty) {
       return _SuggestionStatus(
         key: const Key('home-search-suggestions-empty'),
         icon: const Icon(Icons.search_off_rounded),
         message: 'Bu aramayla eşleşen öneri bulunamadı.',
         actionLabel: 'Tüm sonuçları gör',
-        onAction: onViewAll,
+        onAction: widget.onViewAll,
       );
     }
 
     final categories = loaded.categories
-        .take(_maximumCategorySuggestions)
+        .take(_SuggestionsCard._maximumCategorySuggestions)
         .toList(growable: false);
     final products = loaded.products
-        .take(_maximumProductSuggestions)
+        .take(_SuggestionsCard._maximumProductSuggestions)
         .toList(growable: false);
     final shops = loaded.shops
-        .take(_maximumShopSuggestions)
+        .take(_SuggestionsCard._maximumShopSuggestions)
         .toList(growable: false);
 
     return ListView(
@@ -576,7 +653,7 @@ class _SuggestionsCard extends StatelessWidget {
                 category.name,
               ),
               subtitle: 'Kategori',
-              onTap: () => onCategorySelected(category),
+              onTap: () => widget.onCategorySelected(category),
             ),
         ],
         if (products.isNotEmpty) ...[
@@ -586,9 +663,8 @@ class _SuggestionsCard extends StatelessWidget {
               key: ValueKey('home-product-suggestion-${product.id}'),
               icon: Icons.inventory_2_outlined,
               title: product.name,
-              subtitle:
-                  '${product.effectivePrice.toStringAsFixed(2).replaceAll('.', ',')} TL',
-              onTap: () => onProductSelected(product),
+              subtitle: _priceLabel(product.id, minimumPrices, isPriceLoading),
+              onTap: () => widget.onProductSelected(product),
             ),
         ],
         if (shops.isNotEmpty) ...[
@@ -601,18 +677,91 @@ class _SuggestionsCard extends StatelessWidget {
               subtitle: shop.address?.trim().isNotEmpty == true
                   ? shop.address!.trim()
                   : 'Mağaza profilini görüntüle',
-              onTap: () => onShopSelected(shop),
+              onTap: () => widget.onShopSelected(shop),
             ),
         ],
         const Divider(height: 1),
         TextButton.icon(
           key: const Key('view-all-home-search-results'),
-          onPressed: onViewAll,
+          onPressed: widget.onViewAll,
           icon: const Icon(Icons.search_rounded, size: 18),
-          label: Text('“$query” için tüm sonuçları gör'),
+          label: Text('“${widget.query}” için tüm sonuçları gör'),
         ),
       ],
     );
+  }
+
+  List<String> get _productIds {
+    if (widget.isDebouncing || widget.state is! CustomerSearchLoaded) {
+      return const [];
+    }
+    final loaded = widget.state as CustomerSearchLoaded;
+    if (loaded.query != widget.query) return const [];
+    return loaded.products
+        .take(_SuggestionsCard._maximumProductSuggestions)
+        .map((product) => product.id)
+        .toList(growable: false);
+  }
+
+  void _refreshShopProducts() {
+    final productIds = _productIds;
+    _requestedProductIdsKey = productIds.join('|');
+    _shopProductsFuture = productIds.isEmpty
+        ? null
+        : _loadShopProducts(productIds);
+  }
+
+  Future<Either<String, List<ShopProductEntity>>> _loadShopProducts(
+    List<String> productIds,
+  ) async {
+    try {
+      final loader = widget.shopProductsLoader;
+      if (loader != null) return await loader(productIds);
+      return await sl<GetShopProductsByProductIdsUsecase>()(
+        GetShopProductsByProductIdsParams(productIds: productIds),
+      );
+    } catch (_) {
+      return const Left('Mağaza fiyatları yüklenemedi.');
+    }
+  }
+
+  Map<String, double> _minimumPricesFor(List<ShopProductEntity> shopProducts) {
+    final minimumPrices = <String, double>{};
+    for (final shopProduct in shopProducts) {
+      final price = shopProduct.price;
+      if (!shopProduct.isCustomerPurchasable || !price.isFinite || price < 0) {
+        continue;
+      }
+      final currentMinimum = minimumPrices[shopProduct.productId];
+      if (currentMinimum == null || price < currentMinimum) {
+        minimumPrices[shopProduct.productId] = price;
+      }
+    }
+    return minimumPrices;
+  }
+
+  String _priceLabel(
+    String productId,
+    Map<String, double> minimumPrices,
+    bool isPriceLoading,
+  ) {
+    if (isPriceLoading) return 'Fiyat yükleniyor';
+    final price = minimumPrices[productId];
+    if (price == null) return 'Mağaza fiyatını gör';
+    return '${_formatPrice(price)} TL’den';
+  }
+
+  String _formatPrice(double price) {
+    final parts = price.toStringAsFixed(2).split('.');
+    final integerDigits = parts.first;
+    final buffer = StringBuffer();
+    for (var index = 0; index < integerDigits.length; index++) {
+      if (index > 0 && (integerDigits.length - index) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(integerDigits[index]);
+    }
+    return '$buffer,${parts.last}';
   }
 }
 
