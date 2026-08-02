@@ -7,6 +7,7 @@ import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
@@ -253,6 +254,26 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     });
 
+    testWidgets('uses the customer UI shell and branded content cards', (
+      tester,
+    ) async {
+      await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
+
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      final content = tester.widget<ConstrainedBox>(
+        find.byKey(const Key('nearby-customer-content')),
+      );
+
+      expect(scaffold.backgroundColor, CustomerHomeV1Tokens.cream);
+      expect(content.constraints.maxWidth, 430);
+      expect(find.byKey(const Key('nearby-header')), findsOneWidget);
+      expect(find.byKey(const Key('nearby-location-card')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nearby-shop-shop-1')), findsOneWidget);
+      expect(find.text('1 mağaza'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
     testWidgets('does not request location when the nearby tab opens', (
       tester,
     ) async {
@@ -265,19 +286,22 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     });
 
-    testWidgets('explains privacy before asking for location', (tester) async {
+    testWidgets('shows a concise explanation before asking for location', (
+      tester,
+    ) async {
       await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
 
       await tester.tap(find.byKey(const Key('nearby-location-action')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Konumunu kullanalım mı?'), findsOneWidget);
+      expect(find.text('Konumunu kullan'), findsOneWidget);
       expect(
-        find.textContaining('konumunu bir kez kullanırız'),
+        find.text(
+          'Sana en yakın mağazaları gösterebilmemiz için konum izni ver.',
+        ),
         findsOneWidget,
       );
-      expect(find.textContaining('hesabına kaydetmeyiz'), findsOneWidget);
-      expect(find.textContaining('arka planda takip etmeyiz'), findsOneWidget);
+      expect(find.text('İzin Ver'), findsOneWidget);
       verifyNever(() => nearbyShopsCubit.useCurrentLocation());
 
       await tester.tap(find.byKey(const Key('nearby-location-cancel')));
