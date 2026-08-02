@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
 enum ProductSellerPriceSummaryStatus { loading, available, empty, error }
@@ -57,7 +58,6 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final content = _contentFor(summary);
 
     return Container(
@@ -65,8 +65,11 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(TSizes.md),
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(10),
+        color: CustomerHomeV1Tokens.mint,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        border: Border.all(
+          color: CustomerHomeV1Tokens.petrol.withValues(alpha: 0.12),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +80,14 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
               child: SizedBox(
                 width: 18,
                 height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: CustomerHomeV1Tokens.petrol,
+                ),
               ),
             )
           else
-            Icon(content.icon, color: colorScheme.onPrimaryContainer),
+            Icon(content.icon, color: CustomerHomeV1Tokens.petrol),
           const SizedBox(width: TSizes.sm),
           Expanded(
             child: Column(
@@ -90,7 +96,7 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
                 Text(
                   content.title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
+                    color: CustomerHomeV1Tokens.petrol,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -100,7 +106,7 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
                     content.priceText!,
                     key: const Key('product-seller-price-value'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
+                      color: CustomerHomeV1Tokens.navy,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -110,7 +116,7 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
                   Text(
                     content.description!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
+                      color: CustomerHomeV1Tokens.muted,
                     ),
                   ),
                 ],

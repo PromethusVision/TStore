@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
-import 'package:t_store/core/common/widgets/app_bar.dart';
-import 'package:t_store/core/common/widgets/curved_widget.dart';
-import 'package:t_store/core/utils/constants/colors.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
-import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/widgets/other_same_products_list.dart';
 import 'package:t_store/features/shop/presentation/widgets/selected_product_image.dart';
@@ -22,32 +18,62 @@ class ProductImageSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
     final productImages = _productImages;
 
-    return CurvedWidget(
-      child: Container(
-        decoration: BoxDecoration(
-          color: dark ? TColors.darkGrey : TColors.light,
-        ),
-        child: Stack(
-          children: [
-            SelectedProductImage(image: productImages.first),
+    return Container(
+      key: const Key('product-details-media'),
+      height: 340,
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.mint,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius24),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: SelectedProductImage(
+              image: productImages.first,
+              height: 340,
+              imageExtent: 245,
+              padding: const EdgeInsets.fromLTRB(30, 38, 30, 54),
+            ),
+          ),
+          if (productImages.length > 1)
             OtherSameProductsList(images: productImages),
-            CustomAppBar(
-              appBarModel: AppBarModel(
-                hasArrowBack: true,
-                actions: [
-                  ProductFavoriteButton(
-                    productId: product.id,
-                    keyPrefix: 'product-details-favorite',
-                    currentUserIdProvider: currentUserIdProvider,
-                  ),
-                ],
+          Positioned(
+            left: 12,
+            top: 12,
+            child: Material(
+              color: CustomerHomeV1Tokens.surface,
+              shape: const CircleBorder(),
+              child: IconButton(
+                key: const Key('product-details-back-button'),
+                tooltip: 'Geri',
+                onPressed: () => Navigator.of(context).maybePop(),
+                icon: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: CustomerHomeV1Tokens.navy,
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            right: 12,
+            top: 12,
+            child: ProductFavoriteButton(
+              productId: product.id,
+              keyPrefix: 'product-details-favorite',
+              currentUserIdProvider: currentUserIdProvider,
+              height: 44,
+              width: 44,
+              iconSize: 21,
+              backgroundColor: CustomerHomeV1Tokens.surface,
+            ),
+          ),
+        ],
       ),
     );
   }

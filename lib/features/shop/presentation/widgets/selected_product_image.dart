@@ -6,24 +6,34 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 
 class SelectedProductImage extends StatelessWidget {
-  const SelectedProductImage({super.key, required this.image});
+  const SelectedProductImage({
+    super.key,
+    required this.image,
+    this.height = 400,
+    this.imageExtent = 300,
+    this.padding = const EdgeInsets.all(TSizes.productImageRadius * 3),
+  });
 
   final String image;
+  final double height;
+  final double imageExtent;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     final displayImage = image.trim().isEmpty ? TImages.productImage13 : image;
 
     return SizedBox(
-      height: 400,
+      height: height,
+      width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.all(TSizes.productImageRadius * 3),
+        padding: padding,
         child: Center(
           child: RoundedImage(
             roundedImageModel: RoundedImageModel(
               image: displayImage,
-              width: 300,
-              height: 300,
+              width: imageExtent,
+              height: imageExtent,
               backgroundColor: Colors.transparent,
               isNetworkImage: _isNetworkImage(displayImage),
               errorWidget: const ProductImageFallback(

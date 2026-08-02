@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
@@ -84,48 +84,57 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    final compactLayout = MediaQuery.sizeOf(context).width < 360;
     return Scaffold(
+      backgroundColor: CustomerHomeV1Tokens.cream,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ProductImageSlider(
-                product: widget.product,
-                currentUserIdProvider: widget.currentUserIdProvider,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  TSizes.defaultSpace,
-                  0,
-                  TSizes.defaultSpace,
-                  TSizes.defaultSpace,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ProductInfoCard(
-                      product: widget.product,
-                      sellerPriceSummary: _sellerPriceSummary,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: SingleChildScrollView(
+              key: const Key('product-details-scroll'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProductImageSlider(
+                    product: widget.product,
+                    currentUserIdProvider: widget.currentUserIdProvider,
+                  ),
+                  Padding(
+                    key: const Key('product-details-content'),
+                    padding: EdgeInsets.fromLTRB(
+                      compactLayout ? 8 : 16,
+                      16,
+                      compactLayout ? 8 : 16,
+                      32,
                     ),
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    RatingAndShare(product: widget.product),
-                    ProductMetadata(product: widget.product),
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    ProductSellersSection(
-                      productId: widget.product.id,
-                      productName: widget.product.name,
-                      currentUserIdProvider: widget.currentUserIdProvider,
-                      onPriceSummaryChanged: _updateSellerPriceSummary,
-                      onBrowseOtherProducts: () {
-                        Navigator.of(context).maybePop();
-                      },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _ProductInfoCard(
+                          product: widget.product,
+                          sellerPriceSummary: _sellerPriceSummary,
+                        ),
+                        const SizedBox(height: CustomerHomeV1Tokens.space12),
+                        _ProductFactsCard(product: widget.product),
+                        const SizedBox(height: CustomerHomeV1Tokens.space16),
+                        _ProductSellersCard(
+                          child: ProductSellersSection(
+                            productId: widget.product.id,
+                            productName: widget.product.name,
+                            currentUserIdProvider: widget.currentUserIdProvider,
+                            onPriceSummaryChanged: _updateSellerPriceSummary,
+                            onBrowseOtherProducts: () {
+                              Navigator.of(context).maybePop();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -144,40 +153,113 @@ class _ProductInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final description = product.description?.trim();
     final hasDescription = description != null && description.isNotEmpty;
 
     return Container(
+      key: const Key('product-details-info-card'),
       width: double.infinity,
-      padding: const EdgeInsets.all(TSizes.md),
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outlineVariant),
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             product.name,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontSize: 22,
+              height: 1.15,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.35,
+            ),
           ),
-          const SizedBox(height: TSizes.spaceBtwItems),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
           ProductSellerPriceSummaryView(summary: sellerPriceSummary),
-          const SizedBox(height: TSizes.spaceBtwItems),
+          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          const Text(
+            'Ürün hakkında',
+            style: TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space8),
           Text(
             hasDescription ? description : 'Bu ürün için açıklama eklenmemiş.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: TextStyle(
               color: hasDescription
-                  ? colorScheme.onSurface
-                  : colorScheme.onSurfaceVariant,
+                  ? CustomerHomeV1Tokens.navy
+                  : CustomerHomeV1Tokens.muted,
+              fontSize: 12,
+              height: 1.45,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProductFactsCard extends StatelessWidget {
+  const _ProductFactsCard({required this.product});
+
+  final ProductEntity product;
+
+  @override
+  Widget build(BuildContext context) {
+    final compactLayout = MediaQuery.sizeOf(context).width < 360;
+    return Container(
+      key: const Key('product-details-facts-card'),
+      width: double.infinity,
+      padding: EdgeInsets.all(compactLayout ? 4 : 16),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RatingAndShare(product: product),
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: CustomerHomeV1Tokens.space12,
+            ),
+            child: Divider(height: 1, color: CustomerHomeV1Tokens.border),
+          ),
+          ProductMetadata(product: product),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProductSellersCard extends StatelessWidget {
+  const _ProductSellersCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('product-details-sellers-card'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: child,
     );
   }
 }
