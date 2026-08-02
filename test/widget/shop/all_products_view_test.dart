@@ -211,10 +211,68 @@ void main() {
       verify(() => localProductsCubit.getProducts(refresh: true)).called(1);
       verifyNever(() => parentProductsCubit.getProducts(refresh: true));
       expect(parentProductsCubit.state, same(parentFeaturedState));
+      expect(
+        find.byKey(const Key('all-products-search-field')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('all-products-loading')), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );
+
+  testWidgets('empty product list shows the branded empty state', (
+    tester,
+  ) async {
+    stubLocalState(
+      const ProductsLoaded(products: [], hasReachedMax: true, currentPage: 1),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('all-products-empty')), findsOneWidget);
+    expect(find.text('Henüz ürün bulunmuyor'), findsOneWidget);
+  });
+
+  testWidgets('product load error offers a retry action', (tester) async {
+    stubLocalState(const ProductsError('Bağlantı hatası'));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('all-products-error')), findsOneWidget);
+    expect(find.text('Ürünler yüklenemedi'), findsOneWidget);
+
+    await tester.tap(find.text('Tekrar Dene'));
+    await tester.pump();
+
+    verify(() => localProductsCubit.getProducts(refresh: true)).called(2);
+  });
+
+  testWidgets('mobile width keeps the product grid free of overflow', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    stubLocalState(
+      ProductsLoaded(
+        products: createProducts(4),
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('all-products-grid')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'searches after the debounce with the local cubit without changing the parent product state',
@@ -847,6 +905,13 @@ void main() {
       expect(find.text('1.299,99 TL’den'), findsOneWidget);
       expect(find.text('999,99 TL’den'), findsNothing);
       expect(find.byType(SaleTag), findsNothing);
+      expect(find.byKey(const Key('all-products-summary')), findsOneWidget);
+      expect(find.text('20 ürün gösteriliyor'), findsOneWidget);
+      expect(find.byKey(const Key('all-products-grid')), findsOneWidget);
+      expect(
+        find.byKey(const Key('all-products-product-product-0')),
+        findsOneWidget,
+      );
 
       await tester.pumpWidget(const SizedBox.shrink());
     },
