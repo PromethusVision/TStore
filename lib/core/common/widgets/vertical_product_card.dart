@@ -31,6 +31,8 @@ class VerticalProductCard extends StatelessWidget {
     this.favoriteActionLoading = false,
     this.onFavoritePressed,
     this.currentUserIdProvider,
+    this.priceLabel,
+    this.showCatalogDiscount = true,
   });
 
   final ProductEntity product;
@@ -38,6 +40,8 @@ class VerticalProductCard extends StatelessWidget {
   final bool favoriteActionLoading;
   final VoidCallback? onFavoritePressed;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final String? priceLabel;
+  final bool showCatalogDiscount;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +95,7 @@ class VerticalProductCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        if (product.hasDiscount)
+                        if (showCatalogDiscount && product.hasDiscount)
                           SaleTag(
                             discountPercentage: product.discountPercentage,
                           ),
@@ -180,13 +184,26 @@ class VerticalProductCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: ProductPriceText(
-                          productPriceTextModel: ProductPriceTextModel(
-                            price: product.effectivePrice.toStringAsFixed(2),
-                            maxLines: 1,
-                            smallSize: true,
-                          ),
-                        ),
+                        child: priceLabel == null
+                            ? ProductPriceText(
+                                productPriceTextModel: ProductPriceTextModel(
+                                  price: product.effectivePrice.toStringAsFixed(
+                                    2,
+                                  ),
+                                  maxLines: 1,
+                                  smallSize: true,
+                                ),
+                              )
+                            : Text(
+                                priceLabel!,
+                                key: Key(
+                                  'vertical-product-price-${product.id}',
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                              ),
                       ),
                       const _DetailsBadge(),
                     ],

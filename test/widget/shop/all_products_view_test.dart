@@ -1,14 +1,17 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/common/widgets/sale_tag.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
@@ -138,7 +141,11 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject({bool isSearchMode = false, String initialQuery = ''}) {
+  Widget buildSubject({
+    bool isSearchMode = false,
+    String initialQuery = '',
+    SearchResultsShopProductsLoader? shopProductsLoader,
+  }) {
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -151,6 +158,8 @@ void main() {
           initialQuery: initialQuery,
           recentSearchesStorage: recentSearchesStorage,
           customerSearchCubit: customerSearchCubit,
+          shopProductsLoader:
+              shopProductsLoader ?? (_) async => const Right([]),
           categoryDestinationBuilder: (category) => Scaffold(
             appBar: AppBar(),
             body: Text('Kategori: ${category.name}'),
@@ -457,6 +466,214 @@ void main() {
       expect(find.text('Mağaza: Mahalle Market'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'unified search requests at most thirty products and shows the real starting price',
+    (tester) async {
+      final searchProducts = List.generate(
+        31,
+        (index) => ProductEntity(
+          id: 'search-product-$index',
+          name: 'Search Product $index',
+          price: 150,
+          salePrice: 100,
+          categoryId: 'category-1',
+          stock: 1,
+          images: const [],
+        ),
+      );
+      List<String>? requestedProductIds;
+      stubCustomerSearchState(
+        CustomerSearchLoaded(
+          query: 'market',
+          products: searchProducts,
+          categories: const [],
+          shops: const [],
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          isSearchMode: true,
+          shopProductsLoader: (productIds) async {
+            requestedProductIds = productIds;
+            return const Right([
+              ShopProductEntity(
+                id: 'listing-expensive',
+                shopId: 'shop-1',
+                productId: 'search-product-0',
+                price: 1399.99,
+                shop: ShopEntity(id: 'shop-1', name: 'Birinci Mağaza'),
+              ),
+              ShopProductEntity(
+                id: 'listing-cheap',
+                shopId: 'shop-2',
+                productId: 'search-product-0',
+                price: 1299.99,
+                shop: ShopEntity(id: 'shop-2', name: 'İkinci Mağaza'),
+              ),
+              ShopProductEntity(
+                id: 'listing-inactive',
+                shopId: 'shop-3',
+                productId: 'search-product-0',
+                price: 999.99,
+                shop: ShopEntity(
+                  id: 'shop-3',
+                  name: 'Pasif Mağaza',
+                  isActive: false,
+                ),
+              ),
+            ]);
+          },
+        ),
+      );
+      await tester.pump();
+      await tester.enterText(find.byType(TextFormField), 'market');
+      await tester.pumpAndSettle();
+
+      expect(requestedProductIds, hasLength(30));
+      expect(
+        requestedProductIds,
+        orderedEquals(searchProducts.take(30).map((product) => product.id)),
+      );
+      expect(find.text('1.299,99 TL’den'), findsOneWidget);
+      expect(find.text('999,99 TL’den'), findsNothing);
+      expect(find.byType(SaleTag), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'keeps unified search products visible while prices load or fail',
+    (tester) async {
+      final priceResult = Completer<Either<String, List<ShopProductEntity>>>();
+      stubCustomerSearchState(
+        const CustomerSearchLoaded(
+          query: 'market',
+          products: [featuredProduct],
+          categories: [],
+          shops: [],
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          isSearchMode: true,
+          shopProductsLoader: (_) => priceResult.future,
+        ),
+      );
+      await tester.pump();
+      await tester.enterText(find.byType(TextFormField), 'market');
+      await tester.pump();
+
+      expect(find.text('Fiyat yükleniyor'), findsOneWidget);
+      expect(find.text('Populer Urun'), findsOneWidget);
+
+      priceResult.complete(const Left('Bağlantı hatası'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mağaza fiyatını gör'), findsOneWidget);
+      expect(find.text('Populer Urun'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'does not carry a late price response into newer unified search results',
+    (tester) async {
+      const newerProduct = ProductEntity(
+        id: 'new-product',
+        name: 'Yeni Ürün',
+        price: 250,
+        categoryId: 'category-1',
+        stock: 1,
+        images: [],
+      );
+      final states = StreamController<CustomerSearchState>();
+      final oldPrice = Completer<Either<String, List<ShopProductEntity>>>();
+      final newPrice = Completer<Either<String, List<ShopProductEntity>>>();
+      whenListen(
+        customerSearchCubit,
+        states.stream,
+        initialState: CustomerSearchInitial(),
+      );
+      when(() => customerSearchCubit.search('eski')).thenAnswer((_) async {
+        states.add(
+          const CustomerSearchLoaded(
+            query: 'eski',
+            products: [featuredProduct],
+            categories: [],
+            shops: [],
+          ),
+        );
+      });
+      when(() => customerSearchCubit.search('yeni')).thenAnswer((_) async {
+        states.add(
+          const CustomerSearchLoaded(
+            query: 'yeni',
+            products: [newerProduct],
+            categories: [],
+            shops: [],
+          ),
+        );
+      });
+
+      await tester.pumpWidget(
+        buildSubject(
+          isSearchMode: true,
+          shopProductsLoader: (productIds) =>
+              productIds.single == featuredProduct.id
+              ? oldPrice.future
+              : newPrice.future,
+        ),
+      );
+      await tester.pump();
+      await tester.enterText(find.byType(TextFormField), 'eski');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextFormField), 'yeni');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      newPrice.complete(
+        const Right([
+          ShopProductEntity(
+            id: 'new-listing',
+            shopId: 'shop-2',
+            productId: 'new-product',
+            price: 200,
+            shop: ShopEntity(id: 'shop-2', name: 'Yeni Mağaza'),
+          ),
+        ]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('200,00 TL’den'), findsOneWidget);
+      expect(find.text('Yeni Ürün'), findsOneWidget);
+
+      oldPrice.complete(
+        const Right([
+          ShopProductEntity(
+            id: 'old-listing',
+            shopId: 'shop-1',
+            productId: 'featured-product',
+            price: 100,
+            shop: ShopEntity(id: 'shop-1', name: 'Eski Mağaza'),
+          ),
+        ]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('200,00 TL’den'), findsOneWidget);
+      expect(find.text('100,00 TL’den'), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await states.close();
     },
   );
 

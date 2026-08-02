@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
@@ -10,7 +11,9 @@ import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
+import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_ids_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/customer_search_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
@@ -22,6 +25,10 @@ import 'package:t_store/features/shop/presentation/views/sub_category_view.dart'
 typedef CustomerCategoryDestinationBuilder =
     Widget Function(CategoryEntity category);
 typedef CustomerShopDestinationBuilder = Widget Function(ShopEntity shop);
+typedef SearchResultsShopProductsLoader =
+    Future<Either<String, List<ShopProductEntity>>> Function(
+      List<String> productIds,
+    );
 
 class AllProductsView extends StatelessWidget {
   const AllProductsView({
@@ -34,6 +41,7 @@ class AllProductsView extends StatelessWidget {
     this.customerSearchCubit,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.shopProductsLoader,
   });
 
   final bool autoFocusSearch;
@@ -44,6 +52,7 @@ class AllProductsView extends StatelessWidget {
   final CustomerSearchCubit? customerSearchCubit;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +65,7 @@ class AllProductsView extends StatelessWidget {
           recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
       categoryDestinationBuilder: categoryDestinationBuilder,
       shopDestinationBuilder: shopDestinationBuilder,
+      shopProductsLoader: shopProductsLoader,
     );
 
     if (!isSearchMode) {
@@ -86,6 +96,7 @@ class _AllProductsContent extends StatefulWidget {
     this.currentUserIdProvider,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.shopProductsLoader,
   });
 
   final bool autoFocusSearch;
@@ -95,6 +106,7 @@ class _AllProductsContent extends StatefulWidget {
   final RecentProductSearchesStorage recentSearchesStorage;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
   State<_AllProductsContent> createState() => _AllProductsContentState();
@@ -259,6 +271,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         currentUserIdProvider: widget.currentUserIdProvider,
         categoryDestinationBuilder: widget.categoryDestinationBuilder,
         shopDestinationBuilder: widget.shopDestinationBuilder,
+        shopProductsLoader: widget.shopProductsLoader,
       );
     }
 
@@ -538,6 +551,7 @@ class _CustomerSearchResultsView extends StatelessWidget {
     this.currentUserIdProvider,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.shopProductsLoader,
   });
 
   final ScrollController controller;
@@ -545,6 +559,7 @@ class _CustomerSearchResultsView extends StatelessWidget {
   final String? Function()? currentUserIdProvider;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
   Widget build(BuildContext context) {
@@ -632,21 +647,10 @@ class _CustomerSearchResultsView extends StatelessWidget {
               title: 'Ürünler',
             ),
           ),
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: TSizes.gridViewSpacing,
-              crossAxisSpacing: TSizes.gridViewSpacing,
-              mainAxisExtent: 288,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => VerticalProductCard(
-                product: state.products[index],
-                showFavoriteAction: true,
-                currentUserIdProvider: currentUserIdProvider,
-              ),
-              childCount: state.products.length,
-            ),
+          _SearchResultProductGrid(
+            products: state.products,
+            currentUserIdProvider: currentUserIdProvider,
+            shopProductsLoader: shopProductsLoader,
           ),
         ],
         const SliverToBoxAdapter(child: SizedBox(height: TSizes.defaultSpace)),
@@ -678,6 +682,145 @@ class _CustomerSearchResultsView extends StatelessWidget {
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => destination));
+  }
+}
+
+class _SearchResultProductGrid extends StatefulWidget {
+  const _SearchResultProductGrid({
+    required this.products,
+    required this.currentUserIdProvider,
+    required this.shopProductsLoader,
+  });
+
+  static const int maximumPricedProductCount = 30;
+
+  final List<ProductEntity> products;
+  final String? Function()? currentUserIdProvider;
+  final SearchResultsShopProductsLoader? shopProductsLoader;
+
+  @override
+  State<_SearchResultProductGrid> createState() =>
+      _SearchResultProductGridState();
+}
+
+class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
+  late Future<Either<String, List<ShopProductEntity>>> _shopProductsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _shopProductsFuture = _loadShopProducts();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SearchResultProductGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_productIdsKey(oldWidget.products) != _productIdsKey(widget.products) ||
+        oldWidget.shopProductsLoader != widget.shopProductsLoader) {
+      _shopProductsFuture = _loadShopProducts();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Either<String, List<ShopProductEntity>>>(
+      future: _shopProductsFuture,
+      builder: (context, snapshot) {
+        final minimumPrices =
+            snapshot.data?.fold(
+              (_) => const <String, double>{},
+              _minimumPricesFor,
+            ) ??
+            const <String, double>{};
+        final isPriceLoading =
+            snapshot.connectionState == ConnectionState.waiting;
+
+        return SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: TSizes.gridViewSpacing,
+            crossAxisSpacing: TSizes.gridViewSpacing,
+            mainAxisExtent: 288,
+          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final product = widget.products[index];
+            return VerticalProductCard(
+              product: product,
+              showFavoriteAction: true,
+              currentUserIdProvider: widget.currentUserIdProvider,
+              priceLabel: _priceLabel(
+                product.id,
+                minimumPrices,
+                isPriceLoading,
+              ),
+              showCatalogDiscount: false,
+            );
+          }, childCount: widget.products.length),
+        );
+      },
+    );
+  }
+
+  Future<Either<String, List<ShopProductEntity>>> _loadShopProducts() async {
+    final productIds = widget.products
+        .take(_SearchResultProductGrid.maximumPricedProductCount)
+        .map((product) => product.id)
+        .toList(growable: false);
+    try {
+      final loader = widget.shopProductsLoader;
+      if (loader != null) return await loader(productIds);
+      return await sl<GetShopProductsByProductIdsUsecase>()(
+        GetShopProductsByProductIdsParams(productIds: productIds),
+      );
+    } catch (_) {
+      return const Left('Mağaza fiyatları yüklenemedi.');
+    }
+  }
+
+  Map<String, double> _minimumPricesFor(List<ShopProductEntity> shopProducts) {
+    final minimumPrices = <String, double>{};
+    for (final shopProduct in shopProducts) {
+      final price = shopProduct.price;
+      if (!shopProduct.isCustomerPurchasable || !price.isFinite || price < 0) {
+        continue;
+      }
+      final currentMinimum = minimumPrices[shopProduct.productId];
+      if (currentMinimum == null || price < currentMinimum) {
+        minimumPrices[shopProduct.productId] = price;
+      }
+    }
+    return minimumPrices;
+  }
+
+  String _priceLabel(
+    String productId,
+    Map<String, double> minimumPrices,
+    bool isPriceLoading,
+  ) {
+    if (isPriceLoading) return 'Fiyat yükleniyor';
+    final price = minimumPrices[productId];
+    if (price == null) return 'Mağaza fiyatını gör';
+    return '${_formatPrice(price)} TL’den';
+  }
+
+  String _formatPrice(double price) {
+    final parts = price.toStringAsFixed(2).split('.');
+    final integerDigits = parts.first;
+    final buffer = StringBuffer();
+    for (var index = 0; index < integerDigits.length; index++) {
+      if (index > 0 && (integerDigits.length - index) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(integerDigits[index]);
+    }
+    return '$buffer,${parts.last}';
+  }
+
+  String _productIdsKey(List<ProductEntity> products) {
+    return products
+        .take(_SearchResultProductGrid.maximumPricedProductCount)
+        .map((product) => product.id)
+        .join('|');
   }
 }
 
