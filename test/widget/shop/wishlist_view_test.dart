@@ -55,7 +55,10 @@ void main() {
     await navigationCubit.close();
   });
 
-  Widget buildSubject(WishlistState initialState) {
+  Widget buildSubject(
+    WishlistState initialState, {
+    WishlistProductDestinationBuilder? destinationBuilder,
+  }) {
     whenListen(
       wishlistCubit,
       const Stream<WishlistState>.empty(),
@@ -67,7 +70,9 @@ void main() {
         BlocProvider<WishlistCubit>.value(value: wishlistCubit),
         BlocProvider<NavigationMenuCubit>.value(value: navigationCubit),
       ],
-      child: const MaterialApp(home: WishlistView()),
+      child: MaterialApp(
+        home: WishlistView(destinationBuilder: destinationBuilder),
+      ),
     );
   }
 
@@ -77,7 +82,8 @@ void main() {
     await tester.pumpWidget(buildSubject(WishlistLoading()));
     await tester.pump();
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byKey(const Key('wishlist-loading')), findsOneWidget);
+    expect(find.byKey(const Key('wishlist-header')), findsOneWidget);
     verify(() => wishlistCubit.getWishlist()).called(1);
   });
 
@@ -122,7 +128,26 @@ void main() {
     expect(find.text('%20'), findsOneWidget);
     expect(find.text('%0'), findsNothing);
     expect(find.textContaining('Product '), findsNothing);
+    expect(find.byKey(const Key('wishlist-customer-content')), findsOneWidget);
+    expect(find.byKey(const Key('wishlist-products-grid')), findsOneWidget);
+    expect(find.byKey(const Key('wishlist-product-product-1')), findsOneWidget);
     expect(find.byKey(const Key('favorite-action-product-1')), findsOneWidget);
+  });
+
+  testWidgets('ürün kartı ürün detayını açar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        WishlistLoaded(const [wishlistItem]),
+        destinationBuilder: (_) =>
+            const Scaffold(body: Text('Ürün detay hedefi')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('wishlist-product-product-1')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ürün detay hedefi'), findsOneWidget);
   });
 
   testWidgets('ürün kaydı bulunmayan favoriyi güvenle gizler', (tester) async {
