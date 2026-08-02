@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/core/common/widgets/primary_header_container.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -21,8 +20,8 @@ import 'package:t_store/features/personalization/presentation/views/customer_sav
 import 'package:t_store/features/personalization/presentation/views/help_and_support_view.dart';
 import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
-import 'package:t_store/features/personalization/presentation/widgets/account_settings_section.dart';
 import 'package:t_store/features/personalization/presentation/widgets/app_settings_section.dart';
+import 'package:t_store/features/personalization/presentation/widgets/settings_menu_tile_list.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_view_header_section.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
@@ -314,29 +313,100 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.privacy_tip_outlined,
       ),
     ];
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            PrimaryHeaderContainer(
-              child: SettingsViewHeaderSection(currentUserId: currentUserId),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(TSizes.defaultSpace),
+    return ColoredBox(
+      color: CustomerHomeV1Tokens.cream,
+      child: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('customer-profile-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: SingleChildScrollView(
+              key: const Key('customer-profile-scroll'),
+              padding: const EdgeInsets.fromLTRB(
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space8,
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space24,
+              ),
               child: Column(
                 children: [
-                  AccountSettingsSection(
-                    accountSettingsTiles: accountSettingsTiles,
+                  SettingsViewHeaderSection(currentUserId: currentUserId),
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  _CustomerProfileMenuSection(
+                    key: const Key('customer-profile-activity-section'),
+                    title: 'Alışveriş ve iletişim',
+                    subtitle:
+                        'Siparişlerini, mesajlarını ve fırsatlarını yönet',
+                    tiles: accountSettingsTiles.take(6).toList(),
                   ),
-                  const SizedBox(height: TSizes.spaceBtwSections),
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  _CustomerProfileMenuSection(
+                    key: const Key('customer-profile-account-section'),
+                    title: 'Hesap ve destek',
+                    subtitle:
+                        'Bilgilerini, konumlarını ve tercihlerini düzenle',
+                    tiles: accountSettingsTiles.skip(6).toList(),
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
                   const AppSettingsSection(),
-                  const SizedBox(height: TSizes.spaceBtwItems),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _CustomerProfileMenuSection extends StatelessWidget {
+  const _CustomerProfileMenuSection({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.tiles,
+  });
+
+  final String title;
+  final String subtitle;
+  final List<SettingsMenuTileModel> tiles;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: CustomerHomeV1Tokens.space4,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: CustomerHomeV1Tokens.space12),
+        SettingsMenuTileList(settingsMenuTiles: tiles),
+      ],
     );
   }
 }
@@ -432,14 +502,14 @@ class _UnreadBadge extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 24),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: CustomerHomeV1Tokens.coral,
                   borderRadius: BorderRadius.circular(999),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -219,6 +221,21 @@ void main() {
 
       expect(find.text('Çıkış Yap'), findsOneWidget);
       expect(find.text('Sepetim'), findsNothing);
+      expect(find.text('Profilim'), findsOneWidget);
+      expect(find.text('Alışveriş ve iletişim'), findsOneWidget);
+      expect(find.text('Hesap ve destek'), findsOneWidget);
+      expect(
+        find.byKey(const Key('customer-profile-identity-card')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-profile-activity-section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-profile-account-section')),
+        findsOneWidget,
+      );
 
       for (final hiddenOption in [
         'Adreslerim',
@@ -238,6 +255,59 @@ void main() {
       }
     },
   );
+
+  testWidgets('profil ekranı 320 piksel genişlikte taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 820);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-profile-content')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('çıkış düğmesi beklerken ikinci isteği başlatmaz', (
+    tester,
+  ) async {
+    final signOutCompleter = Completer<void>();
+    when(() => authCubit.signOut()).thenAnswer((_) => signOutCompleter.future);
+
+    await tester.pumpWidget(
+      buildSubject(
+        authState: const AuthAuthenticated(user),
+        currentUserId: user.id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final signOutButton = find.byKey(const Key('customer-sign-out'));
+    await tester.ensureVisible(signOutButton);
+    await tester.tap(signOutButton);
+    await tester.pump();
+    await tester.tap(signOutButton);
+    await tester.pump();
+
+    verify(() => authCubit.signOut()).called(1);
+    expect(find.byKey(const Key('customer-sign-out-progress')), findsOneWidget);
+
+    signOutCompleter.complete();
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Çıkış Yap'), findsOneWidget);
+  });
 
   testWidgets('Alışverişlerim yeni müşteri geçmişi ekranını açar', (
     tester,

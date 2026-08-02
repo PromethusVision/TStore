@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
-import 'package:t_store/core/common/widgets/app_bar.dart';
-import 'package:t_store/core/utils/constants/colors.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
-import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
@@ -25,17 +21,61 @@ class SettingsViewHeaderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomAppBar(
-          appBarModel: AppBarModel(
-            title: Text(
-              TTexts.account,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium!.apply(color: TColors.white),
-            ),
+        Container(
+          key: const Key('customer-profile-header'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.petrol,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.profile_circle,
+                  color: Colors.white,
+                  size: 25,
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Profilim',
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    SizedBox(height: CustomerHomeV1Tokens.space4),
+                    Text(
+                      'Hesabını ve tercihlerini tek yerden yönet',
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: TSizes.spaceBtwSections),
+        const SizedBox(height: CustomerHomeV1Tokens.space12),
         BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
             final user =
@@ -84,7 +124,6 @@ class SettingsViewHeaderSection extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: TSizes.spaceBtwSections * 1.2),
       ],
     );
   }
