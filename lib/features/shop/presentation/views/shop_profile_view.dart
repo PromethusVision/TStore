@@ -1,10 +1,8 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
-import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
-import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
@@ -63,33 +61,88 @@ class _ShopProfileViewState extends State<ShopProfileView> {
     final urlLauncher = widget.urlLauncher ?? _launchShopProfileUrl;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        appBarModel: AppBarModel(title: Text(shop.name), hasArrowBack: true),
-      ),
+      backgroundColor: CustomerHomeV1Tokens.cream,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(TSizes.defaultSpace),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ShopInfoSection(
-                shop: shop,
-                currentUserIdProvider: currentUserIdProvider,
-                urlLauncher: urlLauncher,
-                chatDestinationBuilder: widget.chatDestinationBuilder,
-                pendingProductChatStorage: widget.pendingProductChatStorage,
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('shop-profile-customer-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: SingleChildScrollView(
+              key: const Key('shop-profile-scroll'),
+              padding: const EdgeInsets.fromLTRB(
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space8,
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space24,
               ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-              Text(
-                'Bu mağazadaki ürünler',
-                style: Theme.of(context).textTheme.titleMedium,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _ShopProfileHeader(),
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  _ShopInfoSection(
+                    shop: shop,
+                    currentUserIdProvider: currentUserIdProvider,
+                    urlLauncher: urlLauncher,
+                    chatDestinationBuilder: widget.chatDestinationBuilder,
+                    pendingProductChatStorage: widget.pendingProductChatStorage,
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space20),
+                  const Text(
+                    'Bu mağazadaki ürünler',
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.25,
+                    ),
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  _ShopProductsSection(productsFuture: _productsFuture),
+                ],
               ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              _ShopProductsSection(productsFuture: _productsFuture),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ShopProfileHeader extends StatelessWidget {
+  const _ShopProfileHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      key: const Key('shop-profile-header'),
+      children: [
+        Material(
+          color: CustomerHomeV1Tokens.surface,
+          shape: const CircleBorder(
+            side: BorderSide(color: CustomerHomeV1Tokens.border),
+          ),
+          child: IconButton(
+            key: const Key('shop-profile-back'),
+            tooltip: 'Geri',
+            onPressed: () => Navigator.of(context).maybePop(),
+            color: CustomerHomeV1Tokens.petrol,
+            icon: const Icon(Icons.arrow_back_rounded),
+          ),
+        ),
+        const SizedBox(width: CustomerHomeV1Tokens.space12),
+        const Expanded(
+          child: Text(
+            'Mağaza Profili',
+            style: TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.35,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -131,113 +184,233 @@ class _ShopInfoSection extends StatelessWidget {
         normalizedCurrentUserId == ownerUserId;
     final canShowMessageButton = hasOwnerUserId && !isOwnShop;
     final hasActions = canShowMessageButton || hasPhone || hasDirections;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+          key: const Key('shop-profile-hero'),
           width: double.infinity,
-          padding: const EdgeInsets.all(TSizes.md),
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest.withOpacity(0.45),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: colorScheme.outlineVariant),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [CustomerHomeV1Tokens.petrol, Color(0xFF0D575B)],
+            ),
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius24),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                right: -28,
+                bottom: -36,
+                child: Icon(
+                  Icons.storefront_rounded,
+                  size: 170,
+                  color: Colors.white.withValues(alpha: 0.08),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: Container(
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        CustomerHomeV1Tokens.coral,
+                        CustomerHomeV1Tokens.yellow,
+                        CustomerHomeV1Tokens.coral,
+                        CustomerHomeV1Tokens.yellow,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  CustomerHomeV1Tokens.space16,
+                  CustomerHomeV1Tokens.space24,
+                  CustomerHomeV1Tokens.space16,
+                  CustomerHomeV1Tokens.space20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _ShopAvatar(shopName: shop.name),
+                        const SizedBox(width: CustomerHomeV1Tokens.space12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                shop.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.2,
+                                  letterSpacing: -0.35,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: CustomerHomeV1Tokens.space8,
+                              ),
+                              Wrap(
+                                spacing: CustomerHomeV1Tokens.space8,
+                                runSpacing: CustomerHomeV1Tokens.space8,
+                                children: [
+                                  _RatingChip(rating: shop.rating),
+                                  if (shop.isActive) const _ActiveShopChip(),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space16),
+                    if (_hasText(shop.description))
+                      Text(
+                        shop.description!.trim(),
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.88),
+                          fontSize: 12,
+                          height: 1.45,
+                        ),
+                      )
+                    else
+                      const _MissingInfoText(
+                        'Bu mağaza için açıklama eklenmemiş.',
+                        onDarkSurface: true,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: CustomerHomeV1Tokens.space12),
+        Container(
+          key: const Key('shop-profile-info-card'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _ShopAvatar(shopName: shop.name),
-                  const SizedBox(width: TSizes.spaceBtwItems),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          shop.name,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
+              const Text(
+                'Mağaza bilgileri',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              _InfoLine(
+                icon: Icons.location_on_outlined,
+                label: 'Adres',
+                value: _hasText(shop.address)
+                    ? shop.address!.trim()
+                    : 'Adres bilgisi eklenmemiş.',
+                isMissing: !_hasText(shop.address),
+              ),
+              const Divider(height: CustomerHomeV1Tokens.space20),
+              _InfoLine(
+                icon: Icons.call_outlined,
+                label: 'Telefon',
+                value: _hasText(shop.phone)
+                    ? shop.phone!.trim()
+                    : 'Telefon bilgisi eklenmemiş.',
+                isMissing: !_hasText(shop.phone),
+              ),
+              const Divider(height: CustomerHomeV1Tokens.space20),
+              _InfoLine(
+                icon: Icons.schedule_outlined,
+                label: 'Çalışma saatleri',
+                value: shop.openingHours.isNotEmpty
+                    ? _formatOpeningHours()
+                    : 'Çalışma saatleri eklenmemiş.',
+                isMissing: shop.openingHours.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        if (hasActions) ...[
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          Container(
+            key: const Key('shop-profile-actions-card'),
+            width: double.infinity,
+            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+            decoration: BoxDecoration(
+              color: CustomerHomeV1Tokens.surface,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius20,
+              ),
+              border: Border.all(color: CustomerHomeV1Tokens.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (canShowMessageButton)
+                  FilledButton(
+                    key: const Key('shop-profile-message-action'),
+                    onPressed: () => _openChat(context, ownerUserId),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: CustomerHomeV1Tokens.petrol,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(46),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radius12,
                         ),
-                        const SizedBox(height: TSizes.xs),
-                        Wrap(
-                          spacing: TSizes.xs,
-                          runSpacing: TSizes.xs,
-                          children: [
-                            _RatingChip(rating: shop.rating),
-                            if (shop.isActive) const _ActiveShopChip(),
-                          ],
+                      ),
+                    ),
+                    child: const Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: CustomerHomeV1Tokens.space8,
+                      children: [
+                        Icon(Icons.message_rounded, size: 19),
+                        Text(
+                          'Esnafa Yaz',
+                          style: TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              if (_hasText(shop.description))
-                Text(
-                  shop.description!.trim(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                )
-              else
-                const _MissingInfoText('Bu mağaza için açıklama eklenmemiş.'),
-            ],
-          ),
-        ),
-        const SizedBox(height: TSizes.spaceBtwItems),
-        _InfoLine(
-          label: 'Adres',
-          value: _hasText(shop.address)
-              ? shop.address!.trim()
-              : 'Adres bilgisi eklenmemiş.',
-          isMissing: !_hasText(shop.address),
-        ),
-        _InfoLine(
-          label: 'Telefon',
-          value: _hasText(shop.phone)
-              ? shop.phone!.trim()
-              : 'Telefon bilgisi eklenmemiş.',
-          isMissing: !_hasText(shop.phone),
-        ),
-        _InfoLine(
-          label: 'Çalışma saatleri',
-          value: shop.openingHours.isNotEmpty
-              ? _formatOpeningHours()
-              : 'Çalışma saatleri eklenmemiş.',
-          isMissing: shop.openingHours.isEmpty,
-        ),
-        if (hasActions) ...[
-          const SizedBox(height: TSizes.spaceBtwItems),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (canShowMessageButton)
-                FilledButton.icon(
-                  key: const Key('shop-profile-message-action'),
-                  onPressed: () => _openChat(context, ownerUserId),
-                  icon: const Icon(Icons.message_outlined),
-                  label: const Text('Esnafa Yaz'),
-                ),
-              if (canShowMessageButton && (hasPhone || hasDirections))
-                const SizedBox(height: TSizes.sm),
-              if (hasPhone)
-                OutlinedButton.icon(
-                  key: const Key('shop-profile-call-action'),
-                  onPressed: () => _openPhoneCall(context, phoneTarget),
-                  icon: const Icon(Icons.call_outlined),
-                  label: const Text('Ara'),
-                ),
-              if (hasPhone && hasDirections) const SizedBox(height: TSizes.sm),
-              if (hasDirections)
-                OutlinedButton.icon(
-                  key: const Key('shop-profile-directions-action'),
-                  onPressed: () => _openDirections(context),
-                  icon: const Icon(Icons.directions_outlined),
-                  label: const Text('Yol Tarifi Al'),
-                ),
-            ],
+                if (canShowMessageButton && (hasPhone || hasDirections))
+                  const SizedBox(height: CustomerHomeV1Tokens.space8),
+                if (hasPhone)
+                  _ShopOutlinedAction(
+                    key: const Key('shop-profile-call-action'),
+                    onPressed: () => _openPhoneCall(context, phoneTarget),
+                    icon: Icons.call_rounded,
+                    label: 'Ara',
+                  ),
+                if (hasPhone && hasDirections)
+                  const SizedBox(height: CustomerHomeV1Tokens.space8),
+                if (hasDirections)
+                  _ShopOutlinedAction(
+                    key: const Key('shop-profile-directions-action'),
+                    onPressed: () => _openDirections(context),
+                    icon: Icons.directions_rounded,
+                    label: 'Yol Tarifi Al',
+                  ),
+              ],
+            ),
           ),
         ],
       ],
@@ -403,6 +576,43 @@ class _ShopInfoSection extends StatelessWidget {
   }
 }
 
+class _ShopOutlinedAction extends StatelessWidget {
+  const _ShopOutlinedAction({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: CustomerHomeV1Tokens.petrol,
+        side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
+        minimumSize: const Size.fromHeight(44),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        ),
+      ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: CustomerHomeV1Tokens.space8,
+        children: [
+          Icon(icon, size: 18),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
+        ],
+      ),
+    );
+  }
+}
+
 class _ShopAvatar extends StatelessWidget {
   final String shopName;
 
@@ -411,18 +621,23 @@ class _ShopAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initials = _initialsFromName(shopName);
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return CircleAvatar(
-      radius: 32,
-      backgroundColor: colorScheme.primaryContainer,
-      foregroundColor: colorScheme.onPrimaryContainer,
+    return Container(
+      width: 64,
+      height: 64,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.16),
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withValues(alpha: 0.32)),
+      ),
       child: initials == null
-          ? const Icon(Icons.storefront_outlined, size: 30)
+          ? const Icon(Icons.storefront_rounded, size: 30, color: Colors.white)
           : Text(
               initials,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: colorScheme.onPrimaryContainer,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -450,16 +665,36 @@ class _RatingChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final text = rating > 0 ? rating.toStringAsFixed(1) : 'Yeni';
 
-    return Chip(
-      avatar: Icon(Icons.star_rounded, size: 18, color: colorScheme.primary),
-      label: Text(text),
-      visualDensity: VisualDensity.compact,
-      side: BorderSide(color: colorScheme.outlineVariant),
-      backgroundColor: colorScheme.surface,
-      padding: EdgeInsets.zero,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: CustomerHomeV1Tokens.space8,
+        vertical: CustomerHomeV1Tokens.space4,
+      ),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.yellow,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.star_rounded,
+            size: 14,
+            color: CustomerHomeV1Tokens.navy,
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space4),
+          Text(
+            text,
+            style: const TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -469,48 +704,31 @@ class _ActiveShopChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Chip(
-      avatar: Icon(
-        Icons.verified_outlined,
-        size: 17,
-        color: colorScheme.primary,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: CustomerHomeV1Tokens.space8,
+        vertical: CustomerHomeV1Tokens.space4,
       ),
-      label: const Text('Aktif Mağaza'),
-      visualDensity: VisualDensity.compact,
-      side: BorderSide(color: colorScheme.outlineVariant),
-      backgroundColor: colorScheme.surface,
-      padding: EdgeInsets.zero,
-    );
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool isMissing;
-
-  const _InfoLine({
-    required this.label,
-    required this.value,
-    this.isMissing = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: TSizes.xs),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.32)),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: Theme.of(context).textTheme.labelMedium),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isMissing
-                  ? Theme.of(context).colorScheme.onSurfaceVariant
-                  : null,
+          Icon(Icons.verified_rounded, size: 14, color: Colors.white),
+          SizedBox(width: CustomerHomeV1Tokens.space4),
+          Flexible(
+            child: Text(
+              'Aktif Mağaza',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -519,17 +737,81 @@ class _InfoLine extends StatelessWidget {
   }
 }
 
+class _InfoLine extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool isMissing;
+
+  const _InfoLine({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.isMissing = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 34,
+          height: 34,
+          decoration: const BoxDecoration(
+            color: CustomerHomeV1Tokens.mint,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 17, color: CustomerHomeV1Tokens.petrol),
+        ),
+        const SizedBox(width: CustomerHomeV1Tokens.space12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: TextStyle(
+                  color: isMissing
+                      ? CustomerHomeV1Tokens.muted
+                      : CustomerHomeV1Tokens.navy,
+                  fontSize: 12,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _MissingInfoText extends StatelessWidget {
   final String text;
+  final bool onDarkSurface;
 
-  const _MissingInfoText(this.text);
+  const _MissingInfoText(this.text, {this.onDarkSurface = false});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      style: TextStyle(
+        color: onDarkSurface
+            ? Colors.white.withValues(alpha: 0.76)
+            : CustomerHomeV1Tokens.muted,
+        fontSize: 12,
+        height: 1.4,
       ),
     );
   }
@@ -546,37 +828,104 @@ class _ShopProductsSection extends StatelessWidget {
       future: productsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(TSizes.defaultSpace),
-              child: CircularProgressIndicator(),
-            ),
+          return const _ShopProductsStatus(
+            key: Key('shop-profile-products-loading'),
+            icon: Icons.inventory_2_outlined,
+            message: 'Mağaza ürünleri hazırlanıyor',
+            isLoading: true,
           );
         }
 
         if (snapshot.hasError || !snapshot.hasData) {
-          return const Text(
-            'Mağaza ürünleri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+          return const _ShopProductsStatus(
+            key: Key('shop-profile-products-error'),
+            icon: Icons.cloud_off_rounded,
+            message:
+                'Mağaza ürünleri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
           );
         }
 
-        return snapshot.data!.fold((error) => Text(error), (shopProducts) {
-          if (shopProducts.isEmpty) {
-            return const Text('Bu mağazada şu an listelenen ürün yok.');
-          }
+        return snapshot.data!.fold(
+          (error) => const _ShopProductsStatus(
+            key: Key('shop-profile-products-error'),
+            icon: Icons.cloud_off_rounded,
+            message:
+                'Mağaza ürünleri yüklenemedi. Lütfen daha sonra tekrar deneyin.',
+          ),
+          (shopProducts) {
+            if (shopProducts.isEmpty) {
+              return const _ShopProductsStatus(
+                key: Key('shop-profile-products-empty'),
+                icon: Icons.inventory_2_outlined,
+                message: 'Bu mağazada şu an listelenen ürün yok.',
+              );
+            }
 
-          return ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: shopProducts.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: TSizes.spaceBtwItems),
-            itemBuilder: (context, index) {
-              return _ShopProductTile(shopProduct: shopProducts[index]);
-            },
-          );
-        });
+            return ListView.separated(
+              key: const Key('shop-profile-products-list'),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: shopProducts.length,
+              separatorBuilder: (_, _) =>
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+              itemBuilder: (context, index) {
+                return _ShopProductTile(shopProduct: shopProducts[index]);
+              },
+            );
+          },
+        );
       },
+    );
+  }
+}
+
+class _ShopProductsStatus extends StatelessWidget {
+  const _ShopProductsStatus({
+    super.key,
+    required this.icon,
+    required this.message,
+    this.isLoading = false,
+  });
+
+  final IconData icon;
+  final String message;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space20),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+      ),
+      child: Column(
+        children: [
+          if (isLoading)
+            const SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: CustomerHomeV1Tokens.petrol,
+              ),
+            )
+          else
+            Icon(icon, size: 30, color: CustomerHomeV1Tokens.petrol),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: CustomerHomeV1Tokens.muted,
+              fontSize: 12,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -590,44 +939,148 @@ class _ShopProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = shopProduct.product;
 
-    return Card(
-      margin: EdgeInsets.zero,
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(TSizes.sm),
-        title: Text(product?.name ?? 'Ürün bilgisi yok'),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: TSizes.xs),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '₺${shopProduct.price.toStringAsFixed(2)}',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: TSizes.xs),
-              Text(
-                product == null
-                    ? 'Ürün detayı şu an görüntülenemiyor'
-                    : 'Detayları görüntüle',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        trailing: const Icon(Icons.chevron_right),
+    return Material(
+      key: ValueKey('shop-profile-product-${shopProduct.id}'),
+      color: CustomerHomeV1Tokens.surface,
+      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+      child: InkWell(
         onTap: product == null
             ? null
             : () => _openProductDetails(context, product),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        child: Container(
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Row(
+            children: [
+              _ShopProductVisual(shopProduct: shopProduct),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product?.name ?? 'Ürün bilgisi yok',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        height: 1.25,
+                      ),
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    Text(
+                      _formatPrice(shopProduct.price),
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.petrol,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CustomerHomeV1Tokens.space8,
+                        vertical: CustomerHomeV1Tokens.space4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: shopProduct.isAvailable
+                            ? CustomerHomeV1Tokens.mint
+                            : CustomerHomeV1Tokens.border,
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radiusPill,
+                        ),
+                      ),
+                      child: Text(
+                        shopProduct.isAvailable
+                            ? 'Mağazada mevcut'
+                            : 'Şu an mevcut değil',
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.navy,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (product != null)
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: CustomerHomeV1Tokens.petrol,
+                ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  String _formatPrice(double price) {
+    return '₺${price.toStringAsFixed(2).replaceAll('.', ',')}';
   }
 
   void _openProductDetails(BuildContext context, ProductEntity product) {
     THelperFunctions.navigateToScreen(
       context,
       ProductDetailsView(product: product),
+    );
+  }
+}
+
+class _ShopProductVisual extends StatelessWidget {
+  const _ShopProductVisual({required this.shopProduct});
+
+  final ShopProductEntity shopProduct;
+
+  @override
+  Widget build(BuildContext context) {
+    final product = shopProduct.product;
+    final imageUrl = shopProduct.images.isNotEmpty
+        ? shopProduct.images.first
+        : product?.thumbnail?.trim().isNotEmpty == true
+        ? product!.thumbnail!.trim()
+        : product?.images.isNotEmpty == true
+        ? product!.images.first
+        : null;
+
+    return Container(
+      width: 82,
+      height: 82,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.mint,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      ),
+      child: imageUrl == null
+          ? const _ShopProductFallback()
+          : Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => const _ShopProductFallback(),
+            ),
+    );
+  }
+}
+
+class _ShopProductFallback extends StatelessWidget {
+  const _ShopProductFallback();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Icon(
+        Icons.shopping_bag_rounded,
+        size: 30,
+        color: CustomerHomeV1Tokens.petrol,
+      ),
     );
   }
 }

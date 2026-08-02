@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
+import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
@@ -55,6 +58,24 @@ void main() {
     phone: '+90 (555) 111 22 33',
     openingHours: {'Pazartesi': '09:00 - 18:00'},
     rating: 4.8,
+  );
+
+  const sampleProduct = ProductEntity(
+    id: 'product-1',
+    name: 'Kablosuz Kulaklık',
+    price: 149.90,
+    categoryId: 'electronics',
+    stock: 8,
+    images: [],
+  );
+
+  const sampleShopProduct = ShopProductEntity(
+    id: 'shop-product-1',
+    shopId: 'shop-1',
+    productId: 'product-1',
+    price: 129.90,
+    product: sampleProduct,
+    shop: completeShop,
   );
 
   setUp(() async {
@@ -128,11 +149,57 @@ void main() {
     expect(launchedUris.single.toString(), 'tel:+905551112233');
     expect(launchModes.single, LaunchMode.platformDefault);
 
+    await tester.ensureVisible(
+      find.byKey(const Key('shop-profile-directions-action')),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pump();
     expect(launchedUris.last.host, 'www.google.com');
     expect(launchedUris.last.queryParameters['query'], '41.001,29.002');
     expect(launchModes.last, LaunchMode.externalApplication);
+  });
+
+  testWidgets('müşteri UI kabuğunu ve marka kartlarını kullanır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    final content = tester.widget<ConstrainedBox>(
+      find.byKey(const Key('shop-profile-customer-content')),
+    );
+
+    expect(scaffold.backgroundColor, CustomerHomeV1Tokens.cream);
+    expect(content.constraints.maxWidth, 430);
+    expect(find.byKey(const Key('shop-profile-header')), findsOneWidget);
+    expect(find.byKey(const Key('shop-profile-hero')), findsOneWidget);
+    expect(find.byKey(const Key('shop-profile-info-card')), findsOneWidget);
+    expect(find.byKey(const Key('shop-profile-actions-card')), findsOneWidget);
+    expect(
+      find.byKey(const Key('shop-profile-products-empty')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('mağazanın gerçek ürün ve fiyatını marka kartında gösterir', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByShop(any()),
+    ).thenAnswer((_) async => const Right([sampleShopProduct]));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('shop-profile-product-shop-product-1')),
+      findsOneWidget,
+    );
+    expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
+    expect(find.text('₺129,90'), findsOneWidget);
+    expect(find.text('Mağazada mevcut'), findsOneWidget);
   });
 
   testWidgets('geçersiz koordinat yerine mağaza adresini kullanır', (
@@ -147,6 +214,10 @@ void main() {
     );
 
     await tester.pumpWidget(buildSubject(shop: shop));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('shop-profile-directions-action')),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pump();
@@ -193,6 +264,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Telefon araması başlatılamadı'), findsOneWidget);
 
+    await tester.ensureVisible(
+      find.byKey(const Key('shop-profile-directions-action')),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pumpAndSettle();
     expect(find.text('Yol tarifi açılamadı'), findsOneWidget);
