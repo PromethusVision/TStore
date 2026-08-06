@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
@@ -11,12 +12,6 @@ import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
 typedef ChatCurrentUserIdProvider = String? Function();
 
 class ChatView extends StatelessWidget {
-  final String receiverId;
-  final String receiverName;
-  final String? initialDraft;
-  final ChatCubit? chatCubit;
-  final ChatCurrentUserIdProvider? currentUserIdProvider;
-
   const ChatView({
     super.key,
     required this.receiverId,
@@ -25,6 +20,12 @@ class ChatView extends StatelessWidget {
     this.chatCubit,
     this.currentUserIdProvider,
   });
+
+  final String receiverId;
+  final String receiverName;
+  final String? initialDraft;
+  final ChatCubit? chatCubit;
+  final ChatCurrentUserIdProvider? currentUserIdProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +45,17 @@ class ChatView extends StatelessWidget {
 }
 
 class _ChatViewBody extends StatefulWidget {
-  final String receiverId;
-  final String receiverName;
-  final String? initialDraft;
-  final ChatCurrentUserIdProvider? currentUserIdProvider;
-
   const _ChatViewBody({
     required this.receiverId,
     required this.receiverName,
     required this.initialDraft,
     required this.currentUserIdProvider,
   });
+
+  final String receiverId;
+  final String receiverName;
+  final String? initialDraft;
+  final ChatCurrentUserIdProvider? currentUserIdProvider;
 
   @override
   State<_ChatViewBody> createState() => _ChatViewBodyState();
@@ -93,61 +94,88 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
         : SupabaseService.instance.currentUser?.id;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.receiverName)),
+      backgroundColor: CustomerHomeV1Tokens.cream,
       body: SafeArea(
-        child: BlocConsumer<ChatCubit, ChatState>(
-          listener: (context, state) {
-            if (state is ChatLoaded) {
-              _replaceMessages(state.messages);
-              _hasReachedMax = state.hasReachedMax;
-              if (!_didJumpToInitialMessages) {
-                _didJumpToInitialMessages = true;
-                _jumpToBottom();
-              }
-            }
-
-            if (state is MessageSent) {
-              _messageController.clear();
-              _scrollToBottom();
-            }
-
-            if (state is NewMessageReceived) {
-              if (state.message.senderId == widget.receiverId) {
-                context.read<ChatCubit>().markAllAsRead(widget.receiverId);
-              }
-              _scrollToBottom();
-            }
-
-            if (state is ChatError) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
-          builder: (context, state) {
-            final isInitialLoading = state is ChatLoading && _messages.isEmpty;
-            final isSending = state is MessageSending;
-
-            return Column(
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('customer-chat-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Column(
               children: [
-                Expanded(
-                  child: isInitialLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _MessageList(
-                          messages: _messages,
-                          currentUserId: currentUserId,
-                          scrollController: _scrollController,
-                          isLoadingMore: _isLoadingMore,
-                        ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    0,
+                  ),
+                  child: _ChatHeader(receiverName: widget.receiverName),
                 ),
-                _MessageInput(
-                  controller: _messageController,
-                  isSending: isSending,
-                  onSend: () => _sendMessage(context),
+                const SizedBox(height: CustomerHomeV1Tokens.space8),
+                Expanded(
+                  child: BlocConsumer<ChatCubit, ChatState>(
+                    listener: (context, state) {
+                      if (state is ChatLoaded) {
+                        _replaceMessages(state.messages);
+                        _hasReachedMax = state.hasReachedMax;
+                        if (!_didJumpToInitialMessages) {
+                          _didJumpToInitialMessages = true;
+                          _jumpToBottom();
+                        }
+                      }
+
+                      if (state is MessageSent) {
+                        _messageController.clear();
+                        _scrollToBottom();
+                      }
+
+                      if (state is NewMessageReceived) {
+                        if (state.message.senderId == widget.receiverId) {
+                          context.read<ChatCubit>().markAllAsRead(
+                            widget.receiverId,
+                          );
+                        }
+                        _scrollToBottom();
+                      }
+
+                      if (state is ChatError) {
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                      }
+                    },
+                    builder: (context, state) {
+                      final isInitialLoading =
+                          state is ChatLoading && _messages.isEmpty;
+                      final isSending = state is MessageSending;
+
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: isInitialLoading
+                                ? const _ChatLoadingState()
+                                : _MessageList(
+                                    messages: _messages,
+                                    currentUserId: currentUserId,
+                                    scrollController: _scrollController,
+                                    isLoadingMore: _isLoadingMore,
+                                  ),
+                          ),
+                          _MessageInput(
+                            controller: _messageController,
+                            isSending: isSending,
+                            onSend: () => _sendMessage(context),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ],
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
@@ -217,12 +245,157 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   }
 }
 
-class _MessageList extends StatelessWidget {
-  final List<ChatMessageEntity> messages;
-  final String? currentUserId;
-  final ScrollController scrollController;
-  final bool isLoadingMore;
+class _ChatHeader extends StatelessWidget {
+  const _ChatHeader({required this.receiverName});
 
+  final String receiverName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-chat-header'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          Material(
+            color: CustomerHomeV1Tokens.mint,
+            shape: const CircleBorder(),
+            child: IconButton(
+              key: const Key('customer-chat-back-button'),
+              tooltip: 'Geri',
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: CustomerHomeV1Tokens.petrol,
+                size: 21,
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: CustomerHomeV1Tokens.mint,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              _initialFor(receiverName),
+              style: const TextStyle(
+                color: CustomerHomeV1Tokens.petrol,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  receiverName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: CustomerHomeV1Tokens.navy,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                const SizedBox(height: CustomerHomeV1Tokens.space4),
+                const Text(
+                  'Mağaza ile görüşme',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: CustomerHomeV1Tokens.muted,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: CustomerHomeV1Tokens.cream,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+            ),
+            child: const Icon(
+              Icons.chat_bubble_outline_rounded,
+              color: CustomerHomeV1Tokens.petrol,
+              size: 18,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChatLoadingState extends StatelessWidget {
+  const _ChatLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('customer-chat-loading-state'),
+        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomerHomeV1Tokens.space24,
+          vertical: CustomerHomeV1Tokens.space20,
+        ),
+        decoration: BoxDecoration(
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          border: Border.all(color: CustomerHomeV1Tokens.border),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: CustomerHomeV1Tokens.petrol,
+              ),
+            ),
+            SizedBox(width: CustomerHomeV1Tokens.space12),
+            Flexible(
+              child: Text(
+                'Mesajlar yükleniyor',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MessageList extends StatelessWidget {
   const _MessageList({
     required this.messages,
     required this.currentUserId,
@@ -230,18 +403,29 @@ class _MessageList extends StatelessWidget {
     required this.isLoadingMore,
   });
 
+  final List<ChatMessageEntity> messages;
+  final String? currentUserId;
+  final ScrollController scrollController;
+  final bool isLoadingMore;
+
   @override
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
-      return const Center(child: Text('Henüz mesaj yok.'));
+      return const _EmptyConversationState();
     }
 
     return Stack(
       children: [
         ListView.builder(
+          key: const Key('customer-chat-message-list'),
           controller: scrollController,
           reverse: true,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space8,
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space16,
+          ),
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];
@@ -252,38 +436,42 @@ class _MessageList extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (showDateHeader) _DateHeader(date: message.createdAt!),
+                if (showDateHeader && message.createdAt != null)
+                  _DateHeader(date: message.createdAt!),
                 _MessageBubble(message: message, isMine: isMine),
               ],
             );
           },
         ),
         if (isLoadingMore)
-          Positioned(
-            top: 8,
+          const Positioned(
+            top: CustomerHomeV1Tokens.space8,
             left: 0,
             right: 0,
             child: IgnorePointer(
               child: Center(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: CustomerHomeV1Tokens.surface,
                     shape: BoxShape.circle,
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
-                        color: Color(0x26000000),
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
+                        color: Color(0x14000000),
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: const Padding(
+                  child: Padding(
                     key: Key('chat-load-more-progress'),
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(CustomerHomeV1Tokens.space8),
                     child: SizedBox(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: CustomerHomeV1Tokens.petrol,
+                      ),
                     ),
                   ),
                 ),
@@ -307,25 +495,90 @@ class _MessageList extends StatelessWidget {
   }
 }
 
-class _DateHeader extends StatelessWidget {
-  final DateTime date;
+class _EmptyConversationState extends StatelessWidget {
+  const _EmptyConversationState();
 
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-chat-empty-state'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+          ),
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 29,
+                backgroundColor: CustomerHomeV1Tokens.mint,
+                child: Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  color: CustomerHomeV1Tokens.petrol,
+                  size: 28,
+                ),
+              ),
+              SizedBox(height: CustomerHomeV1Tokens.space16),
+              Text(
+                'Henüz mesaj yok.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                'Mağazaya ilk mesajını aşağıdaki alandan gönderebilirsin.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 12,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DateHeader extends StatelessWidget {
   const _DateHeader({required this.date});
+
+  final DateTime date;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        margin: const EdgeInsets.symmetric(
+          vertical: CustomerHomeV1Tokens.space12,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomerHomeV1Tokens.space12,
+          vertical: CustomerHomeV1Tokens.space4,
+        ),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(999),
+          color: CustomerHomeV1Tokens.mint,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
         ),
         child: Text(
           _formatFullDate(date),
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          style: const TextStyle(
+            color: CustomerHomeV1Tokens.petrol,
+            fontSize: 9.5,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -334,43 +587,75 @@ class _DateHeader extends StatelessWidget {
 }
 
 class _MessageBubble extends StatelessWidget {
+  const _MessageBubble({required this.message, required this.isMine});
+
   final ChatMessageEntity message;
   final bool isMine;
 
-  const _MessageBubble({required this.message, required this.isMine});
-
   @override
   Widget build(BuildContext context) {
-    final color = isMine
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.surfaceContainerHighest;
-    final textColor = isMine
-        ? Theme.of(context).colorScheme.onPrimary
-        : Theme.of(context).colorScheme.onSurface;
+    final maxWidth =
+        MediaQuery.sizeOf(context).width.clamp(0, 430).toDouble() * 0.76;
+    final backgroundColor = isMine
+        ? CustomerHomeV1Tokens.petrol
+        : CustomerHomeV1Tokens.surface;
+    final textColor = isMine ? Colors.white : CustomerHomeV1Tokens.navy;
 
     return Align(
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.sizeOf(context).width * 0.75,
+        key: Key('chat-message-${message.id}'),
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        margin: const EdgeInsets.only(bottom: CustomerHomeV1Tokens.space8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomerHomeV1Tokens.space12,
+          vertical: CustomerHomeV1Tokens.space8,
         ),
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
+          color: backgroundColor,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(CustomerHomeV1Tokens.radius16),
+            topRight: const Radius.circular(CustomerHomeV1Tokens.radius16),
+            bottomLeft: Radius.circular(
+              isMine
+                  ? CustomerHomeV1Tokens.radius16
+                  : CustomerHomeV1Tokens.space4,
+            ),
+            bottomRight: Radius.circular(
+              isMine
+                  ? CustomerHomeV1Tokens.space4
+                  : CustomerHomeV1Tokens.radius16,
+            ),
+          ),
+          border: isMine
+              ? null
+              : Border.all(color: CustomerHomeV1Tokens.border),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(message.content, style: TextStyle(color: textColor)),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                message.content,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 12.5,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
             if (message.createdAt != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: CustomerHomeV1Tokens.space4),
               Text(
                 _formatTime(message.createdAt!),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: textColor.withValues(alpha: 0.72),
+                style: TextStyle(
+                  color: textColor.withValues(alpha: 0.7),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -379,6 +664,122 @@ class _MessageBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+class _MessageInput extends StatelessWidget {
+  const _MessageInput({
+    required this.controller,
+    required this.isSending,
+    required this.onSend,
+  });
+
+  final TextEditingController controller;
+  final bool isSending;
+  final VoidCallback onSend;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-chat-input-area'),
+      padding: const EdgeInsets.fromLTRB(
+        CustomerHomeV1Tokens.space12,
+        CustomerHomeV1Tokens.space8,
+        CustomerHomeV1Tokens.space12,
+        CustomerHomeV1Tokens.space12,
+      ),
+      decoration: const BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        border: Border(top: BorderSide(color: CustomerHomeV1Tokens.border)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: TextField(
+              key: const Key('chat-message-input'),
+              controller: controller,
+              minLines: 1,
+              maxLines: 4,
+              textInputAction: TextInputAction.newline,
+              style: const TextStyle(
+                color: CustomerHomeV1Tokens.navy,
+                fontSize: 13,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Mesaj yaz',
+                hintStyle: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 12.5,
+                ),
+                filled: true,
+                fillColor: CustomerHomeV1Tokens.cream,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: CustomerHomeV1Tokens.space16,
+                  vertical: CustomerHomeV1Tokens.space12,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius20,
+                  ),
+                  borderSide: const BorderSide(
+                    color: CustomerHomeV1Tokens.border,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius20,
+                  ),
+                  borderSide: const BorderSide(
+                    color: CustomerHomeV1Tokens.border,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius20,
+                  ),
+                  borderSide: const BorderSide(
+                    color: CustomerHomeV1Tokens.petrol,
+                    width: 1.4,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          SizedBox.square(
+            dimension: 46,
+            child: IconButton.filled(
+              key: const Key('chat-message-send-action'),
+              tooltip: 'Gönder',
+              onPressed: isSending ? null : onSend,
+              style: IconButton.styleFrom(
+                backgroundColor: CustomerHomeV1Tokens.petrol,
+                disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+                foregroundColor: Colors.white,
+                disabledForegroundColor: CustomerHomeV1Tokens.muted,
+              ),
+              icon: isSending
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: CustomerHomeV1Tokens.petrol,
+                      ),
+                    )
+                  : const Icon(Icons.send_rounded, size: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _initialFor(String value) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return 'M';
+  return trimmed.substring(0, 1).toUpperCase();
 }
 
 String _formatFullDate(DateTime value) {
@@ -405,55 +806,4 @@ bool _isSameDay(DateTime a, DateTime b) {
   return localA.year == localB.year &&
       localA.month == localB.month &&
       localA.day == localB.day;
-}
-
-class _MessageInput extends StatelessWidget {
-  final TextEditingController controller;
-  final bool isSending;
-  final VoidCallback onSend;
-
-  const _MessageInput({
-    required this.controller,
-    required this.isSending,
-    required this.onSend,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                key: const Key('chat-message-input'),
-                controller: controller,
-                minLines: 1,
-                maxLines: 4,
-                textInputAction: TextInputAction.newline,
-                decoration: const InputDecoration(
-                  hintText: 'Mesaj yaz',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            IconButton.filled(
-              key: const Key('chat-message-send-action'),
-              onPressed: isSending ? null : onSend,
-              icon: isSending
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.send),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

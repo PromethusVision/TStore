@@ -67,6 +67,167 @@ void main() {
     );
   }
 
+  Widget buildSubject({
+    String receiverName = 'Mahalle Marketi',
+    String? initialDraft,
+  }) {
+    return MaterialApp(
+      home: ChatView(
+        receiverId: 'owner-1',
+        receiverName: receiverName,
+        initialDraft: initialDraft,
+        chatCubit: chatCubit,
+        currentUserIdProvider: () => 'customer-1',
+      ),
+    );
+  }
+
+  testWidgets('başlık, boş konuşma ve mesaj alanını gösterir', (tester) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-chat-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-chat-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-chat-empty-state')), findsOneWidget);
+    expect(find.byKey(const Key('customer-chat-input-area')), findsOneWidget);
+    expect(find.text('Mahalle Marketi'), findsOneWidget);
+    expect(find.text('Mağaza ile görüşme'), findsOneWidget);
+    expect(find.text('Henüz mesaj yok.'), findsOneWidget);
+  });
+
+  testWidgets('gelen ve gönderilen mesajları tarih ve saatleriyle ayırır', (
+    tester,
+  ) async {
+    final messages = [
+      ChatMessageEntity(
+        id: 'message-mine',
+        senderId: 'customer-1',
+        receiverId: 'owner-1',
+        content: 'Ürün için geleceğim.',
+        createdAt: DateTime(2026, 8, 1, 14, 5),
+      ),
+      ChatMessageEntity(
+        id: 'message-shop',
+        senderId: 'owner-1',
+        receiverId: 'customer-1',
+        content: 'Ürününüz hazırdır.',
+        createdAt: DateTime(2026, 8, 1, 14),
+      ),
+    ];
+    whenListen(
+      chatCubit,
+      Stream<ChatState>.value(ChatLoaded(messages: messages)),
+      initialState: ChatLoading(),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-chat-message-list')), findsOneWidget);
+    expect(find.byKey(const Key('chat-message-message-mine')), findsOneWidget);
+    expect(find.byKey(const Key('chat-message-message-shop')), findsOneWidget);
+    expect(find.text('Ürün için geleceğim.'), findsOneWidget);
+    expect(find.text('Ürününüz hazırdır.'), findsOneWidget);
+    expect(find.text('01.08.2026'), findsOneWidget);
+    expect(find.text('14:05'), findsOneWidget);
+    expect(find.text('14:00'), findsOneWidget);
+  });
+
+  testWidgets('ilk yüklemede markalı bekleme durumunu gösterir', (
+    tester,
+  ) async {
+    whenListen(
+      chatCubit,
+      const Stream<ChatState>.empty(),
+      initialState: ChatLoading(),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-chat-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Mesajlar yükleniyor'), findsOneWidget);
+  });
+
+  testWidgets('mesaj gönderilirken ikinci gönderimi engeller', (tester) async {
+    whenListen(
+      chatCubit,
+      const Stream<ChatState>.empty(),
+      initialState: MessageSending(),
+    );
+
+    await tester.pumpWidget(buildSubject(initialDraft: 'Gönderilecek mesaj'));
+    await tester.pump();
+
+    final sendButton = tester.widget<IconButton>(
+      find.byKey(const Key('chat-message-send-action')),
+    );
+    expect(sendButton.onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key('chat-message-send-action')));
+    await tester.pump();
+    verifyNever(
+      () => chatCubit.sendMessage(
+        receiverId: any(named: 'receiverId'),
+        content: any(named: 'content'),
+      ),
+    );
+  });
+
+  testWidgets('mesaj hatasını kullanıcıya gösterir', (tester) async {
+    whenListen(
+      chatCubit,
+      Stream<ChatState>.value(const ChatError('Mesaj şu anda gönderilemedi.')),
+      initialState: ChatLoading(),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mesaj şu anda gönderilemedi.'), findsOneWidget);
+  });
+
+  testWidgets('dar ekranda uzun mesaj ve mağaza adı taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 560);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final message = ChatMessageEntity(
+      id: 'message-responsive',
+      senderId: 'owner-1',
+      receiverId: 'customer-1',
+      content:
+          'Aradığınız ürün mağazamızda hazır, geldiğinizde size yardımcı olabiliriz.',
+      createdAt: DateTime(2026, 8, 2, 12),
+    );
+    whenListen(
+      chatCubit,
+      Stream<ChatState>.value(ChatLoaded(messages: [message])),
+      initialState: ChatLoading(),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        receiverName: 'Mahalledeki Çok Uzun İsimli Elektronik Mağazası',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('chat-message-message-responsive')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('ürün mesajını taslak olarak açar ve otomatik göndermez', (
     tester,
   ) async {
