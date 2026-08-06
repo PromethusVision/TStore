@@ -151,7 +151,20 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('customer-notifications-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-notifications-header')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-notifications-list')),
+      findsOneWidget,
+    );
     expect(find.text('Bildirimlerim'), findsOneWidget);
+    expect(find.text('1 okunmamış bildirim'), findsOneWidget);
     expect(find.text('Alışverişin doğrulandı'), findsOneWidget);
     expect(find.text('Yeni kampanya'), findsOneWidget);
     expect(find.text('Alışveriş'), findsOneWidget);
@@ -380,6 +393,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('customer-notifications-status')),
+      findsOneWidget,
+    );
     expect(find.text('Henüz bildirimin yok'), findsOneWidget);
     expect(
       find.text('Alışveriş, mesaj ve kampanya bildirimlerin burada görünecek.'),
@@ -402,6 +419,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('customer-notifications-status')),
+      findsOneWidget,
+    );
     expect(find.text('Bildirimlerin yüklenemedi'), findsOneWidget);
     expect(
       find.text('Bildirimlerin şu anda yüklenemiyor. Lütfen tekrar dene.'),
@@ -412,5 +433,52 @@ void main() {
     await tester.pump();
 
     verify(() => notificationsCubit.getNotifications(refresh: true)).called(2);
+  });
+
+  testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
+    await tester.pumpWidget(buildSubject(NotificationsLoading()));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-notifications-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Bildirimlerin yükleniyor'), findsOneWidget);
+  });
+
+  testWidgets('dar ekranda bildirim kartı taşma yapmaz', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 720);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final notification = NotificationEntity(
+      id: 'notification-responsive',
+      userId: 'customer-1',
+      title: 'Mahallendeki mağazadan yeni bir alışveriş bildirimi',
+      body:
+          'Alışverişin mağaza tarafından doğrulandı ve ayrıntıları hazırlandı.',
+      type: NotificationType.order,
+      createdAt: DateTime(2026, 7, 20, 12, 30),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        NotificationsLoaded(
+          notifications: [notification],
+          unreadCount: 1,
+          hasReachedMax: true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('notification-card-notification-responsive')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
   });
 }

@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
@@ -190,116 +191,340 @@ class _CustomerNotificationsContentState
           ..showSnackBar(SnackBar(content: Text(message)));
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bildirimlerim'),
-          actions: [
-            BlocBuilder<NotificationsCubit, NotificationsState>(
-              builder: (context, state) {
-                if (state is! NotificationsLoaded || state.unreadCount == 0) {
-                  return const SizedBox.shrink();
-                }
+        backgroundColor: CustomerHomeV1Tokens.cream,
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              key: const Key('customer-notifications-content'),
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      CustomerHomeV1Tokens.space16,
+                      CustomerHomeV1Tokens.space8,
+                      CustomerHomeV1Tokens.space16,
+                      0,
+                    ),
+                    child: _NotificationsHeader(),
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  Expanded(
+                    child: BlocBuilder<NotificationsCubit, NotificationsState>(
+                      builder: (context, state) {
+                        if (state is NotificationsInitial ||
+                            state is NotificationsLoading) {
+                          return const _NotificationsLoadingState();
+                        }
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: TSizes.sm),
+                        if (state is NotificationsError) {
+                          return _NotificationStatus(
+                            icon: Icons.notifications_off_outlined,
+                            title: 'Bildirimlerin yüklenemedi',
+                            description: state.message,
+                            actionLabel: 'Tekrar Dene',
+                            onAction: () => context
+                                .read<NotificationsCubit>()
+                                .getNotifications(refresh: true),
+                          );
+                        }
+
+                        if (state is! NotificationsLoaded) {
+                          return const _NotificationsLoadingState();
+                        }
+
+                        if (state.notifications.isEmpty) {
+                          return _NotificationStatus(
+                            icon: Icons.notifications_none_rounded,
+                            title: 'Henüz bildirimin yok',
+                            description:
+                                'Alışveriş, mesaj ve kampanya bildirimlerin burada görünecek.',
+                            actionLabel: 'Yenile',
+                            onAction: () => context
+                                .read<NotificationsCubit>()
+                                .getNotifications(refresh: true),
+                          );
+                        }
+
+                        return RefreshIndicator(
+                          color: CustomerHomeV1Tokens.petrol,
+                          onRefresh: () => context
+                              .read<NotificationsCubit>()
+                              .getNotifications(refresh: true),
+                          child: ListView.separated(
+                            key: const Key('customer-notifications-list'),
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(
+                              CustomerHomeV1Tokens.space16,
+                              CustomerHomeV1Tokens.space4,
+                              CustomerHomeV1Tokens.space16,
+                              CustomerHomeV1Tokens.space24,
+                            ),
+                            itemCount: state.notifications.length + 1,
+                            separatorBuilder: (_, _) => const SizedBox(
+                              height: CustomerHomeV1Tokens.space12,
+                            ),
+                            itemBuilder: (context, index) {
+                              if (index == state.notifications.length) {
+                                return _NotificationsListFooter(state: state);
+                              }
+
+                              final notification = state.notifications[index];
+                              final canOpenDestination = _canOpenDestination(
+                                notification,
+                              );
+                              final isProcessing =
+                                  state.isMarkingAllAsRead ||
+                                  state.markingAsReadIds.contains(
+                                    notification.id,
+                                  ) ||
+                                  _openingNotificationIds.contains(
+                                    notification.id,
+                                  );
+                              final canTap =
+                                  !isProcessing &&
+                                  (!notification.isRead || canOpenDestination);
+
+                              return _NotificationCard(
+                                notification: notification,
+                                isProcessing: isProcessing,
+                                interactionHint: _interactionHint(
+                                  notification,
+                                  canOpenDestination,
+                                ),
+                                onTap: canTap
+                                    ? () => _handleNotificationTap(notification)
+                                    : null,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NotificationsHeader extends StatelessWidget {
+  const _NotificationsHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NotificationsCubit, NotificationsState>(
+      builder: (context, state) {
+        final loadedState = state is NotificationsLoaded ? state : null;
+        final unreadCount = loadedState?.unreadCount ?? 0;
+
+        return Container(
+          key: const Key('customer-notifications-header'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Material(
+                    color: CustomerHomeV1Tokens.mint,
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      key: const Key('customer-notifications-back-button'),
+                      tooltip: 'Geri',
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        color: CustomerHomeV1Tokens.petrol,
+                        size: 21,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: CustomerHomeV1Tokens.space12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Bildirimlerim',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: CustomerHomeV1Tokens.navy,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: CustomerHomeV1Tokens.space4),
+                        Text(
+                          unreadCount > 0
+                              ? '$unreadCount okunmamış bildirim'
+                              : 'Alışveriş ve mesaj gelişmelerini takip et',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.muted,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: unreadCount > 0
+                          ? const Color(0xFFFFE4DE)
+                          : CustomerHomeV1Tokens.mint,
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius12,
+                      ),
+                    ),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Center(
+                          child: Icon(
+                            Iconsax.notification,
+                            color: unreadCount > 0
+                                ? CustomerHomeV1Tokens.coral
+                                : CustomerHomeV1Tokens.petrol,
+                            size: 21,
+                          ),
+                        ),
+                        if (unreadCount > 0)
+                          Positioned(
+                            right: -3,
+                            top: -3,
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                minWidth: 18,
+                                minHeight: 18,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: CustomerHomeV1Tokens.coral,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                unreadCount > 99 ? '99+' : '$unreadCount',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (unreadCount > 0) ...[
+                const SizedBox(height: CustomerHomeV1Tokens.space8),
+                Align(
+                  alignment: Alignment.centerRight,
                   child: TextButton.icon(
                     key: const Key('mark-all-notifications-read-button'),
                     onPressed:
-                        state.isMarkingAllAsRead ||
-                            state.markingAsReadIds.isNotEmpty
+                        loadedState!.isMarkingAllAsRead ||
+                            loadedState.markingAsReadIds.isNotEmpty
                         ? null
                         : () => context
                               .read<NotificationsCubit>()
                               .markAllAsRead(),
-                    icon: state.isMarkingAllAsRead
+                    style: TextButton.styleFrom(
+                      foregroundColor: CustomerHomeV1Tokens.petrol,
+                      disabledForegroundColor: CustomerHomeV1Tokens.muted,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CustomerHomeV1Tokens.space12,
+                        vertical: CustomerHomeV1Tokens.space8,
+                      ),
+                    ),
+                    icon: loadedState.isMarkingAllAsRead
                         ? const SizedBox.square(
                             dimension: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: CustomerHomeV1Tokens.petrol,
+                            ),
                           )
-                        : const Icon(Icons.done_all_rounded),
-                    label: const Text('Tümünü oku'),
+                        : const Icon(Icons.done_all_rounded, size: 19),
+                    label: const Text(
+                      'Tümünü oku',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
                   ),
-                );
-              },
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _NotificationsLoadingState extends StatelessWidget {
+  const _NotificationsLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('customer-notifications-loading-state'),
+        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomerHomeV1Tokens.space24,
+          vertical: CustomerHomeV1Tokens.space20,
+        ),
+        decoration: BoxDecoration(
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          border: Border.all(color: CustomerHomeV1Tokens.border),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: CustomerHomeV1Tokens.petrol,
+              ),
+            ),
+            SizedBox(width: CustomerHomeV1Tokens.space12),
+            Flexible(
+              child: Text(
+                'Bildirimlerin yükleniyor',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
-        ),
-        body: BlocBuilder<NotificationsCubit, NotificationsState>(
-          builder: (context, state) {
-            if (state is NotificationsInitial ||
-                state is NotificationsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is NotificationsError) {
-              return _NotificationStatus(
-                icon: Icons.notifications_off_outlined,
-                title: 'Bildirimlerin yüklenemedi',
-                description: state.message,
-                actionLabel: 'Tekrar Dene',
-                onAction: () => context
-                    .read<NotificationsCubit>()
-                    .getNotifications(refresh: true),
-              );
-            }
-
-            if (state is! NotificationsLoaded) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state.notifications.isEmpty) {
-              return _NotificationStatus(
-                icon: Icons.notifications_none,
-                title: 'Henüz bildirimin yok',
-                description:
-                    'Alışveriş, mesaj ve kampanya bildirimlerin burada görünecek.',
-                actionLabel: 'Yenile',
-                onAction: () => context
-                    .read<NotificationsCubit>()
-                    .getNotifications(refresh: true),
-              );
-            }
-
-            return RefreshIndicator(
-              onRefresh: () => context
-                  .read<NotificationsCubit>()
-                  .getNotifications(refresh: true),
-              child: ListView.separated(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
-                itemCount: state.notifications.length + 1,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                itemBuilder: (context, index) {
-                  if (index == state.notifications.length) {
-                    return _NotificationsListFooter(state: state);
-                  }
-
-                  final notification = state.notifications[index];
-                  final canOpenDestination = _canOpenDestination(notification);
-                  final isProcessing =
-                      state.isMarkingAllAsRead ||
-                      state.markingAsReadIds.contains(notification.id) ||
-                      _openingNotificationIds.contains(notification.id);
-                  final canTap =
-                      !isProcessing &&
-                      (!notification.isRead || canOpenDestination);
-
-                  return _NotificationCard(
-                    notification: notification,
-                    isProcessing: isProcessing,
-                    interactionHint: _interactionHint(
-                      notification,
-                      canOpenDestination,
-                    ),
-                    onTap: canTap
-                        ? () => _handleNotificationTap(notification)
-                        : null,
-                  );
-                },
-              ),
-            );
-          },
         ),
       ),
     );
@@ -321,7 +546,6 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final typePresentation = _NotificationTypePresentation.from(
       notification.type,
     );
@@ -338,19 +562,20 @@ class _NotificationCard extends StatelessWidget {
         child: InkWell(
           key: Key('notification-card-${notification.id}'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
           child: Ink(
-            padding: const EdgeInsets.all(TSizes.md),
+            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
             decoration: BoxDecoration(
-              color: notification.isRead
-                  ? colorScheme.surface
-                  : colorScheme.primaryContainer.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
+              color: CustomerHomeV1Tokens.surface,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius20,
+              ),
               border: Border.all(
                 color: notification.isRead
-                    ? colorScheme.outlineVariant
-                    : colorScheme.primary.withValues(alpha: 0.35),
+                    ? CustomerHomeV1Tokens.border
+                    : CustomerHomeV1Tokens.petrol.withValues(alpha: 0.3),
               ),
+              boxShadow: CustomerHomeV1Tokens.softShadow,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,16 +584,17 @@ class _NotificationCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
+                    color: typePresentation.background,
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     typePresentation.icon,
-                    color: colorScheme.onPrimaryContainer,
+                    color: typePresentation.accent,
+                    size: 22,
                   ),
                 ),
-                const SizedBox(width: TSizes.spaceBtwItems),
+                const SizedBox(width: CustomerHomeV1Tokens.space12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,68 +605,93 @@ class _NotificationCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               notification.title,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.navy,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                height: 1.25,
+                              ),
                             ),
                           ),
                           if (isProcessing) ...[
-                            const SizedBox(width: TSizes.sm),
+                            const SizedBox(width: CustomerHomeV1Tokens.space8),
                             const SizedBox.square(
                               key: Key('notification-read-progress'),
                               dimension: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: CustomerHomeV1Tokens.petrol,
+                              ),
                             ),
                           ] else if (!notification.isRead) ...[
-                            const SizedBox(width: TSizes.sm),
+                            const SizedBox(width: CustomerHomeV1Tokens.space8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: TSizes.sm,
-                                vertical: TSizes.xs,
+                                horizontal: CustomerHomeV1Tokens.space8,
+                                vertical: CustomerHomeV1Tokens.space4,
                               ),
                               decoration: BoxDecoration(
-                                color: colorScheme.primary,
-                                borderRadius: BorderRadius.circular(999),
+                                color: CustomerHomeV1Tokens.coral,
+                                borderRadius: BorderRadius.circular(
+                                  CustomerHomeV1Tokens.radiusPill,
+                                ),
                               ),
-                              child: Text(
+                              child: const Text(
                                 'Yeni',
-                                style: Theme.of(context).textTheme.labelSmall
-                                    ?.copyWith(
-                                      color: colorScheme.onPrimary,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                           ],
                         ],
                       ),
-                      const SizedBox(height: TSizes.xs),
+                      const SizedBox(height: CustomerHomeV1Tokens.space8),
                       Text(
                         notification.body,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 12,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: TSizes.sm),
+                      const SizedBox(height: CustomerHomeV1Tokens.space12),
                       Wrap(
-                        spacing: TSizes.sm,
-                        runSpacing: TSizes.xs,
+                        spacing: CustomerHomeV1Tokens.space8,
+                        runSpacing: CustomerHomeV1Tokens.space4,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text(
-                            typePresentation.label,
-                            style: Theme.of(context).textTheme.labelMedium
-                                ?.copyWith(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: CustomerHomeV1Tokens.space8,
+                              vertical: CustomerHomeV1Tokens.space4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: typePresentation.background,
+                              borderRadius: BorderRadius.circular(
+                                CustomerHomeV1Tokens.radiusPill,
+                              ),
+                            ),
+                            child: Text(
+                              typePresentation.label,
+                              style: TextStyle(
+                                color: typePresentation.accent,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
                           if (createdAt != null)
                             Text(
                               _formatDate(createdAt),
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.muted,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                         ],
                       ),
@@ -472,29 +723,42 @@ class _NotificationsListFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     if (state.isLoadingMore) {
       return const Padding(
-        padding: EdgeInsets.symmetric(vertical: TSizes.md),
-        child: Center(child: CircularProgressIndicator()),
+        padding: EdgeInsets.symmetric(vertical: CustomerHomeV1Tokens.space16),
+        child: Center(
+          child: CircularProgressIndicator(color: CustomerHomeV1Tokens.petrol),
+        ),
       );
     }
 
     if (state.loadMoreError != null) {
-      return Column(
-        children: [
-          Text(
-            state.loadMoreError!,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          TextButton(
-            onPressed: () =>
-                context.read<NotificationsCubit>().loadMoreNotifications(),
-            child: const Text('Tekrar Dene'),
-          ),
-        ],
+      return Container(
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+        decoration: BoxDecoration(
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+          border: Border.all(color: CustomerHomeV1Tokens.border),
+        ),
+        child: Column(
+          children: [
+            Text(
+              state.loadMoreError!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: CustomerHomeV1Tokens.muted,
+                fontSize: 12,
+              ),
+            ),
+            TextButton(
+              onPressed: () =>
+                  context.read<NotificationsCubit>().loadMoreNotifications(),
+              child: const Text('Tekrar Dene'),
+            ),
+          ],
+        ),
       );
     }
 
-    return const SizedBox(height: TSizes.sm);
+    return const SizedBox(height: CustomerHomeV1Tokens.space8);
   }
 }
 
@@ -515,38 +779,75 @@ class _NotificationStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 64, color: colorScheme.primary),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: TSizes.sm),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-notifications-status'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 29, color: CustomerHomeV1Tokens.petrol),
               ),
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            FilledButton.icon(
-              onPressed: onAction,
-              icon: const Icon(Icons.refresh),
-              label: Text(actionLabel),
-            ),
-          ],
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 12.5,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space20),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onAction,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CustomerHomeV1Tokens.petrol,
+                    side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: CustomerHomeV1Tokens.space12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius12,
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.refresh_rounded, size: 19),
+                  label: Text(actionLabel),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -557,28 +858,40 @@ class _NotificationTypePresentation {
   const _NotificationTypePresentation({
     required this.icon,
     required this.label,
+    required this.accent,
+    required this.background,
   });
 
   final IconData icon;
   final String label;
+  final Color accent;
+  final Color background;
 
   factory _NotificationTypePresentation.from(NotificationType type) {
     return switch (type) {
       NotificationType.order => const _NotificationTypePresentation(
         icon: Icons.receipt_long_outlined,
         label: 'Alışveriş',
+        accent: CustomerHomeV1Tokens.petrol,
+        background: CustomerHomeV1Tokens.mint,
       ),
       NotificationType.promotion => const _NotificationTypePresentation(
         icon: Icons.local_offer_outlined,
         label: 'Kampanya',
+        accent: CustomerHomeV1Tokens.coral,
+        background: Color(0xFFFFE4DE),
       ),
       NotificationType.chat => const _NotificationTypePresentation(
-        icon: Icons.chat_bubble_outline,
+        icon: Icons.chat_bubble_outline_rounded,
         label: 'Mesaj',
+        accent: Color(0xFF3F6E9C),
+        background: Color(0xFFE6F0F9),
       ),
       NotificationType.system => const _NotificationTypePresentation(
-        icon: Icons.info_outline,
+        icon: Icons.info_outline_rounded,
         label: 'Bilgilendirme',
+        accent: Color(0xFFA66A00),
+        background: Color(0xFFFFF0C7),
       ),
     };
   }
