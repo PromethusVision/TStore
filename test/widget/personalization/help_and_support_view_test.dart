@@ -22,6 +22,10 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
+    expect(find.byKey(const Key('customer-help-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-help-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-help-hero')), findsOneWidget);
+    expect(find.byKey(const Key('customer-help-scroll')), findsOneWidget);
     expect(find.text('Yardım ve Destek'), findsOneWidget);
     expect(find.text('Nasıl yardımcı olabiliriz?'), findsOneWidget);
     expect(find.text('Kargo Bekleme, Esnafta Var.'), findsOneWidget);
@@ -40,6 +44,13 @@ void main() {
     expect(find.text('Esnafta Var nasıl çalışır?'), findsOneWidget);
     expect(find.text('Sepet ve QR ne işe yarar?'), findsOneWidget);
     expect(find.text('İade taleplerime nereden ulaşırım?'), findsOneWidget);
+    expect(find.byKey(const Key('customer-help-faq-list')), findsOneWidget);
+    expect(find.byKey(const Key('customer-help-contact-card')), findsOneWidget);
+    expect(
+      find.text('Musaki Software destek ekibine e-posta ile ulaşabilirsin.'),
+      findsOneWidget,
+    );
+    expect(find.text('info@esnaftavar.com'), findsOneWidget);
   });
 
   testWidgets('sık sorulan sorunun cevabını açıp kapatır', (tester) async {
