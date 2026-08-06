@@ -101,6 +101,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('customer-purchases-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-purchases-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-purchases-tab-bar')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-purchase-card-purchase-1')),
+      findsOneWidget,
+    );
     expect(find.text('Alışverişlerim'), findsNWidgets(2));
     expect(find.text('İade Taleplerim'), findsOneWidget);
     expect(find.text('İade Talebi Oluştur'), findsOneWidget);
@@ -110,6 +117,79 @@ void main() {
     expect(find.text('Onaylandı'), findsOneWidget);
     expect(find.text('Mağazayı Gör'), findsOneWidget);
     expect(find.text('Esnafa Puan Ver'), findsOneWidget);
+  });
+
+  testWidgets('yükleniyor durumunu müşteri kabuğunda gösterir', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: PurchaseHistoryLoading(),
+    );
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pump();
+    expect(
+      find.byKey(const Key('customer-purchases-loading-state')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('hata durumunda yeniden deneme sunar', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: const PurchaseHistoryError(
+        'Alışverişlerin şu anda yüklenemedi.',
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('customer-purchases-state')), findsOneWidget);
+    expect(find.text('Alışverişlerin yüklenemedi'), findsOneWidget);
+    expect(find.text('Tekrar Dene'), findsOneWidget);
+  });
+
+  testWidgets('boş alışveriş durumunu müşteri kabuğunda gösterir', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: const PurchaseHistoryLoaded([]),
+    );
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('customer-purchases-state')), findsOneWidget);
+    expect(find.text('Henüz doğrulanmış alışverişin yok'), findsOneWidget);
+  });
+
+  testWidgets('320 piksel genişlikte taşma yapmaz', (tester) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('customer-purchase-card-purchase-1')),
+      findsOneWidget,
+    );
+    await tester.ensureVisible(
+      find.byKey(const Key('purchase-shop-rating-open-action')),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('mağazayı gör bağlantısı doğru mağaza profilini açar', (
@@ -561,6 +641,19 @@ void main() {
 
     await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
     await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-shop-rating-sheet')), findsOneWidget);
+    expect(find.byKey(const Key('purchase-rating-header')), findsOneWidget);
+    expect(find.byKey(const Key('purchase-rating-stars-card')), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const Key('purchase-shop-rating-submit-action')),
+          )
+          .onPressed,
+      isNull,
+    );
+
     await tester.tap(find.byKey(const Key('purchase-shop-rating-star-4')));
     await tester.pump();
 
@@ -574,6 +667,115 @@ void main() {
     verify(
       () => shopRatingCubit.submitRating(qrSessionId: 'session-1', rating: 4),
     ).called(1);
+  });
+
+  testWidgets('puanlama hatasını güvenli biçimde gösterir', (tester) async {
+    whenListen(
+      shopRatingCubit,
+      const Stream<ShopRatingState>.empty(),
+      initialState: const ShopRatingFailure('Puan şu anda gönderilemedi.'),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-rating-error')), findsOneWidget);
+    expect(find.text('Puan şu anda gönderilemedi.'), findsOneWidget);
+    expect(find.byKey(const Key('purchase-shop-rating-sheet')), findsOneWidget);
+  });
+
+  testWidgets('puan gönderilirken ikinci işlem ve kapatmayı engeller', (
+    tester,
+  ) async {
+    whenListen(
+      shopRatingCubit,
+      const Stream<ShopRatingState>.empty(),
+      initialState: ShopRatingSubmitting(),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
+    await tester.pump();
+
+    expect(find.byKey(const Key('purchase-rating-progress')), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const Key('purchase-shop-rating-submit-action')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester
+          .widget<IconButton>(
+            find.byKey(const Key('purchase-shop-rating-close-action')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('purchase-shop-rating-cancel-action')),
+          )
+          .onPressed,
+      isNull,
+    );
+  });
+
+  testWidgets('puan penceresini göndermeden kapatır', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('purchase-shop-rating-close-action')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-shop-rating-sheet')), findsNothing);
+    verifyNever(
+      () => shopRatingCubit.submitRating(
+        qrSessionId: any(named: 'qrSessionId'),
+        rating: any(named: 'rating'),
+      ),
+    );
+  });
+
+  testWidgets('puan penceresi 320 piksel genişlikte taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('purchase-shop-rating-cancel-action')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-rating-header')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('puanlanmış alışverişte puanı gösterir ve bağlantıyı gizler', (
@@ -634,6 +836,10 @@ void main() {
     await tester.tap(find.byKey(const Key('purchase-shop-rating-open-action')));
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('purchase-rating-success-content')),
+      findsOneWidget,
+    );
     expect(find.text('Puanınız kaydedildi'), findsOneWidget);
     await tester.tap(
       find.byKey(const Key('purchase-shop-rating-success-close')),
