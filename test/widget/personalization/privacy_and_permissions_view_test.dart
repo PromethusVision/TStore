@@ -140,7 +140,7 @@ void main() {
 
     expect(find.text('KVKK Aydınlatma Metni'), findsWidgets);
 
-    await tester.pageBack();
+    await tester.tap(find.byKey(const Key('customer-legal-back')));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.byKey(const Key('privacy-terms-action')),

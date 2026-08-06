@@ -93,6 +93,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(KvkkInformationView), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-list')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-legal-introduction')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('customer-legal-section-0')), findsOneWidget);
     expect(find.text('KVKK Aydınlatma Metni'), findsOneWidget);
     expect(find.textContaining('Musaki Software'), findsWidgets);
     expect(
@@ -100,7 +108,7 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.pageBack();
+    await tester.tap(find.byKey(const Key('customer-legal-back')));
     await tester.pumpAndSettle();
 
     await tester.ensureVisible(find.byKey(const Key('open-terms-of-use')));
@@ -108,6 +116,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(TermsOfUseView), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-list')), findsOneWidget);
     expect(find.text('Kullanım Koşulları'), findsOneWidget);
     expect(
       find.text('Metin sürümü: ${LegalDocumentVersions.termsOfUse}'),
@@ -202,6 +213,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('customer-legal-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-legal-list')), findsOneWidget);
     expect(find.text('KVKK Aydınlatma Metni'), findsOneWidget);
   });
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 
 class KvkkInformationView extends StatelessWidget {
@@ -211,58 +211,248 @@ class _LegalDocumentScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: ListView(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(TSizes.md),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withValues(alpha: 0.45),
-              borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
-              border: Border.all(color: colorScheme.outlineVariant),
-            ),
+      backgroundColor: CustomerHomeV1Tokens.cream,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('customer-legal-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  introduction,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    0,
+                  ),
+                  child: _LegalHeader(title: title),
                 ),
-                const SizedBox(height: TSizes.sm),
-                Text(
-                  'Metin sürümü: $version',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                Expanded(
+                  child: ListView(
+                    key: const Key('customer-legal-list'),
+                    padding: const EdgeInsets.fromLTRB(
+                      CustomerHomeV1Tokens.space16,
+                      CustomerHomeV1Tokens.space4,
+                      CustomerHomeV1Tokens.space16,
+                      CustomerHomeV1Tokens.space24,
+                    ),
+                    children: [
+                      _LegalIntroductionCard(
+                        introduction: introduction,
+                        version: version,
+                      ),
+                      const SizedBox(height: CustomerHomeV1Tokens.space20),
+                      for (var index = 0; index < sections.length; index++) ...[
+                        _LegalSectionCard(
+                          key: Key('customer-legal-section-$index'),
+                          section: sections[index],
+                        ),
+                        if (index != sections.length - 1)
+                          const SizedBox(height: CustomerHomeV1Tokens.space12),
+                      ],
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          for (final section in sections) ...[
-            Text(
-              section.title,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegalHeader extends StatelessWidget {
+  const _LegalHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-legal-header'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            key: const Key('customer-legal-back'),
+            onPressed: () => Navigator.of(context).maybePop(),
+            tooltip: 'Geri',
+            style: IconButton.styleFrom(
+              backgroundColor: CustomerHomeV1Tokens.mint,
+              foregroundColor: CustomerHomeV1Tokens.petrol,
             ),
-            const SizedBox(height: TSizes.sm),
-            for (final paragraph in section.paragraphs) ...[
-              SelectableText(
-                paragraph,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  height: 1.5,
-                  color: colorScheme.onSurfaceVariant,
+            icon: const Icon(Icons.arrow_back_rounded),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: CustomerHomeV1Tokens.navy,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          Container(
+            width: 42,
+            height: 42,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFE4DE),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.policy_outlined,
+              color: CustomerHomeV1Tokens.coral,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegalIntroductionCard extends StatelessWidget {
+  const _LegalIntroductionCard({
+    required this.introduction,
+    required this.version,
+  });
+
+  final String introduction;
+  final String version;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-legal-introduction'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space20),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.petrol,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius24),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.14),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.shield_outlined, color: Colors.white),
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          Text(
+            introduction,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: CustomerHomeV1Tokens.space12,
+              vertical: CustomerHomeV1Tokens.space8,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radiusPill,
+              ),
+            ),
+            child: Text(
+              'Metin sürümü: $version',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegalSectionCard extends StatelessWidget {
+  const _LegalSectionCard({super.key, required this.section});
+
+  final _LegalSectionData section;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  size: 19,
+                  color: CustomerHomeV1Tokens.petrol,
                 ),
               ),
-              const SizedBox(height: TSizes.sm),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    section.title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
             ],
-            const SizedBox(height: TSizes.spaceBtwItems),
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          for (var index = 0; index < section.paragraphs.length; index++) ...[
+            SelectableText(
+              section.paragraphs[index],
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                height: 1.55,
+                color: CustomerHomeV1Tokens.muted,
+              ),
+            ),
+            if (index != section.paragraphs.length - 1)
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
           ],
         ],
       ),
