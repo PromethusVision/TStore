@@ -54,6 +54,118 @@ void main() {
     );
   }
 
+  testWidgets('konuşmaları mesaj, tarih ve okunmamış sayısıyla gösterir', (
+    tester,
+  ) async {
+    final datedThread = ChatThreadEntity(
+      otherUserId: 'owner-dated',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Ürününüz mağazada hazırlandı.',
+      lastMessageAt: DateTime(2026, 7, 20, 14, 30),
+      unreadCount: 2,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: ChatConversationsLoaded([datedThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('customer-conversations-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-conversations-header')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-conversations-list')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('conversation-card-owner-dated')),
+      findsOneWidget,
+    );
+    expect(find.text('Mesajlarım'), findsOneWidget);
+    expect(find.text('2 okunmamış mesaj'), findsOneWidget);
+    expect(find.text('Mahalle Marketi'), findsOneWidget);
+    expect(find.text('Ürününüz mağazada hazırlandı.'), findsOneWidget);
+    expect(find.text('20.07.2026'), findsOneWidget);
+    expect(find.text('2'), findsNWidgets(2));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
+    await tester.pumpWidget(buildSubject(state: ChatConversationsLoading()));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-conversations-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Mesajların yükleniyor'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('yükleme hatasında yeniden deneme sunar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        state: const ChatConversationsError('Mesajların şu anda yüklenemiyor.'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('customer-conversations-status')),
+      findsOneWidget,
+    );
+    expect(find.text('Mesajların yüklenemedi'), findsOneWidget);
+    expect(find.text('Mesajların şu anda yüklenemiyor.'), findsOneWidget);
+
+    await tester.tap(find.text('Tekrar Dene'));
+    await tester.pump();
+
+    verify(() => conversationsCubit.refreshConversations()).called(1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('dar ekranda uzun konuşma bilgileri taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 560);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final longThread = ChatThreadEntity(
+      otherUserId: 'owner-responsive',
+      displayName: 'Mahalledeki Çok Uzun İsimli Elektronik Mağazası',
+      lastMessage:
+          'Aradığınız ürün hazırlandı, mağazamıza geldiğinizde yardımcı olabiliriz.',
+      lastMessageAt: DateTime(2026, 7, 21),
+      unreadCount: 125,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: ChatConversationsLoaded([longThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('conversation-card-owner-responsive')),
+      findsOneWidget,
+    );
+    expect(find.text('99+'), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('ekran açıkken listeyi on beş saniyede sessizce yeniler', (
     tester,
   ) async {
