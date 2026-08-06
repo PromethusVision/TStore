@@ -73,10 +73,15 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(find.byKey(const Key('customer-ratings-content')), findsOneWidget);
+      expect(find.byKey(const Key('customer-ratings-header')), findsOneWidget);
+      expect(find.byKey(const Key('customer-ratings-list')), findsOneWidget);
       expect(find.text('Değerlendirmelerim'), findsOneWidget);
       expect(find.text('Yeni Değerlendirme'), findsOneWidget);
       expect(find.text('Eski Değerlendirme'), findsOneWidget);
       expect(find.text('Puanlanmamış Mağaza'), findsNothing);
+      expect(find.byKey(const Key('customer-rating-newer')), findsOneWidget);
+      expect(find.byKey(const Key('customer-rating-older')), findsOneWidget);
       expect(find.text('5/5'), findsOneWidget);
       expect(find.text('3/5'), findsOneWidget);
       expect(find.text('2 ürün • 150,50 TL'), findsNWidgets(2));
@@ -101,7 +106,84 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('customer-ratings-state')), findsOneWidget);
     expect(find.text('Henüz değerlendirme yapmadınız'), findsOneWidget);
     expect(find.text('Alışverişlerime Git'), findsOneWidget);
+  });
+
+  testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: PurchaseHistoryLoading(),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: CustomerRatingsView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-ratings-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Değerlendirmelerin yükleniyor'), findsOneWidget);
+  });
+
+  testWidgets('hata durumunda yeniden deneme seçeneğini gösterir', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: const PurchaseHistoryError('Bağlantını kontrol et.'),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: CustomerRatingsView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+    clearInteractions(cubit);
+
+    expect(find.byKey(const Key('customer-ratings-state')), findsOneWidget);
+    expect(find.text('Değerlendirmelerin yüklenemedi'), findsOneWidget);
+    expect(find.text('Bağlantını kontrol et.'), findsOneWidget);
+
+    await tester.tap(find.text('Tekrar Dene'));
+    await tester.pump();
+
+    verify(() => cubit.loadPurchases()).called(1);
+  });
+
+  testWidgets('dar ekranda taşma olmadan değerlendirmeyi gösterir', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 720);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final ratedPurchase = purchase(
+      id: 'responsive',
+      shopName: 'Mahalle Esnafı ve Uzun Mağaza Adı',
+      confirmedAt: DateTime.utc(2026, 7, 18, 10),
+      rating: 4,
+      ratedAt: DateTime.utc(2026, 7, 19, 10),
+    );
+    whenListen(
+      cubit,
+      const Stream<PurchaseHistoryState>.empty(),
+      initialState: PurchaseHistoryLoaded([ratedPurchase]),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: CustomerRatingsView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-rating-responsive')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
