@@ -76,6 +76,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('customer-saved-locations-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-saved-locations-header')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-saved-locations-status')),
+      findsOneWidget,
+    );
     expect(find.text('Kayıtlı Konumlarım'), findsOneWidget);
     expect(find.text('Henüz kayıtlı konumun yok'), findsOneWidget);
     expect(find.text('Mevcut Konumumu Kaydet'), findsOneWidget);
@@ -90,6 +102,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('customer-saved-locations-list')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('saved-location-card-location-1')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('saved-location-card-location-2')),
+      findsOneWidget,
+    );
     expect(find.text('Ev'), findsOneWidget);
     expect(find.text('Esenler, İstanbul'), findsOneWidget);
     expect(find.text('İş'), findsOneWidget);
@@ -112,6 +136,7 @@ void main() {
     await tester.tap(find.text('Mevcut Konumumu Kaydet'));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('saved-location-add-sheet')), findsOneWidget);
     await tester.enterText(
       find.byKey(const Key('saved-location-name-field')),
       'Ev',
@@ -195,5 +220,50 @@ void main() {
     await tester.pump();
 
     verify(() => cubit.loadLocations()).called(2);
+  });
+
+  testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(const CustomerSavedLocationsLoading()),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-saved-locations-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Konumların yükleniyor'), findsOneWidget);
+  });
+
+  testWidgets('dar ekranda uzun konum bilgileri taşma yapmaz', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 620);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    const longLocation = CustomerSavedLocationEntity(
+      id: 'location-responsive',
+      userId: 'customer-1',
+      name: 'Ailemin Sık Kullandığı Uzun İsimli Konum',
+      addressText:
+          '15 Temmuz Mahallesi, Esenler Teknopark çevresi, Esenler, İstanbul',
+      latitude: 41.043,
+      longitude: 28.876,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const CustomerSavedLocationsLoaded(locations: [longLocation]),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('saved-location-card-location-responsive')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
   });
 }

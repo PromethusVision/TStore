@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/personalization/domain/entities/customer_saved_location_entity.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_state.dart';
@@ -32,88 +32,78 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kayıtlı Konumlarım')),
-      floatingActionButton:
-          BlocBuilder<CustomerSavedLocationsCubit, CustomerSavedLocationsState>(
-            builder: (context, state) {
-              if (state is! CustomerSavedLocationsLoaded ||
-                  state.locations.isEmpty) {
-                return const SizedBox.shrink();
-              }
+      backgroundColor: CustomerHomeV1Tokens.cream,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('customer-saved-locations-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    0,
+                  ),
+                  child: _SavedLocationsHeader(),
+                ),
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                Expanded(
+                  child:
+                      BlocBuilder<
+                        CustomerSavedLocationsCubit,
+                        CustomerSavedLocationsState
+                      >(
+                        builder: (context, state) {
+                          if (state is CustomerSavedLocationsInitial ||
+                              state is CustomerSavedLocationsLoading) {
+                            return const _SavedLocationsLoadingState();
+                          }
 
-              return FloatingActionButton.extended(
-                key: const Key('saved-location-add-button'),
-                onPressed: state.isBusy
-                    ? null
-                    : () => _openAddLocation(context),
-                icon: const Icon(Icons.add_location_alt_outlined),
-                label: const Text('Konum Ekle'),
-              );
-            },
-          ),
-      body: BlocBuilder<CustomerSavedLocationsCubit, CustomerSavedLocationsState>(
-        builder: (context, state) {
-          if (state is CustomerSavedLocationsInitial ||
-              state is CustomerSavedLocationsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+                          if (state is CustomerSavedLocationsError) {
+                            return _SavedLocationStatus(
+                              icon: Icons.location_off_outlined,
+                              title: 'Konumların yüklenemedi',
+                              description: state.message,
+                              actionLabel: 'Tekrar Dene',
+                              onAction: () => context
+                                  .read<CustomerSavedLocationsCubit>()
+                                  .loadLocations(),
+                            );
+                          }
 
-          if (state is CustomerSavedLocationsError) {
-            return _SavedLocationStatus(
-              icon: Icons.location_off_outlined,
-              title: 'Konumların yüklenemedi',
-              description: state.message,
-              actionLabel: 'Tekrar Dene',
-              onAction: () =>
-                  context.read<CustomerSavedLocationsCubit>().loadLocations(),
-            );
-          }
+                          final loadedState =
+                              state as CustomerSavedLocationsLoaded;
+                          if (loadedState.locations.isEmpty) {
+                            return _SavedLocationStatus(
+                              icon: Icons.add_location_alt_outlined,
+                              title: 'Henüz kayıtlı konumun yok',
+                              description:
+                                  'Sık kullandığın bir konumu kaydederek daha sonra kolayca seçebilirsin.',
+                              actionLabel: 'Mevcut Konumumu Kaydet',
+                              onAction: loadedState.isBusy
+                                  ? null
+                                  : () => _openAddLocation(context),
+                            );
+                          }
 
-          final loadedState = state as CustomerSavedLocationsLoaded;
-          if (loadedState.locations.isEmpty) {
-            return _SavedLocationStatus(
-              icon: Icons.add_location_alt_outlined,
-              title: 'Henüz kayıtlı konumun yok',
-              description:
-                  'Sık kullandığın bir konumu kaydederek daha sonra kolayca seçebilirsin.',
-              actionLabel: 'Mevcut Konumumu Kaydet',
-              onAction: loadedState.isBusy
-                  ? null
-                  : () => _openAddLocation(context),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () =>
-                context.read<CustomerSavedLocationsCubit>().loadLocations(),
-            child: ListView.separated(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                TSizes.defaultSpace,
-                TSizes.defaultSpace,
-                TSizes.defaultSpace,
-                104,
-              ),
-              itemCount: loadedState.locations.length + 1,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(height: TSizes.spaceBtwItems),
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return const _SavedLocationsInfoCard();
-                }
-
-                final location = loadedState.locations[index - 1];
-                return _SavedLocationCard(
-                  location: location,
-                  isBusy: loadedState.isBusy,
-                  isCurrentOperation: loadedState.busyLocationId == location.id,
-                  onSetDefault: () => _setDefaultLocation(context, location),
-                  onDelete: () => _confirmDelete(context, location),
-                );
-              },
+                          return _SavedLocationsLoadedContent(
+                            state: loadedState,
+                            onAddLocation: () => _openAddLocation(context),
+                            onSetDefault: (location) =>
+                                _setDefaultLocation(context, location),
+                            onDelete: (location) =>
+                                _confirmDelete(context, location),
+                          );
+                        },
+                      ),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -124,6 +114,7 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: const _AddSavedLocationSheet(),
@@ -163,6 +154,10 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: CustomerHomeV1Tokens.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        ),
         title: const Text('Konum silinsin mi?'),
         content: Text('${location.name} kayıtlı konumlardan kaldırılacak.'),
         actions: [
@@ -172,6 +167,9 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: CustomerHomeV1Tokens.coral,
+            ),
             child: const Text('Sil'),
           ),
         ],
@@ -194,29 +192,254 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
   }
 }
 
+class _SavedLocationsHeader extends StatelessWidget {
+  const _SavedLocationsHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-saved-locations-header'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          Material(
+            color: CustomerHomeV1Tokens.mint,
+            shape: const CircleBorder(),
+            child: IconButton(
+              key: const Key('customer-saved-locations-back-button'),
+              tooltip: 'Geri',
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: CustomerHomeV1Tokens.petrol,
+                size: 21,
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Kayıtlı Konumlarım',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: CustomerHomeV1Tokens.navy,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                SizedBox(height: CustomerHomeV1Tokens.space4),
+                Text(
+                  'Yakındaki mağazalar için ana konumunu seç',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: CustomerHomeV1Tokens.muted,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE4DE),
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+            ),
+            child: const Icon(
+              Icons.location_on_outlined,
+              color: CustomerHomeV1Tokens.coral,
+              size: 21,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SavedLocationsLoadingState extends StatelessWidget {
+  const _SavedLocationsLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('customer-saved-locations-loading-state'),
+        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomerHomeV1Tokens.space24,
+          vertical: CustomerHomeV1Tokens.space20,
+        ),
+        decoration: BoxDecoration(
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          border: Border.all(color: CustomerHomeV1Tokens.border),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: CustomerHomeV1Tokens.petrol,
+              ),
+            ),
+            SizedBox(width: CustomerHomeV1Tokens.space12),
+            Flexible(
+              child: Text(
+                'Konumların yükleniyor',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SavedLocationsLoadedContent extends StatelessWidget {
+  const _SavedLocationsLoadedContent({
+    required this.state,
+    required this.onAddLocation,
+    required this.onSetDefault,
+    required this.onDelete,
+  });
+
+  final CustomerSavedLocationsLoaded state;
+  final VoidCallback onAddLocation;
+  final ValueChanged<CustomerSavedLocationEntity> onSetDefault;
+  final ValueChanged<CustomerSavedLocationEntity> onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: RefreshIndicator(
+            color: CustomerHomeV1Tokens.petrol,
+            onRefresh: () =>
+                context.read<CustomerSavedLocationsCubit>().loadLocations(),
+            child: ListView.separated(
+              key: const Key('customer-saved-locations-list'),
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space4,
+                CustomerHomeV1Tokens.space16,
+                CustomerHomeV1Tokens.space12,
+              ),
+              itemCount: state.locations.length + 1,
+              separatorBuilder: (_, _) =>
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return const _SavedLocationsInfoCard();
+                }
+
+                final location = state.locations[index - 1];
+                return _SavedLocationCard(
+                  location: location,
+                  isBusy: state.isBusy,
+                  isCurrentOperation: state.busyLocationId == location.id,
+                  onSetDefault: () => onSetDefault(location),
+                  onDelete: () => onDelete(location),
+                );
+              },
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space8,
+            CustomerHomeV1Tokens.space16,
+            CustomerHomeV1Tokens.space12,
+          ),
+          color: CustomerHomeV1Tokens.cream,
+          child: FilledButton.icon(
+            key: const Key('saved-location-add-button'),
+            onPressed: state.isBusy ? null : onAddLocation,
+            style: FilledButton.styleFrom(
+              backgroundColor: CustomerHomeV1Tokens.petrol,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+              disabledForegroundColor: CustomerHomeV1Tokens.muted,
+              padding: const EdgeInsets.symmetric(
+                vertical: CustomerHomeV1Tokens.space12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  CustomerHomeV1Tokens.radius12,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.add_location_alt_outlined, size: 20),
+            label: const Text('Konum Ekle'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _SavedLocationsInfoCard extends StatelessWidget {
   const _SavedLocationsInfoCard();
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
-      padding: const EdgeInsets.all(TSizes.md),
+      key: const Key('saved-locations-info-card'),
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
       decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
+        color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        border: Border.all(
+          color: CustomerHomeV1Tokens.petrol.withValues(alpha: 0.12),
+        ),
       ),
-      child: Row(
+      child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline, color: colorScheme.onSecondaryContainer),
-          const SizedBox(width: TSizes.sm),
+          Icon(
+            Icons.info_outline_rounded,
+            color: CustomerHomeV1Tokens.petrol,
+            size: 20,
+          ),
+          SizedBox(width: CustomerHomeV1Tokens.space8),
           Expanded(
             child: Text(
               'Kaydettiğin konumlardan birini ana konum olarak belirleyebilirsin.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSecondaryContainer,
+              style: TextStyle(
+                color: CustomerHomeV1Tokens.petrol,
+                fontSize: 11,
+                height: 1.4,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -243,23 +466,21 @@ class _SavedLocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Semantics(
       label:
           '${location.name}, ${location.addressText}${location.isDefault ? ', ana konum' : ''}',
       child: Container(
-        padding: const EdgeInsets.all(TSizes.md),
+        key: Key('saved-location-card-${location.id}'),
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
         decoration: BoxDecoration(
-          color: location.isDefault
-              ? colorScheme.primaryContainer.withValues(alpha: 0.35)
-              : colorScheme.surface,
-          borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
           border: Border.all(
             color: location.isDefault
-                ? colorScheme.primary.withValues(alpha: 0.4)
-                : colorScheme.outlineVariant,
+                ? CustomerHomeV1Tokens.petrol.withValues(alpha: 0.35)
+                : CustomerHomeV1Tokens.border,
           ),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,54 +492,71 @@ class _SavedLocationCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
+                    color: location.isDefault
+                        ? CustomerHomeV1Tokens.mint
+                        : CustomerHomeV1Tokens.cream,
                     shape: BoxShape.circle,
+                    border: Border.all(color: CustomerHomeV1Tokens.border),
                   ),
                   child: Icon(
                     _iconForName(location.name),
-                    color: colorScheme.onPrimaryContainer,
+                    color: CustomerHomeV1Tokens.petrol,
+                    size: 21,
                   ),
                 ),
-                const SizedBox(width: TSizes.spaceBtwItems),
+                const SizedBox(width: CustomerHomeV1Tokens.space12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: Text(
                               location.name,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.navy,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                          if (location.isDefault)
+                          if (location.isDefault) ...[
+                            const SizedBox(width: CustomerHomeV1Tokens.space8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: TSizes.sm,
-                                vertical: TSizes.xs,
+                                horizontal: CustomerHomeV1Tokens.space8,
+                                vertical: CustomerHomeV1Tokens.space4,
                               ),
                               decoration: BoxDecoration(
-                                color: colorScheme.primary,
-                                borderRadius: BorderRadius.circular(999),
+                                color: CustomerHomeV1Tokens.petrol,
+                                borderRadius: BorderRadius.circular(
+                                  CustomerHomeV1Tokens.radiusPill,
+                                ),
                               ),
-                              child: Text(
+                              child: const Text(
                                 'Ana Konum',
-                                style: Theme.of(context).textTheme.labelSmall
-                                    ?.copyWith(
-                                      color: colorScheme.onPrimary,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: TSizes.xs),
+                      const SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(
                         location.addressText,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 11.5,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -326,28 +564,58 @@ class _SavedLocationCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: TSizes.md),
+            const SizedBox(height: CustomerHomeV1Tokens.space12),
+            const Divider(height: 1, color: CustomerHomeV1Tokens.border),
+            const SizedBox(height: CustomerHomeV1Tokens.space8),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if (!location.isDefault)
-                  TextButton.icon(
-                    onPressed: isBusy ? null : onSetDefault,
-                    icon: const Icon(Icons.check_circle_outline),
-                    label: const Text('Ana Konum Yap'),
+                  Expanded(
+                    child: TextButton.icon(
+                      onPressed: isBusy ? null : onSetDefault,
+                      style: TextButton.styleFrom(
+                        foregroundColor: CustomerHomeV1Tokens.petrol,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: CustomerHomeV1Tokens.space8,
+                        ),
+                      ),
+                      icon: const Icon(Icons.check_circle_outline, size: 18),
+                      label: const Text(
+                        'Ana Konum Yap',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  const Expanded(
+                    child: Text(
+                      'Yakındaki sonuçlarda kullanılıyor',
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.green,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                const Spacer(),
                 if (isCurrentOperation)
                   const SizedBox(
                     width: 24,
                     height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: CustomerHomeV1Tokens.petrol,
+                    ),
                   )
                 else
                   IconButton(
                     tooltip: 'Konumu sil',
                     onPressed: isBusy ? null : onDelete,
-                    icon: const Icon(Icons.delete_outline),
+                    color: CustomerHomeV1Tokens.coral,
+                    icon: const Icon(Icons.delete_outline_rounded, size: 20),
                   ),
               ],
             ),
@@ -363,7 +631,7 @@ class _SavedLocationCard extends StatelessWidget {
     if (normalizedName == 'iş' ||
         normalizedName == 'is' ||
         normalizedName.contains('ofis')) {
-      return Icons.work_outline;
+      return Icons.work_outline_rounded;
     }
     return Icons.location_on_outlined;
   }
@@ -394,129 +662,257 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: EdgeInsets.only(
-        left: TSizes.defaultSpace,
-        right: TSizes.defaultSpace,
-        top: TSizes.defaultSpace,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + TSizes.defaultSpace,
-      ),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              Text(
-                'Konum Ekle',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: TSizes.sm),
-              Text(
-                'Konumunu bulduktan sonra kolay hatırlayacağın bir ad ve adres açıklaması ekle.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              TextFormField(
-                key: const Key('saved-location-name-field'),
-                controller: _nameController,
-                textInputAction: TextInputAction.next,
-                maxLength: 50,
-                decoration: const InputDecoration(
-                  labelText: 'Konum Adı',
-                  hintText: 'Ev, İş veya başka bir ad',
-                  prefixIcon: Icon(Icons.label_outline),
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Konum adı gerekli.'
-                    : null,
-              ),
-              const SizedBox(height: TSizes.spaceBtwInputFields),
-              TextFormField(
-                key: const Key('saved-location-address-field'),
-                controller: _addressController,
-                textInputAction: TextInputAction.done,
-                minLines: 2,
-                maxLines: 3,
-                maxLength: 200,
-                decoration: const InputDecoration(
-                  labelText: 'Adres Açıklaması',
-                  hintText: 'Örn. Esenler, İstanbul',
-                  prefixIcon: Icon(Icons.location_on_outlined),
-                  alignLabelWithHint: true,
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Adres açıklaması gerekli.'
-                    : null,
-              ),
-              const SizedBox(height: TSizes.spaceBtwInputFields),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  key: const Key('saved-location-capture-button'),
-                  onPressed: _isLocating || _isSaving ? null : _captureLocation,
-                  icon: _isLocating
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(
-                          _coordinates == null
-                              ? Icons.my_location
-                              : Icons.check_circle,
-                        ),
-                  label: Text(
-                    _coordinates == null
-                        ? 'Mevcut Konumumu Al'
-                        : 'Konum Alındı',
-                  ),
-                ),
-              ),
-              if (_locationError != null) ...[
-                const SizedBox(height: TSizes.sm),
-                Text(
-                  _locationError!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: colorScheme.error),
-                ),
-              ],
-              const SizedBox(height: TSizes.defaultSpace),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  key: const Key('saved-location-save-button'),
-                  onPressed: _isSaving ? null : _save,
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Konumu Kaydet'),
-                ),
-              ),
-            ],
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 430),
+        child: Container(
+          key: const Key('saved-location-add-sheet'),
+          decoration: const BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(CustomerHomeV1Tokens.radius24),
+            ),
           ),
+          padding: EdgeInsets.only(
+            left: CustomerHomeV1Tokens.space20,
+            right: CustomerHomeV1Tokens.space20,
+            top: CustomerHomeV1Tokens.space16,
+            bottom:
+                MediaQuery.viewInsetsOf(context).bottom +
+                CustomerHomeV1Tokens.space20,
+          ),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: CustomerHomeV1Tokens.border,
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radiusPill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  const Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor: CustomerHomeV1Tokens.mint,
+                        child: Icon(
+                          Icons.add_location_alt_outlined,
+                          color: CustomerHomeV1Tokens.petrol,
+                          size: 22,
+                        ),
+                      ),
+                      SizedBox(width: CustomerHomeV1Tokens.space12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Konum Ekle',
+                              style: TextStyle(
+                                color: CustomerHomeV1Tokens.navy,
+                                fontSize: 19,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: CustomerHomeV1Tokens.space4),
+                            Text(
+                              'Mevcut GPS konumunu kaydet',
+                              style: TextStyle(
+                                color: CustomerHomeV1Tokens.muted,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const Text(
+                    'Konumunu bulduktan sonra kolay hatırlayacağın bir ad ve adres açıklaması ekle.',
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.muted,
+                      fontSize: 12,
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  TextFormField(
+                    key: const Key('saved-location-name-field'),
+                    controller: _nameController,
+                    textInputAction: TextInputAction.next,
+                    maxLength: 50,
+                    decoration: _inputDecoration(
+                      label: 'Konum Adı',
+                      hint: 'Ev, İş veya başka bir ad',
+                      icon: Icons.label_outline_rounded,
+                    ),
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Konum adı gerekli.'
+                        : null,
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space8),
+                  TextFormField(
+                    key: const Key('saved-location-address-field'),
+                    controller: _addressController,
+                    textInputAction: TextInputAction.done,
+                    minLines: 2,
+                    maxLines: 3,
+                    maxLength: 200,
+                    decoration: _inputDecoration(
+                      label: 'Adres Açıklaması',
+                      hint: 'Örn. Esenler, İstanbul',
+                      icon: Icons.location_on_outlined,
+                    ).copyWith(alignLabelWithHint: true),
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Adres açıklaması gerekli.'
+                        : null,
+                  ),
+                  const SizedBox(height: CustomerHomeV1Tokens.space8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      key: const Key('saved-location-capture-button'),
+                      onPressed: _isLocating || _isSaving
+                          ? null
+                          : _captureLocation,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: CustomerHomeV1Tokens.petrol,
+                        side: const BorderSide(
+                          color: CustomerHomeV1Tokens.petrol,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: CustomerHomeV1Tokens.space12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radius12,
+                          ),
+                        ),
+                      ),
+                      icon: _isLocating
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: CustomerHomeV1Tokens.petrol,
+                              ),
+                            )
+                          : Icon(
+                              _coordinates == null
+                                  ? Icons.my_location_rounded
+                                  : Icons.check_circle_rounded,
+                            ),
+                      label: Text(
+                        _coordinates == null
+                            ? 'Mevcut Konumumu Al'
+                            : 'Konum Alındı',
+                      ),
+                    ),
+                  ),
+                  if (_locationError != null) ...[
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(
+                        CustomerHomeV1Tokens.space12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFE4DE),
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radius12,
+                        ),
+                      ),
+                      child: Text(
+                        _locationError!,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.coral,
+                          fontSize: 11,
+                          height: 1.35,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      key: const Key('saved-location-save-button'),
+                      onPressed: _isSaving ? null : _save,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: CustomerHomeV1Tokens.petrol,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: CustomerHomeV1Tokens.space12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radius12,
+                          ),
+                        ),
+                      ),
+                      child: _isSaving
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: CustomerHomeV1Tokens.petrol,
+                              ),
+                            )
+                          : const Text('Konumu Kaydet'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration({
+    required String label,
+    required String hint,
+    required IconData icon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      prefixIcon: Icon(icon, color: CustomerHomeV1Tokens.petrol),
+      filled: true,
+      fillColor: CustomerHomeV1Tokens.cream,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        borderSide: const BorderSide(color: CustomerHomeV1Tokens.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        borderSide: const BorderSide(color: CustomerHomeV1Tokens.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        borderSide: const BorderSide(
+          color: CustomerHomeV1Tokens.petrol,
+          width: 1.4,
         ),
       ),
     );
@@ -603,38 +999,80 @@ class _SavedLocationStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 64, color: colorScheme.primary),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: TSizes.sm),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-saved-locations-status'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 29, color: CustomerHomeV1Tokens.petrol),
               ),
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            FilledButton.icon(
-              onPressed: onAction,
-              icon: const Icon(Icons.add_location_alt_outlined),
-              label: Text(actionLabel),
-            ),
-          ],
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 12.5,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space20),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onAction,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CustomerHomeV1Tokens.petrol,
+                    side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: CustomerHomeV1Tokens.space12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius12,
+                      ),
+                    ),
+                  ),
+                  icon: Icon(
+                    actionLabel == 'Tekrar Dene'
+                        ? Icons.refresh_rounded
+                        : Icons.add_location_alt_outlined,
+                    size: 19,
+                  ),
+                  label: Text(actionLabel),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
