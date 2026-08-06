@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +94,13 @@ void main() {
     expect(find.byType(EditProfileBottomSheet), findsOneWidget);
   }
 
+  Future<void> tapSave(WidgetTester tester) async {
+    final saveButton = find.byKey(const Key('edit-profile-save-button'));
+    await tester.ensureVisible(saveButton);
+    await tester.pumpAndSettle();
+    await tester.tap(saveButton);
+  }
+
   testWidgets('geçerli ad ve telefonu kaydedip ekranlara anında yansıtır', (
     tester,
   ) async {
@@ -108,7 +117,7 @@ void main() {
       find.byKey(const Key('edit-profile-phone-field')),
       '  0555 222 33 44  ',
     );
-    await tester.tap(find.byKey(const Key('edit-profile-save-button')));
+    await tapSave(tester);
     await tester.pumpAndSettle();
 
     final captured =
@@ -126,6 +135,14 @@ void main() {
     tester,
   ) async {
     await openEditor(tester);
+
+    expect(find.byKey(const Key('edit-profile-sheet')), findsOneWidget);
+    expect(find.byKey(const Key('edit-profile-header')), findsOneWidget);
+    expect(find.text('Değişiklikleri Kaydet'), findsOneWidget);
+    expect(
+      find.text('E-posta adresin hesap güvenliği için sabittir.'),
+      findsOneWidget,
+    );
 
     final button = tester.widget<FilledButton>(
       find.byKey(const Key('edit-profile-save-button')),
@@ -146,7 +163,7 @@ void main() {
       find.byKey(const Key('edit-profile-phone-field')),
       '12345',
     );
-    await tester.tap(find.byKey(const Key('edit-profile-save-button')));
+    await tapSave(tester);
     await tester.pump();
 
     expect(find.text('Ad soyad boş bırakılamaz'), findsOneWidget);
@@ -170,7 +187,7 @@ void main() {
       'Ayşe Demir',
     );
     await tester.pump();
-    await tester.tap(find.byKey(const Key('edit-profile-save-button')));
+    await tapSave(tester);
     await tester.pumpAndSettle();
 
     expect(profileCubit.state, isA<ProfileError>());
@@ -190,5 +207,69 @@ void main() {
       'Ayşe Demir',
     );
     verifyNever(() => authCubit.syncUserProfile(any()));
+  });
+
+  testWidgets('kapatma düğmesi değişiklik yapmadan hesaba geri döner', (
+    tester,
+  ) async {
+    await openEditor(tester);
+
+    await tester.tap(find.byKey(const Key('edit-profile-close-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EditProfileBottomSheet), findsNothing);
+    expect(find.byKey(const Key('customer-account-content')), findsOneWidget);
+    verifyNever(() => updateProfileUsecase(any()));
+  });
+
+  testWidgets('dar ekranda alanlar kaydırılabilir ve taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await openEditor(tester);
+
+    expect(find.byKey(const Key('edit-profile-header')), findsOneWidget);
+    expect(find.byKey(const Key('edit-profile-phone-field')), findsOneWidget);
+    await tester.ensureVisible(
+      find.byKey(const Key('edit-profile-save-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Değişiklikleri Kaydet'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('kayıt sürerken ikinci gönderimi engeller', (tester) async {
+    final updateResult = Completer<Either<String, UserEntity>>();
+    when(
+      () => updateProfileUsecase(any()),
+    ).thenAnswer((_) => updateResult.future);
+
+    await openEditor(tester);
+    await tester.enterText(
+      find.byKey(const Key('edit-profile-full-name-field')),
+      'Ayşe Demir',
+    );
+    await tapSave(tester);
+    await tester.pump();
+
+    final updatingButton = tester.widget<FilledButton>(
+      find.byKey(const Key('edit-profile-save-button')),
+    );
+    expect(updatingButton.onPressed, isNull);
+    expect(find.text('Kaydediliyor...'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('edit-profile-save-button')));
+    await tester.pump();
+    verify(() => updateProfileUsecase(any())).called(1);
+
+    updateResult.complete(const Right(updatedUser));
+    await tester.pumpAndSettle();
+    expect(find.byType(EditProfileBottomSheet), findsNothing);
   });
 }

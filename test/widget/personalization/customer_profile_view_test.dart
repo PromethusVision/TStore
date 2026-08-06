@@ -27,10 +27,10 @@ void main() {
   }) {
     whenListen(authCubit, const Stream<AuthState>.empty(), initialState: state);
 
-    return MaterialApp(
-      home: BlocProvider<AuthCubit>.value(
-        value: authCubit,
-        child: Scaffold(
+    return BlocProvider<AuthCubit>.value(
+      value: authCubit,
+      child: MaterialApp(
+        home: Scaffold(
           body: SingleChildScrollView(
             child: SettingsViewHeaderSection(currentUserId: currentUserId),
           ),
@@ -65,9 +65,79 @@ void main() {
     expect(find.text('Ayşe Yılmaz'), findsOneWidget);
     expect(find.text('ayse@example.com'), findsOneWidget);
     expect(find.text('+90 555 111 22 33'), findsOneWidget);
+    expect(find.byKey(const Key('customer-account-content')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-account-identity-card')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-account-contact-card')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-account-danger-zone')),
+      findsOneWidget,
+    );
+    expect(find.text('Profil Fotoğrafını Değiştir'), findsNothing);
     expect(find.text('Kullanıcı Adı'), findsNothing);
     expect(find.text('Cinsiyet'), findsNothing);
     expect(find.text('Doğum Tarihi'), findsNothing);
+  });
+
+  testWidgets('hesap bilgileri 320 piksel genişlikte taşma yapmaz', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 760);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    const user = UserEntity(
+      id: 'customer-1',
+      email: 'uzunepostaadresi@example.com',
+      fullName: 'Oldukça Uzun Müşteri Adı Soyadı',
+      phone: '+90 555 111 22 33',
+    );
+
+    await tester.pumpWidget(
+      buildHeader(state: const AuthAuthenticated(user), currentUserId: user.id),
+    );
+    await tester.tap(find.text('Oldukça Uzun Müşteri Adı Soyadı'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-account-content')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('hesabı sil düğmesi korumalı onay penceresini açar', (
+    tester,
+  ) async {
+    const user = UserEntity(
+      id: 'customer-1',
+      email: 'ayse@example.com',
+      fullName: 'Ayşe Yılmaz',
+    );
+
+    await tester.pumpWidget(
+      buildHeader(state: const AuthAuthenticated(user), currentUserId: user.id),
+    );
+    await tester.tap(find.text('Ayşe Yılmaz'));
+    await tester.pumpAndSettle();
+
+    final deleteButton = find.byKey(const Key('delete-account-button'));
+    await tester.ensureVisible(deleteButton);
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('account-deletion-dialog')), findsOneWidget);
+    expect(find.text('Hesabını kalıcı olarak sil'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('account-deletion-cancel-button')));
+    await tester.pumpAndSettle();
+
+    verifyNever(() => authCubit.deleteCurrentCustomerAccount());
   });
 
   testWidgets('eksik profil alanlarında yanıltıcı örnek bilgi göstermez', (

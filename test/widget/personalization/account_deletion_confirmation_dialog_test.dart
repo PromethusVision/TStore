@@ -50,6 +50,14 @@ void main() {
     );
 
     expect(find.textContaining('Bu işlem geri alınamaz.'), findsOneWidget);
+    expect(
+      find.byKey(const Key('account-deletion-warning-card')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('account-deletion-retention-note')),
+      findsOneWidget,
+    );
     expect(confirmButton().onPressed, isNull);
 
     await tester.enterText(
@@ -79,6 +87,23 @@ void main() {
     );
 
     await tester.tap(find.byKey(const Key('account-deletion-cancel-button')));
+    await tester.pumpAndSettle();
+
+    expect(submissionCount, 0);
+    expect(find.byKey(const Key('account-deletion-dialog')), findsNothing);
+  });
+
+  testWidgets('close button leaves the account untouched', (tester) async {
+    var submissionCount = 0;
+    await openDialog(
+      tester,
+      onConfirm: () async {
+        submissionCount += 1;
+        return null;
+      },
+    );
+
+    await tester.tap(find.byKey(const Key('account-deletion-close-button')));
     await tester.pumpAndSettle();
 
     expect(submissionCount, 0);
@@ -121,6 +146,22 @@ void main() {
           .enabled,
       isFalse,
     );
+    expect(
+      tester
+          .widget<IconButton>(
+            find.byKey(const Key('account-deletion-close-button')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('account-deletion-cancel-button')),
+          )
+          .onPressed,
+      isNull,
+    );
 
     result.complete(null);
     await tester.pumpAndSettle();
@@ -155,5 +196,26 @@ void main() {
           .onPressed,
       isNotNull,
     );
+  });
+
+  testWidgets('stays scrollable without overflow on a narrow screen', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await openDialog(tester, onConfirm: () async => null);
+
+    expect(find.byKey(const Key('account-deletion-header')), findsOneWidget);
+    await tester.ensureVisible(
+      find.byKey(const Key('account-deletion-confirm-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Hesabımı Sil'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

@@ -6,7 +6,6 @@ import 'package:t_store/core/common/widgets/section_heading.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/personalization/presentation/view_models/profile_entity_tile_model.dart';
-import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/profile_entity_tile_list.dart';
 
 class ProfileInformationSection extends StatelessWidget {
@@ -39,13 +38,16 @@ class ProfileInformationSection extends StatelessWidget {
             ],
           ),
         ),
-        const SpaceBetweenSectionsWithDivider(),
+        const SizedBox(height: TSizes.spaceBtwItems / 1.5),
+        const Divider(),
+        const SizedBox(height: TSizes.spaceBtwItems / 1.5),
         SectionHeading(
-            sectionHeadingModel: SectionHeadingModel(
-                title: "Profil Bilgileri", showActionButton: false)),
-        const SizedBox(
-          height: TSizes.spaceBtwItems / 1.5,
+          sectionHeadingModel: SectionHeadingModel(
+            title: "Profil Bilgileri",
+            showActionButton: false,
+          ),
         ),
+        const SizedBox(height: TSizes.spaceBtwItems / 1.5),
         ProfileEntityTileList(profileEntityTileModelList: profileInformation),
       ],
     );
