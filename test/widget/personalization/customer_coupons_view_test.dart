@@ -13,6 +13,9 @@ void main() {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('customer-coupons-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-coupons-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-coupons-tab-bar')), findsOneWidget);
     expect(find.text('Kuponlarım'), findsOneWidget);
     expect(find.text('Kullanılabilir'), findsOneWidget);
     expect(find.text('Geçmiş'), findsOneWidget);
@@ -30,6 +33,7 @@ void main() {
     await tester.tap(find.byKey(const Key('coupon-history-tab')));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('coupon-history-empty-state')), findsOneWidget);
     expect(find.text('Kupon geçmişin boş'), findsOneWidget);
     expect(
       find.textContaining('Kullandığın veya süresi dolan kuponları'),
@@ -48,6 +52,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('customer-coupons-header')), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('coupon-history-tab')));
     await tester.pumpAndSettle();
