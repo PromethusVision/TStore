@@ -26,6 +26,10 @@ void main() {
       }),
     );
 
+    expect(find.byKey(const Key('customer-privacy-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-privacy-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-privacy-hero')), findsOneWidget);
+    expect(find.byKey(const Key('customer-privacy-scroll')), findsOneWidget);
     expect(callCount, 1);
     expect(find.text('İzin durumu kontrol ediliyor'), findsOneWidget);
     expect(
@@ -118,6 +122,35 @@ void main() {
 
     expect(callCount, 2);
     expect(find.text('Ayarlar üzerinden kapalı'), findsOneWidget);
+  });
+
+  testWidgets('KVKK ve kullanım koşulları metinlerini açar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(() async => CustomerLocationPermissionStatus.allowed),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('privacy-kvkk-action')),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const Key('privacy-kvkk-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('KVKK Aydınlatma Metni'), findsWidgets);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('privacy-terms-action')),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const Key('privacy-terms-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kullanım Koşulları'), findsWidgets);
   });
 
   testWidgets('dar ekranda taşmadan aşağı kaydırılabilir', (tester) async {
