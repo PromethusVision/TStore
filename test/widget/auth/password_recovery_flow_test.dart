@@ -37,12 +37,107 @@ void main() {
     await authCubit.close();
   });
 
-  Widget buildSubject(Widget child) {
+  Widget buildSubject(
+    Widget child, {
+    TextScaler textScaler = TextScaler.noScaling,
+  }) {
     return BlocProvider<AuthCubit>.value(
       value: authCubit,
-      child: MaterialApp(home: child),
+      child: MaterialApp(
+        builder: (context, routeChild) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: routeChild!,
+        ),
+        home: child,
+      ),
     );
   }
+
+  testWidgets('shows the customer brand and reset request form', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(const ForgetPasswordView()));
+
+    expect(
+      find.byKey(const Key('customer-forgot-password-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-forgot-password-header')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('forgot-password-wordmark')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-forgot-password-form-card')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('forgot-password-email')), findsOneWidget);
+    expect(find.byKey(const Key('forgot-password-submit')), findsOneWidget);
+    expect(find.text('Şifremi unuttum'), findsOneWidget);
+  });
+
+  testWidgets('custom back button returns to the previous screen', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              key: const Key('open-forgot-password'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const ForgetPasswordView(),
+                ),
+              ),
+              child: const Text('Aç'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('open-forgot-password')));
+    await tester.pumpAndSettle();
+    expect(find.byType(ForgetPasswordView), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('customer-forgot-password-back')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ForgetPasswordView), findsNothing);
+    expect(find.byKey(const Key('open-forgot-password')), findsOneWidget);
+  });
+
+  testWidgets('reset request form supports narrow screens and larger text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      buildSubject(
+        const ForgetPasswordView(),
+        textScaler: const TextScaler.linear(1.4),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('customer-forgot-password-scroll')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('forgot-password-submit')),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.byKey(const Key('forgot-password-submit')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('validates the email before requesting a reset link', (
     tester,
