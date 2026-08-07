@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -61,32 +62,9 @@ class HomeAppBar extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Temporary code-rendered wordmark until the official
-                      // Esnafta Var logo asset is delivered.
-                      Text.rich(
+                      CustomerBrandWordmark(
                         key: Key('home-wordmark'),
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: 24,
-                            height: 1,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.7,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Esnafta',
-                              style: TextStyle(
-                                color: CustomerHomeV1Tokens.petrol,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Var',
-                              style: TextStyle(
-                                color: CustomerHomeV1Tokens.coral,
-                              ),
-                            ),
-                          ],
-                        ),
+                        fontSize: 24,
                       ),
                       SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(

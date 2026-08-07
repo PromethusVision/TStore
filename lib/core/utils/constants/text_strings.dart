@@ -55,7 +55,7 @@ class TTexts {
   // -- Authentication Headings
   static const String loginTitle = "Hoş geldiniz,";
   static const String loginSubTitle =
-      "Kargo beklemeden, yakındaki esnafı keşfedin.";
+      "İhtiyacınız olan ürünler, hemen yakınınızda.";
   static const String signUpTitle = "Hesabınızı oluşturalım";
   static const String forgetPasswordTitle = "Şifremi unuttum";
   static const String forgetPasswordSubTitle =

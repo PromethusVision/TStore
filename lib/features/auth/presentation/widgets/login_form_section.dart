@@ -222,29 +222,51 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                 ),
                 const SizedBox(height: TSizes.spaceBtwInputFields / 2),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? true;
-                            });
-                          },
-                        ),
-                        const Text(TTexts.rememberMe),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            visualDensity: VisualDensity.compact,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? true;
+                              });
+                            },
+                          ),
+                          const SizedBox(width: TSizes.xs),
+                          const Expanded(
+                            child: Text(
+                              TTexts.rememberMe,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        THelperFunctions.navigateToScreen(
-                          context,
-                          const ForgetPasswordView(),
-                        );
-                      },
-                      child: const Text(TTexts.forgetPassword),
+                    Flexible(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: TSizes.xs,
+                          ),
+                        ),
+                        onPressed: () {
+                          THelperFunctions.navigateToScreen(
+                            context,
+                            const ForgetPasswordView(),
+                          );
+                        },
+                        child: const Text(
+                          TTexts.forgetPassword,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.end,
+                        ),
+                      ),
                     ),
                   ],
                 ),
