@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/constants/sizes.dart';
+import '../../../../core/utils/constants/customer_home_v1_tokens.dart';
 
 class TermsAndPrivacyAgreement extends StatelessWidget {
   const TermsAndPrivacyAgreement({
@@ -41,7 +41,7 @@ class TermsAndPrivacyAgreement extends StatelessWidget {
               ? 'Devam etmek için aydınlatma metnini okuduğunuzu belirtin.'
               : null,
         ),
-        const SizedBox(height: TSizes.sm),
+        const SizedBox(height: CustomerHomeV1Tokens.space12),
         _LegalAgreementTile(
           key: const Key('terms-of-use-agreement'),
           value: termsAccepted,
@@ -85,19 +85,20 @@ class _LegalAgreementTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.cream,
         border: Border.all(
           color: errorText == null
-              ? colorScheme.outlineVariant
+              ? CustomerHomeV1Tokens.border
               : colorScheme.error,
         ),
-        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          TSizes.xs,
-          TSizes.xs,
-          TSizes.md,
-          TSizes.sm,
+          CustomerHomeV1Tokens.space4,
+          CustomerHomeV1Tokens.space4,
+          CustomerHomeV1Tokens.space16,
+          CustomerHomeV1Tokens.space8,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,27 +107,39 @@ class _LegalAgreementTile extends StatelessWidget {
               value: value,
               onChanged: (nextValue) => onChanged(nextValue ?? false),
             ),
-            const SizedBox(width: TSizes.xs),
+            const SizedBox(width: CustomerHomeV1Tokens.space4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(label),
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: CustomerHomeV1Tokens.navy,
+                        height: 1.35,
+                      ),
+                    ),
                   ),
                   TextButton(
                     key: linkKey,
                     onPressed: onOpenDocument,
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                      foregroundColor: CustomerHomeV1Tokens.petrol,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: CustomerHomeV1Tokens.space4,
+                      ),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: Text(linkLabel),
+                    child: Text(
+                      linkLabel,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                   if (errorText != null) ...[
-                    const SizedBox(height: TSizes.xs),
+                    const SizedBox(height: CustomerHomeV1Tokens.space4),
                     Text(
                       errorText!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(

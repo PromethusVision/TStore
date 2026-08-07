@@ -114,35 +114,29 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
         key: _formKey,
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    key: const Key('signup-first-name'),
-                    controller: _firstNameController,
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Ad alanı zorunludur.' : null,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Iconsax.user),
-                      labelText: TTexts.firstName,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: TSizes.spaceBtwInputFields),
-                Expanded(
-                  child: TextFormField(
-                    key: const Key('signup-last-name'),
-                    controller: _lastNameController,
-                    validator: (value) => value?.isEmpty ?? true
-                        ? 'Soyad alanı zorunludur.'
-                        : null,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Iconsax.user),
-                      labelText: TTexts.lastName,
-                    ),
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final firstNameField = _buildFirstNameField();
+                final lastNameField = _buildLastNameField();
+
+                if (constraints.maxWidth < 340) {
+                  return Column(
+                    children: [
+                      firstNameField,
+                      const SizedBox(height: TSizes.spaceBtwInputFields),
+                      lastNameField,
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    Expanded(child: firstNameField),
+                    const SizedBox(width: TSizes.spaceBtwInputFields),
+                    Expanded(child: lastNameField),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields),
             TextFormField(
@@ -243,6 +237,32 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFirstNameField() {
+    return TextFormField(
+      key: const Key('signup-first-name'),
+      controller: _firstNameController,
+      validator: (value) =>
+          value?.isEmpty ?? true ? 'Ad alanı zorunludur.' : null,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Iconsax.user),
+        labelText: TTexts.firstName,
+      ),
+    );
+  }
+
+  Widget _buildLastNameField() {
+    return TextFormField(
+      key: const Key('signup-last-name'),
+      controller: _lastNameController,
+      validator: (value) =>
+          value?.isEmpty ?? true ? 'Soyad alanı zorunludur.' : null,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Iconsax.user),
+        labelText: TTexts.lastName,
       ),
     );
   }
