@@ -99,16 +99,19 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject() {
+  Widget buildSubject({
+    ProductReviewsDestinationBuilder? reviewsDestinationBuilder,
+  }) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CartV2Cubit>.value(value: cartV2Cubit),
         BlocProvider<WishlistCubit>.value(value: wishlistCubit),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         home: ProductDetailsView(
           product: product,
           currentUserIdProvider: _customerId,
+          reviewsDestinationBuilder: reviewsDestinationBuilder,
         ),
       ),
     );
@@ -153,6 +156,29 @@ void main() {
 
     expect(find.byKey(const Key('product-details-scroll')), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('puan alanı gerçek değerlendirme hedefini açar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        reviewsDestinationBuilder: (_) => const Scaffold(
+          body: SizedBox(key: Key('product-reviews-test-destination')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('product-reviews-action')), findsOneWidget);
+    expect(find.text('Değerlendirmeleri gör'), findsOneWidget);
+
+    await tester.ensureVisible(find.byKey(const Key('product-reviews-action')));
+    await tester.tap(find.byKey(const Key('product-reviews-action')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('product-reviews-test-destination')),
+      findsOneWidget,
+    );
   });
 }
 

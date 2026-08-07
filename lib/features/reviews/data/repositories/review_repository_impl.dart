@@ -25,14 +25,24 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       final response = await supabaseService.client
           .from(SupabaseTables.reviews)
-          .select('*, profiles(full_name, avatar_url)')
+          .select()
           .eq('product_id', productId)
           .order('created_at', ascending: false)
           .range(from, to);
 
-      final reviews = (response as List)
-          .map((json) => ReviewModel.fromJson(json as Map<String, dynamic>))
+      final reviewRows = (response as List)
+          .whereType<Map>()
+          .map((row) => Map<String, dynamic>.from(row))
           .toList();
+      final profilesById = await _loadReviewerProfiles(reviewRows);
+      final reviews = reviewRows.map((json) {
+        final userId = json['user_id'] as String?;
+        return ReviewModel.fromJson({
+          ...json,
+          if (userId != null && profilesById[userId] != null)
+            'profiles': profilesById[userId],
+        });
+      }).toList();
 
       return Right(reviews);
     } catch (e) {
@@ -236,6 +246,35 @@ class ReviewRepositoryImpl implements ReviewRepository {
       return (response as List).isNotEmpty;
     } catch (_) {
       return false;
+    }
+  }
+
+  Future<Map<String, Map<String, dynamic>>> _loadReviewerProfiles(
+    List<Map<String, dynamic>> reviews,
+  ) async {
+    final userIds = reviews
+        .map((review) => review['user_id'])
+        .whereType<String>()
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    if (userIds.isEmpty) return const {};
+
+    try {
+      final response = await supabaseService.client
+          .from(SupabaseTables.profiles)
+          .select('id, full_name, avatar_url')
+          .inFilter('id', userIds);
+      final profiles = (response as List).whereType<Map>().map(
+        (row) => Map<String, dynamic>.from(row),
+      );
+      return {
+        for (final profile in profiles)
+          if (profile['id'] is String) profile['id'] as String: profile,
+      };
+    } catch (_) {
+      // Profil bilgisi yorum listesinin açılmasını engellememelidir.
+      return const {};
     }
   }
 }

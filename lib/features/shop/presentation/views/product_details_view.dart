@@ -6,6 +6,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
+import 'package:t_store/features/shop/presentation/views/product_reviews_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
@@ -13,17 +14,21 @@ import 'package:t_store/features/shop/presentation/widgets/product_sellers_secti
 import 'package:t_store/features/shop/presentation/widgets/rating_and_share.dart';
 
 typedef ProductDetailsCurrentUserIdProvider = String? Function();
+typedef ProductReviewsDestinationBuilder =
+    Widget Function(ProductEntity product);
 
 class ProductDetailsView extends StatefulWidget {
   final ProductEntity product;
   final RecentlyViewedProductsStorage? recentlyViewedProductsStorage;
   final ProductDetailsCurrentUserIdProvider? currentUserIdProvider;
+  final ProductReviewsDestinationBuilder? reviewsDestinationBuilder;
 
   const ProductDetailsView({
     super.key,
     required this.product,
     this.recentlyViewedProductsStorage,
     this.currentUserIdProvider,
+    this.reviewsDestinationBuilder,
   });
 
   @override
@@ -82,6 +87,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     setState(() => _sellerPriceSummary = summary);
   }
 
+  void _openProductReviews() {
+    final destination =
+        widget.reviewsDestinationBuilder?.call(widget.product) ??
+        ProductReviewsView(product: widget.product);
+    Navigator.of(
+      context,
+    ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+  }
+
   @override
   Widget build(BuildContext context) {
     final compactLayout = MediaQuery.sizeOf(context).width < 360;
@@ -116,7 +130,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           sellerPriceSummary: _sellerPriceSummary,
                         ),
                         const SizedBox(height: CustomerHomeV1Tokens.space12),
-                        _ProductFactsCard(product: widget.product),
+                        _ProductFactsCard(
+                          product: widget.product,
+                          onReviewsTap: _openProductReviews,
+                        ),
                         const SizedBox(height: CustomerHomeV1Tokens.space16),
                         _ProductSellersCard(
                           child: ProductSellersSection(
@@ -208,9 +225,10 @@ class _ProductInfoCard extends StatelessWidget {
 }
 
 class _ProductFactsCard extends StatelessWidget {
-  const _ProductFactsCard({required this.product});
+  const _ProductFactsCard({required this.product, required this.onReviewsTap});
 
   final ProductEntity product;
+  final VoidCallback onReviewsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +246,7 @@ class _ProductFactsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RatingAndShare(product: product),
+          RatingAndShare(product: product, onReviewsTap: onReviewsTap),
           const Padding(
             padding: EdgeInsets.symmetric(
               vertical: CustomerHomeV1Tokens.space12,
