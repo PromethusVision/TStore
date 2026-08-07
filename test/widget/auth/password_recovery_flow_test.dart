@@ -205,8 +205,54 @@ void main() {
     await tester.pump();
 
     expect(find.byType(ResetPasswordView), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-reset-email-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-reset-email-header')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('reset-email-wordmark')), findsOneWidget);
+    expect(find.byKey(const Key('customer-reset-email-card')), findsOneWidget);
+    expect(find.byKey(const Key('reset-email-icon')), findsOneWidget);
+    expect(find.byKey(const Key('reset-email-address-card')), findsOneWidget);
+    expect(find.byKey(const Key('reset-email-spam-hint')), findsOneWidget);
     expect(find.text(email), findsOneWidget);
     expect(find.textContaining('sistemde kayıtlıysa'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('waiting screen supports narrow screens and larger text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      buildSubject(
+        const ResetPasswordView(email: email),
+        textScaler: const TextScaler.linear(1.4),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('customer-reset-email-scroll')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('reset-email-resend')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.byKey(const Key('reset-email-resend')), findsOneWidget);
+    expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -242,6 +288,39 @@ void main() {
       find.byKey(const Key('reset-email-resend')),
     );
     expect(resendButton.onPressed, isNull);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('waiting screen returns to a clean login screen', (tester) async {
+    final loginAuthCubit = MockAuthCubit();
+    whenListen(
+      loginAuthCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    if (sl.isRegistered<AuthCubit>()) {
+      await sl.unregister<AuthCubit>();
+    }
+    sl.registerFactory<AuthCubit>(() => loginAuthCubit);
+    addTearDown(() async {
+      if (sl.isRegistered<AuthCubit>()) {
+        await sl.unregister<AuthCubit>();
+      }
+      await loginAuthCubit.close();
+    });
+
+    await tester.pumpWidget(
+      buildSubject(const ResetPasswordView(email: email)),
+    );
+    await tester.ensureVisible(
+      find.byKey(const Key('reset-email-back-to-login')),
+    );
+    await tester.tap(find.byKey(const Key('reset-email-back-to-login')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+    expect(find.byType(ResetPasswordView), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
