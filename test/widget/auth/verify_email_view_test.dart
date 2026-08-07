@@ -30,10 +30,17 @@ void main() {
     await authCubit.close();
   });
 
-  Widget buildSubject({int cooldownSeconds = 60}) {
+  Widget buildSubject({
+    int cooldownSeconds = 60,
+    TextScaler textScaler = TextScaler.noScaling,
+  }) {
     return BlocProvider<AuthCubit>.value(
       value: authCubit,
       child: MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: child!,
+        ),
         home: VerifyEmailView(
           email: email,
           resendCooldownSeconds: cooldownSeconds,
@@ -77,6 +84,19 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
+    expect(
+      find.byKey(const Key('customer-verify-email-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-verify-email-header')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('verify-email-wordmark')), findsOneWidget);
+    expect(find.byKey(const Key('customer-verify-email-card')), findsOneWidget);
+    expect(find.byKey(const Key('verify-email-icon')), findsOneWidget);
+    expect(find.byKey(const Key('verify-email-address-card')), findsOneWidget);
+    expect(find.byKey(const Key('verify-email-spam-hint')), findsOneWidget);
     expect(find.text(email), findsOneWidget);
     expect(find.text('E-posta adresinizi doğrulayın'), findsOneWidget);
     expect(find.textContaining('60 saniye sonra'), findsOneWidget);
@@ -224,10 +244,25 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(buildSubject());
+    await tester.pumpWidget(
+      buildSubject(textScaler: const TextScaler.linear(1.4)),
+    );
 
     expect(tester.takeException(), isNull);
+    expect(
+      find.byKey(const Key('customer-verify-email-scroll')),
+      findsOneWidget,
+    );
     expect(find.text(email), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('verify-email-resend')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.byKey(const Key('verify-email-resend')), findsOneWidget);
+    expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

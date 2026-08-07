@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/enums/status.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
-import 'package:t_store/core/utils/device/device_utility.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/auth/presentation/widgets/customer_auth_form_card.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({
@@ -103,95 +103,236 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
         final canResend = !isSending && _remainingSeconds <= 0;
 
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            actions: [
-              IconButton(
-                key: const Key('verify-email-close'),
-                tooltip: 'Giriş ekranına dön',
-                onPressed: _goToLogin,
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          ),
+          backgroundColor: CustomerHomeV1Tokens.cream,
           body: SafeArea(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
-                child: Column(
-                  children: [
-                    Image(
-                      width: TDeviceUtils.getScreenWidth(context) * .6,
-                      image: const AssetImage(
-                        TImages.deliveredEmailIllustration,
-                      ),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    Text(
-                      'E-posta adresinizi doğrulayın',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    Text(
-                      widget.email,
-                      key: const Key('verify-email-address'),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    Text(
-                      'Gönderdiğimiz bağlantıya dokunarak hesabınızı '
-                      'doğrulayın. Ardından giriş ekranına dönüp hesabınıza '
-                      'giriş yapabilirsiniz.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TSizes.sm),
-                    Text(
-                      'E-postayı göremiyorsanız spam veya gereksiz klasörünü '
-                      'kontrol edin.',
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        key: const Key('verify-email-back-to-login'),
-                        onPressed: _goToLogin,
-                        child: const Text('Giriş ekranına dön'),
-                      ),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                        key: const Key('verify-email-resend'),
-                        onPressed: canResend
-                            ? () => context
-                                  .read<AuthCubit>()
-                                  .resendConfirmation(widget.email)
-                            : null,
-                        child: Text(
-                          isSending
-                              ? 'Gönderiliyor...'
-                              : _remainingSeconds > 0
-                              ? '$_remainingSeconds saniye sonra yeniden gönder'
-                              : 'E-postayı yeniden gönder',
+            child: Center(
+              child: ConstrainedBox(
+                key: const Key('customer-verify-email-content'),
+                constraints: const BoxConstraints(maxWidth: 430),
+                child: SingleChildScrollView(
+                  key: const Key('customer-verify-email-scroll'),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space32,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _VerifyEmailHeader(onClose: _goToLogin),
+                      const SizedBox(height: CustomerHomeV1Tokens.space24),
+                      CustomerAuthFormCard(
+                        key: const Key('customer-verify-email-card'),
+                        padding: const EdgeInsets.all(
+                          CustomerHomeV1Tokens.space20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const _EmailIllustration(),
+                            const SizedBox(
+                              height: CustomerHomeV1Tokens.space20,
+                            ),
+                            Text(
+                              'E-posta adresinizi doğrulayın',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(
+                                    color: CustomerHomeV1Tokens.navy,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              height: CustomerHomeV1Tokens.space12,
+                            ),
+                            Container(
+                              key: const Key('verify-email-address-card'),
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: CustomerHomeV1Tokens.space16,
+                                vertical: CustomerHomeV1Tokens.space12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: CustomerHomeV1Tokens.mint,
+                                borderRadius: BorderRadius.circular(
+                                  CustomerHomeV1Tokens.radius16,
+                                ),
+                                border: Border.all(
+                                  color: CustomerHomeV1Tokens.petrol.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                widget.email,
+                                key: const Key('verify-email-address'),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: CustomerHomeV1Tokens.petrol,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: CustomerHomeV1Tokens.space16,
+                            ),
+                            Text(
+                              'Gönderdiğimiz bağlantıya dokunarak hesabınızı '
+                              'doğrulayın. Ardından giriş ekranına dönüp hesabınıza '
+                              'giriş yapabilirsiniz.',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: CustomerHomeV1Tokens.muted,
+                                    height: 1.5,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              height: CustomerHomeV1Tokens.space16,
+                            ),
+                            const _SpamFolderHint(),
+                            const SizedBox(
+                              height: CustomerHomeV1Tokens.space24,
+                            ),
+                            ElevatedButton(
+                              key: const Key('verify-email-back-to-login'),
+                              onPressed: _goToLogin,
+                              child: const Text('Giriş ekranına dön'),
+                            ),
+                            const SizedBox(height: CustomerHomeV1Tokens.space8),
+                            TextButton(
+                              key: const Key('verify-email-resend'),
+                              onPressed: canResend
+                                  ? () => context
+                                        .read<AuthCubit>()
+                                        .resendConfirmation(widget.email)
+                                  : null,
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 48),
+                              ),
+                              child: Text(
+                                isSending
+                                    ? 'Gönderiliyor...'
+                                    : _remainingSeconds > 0
+                                    ? '$_remainingSeconds saniye sonra yeniden gönder'
+                                    : 'E-postayı yeniden gönder',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _VerifyEmailHeader extends StatelessWidget {
+  const _VerifyEmailHeader({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-verify-email-header'),
+      padding: const EdgeInsets.symmetric(
+        horizontal: CustomerHomeV1Tokens.space12,
+        vertical: CustomerHomeV1Tokens.space8,
+      ),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: CustomerBrandWordmark(
+              key: Key('verify-email-wordmark'),
+              fontSize: 28,
+            ),
+          ),
+          IconButton(
+            key: const Key('verify-email-close'),
+            tooltip: 'Giriş ekranına dön',
+            onPressed: onClose,
+            color: CustomerHomeV1Tokens.petrol,
+            icon: const Icon(Icons.close_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmailIllustration extends StatelessWidget {
+  const _EmailIllustration();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('verify-email-icon'),
+        width: 76,
+        height: 76,
+        decoration: const BoxDecoration(
+          color: CustomerHomeV1Tokens.mint,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.mark_email_unread_outlined,
+          color: CustomerHomeV1Tokens.petrol,
+          size: 38,
+        ),
+      ),
+    );
+  }
+}
+
+class _SpamFolderHint extends StatelessWidget {
+  const _SpamFolderHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('verify-email-spam-hint'),
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.yellow.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.info_outline_rounded,
+            color: CustomerHomeV1Tokens.petrol,
+            size: 20,
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          Expanded(
+            child: Text(
+              'E-postayı göremiyorsanız spam veya gereksiz klasörünü kontrol edin.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: CustomerHomeV1Tokens.navy,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
