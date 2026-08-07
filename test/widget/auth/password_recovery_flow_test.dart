@@ -330,6 +330,20 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
 
+    expect(
+      find.byKey(const Key('customer-update-password-content')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-update-password-header')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('update-password-wordmark')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-update-password-card')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('update-password-icon')), findsOneWidget);
     await tester.enterText(
       find.byKey(const Key('update-password-new')),
       newPassword,
@@ -344,6 +358,37 @@ void main() {
 
     expect(find.text('Şifreler eşleşmiyor.'), findsOneWidget);
     verifyNever(() => authCubit.updatePassword(any()));
+  });
+
+  testWidgets('new password visibility controls work independently', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+
+    bool isObscured(Key fieldKey) {
+      return tester
+          .widget<EditableText>(
+            find.descendant(
+              of: find.byKey(fieldKey),
+              matching: find.byType(EditableText),
+            ),
+          )
+          .obscureText;
+    }
+
+    expect(isObscured(const Key('update-password-new')), isTrue);
+    expect(isObscured(const Key('update-password-confirm')), isTrue);
+
+    await tester.tap(find.byKey(const Key('update-password-toggle-new')));
+    await tester.pump();
+
+    expect(isObscured(const Key('update-password-new')), isFalse);
+    expect(isObscured(const Key('update-password-confirm')), isTrue);
+
+    await tester.tap(find.byKey(const Key('update-password-toggle-confirm')));
+    await tester.pump();
+
+    expect(isObscured(const Key('update-password-confirm')), isFalse);
   });
 
   testWidgets('submits a valid new password only once', (tester) async {
@@ -376,7 +421,11 @@ void main() {
     final button = tester.widget<ElevatedButton>(
       find.byKey(const Key('update-password-submit')),
     );
+    final closeButton = tester.widget<IconButton>(
+      find.byKey(const Key('update-password-close')),
+    );
     expect(button.onPressed, isNull);
+    expect(closeButton.onPressed, isNull);
     expect(find.text('Kaydediliyor...'), findsOneWidget);
   });
 
@@ -395,6 +444,10 @@ void main() {
     await tester.pump();
 
     expect(find.byKey(const Key('update-password-success')), findsOneWidget);
+    expect(
+      find.byKey(const Key('update-password-success-icon')),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('update-password-new')), findsNothing);
   });
 
@@ -444,9 +497,27 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(),
+        textScaler: const TextScaler.linear(1.4),
+      ),
+    );
 
     expect(tester.takeException(), isNull);
+    expect(
+      find.byKey(const Key('customer-update-password-scroll')),
+      findsOneWidget,
+    );
     expect(find.text('Yeni şifrenizi belirleyin'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('update-password-submit')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.byKey(const Key('update-password-submit')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

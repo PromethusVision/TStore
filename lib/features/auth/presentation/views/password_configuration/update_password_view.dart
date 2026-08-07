@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/enums/status.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/core/utils/validators/validation.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/auth/presentation/widgets/customer_auth_form_card.dart';
 
 class UpdatePasswordView extends StatefulWidget {
   const UpdatePasswordView({super.key});
@@ -82,23 +84,42 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
         final isLoading = state is AuthLoading || _returningToLogin;
 
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            actions: [
-              IconButton(
-                key: const Key('update-password-close'),
-                tooltip: 'İptal et ve girişe dön',
-                onPressed: isLoading ? null : _returnToLogin,
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          ),
+          backgroundColor: CustomerHomeV1Tokens.cream,
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(TSizes.defaultSpace),
-              child: _passwordUpdated
-                  ? _buildSuccessContent(isLoading)
-                  : _buildPasswordForm(isLoading),
+            child: Center(
+              child: ConstrainedBox(
+                key: const Key('customer-update-password-content'),
+                constraints: const BoxConstraints(maxWidth: 430),
+                child: SingleChildScrollView(
+                  key: const Key('customer-update-password-scroll'),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space32,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _UpdatePasswordHeader(
+                        isLoading: isLoading,
+                        onClose: _returnToLogin,
+                      ),
+                      const SizedBox(height: CustomerHomeV1Tokens.space24),
+                      CustomerAuthFormCard(
+                        key: const Key('customer-update-password-card'),
+                        padding: const EdgeInsets.all(
+                          CustomerHomeV1Tokens.space20,
+                        ),
+                        child: _passwordUpdated
+                            ? _buildSuccessContent(isLoading)
+                            : _buildPasswordForm(isLoading),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         );
@@ -110,19 +131,29 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const _UpdatePasswordIllustration(),
+          const SizedBox(height: CustomerHomeV1Tokens.space20),
           Text(
             'Yeni şifrenizi belirleyin',
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: CustomerHomeV1Tokens.navy,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: TSizes.spaceBtwItems),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
           Text(
             'Hesabınızı korumak için daha önce kullanmadığınız güçlü bir '
             'şifre seçin.',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: CustomerHomeV1Tokens.muted,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: TSizes.spaceBtwSections),
+          const SizedBox(height: CustomerHomeV1Tokens.space24),
           TextFormField(
             key: const Key('update-password-new'),
             controller: _passwordController,
@@ -142,7 +173,7 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
               ),
             ),
           ),
-          const SizedBox(height: TSizes.spaceBtwInputFields),
+          const SizedBox(height: CustomerHomeV1Tokens.space16),
           TextFormField(
             key: const Key('update-password-confirm'),
             controller: _confirmPasswordController,
@@ -170,14 +201,11 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
               ),
             ),
           ),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              key: const Key('update-password-submit'),
-              onPressed: isLoading ? null : _submit,
-              child: Text(isLoading ? 'Kaydediliyor...' : 'Şifreyi yenile'),
-            ),
+          const SizedBox(height: CustomerHomeV1Tokens.space24),
+          ElevatedButton(
+            key: const Key('update-password-submit'),
+            onPressed: isLoading ? null : _submit,
+            child: Text(isLoading ? 'Kaydediliyor...' : 'Şifreyi yenile'),
           ),
         ],
       ),
@@ -186,34 +214,124 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
 
   Widget _buildSuccessContent(bool isLoading) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: TSizes.spaceBtwSections),
-        const Icon(Icons.check_circle, color: Colors.green, size: 88),
-        const SizedBox(height: TSizes.spaceBtwSections),
+        const _PasswordUpdatedIllustration(),
+        const SizedBox(height: CustomerHomeV1Tokens.space20),
         Text(
           'Şifreniz yenilendi',
           key: const Key('update-password-success'),
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: CustomerHomeV1Tokens.navy,
+            fontWeight: FontWeight.w700,
+          ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: TSizes.spaceBtwItems),
+        const SizedBox(height: CustomerHomeV1Tokens.space12),
         Text(
           'Yeni şifrenizle güvenli şekilde giriş yapabilirsiniz.',
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: CustomerHomeV1Tokens.muted,
+            height: 1.5,
+          ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: TSizes.spaceBtwSections),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            key: const Key('update-password-back-to-login'),
-            onPressed: isLoading ? null : _returnToLogin,
-            child: Text(
-              isLoading ? 'Çıkış yapılıyor...' : 'Giriş ekranına dön',
-            ),
-          ),
+        const SizedBox(height: CustomerHomeV1Tokens.space24),
+        ElevatedButton(
+          key: const Key('update-password-back-to-login'),
+          onPressed: isLoading ? null : _returnToLogin,
+          child: Text(isLoading ? 'Çıkış yapılıyor...' : 'Giriş ekranına dön'),
         ),
       ],
+    );
+  }
+}
+
+class _UpdatePasswordHeader extends StatelessWidget {
+  const _UpdatePasswordHeader({required this.isLoading, required this.onClose});
+
+  final bool isLoading;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-update-password-header'),
+      padding: const EdgeInsets.symmetric(
+        horizontal: CustomerHomeV1Tokens.space12,
+        vertical: CustomerHomeV1Tokens.space8,
+      ),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: CustomerBrandWordmark(
+              key: Key('update-password-wordmark'),
+              fontSize: 28,
+            ),
+          ),
+          IconButton(
+            key: const Key('update-password-close'),
+            tooltip: 'İptal et ve girişe dön',
+            onPressed: isLoading ? null : onClose,
+            color: CustomerHomeV1Tokens.petrol,
+            icon: const Icon(Icons.close_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UpdatePasswordIllustration extends StatelessWidget {
+  const _UpdatePasswordIllustration();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('update-password-icon'),
+        width: 76,
+        height: 76,
+        decoration: const BoxDecoration(
+          color: CustomerHomeV1Tokens.mint,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.lock_reset_rounded,
+          color: CustomerHomeV1Tokens.petrol,
+          size: 40,
+        ),
+      ),
+    );
+  }
+}
+
+class _PasswordUpdatedIllustration extends StatelessWidget {
+  const _PasswordUpdatedIllustration();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('update-password-success-icon'),
+        width: 76,
+        height: 76,
+        decoration: const BoxDecoration(
+          color: CustomerHomeV1Tokens.mint,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.check_rounded,
+          color: CustomerHomeV1Tokens.green,
+          size: 42,
+        ),
+      ),
     );
   }
 }
