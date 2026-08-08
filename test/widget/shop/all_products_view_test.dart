@@ -154,6 +154,8 @@ void main() {
     String initialQuery = '',
     SearchResultsShopProductsLoader? shopProductsLoader,
     CustomerProductDestinationBuilder? productDestinationBuilder,
+    CustomerShopDestinationBuilder? shopDestinationBuilder,
+    CustomerCategoryDestinationBuilder? categoryDestinationBuilder,
   }) {
     return MaterialApp(
       home: MultiBlocProvider(
@@ -169,12 +171,18 @@ void main() {
           customerSearchCubit: customerSearchCubit,
           shopProductsLoader:
               shopProductsLoader ?? (_) async => const Right([]),
-          categoryDestinationBuilder: (category) => Scaffold(
-            appBar: AppBar(),
-            body: Text('Kategori: ${category.name}'),
-          ),
-          shopDestinationBuilder: (shop) =>
-              Scaffold(appBar: AppBar(), body: Text('Mağaza: ${shop.name}')),
+          categoryDestinationBuilder:
+              categoryDestinationBuilder ??
+              (category) => Scaffold(
+                appBar: AppBar(),
+                body: Text('Kategori: ${category.name}'),
+              ),
+          shopDestinationBuilder:
+              shopDestinationBuilder ??
+              (shop) => Scaffold(
+                appBar: AppBar(),
+                body: Text('Mağaza: ${shop.name}'),
+              ),
           productDestinationBuilder:
               productDestinationBuilder ??
               (product) => Scaffold(
@@ -1377,5 +1385,176 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Populer Urun'), findsOneWidget);
+  });
+
+  testWidgets('pasif veya kimliği eksik arama mağazası profil açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [],
+        categories: [],
+        shops: [
+          ShopEntity(id: '', name: 'Kimliksiz Mağaza'),
+          ShopEntity(
+            id: 'inactive-shop',
+            name: 'Kapalı Mağaza',
+            isActive: false,
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        shopDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Açılmamalı'));
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final missingIdLink = tester.widget<InkWell>(
+      find.byKey(const Key('customer-search-shop-link-')),
+    );
+    final inactiveLink = tester.widget<InkWell>(
+      find.byKey(const Key('customer-search-shop-link-inactive-shop')),
+    );
+
+    expect(missingIdLink.onTap, isNull);
+    expect(inactiveLink.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Açılmamalı'), findsNothing);
+  });
+
+  testWidgets('arama mağazasına hızlı çift dokunma yalnız bir profil açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [],
+        categories: [],
+        shops: [ShopEntity(id: 'shop-1', name: 'Mahalle Market')],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        shopDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Text('Tek arama mağaza hedefi'),
+          );
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final shopLink = tester.widget<InkWell>(
+      find.byKey(const Key('customer-search-shop-link-shop-1')),
+    );
+    shopLink.onTap!();
+    shopLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek arama mağaza hedefi'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mahalle Market'), findsOneWidget);
+  });
+
+  testWidgets('kimliği eksik arama kategorisi bozuk sayfa açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [],
+        categories: [CategoryEntity(id: '', name: 'Grocery')],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        categoryDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Kategori açılmamalı'));
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final categoryChip = tester.widget<ActionChip>(
+      find.byKey(const Key('customer-search-category-')),
+    );
+
+    expect(categoryChip.onPressed, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Kategori açılmamalı'), findsNothing);
+  });
+
+  testWidgets('arama kategorisine hızlı çift dokunma yalnız bir sayfa açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [],
+        categories: [CategoryEntity(id: 'market', name: 'Grocery')],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        categoryDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Text('Tek arama kategori hedefi'),
+          );
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final categoryChip = tester.widget<ActionChip>(
+      find.byKey(const Key('customer-search-category-market')),
+    );
+    categoryChip.onPressed!();
+    categoryChip.onPressed!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek arama kategori hedefi'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Market'), findsOneWidget);
   });
 }

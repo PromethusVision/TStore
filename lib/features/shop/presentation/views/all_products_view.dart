@@ -621,7 +621,7 @@ class _SearchError extends StatelessWidget {
   }
 }
 
-class _CustomerSearchResultsView extends StatelessWidget {
+class _CustomerSearchResultsView extends StatefulWidget {
   const _CustomerSearchResultsView({
     required this.controller,
     required this.state,
@@ -639,6 +639,28 @@ class _CustomerSearchResultsView extends StatelessWidget {
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
   final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
+
+  @override
+  State<_CustomerSearchResultsView> createState() =>
+      _CustomerSearchResultsViewState();
+}
+
+class _CustomerSearchResultsViewState
+    extends State<_CustomerSearchResultsView> {
+  final Set<String> _openingCategoryIds = {};
+  final Set<String> _openingShopIds = {};
+
+  ScrollController get controller => widget.controller;
+  CustomerSearchLoaded get state => widget.state;
+  String? Function()? get currentUserIdProvider => widget.currentUserIdProvider;
+  CustomerCategoryDestinationBuilder? get categoryDestinationBuilder =>
+      widget.categoryDestinationBuilder;
+  CustomerShopDestinationBuilder? get shopDestinationBuilder =>
+      widget.shopDestinationBuilder;
+  CustomerProductDestinationBuilder? get productDestinationBuilder =>
+      widget.productDestinationBuilder;
+  SearchResultsShopProductsLoader? get shopProductsLoader =>
+      widget.shopProductsLoader;
 
   @override
   Widget build(BuildContext context) {
@@ -688,7 +710,9 @@ class _CustomerSearchResultsView extends StatelessWidget {
                           category.name,
                         ),
                       ),
-                      onPressed: () => _openCategory(context, category),
+                      onPressed: category.id.trim().isEmpty
+                          ? null
+                          : () => _openCategory(context, category),
                     ),
                 ],
               ),
@@ -711,7 +735,9 @@ class _CustomerSearchResultsView extends StatelessWidget {
               return _CustomerSearchShopCard(
                 key: ValueKey('customer-search-shop-${shop.id}'),
                 shop: shop,
-                onTap: () => _openShop(context, shop),
+                onTap: !shop.isActive || shop.id.trim().isEmpty
+                    ? null
+                    : () => _openShop(context, shop),
               );
             },
           ),
@@ -738,30 +764,51 @@ class _CustomerSearchResultsView extends StatelessWidget {
     );
   }
 
-  void _openCategory(BuildContext context, CategoryEntity category) {
-    final destination =
-        categoryDestinationBuilder?.call(category) ??
-        SubCategoryView(
-          title: CustomerCategoryPresentationHelper.localizedTitle(
-            category.name,
-          ),
-          categoryId: category.id,
-        );
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => destination));
+  Future<void> _openCategory(
+    BuildContext context,
+    CategoryEntity category,
+  ) async {
+    final categoryId = category.id.trim();
+    if (categoryId.isEmpty || _openingCategoryIds.contains(categoryId)) return;
+
+    _openingCategoryIds.add(categoryId);
+    try {
+      final destination =
+          categoryDestinationBuilder?.call(category) ??
+          SubCategoryView(
+            title: CustomerCategoryPresentationHelper.localizedTitle(
+              category.name,
+            ),
+            categoryId: categoryId,
+          );
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingCategoryIds.remove(categoryId);
+    }
   }
 
-  void _openShop(BuildContext context, ShopEntity shop) {
-    final destination =
-        shopDestinationBuilder?.call(shop) ??
-        ShopProfileView(
-          shop: shop,
-          currentUserIdProvider: currentUserIdProvider,
-        );
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => destination));
+  Future<void> _openShop(BuildContext context, ShopEntity shop) async {
+    final shopId = shop.id.trim();
+    if (!shop.isActive || shopId.isEmpty || _openingShopIds.contains(shopId)) {
+      return;
+    }
+
+    _openingShopIds.add(shopId);
+    try {
+      final destination =
+          shopDestinationBuilder?.call(shop) ??
+          ShopProfileView(
+            shop: shop,
+            currentUserIdProvider: currentUserIdProvider,
+          );
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingShopIds.remove(shopId);
+    }
   }
 }
 
@@ -1371,7 +1418,7 @@ class _CustomerSearchShopCard extends StatelessWidget {
   });
 
   final ShopEntity shop;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1381,6 +1428,7 @@ class _CustomerSearchShopCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
+        key: Key('customer-search-shop-link-${shop.id}'),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(TSizes.md),
