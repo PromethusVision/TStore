@@ -183,6 +183,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('customer-cart-header')), findsOneWidget);
+    expect(find.text('Sepetim'), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-empty-state')), findsOneWidget);
     expect(find.text('Henüz mağaza sepetinde ürün yok'), findsOneWidget);
     expect(
       find.text(
@@ -206,8 +209,90 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-items-list')), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-item-item-1')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-cart-product-thumbnail')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('customer-cart-checkout-panel')),
+      findsOneWidget,
+    );
+    expect(find.text('Mahalle Mağazası'), findsOneWidget);
+    expect(find.text('Test Ürünü'), findsOneWidget);
     expect(find.text('Sepet Toplamı'), findsOneWidget);
     expect(find.text('Toplam güncellenmeli'), findsNothing);
+  });
+
+  testWidgets('dar müşteri ekranında taşmadan kaydırılabilir', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-cart-header')), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-items-list')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-cart-checkout-panel')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('yükleme ve hata durumlarını müşteri tasarımıyla gösterir', (
+    tester,
+  ) async {
+    final stateController = StreamController<CartV2State>();
+    addTearDown(stateController.close);
+    whenListen(
+      cartV2Cubit,
+      stateController.stream,
+      initialState: CartV2Loading(),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<CartV2Cubit>.value(
+          value: cartV2Cubit,
+          child: const CartV2View(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('customer-cart-loading-state')),
+      findsOneWidget,
+    );
+    expect(find.text('Sepetin hazırlanıyor'), findsOneWidget);
+
+    stateController.add(const CartV2Error('Bağlantı kurulamadı.'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.byKey(const Key('customer-cart-error-state')), findsOneWidget);
+    expect(find.text('Sepet bilgileri yüklenemedi'), findsOneWidget);
+    expect(find.text('Bağlantı kurulamadı.'), findsWidgets);
+
+    await tester.tap(find.byKey(const Key('customer-cart-retry-button')));
+    await tester.pump();
+
+    verify(() => cartV2Cubit.getActiveCartItems()).called(2);
   });
 
   testWidgets('QR penceresi kapanınca aktif sepeti yeniden yükler', (
@@ -466,23 +551,23 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.delete_outline));
+    final removeButton = find.byKey(
+      const Key('customer-cart-item-item-1-remove'),
+    );
+    await tester.tap(removeButton);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Kaldır'));
     await tester.pump();
 
     expect(find.text('Kaldırılıyor…'), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Icons.delete_outline), findsNothing);
+    expect(removeButton, findsNothing);
     verify(() => cartV2Cubit.removeItem('item-1')).called(1);
 
     removeRequest.complete();
     await tester.pumpAndSettle();
 
     expect(find.text('Kaldırılıyor…'), findsNothing);
-    expect(
-      find.widgetWithIcon(IconButton, Icons.delete_outline),
-      findsOneWidget,
-    );
+    expect(removeButton, findsOneWidget);
   });
 
   testWidgets(
@@ -764,7 +849,9 @@ void main() {
     await tester.pump();
     expect(requestCount, 2);
 
-    final verificationButton = find.byType(ElevatedButton);
+    final verificationButton = find.byKey(
+      const Key('customer-cart-verify-button'),
+    );
     expect(verificationButton, findsOneWidget);
     await tester.tap(verificationButton);
     await tester.pump();

@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/common/view_models/app_bar_view_model.dart';
-import 'package:t_store/core/common/widgets/app_bar.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_v2_entity.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
@@ -37,100 +38,126 @@ class _CartV2ViewState extends State<CartV2View> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        appBarModel: AppBarModel(
-          title: Text(
-            'Mağaza Sepeti',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          hasArrowBack: true,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: BlocConsumer<CartV2Cubit, CartV2State>(
-          listenWhen: (previous, current) => current is CartV2Error,
-          listener: (context, state) {
-            if (state is CartV2Error) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
-          buildWhen: (previous, current) {
-            if (current is CartV2Error && previous is CartV2Loaded) {
-              return false;
-            }
-            return true;
-          },
-          builder: (context, state) {
-            if (state is CartV2Initial || state is CartV2Loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      backgroundColor: CustomerHomeV1Tokens.cream,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            key: const Key('customer-cart-content'),
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    CustomerHomeV1Tokens.space16,
+                    CustomerHomeV1Tokens.space8,
+                    CustomerHomeV1Tokens.space16,
+                    0,
+                  ),
+                  child: _CartV2Header(),
+                ),
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                Expanded(
+                  child: BlocConsumer<CartV2Cubit, CartV2State>(
+                    listenWhen: (previous, current) => current is CartV2Error,
+                    listener: (context, state) {
+                      if (state is CartV2Error) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                      }
+                    },
+                    buildWhen: (previous, current) {
+                      if (current is CartV2Error && previous is CartV2Loaded) {
+                        return false;
+                      }
+                      return true;
+                    },
+                    builder: (context, state) {
+                      if (state is CartV2Initial || state is CartV2Loading) {
+                        return const _CartV2LoadingState();
+                      }
 
-            if (state is CartV2Error) {
-              return _CartV2ErrorState(message: state.message);
-            }
-
-            if (state is CartV2Loaded) {
-              if (state.isEmpty) {
-                return const _CartV2EmptyState();
-              }
-
-              return Column(
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        final item = state.items[index];
-                        return _CartV2ItemCard(
-                          item: item,
-                          pendingAction: _pendingItemActions[item.id],
-                          isCartInteractionBlocked: _isCartMutationInProgress,
-                          isRefreshingAvailability:
-                              _isRefreshingUnavailableItem,
-                          onRefreshAvailability: _refreshUnavailableItem,
-                          onIncrement: () =>
-                              _updateItemQuantity(item, shouldIncrement: true),
-                          onDecrement: () =>
-                              _updateItemQuantity(item, shouldIncrement: false),
-                          onRemove: () => _confirmAndRemoveItem(item),
+                      if (state is CartV2Error) {
+                        return _CartV2ErrorState(
+                          message: state.message,
+                          onRetry: () =>
+                              context.read<CartV2Cubit>().getActiveCartItems(),
                         );
-                      },
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: TSizes.spaceBtwItems),
-                      itemCount: state.items.length,
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwItems),
-                  _CartV2TotalBox(
-                    totalAmount: state.totalAmount,
-                    requiresRefresh: state.items.any(
-                      (item) => !item.isPurchaseVerifiable,
-                    ),
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwItems),
-                  _ShowInStoreButton(
-                    isPreparing: _isPreparingPurchaseVerification,
-                    isEnabled:
-                        !_isCartMutationInProgress &&
-                        !_isRefreshingUnavailableItem,
-                    onPressed: _preparePurchaseVerification,
-                  ),
-                  const SizedBox(height: TSizes.spaceBtwItems),
-                  _CancelActiveCartButton(
-                    isClearing: _isClearingCart,
-                    isEnabled:
-                        _pendingItemActions.isEmpty &&
-                        !_isRefreshingUnavailableItem,
-                    onPressed: _confirmAndClearCart,
-                  ),
-                ],
-              );
-            }
+                      }
 
-            return const SizedBox.shrink();
-          },
+                      if (state is CartV2Loaded) {
+                        if (state.isEmpty) {
+                          return const _CartV2EmptyState();
+                        }
+
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: ListView.separated(
+                                key: const Key('customer-cart-items-list'),
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                padding: const EdgeInsets.fromLTRB(
+                                  CustomerHomeV1Tokens.space16,
+                                  CustomerHomeV1Tokens.space4,
+                                  CustomerHomeV1Tokens.space16,
+                                  CustomerHomeV1Tokens.space16,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final item = state.items[index];
+                                  return _CartV2ItemCard(
+                                    item: item,
+                                    pendingAction: _pendingItemActions[item.id],
+                                    isCartInteractionBlocked:
+                                        _isCartMutationInProgress,
+                                    isRefreshingAvailability:
+                                        _isRefreshingUnavailableItem,
+                                    onRefreshAvailability:
+                                        _refreshUnavailableItem,
+                                    onIncrement: () => _updateItemQuantity(
+                                      item,
+                                      shouldIncrement: true,
+                                    ),
+                                    onDecrement: () => _updateItemQuantity(
+                                      item,
+                                      shouldIncrement: false,
+                                    ),
+                                    onRemove: () => _confirmAndRemoveItem(item),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                      height: CustomerHomeV1Tokens.space12,
+                                    ),
+                                itemCount: state.items.length,
+                              ),
+                            ),
+                            _CartV2CheckoutPanel(
+                              totalAmount: state.totalAmount,
+                              requiresRefresh: state.items.any(
+                                (item) => !item.isPurchaseVerifiable,
+                              ),
+                              isPreparing: _isPreparingPurchaseVerification,
+                              isVerificationEnabled:
+                                  !_isCartMutationInProgress &&
+                                  !_isRefreshingUnavailableItem,
+                              onVerify: _preparePurchaseVerification,
+                              isClearing: _isClearingCart,
+                              isClearEnabled:
+                                  _pendingItemActions.isEmpty &&
+                                  !_isRefreshingUnavailableItem,
+                              onClear: _confirmAndClearCart,
+                            ),
+                          ],
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -457,6 +484,190 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 }
 
+class _CartV2Header extends StatelessWidget {
+  const _CartV2Header();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-cart-header'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      decoration: BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        border: Border.all(color: CustomerHomeV1Tokens.border),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
+      ),
+      child: Row(
+        children: [
+          Material(
+            color: CustomerHomeV1Tokens.mint,
+            shape: const CircleBorder(),
+            child: IconButton(
+              key: const Key('customer-cart-back-button'),
+              tooltip: 'Geri',
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: CustomerHomeV1Tokens.petrol,
+                size: 21,
+              ),
+            ),
+          ),
+          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sepetim',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: CustomerHomeV1Tokens.navy,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                SizedBox(height: CustomerHomeV1Tokens.space4),
+                Text(
+                  'Mağaza alışverişini burada tamamla',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: CustomerHomeV1Tokens.muted,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE4DE),
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+            ),
+            child: const Icon(
+              Iconsax.shopping_bag,
+              color: CustomerHomeV1Tokens.coral,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CartV2LoadingState extends StatelessWidget {
+  const _CartV2LoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        key: const Key('customer-cart-loading-state'),
+        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+        decoration: BoxDecoration(
+          color: CustomerHomeV1Tokens.surface,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          border: Border.all(color: CustomerHomeV1Tokens.border),
+          boxShadow: CustomerHomeV1Tokens.softShadow,
+        ),
+        child: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox.square(
+              dimension: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: CustomerHomeV1Tokens.petrol,
+              ),
+            ),
+            SizedBox(height: CustomerHomeV1Tokens.space12),
+            Text(
+              'Sepetin hazırlanıyor',
+              style: TextStyle(
+                color: CustomerHomeV1Tokens.navy,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CartV2CheckoutPanel extends StatelessWidget {
+  const _CartV2CheckoutPanel({
+    required this.totalAmount,
+    required this.requiresRefresh,
+    required this.isPreparing,
+    required this.isVerificationEnabled,
+    required this.onVerify,
+    required this.isClearing,
+    required this.isClearEnabled,
+    required this.onClear,
+  });
+
+  final double totalAmount;
+  final bool requiresRefresh;
+  final bool isPreparing;
+  final bool isVerificationEnabled;
+  final VoidCallback onVerify;
+  final bool isClearing;
+  final bool isClearEnabled;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('customer-cart-checkout-panel'),
+      padding: const EdgeInsets.fromLTRB(
+        CustomerHomeV1Tokens.space16,
+        CustomerHomeV1Tokens.space12,
+        CustomerHomeV1Tokens.space16,
+        CustomerHomeV1Tokens.space16,
+      ),
+      decoration: const BoxDecoration(
+        color: CustomerHomeV1Tokens.surface,
+        border: Border(top: BorderSide(color: CustomerHomeV1Tokens.border)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _CartV2TotalBox(
+            totalAmount: totalAmount,
+            requiresRefresh: requiresRefresh,
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          _ShowInStoreButton(
+            isPreparing: isPreparing,
+            isEnabled: isVerificationEnabled,
+            onPressed: onVerify,
+          ),
+          const SizedBox(height: CustomerHomeV1Tokens.space8),
+          _CancelActiveCartButton(
+            isClearing: isClearing,
+            isEnabled: isClearEnabled,
+            onPressed: onClear,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CartTotalComparisonRow extends StatelessWidget {
   const _CartTotalComparisonRow({
     required this.label,
@@ -503,14 +714,31 @@ class _ShowInStoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
+      height: 52,
+      child: FilledButton.icon(
+        key: const Key('customer-cart-verify-button'),
         onPressed: isPreparing || !isEnabled ? null : onPressed,
-        child: isPreparing
+        style: FilledButton.styleFrom(
+          backgroundColor: CustomerHomeV1Tokens.petrol,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: CustomerHomeV1Tokens.muted.withValues(
+            alpha: 0.28,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          ),
+          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+        ),
+        icon: isPreparing
             ? const SizedBox.square(
                 dimension: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
               )
-            : const Text('Alışverişi doğrula'),
+            : const Icon(Iconsax.scan_barcode, size: 20),
+        label: Text(isPreparing ? 'Hazırlanıyor…' : 'Alışverişi doğrula'),
       ),
     );
   }
@@ -544,32 +772,71 @@ class _CartV2ItemCard extends StatelessWidget {
     final product = shopProduct?.product;
     final shopPrice = shopProduct?.price ?? 0;
     final isUnavailable = !item.isPurchaseVerifiable;
-    final colorScheme = Theme.of(context).colorScheme;
+    final imageUrl = product?.images.isNotEmpty == true
+        ? product!.images.first.trim()
+        : '';
 
     return Container(
+      key: Key('customer-cart-item-${item.id}'),
       width: double.infinity,
-      padding: const EdgeInsets.all(TSizes.md),
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
       decoration: BoxDecoration(
         color: isUnavailable
-            ? colorScheme.errorContainer.withValues(alpha: 0.22)
-            : null,
-        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+            ? const Color(0xFFFFF3F0)
+            : CustomerHomeV1Tokens.surface,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
         border: Border.all(
           color: isUnavailable
-              ? colorScheme.error.withValues(alpha: 0.55)
-              : Theme.of(context).dividerColor,
+              ? CustomerHomeV1Tokens.coral.withValues(alpha: 0.55)
+              : CustomerHomeV1Tokens.border,
         ),
+        boxShadow: CustomerHomeV1Tokens.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.shop,
+                  size: 17,
+                  color: CustomerHomeV1Tokens.petrol,
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space8),
               Expanded(
-                child: Text(
-                  shop?.name ?? 'Bilinmeyen esnaf',
-                  style: Theme.of(context).textTheme.titleMedium,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      shop?.name ?? 'Bilinmeyen esnaf',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      shop?.address ?? 'Adres bilgisi yok',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               if (pendingAction == _CartItemPendingAction.removing)
@@ -578,55 +845,95 @@ class _CartV2ItemCard extends StatelessWidget {
                   children: [
                     SizedBox.square(
                       dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: CustomerHomeV1Tokens.coral,
+                      ),
                     ),
-                    SizedBox(width: TSizes.sm),
-                    Text('Kaldırılıyor…'),
+                    SizedBox(width: CustomerHomeV1Tokens.space4),
+                    Text(
+                      'Kaldırılıyor…',
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 10,
+                      ),
+                    ),
                   ],
                 )
               else if (!isUnavailable)
                 IconButton(
+                  key: Key('customer-cart-item-${item.id}-remove'),
                   tooltip: 'Kaldır',
+                  visualDensity: VisualDensity.compact,
                   onPressed:
                       isRefreshingAvailability || isCartInteractionBlocked
                       ? null
                       : onRemove,
-                  icon: const Icon(Icons.delete_outline),
+                  icon: const Icon(
+                    Iconsax.trash,
+                    size: 19,
+                    color: CustomerHomeV1Tokens.coral,
+                  ),
                 ),
             ],
           ),
-          const SizedBox(height: TSizes.xs),
-          Text(
-            shop?.address ?? 'Adres bilgisi yok',
-            style: Theme.of(context).textTheme.bodySmall,
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          Container(height: 1, color: CustomerHomeV1Tokens.border),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _CartProductThumbnail(imageUrl: imageUrl),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product?.name ?? 'Ürün bilgisi yok',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 13.5,
+                        height: 1.25,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    Text(
+                      '₺${shopPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.petrol,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space12),
+                    _CartV2QuantityRow(
+                      item: item,
+                      isEnabled:
+                          !isUnavailable &&
+                          !isRefreshingAvailability &&
+                          !isCartInteractionBlocked,
+                      isUpdating:
+                          pendingAction ==
+                          _CartItemPendingAction.updatingQuantity,
+                      onIncrement: onIncrement,
+                      onDecrement: onDecrement,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: TSizes.spaceBtwItems),
-          Text(
-            product?.name ?? 'Ürün bilgisi yok',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: TSizes.sm),
+          const SizedBox(height: CustomerHomeV1Tokens.space12),
           _CartV2InfoRow(
-            label: 'Mağaza fiyatı',
-            value: '₺${shopPrice.toStringAsFixed(2)}',
-          ),
-          _CartV2QuantityRow(
-            item: item,
-            isEnabled:
-                !isUnavailable &&
-                !isRefreshingAvailability &&
-                !isCartInteractionBlocked,
-            isUpdating:
-                pendingAction == _CartItemPendingAction.updatingQuantity,
-            onIncrement: onIncrement,
-            onDecrement: onDecrement,
-          ),
-          _CartV2InfoRow(
-            label: 'Satır toplamı',
+            label: 'Ürün toplamı',
             value: '₺${item.totalPrice.toStringAsFixed(2)}',
           ),
           if (isUnavailable) ...[
-            const SizedBox(height: TSizes.spaceBtwItems),
+            const SizedBox(height: CustomerHomeV1Tokens.space12),
             _UnavailableCartItemNotice(
               message:
                   item.purchaseBlockReason ??
@@ -639,6 +946,57 @@ class _CartV2ItemCard extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _CartProductThumbnail extends StatelessWidget {
+  const _CartProductThumbnail({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      child: Container(
+        key: const Key('customer-cart-product-thumbnail'),
+        width: 88,
+        height: 88,
+        color: CustomerHomeV1Tokens.mint,
+        child: imageUrl.isEmpty
+            ? const _CartProductImagePlaceholder()
+            : CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: CustomerHomeV1Tokens.petrol,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) =>
+                    const _CartProductImagePlaceholder(),
+              ),
+      ),
+    );
+  }
+}
+
+class _CartProductImagePlaceholder extends StatelessWidget {
+  const _CartProductImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Icon(
+        Iconsax.gallery,
+        color: CustomerHomeV1Tokens.petrol,
+        size: 28,
       ),
     );
   }
@@ -659,17 +1017,19 @@ class _UnavailableCartItemNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Semantics(
       container: true,
       label: 'Satın alınamayan ürün',
       child: Container(
+        key: const Key('customer-cart-unavailable-notice'),
         width: double.infinity,
-        padding: const EdgeInsets.all(TSizes.sm),
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
         decoration: BoxDecoration(
-          color: colorScheme.surface.withValues(alpha: 0.72),
-          borderRadius: BorderRadius.circular(TSizes.borderRadiusMd),
+          color: CustomerHomeV1Tokens.coral.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+          border: Border.all(
+            color: CustomerHomeV1Tokens.coral.withValues(alpha: 0.28),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -679,15 +1039,17 @@ class _UnavailableCartItemNotice extends StatelessWidget {
               children: [
                 Icon(
                   Icons.error_outline,
-                  size: TSizes.iconSm,
-                  color: colorScheme.error,
+                  size: 19,
+                  color: CustomerHomeV1Tokens.coral,
                 ),
-                const SizedBox(width: TSizes.sm),
+                const SizedBox(width: CustomerHomeV1Tokens.space8),
                 Expanded(
                   child: Text(
                     message,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onErrorContainer,
+                    style: const TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 11,
+                      height: 1.35,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -709,13 +1071,24 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                   label: Text(
                     isRefreshing ? 'Kontrol ediliyor…' : 'Yeniden kontrol et',
                   ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: CustomerHomeV1Tokens.petrol,
+                    textStyle: const TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
                 TextButton.icon(
                   onPressed: onRemove,
                   icon: const Icon(Icons.delete_outline),
                   label: const Text('Sepetten kaldır'),
                   style: TextButton.styleFrom(
-                    foregroundColor: colorScheme.error,
+                    foregroundColor: CustomerHomeV1Tokens.coral,
+                    textStyle: const TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
@@ -744,48 +1117,91 @@ class _CartV2QuantityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: TSizes.xs),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Adet', style: Theme.of(context).textTheme.bodyMedium),
-          if (isUpdating)
-            const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Adet',
+          style: TextStyle(
+            color: CustomerHomeV1Tokens.muted,
+            fontSize: 10.5,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        if (isUpdating)
+          const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox.square(
+                dimension: 15,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: CustomerHomeV1Tokens.petrol,
                 ),
-                SizedBox(width: TSizes.sm),
-                Text('Güncelleniyor…'),
-              ],
-            )
-          else
-            Row(
+              ),
+              SizedBox(width: CustomerHomeV1Tokens.space4),
+              Text(
+                'Güncelleniyor…',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 9.5,
+                ),
+              ),
+            ],
+          )
+        else
+          Container(
+            height: 44,
+            decoration: BoxDecoration(
+              color: CustomerHomeV1Tokens.cream,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+              border: Border.all(color: CustomerHomeV1Tokens.border),
+            ),
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   tooltip: 'Azalt',
+                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints.tightFor(
+                    width: 44,
+                    height: 44,
+                  ),
+                  padding: EdgeInsets.zero,
                   onPressed: !isEnabled || item.quantity <= 1
                       ? null
                       : onDecrement,
-                  icon: const Icon(Icons.remove),
+                  icon: const Icon(Icons.remove, size: 17),
                 ),
-                Text(
-                  item.quantity.toString(),
-                  style: Theme.of(context).textTheme.titleSmall,
+                SizedBox(
+                  width: 24,
+                  child: Text(
+                    item.quantity.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
                 IconButton(
                   tooltip: 'Artır',
+                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints.tightFor(
+                    width: 44,
+                    height: 44,
+                  ),
+                  padding: EdgeInsets.zero,
                   onPressed: isEnabled ? onIncrement : null,
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add, size: 17),
                 ),
               ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -798,13 +1214,30 @@ class _CartV2InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: TSizes.xs),
+    return Container(
+      padding: const EdgeInsets.only(top: CustomerHomeV1Tokens.space8),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: CustomerHomeV1Tokens.border)),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Theme.of(context).textTheme.bodyMedium),
-          Text(value, style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            label,
+            style: const TextStyle(
+              color: CustomerHomeV1Tokens.muted,
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
         ],
       ),
     );
@@ -822,20 +1255,19 @@ class _CartV2TotalBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
+      key: const Key('customer-cart-total-box'),
       width: double.infinity,
-      padding: const EdgeInsets.all(TSizes.md),
+      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
       decoration: BoxDecoration(
         color: requiresRefresh
-            ? colorScheme.errorContainer.withValues(alpha: 0.22)
-            : null,
-        borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
+            ? CustomerHomeV1Tokens.coral.withValues(alpha: 0.08)
+            : CustomerHomeV1Tokens.mint,
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         border: Border.all(
           color: requiresRefresh
-              ? colorScheme.error.withValues(alpha: 0.55)
-              : Theme.of(context).dividerColor,
+              ? CustomerHomeV1Tokens.coral.withValues(alpha: 0.42)
+              : CustomerHomeV1Tokens.petrol.withValues(alpha: 0.14),
         ),
       ),
       child: requiresRefresh
@@ -844,25 +1276,31 @@ class _CartV2TotalBox extends StatelessWidget {
               children: [
                 Icon(
                   Icons.info_outline,
-                  size: TSizes.iconMd,
-                  color: colorScheme.error,
+                  size: 21,
+                  color: CustomerHomeV1Tokens.coral,
                 ),
-                const SizedBox(width: TSizes.sm),
+                const SizedBox(width: CustomerHomeV1Tokens.space8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Toplam güncellenmeli',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(color: colorScheme.onErrorContainer),
+                        style: TextStyle(
+                          color: CustomerHomeV1Tokens.navy,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      const SizedBox(height: TSizes.xs),
-                      Text(
+                      const SizedBox(height: CustomerHomeV1Tokens.space4),
+                      const Text(
                         'Satın alınamayan ürünü kaldırdığınızda güncel toplam '
                         'gösterilecek.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onErrorContainer,
+                        style: TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 10.5,
+                          height: 1.35,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -873,13 +1311,27 @@ class _CartV2TotalBox extends StatelessWidget {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Sepet Toplamı',
-                  style: Theme.of(context).textTheme.titleMedium,
+                const Expanded(
+                  child: Text(
+                    'Sepet Toplamı',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
+                const SizedBox(width: CustomerHomeV1Tokens.space8),
                 Text(
                   '₺${totalAmount.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: const TextStyle(
+                    color: CustomerHomeV1Tokens.petrol,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.4,
+                  ),
                 ),
               ],
             ),
@@ -902,17 +1354,31 @@ class _CancelActiveCartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
+      height: 44,
       child: OutlinedButton(
         onPressed: isClearing || !isEnabled ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: CustomerHomeV1Tokens.coral,
+          side: BorderSide(
+            color: CustomerHomeV1Tokens.coral.withValues(alpha: 0.48),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          ),
+          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+        ),
         child: isClearing
             ? const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox.square(
                     dimension: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: CustomerHomeV1Tokens.coral,
+                    ),
                   ),
-                  SizedBox(width: TSizes.sm),
+                  SizedBox(width: CustomerHomeV1Tokens.space8),
                   Text('Sepet boşaltılıyor…'),
                 ],
               )
@@ -930,24 +1396,58 @@ class _CartV2EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Henüz mağaza sepetinde ürün yok',
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            Text(
-              'Ürün detayından bir mağaza seçip sepete eklediğinde '
-              'ürünlerin burada görünecek.',
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-          ],
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-cart-empty-state'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 68,
+                height: 68,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.shopping_bag,
+                  color: CustomerHomeV1Tokens.petrol,
+                  size: 31,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              const Text(
+                'Henüz mağaza sepetinde ürün yok',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              const Text(
+                'Ürün detayından bir mağaza seçip sepete eklediğinde '
+                'ürünlerin burada görünecek.',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 11.5,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -955,30 +1455,81 @@ class _CartV2EmptyState extends StatelessWidget {
 }
 
 class _CartV2ErrorState extends StatelessWidget {
-  const _CartV2ErrorState({required this.message});
+  const _CartV2ErrorState({required this.message, required this.onRetry});
 
   final String message;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Sepet bilgileri yüklenemedi',
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-          ],
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-cart-error-state'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 68,
+                height: 68,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFE4DE),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.warning_2,
+                  color: CustomerHomeV1Tokens.coral,
+                  size: 31,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              const Text(
+                'Sepet bilgileri yüklenemedi',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                message,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 11.5,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              FilledButton.icon(
+                key: const Key('customer-cart-retry-button'),
+                onPressed: onRetry,
+                style: FilledButton.styleFrom(
+                  backgroundColor: CustomerHomeV1Tokens.petrol,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius16,
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.refresh_rounded, size: 19),
+                label: const Text('Tekrar Dene'),
+              ),
+            ],
+          ),
         ),
       ),
     );
