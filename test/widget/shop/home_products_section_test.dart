@@ -47,6 +47,7 @@ void main() {
   Widget buildSubject(
     ProductsState state, {
     HomeShopProductsLoader? shopProductsLoader,
+    HomeProductDestinationBuilder? destinationBuilder,
   }) {
     whenListen(
       productsCubit,
@@ -64,8 +65,9 @@ void main() {
             currentUserIdProvider: () => null,
             shopProductsLoader:
                 shopProductsLoader ?? (_) async => const Right([]),
-            destinationBuilder: (product) =>
-                Scaffold(key: Key('product-detail-${product.id}')),
+            destinationBuilder:
+                destinationBuilder ??
+                (product) => Scaffold(key: Key('product-detail-${product.id}')),
           ),
         ),
       ),
@@ -147,6 +149,86 @@ void main() {
     await tester.tap(find.byKey(const Key('home-product-product-1')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('product-detail-product-1')), findsOneWidget);
+  });
+
+  testWidgets('kimliği eksik ürün kartı bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var openCount = 0;
+    const invalidProduct = ProductEntity(
+      id: '',
+      name: 'Eksik Ürün',
+      price: 10,
+      categoryId: 'market',
+      stock: 1,
+      images: [],
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const ProductsLoaded(products: [invalidProduct]),
+        destinationBuilder: (_) {
+          openCount++;
+          return const Scaffold();
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('home-product-link-')),
+    );
+    expect(productLink.onTap, isNull);
+    expect(find.text('Eksik Ürün'), findsOneWidget);
+    expect(openCount, 0);
+  });
+
+  testWidgets('ürün kartına hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var openCount = 0;
+    const product = ProductEntity(
+      id: 'product-1',
+      name: 'Taze Domates',
+      price: 29.90,
+      categoryId: 'market',
+      stock: 12,
+      images: [],
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const ProductsLoaded(products: [product]),
+        destinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('product-details-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('home-product-link-product-1')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(openCount, 1);
+    expect(
+      find.byKey(const Key('product-details-destination')),
+      findsOneWidget,
+    );
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('product-details-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('product-details-destination')), findsNothing);
+    expect(find.text('Taze Domates'), findsOneWidget);
   });
 
   testWidgets('yalnız ekranda gösterilen ürünleri tek sorguda ister', (
