@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -6,7 +8,6 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
-import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -14,13 +15,16 @@ import 'package:t_store/features/notifications/presentation/cubit/notifications_
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 
-class HomeAppBar extends StatelessWidget {
+class HomeAppBar extends StatefulWidget {
   const HomeAppBar({super.key, this.sessionFullName, this.notificationsCubit});
 
   final String? sessionFullName;
   final NotificationsCubit? notificationsCubit;
 
-  String _currentSessionFullName() {
+  @override
+  State<HomeAppBar> createState() => _HomeAppBarState();
+
+  String currentSessionFullName() {
     if (sessionFullName != null) return sessionFullName!.trim();
 
     try {
@@ -31,6 +35,10 @@ class HomeAppBar extends StatelessWidget {
       return '';
     }
   }
+}
+
+class _HomeAppBarState extends State<HomeAppBar> {
+  bool _isOpeningNotifications = false;
 
   String _customerDisplayName(AuthState state) {
     if (state is AuthAuthenticated) {
@@ -38,10 +46,35 @@ class HomeAppBar extends StatelessWidget {
       if (authenticatedFullName.isNotEmpty) return authenticatedFullName;
     }
 
-    final currentSessionFullName = _currentSessionFullName();
+    final currentSessionFullName = widget.currentSessionFullName();
     return currentSessionFullName.isEmpty
         ? TTexts.homeAppbarSubTitle
         : currentSessionFullName;
+  }
+
+  Future<void> _openNotifications({required bool isAuthenticated}) async {
+    if (_isOpeningNotifications) return;
+    _isOpeningNotifications = true;
+
+    try {
+      if (!isAuthenticated) {
+        final signedIn = await Navigator.of(context).push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) =>
+                const LoginView(returnToCallerAfterCustomerLogin: true),
+          ),
+        );
+        if (!mounted || signedIn != true) return;
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const CustomerNotificationsView(),
+        ),
+      );
+    } finally {
+      _isOpeningNotifications = false;
+    }
   }
 
   @override
@@ -97,14 +130,7 @@ class HomeAppBar extends StatelessWidget {
     required bool isAuthenticated,
   }) {
     void openNotifications() {
-      if (!isAuthenticated) {
-        THelperFunctions.navigateToScreen(context, const LoginView());
-        return;
-      }
-      THelperFunctions.navigateToScreen(
-        context,
-        const CustomerNotificationsView(),
-      );
+      unawaited(_openNotifications(isAuthenticated: isAuthenticated));
     }
 
     if (!isAuthenticated) {
@@ -114,7 +140,7 @@ class HomeAppBar extends StatelessWidget {
       );
     }
 
-    final providedCubit = notificationsCubit;
+    final providedCubit = widget.notificationsCubit;
     if (providedCubit != null) {
       return BlocProvider<NotificationsCubit>.value(
         value: providedCubit,
