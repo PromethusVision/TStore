@@ -12,18 +12,27 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
   OnBoardingCubit() : super(OnBoardingInitial());
   final PageController pageController = PageController();
   int currentIndex = 0;
+
   void dotNavigationClicked(int index) {
     currentIndex = index;
-    pageController.jumpToPage(index);
-    emit(OnBoardingUpdateIndicator());
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+    emit(OnBoardingUpdateIndicator(currentIndex));
   }
 
   void goToNextPage(BuildContext context) {
     if (currentIndex != 2) {
       currentIndex++;
 
-      pageController.jumpToPage(currentIndex);
-      emit(OnBoardingUpdateIndicator());
+      pageController.animateToPage(
+        currentIndex,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+      emit(OnBoardingUpdateIndicator(currentIndex));
     } else {
       THelperFunctions.navigateReplacementToScreen(context, const LoginView());
     }
@@ -31,12 +40,16 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
 
   void updatePageIndicator(int index) {
     currentIndex = index;
-    emit(OnBoardingUpdateIndicator());
+    emit(OnBoardingUpdateIndicator(currentIndex));
   }
 
-  void skipPage() {
-    currentIndex = 2;
-    pageController.jumpToPage(currentIndex);
-    emit(OnBoardingUpdateIndicator());
+  void skipPage(BuildContext context) {
+    THelperFunctions.navigateReplacementToScreen(context, const LoginView());
+  }
+
+  @override
+  Future<void> close() {
+    pageController.dispose();
+    return super.close();
   }
 }
