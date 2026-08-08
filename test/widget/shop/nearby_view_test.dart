@@ -92,6 +92,7 @@ void main() {
     Future<void> Function()? onChangeLocationRequested,
     NearbyCurrentUserIdProvider? currentUserIdProvider,
     NearbyCartDestinationBuilder? cartDestinationBuilder,
+    NearbyShopDestinationBuilder? shopDestinationBuilder,
   }) {
     return MaterialApp(
       builder: textScaler == null
@@ -111,6 +112,7 @@ void main() {
                 key: Key('nearby-cart-destination'),
                 body: SizedBox.shrink(),
               ),
+          shopDestinationBuilder: shopDestinationBuilder,
         ),
       ),
     );
@@ -123,6 +125,7 @@ void main() {
     Future<void> Function()? onChangeLocationRequested,
     NearbyCurrentUserIdProvider? currentUserIdProvider,
     NearbyCartDestinationBuilder? cartDestinationBuilder,
+    NearbyShopDestinationBuilder? shopDestinationBuilder,
   }) async {
     stubNearbyState(state);
     await tester.pumpWidget(
@@ -131,6 +134,7 @@ void main() {
         onChangeLocationRequested: onChangeLocationRequested,
         currentUserIdProvider: currentUserIdProvider,
         cartDestinationBuilder: cartDestinationBuilder,
+        shopDestinationBuilder: shopDestinationBuilder,
       ),
     );
     await tester.pump();
@@ -378,6 +382,102 @@ void main() {
       expect(find.byType(CartCounterIcon), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('opens the correct active shop profile', (tester) async {
+      ShopEntity? openedShop;
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([completeShop]),
+        shopDestinationBuilder: (shop) {
+          openedShop = shop;
+          return const Scaffold(
+            body: SizedBox(key: Key('nearby-shop-profile-destination')),
+          );
+        },
+      );
+
+      final openButton = find.byKey(const Key('nearby-shop-open-shop-1'));
+      await tester.ensureVisible(openButton);
+      await tester.pumpAndSettle();
+      await tester.tap(openButton);
+      await tester.pumpAndSettle();
+
+      expect(openedShop?.id, 'shop-1');
+      expect(openedShop?.name, 'Mahalle Kahvecisi');
+      expect(
+        find.byKey(const Key('nearby-shop-profile-destination')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('does not open inactive or invalid shop profiles', (
+      tester,
+    ) async {
+      var openCount = 0;
+      const state = NearbyShopsLoaded([
+        ShopEntity(id: 'inactive', name: 'Pasif Mağaza', isActive: false),
+        ShopEntity(id: '', name: 'Eksik Mağaza'),
+      ]);
+      await pumpNearbyView(
+        tester,
+        state,
+        shopDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold();
+        },
+      );
+
+      final inactiveButton = tester.widget<OutlinedButton>(
+        find.byKey(const Key('nearby-shop-open-inactive')),
+      );
+      final invalidButton = tester.widget<OutlinedButton>(
+        find.byKey(const Key('nearby-shop-open-')),
+      );
+
+      expect(inactiveButton.onPressed, isNull);
+      expect(invalidButton.onPressed, isNull);
+      expect(openCount, 0);
+    });
+
+    testWidgets('rapid double tap opens only one shop profile', (tester) async {
+      var openCount = 0;
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([completeShop]),
+        shopDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('nearby-shop-profile-destination')),
+          );
+        },
+      );
+
+      final openButton = tester.widget<OutlinedButton>(
+        find.byKey(const Key('nearby-shop-open-shop-1')),
+      );
+      openButton.onPressed!();
+      openButton.onPressed!();
+      await tester.pumpAndSettle();
+
+      expect(openCount, 1);
+      expect(
+        find.byKey(const Key('nearby-shop-profile-destination')),
+        findsOneWidget,
+      );
+
+      Navigator.of(
+        tester.element(
+          find.byKey(const Key('nearby-shop-profile-destination')),
+        ),
+      ).pop();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('nearby-shop-profile-destination')),
+        findsNothing,
+      );
+      expect(find.text('Mahalle Kahvecisi'), findsOneWidget);
     });
 
     testWidgets('uses the customer UI shell and branded content cards', (

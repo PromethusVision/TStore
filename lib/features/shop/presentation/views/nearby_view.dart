@@ -18,6 +18,7 @@ import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart'
 
 typedef NearbyCurrentUserIdProvider = String? Function();
 typedef NearbyCartDestinationBuilder = Widget Function(BuildContext context);
+typedef NearbyShopDestinationBuilder = Widget Function(ShopEntity shop);
 
 String? _nearbyCurrentUserId() {
   try {
@@ -35,12 +36,14 @@ class NearbyView extends StatelessWidget {
   final Future<void> Function()? onChangeLocationRequested;
   final NearbyCurrentUserIdProvider currentUserIdProvider;
   final NearbyCartDestinationBuilder cartDestinationBuilder;
+  final NearbyShopDestinationBuilder? shopDestinationBuilder;
 
   const NearbyView({
     super.key,
     this.onChangeLocationRequested,
     this.currentUserIdProvider = _nearbyCurrentUserId,
     this.cartDestinationBuilder = _defaultNearbyCartDestinationBuilder,
+    this.shopDestinationBuilder,
   });
 
   @override
@@ -51,6 +54,7 @@ class NearbyView extends StatelessWidget {
         onChangeLocationRequested: onChangeLocationRequested,
         currentUserIdProvider: currentUserIdProvider,
         cartDestinationBuilder: cartDestinationBuilder,
+        shopDestinationBuilder: shopDestinationBuilder,
       ),
     );
   }
@@ -60,11 +64,13 @@ class _NearbyContent extends StatefulWidget {
   final Future<void> Function()? onChangeLocationRequested;
   final NearbyCurrentUserIdProvider currentUserIdProvider;
   final NearbyCartDestinationBuilder cartDestinationBuilder;
+  final NearbyShopDestinationBuilder? shopDestinationBuilder;
 
   const _NearbyContent({
     this.onChangeLocationRequested,
     required this.currentUserIdProvider,
     required this.cartDestinationBuilder,
+    this.shopDestinationBuilder,
   });
 
   @override
@@ -73,6 +79,7 @@ class _NearbyContent extends StatefulWidget {
 
 class _NearbyContentState extends State<_NearbyContent> {
   bool _isOpeningCart = false;
+  final Set<String> _openingShopIds = <String>{};
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +144,8 @@ class _NearbyContentState extends State<_NearbyContent> {
                             onRefresh: context
                                 .read<NearbyShopsCubit>()
                                 .loadShops,
+                            onShopSelected: (shop) =>
+                                unawaited(_openShopProfile(context, shop)),
                           );
                         }
 
@@ -177,6 +186,25 @@ class _NearbyContentState extends State<_NearbyContent> {
       );
     } finally {
       _isOpeningCart = false;
+    }
+  }
+
+  Future<void> _openShopProfile(BuildContext context, ShopEntity shop) async {
+    final shopId = shop.id.trim();
+    if (!shop.isActive || shopId.isEmpty || _openingShopIds.contains(shopId)) {
+      return;
+    }
+
+    _openingShopIds.add(shopId);
+    try {
+      final destination =
+          widget.shopDestinationBuilder?.call(shop) ??
+          ShopProfileView(shop: shop);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingShopIds.remove(shopId);
     }
   }
 
@@ -385,12 +413,14 @@ class _LoadedNearbyShops extends StatelessWidget {
   final VoidCallback onLocationRequested;
   final VoidCallback onSavedLocationRequested;
   final Future<void> Function() onRefresh;
+  final ValueChanged<ShopEntity> onShopSelected;
 
   const _LoadedNearbyShops({
     required this.state,
     required this.onLocationRequested,
     required this.onSavedLocationRequested,
     required this.onRefresh,
+    required this.onShopSelected,
   });
 
   @override
@@ -426,6 +456,9 @@ class _LoadedNearbyShops extends StatelessWidget {
             shop: shop,
             distanceMeters: state.distanceForShop(shop.id),
             locationReady: state.locationStatus == NearbyLocationStatus.ready,
+            onOpenShop: !shop.isActive || shop.id.trim().isEmpty
+                ? null
+                : () => onShopSelected(shop),
           );
         },
       ),
@@ -696,11 +729,13 @@ class _NearbyShopCard extends StatelessWidget {
   final ShopEntity shop;
   final double? distanceMeters;
   final bool locationReady;
+  final VoidCallback? onOpenShop;
 
   const _NearbyShopCard({
     required this.shop,
     required this.distanceMeters,
     required this.locationReady,
+    required this.onOpenShop,
   });
 
   @override
@@ -813,7 +848,8 @@ class _NearbyShopCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => _openShop(context),
+              key: Key('nearby-shop-open-${shop.id}'),
+              onPressed: onOpenShop,
               style: OutlinedButton.styleFrom(
                 foregroundColor: CustomerHomeV1Tokens.petrol,
                 side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
@@ -834,12 +870,6 @@ class _NearbyShopCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _openShop(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)));
   }
 
   static bool _hasText(String? value) {
