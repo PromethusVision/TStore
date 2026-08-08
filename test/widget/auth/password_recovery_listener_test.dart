@@ -13,6 +13,7 @@ import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/invalid_password_recovery_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/update_password_view.dart';
+import 'package:t_store/features/auth/presentation/views/on_boarding/customer_launch_gate.dart';
 import 'package:t_store/features/auth/presentation/widgets/password_recovery_listener.dart';
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -101,6 +102,58 @@ void main() {
     expect(find.text('Ana sayfa'), findsNothing);
   });
 
+  testWidgets(
+    'verified recovery link takes priority while onboarding decision waits',
+    (tester) async {
+      final authCubit = MockAuthCubit();
+      final authEvents = StreamController<supabase.AuthState>();
+      final navigatorKey = GlobalKey<NavigatorState>();
+      final launchStatus = Completer<bool>();
+
+      whenListen(
+        authCubit,
+        const Stream<AuthState>.empty(),
+        initialState: AuthInitial(),
+      );
+
+      addTearDown(() async {
+        await authEvents.close();
+        await authCubit.close();
+      });
+
+      await tester.pumpWidget(
+        BlocProvider<AuthCubit>.value(
+          value: authCubit,
+          child: PasswordRecoveryListener(
+            authStateChanges: authEvents.stream,
+            navigatorKey: navigatorKey,
+            initialPasswordRecoveryStatus:
+                PasswordRecoveryLaunchStatus.verified,
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              home: CustomerLaunchGate(
+                statusProvider: () => launchStatus.future,
+                onboardingBuilder: (_) =>
+                    const Scaffold(key: Key('onboarding-destination')),
+                homeBuilder: (_) =>
+                    const Scaffold(key: Key('customer-home-destination')),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(UpdatePasswordView), findsOneWidget);
+      expect(find.text('Yeni şifrenizi belirleyin'), findsOneWidget);
+      expect(find.byKey(const Key('customer-launch-loading')), findsNothing);
+      expect(find.byKey(const Key('onboarding-destination')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('invalid startup recovery shows a safe error screen', (
     tester,
   ) async {
@@ -167,6 +220,57 @@ void main() {
 
     expect(find.byType(ForgetPasswordView), findsOneWidget);
   });
+
+  testWidgets(
+    'invalid recovery link takes priority while onboarding decision waits',
+    (tester) async {
+      final authCubit = MockAuthCubit();
+      final authEvents = StreamController<supabase.AuthState>();
+      final navigatorKey = GlobalKey<NavigatorState>();
+      final launchStatus = Completer<bool>();
+
+      whenListen(
+        authCubit,
+        const Stream<AuthState>.empty(),
+        initialState: AuthInitial(),
+      );
+
+      addTearDown(() async {
+        await authEvents.close();
+        await authCubit.close();
+      });
+
+      await tester.pumpWidget(
+        BlocProvider<AuthCubit>.value(
+          value: authCubit,
+          child: PasswordRecoveryListener(
+            authStateChanges: authEvents.stream,
+            navigatorKey: navigatorKey,
+            initialPasswordRecoveryStatus: PasswordRecoveryLaunchStatus.invalid,
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              home: CustomerLaunchGate(
+                statusProvider: () => launchStatus.future,
+                onboardingBuilder: (_) =>
+                    const Scaffold(key: Key('onboarding-destination')),
+                homeBuilder: (_) =>
+                    const Scaffold(key: Key('customer-home-destination')),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(InvalidPasswordRecoveryView), findsOneWidget);
+      expect(find.text('Bağlantı kullanılamıyor'), findsOneWidget);
+      expect(find.byKey(const Key('customer-launch-loading')), findsNothing);
+      expect(find.byKey(const Key('onboarding-destination')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('invalid recovery can return to a clean login screen', (
     tester,
