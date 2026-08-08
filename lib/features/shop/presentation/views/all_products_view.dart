@@ -26,6 +26,8 @@ import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_
 typedef CustomerCategoryDestinationBuilder =
     Widget Function(CategoryEntity category);
 typedef CustomerShopDestinationBuilder = Widget Function(ShopEntity shop);
+typedef CustomerProductDestinationBuilder =
+    Widget Function(ProductEntity product);
 typedef SearchResultsShopProductsLoader =
     Future<Either<String, List<ShopProductEntity>>> Function(
       List<String> productIds,
@@ -42,6 +44,7 @@ class AllProductsView extends StatelessWidget {
     this.customerSearchCubit,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.productDestinationBuilder,
     this.shopProductsLoader,
   });
 
@@ -53,6 +56,7 @@ class AllProductsView extends StatelessWidget {
   final CustomerSearchCubit? customerSearchCubit;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
@@ -66,6 +70,7 @@ class AllProductsView extends StatelessWidget {
           recentSearchesStorage ?? sl<RecentProductSearchesStorage>(),
       categoryDestinationBuilder: categoryDestinationBuilder,
       shopDestinationBuilder: shopDestinationBuilder,
+      productDestinationBuilder: productDestinationBuilder,
       shopProductsLoader: shopProductsLoader,
     );
 
@@ -97,6 +102,7 @@ class _AllProductsContent extends StatefulWidget {
     this.currentUserIdProvider,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.productDestinationBuilder,
     this.shopProductsLoader,
   });
 
@@ -107,6 +113,7 @@ class _AllProductsContent extends StatefulWidget {
   final RecentProductSearchesStorage recentSearchesStorage;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
@@ -321,6 +328,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         currentUserIdProvider: widget.currentUserIdProvider,
         categoryDestinationBuilder: widget.categoryDestinationBuilder,
         shopDestinationBuilder: widget.shopDestinationBuilder,
+        productDestinationBuilder: widget.productDestinationBuilder,
         shopProductsLoader: widget.shopProductsLoader,
       );
     }
@@ -364,6 +372,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         products: state.products,
         summaryTitle: 'Arama Sonuçları',
         currentUserIdProvider: widget.currentUserIdProvider,
+        productDestinationBuilder: widget.productDestinationBuilder,
         shopProductsLoader: widget.shopProductsLoader,
       );
     }
@@ -383,6 +392,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         products: state.products,
         summaryTitle: 'Tüm Ürünler',
         currentUserIdProvider: widget.currentUserIdProvider,
+        productDestinationBuilder: widget.productDestinationBuilder,
         shopProductsLoader: widget.shopProductsLoader,
         footer: _ProductsLoadMoreFooter(state: state, onRetry: _retryLoadMore),
       );
@@ -618,6 +628,7 @@ class _CustomerSearchResultsView extends StatelessWidget {
     this.currentUserIdProvider,
     this.categoryDestinationBuilder,
     this.shopDestinationBuilder,
+    this.productDestinationBuilder,
     this.shopProductsLoader,
   });
 
@@ -626,6 +637,7 @@ class _CustomerSearchResultsView extends StatelessWidget {
   final String? Function()? currentUserIdProvider;
   final CustomerCategoryDestinationBuilder? categoryDestinationBuilder;
   final CustomerShopDestinationBuilder? shopDestinationBuilder;
+  final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
@@ -717,6 +729,7 @@ class _CustomerSearchResultsView extends StatelessWidget {
           _SearchResultProductGrid(
             products: state.products,
             currentUserIdProvider: currentUserIdProvider,
+            productDestinationBuilder: productDestinationBuilder,
             shopProductsLoader: shopProductsLoader,
           ),
         ],
@@ -756,6 +769,7 @@ class _SearchResultProductGrid extends StatefulWidget {
   const _SearchResultProductGrid({
     required this.products,
     required this.currentUserIdProvider,
+    required this.productDestinationBuilder,
     required this.shopProductsLoader,
   });
 
@@ -763,6 +777,7 @@ class _SearchResultProductGrid extends StatefulWidget {
 
   final List<ProductEntity> products;
   final String? Function()? currentUserIdProvider;
+  final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
 
   @override
@@ -772,6 +787,7 @@ class _SearchResultProductGrid extends StatefulWidget {
 
 class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
   late Future<Either<String, List<ShopProductEntity>>> _shopProductsFuture;
+  final Set<String> _openingProductIds = {};
 
   @override
   void initState() {
@@ -820,16 +836,34 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
                 minimumPrices,
                 isPriceLoading,
               ),
-              onTap: () => _openProductDetails(
-                context,
-                product,
-                widget.currentUserIdProvider,
-              ),
+              onTap: product.id.trim().isEmpty
+                  ? null
+                  : () => _openProduct(context, product),
             );
           }, childCount: widget.products.length),
         );
       },
     );
+  }
+
+  Future<void> _openProduct(BuildContext context, ProductEntity product) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
+
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          widget.productDestinationBuilder?.call(product) ??
+          ProductDetailsView(
+            product: product,
+            currentUserIdProvider: widget.currentUserIdProvider,
+          );
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 
   Future<Either<String, List<ShopProductEntity>>> _loadShopProducts() async {
@@ -895,21 +929,6 @@ String _formatTurkishPrice(double price) {
     buffer.write(integerDigits[index]);
   }
   return '$buffer,${parts.last}';
-}
-
-void _openProductDetails(
-  BuildContext context,
-  ProductEntity product,
-  String? Function()? currentUserIdProvider,
-) {
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => ProductDetailsView(
-        product: product,
-        currentUserIdProvider: currentUserIdProvider,
-      ),
-    ),
-  );
 }
 
 class _AllProductsSummary extends StatelessWidget {
@@ -991,7 +1010,7 @@ class _AllProductsProductCard extends StatelessWidget {
   final ProductEntity product;
   final String priceLabel;
   final String? Function()? currentUserIdProvider;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1001,6 +1020,7 @@ class _AllProductsProductCard extends StatelessWidget {
       color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
+        key: Key('all-products-product-link-${product.id}'),
         onTap: onTap,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         child: Container(
@@ -1571,6 +1591,7 @@ class _ProductsScrollView extends StatefulWidget {
   final List<ProductEntity> products;
   final String summaryTitle;
   final String? Function()? currentUserIdProvider;
+  final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
   final Widget? footer;
 
@@ -1579,6 +1600,7 @@ class _ProductsScrollView extends StatefulWidget {
     required this.products,
     required this.summaryTitle,
     this.currentUserIdProvider,
+    this.productDestinationBuilder,
     this.shopProductsLoader,
     this.footer,
   });
@@ -1591,6 +1613,7 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
   final Map<String, double> _minimumPrices = <String, double>{};
   final Set<String> _requestedProductIds = <String>{};
   final Set<String> _loadingProductIds = <String>{};
+  final Set<String> _openingProductIds = <String>{};
   var _requestGeneration = 0;
 
   @override
@@ -1655,11 +1678,9 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
                 _minimumPrices,
                 _loadingProductIds.contains(product.id),
               ),
-              onTap: () => _openProductDetails(
-                context,
-                product,
-                widget.currentUserIdProvider,
-              ),
+              onTap: product.id.trim().isEmpty
+                  ? null
+                  : () => _openProduct(context, product),
             );
           }, childCount: widget.products.length),
         ),
@@ -1668,6 +1689,26 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
         ),
       ],
     );
+  }
+
+  Future<void> _openProduct(BuildContext context, ProductEntity product) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
+
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          widget.productDestinationBuilder?.call(product) ??
+          ProductDetailsView(
+            product: product,
+            currentUserIdProvider: widget.currentUserIdProvider,
+          );
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 
   void _requestMissingPrices() {

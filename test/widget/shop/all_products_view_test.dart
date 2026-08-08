@@ -86,6 +86,14 @@ void main() {
     images: [],
     isFeatured: true,
   );
+  const invalidProduct = ProductEntity(
+    id: '',
+    name: 'Kimliksiz Ürün',
+    price: 75,
+    categoryId: 'category-1',
+    stock: 1,
+    images: [],
+  );
 
   setUp(() async {
     await sl.reset();
@@ -145,6 +153,7 @@ void main() {
     bool isSearchMode = false,
     String initialQuery = '',
     SearchResultsShopProductsLoader? shopProductsLoader,
+    CustomerProductDestinationBuilder? productDestinationBuilder,
   }) {
     return MaterialApp(
       home: MultiBlocProvider(
@@ -166,6 +175,12 @@ void main() {
           ),
           shopDestinationBuilder: (shop) =>
               Scaffold(appBar: AppBar(), body: Text('Mağaza: ${shop.name}')),
+          productDestinationBuilder:
+              productDestinationBuilder ??
+              (product) => Scaffold(
+                appBar: AppBar(),
+                body: Text('Ürün: ${product.name}'),
+              ),
         ),
       ),
     );
@@ -1211,4 +1226,156 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );
+
+  testWidgets('kimliği eksik tüm ürün kartı bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubLocalState(
+      const ProductsLoaded(
+        products: [invalidProduct],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Açılmamalı'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('all-products-product-link-')),
+    );
+
+    expect(productLink.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Açılmamalı'), findsNothing);
+  });
+
+  testWidgets('tüm ürün kartına hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubLocalState(
+      const ProductsLoaded(
+        products: [featuredProduct],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Text('Tek tüm ürün detay hedefi'),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('all-products-product-link-featured-product')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek tüm ürün detay hedefi'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Populer Urun'), findsOneWidget);
+  });
+
+  testWidgets('kimliği eksik arama ürünü bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [invalidProduct],
+        categories: [],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Arama sonucu açılmamalı'));
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('all-products-product-link-')),
+    );
+
+    expect(productLink.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Arama sonucu açılmamalı'), findsNothing);
+  });
+
+  testWidgets('arama ürününe hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    stubCustomerSearchState(
+      const CustomerSearchLoaded(
+        query: 'market',
+        products: [featuredProduct],
+        categories: [],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        isSearchMode: true,
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Text('Tek arama ürün detay hedefi'),
+          );
+        },
+      ),
+    );
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), 'market');
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('all-products-product-link-featured-product')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek arama ürün detay hedefi'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Populer Urun'), findsOneWidget);
+  });
 }
