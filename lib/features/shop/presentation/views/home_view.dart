@@ -25,14 +25,40 @@ import 'package:t_store/features/shop/presentation/widgets/home_products_section
 import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
 
+typedef HomeCurrentUserIdProvider = String? Function();
+typedef HomeSavedLocationsDestinationBuilder =
+    Widget Function(BuildContext context);
+
+String? _homeCurrentUserId() {
+  try {
+    return SupabaseService.instance.currentUser?.id;
+  } catch (_) {
+    return null;
+  }
+}
+
+Widget _defaultSavedLocationsDestinationBuilder(BuildContext context) {
+  return const CustomerSavedLocationsView();
+}
+
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  const HomeView({
+    super.key,
+    this.currentUserIdProvider = _homeCurrentUserId,
+    this.savedLocationsDestinationBuilder =
+        _defaultSavedLocationsDestinationBuilder,
+  });
+
+  final HomeCurrentUserIdProvider currentUserIdProvider;
+  final HomeSavedLocationsDestinationBuilder savedLocationsDestinationBuilder;
 
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
+  bool _isOpeningSavedLocations = false;
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +77,7 @@ class _HomeViewState extends State<HomeView> {
         BlocProvider<CustomerSavedLocationsCubit>(
           create: (_) {
             final cubit = sl<CustomerSavedLocationsCubit>();
-            if (SupabaseService.instance.currentUser != null) {
+            if (widget.currentUserIdProvider() != null) {
               cubit.loadLocations();
             }
             return cubit;
@@ -85,21 +111,37 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _openSavedLocations(BuildContext context) async {
-    if (SupabaseService.instance.currentUser == null) {
-      THelperFunctions.navigateToScreen(context, const LoginView());
-      return;
+    if (_isOpeningSavedLocations) return;
+    _isOpeningSavedLocations = true;
+
+    try {
+      if (widget.currentUserIdProvider() == null) {
+        final signedIn = await Navigator.of(context).push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) =>
+                const LoginView(returnToCallerAfterCustomerLogin: true),
+          ),
+        );
+        if (!context.mounted ||
+            signedIn != true ||
+            widget.currentUserIdProvider() == null) {
+          return;
+        }
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: widget.savedLocationsDestinationBuilder,
+        ),
+      );
+
+      if (!context.mounted) return;
+      await context.read<CustomerSavedLocationsCubit>().loadLocations();
+      if (!context.mounted) return;
+      await context.read<NearbyShopsCubit>().loadShops();
+    } finally {
+      _isOpeningSavedLocations = false;
     }
-
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const CustomerSavedLocationsView(),
-      ),
-    );
-
-    if (!context.mounted) return;
-    await context.read<CustomerSavedLocationsCubit>().loadLocations();
-    if (!context.mounted) return;
-    await context.read<NearbyShopsCubit>().loadShops();
   }
 
   void _openAllProductsSearch(BuildContext context, String query) {
