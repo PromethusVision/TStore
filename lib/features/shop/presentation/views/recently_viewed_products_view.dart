@@ -42,7 +42,7 @@ class RecentlyViewedProductsView extends StatelessWidget {
   }
 }
 
-class _RecentlyViewedProductsContent extends StatelessWidget {
+class _RecentlyViewedProductsContent extends StatefulWidget {
   const _RecentlyViewedProductsContent({
     required this.customerId,
     required this.onExplore,
@@ -52,6 +52,20 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
   final String customerId;
   final VoidCallback? onExplore;
   final RecentlyViewedProductDestinationBuilder? productDestinationBuilder;
+
+  @override
+  State<_RecentlyViewedProductsContent> createState() =>
+      _RecentlyViewedProductsContentState();
+}
+
+class _RecentlyViewedProductsContentState
+    extends State<_RecentlyViewedProductsContent> {
+  final Set<String> _openingProductIds = {};
+
+  String get customerId => widget.customerId;
+  VoidCallback? get onExplore => widget.onExplore;
+  RecentlyViewedProductDestinationBuilder? get productDestinationBuilder =>
+      widget.productDestinationBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +169,9 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
         itemBuilder: (context, index) => _RecentlyViewedProductCard(
           product: products[index],
           customerId: customerId,
-          onTap: () => _openProduct(context, products[index]),
+          onTap: products[index].id.trim().isEmpty
+              ? null
+              : () => _openProduct(context, products[index]),
           onRemove: () => _removeProduct(context, products[index]),
         ),
       ),
@@ -163,16 +179,23 @@ class _RecentlyViewedProductsContent extends StatelessWidget {
   }
 
   Future<void> _openProduct(BuildContext context, ProductEntity product) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) =>
-            productDestinationBuilder?.call(product) ??
-            ProductDetailsView(product: product),
-      ),
-    );
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
 
-    if (!context.mounted) return;
-    await context.read<RecentlyViewedProductsCubit>().load(customerId);
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          productDestinationBuilder?.call(product) ??
+          ProductDetailsView(product: product);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+
+      if (!context.mounted) return;
+      await context.read<RecentlyViewedProductsCubit>().load(customerId);
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 
   void _openExplore(BuildContext context) {
@@ -377,7 +400,7 @@ class _RecentlyViewedProductCard extends StatelessWidget {
 
   final ProductEntity product;
   final String customerId;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final VoidCallback onRemove;
 
   @override
@@ -386,13 +409,14 @@ class _RecentlyViewedProductCard extends StatelessWidget {
     final isCompact = MediaQuery.sizeOf(context).width <= 340;
 
     return Semantics(
-      button: true,
+      button: onTap != null,
       label: '${product.name} ürününü yeniden görüntüle',
       child: Material(
         key: Key('recently-viewed-product-${product.id}'),
         color: CustomerHomeV1Tokens.surface,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         child: InkWell(
+          key: Key('recently-viewed-product-link-${product.id}'),
           onTap: onTap,
           borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
           child: Container(

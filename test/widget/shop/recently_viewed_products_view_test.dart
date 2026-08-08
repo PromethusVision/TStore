@@ -40,6 +40,14 @@ void main() {
     stock: 5,
     images: [],
   );
+  const invalidProduct = ProductEntity(
+    id: '',
+    name: 'Kimliksiz Ürün',
+    price: 75,
+    categoryId: 'category-1',
+    stock: 1,
+    images: [],
+  );
 
   late MockRecentlyViewedProductsCubit cubit;
   late MockWishlistCubit wishlistCubit;
@@ -388,5 +396,79 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(() => cubit.restoreProduct('customer-1', removal)).called(1);
+  });
+
+  testWidgets('kimliği eksik geçmiş ürünü bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([invalidProduct]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Açılmamalı'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('recently-viewed-product-link-')),
+    );
+
+    expect(productLink.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Açılmamalı'), findsNothing);
+  });
+
+  testWidgets('geçmiş ürüne hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return Builder(
+            builder: (context) => Scaffold(
+              body: TextButton(
+                key: const Key('double-tap-product-detail-back'),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Tek geçmiş detay hedefi'),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('recently-viewed-product-link-p1')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek geçmiş detay hedefi'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('double-tap-product-detail-back')));
+    await tester.pumpAndSettle();
+
+    verify(() => cubit.load('customer-1')).called(2);
+    expect(find.text('Kahve Makinesi'), findsOneWidget);
   });
 }
