@@ -12,8 +12,11 @@ import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
+import 'package:t_store/features/chat/presentation/cubit/chat_conversations_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
+import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
@@ -25,6 +28,7 @@ import 'package:t_store/features/personalization/presentation/views/help_and_sup
 import 'package:t_store/features/personalization/presentation/views/privacy_and_permissions_view.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
+import 'package:t_store/features/personalization/presentation/widgets/settings_menu_tile.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
@@ -39,6 +43,9 @@ class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
 class MockChatUnreadCubit extends MockCubit<ChatUnreadState>
     implements ChatUnreadCubit {}
+
+class MockChatConversationsCubit extends MockCubit<ChatConversationsState>
+    implements ChatConversationsCubit {}
 
 class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
     implements PurchaseHistoryCubit {}
@@ -65,6 +72,7 @@ void main() {
   late MockAuthCubit loginAuthCubit;
   late MockCartV2Cubit cartV2Cubit;
   late MockChatUnreadCubit chatUnreadCubit;
+  late MockChatConversationsCubit chatConversationsCubit;
   late MockPurchaseHistoryCubit purchaseHistoryCubit;
   late MockRecentlyViewedProductsCubit recentlyViewedProductsCubit;
   late MockNotificationsCubit notificationsCubit;
@@ -77,6 +85,7 @@ void main() {
     loginAuthCubit = MockAuthCubit();
     cartV2Cubit = MockCartV2Cubit();
     chatUnreadCubit = MockChatUnreadCubit();
+    chatConversationsCubit = MockChatConversationsCubit();
     purchaseHistoryCubit = MockPurchaseHistoryCubit();
     recentlyViewedProductsCubit = MockRecentlyViewedProductsCubit();
     notificationsCubit = MockNotificationsCubit();
@@ -99,6 +108,19 @@ void main() {
       () => chatUnreadCubit.refreshUnreadCountSilently(),
     ).thenAnswer((_) async {});
     when(() => chatUnreadCubit.close()).thenAnswer((_) async {});
+
+    whenListen(
+      chatConversationsCubit,
+      const Stream<ChatConversationsState>.empty(),
+      initialState: const ChatConversationsLoaded([]),
+    );
+    when(
+      () => chatConversationsCubit.loadConversations(),
+    ).thenAnswer((_) async {});
+    when(
+      () => chatConversationsCubit.refreshConversationsSilently(),
+    ).thenAnswer((_) async {});
+    when(() => chatConversationsCubit.close()).thenAnswer((_) async {});
 
     whenListen(
       purchaseHistoryCubit,
@@ -149,6 +171,7 @@ void main() {
     when(() => loginAuthCubit.close()).thenAnswer((_) async {});
 
     sl.registerFactory<ChatUnreadCubit>(() => chatUnreadCubit);
+    sl.registerFactory<ChatConversationsCubit>(() => chatConversationsCubit);
     sl.registerFactory<PurchaseHistoryCubit>(() => purchaseHistoryCubit);
     sl.registerFactory<RecentlyViewedProductsCubit>(
       () => recentlyViewedProductsCubit,
@@ -167,7 +190,9 @@ void main() {
   Widget buildSubject({
     required AuthState authState,
     required String? currentUserId,
+    SettingsCurrentUserIdProvider? currentUserIdProvider,
     Duration unreadAutoRefreshInterval = const Duration(seconds: 15),
+    bool useInheritedChatUnreadCubit = false,
   }) {
     whenListen(
       authCubit,
@@ -179,14 +204,17 @@ void main() {
       providers: [
         BlocProvider<AuthCubit>.value(value: authCubit),
         BlocProvider<CartV2Cubit>.value(value: cartV2Cubit),
+        if (useInheritedChatUnreadCubit)
+          BlocProvider<ChatUnreadCubit>.value(value: chatUnreadCubit),
       ],
       child: MaterialApp(
         home: Scaffold(
           body: SettingsView(
-            currentUserIdProvider: () => currentUserId,
+            currentUserIdProvider: currentUserIdProvider ?? () => currentUserId,
             locationPermissionLoader: () async =>
                 CustomerLocationPermissionStatus.notAllowed,
             unreadAutoRefreshInterval: unreadAutoRefreshInterval,
+            useInheritedChatUnreadCubit: useInheritedChatUnreadCubit,
           ),
         ),
       ),
@@ -500,6 +528,176 @@ void main() {
 
     expect(find.byType(LoginView), findsOneWidget);
     expect(find.byType(CustomerCouponsView), findsNothing);
+    expect(
+      tester
+          .widget<LoginView>(find.byType(LoginView))
+          .returnToCallerAfterCustomerLogin,
+      isTrue,
+    );
+  });
+
+  for (final destination in const [
+    (label: 'Mesajlarım', viewType: ConversationsView),
+    (label: 'Alışverişlerim', viewType: PurchasesView),
+    (label: 'Kuponlarım', viewType: CustomerCouponsView),
+    (label: 'Son Görüntülediklerim', viewType: RecentlyViewedProductsView),
+    (label: 'Değerlendirmelerim', viewType: CustomerRatingsView),
+    (label: 'Bildirimlerim', viewType: CustomerNotificationsView),
+    (label: 'Kayıtlı Konumlarım', viewType: CustomerSavedLocationsView),
+    (label: 'Hesap Bilgilerim', viewType: ProfileView),
+  ]) {
+    testWidgets('misafir ${destination.label} seçimini girişten sonra açar', (
+      tester,
+    ) async {
+      String? currentUserId;
+      await tester.pumpWidget(
+        buildSubject(
+          authState: AuthUnauthenticated(),
+          currentUserId: null,
+          currentUserIdProvider: () => currentUserId,
+          useInheritedChatUnreadCubit: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final destinationTile = find.text(destination.label);
+      await tester.ensureVisible(destinationTile);
+      await tester.tap(destinationTile);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsOneWidget);
+      expect(find.byType(destination.viewType), findsNothing);
+
+      currentUserId = user.id;
+      when(() => authCubit.state).thenReturn(const AuthAuthenticated(user));
+      Navigator.of(tester.element(find.byType(LoginView))).pop(true);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(destination.viewType), findsOneWidget);
+    });
+  }
+
+  testWidgets('misafir girişten vazgeçerse profil ekranında kalır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: AuthUnauthenticated(),
+        currentUserId: null,
+        useInheritedChatUnreadCubit: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Alışverişlerim'));
+    await tester.tap(find.text('Alışverişlerim'));
+    await tester.pumpAndSettle();
+
+    Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SettingsView), findsOneWidget);
+    expect(find.byType(PurchasesView), findsNothing);
+  });
+
+  testWidgets('misafir hızlı dokunsa da tek giriş ekranı açar', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: AuthUnauthenticated(),
+        currentUserId: null,
+        useInheritedChatUnreadCubit: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final couponsTile = tester.widget<SettingsMenuTile>(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is SettingsMenuTile &&
+            widget.settingsMenuTileModel.title == 'Kuponlarım',
+      ),
+    );
+    couponsTile.settingsMenuTileModel.onTap();
+    couponsTile.settingsMenuTileModel.onTap();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+  });
+
+  for (final destination in const [
+    (
+      actionKey: Key('help-purchases-action'),
+      label: 'Alışverişlerim',
+      viewType: PurchasesView,
+    ),
+    (
+      actionKey: Key('help-messages-action'),
+      label: 'Mesajlarım',
+      viewType: ConversationsView,
+    ),
+    (
+      actionKey: Key('help-saved-locations-action'),
+      label: 'Kayıtlı Konumlarım',
+      viewType: CustomerSavedLocationsView,
+    ),
+  ]) {
+    testWidgets(
+      'misafir Yardım içindeki ${destination.label} seçimini girişten sonra açar',
+      (tester) async {
+        String? currentUserId;
+        await tester.pumpWidget(
+          buildSubject(
+            authState: AuthUnauthenticated(),
+            currentUserId: null,
+            currentUserIdProvider: () => currentUserId,
+            useInheritedChatUnreadCubit: true,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(find.text('Yardım ve Destek'));
+        await tester.tap(find.text('Yardım ve Destek'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(destination.actionKey));
+        await tester.tap(find.byKey(destination.actionKey));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LoginView), findsOneWidget);
+        expect(find.byType(destination.viewType), findsNothing);
+
+        currentUserId = user.id;
+        when(() => authCubit.state).thenReturn(const AuthAuthenticated(user));
+        Navigator.of(tester.element(find.byType(LoginView))).pop(true);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(destination.viewType), findsOneWidget);
+      },
+    );
+  }
+
+  testWidgets('Yardım kısayolunda girişten vazgeçerse Yardım ekranında kalır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: AuthUnauthenticated(),
+        currentUserId: null,
+        useInheritedChatUnreadCubit: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Yardım ve Destek'));
+    await tester.tap(find.text('Yardım ve Destek'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('help-purchases-action')));
+    await tester.pumpAndSettle();
+
+    Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HelpAndSupportView), findsOneWidget);
+    expect(find.byType(PurchasesView), findsNothing);
   });
 
   testWidgets('profil açıkken okunmamış mesaj sayısını sessizce yeniler', (

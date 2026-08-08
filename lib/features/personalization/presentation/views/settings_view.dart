@@ -48,10 +48,81 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  bool _isOpeningProtectedDestination = false;
+
   String? get _currentUserId {
     final currentUserIdProvider = widget.currentUserIdProvider;
     if (currentUserIdProvider != null) return currentUserIdProvider();
     return SupabaseService.instance.currentUser?.id;
+  }
+
+  Future<String?> _requireCustomerSignIn(BuildContext context) async {
+    final currentUserId = _currentUserId;
+    if (currentUserId != null) return currentUserId;
+
+    final signedIn = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => const LoginView(returnToCallerAfterCustomerLogin: true),
+      ),
+    );
+    if (!mounted ||
+        !context.mounted ||
+        signedIn != true ||
+        _currentUserId == null) {
+      return null;
+    }
+
+    return _currentUserId;
+  }
+
+  Future<void> _openProtectedDestination(
+    BuildContext context,
+    FutureOr<Widget?> Function(String customerId) destinationBuilder, {
+    Future<void> Function()? afterReturn,
+  }) async {
+    if (_isOpeningProtectedDestination) return;
+    _isOpeningProtectedDestination = true;
+
+    try {
+      final customerId = await _requireCustomerSignIn(context);
+      if (customerId == null || !mounted || !context.mounted) return;
+
+      final destination = await destinationBuilder(customerId);
+      if (destination == null || !mounted || !context.mounted) return;
+
+      await Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => destination));
+      if (!mounted || !context.mounted) return;
+
+      await afterReturn?.call();
+    } finally {
+      _isOpeningProtectedDestination = false;
+      if (mounted) setState(() {});
+    }
+  }
+
+  Future<Widget?> _buildAccountDestination(
+    BuildContext context,
+    String customerId,
+  ) async {
+    final authCubit = context.read<AuthCubit>();
+    var authState = authCubit.state;
+    if (authState is! AuthAuthenticated || authState.user.id != customerId) {
+      await authCubit.checkAuthStatus();
+      if (!mounted || !context.mounted) return null;
+      authState = authCubit.state;
+    }
+
+    if (authState is AuthAuthenticated && authState.user.id == customerId) {
+      return ProfileView(user: authState.user);
+    }
+
+    THelperFunctions.showSnackBar(
+      context: context,
+      message: 'Hesap bilgilerin yüklenemedi. Lütfen tekrar dene.',
+    );
+    return null;
   }
 
   @override
@@ -113,17 +184,12 @@ class _SettingsViewState extends State<SettingsView> {
     final List<SettingsMenuTileModel> accountSettingsTiles = [
       SettingsMenuTileModel(
         onTap: () async {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          await Navigator.of(
+          await _openProtectedDestination(
             context,
-          ).push(MaterialPageRoute(builder: (_) => const ConversationsView()));
-          if (!context.mounted) return;
-
-          await context.read<ChatUnreadCubit>().refreshUnreadCountSilently();
+            (_) => const ConversationsView(),
+            afterReturn: () =>
+                context.read<ChatUnreadCubit>().refreshUnreadCountSilently(),
+          );
         },
         title: "Mesajlarım",
         subtitle: "Geçmiş konuşmalarını görüntüle",
@@ -131,121 +197,62 @@ class _SettingsViewState extends State<SettingsView> {
         trailing: isLoggedIn ? const _UnreadBadge() : null,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(context, const PurchasesView());
-        },
+        onTap: () =>
+            _openProtectedDestination(context, (_) => const PurchasesView()),
         title: "Alışverişlerim",
         subtitle: "Doğrulanan alışverişlerini görüntüle",
         leading: Icons.receipt_long_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(
-            context,
-            const CustomerCouponsView(),
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (_) => const CustomerCouponsView(),
+        ),
         title: "Kuponlarım",
         subtitle: "Kullanabileceğin kuponları görüntüle",
         leading: Icons.local_offer_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn || currentUserId == null) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(
-            context,
-            RecentlyViewedProductsView(customerId: currentUserId),
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (customerId) => RecentlyViewedProductsView(customerId: customerId),
+        ),
         title: "Son Görüntülediklerim",
         subtitle: "İncelediğin ürünlere yeniden ulaş",
         leading: Icons.history_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(
-            context,
-            const CustomerRatingsView(),
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (_) => const CustomerRatingsView(),
+        ),
         title: "Değerlendirmelerim",
         subtitle: "Mağazalara verdiğin puanları görüntüle",
         leading: Icons.star_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(
-            context,
-            const CustomerNotificationsView(),
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (_) => const CustomerNotificationsView(),
+        ),
         title: "Bildirimlerim",
         subtitle: "Kampanya ve alışveriş bildirimlerini görüntüle",
         leading: Icons.notifications_none,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          THelperFunctions.navigateToScreen(
-            context,
-            const CustomerSavedLocationsView(),
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (_) => const CustomerSavedLocationsView(),
+        ),
         title: "Kayıtlı Konumlarım",
         subtitle: "Kaydettiğin konumları yönet",
         leading: Icons.location_on_outlined,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          if (!isLoggedIn) {
-            THelperFunctions.navigateToScreen(context, const LoginView());
-            return;
-          }
-
-          final authState = context.read<AuthCubit>().state;
-          if (authState is AuthAuthenticated &&
-              authState.user.id == currentUserId) {
-            THelperFunctions.navigateToScreen(
-              context,
-              ProfileView(user: authState.user),
-            );
-            return;
-          }
-
-          context.read<AuthCubit>().checkAuthStatus();
-          THelperFunctions.showSnackBar(
-            context: context,
-            message: 'Hesap bilgilerin yükleniyor. Lütfen tekrar dene.',
-          );
-        },
+        onTap: () => _openProtectedDestination(
+          context,
+          (customerId) => _buildAccountDestination(context, customerId),
+        ),
         title: "Hesap Bilgilerim",
         subtitle: "Kişisel bilgilerini görüntüle ve düzenle",
         leading: Icons.person_outline,
@@ -255,43 +262,21 @@ class _SettingsViewState extends State<SettingsView> {
           THelperFunctions.navigateToScreen(
             context,
             HelpAndSupportView(
-              onOpenPurchases: () {
-                if (!isLoggedIn) {
-                  THelperFunctions.navigateToScreen(context, const LoginView());
-                  return;
-                }
-
-                THelperFunctions.navigateToScreen(
-                  context,
-                  const PurchasesView(),
-                );
-              },
-              onOpenMessages: () async {
-                if (!isLoggedIn) {
-                  THelperFunctions.navigateToScreen(context, const LoginView());
-                  return;
-                }
-
-                await Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ConversationsView()),
-                );
-                if (!context.mounted) return;
-
-                await context
+              onOpenPurchases: () => _openProtectedDestination(
+                context,
+                (_) => const PurchasesView(),
+              ),
+              onOpenMessages: () => _openProtectedDestination(
+                context,
+                (_) => const ConversationsView(),
+                afterReturn: () => context
                     .read<ChatUnreadCubit>()
-                    .refreshUnreadCountSilently();
-              },
-              onOpenSavedLocations: () {
-                if (!isLoggedIn) {
-                  THelperFunctions.navigateToScreen(context, const LoginView());
-                  return;
-                }
-
-                THelperFunctions.navigateToScreen(
-                  context,
-                  const CustomerSavedLocationsView(),
-                );
-              },
+                    .refreshUnreadCountSilently(),
+              ),
+              onOpenSavedLocations: () => _openProtectedDestination(
+                context,
+                (_) => const CustomerSavedLocationsView(),
+              ),
             ),
           );
         },
