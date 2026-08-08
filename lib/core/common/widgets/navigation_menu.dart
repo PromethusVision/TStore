@@ -6,7 +6,6 @@ import 'package:t_store/core/common/widgets/customer_bottom_navigation.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_state.dart';
@@ -110,25 +109,8 @@ class _NavigationMenuBodyState extends State<_NavigationMenuBody>
               bottomNavigationBar: CustomerBottomNavigation(
                 selectedIndex: selectedIndex,
                 unreadMessageCount: unreadMessageCount,
-                onSelected: (int index) {
-                  if (index >= 2) {
-                    if (!isLoggedIn) {
-                      THelperFunctions.navigateToScreen(
-                        context,
-                        const LoginView(),
-                      );
-                      return;
-                    }
-                  }
-                  if (index == 4) {
-                    unawaited(
-                      context
-                          .read<ChatUnreadCubit>()
-                          .refreshUnreadCountSilently(),
-                    );
-                  }
-                  context.read<NavigationMenuCubit>().changeIndex(index);
-                },
+                onSelected: (index) =>
+                    unawaited(_handleDestinationSelected(index)),
               ),
               body: context.read<NavigationMenuCubit>().getScreen(),
             );
@@ -136,6 +118,27 @@ class _NavigationMenuBodyState extends State<_NavigationMenuBody>
         );
       },
     );
+  }
+
+  Future<void> _handleDestinationSelected(int index) async {
+    if (index >= 2 && widget.currentUserIdProvider() == null) {
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) =>
+              const LoginView(returnToCallerAfterCustomerLogin: true),
+        ),
+      );
+      if (!mounted ||
+          signedIn != true ||
+          widget.currentUserIdProvider() == null) {
+        return;
+      }
+    }
+
+    if (index == 4) {
+      unawaited(context.read<ChatUnreadCubit>().refreshUnreadCountSilently());
+    }
+    context.read<NavigationMenuCubit>().changeIndex(index);
   }
 
   void _startUnreadRefresh() {
