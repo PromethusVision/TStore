@@ -26,6 +26,7 @@ class WishlistView extends StatefulWidget {
 
 class _WishlistViewState extends State<WishlistView> {
   final Set<String> _removingProductIds = {};
+  final Set<String> _openingProductIds = {};
 
   @override
   void initState() {
@@ -145,22 +146,34 @@ class _WishlistViewState extends State<WishlistView> {
 
   Widget _buildProductCard(WishlistItemEntity item) {
     final product = item.product!;
+    final productId = product.id.trim();
     final isRemoving = _removingProductIds.contains(item.productId);
 
     return _WishlistProductCard(
       product: product,
       isRemoving: isRemoving,
-      onTap: isRemoving
+      onTap: isRemoving || productId.isEmpty
           ? null
-          : () => Navigator.of(context).push<void>(
-              MaterialPageRoute<void>(
-                builder: (_) =>
-                    widget.destinationBuilder?.call(product) ??
-                    ProductDetailsView(product: product),
-              ),
-            ),
+          : () => unawaited(_openProduct(product)),
       onRemove: isRemoving ? null : () => _removeFavorite(item),
     );
+  }
+
+  Future<void> _openProduct(ProductEntity product) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
+
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          widget.destinationBuilder?.call(product) ??
+          ProductDetailsView(product: product);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 
   Future<void> _removeFavorite(WishlistItemEntity item) async {
@@ -294,6 +307,7 @@ class _WishlistProductCard extends StatelessWidget {
       color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
+        key: Key('wishlist-product-link-${product.id}'),
         onTap: onTap,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         child: Container(

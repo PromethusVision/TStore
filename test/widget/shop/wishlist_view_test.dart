@@ -38,6 +38,20 @@ void main() {
     userId: 'customer-1',
     productId: 'deleted-product',
   );
+  const invalidProduct = ProductEntity(
+    id: '',
+    name: 'Kimliksiz Ürün',
+    price: 50,
+    categoryId: 'category-1',
+    stock: 1,
+    images: [],
+  );
+  const invalidProductItem = WishlistItemEntity(
+    id: 'wishlist-invalid',
+    userId: 'customer-1',
+    productId: 'invalid-product',
+    product: invalidProduct,
+  );
 
   late MockWishlistCubit wishlistCubit;
   late NavigationMenuCubit navigationCubit;
@@ -222,5 +236,60 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(() => wishlistCubit.getWishlist()).called(2);
+  });
+
+  testWidgets('kimliği eksik favori ürünü bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        WishlistLoaded(const [invalidProductItem]),
+        destinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Açılmamalı'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('wishlist-product-link-')),
+    );
+
+    expect(productLink.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Açılmamalı'), findsNothing);
+  });
+
+  testWidgets('favori ürüne hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        WishlistLoaded(const [wishlistItem]),
+        destinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Tek favori detay hedefi'));
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('wishlist-product-link-product-1')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Tek favori detay hedefi'), findsOneWidget);
+
+    Navigator.of(tester.element(find.text('Tek favori detay hedefi'))).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mahalle Kahvesi'), findsOneWidget);
   });
 }
