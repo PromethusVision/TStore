@@ -14,6 +14,8 @@ import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
 
 typedef ProductFavoriteCurrentUserIdProvider = String? Function();
+typedef ProductFavoriteSignInRequester =
+    Future<bool?> Function(BuildContext context);
 
 class ProductFavoriteButton extends StatefulWidget {
   const ProductFavoriteButton({
@@ -25,6 +27,7 @@ class ProductFavoriteButton extends StatefulWidget {
     this.width,
     this.iconSize,
     this.backgroundColor,
+    this.signInRequester,
   });
 
   final String productId;
@@ -34,6 +37,7 @@ class ProductFavoriteButton extends StatefulWidget {
   final double? width;
   final double? iconSize;
   final Color? backgroundColor;
+  final ProductFavoriteSignInRequester? signInRequester;
 
   @override
   State<ProductFavoriteButton> createState() => _ProductFavoriteButtonState();
@@ -59,10 +63,9 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
           widget.productId,
         );
         final isFavoriteLoading =
-            isLoggedIn &&
-            (_favoriteActionPending ||
-                state is WishlistInitial ||
-                state is WishlistLoading);
+            _favoriteActionPending ||
+            (isLoggedIn &&
+                (state is WishlistInitial || state is WishlistLoading));
 
         if (isFavoriteLoading) {
           return GestureDetector(
@@ -112,7 +115,37 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
     if (_favoriteActionPending) return;
 
     if (_currentUserId == null) {
-      THelperFunctions.navigateToScreen(context, const LoginView());
+      setState(() => _favoriteActionPending = true);
+
+      final signedIn = await (widget.signInRequester ?? _requestSignIn)(
+        context,
+      );
+      if (!mounted) return;
+
+      if (signedIn != true || _currentUserId == null) {
+        setState(() => _favoriteActionPending = false);
+        return;
+      }
+
+      final wishlistCubit = context.read<WishlistCubit>();
+      await wishlistCubit.getWishlist();
+      if (!mounted) return;
+
+      if (wishlistCubit.state is WishlistError) {
+        setState(() => _favoriteActionPending = false);
+        _showFavoriteMessage(
+          'Favoriler şu anda yüklenemedi. Lütfen tekrar deneyin.',
+        );
+        return;
+      }
+
+      if (wishlistCubit.isInWishlist(widget.productId)) {
+        setState(() => _favoriteActionPending = false);
+        _showFavoriteMessage('Ürün zaten favorilerinde.');
+        return;
+      }
+
+      await _toggleFavorite(wishlistCubit);
       return;
     }
 
@@ -122,9 +155,8 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
       return;
     }
 
-    setState(() => _favoriteActionPending = true);
-
     if (wishlistCubit.state is WishlistError) {
+      setState(() => _favoriteActionPending = true);
       await wishlistCubit.getWishlist();
       if (!mounted) return;
 
@@ -141,6 +173,11 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
       return;
     }
 
+    setState(() => _favoriteActionPending = true);
+    await _toggleFavorite(wishlistCubit);
+  }
+
+  Future<void> _toggleFavorite(WishlistCubit wishlistCubit) async {
     await wishlistCubit.toggleWishlist(widget.productId);
     if (!mounted) return;
 
@@ -156,6 +193,14 @@ class _ProductFavoriteButtonState extends State<ProductFavoriteButton> {
     final isFavorite = wishlistCubit.isInWishlist(widget.productId);
     _showFavoriteMessage(
       isFavorite ? 'Ürün favorilere eklendi.' : 'Ürün favorilerden çıkarıldı.',
+    );
+  }
+
+  Future<bool?> _requestSignIn(BuildContext context) {
+    return Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => const LoginView(returnToCallerAfterCustomerLogin: true),
+      ),
     );
   }
 

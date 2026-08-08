@@ -232,6 +232,12 @@ void main() {
     verifyNever(() => wishlistCubit.toggleWishlist(any()));
     verifyNever(() => wishlistCubit.getWishlist());
     expect(find.byType(LoginView), findsOneWidget);
+    expect(
+      tester
+          .widget<LoginView>(find.byType(LoginView))
+          .returnToCallerAfterCustomerLogin,
+      isTrue,
+    );
   });
 
   testWidgets('Favorilerim ekranındaki doğrudan kaldırma davranışını korur', (
