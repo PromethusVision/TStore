@@ -805,16 +805,23 @@ class _SellerTile extends StatelessWidget {
   Future<void>? _startAddToCart(BuildContext context) {
     if (shopProduct.shop?.isActive != true) return null;
 
+    return _addToCartAfterSignIn(context);
+  }
+
+  Future<void> _addToCartAfterSignIn(BuildContext context) async {
     if (_currentUserId == null) {
-      unawaited(
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const LoginView())),
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) =>
+              const LoginView(returnToCallerAfterCustomerLogin: true),
+        ),
       );
-      return null;
+      if (!context.mounted || signedIn != true || _currentUserId == null) {
+        return;
+      }
     }
 
-    return context.read<CartV2Cubit>().addShopProductToCart(
+    await context.read<CartV2Cubit>().addShopProductToCart(
       shopProductId: shopProduct.id,
       quantity: 1,
     );

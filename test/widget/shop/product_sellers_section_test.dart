@@ -731,6 +731,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(LoginView), findsOneWidget);
+    expect(
+      tester
+          .widget<LoginView>(find.byType(LoginView))
+          .returnToCallerAfterCustomerLogin,
+      isTrue,
+    );
     expect(find.text('Sepete ekleniyor…'), findsNothing);
     verifyNever(
       () => cartV2Cubit.addShopProductToCart(
@@ -738,7 +744,74 @@ void main() {
         quantity: any(named: 'quantity'),
       ),
     );
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsNothing);
+    expect(
+      find.byKey(const ValueKey('product-seller-add-active')),
+      findsOneWidget,
+    );
+    verifyNever(
+      () => cartV2Cubit.addShopProductToCart(
+        shopProductId: any(named: 'shopProductId'),
+        quantity: any(named: 'quantity'),
+      ),
+    );
   });
+
+  testWidgets(
+    'başarılı girişten sonra seçilen satıcının ürününü sepete ekler',
+    (tester) async {
+      final authCubit = MockAuthCubit();
+      final authStates = StreamController<AuthState>();
+      addTearDown(authStates.close);
+      var currentUserId = '';
+
+      whenListen(authCubit, authStates.stream, initialState: AuthInitial());
+      when(() => authCubit.close()).thenAnswer((_) async {});
+      sl.registerFactory<AuthCubit>(() => authCubit);
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer(
+        (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          currentUserIdProvider: () =>
+              currentUserId.isEmpty ? null : currentUserId,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('product-seller-add-active')));
+      await tester.pumpAndSettle();
+      expect(find.byType(LoginView), findsOneWidget);
+
+      currentUserId = 'customer-1';
+      authStates.add(
+        const AuthAuthenticated(
+          UserEntity(id: 'customer-1', email: 'customer@example.com'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsNothing);
+      verify(
+        () => cartV2Cubit.addShopProductToCart(
+          shopProductId: 'active',
+          quantity: 1,
+        ),
+      ).called(1);
+      expect(find.text('Sepete ekleniyor…'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('product-seller-add-active')),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('satıcıya ürün adıyla düzenlenebilir mesaj taslağı açar', (
     tester,
