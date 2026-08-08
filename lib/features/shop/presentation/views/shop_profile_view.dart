@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
@@ -21,12 +22,15 @@ typedef ShopProfileUrlLauncher =
 typedef ShopProfileCurrentUserIdProvider = String? Function();
 typedef ShopProfileChatDestinationBuilder =
     Widget Function(String receiverId, String receiverName);
+typedef ShopProfileProductDestinationBuilder =
+    Widget Function(ProductEntity product);
 
 class ShopProfileView extends StatefulWidget {
   final ShopEntity shop;
   final ShopProfileUrlLauncher? urlLauncher;
   final ShopProfileCurrentUserIdProvider? currentUserIdProvider;
   final ShopProfileChatDestinationBuilder? chatDestinationBuilder;
+  final ShopProfileProductDestinationBuilder? productDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
 
   const ShopProfileView({
@@ -35,6 +39,7 @@ class ShopProfileView extends StatefulWidget {
     this.urlLauncher,
     this.currentUserIdProvider,
     this.chatDestinationBuilder,
+    this.productDestinationBuilder,
     this.pendingProductChatStorage,
   });
 
@@ -44,6 +49,7 @@ class ShopProfileView extends StatefulWidget {
 
 class _ShopProfileViewState extends State<ShopProfileView> {
   late final Future<Either<String, List<ShopProductEntity>>> _productsFuture;
+  final Set<String> _openingProductIds = <String>{};
 
   @override
   void initState() {
@@ -98,7 +104,11 @@ class _ShopProfileViewState extends State<ShopProfileView> {
                     ),
                   ),
                   const SizedBox(height: CustomerHomeV1Tokens.space12),
-                  _ShopProductsSection(productsFuture: _productsFuture),
+                  _ShopProductsSection(
+                    productsFuture: _productsFuture,
+                    onProductSelected: (product) =>
+                        unawaited(_openProductDetails(context, product)),
+                  ),
                 ],
               ),
             ),
@@ -106,6 +116,26 @@ class _ShopProfileViewState extends State<ShopProfileView> {
         ),
       ),
     );
+  }
+
+  Future<void> _openProductDetails(
+    BuildContext context,
+    ProductEntity product,
+  ) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
+
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          widget.productDestinationBuilder?.call(product) ??
+          ProductDetailsView(product: product);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 }
 
@@ -819,8 +849,12 @@ class _MissingInfoText extends StatelessWidget {
 
 class _ShopProductsSection extends StatelessWidget {
   final Future<Either<String, List<ShopProductEntity>>> productsFuture;
+  final ValueChanged<ProductEntity> onProductSelected;
 
-  const _ShopProductsSection({required this.productsFuture});
+  const _ShopProductsSection({
+    required this.productsFuture,
+    required this.onProductSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -869,7 +903,14 @@ class _ShopProductsSection extends StatelessWidget {
               separatorBuilder: (_, _) =>
                   const SizedBox(height: CustomerHomeV1Tokens.space12),
               itemBuilder: (context, index) {
-                return _ShopProductTile(shopProduct: shopProducts[index]);
+                final shopProduct = shopProducts[index];
+                final product = shopProduct.product;
+                return _ShopProductTile(
+                  shopProduct: shopProduct,
+                  onProductTap: product == null
+                      ? null
+                      : () => onProductSelected(product),
+                );
               },
             );
           },
@@ -932,8 +973,12 @@ class _ShopProductsStatus extends StatelessWidget {
 
 class _ShopProductTile extends StatelessWidget {
   final ShopProductEntity shopProduct;
+  final VoidCallback? onProductTap;
 
-  const _ShopProductTile({required this.shopProduct});
+  const _ShopProductTile({
+    required this.shopProduct,
+    required this.onProductTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -944,9 +989,8 @@ class _ShopProductTile extends StatelessWidget {
       color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
       child: InkWell(
-        onTap: product == null
-            ? null
-            : () => _openProductDetails(context, product),
+        key: ValueKey('shop-profile-product-link-${shopProduct.id}'),
+        onTap: onProductTap,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
         child: Container(
           padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
@@ -1025,13 +1069,6 @@ class _ShopProductTile extends StatelessWidget {
 
   String _formatPrice(double price) {
     return '₺${price.toStringAsFixed(2).replaceAll('.', ',')}';
-  }
-
-  void _openProductDetails(BuildContext context, ProductEntity product) {
-    THelperFunctions.navigateToScreen(
-      context,
-      ProductDetailsView(product: product),
-    );
   }
 }
 

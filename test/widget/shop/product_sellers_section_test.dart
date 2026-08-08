@@ -142,6 +142,7 @@ void main() {
     ProductSellerPriceSummaryChanged? onPriceSummaryChanged,
     ProductSellerCurrentUserIdProvider? currentUserIdProvider,
     ProductSellerChatDestinationBuilder? chatDestinationBuilder,
+    ProductSellerShopDestinationBuilder? shopDestinationBuilder,
   }) {
     return BlocProvider<CartV2Cubit>.value(
       value: cartV2Cubit,
@@ -163,6 +164,7 @@ void main() {
               currentUserIdProvider:
                   currentUserIdProvider ?? () => 'customer-1',
               chatDestinationBuilder: chatDestinationBuilder,
+              shopDestinationBuilder: shopDestinationBuilder,
             ),
           ),
         ),
@@ -664,6 +666,73 @@ void main() {
     expect(find.text('Pasif Esnaf'), findsNothing);
     expect(find.text('Bilinmeyen esnaf'), findsNothing);
     expect(find.text('Bu Esnaftan Sepete Ekle'), findsOneWidget);
+  });
+
+  testWidgets('aktif satıcıdan doğru mağaza profiline gider', (tester) async {
+    ShopEntity? openedShop;
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Aktif Esnaf')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        shopDestinationBuilder: (shop) {
+          openedShop = shop;
+          return const Scaffold(
+            body: SizedBox(key: Key('shop-profile-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('product-seller-shop-profile-active')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(openedShop?.id, 'shop-active');
+    expect(openedShop?.name, 'Aktif Esnaf');
+    expect(find.byKey(const Key('shop-profile-destination')), findsOneWidget);
+  });
+
+  testWidgets('hızlı çift dokunma yalnız bir mağaza profili açar', (
+    tester,
+  ) async {
+    var openCount = 0;
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Aktif Esnaf')]),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        shopDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('shop-profile-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final profileLink = tester.widget<InkWell>(
+      find.byKey(const Key('product-seller-shop-profile-active')),
+    );
+    profileLink.onTap!();
+    profileLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(openCount, 1);
+    expect(find.byKey(const Key('shop-profile-destination')), findsOneWidget);
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('shop-profile-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('shop-profile-destination')), findsNothing);
+    expect(find.text('Aktif Esnaf'), findsOneWidget);
   });
 
   testWidgets(

@@ -108,6 +108,7 @@ void main() {
     ShopProfileUrlLauncher? urlLauncher,
     ShopProfileCurrentUserIdProvider? currentUserIdProvider,
     ShopProfileChatDestinationBuilder? chatDestinationBuilder,
+    ShopProfileProductDestinationBuilder? productDestinationBuilder,
     PendingProductChatStorage? pendingProductChatStorage,
     TextScaler? textScaler,
   }) {
@@ -123,6 +124,7 @@ void main() {
         urlLauncher: urlLauncher ?? successfulLauncher,
         currentUserIdProvider: currentUserIdProvider ?? () => 'customer-1',
         chatDestinationBuilder: chatDestinationBuilder,
+        productDestinationBuilder: productDestinationBuilder,
         pendingProductChatStorage: pendingProductChatStorage,
       ),
     );
@@ -200,6 +202,115 @@ void main() {
     expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
     expect(find.text('₺129,90'), findsOneWidget);
     expect(find.text('Mağazada mevcut'), findsOneWidget);
+  });
+
+  testWidgets('mağaza ürününden doğru ürün detayına gider', (tester) async {
+    ProductEntity? openedProduct;
+    when(
+      () => shopRepository.getShopProductsByShop(any()),
+    ).thenAnswer((_) async => const Right([sampleShopProduct]));
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (product) {
+          openedProduct = product;
+          return const Scaffold(
+            body: SizedBox(key: Key('product-details-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = find.byKey(
+      const Key('shop-profile-product-link-shop-product-1'),
+    );
+    await tester.ensureVisible(productLink);
+    await tester.pumpAndSettle();
+    await tester.tap(productLink);
+    await tester.pumpAndSettle();
+
+    expect(openedProduct?.id, 'product-1');
+    expect(openedProduct?.name, 'Kablosuz Kulaklık');
+    expect(
+      find.byKey(const Key('product-details-destination')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('ürün bilgisi eksik mağaza kaydı detay sayfası açmaz', (
+    tester,
+  ) async {
+    var openCount = 0;
+    const missingProduct = ShopProductEntity(
+      id: 'missing-product',
+      shopId: 'shop-1',
+      productId: 'product-missing',
+      price: 99,
+      shop: completeShop,
+    );
+    when(
+      () => shopRepository.getShopProductsByShop(any()),
+    ).thenAnswer((_) async => const Right([missingProduct]));
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold();
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('shop-profile-product-link-missing-product')),
+    );
+    expect(productLink.onTap, isNull);
+    expect(find.text('Ürün bilgisi yok'), findsOneWidget);
+    expect(openCount, 0);
+  });
+
+  testWidgets('ürün kartına hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var openCount = 0;
+    when(
+      () => shopRepository.getShopProductsByShop(any()),
+    ).thenAnswer((_) async => const Right([sampleShopProduct]));
+
+    await tester.pumpWidget(
+      buildSubject(
+        productDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('product-details-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('shop-profile-product-link-shop-product-1')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(openCount, 1);
+    expect(
+      find.byKey(const Key('product-details-destination')),
+      findsOneWidget,
+    );
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('product-details-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('product-details-destination')), findsNothing);
+    expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
   });
 
   testWidgets('geçersiz koordinat yerine mağaza adresini kullanır', (

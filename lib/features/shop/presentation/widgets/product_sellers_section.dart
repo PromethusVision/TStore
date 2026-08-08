@@ -12,6 +12,7 @@ import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/domain/services/pending_product_chat_storage.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
@@ -28,6 +29,7 @@ typedef ProductSellerChatDestinationBuilder =
       String receiverName,
       String initialDraft,
     );
+typedef ProductSellerShopDestinationBuilder = Widget Function(ShopEntity shop);
 
 class ProductSellersSection extends StatefulWidget {
   final String productId;
@@ -37,6 +39,7 @@ class ProductSellersSection extends StatefulWidget {
   final ProductSellerPriceSummaryChanged? onPriceSummaryChanged;
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
+  final ProductSellerShopDestinationBuilder? shopDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
 
   const ProductSellersSection({
@@ -48,6 +51,7 @@ class ProductSellersSection extends StatefulWidget {
     this.onPriceSummaryChanged,
     this.currentUserIdProvider,
     this.chatDestinationBuilder,
+    this.shopDestinationBuilder,
     this.pendingProductChatStorage,
   });
 
@@ -60,6 +64,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   late final CustomerLocationService _customerLocationService;
   CustomerPreferredLocation? _preferredLocation;
   _SellerSortOption? _selectedSortOption;
+  final Set<String> _openingShopIds = <String>{};
   bool _isRetryInProgress = false;
   static bool _isConflictDialogOpen = false;
 
@@ -192,6 +197,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                         const SizedBox(height: TSizes.spaceBtwItems),
                     itemBuilder: (context, index) {
                       final rankedSeller = rankedSellers[index];
+                      final shop = rankedSeller.shopProduct.shop;
                       return _SellerTile(
                         shopProduct: rankedSeller.shopProduct,
                         productName: widget.productName,
@@ -201,6 +207,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                         chatDestinationBuilder: widget.chatDestinationBuilder,
                         pendingProductChatStorage:
                             widget.pendingProductChatStorage,
+                        onShopProfileTap: shop?.isActive == true
+                            ? () => unawaited(_openShopProfile(context, shop!))
+                            : null,
                       );
                     },
                   ),
@@ -225,6 +234,23 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
       ),
     );
     return request;
+  }
+
+  Future<void> _openShopProfile(BuildContext context, ShopEntity shop) async {
+    final shopId = shop.id.trim();
+    if (shopId.isEmpty || _openingShopIds.contains(shopId)) return;
+
+    _openingShopIds.add(shopId);
+    try {
+      final destination =
+          widget.shopDestinationBuilder?.call(shop) ??
+          ShopProfileView(shop: shop);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingShopIds.remove(shopId);
+    }
   }
 
   void _notifyPriceSummary(Either<String, List<ShopProductEntity>> result) {
@@ -552,6 +578,7 @@ class _SellerTile extends StatelessWidget {
   final ProductSellerCurrentUserIdProvider? currentUserIdProvider;
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
+  final VoidCallback? onShopProfileTap;
 
   const _SellerTile({
     required this.shopProduct,
@@ -561,6 +588,7 @@ class _SellerTile extends StatelessWidget {
     required this.currentUserIdProvider,
     required this.chatDestinationBuilder,
     required this.pendingProductChatStorage,
+    required this.onShopProfileTap,
   });
 
   @override
@@ -596,10 +624,11 @@ class _SellerTile extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
+                    key: ValueKey(
+                      'product-seller-shop-profile-${shopProduct.id}',
+                    ),
                     borderRadius: BorderRadius.circular(8),
-                    onTap: shop?.isActive != true
-                        ? null
-                        : () => _openShopProfile(context),
+                    onTap: onShopProfileTap,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
                       child: Row(
@@ -692,15 +721,6 @@ class _SellerTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _openShopProfile(BuildContext context) {
-    final shop = shopProduct.shop;
-    if (shop == null) return;
-
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => ShopProfileView(shop: shop)));
   }
 
   String? get _currentUserId {
