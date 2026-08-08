@@ -10,7 +10,9 @@ class OnBoardingSkipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       key: const Key('onboarding-skip'),
-      onPressed: () => context.read<OnBoardingCubit>().skipPage(context),
+      onPressed: () async {
+        await context.read<OnBoardingCubit>().skipPage(context);
+      },
       style: TextButton.styleFrom(
         foregroundColor: CustomerHomeV1Tokens.petrol,
         minimumSize: const Size(64, 44),

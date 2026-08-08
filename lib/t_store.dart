@@ -9,6 +9,7 @@ import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
+import 'package:t_store/features/auth/presentation/views/on_boarding/customer_launch_gate.dart';
 import 'package:t_store/features/auth/presentation/widgets/customer_session_listener.dart';
 import 'package:t_store/features/auth/presentation/widgets/password_recovery_listener.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
@@ -86,7 +87,7 @@ class TStore extends StatelessWidget {
               theme: TAppTheme.lightTheme,
               darkTheme: TAppTheme.darkTheme,
               debugShowCheckedModeBanner: false,
-              home: const NavigationMenu(),
+              home: const CustomerLaunchGate(),
             ),
           ),
         ),

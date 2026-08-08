@@ -1,38 +1,31 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
-import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
-import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/auth/presentation/views/on_boarding/on_boarding_view.dart';
 
-class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
-
 void main() {
-  late MockAuthCubit authCubit;
   late OnBoardingCubit onBoardingCubit;
+  late int completionWriteCount;
 
-  setUp(() async {
-    await sl.reset();
-    authCubit = MockAuthCubit();
-    onBoardingCubit = OnBoardingCubit();
-    whenListen(
-      authCubit,
-      const Stream<AuthState>.empty(),
-      initialState: AuthInitial(),
+  setUp(() {
+    completionWriteCount = 0;
+    onBoardingCubit = OnBoardingCubit(
+      completionWriter: () async {
+        completionWriteCount++;
+      },
+      destinationBuilder: (_) => const Scaffold(
+        key: Key('customer-home-destination'),
+        body: Text('Müşteri ana sayfası'),
+      ),
     );
-    when(() => authCubit.close()).thenAnswer((_) async {});
-    sl.registerFactory<AuthCubit>(() => authCubit);
   });
 
   tearDown(() async {
     await onBoardingCubit.close();
-    await sl.reset();
   });
 
   Widget buildSubject({TextScaler textScaler = TextScaler.noScaling}) {
@@ -73,19 +66,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Gec dogrudan giris ekranini acar', (tester) async {
+  testWidgets('Gec tercihi kaydeder ve misafir ana sayfasini acar', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildSubject());
     await tester.pump();
 
     await tester.tap(find.byKey(const Key('onboarding-skip')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(LoginView), findsOneWidget);
+    expect(completionWriteCount, 1);
+    expect(find.byKey(const Key('customer-home-destination')), findsOneWidget);
     expect(find.byType(OnBoardingView), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Devam adimlari ilerletir ve Basla giris ekranini acar', (
+  testWidgets('Devam adimlari ilerletir ve Basla misafir ana sayfasini acar', (
     tester,
   ) async {
     await tester.pumpWidget(buildSubject());
@@ -108,8 +104,39 @@ void main() {
     await tester.tap(find.byKey(const Key('onboarding-next')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(LoginView), findsOneWidget);
+    expect(completionWriteCount, 1);
+    expect(find.byKey(const Key('customer-home-destination')), findsOneWidget);
     expect(find.byType(OnBoardingView), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('hizli cift dokunus tamamlanma kaydini tekrarlamaz', (
+    tester,
+  ) async {
+    final completion = Completer<void>();
+    await onBoardingCubit.close();
+    onBoardingCubit = OnBoardingCubit(
+      completionWriter: () {
+        completionWriteCount++;
+        return completion.future;
+      },
+      destinationBuilder: (_) =>
+          const Scaffold(key: Key('customer-home-destination')),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('onboarding-skip')));
+    await tester.tap(find.byKey(const Key('onboarding-skip')));
+    await tester.pump();
+
+    expect(completionWriteCount, 1);
+
+    completion.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('customer-home-destination')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

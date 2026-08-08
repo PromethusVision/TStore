@@ -16,8 +16,8 @@ class OnBoardingNextButton extends StatelessWidget {
           height: 48,
           child: ElevatedButton.icon(
             key: const Key('onboarding-next'),
-            onPressed: () {
-              context.read<OnBoardingCubit>().goToNextPage(context);
+            onPressed: () async {
+              await context.read<OnBoardingCubit>().goToNextPage(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: CustomerHomeV1Tokens.petrol,
