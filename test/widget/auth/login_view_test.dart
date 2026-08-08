@@ -29,13 +29,16 @@ void main() {
     await sl.reset();
   });
 
-  Widget buildSubject({TextScaler textScaler = TextScaler.noScaling}) {
+  Widget buildSubject({
+    TextScaler textScaler = TextScaler.noScaling,
+    Widget home = const LoginView(),
+  }) {
     return MaterialApp(
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaler: textScaler),
         child: child!,
       ),
-      home: const LoginView(),
+      home: home,
     );
   }
 
@@ -49,6 +52,11 @@ void main() {
     expect(find.byKey(const Key('customer-login-header')), findsOneWidget);
     expect(find.byKey(const Key('login-wordmark')), findsOneWidget);
     expect(find.byKey(const Key('customer-login-form-card')), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-login-continue-shopping')),
+      findsOneWidget,
+    );
+    expect(find.text('Keşfetmeye devam et'), findsOneWidget);
     expect(find.text('EsnaftaVar'), findsOneWidget);
     expect(find.text('Hoş geldiniz,'), findsOneWidget);
     expect(
@@ -57,6 +65,74 @@ void main() {
     );
     expect(find.byKey(const Key('login-email')), findsOneWidget);
     expect(find.byKey(const Key('login-password')), findsOneWidget);
+  });
+
+  testWidgets('dogrudan acilan giristen misafir ana sayfasina doner', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        home: LoginView(
+          guestDestinationBuilder: (_) => const Scaffold(
+            key: Key('guest-home-destination'),
+            body: Text('Misafir ana sayfası'),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('customer-login-continue-shopping')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('guest-home-destination')), findsOneWidget);
+    expect(find.byType(LoginView), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('korumali ozellikten acilan giris onceki ekrana doner', (
+    tester,
+  ) async {
+    var guestDestinationBuilt = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          key: const Key('protected-feature-caller'),
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              key: const Key('open-login'),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => LoginView(
+                      guestDestinationBuilder: (_) {
+                        guestDestinationBuilt = true;
+                        return const Scaffold(
+                          key: Key('guest-home-destination'),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Giriş aç'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('open-login')));
+    await tester.pumpAndSettle();
+    expect(find.byType(LoginView), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('customer-login-continue-shopping')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('protected-feature-caller')), findsOneWidget);
+    expect(find.byType(LoginView), findsNothing);
+    expect(guestDestinationBuilt, isFalse);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
