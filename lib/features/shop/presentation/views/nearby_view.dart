@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/view_models/cart_counter_icon_view_model.dart';
@@ -5,7 +7,6 @@ import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/personalization/presentation/views/customer_saved_locations_view.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
@@ -15,10 +16,32 @@ import 'package:t_store/features/shop/presentation/helpers/customer_proximity_he
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
+typedef NearbyCurrentUserIdProvider = String? Function();
+typedef NearbyCartDestinationBuilder = Widget Function(BuildContext context);
+
+String? _nearbyCurrentUserId() {
+  try {
+    return SupabaseService.instance.currentUser?.id;
+  } catch (_) {
+    return null;
+  }
+}
+
+Widget _defaultNearbyCartDestinationBuilder(BuildContext context) {
+  return const CartV2View();
+}
+
 class NearbyView extends StatelessWidget {
   final Future<void> Function()? onChangeLocationRequested;
+  final NearbyCurrentUserIdProvider currentUserIdProvider;
+  final NearbyCartDestinationBuilder cartDestinationBuilder;
 
-  const NearbyView({super.key, this.onChangeLocationRequested});
+  const NearbyView({
+    super.key,
+    this.onChangeLocationRequested,
+    this.currentUserIdProvider = _nearbyCurrentUserId,
+    this.cartDestinationBuilder = _defaultNearbyCartDestinationBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +49,30 @@ class NearbyView extends StatelessWidget {
       create: (_) => sl<NearbyShopsCubit>()..loadShops(),
       child: _NearbyContent(
         onChangeLocationRequested: onChangeLocationRequested,
+        currentUserIdProvider: currentUserIdProvider,
+        cartDestinationBuilder: cartDestinationBuilder,
       ),
     );
   }
 }
 
-class _NearbyContent extends StatelessWidget {
+class _NearbyContent extends StatefulWidget {
   final Future<void> Function()? onChangeLocationRequested;
+  final NearbyCurrentUserIdProvider currentUserIdProvider;
+  final NearbyCartDestinationBuilder cartDestinationBuilder;
 
-  const _NearbyContent({this.onChangeLocationRequested});
+  const _NearbyContent({
+    this.onChangeLocationRequested,
+    required this.currentUserIdProvider,
+    required this.cartDestinationBuilder,
+  });
+
+  @override
+  State<_NearbyContent> createState() => _NearbyContentState();
+}
+
+class _NearbyContentState extends State<_NearbyContent> {
+  bool _isOpeningCart = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +93,9 @@ class _NearbyContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _NearbyHeader(onCartPressed: () => _openCart(context)),
+                  _NearbyHeader(
+                    onCartPressed: () => unawaited(_openCart(context)),
+                  ),
                   const SizedBox(height: CustomerHomeV1Tokens.space16),
                   Expanded(
                     child: BlocBuilder<NearbyShopsCubit, NearbyShopsState>(
@@ -113,15 +153,31 @@ class _NearbyContent extends StatelessWidget {
     );
   }
 
-  void _openCart(BuildContext context) {
-    final user = SupabaseService.instance.currentUser;
+  Future<void> _openCart(BuildContext context) async {
+    if (_isOpeningCart) return;
+    _isOpeningCart = true;
 
-    if (user == null) {
-      THelperFunctions.navigateToScreen(context, const LoginView());
-      return;
+    try {
+      if (widget.currentUserIdProvider() == null) {
+        final signedIn = await Navigator.of(context).push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) =>
+                const LoginView(returnToCallerAfterCustomerLogin: true),
+          ),
+        );
+        if (!context.mounted ||
+            signedIn != true ||
+            widget.currentUserIdProvider() == null) {
+          return;
+        }
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: widget.cartDestinationBuilder),
+      );
+    } finally {
+      _isOpeningCart = false;
     }
-
-    THelperFunctions.navigateToScreen(context, const CartV2View());
   }
 
   Future<void> _showLocationExplanation(BuildContext context) async {
@@ -215,7 +271,7 @@ class _NearbyContent extends StatelessWidget {
   }
 
   Future<void> _openSavedLocations(BuildContext context) async {
-    final callback = onChangeLocationRequested;
+    final callback = widget.onChangeLocationRequested;
     if (callback != null) {
       await callback();
     } else {

@@ -8,6 +8,9 @@ import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_unread_cubit.dart';
@@ -28,9 +31,12 @@ class MockNavigationMenuCubit extends MockCubit<NavigationMenuState>
 class MockChatUnreadCubit extends MockCubit<ChatUnreadState>
     implements ChatUnreadCubit {}
 
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
+
 void main() {
   late MockNearbyShopsCubit nearbyShopsCubit;
   late MockCartV2Cubit cartV2Cubit;
+  late MockAuthCubit loginAuthCubit;
 
   const completeShop = ShopEntity(
     id: 'shop-1',
@@ -49,6 +55,7 @@ void main() {
 
     nearbyShopsCubit = MockNearbyShopsCubit();
     cartV2Cubit = MockCartV2Cubit();
+    loginAuthCubit = MockAuthCubit();
 
     when(() => nearbyShopsCubit.loadShops()).thenAnswer((_) async {});
     when(() => nearbyShopsCubit.useCurrentLocation()).thenAnswer((_) async {});
@@ -58,8 +65,14 @@ void main() {
       const Stream<CartV2State>.empty(),
       initialState: CartV2Initial(),
     );
+    whenListen(
+      loginAuthCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
 
     sl.registerFactory<NearbyShopsCubit>(() => nearbyShopsCubit);
+    sl.registerFactory<AuthCubit>(() => loginAuthCubit);
   });
 
   tearDown(() async {
@@ -77,6 +90,8 @@ void main() {
   Widget buildNearbyView({
     TextScaler? textScaler,
     Future<void> Function()? onChangeLocationRequested,
+    NearbyCurrentUserIdProvider? currentUserIdProvider,
+    NearbyCartDestinationBuilder? cartDestinationBuilder,
   }) {
     return MaterialApp(
       builder: textScaler == null
@@ -87,7 +102,16 @@ void main() {
             ),
       home: BlocProvider<CartV2Cubit>.value(
         value: cartV2Cubit,
-        child: NearbyView(onChangeLocationRequested: onChangeLocationRequested),
+        child: NearbyView(
+          onChangeLocationRequested: onChangeLocationRequested,
+          currentUserIdProvider: currentUserIdProvider ?? () => null,
+          cartDestinationBuilder:
+              cartDestinationBuilder ??
+              (_) => const Scaffold(
+                key: Key('nearby-cart-destination'),
+                body: SizedBox.shrink(),
+              ),
+        ),
       ),
     );
   }
@@ -97,12 +121,16 @@ void main() {
     NearbyShopsState state, {
     TextScaler? textScaler,
     Future<void> Function()? onChangeLocationRequested,
+    NearbyCurrentUserIdProvider? currentUserIdProvider,
+    NearbyCartDestinationBuilder? cartDestinationBuilder,
   }) async {
     stubNearbyState(state);
     await tester.pumpWidget(
       buildNearbyView(
         textScaler: textScaler,
         onChangeLocationRequested: onChangeLocationRequested,
+        currentUserIdProvider: currentUserIdProvider,
+        cartDestinationBuilder: cartDestinationBuilder,
       ),
     );
     await tester.pump();
@@ -179,6 +207,104 @@ void main() {
   });
 
   group('NearbyView', () {
+    testWidgets('misafir giristen sonra sepete devam eder', (tester) async {
+      String? currentUserId;
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsEmpty(),
+        currentUserIdProvider: () => currentUserId,
+      );
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(CartCounterIcon),
+          matching: find.byType(IconButton),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final loginView = tester.widget<LoginView>(find.byType(LoginView));
+      expect(loginView.returnToCallerAfterCustomerLogin, isTrue);
+      expect(find.byKey(const Key('nearby-cart-destination')), findsNothing);
+
+      currentUserId = 'customer-1';
+      Navigator.of(tester.element(find.byType(LoginView))).pop(true);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsNothing);
+      expect(find.byKey(const Key('nearby-cart-destination')), findsOneWidget);
+    });
+
+    testWidgets('misafir giristen vazgecerse yakindakilerde kalir', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsEmpty(),
+        currentUserIdProvider: () => null,
+      );
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(CartCounterIcon),
+          matching: find.byType(IconButton),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsNothing);
+      expect(find.byKey(const Key('nearby-cart-destination')), findsNothing);
+      expect(find.byKey(const Key('nearby-customer-content')), findsOneWidget);
+    });
+
+    testWidgets('giris yapmis kullanici sepeti dogrudan acar', (tester) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsEmpty(),
+        currentUserIdProvider: () => 'customer-1',
+      );
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(CartCounterIcon),
+          matching: find.byType(IconButton),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsNothing);
+      expect(find.byKey(const Key('nearby-cart-destination')), findsOneWidget);
+    });
+
+    testWidgets('hizli iki dokunmada tek giris ekrani acar', (tester) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsEmpty(),
+        currentUserIdProvider: () => null,
+      );
+
+      final cartButton = tester.widget<IconButton>(
+        find.descendant(
+          of: find.byType(CartCounterIcon),
+          matching: find.byType(IconButton),
+        ),
+      );
+      cartButton.onPressed!();
+      cartButton.onPressed!();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsOneWidget);
+
+      Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoginView), findsNothing);
+      expect(find.byKey(const Key('nearby-cart-destination')), findsNothing);
+    });
+
     testWidgets('shows a loading indicator while shops are loading', (
       tester,
     ) async {
