@@ -70,6 +70,7 @@ void main() {
 
   Widget buildSubject({
     required CategoryShopProductsLoader shopProductsLoader,
+    CategoryProductDestinationBuilder? productDestinationBuilder,
   }) {
     return BlocProvider<WishlistCubit>.value(
       value: wishlistCubit,
@@ -79,9 +80,11 @@ void main() {
           categoryId: 'category-1',
           currentUserIdProvider: () => null,
           shopProductsLoader: shopProductsLoader,
-          productDestinationBuilder: (selectedProduct) => Scaffold(
-            body: Center(child: Text('Detay: ${selectedProduct.id}')),
-          ),
+          productDestinationBuilder:
+              productDestinationBuilder ??
+              (selectedProduct) => Scaffold(
+                body: Center(child: Text('Detay: ${selectedProduct.id}')),
+              ),
         ),
       ),
     );
@@ -185,6 +188,85 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Detay: product-0'), findsOneWidget);
+  });
+
+  testWidgets('kimliği eksik ürün kartı bozuk detay sayfası açmaz', (
+    tester,
+  ) async {
+    var openCount = 0;
+    final invalidProduct = product.copyWith(id: '', name: 'Eksik Ürün');
+    stubProductsState(
+      ProductsLoaded(
+        products: [invalidProduct],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        shopProductsLoader: (_) async => const Right([]),
+        productDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold();
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('category-product-link-')),
+    );
+    expect(productLink.onTap, isNull);
+    expect(find.text('Eksik Ürün'), findsOneWidget);
+    expect(openCount, 0);
+  });
+
+  testWidgets('ürün kartına hızlı çift dokunma yalnız bir detay açar', (
+    tester,
+  ) async {
+    var openCount = 0;
+    stubProductsState(
+      const ProductsLoaded(
+        products: [product],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        shopProductsLoader: (_) async => const Right([]),
+        productDestinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('category-product-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLink = tester.widget<InkWell>(
+      find.byKey(const Key('category-product-link-product-0')),
+    );
+    productLink.onTap!();
+    productLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(openCount, 1);
+    expect(
+      find.byKey(const Key('category-product-destination')),
+      findsOneWidget,
+    );
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('category-product-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('category-product-destination')), findsNothing);
+    expect(find.text('Mahalle Ürünü'), findsOneWidget);
   });
 
   testWidgets('yükleme durumu profesyonel iskelet görünümünü gösterir', (

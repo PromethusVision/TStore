@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
@@ -188,6 +190,7 @@ class _CategoryProductsList extends StatefulWidget {
 
 class _CategoryProductsListState extends State<_CategoryProductsList> {
   late Future<Either<String, List<ShopProductEntity>>> _shopProductsFuture;
+  final Set<String> _openingProductIds = <String>{};
 
   @override
   void initState() {
@@ -261,7 +264,9 @@ class _CategoryProductsListState extends State<_CategoryProductsList> {
                       minimumPrices,
                       isPriceLoading,
                     ),
-                    onTap: () => _openProduct(context, product),
+                    onTap: product.id.trim().isEmpty
+                        ? null
+                        : () => unawaited(_openProduct(context, product)),
                   );
                 }, childCount: widget.products.length),
               ),
@@ -275,17 +280,24 @@ class _CategoryProductsListState extends State<_CategoryProductsList> {
     );
   }
 
-  void _openProduct(BuildContext context, ProductEntity product) {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) =>
-            widget.productDestinationBuilder?.call(product) ??
-            ProductDetailsView(
-              product: product,
-              currentUserIdProvider: widget.currentUserIdProvider,
-            ),
-      ),
-    );
+  Future<void> _openProduct(BuildContext context, ProductEntity product) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _openingProductIds.contains(productId)) return;
+
+    _openingProductIds.add(productId);
+    try {
+      final destination =
+          widget.productDestinationBuilder?.call(product) ??
+          ProductDetailsView(
+            product: product,
+            currentUserIdProvider: widget.currentUserIdProvider,
+          );
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingProductIds.remove(productId);
+    }
   }
 
   Future<Either<String, List<ShopProductEntity>>> _loadShopProducts() async {
@@ -432,7 +444,7 @@ class _CategoryProductCard extends StatelessWidget {
   final ProductEntity product;
   final String priceLabel;
   final String? Function()? currentUserIdProvider;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -442,6 +454,7 @@ class _CategoryProductCard extends StatelessWidget {
       color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
+        key: Key('category-product-link-${product.id}'),
         onTap: onTap,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         child: Container(
