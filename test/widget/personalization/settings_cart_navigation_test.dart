@@ -29,6 +29,7 @@ import 'package:t_store/features/personalization/presentation/views/privacy_and_
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/settings_menu_tile.dart';
+import 'package:t_store/features/personalization/presentation/widgets/user_profile_tile.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
@@ -168,6 +169,7 @@ void main() {
       const Stream<AuthState>.empty(),
       initialState: AuthInitial(),
     );
+    when(() => authCubit.checkAuthStatus()).thenAnswer((_) async {});
     when(() => loginAuthCubit.close()).thenAnswer((_) async {});
 
     sl.registerFactory<ChatUnreadCubit>(() => chatUnreadCubit);
@@ -512,6 +514,87 @@ void main() {
 
     expect(find.byType(CustomerCouponsView), findsOneWidget);
     expect(find.text('Henüz kullanılabilir kuponun yok'), findsOneWidget);
+  });
+
+  testWidgets(
+    'profil üst kartı girişten sonra profilde kalıp bilgileri yeniler',
+    (tester) async {
+      String? currentUserId;
+      await tester.pumpWidget(
+        buildSubject(
+          authState: AuthUnauthenticated(),
+          currentUserId: null,
+          currentUserIdProvider: () => currentUserId,
+          useInheritedChatUnreadCubit: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Giriş yap'));
+      await tester.pumpAndSettle();
+
+      final loginView = tester.widget<LoginView>(find.byType(LoginView));
+      expect(loginView.returnToCallerAfterCustomerLogin, isTrue);
+
+      currentUserId = user.id;
+      when(() => authCubit.state).thenReturn(const AuthAuthenticated(user));
+      Navigator.of(tester.element(find.byType(LoginView))).pop(true);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsView), findsOneWidget);
+      expect(find.byType(LoginView), findsNothing);
+      expect(find.text('Müşteri Kullanıcı'), findsOneWidget);
+      expect(find.text('customer@example.com'), findsOneWidget);
+      verify(() => authCubit.checkAuthStatus()).called(1);
+    },
+  );
+
+  testWidgets('profil üst kartında girişten vazgeçerse misafir profili korur', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: AuthUnauthenticated(),
+        currentUserId: null,
+        useInheritedChatUnreadCubit: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Giriş yap'));
+    await tester.pumpAndSettle();
+    Navigator.of(tester.element(find.byType(LoginView))).pop(false);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SettingsView), findsOneWidget);
+    expect(find.text('Giriş yap'), findsOneWidget);
+    verifyNever(() => authCubit.checkAuthStatus());
+  });
+
+  testWidgets('profil üst kartına hızlı dokununca tek giriş ekranı açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        authState: AuthUnauthenticated(),
+        currentUserId: null,
+        useInheritedChatUnreadCubit: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final signInTile = tester.widget<UserProfileTile>(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is UserProfileTile &&
+            widget.userProfileTileModel.title == 'Giriş yap',
+      ),
+    );
+    signInTile.userProfileTileModel.onTap?.call();
+    signInTile.userProfileTileModel.onTap?.call();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
   });
 
   testWidgets('giriş yapmayan müşteriyi kuponlardan önce girişe yönlendirir', (

@@ -24,6 +24,7 @@ void main() {
   Widget buildHeader({
     required AuthState state,
     required String? currentUserId,
+    VoidCallback? onSignIn,
   }) {
     whenListen(authCubit, const Stream<AuthState>.empty(), initialState: state);
 
@@ -32,7 +33,10 @@ void main() {
       child: MaterialApp(
         home: Scaffold(
           body: SingleChildScrollView(
-            child: SettingsViewHeaderSection(currentUserId: currentUserId),
+            child: SettingsViewHeaderSection(
+              currentUserId: currentUserId,
+              onSignIn: onSignIn ?? () {},
+            ),
           ),
         ),
       ),
@@ -82,6 +86,24 @@ void main() {
     expect(find.text('Kullanıcı Adı'), findsNothing);
     expect(find.text('Cinsiyet'), findsNothing);
     expect(find.text('Doğum Tarihi'), findsNothing);
+  });
+
+  testWidgets('misafir profil kartı geri dönüşlü giriş işlemini çağırır', (
+    tester,
+  ) async {
+    var signInCallCount = 0;
+    await tester.pumpWidget(
+      buildHeader(
+        state: AuthUnauthenticated(),
+        currentUserId: null,
+        onSignIn: () => signInCallCount++,
+      ),
+    );
+
+    await tester.tap(find.text('Giriş yap'));
+    await tester.pump();
+
+    expect(signInCallCount, 1);
   });
 
   testWidgets('hesap bilgileri 320 piksel genişlikte taşma yapmaz', (

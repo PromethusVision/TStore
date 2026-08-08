@@ -7,15 +7,19 @@ import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
-import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/personalization/presentation/view_models/user_profile_tile_model.dart';
 import 'package:t_store/features/personalization/presentation/views/profile_view.dart';
 import 'package:t_store/features/personalization/presentation/widgets/user_profile_tile.dart';
 
 class SettingsViewHeaderSection extends StatelessWidget {
-  const SettingsViewHeaderSection({super.key, required this.currentUserId});
+  const SettingsViewHeaderSection({
+    super.key,
+    required this.currentUserId,
+    required this.onSignIn,
+  });
 
   final String? currentUserId;
+  final VoidCallback onSignIn;
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +96,7 @@ class SettingsViewHeaderSection extends StatelessWidget {
                 userProfileTileModel: UserProfileTileModel(
                   title: 'Giriş yap',
                   subtitle: 'Hesabını ve alışverişlerini görüntüle',
-                  onTap: () => THelperFunctions.navigateToScreen(
-                    context,
-                    const LoginView(),
-                  ),
+                  onTap: onSignIn,
                   trailing: Icons.login,
                   leading: TImages.user,
                 ),

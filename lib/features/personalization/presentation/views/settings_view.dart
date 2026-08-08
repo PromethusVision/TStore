@@ -102,6 +102,21 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
 
+  Future<void> _signInFromProfileHeader(BuildContext context) async {
+    if (_isOpeningProtectedDestination) return;
+    _isOpeningProtectedDestination = true;
+
+    try {
+      final customerId = await _requireCustomerSignIn(context);
+      if (customerId == null || !mounted || !context.mounted) return;
+
+      await context.read<AuthCubit>().checkAuthStatus();
+    } finally {
+      _isOpeningProtectedDestination = false;
+      if (mounted) setState(() {});
+    }
+  }
+
   Future<Widget?> _buildAccountDestination(
     BuildContext context,
     String customerId,
@@ -315,7 +330,10 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               child: Column(
                 children: [
-                  SettingsViewHeaderSection(currentUserId: currentUserId),
+                  SettingsViewHeaderSection(
+                    currentUserId: currentUserId,
+                    onSignIn: () => _signInFromProfileHeader(context),
+                  ),
                   const SizedBox(height: CustomerHomeV1Tokens.space16),
                   _CustomerProfileMenuSection(
                     key: const Key('customer-profile-activity-section'),
