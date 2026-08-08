@@ -19,7 +19,10 @@ void main() {
     when(() => nearbyCubit.loadShops()).thenAnswer((_) async {});
   });
 
-  Widget buildSubject(NearbyShopsState state) {
+  Widget buildSubject(
+    NearbyShopsState state, {
+    HomeShopDestinationBuilder? destinationBuilder,
+  }) {
     whenListen(
       nearbyCubit,
       const Stream<NearbyShopsState>.empty(),
@@ -33,8 +36,9 @@ void main() {
           body: SingleChildScrollView(
             child: HomeNearbyShopsSection(
               onViewAll: () {},
-              shopDestinationBuilder: (shop) =>
-                  Scaffold(key: Key('shop-profile-${shop.id}')),
+              shopDestinationBuilder:
+                  destinationBuilder ??
+                  (shop) => Scaffold(key: Key('shop-profile-${shop.id}')),
             ),
           ),
         ),
@@ -98,5 +102,73 @@ void main() {
     await tester.tap(find.byKey(const Key('home-shop-shop-1')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('shop-profile-shop-1')), findsOneWidget);
+  });
+
+  testWidgets('pasif veya kimliği eksik mağaza profil açmaz', (tester) async {
+    var openCount = 0;
+    const state = NearbyShopsLoaded([
+      ShopEntity(id: 'inactive', name: 'Pasif Mağaza', isActive: false),
+      ShopEntity(id: '', name: 'Eksik Mağaza'),
+    ]);
+
+    await tester.pumpWidget(
+      buildSubject(
+        state,
+        destinationBuilder: (_) {
+          openCount++;
+          return const Scaffold();
+        },
+      ),
+    );
+
+    final inactiveLink = tester.widget<InkWell>(
+      find.byKey(const Key('home-shop-link-inactive')),
+    );
+    final invalidLink = tester.widget<InkWell>(
+      find.byKey(const Key('home-shop-link-')),
+    );
+
+    expect(inactiveLink.onTap, isNull);
+    expect(invalidLink.onTap, isNull);
+    expect(openCount, 0);
+  });
+
+  testWidgets('mağaza kartına hızlı çift dokunma yalnız bir profil açar', (
+    tester,
+  ) async {
+    var openCount = 0;
+    const state = NearbyShopsLoaded([
+      ShopEntity(id: 'shop-1', name: 'Nihat Manav'),
+    ]);
+
+    await tester.pumpWidget(
+      buildSubject(
+        state,
+        destinationBuilder: (_) {
+          openCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('shop-profile-destination')),
+          );
+        },
+      ),
+    );
+
+    final shopLink = tester.widget<InkWell>(
+      find.byKey(const Key('home-shop-link-shop-1')),
+    );
+    shopLink.onTap!();
+    shopLink.onTap!();
+    await tester.pumpAndSettle();
+
+    expect(openCount, 1);
+    expect(find.byKey(const Key('shop-profile-destination')), findsOneWidget);
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('shop-profile-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('shop-profile-destination')), findsNothing);
+    expect(find.text('Nihat Manav'), findsOneWidget);
   });
 }

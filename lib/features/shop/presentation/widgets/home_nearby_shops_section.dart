@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -160,7 +162,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _HomeShopCard extends StatelessWidget {
+class _HomeShopCard extends StatefulWidget {
   const _HomeShopCard({
     required this.shop,
     required this.distanceMeters,
@@ -172,19 +174,25 @@ class _HomeShopCard extends StatelessWidget {
   final HomeShopDestinationBuilder? destinationBuilder;
 
   @override
+  State<_HomeShopCard> createState() => _HomeShopCardState();
+}
+
+class _HomeShopCardState extends State<_HomeShopCard> {
+  bool _isOpeningProfile = false;
+
+  @override
   Widget build(BuildContext context) {
+    final shop = widget.shop;
     return Material(
       key: Key('home-shop-${shop.id}'),
       color: Colors.white,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
+        key: Key('home-shop-link-${shop.id}'),
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        onTap: () => Navigator.of(context).push<void>(
-          MaterialPageRoute<void>(
-            builder: (_) =>
-                destinationBuilder?.call(shop) ?? ShopProfileView(shop: shop),
-          ),
-        ),
+        onTap: !shop.isActive || shop.id.trim().isEmpty
+            ? null
+            : () => unawaited(_openShopProfile(context)),
         child: Container(
           width: 122,
           clipBehavior: Clip.antiAlias,
@@ -217,10 +225,10 @@ class _HomeShopCard extends StatelessWidget {
                       spacing: 3,
                       runSpacing: 1,
                       children: [
-                        if (distanceMeters != null)
+                        if (widget.distanceMeters != null)
                           _ShopDetail(
                             icon: Icons.location_on_rounded,
-                            text: _compactDistance(distanceMeters!),
+                            text: _compactDistance(widget.distanceMeters!),
                           ),
                         if (shop.ratingCount > 0)
                           _ShopDetail(
@@ -237,6 +245,22 @@ class _HomeShopCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openShopProfile(BuildContext context) async {
+    final shop = widget.shop;
+    if (_isOpeningProfile || !shop.isActive || shop.id.trim().isEmpty) return;
+
+    _isOpeningProfile = true;
+    try {
+      final destination =
+          widget.destinationBuilder?.call(shop) ?? ShopProfileView(shop: shop);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _isOpeningProfile = false;
+    }
   }
 
   String _compactDistance(double distanceMeters) {
