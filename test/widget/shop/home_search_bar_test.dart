@@ -678,6 +678,72 @@ void main() {
     await states.close();
   });
 
+  testWidgets('ürün önerisine hızlı çift dokunma tek eylem üretir', (
+    tester,
+  ) async {
+    whenListen(
+      searchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: const CustomerSearchLoaded(
+        query: 'kulaklık',
+        products: [product],
+        categories: [],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.enterText(find.byType(TextField), 'kulaklık');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    final productAction = tester.widget<InkWell>(
+      find.descendant(
+        of: find.byKey(const Key('home-product-suggestion-product-1')),
+        matching: find.byType(InkWell),
+      ),
+    );
+    productAction.onTap!();
+    productAction.onTap!();
+    await tester.pump();
+
+    expect(selectedProducts, [product]);
+  });
+
+  testWidgets('mağaza önerisine hızlı çift dokunma tek eylem üretir', (
+    tester,
+  ) async {
+    whenListen(
+      searchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: const CustomerSearchLoaded(
+        query: 'esnafta',
+        products: [],
+        categories: [],
+        shops: [shop],
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.enterText(find.byType(TextField), 'esnafta');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    final shopAction = tester.widget<InkWell>(
+      find.descendant(
+        of: find.byKey(const Key('home-shop-suggestion-shop-1')),
+        matching: find.byType(InkWell),
+      ),
+    );
+    shopAction.onTap!();
+    shopAction.onTap!();
+    await tester.pump();
+
+    expect(selectedShops, [shop]);
+  });
+
   testWidgets('arama tuşu mevcut ifadeyi tam sonuçlara bir kez gönderir', (
     tester,
   ) async {
