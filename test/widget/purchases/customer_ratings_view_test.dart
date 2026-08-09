@@ -111,6 +111,64 @@ void main() {
     expect(find.text('Alışverişlerime Git'), findsOneWidget);
   });
 
+  testWidgets(
+    'alışveriş bağlantısını çift dokunmada bir kez açar ve dönüşte yeniden kullanır',
+    (tester) async {
+      whenListen(
+        cubit,
+        const Stream<PurchaseHistoryState>.empty(),
+        initialState: const PurchaseHistoryLoaded([]),
+      );
+      var destinationBuildCount = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: CustomerRatingsView(
+            purchaseHistoryCubit: cubit,
+            purchasesDestinationBuilder: (destinationContext) {
+              destinationBuildCount++;
+              return Scaffold(
+                body: TextButton(
+                  key: const Key('ratings-purchases-destination-back'),
+                  onPressed: () => Navigator.of(destinationContext).pop(),
+                  child: const Text('Geri dön'),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final action = tester.widget<OutlinedButton>(
+        find.byKey(const Key('customer-ratings-state-action')),
+      );
+      action.onPressed?.call();
+      action.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(destinationBuildCount, 1);
+      expect(
+        find.byKey(const Key('ratings-purchases-destination-back')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('ratings-purchases-destination-back')),
+      );
+      await tester.pumpAndSettle();
+
+      final reopenedAction = tester.widget<OutlinedButton>(
+        find.byKey(const Key('customer-ratings-state-action')),
+      );
+      expect(reopenedAction.onPressed, isNotNull);
+      reopenedAction.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(destinationBuildCount, 2);
+    },
+  );
+
   testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
     whenListen(
       cubit,

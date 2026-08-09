@@ -9,22 +9,60 @@ import 'package:t_store/features/purchases/presentation/cubit/purchase_history_s
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
 class CustomerRatingsView extends StatelessWidget {
-  const CustomerRatingsView({super.key, this.purchaseHistoryCubit});
+  const CustomerRatingsView({
+    super.key,
+    this.purchaseHistoryCubit,
+    this.purchasesDestinationBuilder,
+  });
 
   final PurchaseHistoryCubit? purchaseHistoryCubit;
+  final WidgetBuilder? purchasesDestinationBuilder;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
           (purchaseHistoryCubit ?? sl<PurchaseHistoryCubit>())..loadPurchases(),
-      child: const _CustomerRatingsScaffold(),
+      child: _CustomerRatingsScaffold(
+        purchasesDestinationBuilder: purchasesDestinationBuilder,
+      ),
     );
   }
 }
 
-class _CustomerRatingsScaffold extends StatelessWidget {
-  const _CustomerRatingsScaffold();
+class _CustomerRatingsScaffold extends StatefulWidget {
+  const _CustomerRatingsScaffold({this.purchasesDestinationBuilder});
+
+  final WidgetBuilder? purchasesDestinationBuilder;
+
+  @override
+  State<_CustomerRatingsScaffold> createState() =>
+      _CustomerRatingsScaffoldState();
+}
+
+class _CustomerRatingsScaffoldState extends State<_CustomerRatingsScaffold> {
+  bool _isOpeningPurchases = false;
+
+  Future<void> _openPurchases() async {
+    if (_isOpeningPurchases) return;
+
+    setState(() => _isOpeningPurchases = true);
+    try {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder:
+              widget.purchasesDestinationBuilder ??
+              (_) => const PurchasesView(),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isOpeningPurchases = false);
+      } else {
+        _isOpeningPurchases = false;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +124,7 @@ class _CustomerRatingsScaffold extends StatelessWidget {
                           description:
                               'Mağazalara verdiğiniz puanlar burada görünecek.',
                           actionLabel: 'Alışverişlerime Git',
-                          onAction: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const PurchasesView(),
-                            ),
-                          ),
+                          onAction: _isOpeningPurchases ? null : _openPurchases,
                         );
                       }
 
@@ -439,7 +473,7 @@ class _RatingsStateView extends StatelessWidget {
   final String title;
   final String description;
   final String actionLabel;
-  final VoidCallback onAction;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -493,6 +527,7 @@ class _RatingsStateView extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
+                  key: const Key('customer-ratings-state-action'),
                   onPressed: onAction,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.petrol,
