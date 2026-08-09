@@ -419,10 +419,17 @@ void main() {
     expect(find.text('Güncel tutarla devam et'), findsOneWidget);
     verifyNever(() => qrSessionCubit.createQrSession(any()));
 
-    await tester.tap(find.text('Güncel tutarla devam et'));
+    final continueAction = tester
+        .widget<FilledButton>(
+          find.widgetWithText(FilledButton, 'Güncel tutarla devam et'),
+        )
+        .onPressed!;
+    continueAction();
+    continueAction();
     await tester.pumpAndSettle();
 
     expect(find.text('Alışveriş onaylandı'), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 
@@ -461,11 +468,16 @@ void main() {
     await tester.tap(find.text('Alışverişi doğrula'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(find.text('Vazgeç'));
+    final cancelAction = tester
+        .widget<TextButton>(find.widgetWithText(TextButton, 'Vazgeç'))
+        .onPressed!;
+    cancelAction();
+    cancelAction();
     await tester.pumpAndSettle();
 
     expect(find.text('Sepet tutarı güncellendi'), findsNothing);
     expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
     verifyNever(() => qrSessionCubit.createQrSession(any()));
   });
 

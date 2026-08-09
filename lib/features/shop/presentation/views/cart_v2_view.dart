@@ -394,43 +394,54 @@ class _CartV2ViewState extends State<CartV2View> {
     required CartV2Loaded previousState,
     required CartV2Loaded refreshedState,
   }) async {
+    var isClosingDialog = false;
     final shouldContinue = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          icon: const Icon(Icons.price_change_outlined),
-          title: const Text('Sepet tutarı güncellendi'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Mağazadaki güncel fiyatlar sepetinize yansıtıldı. '
-                'Devam etmeden önce yeni tutarı kontrol edin.',
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            void closeDialog(bool result) {
+              if (isClosingDialog) return;
+              setDialogState(() => isClosingDialog = true);
+              Navigator.of(dialogContext).pop(result);
+            }
+
+            return AlertDialog(
+              icon: const Icon(Icons.price_change_outlined),
+              title: const Text('Sepet tutarı güncellendi'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Mağazadaki güncel fiyatlar sepetinize yansıtıldı. '
+                    'Devam etmeden önce yeni tutarı kontrol edin.',
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwItems),
+                  _CartTotalComparisonRow(
+                    label: 'Önceki toplam',
+                    amount: previousState.totalAmount,
+                  ),
+                  const SizedBox(height: TSizes.sm),
+                  _CartTotalComparisonRow(
+                    label: 'Güncel toplam',
+                    amount: refreshedState.totalAmount,
+                    isHighlighted: true,
+                  ),
+                ],
               ),
-              const SizedBox(height: TSizes.spaceBtwItems),
-              _CartTotalComparisonRow(
-                label: 'Önceki toplam',
-                amount: previousState.totalAmount,
-              ),
-              const SizedBox(height: TSizes.sm),
-              _CartTotalComparisonRow(
-                label: 'Güncel toplam',
-                amount: refreshedState.totalAmount,
-                isHighlighted: true,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Vazgeç'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Güncel tutarla devam et'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: isClosingDialog ? null : () => closeDialog(false),
+                  child: const Text('Vazgeç'),
+                ),
+                FilledButton(
+                  onPressed: isClosingDialog ? null : () => closeDialog(true),
+                  child: const Text('Güncel tutarla devam et'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
