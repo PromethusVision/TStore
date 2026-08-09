@@ -153,6 +153,57 @@ void main() {
     expect(find.text('Kullanım Koşulları'), findsWidgets);
   });
 
+  for (final document in const [
+    (actionKey: Key('privacy-kvkk-action'), title: 'KVKK Aydınlatma Metni'),
+    (actionKey: Key('privacy-terms-action'), title: 'Kullanım Koşulları'),
+  ]) {
+    testWidgets(
+      '${document.title} hızlı dokunmada bir kez açılır ve dönüşte yeniden çalışır',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(() async => CustomerLocationPermissionStatus.allowed),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.scrollUntilVisible(
+          find.byKey(document.actionKey),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final action = tester.widget<InkWell>(
+          find.descendant(
+            of: find.byKey(document.actionKey),
+            matching: find.byType(InkWell),
+          ),
+        );
+        action.onTap!();
+        action.onTap!();
+        await tester.pumpAndSettle();
+
+        expect(find.text(document.title), findsWidgets);
+
+        await tester.tap(find.byKey(const Key('customer-legal-back')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const Key('customer-privacy-content')),
+          findsOneWidget,
+        );
+        expect(find.byKey(const Key('customer-legal-back')), findsNothing);
+
+        await tester.scrollUntilVisible(
+          find.byKey(document.actionKey),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.byKey(document.actionKey));
+        await tester.pumpAndSettle();
+
+        expect(find.text(document.title), findsWidgets);
+      },
+    );
+  }
+
   testWidgets('dar ekranda taşmadan aşağı kaydırılabilir', (tester) async {
     await tester.binding.setSurfaceSize(const Size(320, 640));
     addTearDown(() => tester.binding.setSurfaceSize(null));

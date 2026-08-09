@@ -27,6 +27,7 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
   CustomerLocationPermissionStatus? _locationStatus;
   bool _isLoading = true;
   bool _hasError = false;
+  bool _isOpeningLegalDocument = false;
 
   CustomerLocationPermissionLoader get _permissionLoader =>
       widget.locationPermissionLoader ?? _loadLocationPermission;
@@ -66,6 +67,19 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
       _isLoading = true;
     });
     await _readPermissionStatus();
+  }
+
+  Future<void> _openLegalDocument(WidgetBuilder builder) async {
+    if (_isOpeningLegalDocument) return;
+    _isOpeningLegalDocument = true;
+
+    try {
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: builder));
+    } finally {
+      _isOpeningLegalDocument = false;
+    }
   }
 
   @override
@@ -202,10 +216,8 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
                           title: 'KVKK Aydınlatma Metni',
                           subtitle:
                               'Kişisel verilerin nasıl işlendiğini incele',
-                          onTap: () => Navigator.of(context).push<void>(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const KvkkInformationView(),
-                            ),
+                          onTap: () => _openLegalDocument(
+                            (_) => const KvkkInformationView(),
                           ),
                         ),
                         const SizedBox(height: CustomerHomeV1Tokens.space8),
@@ -215,11 +227,8 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
                           title: 'Kullanım Koşulları',
                           subtitle:
                               'Uygulamanın kullanım kurallarını görüntüle',
-                          onTap: () => Navigator.of(context).push<void>(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const TermsOfUseView(),
-                            ),
-                          ),
+                          onTap: () =>
+                              _openLegalDocument((_) => const TermsOfUseView()),
                         ),
                         const SizedBox(height: CustomerHomeV1Tokens.space20),
                         const _PermissionManagementNote(),
