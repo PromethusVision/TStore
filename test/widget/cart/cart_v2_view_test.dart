@@ -863,4 +863,98 @@ void main() {
     expect(find.text('Alışveriş onaylandı'), findsOneWidget);
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
+
+  testWidgets(
+    'doğrulama hazırlanırken sepet değişikliklerini engeller ve sonra yeniden açar',
+    (tester) async {
+      var requestCount = 0;
+      final verificationRequest = Completer<void>();
+      when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) {
+        requestCount++;
+        if (requestCount == 2) return verificationRequest.future;
+        return Future<void>.value();
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final incrementAction = tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.add))
+          .onPressed!;
+      final removeAction = tester
+          .widget<IconButton>(
+            find.byKey(const Key('customer-cart-item-item-1-remove')),
+          )
+          .onPressed!;
+      final clearAction = tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
+          )
+          .onPressed!;
+
+      await tester.tap(find.text('Alışverişi doğrula'));
+      await tester.pump();
+
+      expect(find.text('Hazırlanıyor…'), findsOneWidget);
+      expect(
+        tester
+            .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.add))
+            .onPressed,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byKey(const Key('customer-cart-item-item-1-remove')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
+            )
+            .onPressed,
+        isNull,
+      );
+
+      incrementAction();
+      removeAction();
+      clearAction();
+      await tester.pump();
+
+      verifyNever(() => cartV2Cubit.incrementItemQuantity(cartItem));
+      verifyNever(() => cartV2Cubit.removeItem(any()));
+      verifyNever(() => cartV2Cubit.cancelActiveCart());
+      expect(find.byType(AlertDialog), findsNothing);
+
+      verificationRequest.complete();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tamam'));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.add))
+            .onPressed,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
+            )
+            .onPressed,
+        isNotNull,
+      );
+    },
+  );
 }

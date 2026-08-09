@@ -29,6 +29,12 @@ class _CartV2ViewState extends State<CartV2View> {
   bool get _isCartMutationInProgress =>
       _isClearingCart || _pendingItemActions.isNotEmpty;
 
+  bool get _isCartInteractionBlocked =>
+      _isCartConfirmationOpen ||
+      _isPreparingPurchaseVerification ||
+      _isRefreshingUnavailableItem ||
+      _isCartMutationInProgress;
+
   @override
   void initState() {
     super.initState();
@@ -108,7 +114,7 @@ class _CartV2ViewState extends State<CartV2View> {
                                     item: item,
                                     pendingAction: _pendingItemActions[item.id],
                                     isCartInteractionBlocked:
-                                        _isCartMutationInProgress,
+                                        _isCartInteractionBlocked,
                                     isRefreshingAvailability:
                                         _isRefreshingUnavailableItem,
                                     onRefreshAvailability:
@@ -137,14 +143,10 @@ class _CartV2ViewState extends State<CartV2View> {
                                 (item) => !item.isPurchaseVerifiable,
                               ),
                               isPreparing: _isPreparingPurchaseVerification,
-                              isVerificationEnabled:
-                                  !_isCartMutationInProgress &&
-                                  !_isRefreshingUnavailableItem,
+                              isVerificationEnabled: !_isCartInteractionBlocked,
                               onVerify: _preparePurchaseVerification,
                               isClearing: _isClearingCart,
-                              isClearEnabled:
-                                  _pendingItemActions.isEmpty &&
-                                  !_isRefreshingUnavailableItem,
+                              isClearEnabled: !_isCartInteractionBlocked,
                               onClear: _confirmAndClearCart,
                             ),
                           ],
@@ -177,7 +179,7 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _confirmAndRemoveItem(CartItemV2Entity item) async {
-    if (_isCartConfirmationOpen || _isCartMutationInProgress) return;
+    if (_isCartInteractionBlocked) return;
 
     _isCartConfirmationOpen = true;
     bool shouldRemove;
@@ -218,7 +220,7 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _confirmAndClearCart() async {
-    if (_isCartConfirmationOpen || _isCartMutationInProgress) return;
+    if (_isCartInteractionBlocked) return;
 
     _isCartConfirmationOpen = true;
     bool shouldClear;
@@ -265,7 +267,7 @@ class _CartV2ViewState extends State<CartV2View> {
     required _CartItemPendingAction action,
     required Future<void> Function() request,
   }) async {
-    if (_isCartMutationInProgress) return;
+    if (_isCartInteractionBlocked) return;
 
     setState(() => _pendingItemActions[itemId] = action);
     try {
@@ -278,7 +280,7 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _preparePurchaseVerification() async {
-    if (_isPreparingPurchaseVerification || _isCartMutationInProgress) return;
+    if (_isCartInteractionBlocked) return;
 
     setState(() => _isPreparingPurchaseVerification = true);
     final cartCubit = context.read<CartV2Cubit>();
@@ -407,7 +409,7 @@ class _CartV2ViewState extends State<CartV2View> {
   }
 
   Future<void> _refreshUnavailableItem(String cartItemId) async {
-    if (_isRefreshingUnavailableItem || _isCartMutationInProgress) return;
+    if (_isCartInteractionBlocked) return;
 
     setState(() => _isRefreshingUnavailableItem = true);
     final cartCubit = context.read<CartV2Cubit>();
