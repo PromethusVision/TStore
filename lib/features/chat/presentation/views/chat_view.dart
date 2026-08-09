@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/features/chat/domain/chat_message_rules.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
@@ -73,7 +75,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   void initState() {
     super.initState();
     _messageController = TextEditingController(
-      text: widget.initialDraft?.trim() ?? '',
+      text: ChatMessageRules.limitText(widget.initialDraft?.trim() ?? ''),
     );
     _scrollController.addListener(_handleScroll);
   }
@@ -695,52 +697,59 @@ class _MessageInput extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-            child: TextField(
-              key: const Key('chat-message-input'),
-              controller: controller,
-              readOnly: isSending,
-              minLines: 1,
-              maxLines: 4,
-              textInputAction: TextInputAction.newline,
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.navy,
-                fontSize: 13,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Mesaj yaz',
-                hintStyle: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12.5,
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller,
+              builder: (context, value, _) => TextField(
+                key: const Key('chat-message-input'),
+                controller: controller,
+                readOnly: isSending,
+                inputFormatters: const [_ChatMessageLengthFormatter()],
+                minLines: 1,
+                maxLines: 4,
+                textInputAction: TextInputAction.newline,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 13,
                 ),
-                filled: true,
-                fillColor: CustomerHomeV1Tokens.cream,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: CustomerHomeV1Tokens.space16,
-                  vertical: CustomerHomeV1Tokens.space12,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius20,
+                decoration: InputDecoration(
+                  hintText: 'Mesaj yaz',
+                  counterText:
+                      '${ChatMessageRules.characterCount(value.text)} / '
+                      '${ChatMessageRules.maxTextLength}',
+                  hintStyle: const TextStyle(
+                    color: CustomerHomeV1Tokens.muted,
+                    fontSize: 12.5,
                   ),
-                  borderSide: const BorderSide(
-                    color: CustomerHomeV1Tokens.border,
+                  filled: true,
+                  fillColor: CustomerHomeV1Tokens.cream,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: CustomerHomeV1Tokens.space16,
+                    vertical: CustomerHomeV1Tokens.space12,
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius20,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius20,
+                    ),
+                    borderSide: const BorderSide(
+                      color: CustomerHomeV1Tokens.border,
+                    ),
                   ),
-                  borderSide: const BorderSide(
-                    color: CustomerHomeV1Tokens.border,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius20,
+                    ),
+                    borderSide: const BorderSide(
+                      color: CustomerHomeV1Tokens.border,
+                    ),
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius20,
-                  ),
-                  borderSide: const BorderSide(
-                    color: CustomerHomeV1Tokens.petrol,
-                    width: 1.4,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius20,
+                    ),
+                    borderSide: const BorderSide(
+                      color: CustomerHomeV1Tokens.petrol,
+                      width: 1.4,
+                    ),
                   ),
                 ),
               ),
@@ -750,7 +759,9 @@ class _MessageInput extends StatelessWidget {
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, _) {
-              final canSend = !isSending && value.text.trim().isNotEmpty;
+              final canSend =
+                  !isSending &&
+                  ChatMessageRules.validationError(value.text) == null;
 
               return SizedBox.square(
                 dimension: 46,
@@ -780,6 +791,27 @@ class _MessageInput extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ChatMessageLengthFormatter extends TextInputFormatter {
+  const _ChatMessageLengthFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (ChatMessageRules.characterCount(newValue.text) <=
+        ChatMessageRules.maxTextLength) {
+      return newValue;
+    }
+
+    final limitedText = ChatMessageRules.limitText(newValue.text);
+    return TextEditingValue(
+      text: limitedText,
+      selection: TextSelection.collapsed(offset: limitedText.length),
     );
   }
 }

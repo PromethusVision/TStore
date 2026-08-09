@@ -205,7 +205,9 @@ CREATE TABLE IF NOT EXISTS chat_messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   sender_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   receiver_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
+  content TEXT NOT NULL CHECK (
+    char_length(btrim(content)) BETWEEN 1 AND 1000
+  ),
   message_type TEXT DEFAULT 'text',
   is_read BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

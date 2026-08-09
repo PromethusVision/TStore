@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/features/chat/domain/chat_message_rules.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
@@ -99,13 +100,21 @@ class ChatCubit extends Cubit<ChatState> {
   }) async {
     if (_isSendingMessage) return;
 
+    final validationError = ChatMessageRules.validationError(content);
+    if (validationError != null) {
+      emit(ChatError(validationError));
+      return;
+    }
+
+    final normalizedContent = ChatMessageRules.normalizeText(content);
+
     _isSendingMessage = true;
     emit(MessageSending());
 
     try {
       final result = await repository.sendMessage(
         receiverId: receiverId,
-        content: content,
+        content: normalizedContent,
         messageType: messageType,
       );
 

@@ -174,6 +174,20 @@ void main() {
     );
     await tester.pump();
     expect(sendButton().onPressed, isNotNull);
+
+    final overLimitMessage = List.filled(1001, 'a').join();
+    await tester.enterText(
+      find.byKey(const Key('chat-message-input')),
+      overLimitMessage,
+    );
+    await tester.pump();
+
+    final messageField = tester.widget<TextField>(
+      find.byKey(const Key('chat-message-input')),
+    );
+    expect(messageField.controller?.text.length, 1000);
+    expect(find.text('1000 / 1000'), findsOneWidget);
+    expect(sendButton().onPressed, isNotNull);
   });
 
   testWidgets('mesaj gönderilirken ikinci gönderimi engeller', (tester) async {

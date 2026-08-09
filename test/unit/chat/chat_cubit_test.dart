@@ -3,6 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/features/chat/domain/chat_message_rules.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
@@ -289,6 +290,46 @@ void main() {
     });
 
     group('sendMessage', () {
+      test('boş mesajı veri kaynağına göndermeden reddeder', () async {
+        await chatCubit.sendMessage(
+          receiverId: testOtherUserId,
+          content: '   ',
+        );
+
+        expect(chatCubit.state, const ChatError('Mesaj boş olamaz.'));
+        verifyNever(
+          () => mockChatRepository.sendMessage(
+            receiverId: testOtherUserId,
+            content: '   ',
+            messageType: MessageType.text,
+          ),
+        );
+      });
+
+      test('1.000 karakteri aşan mesajı veri kaynağına göndermez', () async {
+        final overLimitMessage = List.filled(
+          ChatMessageRules.maxTextLength + 1,
+          'a',
+        ).join();
+
+        await chatCubit.sendMessage(
+          receiverId: testOtherUserId,
+          content: overLimitMessage,
+        );
+
+        expect(
+          chatCubit.state,
+          const ChatError('Mesaj en fazla 1.000 karakter olabilir.'),
+        );
+        verifyNever(
+          () => mockChatRepository.sendMessage(
+            receiverId: testOtherUserId,
+            content: overLimitMessage,
+            messageType: MessageType.text,
+          ),
+        );
+      });
+
       blocTest<ChatCubit, ChatState>(
         'emits [MessageSending, MessageSent, ChatLoaded] when sendMessage succeeds',
         build: () {
