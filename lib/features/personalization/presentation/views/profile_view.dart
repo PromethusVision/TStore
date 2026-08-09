@@ -26,6 +26,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   late UserEntity _user;
+  bool _isOpeningEditor = false;
 
   @override
   void initState() {
@@ -34,30 +35,43 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Future<void> _openEditProfile() async {
-    final updatedUser = await showModalBottomSheet<UserEntity>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: CustomerHomeV1Tokens.cream,
-      barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
-      clipBehavior: Clip.antiAlias,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(CustomerHomeV1Tokens.radius24),
-        ),
-      ),
-      builder: (_) => BlocProvider(
-        create: (_) => sl<ProfileCubit>(),
-        child: EditProfileBottomSheet(user: _user),
-      ),
-    );
+    if (_isOpeningEditor) return;
 
-    if (!mounted || updatedUser == null) return;
+    setState(() => _isOpeningEditor = true);
+    UserEntity? updatedUser;
+    try {
+      updatedUser = await showModalBottomSheet<UserEntity>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: CustomerHomeV1Tokens.cream,
+        barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(CustomerHomeV1Tokens.radius24),
+          ),
+        ),
+        builder: (_) => BlocProvider(
+          create: (_) => sl<ProfileCubit>(),
+          child: EditProfileBottomSheet(user: _user),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isOpeningEditor = false);
+      } else {
+        _isOpeningEditor = false;
+      }
+    }
+
+    final savedUser = updatedUser;
+    if (!mounted || savedUser == null) return;
 
     setState(() {
-      _user = updatedUser;
+      _user = savedUser;
     });
-    context.read<AuthCubit>().syncUserProfile(updatedUser);
+    context.read<AuthCubit>().syncUserProfile(savedUser);
   }
 
   Future<void> _openAccountDeletionConfirmation() async {
@@ -135,7 +149,7 @@ class _ProfileViewState extends State<ProfileView> {
                     height: 52,
                     child: FilledButton.icon(
                       key: const Key('edit-profile-button'),
-                      onPressed: _openEditProfile,
+                      onPressed: _isOpeningEditor ? null : _openEditProfile,
                       style: FilledButton.styleFrom(
                         backgroundColor: CustomerHomeV1Tokens.petrol,
                         foregroundColor: Colors.white,

@@ -21,6 +21,8 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
   late final TextEditingController _phoneController;
   late final String _initialFullName;
   late final String _initialPhone;
+  bool _isSubmitPending = false;
+  bool _isClosing = false;
 
   @override
   void initState() {
@@ -53,12 +55,28 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
       _phoneController.text.trim() != _initialPhone;
 
   void _submit() {
+    if (_isSubmitPending ||
+        context.read<ProfileCubit>().state is ProfileUpdating) {
+      return;
+    }
     if (!_formKey.currentState!.validate() || !_hasChanges) return;
 
+    setState(() => _isSubmitPending = true);
     context.read<ProfileCubit>().updateProfile(
       fullName: _fullNameController.text.trim(),
       phone: _phoneController.text.trim(),
     );
+  }
+
+  void _close() {
+    if (_isClosing ||
+        _isSubmitPending ||
+        context.read<ProfileCubit>().state is ProfileUpdating) {
+      return;
+    }
+
+    _isClosing = true;
+    Navigator.of(context).pop();
   }
 
   String? _validateFullName(String? value) {
@@ -94,11 +112,16 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is ProfileUpdated) {
+          _isClosing = true;
           Navigator.of(context).pop(state.user);
+          return;
+        }
+        if (state is ProfileError && _isSubmitPending) {
+          setState(() => _isSubmitPending = false);
         }
       },
       builder: (context, state) {
-        final isUpdating = state is ProfileUpdating;
+        final isUpdating = state is ProfileUpdating || _isSubmitPending;
 
         return ColoredBox(
           key: const Key('edit-profile-sheet'),
@@ -123,11 +146,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                     children: [
                       const _SheetHandle(),
                       const SizedBox(height: CustomerHomeV1Tokens.space12),
-                      _EditorHeader(
-                        onClose: isUpdating
-                            ? null
-                            : () => Navigator.of(context).pop(),
-                      ),
+                      _EditorHeader(onClose: isUpdating ? null : _close),
                       const SizedBox(height: CustomerHomeV1Tokens.space20),
                       TextFormField(
                         key: const Key('edit-profile-full-name-field'),

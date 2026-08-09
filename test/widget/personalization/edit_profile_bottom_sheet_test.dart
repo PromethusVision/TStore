@@ -43,6 +43,7 @@ void main() {
   late MockGetProfileUsecase getProfileUsecase;
   late MockUpdateProfileUsecase updateProfileUsecase;
   late ProfileCubit profileCubit;
+  late int profileCubitResolveCount;
 
   setUpAll(() {
     registerFallbackValue(FakeUpdateProfileParams());
@@ -56,6 +57,7 @@ void main() {
     authCubit = MockAuthCubit();
     getProfileUsecase = MockGetProfileUsecase();
     updateProfileUsecase = MockUpdateProfileUsecase();
+    profileCubitResolveCount = 0;
 
     whenListen(
       authCubit,
@@ -71,7 +73,10 @@ void main() {
       getProfileUsecase: getProfileUsecase,
       updateProfileUsecase: updateProfileUsecase,
     );
-    sl.registerFactory<ProfileCubit>(() => profileCubit);
+    sl.registerFactory<ProfileCubit>(() {
+      profileCubitResolveCount++;
+      return profileCubit;
+    });
   });
 
   tearDown(() async {
@@ -222,6 +227,40 @@ void main() {
     verifyNever(() => updateProfileUsecase(any()));
   });
 
+  testWidgets(
+    'düzenleme penceresini çift dokunmada bir kez açar ve güvenli kapatır',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final editAction = tester.widget<FilledButton>(
+        find.byKey(const Key('edit-profile-button')),
+      );
+      editAction.onPressed?.call();
+      editAction.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditProfileBottomSheet), findsOneWidget);
+      expect(profileCubitResolveCount, 1);
+
+      final closeAction = tester.widget<IconButton>(
+        find.byKey(const Key('edit-profile-close-button')),
+      );
+      closeAction.onPressed?.call();
+      closeAction.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditProfileBottomSheet), findsNothing);
+      expect(find.byKey(const Key('customer-account-content')), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('edit-profile-button')))
+            .onPressed,
+        isNotNull,
+      );
+      verifyNever(() => updateProfileUsecase(any()));
+    },
+  );
+
   testWidgets('dar ekranda alanlar kaydırılabilir ve taşma yapmaz', (
     tester,
   ) async {
@@ -271,5 +310,37 @@ void main() {
     updateResult.complete(const Right(updatedUser));
     await tester.pumpAndSettle();
     expect(find.byType(EditProfileBottomSheet), findsNothing);
+  });
+
+  testWidgets('hızlı çift kaydetme yalnız bir güncelleme gönderir', (
+    tester,
+  ) async {
+    final updateResult = Completer<Either<String, UserEntity>>();
+    when(
+      () => updateProfileUsecase(any()),
+    ).thenAnswer((_) => updateResult.future);
+
+    await openEditor(tester);
+    await tester.enterText(
+      find.byKey(const Key('edit-profile-full-name-field')),
+      'Ayşe Demir',
+    );
+    await tester.pump();
+
+    final saveAction = tester.widget<FilledButton>(
+      find.byKey(const Key('edit-profile-save-button')),
+    );
+    saveAction.onPressed?.call();
+    saveAction.onPressed?.call();
+    await tester.pump();
+
+    verify(() => updateProfileUsecase(any())).called(1);
+    expect(find.text('Kaydediliyor...'), findsOneWidget);
+
+    updateResult.complete(const Right(updatedUser));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EditProfileBottomSheet), findsNothing);
+    verify(() => authCubit.syncUserProfile(updatedUser)).called(1);
   });
 }
