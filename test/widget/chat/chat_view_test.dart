@@ -138,6 +138,57 @@ void main() {
     expect(find.text('14:00'), findsOneWidget);
   });
 
+  testWidgets('yalnız gönderilen mesajın gerçek okundu durumunu gösterir', (
+    tester,
+  ) async {
+    final stateController = StreamController<ChatState>();
+    addTearDown(stateController.close);
+    whenListen(chatCubit, stateController.stream, initialState: ChatLoading());
+
+    final sentMessage = ChatMessageEntity(
+      id: 'status-mine',
+      senderId: 'customer-1',
+      receiverId: 'owner-1',
+      content: 'Ürün mağazada var mı?',
+      isRead: false,
+      createdAt: DateTime(2026, 8, 10, 11),
+    );
+    final receivedMessage = ChatMessageEntity(
+      id: 'status-shop',
+      senderId: 'owner-1',
+      receiverId: 'customer-1',
+      content: 'Evet, ürün mevcut.',
+      isRead: true,
+      createdAt: DateTime(2026, 8, 10, 11, 1),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    stateController.add(ChatLoaded(messages: [receivedMessage, sentMessage]));
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('chat-message-status-status-mine')),
+      findsOneWidget,
+    );
+    expect(find.text('Gönderildi'), findsOneWidget);
+    expect(
+      find.byKey(const Key('chat-message-status-status-shop')),
+      findsNothing,
+    );
+
+    stateController.add(
+      ChatLoaded(
+        messages: [receivedMessage, sentMessage.copyWith(isRead: true)],
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Gönderildi'), findsNothing);
+    expect(find.text('Okundu'), findsOneWidget);
+  });
+
   testWidgets('ilk yüklemede markalı bekleme durumunu gösterir', (
     tester,
   ) async {

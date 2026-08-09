@@ -803,15 +803,44 @@ class _MessageBubble extends StatelessWidget {
                 ),
               ),
             ),
-            if (message.createdAt != null) ...[
+            if (message.createdAt != null || isMine) ...[
               const SizedBox(height: CustomerHomeV1Tokens.space4),
-              Text(
-                _formatTime(message.createdAt!),
-                style: TextStyle(
-                  color: textColor.withValues(alpha: 0.7),
-                  fontSize: 9,
-                  fontWeight: FontWeight.w500,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (message.createdAt != null)
+                    Text(
+                      _formatTime(message.createdAt!),
+                      style: TextStyle(
+                        color: textColor.withValues(alpha: 0.7),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  if (message.createdAt != null && isMine)
+                    const SizedBox(width: CustomerHomeV1Tokens.space4),
+                  if (isMine) ...[
+                    ExcludeSemantics(
+                      child: Icon(
+                        message.isRead
+                            ? Icons.done_all_rounded
+                            : Icons.done_rounded,
+                        color: textColor.withValues(alpha: 0.78),
+                        size: 12,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      message.isRead ? 'Okundu' : 'Gönderildi',
+                      key: Key('chat-message-status-${message.id}'),
+                      style: TextStyle(
+                        color: textColor.withValues(alpha: 0.78),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ],
