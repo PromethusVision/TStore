@@ -545,6 +545,49 @@ void main() {
     },
   );
 
+  testWidgets('Tamam hızlı dokunmada alt pencereyi yalnızca bir kez kapatır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildModalSubject(const QrSessionCompleted(sessionId: 'session-1')),
+    );
+    await tester.tap(find.byKey(const Key('open-qr-sheet')));
+    await tester.pumpAndSettle();
+
+    final closeAction = tester
+        .widget<TextButton>(find.widgetWithText(TextButton, 'Tamam'))
+        .onPressed!;
+    closeAction();
+    closeAction();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+    expect(find.text('Alışveriş onaylandı'), findsNothing);
+  });
+
+  testWidgets(
+    'Şimdi değil hızlı dokunmada pencereyi yalnızca bir kez kapatır',
+    (tester) async {
+      await tester.pumpWidget(
+        buildModalSubject(const QrSessionCompleted(sessionId: 'session-1')),
+      );
+      await tester.tap(find.byKey(const Key('open-qr-sheet')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('shop-rating-open-action')));
+      await tester.pump();
+
+      final closeAction = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Şimdi değil'))
+          .onPressed!;
+      closeAction();
+      closeAction();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+      expect(find.text('Alışveriş onaylandı'), findsNothing);
+    },
+  );
+
   testWidgets('doğrulanmış alışveriş için beş yıldız gönderir', (tester) async {
     await tester.pumpWidget(
       buildSubject(const QrSessionCompleted(sessionId: 'session-1')),

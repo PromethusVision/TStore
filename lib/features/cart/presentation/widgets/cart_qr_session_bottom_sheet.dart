@@ -446,17 +446,31 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
 
   bool _showRatingForm = false;
   bool _isOpeningPurchases = false;
+  bool _isClosing = false;
   int _selectedRating = 0;
 
   void _selectRating(int rating) {
+    if (_isClosing || _isOpeningPurchases) return;
     setState(() => _selectedRating = rating);
   }
 
+  void _openRatingForm() {
+    if (_isClosing || _isOpeningPurchases) return;
+    setState(() => _showRatingForm = true);
+  }
+
   void _openPurchases() {
-    if (_isOpeningPurchases) return;
+    if (_isClosing || _isOpeningPurchases) return;
 
     setState(() => _isOpeningPurchases = true);
     widget.onViewPurchases(widget.sessionId);
+  }
+
+  void _close() {
+    if (_isClosing || _isOpeningPurchases) return;
+
+    setState(() => _isClosing = true);
+    widget.onClose();
   }
 
   @override
@@ -511,7 +525,8 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                     return IconButton(
                       key: Key('shop-rating-star-$rating'),
                       tooltip: '$rating yıldız',
-                      onPressed: isSubmitting
+                      onPressed:
+                          isSubmitting || _isClosing || _isOpeningPurchases
                           ? null
                           : () => _selectRating(rating),
                       icon: Icon(
@@ -539,7 +554,9 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
               ] else
                 TextButton.icon(
                   key: const Key('shop-rating-open-action'),
-                  onPressed: () => setState(() => _showRatingForm = true),
+                  onPressed: _isClosing || _isOpeningPurchases
+                      ? null
+                      : _openRatingForm,
                   icon: const Icon(Icons.star_outline_rounded),
                   label: const Text('Esnafa puan ver'),
                 ),
@@ -549,7 +566,11 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                   width: double.infinity,
                   child: FilledButton(
                     key: const Key('shop-rating-submit-action'),
-                    onPressed: isSubmitting || _selectedRating == 0
+                    onPressed:
+                        isSubmitting ||
+                            _isClosing ||
+                            _isOpeningPurchases ||
+                            _selectedRating == 0
                         ? null
                         : () => context.read<ShopRatingCubit>().submitRating(
                             qrSessionId: widget.sessionId,
@@ -564,7 +585,7 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                   ),
                 ),
                 TextButton(
-                  onPressed: isSubmitting ? null : widget.onClose,
+                  onPressed: isSubmitting || _isClosing ? null : _close,
                   child: const Text('Şimdi değil'),
                 ),
               ] else ...[
@@ -572,7 +593,9 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                   width: double.infinity,
                   child: FilledButton.icon(
                     key: const Key('view-completed-purchase-action'),
-                    onPressed: _isOpeningPurchases ? null : _openPurchases,
+                    onPressed: _isClosing || _isOpeningPurchases
+                        ? null
+                        : _openPurchases,
                     icon: const Icon(Icons.receipt_long_outlined),
                     label: Text(
                       _isOpeningPurchases
@@ -582,7 +605,7 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
                   ),
                 ),
                 TextButton(
-                  onPressed: _isOpeningPurchases ? null : widget.onClose,
+                  onPressed: _isClosing || _isOpeningPurchases ? null : _close,
                   child: const Text('Tamam'),
                 ),
               ],
