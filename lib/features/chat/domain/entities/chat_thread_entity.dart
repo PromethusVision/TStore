@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 class ChatThreadEntity extends Equatable {
+  static const String fallbackDisplayName = 'Mağaza görüşmesi';
+
   final String otherUserId;
   final String displayName;
   final String lastMessage;
@@ -33,10 +35,10 @@ class ChatThreadEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        otherUserId,
-        displayName,
-        lastMessage,
-        lastMessageAt,
-        unreadCount,
-      ];
+    otherUserId,
+    displayName,
+    lastMessage,
+    lastMessageAt,
+    unreadCount,
+  ];
 }

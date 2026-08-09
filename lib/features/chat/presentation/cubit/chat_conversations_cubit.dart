@@ -72,7 +72,10 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
         final ownerUserId = shop.ownerUserId?.trim();
         if (ownerUserId == null || ownerUserId.isEmpty) continue;
 
-        shopNameByOwnerId.putIfAbsent(ownerUserId, () => shop.name);
+        final shopName = shop.name.trim();
+        if (shopName.isEmpty) continue;
+
+        shopNameByOwnerId.putIfAbsent(ownerUserId, () => shopName);
       }
 
       return threads.map((thread) {

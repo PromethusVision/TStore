@@ -7,6 +7,7 @@ import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_state.dart';
+import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 
 class MockChatRepository extends Mock implements ChatRepository {}
@@ -31,6 +32,18 @@ void main() {
     lastMessage: 'Ürün hazır',
     lastMessageAt: null,
     unreadCount: 2,
+  );
+  const fallbackThread = ChatThreadEntity(
+    otherUserId: 'owner-1',
+    displayName: ChatThreadEntity.fallbackDisplayName,
+    lastMessage: 'Merhaba',
+    lastMessageAt: null,
+    unreadCount: 1,
+  );
+  const shop = ShopEntity(
+    id: 'shop-1',
+    ownerUserId: 'owner-1',
+    name: ' Mahalle Marketi ',
   );
 
   setUp(() {
@@ -123,4 +136,63 @@ void main() {
     response.complete(const Right([firstThread]));
     await firstLoad;
   });
+
+  test('konuşmayı gerçek mağaza adıyla gösterir', () async {
+    when(
+      () => chatRepository.getConversations(),
+    ).thenAnswer((_) async => const Right([fallbackThread]));
+    when(
+      () => shopRepository.getShops(),
+    ).thenAnswer((_) async => const Right([shop]));
+
+    await cubit.loadConversations();
+
+    final state = cubit.state as ChatConversationsLoaded;
+    expect(state.threads.single.displayName, 'Mahalle Marketi');
+  });
+
+  test('mağaza bilgisi yüklenemezse teknik kimlik göstermez', () async {
+    when(
+      () => chatRepository.getConversations(),
+    ).thenAnswer((_) async => const Right([fallbackThread]));
+    when(
+      () => shopRepository.getShops(),
+    ).thenAnswer((_) async => const Left('Geçici mağaza bilgisi hatası'));
+
+    await cubit.loadConversations();
+
+    final state = cubit.state as ChatConversationsLoaded;
+    expect(
+      state.threads.single.displayName,
+      ChatThreadEntity.fallbackDisplayName,
+    );
+    expect(state.threads.single.displayName, isNot(contains('owner-1')));
+  });
+
+  test(
+    'sonraki yenilemede genel adı gerçek mağaza adıyla değiştirir',
+    () async {
+      when(
+        () => chatRepository.getConversations(),
+      ).thenAnswer((_) async => const Right([fallbackThread]));
+      var shopCallCount = 0;
+      when(() => shopRepository.getShops()).thenAnswer((_) async {
+        shopCallCount++;
+        return Right(shopCallCount == 1 ? const [] : const [shop]);
+      });
+
+      await cubit.loadConversations();
+      expect(
+        (cubit.state as ChatConversationsLoaded).threads.single.displayName,
+        ChatThreadEntity.fallbackDisplayName,
+      );
+
+      await cubit.refreshConversationsSilently();
+
+      expect(
+        (cubit.state as ChatConversationsLoaded).threads.single.displayName,
+        'Mahalle Marketi',
+      );
+    },
+  );
 }

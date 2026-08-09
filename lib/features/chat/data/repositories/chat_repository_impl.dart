@@ -244,7 +244,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
             return ChatThreadEntity(
               otherUserId: entry.key,
-              displayName: _buildDisplayName(entry.key),
+              displayName: ChatThreadEntity.fallbackDisplayName,
               lastMessage: latestMessage.content,
               lastMessageAt: latestMessage.createdAt,
               unreadCount: unreadCount,
@@ -266,12 +266,5 @@ class ChatRepositoryImpl implements ChatRepository {
         ),
       );
     }
-  }
-
-  String _buildDisplayName(String otherUserId) {
-    final shortId = otherUserId.length > 8
-        ? otherUserId.substring(0, 8)
-        : otherUserId;
-    return 'Konuşma $shortId';
   }
 }
