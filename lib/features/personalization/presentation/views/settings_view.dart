@@ -49,6 +49,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   bool _isOpeningProtectedDestination = false;
+  bool _isOpeningPublicDestination = false;
 
   String? get _currentUserId {
     final currentUserIdProvider = widget.currentUserIdProvider;
@@ -113,6 +114,23 @@ class _SettingsViewState extends State<SettingsView> {
       await context.read<AuthCubit>().checkAuthStatus();
     } finally {
       _isOpeningProtectedDestination = false;
+      if (mounted) setState(() {});
+    }
+  }
+
+  Future<void> _openPublicDestination(
+    BuildContext context,
+    Widget destination,
+  ) async {
+    if (_isOpeningPublicDestination) return;
+    _isOpeningPublicDestination = true;
+
+    try {
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _isOpeningPublicDestination = false;
       if (mounted) setState(() {});
     }
   }
@@ -273,41 +291,36 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.person_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          THelperFunctions.navigateToScreen(
-            context,
-            HelpAndSupportView(
-              onOpenPurchases: () => _openProtectedDestination(
-                context,
-                (_) => const PurchasesView(),
-              ),
-              onOpenMessages: () => _openProtectedDestination(
-                context,
-                (_) => const ConversationsView(),
-                afterReturn: () => context
-                    .read<ChatUnreadCubit>()
-                    .refreshUnreadCountSilently(),
-              ),
-              onOpenSavedLocations: () => _openProtectedDestination(
-                context,
-                (_) => const CustomerSavedLocationsView(),
-              ),
+        onTap: () => _openPublicDestination(
+          context,
+          HelpAndSupportView(
+            onOpenPurchases: () => _openProtectedDestination(
+              context,
+              (_) => const PurchasesView(),
             ),
-          );
-        },
+            onOpenMessages: () => _openProtectedDestination(
+              context,
+              (_) => const ConversationsView(),
+              afterReturn: () =>
+                  context.read<ChatUnreadCubit>().refreshUnreadCountSilently(),
+            ),
+            onOpenSavedLocations: () => _openProtectedDestination(
+              context,
+              (_) => const CustomerSavedLocationsView(),
+            ),
+          ),
+        ),
         title: "Yardım ve Destek",
         subtitle: "Sık sorulan sorular ve destek",
         leading: Icons.help_outline,
       ),
       SettingsMenuTileModel(
-        onTap: () {
-          THelperFunctions.navigateToScreen(
-            context,
-            PrivacyAndPermissionsView(
-              locationPermissionLoader: widget.locationPermissionLoader,
-            ),
-          );
-        },
+        onTap: () => _openPublicDestination(
+          context,
+          PrivacyAndPermissionsView(
+            locationPermissionLoader: widget.locationPermissionLoader,
+          ),
+        ),
         title: "Gizlilik ve İzinler",
         subtitle: "Gizlilik tercihlerini ve izinlerini yönet",
         leading: Icons.privacy_tip_outlined,

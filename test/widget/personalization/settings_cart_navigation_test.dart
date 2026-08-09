@@ -499,6 +499,56 @@ void main() {
     expect(find.text('Gizliliğin ve kontrolün sende'), findsOneWidget);
   });
 
+  for (final destination in const [
+    (label: 'Yardım ve Destek', viewType: HelpAndSupportView),
+    (label: 'Gizlilik ve İzinler', viewType: PrivacyAndPermissionsView),
+  ]) {
+    testWidgets(
+      '${destination.label} hızlı dokunmada bir kez açılır ve dönüşte yeniden çalışır',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(
+            authState: const AuthAuthenticated(user),
+            currentUserId: user.id,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final destinationTile = tester.widget<SettingsMenuTile>(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is SettingsMenuTile &&
+                widget.settingsMenuTileModel.title == destination.label,
+          ),
+        );
+        destinationTile.settingsMenuTileModel.onTap();
+        destinationTile.settingsMenuTileModel.onTap();
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byType(destination.viewType, skipOffstage: false),
+          findsOneWidget,
+        );
+
+        Navigator.of(tester.element(find.byType(destination.viewType))).pop();
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SettingsView), findsOneWidget);
+        final reopenedTile = tester.widget<SettingsMenuTile>(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is SettingsMenuTile &&
+                widget.settingsMenuTileModel.title == destination.label,
+          ),
+        );
+        reopenedTile.settingsMenuTileModel.onTap();
+        await tester.pumpAndSettle();
+
+        expect(find.byType(destination.viewType), findsOneWidget);
+      },
+    );
+  }
+
   testWidgets('Kuponlarım müşteri kuponları ekranını açar', (tester) async {
     await tester.pumpWidget(
       buildSubject(
