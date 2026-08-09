@@ -37,6 +37,7 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   DateTime _now = DateTime.now();
   String? _confirmedUpdatedSummarySessionId;
   bool _isRetryingInvalidSnapshot = false;
+  bool _isClosingInvalidSnapshot = false;
   bool _isRefreshingExpiredSession = false;
 
   @override
@@ -72,11 +73,18 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   }
 
   void _retryInvalidSnapshot() {
-    if (_isRetryingInvalidSnapshot) return;
+    if (_isRetryingInvalidSnapshot || _isClosingInvalidSnapshot) return;
 
     _stopTimer();
     setState(() => _isRetryingInvalidSnapshot = true);
     context.read<QrSessionCubit>().createQrSession(widget.cartId);
+  }
+
+  void _closeInvalidSnapshot() {
+    if (_isRetryingInvalidSnapshot || _isClosingInvalidSnapshot) return;
+
+    setState(() => _isClosingInvalidSnapshot = true);
+    Navigator.of(context).pop();
   }
 
   void _refreshExpiredSession() {
@@ -178,9 +186,10 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
 
               if (!_hasValidSnapshotSummary(state.session)) {
                 return _QrSessionInvalidSnapshotView(
-                  isRetrying: _isRetryingInvalidSnapshot,
+                  isRetrying:
+                      _isRetryingInvalidSnapshot || _isClosingInvalidSnapshot,
                   onRetry: _retryInvalidSnapshot,
-                  onBack: () => Navigator.of(context).pop(),
+                  onBack: _closeInvalidSnapshot,
                 );
               }
 
@@ -288,7 +297,7 @@ class _QrSessionInvalidSnapshotView extends StatelessWidget {
   }
 }
 
-class _QrSessionSummaryChangeView extends StatelessWidget {
+class _QrSessionSummaryChangeView extends StatefulWidget {
   const _QrSessionSummaryChangeView({
     required this.previousItemCount,
     required this.currentItemCount,
@@ -308,6 +317,22 @@ class _QrSessionSummaryChangeView extends StatelessWidget {
   final bool totalChanged;
   final VoidCallback onCancel;
   final VoidCallback onContinue;
+
+  @override
+  State<_QrSessionSummaryChangeView> createState() =>
+      _QrSessionSummaryChangeViewState();
+}
+
+class _QrSessionSummaryChangeViewState
+    extends State<_QrSessionSummaryChangeView> {
+  bool _isResolving = false;
+
+  void _resolve(VoidCallback action) {
+    if (_isResolving) return;
+
+    setState(() => _isResolving = true);
+    action();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,42 +360,42 @@ class _QrSessionSummaryChangeView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
-          if (itemCountChanged) ...[
+          if (widget.itemCountChanged) ...[
             _QrSummaryChangeRow(
               label: 'Az önceki ürün adedi',
-              value: previousItemCount.toString(),
+              value: widget.previousItemCount.toString(),
             ),
             const SizedBox(height: TSizes.sm),
             _QrSummaryChangeRow(
               label: 'Güncel ürün adedi',
-              value: currentItemCount.toString(),
+              value: widget.currentItemCount.toString(),
               isHighlighted: true,
             ),
           ],
-          if (itemCountChanged && totalChanged)
+          if (widget.itemCountChanged && widget.totalChanged)
             const SizedBox(height: TSizes.spaceBtwItems),
-          if (totalChanged) ...[
+          if (widget.totalChanged) ...[
             _QrSummaryChangeRow(
               label: 'Az önceki toplam',
-              value: '₺${previousTotal.toStringAsFixed(2)}',
+              value: '₺${widget.previousTotal.toStringAsFixed(2)}',
             ),
             const SizedBox(height: TSizes.sm),
             _QrSummaryChangeRow(
               label: 'Güncel toplam',
-              value: '₺${currentTotal.toStringAsFixed(2)}',
+              value: '₺${widget.currentTotal.toStringAsFixed(2)}',
               isHighlighted: true,
             ),
           ],
           const SizedBox(height: TSizes.spaceBtwItems),
           FilledButton(
             key: const Key('qr-summary-change-continue-action'),
-            onPressed: onContinue,
+            onPressed: _isResolving ? null : () => _resolve(widget.onContinue),
             child: const Text('Güncel sepetle devam et'),
           ),
           const SizedBox(height: TSizes.sm),
           OutlinedButton(
             key: const Key('qr-summary-change-cancel-action'),
-            onPressed: onCancel,
+            onPressed: _isResolving ? null : () => _resolve(widget.onCancel),
             child: const Text('Sepete dön'),
           ),
         ],
@@ -664,10 +689,25 @@ class _QrSessionFailureView extends StatelessWidget {
   }
 }
 
-class _QrSessionCancelledView extends StatelessWidget {
+class _QrSessionCancelledView extends StatefulWidget {
   const _QrSessionCancelledView({required this.onBackToCart});
 
   final VoidCallback onBackToCart;
+
+  @override
+  State<_QrSessionCancelledView> createState() =>
+      _QrSessionCancelledViewState();
+}
+
+class _QrSessionCancelledViewState extends State<_QrSessionCancelledView> {
+  bool _isReturningToCart = false;
+
+  void _returnToCart() {
+    if (_isReturningToCart) return;
+
+    setState(() => _isReturningToCart = true);
+    widget.onBackToCart();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -697,7 +737,7 @@ class _QrSessionCancelledView extends StatelessWidget {
           width: double.infinity,
           child: FilledButton(
             key: const Key('qr-cancelled-back-to-cart-action'),
-            onPressed: onBackToCart,
+            onPressed: _isReturningToCart ? null : _returnToCart,
             child: const Text('Sepete dön ve güncelle'),
           ),
         ),

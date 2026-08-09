@@ -102,6 +102,7 @@ void main() {
     QrSessionState initialState, {
     int itemCount = 2,
     double totalAmount = 249.90,
+    bool hasPoppableHost = false,
   }) {
     whenListen(
       qrSessionCubit,
@@ -109,8 +110,8 @@ void main() {
       initialState: initialState,
     );
 
-    return MaterialApp(
-      home: Scaffold(
+    Widget buildCartPage() {
+      return Scaffold(
         body: Builder(
           builder: (context) {
             return FilledButton(
@@ -132,7 +133,19 @@ void main() {
             );
           },
         ),
-      ),
+      );
+    }
+
+    if (!hasPoppableHost) {
+      return MaterialApp(home: buildCartPage());
+    }
+
+    return MaterialApp(
+      initialRoute: '/cart',
+      routes: {
+        '/': (_) => const Scaffold(body: Text('Ana rota')),
+        '/cart': (_) => buildCartPage(),
+      },
     );
   }
 
@@ -278,23 +291,30 @@ void main() {
     );
   });
 
-  testWidgets('geçersiz QR özetinde sepete dön pencereyi kapatır', (
+  testWidgets('geçersiz QR geri dönüşünde çift dokunma alt sayfayı kapatmaz', (
     tester,
   ) async {
     final incompleteSession = buildSession(itemCount: 0);
 
     await tester.pumpWidget(
-      buildModalSubject(QrSessionCreated(incompleteSession)),
+      buildModalSubject(
+        QrSessionCreated(incompleteSession),
+        hasPoppableHost: true,
+      ),
     );
     await tester.tap(find.byKey(const Key('open-qr-sheet')));
     await tester.pumpAndSettle();
 
     expect(find.text('QR bilgileri doğrulanamadı'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('qr-invalid-snapshot-back-action')));
+    final backAction = find.byKey(const Key('qr-invalid-snapshot-back-action'));
+    final backButton = tester.widget<OutlinedButton>(backAction);
+    backButton.onPressed!();
+    backButton.onPressed!();
     await tester.pumpAndSettle();
 
     expect(find.text('QR bilgileri doğrulanamadı'), findsNothing);
     expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+    expect(find.text('Ana rota'), findsNothing);
   });
 
   testWidgets('sunucu toplamı değişince QR onaya kadar gizlenir', (
@@ -371,30 +391,40 @@ void main() {
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 
-  testWidgets('güncel QR sepeti reddedilince pencere kapanır', (tester) async {
-    await tester.pumpWidget(
-      buildModalSubject(QrSessionCreated(activeSession), totalAmount: 100),
-    );
+  testWidgets(
+    'güncel QR sepetini reddetmede çift dokunma alt sayfayı kapatmaz',
+    (tester) async {
+      await tester.pumpWidget(
+        buildModalSubject(
+          QrSessionCreated(activeSession),
+          totalAmount: 100,
+          hasPoppableHost: true,
+        ),
+      );
 
-    await tester.tap(find.byKey(const Key('open-qr-sheet')));
-    await tester.pumpAndSettle();
-    expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('open-qr-sheet')));
+      await tester.pumpAndSettle();
+      expect(find.text('Sepet bilgileri güncellendi'), findsOneWidget);
 
-    final cancelAction = find.byKey(
-      const Key('qr-summary-change-cancel-action'),
-    );
-    await tester.ensureVisible(cancelAction);
-    await tester.pumpAndSettle();
-    await tester.tap(cancelAction);
-    await tester.pumpAndSettle();
+      final cancelAction = find.byKey(
+        const Key('qr-summary-change-cancel-action'),
+      );
+      await tester.ensureVisible(cancelAction);
+      await tester.pumpAndSettle();
+      final cancelButton = tester.widget<OutlinedButton>(cancelAction);
+      cancelButton.onPressed!();
+      cancelButton.onPressed!();
+      await tester.pumpAndSettle();
 
-    expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
-    expect(
-      find.byKey(const Key('purchase-verification-qr-code')),
-      findsNothing,
-    );
-    expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
-  });
+      expect(find.text('Sepet bilgileri güncellendi'), findsNothing);
+      expect(
+        find.byKey(const Key('purchase-verification-qr-code')),
+        findsNothing,
+      );
+      expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+      expect(find.text('Ana rota'), findsNothing);
+    },
+  );
 
   testWidgets('süresi dolan QR gizlenir ve çift yenileme isteği engellenir', (
     tester,
@@ -684,18 +714,26 @@ void main() {
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 
-  testWidgets('iptal edilen QR ekranından sepete dönüş pencereyi kapatır', (
+  testWidgets('iptal edilen QR dönüşünde çift dokunma alt sayfayı kapatmaz', (
     tester,
   ) async {
-    await tester.pumpWidget(buildModalSubject(const QrSessionCancelled()));
+    await tester.pumpWidget(
+      buildModalSubject(const QrSessionCancelled(), hasPoppableHost: true),
+    );
     await tester.tap(find.byKey(const Key('open-qr-sheet')));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('qr-cancelled-back-to-cart-action')));
+    final backAction = find.byKey(
+      const Key('qr-cancelled-back-to-cart-action'),
+    );
+    final backButton = tester.widget<FilledButton>(backAction);
+    backButton.onPressed!();
+    backButton.onPressed!();
     await tester.pumpAndSettle();
 
     expect(find.text('QR iptal edildi'), findsNothing);
     expect(find.byKey(const Key('open-qr-sheet')), findsOneWidget);
+    expect(find.text('Ana rota'), findsNothing);
     verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
   });
 }
