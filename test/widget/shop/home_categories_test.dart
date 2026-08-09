@@ -36,6 +36,7 @@ void main() {
   Future<void> pumpCategories(
     WidgetTester tester, {
     required CategoriesState state,
+    HomeCategoryDestinationBuilder? destinationBuilder,
   }) async {
     tester.view.physicalSize = const Size(1400, 400);
     tester.view.devicePixelRatio = 1;
@@ -53,7 +54,7 @@ void main() {
         home: Scaffold(
           body: BlocProvider<CategoriesCubit>.value(
             value: categoriesCubit,
-            child: const HomeCategories(),
+            child: HomeCategories(destinationBuilder: destinationBuilder),
           ),
         ),
       ),
@@ -134,5 +135,58 @@ void main() {
     await tester.pump();
 
     verify(() => categoriesCubit.getCategories()).called(1);
+  });
+
+  testWidgets('kimliği eksik kategori bozuk sayfa açmaz', (tester) async {
+    const category = CategoryEntity(id: '   ', name: 'Market');
+    var destinationBuildCount = 0;
+
+    await pumpCategories(
+      tester,
+      state: const CategoriesLoaded([category]),
+      destinationBuilder: (_, _) {
+        destinationBuildCount++;
+        return const Scaffold(body: Text('Kategori hedefi'));
+      },
+    );
+
+    final categoryItem = find.byKey(const Key('home-category-   '));
+    final categoryInkWell = tester.widget<InkWell>(
+      find.descendant(of: categoryItem, matching: find.byType(InkWell)),
+    );
+
+    expect(categoryInkWell.onTap, isNull);
+    expect(destinationBuildCount, 0);
+    expect(find.text('Kategori hedefi'), findsNothing);
+  });
+
+  testWidgets('kategoriye hızlı çift dokunma yalnız bir sayfa açar', (
+    tester,
+  ) async {
+    const category = CategoryEntity(id: ' market ', name: 'Market');
+    var destinationBuildCount = 0;
+    CategoryEntity? openedCategory;
+
+    await pumpCategories(
+      tester,
+      state: const CategoriesLoaded([category]),
+      destinationBuilder: (selectedCategory, _) {
+        destinationBuildCount++;
+        openedCategory = selectedCategory;
+        return const Scaffold(body: Text('Kategori hedefi'));
+      },
+    );
+
+    final categoryItem = find.byKey(const Key('home-category- market '));
+    final categoryInkWell = tester.widget<InkWell>(
+      find.descendant(of: categoryItem, matching: find.byType(InkWell)),
+    );
+    categoryInkWell.onTap?.call();
+    categoryInkWell.onTap?.call();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(openedCategory?.id, 'market');
+    expect(find.text('Kategori hedefi'), findsOneWidget);
   });
 }

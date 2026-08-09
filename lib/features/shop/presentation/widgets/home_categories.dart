@@ -21,6 +21,8 @@ class HomeCategories extends StatefulWidget {
 }
 
 class _HomeCategoriesState extends State<HomeCategories> {
+  final Set<String> _openingCategoryIds = {};
+
   static const _pastelSurfaces = [
     CustomerHomeV1Tokens.mint,
     Color(0xFFE4F0E0),
@@ -133,6 +135,7 @@ class _HomeCategoriesState extends State<HomeCategories> {
                   const SizedBox(width: CustomerHomeV1Tokens.space8),
               itemBuilder: (context, index) {
                 final category = state.categories[index];
+                final categoryId = category.id.trim();
                 return _HomeCategoryItem(
                   key: Key('home-category-${category.id}'),
                   category: category,
@@ -140,7 +143,9 @@ class _HomeCategoriesState extends State<HomeCategories> {
                   fallbackIcon: _fallbackIcon(category.name, index),
                   backgroundColor:
                       _pastelSurfaces[index % _pastelSurfaces.length],
-                  onTap: () => _openCategory(context, category),
+                  onTap: categoryId.isEmpty
+                      ? null
+                      : () => _openCategory(context, category),
                 );
               },
             );
@@ -152,15 +157,26 @@ class _HomeCategoriesState extends State<HomeCategories> {
     );
   }
 
-  void _openCategory(BuildContext context, CategoryEntity category) {
+  Future<void> _openCategory(
+    BuildContext context,
+    CategoryEntity category,
+  ) async {
+    final categoryId = category.id.trim();
+    if (categoryId.isEmpty || _openingCategoryIds.contains(categoryId)) return;
+
     final title = _localizedTitle(category.name);
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) =>
-            widget.destinationBuilder?.call(category, title) ??
-            SubCategoryView(categoryId: category.id, title: title),
-      ),
-    );
+    final normalizedCategory = category.copyWith(id: categoryId);
+    _openingCategoryIds.add(categoryId);
+    try {
+      final destination =
+          widget.destinationBuilder?.call(normalizedCategory, title) ??
+          SubCategoryView(categoryId: categoryId, title: title);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _openingCategoryIds.remove(categoryId);
+    }
   }
 }
 
@@ -178,7 +194,7 @@ class _HomeCategoryItem extends StatelessWidget {
   final String title;
   final IconData fallbackIcon;
   final Color backgroundColor;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

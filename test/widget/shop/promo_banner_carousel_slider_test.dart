@@ -63,15 +63,26 @@ void main() {
     expect(image.imageUrl, banner.imageUrl);
   });
 
-  testWidgets('keşfet eylemini yalnız bir kez çalıştırır', (tester) async {
+  testWidgets('keşfet eylemi hızlı çift dokunmada yalnız bir kez çalışır', (
+    tester,
+  ) async {
     var tapCount = 0;
     await tester.pumpWidget(
       buildSubject(const BannersLoaded([]), onDiscover: () => tapCount++),
     );
 
-    await tester.tap(find.byKey(const Key('customer-home-discover')));
-    await tester.pump();
+    final button = tester.widget<FilledButton>(
+      find.byKey(const Key('customer-home-discover')),
+    );
+    button.onPressed?.call();
+    button.onPressed?.call();
 
     expect(tapCount, 1);
+
+    await tester.pump();
+    button.onPressed?.call();
+    await tester.pump();
+
+    expect(tapCount, 2);
   });
 }

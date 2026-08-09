@@ -21,6 +21,7 @@ class PromoBannerCarouselSlider extends StatefulWidget {
 
 class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider> {
   int _selectedIndex = 0;
+  bool _isOpeningDiscovery = false;
 
   @override
   void initState() {
@@ -41,16 +42,29 @@ class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider> {
           images: images,
           selectedIndex: _selectedIndex.clamp(0, images.length - 1),
           onPageChanged: (index) => setState(() => _selectedIndex = index),
-          onDiscover:
-              widget.onDiscover ??
-              () => Navigator.of(context).push<void>(
-                MaterialPageRoute<void>(
-                  builder: (_) => const AllProductsView(),
-                ),
-              ),
+          onDiscover: () => _openDiscovery(context),
         );
       },
     );
+  }
+
+  Future<void> _openDiscovery(BuildContext context) async {
+    if (_isOpeningDiscovery) return;
+
+    _isOpeningDiscovery = true;
+    try {
+      final onDiscover = widget.onDiscover;
+      if (onDiscover != null) {
+        await Future<void>.sync(onDiscover);
+        return;
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: (_) => const AllProductsView()),
+      );
+    } finally {
+      _isOpeningDiscovery = false;
+    }
   }
 
   List<String> _activeImages(BannersState state) {
