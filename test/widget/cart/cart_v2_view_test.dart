@@ -500,6 +500,47 @@ void main() {
   });
 
   testWidgets(
+    'sepet boşaltma penceresi hızlı dokunmada yalnız bir kez kapanır',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await tester.pumpAndSettle();
+
+      final cancelAction = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Vazgeç'))
+          .onPressed!;
+      cancelAction();
+      cancelAction();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+      verifyNever(() => cartV2Cubit.cancelActiveCart());
+
+      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await tester.pumpAndSettle();
+
+      final confirmAction = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Sepeti boşalt'))
+          .onPressed!;
+      confirmAction();
+      confirmAction();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+      verify(() => cartV2Cubit.cancelActiveCart()).called(1);
+    },
+  );
+
+  testWidgets(
     'adet güncellenirken geri bildirim gösterir ve tekrar dokunmayı engeller',
     (tester) async {
       final updateRequest = Completer<void>();
