@@ -38,6 +38,7 @@ class ProductDetailsView extends StatefulWidget {
 class _ProductDetailsViewState extends State<ProductDetailsView> {
   ProductSellerPriceSummary _sellerPriceSummary =
       const ProductSellerPriceSummary.loading();
+  bool _isOpeningProductReviews = false;
 
   @override
   void initState() {
@@ -87,13 +88,24 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     setState(() => _sellerPriceSummary = summary);
   }
 
-  void _openProductReviews() {
-    final destination =
-        widget.reviewsDestinationBuilder?.call(widget.product) ??
-        ProductReviewsView(product: widget.product);
-    Navigator.of(
-      context,
-    ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+  Future<void> _openProductReviews() async {
+    final productId = widget.product.id.trim();
+    if (_isOpeningProductReviews || productId.isEmpty) return;
+
+    _isOpeningProductReviews = true;
+    try {
+      final product = widget.product.id == productId
+          ? widget.product
+          : widget.product.copyWith(id: productId);
+      final destination =
+          widget.reviewsDestinationBuilder?.call(product) ??
+          ProductReviewsView(product: product);
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+    } finally {
+      _isOpeningProductReviews = false;
+    }
   }
 
   @override

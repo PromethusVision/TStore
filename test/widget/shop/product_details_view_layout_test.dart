@@ -100,6 +100,7 @@ void main() {
   });
 
   Widget buildSubject({
+    ProductEntity? subjectProduct,
     ProductReviewsDestinationBuilder? reviewsDestinationBuilder,
   }) {
     return MultiBlocProvider(
@@ -109,7 +110,7 @@ void main() {
       ],
       child: MaterialApp(
         home: ProductDetailsView(
-          product: product,
+          product: subjectProduct ?? product,
           currentUserIdProvider: _customerId,
           reviewsDestinationBuilder: reviewsDestinationBuilder,
         ),
@@ -178,6 +179,67 @@ void main() {
     expect(
       find.byKey(const Key('product-reviews-test-destination')),
       findsOneWidget,
+    );
+  });
+
+  testWidgets('puan alanına hızlı çift dokunma yalnız bir hedef açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        reviewsDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('product-reviews-test-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('product-reviews-action')));
+
+    final reviewsAction = tester.widget<InkWell>(
+      find.byKey(const Key('product-reviews-action')),
+    );
+    reviewsAction.onTap?.call();
+    reviewsAction.onTap?.call();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(
+      find.byKey(const Key('product-reviews-test-destination')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('kimliği eksik ürün değerlendirme hedefi açmaz', (tester) async {
+    final invalidProduct = product.copyWith(id: '   ');
+    when(
+      () => shopRepository.getShopProductsByProduct(invalidProduct.id),
+    ).thenAnswer((_) async => const Right([]));
+    var destinationBuildCount = 0;
+
+    await tester.pumpWidget(
+      buildSubject(
+        subjectProduct: invalidProduct,
+        reviewsDestinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(
+            body: SizedBox(key: Key('product-reviews-test-destination')),
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('product-reviews-action')));
+    await tester.tap(find.byKey(const Key('product-reviews-action')));
+    await tester.pump();
+
+    expect(destinationBuildCount, 0);
+    expect(
+      find.byKey(const Key('product-reviews-test-destination')),
+      findsNothing,
     );
   });
 }

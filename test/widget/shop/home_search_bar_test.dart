@@ -322,6 +322,86 @@ void main() {
     await states.close();
   });
 
+  testWidgets('geçersiz ve pasif önerileri kullanıcıya göstermez', (
+    tester,
+  ) async {
+    const invalidProduct = ProductEntity(
+      id: '   ',
+      name: 'Geçersiz Ürün',
+      price: 10,
+      categoryId: 'category-1',
+      stock: 1,
+      images: [],
+    );
+    const invalidCategory = CategoryEntity(id: '   ', name: 'Geçersiz');
+    const missingShop = ShopEntity(id: '   ', name: 'Eksik Mağaza');
+    const inactiveShop = ShopEntity(
+      id: 'inactive-shop',
+      name: 'Pasif Mağaza',
+      isActive: false,
+    );
+    whenListen(
+      searchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: const CustomerSearchLoaded(
+        query: 'geçersiz',
+        products: [invalidProduct],
+        categories: [invalidCategory],
+        shops: [missingShop, inactiveShop],
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.enterText(find.byType(TextField), 'geçersiz');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('home-search-suggestions-empty')),
+      findsOneWidget,
+    );
+    expect(find.text('Geçersiz Ürün'), findsNothing);
+    expect(find.text('Geçersiz'), findsNothing);
+    expect(find.text('Eksik Mağaza'), findsNothing);
+    expect(find.text('Pasif Mağaza'), findsNothing);
+    expect(selectedProducts, isEmpty);
+    expect(selectedCategories, isEmpty);
+    expect(selectedShops, isEmpty);
+  });
+
+  testWidgets('kategori önerisini temiz kimlikle seçer', (tester) async {
+    const paddedCategory = CategoryEntity(
+      id: ' category-1 ',
+      name: 'Electronics',
+    );
+    whenListen(
+      searchCubit,
+      const Stream<CustomerSearchState>.empty(),
+      initialState: const CustomerSearchLoaded(
+        query: 'elektronik',
+        products: [],
+        categories: [paddedCategory],
+        shops: [],
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.tap(find.byKey(const Key('home-search-input')));
+    await tester.enterText(find.byType(TextField), 'elektronik');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('home-category-suggestion- category-1 ')),
+    );
+    await tester.pump();
+
+    expect(selectedCategories, hasLength(1));
+    expect(selectedCategories.single.id, 'category-1');
+    expect(selectedProducts, isEmpty);
+    expect(selectedShops, isEmpty);
+  });
+
   testWidgets('en fazla üç ürün için gerçek mağaza başlangıç fiyatını ister', (
     tester,
   ) async {

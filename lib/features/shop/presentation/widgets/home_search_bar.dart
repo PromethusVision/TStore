@@ -273,29 +273,39 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   }
 
   void _selectProduct(ProductEntity product) {
-    if (_navigationLocked) return;
+    final productId = product.id.trim();
+    if (_navigationLocked || productId.isEmpty) return;
+
     _navigationLocked = true;
     _focusNode.unfocus();
     unawaited(_recordCurrentQuery(_query));
-    widget.onProductSelected(product);
+    widget.onProductSelected(
+      product.id == productId ? product : product.copyWith(id: productId),
+    );
     _unlockNavigationNextFrame();
   }
 
   void _selectCategory(CategoryEntity category) {
-    if (_navigationLocked) return;
+    final categoryId = category.id.trim();
+    if (_navigationLocked || categoryId.isEmpty) return;
+
     _navigationLocked = true;
     _focusNode.unfocus();
     unawaited(_recordCurrentQuery(_query));
-    widget.onCategorySelected(category);
+    widget.onCategorySelected(
+      category.id == categoryId ? category : category.copyWith(id: categoryId),
+    );
     _unlockNavigationNextFrame();
   }
 
   void _selectShop(ShopEntity shop) {
-    if (_navigationLocked) return;
+    final shopId = shop.id.trim();
+    if (_navigationLocked || !shop.isActive || shopId.isEmpty) return;
+
     _navigationLocked = true;
     _focusNode.unfocus();
     unawaited(_recordCurrentQuery(_query));
-    widget.onShopSelected(shop);
+    widget.onShopSelected(shop.id == shopId ? shop : shop.copyWith(id: shopId));
     _unlockNavigationNextFrame();
   }
 
@@ -618,7 +628,20 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
     }
 
     final loaded = widget.state as CustomerSearchLoaded;
-    if (loaded.isEmpty) {
+    final categories = loaded.categories
+        .where((category) => category.id.trim().isNotEmpty)
+        .take(_SuggestionsCard._maximumCategorySuggestions)
+        .toList(growable: false);
+    final products = loaded.products
+        .where((product) => product.id.trim().isNotEmpty)
+        .take(_SuggestionsCard._maximumProductSuggestions)
+        .toList(growable: false);
+    final shops = loaded.shops
+        .where((shop) => shop.isActive && shop.id.trim().isNotEmpty)
+        .take(_SuggestionsCard._maximumShopSuggestions)
+        .toList(growable: false);
+
+    if (categories.isEmpty && products.isEmpty && shops.isEmpty) {
       return _SuggestionStatus(
         key: const Key('home-search-suggestions-empty'),
         icon: const Icon(Icons.search_off_rounded),
@@ -627,16 +650,6 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
         onAction: widget.onViewAll,
       );
     }
-
-    final categories = loaded.categories
-        .take(_SuggestionsCard._maximumCategorySuggestions)
-        .toList(growable: false);
-    final products = loaded.products
-        .take(_SuggestionsCard._maximumProductSuggestions)
-        .toList(growable: false);
-    final shops = loaded.shops
-        .take(_SuggestionsCard._maximumShopSuggestions)
-        .toList(growable: false);
 
     return ListView(
       key: const Key('home-search-suggestions-list'),
@@ -663,7 +676,11 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
               key: ValueKey('home-product-suggestion-${product.id}'),
               icon: Icons.inventory_2_outlined,
               title: product.name,
-              subtitle: _priceLabel(product.id, minimumPrices, isPriceLoading),
+              subtitle: _priceLabel(
+                product.id.trim(),
+                minimumPrices,
+                isPriceLoading,
+              ),
               onTap: () => widget.onProductSelected(product),
             ),
         ],
@@ -698,8 +715,9 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
     final loaded = widget.state as CustomerSearchLoaded;
     if (loaded.query != widget.query) return const [];
     return loaded.products
+        .where((product) => product.id.trim().isNotEmpty)
         .take(_SuggestionsCard._maximumProductSuggestions)
-        .map((product) => product.id)
+        .map((product) => product.id.trim())
         .toList(growable: false);
   }
 
