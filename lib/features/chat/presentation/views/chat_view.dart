@@ -747,29 +747,36 @@ class _MessageInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: CustomerHomeV1Tokens.space8),
-          SizedBox.square(
-            dimension: 46,
-            child: IconButton.filled(
-              key: const Key('chat-message-send-action'),
-              tooltip: 'Gönder',
-              onPressed: isSending ? null : onSend,
-              style: IconButton.styleFrom(
-                backgroundColor: CustomerHomeV1Tokens.petrol,
-                disabledBackgroundColor: CustomerHomeV1Tokens.mint,
-                foregroundColor: Colors.white,
-                disabledForegroundColor: CustomerHomeV1Tokens.muted,
-              ),
-              icon: isSending
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: CustomerHomeV1Tokens.petrol,
-                      ),
-                    )
-                  : const Icon(Icons.send_rounded, size: 20),
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              final canSend = !isSending && value.text.trim().isNotEmpty;
+
+              return SizedBox.square(
+                dimension: 46,
+                child: IconButton.filled(
+                  key: const Key('chat-message-send-action'),
+                  tooltip: 'Gönder',
+                  onPressed: canSend ? onSend : null,
+                  style: IconButton.styleFrom(
+                    backgroundColor: CustomerHomeV1Tokens.petrol,
+                    disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+                    foregroundColor: Colors.white,
+                    disabledForegroundColor: CustomerHomeV1Tokens.muted,
+                  ),
+                  icon: isSending
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: CustomerHomeV1Tokens.petrol,
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded, size: 20),
+                ),
+              );
+            },
           ),
         ],
       ),

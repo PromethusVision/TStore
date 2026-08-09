@@ -152,6 +152,30 @@ void main() {
     expect(find.text('Mesajlar yükleniyor'), findsOneWidget);
   });
 
+  testWidgets('gönder düğmesi yalnızca gerçek mesaj yazıldığında açılır', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    IconButton sendButton() => tester.widget<IconButton>(
+      find.byKey(const Key('chat-message-send-action')),
+    );
+
+    expect(sendButton().onPressed, isNull);
+
+    await tester.enterText(find.byKey(const Key('chat-message-input')), '   ');
+    await tester.pump();
+    expect(sendButton().onPressed, isNull);
+
+    await tester.enterText(
+      find.byKey(const Key('chat-message-input')),
+      'Mağazada mevcut mu?',
+    );
+    await tester.pump();
+    expect(sendButton().onPressed, isNotNull);
+  });
+
   testWidgets('mesaj gönderilirken ikinci gönderimi engeller', (tester) async {
     whenListen(
       chatCubit,
