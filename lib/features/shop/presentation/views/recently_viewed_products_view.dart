@@ -61,6 +61,9 @@ class _RecentlyViewedProductsContent extends StatefulWidget {
 class _RecentlyViewedProductsContentState
     extends State<_RecentlyViewedProductsContent> {
   final Set<String> _openingProductIds = {};
+  final Set<String> _removingProductIds = {};
+  bool _isOpeningExplore = false;
+  bool _isConfirmingClear = false;
 
   String get customerId => widget.customerId;
   VoidCallback? get onExplore => widget.onExplore;
@@ -198,66 +201,87 @@ class _RecentlyViewedProductsContentState
     }
   }
 
-  void _openExplore(BuildContext context) {
-    final exploreAction = onExplore;
-    if (exploreAction != null) {
-      exploreAction();
-      return;
-    }
+  Future<void> _openExplore(BuildContext context) async {
+    if (_isOpeningExplore) return;
 
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const AllProductsView()));
+    _isOpeningExplore = true;
+    try {
+      final exploreAction = onExplore;
+      if (exploreAction != null) {
+        await Future<void>.sync(exploreAction);
+        return;
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: (_) => const AllProductsView()),
+      );
+    } finally {
+      _isOpeningExplore = false;
+    }
   }
 
   Future<void> _confirmClear(BuildContext context) async {
-    final shouldClear = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: CustomerHomeV1Tokens.surface,
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        ),
-        title: const Text(
-          'Görüntüleme geçmişi silinsin mi?',
-          style: TextStyle(
-            color: CustomerHomeV1Tokens.navy,
-            fontWeight: FontWeight.w700,
+    if (_isConfirmingClear) return;
+
+    _isConfirmingClear = true;
+    var dialogResultSubmitted = false;
+    void completeDialog(BuildContext dialogContext, bool result) {
+      if (dialogResultSubmitted) return;
+      dialogResultSubmitted = true;
+      Navigator.of(dialogContext).pop(result);
+    }
+
+    try {
+      final shouldClear = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          backgroundColor: CustomerHomeV1Tokens.surface,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
           ),
-        ),
-        content: const Text(
-          'Bu tarayıcıda kaydedilen son görüntülenen ürünler kaldırılacak.',
-          style: TextStyle(color: CustomerHomeV1Tokens.muted),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Vazgeç'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: CustomerHomeV1Tokens.coral,
-              foregroundColor: Colors.white,
+          title: const Text(
+            'Görüntüleme geçmişi silinsin mi?',
+            style: TextStyle(
+              color: CustomerHomeV1Tokens.navy,
+              fontWeight: FontWeight.w700,
             ),
-            child: const Text('Tümünü Temizle'),
           ),
-        ],
-      ),
-    );
-
-    if (shouldClear != true || !context.mounted) return;
-
-    final didClear = await context.read<RecentlyViewedProductsCubit>().clear(
-      customerId,
-    );
-    if (!didClear && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Görüntüleme geçmişi şu anda temizlenemedi.'),
+          content: const Text(
+            'Bu tarayıcıda kaydedilen son görüntülenen ürünler kaldırılacak.',
+            style: TextStyle(color: CustomerHomeV1Tokens.muted),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => completeDialog(dialogContext, false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => completeDialog(dialogContext, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: CustomerHomeV1Tokens.coral,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Tümünü Temizle'),
+            ),
+          ],
         ),
       );
+
+      if (shouldClear != true || !context.mounted) return;
+
+      final didClear = await context.read<RecentlyViewedProductsCubit>().clear(
+        customerId,
+      );
+      if (!didClear && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Görüntüleme geçmişi şu anda temizlenemedi.'),
+          ),
+        );
+      }
+    } finally {
+      _isConfirmingClear = false;
     }
   }
 
@@ -265,34 +289,52 @@ class _RecentlyViewedProductsContentState
     BuildContext context,
     ProductEntity product,
   ) async {
+    final productId = product.id.trim();
+    if (productId.isEmpty || _removingProductIds.contains(productId)) return;
+
+    _removingProductIds.add(productId);
     final cubit = context.read<RecentlyViewedProductsCubit>();
-    final removal = await cubit.removeProduct(customerId, product.id);
-    if (!context.mounted) return;
+    try {
+      final removal = await cubit.removeProduct(customerId, productId);
+      if (!context.mounted) return;
 
-    final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
-    if (removal == null) {
+      final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+      if (removal == null) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Ürün geçmişten şu anda kaldırılamadı.'),
+          ),
+        );
+        return;
+      }
+
+      var restoreRequested = false;
       messenger.showSnackBar(
-        const SnackBar(content: Text('Ürün geçmişten şu anda kaldırılamadı.')),
-      );
-      return;
-    }
-
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text('${product.name} geçmişten kaldırıldı.'),
-        action: SnackBarAction(
-          label: 'Geri Al',
-          onPressed: () async {
-            final didRestore = await cubit.restoreProduct(customerId, removal);
-            if (!didRestore && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Ürün geçmişe geri eklenemedi.')),
+        SnackBar(
+          content: Text('${product.name} geçmişten kaldırıldı.'),
+          action: SnackBarAction(
+            label: 'Geri Al',
+            onPressed: () async {
+              if (restoreRequested) return;
+              restoreRequested = true;
+              final didRestore = await cubit.restoreProduct(
+                customerId,
+                removal,
               );
-            }
-          },
+              if (!didRestore && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Ürün geçmişe geri eklenemedi.'),
+                  ),
+                );
+              }
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      _removingProductIds.remove(productId);
+    }
   }
 }
 

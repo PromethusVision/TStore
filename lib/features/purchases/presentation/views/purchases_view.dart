@@ -704,6 +704,7 @@ class _PurchaseItemRow extends StatelessWidget {
 
 class _PurchaseCardState extends State<_PurchaseCard> {
   bool _isOpeningShop = false;
+  bool _isOpeningRating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -931,7 +932,9 @@ class _PurchaseCardState extends State<_PurchaseCard> {
               if (purchase.customerRating == null)
                 TextButton.icon(
                   key: const Key('purchase-shop-rating-open-action'),
-                  onPressed: () => _openShopRating(context),
+                  onPressed: _isOpeningRating
+                      ? null
+                      : () => _openShopRating(context),
                   style: TextButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.coral,
                     shape: RoundedRectangleBorder(
@@ -988,28 +991,39 @@ class _PurchaseCardState extends State<_PurchaseCard> {
   }
 
   Future<void> _openShopRating(BuildContext context) async {
-    final didRate = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: CustomerHomeV1Tokens.cream,
-      barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
-      clipBehavior: Clip.antiAlias,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(CustomerHomeV1Tokens.radius24),
-        ),
-      ),
-      builder: (_) => BlocProvider(
-        create: (_) => sl<ShopRatingCubit>(),
-        child: _PurchaseShopRatingSheet(purchase: widget.purchase),
-      ),
-    );
+    if (_isOpeningRating) return;
 
-    if (didRate == true && context.mounted) {
-      await context.read<PurchaseHistoryCubit>().loadPurchases();
+    setState(() => _isOpeningRating = true);
+    try {
+      final didRate = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: CustomerHomeV1Tokens.cream,
+        barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(CustomerHomeV1Tokens.radius24),
+          ),
+        ),
+        builder: (_) => BlocProvider(
+          create: (_) => sl<ShopRatingCubit>(),
+          child: _PurchaseShopRatingSheet(purchase: widget.purchase),
+        ),
+      );
+
+      if (didRate == true && context.mounted) {
+        await context.read<PurchaseHistoryCubit>().loadPurchases();
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isOpeningRating = false);
+      } else {
+        _isOpeningRating = false;
+      }
     }
   }
 }

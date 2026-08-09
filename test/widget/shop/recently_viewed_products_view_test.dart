@@ -292,28 +292,35 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('boş durumda ürün keşfine yönlendiren eylemi gösterir', (
+  testWidgets('ürün keşfi hızlı çift dokunmada yalnız bir kez çalışır', (
     tester,
   ) async {
-    var didRequestExplore = false;
+    var exploreCount = 0;
     whenListen(
       cubit,
       const Stream<RecentlyViewedProductsState>.empty(),
       initialState: const RecentlyViewedProductsLoaded([]),
     );
 
-    await tester.pumpWidget(
-      buildSubject(onExplore: () => didRequestExplore = true),
-    );
+    await tester.pumpWidget(buildSubject(onExplore: () => exploreCount++));
     await tester.pumpAndSettle();
 
     expect(find.text('Henüz görüntülediğin ürün yok'), findsOneWidget);
     expect(find.text('Ürünleri Keşfet'), findsOneWidget);
 
-    await tester.tap(find.text('Ürünleri Keşfet'));
+    final exploreButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Ürünleri Keşfet'),
+    );
+    exploreButton.onPressed?.call();
+    exploreButton.onPressed?.call();
+
+    expect(exploreCount, 1);
+
+    await tester.pump();
+    exploreButton.onPressed?.call();
     await tester.pump();
 
-    expect(didRequestExplore, isTrue);
+    expect(exploreCount, 2);
   });
 
   testWidgets('aşağı çekerek ürün geçmişini yeniler', (tester) async {
@@ -347,16 +354,50 @@ void main() {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Geçmişi temizle'));
+    final clearButton = tester.widget<IconButton>(
+      find.byWidgetPredicate(
+        (widget) => widget is IconButton && widget.tooltip == 'Geçmişi temizle',
+      ),
+    );
+    clearButton.onPressed?.call();
+    clearButton.onPressed?.call();
     await tester.pumpAndSettle();
 
     expect(find.text('Görüntüleme geçmişi silinsin mi?'), findsOneWidget);
     verifyNever(() => cubit.clear(any()));
 
-    await tester.tap(find.text('Tümünü Temizle'));
+    final confirmButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Tümünü Temizle'),
+    );
+    confirmButton.onPressed?.call();
+    confirmButton.onPressed?.call();
     await tester.pumpAndSettle();
 
     verify(() => cubit.clear('customer-1')).called(1);
+  });
+
+  testWidgets('vazgeç seçeneği çift dokunmada ekranı kapatmaz', (tester) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Geçmişi temizle'));
+    await tester.pumpAndSettle();
+
+    final cancelButton = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Vazgeç'),
+    );
+    cancelButton.onPressed?.call();
+    cancelButton.onPressed?.call();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('recently-viewed-header')), findsOneWidget);
+    expect(find.text('Görüntüleme geçmişi silinsin mi?'), findsNothing);
+    verifyNever(() => cubit.clear(any()));
   });
 
   testWidgets('tek ürünü menüden kaldırır ve geri alma seçeneği sunar', (
@@ -392,10 +433,70 @@ void main() {
     expect(find.text('Kahve Makinesi geçmişten kaldırıldı.'), findsOneWidget);
     expect(find.text('Geri Al'), findsOneWidget);
 
-    await tester.tap(find.text('Geri Al'));
+    final undoAction = tester.widget<SnackBarAction>(
+      find.byType(SnackBarAction),
+    );
+    undoAction.onPressed();
+    undoAction.onPressed();
     await tester.pumpAndSettle();
 
     verify(() => cubit.restoreProduct('customer-1', removal)).called(1);
+  });
+
+  testWidgets('ürün kaldırma beklerken ikinci isteği çalıştırmaz', (
+    tester,
+  ) async {
+    const removal = RecentlyViewedProductRemoval(
+      product: firstProduct,
+      originalPosition: 0,
+    );
+    final removalResult = Completer<RecentlyViewedProductRemoval?>();
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([firstProduct]),
+    );
+    when(
+      () => cubit.removeProduct('customer-1', firstProduct.id),
+    ).thenAnswer((_) => removalResult.future);
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Ürün işlemleri'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Geçmişten kaldır'));
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Ürün işlemleri'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Geçmişten kaldır'));
+    await tester.pump();
+
+    verify(() => cubit.removeProduct('customer-1', firstProduct.id)).called(1);
+
+    removalResult.complete(removal);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('kimliği eksik ürünü geçmişten kaldırmaya çalışmaz', (
+    tester,
+  ) async {
+    whenListen(
+      cubit,
+      const Stream<RecentlyViewedProductsState>.empty(),
+      initialState: const RecentlyViewedProductsLoaded([invalidProduct]),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Ürün işlemleri'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Geçmişten kaldır'));
+    await tester.pump();
+
+    verifyNever(() => cubit.removeProduct(any(), any()));
+    expect(find.text('Kimliksiz Ürün'), findsOneWidget);
   });
 
   testWidgets('kimliği eksik geçmiş ürünü bozuk detay sayfası açmaz', (

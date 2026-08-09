@@ -54,12 +54,14 @@ void main() {
   late MockPurchaseHistoryCubit cubit;
   late MockShopRatingCubit shopRatingCubit;
   late MockGetShopByIdUsecase getShopByIdUsecase;
+  late int shopRatingCubitResolveCount;
 
   setUp(() async {
     await sl.reset();
     cubit = MockPurchaseHistoryCubit();
     shopRatingCubit = MockShopRatingCubit();
     getShopByIdUsecase = MockGetShopByIdUsecase();
+    shopRatingCubitResolveCount = 0;
     whenListen(
       cubit,
       const Stream<PurchaseHistoryState>.empty(),
@@ -85,7 +87,10 @@ void main() {
       () => getShopByIdUsecase(any()),
     ).thenAnswer((_) async => const Right(shop));
 
-    sl.registerFactory<ShopRatingCubit>(() => shopRatingCubit);
+    sl.registerFactory<ShopRatingCubit>(() {
+      shopRatingCubitResolveCount++;
+      return shopRatingCubit;
+    });
     sl.registerLazySingleton<GetShopByIdUsecase>(() => getShopByIdUsecase);
   });
 
@@ -667,6 +672,38 @@ void main() {
     verify(
       () => shopRatingCubit.submitRating(qrSessionId: 'session-1', rating: 4),
     ).called(1);
+  });
+
+  testWidgets('puan penceresini çift dokunmada bir kez açar', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+    );
+    await tester.pumpAndSettle();
+
+    final ratingAction = tester.widget<TextButton>(
+      find.byKey(const Key('purchase-shop-rating-open-action')),
+    );
+    ratingAction.onPressed?.call();
+    ratingAction.onPressed?.call();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-shop-rating-sheet')), findsOneWidget);
+    expect(shopRatingCubitResolveCount, 1);
+
+    await tester.tap(
+      find.byKey(const Key('purchase-shop-rating-close-action')),
+    );
+    await tester.pumpAndSettle();
+
+    final reopenedRatingAction = tester.widget<TextButton>(
+      find.byKey(const Key('purchase-shop-rating-open-action')),
+    );
+    expect(reopenedRatingAction.onPressed, isNotNull);
+    reopenedRatingAction.onPressed?.call();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('purchase-shop-rating-sheet')), findsOneWidget);
+    expect(shopRatingCubitResolveCount, 2);
   });
 
   testWidgets('puanlama hatasını güvenli biçimde gösterir', (tester) async {
