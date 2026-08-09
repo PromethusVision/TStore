@@ -26,8 +26,17 @@ class CustomerSavedLocationsView extends StatelessWidget {
   }
 }
 
-class _CustomerSavedLocationsContent extends StatelessWidget {
+class _CustomerSavedLocationsContent extends StatefulWidget {
   const _CustomerSavedLocationsContent();
+
+  @override
+  State<_CustomerSavedLocationsContent> createState() =>
+      _CustomerSavedLocationsContentState();
+}
+
+class _CustomerSavedLocationsContentState
+    extends State<_CustomerSavedLocationsContent> {
+  bool _isPageActionPending = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +85,8 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
 
                           final loadedState =
                               state as CustomerSavedLocationsLoaded;
+                          final isInteractionBlocked =
+                              loadedState.isBusy || _isPageActionPending;
                           if (loadedState.locations.isEmpty) {
                             return _SavedLocationStatus(
                               icon: Icons.add_location_alt_outlined,
@@ -83,7 +94,7 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
                               description:
                                   'Sık kullandığın bir konumu kaydederek daha sonra kolayca seçebilirsin.',
                               actionLabel: 'Mevcut Konumumu Kaydet',
-                              onAction: loadedState.isBusy
+                              onAction: isInteractionBlocked
                                   ? null
                                   : () => _openAddLocation(context),
                             );
@@ -91,6 +102,7 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
 
                           return _SavedLocationsLoadedContent(
                             state: loadedState,
+                            isInteractionBlocked: isInteractionBlocked,
                             onAddLocation: () => _openAddLocation(context),
                             onSetDefault: (location) =>
                                 _setDefaultLocation(context, location),
@@ -109,19 +121,33 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
   }
 
   Future<void> _openAddLocation(BuildContext context) async {
-    final cubit = context.read<CustomerSavedLocationsCubit>();
-    final didSave = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: const _AddSavedLocationSheet(),
-      ),
-    );
+    if (_isPageActionPending) return;
 
-    if (didSave != true || !context.mounted) return;
+    setState(() => _isPageActionPending = true);
+    final cubit = context.read<CustomerSavedLocationsCubit>();
+    bool didSave = false;
+    try {
+      didSave =
+          await showModalBottomSheet<bool>(
+            context: context,
+            isScrollControlled: true,
+            useSafeArea: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: const _AddSavedLocationSheet(),
+            ),
+          ) ==
+          true;
+    } finally {
+      if (mounted) {
+        setState(() => _isPageActionPending = false);
+      } else {
+        _isPageActionPending = false;
+      }
+    }
+
+    if (!didSave || !context.mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Konumun kaydedildi.')));
@@ -131,9 +157,21 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
     BuildContext context,
     CustomerSavedLocationEntity location,
   ) async {
-    final didSet = await context
-        .read<CustomerSavedLocationsCubit>()
-        .setDefaultLocation(location.id);
+    if (_isPageActionPending) return;
+
+    setState(() => _isPageActionPending = true);
+    bool didSet = false;
+    try {
+      didSet = await context
+          .read<CustomerSavedLocationsCubit>()
+          .setDefaultLocation(location.id);
+    } finally {
+      if (mounted) {
+        setState(() => _isPageActionPending = false);
+      } else {
+        _isPageActionPending = false;
+      }
+    }
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -151,35 +189,73 @@ class _CustomerSavedLocationsContent extends StatelessWidget {
     BuildContext context,
     CustomerSavedLocationEntity location,
   ) async {
-    final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: CustomerHomeV1Tokens.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        ),
-        title: const Text('Konum silinsin mi?'),
-        content: Text('${location.name} kayıtlı konumlardan kaldırılacak.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Vazgeç'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: CustomerHomeV1Tokens.coral,
-            ),
-            child: const Text('Sil'),
-          ),
-        ],
-      ),
-    );
+    if (_isPageActionPending) return;
 
-    if (shouldDelete != true || !context.mounted) return;
-    final didDelete = await context
-        .read<CustomerSavedLocationsCubit>()
-        .deleteLocation(location.id);
+    setState(() => _isPageActionPending = true);
+    bool shouldDelete = false;
+    bool didDelete = false;
+    try {
+      var isDialogResolving = false;
+      shouldDelete =
+          await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) => StatefulBuilder(
+              builder: (context, setDialogState) {
+                void closeDialog(bool result) {
+                  if (isDialogResolving) return;
+                  isDialogResolving = true;
+                  setDialogState(() {});
+                  Navigator.of(dialogContext).pop(result);
+                }
+
+                return AlertDialog(
+                  backgroundColor: CustomerHomeV1Tokens.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius20,
+                    ),
+                  ),
+                  title: const Text('Konum silinsin mi?'),
+                  content: Text(
+                    '${location.name} kayıtlı konumlardan kaldırılacak.',
+                  ),
+                  actions: [
+                    TextButton(
+                      key: const Key('saved-location-delete-cancel'),
+                      onPressed: isDialogResolving
+                          ? null
+                          : () => closeDialog(false),
+                      child: const Text('Vazgeç'),
+                    ),
+                    FilledButton(
+                      key: const Key('saved-location-delete-confirm'),
+                      onPressed: isDialogResolving
+                          ? null
+                          : () => closeDialog(true),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: CustomerHomeV1Tokens.coral,
+                      ),
+                      child: const Text('Sil'),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ) ==
+          true;
+
+      if (!shouldDelete || !context.mounted) return;
+      didDelete = await context
+          .read<CustomerSavedLocationsCubit>()
+          .deleteLocation(location.id);
+    } finally {
+      if (mounted) {
+        setState(() => _isPageActionPending = false);
+      } else {
+        _isPageActionPending = false;
+      }
+    }
+
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -325,12 +401,14 @@ class _SavedLocationsLoadingState extends StatelessWidget {
 class _SavedLocationsLoadedContent extends StatelessWidget {
   const _SavedLocationsLoadedContent({
     required this.state,
+    required this.isInteractionBlocked,
     required this.onAddLocation,
     required this.onSetDefault,
     required this.onDelete,
   });
 
   final CustomerSavedLocationsLoaded state;
+  final bool isInteractionBlocked;
   final VoidCallback onAddLocation;
   final ValueChanged<CustomerSavedLocationEntity> onSetDefault;
   final ValueChanged<CustomerSavedLocationEntity> onDelete;
@@ -364,7 +442,7 @@ class _SavedLocationsLoadedContent extends StatelessWidget {
                 final location = state.locations[index - 1];
                 return _SavedLocationCard(
                   location: location,
-                  isBusy: state.isBusy,
+                  isBusy: isInteractionBlocked,
                   isCurrentOperation: state.busyLocationId == location.id,
                   onSetDefault: () => onSetDefault(location),
                   onDelete: () => onDelete(location),
@@ -384,7 +462,7 @@ class _SavedLocationsLoadedContent extends StatelessWidget {
           color: CustomerHomeV1Tokens.cream,
           child: FilledButton.icon(
             key: const Key('saved-location-add-button'),
-            onPressed: state.isBusy ? null : onAddLocation,
+            onPressed: isInteractionBlocked ? null : onAddLocation,
             style: FilledButton.styleFrom(
               backgroundColor: CustomerHomeV1Tokens.petrol,
               foregroundColor: Colors.white,
@@ -854,7 +932,7 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
                     width: double.infinity,
                     child: FilledButton(
                       key: const Key('saved-location-save-button'),
-                      onPressed: _isSaving ? null : _save,
+                      onPressed: _isSaving || _isLocating ? null : _save,
                       style: FilledButton.styleFrom(
                         backgroundColor: CustomerHomeV1Tokens.petrol,
                         foregroundColor: Colors.white,
@@ -919,6 +997,8 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
   }
 
   Future<void> _captureLocation() async {
+    if (_isLocating || _isSaving) return;
+
     setState(() {
       _isLocating = true;
       _locationError = null;
@@ -938,6 +1018,7 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
   }
 
   Future<void> _save() async {
+    if (_isSaving || _isLocating) return;
     if (!_formKey.currentState!.validate()) return;
     final coordinates = _coordinates;
     if (coordinates == null) {

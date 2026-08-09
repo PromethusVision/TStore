@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -163,6 +165,111 @@ void main() {
     expect(find.text('Konumun kaydedildi.'), findsOneWidget);
   });
 
+  testWidgets('konum ekleme penceresini çift dokunmada bir kez açar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(const CustomerSavedLocationsLoaded(locations: [])),
+    );
+    await tester.pumpAndSettle();
+
+    final addAction = tester.widget<OutlinedButton>(
+      find.widgetWithText(OutlinedButton, 'Mevcut Konumumu Kaydet'),
+    );
+    addAction.onPressed?.call();
+    addAction.onPressed?.call();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('saved-location-add-sheet')), findsOneWidget);
+
+    Navigator.of(
+      tester.element(find.byKey(const Key('saved-location-add-sheet'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    final reopenedAddAction = tester.widget<OutlinedButton>(
+      find.widgetWithText(OutlinedButton, 'Mevcut Konumumu Kaydet'),
+    );
+    expect(reopenedAddAction.onPressed, isNotNull);
+  });
+
+  testWidgets('konum alma işlemini çift dokunmada bir kez çalıştırır', (
+    tester,
+  ) async {
+    final locationResult = Completer<CustomerLocationResult>();
+    when(
+      () => cubit.captureCurrentLocation(),
+    ).thenAnswer((_) => locationResult.future);
+    await tester.pumpWidget(
+      buildSubject(const CustomerSavedLocationsLoaded(locations: [])),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Mevcut Konumumu Kaydet'));
+    await tester.pumpAndSettle();
+    final captureAction = tester.widget<OutlinedButton>(
+      find.byKey(const Key('saved-location-capture-button')),
+    );
+    captureAction.onPressed?.call();
+    captureAction.onPressed?.call();
+    await tester.pump();
+
+    verify(() => cubit.captureCurrentLocation()).called(1);
+
+    locationResult.complete(const CustomerLocationResult.success(coordinates));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Konum Alındı'), findsOneWidget);
+  });
+
+  testWidgets('konum kaydını çift dokunmada bir kez gönderir', (tester) async {
+    final saveResult = Completer<bool>();
+    when(
+      () => cubit.addLocation(
+        name: any(named: 'name'),
+        addressText: any(named: 'addressText'),
+        coordinates: any(named: 'coordinates'),
+      ),
+    ).thenAnswer((_) => saveResult.future);
+    await tester.pumpWidget(
+      buildSubject(const CustomerSavedLocationsLoaded(locations: [])),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Mevcut Konumumu Kaydet'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('saved-location-name-field')),
+      'Ev',
+    );
+    await tester.enterText(
+      find.byKey(const Key('saved-location-address-field')),
+      'Esenler, İstanbul',
+    );
+    await tester.tap(find.byKey(const Key('saved-location-capture-button')));
+    await tester.pumpAndSettle();
+
+    final saveAction = tester.widget<FilledButton>(
+      find.byKey(const Key('saved-location-save-button')),
+    );
+    saveAction.onPressed?.call();
+    saveAction.onPressed?.call();
+    await tester.pump();
+
+    verify(
+      () => cubit.addLocation(
+        name: 'Ev',
+        addressText: 'Esenler, İstanbul',
+        coordinates: coordinates,
+      ),
+    ).called(1);
+
+    saveResult.complete(true);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Konumun kaydedildi.'), findsOneWidget);
+  });
+
   testWidgets('konum izni reddedildiğinde anlaşılır açıklama gösterir', (
     tester,
   ) async {
@@ -203,6 +310,96 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(() => cubit.deleteLocation(home.id)).called(1);
+  });
+
+  testWidgets(
+    'silme penceresi ve silme işlemi çift dokunmada bir kez çalışır',
+    (tester) async {
+      final deleteResult = Completer<bool>();
+      when(
+        () => cubit.deleteLocation(home.id),
+      ).thenAnswer((_) => deleteResult.future);
+      await tester.pumpWidget(
+        buildSubject(
+          const CustomerSavedLocationsLoaded(locations: [home, work]),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final deleteAction = tester.widget<IconButton>(
+        find.widgetWithIcon(IconButton, Icons.delete_outline_rounded).first,
+      );
+      deleteAction.onPressed?.call();
+      deleteAction.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Konum silinsin mi?'), findsOneWidget);
+
+      final cancelAction = tester.widget<TextButton>(
+        find.byKey(const Key('saved-location-delete-cancel')),
+      );
+      cancelAction.onPressed?.call();
+      cancelAction.onPressed?.call();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('customer-saved-locations-content')),
+        findsOneWidget,
+      );
+      verifyNever(() => cubit.deleteLocation(any()));
+
+      await tester.tap(
+        find.widgetWithIcon(IconButton, Icons.delete_outline_rounded).first,
+      );
+      await tester.pumpAndSettle();
+      final confirmAction = tester.widget<FilledButton>(
+        find.byKey(const Key('saved-location-delete-confirm')),
+      );
+      confirmAction.onPressed?.call();
+      confirmAction.onPressed?.call();
+      await tester.pump();
+
+      verify(() => cubit.deleteLocation(home.id)).called(1);
+
+      deleteResult.complete(true);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('customer-saved-locations-content')),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('ana konum seçimini çift dokunmada bir kez gönderir', (
+    tester,
+  ) async {
+    final setDefaultResult = Completer<bool>();
+    when(
+      () => cubit.setDefaultLocation(work.id),
+    ).thenAnswer((_) => setDefaultResult.future);
+    await tester.pumpWidget(
+      buildSubject(const CustomerSavedLocationsLoaded(locations: [home, work])),
+    );
+    await tester.pumpAndSettle();
+
+    final setDefaultAction = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Ana Konum Yap'),
+    );
+    setDefaultAction.onPressed?.call();
+    setDefaultAction.onPressed?.call();
+    await tester.pump();
+
+    verify(() => cubit.setDefaultLocation(work.id)).called(1);
+
+    setDefaultResult.complete(true);
+    await tester.pumpAndSettle();
+
+    expect(find.text('İş ana konum olarak seçildi.'), findsOneWidget);
+    final availableAction = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Ana Konum Yap'),
+    );
+    expect(availableAction.onPressed, isNotNull);
   });
 
   testWidgets('yükleme hatasında tekrar deneme sunar', (tester) async {
