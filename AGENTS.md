@@ -15,6 +15,14 @@
 - Uzun terminal ve kod çıktılarını gösterme; yalnızca sonuç özeti ver.
 - Görev tamamlandığında sıradaki en küçük güvenli işi öner.
 
+## Güvenli Çalışmalarda Otomatik Commit ve Push
+
+- Yukarıdaki commit ve push onayı kuralının istisnası olarak; küçük, güvenli ve geri alınabilir bir müşteri uygulaması çalışması tamamlandığında, bütün ilgili otomatik testler geçtiğinde, manuel ürün veya görsel kabulü gerekmediğinde ve çalışma ağacında ilgisiz dosya bulunmadığında kullanıcıdan yeniden onay istemeden commit oluştur ve mevcut onaylı `origin/main` dalına push et.
+- Kullanıcı manuel kontrolün başarılı olduğunu bildirdiyse ve başka bir engel yoksa aynı otomatik commit ve push yetkisi geçerlidir.
+- Görsel veya nihai kullanıcı kabulü bekleniyorsa, testlerden biri başarısızsa, beklenmeyen ya da ilgisiz dosya varsa, Git çakışması oluşursa veya çalışma SQL, migration, `.env`, dependency, büyük refactor, kritik akış, veri kaybı riski ya da geri dönüşü zor bir işlem içeriyorsa otomatik commit veya push yapma; durumu sade Türkçeyle anlat ve kullanıcıdan onay iste.
+- Otomatik push yetkisi yalnızca mevcut onaylı `origin/main` akışı içindir. Yeni branch, merge, pull request, force push, rebase veya geçmiş değiştiren Git işlemleri için ayrıca onay iste.
+- Commit ve push sonrasında commit kimliğini, hedef dalı, geçen testleri ve çalışma ağacının temiz olup olmadığını kısa bir sonuç özetiyle bildir.
+
 ## Kodlama Sonrası Otomatik Doğrulama
 
 - Kodlama tamamlandığında kullanıcıyı doğrudan manuel kontrol listesine yönlendirme; önce mümkün olan bütün kontrolleri kendin gerçekleştir.
