@@ -152,6 +152,73 @@ void main() {
     expect(find.text('Mesajlar yükleniyor'), findsOneWidget);
   });
 
+  testWidgets(
+    'ilk yükleme hatasını boş sohbetten ayırır ve yeniden denemeyi tamamlar',
+    (tester) async {
+      final stateController = StreamController<ChatState>();
+      addTearDown(stateController.close);
+      whenListen(
+        chatCubit,
+        stateController.stream,
+        initialState: const ChatError(
+          'Bağlantını kontrol edip tekrar deneyebilirsin.',
+        ),
+      );
+
+      await tester.pumpWidget(buildSubject(initialDraft: 'Korunan taslak'));
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('customer-chat-load-error-state')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('customer-chat-empty-state')), findsNothing);
+      expect(find.text('Mesajlar yüklenemedi'), findsOneWidget);
+      expect(
+        find.text('Bağlantını kontrol edip tekrar deneyebilirsin.'),
+        findsOneWidget,
+      );
+
+      var messageField = tester.widget<TextField>(
+        find.byKey(const Key('chat-message-input')),
+      );
+      expect(messageField.readOnly, isTrue);
+      expect(messageField.controller?.text, 'Korunan taslak');
+
+      clearInteractions(chatCubit);
+      await tester.tap(
+        find.byKey(const Key('customer-chat-load-retry-action')),
+      );
+      await tester.pump();
+
+      verify(() => chatCubit.getMessages('owner-1', refresh: true)).called(1);
+
+      stateController.add(ChatLoading());
+      await tester.pump();
+      expect(
+        find.byKey(const Key('customer-chat-loading-state')),
+        findsOneWidget,
+      );
+
+      stateController.add(const ChatLoaded(messages: []));
+      await tester.pump();
+      expect(
+        find.byKey(const Key('customer-chat-empty-state')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-chat-load-error-state')),
+        findsNothing,
+      );
+
+      messageField = tester.widget<TextField>(
+        find.byKey(const Key('chat-message-input')),
+      );
+      expect(messageField.readOnly, isFalse);
+      expect(messageField.controller?.text, 'Korunan taslak');
+    },
+  );
+
   testWidgets('gönder düğmesi yalnızca gerçek mesaj yazıldığında açılır', (
     tester,
   ) async {
@@ -256,16 +323,26 @@ void main() {
   });
 
   testWidgets('mesaj hatasını kullanıcıya gösterir', (tester) async {
+    final stateController = StreamController<ChatState>();
+    addTearDown(stateController.close);
     whenListen(
       chatCubit,
-      Stream<ChatState>.value(const ChatError('Mesaj şu anda gönderilemedi.')),
-      initialState: ChatLoading(),
+      stateController.stream,
+      initialState: const ChatLoaded(messages: []),
     );
 
     await tester.pumpWidget(buildSubject());
-    await tester.pumpAndSettle();
+    await tester.pump();
+
+    stateController.add(const ChatError('Mesaj şu anda gönderilemedi.'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
 
     expect(find.text('Mesaj şu anda gönderilemedi.'), findsOneWidget);
+    expect(
+      find.byKey(const Key('customer-chat-load-error-state')),
+      findsNothing,
+    );
   });
 
   testWidgets('dar ekranda uzun mesaj ve mağaza adı taşma yapmaz', (

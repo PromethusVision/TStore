@@ -68,6 +68,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
   bool _didJumpToInitialMessages = false;
+  bool _hasCompletedInitialLoad = false;
   bool _isLoadingMore = false;
   bool _hasReachedMax = false;
 
@@ -119,6 +120,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                     listener: (context, state) {
                       if (state is ChatLoaded) {
                         _replaceMessages(state.messages);
+                        _hasCompletedInitialLoad = true;
                         _hasReachedMax = state.hasReachedMax;
                         if (!_didJumpToInitialMessages) {
                           _didJumpToInitialMessages = true;
@@ -141,16 +143,28 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                       }
 
                       if (state is ChatError) {
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(content: Text(state.message)),
-                          );
+                        final isInitialLoadError =
+                            !_hasCompletedInitialLoad && _messages.isEmpty;
+                        if (!isInitialLoadError) {
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(content: Text(state.message)),
+                            );
+                        }
                       }
                     },
                     builder: (context, state) {
+                      if (state is ChatLoaded) {
+                        _hasCompletedInitialLoad = true;
+                      }
+
                       final isInitialLoading =
                           state is ChatLoading && _messages.isEmpty;
+                      final isInitialLoadError =
+                          state is ChatError &&
+                          !_hasCompletedInitialLoad &&
+                          _messages.isEmpty;
                       final isSending = state is MessageSending;
 
                       return Column(
@@ -158,6 +172,16 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                           Expanded(
                             child: isInitialLoading
                                 ? const _ChatLoadingState()
+                                : isInitialLoadError
+                                ? _ChatLoadErrorState(
+                                    message: state.message,
+                                    onRetry: () => unawaited(
+                                      context.read<ChatCubit>().getMessages(
+                                        widget.receiverId,
+                                        refresh: true,
+                                      ),
+                                    ),
+                                  )
                                 : _MessageList(
                                     messages: _messages,
                                     currentUserId: currentUserId,
@@ -168,6 +192,7 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
                           _MessageInput(
                             controller: _messageController,
                             isSending: isSending,
+                            isEnabled: !isInitialLoading && !isInitialLoadError,
                             onSend: () => _sendMessage(context),
                           ),
                         ],
@@ -391,6 +416,88 @@ class _ChatLoadingState extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatLoadErrorState extends StatelessWidget {
+  const _ChatLoadErrorState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        child: Container(
+          key: const Key('customer-chat-load-error-state'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            border: Border.all(color: CustomerHomeV1Tokens.border),
+            boxShadow: CustomerHomeV1Tokens.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFE4DE),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.cloud_off_rounded,
+                  color: CustomerHomeV1Tokens.coral,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              const Text(
+                'Mesajlar yüklenemedi',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.muted,
+                  fontSize: 12,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              FilledButton.icon(
+                key: const Key('customer-chat-load-retry-action'),
+                onPressed: onRetry,
+                style: FilledButton.styleFrom(
+                  backgroundColor: CustomerHomeV1Tokens.petrol,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      CustomerHomeV1Tokens.radius16,
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.refresh_rounded, size: 19),
+                label: const Text('Tekrar dene'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -672,11 +779,13 @@ class _MessageInput extends StatelessWidget {
   const _MessageInput({
     required this.controller,
     required this.isSending,
+    required this.isEnabled,
     required this.onSend,
   });
 
   final TextEditingController controller;
   final bool isSending;
+  final bool isEnabled;
   final VoidCallback onSend;
 
   @override
@@ -702,7 +811,7 @@ class _MessageInput extends StatelessWidget {
               builder: (context, value, _) => TextField(
                 key: const Key('chat-message-input'),
                 controller: controller,
-                readOnly: isSending,
+                readOnly: isSending || !isEnabled,
                 inputFormatters: const [_ChatMessageLengthFormatter()],
                 minLines: 1,
                 maxLines: 4,
@@ -760,6 +869,7 @@ class _MessageInput extends StatelessWidget {
             valueListenable: controller,
             builder: (context, value, _) {
               final canSend =
+                  isEnabled &&
                   !isSending &&
                   ChatMessageRules.validationError(value.text) == null;
 
