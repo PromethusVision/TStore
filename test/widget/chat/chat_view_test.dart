@@ -165,7 +165,12 @@ void main() {
     final sendButton = tester.widget<IconButton>(
       find.byKey(const Key('chat-message-send-action')),
     );
+    final messageField = tester.widget<TextField>(
+      find.byKey(const Key('chat-message-input')),
+    );
     expect(sendButton.onPressed, isNull);
+    expect(messageField.readOnly, isTrue);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('chat-message-send-action')));
     await tester.pump();
@@ -175,6 +180,41 @@ void main() {
         content: any(named: 'content'),
       ),
     );
+  });
+
+  testWidgets('mesaj hatasında taslağı korur ve yeniden düzenlemeye açar', (
+    tester,
+  ) async {
+    final stateController = StreamController<ChatState>();
+    addTearDown(stateController.close);
+    whenListen(
+      chatCubit,
+      stateController.stream,
+      initialState: const ChatLoaded(messages: []),
+    );
+
+    await tester.pumpWidget(buildSubject(initialDraft: 'Korunacak taslak'));
+    await tester.pump();
+
+    stateController.add(MessageSending());
+    await tester.pump();
+    await tester.pump();
+
+    var messageField = tester.widget<TextField>(
+      find.byKey(const Key('chat-message-input')),
+    );
+    expect(messageField.readOnly, isTrue);
+    expect(messageField.controller?.text, 'Korunacak taslak');
+
+    stateController.add(const ChatError('Mesaj gönderilemedi.'));
+    await tester.pump();
+    await tester.pump();
+
+    messageField = tester.widget<TextField>(
+      find.byKey(const Key('chat-message-input')),
+    );
+    expect(messageField.readOnly, isFalse);
+    expect(messageField.controller?.text, 'Korunacak taslak');
   });
 
   testWidgets('mesaj hatasını kullanıcıya gösterir', (tester) async {

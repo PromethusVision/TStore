@@ -698,6 +698,7 @@ class _MessageInput extends StatelessWidget {
             child: TextField(
               key: const Key('chat-message-input'),
               controller: controller,
+              readOnly: isSending,
               minLines: 1,
               maxLines: 4,
               textInputAction: TextInputAction.newline,
