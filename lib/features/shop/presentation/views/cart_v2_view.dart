@@ -182,27 +182,42 @@ class _CartV2ViewState extends State<CartV2View> {
     if (_isCartInteractionBlocked) return;
 
     _isCartConfirmationOpen = true;
+    var isClosingDialog = false;
     bool shouldRemove;
     try {
       shouldRemove =
           await showDialog<bool>(
             context: context,
             builder: (dialogContext) {
-              return AlertDialog(
-                title: const Text('Ürünü sepetten kaldır'),
-                content: const Text(
-                  'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(false),
-                    child: const Text('Vazgeç'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(true),
-                    child: const Text('Kaldır'),
-                  ),
-                ],
+              return StatefulBuilder(
+                builder: (context, setDialogState) {
+                  void closeDialog(bool result) {
+                    if (isClosingDialog) return;
+                    setDialogState(() => isClosingDialog = true);
+                    Navigator.of(dialogContext).pop(result);
+                  }
+
+                  return AlertDialog(
+                    title: const Text('Ürünü sepetten kaldır'),
+                    content: const Text(
+                      'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: isClosingDialog
+                            ? null
+                            : () => closeDialog(false),
+                        child: const Text('Vazgeç'),
+                      ),
+                      TextButton(
+                        onPressed: isClosingDialog
+                            ? null
+                            : () => closeDialog(true),
+                        child: const Text('Kaldır'),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ) ==

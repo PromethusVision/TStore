@@ -612,6 +612,50 @@ void main() {
   });
 
   testWidgets(
+    'ürün kaldırma penceresi hızlı dokunmada yalnız bir kez kapanır',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final removeButton = find.byKey(
+        const Key('customer-cart-item-item-1-remove'),
+      );
+      await tester.tap(removeButton);
+      await tester.pumpAndSettle();
+
+      final cancelAction = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Vazgeç'))
+          .onPressed!;
+      cancelAction();
+      cancelAction();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+      verifyNever(() => cartV2Cubit.removeItem(any()));
+
+      await tester.tap(removeButton);
+      await tester.pumpAndSettle();
+
+      final confirmAction = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Kaldır'))
+          .onPressed!;
+      confirmAction();
+      confirmAction();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+      verify(() => cartV2Cubit.removeItem('item-1')).called(1);
+    },
+  );
+
+  testWidgets(
     'sepet boşaltılırken geri bildirim gösterir ve tekrarını engeller',
     (tester) async {
       final clearRequest = Completer<void>();
