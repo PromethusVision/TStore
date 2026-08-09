@@ -33,6 +33,9 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(() => chatCubit.loadMoreMessages(any())).thenAnswer((_) async {});
+    when(
+      () => chatCubit.refreshMessagesSilently(any()),
+    ).thenAnswer((_) async {});
     when(() => chatCubit.close()).thenAnswer((_) async {});
   });
 
@@ -70,6 +73,7 @@ void main() {
   Widget buildSubject({
     String receiverName = 'Mahalle Marketi',
     String? initialDraft,
+    Duration autoRefreshInterval = const Duration(seconds: 15),
   }) {
     return MaterialApp(
       home: ChatView(
@@ -78,6 +82,7 @@ void main() {
         initialDraft: initialDraft,
         chatCubit: chatCubit,
         currentUserIdProvider: () => 'customer-1',
+        autoRefreshInterval: autoRefreshInterval,
       ),
     );
   }
@@ -218,6 +223,48 @@ void main() {
       expect(messageField.controller?.text, 'Korunan taslak');
     },
   );
+
+  testWidgets('ekran açıkken sohbeti düzenli olarak sessizce yeniler', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(autoRefreshInterval: const Duration(seconds: 1)),
+    );
+    await tester.pump();
+
+    verifyNever(() => chatCubit.refreshMessagesSilently(any()));
+
+    await tester.pump(const Duration(seconds: 1));
+
+    verify(() => chatCubit.refreshMessagesSilently('owner-1')).called(1);
+    expect(find.byKey(const Key('customer-chat-empty-state')), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('arka planda yenilemeyi durdurur ve dönüşte hemen eşitler', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(autoRefreshInterval: const Duration(seconds: 1)),
+    );
+    await tester.pump();
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump(const Duration(seconds: 2));
+    verifyNever(() => chatCubit.refreshMessagesSilently(any()));
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    verify(() => chatCubit.refreshMessagesSilently('owner-1')).called(1);
+
+    clearInteractions(chatCubit);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(seconds: 2));
+    verifyNever(() => chatCubit.refreshMessagesSilently(any()));
+  });
 
   testWidgets('gönder düğmesi yalnızca gerçek mesaj yazıldığında açılır', (
     tester,

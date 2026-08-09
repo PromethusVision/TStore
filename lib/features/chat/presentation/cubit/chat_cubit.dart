@@ -93,6 +93,35 @@ class ChatCubit extends Cubit<ChatState> {
     await getMessages(otherUserId);
   }
 
+  Future<void> refreshMessagesSilently(String otherUserId) async {
+    if (_isLoadingMessages ||
+        !_hasLoadedCurrentConversation ||
+        _currentOtherUserId != otherUserId) {
+      return;
+    }
+
+    _isLoadingMessages = true;
+    try {
+      final result = await repository.getMessages(
+        otherUserId: otherUserId,
+        page: 0,
+        limit: _limit,
+      );
+
+      result.fold((_) {}, (messages) {
+        if (isClosed) return;
+
+        _mergeMessages(messages);
+        if (_currentPage <= 1) {
+          _hasReachedMax = messages.length < _limit;
+        }
+        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+      });
+    } finally {
+      _isLoadingMessages = false;
+    }
+  }
+
   Future<void> sendMessage({
     required String receiverId,
     required String content,

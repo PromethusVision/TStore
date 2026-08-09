@@ -21,6 +21,7 @@ class ChatView extends StatelessWidget {
     this.initialDraft,
     this.chatCubit,
     this.currentUserIdProvider,
+    this.autoRefreshInterval = const Duration(seconds: 15),
   });
 
   final String receiverId;
@@ -28,6 +29,7 @@ class ChatView extends StatelessWidget {
   final String? initialDraft;
   final ChatCubit? chatCubit;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
+  final Duration autoRefreshInterval;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class ChatView extends StatelessWidget {
         receiverName: receiverName,
         initialDraft: initialDraft,
         currentUserIdProvider: currentUserIdProvider,
+        autoRefreshInterval: autoRefreshInterval,
       ),
     );
   }
@@ -52,21 +55,25 @@ class _ChatViewBody extends StatefulWidget {
     required this.receiverName,
     required this.initialDraft,
     required this.currentUserIdProvider,
+    required this.autoRefreshInterval,
   });
 
   final String receiverId;
   final String receiverName;
   final String? initialDraft;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
+  final Duration autoRefreshInterval;
 
   @override
   State<_ChatViewBody> createState() => _ChatViewBodyState();
 }
 
-class _ChatViewBodyState extends State<_ChatViewBody> {
+class _ChatViewBodyState extends State<_ChatViewBody>
+    with WidgetsBindingObserver {
   late final TextEditingController _messageController;
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessageEntity> _messages = [];
+  Timer? _autoRefreshTimer;
   bool _didJumpToInitialMessages = false;
   bool _hasCompletedInitialLoad = false;
   bool _isLoadingMore = false;
@@ -75,18 +82,32 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _messageController = TextEditingController(
       text: ChatMessageRules.limitText(widget.initialDraft?.trim() ?? ''),
     );
     _scrollController.addListener(_handleScroll);
+    _startAutoRefresh();
   }
 
   @override
   void dispose() {
+    _stopAutoRefresh();
+    WidgetsBinding.instance.removeObserver(this);
     _messageController.dispose();
     _scrollController.removeListener(_handleScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshAndRestart());
+      return;
+    }
+
+    _stopAutoRefresh();
   }
 
   @override
@@ -269,6 +290,31 @@ class _ChatViewBodyState extends State<_ChatViewBody> {
         setState(() => _isLoadingMore = false);
       }
     }
+  }
+
+  void _startAutoRefresh() {
+    _autoRefreshTimer?.cancel();
+    _autoRefreshTimer = Timer.periodic(widget.autoRefreshInterval, (_) {
+      if (!mounted) return;
+      unawaited(
+        context.read<ChatCubit>().refreshMessagesSilently(widget.receiverId),
+      );
+    });
+  }
+
+  void _stopAutoRefresh() {
+    _autoRefreshTimer?.cancel();
+    _autoRefreshTimer = null;
+  }
+
+  Future<void> _refreshAndRestart() async {
+    _stopAutoRefresh();
+    if (!mounted) return;
+
+    await context.read<ChatCubit>().refreshMessagesSilently(widget.receiverId);
+    if (!mounted) return;
+
+    _startAutoRefresh();
   }
 }
 

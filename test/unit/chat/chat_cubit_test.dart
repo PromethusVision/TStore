@@ -287,6 +287,116 @@ void main() {
         final state = chatCubit.state as ChatLoaded;
         expect(state.messages, hasLength(50));
       });
+
+      test(
+        'sessiz yenileme yeni mesajları mevcut geçmişi silmeden birleştirir',
+        () async {
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right(testMessages));
+          await chatCubit.getMessages(testOtherUserId, refresh: true);
+
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right([newMessage]));
+
+          final stateExpectation = expectLater(
+            chatCubit.stream,
+            emits(
+              isA<ChatLoaded>()
+                  .having((state) => state.messages, 'messages', hasLength(3))
+                  .having(
+                    (state) => state.messages.map((message) => message.id),
+                    'message ids',
+                    containsAll(['msg-1', 'msg-2', 'msg-3']),
+                  ),
+            ),
+          );
+
+          await chatCubit.refreshMessagesSilently(testOtherUserId);
+          await stateExpectation;
+        },
+      );
+
+      test('sessiz yenileme hatasında mevcut konuşmayı korur', () async {
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 0,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => Right(testMessages));
+        await chatCubit.getMessages(testOtherUserId, refresh: true);
+        final stateBeforeRefresh = chatCubit.state;
+
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 0,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => const Left('Geçici bağlantı hatası'));
+        final emittedStates = <ChatState>[];
+        final subscription = chatCubit.stream.listen(emittedStates.add);
+
+        await chatCubit.refreshMessagesSilently(testOtherUserId);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(chatCubit.state, stateBeforeRefresh);
+        expect(emittedStates, isEmpty);
+        await subscription.cancel();
+      });
+
+      test(
+        'devam eden sessiz yenileme sırasında ikinci isteği engeller',
+        () async {
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => Right(testMessages));
+          await chatCubit.getMessages(testOtherUserId, refresh: true);
+
+          final refreshResult =
+              Completer<Either<String, List<ChatMessageEntity>>>();
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) => refreshResult.future);
+          clearInteractions(mockChatRepository);
+
+          final firstRefresh = chatCubit.refreshMessagesSilently(
+            testOtherUserId,
+          );
+          final secondRefresh = chatCubit.refreshMessagesSilently(
+            testOtherUserId,
+          );
+
+          verify(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).called(1);
+
+          refreshResult.complete(const Right([]));
+          await Future.wait([firstRefresh, secondRefresh]);
+        },
+      );
     });
 
     group('sendMessage', () {
