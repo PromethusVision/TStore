@@ -86,11 +86,19 @@ void main() {
       },
     );
 
-    await tester.tap(find.byKey(const Key('account-deletion-cancel-button')));
+    final cancelAction = tester.widget<OutlinedButton>(
+      find.byKey(const Key('account-deletion-cancel-button')),
+    );
+    cancelAction.onPressed?.call();
+    cancelAction.onPressed?.call();
     await tester.pumpAndSettle();
 
     expect(submissionCount, 0);
     expect(find.byKey(const Key('account-deletion-dialog')), findsNothing);
+    expect(
+      find.byKey(const Key('open-account-deletion-dialog')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('close button leaves the account untouched', (tester) async {
@@ -103,11 +111,19 @@ void main() {
       },
     );
 
-    await tester.tap(find.byKey(const Key('account-deletion-close-button')));
+    final closeAction = tester.widget<IconButton>(
+      find.byKey(const Key('account-deletion-close-button')),
+    );
+    closeAction.onPressed?.call();
+    closeAction.onPressed?.call();
     await tester.pumpAndSettle();
 
     expect(submissionCount, 0);
     expect(find.byKey(const Key('account-deletion-dialog')), findsNothing);
+    expect(
+      find.byKey(const Key('open-account-deletion-dialog')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('blocks double submit and shows progress while deleting', (
@@ -128,12 +144,11 @@ void main() {
     );
     await tester.pump();
 
-    await tester.tap(find.byKey(const Key('account-deletion-confirm-button')));
-    await tester.pump();
-    await tester.tap(
+    final confirmAction = tester.widget<FilledButton>(
       find.byKey(const Key('account-deletion-confirm-button')),
-      warnIfMissed: false,
     );
+    confirmAction.onPressed?.call();
+    confirmAction.onPressed?.call();
     await tester.pump();
 
     expect(submissionCount, 1);

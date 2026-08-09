@@ -150,15 +150,24 @@ void main() {
 
     final deleteButton = find.byKey(const Key('delete-account-button'));
     await tester.ensureVisible(deleteButton);
-    await tester.tap(deleteButton);
+    final deleteAction = tester.widget<TextButton>(deleteButton);
+    deleteAction.onPressed?.call();
+    deleteAction.onPressed?.call();
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('account-deletion-dialog')), findsOneWidget);
     expect(find.text('Hesabını kalıcı olarak sil'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('account-deletion-cancel-button')));
+    final cancelAction = tester.widget<OutlinedButton>(
+      find.byKey(const Key('account-deletion-cancel-button')),
+    );
+    cancelAction.onPressed?.call();
+    cancelAction.onPressed?.call();
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('account-deletion-dialog')), findsNothing);
+    expect(find.byKey(const Key('customer-account-content')), findsOneWidget);
+    expect(tester.widget<TextButton>(deleteButton).onPressed, isNotNull);
     verifyNever(() => authCubit.deleteCurrentCustomerAccount());
   });
 

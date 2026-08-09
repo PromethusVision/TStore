@@ -27,6 +27,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   late UserEntity _user;
   bool _isOpeningEditor = false;
+  bool _isOpeningAccountDeletion = false;
 
   @override
   void initState() {
@@ -75,44 +76,55 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Future<void> _openAccountDeletionConfirmation() async {
-    final deleteCurrentCustomerAccount = context
-        .read<AuthCubit>()
-        .deleteCurrentCustomerAccount;
-    final deleted = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AccountDeletionConfirmationDialog(
-        onConfirm: deleteCurrentCustomerAccount,
-      ),
-    );
-    if (!mounted || deleted != true) return;
+    if (_isOpeningAccountDeletion) return;
 
-    if (sl.isRegistered<RecentlyViewedProductsStorage>()) {
-      try {
-        await sl<RecentlyViewedProductsStorage>().clear(_user.id);
-      } catch (_) {
-        // Account deletion has already succeeded. Local history cleanup must
-        // never trap the customer on a deleted account screen.
-      }
-    }
-    if (!mounted) return;
-
-    context.read<CartV2Cubit>().clearLocalCart();
-    context.read<WishlistCubit>().clearLocalWishlist();
-    context.read<NavigationMenuCubit>().changeIndex(0);
-
-    final messenger = ScaffoldMessenger.of(context);
-    Navigator.of(context).pushAndRemoveUntil<void>(
-      MaterialPageRoute<void>(builder: (_) => const NavigationMenu()),
-      (_) => false,
-    );
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Hesabınız ve kişisel bilgileriniz silindi.'),
+    setState(() => _isOpeningAccountDeletion = true);
+    try {
+      final deleteCurrentCustomerAccount = context
+          .read<AuthCubit>()
+          .deleteCurrentCustomerAccount;
+      final deleted = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AccountDeletionConfirmationDialog(
+          onConfirm: deleteCurrentCustomerAccount,
         ),
       );
+      if (!mounted || deleted != true) return;
+
+      if (sl.isRegistered<RecentlyViewedProductsStorage>()) {
+        try {
+          await sl<RecentlyViewedProductsStorage>().clear(_user.id);
+        } catch (_) {
+          // Account deletion has already succeeded. Local history cleanup must
+          // never trap the customer on a deleted account screen.
+        }
+      }
+      if (!mounted) return;
+
+      context.read<CartV2Cubit>().clearLocalCart();
+      context.read<WishlistCubit>().clearLocalWishlist();
+      context.read<NavigationMenuCubit>().changeIndex(0);
+
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.of(context).pushAndRemoveUntil<void>(
+        MaterialPageRoute<void>(builder: (_) => const NavigationMenu()),
+        (_) => false,
+      );
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Hesabınız ve kişisel bilgileriniz silindi.'),
+          ),
+        );
+    } finally {
+      if (mounted) {
+        setState(() => _isOpeningAccountDeletion = false);
+      } else {
+        _isOpeningAccountDeletion = false;
+      }
+    }
   }
 
   @override
@@ -169,7 +181,9 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   const SizedBox(height: CustomerHomeV1Tokens.space24),
                   _DangerZoneCard(
-                    onDeleteAccount: _openAccountDeletionConfirmation,
+                    onDeleteAccount: _isOpeningAccountDeletion
+                        ? null
+                        : _openAccountDeletionConfirmation,
                   ),
                 ],
               ),
@@ -446,7 +460,7 @@ class _AccountInfoRow extends StatelessWidget {
 class _DangerZoneCard extends StatelessWidget {
   const _DangerZoneCard({required this.onDeleteAccount});
 
-  final VoidCallback onDeleteAccount;
+  final VoidCallback? onDeleteAccount;
 
   @override
   Widget build(BuildContext context) {

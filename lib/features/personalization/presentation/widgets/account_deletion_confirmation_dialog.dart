@@ -18,6 +18,7 @@ class _AccountDeletionConfirmationDialogState
     extends State<AccountDeletionConfirmationDialog> {
   final TextEditingController _confirmationController = TextEditingController();
   bool _isSubmitting = false;
+  bool _isClosing = false;
   String? _errorMessage;
 
   bool get _isConfirmationValid {
@@ -35,7 +36,7 @@ class _AccountDeletionConfirmationDialogState
   }
 
   Future<void> _submit() async {
-    if (_isSubmitting || !_isConfirmationValid) return;
+    if (_isSubmitting || _isClosing || !_isConfirmationValid) return;
 
     setState(() {
       _isSubmitting = true;
@@ -46,6 +47,7 @@ class _AccountDeletionConfirmationDialogState
     if (!mounted) return;
 
     if (errorMessage == null) {
+      _isClosing = true;
       Navigator.of(context).pop(true);
       return;
     }
@@ -54,6 +56,13 @@ class _AccountDeletionConfirmationDialogState
       _isSubmitting = false;
       _errorMessage = errorMessage;
     });
+  }
+
+  void _close() {
+    if (_isSubmitting || _isClosing) return;
+
+    _isClosing = true;
+    Navigator.of(context).pop(false);
   }
 
   @override
@@ -80,10 +89,7 @@ class _AccountDeletionConfirmationDialogState
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _DeletionHeader(
-                  isSubmitting: _isSubmitting,
-                  onClose: () => Navigator.of(context).pop(false),
-                ),
+                _DeletionHeader(isSubmitting: _isSubmitting, onClose: _close),
                 const SizedBox(height: CustomerHomeV1Tokens.space16),
                 const _DeletionWarningCard(),
                 const SizedBox(height: CustomerHomeV1Tokens.space12),
@@ -152,9 +158,7 @@ class _AccountDeletionConfirmationDialogState
                         height: 48,
                         child: OutlinedButton(
                           key: const Key('account-deletion-cancel-button'),
-                          onPressed: _isSubmitting
-                              ? null
-                              : () => Navigator.of(context).pop(false),
+                          onPressed: _isSubmitting ? null : _close,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: CustomerHomeV1Tokens.navy,
                             side: const BorderSide(
