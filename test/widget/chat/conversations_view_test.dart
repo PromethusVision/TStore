@@ -216,6 +216,39 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets('hızlı çift dokunma aynı sohbeti yalnızca bir kez açar', (
+    tester,
+  ) async {
+    var destinationBuildCount = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        state: const ChatConversationsLoaded([thread]),
+        destinationBuilder: (_) {
+          destinationBuildCount++;
+          return const Scaffold(body: Text('Sohbet hedefi'));
+        },
+      ),
+    );
+    await tester.pump();
+
+    final conversationAction = tester
+        .widget<InkWell>(find.byKey(const Key('conversation-card-owner-1')))
+        .onTap!;
+    conversationAction();
+    conversationAction();
+    await tester.pumpAndSettle();
+
+    expect(destinationBuildCount, 1);
+    expect(find.text('Sohbet hedefi'), findsOneWidget);
+
+    Navigator.of(tester.element(find.text('Sohbet hedefi'))).pop();
+    await tester.pumpAndSettle();
+
+    verify(() => conversationsCubit.refreshConversationsSilently()).called(1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('uygulama arka plandayken yenilemeyi durdurur', (tester) async {
     await tester.pumpWidget(buildSubject());
     await tester.pump();

@@ -54,6 +54,7 @@ class _ConversationsViewBody extends StatefulWidget {
 class _ConversationsViewBodyState extends State<_ConversationsViewBody>
     with WidgetsBindingObserver {
   Timer? _autoRefreshTimer;
+  bool _isOpeningConversation = false;
 
   @override
   void initState() {
@@ -205,6 +206,9 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
   }
 
   Future<void> _openConversation(ChatThreadEntity thread) async {
+    if (_isOpeningConversation) return;
+
+    _isOpeningConversation = true;
     _stopAutoRefresh();
 
     try {
@@ -218,8 +222,12 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
         context,
       ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
     } finally {
-      if (mounted) {
-        await _refreshAndRestart();
+      try {
+        if (mounted) {
+          await _refreshAndRestart();
+        }
+      } finally {
+        _isOpeningConversation = false;
       }
     }
   }
