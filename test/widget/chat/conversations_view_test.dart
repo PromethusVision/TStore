@@ -1,7 +1,9 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_state.dart';
@@ -280,6 +282,63 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets(
+    'boş durumda ürün keşfine ana sayfa üzerinden güvenle yönlendirir',
+    (tester) async {
+      final navigationCubit = NavigationMenuCubit()..changeIndex(4);
+      addTearDown(navigationCubit.close);
+      whenListen(
+        conversationsCubit,
+        const Stream<ChatConversationsState>.empty(),
+        initialState: const ChatConversationsLoaded([]),
+      );
+
+      await tester.pumpWidget(
+        BlocProvider<NavigationMenuCubit>.value(
+          value: navigationCubit,
+          child: MaterialApp(
+            home: Builder(
+              builder: (rootContext) => Scaffold(
+                body: TextButton(
+                  key: const Key('open-empty-conversations'),
+                  onPressed: () => Navigator.of(rootContext).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ConversationsView(
+                        conversationsCubit: conversationsCubit,
+                        nowProvider: () => DateTime(2026, 8, 10, 18),
+                      ),
+                    ),
+                  ),
+                  child: const Text('Mesajları Aç'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('open-empty-conversations')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Henüz mesajın yok'), findsOneWidget);
+      expect(find.text('Ürünleri Keşfet'), findsOneWidget);
+      expect(find.text('Yenile'), findsNothing);
+
+      final exploreAction = tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Ürünleri Keşfet'),
+          )
+          .onPressed!;
+      exploreAction();
+      exploreAction();
+      await tester.pumpAndSettle();
+
+      expect(navigationCubit.selectedIndex, 0);
+      expect(find.text('Henüz mesajın yok'), findsNothing);
+      expect(find.byKey(const Key('open-empty-conversations')), findsOneWidget);
+    },
+  );
+
   testWidgets('dar ekranda uzun konuşma bilgileri taşma yapmaz', (
     tester,
   ) async {
@@ -326,7 +385,7 @@ void main() {
     await tester.pump(const Duration(seconds: 15));
 
     verify(() => conversationsCubit.refreshConversationsSilently()).called(1);
-    expect(find.text('Henüz mesajınız yok.'), findsOneWidget);
+    expect(find.text('Henüz mesajın yok'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

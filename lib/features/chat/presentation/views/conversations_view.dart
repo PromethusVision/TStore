@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
@@ -60,6 +61,7 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
     with WidgetsBindingObserver {
   Timer? _autoRefreshTimer;
   bool _isOpeningConversation = false;
+  bool _isOpeningProductDiscovery = false;
 
   @override
   void initState() {
@@ -124,6 +126,10 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
                               title: 'Mesajların yüklenemedi',
                               description: state.message,
                               actionLabel: 'Tekrar Dene',
+                              actionIcon: Icons.refresh_rounded,
+                              onAction: () => context
+                                  .read<ChatConversationsCubit>()
+                                  .refreshConversations(),
                               onRefresh: () => context
                                   .read<ChatConversationsCubit>()
                                   .refreshConversations(),
@@ -134,10 +140,12 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
                             if (state.threads.isEmpty) {
                               return _ConversationStatus(
                                 icon: Icons.forum_outlined,
-                                title: 'Henüz mesajınız yok.',
+                                title: 'Henüz mesajın yok',
                                 description:
-                                    'Esnafa gönderdiğin mesajlar ve yanıtları burada görünecek.',
-                                actionLabel: 'Yenile',
+                                    'Bir ürün hakkında mağazaya yazdığında konuşmaların burada görünecek.',
+                                actionLabel: 'Ürünleri Keşfet',
+                                actionIcon: Icons.search_rounded,
+                                onAction: _openProductDiscovery,
                                 onRefresh: () => context
                                     .read<ChatConversationsCubit>()
                                     .refreshConversations(),
@@ -235,6 +243,18 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
       } finally {
         _isOpeningConversation = false;
       }
+    }
+  }
+
+  Future<void> _openProductDiscovery() async {
+    if (_isOpeningProductDiscovery) return;
+
+    _isOpeningProductDiscovery = true;
+    try {
+      context.read<NavigationMenuCubit>().changeIndex(0);
+      await Navigator.of(context).maybePop<void>();
+    } finally {
+      _isOpeningProductDiscovery = false;
     }
   }
 }
@@ -642,6 +662,8 @@ class _ConversationStatus extends StatelessWidget {
     required this.title,
     required this.description,
     required this.actionLabel,
+    required this.actionIcon,
+    required this.onAction,
     required this.onRefresh,
   });
 
@@ -649,6 +671,8 @@ class _ConversationStatus extends StatelessWidget {
   final String title;
   final String description;
   final String actionLabel;
+  final IconData actionIcon;
+  final Future<void> Function() onAction;
   final Future<void> Function() onRefresh;
 
   @override
@@ -727,7 +751,7 @@ class _ConversationStatus extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: onRefresh,
+                          onPressed: onAction,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: CustomerHomeV1Tokens.petrol,
                             side: const BorderSide(
@@ -742,7 +766,7 @@ class _ConversationStatus extends StatelessWidget {
                               ),
                             ),
                           ),
-                          icon: const Icon(Icons.refresh_rounded, size: 19),
+                          icon: Icon(actionIcon, size: 19),
                           label: Text(actionLabel),
                         ),
                       ),
