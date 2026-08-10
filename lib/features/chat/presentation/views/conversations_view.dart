@@ -522,6 +522,37 @@ class _ConversationCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (thread.lastMessageIsMine) ...[
+                      const SizedBox(height: CustomerHomeV1Tokens.space4),
+                      Row(
+                        key: Key(
+                          'conversation-delivery-status-${thread.otherUserId}',
+                        ),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            thread.lastMessageIsRead
+                                ? Icons.done_all_rounded
+                                : Icons.done_rounded,
+                            size: 12,
+                            color: thread.lastMessageIsRead
+                                ? CustomerHomeV1Tokens.petrol
+                                : CustomerHomeV1Tokens.muted,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            thread.lastMessageIsRead ? 'Okundu' : 'Gönderildi',
+                            style: TextStyle(
+                              color: thread.lastMessageIsRead
+                                  ? CustomerHomeV1Tokens.petrol
+                                  : CustomerHomeV1Tokens.muted,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     if (hasUnreadMessages) ...[
                       const SizedBox(height: CustomerHomeV1Tokens.space8),
                       Container(

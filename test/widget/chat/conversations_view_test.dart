@@ -137,6 +137,73 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets('müşterinin okunmamış son mesajını Gönderildi olarak gösterir', (
+    tester,
+  ) async {
+    const sentThread = ChatThreadEntity(
+      otherUserId: 'owner-sent-message',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Ürünü ayırabilir misiniz?',
+      lastMessageAt: null,
+      lastMessageIsMine: true,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: const ChatConversationsLoaded([sentThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gönderildi'), findsOneWidget);
+    expect(find.text('Okundu'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('müşterinin okunan son mesajını Okundu olarak gösterir', (
+    tester,
+  ) async {
+    const readThread = ChatThreadEntity(
+      otherUserId: 'owner-read-message',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Teşekkür ederim.',
+      lastMessageAt: null,
+      lastMessageIsMine: true,
+      lastMessageIsRead: true,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: const ChatConversationsLoaded([readThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Okundu'), findsOneWidget);
+    expect(find.text('Gönderildi'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('mağazadan gelen son mesaja teslim durumu eklemez', (
+    tester,
+  ) async {
+    const receivedThread = ChatThreadEntity(
+      otherUserId: 'owner-received-message',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Ürünü sizin için ayırdık.',
+      lastMessageAt: null,
+      lastMessageIsRead: true,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: const ChatConversationsLoaded([receivedThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gönderildi'), findsNothing);
+    expect(find.text('Okundu'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
     await tester.pumpWidget(buildSubject(state: ChatConversationsLoading()));
     await tester.pump();

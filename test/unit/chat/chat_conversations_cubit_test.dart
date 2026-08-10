@@ -38,6 +38,8 @@ void main() {
     displayName: ChatThreadEntity.fallbackDisplayName,
     lastMessage: 'Merhaba',
     lastMessageAt: null,
+    lastMessageIsMine: true,
+    lastMessageIsRead: true,
     unreadCount: 1,
   );
   const shop = ShopEntity(
@@ -149,6 +151,8 @@ void main() {
 
     final state = cubit.state as ChatConversationsLoaded;
     expect(state.threads.single.displayName, 'Mahalle Marketi');
+    expect(state.threads.single.lastMessageIsMine, isTrue);
+    expect(state.threads.single.lastMessageIsRead, isTrue);
   });
 
   test('mağaza bilgisi yüklenemezse teknik kimlik göstermez', () async {

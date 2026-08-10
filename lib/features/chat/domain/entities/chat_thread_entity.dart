@@ -8,6 +8,7 @@ class ChatThreadEntity extends Equatable {
   final String lastMessage;
   final DateTime? lastMessageAt;
   final bool lastMessageIsMine;
+  final bool lastMessageIsRead;
   final int unreadCount;
 
   const ChatThreadEntity({
@@ -16,6 +17,7 @@ class ChatThreadEntity extends Equatable {
     required this.lastMessage,
     required this.lastMessageAt,
     this.lastMessageIsMine = false,
+    this.lastMessageIsRead = false,
     this.unreadCount = 0,
   });
 
@@ -25,6 +27,7 @@ class ChatThreadEntity extends Equatable {
     String? lastMessage,
     DateTime? lastMessageAt,
     bool? lastMessageIsMine,
+    bool? lastMessageIsRead,
     int? unreadCount,
   }) {
     return ChatThreadEntity(
@@ -33,6 +36,7 @@ class ChatThreadEntity extends Equatable {
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
       lastMessageIsMine: lastMessageIsMine ?? this.lastMessageIsMine,
+      lastMessageIsRead: lastMessageIsRead ?? this.lastMessageIsRead,
       unreadCount: unreadCount ?? this.unreadCount,
     );
   }
@@ -44,6 +48,7 @@ class ChatThreadEntity extends Equatable {
     lastMessage,
     lastMessageAt,
     lastMessageIsMine,
+    lastMessageIsRead,
     unreadCount,
   ];
 }
