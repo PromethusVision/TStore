@@ -63,7 +63,16 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
   ) async {
     if (threads.isEmpty) return threads;
 
-    final shopsResult = await shopRepository.getShops();
+    final ownerUserIds = threads
+        .map((thread) => thread.otherUserId.trim())
+        .where((ownerUserId) => ownerUserId.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    if (ownerUserIds.isEmpty) return threads;
+
+    final shopsResult = await shopRepository.getShopsByOwnerUserIds(
+      ownerUserIds,
+    );
 
     return shopsResult.fold((_) => threads, (shops) {
       final shopNameByOwnerId = <String, String>{};

@@ -15,6 +15,10 @@ class MockChatRepository extends Mock implements ChatRepository {}
 class MockShopRepository extends Mock implements ShopRepository {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(<String>[]);
+  });
+
   late MockChatRepository chatRepository;
   late MockShopRepository shopRepository;
   late ChatConversationsCubit cubit;
@@ -57,7 +61,7 @@ void main() {
     );
 
     when(
-      () => shopRepository.getShops(),
+      () => shopRepository.getShopsByOwnerUserIds(any()),
     ).thenAnswer((_) async => const Right([]));
   });
 
@@ -144,7 +148,7 @@ void main() {
       () => chatRepository.getConversations(),
     ).thenAnswer((_) async => const Right([fallbackThread]));
     when(
-      () => shopRepository.getShops(),
+      () => shopRepository.getShopsByOwnerUserIds(any()),
     ).thenAnswer((_) async => const Right([shop]));
 
     await cubit.loadConversations();
@@ -153,6 +157,11 @@ void main() {
     expect(state.threads.single.displayName, 'Mahalle Marketi');
     expect(state.threads.single.lastMessageIsMine, isTrue);
     expect(state.threads.single.lastMessageIsRead, isTrue);
+    verify(
+      () => shopRepository.getShopsByOwnerUserIds(
+        any(that: unorderedEquals(const ['owner-1'])),
+      ),
+    ).called(1);
   });
 
   test('mağaza bilgisi yüklenemezse teknik kimlik göstermez', () async {
@@ -160,7 +169,7 @@ void main() {
       () => chatRepository.getConversations(),
     ).thenAnswer((_) async => const Right([fallbackThread]));
     when(
-      () => shopRepository.getShops(),
+      () => shopRepository.getShopsByOwnerUserIds(any()),
     ).thenAnswer((_) async => const Left('Geçici mağaza bilgisi hatası'));
 
     await cubit.loadConversations();
@@ -180,7 +189,9 @@ void main() {
         () => chatRepository.getConversations(),
       ).thenAnswer((_) async => const Right([fallbackThread]));
       var shopCallCount = 0;
-      when(() => shopRepository.getShops()).thenAnswer((_) async {
+      when(() => shopRepository.getShopsByOwnerUserIds(any())).thenAnswer((
+        _,
+      ) async {
         shopCallCount++;
         return Right(shopCallCount == 1 ? const [] : const [shop]);
       });

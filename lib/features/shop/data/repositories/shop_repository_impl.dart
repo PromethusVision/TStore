@@ -41,6 +41,42 @@ class ShopRepositoryImpl implements ShopRepository {
   }
 
   @override
+  Future<Either<String, List<ShopEntity>>> getShopsByOwnerUserIds(
+    List<String> ownerUserIds,
+  ) async {
+    final normalizedOwnerIds = ownerUserIds
+        .map((ownerId) => ownerId.trim())
+        .where((ownerId) => ownerId.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    if (normalizedOwnerIds.isEmpty) {
+      return const Right([]);
+    }
+
+    try {
+      final response = await supabaseService.client
+          .from(SupabaseTables.shops)
+          .select()
+          .eq('is_active', true)
+          .inFilter('owner_user_id', normalizedOwnerIds)
+          .order('name', ascending: true);
+
+      final shops = (response as List)
+          .map((json) => ShopModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      return Right(shops);
+    } catch (e) {
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Mağaza bilgileri yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<String, ShopEntity?>> getShopById(String shopId) async {
     try {
       final response = await supabaseService.client

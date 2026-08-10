@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/chat/data/models/chat_message_model.dart';
+import 'package:t_store/features/chat/data/models/chat_thread_model.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
@@ -17,6 +19,8 @@ class ChatRepositoryImpl implements ChatRepository {
 
   static const String _messageSelect =
       'id, sender_id, receiver_id, content, message_type, is_read, created_at';
+  static const String _conversationSummariesRpc = 'get_customer_conversations';
+  static const String _unreadCountRpc = 'get_customer_unread_chat_count';
 
   String get _userId => supabaseService.currentUser?.id ?? '';
 
@@ -182,11 +186,29 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Future<Either<String, int>> getUnreadCount() async {
+    if (_userId.isEmpty) {
+      return const Right(0);
+    }
+
     try {
-      if (_userId.isEmpty) {
-        return const Right(0);
+      final response = await supabaseService.client.rpc(_unreadCountRpc);
+      return Right(_parseCount(response));
+    } catch (e) {
+      if (_isMissingRpc(e, _unreadCountRpc)) {
+        return _getUnreadCountLegacy();
       }
 
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Okunmamış mesaj sayısı alınamadı.',
+        ),
+      );
+    }
+  }
+
+  Future<Either<String, int>> _getUnreadCountLegacy() async {
+    try {
       final response = await supabaseService.client
           .from(SupabaseTables.chatMessages)
           .select('id')
@@ -206,11 +228,40 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Future<Either<String, List<ChatThreadEntity>>> getConversations() async {
+    if (_userId.isEmpty) {
+      return const Left(CustomerErrorMessage.signInRequired);
+    }
+
     try {
-      if (_userId.isEmpty) {
-        return const Left(CustomerErrorMessage.signInRequired);
+      final response = await supabaseService.client.rpc(
+        _conversationSummariesRpc,
+      );
+      final threads = (response as List)
+          .map(
+            (json) => ChatThreadModel.fromConversationSummary(
+              json as Map<String, dynamic>,
+            ),
+          )
+          .toList();
+
+      return Right(threads);
+    } catch (e) {
+      if (_isMissingRpc(e, _conversationSummariesRpc)) {
+        return _getConversationsLegacy();
       }
 
+      return Left(
+        CustomerErrorMessage.from(
+          e,
+          fallback: 'Konuşmalar yüklenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
+    }
+  }
+
+  Future<Either<String, List<ChatThreadEntity>>>
+  _getConversationsLegacy() async {
+    try {
       final response = await supabaseService.client
           .from(SupabaseTables.chatMessages)
           .select(_messageSelect)
@@ -268,5 +319,24 @@ class ChatRepositoryImpl implements ChatRepository {
         ),
       );
     }
+  }
+
+  int _parseCount(dynamic value) {
+    if (value is num) return value.toInt();
+
+    final parsed = int.tryParse(value?.toString() ?? '');
+    if (parsed != null) return parsed;
+
+    throw const FormatException('Unread chat count is not numeric.');
+  }
+
+  bool _isMissingRpc(Object error, String functionName) {
+    if (error is! PostgrestException) return false;
+
+    if (error.code == 'PGRST202' || error.code == '42883') return true;
+
+    final normalizedMessage = error.message.toLowerCase();
+    return normalizedMessage.contains(functionName.toLowerCase()) &&
+        normalizedMessage.contains('could not find');
   }
 }
