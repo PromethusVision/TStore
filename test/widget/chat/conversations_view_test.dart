@@ -38,6 +38,7 @@ void main() {
       <ChatThreadEntity>[],
     ),
     ConversationDestinationBuilder? destinationBuilder,
+    DateTime? now,
   }) {
     whenListen(
       conversationsCubit,
@@ -50,6 +51,7 @@ void main() {
         conversationsCubit: conversationsCubit,
         autoRefreshInterval: const Duration(seconds: 15),
         destinationBuilder: destinationBuilder,
+        nowProvider: () => now ?? DateTime(2026, 8, 10, 18),
       ),
     );
   }
@@ -92,6 +94,44 @@ void main() {
     expect(find.text('Ürününüz mağazada hazırlandı.'), findsOneWidget);
     expect(find.text('20.07.2026'), findsOneWidget);
     expect(find.text('2'), findsNWidgets(2));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('bugünkü son mesajı saat olarak gösterir', (tester) async {
+    final todayThread = ChatThreadEntity(
+      otherUserId: 'owner-today',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Bugünkü mesaj',
+      lastMessageAt: DateTime(2026, 8, 10, 14, 5),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: ChatConversationsLoaded([todayThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('14:05'), findsOneWidget);
+    expect(find.text('10.08.2026'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('dünkü son mesajı Dün olarak gösterir', (tester) async {
+    final yesterdayThread = ChatThreadEntity(
+      otherUserId: 'owner-yesterday',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Dünkü mesaj',
+      lastMessageAt: DateTime(2026, 8, 9, 23, 59),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: ChatConversationsLoaded([yesterdayThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dün'), findsOneWidget);
+    expect(find.text('09.08.2026'), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

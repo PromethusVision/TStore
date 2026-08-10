@@ -18,11 +18,13 @@ class ConversationsView extends StatelessWidget {
     this.conversationsCubit,
     this.autoRefreshInterval = const Duration(seconds: 15),
     this.destinationBuilder,
+    this.nowProvider,
   });
 
   final ChatConversationsCubit? conversationsCubit;
   final Duration autoRefreshInterval;
   final ConversationDestinationBuilder? destinationBuilder;
+  final DateTime Function()? nowProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class ConversationsView extends StatelessWidget {
       child: _ConversationsViewBody(
         autoRefreshInterval: autoRefreshInterval,
         destinationBuilder: destinationBuilder,
+        nowProvider: nowProvider ?? DateTime.now,
       ),
     );
   }
@@ -42,10 +45,12 @@ class _ConversationsViewBody extends StatefulWidget {
   const _ConversationsViewBody({
     required this.autoRefreshInterval,
     required this.destinationBuilder,
+    required this.nowProvider,
   });
 
   final Duration autoRefreshInterval;
   final ConversationDestinationBuilder? destinationBuilder;
+  final DateTime Function() nowProvider;
 
   @override
   State<_ConversationsViewBody> createState() => _ConversationsViewBodyState();
@@ -161,6 +166,7 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
                                   final thread = state.threads[index];
                                   return _ConversationCard(
                                     thread: thread,
+                                    now: widget.nowProvider(),
                                     onTap: () => _openConversation(thread),
                                   );
                                 },
@@ -413,9 +419,14 @@ class _ConversationsLoadingState extends StatelessWidget {
 }
 
 class _ConversationCard extends StatelessWidget {
-  const _ConversationCard({required this.thread, required this.onTap});
+  const _ConversationCard({
+    required this.thread,
+    required this.now,
+    required this.onTap,
+  });
 
   final ChatThreadEntity thread;
+  final DateTime now;
   final VoidCallback onTap;
 
   @override
@@ -513,7 +524,7 @@ class _ConversationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      _formatDate(thread.lastMessageAt),
+                      _formatDate(thread.lastMessageAt, now),
                       style: const TextStyle(
                         color: CustomerHomeV1Tokens.muted,
                         fontSize: 9.5,
@@ -594,15 +605,34 @@ class _ConversationCard extends StatelessWidget {
     return trimmed.substring(0, 1).toUpperCase();
   }
 
-  String _formatDate(DateTime? value) {
+  String _formatDate(DateTime? value, DateTime now) {
     if (value == null) return '';
 
     final local = value.toLocal();
+    final localNow = now.toLocal();
+
+    if (_isSameDay(local, localNow)) {
+      final hour = local.hour.toString().padLeft(2, '0');
+      final minute = local.minute.toString().padLeft(2, '0');
+      return '$hour:$minute';
+    }
+
+    final yesterday = DateTime(
+      localNow.year,
+      localNow.month,
+      localNow.day,
+    ).subtract(const Duration(days: 1));
+    if (_isSameDay(local, yesterday)) return 'Dün';
+
     final day = local.day.toString().padLeft(2, '0');
     final month = local.month.toString().padLeft(2, '0');
     final year = local.year.toString().padLeft(4, '0');
 
     return '$day.$month.$year';
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }
 
