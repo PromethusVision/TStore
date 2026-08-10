@@ -247,6 +247,7 @@ class ChatRepositoryImpl implements ChatRepository {
               displayName: ChatThreadEntity.fallbackDisplayName,
               lastMessage: latestMessage.content,
               lastMessageAt: latestMessage.createdAt,
+              lastMessageIsMine: latestMessage.senderId == _userId,
               unreadCount: unreadCount,
             );
           }).toList()..sort((a, b) {

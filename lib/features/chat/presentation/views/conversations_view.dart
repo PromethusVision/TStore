@@ -488,7 +488,9 @@ class _ConversationCard extends StatelessWidget {
                       ),
                       const SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(
-                        thread.lastMessage,
+                        thread.lastMessageIsMine
+                            ? 'Siz: ${thread.lastMessage}'
+                            : thread.lastMessage,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

@@ -96,6 +96,47 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets('müşterinin son mesajını Siz etiketiyle gösterir', (
+    tester,
+  ) async {
+    const ownMessageThread = ChatThreadEntity(
+      otherUserId: 'owner-own-message',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Ürün hâlâ mevcut mu?',
+      lastMessageAt: null,
+      lastMessageIsMine: true,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: const ChatConversationsLoaded([ownMessageThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Siz: Ürün hâlâ mevcut mu?'), findsOneWidget);
+    expect(find.text('Ürün hâlâ mevcut mu?'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('mağazanın son mesajına Siz etiketi eklemez', (tester) async {
+    const shopMessageThread = ChatThreadEntity(
+      otherUserId: 'owner-shop-message',
+      displayName: 'Mahalle Marketi',
+      lastMessage: 'Ürün mağazamızda mevcut.',
+      lastMessageAt: null,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(state: const ChatConversationsLoaded([shopMessageThread])),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ürün mağazamızda mevcut.'), findsOneWidget);
+    expect(find.text('Siz: Ürün mağazamızda mevcut.'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('yüklenirken markalı bekleme durumunu gösterir', (tester) async {
     await tester.pumpWidget(buildSubject(state: ChatConversationsLoading()));
     await tester.pump();
