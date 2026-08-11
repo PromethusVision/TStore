@@ -218,12 +218,16 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.byKey(const Key('customer-cart-checkout-panel')),
+      find.byKey(const Key('customer-cart-verification-panel')),
       findsOneWidget,
     );
     expect(find.text('Mahalle Mağazası'), findsOneWidget);
     expect(find.text('Test Ürünü'), findsOneWidget);
     expect(find.text('Sepet Toplamı'), findsOneWidget);
+    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    expect(find.text('Ödeme'), findsNothing);
+    expect(find.text('Kargo'), findsNothing);
+    expect(find.text('Siparişi tamamla'), findsNothing);
     expect(find.text('Toplam güncellenmeli'), findsNothing);
   });
 
@@ -248,7 +252,7 @@ void main() {
     expect(find.byKey(const Key('customer-cart-header')), findsOneWidget);
     expect(find.byKey(const Key('customer-cart-items-list')), findsOneWidget);
     expect(
-      find.byKey(const Key('customer-cart-checkout-panel')),
+      find.byKey(const Key('customer-cart-verification-panel')),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);

@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/features/orders/domain/entities/order_entity.dart';
 
+// LEGACY ORDER BOUNDARY: This contract models the retired online checkout
+// flow. Active purchases use the Cart V2 -> QR -> verified purchases path.
 abstract class OrderRepository {
   Future<Either<String, List<OrderEntity>>> getOrders();
 

@@ -7,6 +7,8 @@ import 'package:t_store/features/orders/domain/usecases/create_order_usecase.dar
 import 'package:t_store/features/orders/domain/usecases/cancel_order_usecase.dart';
 import 'package:t_store/features/orders/presentation/cubit/orders_state.dart';
 
+// LEGACY ORDER BOUNDARY: Retained but intentionally disconnected from the
+// customer app. Do not provide this Cubit to Cart V2 or navigation screens.
 class OrdersCubit extends Cubit<OrdersState> {
   final GetOrdersUsecase getOrdersUsecase;
   final GetOrderByIdUsecase getOrderByIdUsecase;
@@ -53,15 +55,17 @@ class OrdersCubit extends Cubit<OrdersState> {
   }) async {
     emit(OrderCreating());
 
-    final result = await createOrderUsecase(CreateOrderParams(
-      addressId: addressId,
-      items: items,
-      paymentMethod: paymentMethod,
-      couponCode: couponCode,
-      notes: notes,
-      shippingCost: shippingCost,
-      discount: discount,
-    ));
+    final result = await createOrderUsecase(
+      CreateOrderParams(
+        addressId: addressId,
+        items: items,
+        paymentMethod: paymentMethod,
+        couponCode: couponCode,
+        notes: notes,
+        shippingCost: shippingCost,
+        discount: discount,
+      ),
+    );
 
     result.fold(
       (error) => emit(OrdersError(error)),

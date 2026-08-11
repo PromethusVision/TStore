@@ -3,6 +3,8 @@ import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/orders/domain/entities/order_entity.dart';
 import 'package:t_store/features/orders/domain/repositories/order_repository.dart';
 
+// LEGACY ORDER BOUNDARY: Never connect this use case to customer navigation.
+// EsnaftaVar does not create online checkout orders.
 class CreateOrderUsecase implements UseCase<OrderEntity, CreateOrderParams> {
   final OrderRepository repository;
 
