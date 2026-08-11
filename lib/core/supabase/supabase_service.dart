@@ -22,12 +22,12 @@ class SupabaseService {
   }
 
   /// Initialize Supabase - Call this in main()
-  static Future<void> initialize() async {
+  static Future<void> initialize({required SupabaseConfig config}) async {
     final launchUri = Uri.base;
 
     await Supabase.initialize(
-      url: SupabaseConfig.supabaseUrl,
-      anonKey: SupabaseConfig.supabaseAnonKey,
+      url: config.supabaseUrl,
+      anonKey: config.supabaseAnonKey,
       authOptions: const FlutterAuthClientOptions(
         authFlowType: AuthFlowType.pkce,
       ),
