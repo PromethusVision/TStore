@@ -90,15 +90,6 @@ import 'package:t_store/features/wishlist/domain/usecases/add_to_wishlist_usecas
 import 'package:t_store/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 
-// Orders
-import 'package:t_store/features/orders/data/repositories/order_repository_impl.dart';
-import 'package:t_store/features/orders/domain/repositories/order_repository.dart';
-import 'package:t_store/features/orders/domain/usecases/get_orders_usecase.dart';
-import 'package:t_store/features/orders/domain/usecases/get_order_by_id_usecase.dart';
-import 'package:t_store/features/orders/domain/usecases/create_order_usecase.dart';
-import 'package:t_store/features/orders/domain/usecases/cancel_order_usecase.dart';
-import 'package:t_store/features/orders/presentation/cubit/orders_cubit.dart';
-
 // Verified purchases
 import 'package:t_store/features/purchases/data/repositories/purchase_history_repository_impl.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_history_repository.dart';
@@ -373,28 +364,6 @@ Future<void> setupServiceLocator() async {
       getWishlistUsecase: sl(),
       addToWishlistUsecase: sl(),
       removeFromWishlistUsecase: sl(),
-    ),
-  );
-
-  // ==================== Orders ====================
-  // Repository
-  sl.registerLazySingleton<OrderRepository>(
-    () => OrderRepositoryImpl(supabaseService: sl()),
-  );
-
-  // Use Cases
-  sl.registerLazySingleton(() => GetOrdersUsecase(sl()));
-  sl.registerLazySingleton(() => GetOrderByIdUsecase(sl()));
-  sl.registerLazySingleton(() => CreateOrderUsecase(sl()));
-  sl.registerLazySingleton(() => CancelOrderUsecase(sl()));
-
-  // Cubit
-  sl.registerFactory(
-    () => OrdersCubit(
-      getOrdersUsecase: sl(),
-      getOrderByIdUsecase: sl(),
-      createOrderUsecase: sl(),
-      cancelOrderUsecase: sl(),
     ),
   );
 

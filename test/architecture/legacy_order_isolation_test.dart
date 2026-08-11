@@ -8,7 +8,7 @@ const _legacyOrdersViewImport =
 
 void main() {
   group('legacy order boundary', () {
-    test('legacy order package has at most the existing DI boundary', () {
+    test('legacy order package is absent from active app wiring', () {
       final references =
           _libDartFiles()
               .where(
@@ -22,14 +22,10 @@ void main() {
 
       expect(
         references,
-        anyOf(
-          isEmpty,
-          equals(['lib/core/dependency_injection/service_locator.dart']),
-        ),
+        isEmpty,
         reason:
-            'Legacy order code must not be imported outside its own module. '
-            'The optional existing DI registration is a documented '
-            'integration task.',
+            'Legacy order code must not be imported outside its own module, '
+            'including by the active dependency injection graph.',
       );
     });
 
