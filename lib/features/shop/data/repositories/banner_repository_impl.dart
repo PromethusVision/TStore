@@ -17,11 +17,10 @@ class BannerRepositoryImpl implements BannerRepository {
       final response = await supabaseService.client
           .from(SupabaseTables.banners)
           .select()
-          .order('sort_order', ascending: true);
+          .order('sort_order', ascending: true)
+          .order('id', ascending: true);
 
-      final banners = (response as List)
-          .map((json) => BannerModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final banners = _parseRows(response);
 
       return Right(banners);
     } catch (e) {
@@ -45,11 +44,10 @@ class BannerRepositoryImpl implements BannerRepository {
           .eq('is_active', true)
           .or('start_date.is.null,start_date.lte.$now')
           .or('end_date.is.null,end_date.gte.$now')
-          .order('sort_order', ascending: true);
+          .order('sort_order', ascending: true)
+          .order('id', ascending: true);
 
-      final banners = (response as List)
-          .map((json) => BannerModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final banners = _parseRows(response);
 
       return Right(banners);
     } catch (e) {
@@ -60,5 +58,24 @@ class BannerRepositoryImpl implements BannerRepository {
         ),
       );
     }
+  }
+
+  List<BannerEntity> _parseRows(Object? response) {
+    if (response is! List) {
+      throw const FormatException('Unexpected banner response.');
+    }
+
+    final banners = <BannerEntity>[];
+    for (final row in response) {
+      if (row is! Map) continue;
+
+      try {
+        final model = BannerModel.tryFromJson(Map<String, dynamic>.from(row));
+        if (model != null) banners.add(model);
+      } on Object {
+        continue;
+      }
+    }
+    return banners;
   }
 }

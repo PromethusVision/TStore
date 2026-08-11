@@ -27,28 +27,29 @@ class BannerEntity extends Equatable {
     this.createdAt,
   });
 
-  bool get isCurrentlyActive {
+  bool isActiveAt(DateTime instant) {
     if (!isActive) return false;
-    final now = DateTime.now();
-    if (startDate != null && now.isBefore(startDate!)) return false;
-    if (endDate != null && now.isAfter(endDate!)) return false;
+    if (startDate != null && instant.isBefore(startDate!)) return false;
+    if (endDate != null && instant.isAfter(endDate!)) return false;
     return true;
   }
 
+  bool get isCurrentlyActive => isActiveAt(DateTime.now());
+
   @override
   List<Object?> get props => [
-        id,
-        imageUrl,
-        title,
-        subtitle,
-        actionUrl,
-        actionType,
-        sortOrder,
-        isActive,
-        startDate,
-        endDate,
-        createdAt,
-      ];
+    id,
+    imageUrl,
+    title,
+    subtitle,
+    actionUrl,
+    actionType,
+    sortOrder,
+    isActive,
+    startDate,
+    endDate,
+    createdAt,
+  ];
 
   BannerEntity copyWith({
     String? id,

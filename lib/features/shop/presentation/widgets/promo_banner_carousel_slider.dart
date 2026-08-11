@@ -69,11 +69,22 @@ class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider> {
 
   List<String> _activeImages(BannersState state) {
     if (state is BannersLoaded) {
-      final activeImages = state.banners
-          .where((banner) => banner.isCurrentlyActive)
-          .map((banner) => banner.imageUrl.trim())
-          .where((url) => url.isNotEmpty)
-          .toList(growable: false);
+      final instant = DateTime.now();
+      final activeImages = <String>[];
+      final seenIds = <String>{};
+      final seenUrls = <String>{};
+      for (final banner in state.banners) {
+        final id = banner.id.trim();
+        final imageUrl = banner.imageUrl.trim();
+        if (id.isEmpty ||
+            imageUrl.isEmpty ||
+            !banner.isActiveAt(instant) ||
+            !seenIds.add(id) ||
+            !seenUrls.add(imageUrl)) {
+          continue;
+        }
+        activeImages.add(imageUrl);
+      }
       if (activeImages.isNotEmpty) return activeImages;
     }
 
@@ -214,7 +225,10 @@ class _HeroImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final uri = Uri.tryParse(imagePath);
     final isNetwork =
-        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
+        uri != null &&
+        uri.hasAuthority &&
+        uri.host.isNotEmpty &&
+        (uri.scheme == 'http' || uri.scheme == 'https');
 
     if (!isNetwork) {
       return Image.asset(
@@ -265,6 +279,7 @@ class _BrandedHeroArtwork extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
+      key: const Key('customer-home-hero-image-fallback'),
       color: CustomerHomeV1Tokens.petrol,
       child: Align(
         alignment: Alignment.centerRight,
