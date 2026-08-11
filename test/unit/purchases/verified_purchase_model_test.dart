@@ -74,4 +74,70 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('ürün toplamıyla uyuşmayan işlem toplamını kabul etmez', () {
+    expect(
+      () => VerifiedPurchaseModel.fromJson({
+        'id': 'purchase-1',
+        'source_qr_session_id': 'session-1',
+        'shop_id': 'shop-1',
+        'shop_name': 'Mahalle Marketi',
+        'item_count': 2,
+        'total_amount': 151,
+        'confirmed_at': '2026-07-15T10:30:00Z',
+        'verified_transaction_items': [
+          {
+            'id': 'item-1',
+            'shop_product_id': 'shop-product-1',
+            'product_name': 'Deneme Ürünü',
+            'quantity': 2,
+            'unit_price': 75.25,
+            'line_total': 150.5,
+          },
+        ],
+      }),
+      throwsFormatException,
+    );
+  });
+
+  test('satır tutarıyla uyuşmayan ürün snapshotını kabul etmez', () {
+    expect(
+      () => VerifiedPurchaseModel.fromJson({
+        'id': 'purchase-1',
+        'source_qr_session_id': 'session-1',
+        'shop_id': 'shop-1',
+        'shop_name': 'Mahalle Marketi',
+        'item_count': 2,
+        'total_amount': 150.5,
+        'confirmed_at': '2026-07-15T10:30:00Z',
+        'verified_transaction_items': [
+          {
+            'id': 'item-1',
+            'shop_product_id': 'shop-product-1',
+            'product_name': 'Deneme Ürünü',
+            'quantity': 2,
+            'unit_price': 75.25,
+            'line_total': 149,
+          },
+        ],
+      }),
+      throwsFormatException,
+    );
+  });
+
+  test('boş doğrulanmış işlem snapshotını kabul etmez', () {
+    expect(
+      () => VerifiedPurchaseModel.fromJson({
+        'id': 'purchase-1',
+        'source_qr_session_id': 'session-1',
+        'shop_id': 'shop-1',
+        'shop_name': 'Mahalle Marketi',
+        'item_count': 0,
+        'total_amount': 0,
+        'confirmed_at': '2026-07-15T10:30:00Z',
+        'verified_transaction_items': <Map<String, dynamic>>[],
+      }),
+      throwsFormatException,
+    );
+  });
 }

@@ -11,13 +11,25 @@ class VerifiedPurchaseItemModel extends VerifiedPurchaseItemEntity {
   });
 
   factory VerifiedPurchaseItemModel.fromJson(Map<String, dynamic> json) {
+    final quantity = _toInt(json['quantity']);
+    final unitPrice = _toDouble(json['unit_price']);
+    final lineTotal = _toDouble(json['line_total']);
+    if (quantity <= 0 ||
+        !unitPrice.isFinite ||
+        !lineTotal.isFinite ||
+        unitPrice < 0 ||
+        lineTotal < 0 ||
+        (lineTotal - (unitPrice * quantity)).abs() > 0.005) {
+      throw const FormatException('Alışveriş ürün tutarı geçersiz.');
+    }
+
     return VerifiedPurchaseItemModel(
       id: _requiredString(json, 'id'),
       shopProductId: _requiredString(json, 'shop_product_id'),
       productName: _requiredString(json, 'product_name'),
-      quantity: _toInt(json['quantity']),
-      unitPrice: _toDouble(json['unit_price']),
-      lineTotal: _toDouble(json['line_total']),
+      quantity: quantity,
+      unitPrice: unitPrice,
+      lineTotal: lineTotal,
     );
   }
 }
@@ -55,6 +67,25 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
           throw const FormatException('Alışveriş ürünü okunamadı.');
         })
         .toList(growable: false);
+    if (items.isEmpty) {
+      throw const FormatException('Alışveriş ürün listesi boş.');
+    }
+
+    final itemCount = _toInt(json['item_count']);
+    final totalAmount = _toDouble(json['total_amount']);
+    final calculatedItemCount = items.fold<int>(
+      0,
+      (sum, item) => sum + item.quantity,
+    );
+    final calculatedTotal = items.fold<double>(
+      0,
+      (sum, item) => sum + item.lineTotal,
+    );
+    if (!totalAmount.isFinite ||
+        itemCount != calculatedItemCount ||
+        (totalAmount - calculatedTotal).abs() > 0.005) {
+      throw const FormatException('Alışveriş toplam bilgisi geçersiz.');
+    }
 
     final ratingJson = _customerRatingJson(json['shop_ratings']);
 
@@ -63,8 +94,8 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
       sourceQrSessionId: _requiredString(json, 'source_qr_session_id'),
       shopId: _requiredString(json, 'shop_id'),
       shopName: _requiredString(json, 'shop_name'),
-      itemCount: _toInt(json['item_count']),
-      totalAmount: _toDouble(json['total_amount']),
+      itemCount: itemCount,
+      totalAmount: totalAmount,
       confirmedAt: _toDateTime(json['confirmed_at']),
       items: items,
       customerRating: _toCustomerRating(ratingJson),
@@ -80,8 +111,13 @@ String _requiredString(Map<String, dynamic> json, String key) {
 }
 
 int _toInt(dynamic value) {
-  if (value is num) return value.toInt();
-  return int.parse(value.toString());
+  final parsed = value is num
+      ? value.toDouble()
+      : double.parse(value.toString());
+  if (!parsed.isFinite || parsed != parsed.truncateToDouble()) {
+    throw const FormatException('Ürün adedi geçersiz.');
+  }
+  return parsed.toInt();
 }
 
 double _toDouble(dynamic value) {

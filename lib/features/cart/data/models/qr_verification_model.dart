@@ -16,6 +16,8 @@ class QrVerificationItemModel extends QrVerificationItemEntity {
     final lineTotal = _toDouble(json['line_total']);
 
     if (quantity <= 0 ||
+        !unitPrice.isFinite ||
+        !lineTotal.isFinite ||
         unitPrice < 0 ||
         lineTotal < 0 ||
         (lineTotal - (unitPrice * quantity)).abs() > 0.005) {
@@ -44,8 +46,13 @@ class QrVerificationItemModel extends QrVerificationItemEntity {
   }
 
   static int _toInt(dynamic value) {
-    if (value is num) return value.toInt();
-    return int.parse(value.toString());
+    final parsed = value is num
+        ? value.toDouble()
+        : double.parse(value.toString());
+    if (!parsed.isFinite || parsed != parsed.truncateToDouble()) {
+      throw const FormatException('QR urun adedi gecersiz.');
+    }
+    return parsed.toInt();
   }
 
   static double _toDouble(dynamic value) {
@@ -58,7 +65,7 @@ class QrVerificationItemModel extends QrVerificationItemEntity {
     if (value == null || value.toString().trim().isEmpty) {
       throw FormatException('$key alani eksik.');
     }
-    return value.toString();
+    return value.toString().trim();
   }
 }
 
@@ -102,6 +109,18 @@ class QrVerificationModel extends QrVerificationEntity {
 
     final itemCount = _toInt(json['item_count']);
     final totalAmount = _toDouble(json['total_amount']);
+    final status = _requiredString(json, 'status');
+    if (!const {'active', 'used', 'expired', 'cancelled'}.contains(status)) {
+      throw const FormatException('QR durumu gecersiz.');
+    }
+
+    final expiresAt = _toDateTime(json['expires_at']);
+    final usedAt = _toNullableDateTime(json['used_at']);
+    if ((status == 'used' && usedAt == null) ||
+        (status != 'used' && usedAt != null) ||
+        !totalAmount.isFinite) {
+      throw const FormatException('QR zaman veya durum bilgisi gecersiz.');
+    }
     final calculatedItemCount = items.fold<int>(
       0,
       (sum, item) => sum + item.quantity,
@@ -119,9 +138,9 @@ class QrVerificationModel extends QrVerificationEntity {
     return QrVerificationModel(
       sessionId: _requiredString(json, 'session_id'),
       sessionToken: _requiredString(json, 'session_token'),
-      status: _requiredString(json, 'status'),
-      expiresAt: _toDateTime(json['expires_at']),
-      usedAt: _toNullableDateTime(json['used_at']),
+      status: status,
+      expiresAt: expiresAt,
+      usedAt: usedAt,
       shopId: _requiredString(json, 'shop_id'),
       shopName: _requiredString(json, 'shop_name'),
       itemCount: itemCount,
@@ -168,8 +187,13 @@ class QrVerificationModel extends QrVerificationEntity {
   }
 
   static int _toInt(dynamic value) {
-    if (value is num) return value.toInt();
-    return int.parse(value.toString());
+    final parsed = value is num
+        ? value.toDouble()
+        : double.parse(value.toString());
+    if (!parsed.isFinite || parsed != parsed.truncateToDouble()) {
+      throw const FormatException('QR urun adedi gecersiz.');
+    }
+    return parsed.toInt();
   }
 
   static double _toDouble(dynamic value) {
@@ -182,6 +206,6 @@ class QrVerificationModel extends QrVerificationEntity {
     if (value == null || value.toString().trim().isEmpty) {
       throw FormatException('$key alani eksik.');
     }
-    return value.toString();
+    return value.toString().trim();
   }
 }

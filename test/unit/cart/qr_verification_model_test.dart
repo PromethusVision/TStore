@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/features/cart/data/models/qr_session_model.dart';
+import 'package:t_store/features/cart/data/models/qr_session_status_model.dart';
 import 'package:t_store/features/cart/data/models/qr_verification_model.dart';
 
 void main() {
@@ -75,6 +76,67 @@ void main() {
       expect(
         () => QrVerificationModel.fromJson(invalidJson),
         throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('rejects a used response without a server usage timestamp', () {
+      final invalidJson = <String, dynamic>{
+        ...validJson,
+        'status': 'used',
+        'used_at': null,
+      };
+
+      expect(
+        () => QrVerificationModel.fromJson(invalidJson),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('rejects fractional item quantities from the RPC contract', () {
+      final invalidJson = <String, dynamic>{
+        ...validJson,
+        'item_count': 1.5,
+        'items': <Map<String, dynamic>>[
+          {
+            ...(validJson['items'] as List<Map<String, dynamic>>).single,
+            'quantity': 1.5,
+          },
+        ],
+      };
+
+      expect(
+        () => QrVerificationModel.fromJson(invalidJson),
+        throwsA(isA<FormatException>()),
+      );
+    });
+  });
+
+  group('QrSessionStatusModel', () {
+    test('resolves a persisted active row as expired after its deadline', () {
+      final status = QrSessionStatusModel.fromJson({
+        'status': 'active',
+        'expires_at': '2026-08-11T10:00:00Z',
+      });
+
+      expect(status.resolveAt(DateTime.utc(2026, 8, 11, 10, 0, 1)), 'expired');
+    });
+
+    test('preserves a terminal server status', () {
+      final status = QrSessionStatusModel.fromJson({
+        'status': 'used',
+        'expires_at': '2026-08-11T10:00:00Z',
+      });
+
+      expect(status.resolveAt(DateTime.utc(2026, 8, 11, 10, 0, 1)), 'used');
+    });
+
+    test('rejects an unknown backend status', () {
+      expect(
+        () => QrSessionStatusModel.fromJson({
+          'status': 'processing',
+          'expires_at': '2026-08-11T10:00:00Z',
+        }),
+        throwsFormatException,
       );
     });
   });
