@@ -276,9 +276,11 @@ class _CustomerNotificationsContentState
                               );
                               final isProcessing =
                                   state.isMarkingAllAsRead ||
+                                  state.isDeletingAll ||
                                   state.markingAsReadIds.contains(
                                     notification.id,
                                   ) ||
+                                  state.deletingIds.contains(notification.id) ||
                                   _openingNotificationIds.contains(
                                     notification.id,
                                   );
@@ -446,7 +448,9 @@ class _NotificationsHeader extends StatelessWidget {
                     key: const Key('mark-all-notifications-read-button'),
                     onPressed:
                         loadedState!.isMarkingAllAsRead ||
-                            loadedState.markingAsReadIds.isNotEmpty
+                            loadedState.markingAsReadIds.isNotEmpty ||
+                            loadedState.deletingIds.isNotEmpty ||
+                            loadedState.isDeletingAll
                         ? null
                         : () => context
                               .read<NotificationsCubit>()

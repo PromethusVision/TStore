@@ -20,6 +20,8 @@ class NotificationsLoaded extends NotificationsState {
   final String? loadMoreError;
   final Set<String> markingAsReadIds;
   final bool isMarkingAllAsRead;
+  final Set<String> deletingIds;
+  final bool isDeletingAll;
   final String? actionError;
 
   const NotificationsLoaded({
@@ -30,8 +32,16 @@ class NotificationsLoaded extends NotificationsState {
     this.loadMoreError,
     this.markingAsReadIds = const {},
     this.isMarkingAllAsRead = false,
+    this.deletingIds = const {},
+    this.isDeletingAll = false,
     this.actionError,
   });
+
+  bool get hasActionInProgress =>
+      markingAsReadIds.isNotEmpty ||
+      isMarkingAllAsRead ||
+      deletingIds.isNotEmpty ||
+      isDeletingAll;
 
   @override
   List<Object?> get props => [
@@ -42,6 +52,8 @@ class NotificationsLoaded extends NotificationsState {
     loadMoreError,
     markingAsReadIds,
     isMarkingAllAsRead,
+    deletingIds,
+    isDeletingAll,
     actionError,
   ];
 
@@ -54,6 +66,8 @@ class NotificationsLoaded extends NotificationsState {
     bool clearLoadMoreError = false,
     Set<String>? markingAsReadIds,
     bool? isMarkingAllAsRead,
+    Set<String>? deletingIds,
+    bool? isDeletingAll,
     String? actionError,
     bool clearActionError = false,
   }) {
@@ -67,6 +81,8 @@ class NotificationsLoaded extends NotificationsState {
           : loadMoreError ?? this.loadMoreError,
       markingAsReadIds: markingAsReadIds ?? this.markingAsReadIds,
       isMarkingAllAsRead: isMarkingAllAsRead ?? this.isMarkingAllAsRead,
+      deletingIds: deletingIds ?? this.deletingIds,
+      isDeletingAll: isDeletingAll ?? this.isDeletingAll,
       actionError: clearActionError ? null : actionError ?? this.actionError,
     );
   }

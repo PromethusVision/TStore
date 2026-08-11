@@ -65,9 +65,9 @@ void main() {
     );
   });
 
-  tearDown(() {
-    notificationsCubit.close();
-    notificationsStreamController.close();
+  tearDown(() async {
+    await notificationsCubit.close();
+    await notificationsStreamController.close();
   });
 
   group('NotificationsCubit', () {
@@ -163,6 +163,127 @@ void main() {
           ),
         ],
       );
+
+      test(
+        'yenilemede Realtime dinlemesini güncel oturuma yeniden bağlar',
+        () async {
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+
+          await notificationsCubit.getNotifications();
+          await notificationsCubit.getNotifications(refresh: true);
+
+          verify(
+            () => mockNotificationRepository.notificationsStream,
+          ).called(2);
+        },
+      );
+
+      test('Cubit kapanınca geciken yükleme sonucu state yayınlamaz', () async {
+        final response = Completer<Either<String, List<NotificationEntity>>>();
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) => response.future);
+
+        final loadFuture = notificationsCubit.getNotifications();
+        expect(notificationsCubit.state, NotificationsLoading());
+
+        await notificationsCubit.close();
+        response.complete(Right(testNotifications));
+
+        await expectLater(loadFuture, completes);
+        verifyNever(() => mockNotificationRepository.getUnreadCount());
+      });
+    });
+
+    group('Realtime', () {
+      test(
+        'tekrar gelen kaydı çoğaltmaz veya unread sayısını şişirmez',
+        () async {
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+
+          await notificationsCubit.getNotifications();
+          notificationsStreamController.add(testNotifications.first);
+          await pumpEventQueue();
+
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(state.notifications, hasLength(3));
+          expect(
+            state.notifications.map((notification) => notification.id).toSet(),
+            hasLength(3),
+          );
+          expect(state.unreadCount, 2);
+        },
+      );
+
+      test(
+        'Realtime read güncellemesini tek kez unread sayısına yansıtır',
+        () async {
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+
+          await notificationsCubit.getNotifications();
+          final readNotification = testNotifications.first.copyWith(
+            isRead: true,
+          );
+          notificationsStreamController
+            ..add(readNotification)
+            ..add(readNotification);
+          await pumpEventQueue();
+
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(state.notifications, hasLength(3));
+          expect(
+            state.notifications
+                .firstWhere((item) => item.id == 'notif-1')
+                .isRead,
+            isTrue,
+          );
+          expect(state.unreadCount, 1);
+        },
+      );
+
+      test('okunmuş yeni Realtime kaydı unread sayısını artırmaz', () async {
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+
+        await notificationsCubit.getNotifications();
+        notificationsStreamController.add(
+          const NotificationEntity(
+            id: 'notif-read-realtime',
+            userId: testUserId,
+            title: 'Okunmuş bildirim',
+            body: 'Başka cihazda okundu',
+            type: NotificationType.system,
+            isRead: true,
+          ),
+        );
+        await pumpEventQueue();
+
+        final state = notificationsCubit.state as NotificationsLoaded;
+        expect(state.notifications, hasLength(4));
+        expect(state.unreadCount, 2);
+      });
     });
 
     group('markAsRead', () {
@@ -251,6 +372,36 @@ void main() {
         response.complete(const Right(null));
         await Future.wait([firstTap, secondTap]);
       });
+
+      test(
+        'Realtime önce tamamlarsa unread sayısını ikinci kez azaltmaz',
+        () async {
+          final response = Completer<Either<String, void>>();
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.markAsRead('notif-1'),
+          ).thenAnswer((_) => response.future);
+
+          await notificationsCubit.getNotifications();
+          final markFuture = notificationsCubit.markAsRead('notif-1');
+          notificationsStreamController.add(
+            testNotifications.first.copyWith(isRead: true),
+          );
+          await pumpEventQueue();
+
+          response.complete(const Right(null));
+          await markFuture;
+
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(state.unreadCount, 1);
+        },
+      );
     });
 
     group('markAllAsRead', () {
@@ -353,6 +504,65 @@ void main() {
           verify(
             () => mockNotificationRepository.deleteNotification('notif-1'),
           ).called(1);
+          final state = notificationsCubit.state as NotificationsLoaded;
+          expect(
+            state.notifications.map((item) => item.id),
+            isNot(contains('notif-1')),
+          );
+          expect(state.unreadCount, 1);
+          expect(state.deletingIds, isEmpty);
+          expect(state.actionError, isNull);
+        },
+      );
+
+      test('silme hatasında bildirimi ve unread sayısını korur', () async {
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.deleteNotification('notif-1'),
+        ).thenAnswer((_) async => const Left('connection failed'));
+
+        await notificationsCubit.getNotifications();
+        await notificationsCubit.deleteNotification('notif-1');
+
+        final state = notificationsCubit.state as NotificationsLoaded;
+        expect(state.notifications, testNotifications);
+        expect(state.unreadCount, 2);
+        expect(state.deletingIds, isEmpty);
+        expect(
+          state.actionError,
+          'Bildirim silinemedi. Lütfen tekrar deneyin.',
+        );
+      });
+
+      test(
+        'silme sürerken aynı bildirim için ikinci isteği engeller',
+        () async {
+          final response = Completer<Either<String, void>>();
+          when(
+            () =>
+                mockNotificationRepository.getNotifications(page: 0, limit: 20),
+          ).thenAnswer((_) async => Right(testNotifications));
+          when(
+            () => mockNotificationRepository.getUnreadCount(),
+          ).thenAnswer((_) async => const Right(2));
+          when(
+            () => mockNotificationRepository.deleteNotification('notif-1'),
+          ).thenAnswer((_) => response.future);
+
+          await notificationsCubit.getNotifications();
+          final firstDelete = notificationsCubit.deleteNotification('notif-1');
+          final secondDelete = notificationsCubit.deleteNotification('notif-1');
+
+          verify(
+            () => mockNotificationRepository.deleteNotification('notif-1'),
+          ).called(1);
+          response.complete(const Right(null));
+          await Future.wait([firstDelete, secondDelete]);
         },
       );
     });
@@ -386,6 +596,53 @@ void main() {
           expect(state.unreadCount, 0);
         },
       );
+
+      test('toplu silme hatasında görünen listeyi korur', () async {
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.deleteAllNotifications(),
+        ).thenAnswer((_) async => const Left('connection failed'));
+
+        await notificationsCubit.getNotifications();
+        await notificationsCubit.deleteAllNotifications();
+
+        final state = notificationsCubit.state as NotificationsLoaded;
+        expect(state.notifications, testNotifications);
+        expect(state.unreadCount, 2);
+        expect(state.isDeletingAll, isFalse);
+        expect(
+          state.actionError,
+          'Bildirimler silinemedi. Lütfen tekrar deneyin.',
+        );
+      });
+
+      test('toplu silme sürerken ikinci isteği engeller', () async {
+        final response = Completer<Either<String, void>>();
+        when(
+          () => mockNotificationRepository.getNotifications(page: 0, limit: 20),
+        ).thenAnswer((_) async => Right(testNotifications));
+        when(
+          () => mockNotificationRepository.getUnreadCount(),
+        ).thenAnswer((_) async => const Right(2));
+        when(
+          () => mockNotificationRepository.deleteAllNotifications(),
+        ).thenAnswer((_) => response.future);
+
+        await notificationsCubit.getNotifications();
+        final firstDelete = notificationsCubit.deleteAllNotifications();
+        final secondDelete = notificationsCubit.deleteAllNotifications();
+
+        verify(
+          () => mockNotificationRepository.deleteAllNotifications(),
+        ).called(1);
+        response.complete(const Right(null));
+        await Future.wait([firstDelete, secondDelete]);
+      });
     });
   });
 
