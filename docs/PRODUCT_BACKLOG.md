@@ -27,6 +27,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   - Canlı backend/RLS bütünlüğünü ve kritik entegrasyonları doğrulamak.
   - Klasik online ödeme, kargo veya checkout akışı eklememek.
 - 2026-08-11 Wave 1 teknik ilerleme: chat Realtime/reconnect/dedup ve async lifecycle hardening, in-app notification Realtime/pagination/session/mutation hardening ve QR/verified purchase client + RPC contract hardening tamamlandı; birleşik analyzer ve tam test suite geçti.
+- 2026-08-11 Wave 2 teknik ilerleme: development/production config sözleşmesi ayrıldı, discovery ekranlarındaki 5 lifecycle/race problemi giderildi ve legacy order aktif müşteri navigation'ı ile DI grafiğinden izole edildi; birleşik analyzer ve tam test suite geçti.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -112,31 +113,35 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### C4. Legacy Order / Shipping / Payment Teknik Borcu
 
-- Legacy order repository/Cubit ve shipping/payment alanlarını hedef ürün modelinden izole tutmak.
-- Bu görev kapsamında kaldırılmaz.
+- Legacy order repository/Cubit ve shipping/payment alanları aktif müşteri navigation'ından ve GetIt DI grafiğinden izole edildi.
+- Legacy dosyalar, tablolar, veriler ve testler kaldırılmadı; tam kaldırma tamamlanmış sayılmaz.
 - Gelecekte kaldırma veya arşivleme, mevcut referanslar ve veri etkisi analiz edildikten sonra ayrı görev olarak ele alınır.
+- Ürün yorumu eligibility'sinin legacy `orders/order_items` bağı ayrı ürün kararı olarak açıktır.
 
 ### C5. Environment Ayrımı
 
-- `main_development.dart` ve `main_production.dart` şu anda aynı.
-- Development/production config ve güvenli environment yönetimi tasarlanmalı.
-- Flutter asset olarak yüklenen `.env` içine service-role veya özel secret konmamalı.
+- Development/production Dart-define ad alanları ayrıldı; sessiz fallback kaldırıldı ve eksik/placeholder/güvensiz/server-only config startup'ta güvenli biçimde reddediliyor.
+- `.env` Flutter asset paketinden çıkarıldı; aktif uygulama source taramasında hardcoded Supabase URL/JWT ve çalışma alanında geçici `.env` placeholder bulunmadı.
+- Release gate: gerçek client-safe development ve production değerleriyle iki entrypoint için smoke build alınmalı; production backend'e güvenli değer olmadan bağlanılmamalı.
 
 ### C6. Lint ve Navigation Lifecycle Borcu
 
-- `use_build_context_synchronously` global ignore kararını kaldırmaya yönelik kontrollü plan hazırlanmalı.
-- Büyük navigation ağırlıklı ekranlarda async context ve mounted davranışı dosya bazında düzeltilmeli.
+- Discovery ekranlarındaki Wave 2 kapsamlı lifecycle/race düzeltmeleri tamamlandı.
+- `use_build_context_synchronously` global ignore kaldırılarak yapılan ölçümde 3 dosyada 9 ihlal kaldı; ignore bu wave'de korundu ve kalan ihlaller ayrı kontrollü iş paketidir.
+- `helper_functions.dart`, `location_helper.dart` ve `product_sellers_section.dart` async context/mounted davranışı dosya bazında düzeltilmeli.
 - Mevcut duplicate-submit/double-navigation korumaları korunmalı.
 
 ### C7. Eski Dokümantasyonun Güncellenmesi
 
-- README, `NEXT_STEPS.md`, `KNOWN_ISSUES.md` ve eski planların güncel kodla çelişen bölümleri belirlenmeli.
+- Wave 2'de README, `NEXT_STEPS.md`, `KNOWN_ISSUES.md` ve yeni `docs/LEGACY_ORDER_ISOLATION.md` legacy order sınırını güncel kod gerçeğine göre belgeledi.
+- Diğer eski planların güncel kodla çelişen bölümleri ortaya çıktıkça belirlenmeli.
 - Bu üç koordinasyon belgesi source-of-truth olarak korunmalı.
 - Eski belgeler gerçek kod durumu doğrulanmadan otomatik kopyalanmamalı.
 
 ### C8. Test ve Release Sağlığı
 
 - 2026-08-11 Wave 1 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138, settings/navigation 34/34.
+- 2026-08-11 Wave 2 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: environment/config 11/11, discovery/shop 344/344, legacy mimari + unit 22/22, Cart V2/QR 94/94.
 - QR, chat, merchant ve RLS için integration kapsamı eklemek.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
