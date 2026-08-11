@@ -696,11 +696,9 @@ class _SellerTile extends StatelessWidget {
               runSpacing: TSizes.xs,
               children: [
                 if (canMessage)
-                  TextButton.icon(
-                    key: Key('product-seller-message-${shopProduct.id}'),
+                  _SellerChatButton(
+                    shopProductId: shopProduct.id,
                     onPressed: () => _openChat(context, ownerUserId),
-                    icon: const Icon(Icons.message_outlined),
-                    label: const Text('Esnafa Yaz'),
                   ),
                 if (canAddToCart)
                   _SellerAddToCartButton(
@@ -756,6 +754,12 @@ class _SellerTile extends StatelessWidget {
 
     if (_currentUserId == null) {
       pendingIntentWasSaved = await _savePendingIntent(pendingIntent);
+      if (!context.mounted) {
+        if (pendingIntentWasSaved) {
+          await _clearPendingIntent();
+        }
+        return;
+      }
       final signedIn = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (_) =>
@@ -845,6 +849,43 @@ class _SellerTile extends StatelessWidget {
       shopProductId: shopProduct.id,
       quantity: 1,
     );
+  }
+}
+
+class _SellerChatButton extends StatefulWidget {
+  const _SellerChatButton({
+    required this.shopProductId,
+    required this.onPressed,
+  });
+
+  final String shopProductId;
+  final Future<void> Function() onPressed;
+
+  @override
+  State<_SellerChatButton> createState() => _SellerChatButtonState();
+}
+
+class _SellerChatButtonState extends State<_SellerChatButton> {
+  bool _isOpening = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      key: Key('product-seller-message-${widget.shopProductId}'),
+      onPressed: _isOpening ? null : _handlePressed,
+      icon: const Icon(Icons.message_outlined),
+      label: const Text('Esnafa Yaz'),
+    );
+  }
+
+  Future<void> _handlePressed() async {
+    if (_isOpening) return;
+    setState(() => _isOpening = true);
+    try {
+      await widget.onPressed();
+    } finally {
+      if (mounted) setState(() => _isOpening = false);
+    }
   }
 }
 

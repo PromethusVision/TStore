@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -31,14 +32,19 @@ class LocationHelper {
       LoggerHelper.info('Konum izinleri kontrol ediliyor...');
 
       var status = await Permission.location.status;
+      if (!context.mounted) return null;
+
       if (!status.isGranted) {
         LoggerHelper.warning('Konum izni verilmemiş. İzin isteniyor...');
 
         bool shouldRequestPermission =
             await THelperFunctions.showPermissionDialog(context);
+        if (!context.mounted) return null;
 
         if (shouldRequestPermission) {
           status = await Permission.location.request();
+          if (!context.mounted) return null;
+
           if (!status.isGranted) {
             LoggerHelper.error('Konum izni reddedildi.');
 
@@ -192,21 +198,27 @@ class LocationHelper {
       LoggerHelper.info('Konum hizmetleri kontrol ediliyor...');
 
       if (!await Geolocator.isLocationServiceEnabled()) {
+        if (!context.mounted) return null;
+
         LoggerHelper.error('Konum hizmetleri kapalı.');
         bool shouldOpenSettings =
             await THelperFunctions.showLocationServiceDialog(context);
+        if (!context.mounted) return null;
+
         if (!shouldOpenSettings ||
             !await Geolocator.isLocationServiceEnabled()) {
           return null;
         }
       }
+      if (!context.mounted) return null;
 
       LoggerHelper.info('Mevcut konum belirleniyor...');
 
-      // Show loading indicator
-      showDialog(
+      final loadingNavigator = Navigator.of(context, rootNavigator: true);
+      final loadingRoute = DialogRoute<void>(
         context: context,
         barrierDismissible: false,
+        barrierLabel: 'Konum belirleniyor',
         builder: (BuildContext context) {
           return PopScope(
             canPop: false,
@@ -249,6 +261,13 @@ class LocationHelper {
           );
         },
       );
+      unawaited(loadingNavigator.push<void>(loadingRoute));
+
+      void closeLoadingDialog() {
+        if (loadingNavigator.mounted && loadingRoute.isActive) {
+          loadingNavigator.removeRoute(loadingRoute);
+        }
+      }
 
       try {
         // Get platform-specific location settings
@@ -259,8 +278,7 @@ class LocationHelper {
           locationSettings: locationSettings,
         );
 
-        // Close loading dialog
-        Navigator.of(context).pop();
+        closeLoadingDialog();
 
         LoggerHelper.debug(
           'Konum belirlendi: enlem ${position.latitude}, boylam ${position.longitude}',
@@ -288,22 +306,20 @@ class LocationHelper {
               .replaceAll(RegExp(r',\s*,'), ',')
               .replaceAll(RegExp(r'^\s*,\s*|\s*,\s*$'), '');
 
-          // Show success snackbar
-          THelperFunctions.showSnackBar(
-            type: SnackBarType.success,
-            context: context,
-            message: 'Konumunuz başarıyla belirlendi.',
-          );
+          if (context.mounted) {
+            THelperFunctions.showSnackBar(
+              type: SnackBarType.success,
+              context: context,
+              message: 'Konumunuz başarıyla belirlendi.',
+            );
+          }
           LoggerHelper.info('Adres bulundu: $address');
           return address;
         }
 
         return null;
       } catch (e) {
-        // Close loading dialog if it's still showing
-        if (context.mounted && Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        }
+        closeLoadingDialog();
 
         // Show error snackbar
         if (context.mounted) {
@@ -325,11 +341,13 @@ class LocationHelper {
         'Konum işlemi sırasında sistem hatası oluştu.',
         e.message,
       );
-      THelperFunctions.showSnackBar(
-        type: SnackBarType.error,
-        context: context,
-        message: 'Konumunuz belirlenemedi. Lütfen tekrar deneyin.',
-      );
+      if (context.mounted) {
+        THelperFunctions.showSnackBar(
+          type: SnackBarType.error,
+          context: context,
+          message: 'Konumunuz belirlenemedi. Lütfen tekrar deneyin.',
+        );
+      }
       return null;
     }
   }

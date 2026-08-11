@@ -36,6 +36,7 @@ class MemoryPendingProductChatStorage implements PendingProductChatStorage {
   int saveCount = 0;
   int clearCount = 0;
   bool throwOnSave = false;
+  Completer<void>? saveCompleter;
 
   @override
   Future<void> clear() async {
@@ -49,6 +50,7 @@ class MemoryPendingProductChatStorage implements PendingProductChatStorage {
   @override
   Future<void> save(PendingProductChatIntent intent) async {
     saveCount++;
+    await saveCompleter?.future;
     if (throwOnSave) {
       throw StateError('Yerel kayıt kullanılamıyor');
     }
@@ -947,6 +949,64 @@ void main() {
       pendingChatStorage.pending?.initialDraft,
       'Merhaba, "Deneme Ürünü" mağazanızda mevcut mu?',
     );
+  });
+
+  testWidgets('yavaş mesaj kaydında hızlı çift dokunma tek giriş açar', (
+    tester,
+  ) async {
+    final authCubit = MockAuthCubit();
+    whenListen(
+      authCubit,
+      const Stream<AuthState>.empty(),
+      initialState: AuthInitial(),
+    );
+    when(() => authCubit.close()).thenAnswer((_) async {});
+    sl.registerFactory<AuthCubit>(() => authCubit);
+    pendingChatStorage.saveCompleter = Completer<void>();
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+    await tester.pumpAndSettle();
+    final messageButton = find.byKey(
+      const Key('product-seller-message-active'),
+    );
+
+    await tester.tap(messageButton);
+    await tester.tap(messageButton);
+    await tester.pump();
+
+    expect(pendingChatStorage.saveCount, 1);
+    expect(find.byType(LoginView), findsNothing);
+
+    pendingChatStorage.saveCompleter!.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginView), findsOneWidget);
+  });
+
+  testWidgets('mesaj kaydı sürerken dispose olursa navigation yapmaz', (
+    tester,
+  ) async {
+    pendingChatStorage.saveCompleter = Completer<void>();
+    when(() => shopRepository.getShopProductsByProduct('product-1')).thenAnswer(
+      (_) async => Right([seller(id: 'active', name: 'Mahalle Marketi')]),
+    );
+
+    await tester.pumpWidget(buildSubject(currentUserIdProvider: () => null));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('product-seller-message-active')));
+    await tester.pump();
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    pendingChatStorage.saveCompleter!.complete();
+    await tester.pump();
+
+    expect(pendingChatStorage.saveCount, 1);
+    expect(pendingChatStorage.clearCount, 1);
+    expect(pendingChatStorage.pending, isNull);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
