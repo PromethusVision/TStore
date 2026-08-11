@@ -83,9 +83,11 @@ void main() {
     chatCubit = ChatCubit(repository: mockChatRepository);
   });
 
-  tearDown(() {
-    chatCubit.close();
-    messagesStreamController.close();
+  tearDown(() async {
+    if (!chatCubit.isClosed) {
+      await chatCubit.close();
+    }
+    await messagesStreamController.close();
   });
 
   group('ChatCubit', () {
@@ -397,6 +399,31 @@ void main() {
           await Future.wait([firstRefresh, secondRefresh]);
         },
       );
+
+      test(
+        'ekran kapanınca geç dönen mesaj isteğini güvenle yok sayar',
+        () async {
+          final loadResult =
+              Completer<Either<String, List<ChatMessageEntity>>>();
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) => loadResult.future);
+
+          final loadFuture = chatCubit.getMessages(
+            testOtherUserId,
+            refresh: true,
+          );
+          await chatCubit.close();
+          loadResult.complete(Right(testMessages));
+
+          await expectLater(loadFuture, completes);
+          expect(chatCubit.isClosed, isTrue);
+        },
+      );
     });
 
     group('sendMessage', () {
@@ -551,6 +578,144 @@ void main() {
 
           sendResult.complete(Right(newMessage));
           await Future.wait([firstSend, secondSend]);
+        },
+      );
+
+      test(
+        'yavaş gönderim sırasında gelen realtime mesajı gönderim kilidini korur',
+        () async {
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => const Right([]));
+          final sendResult = Completer<Either<String, ChatMessageEntity>>();
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'Tek mesaj',
+              messageType: MessageType.text,
+            ),
+          ).thenAnswer((_) => sendResult.future);
+          final incomingMessage = ChatMessageEntity(
+            id: 'incoming-during-send',
+            senderId: testOtherUserId,
+            receiverId: testUserId,
+            content: 'Yeni cevap',
+            createdAt: DateTime(2024, 1, 15, 10, 32),
+          );
+
+          chatCubit.startListening();
+          await chatCubit.getMessages(testOtherUserId, refresh: true);
+          final firstSend = chatCubit.sendMessage(
+            receiverId: testOtherUserId,
+            content: 'Tek mesaj',
+          );
+          await pumpEventQueue();
+          messagesStreamController.add(incomingMessage);
+          await pumpEventQueue();
+
+          final realtimeState = chatCubit.state as ChatLoaded;
+          expect(realtimeState.isSending, isTrue);
+          expect(realtimeState.messages, contains(incomingMessage));
+
+          await chatCubit.sendMessage(
+            receiverId: testOtherUserId,
+            content: 'Tek mesaj',
+          );
+          verify(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'Tek mesaj',
+              messageType: MessageType.text,
+            ),
+          ).called(1);
+
+          sendResult.complete(Right(newMessage));
+          await firstSend;
+          expect((chatCubit.state as ChatLoaded).isSending, isFalse);
+        },
+      );
+
+      test(
+        'ekran kapanınca geç dönen gönderim sonucunu güvenle yok sayar',
+        () async {
+          final sendResult = Completer<Either<String, ChatMessageEntity>>();
+          when(
+            () => mockChatRepository.sendMessage(
+              receiverId: testOtherUserId,
+              content: 'Geç sonuç',
+              messageType: MessageType.text,
+            ),
+          ).thenAnswer((_) => sendResult.future);
+
+          final sendFuture = chatCubit.sendMessage(
+            receiverId: testOtherUserId,
+            content: 'Geç sonuç',
+          );
+          await chatCubit.close();
+          sendResult.complete(Right(newMessage));
+
+          await expectLater(sendFuture, completes);
+          expect(chatCubit.isClosed, isTrue);
+        },
+      );
+    });
+
+    group('realtime messages', () {
+      test('aynı kimlikli mesajın değişen okundu durumunu günceller', () async {
+        when(
+          () => mockChatRepository.getMessages(
+            otherUserId: testOtherUserId,
+            page: 0,
+            limit: 50,
+          ),
+        ).thenAnswer((_) async => Right(testMessages));
+        chatCubit.startListening();
+        await chatCubit.getMessages(testOtherUserId, refresh: true);
+        final updatedMessage = testMessages.last.copyWith(isRead: true);
+
+        messagesStreamController.add(updatedMessage);
+        await pumpEventQueue();
+
+        final loaded = chatCubit.state as ChatLoaded;
+        expect(
+          loaded.messages.singleWhere((message) => message.id == 'msg-2'),
+          updatedMessage,
+        );
+      });
+
+      test(
+        'aynı realtime mesajını ikinci kez state olarak yayınlamaz',
+        () async {
+          when(
+            () => mockChatRepository.getMessages(
+              otherUserId: testOtherUserId,
+              page: 0,
+              limit: 50,
+            ),
+          ).thenAnswer((_) async => const Right([]));
+          chatCubit.startListening();
+          await chatCubit.getMessages(testOtherUserId, refresh: true);
+          final incomingMessage = ChatMessageEntity(
+            id: 'one-realtime-message',
+            senderId: testOtherUserId,
+            receiverId: testUserId,
+            content: 'Bir kez göster',
+            createdAt: DateTime(2024, 1, 15, 10, 33),
+          );
+          final emittedStates = <ChatState>[];
+          final subscription = chatCubit.stream.listen(emittedStates.add);
+
+          messagesStreamController
+            ..add(incomingMessage)
+            ..add(incomingMessage);
+          await pumpEventQueue();
+
+          expect(emittedStates.whereType<NewMessageReceived>(), hasLength(1));
+          await subscription.cancel();
         },
       );
     });

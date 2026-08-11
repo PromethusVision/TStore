@@ -40,6 +40,7 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
 
     try {
       final result = await repository.getConversations();
+      if (isClosed) return;
 
       await result.fold(
         (error) async {
@@ -50,6 +51,7 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
         },
         (threads) async {
           final enrichedThreads = await _enrichWithShopNames(threads);
+          if (isClosed) return;
           emit(ChatConversationsLoaded(enrichedThreads));
         },
       );

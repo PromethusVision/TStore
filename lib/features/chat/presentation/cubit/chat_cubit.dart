@@ -19,24 +19,32 @@ class ChatCubit extends Cubit<ChatState> {
   bool _isSendingMessage = false;
   bool _isLoadingMessages = false;
   bool _hasReachedMax = false;
+  bool _isDisposing = false;
+  int _messagesListenerGeneration = 0;
+
+  bool get _canEmit => !_isDisposing && !isClosed;
 
   void startListening() {
-    _messagesSubscription?.cancel();
+    final listenerGeneration = ++_messagesListenerGeneration;
+    unawaited(_messagesSubscription?.cancel());
     _messagesSubscription = repository.messagesStream.listen((message) {
+      if (!_canEmit || listenerGeneration != _messagesListenerGeneration) {
+        return;
+      }
       if (_currentOtherUserId != null &&
           _hasLoadedCurrentConversation &&
           (message.senderId == _currentOtherUserId ||
               message.receiverId == _currentOtherUserId)) {
-        if (!_addMessageIfNew(message)) return;
+        if (!_upsertMessage(message)) return;
 
         emit(NewMessageReceived(message));
-        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+        _emitLoaded();
       }
-    });
+    }, onError: (_, _) {});
   }
 
   Future<void> getMessages(String otherUserId, {bool refresh = false}) async {
-    if (_isLoadingMessages) return;
+    if (_isLoadingMessages || !_canEmit) return;
 
     _isLoadingMessages = true;
     _currentOtherUserId = otherUserId;
@@ -59,15 +67,14 @@ class ChatCubit extends Cubit<ChatState> {
         page: _currentPage,
         limit: _limit,
       );
+      if (!_canEmit || _currentOtherUserId != otherUserId) return;
 
       result.fold(
         (error) {
           _hasLoadedCurrentConversation = true;
           emit(ChatError(error));
           if (!isInitialPage) {
-            emit(
-              ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax),
-            );
+            _emitLoaded();
           }
         },
         (messages) {
@@ -75,7 +82,7 @@ class ChatCubit extends Cubit<ChatState> {
           _hasLoadedCurrentConversation = true;
           _hasReachedMax = messages.length < _limit;
           _currentPage++;
-          emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+          _emitLoaded();
         },
       );
     } finally {
@@ -107,15 +114,14 @@ class ChatCubit extends Cubit<ChatState> {
         page: 0,
         limit: _limit,
       );
+      if (!_canEmit || _currentOtherUserId != otherUserId) return;
 
       result.fold((_) {}, (messages) {
-        if (isClosed) return;
-
         _mergeMessages(messages);
         if (_currentPage <= 1) {
           _hasReachedMax = messages.length < _limit;
         }
-        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+        _emitLoaded();
       });
     } finally {
       _isLoadingMessages = false;
@@ -127,7 +133,7 @@ class ChatCubit extends Cubit<ChatState> {
     required String content,
     MessageType messageType = MessageType.text,
   }) async {
-    if (_isSendingMessage) return;
+    if (_isSendingMessage || !_canEmit) return;
 
     final validationError = ChatMessageRules.validationError(content);
     if (validationError != null) {
@@ -146,12 +152,19 @@ class ChatCubit extends Cubit<ChatState> {
         content: normalizedContent,
         messageType: messageType,
       );
+      if (!_canEmit) return;
 
+      _isSendingMessage = false;
       result.fold((error) => emit(ChatError(error)), (message) {
-        _addMessageIfNew(message);
+        _upsertMessage(message);
         emit(MessageSent(message));
-        emit(ChatLoaded(messages: _messages, hasReachedMax: _hasReachedMax));
+        _emitLoaded();
       });
+    } catch (_) {
+      if (_canEmit) {
+        _isSendingMessage = false;
+        emit(const ChatError('Mesaj gönderilemedi. Lütfen tekrar deneyin.'));
+      }
     } finally {
       _isSendingMessage = false;
     }
@@ -165,10 +178,16 @@ class ChatCubit extends Cubit<ChatState> {
     await repository.markAllAsRead(senderId);
   }
 
-  bool _addMessageIfNew(ChatMessageEntity message) {
-    if (_messages.any((item) => item.id == message.id)) return false;
+  bool _upsertMessage(ChatMessageEntity message) {
+    final existingIndex = _messages.indexWhere((item) => item.id == message.id);
+    if (existingIndex >= 0) {
+      if (_messages[existingIndex] == message) return false;
+      _messages[existingIndex] = message;
+    } else {
+      _messages = [message, ..._messages];
+    }
 
-    _messages = [message, ..._messages]..sort(_compareNewestFirst);
+    _messages.sort(_compareNewestFirst);
     return true;
   }
 
@@ -191,9 +210,24 @@ class ChatCubit extends Cubit<ChatState> {
     return b.id.compareTo(a.id);
   }
 
+  void _emitLoaded() {
+    if (!_canEmit) return;
+    emit(
+      ChatLoaded(
+        messages: _messages,
+        hasReachedMax: _hasReachedMax,
+        isSending: _isSendingMessage,
+      ),
+    );
+  }
+
   @override
-  Future<void> close() {
-    _messagesSubscription?.cancel();
-    return super.close();
+  Future<void> close() async {
+    _isDisposing = true;
+    _messagesListenerGeneration++;
+    final subscription = _messagesSubscription;
+    _messagesSubscription = null;
+    await subscription?.cancel();
+    await super.close();
   }
 }

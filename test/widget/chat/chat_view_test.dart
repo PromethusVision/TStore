@@ -385,6 +385,29 @@ void main() {
     );
   });
 
+  testWidgets('realtime yenilemesi sırasında gönderim kilidini görünür tutar', (
+    tester,
+  ) async {
+    whenListen(
+      chatCubit,
+      const Stream<ChatState>.empty(),
+      initialState: const ChatLoaded(messages: [], isSending: true),
+    );
+
+    await tester.pumpWidget(buildSubject(initialDraft: 'Korunan taslak'));
+    await tester.pump();
+
+    final sendButton = tester.widget<IconButton>(
+      find.byKey(const Key('chat-message-send-action')),
+    );
+    final messageField = tester.widget<TextField>(
+      find.byKey(const Key('chat-message-input')),
+    );
+    expect(sendButton.onPressed, isNull);
+    expect(messageField.readOnly, isTrue);
+    expect(messageField.controller?.text, 'Korunan taslak');
+  });
+
   testWidgets('mesaj hatasında taslağı korur ve yeniden düzenlemeye açar', (
     tester,
   ) async {
