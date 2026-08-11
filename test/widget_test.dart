@@ -1,7 +1,7 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/t_store.dart';
 
@@ -9,13 +9,12 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
-    dotenv.loadFromString(
-      envString: '''
-SUPABASE_URL=https://example.supabase.co
-SUPABASE_ANON_KEY=test-anon-key
-''',
+    final config = SupabaseConfig.forEnvironment(
+      environment: AppEnvironment.development,
+      supabaseUrl: 'https://widget-test.supabase.co',
+      supabaseAnonKey: 'sb_publishable_widget_test_public_key',
     );
-    await SupabaseService.initialize();
+    await SupabaseService.initialize(config: config);
     await setupServiceLocator();
   });
 
