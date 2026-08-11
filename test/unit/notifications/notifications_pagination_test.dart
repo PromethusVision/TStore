@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -29,6 +31,9 @@ void main() {
 
   setUp(() {
     repository = MockNotificationRepository();
+    when(
+      () => repository.notificationsStream,
+    ).thenAnswer((_) => const Stream<NotificationEntity>.empty());
     cubit = NotificationsCubit(repository: repository);
     when(
       () => repository.getUnreadCount(),
@@ -90,5 +95,58 @@ void main() {
     expect(state.notifications, initialNotifications);
     expect(state.isLoadingMore, isFalse);
     expect(state.loadMoreError, 'Diğer bildirimler yüklenemedi.');
+  });
+
+  test('yenileme, geciken eski sayfa sonucunu geçersiz kılar', () async {
+    final initialNotifications = firstPage();
+    final loadMoreResponse =
+        Completer<Either<String, List<NotificationEntity>>>();
+    final refreshResponse =
+        Completer<Either<String, List<NotificationEntity>>>();
+    var firstPageRequestCount = 0;
+
+    when(() => repository.getNotifications(page: 0, limit: 20)).thenAnswer((_) {
+      firstPageRequestCount++;
+      if (firstPageRequestCount == 1) {
+        return Future.value(Right(initialNotifications));
+      }
+      return refreshResponse.future;
+    });
+    when(
+      () => repository.getNotifications(page: 1, limit: 20),
+    ).thenAnswer((_) => loadMoreResponse.future);
+
+    await cubit.getNotifications();
+    final loadMoreFuture = cubit.loadMoreNotifications();
+    final refreshFuture = cubit.getNotifications(refresh: true);
+
+    const refreshedNotification = NotificationEntity(
+      id: 'notification-fresh',
+      userId: 'customer-1',
+      title: 'Güncel bildirim',
+      body: 'Yeni oturum verisi',
+      type: NotificationType.system,
+      isRead: true,
+    );
+    refreshResponse.complete(const Right([refreshedNotification]));
+    await refreshFuture;
+
+    loadMoreResponse.complete(
+      const Right([
+        NotificationEntity(
+          id: 'notification-stale',
+          userId: 'customer-1',
+          title: 'Gecikmiş bildirim',
+          body: 'Eski sayfa sonucu',
+          type: NotificationType.system,
+          isRead: true,
+        ),
+      ]),
+    );
+    await loadMoreFuture;
+
+    final state = cubit.state as NotificationsLoaded;
+    expect(state.notifications, const [refreshedNotification]);
+    expect(state.hasReachedMax, isTrue);
   });
 }
