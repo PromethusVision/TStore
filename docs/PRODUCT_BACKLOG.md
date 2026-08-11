@@ -26,10 +26,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   - Duplicate-submit/double-navigation korumalarını sürdürmek.
   - Canlı backend/RLS bütünlüğünü ve kritik entegrasyonları doğrulamak.
   - Klasik online ödeme, kargo veya checkout akışı eklememek.
+- 2026-08-11 Wave 1 teknik ilerleme: chat Realtime/reconnect/dedup ve async lifecycle hardening, in-app notification Realtime/pagination/session/mutation hardening ve QR/verified purchase client + RPC contract hardening tamamlandı; birleşik analyzer ve tam test suite geçti.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
-- Durum: Kod ve migration altyapısı mevcut; gerçek cihaz kabulü açık
+- Durum: Kod hardening ve migration dosyası mevcut; gerçek PostgreSQL/test Supabase migration doğrulaması ile gerçek cihaz kabulü açık
 - Hedef: Müşteri QR oluşturma → merchant QR okutma → merchant onayı → müşteride tamamlanma akışını gerçek hesaplar ve iki fiziksel cihazla doğrulamak.
 - Kabul kapsamında kamera izni, yanlış mağaza, süresi dolmuş/iptal edilmiş/kullanılmış QR ve bağlantı gecikmesi davranışları bulunur.
 
@@ -95,17 +96,18 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### C2. Backend Integration Test Eksikleri
 
-- QR session/verification RPC ve state geçişleri.
-- Chat Realtime, unread ve conversation summary RPC'leri.
+- QR session/verification istemci ve migration sözleşme hardening'i tamamlandı; RPC'lerin gerçek PostgreSQL/test Supabase uygulama ve state geçişi doğrulaması açık.
+- Chat Realtime, unread ve conversation summary için istemci lifecycle/dedup hardening'i tamamlandı; gerçek Supabase integration doğrulaması açık.
 - Merchant role/shop erişimi.
-- Notification ve saved-location izinleri.
+- In-app notification istemci Realtime/pagination/session hardening'i tamamlandı; notification ve saved-location backend izin doğrulaması açık.
 - Verified purchase ve rating bütünlüğü.
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
-- Repo içindeki schema ve 18 migration'ın canlı ortamla eşleşmesini doğrulamak.
+- Repo içindeki schema ve 19 migration'ın canlı ortamla eşleşmesini doğrulamak.
 - Policy, grant, trigger, RPC ve `SECURITY DEFINER` izinlerini kontrol etmek.
 - Migration sırasını ve canonical schema kaynağını netleştirmek.
+- `supabase_migration_qr_verified_purchase_release_hardening.sql` dosyasını `supabase_migration_qr_verification.sql` sonrasında gerçek PostgreSQL/test Supabase üzerinde doğrulamak; dosya production veya başka bir Supabase ortamına uygulanmadı.
 - Production üzerinde destructive işlem kullanıcı onayı olmadan yapılmaz.
 
 ### C4. Legacy Order / Shipping / Payment Teknik Borcu
@@ -134,7 +136,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### C8. Test ve Release Sağlığı
 
-- Güncel full analyzer ve test suite sonucunu kaydetmek.
+- 2026-08-11 Wave 1 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138, settings/navigation 34/34.
 - QR, chat, merchant ve RLS için integration kapsamı eklemek.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.

@@ -3,11 +3,11 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-11
-- Son doğrulanan uygulama commit'i: `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57`
-- Doğrulanan branch/upstream: `main` / `origin/main`
+- Son doğrulanan uygulama commit'i: `c9a27ec994fb398541b45519cac698c7c95d81ac`
+- Doğrulanan branch/upstream: `integration/wave-1` / `origin/main` release hedefi
 - Snapshot oluşturulurken çalışma ağacı: temiz (`+0/-0`)
-- Doğrulama türü: repo, kod, test yapısı, SQL ve Git geçmişi üzerinde salt okunur baseline analizi
-- Çalıştırılmayan kontroller: Flutter test suite, analyzer, uygulama, gerçek cihaz ve canlı Supabase doğrulaması
+- Doğrulama türü: Wave 1 birleşik diff incelemesi, hedefli ve tam Flutter testleri, analyzer ve QR migration statik güvenlik incelemesi
+- Çalıştırılmayan kontroller: uygulama/gerçek cihaz kabulü ile gerçek PostgreSQL, test Supabase ve canlı Supabase doğrulaması
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -44,9 +44,9 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Favoriler | COMPLETE | Supabase repository, Cubit, guest-login devam akışı, kart entegrasyonu ve testler var. |
 | Profil / hesap | COMPLETE | Profil düzenleme, avatar, hesap silme, kayıtlı konumlar, yardım/gizlilik ve testler var. |
 | Doğrulanmış alışveriş geçmişi | COMPLETE | `verified_transactions` snapshot verileri, repository, Cubit, detay ekranı ve testler var. |
-| Mesajlaşma / chat | COMPLETE | Ürün bağlantılı mesaj, konuşma listesi, pagination, Realtime, unread, delivery/read state'leri ve testler var. |
-| QR / mağaza içi doğrulama | PARTIAL | Müşteri QR, merchant scanner, polling, tek kullanımlı onay, snapshot ve güvenli RPC/RLS var; iki gerçek cihaz kabulü bekliyor. |
-| Bildirimler | PARTIAL | Supabase içi liste, pagination, unread, okundu/silme, Realtime ve testler var; push notification yok. |
+| Mesajlaşma / chat | COMPLETE | Ürün bağlantılı mesaj, konuşma listesi, pagination, Realtime lifecycle/reconnect/dedup, unread ve delivery/read state'leri var; release-hardening testleri birleşik durumda geçti. |
+| QR / mağaza içi doğrulama | PARTIAL | Müşteri QR, merchant scanner, polling, tek kullanımlı onay, immutable snapshot revalidation, stale/duplicate/timeout korumaları ve güvenli RPC/RLS var; yeni RPC hardening migration'ının gerçek PostgreSQL doğrulaması ve iki gerçek cihaz kabulü bekliyor. |
+| Bildirimler | PARTIAL | Supabase içi liste, pagination/refresh yarış koruması, session izolasyonu, Realtime lifecycle/dedup ve güvenli okundu/silme işlemleri var; release-hardening testleri geçti ancak push notification yok. |
 | Puanlama / yorum | PARTIAL | Ürün yorumları ve QR-doğrulanmış mağaza puanı var. Ürün yorumu yetkisi halen legacy `orders/order_items` modeline bakıyor. |
 | Merchant altyapısı | PARTIAL | Rol kapısı, merchant login, mağaza oluşturma/düzenleme ve QR scanner var; merchant ürün/stok/fiyat/istatistik yönetimi yok. |
 | Reklam / sponsored / campaign | SKELETON | Supabase banner gösterimi ve promotion bildirim tipi var; reklam/campaign motoru yok. |
@@ -54,7 +54,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | PARTIAL | Geniş RLS, trigger, permission ve `SECURITY DEFINER` RPC altyapısı var; canlı şema bu snapshot'ta doğrulanmadı ve migration'lar tek sıralı klasörde değil. |
+| Supabase / RLS | PARTIAL | Geniş RLS, trigger, permission ve `SECURITY DEFINER` RPC altyapısı var. QR RPC hardening migration'ı statik olarak incelendi; gerçek PostgreSQL/test Supabase ve canlı şema doğrulaması yapılmadı, migration'lar tek sıralı klasörde değil. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit ve shipping/payment alanları repoda duruyor; ana müşteri navigation'ına bağlı değil ve hedef ürün akışı değil. |
 
@@ -74,19 +74,19 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Kritik Integration Eksikleri
 
 - QR müşteri → merchant scanner → onay → müşteri tamamlanma akışı iki gerçek cihazla kabul edilmedi.
-- QR, chat, merchant ve RLS için gerçek Supabase integration testi yok.
+- QR, chat, notifications, merchant ve RLS için gerçek Supabase integration testi yok.
 - Ürün yorumu yetkisi yeni doğrulanmış alışveriş modeliyle bütünleştirilmedi.
 - Canlı Supabase schema/RLS durumu repo dosyalarından bağımsız doğrulanmadı.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
 
 ## Test Durumu
 
-- 98 test dosyası: 40 unit, 56 widget, 1 integration ve 1 kök smoke/widget testi.
-- Baseline taramasında 817 `test/testWidgets` bloğu bulundu.
+- 101 test dosyası: 43 unit, 56 widget, 1 integration ve 1 kök smoke/widget testi.
+- Wave 1 snapshot'ında 857 `test/testWidgets` bloğu bulundu.
 - Güçlü alanlar: Shop, Auth, Personalization, Chat ve Cart.
 - Zayıf alanlar: gerçek backend integration, RLS, merchant ekranları, kupon backend'i ve review repository geçişi.
 - Mevcut tek integration dosyası auth akışına odaklanıyor.
-- Bu snapshot hazırlanırken test suite ve analyzer çalıştırılmadı; güncel geçiş durumu bilinmiyor.
+- Wave 1 birleşik durumda tam Flutter test suite geçti; `flutter analyze --no-pub` sonucu temizdi. Hedefli sonuçlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138 ve settings/navigation 34/34.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -102,7 +102,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Canlı Backend ile Doğrulanmamış Alanlar
 
-- Repo içindeki 18 migration'ın canlı ortamda tam ve doğru sırayla uygulanmış güncel durumu.
+- Repo içindeki 19 migration'ın canlı ortamda tam ve doğru sırayla uygulanmış güncel durumu; `supabase_migration_qr_verified_purchase_release_hardening.sql` production veya başka bir Supabase ortamına uygulanmadı.
 - Canlı RLS, grant, trigger ve `SECURITY DEFINER` RPC izinlerinin repo ile bire bir eşleşmesi.
 - Chat conversation summary RPC'lerinin canlı performans ve fallback davranışı.
 - Notification ve saved-location permission migration'larının canlı durumu.
@@ -111,6 +111,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-11: chat, in-app notifications ve QR/verified purchase release-hardening Wave 1 entegrasyonu; analyzer ve tam test suite temiz.
 - 2026-08-10: chat güvenilirliği, delivery/read state'leri, konuşma özetleri ve hata ayrımı.
 - 2026-08-09: double-submit, double-navigation ve kritik kullanıcı aksiyonu korumaları.
 - 2026-08-08: guest-login sonrası hedef işleme devam etme, auth ve onboarding.
