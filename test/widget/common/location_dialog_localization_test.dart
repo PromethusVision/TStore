@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
@@ -77,5 +79,38 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(result, isFalse);
+  });
+
+  testWidgets('ayar dönüşünde kapanmış dialog contextini kullanmaz', (
+    tester,
+  ) async {
+    final settingsCompleter = Completer<bool>();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () => THelperFunctions.showLocationServiceDialog(
+                context,
+                openLocationSettings: () => settingsCompleter.future,
+              ),
+              child: const Text('Pencereyi Aç'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Pencereyi Aç'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ayarları Aç'));
+    await tester.pump();
+
+    await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
+    settingsCompleter.complete(true);
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
   });
 }

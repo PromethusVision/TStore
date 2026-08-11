@@ -42,7 +42,12 @@ class THelperFunctions {
     }
   }
 
-  static Future<bool> showLocationServiceDialog(BuildContext context) async {
+  static Future<bool> showLocationServiceDialog(
+    BuildContext context, {
+    Future<bool> Function()? openLocationSettings,
+  }) async {
+    final openSettings =
+        openLocationSettings ?? Geolocator.openLocationSettings;
     return await showGeneralDialog<bool>(
           context: context,
           barrierDismissible: false,
@@ -174,7 +179,8 @@ class THelperFunctions {
                             ],
                           ),
                           onPressed: () async {
-                            await Geolocator.openLocationSettings();
+                            await openSettings();
+                            if (!context.mounted) return;
                             Navigator.of(context).pop(true);
                           },
                         ),
