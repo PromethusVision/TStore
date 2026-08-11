@@ -130,6 +130,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   Timer? _searchDebounce;
   List<String> _recentSearches = const [];
   String? _lastRequestedQuery;
+  int _recentSearchesRequestId = 0;
 
   @override
   void initState() {
@@ -514,10 +515,11 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       _searchController.text.trim().isEmpty &&
       _recentSearches.isNotEmpty;
 
-  Future<void> _loadRecentSearches() async {
+  Future<void> _loadRecentSearches({int? requestId}) async {
+    final activeRequestId = requestId ?? ++_recentSearchesRequestId;
     try {
       final queries = await widget.recentSearchesStorage.getQueries();
-      if (!mounted) return;
+      if (!mounted || activeRequestId != _recentSearchesRequestId) return;
 
       setState(() => _recentSearches = queries);
     } catch (_) {
@@ -526,9 +528,11 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   }
 
   Future<void> _recordRecentSearch(String query) async {
+    final requestId = ++_recentSearchesRequestId;
     try {
       await widget.recentSearchesStorage.recordQuery(query);
-      await _loadRecentSearches();
+      if (!mounted || requestId != _recentSearchesRequestId) return;
+      await _loadRecentSearches(requestId: requestId);
     } catch (_) {
       // Yerel kayıt başarısız olsa bile arama sonucu kullanılabilir kalır.
     }
@@ -546,18 +550,21 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   }
 
   Future<void> _removeRecentSearch(String query) async {
+    final requestId = ++_recentSearchesRequestId;
     try {
       await widget.recentSearchesStorage.removeQuery(query);
-      await _loadRecentSearches();
+      if (!mounted || requestId != _recentSearchesRequestId) return;
+      await _loadRecentSearches(requestId: requestId);
     } catch (_) {
       // Tek bir geçmiş kaydı silinemese de ürün araması çalışmaya devam eder.
     }
   }
 
   Future<void> _clearRecentSearches() async {
+    final requestId = ++_recentSearchesRequestId;
     try {
       await widget.recentSearchesStorage.clear();
-      if (!mounted) return;
+      if (!mounted || requestId != _recentSearchesRequestId) return;
 
       setState(() => _recentSearches = const []);
     } catch (_) {

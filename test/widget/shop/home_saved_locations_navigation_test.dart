@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -242,5 +244,63 @@ void main() {
 
     expect(find.byType(LoginView), findsNothing);
     expect(find.byKey(const Key('saved-locations-destination')), findsNothing);
+  });
+
+  testWidgets('eski oturumun konum dönüşü yeni oturuma yenileme uygulamaz', (
+    tester,
+  ) async {
+    String? currentUserId = 'customer-1';
+    await tester.pumpWidget(buildSubject(userIdProvider: () => currentUserId));
+    await tester.pump();
+    clearInteractions(savedLocationsCubit);
+    clearInteractions(nearbyShopsCubit);
+
+    await tester.tap(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('saved-locations-destination')),
+      findsOneWidget,
+    );
+
+    currentUserId = 'customer-2';
+    Navigator.of(
+      tester.element(find.byKey(const Key('saved-locations-destination'))),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    verifyNever(() => savedLocationsCubit.loadLocations());
+    verifyNever(() => nearbyShopsCubit.loadShops());
+    expect(find.byKey(const Key('home-location-bar')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('dispose sonrası yavaş konum yenileme hatası ekrana taşınmaz', (
+    tester,
+  ) async {
+    final refreshCompletion = Completer<void>();
+    when(
+      () => savedLocationsCubit.loadLocations(),
+    ).thenAnswer((_) => refreshCompletion.future);
+    await tester.pumpWidget(buildSubject(userIdProvider: () => 'customer-1'));
+    await tester.pump();
+    clearInteractions(savedLocationsCubit);
+    clearInteractions(nearbyShopsCubit);
+
+    await tester.tap(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
+    Navigator.of(
+      tester.element(find.byKey(const Key('saved-locations-destination'))),
+    ).pop();
+    await tester.pump();
+
+    verify(() => savedLocationsCubit.loadLocations()).called(1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    refreshCompletion.completeError(StateError('Cubit already closed'));
+    await tester.pump();
+
+    verifyNever(() => nearbyShopsCubit.loadShops());
+    expect(tester.takeException(), isNull);
   });
 }
