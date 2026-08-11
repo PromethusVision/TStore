@@ -66,7 +66,9 @@ void main() {
   });
 
   tearDown(() async {
-    await cubit.close();
+    if (!cubit.isClosed) {
+      await cubit.close();
+    }
   });
 
   test('ilk yüklemede yükleniyor ve konuşma listesini gösterir', () async {
@@ -142,6 +144,23 @@ void main() {
     response.complete(const Right([firstThread]));
     await firstLoad;
   });
+
+  test(
+    'ekran kapanınca geç dönen konuşma isteğini güvenle yok sayar',
+    () async {
+      final response = Completer<Either<String, List<ChatThreadEntity>>>();
+      when(
+        () => chatRepository.getConversations(),
+      ).thenAnswer((_) => response.future);
+
+      final loadFuture = cubit.loadConversations();
+      await cubit.close();
+      response.complete(const Right([firstThread]));
+
+      await expectLater(loadFuture, completes);
+      expect(cubit.isClosed, isTrue);
+    },
+  );
 
   test('konuşmayı gerçek mağaza adıyla gösterir', () async {
     when(

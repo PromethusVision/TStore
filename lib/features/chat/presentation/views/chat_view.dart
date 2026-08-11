@@ -186,7 +186,9 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                           state is ChatError &&
                           !_hasCompletedInitialLoad &&
                           _messages.isEmpty;
-                      final isSending = state is MessageSending;
+                      final isSending =
+                          state is MessageSending ||
+                          (state is ChatLoaded && state.isSending);
 
                       return Column(
                         children: [

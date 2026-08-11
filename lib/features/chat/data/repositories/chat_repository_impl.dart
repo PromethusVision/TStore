@@ -6,6 +6,7 @@ import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/chat/data/models/chat_message_model.dart';
 import 'package:t_store/features/chat/data/models/chat_thread_model.dart';
+import 'package:t_store/features/chat/data/services/chat_realtime_snapshot_tracker.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
@@ -14,6 +15,7 @@ class ChatRepositoryImpl implements ChatRepository {
   final SupabaseService supabaseService;
   StreamController<ChatMessageEntity>? _messagesController;
   StreamSubscription? _messagesRealtimeSubscription;
+  int _messagesStreamGeneration = 0;
 
   ChatRepositoryImpl({required this.supabaseService});
 
@@ -21,6 +23,7 @@ class ChatRepositoryImpl implements ChatRepository {
       'id, sender_id, receiver_id, content, message_type, is_read, created_at';
   static const String _conversationSummariesRpc = 'get_customer_conversations';
   static const String _unreadCountRpc = 'get_customer_unread_chat_count';
+  static const int _realtimeMessageLimit = 50;
 
   String get _userId => supabaseService.currentUser?.id ?? '';
 
@@ -144,44 +147,87 @@ class ChatRepositoryImpl implements ChatRepository {
       return Stream.empty();
     }
 
+    final streamGeneration = ++_messagesStreamGeneration;
     _cancelMessagesRealtimeSubscription();
-    _messagesController?.close();
-    _messagesController = StreamController<ChatMessageEntity>.broadcast(
-      onCancel: _disposeMessagesStream,
+    final previousController = _messagesController;
+    _messagesController = null;
+    if (previousController != null && !previousController.isClosed) {
+      unawaited(previousController.close());
+    }
+
+    final snapshotTracker = ChatRealtimeSnapshotTracker();
+    late final StreamController<ChatMessageEntity> controller;
+    controller = StreamController<ChatMessageEntity>.broadcast(
+      onCancel: () => _disposeMessagesStream(streamGeneration, controller),
     );
+    _messagesController = controller;
 
     _messagesRealtimeSubscription = supabaseService.client
         .from(SupabaseTables.chatMessages)
         .stream(primaryKey: ['id'])
         .eq('receiver_id', _userId)
-        .listen((data) async {
-          for (final item in data) {
-            try {
-              if (_messagesController?.isClosed ?? true) return;
+        .order('created_at', ascending: false)
+        .limit(_realtimeMessageLimit)
+        .listen(
+          (data) {
+            if (!_isActiveMessagesStream(streamGeneration, controller)) return;
 
-              final response = await supabaseService.client
-                  .from(SupabaseTables.chatMessages)
-                  .select(_messageSelect)
-                  .eq('id', item['id'])
-                  .single();
-              if (_messagesController?.isClosed ?? true) return;
+            final snapshot = <ChatMessageEntity>[];
+            for (final item in data) {
+              try {
+                snapshot.add(ChatMessageModel.fromJson(item));
+              } catch (_) {}
+            }
 
-              _messagesController?.add(ChatMessageModel.fromJson(response));
-            } catch (_) {}
-          }
-        });
+            for (final message in snapshotTracker.changesSinceLast(snapshot)) {
+              if (!_isActiveMessagesStream(streamGeneration, controller)) {
+                return;
+              }
+              controller.add(message);
+            }
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            if (!_isActiveMessagesStream(streamGeneration, controller)) return;
+            controller.addError(error, stackTrace);
+          },
+          onDone: () {
+            if (!_isActiveMessagesStream(streamGeneration, controller)) return;
+            unawaited(controller.close());
+          },
+        );
 
-    return _messagesController!.stream;
+    return controller.stream;
   }
 
   void _cancelMessagesRealtimeSubscription() {
-    _messagesRealtimeSubscription?.cancel();
+    final subscription = _messagesRealtimeSubscription;
     _messagesRealtimeSubscription = null;
+    if (subscription != null) {
+      unawaited(subscription.cancel());
+    }
   }
 
-  void _disposeMessagesStream() {
+  bool _isActiveMessagesStream(
+    int streamGeneration,
+    StreamController<ChatMessageEntity> controller,
+  ) {
+    return streamGeneration == _messagesStreamGeneration &&
+        identical(_messagesController, controller) &&
+        !controller.isClosed;
+  }
+
+  void _disposeMessagesStream(
+    int streamGeneration,
+    StreamController<ChatMessageEntity> controller,
+  ) {
+    if (!_isActiveMessagesStream(streamGeneration, controller)) return;
+
+    _messagesStreamGeneration++;
     _cancelMessagesRealtimeSubscription();
     _messagesController = null;
+    if (!controller.isClosed) {
+      unawaited(controller.close());
+    }
   }
 
   @override

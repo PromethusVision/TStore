@@ -15,22 +15,26 @@ class ChatLoading extends ChatState {}
 class ChatLoaded extends ChatState {
   final List<ChatMessageEntity> messages;
   final bool hasReachedMax;
+  final bool isSending;
 
   const ChatLoaded({
     required this.messages,
     this.hasReachedMax = false,
+    this.isSending = false,
   });
 
   @override
-  List<Object?> get props => [messages, hasReachedMax];
+  List<Object?> get props => [messages, hasReachedMax, isSending];
 
   ChatLoaded copyWith({
     List<ChatMessageEntity>? messages,
     bool? hasReachedMax,
+    bool? isSending,
   }) {
     return ChatLoaded(
       messages: messages ?? this.messages,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isSending: isSending ?? this.isSending,
     );
   }
 }

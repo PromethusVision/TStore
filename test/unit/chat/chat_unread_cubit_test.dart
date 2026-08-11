@@ -19,7 +19,9 @@ void main() {
   });
 
   tearDown(() async {
-    await cubit.close();
+    if (!cubit.isClosed) {
+      await cubit.close();
+    }
   });
 
   test('ilk yüklemede okunmamış mesaj sayısını gösterir', () async {
@@ -87,6 +89,18 @@ void main() {
     response.complete(const Right(4));
     await firstLoad;
     expect(cubit.state, const ChatUnreadLoaded(4));
+  });
+
+  test('ekran kapanınca geç dönen unread isteğini güvenle yok sayar', () async {
+    final response = Completer<Either<String, int>>();
+    when(() => repository.getUnreadCount()).thenAnswer((_) => response.future);
+
+    final loadFuture = cubit.loadUnreadCount();
+    await cubit.close();
+    response.complete(const Right(4));
+
+    await expectLater(loadFuture, completes);
+    expect(cubit.isClosed, isTrue);
   });
 
   test('oturum kapandığında okunmamış mesaj sayısını sıfırlar', () async {

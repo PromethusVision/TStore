@@ -39,6 +39,7 @@ class ChatUnreadCubit extends Cubit<ChatUnreadState> {
 
     try {
       final result = await chatRepository.getUnreadCount();
+      if (isClosed) return;
 
       result.fold((error) {
         if (preserveLoadedState && previousState is ChatUnreadLoaded) return;
