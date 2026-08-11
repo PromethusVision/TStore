@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -537,6 +539,28 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     });
 
+    testWidgets('rapid double tap opens only one location explanation', (
+      tester,
+    ) async {
+      await pumpNearbyView(tester, const NearbyShopsLoaded([completeShop]));
+
+      final locationAction = tester.widget<FilledButton>(
+        find.byKey(const Key('nearby-location-action')),
+      );
+      locationAction.onPressed!();
+      locationAction.onPressed!();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('nearby-location-confirm')), findsOneWidget);
+      verifyNever(() => nearbyShopsCubit.useCurrentLocation());
+
+      await tester.tap(find.byKey(const Key('nearby-location-cancel')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('nearby-location-confirm')), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('requests location only after the user confirms', (
       tester,
     ) async {
@@ -647,6 +671,72 @@ void main() {
         await tester.pumpWidget(const SizedBox.shrink());
       },
     );
+
+    testWidgets('rapid double tap starts one saved location flow', (
+      tester,
+    ) async {
+      final locationChange = Completer<void>();
+      var locationChangeCount = 0;
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded(
+          [completeShop],
+          locationStatus: NearbyLocationStatus.ready,
+          distanceMetersByShopId: {'shop-1': 1250},
+          locationSource: NearbyLocationSource.savedLocation,
+          locationLabel: 'Ev',
+        ),
+        onChangeLocationRequested: () {
+          locationChangeCount++;
+          return locationChange.future;
+        },
+      );
+      clearInteractions(nearbyShopsCubit);
+
+      final changeLocationButton = tester.widget<TextButton>(
+        find.byKey(const Key('nearby-change-location')),
+      );
+      changeLocationButton.onPressed!();
+      changeLocationButton.onPressed!();
+      await tester.pump();
+
+      expect(locationChangeCount, 1);
+      verifyNever(() => nearbyShopsCubit.loadShops());
+
+      locationChange.complete();
+      await tester.pumpAndSettle();
+
+      verify(() => nearbyShopsCubit.loadShops()).called(1);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('disposed view ignores slow saved location completion', (
+      tester,
+    ) async {
+      final locationChange = Completer<void>();
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded(
+          [completeShop],
+          locationStatus: NearbyLocationStatus.ready,
+          distanceMetersByShopId: {'shop-1': 1250},
+          locationSource: NearbyLocationSource.savedLocation,
+          locationLabel: 'Ev',
+        ),
+        onChangeLocationRequested: () => locationChange.future,
+      );
+      clearInteractions(nearbyShopsCubit);
+
+      await tester.tap(find.byKey(const Key('nearby-change-location')));
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      locationChange.complete();
+      await tester.pump();
+
+      verifyNever(() => nearbyShopsCubit.loadShops());
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets('does not invent a minimum distance for the same location', (
       tester,

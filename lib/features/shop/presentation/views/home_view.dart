@@ -115,18 +115,18 @@ class _HomeViewState extends State<HomeView> {
     _isOpeningSavedLocations = true;
 
     try {
-      if (widget.currentUserIdProvider() == null) {
+      var flowCustomerId = _currentCustomerId;
+      if (flowCustomerId == null) {
         final signedIn = await Navigator.of(context).push<bool>(
           MaterialPageRoute<bool>(
             builder: (_) =>
                 const LoginView(returnToCallerAfterCustomerLogin: true),
           ),
         );
-        if (!context.mounted ||
-            signedIn != true ||
-            widget.currentUserIdProvider() == null) {
-          return;
-        }
+        if (!context.mounted || signedIn != true) return;
+
+        flowCustomerId = _currentCustomerId;
+        if (flowCustomerId == null) return;
       }
 
       await Navigator.of(context).push<void>(
@@ -135,13 +135,23 @@ class _HomeViewState extends State<HomeView> {
         ),
       );
 
-      if (!context.mounted) return;
-      await context.read<CustomerSavedLocationsCubit>().loadLocations();
-      if (!context.mounted) return;
+      if (!context.mounted || _currentCustomerId != flowCustomerId) return;
+      try {
+        await context.read<CustomerSavedLocationsCubit>().loadLocations();
+      } catch (_) {
+        if (!context.mounted) return;
+        rethrow;
+      }
+      if (!context.mounted || _currentCustomerId != flowCustomerId) return;
       await context.read<NearbyShopsCubit>().loadShops();
     } finally {
       _isOpeningSavedLocations = false;
     }
+  }
+
+  String? get _currentCustomerId {
+    final customerId = widget.currentUserIdProvider()?.trim();
+    return customerId == null || customerId.isEmpty ? null : customerId;
   }
 
   void _openAllProductsSearch(BuildContext context, String query) {

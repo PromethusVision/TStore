@@ -69,6 +69,33 @@ class InMemoryRecentProductSearchesStorage
   }
 }
 
+class DelayedSnapshotRecentProductSearchesStorage
+    extends InMemoryRecentProductSearchesStorage {
+  DelayedSnapshotRecentProductSearchesStorage(super.initialQueries);
+
+  bool delayNextRead = false;
+  Completer<void>? _pendingRead;
+
+  bool get hasPendingRead => _pendingRead != null;
+
+  void releasePendingRead() {
+    _pendingRead?.complete();
+    _pendingRead = null;
+  }
+
+  @override
+  Future<List<String>> getQueries() async {
+    final snapshot = List<String>.unmodifiable(queries);
+    if (!delayNextRead) return snapshot;
+
+    delayNextRead = false;
+    final pendingRead = Completer<void>();
+    _pendingRead = pendingRead;
+    await pendingRead.future;
+    return snapshot;
+  }
+}
+
 void main() {
   late MockProductsCubit parentProductsCubit;
   late MockProductsCubit localProductsCubit;
@@ -152,6 +179,7 @@ void main() {
   Widget buildSubject({
     bool isSearchMode = false,
     String initialQuery = '',
+    RecentProductSearchesStorage? recentSearchesStorageOverride,
     SearchResultsShopProductsLoader? shopProductsLoader,
     CustomerProductDestinationBuilder? productDestinationBuilder,
     CustomerShopDestinationBuilder? shopDestinationBuilder,
@@ -167,7 +195,8 @@ void main() {
           currentUserIdProvider: () => null,
           isSearchMode: isSearchMode,
           initialQuery: initialQuery,
-          recentSearchesStorage: recentSearchesStorage,
+          recentSearchesStorage:
+              recentSearchesStorageOverride ?? recentSearchesStorage,
           customerSearchCubit: customerSearchCubit,
           shopProductsLoader:
               shopProductsLoader ?? (_) async => const Right([]),
@@ -390,6 +419,66 @@ void main() {
     expect(recentSearchesStorage.queries, isEmpty);
 
     await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('late recent search snapshot cannot undo a newer clear', (
+    tester,
+  ) async {
+    final storage = DelayedSnapshotRecentProductSearchesStorage(['eski']);
+    final states = StreamController<CustomerSearchState>();
+    whenListen(
+      customerSearchCubit,
+      states.stream,
+      initialState: CustomerSearchInitial(),
+    );
+    when(() => customerSearchCubit.search('kahve')).thenAnswer((_) async {
+      states.add(
+        const CustomerSearchLoaded(
+          query: 'kahve',
+          products: [],
+          categories: [],
+          shops: [],
+        ),
+      );
+    });
+
+    await tester.pumpWidget(
+      buildSubject(isSearchMode: true, recentSearchesStorageOverride: storage),
+    );
+    await tester.pump();
+
+    storage.delayNextRead = true;
+    await tester.enterText(find.byType(TextFormField), 'kahve');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+
+    expect(storage.hasPendingRead, isTrue);
+    expect(storage.queries, ['kahve', 'eski']);
+
+    await tester.tap(find.byTooltip('Aramayı temizle'));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('clear-recent-product-searches')));
+    await tester.pump();
+
+    expect(storage.queries, isEmpty);
+    expect(
+      find.byKey(const Key('recent-product-searches-section')),
+      findsNothing,
+    );
+
+    storage.releasePendingRead();
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('recent-product-searches-section')),
+      findsNothing,
+    );
+    expect(find.text('kahve'), findsNothing);
+    expect(find.text('eski'), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await states.close();
   });
 
   testWidgets(
