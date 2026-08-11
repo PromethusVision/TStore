@@ -6,6 +6,8 @@ import 'package:t_store/features/orders/data/models/order_model.dart';
 import 'package:t_store/features/orders/domain/entities/order_entity.dart';
 import 'package:t_store/features/orders/domain/repositories/order_repository.dart';
 
+// LEGACY ORDER BOUNDARY: Retained for compatibility analysis only. Do not use
+// this repository from the active customer cart, QR, or purchase journeys.
 class OrderRepositoryImpl implements OrderRepository {
   final SupabaseService supabaseService;
 

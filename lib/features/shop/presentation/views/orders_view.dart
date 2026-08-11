@@ -4,22 +4,25 @@ import 'package:t_store/core/common/widgets/app_bar.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/presentation/widgets/orders_list.dart';
 
-class OrdersView extends StatelessWidget {
-  const OrdersView({super.key});
+// LEGACY ORDER BOUNDARY: This disconnected placeholder must not be added to
+// customer navigation. Verified purchases live under features/purchases.
+class LegacyOrdersView extends StatelessWidget {
+  const LegacyOrdersView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         appBarModel: AppBarModel(
-            title: Text(
-          "İşlemlerim",
-          style: Theme.of(context).textTheme.headlineSmall,
-        )),
+          title: Text(
+            "Legacy Siparişler",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
       ),
       body: const Padding(
         padding: EdgeInsets.all(TSizes.defaultSpace),
-        child: OrdersList(),
+        child: LegacyOrdersList(),
       ),
     );
   }

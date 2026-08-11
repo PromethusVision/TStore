@@ -1,4 +1,4 @@
-# TStore - Flutter E-Commerce App
+# EsnaftaVar - Yerel Esnaf Keşif ve Doğrulama Uygulaması
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.38.4-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.10.3-blue.svg)](https://dart.dev)
@@ -6,7 +6,22 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![wakatime](https://wakatime.com/badge/user/018c9017-daf8-45c1-be71-8b16fd238022/project/018e3724-1bcf-41fe-86c2-770c411d1f5f.svg)](https://wakatime.com/badge/user/018c9017-daf8-45c1-be71-8b16fd238022/project/018e3724-1bcf-41fe-86c2-770c411d1f5f)
 
-A full-featured e-commerce mobile application built with Flutter and Supabase, following Clean Architecture principles and SOLID design patterns. This project serves as a production-ready template for building scalable Flutter applications.
+EsnaftaVar, müşterilerin yakındaki esnafta ürün keşfetmesini ve fiziksel mağaza
+alışverişini QR ile doğrulamasını sağlayan Flutter/Supabase uygulamasıdır.
+
+## Ürün Sınırı
+
+- Online ödeme, kargo, klasik checkout ve klasik sipariş akışı yoktur.
+- Müşteri ürünü keşfeder, mağazayı seçer ve tek mağaza Sepet V2'yi hazırlar.
+- Alışveriş fiziksel mağazada QR ile doğrulanır.
+- Alışveriş geçmişi klasik siparişlerden değil, doğrulanmış işlemlerden oluşur.
+- Repodaki `features/orders` ile shipping/payment sözleşmeleri legacy teknik
+  borçtur ve aktif müşteri yolculuğuna bağlanmaz.
+
+Legacy sınırı ve integration notları için
+[`docs/LEGACY_ORDER_ISOLATION.md`](docs/LEGACY_ORDER_ISOLATION.md) belgesine
+bakın. Güncel proje gerçeği için `docs/PROJECT_STATE.md`, açık ürün işleri için
+`docs/PRODUCT_BACKLOG.md` esas alınır.
 
 ## Screenshots
 
@@ -29,21 +44,21 @@ A full-featured e-commerce mobile application built with Flutter and Supabase, f
 - [x] Product Details with Variations
 - [x] Categories & Brands
 - [x] Wishlist Management
-- [x] Shopping Cart
-- [x] Order Management
+- [x] Tek mağaza Sepet V2 ve QR doğrulama hazırlığı
+- [x] QR ile doğrulanmış alışveriş geçmişi
 - [x] User Profile Management
 - [x] Address Management
 - [x] Product Reviews & Ratings
 - [x] Real-time Chat Support
 - [x] Notifications System
-- [x] Coupon System
+- [ ] Coupon/Reward backend and business rules
 - [x] Light/Dark Theme Support
 - [x] Shimmer Loading Effects
 - [x] Responsive Design
 
 ### Planned
 - [ ] Push Notifications (FCM)
-- [ ] Payment Integration (Stripe)
+- [ ] Gerçek iki cihazla QR kabulü
 - [ ] Multi-language Support (i18n)
 - [ ] Analytics Dashboard
 
@@ -73,7 +88,7 @@ lib/
     │
     ├── cart/                      # Shopping Cart
     ├── wishlist/                  # Wishlist
-    ├── orders/                    # Order Management
+    ├── orders/                    # Legacy; aktif müşteri akışına bağlı değil
     ├── reviews/                   # Product Reviews
     ├── chat/                      # Real-time Chat
     ├── notifications/             # Notifications
@@ -251,7 +266,7 @@ test/
 │   ├── wishlist/
 │   │   └── wishlist_cubit_test.dart    # 20 tests
 │   ├── orders/
-│   │   └── orders_cubit_test.dart      # 16 tests
+│   │   └── orders_cubit_test.dart      # Legacy sözleşme testleri
 │   ├── reviews/
 │   │   └── reviews_cubit_test.dart     # 16 tests
 │   ├── chat/
@@ -275,7 +290,7 @@ test/
 | Shop Unit Tests | 32 | Cubit, UseCases, Entity helpers |
 | Cart Unit Tests | 23 | Cubit, Entity calculations |
 | Wishlist Unit Tests | 20 | Cubit, State management |
-| Orders Unit Tests | 16 | Cubit, Entity helpers |
+| Orders Unit Tests | 16 | Legacy Cubit ve entity sözleşmeleri |
 | Reviews Unit Tests | 16 | Cubit, Entity helpers, Stats |
 | Chat Unit Tests | 17 | Cubit, Entity, Message types |
 | Notifications Unit Tests | 17 | Cubit, Entity, Actions |
@@ -331,8 +346,8 @@ The app uses Supabase (PostgreSQL) with the following tables:
 | products | Product catalog |
 | wishlist | User wishlists |
 | cart_items | Shopping cart items |
-| orders | User orders |
-| order_items | Order line items |
+| orders | Legacy order verisi; aktif müşteri akışı kullanmaz |
+| order_items | Legacy order satırları; ürün yorumu uygunluğu halen referans alır |
 | reviews | Product reviews |
 | addresses | User addresses |
 | banners | Promotional banners |
@@ -375,8 +390,8 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
 
 ### v1.2.0
 - [ ] Push notifications
-- [ ] Payment integration (Stripe)
-- [ ] Order tracking
+- [ ] Gerçek iki cihazla QR kabulü
+- [ ] Test Supabase üzerinde QR/RLS integration doğrulaması
 
 ### v2.0.0
 - [ ] Multi-language support (i18n)

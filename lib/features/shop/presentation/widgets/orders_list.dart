@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
-class OrdersList extends StatelessWidget {
-  const OrdersList({super.key});
+// LEGACY ORDER BOUNDARY: Kept only with the disconnected legacy screen.
+class LegacyOrdersList extends StatelessWidget {
+  const LegacyOrdersList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +14,13 @@ class OrdersList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Henüz işlem kaydı yok',
+              'Legacy sipariş ekranı aktif değil',
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: TSizes.spaceBtwItems),
             Text(
-              'Mağazada doğrulanan alışverişlerin burada görünecek.',
+              'Doğrulanmış mağaza alışverişleri Alışverişlerim alanında gösterilir.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

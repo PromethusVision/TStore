@@ -1,65 +1,30 @@
 # NEXT_STEPS
 
-## Sıradaki En Küçük Güvenli İş
+Bu dosya kısa çalışma sırası notudur. Güncel kod gerçeği için
+`docs/PROJECT_STATE.md`, onaylı/açık ürün işleri için `docs/PRODUCT_BACKLOG.md`
+esas alınır.
 
-- Kasada QR doğrulama kodu, güvenlik koruması ve canlı migration tamamlandı.
-- Canlı geçiş öncesi yedek alındı; migration sonrası veri ve yetki kontrolleri geçti.
-- Eski, sabit ürün/fiyat kaydı bulunmayan 11 aktif QR iptal edildi; mevcut ürün, sepet veya mağaza verisi silinmedi.
-- Migration sonrasında iki ayrı gerçek hesapla müşteri QR oluşturma → esnaf QR okutma → esnaf onayı → müşteride tamamlanma akışı test edilmeli.
-- Kamera testi için mümkünse iki fiziksel telefon kullanılmalı.
-- İki telefon testi geçene kadar yeni QR doğrulama akışı ticari kullanıma hazır kabul edilmemeli.
+## Hedef ürün sınırı
 
-## Son Guncel Sonraki Teknik Calisma
+- Online ödeme, kargo, klasik checkout veya klasik sipariş akışı geliştirilmez.
+- Müşteri yakındaki esnafta ürün keşfeder ve tek mağaza Sepet V2'yi hazırlar.
+- Alışveriş fiziksel mağazada QR ile doğrulanır.
+- Geçmiş ve puanlama, doğrulanmış fiziksel alışveriş modeline taşınır.
 
-- Calisma 20: shops + shop_products SQL migration taslagi hazirlama.
-- Bu calisma dogrudan SQL calistirmakla baslamayacak.
-- Once sadece migration SQL taslagi uretilecek.
-- Ilk migration yalnizca shops ve shop_products tablolarini eklemeli.
-- Mevcut products, cart_items, add-to-cart ve CartView akisi bozulmamali.
-- qr_sessions, carts ve yeni cart_items donusumu sonraki asamalara birakilmali.
-- Supabase'e SQL uygulanmadan once kullanicidan acik onay alinmali.
-- SQL calistirmadan once GitHub Desktop Changes temiz olmali.
-- Her SQL adimindan sonra uygulama smoke test yapilmali.
+## Sıradaki doğrulamalar
 
-## Son Guncel Yeni Sohbet Hatirlatmasi
+1. QR release-hardening migration'ını önce gerçek PostgreSQL/test Supabase
+   üzerinde doğrula; production uygulaması ayrı yetki ve güvenlik kapısıdır.
+2. Müşteri QR oluşturma → esnaf okutma → esnaf onayı → müşteride tamamlanma
+   akışını iki gerçek hesap ve iki fiziksel cihazla kabul et.
+3. Ürün yorumu uygunluğunun legacy `orders/order_items` yerine QR ile
+   doğrulanmış alışverişe taşınması için ürün kararını netleştir.
+4. Integration aşamasında tüketicisi olmayan legacy order DI kayıtlarını
+   kaldır; legacy dosya, tablo veya verileri bu işlem sırasında silme.
 
-- Yeni pencere acilirsa once PROJECT_BRIEF.md, DEV_LOG.md, NEXT_STEPS.md, KNOWN_ISSUES.md, DESIGN_CART_QR_MODEL.md ve MIGRATION_PLAN_CART_QR.md okunmali.
-- Kod veya SQL yazmadan once aktif branch, son commit ve GitHub Desktop Changes durumu sorulmali.
-- Her iste once analiz, sonra minimum degisiklik, sonra test, sonra commit, sonra push yapilmali.
+## Legacy order sınırı
 
-## Guncel Sonraki Teknik Calisma
-
-- Calisma 19: SQL migration plani hazirlama.
-- Amac: DESIGN_CART_QR_MODEL.md icindeki shops, shop_products, carts, cart_items ve qr_sessions modelini mevcut calisan sistemi bozmadan kucuk migration adimlarina bolmek.
-- Ilk adimda dogrudan SQL calistirilmayacak.
-- Once migration plani analiz edilecek.
-- Mevcut calisan cart_items yapisi hemen bozulmayacak.
-- Prototip verisi korunacak.
-- shops ve shop_products icin seed/demo data plani cikarilacak.
-- cart_items eski modelden yeni carts/cart_items modeline nasil gececek analiz edilecek.
-- QR sessions tablosu en son asamada ele alinacak.
-
-## Yeni Sohbet Hatirlatmasi
-
-- Yeni sohbet penceresinde once PROJECT_BRIEF.md, DEV_LOG.md, NEXT_STEPS.md, KNOWN_ISSUES.md ve DESIGN_CART_QR_MODEL.md okunmali.
-- Kod yazmadan once aktif branch, GitHub Desktop Changes durumu ve son commit sorulmali.
-- Her iste once analiz, sonra minimum degisiklik, sonra test, sonra commit, sonra push yapilmali.
-
-- Bir sonraki oturumda önce kontrol edilecekler:
-  1. GitHub Desktop current branch kontrol edilecek.
-  2. GitHub Desktop Changes alanı temiz mi kontrol edilecek.
-  3. Uygulama Chrome’da çalıştırılacak.
-  4. Guest home, logout, cart icon guard kısa test edilecek.
-- Sıradaki geliştirme konuları:
-  1. NavigationMenu içindeki Favoriler ve Profil guest guard’ın aktif branch’te gerçekten durup durmadığını kontrol et.
-  2. Eksikse Favoriler/Profil guest guard’ı tekrar ekle.
-  3. Add to Cart butonlarının gerçekten CartCubit’e bağlı olup olmadığını incele.
-  4. Ürün detay sayfasındaki Add to Cart davranışını analiz et.
-  5. Sepeti Esnafta Var modelindeki QR doğrulama sepetine dönüştürme planı çıkar.
-  6. Tek esnaf sepet kuralı için veri/model analizi yap.
-- Her yeni iş için kural:
-  - Önce analiz.
-  - Sonra minimum değişiklik.
-  - Sonra test.
-  - Sonra commit.
-  - Sonra push.
+`lib/features/orders/**` ile eski shipping/payment sözleşmeleri yalnız legacy
+uyumluluk ve veri etkisi analizi için tutulur. Ana navigation, Sepet V2, ürün
+detay ve mağaza profili bu alana bağlanmaz. Teknik ayrıntı ve regression kanıtı
+için `docs/LEGACY_ORDER_ISOLATION.md` belgesine bakın.

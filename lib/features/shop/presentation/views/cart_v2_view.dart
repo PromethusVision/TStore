@@ -137,7 +137,7 @@ class _CartV2ViewState extends State<CartV2View> {
                                 itemCount: state.items.length,
                               ),
                             ),
-                            _CartV2CheckoutPanel(
+                            _CartV2VerificationPanel(
                               totalAmount: state.totalAmount,
                               requiresRefresh: state.items.any(
                                 (item) => !item.isPurchaseVerifiable,
@@ -576,7 +576,7 @@ class _CartV2Header extends StatelessWidget {
                 ),
                 SizedBox(height: CustomerHomeV1Tokens.space4),
                 Text(
-                  'Mağaza alışverişini burada tamamla',
+                  'Mağazada doğrulanacak ürünleri burada hazırla',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -651,8 +651,8 @@ class _CartV2LoadingState extends StatelessWidget {
   }
 }
 
-class _CartV2CheckoutPanel extends StatelessWidget {
-  const _CartV2CheckoutPanel({
+class _CartV2VerificationPanel extends StatelessWidget {
+  const _CartV2VerificationPanel({
     required this.totalAmount,
     required this.requiresRefresh,
     required this.isPreparing,
@@ -675,7 +675,7 @@ class _CartV2CheckoutPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: const Key('customer-cart-checkout-panel'),
+      key: const Key('customer-cart-verification-panel'),
       padding: const EdgeInsets.fromLTRB(
         CustomerHomeV1Tokens.space16,
         CustomerHomeV1Tokens.space12,
