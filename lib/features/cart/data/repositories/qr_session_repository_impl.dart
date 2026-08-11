@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/features/cart/data/models/qr_session_model.dart';
+import 'package:t_store/features/cart/data/models/qr_session_status_model.dart';
 import 'package:t_store/features/cart/data/models/qr_verification_model.dart';
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
@@ -17,30 +18,72 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
     required String cartId,
   }) async {
     try {
-      if (supabaseService.currentUser == null) {
+      final user = supabaseService.currentUser;
+      if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
       }
 
-      if (cartId.trim().isEmpty) {
+      final normalizedCartId = cartId.trim();
+      if (normalizedCartId.isEmpty) {
         return const Left('Aktif mağaza sepeti bulunamadı.');
       }
 
-      final response = await supabaseService.client.rpc(
+      var response = await supabaseService.client.rpc(
         'create_qr_session',
-        params: {'p_cart_id': cartId},
+        params: {'p_cart_id': normalizedCartId},
       );
-
-      if (response is Map<String, dynamic>) {
-        return Right(QrSessionModel.fromJson(response));
-      }
-
-      if (response is Map) {
-        return Right(
-          QrSessionModel.fromJson(Map<String, dynamic>.from(response)),
+      if (!_isSameAuthenticatedUser(user.id)) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
         );
       }
 
-      return const Left('QR kodu oluşturulamadı. Lütfen tekrar deneyin.');
+      var json = _asJsonObject(response);
+      if (json == null) {
+        return const Left('QR kodu oluşturulamadı. Lütfen tekrar deneyin.');
+      }
+
+      var session = QrSessionModel.fromJson(json);
+      if (session.userId == user.id &&
+          session.cartId == normalizedCartId &&
+          session.status == 'active' &&
+          !session.expiresAt.isAfter(DateTime.now())) {
+        // A heavily contended older RPC can return an active row whose
+        // deadline passed while it waited for a database lock. One bounded,
+        // idempotent retry lets the server expire that row and create a fresh
+        // snapshot without exposing a stale QR to the customer.
+        response = await supabaseService.client.rpc(
+          'create_qr_session',
+          params: {'p_cart_id': normalizedCartId},
+        );
+        if (!_isSameAuthenticatedUser(user.id)) {
+          return const Left(
+            'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+          );
+        }
+        json = _asJsonObject(response);
+        if (json == null) {
+          return const Left('QR kodu oluşturulamadı. Lütfen tekrar deneyin.');
+        }
+        session = QrSessionModel.fromJson(json);
+      }
+
+      if (session.userId != user.id ||
+          session.cartId != normalizedCartId ||
+          session.sessionToken.trim().isEmpty ||
+          session.status != 'active' ||
+          !session.expiresAt.isAfter(DateTime.now()) ||
+          session.itemCount == null ||
+          session.itemCount! <= 0 ||
+          session.totalAmount == null ||
+          !session.totalAmount!.isFinite ||
+          session.totalAmount! < 0) {
+        return const Left(
+          'QR bilgileri sunucudan güvenli biçimde doğrulanamadı.',
+        );
+      }
+
+      return Right(session);
     } catch (e) {
       return Left(
         _friendlyError(
@@ -68,16 +111,23 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
 
       final response = await supabaseService.client
           .from(SupabaseTables.qrSessions)
-          .select('status')
+          .select('status, expires_at')
           .eq('id', normalizedSessionId)
           .eq('user_id', user.id)
           .maybeSingle();
 
-      if (response == null || response['status'] == null) {
+      if (!_isSameAuthenticatedUser(user.id)) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
+
+      if (response == null) {
         return const Left('QR oturumu bulunamadı.');
       }
 
-      return Right(response['status'].toString());
+      final status = QrSessionStatusModel.fromJson(response);
+      return Right(status.resolveAt(DateTime.now()));
     } catch (e) {
       return Left(_friendlyError(e, fallback: 'QR durumu kontrol edilemedi.'));
     }
@@ -88,7 +138,8 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
     required String sessionToken,
   }) async {
     try {
-      if (supabaseService.currentUser == null) {
+      final user = supabaseService.currentUser;
+      if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
       }
 
@@ -101,12 +152,25 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
         'get_qr_session_for_verification',
         params: {'p_session_token': normalizedToken},
       );
+      if (!_isSameAuthenticatedUser(user.id)) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
+
       final json = _asJsonObject(response);
       if (json == null) {
         return const Left('QR bilgileri bulunamadı.');
       }
 
-      return Right(QrVerificationModel.fromJson(json));
+      final verification = QrVerificationModel.fromJson(json);
+      if (verification.sessionToken != normalizedToken) {
+        return const Left(
+          'QR bilgileri sunucudan güvenli biçimde doğrulanamadı.',
+        );
+      }
+
+      return Right(verification);
     } catch (e) {
       return Left(
         _friendlyError(
@@ -122,7 +186,8 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
     required String sessionToken,
   }) async {
     try {
-      if (supabaseService.currentUser == null) {
+      final user = supabaseService.currentUser;
+      if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
       }
 
@@ -135,12 +200,27 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
         'confirm_qr_session',
         params: {'p_session_token': normalizedToken},
       );
+      if (!_isSameAuthenticatedUser(user.id)) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
+
       final json = _asJsonObject(response);
       if (json == null) {
         return const Left('Alışveriş onaylanamadı.');
       }
 
-      return Right(QrVerificationModel.fromJson(json));
+      final verification = QrVerificationModel.fromJson(json);
+      if (verification.sessionToken != normalizedToken ||
+          verification.status != 'used' ||
+          verification.usedAt == null) {
+        return const Left(
+          'Sunucu alışveriş onayını güvenli biçimde doğrulayamadı.',
+        );
+      }
+
+      return Right(verification);
     } catch (e) {
       return Left(
         _friendlyError(
@@ -161,6 +241,9 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
     }
     return null;
   }
+
+  bool _isSameAuthenticatedUser(String expectedUserId) =>
+      supabaseService.currentUser?.id == expectedUserId;
 
   static String _friendlyError(Object error, {required String fallback}) {
     final message = error.toString().toLowerCase();
@@ -193,12 +276,17 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
     if (message.contains('not found') || message.contains('p0002')) {
       return 'QR kodu bulunamadı veya artık geçerli değil.';
     }
+    if (message.contains('shop is not active')) {
+      return 'Mağaza aktif olmadığı için QR işlemi yapılamıyor.';
+    }
     if (message.contains('not active') ||
         message.contains('no longer eligible')) {
       return 'QR kodu artık geçerli değil.';
     }
-    if (message.contains('shop is not active')) {
-      return 'Mağaza aktif olmadığı için QR işlemi yapılamıyor.';
+    if (message.contains('snapshot is missing') ||
+        message.contains('snapshot is incomplete') ||
+        message.contains('snapshot is inconsistent')) {
+      return 'QR ürün ve toplam bilgileri doğrulanamadı.';
     }
     if (message.contains('unavailable or different shop item')) {
       return 'Sepette artık satışta olmayan veya farklı mağazaya ait bir ürün var.';

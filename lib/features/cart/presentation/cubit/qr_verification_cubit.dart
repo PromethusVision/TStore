@@ -7,6 +7,7 @@ import 'package:t_store/features/cart/presentation/cubit/qr_verification_state.d
 class QrVerificationCubit extends Cubit<QrVerificationState> {
   final GetQrVerificationUsecase getQrVerificationUsecase;
   final ConfirmQrVerificationUsecase confirmQrVerificationUsecase;
+  final DateTime Function() currentTime;
 
   QrVerificationEntity? _verification;
   int _operationId = 0;
@@ -14,7 +15,9 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
   QrVerificationCubit({
     required this.getQrVerificationUsecase,
     required this.confirmQrVerificationUsecase,
-  }) : super(QrVerificationInitial());
+    DateTime Function()? currentTime,
+  }) : currentTime = currentTime ?? DateTime.now,
+       super(QrVerificationInitial());
 
   Future<void> loadVerification(String sessionToken) async {
     final operationId = ++_operationId;
@@ -39,9 +42,12 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
     if (isClosed || operationId != _operationId) return;
 
     result.fold((error) => emit(QrVerificationFailure(error)), (verification) {
-      if (verification.status != 'active') {
+      if (!_canBeConfirmed(verification)) {
         _verification = null;
-        emit(QrVerificationFailure(_inactiveQrMessage(verification.status)));
+        final status = verification.status == 'active'
+            ? 'expired'
+            : verification.status;
+        emit(QrVerificationFailure(_inactiveQrMessage(status)));
         return;
       }
       _verification = verification;
@@ -56,7 +62,15 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
       emit(const QrVerificationFailure('Onaylanacak alışveriş bulunamadı.'));
       return;
     }
-    if (state is QrVerificationConfirming) return;
+    if (state is QrVerificationConfirming || state is QrVerificationSuccess) {
+      return;
+    }
+    if (!_canBeConfirmed(verification)) {
+      _operationId++;
+      _verification = null;
+      emit(const QrVerificationFailure('QR kodunun süresi dolmuş.'));
+      return;
+    }
 
     final operationId = ++_operationId;
     emit(QrVerificationConfirming(verification));
@@ -67,13 +81,71 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
 
     if (isClosed || operationId != _operationId) return;
 
-    result.fold((error) => emit(QrVerificationFailure(error)), (
-      confirmedVerification,
-    ) {
-      _verification = confirmedVerification;
-      emit(QrVerificationSuccess(confirmedVerification));
+    await result.fold(
+      (error) => _reconcileConfirmationFailure(
+        operationId: operationId,
+        verification: verification,
+        originalError: error,
+      ),
+      (confirmedVerification) async {
+        if (!_isConfirmedVersionOf(verification, confirmedVerification)) {
+          emit(
+            const QrVerificationFailure(
+              'Sunucu alışveriş onayını güvenli biçimde doğrulayamadı.',
+            ),
+          );
+          return;
+        }
+
+        _verification = confirmedVerification;
+        emit(QrVerificationSuccess(confirmedVerification));
+      },
+    );
+  }
+
+  Future<void> _reconcileConfirmationFailure({
+    required int operationId,
+    required QrVerificationEntity verification,
+    required String originalError,
+  }) async {
+    final result = await getQrVerificationUsecase(
+      GetQrVerificationParams(sessionToken: verification.sessionToken),
+    );
+
+    if (isClosed || operationId != _operationId) return;
+
+    result.fold((_) => emit(QrVerificationFailure(originalError)), (current) {
+      if (_isConfirmedVersionOf(verification, current)) {
+        _verification = current;
+        emit(QrVerificationSuccess(current));
+        return;
+      }
+
+      if (!_canBeConfirmed(current)) {
+        _verification = null;
+        final status = current.status == 'active' ? 'expired' : current.status;
+        emit(QrVerificationFailure(_inactiveQrMessage(status)));
+        return;
+      }
+
+      _verification = current;
+      emit(QrVerificationFailure(originalError));
     });
   }
+
+  static bool _isConfirmedVersionOf(
+    QrVerificationEntity original,
+    QrVerificationEntity candidate,
+  ) =>
+      candidate.sessionId == original.sessionId &&
+      candidate.sessionToken == original.sessionToken &&
+      candidate.shopId == original.shopId &&
+      candidate.status == 'used' &&
+      candidate.usedAt != null;
+
+  bool _canBeConfirmed(QrVerificationEntity verification) =>
+      verification.status == 'active' &&
+      verification.expiresAt.isAfter(currentTime());
 
   void reset() {
     _operationId++;

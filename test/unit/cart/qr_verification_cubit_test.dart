@@ -155,6 +155,40 @@ void main() {
     );
 
     blocTest<QrVerificationCubit, QrVerificationState>(
+      'rejects an active QR whose deadline has already passed',
+      build: () {
+        final staleVerification = QrVerificationEntity(
+          sessionId: verification.sessionId,
+          sessionToken: verification.sessionToken,
+          status: 'active',
+          expiresAt: DateTime.utc(2026, 8, 11, 9, 59),
+          shopId: verification.shopId,
+          shopName: verification.shopName,
+          itemCount: verification.itemCount,
+          totalAmount: verification.totalAmount,
+          items: verification.items,
+        );
+        when(
+          () => mockGetQrVerificationUsecase(any()),
+        ).thenAnswer((_) async => Right(staleVerification));
+        return QrVerificationCubit(
+          getQrVerificationUsecase: mockGetQrVerificationUsecase,
+          confirmQrVerificationUsecase: mockConfirmQrVerificationUsecase,
+          currentTime: () => DateTime.utc(2026, 8, 11, 10),
+        );
+      },
+      act: (cubit) => cubit.loadVerification('token-1'),
+      expect: () => [
+        QrVerificationLoading(),
+        isA<QrVerificationFailure>().having(
+          (state) => state.message,
+          'message',
+          contains('süresi dolmuş'),
+        ),
+      ],
+    );
+
+    blocTest<QrVerificationCubit, QrVerificationState>(
       'rejects an empty QR token without calling the usecase',
       build: () => qrVerificationCubit,
       act: (cubit) => cubit.loadVerification('   '),
@@ -283,5 +317,71 @@ void main() {
         verify(() => mockConfirmQrVerificationUsecase(any())).called(1);
       },
     );
+
+    test(
+      'does not confirm a preview that expires before merchant approval',
+      () async {
+        var now = DateTime.utc(2098, 12, 31, 23, 59);
+        final cubit = QrVerificationCubit(
+          getQrVerificationUsecase: mockGetQrVerificationUsecase,
+          confirmQrVerificationUsecase: mockConfirmQrVerificationUsecase,
+          currentTime: () => now,
+        );
+        addTearDown(cubit.close);
+        when(
+          () => mockGetQrVerificationUsecase(any()),
+        ).thenAnswer((_) async => Right(verification));
+
+        await cubit.loadVerification('token-1');
+        now = DateTime.utc(2099, 1, 1);
+        await cubit.confirmVerification();
+
+        expect(
+          cubit.state,
+          const QrVerificationFailure('QR kodunun süresi dolmuş.'),
+        );
+        verifyNever(() => mockConfirmQrVerificationUsecase(any()));
+      },
+    );
+
+    test('reconciles an ambiguous confirmation timeout as success', () async {
+      var lookupCount = 0;
+      when(() => mockGetQrVerificationUsecase(any())).thenAnswer((_) async {
+        lookupCount++;
+        return Right(lookupCount == 1 ? verification : confirmedVerification);
+      });
+      when(
+        () => mockConfirmQrVerificationUsecase(any()),
+      ).thenAnswer((_) async => const Left('Bağlantı zaman aşımına uğradı'));
+
+      await qrVerificationCubit.loadVerification('token-1');
+      await qrVerificationCubit.confirmVerification();
+
+      expect(
+        qrVerificationCubit.state,
+        QrVerificationSuccess(confirmedVerification),
+      );
+      verify(() => mockConfirmQrVerificationUsecase(any())).called(1);
+      verify(() => mockGetQrVerificationUsecase(any())).called(2);
+    });
+
+    test('does not submit the same confirmation again after success', () async {
+      when(
+        () => mockGetQrVerificationUsecase(any()),
+      ).thenAnswer((_) async => Right(verification));
+      when(
+        () => mockConfirmQrVerificationUsecase(any()),
+      ).thenAnswer((_) async => Right(confirmedVerification));
+
+      await qrVerificationCubit.loadVerification('token-1');
+      await qrVerificationCubit.confirmVerification();
+      await qrVerificationCubit.confirmVerification();
+
+      expect(
+        qrVerificationCubit.state,
+        QrVerificationSuccess(confirmedVerification),
+      );
+      verify(() => mockConfirmQrVerificationUsecase(any())).called(1);
+    });
   });
 }

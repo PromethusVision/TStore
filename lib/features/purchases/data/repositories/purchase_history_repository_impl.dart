@@ -31,6 +31,12 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
           .eq('customer_user_id', user.id)
           .order('confirmed_at', ascending: false);
 
+      if (supabaseService.currentUser?.id != user.id) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
+
       final purchases = (response as List)
           .map(
             (json) => VerifiedPurchaseModel.fromJson(
