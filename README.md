@@ -147,25 +147,26 @@ lib/
 
    a. Create a Supabase project at [Supabase Dashboard](https://supabase.com/dashboard)
 
-   b. Run the database schema:
-      - Go to SQL Editor in Supabase Dashboard
-      - Copy contents of `supabase_schema.sql` and run it
-      - Copy contents of `supabase_sample_data.sql` and run it (optional - adds sample data)
+   b. Use the canonical migration chain:
+      - Read [`docs/SUPABASE_MIGRATION_NORMALIZATION.md`](docs/SUPABASE_MIGRATION_NORMALIZATION.md)
+      - Apply `supabase/migrations/` in version order with the Supabase CLI,
+        first against a disposable local stack or a verified fresh Development
+        project
+      - Do **not** run `supabase_schema.sql` directly; it is a destructive
+        historical reference, not a bootstrap entrypoint
+      - Existing sample/seed SQL is not automatically runnable; follow
+        [`supabase/seed/README.md`](supabase/seed/README.md)
 
-   c. Create Storage Buckets:
-      - Go to Storage in Supabase Dashboard
-      - Create buckets: `avatars`, `products`, `reviews`, `chat`
-      - Set each bucket to public (for image access)
+   c. Resolve Storage policy decisions before creating buckets:
+      - Expected names and the visibility/write-policy blockers are documented
+        in the migration normalization document
+      - Do not make every bucket public or add broad write policies by default
 
 4. **Environment Variables**
 
-   Create a `.env` file in the root directory:
-   ```env
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_ANON_KEY=your-anon-key
-   ```
-
-   Find these values in: Supabase Dashboard > Settings > API
+   Follow `.env.example`, but pass the selected environment's client-safe URL
+   and anon/publishable key via `--dart-define`. Never pass a service-role or
+   server-only secret to Flutter.
 
 5. **Run the app**
    ```bash
@@ -196,8 +197,9 @@ TStore/
 │   ├── images/             # Image assets
 │   ├── icons/              # Icon assets
 │   └── logos/              # Logo assets
-├── supabase_schema.sql     # Database schema
-├── supabase_sample_data.sql # Sample data with real images
+├── supabase/migrations/    # Canonical versioned database schema
+├── supabase_schema.sql     # Historical destructive reference only
+├── supabase_sample_data.sql # Historical/manual seed reference
 ├── pubspec.yaml
 └── README.md
 ```
@@ -345,7 +347,17 @@ The app uses Supabase (PostgreSQL) with the following tables:
 | brands | Product brands |
 | products | Product catalog |
 | wishlist | User wishlists |
-| cart_items | Shopping cart items |
+| customer_saved_locations | Customer map locations |
+| legal_consents | Immutable signup consent evidence |
+| shops | Merchant shops |
+| shop_products | Shop-specific product listings |
+| carts | Active Cart V2 headers |
+| cart_items_v2 | Active Cart V2 items |
+| qr_sessions | Short-lived QR verification sessions |
+| qr_session_items | Immutable QR item snapshots |
+| verified_transactions | Durable verified purchase proof |
+| verified_transaction_items | Durable verified purchase item snapshots |
+| shop_ratings | Ratings tied to verified transactions |
 | orders | Legacy order verisi; aktif müşteri akışı kullanmaz |
 | order_items | Legacy order satırları; ürün yorumu uygunluğu halen referans alır |
 | reviews | Product reviews |
@@ -353,16 +365,19 @@ The app uses Supabase (PostgreSQL) with the following tables:
 | banners | Promotional banners |
 | chat_messages | Support chat messages |
 | notifications | User notifications |
-| coupons | Discount coupons |
 
 ## Sample Data
 
-The `supabase_sample_data.sql` includes:
+The historical `supabase_sample_data.sql` includes:
 - 5 Categories (Electronics, Clothes, Shoes, Furniture, Accessories)
 - 5 Brands
 - 29 Products with real images
 - 5 Promotional Banners
 - 3 Discount Coupons (WELCOME10, SAVE20, FLASH25)
+
+It is not directly compatible with the canonical schema because coupons are
+not part of the active contract. Follow `supabase/seed/README.md`; do not run
+the file automatically.
 
 ## Contributing
 
