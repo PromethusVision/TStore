@@ -5,13 +5,16 @@ import 'package:t_store/features/shop/presentation/cubit/banners_state.dart';
 
 class BannersCubit extends Cubit<BannersState> {
   final GetBannersUsecase getBannersUsecase;
+  int _activeRequestId = 0;
 
   BannersCubit({required this.getBannersUsecase}) : super(BannersInitial());
 
   Future<void> getBanners() async {
-    emit(BannersLoading());
+    final requestId = ++_activeRequestId;
+    if (!isClosed) emit(BannersLoading());
 
     final result = await getBannersUsecase(const NoParams());
+    if (isClosed || requestId != _activeRequestId) return;
 
     result.fold(
       (error) => emit(BannersError(error)),
