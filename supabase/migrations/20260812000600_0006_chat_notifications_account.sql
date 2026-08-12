@@ -258,7 +258,8 @@ CREATE TRIGGER create_verified_purchase_notification_after_insert
 -- Clients can read, mark, and delete only their own notification rows through
 -- RLS. Notification creation remains limited to trusted trigger functions.
 REVOKE ALL ON TABLE public.notifications FROM PUBLIC, anon, authenticated;
-GRANT SELECT, UPDATE, DELETE ON TABLE public.notifications TO authenticated;
+GRANT SELECT, DELETE ON TABLE public.notifications TO authenticated;
+GRANT UPDATE (is_read) ON TABLE public.notifications TO authenticated;
 
 CREATE FUNCTION public.delete_current_customer_account()
 RETURNS VOID

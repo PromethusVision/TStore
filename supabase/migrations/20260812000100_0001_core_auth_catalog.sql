@@ -466,7 +466,8 @@ GRANT SELECT, INSERT ON TABLE public.orders, public.order_items
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.reviews
   TO authenticated;
 GRANT SELECT ON TABLE public.reviews TO anon;
-GRANT SELECT, INSERT, UPDATE ON TABLE public.chat_messages TO authenticated;
+GRANT SELECT, INSERT ON TABLE public.chat_messages TO authenticated;
+GRANT UPDATE (is_read) ON TABLE public.chat_messages TO authenticated;
 -- Notification table privileges are finalized in migration 0006. Direct
 -- authenticated INSERT is intentionally never granted.
 

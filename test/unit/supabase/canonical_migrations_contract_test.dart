@@ -132,8 +132,10 @@ void main() {
     final executableSql = _withoutLineComments(canonicalSql);
     final forbiddenPatterns = <RegExp>[
       RegExp(r'\bDROP\s+TABLE\b', caseSensitive: false),
+      RegExp(r'\bDROP\s+SCHEMA\b', caseSensitive: false),
       RegExp(r'\bDROP\s+TRIGGER\b', caseSensitive: false),
       RegExp(r'\bDROP\s+FUNCTION\b', caseSensitive: false),
+      RegExp(r'\bDROP\b[\s\S]{0,80}\bCASCADE\b', caseSensitive: false),
       RegExp(r'\bTRUNCATE\b', caseSensitive: false),
       RegExp(r'\bCREATE\s+OR\s+REPLACE\b', caseSensitive: false),
       RegExp(r'\bGRANT\s+ALL\b', caseSensitive: false),
@@ -144,7 +146,26 @@ void main() {
     }
   });
 
-  test('constraint, trigger, and function definitions are not duplicated', () {
+  test('canonical schema contains no environment credentials or data IDs', () {
+    final executableSql = _withoutLineComments(canonicalSql);
+    final forbiddenPatterns = <RegExp>[
+      RegExp(r'\bservice_role\b', caseSensitive: false),
+      RegExp(r'\b(?:postgres|postgresql)://', caseSensitive: false),
+      RegExp(r'https?://[^\s]*supabase\.(?:co|in)', caseSensitive: false),
+      RegExp(r'\beyJ[A-Za-z0-9_-]{20,}', caseSensitive: false),
+      RegExp(
+        r'\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-'
+        r'[89ab][0-9a-f]{3}-[0-9a-f]{12}\b',
+        caseSensitive: false,
+      ),
+    ];
+
+    for (final pattern in forbiddenPatterns) {
+      expect(executableSql, isNot(matches(pattern)), reason: pattern.pattern);
+    }
+  });
+
+  test('named canonical objects are not duplicated', () {
     final constraints = _captures(
       canonicalSql,
       RegExp(r'\bCONSTRAINT\s+(\w+)', caseSensitive: false),
@@ -165,10 +186,28 @@ void main() {
         multiLine: true,
       ),
     );
+    final indexes = _captures(
+      canonicalSql,
+      RegExp(
+        r'^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+(\w+)',
+        caseSensitive: false,
+        multiLine: true,
+      ),
+    );
+    final policies = _captures(
+      canonicalSql,
+      RegExp(
+        r'^\s*CREATE\s+POLICY\s+(\w+)',
+        caseSensitive: false,
+        multiLine: true,
+      ),
+    );
 
     _expectUnique(constraints, label: 'constraint');
     _expectUnique(triggers, label: 'trigger');
     _expectUnique(functions, label: 'function');
+    _expectUnique(indexes, label: 'index');
+    _expectUnique(policies, label: 'policy');
 
     expect(
       _occurrences(canonicalSql, RegExp('chat_messages_content_length_check')),
@@ -284,12 +323,45 @@ void main() {
     },
   );
 
-  test('notification privilege and trusted-write contract is explicit', () {
+  test('chat and notification mutation grants are least privilege', () {
     expect(
       canonicalSql,
       contains(
-        'GRANT SELECT, UPDATE, DELETE ON TABLE public.notifications '
+        'GRANT SELECT, INSERT ON TABLE public.chat_messages '
         'TO authenticated;',
+      ),
+    );
+    expect(
+      canonicalSql,
+      contains(
+        'GRANT UPDATE (is_read) ON TABLE public.chat_messages '
+        'TO authenticated;',
+      ),
+    );
+    expect(
+      canonicalSql,
+      contains(
+        'GRANT SELECT, DELETE ON TABLE public.notifications '
+        'TO authenticated;',
+      ),
+    );
+    expect(
+      canonicalSql,
+      contains(
+        'GRANT UPDATE (is_read) ON TABLE public.notifications '
+        'TO authenticated;',
+      ),
+    );
+    expect(
+      canonicalSql,
+      isNot(
+        contains('GRANT SELECT, INSERT, UPDATE ON TABLE public.chat_messages'),
+      ),
+    );
+    expect(
+      canonicalSql,
+      isNot(
+        contains('GRANT SELECT, UPDATE, DELETE ON TABLE public.notifications'),
       ),
     );
     expect(
@@ -306,9 +378,11 @@ void main() {
     );
     expect(
       canonicalSql,
-      contains(
-        "has_table_privilege(\n"
-        "       'authenticated', 'public.notifications', 'INSERT'",
+      matches(
+        RegExp(
+          r"has_table_privilege\(\s*'authenticated',\s*"
+          r"'public\.notifications',\s*'INSERT'",
+        ),
       ),
     );
   });
