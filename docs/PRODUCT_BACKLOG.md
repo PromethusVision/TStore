@@ -28,6 +28,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   - Klasik online ödeme, kargo veya checkout akışı eklememek.
 - 2026-08-11 Wave 1 teknik ilerleme: chat Realtime/reconnect/dedup ve async lifecycle hardening, in-app notification Realtime/pagination/session/mutation hardening ve QR/verified purchase client + RPC contract hardening tamamlandı; birleşik analyzer ve tam test suite geçti.
 - 2026-08-11 Wave 2 teknik ilerleme: development/production config sözleşmesi ayrıldı, discovery ekranlarındaki 5 lifecycle/race problemi giderildi ve legacy order aktif müşteri navigation'ı ile DI grafiğinden izole edildi; birleşik analyzer ve tam test suite geçti.
+- 2026-08-12 Wave 3 teknik ilerleme: 7 dosyalı canonical Supabase migration zinciri ve 23 tabloluk fresh bootstrap sözleşmesi hazırlandı, banner okuma yolu sertleştirildi, kalan 9 async-context ihlali temizlendi ve global lint etkinleştirildi; birleşik analyzer ve tam test suite geçti. Remote Supabase'e migration uygulanmadı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -105,10 +106,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
-- Repo içindeki schema ve 19 migration'ın canlı ortamla eşleşmesini doğrulamak.
+- Fresh bootstrap için resmi kaynak `supabase/migrations/` altındaki `0001`–`0007` canonical zinciridir; kökteki eski schema ve migration dosyaları tarihsel referans olarak kalır.
+- Eski audit modelindeki 25 tablo ile canonical 23 tablo farkı kapatıldı: aktif repository kullanımı olmayan legacy `cart_items` ve backend'e bağlanmamış `coupons` canonical zincire alınmadı. `orders/order_items`, ürün yorumu kararı verilene kadar korundu.
+- Canonical zinciri doğrulanmış fresh Development Supabase'e uygulamak ve gerçek object/table/policy/function/grant envanterini sözleşmeyle karşılaştırmak.
 - Policy, grant, trigger, RPC ve `SECURITY DEFINER` izinlerini kontrol etmek.
-- Migration sırasını ve canonical schema kaynağını netleştirmek.
-- `supabase_migration_qr_verified_purchase_release_hardening.sql` dosyasını `supabase_migration_qr_verification.sql` sonrasında gerçek PostgreSQL/test Supabase üzerinde doğrulamak; dosya production veya başka bir Supabase ortamına uygulanmadı.
+- Canonical QR RPC'lerini gerçek PostgreSQL/test Supabase üzerinde doğrulamak; production veya başka bir Supabase ortamına bu entegrasyonda migration uygulanmadı.
+- `product-images`, `category-images`, `brand-logos`, `banner-images`, `avatars` ve `review-images` için visibility/write/ownership/MIME/size/delete ürün kararlarını alıp ayrı least-privilege migration hazırlamak.
 - Production üzerinde destructive işlem kullanıcı onayı olmadan yapılmaz.
 
 ### C4. Legacy Order / Shipping / Payment Teknik Borcu
@@ -127,8 +130,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 ### C6. Lint ve Navigation Lifecycle Borcu
 
 - Discovery ekranlarındaki Wave 2 kapsamlı lifecycle/race düzeltmeleri tamamlandı.
-- `use_build_context_synchronously` global ignore kaldırılarak yapılan ölçümde 3 dosyada 9 ihlal kaldı; ignore bu wave'de korundu ve kalan ihlaller ayrı kontrollü iş paketidir.
-- `helper_functions.dart`, `location_helper.dart` ve `product_sellers_section.dart` async context/mounted davranışı dosya bazında düzeltilmeli.
+- Wave 3'te `helper_functions.dart`, `location_helper.dart` ve `product_sellers_section.dart` içindeki kalan 9 ihlal lifecycle/dispose ve duplicate-navigation korumalarıyla düzeltildi.
+- `use_build_context_synchronously` global ignore'u kaldırıldı; lint repo genelinde etkin ve analyzer temiz.
 - Mevcut duplicate-submit/double-navigation korumaları korunmalı.
 
 ### C7. Eski Dokümantasyonun Güncellenmesi
@@ -142,6 +145,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 - 2026-08-11 Wave 1 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138, settings/navigation 34/34.
 - 2026-08-11 Wave 2 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: environment/config 11/11, discovery/shop 344/344, legacy mimari + unit 22/22, Cart V2/QR 94/94.
+- 2026-08-12 Wave 3 birleşik sonucu: `flutter analyze --no-pub` temiz ve 108 dosyalık tam Flutter test suite başarılı. Hedefli kanıtlar: canonical migration 13/13, QR release contract 3/3, banner 22/22, async-context 32/32, chat 97/97, notifications 53/53, cart/QR/purchases 157/157 ve discovery/navigation 412/412.
 - QR, chat, merchant ve RLS için integration kapsamı eklemek.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.

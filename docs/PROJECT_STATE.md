@@ -2,12 +2,13 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-11
-- Son doğrulanan uygulama commit'i: `035428ded27616d1b93c0945d02d4e6af2449c1d`
-- Doğrulanan branch/upstream: `integration/wave-2` / `origin/main` release hedefi
+- Son güncelleme: 2026-08-12
+- Son doğrulanan uygulama commit'i: `1ba10ed79a5d2743c56fd694641a9f476b434784`
+- Doğrulanan branch/upstream: `integration/wave-3` / `origin/main` release hedefi
+- Entegrasyon durumu: **WAVE 3 COMPLETED** (remote Development bootstrap ve aşağıdaki release gate'ler hariç)
 - Snapshot oluşturulurken çalışma ağacı: temiz (`+0/-0`)
-- Doğrulama türü: Wave 2 birleşik diff incelemesi, config güvenlik taraması, hedefli ve tam Flutter testleri, analyzer, legacy DI tüketici taraması ve async-context lint borcu ölçümü
-- Çalıştırılmayan kontroller: gerçek client-safe dev/prod değerleriyle smoke build, uygulama/gerçek cihaz kabulü ile gerçek PostgreSQL, test Supabase ve canlı Supabase doğrulaması
+- Doğrulama türü: Wave 3 birleşik diff incelemesi, canonical SQL güvenlik/sözleşme taraması, 25/23 tablo reconciliation, hedefli ve tam Flutter testleri, global async-context lint ve analyzer
+- Çalıştırılmayan kontroller: canonical migration'ların gerçek PostgreSQL/Development Supabase uygulaması, RLS/RPC integration testi, gerçek Realtime/Storage kabulü, gerçek client-safe dev/prod değerleriyle smoke build ve iki cihaz QR kabulü
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -20,7 +21,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Navigation, merkezi bir router paketi yerine `MaterialApp`, global navigator key ve doğrudan `Navigator/MaterialPageRoute` çağrılarıyla yürütülüyor.
 - Beş ana müşteri sekmesi: Ana Sayfa, Yakındakiler, Sepet, Favoriler ve Profil.
 - Auth, tablo CRUD, Storage ve Realtime için ortak `SupabaseService`; feature repository'lerinde doğrudan Supabase sorguları ve güvenli RPC çağrıları bulunuyor.
-- RLS, trigger ve RPC altyapısı kökteki schema ve migration SQL dosyalarında tutuluyor.
+- Fresh Supabase bootstrap için resmi kaynak, `supabase/migrations/` altındaki sıralı `0001`–`0007` canonical zinciridir; kökteki eski schema/migration dosyaları yalnız tarihsel referanstır.
 - Son aramalar, son görüntülenen ürünler ve bekleyen ürün sohbeti için SharedPreferences; konum için Geolocator kullanılıyor.
 - Ortak tasarım altyapısı `TAppTheme`, widget theme dosyaları ve `customer_home_v1_tokens.dart` üzerinden ilerliyor. Eski ve yeni tasarım sabitleri birlikte bulunuyor.
 - `main_development.dart` ve `main_production.dart` ayrı Dart-define ad alanlarını seçiyor; eksik, placeholder, güvensiz veya server-only config güvenli biçimde startup'ta reddediliyor ve ortamlar arasında fallback yapılmıyor.
@@ -33,7 +34,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
 | Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Sosyal giriş düğmeleri backend metotlarına bağlı değil; merchant kayıt akışı açık değil. |
-| Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; async session sonucu ve duplicate navigation korumaları var. |
+| Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
 | Yakındakiler / location | COMPLETE | GPS, izin durumları, kayıtlı/manuel konum, mesafe sıralaması, hata/fallback, dispose sonrası async completion ve duplicate dialog/navigation korumaları var. |
@@ -54,7 +55,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | PARTIAL | Geniş RLS, trigger, permission ve `SECURITY DEFINER` RPC altyapısı var. QR RPC hardening migration'ı statik olarak incelendi; gerçek PostgreSQL/test Supabase ve canlı şema doğrulaması yapılmadı, migration'lar tek sıralı klasörde değil. |
+| Supabase / RLS | PARTIAL | Fresh bootstrap için 7 dosyalı canonical zincir, 23 public tablo, tüm tablolarda RLS, açık grant/revoke ve sabit `search_path` kullanan `SECURITY DEFINER` RPC'ler var. Chat/bildirim client güncellemesi yalnız `is_read` sütunuyla sınırlı. Zincir gerçek PostgreSQL/Development Supabase üzerinde henüz uygulanmadı; Storage policy kararları açık. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit, testler ve shipping/payment alanları repoda duruyor; aktif müşteri navigation'ına ve GetIt DI grafiğine bağlı değil, hedef ürün akışı değil. |
 
@@ -66,7 +67,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Merchant ürün/stok/fiyat yönetimi bulunmuyor; mevcut merchant altyapısı yalnız mağaza profili ve QR doğrulama seviyesinde.
 - Legacy order/shipping/payment kodu hedef ürün modelinin dışında ve aktif DI grafiğinden çıkarılmış olduğu halde repoda tutuluyor.
 - Development/production config sözleşmesi ayrıldı; gerçek client-safe ortam değerleriyle iki entrypoint smoke build'i release gate olarak açık.
-- `use_build_context_synchronously` lint'i analyzer seviyesinde global olarak ignore ediliyor; Wave 2 ölçümünde 3 dosyada 9 ihlal kaldı.
+- `use_build_context_synchronously` global ignore'u kaldırıldı; Wave 3 birleşik durumda lint repo genelinde etkin ve analyzer temiz.
+- Storage bucket görünürlüğü, yazan roller, object path sahipliği, MIME/size ve silme kuralları ürün kararı bekliyor.
 - Feature flag, analytics/event ve crash reporting altyapısı yok.
 - Bazı merkezi view dosyaları çok büyük: `all_products_view.dart`, `cart_v2_view.dart`, `nearby_view.dart`, `chat_view.dart` ve `conversations_view.dart`.
 
@@ -77,17 +79,19 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Ürün yorumu yetkisi yeni doğrulanmış alışveriş modeliyle bütünleştirilmedi.
 - Canlı Supabase schema/RLS durumu repo dosyalarından bağımsız doğrulanmadı.
 - Gerçek client-safe development ve production değerleriyle ayrı smoke build alınmadı.
+- Canonical `0001`–`0007` zinciri fresh Development Supabase'e henüz uygulanmadı; gerçek PostgreSQL parser/engine ve RLS/RPC integration doğrulaması açık.
+- Beklenen altı Storage bucket için visibility/write/ownership/MIME/size/delete kararları verilmedi; bucket veya policy oluşturulmadı.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
 
 ## Test Durumu
 
-- 103 test dosyası: 44 unit, 56 widget, 1 architecture, 1 integration ve 1 kök smoke/widget testi.
-- Wave 2 snapshot'ında 879 `test/testWidgets` bloğu bulundu.
+- 108 test dosyası ve 1045 test bloğu bulunuyor.
 - Güçlü alanlar: Shop, Auth, Personalization, Chat ve Cart.
 - Zayıf alanlar: gerçek backend integration, RLS, merchant ekranları, kupon backend'i ve review repository geçişi.
 - Mevcut tek integration dosyası auth akışına odaklanıyor.
 - Wave 1 birleşik durumda tam Flutter test suite geçti; `flutter analyze --no-pub` sonucu temizdi. Hedefli sonuçlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138 ve settings/navigation 34/34.
 - Wave 2 birleşik durumda tam Flutter test suite ve `flutter analyze --no-pub` geçti. Hedefli sonuçlar: environment/config 11/11, discovery/shop 344/344, legacy mimari + unit 22/22 ve Cart V2/QR 94/94.
+- Wave 3 birleşik durumda tam Flutter test suite ve `flutter analyze --no-pub` geçti. Hedefli sonuçlar: canonical migration 13/13, QR release contract 3/3, banner 22/22, async-context 32/32, chat 97/97, notifications 53/53, cart/QR/purchases 157/157 ve discovery/navigation 412/412.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -103,15 +107,17 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Canlı Backend ile Doğrulanmamış Alanlar
 
-- Repo içindeki 19 migration'ın canlı ortamda tam ve doğru sırayla uygulanmış güncel durumu; `supabase_migration_qr_verified_purchase_release_hardening.sql` production veya başka bir Supabase ortamına uygulanmadı.
+- Canonical `supabase/migrations/0001`–`0007` zincirinin gerçek Development veya production ortamında uygulanmış durumu; bu entegrasyon hiçbir remote veritabanına yazmadı.
 - Canlı RLS, grant, trigger ve `SECURITY DEFINER` RPC izinlerinin repo ile bire bir eşleşmesi.
 - Chat conversation summary RPC'lerinin canlı performans ve fallback davranışı.
 - Notification ve saved-location permission migration'larının canlı durumu.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
 - Supabase içindeki veri bütünlüğünün mevcut schema dosyalarıyla tam uyumu.
+- Altı beklenen Storage bucket ve bunların least-privilege policy sözleşmesi.
 
 ## Son Geliştirme Odağı
 
+- 2026-08-12: canonical Supabase migration normalization, 25/23 tablo reconciliation, promotion banner read-path hardening ve kalan 9 async-context ihlalinin temizlenmesi Wave 3 entegrasyonu; analyzer ve tam test suite temiz.
 - 2026-08-11: development/production config ayrımı, discovery async lifecycle hardening ve legacy order aktif navigation + DI izolasyonu Wave 2 entegrasyonu; analyzer ve tam test suite temiz.
 - 2026-08-11: chat, in-app notifications ve QR/verified purchase release-hardening Wave 1 entegrasyonu; analyzer ve tam test suite temiz.
 - 2026-08-10: chat güvenilirliği, delivery/read state'leri, konuşma özetleri ve hata ayrımı.

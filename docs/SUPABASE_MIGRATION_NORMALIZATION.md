@@ -51,8 +51,12 @@ remote veritabanına migration uygulamaz.
 - QR create/confirm RPC'leri yalnız release-hardening'deki lock sırası ve taze
   clock davranışıyla kurulur; geçici/zayıf sürüm yoktur.
 - Policy, grant, constraint ve trigger'lar final haliyle bir kez tanımlanır.
-- Notification istemcisine `SELECT`, `UPDATE`, `DELETE` verilir; doğrudan
-  `INSERT` verilmez. Kayıtlar yalnız trusted trigger fonksiyonlarından oluşur.
+- Notification istemcisine `SELECT`, `DELETE` ve yalnız `is_read` sütunuyla
+  sınırlı `UPDATE` verilir; doğrudan `INSERT` verilmez. Kayıtlar yalnız trusted
+  trigger fonksiyonlarından oluşur.
+- Chat istemcisi mesaj gönderebilir ve okuyabilir; alıcının `UPDATE` yetkisi
+  yalnız `is_read` sütunuyla sınırlıdır. Mesaj içeriği veya kimlik alanları
+  alıcı tarafından değiştirilemez.
 
 ## Kapsam kararları
 
@@ -65,6 +69,12 @@ remote veritabanına migration uygulamaz.
 - Product review eligibility bu görevde QR verified purchases'a taşınmamıştır.
 - Kalıcı `verified_transactions`, item snapshot'ları ve `shop_ratings` auth/shop
   silinmesinden etkilenmemek için mutable tablolara FK taşımaz.
+
+Eski audit modelindeki 25 tablo ile canonical 23 tablo arasındaki fark yalnız
+`cart_items` ve `coupons` tablolarıdır. Aktif Dart sorgu taraması `cart_items`
+yerine `carts/cart_items_v2` kullanıldığını ve kupon ekranında Supabase
+repository/Cubit bulunmadığını doğrular. Bu nedenle canonical sayı 23'tür;
+aktif uygulamanın gerektirdiği atlanmış bir tablo bulunmamıştır.
 
 ## SECURITY DEFINER standardı
 
