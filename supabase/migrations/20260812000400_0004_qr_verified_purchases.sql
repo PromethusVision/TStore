@@ -300,7 +300,7 @@ SET search_path = pg_catalog, public, extensions, auth
 AS $function$
 DECLARE
   current_user_id UUID := auth.uid();
-  current_time TIMESTAMPTZ := clock_timestamp();
+  v_current_time TIMESTAMPTZ := clock_timestamp();
   payload JSONB;
 BEGIN
   IF current_user_id IS NULL THEN
@@ -323,7 +323,7 @@ BEGIN
   SET status = 'expired'
   WHERE session_row.session_token = p_session_token
     AND session_row.status = 'active'
-    AND session_row.expires_at <= current_time
+    AND session_row.expires_at <= v_current_time
     AND EXISTS (
       SELECT 1 FROM public.shops AS owned_shop
       WHERE owned_shop.id = session_row.shop_id
@@ -389,7 +389,7 @@ SET search_path = pg_catalog, public, extensions, auth
 AS $function$
 DECLARE
   current_user_id UUID;
-  current_time TIMESTAMPTZ;
+  v_current_time TIMESTAMPTZ;
   active_cart public.carts%ROWTYPE;
   session_row public.qr_sessions%ROWTYPE;
   cart_line_count INTEGER;
@@ -469,14 +469,14 @@ BEGIN
   END IF;
 
   -- Capture time only after all potentially blocking locks are held.
-  current_time := clock_timestamp();
+  v_current_time := clock_timestamp();
 
   UPDATE public.qr_sessions AS existing_session
   SET status = 'expired'
   WHERE existing_session.cart_id = active_cart.id
     AND existing_session.user_id = current_user_id
     AND existing_session.status = 'active'
-    AND existing_session.expires_at <= current_time;
+    AND existing_session.expires_at <= v_current_time;
 
   SELECT existing_session.*
     INTO session_row
@@ -484,7 +484,7 @@ BEGIN
   WHERE existing_session.cart_id = active_cart.id
     AND existing_session.user_id = current_user_id
     AND existing_session.status = 'active'
-    AND existing_session.expires_at > current_time
+    AND existing_session.expires_at > v_current_time
   LIMIT 1
   FOR UPDATE;
 
@@ -525,7 +525,7 @@ BEGIN
     active_cart.id,
     active_cart.shop_id,
     'active',
-    current_time + INTERVAL '2 minutes',
+    v_current_time + INTERVAL '2 minutes',
     NULL,
     0,
     0,
@@ -597,7 +597,7 @@ SET search_path = pg_catalog, public, extensions, auth
 AS $function$
 DECLARE
   current_user_id UUID := auth.uid();
-  current_time TIMESTAMPTZ;
+  v_current_time TIMESTAMPTZ;
   session_id UUID;
   session_cart_id UUID;
   locked_cart public.carts%ROWTYPE;
@@ -680,7 +680,7 @@ BEGIN
   END IF;
 
   -- Refresh time only after every blocking lock is held.
-  current_time := clock_timestamp();
+  v_current_time := clock_timestamp();
 
   IF locked_session.status = 'used'
      OR locked_session.used_at IS NOT NULL
@@ -693,7 +693,7 @@ BEGIN
     RAISE EXCEPTION 'QR session is not active' USING ERRCODE = '55000';
   END IF;
 
-  IF locked_session.expires_at <= current_time THEN
+  IF locked_session.expires_at <= v_current_time THEN
     RAISE EXCEPTION 'QR session has expired' USING ERRCODE = '55000';
   END IF;
 
@@ -737,7 +737,7 @@ BEGIN
     current_user_id,
     locked_session.item_count,
     locked_session.total_amount,
-    current_time
+    v_current_time
   FROM public.shops AS shop
   WHERE shop.id = locked_session.shop_id
     AND shop.owner_user_id = current_user_id
@@ -777,7 +777,7 @@ BEGIN
 
   UPDATE public.qr_sessions
   SET status = 'used',
-      used_at = current_time,
+      used_at = v_current_time,
       confirmed_by_user_id = current_user_id
   WHERE id = locked_session.id AND status = 'active'
   RETURNING * INTO locked_session;

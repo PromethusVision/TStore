@@ -269,14 +269,14 @@ SET search_path = pg_catalog, public, auth
 AS $function$
 DECLARE
   current_user_id UUID := auth.uid();
-  current_role TEXT;
+  v_current_role TEXT;
 BEGIN
   IF current_user_id IS NULL THEN
     RAISE EXCEPTION 'Authentication required' USING ERRCODE = '28000';
   END IF;
 
   SELECT profile.role
-    INTO current_role
+    INTO v_current_role
   FROM public.profiles AS profile
   WHERE profile.id = current_user_id
   FOR UPDATE;
@@ -285,7 +285,7 @@ BEGIN
     RAISE EXCEPTION 'Customer profile not found' USING ERRCODE = 'P0002';
   END IF;
 
-  IF current_role <> 'customer' THEN
+  IF v_current_role <> 'customer' THEN
     RAISE EXCEPTION 'Only customer accounts can be deleted here'
       USING ERRCODE = '42501';
   END IF;

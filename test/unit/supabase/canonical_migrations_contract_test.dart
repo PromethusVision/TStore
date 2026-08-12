@@ -38,6 +38,30 @@ const _expectedPublicTables = <String>{
   'wishlist',
 };
 
+const _forbiddenPlpgsqlLocalIdentifiers = <String>{
+  'authorization',
+  'constraint',
+  'current_catalog',
+  'current_date',
+  'current_role',
+  'current_schema',
+  'current_time',
+  'current_timestamp',
+  'current_user',
+  'exception',
+  'function',
+  'localtime',
+  'localtimestamp',
+  'position',
+  'role',
+  'session_user',
+  'system_user',
+  'table',
+  'transaction',
+  'trigger',
+  'user',
+};
+
 void main() {
   late List<File> migrationFiles;
   late String canonicalSql;
@@ -264,6 +288,45 @@ void main() {
     },
   );
 
+  test('PL/pgSQL locals avoid PostgreSQL special SQL identifiers', () {
+    final conflictingLocals = <String>[];
+
+    for (final file in migrationFiles) {
+      final sql = file.readAsStringSync();
+      for (final declareBlock in RegExp(
+        r'\bDECLARE\s+([\s\S]*?)\bBEGIN\b',
+        caseSensitive: false,
+      ).allMatches(sql)) {
+        final localIdentifiers = _captures(
+          declareBlock.group(1)!,
+          RegExp(
+            r'^\s*([a-z_][a-z0-9_]*)\s+(?:CONSTANT\s+)?'
+            r'(?:UUID|TEXT|TIMESTAMPTZ|INTEGER|NUMERIC|JSONB|BOOLEAN|'
+            r'public\.\w+%ROWTYPE)\b',
+            caseSensitive: false,
+            multiLine: true,
+          ),
+        );
+
+        for (final identifier in localIdentifiers) {
+          if (_forbiddenPlpgsqlLocalIdentifiers.contains(
+            identifier.toLowerCase(),
+          )) {
+            conflictingLocals.add('${_basename(file)}:$identifier');
+          }
+        }
+      }
+    }
+
+    expect(
+      conflictingLocals,
+      isEmpty,
+      reason:
+          'PL/pgSQL locals must not shadow PostgreSQL special SQL '
+          'expressions or keywords.',
+    );
+  });
+
   test(
     'every SECURITY DEFINER function fixes search_path and revokes execute',
     () {
@@ -393,7 +456,7 @@ void main() {
     expect(qrSql, contains('FOR SHARE OF listing, product;'));
     expect(qrSql, contains('FOR UPDATE;'));
     expect(
-      _occurrences(qrSql, RegExp(r'current_time := clock_timestamp\(\);')),
+      _occurrences(qrSql, RegExp(r'v_current_time := clock_timestamp\(\);')),
       greaterThanOrEqualTo(2),
     );
     expect(qrSql, contains('qr_sessions_one_active_per_cart_idx'));
