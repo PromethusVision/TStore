@@ -10,6 +10,7 @@ const _expectedMigrationFiles = <String>[
   '20260812000500_0005_verified_shop_ratings.sql',
   '20260812000600_0006_chat_notifications_account.sql',
   '20260812000700_0007_storage_realtime.sql',
+  '20260814000800_0008_fix_profile_role_guard.sql',
 ];
 
 const _expectedPublicTables = <String>{
@@ -161,13 +162,48 @@ void main() {
       RegExp(r'\bDROP\s+FUNCTION\b', caseSensitive: false),
       RegExp(r'\bDROP\b[\s\S]{0,80}\bCASCADE\b', caseSensitive: false),
       RegExp(r'\bTRUNCATE\b', caseSensitive: false),
-      RegExp(r'\bCREATE\s+OR\s+REPLACE\b', caseSensitive: false),
       RegExp(r'\bGRANT\s+ALL\b', caseSensitive: false),
     ];
 
     for (final pattern in forbiddenPatterns) {
       expect(executableSql, isNot(matches(pattern)), reason: pattern.pattern);
     }
+  });
+
+  test('only the additive hotfix replaces the profile role guard', () {
+    final historicalSql = migrationFiles
+        .take(migrationFiles.length - 1)
+        .map((file) => file.readAsStringSync())
+        .join('\n');
+    final hotfixSql = migrationFiles.last.readAsStringSync();
+
+    expect(
+      historicalSql,
+      isNot(
+        matches(RegExp(r'\bCREATE\s+OR\s+REPLACE\b', caseSensitive: false)),
+      ),
+    );
+    expect(
+      _captures(
+        hotfixSql,
+        RegExp(
+          r'^CREATE OR REPLACE FUNCTION public\.(\w+)\s*\(',
+          multiLine: true,
+        ),
+      ),
+      ['prevent_profile_role_client_escalation'],
+    );
+    expect(
+      hotfixSql,
+      isNot(
+        matches(
+          RegExp(
+            r'\b(?:DROP|TRUNCATE|ALTER\s+TABLE|CREATE\s+POLICY)\b',
+            caseSensitive: false,
+          ),
+        ),
+      ),
+    );
   });
 
   test('canonical schema contains no environment credentials or data IDs', () {
@@ -261,7 +297,7 @@ void main() {
         final sql = file.readAsStringSync();
         final functionCount = _occurrences(
           sql,
-          RegExp(r'^CREATE FUNCTION public\.', multiLine: true),
+          RegExp(r'^CREATE(?: OR REPLACE)? FUNCTION public\.', multiLine: true),
         );
 
         expect(
@@ -328,6 +364,30 @@ void main() {
   });
 
   test(
+    'effective canonical functions do not schema-qualify SQL expressions',
+    () {
+      final invalidExpression = RegExp(
+        r'\b(?:pg_catalog|public|auth)\.'
+        r'(?:coalesce|nullif|greatest|least|current_date|current_time|'
+        r'current_timestamp|localtime|localtimestamp)\b',
+        caseSensitive: false,
+      );
+      final invalidDefinitions = _functionSections(canonicalSql).entries
+          .where((entry) => invalidExpression.hasMatch(entry.value))
+          .map((entry) => entry.key)
+          .toList();
+
+      expect(
+        invalidDefinitions,
+        isEmpty,
+        reason:
+            'PostgreSQL special syntax expressions cannot be called as '
+            'schema-qualified functions.',
+      );
+    },
+  );
+
+  test(
     'every SECURITY DEFINER function fixes search_path and revokes execute',
     () {
       final functionSections = _functionSections(canonicalSql);
@@ -352,6 +412,49 @@ void main() {
       }
     },
   );
+
+  test('profile role guard hotfix preserves the security contract', () {
+    final hotfixSql = migrationFiles.last.readAsStringSync();
+    final effectiveGuard = _functionSections(
+      canonicalSql,
+    )['prevent_profile_role_client_escalation'];
+
+    expect(effectiveGuard, isNotNull);
+    expect(effectiveGuard, contains('SECURITY DEFINER'));
+    expect(effectiveGuard, contains("SET search_path = ''"));
+    expect(
+      effectiveGuard,
+      contains("AND coalesce(NEW.role, 'customer') <> 'customer'"),
+    );
+    expect(effectiveGuard, isNot(contains('pg_catalog.coalesce')));
+    expect(
+      effectiveGuard,
+      contains("TG_OP = 'UPDATE' AND OLD.role IS DISTINCT FROM NEW.role"),
+    );
+    expect(_occurrences(effectiveGuard!, RegExp("USING ERRCODE = '42501'")), 2);
+    expect(effectiveGuard, contains('RETURN NEW;'));
+    expect(
+      hotfixSql,
+      contains(
+        'REVOKE ALL ON FUNCTION '
+        'public.prevent_profile_role_client_escalation()',
+      ),
+    );
+    expect(
+      hotfixSql,
+      isNot(
+        matches(
+          RegExp(
+            r'GRANT\s+EXECUTE\s+ON\s+FUNCTION\s+'
+            r'public\.prevent_profile_role_client_escalation',
+            caseSensitive: false,
+          ),
+        ),
+      ),
+    );
+    expect(hotfixSql, isNot(contains('CREATE TRIGGER')));
+    expect(hotfixSql, isNot(contains('DROP TRIGGER')));
+  });
 
   test(
     'auth.users remains managed and signup trigger is not blindly dropped',
@@ -472,7 +575,12 @@ void main() {
   test(
     'Realtime is explicit while Storage remains least-privilege blocked',
     () {
-      final migration = migrationFiles.last.readAsStringSync();
+      final migration = migrationFiles
+          .singleWhere(
+            (file) =>
+                _basename(file) == '20260812000700_0007_storage_realtime.sql',
+          )
+          .readAsStringSync();
       const buckets = <String>[
         'product-images',
         'category-images',
@@ -542,7 +650,7 @@ void _expectUnique(List<String> names, {required String label}) {
 
 Map<String, String> _functionSections(String sql) {
   final starts = RegExp(
-    r'^CREATE FUNCTION public\.(\w+)\s*\(',
+    r'^CREATE(?: OR REPLACE)? FUNCTION public\.(\w+)\s*\(',
     multiLine: true,
   ).allMatches(sql).toList();
   final sections = <String, String>{};
