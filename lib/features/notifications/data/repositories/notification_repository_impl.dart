@@ -277,9 +277,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
                 callback: addNotification,
               )
               .subscribe((status, error) {
-                if (status != RealtimeSubscribeStatus.channelError &&
-                    status != RealtimeSubscribeStatus.timedOut &&
-                    status != RealtimeSubscribeStatus.closed) {
+                if (status != RealtimeSubscribeStatus.closed) {
                   return;
                 }
                 if (controller.isClosed) return;
