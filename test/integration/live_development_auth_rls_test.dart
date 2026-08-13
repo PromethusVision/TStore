@@ -133,11 +133,9 @@ void main() {
       await _verifySignupProfileAndConsents(clientA, userA.id, 'A');
       await _verifySignupProfileAndConsents(clientB, userB.id, 'B');
       await _verifyProfileIsolation(
-        clientA: clientA,
         clientB: clientB,
         anonClient: anonClient,
         userAId: userA.id,
-        runId: runId,
       );
       await _verifySavedLocations(
         clientA: clientA,
@@ -158,6 +156,17 @@ void main() {
         clientB: clientB,
         anonClient: anonClient,
         userAId: userA.id,
+      );
+      final backendContractIssues = [
+        ...await _verifyOwnProfileUpdate(clientA, userA.id, runId),
+        ...await _verifyRoleEscalation(clientA, userA.id),
+      ];
+      expect(
+        backendContractIssues,
+        isEmpty,
+        reason:
+            'Development profile mutation contract failures: '
+            '${backendContractIssues.join(', ')}',
       );
     },
     skip: _runLive
@@ -278,23 +287,10 @@ Future<void> _verifySignupProfileAndConsents(
 }
 
 Future<void> _verifyProfileIsolation({
-  required SupabaseClient clientA,
   required SupabaseClient clientB,
   required SupabaseClient anonClient,
   required String userAId,
-  required String runId,
 }) async {
-  final updatedName = 'w4a1_updated_$runId';
-  final updated = await clientA
-      .from('profiles')
-      .update({'full_name': updatedName, 'phone': '+900000000001'})
-      .eq('id', userAId)
-      .select('id, full_name, phone, role')
-      .single();
-  expect(updated['id'], userAId);
-  expect(updated['full_name'], updatedName);
-  expect(updated['role'], 'customer');
-
   final crossUserUpdate = await clientB
       .from('profiles')
       .update({'full_name': 'w4a1_forbidden_profile_change'})
@@ -307,19 +303,54 @@ Future<void> _verifyProfileIsolation({
   await _expectNoVisibleRows(
     () => anonClient.from('profiles').select('id').eq('id', userAId),
   );
+}
 
+Future<List<String>> _verifyOwnProfileUpdate(
+  SupabaseClient client,
+  String userId,
+  String runId,
+) async {
+  final issues = <String>[];
+  final updatedName = 'w4a1_updated_$runId';
+  try {
+    final updated = await client
+        .from('profiles')
+        .update({'full_name': updatedName, 'phone': '+900000000001'})
+        .eq('id', userId)
+        .select('id, full_name, phone, role')
+        .single();
+    expect(updated['id'], userId);
+    expect(updated['full_name'], updatedName);
+    expect(updated['role'], 'customer');
+  } on PostgrestException catch (error) {
+    issues.add('allowed-own-profile-update=${error.code}');
+  }
+  return issues;
+}
+
+Future<List<String>> _verifyRoleEscalation(
+  SupabaseClient client,
+  String userId,
+) async {
+  final unexpectedFailureCodes = <String>[];
   for (final privilegedRole in ['merchant', 'admin']) {
-    await _expectDatabaseDenied(
-      () => clientA
+    try {
+      await client
           .from('profiles')
           .update({'role': privilegedRole})
-          .eq('id', userAId)
-          .select('id'),
-    );
-    final roleCheck = await clientA
+          .eq('id', userId)
+          .select('id');
+      fail('CRITICAL: client role escalation to $privilegedRole succeeded.');
+    } on PostgrestException catch (error) {
+      if (error.code != '42501') {
+        unexpectedFailureCodes.add('$privilegedRole=${error.code}');
+      }
+    }
+
+    final roleCheck = await client
         .from('profiles')
         .select('role')
-        .eq('id', userAId)
+        .eq('id', userId)
         .single();
     expect(
       roleCheck['role'],
@@ -327,6 +358,8 @@ Future<void> _verifyProfileIsolation({
       reason: 'CRITICAL: client role escalation must never persist.',
     );
   }
+
+  return unexpectedFailureCodes;
 }
 
 Future<void> _verifySavedLocations({
