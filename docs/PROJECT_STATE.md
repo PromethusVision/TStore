@@ -2,13 +2,13 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-14
-- Son doğrulanan uygulama commit'i: `4d14df35f182f105bd1e2cf72153adb8a49e4e89`
-- Doğrulanan branch/upstream: `origin/main` / `origin/main`
-- Entegrasyon durumu: **WAVE 4.1 DEVELOPMENT PROFILE ROLE GUARD APPLIED**
+- Son güncelleme: 2026-08-15
+- Son doğrulanan uygulama commit'i: `ce275b3bc8f1e3dc75620cd64992ad7e31f02c98`
+- Doğrulanan branch/upstream: `integration/wave-4-final` / `origin/main`
+- Entegrasyon durumu: **WAVE 4 COMPLETE**
 - Snapshot oluşturulurken çalışma ağacı: temiz (`+0/-0`)
-- Doğrulama türü: Wave 3.1 identifier hotfix ve Wave 4.1 profile role guard diff incelemesi; gerçek Development PostgreSQL parse/apply; 23 tablo, 8 migration, 23/23 RLS, 55 policy, canonical grant ve 19 app fonksiyonu audit'i; profile update/role escalation smoke; Realtime publication sözleşmesi; canonical/QR testleri ve analyzer
-- Çalıştırılmayan kontroller: gerçek kullanıcı/veriyle QR, chat, notifications, merchant ve rating state geçişleri; Storage bucket/policy kabulü; gerçek client-safe dev/prod değerleriyle smoke build ve iki cihaz QR kabulü
+- Doğrulama türü: Wave 4 Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime live sonuçlarının entegrasyonu; Development MCP read-only kontrolü; 23 public tablo, 8 migration ve 23/23 RLS doğrulaması; hedefli 998/998, tam 1069/1069 test; analyzer ve güvenlik taraması
+- Çalıştırılmayan kontroller: Integration ortamında client-safe Development Dart-define değerleri bulunmadığı için üç live harness rerun'u; fiziksel iki cihaz QR kabulü; Storage bucket/policy kabulü; gerçek client-safe Development/Production smoke build'i; production-like e-posta doğrulama/SMTP kabulü
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -45,9 +45,9 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Favoriler | COMPLETE | Supabase repository, Cubit, guest-login devam akışı, kart entegrasyonu ve testler var. |
 | Profil / hesap | COMPLETE | Profil düzenleme, avatar, hesap silme, kayıtlı konumlar, yardım/gizlilik ve testler var. |
 | Doğrulanmış alışveriş geçmişi | COMPLETE | `verified_transactions` snapshot verileri, repository, Cubit, detay ekranı ve testler var. |
-| Mesajlaşma / chat | COMPLETE | Ürün bağlantılı mesaj, konuşma listesi, pagination, Realtime lifecycle/reconnect/dedup, unread ve delivery/read state'leri var; release-hardening testleri birleşik durumda geçti. |
-| QR / mağaza içi doğrulama | PARTIAL | Müşteri QR, merchant scanner, polling, tek kullanımlı onay, immutable snapshot revalidation, stale/duplicate/timeout korumaları ve güvenli RPC/RLS var; canonical QR migration'ı Development PostgreSQL üzerinde parse/apply edildi, gerçek hesaplarla iki cihaz kabulü bekliyor. |
-| Bildirimler | PARTIAL | Supabase içi liste, pagination/refresh yarış koruması, session izolasyonu, Realtime lifecycle/dedup ve güvenli okundu/silme işlemleri var; release-hardening testleri geçti ancak push notification yok. |
+| Mesajlaşma / chat | COMPLETE | Ürün bağlantılı mesaj, konuşma listesi, pagination, Realtime lifecycle/reconnect/dedup, unread ve delivery/read state'leri var; Development üzerinde chat event delivery, RLS isolation, reconnect, dedup, unsubscribe ve summary RPC canlı doğrulandı. |
+| QR / mağaza içi doğrulama | PARTIAL | Müşteri QR, merchant scanner, polling, tek kullanımlı onay, immutable snapshot revalidation, stale/duplicate/timeout korumaları ve güvenli RPC/RLS var; Development canlı testinde create/confirm, negative state'ler ve gerçek concurrent confirm geçti. Fiziksel iki cihaz kabulü bekliyor. |
+| Bildirimler | PARTIAL | Supabase içi liste, pagination/refresh yarış koruması, session izolasyonu, Realtime lifecycle/dedup ve güvenli okundu/silme işlemleri var; Development canlı event/recipient isolation/mark-read doğrulandı. Geçici `channelError`/`timedOut` artık stream'i sonlandırmıyor; yalnız terminal `closed` kapatıyor. Push notification yok. |
 | Puanlama / yorum | PARTIAL | Ürün yorumları ve QR-doğrulanmış mağaza puanı var. Ürün yorumu yetkisi halen legacy `orders/order_items` modeline bakıyor. |
 | Merchant altyapısı | PARTIAL | Rol kapısı, merchant login, mağaza oluşturma/düzenleme ve QR scanner var; merchant ürün/stok/fiyat/istatistik yönetimi yok. |
 | Reklam / sponsored / campaign | SKELETON | Supabase banner gösterimi ve promotion bildirim tipi var; reklam/campaign motoru yok. |
@@ -55,7 +55,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | COMPLETE | Development projesinde 8 dosyalı canonical zincir uygulandı: 23 public tablo, 23/23 RLS, 55 policy, birebir canonical anon/auth grant matrisi ve 19 app fonksiyonu doğrulandı. `0008` profile role guard düzeltmesi uygulandı; normal profil güncellemesi geçti, merchant/admin escalation reddedildi ve PostgreSQL 42883 giderildi. Agent 1 tam Wave 4 Auth/RLS canlı rerun'u hâlâ gereklidir. Chat/bildirim client güncellemesi yalnız `is_read` sütunuyla sınırlı; Realtime publication yapılandırıldı. Storage bucket/policy kararları ayrı ürün blocker'ı olarak açık. |
+| Supabase / RLS | COMPLETE | Development projesinde 8 dosyalı canonical zincir uygulandı: 23 public tablo, 23/23 RLS, 55 policy, birebir canonical anon/auth grant matrisi ve 19 app fonksiyonu doğrulandı. `0008` profile role guard düzeltmesi uygulandı; tam Wave 4 Auth/Profile/RLS canlı harness'i geçti, merchant/admin escalation `42501` ile reddedildi ve PostgreSQL 42883 görülmedi. Chat/notifications Realtime ile QR/verified purchase canlı doğrulandı. Storage bucket/policy kararları ayrı ürün blocker'ı olarak açık. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit, testler ve shipping/payment alanları repoda duruyor; aktif müşteri navigation'ına ve GetIt DI grafiğine bağlı değil, hedef ürün akışı değil. |
 
@@ -75,25 +75,26 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Kritik Integration Eksikleri
 
 - QR müşteri → merchant scanner → onay → müşteri tamamlanma akışı iki gerçek cihazla kabul edilmedi.
-- QR, chat, notifications, merchant ve RLS için gerçek Supabase integration testi yok.
+- Wave 4 Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime Development integration testleri tamamlandı; fiziksel cihaz ve ürün-kararı gerektiren kapılar aşağıda açık tutuluyor.
 - Ürün yorumu yetkisi yeni doğrulanmış alışveriş modeliyle bütünleştirilmedi.
-- Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası profile update/role escalation smoke geçti, ancak Agent 1 tam Wave 4 Auth/RLS canlı rerun'u yapılmadı.
+- Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası tam Wave 4 Auth/Profile/RLS canlı harness'i geçti.
 - Gerçek client-safe development ve production değerleriyle ayrı smoke build alınmadı.
-- Canonical `0001`–`0008` zinciri Development Supabase'e uygulandı; gerçek PostgreSQL parse/apply ve statik remote RLS/RPC/grant audit'i geçti. Profile role guard smoke geçti; tam Wave 4 Auth/RLS davranış integration testi açık.
+- Canonical `0001`–`0008` zinciri Development Supabase'e uygulandı; gerçek PostgreSQL parse/apply, statik remote RLS/RPC/grant audit'i ve tam Wave 4 Auth/Profile/RLS davranış testi geçti.
 - Beklenen altı Storage bucket için visibility/write/ownership/MIME/size/delete kararları verilmedi; bucket veya policy oluşturulmadı.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
 
 ## Test Durumu
 
-- 108 test dosyası ve 1045 test bloğu bulunuyor.
+- `test/` altında 110 Dart test dosyası ve ayrıca gated QR live harness'i bulunuyor.
 - Güçlü alanlar: Shop, Auth, Personalization, Chat ve Cart.
-- Zayıf alanlar: gerçek backend integration, RLS, merchant ekranları, kupon backend'i ve review repository geçişi.
-- Mevcut tek integration dosyası auth akışına odaklanıyor.
+- Açık doğrulama alanları: fiziksel cihaz/kamera kabulü, Storage policy uygulaması, merchant ekranları, kupon backend'i ve review eligibility geçişi.
+- Auth/RLS, QR ve Realtime için Development ref'ine kilitli, açık opt-in gerektiren live harness'lar bulunuyor; normal `flutter test` remote istek yapmadan bunları skip ediyor.
 - Wave 1 birleşik durumda tam Flutter test suite geçti; `flutter analyze --no-pub` sonucu temizdi. Hedefli sonuçlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138 ve settings/navigation 34/34.
 - Wave 2 birleşik durumda tam Flutter test suite ve `flutter analyze --no-pub` geçti. Hedefli sonuçlar: environment/config 11/11, discovery/shop 344/344, legacy mimari + unit 22/22 ve Cart V2/QR 94/94.
 - Wave 3 birleşik durumda tam Flutter test suite ve `flutter analyze --no-pub` geçti. Hedefli sonuçlar: canonical migration 13/13, QR release contract 3/3, banner 22/22, async-context 32/32, chat 97/97, notifications 53/53, cart/QR/purchases 157/157 ve discovery/navigation 412/412.
 - Wave 3.1 hotfix ve Development bootstrap öncesi/sonrası canonical migration 14/14, QR concurrency contract 3/3 ve `flutter analyze --no-pub` geçti; gerçek PostgreSQL parse/apply 0004–0007 için başarılı oldu.
 - Wave 4.1 Development `0008_fix_profile_role_guard` apply/postflight geçti; normal profile update başarılı, merchant/admin escalation `42501` ile reddedildi, final rol `customer` kaldı ve smoke sırasında `42883` görülmedi.
+- Wave 4 final birleşik durumda hedefli matris 998/998 (4 gated live skip), tam Flutter suite 1069/1069 (3 gated live skip) ve `flutter analyze --no-pub` geçti; global `use_build_context_synchronously` etkin ve temiz kaldı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -110,15 +111,15 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap ve `0008` apply tamamlandı: 23 tablo, 8 migration, 23/23 RLS, 55 policy, canonical grant matrisi, trigger/RPC envanteri ve Realtime publication üyeliği remote olarak doğrulandı; production'a dokunulmadı.
-- Agent 1 tam Wave 4 Auth/RLS canlı rerun'u ile QR, chat, notification, merchant ve rating davranışlarının gerçek hesap/veriyle state geçişi ve RLS enforcement integration testleri.
-- Chat conversation summary RPC'lerinin canlı performans ve fallback davranışı.
+- Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
-- Supabase içindeki veri bütünlüğünün mevcut schema dosyalarıyla tam uyumu.
+- Gerçek client-safe Development Dart-define değerleriyle uygulama build/smoke doğrulaması; Production smoke yalnız güvenli Production değerleri sağlandığında ayrıca yapılır.
 - Altı beklenen Storage bucket ve bunların least-privilege policy sözleşmesi.
 
 ## Son Geliştirme Odağı
 
-- 2026-08-14: Wave 4.1 `0008_fix_profile_role_guard` Development'a uygulandı; normal profil update smoke geçti, merchant/admin escalation reddedildi, PostgreSQL 42883 giderildi ve disposable müşteri güvenli RPC ile temizlendi. Agent 1 tam Wave 4 Auth/RLS canlı rerun'u açık.
+- 2026-08-15: **WAVE 4 COMPLETE** — Live Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime sonuçları entegre edildi. Development read-only kontrolde 23 tablo, 8 migration ve 23/23 RLS doğrulandı; test verisi temiz. Bildirim stream'i geçici Realtime kanal hatalarında açık kalacak şekilde düzeltildi; birleşik hedefli/tam test ve analyzer kapıları geçti.
+- 2026-08-14: Wave 4.1 `0008_fix_profile_role_guard` Development'a uygulandı; normal profil update smoke geçti, merchant/admin escalation reddedildi, PostgreSQL 42883 giderildi ve disposable müşteri güvenli RPC ile temizlendi.
 - 2026-08-12: Wave 3.1 PostgreSQL özel identifier hotfix'i `origin/main`e entegre edildi; Development canonical DB bootstrap 23 tablo/7 migration ile tamamlandı, RLS/grant/RPC ve Realtime audit'i geçti, seed ve Storage bucket/policy uygulanmadı.
 - 2026-08-12: canonical Supabase migration normalization, 25/23 tablo reconciliation, promotion banner read-path hardening ve kalan 9 async-context ihlalinin temizlenmesi Wave 3 entegrasyonu; analyzer ve tam test suite temiz.
 - 2026-08-11: development/production config ayrımı, discovery async lifecycle hardening ve legacy order aktif navigation + DI izolasyonu Wave 2 entegrasyonu; analyzer ve tam test suite temiz.

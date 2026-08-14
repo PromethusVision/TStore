@@ -29,10 +29,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-11 Wave 1 teknik ilerleme: chat Realtime/reconnect/dedup ve async lifecycle hardening, in-app notification Realtime/pagination/session/mutation hardening ve QR/verified purchase client + RPC contract hardening tamamlandı; birleşik analyzer ve tam test suite geçti.
 - 2026-08-11 Wave 2 teknik ilerleme: development/production config sözleşmesi ayrıldı, discovery ekranlarındaki 5 lifecycle/race problemi giderildi ve legacy order aktif müşteri navigation'ı ile DI grafiğinden izole edildi; birleşik analyzer ve tam test suite geçti.
 - 2026-08-12 Wave 3 teknik ilerleme: 7 dosyalı canonical Supabase migration zinciri ve 23 tabloluk fresh bootstrap sözleşmesi hazırlandı, banner okuma yolu sertleştirildi, kalan 9 async-context ihlali temizlendi ve global lint etkinleştirildi; birleşik analyzer ve tam test suite geçti. Remote Supabase'e migration uygulanmadı.
+- 2026-08-15 Wave 4 teknik ilerleme: Development üzerinde Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime live doğrulamaları geçti; `0008` profile role guard 42883 regresyonunu giderdi; bildirim stream'i geçici kanal hatalarında açık kalacak şekilde düzeltildi. Final entegrasyon hedefli/tam test ve analyzer kapılarını geçti.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
-- Durum: Kod hardening ve migration dosyası mevcut; gerçek PostgreSQL/test Supabase migration doğrulaması ile gerçek cihaz kabulü açık
+- Durum: Kod hardening, Development PostgreSQL uygulaması ve gerçek backend concurrent confirm doğrulaması tamamlandı; fiziksel iki cihaz kabulü açık
 - Hedef: Müşteri QR oluşturma → merchant QR okutma → merchant onayı → müşteride tamamlanma akışını gerçek hesaplar ve iki fiziksel cihazla doğrulamak.
 - Kabul kapsamında kamera izni, yanlış mağaza, süresi dolmuş/iptal edilmiş/kullanılmış QR ve bağlantı gecikmesi davranışları bulunur.
 
@@ -98,19 +99,17 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### C2. Backend Integration Test Eksikleri
 
-- QR session/verification istemci ve migration sözleşme hardening'i tamamlandı; RPC'lerin gerçek PostgreSQL/test Supabase uygulama ve state geçişi doğrulaması açık.
-- Chat Realtime, unread ve conversation summary için istemci lifecycle/dedup hardening'i tamamlandı; gerçek Supabase integration doğrulaması açık.
-- Merchant role/shop erişimi.
-- In-app notification istemci Realtime/pagination/session hardening'i tamamlandı; notification ve saved-location backend izin doğrulaması açık.
-- Verified purchase ve rating bütünlüğü.
+- Wave 4 tamamlanan Development doğrulamaları: Auth signup/session, otomatik profil/legal consent, own/cross-user/anon RLS, saved locations/addresses/wishlist, merchant/admin escalation reddi; QR create/confirm/negative state'ler/immutable snapshot/gerçek concurrency; Chat ve Notifications Realtime delivery/isolation/reconnect/dedup/lifecycle.
+- Fiziksel kamera ve iki cihaz QR kabulü C1 altında açık kalır.
+- Ürün yorumu eligibility kararı ve bunun legacy `orders/order_items` bağı C4/B3 altında açıktır; karar verilmeden rating/review modeli genişletilmez.
+- Production-like e-posta doğrulama/SMTP kabulü, Confirm Email'in kapalı olduğu Development live testlerinden ayrı bir release kapısıdır.
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
-- Fresh bootstrap için resmi kaynak `supabase/migrations/` altındaki `0001`–`0007` canonical zinciridir; kökteki eski schema ve migration dosyaları tarihsel referans olarak kalır.
+- Fresh bootstrap için resmi kaynak `supabase/migrations/` altındaki `0001`–`0008` canonical zinciridir; kökteki eski schema ve migration dosyaları tarihsel referans olarak kalır.
 - Eski audit modelindeki 25 tablo ile canonical 23 tablo farkı kapatıldı: aktif repository kullanımı olmayan legacy `cart_items` ve backend'e bağlanmamış `coupons` canonical zincire alınmadı. `orders/order_items`, ürün yorumu kararı verilene kadar korundu.
-- Canonical zinciri doğrulanmış fresh Development Supabase'e uygulamak ve gerçek object/table/policy/function/grant envanterini sözleşmeyle karşılaştırmak.
-- Policy, grant, trigger, RPC ve `SECURITY DEFINER` izinlerini kontrol etmek.
-- Canonical QR RPC'lerini gerçek PostgreSQL/test Supabase üzerinde doğrulamak; production veya başka bir Supabase ortamına bu entegrasyonda migration uygulanmadı.
+- Canonical `0001`–`0008` zinciri doğrulanmış Development Supabase'e uygulandı; 23 public tablo, 23/23 RLS, 55 policy, grant/trigger/RPC ve `SECURITY DEFINER` envanteri audit edildi.
+- Canonical QR RPC'leri gerçek Development PostgreSQL üzerinde state geçişi ve concurrent confirm ile doğrulandı; Production'a migration uygulanmadı ve Wave 4 final entegrasyonu remote yazma yapmadı.
 - `product-images`, `category-images`, `brand-logos`, `banner-images`, `avatars` ve `review-images` için visibility/write/ownership/MIME/size/delete ürün kararlarını alıp ayrı least-privilege migration hazırlamak.
 - Production üzerinde destructive işlem kullanıcı onayı olmadan yapılmaz.
 
@@ -146,7 +145,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-11 Wave 1 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: chat 97/97, notifications 53/53, cart/QR/purchases 138/138, settings/navigation 34/34.
 - 2026-08-11 Wave 2 birleşik sonucu: `flutter analyze --no-pub` temiz ve tam Flutter test suite başarılı. Hedefli kanıtlar: environment/config 11/11, discovery/shop 344/344, legacy mimari + unit 22/22, Cart V2/QR 94/94.
 - 2026-08-12 Wave 3 birleşik sonucu: `flutter analyze --no-pub` temiz ve 108 dosyalık tam Flutter test suite başarılı. Hedefli kanıtlar: canonical migration 13/13, QR release contract 3/3, banner 22/22, async-context 32/32, chat 97/97, notifications 53/53, cart/QR/purchases 157/157 ve discovery/navigation 412/412.
-- QR, chat, merchant ve RLS için integration kapsamı eklemek.
+- 2026-08-15 Wave 4 final sonucu: Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime gated live harness'ları entegre edildi; hedefli 998/998, tam Flutter suite 1069/1069 ve analyzer geçti. Integration live rerun'u client-safe değer bulunmadığı için yapılmadı; bağımsız üç live sonuç PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
