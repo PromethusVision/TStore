@@ -22,10 +22,13 @@ Bu aktif alanların hiçbiri `features/orders`, `OrdersCubit`,
 `test/architecture/legacy_order_isolation_test.dart` bu sınırı regression testi
 olarak korur.
 
-Ürün detayından açılan ürün yorumları ayrı ve bilinen bir veri bağı taşır:
-yorum uygunluğu halen doğrudan legacy `orders/order_items` tablolarında
-`delivered` kayıt arar. Bu bağlantı klasik checkout'a navigation sağlamaz;
-QR-doğrulanmış alışveriş modeline taşınması ürün kararı ve ayrı görev gerektirir.
+Ürün detayından açılan ürün yorumları ayrı ve bilinen bir veri bağı taşır.
+`ReviewRepositoryImpl.addReview`, legacy `orders/order_items` tablolarında
+`delivered` kayıt arar; ancak bu sonuç yorum göndermeyi engellemez, yalnız
+`reviews.is_verified_purchase` alanını belirler. Mevcut ürün yorumları ekranı
+salt okunurdur ve submit UI içermez. Bu bağlantı klasik checkout'a navigation
+sağlamaz; doğrulanmış etiketi/yorum uygunluğunun QR-doğrulanmış alışveriş
+modeline taşınması ürün kararı ve ayrı görev gerektirir.
 
 ## Korunan legacy alanlar
 
@@ -35,19 +38,27 @@ QR-doğrulanmış alışveriş modeline taşınması ürün kararı ve ayrı gö
 - Legacy `orders` / `order_items` tablo ve veri sözleşmeleri
 - Legacy order unit testleri
 
-Bu alanlar topluca silinmemiştir. Ürün yorumu uygunluğunun halen legacy
-`orders/order_items` verisine dayanması nedeniyle tablo/veri kaldırma işi ayrı
-bir veri etkisi ve migration analizi gerektirir.
+Bu alanlar topluca silinmemiştir. Ürün yorumu doğrulanmış satın alma etiketinin
+legacy `orders/order_items` sorgusuna, hesap silme RPC'sinin de `orders`
+tablosuna dayanması nedeniyle tablo/veri kaldırma işi ayrı bir veri etkisi ve
+migration analizi gerektirir.
 
-## Integration required
+## Güncel DI ve DB durumu
 
-`lib/core/dependency_injection/service_locator.dart` halen
-`OrderRepositoryImpl`, order use-case'leri ve `OrdersCubit` kayıtlarını içerir.
-Aktif kodda bu kayıtlardan tüketim bulunmamıştır; ancak dosya shared/hot-spot
-olduğu için bu görevde değiştirilmemiştir. Integration agentı, birleşik branch
-üzerinde tüketici olmadığını yeniden doğruladıktan sonra yalnız bu import ve
-kayıtları kaldırmalıdır. Legacy dosya, tablo veya veriler bu wiring değişikliği
-sırasında silinmemelidir.
+Wave 2 entegrasyonu sonrasında
+`lib/core/dependency_injection/service_locator.dart` içinde
+`OrderRepositoryImpl`, order use-case'leri veya `OrdersCubit` import/kaydı
+bulunmaz. Legacy Dart sınıfları yalnız kendi modülleri ve testleri içinde
+reachable durumdadır; architecture testi bunların aktif uygulama koduna yeniden
+import edilmesini engeller.
+
+Legacy DB bağı tamamen bitmemiştir. Review repository doğrulanmış satın alma
+etiketi için tabloları doğrudan sorgular; ayrıca `delete_current_customer_account`
+RPC'si cascade olmayan `orders.user_id` foreign key'i nedeniyle auth kullanıcısı
+silinmeden önce legacy order kayıtlarını siler. Kesin dependency haritası ve
+kaldırma sırası için
+[`REVIEW_ELIGIBILITY_LEGACY_ORDER_AUDIT.md`](REVIEW_ELIGIBILITY_LEGACY_ORDER_AUDIT.md)
+belgesine bakın.
 
 ## Yasak bağlantılar
 
