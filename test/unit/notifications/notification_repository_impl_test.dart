@@ -216,6 +216,39 @@ void main() {
         RealtimeSubscribeStatus.channelError,
         StateError('channel failed'),
       );
+      statusCallbacks.first(RealtimeSubscribeStatus.timedOut, null);
+      await pumpEventQueue();
+
+      expect(firstDone.isCompleted, isFalse);
+      callbacks
+          .firstWhere(
+            (registration) => registration.event == PostgresChangeEvent.insert,
+          )
+          .callback(
+            PostgresChangePayload(
+              schema: 'public',
+              table: SupabaseTables.notifications,
+              commitTimestamp: DateTime(2026, 8, 11, 0, 1),
+              eventType: PostgresChangeEvent.insert,
+              newRecord: const {
+                'id': 'notification-after-channel-error',
+                'user_id': 'customer-1',
+                'title': 'Yeni bildirim',
+                'body': 'Bağlantı sonrası bildirim',
+                'type': 'system',
+                'is_read': false,
+              },
+              oldRecord: const {},
+              errors: null,
+            ),
+          );
+      await pumpEventQueue();
+      expect(firstNotifications.map((notification) => notification.id), const [
+        'notification-realtime',
+        'notification-after-channel-error',
+      ]);
+
+      statusCallbacks.first(RealtimeSubscribeStatus.closed, null);
       await firstDone.future;
       await firstSubscription.cancel();
       await secondSubscription.cancel();
