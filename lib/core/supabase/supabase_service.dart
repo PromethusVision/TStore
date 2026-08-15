@@ -37,8 +37,13 @@ class SupabaseService {
     );
     _client = Supabase.instance.client;
 
+    final latestAuthState = await _client!.auth.onAuthStateChange.first;
+
     _initialPasswordRecoveryStatus = await resolvePasswordRecoveryLaunch(
       uri: launchUri,
+      recoverySessionVerified:
+          latestAuthState.event == AuthChangeEvent.passwordRecovery &&
+          latestAuthState.session != null,
       verifyToken: (tokenHash) async {
         final response = await _client!.auth.verifyOTP(
           tokenHash: tokenHash,
@@ -85,9 +90,18 @@ class SupabaseService {
   static Future<PasswordRecoveryLaunchStatus> resolvePasswordRecoveryLaunch({
     required Uri uri,
     required Future<bool> Function(String tokenHash) verifyToken,
+    bool recoverySessionVerified = false,
   }) async {
     if (!isPasswordRecoveryLaunchUri(uri)) {
       return PasswordRecoveryLaunchStatus.none;
+    }
+
+    // The default Supabase recovery template redirects through the Auth
+    // endpoint. With PKCE, Supabase.initialize exchanges that callback before
+    // this method runs. Preserve that verified result instead of requiring the
+    // custom token_hash template path as well.
+    if (recoverySessionVerified) {
+      return PasswordRecoveryLaunchStatus.verified;
     }
 
     final tokenHash = uri.queryParameters['token_hash'];

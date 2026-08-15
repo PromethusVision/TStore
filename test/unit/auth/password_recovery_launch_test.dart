@@ -53,6 +53,40 @@ void main() {
       },
     );
 
+    test(
+      'accepts a recovery session already verified by PKCE startup',
+      () async {
+        var verifierCalled = false;
+
+        final status = await SupabaseService.resolvePasswordRecoveryLaunch(
+          uri: Uri.parse(
+            'http://127.0.0.1:7357/'
+            '?auth_action=password_recovery&code=one-time-code',
+          ),
+          recoverySessionVerified: true,
+          verifyToken: (_) async {
+            verifierCalled = true;
+            return false;
+          },
+        );
+
+        expect(status, PasswordRecoveryLaunchStatus.verified);
+        expect(verifierCalled, isFalse);
+      },
+    );
+
+    test('rejects an unverified PKCE recovery callback', () async {
+      final status = await SupabaseService.resolvePasswordRecoveryLaunch(
+        uri: Uri.parse(
+          'http://127.0.0.1:7357/'
+          '?auth_action=password_recovery&code=expired-code',
+        ),
+        verifyToken: (_) async => true,
+      );
+
+      expect(status, PasswordRecoveryLaunchStatus.invalid);
+    });
+
     test('rejects a recovery link without a usable token hash', () async {
       final status = await SupabaseService.resolvePasswordRecoveryLaunch(
         uri: Uri.parse(

@@ -126,6 +126,14 @@ class AuthRepositoryImpl implements AuthRepository {
         ),
       );
     } on AuthException catch (e) {
+      if (_isExistingAccountError(e.message)) {
+        // Keep the observable result aligned with a normal confirmation-
+        // required signup. Revealing that this address already has an account
+        // would allow email enumeration from the customer client.
+        return Right(
+          UserEntity(id: '', email: email, fullName: fullName, phone: phone),
+        );
+      }
       return Left(_getAuthErrorMessage(e.message));
     } catch (e) {
       return Left(
@@ -396,6 +404,13 @@ class AuthRepositoryImpl implements AuthRepository {
         lowerMessage.contains('connection refused') ||
         lowerMessage.contains('timed out') ||
         lowerMessage.contains('timeout');
+  }
+
+  bool _isExistingAccountError(String message) {
+    final lowerMessage = message.toLowerCase();
+    return lowerMessage.contains('user already registered') ||
+        lowerMessage.contains('already been registered') ||
+        lowerMessage.contains('email already exists');
   }
 
   bool _isServiceUnavailableError(String lowerMessage) {
