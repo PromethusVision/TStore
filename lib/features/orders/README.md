@@ -8,8 +8,9 @@ EsnaftaVar'ın aktif müşteri ürünü bu modeli kullanmaz.
 - Bu klasördeki repository, use-case ve Cubit müşteri navigation'ına, Sepet
   V2'ye veya ürün/mağaza akışına bağlanmamalıdır.
 - Legacy tablolar ve kod bu görevde veri etkisi analiz edilmeden kaldırılmaz.
-- Global DI kayıtlarının kaldırılması shared wiring değişikliği olduğu için
-  integration agentına bırakılmıştır.
+- Global DI import ve kayıtları Wave 2 entegrasyonunda kaldırılmıştır. Bu
+  modüldeki sınıflar yalnız kendi legacy kodu ve unit testleri içinde birbirine
+  bağlıdır; aktif uygulama koduna yeniden import edilmemelidir.
 
 Teknik sınır ve kaldırma ön koşulları için
 [`docs/LEGACY_ORDER_ISOLATION.md`](../../../docs/LEGACY_ORDER_ISOLATION.md)
