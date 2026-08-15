@@ -11,6 +11,7 @@ const _expectedMigrationFiles = <String>[
   '20260812000600_0006_chat_notifications_account.sql',
   '20260812000700_0007_storage_realtime.sql',
   '20260814000800_0008_fix_profile_role_guard.sql',
+  '20260815000900_0009_verified_product_reviews_storage.sql',
 ];
 
 const _expectedPublicTables = <String>{
@@ -170,22 +171,29 @@ void main() {
     }
   });
 
-  test('only the additive hotfix replaces the profile role guard', () {
-    final historicalSql = migrationFiles
-        .take(migrationFiles.length - 1)
+  test('only designated forward migrations replace installed functions', () {
+    final initialCanonicalSql = migrationFiles
+        .take(7)
         .map((file) => file.readAsStringSync())
         .join('\n');
-    final hotfixSql = migrationFiles.last.readAsStringSync();
+    final profileHotfixSql = migrationFiles
+        .singleWhere(
+          (file) =>
+              _basename(file) ==
+              '20260814000800_0008_fix_profile_role_guard.sql',
+        )
+        .readAsStringSync();
+    final wave6Sql = migrationFiles.last.readAsStringSync();
 
     expect(
-      historicalSql,
+      initialCanonicalSql,
       isNot(
         matches(RegExp(r'\bCREATE\s+OR\s+REPLACE\b', caseSensitive: false)),
       ),
     );
     expect(
       _captures(
-        hotfixSql,
+        profileHotfixSql,
         RegExp(
           r'^CREATE OR REPLACE FUNCTION public\.(\w+)\s*\(',
           multiLine: true,
@@ -194,11 +202,38 @@ void main() {
       ['prevent_profile_role_client_escalation'],
     );
     expect(
-      hotfixSql,
+      profileHotfixSql,
       isNot(
         matches(
           RegExp(
             r'\b(?:DROP|TRUNCATE|ALTER\s+TABLE|CREATE\s+POLICY)\b',
+            caseSensitive: false,
+          ),
+        ),
+      ),
+    );
+    expect(
+      _captures(
+        wave6Sql,
+        RegExp(
+          r'^CREATE OR REPLACE FUNCTION public\.(\w+)\s*\(',
+          multiLine: true,
+        ),
+      ).toSet(),
+      {
+        'get_qr_session_for_verification',
+        'create_qr_session',
+        'confirm_qr_session',
+        'refresh_product_rating_after_review',
+      },
+    );
+    expect(
+      wave6Sql,
+      isNot(
+        matches(
+          RegExp(
+            r'\b(?:DROP\s+TABLE|DROP\s+SCHEMA|DROP\s+FUNCTION|'
+            r'DROP\s+TRIGGER|TRUNCATE)\b',
             caseSensitive: false,
           ),
         ),
@@ -414,7 +449,13 @@ void main() {
   );
 
   test('profile role guard hotfix preserves the security contract', () {
-    final hotfixSql = migrationFiles.last.readAsStringSync();
+    final hotfixSql = migrationFiles
+        .singleWhere(
+          (file) =>
+              _basename(file) ==
+              '20260814000800_0008_fix_profile_role_guard.sql',
+        )
+        .readAsStringSync();
     final effectiveGuard = _functionSections(
       canonicalSql,
     )['prevent_profile_role_client_escalation'];
@@ -626,6 +667,39 @@ void main() {
       );
     },
   );
+
+  test('Wave 6 provisions only the three frozen public media buckets', () {
+    final migration = migrationFiles.last.readAsStringSync();
+
+    for (final bucket in [
+      'product-images',
+      'category-images',
+      'banner-images',
+    ]) {
+      expect(migration, contains("'$bucket'"));
+    }
+    expect(migration, isNot(contains("'brand-logos'")));
+    expect(migration, isNot(contains("'avatars'")));
+    expect(migration, isNot(contains("'review-images'")));
+    expect(
+      migration,
+      contains("ARRAY['image/jpeg', 'image/png', 'image/webp']::TEXT[]"),
+    );
+    expect(migration, contains('8388608'));
+    expect(migration, contains('2097152'));
+    expect(migration, contains('5242880'));
+    expect(
+      migration,
+      isNot(
+        matches(
+          RegExp(
+            r'CREATE\s+POLICY[\s\S]*?ON\s+storage\.objects',
+            caseSensitive: false,
+          ),
+        ),
+      ),
+    );
+  });
 }
 
 String _basename(File file) => file.uri.pathSegments.last;
