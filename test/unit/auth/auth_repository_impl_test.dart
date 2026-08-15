@@ -64,6 +64,36 @@ void main() {
     },
   );
 
+  test(
+    'existing signup is indistinguishable from confirmation required',
+    () async {
+      final supabaseService = MockSupabaseService();
+      final repository = AuthRepositoryImpl(supabaseService: supabaseService);
+
+      when(
+        () => supabaseService.signUp(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+          data: any(named: 'data'),
+        ),
+      ).thenThrow(const AuthException('User already registered'));
+
+      final result = await repository.signUp(
+        email: 'existing@example.com',
+        password: 'Strong1!',
+        fullName: 'Mevcut Kullanıcı',
+        privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+        termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+      );
+
+      expect(result.isRight(), isTrue);
+      result.fold(
+        (_) => fail('Existing account details must not be exposed.'),
+        (user) => expect(user.email, 'existing@example.com'),
+      );
+    },
+  );
+
   test('unconfirmed email error is returned in Turkish', () async {
     final supabaseService = MockSupabaseService();
     final repository = AuthRepositoryImpl(supabaseService: supabaseService);
