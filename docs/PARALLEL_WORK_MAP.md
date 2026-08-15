@@ -71,6 +71,15 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Birleşik review/QR/shop rating/Storage contract/legacy architecture hedefli matrisi 169/169, tam Flutter suite 1069/1069 (3 güvenlik-gated live skip) ve analyzer temiz geçti. Agent 1'in Development web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure smoke sonucu ayrıca PASS'tir.
 - Açık kapılar: Option A server-authoritative eligibility implementasyonu; tarihsel veri/backfill ve doğrulanmış alışveriş etiketi kararı; Storage owner kararları ve least-privilege implementasyonu; fiziksel iki cihaz QR kabulü; Production smoke ve production-like e-posta/SMTP kabulü. Legacy `orders/order_items` bu bağımlılıklar ve hesap silme referansları çözülmeden kaldırılamaz.
 
+## Wave 6 Final Entegrasyon Gözlemi
+
+- Agent 1 backend/migration, Agent 2 review client ve Agent 3 Storage client dalları belirtilen sırayla `--no-ff` ve çatışmasız birleştirildi. SQL/migration sahipliği yalnız Agent 1'de, `service_locator.dart` sahipliği yalnız Agent 2'de ve ortak medya modelleri yalnız Agent 3'te kaldı.
+- Canonical `0009_verified_product_reviews_storage` Development'ta exact remote migration kaydıyla doğrulandı ve entegrasyon sırasında yeniden uygulanmadı. Production erişimi veya yazması yapılmadı.
+- Frozen review RPC isimleri/parametreleri/JSON/error sözleşmesi backend ile Agent 2 istemcisinde birebir eşleşti. Review mutasyonları RPC-only, verified durumu server-derived ve evidence immutable kaldı; normal Auth client canlı create/duplicate/update/delete/recreate ve unverified rejection akışı 3/3 geçti.
+- Agent 3 controlled-path resolver'ı backend sözleşmesindeki tam segment sayısı, `v<14 digit>` sürüm klasörü, lowercase safe filename ve JPEG/PNG/WebP allowlist'iyle hizalandı. Legacy HTTPS okuma uyumluluğu korundu; yeni client Storage write/update/delete eklenmedi.
+- Yalnız izole Wave 6 Development fixture'ları temizlendi; review, verified transaction/item, listing, shop, product ve üç Auth test hesabında residual `0` doğrulandı.
+- Hedefli matris 189/189, tam Flutter suite 1106/1106 (opt-in live testler normal koşuda skip), ayrı Development live review harness'i 3/3 ve analyzer PASS oldu. Açık release kapıları: fiziksel iki-cihaz QR kabulü, Production smoke, production-like e-posta/SMTP kabulü, deferred `brand-logos`/`avatars`/`review-images` ve ayrı yetkili legacy order final drop.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
