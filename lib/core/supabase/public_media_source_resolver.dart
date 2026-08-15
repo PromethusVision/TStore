@@ -162,7 +162,7 @@ final class PublicMediaSourceResolver {
     }
 
     final segments = original.split('/');
-    if (segments.length <= expectedSegments.length) return false;
+    if (segments.length != expectedSegments.length + 2) return false;
 
     for (var index = 0; index < segments.length; index++) {
       final segment = segments[index];
@@ -172,7 +172,11 @@ final class PublicMediaSourceResolver {
         return false;
       }
     }
-    return true;
+
+    final version = segments[expectedSegments.length];
+    final fileName = segments[expectedSegments.length + 1];
+    return _versionSegment.hasMatch(version) &&
+        _canonicalImageFileName.hasMatch(fileName);
   }
 
   static bool _isSafePathSegment(String segment) {
@@ -210,4 +214,8 @@ final class PublicMediaSourceResolver {
   }
 
   static final RegExp _safePathSegment = RegExp(r'^[A-Za-z0-9._-]+$');
+  static final RegExp _versionSegment = RegExp(r'^v[0-9]{14}$');
+  static final RegExp _canonicalImageFileName = RegExp(
+    r'^[a-z0-9][a-z0-9._-]{0,127}\.(jpg|jpeg|png|webp)$',
+  );
 }

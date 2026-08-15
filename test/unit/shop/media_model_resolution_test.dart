@@ -16,14 +16,14 @@ void main() {
   );
 
   test('product model resolves catalog media and preserves legacy HTTPS', () {
-    const thumbnail = 'catalog/$productId/thumbnail.webp';
+    const thumbnail = 'catalog/$productId/v20260815093000/thumbnail.webp';
     const legacyImage = 'https://legacy.example/product-detail.jpg';
     final model = ProductModel.fromJson({
       'id': productId,
       'name': 'Product',
       'price': 10,
       'category_id': categoryId,
-      'images': [legacyImage, 'catalog/$productId/detail.webp'],
+      'images': [legacyImage, 'catalog/$productId/v20260815093000/detail.webp'],
       'thumbnail': thumbnail,
     }, mediaResolver: resolver);
 
@@ -31,12 +31,15 @@ void main() {
     expect(model.images.first, legacyImage);
     expect(
       model.images.last,
-      contains('/product-images/catalog/$productId/detail.webp'),
+      contains(
+        '/product-images/catalog/$productId/v20260815093000/detail.webp',
+      ),
     );
   });
 
   test('shop product model resolves listing and nested catalog media', () {
-    const shopImage = 'shops/$shopId/$shopProductId/listing.webp';
+    const shopImage =
+        'shops/$shopId/$shopProductId/v20260815093000/listing.webp';
     final model = ShopProductModel.fromJson({
       'id': shopProductId,
       'shop_id': shopId,
@@ -48,20 +51,22 @@ void main() {
         'name': 'Product',
         'price': 10,
         'category_id': categoryId,
-        'images': ['catalog/$productId/detail.webp'],
+        'images': ['catalog/$productId/v20260815093000/detail.webp'],
       },
     }, mediaResolver: resolver);
 
     expect(model.images.single, contains('/product-images/$shopImage'));
     expect(
       model.product?.images.single,
-      contains('/product-images/catalog/$productId/detail.webp'),
+      contains(
+        '/product-images/catalog/$productId/v20260815093000/detail.webp',
+      ),
     );
   });
 
   test('category and banner models resolve their dedicated buckets', () {
-    const categoryPath = 'catalog/$categoryId/tile.webp';
-    const bannerPath = 'catalog/$bannerId/hero.webp';
+    const categoryPath = 'catalog/$categoryId/v20260815093000/tile.webp';
+    const bannerPath = 'catalog/$bannerId/v20260815093000/hero.webp';
     final category = CategoryModel.fromJson({
       'id': categoryId,
       'name': 'Category',
@@ -84,7 +89,7 @@ void main() {
       'category_id': categoryId,
       'images': const [
         'javascript:alert(1)',
-        'catalog/another-product/image.webp',
+        'catalog/another-product/v20260815093000/image.webp',
       ],
       'thumbnail': 'file:///tmp/image.webp',
     }, mediaResolver: resolver);
@@ -95,7 +100,7 @@ void main() {
     }, mediaResolver: resolver);
     final banner = BannerModel.tryFromJson({
       'id': bannerId,
-      'image_url': 'avatars/$bannerId/image.webp',
+      'image_url': 'avatars/$bannerId/v20260815093000/image.webp',
     }, mediaResolver: resolver);
 
     expect(product.images, isEmpty);

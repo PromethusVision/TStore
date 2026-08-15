@@ -22,7 +22,7 @@ void main() {
     });
 
     test('resolves a catalog product path from product-images', () {
-      const path = 'catalog/$productId/primary.webp';
+      const path = 'catalog/$productId/v20260815093000/primary.webp';
 
       expect(
         resolver.resolveCatalogProduct(path, productId: productId),
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('resolves a shop-specific product path from product-images', () {
-      const path = 'shops/$shopId/$shopProductId/primary.webp';
+      const path = 'shops/$shopId/$shopProductId/v20260815093000/primary.webp';
 
       expect(
         resolver.resolveShopProduct(
@@ -46,7 +46,7 @@ void main() {
     });
 
     test('resolves a category catalog path from category-images', () {
-      const path = 'catalog/$categoryId/tile.png';
+      const path = 'catalog/$categoryId/v20260815093000/tile.png';
 
       expect(
         resolver.resolveCategory(path, categoryId: categoryId),
@@ -56,7 +56,7 @@ void main() {
     });
 
     test('resolves a banner catalog path from banner-images', () {
-      const path = 'catalog/$bannerId/home-hero.jpg';
+      const path = 'catalog/$bannerId/v20260815093000/home-hero.jpg';
 
       expect(
         resolver.resolveBanner(path, bannerId: bannerId),
@@ -99,10 +99,16 @@ void main() {
         'avatars/$productId/image.png',
         'catalog/another-product/image.png',
         'shops/$shopId/$shopProductId/image.png',
-        'catalog/$productId/../image.png',
-        'catalog/$productId/%2e%2e/image.png',
-        'catalog/$productId/image.png?download=true',
-        '/catalog/$productId/image.png',
+        'catalog/$productId/../v20260815093000/image.png',
+        'catalog/$productId/%2e%2e/v20260815093000/image.png',
+        'catalog/$productId/v20260815093000/image.png?download=true',
+        '/catalog/$productId/v20260815093000/image.png',
+        'catalog/$productId/image.png',
+        'catalog/$productId/v2026081509300/image.png',
+        'catalog/$productId/V20260815093000/image.png',
+        'catalog/$productId/v20260815093000/Image.png',
+        'catalog/$productId/v20260815093000/image.gif',
+        'catalog/$productId/v20260815093000/nested/image.png',
       ]) {
         expect(
           resolver.resolveCatalogProduct(source, productId: productId),
@@ -127,7 +133,7 @@ void main() {
     });
 
     test('drops invalid list members while preserving valid order', () {
-      const path = 'catalog/$productId/secondary.webp';
+      const path = 'catalog/$productId/v20260815093000/secondary.webp';
 
       expect(
         resolver.resolveCatalogProducts(const [
@@ -152,14 +158,14 @@ void main() {
 
       expect(
         throwingResolver.resolveCatalogProduct(
-          'catalog/$productId/image.png',
+          'catalog/$productId/v20260815093000/image.png',
           productId: productId,
         ),
         isNull,
       );
       expect(
         unsafeResolver.resolveCatalogProduct(
-          'catalog/$productId/image.png',
+          'catalog/$productId/v20260815093000/image.png',
           productId: productId,
         ),
         isNull,
@@ -170,7 +176,7 @@ void main() {
   test(
     'uses the current client project for Development and Production-like configurations',
     () {
-      const path = 'catalog/$productId/primary.webp';
+      const path = 'catalog/$productId/v20260815093000/primary.webp';
       const developmentKey = 'sb_publishable_development_test_key';
       const productionKey = 'sb_publishable_production_test_key';
       final developmentResolver = PublicMediaSourceResolver.fromSupabaseClient(
@@ -210,7 +216,7 @@ void main() {
   );
 
   test('allows generated HTTP URLs only for a loopback Development client', () {
-    const path = 'catalog/$categoryId/tile.png';
+    const path = 'catalog/$categoryId/v20260815093000/tile.png';
     final resolver = PublicMediaSourceResolver.fromSupabaseClient(
       SupabaseClient('http://127.0.0.1:54321', 'sb_publishable_local_test'),
     );
