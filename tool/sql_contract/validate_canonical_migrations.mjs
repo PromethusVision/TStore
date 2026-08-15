@@ -533,11 +533,26 @@ const storedObject = await one(
   `,
   [validStoragePath],
 );
-await expectDatabaseError(
-  () =>
-    database.query(`DELETE FROM storage.objects WHERE id = $1`, [storedObject.id]),
-  '55000',
-  '[STORAGE_RETENTION_WINDOW]',
+await database.query(`DELETE FROM storage.objects WHERE id = $1`, [storedObject.id]);
+const categoryObject = await one(
+  `
+    INSERT INTO storage.objects (bucket_id, name)
+    VALUES ('category-images', $1)
+    RETURNING id
+  `,
+  [`catalog/${productOne.id}/v20260815010101/w6-category.webp`],
+);
+const bannerObject = await one(
+  `
+    INSERT INTO storage.objects (bucket_id, name)
+    VALUES ('banner-images', $1)
+    RETURNING id
+  `,
+  [`catalog/${productOne.id}/v20260815010101/w6-banner.webp`],
+);
+await database.query(
+  `DELETE FROM storage.objects WHERE id = ANY($1::uuid[])`,
+  [[categoryObject.id, bannerObject.id]],
 );
 await expectDatabaseError(
   () =>

@@ -1269,18 +1269,6 @@ DECLARE
   version_file_pattern CONSTANT TEXT :=
     'v[0-9]{14}/[a-z0-9][a-z0-9._-]{0,127}\.(jpg|jpeg|png|webp)';
 BEGIN
-  IF TG_OP = 'DELETE' THEN
-    IF OLD.bucket_id IN (
-         'product-images', 'category-images', 'banner-images'
-       )
-       AND OLD.created_at > clock_timestamp() - INTERVAL '7 days' THEN
-      RAISE EXCEPTION '[STORAGE_RETENTION_WINDOW] managed media objects must be retained for at least 7 days'
-        USING ERRCODE = '55000';
-    END IF;
-
-    RETURN OLD;
-  END IF;
-
   IF NEW.bucket_id = 'product-images'
      AND NOT (
        NEW.name ~ (
@@ -1295,14 +1283,14 @@ BEGIN
       USING ERRCODE = '23514';
   ELSIF NEW.bucket_id = 'category-images'
         AND NEW.name !~ (
-          '^categories/' || uuid_pattern || '/' ||
+          '^catalog/' || uuid_pattern || '/' ||
           version_file_pattern || '$'
         ) THEN
     RAISE EXCEPTION '[STORAGE_INVALID_PATH] invalid category-images object path'
       USING ERRCODE = '23514';
   ELSIF NEW.bucket_id = 'banner-images'
         AND NEW.name !~ (
-          '^banners/' || uuid_pattern || '/' ||
+          '^catalog/' || uuid_pattern || '/' ||
           version_file_pattern || '$'
         ) THEN
     RAISE EXCEPTION '[STORAGE_INVALID_PATH] invalid banner-images object path'
@@ -1318,9 +1306,6 @@ REVOKE ALL ON FUNCTION public.enforce_active_media_storage_contract()
 
 CREATE TRIGGER enforce_active_media_storage_path
   BEFORE INSERT OR UPDATE OF bucket_id, name ON storage.objects
-  FOR EACH ROW EXECUTE FUNCTION public.enforce_active_media_storage_contract();
-CREATE TRIGGER enforce_active_media_storage_retention
-  BEFORE DELETE ON storage.objects
   FOR EACH ROW EXECUTE FUNCTION public.enforce_active_media_storage_contract();
 
 COMMIT;

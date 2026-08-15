@@ -225,8 +225,8 @@ Exact lowercase object paths:
 ```text
 product-images/catalog/<product_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
 product-images/shops/<shop_uuid>/<shop_product_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
-category-images/categories/<category_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
-banner-images/banners/<banner_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
+category-images/catalog/<category_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
+banner-images/catalog/<banner_uuid>/v<YYYYMMDDHHMMSS>/<safe-name>.<jpg|jpeg|png|webp>
 ```
 
 `safe-name` starts with an ASCII lowercase letter or digit and then contains
@@ -243,6 +243,8 @@ Replacement is versioned and non-destructive:
 5. A trusted operations cleanup may delete an unreferenced object only after
    the seven-day window.
 
-The database blocks deletion inside the retention window. Wave 6 installs no
-cron or automatic garbage collector. `brand-logos`, `avatars`, and
-`review-images` remain deferred and are not provisioned.
+The seven-day retention window is a trusted operations workflow contract, not
+a database delete blocker. This permits exact rollback and disposable test
+object cleanup while client delete remains denied by the absence of a Storage
+policy. Wave 6 installs no cron or automatic garbage collector. `brand-logos`,
+`avatars`, and `review-images` remain deferred and are not provisioned.

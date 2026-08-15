@@ -221,22 +221,16 @@ void main() {
   );
 
   test(
-    'trusted media paths are versioned and recent objects cannot be deleted',
+    'trusted media paths match the client and retention stays operational',
     () {
-      for (final prefix in [
-        "'^catalog/'",
-        "'^shops/'",
-        "'^categories/'",
-        "'^banners/'",
-      ]) {
-        expect(migration, contains(prefix));
-      }
+      expect(_occurrences(migration, "'^catalog/'"), 3);
+      expect(_occurrences(migration, "'^shops/'"), 1);
       expect(migration, contains("'v[0-9]{14}/"));
-      expect(migration, contains("'7 days'"));
       expect(migration, contains("'[STORAGE_INVALID_PATH]"));
-      expect(migration, contains("'[STORAGE_RETENTION_WINDOW]"));
+      expect(migration, isNot(contains('BEFORE DELETE ON storage.objects')));
       expect(contract, contains('new versioned object'));
-      expect(contract, contains('installs no\ncron'));
+      expect(contract, contains('trusted operations workflow contract'));
+      expect(contract, contains('installs no cron'));
     },
   );
 }
