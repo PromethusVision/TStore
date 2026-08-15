@@ -13,6 +13,15 @@ Bir Storage implementation veya policy tasarımı değildir.
 - `OWNER DECISION REQUIRED`, implementation öncesinde ürün sahibinin
   kesinleştirmesi gereken bilgidir.
 
+## Integration consistency note — 2026-08-15
+
+Wave 5 final integration sırasında merged repoda bu auditin açık Storage owner
+kararlarını kapatan daha yeni bir `FINAL` karar belgesi bulunmamıştır. Bu nedenle
+belgedeki `CONFIRMED` bulgular source-of-truth olarak korunur;
+`OWNER DECISION REQUIRED` maddeleri ise sessizce kesinleştirilmez ve bir sonraki
+Storage implementation wave'inden önce kapanması gereken ürün kararları olarak
+açık kalır. Bu audit bucket/policy implementation yetkisi vermez.
+
 ## Yönetici özeti
 
 `SupabaseConfig` altı beklenen bucket adını tanımlar. Buna karşılık kaynak

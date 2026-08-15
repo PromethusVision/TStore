@@ -60,7 +60,16 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Wave 4 dalları canonical `0001`–`0008` migration zincirini, RLS/policy'leri, Auth config'i veya Storage'ı değiştirmedi. MCP read-only postflight 23 public tablo, 8 migration ve 23/23 RLS durumunu doğruladı; Production'a dokunulmadı.
 - Agent 3'ün tek production-code değişikliği, bildirim Realtime stream'inin geçici `channelError`/`timedOut` durumlarında kapanmasını önler; yalnız terminal `closed` stream'i kapatır. Hedefli testte tekrar subscription üretmeden ve dispose davranışını değiştirmeden doğrulandı.
 - Birleşik hedefli matris 998/998 (4 gated live skip), tam Flutter suite 1069/1069 (3 gated live skip) ve analyzer temiz geçti. Integration ortamında client-safe Development değerleri bulunmadığı için üç live harness yeniden çalıştırılmadı; bağımsız agent PASS sonuçları geçerlidir.
-- Açık kapılar: fiziksel iki cihaz QR kabulü; altı Storage bucket'ının ürün-policy kararları ve sonraki implementasyonu; gerçek Development Dart-define build/smoke; ürün yorumu eligibility kararı; bu karardan sonra eventual legacy `orders/order_items` kaldırma değerlendirmesi; production-like e-posta doğrulama/SMTP kabulü.
+- Wave 4 kapanışında açık olan kapılar: fiziksel iki cihaz QR kabulü; altı Storage bucket'ının ürün-policy kararları ve sonraki implementasyonu; gerçek Development Dart-define build/smoke; ürün yorumu eligibility kararı; bu karardan sonra eventual legacy `orders/order_items` kaldırma değerlendirmesi; production-like e-posta doğrulama/SMTP kabulü. Development smoke ve eligibility kararının sonraki durumu aşağıdaki Wave 5 gözleminde kayıtlıdır.
+
+## Wave 5 Final Entegrasyon Gözlemi
+
+- 2026-08-15 Wave 5'te Agent 1 Development istemci smoke işini kod veya commit üretmeden **PASS** tamamladı; branch'i `origin/main` ile aynı kaldığı için sahte/no-op merge yapılmadı.
+- Agent 2'nin yalnız `docs/STORAGE_CONTRACT_AUDIT.md` ekleyen branch'i, ardından Agent 3'ün review eligibility/legacy order doküman branch'i zorunlu sırayla `--no-ff` ve çatışmasız birleştirildi. Migration, schema, Storage bucket/policy veya uygulama kodu değişmedi.
+- Ürün yorumu için Option A **FINAL**: yalnız merchant tarafından doğrulanmış, server-authoritative fiziksel QR alışverişi ve ilgili ürün satırı eligibility verir; ürün görüntüleme, sepete ekleme veya yalnız QR oluşturma vermez. Audit mevcut kodun bu kararı henüz uygulamadığını doğruladı.
+- Storage auditi mevcut bucket referanslarını ve kullanım sözleşmelerini kaydetti. Repoda daha yeni FINAL owner kararı bulunmadığından görünürlük, yazan roller, object path sahipliği, MIME/size, silme ve retention başlıkları gerçek `OWNER DECISION REQUIRED` olarak açık tutuldu; hiçbir backend yazması yapılmadı.
+- Birleşik review/QR/shop rating/Storage contract/legacy architecture hedefli matrisi 169/169, tam Flutter suite 1069/1069 (3 güvenlik-gated live skip) ve analyzer temiz geçti. Agent 1'in Development web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure smoke sonucu ayrıca PASS'tir.
+- Açık kapılar: Option A server-authoritative eligibility implementasyonu; tarihsel veri/backfill ve doğrulanmış alışveriş etiketi kararı; Storage owner kararları ve least-privilege implementasyonu; fiziksel iki cihaz QR kabulü; Production smoke ve production-like e-posta/SMTP kabulü. Legacy `orders/order_items` bu bağımlılıklar ve hesap silme referansları çözülmeden kaldırılamaz.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 

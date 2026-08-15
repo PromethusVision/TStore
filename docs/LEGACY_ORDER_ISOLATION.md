@@ -28,7 +28,9 @@ olarak korur.
 `reviews.is_verified_purchase` alanını belirler. Mevcut ürün yorumları ekranı
 salt okunurdur ve submit UI içermez. Bu bağlantı klasik checkout'a navigation
 sağlamaz; doğrulanmış etiketi/yorum uygunluğunun QR-doğrulanmış alışveriş
-modeline taşınması ürün kararı ve ayrı görev gerektirir.
+modeline taşınması için ürün sahibi **Option A** yönünü kesinleştirmiştir.
+Server-authoritative eligibility ve durable verified item kanıtı henüz
+uygulanmadığından mevcut legacy bağı bu audit wave'inde kaldırılmamıştır.
 
 ## Korunan legacy alanlar
 
@@ -59,6 +61,11 @@ silinmeden önce legacy order kayıtlarını siler. Kesin dependency haritası v
 kaldırma sırası için
 [`REVIEW_ELIGIBILITY_LEGACY_ORDER_AUDIT.md`](REVIEW_ELIGIBILITY_LEGACY_ORDER_AUDIT.md)
 belgesine bakın.
+
+Canonical ürün yönü Option A olsa da legacy `orders/order_items` drop'u bu
+kararla otomatik olarak yetkilendirilmez. Önce review eligibility geçişi ve
+account-delete bağı ayrı bir implementation ile tamamlanmalı; destructive drop
+ancak sonraki, veri etkisi ayrıca onaylanmış migration aşamasında ele alınmalıdır.
 
 ## Yasak bağlantılar
 

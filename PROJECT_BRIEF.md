@@ -75,6 +75,13 @@ Esnafta Var, kullanıcıların ihtiyaç duyduğu ürünleri kargo beklemeden yak
 ## 9. Yorum, İade ve Oyunlaştırma
 
 - Yalnızca doğrulanmış alışverişlerden sonra yorum yapılabilir.
+- **FINAL ürün kararı — Option A:** Ürün yorumu ve ürün puanı hakkı yalnızca
+  fiziksel mağazada merchant tarafından onaylanmış, server-authoritative
+  QR/verified transaction + item kanıtı bulunan alışverişten doğar.
+- Ürünü görüntülemek, sepete eklemek veya yalnızca QR oluşturmak yorum hakkı
+  oluşturmaz.
+- Bu karar canonical ürün yönüdür; gerekli server-side eligibility sözleşmesi
+  ayrı bir implementation wave'inde uygulanacaktır.
 - Müşteri kısa anket, yıldız puanı ve yorum bırakabilir.
 - Esnaflara güvenilir esnaf, güler yüzlü esnaf gibi rozetler verilebilir.
 - Müşterilere kanaat önderi, mahallenin müdavimi gibi rozetler verilebilir.

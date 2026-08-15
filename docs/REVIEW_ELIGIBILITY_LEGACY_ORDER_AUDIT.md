@@ -6,6 +6,24 @@ Bu audit `bd3b2cff244b922e6e9626d4634f5f39f85db76c` canonical baseline'ında
 yapılmıştır. Ürün davranışı, veritabanı şeması, migration zinciri ve legacy
 dosyalar değiştirilmemiştir.
 
+## Canonical ürün sahibi kararı — FINAL
+
+Bu audit sonrasında ürün sahibi **Option A** yönünü kesinleştirmiştir:
+
+- Ürün yorumu ve ürün puanı yalnız server-authoritative, doğrulanmış fiziksel
+  mağaza/QR alışverişinden sonra açılır.
+- Eligibility kanıtı merchant confirmation ile üretilen verified transaction ve
+  durable verified item sözleşmesine dayanmalıdır.
+- Ürün görüntüleme, sepete ekleme veya yalnız QR oluşturma yorum hakkı üretmez.
+- Option B ve Option C seçilmemiştir.
+
+Bu karar implementation'ın tamamlandığı anlamına gelmez. Mevcut review write
+yolu hâlâ aşağıda audit edilen zayıf client boolean/legacy sorgu davranışını
+taşır. Server-side eligibility, immutable `product_id` snapshot'ı, historical
+data/backfill ve mevcut badge semantiği bir sonraki implementation wave'inde
+ele alınmalıdır. Historical data/backfill ve mevcut badge davranışı bu kararla
+kendiliğinden kesinleşmiş sayılmaz.
+
 En önemli bulgu şudur: mevcut legacy satın alma sorgusu ürün yorumu göndermeyi
 engelleyen bir eligibility kapısı değildir. `ReviewRepositoryImpl.addReview`,
 oturum ve aynı ürün için mükerrer yorum kontrolünden sonra yorumu her durumda
@@ -164,8 +182,8 @@ geçişte birlikte ele alınmalıdır.
 Doğrudan `ReviewRepositoryImpl` için unit veya gerçek backend integration testi
 bulunmadı. Bu nedenle legacy sorgunun `false` fallback'i, `is_verified_purchase`
 payload'ı ve DB policy güven sınırı bugün otomatik regression kanıtına sahip
-değildir. Ürün kararı verilmeden mevcut zayıf sözleşmeyi kalıcılaştıran yeni bir
-davranış testi eklenmemiştir.
+değildir. Mevcut zayıf sözleşmeyi kalıcılaştıran yeni bir davranış testi bu audit
+kapsamında eklenmemiştir.
 
 ## E. Verified purchase capability
 
@@ -206,9 +224,9 @@ verified kayıtların nasıl ele alınacağı da karardır: listing hâlâ varsa
 kanıt yoksa ineligible/manuel değerlendirme veya yalnız yeni işlemler gibi bir
 politika seçilmelidir. Bu audit migration tasarlamaz.
 
-## Product options
+## Audit sırasında değerlendirilen product options
 
-### Option A - Yalnız QR ile doğrulanmış alışveriş
+### Option A — SELECTED / FINAL — Yalnız QR ile doğrulanmış alışveriş
 
 - Fraud resistance: En güçlü seçenek. Eligibility ve verified etiketi
   server-authoritative verified transaction/item kanıtından türetilebilir.
@@ -223,7 +241,7 @@ politika seçilmelidir. Bu audit migration tasarlamaz.
 - Migration impact: Önce additive snapshot/contract, sonra uygulama geçişi;
   legacy drop ancak ayrı ve daha sonraki bir aşamadır.
 
-### Option B - Legacy order veya verified purchase
+### Option B — NOT SELECTED — Legacy order veya verified purchase
 
 - Fraud resistance: Karışık ve mevcut haliyle zayıf. QR kanıtı güçlü, legacy
   delivered order kanıtı istemci tarafından üretilebilir. İki kaynağın aynı
@@ -236,7 +254,7 @@ politika seçilmelidir. Bu audit migration tasarlamaz.
 - Migration impact: Verified item için yine durable `product_id` gerekir;
   legacy kaynak sunset edilmedikçe sonraki drop aşamasına geçilemez.
 
-### Option C - Satın alma doğrulaması olmadan açık yorum
+### Option C — NOT SELECTED — Satın alma doğrulaması olmadan açık yorum
 
 - Fraud resistance: En düşük seçenek. Spam, sahte deneyim ve moderasyon yükü
   artar; yalnız auth + kullanıcı/ürün tekilliği kalır.
@@ -249,20 +267,22 @@ politika seçilmelidir. Bu audit migration tasarlamaz.
 - Migration impact: Düşük/orta. `is_verified_purchase` alanı ve mevcut badge'lerin
   anlamı için veri/ürün kararı gerekir.
 
-## Önerilen teknik yön
+## Canonical teknik yön
 
 EsnaftaVar'ın fiziksel mağaza ve QR ile doğrulanmış alışveriş modeline en doğal
 teknik uyum Option A'dır. Aynı doğrulama kaynağını shop rating, purchase history
 ve product review için kullanmak tek ve server-authoritative bir ticari kanıt
 sınırı oluşturur.
 
-Bu yalnız teknik öneridir. Yorumların QR zorunluluğu, eski alışverişlerin
-geçerliliği ve mevcut verified badge'lerin anlamı ürün sahibi kararı gerektirir.
+Option A artık yalnız teknik öneri değil, canonical ürün sahibi kararıdır.
+Eski alışverişlerin backfill/eligibility davranışı ve mevcut verified badge'lerin
+geçiş semantiği ise ayrıca kesinleştirilmesi gereken implementation alt
+kararlarıdır.
 
-## Verified purchase seçilirse legacy removal path
+## FINAL Option A sonrası legacy removal path
 
-1. Ürün sahibi Option A/B/C kararını, historical eligibility ve mevcut badge
-   politikasını kesinleştirir.
+1. Option A seçimi korunur; historical eligibility/backfill ve mevcut badge
+   geçiş politikası implementation başlamadan ayrıca kesinleştirilir.
 2. Option A için verified item proof'unun immutable `product_id` eksiği additive
    bir sözleşmeyle giderilir; eski verified kayıtların backfill/eligibility
    politikası belirlenir.
