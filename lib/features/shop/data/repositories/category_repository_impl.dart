@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -8,8 +9,14 @@ import 'package:t_store/features/shop/domain/repositories/category_repository.da
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  CategoryRepositoryImpl({required this.supabaseService});
+  CategoryRepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   @override
   Future<Either<String, List<CategoryEntity>>> getCategories() async {
@@ -21,7 +28,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
           .order('sort_order', ascending: true);
 
       final categories = (response as List)
-          .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CategoryModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(categories);
@@ -44,7 +56,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           .eq('id', id)
           .single();
 
-      return Right(CategoryModel.fromJson(response));
+      return Right(
+        CategoryModel.fromJson(response, mediaResolver: mediaResolver),
+      );
     } catch (e) {
       return Left(
         CustomerErrorMessage.from(
@@ -66,7 +80,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
           .order('sort_order', ascending: true);
 
       final categories = (response as List)
-          .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CategoryModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(categories);
@@ -93,7 +112,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
           .order('sort_order', ascending: true);
 
       final categories = (response as List)
-          .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CategoryModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(categories);

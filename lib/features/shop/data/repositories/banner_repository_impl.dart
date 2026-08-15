@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -8,8 +9,14 @@ import 'package:t_store/features/shop/domain/repositories/banner_repository.dart
 
 class BannerRepositoryImpl implements BannerRepository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  BannerRepositoryImpl({required this.supabaseService});
+  BannerRepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   @override
   Future<Either<String, List<BannerEntity>>> getBanners() async {
@@ -70,7 +77,10 @@ class BannerRepositoryImpl implements BannerRepository {
       if (row is! Map) continue;
 
       try {
-        final model = BannerModel.tryFromJson(Map<String, dynamic>.from(row));
+        final model = BannerModel.tryFromJson(
+          Map<String, dynamic>.from(row),
+          mediaResolver: mediaResolver,
+        );
         if (model != null) banners.add(model);
       } on Object {
         continue;

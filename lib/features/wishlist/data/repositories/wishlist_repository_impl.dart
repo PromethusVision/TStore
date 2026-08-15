@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -8,8 +9,14 @@ import 'package:t_store/features/wishlist/domain/repositories/wishlist_repositor
 
 class WishlistRepositoryImpl implements WishlistRepository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  WishlistRepositoryImpl({required this.supabaseService});
+  WishlistRepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   String get _userId => supabaseService.currentUser?.id ?? '';
 
@@ -28,7 +35,10 @@ class WishlistRepositoryImpl implements WishlistRepository {
 
       final items = (response as List)
           .map(
-            (json) => WishlistItemModel.fromJson(json as Map<String, dynamic>),
+            (json) => WishlistItemModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
           )
           .toList();
 
@@ -70,7 +80,9 @@ class WishlistRepositoryImpl implements WishlistRepository {
           .select('*, products(*, categories(name), brands(name))')
           .single();
 
-      return Right(WishlistItemModel.fromJson(response));
+      return Right(
+        WishlistItemModel.fromJson(response, mediaResolver: mediaResolver),
+      );
     } catch (e) {
       return Left(
         CustomerErrorMessage.from(

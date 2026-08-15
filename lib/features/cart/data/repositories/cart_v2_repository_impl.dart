@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -12,8 +13,14 @@ import 'package:t_store/features/shop/data/models/shop_product_model.dart';
 
 class CartV2RepositoryImpl implements CartV2Repository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  CartV2RepositoryImpl({required this.supabaseService});
+  CartV2RepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   String get _userId => supabaseService.currentUser?.id ?? '';
 
@@ -66,7 +73,12 @@ class CartV2RepositoryImpl implements CartV2Repository {
           .order('created_at', ascending: false);
 
       final items = (response as List)
-          .map((json) => CartItemV2Model.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CartItemV2Model.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(items);
@@ -121,7 +133,10 @@ class CartV2RepositoryImpl implements CartV2Repository {
         return const Left('Bu ürün seçtiğiniz mağazada satışta değil.');
       }
 
-      final shopProduct = ShopProductModel.fromJson(shopProductResponse);
+      final shopProduct = ShopProductModel.fromJson(
+        shopProductResponse,
+        mediaResolver: mediaResolver,
+      );
       if (!shopProduct.isCustomerPurchasable) {
         return const Left('Bu mağaza şu anda alışverişe açık değil.');
       }
@@ -275,7 +290,10 @@ class CartV2RepositoryImpl implements CartV2Repository {
         return const Left('Bu ürün seçtiğiniz mağazada satışta değil.');
       }
 
-      final shopProduct = ShopProductModel.fromJson(shopProductResponse);
+      final shopProduct = ShopProductModel.fromJson(
+        shopProductResponse,
+        mediaResolver: mediaResolver,
+      );
       if (!shopProduct.isCustomerPurchasable) {
         return const Left('Bu mağaza şu anda alışverişe açık değil.');
       }

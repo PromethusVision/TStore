@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/shop/data/models/product_model.dart';
 import 'package:t_store/features/shop/data/models/shop_model.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -20,19 +21,35 @@ class ShopProductModel extends ShopProductEntity {
     super.shop,
   });
 
-  factory ShopProductModel.fromJson(Map<String, dynamic> json) {
+  factory ShopProductModel.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    final id = json['id'] as String;
+    final shopId = json['shop_id'] as String;
+    final rawImages = _toStringList(json['images']);
+
     return ShopProductModel(
-      id: json['id'] as String,
-      shopId: json['shop_id'] as String,
+      id: id,
+      shopId: shopId,
       productId: json['product_id'] as String,
       price: _toDouble(json['price']),
       isAvailable: json['is_available'] as bool? ?? true,
       description: json['description'] as String?,
-      images: _toStringList(json['images']),
+      images:
+          mediaResolver?.resolveShopProducts(
+            rawImages,
+            shopId: shopId,
+            shopProductId: id,
+          ) ??
+          rawImages,
       isActive: json['is_active'] as bool? ?? true,
       createdAt: _toNullableDateTime(json['created_at']),
       updatedAt: _toNullableDateTime(json['updated_at']),
-      product: _parseProduct(json['products'] ?? json['product']),
+      product: _parseProduct(
+        json['products'] ?? json['product'],
+        mediaResolver: mediaResolver,
+      ),
       shop: _parseShop(json['shops'] ?? json['shop']),
     );
   }
@@ -67,10 +84,18 @@ class ShopProductModel extends ShopProductEntity {
     );
   }
 
-  static ProductEntity? _parseProduct(dynamic value) {
-    if (value is Map<String, dynamic>) return ProductModel.fromJson(value);
+  static ProductEntity? _parseProduct(
+    dynamic value, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    if (value is Map<String, dynamic>) {
+      return ProductModel.fromJson(value, mediaResolver: mediaResolver);
+    }
     if (value is Map) {
-      return ProductModel.fromJson(Map<String, dynamic>.from(value));
+      return ProductModel.fromJson(
+        Map<String, dynamic>.from(value),
+        mediaResolver: mediaResolver,
+      );
     }
     return null;
   }

@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 
 class CategoryModel extends CategoryEntity {
@@ -13,12 +14,20 @@ class CategoryModel extends CategoryEntity {
     super.updatedAt,
   });
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+  factory CategoryModel.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    final id = json['id'] as String;
+    final rawImageUrl = json['image_url'] as String?;
+
     return CategoryModel(
-      id: json['id'] as String,
+      id: id,
       name: json['name'] as String,
       description: json['description'] as String?,
-      imageUrl: json['image_url'] as String?,
+      imageUrl:
+          mediaResolver?.resolveCategory(rawImageUrl, categoryId: id) ??
+          (mediaResolver == null ? rawImageUrl : null),
       parentId: json['parent_id'] as String?,
       sortOrder: json['sort_order'] as int? ?? 0,
       isActive: json['is_active'] as bool? ?? true,

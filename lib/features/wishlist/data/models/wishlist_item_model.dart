@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
 import 'package:t_store/features/shop/data/models/product_model.dart';
 
@@ -10,7 +11,10 @@ class WishlistItemModel extends WishlistItemEntity {
     super.product,
   });
 
-  factory WishlistItemModel.fromJson(Map<String, dynamic> json) {
+  factory WishlistItemModel.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
     return WishlistItemModel(
       id: json['id'] as String,
       userId: json['user_id'] as String,
@@ -19,15 +23,15 @@ class WishlistItemModel extends WishlistItemEntity {
           ? DateTime.parse(json['created_at'] as String)
           : null,
       product: json['products'] != null
-          ? ProductModel.fromJson(json['products'] as Map<String, dynamic>)
+          ? ProductModel.fromJson(
+              json['products'] as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            )
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'user_id': userId,
-      'product_id': productId,
-    };
+    return {'user_id': userId, 'product_id': productId};
   }
 }
