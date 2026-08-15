@@ -80,6 +80,14 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Yalnız izole Wave 6 Development fixture'ları temizlendi; review, verified transaction/item, listing, shop, product ve üç Auth test hesabında residual `0` doğrulandı.
 - Hedefli matris 189/189, tam Flutter suite 1106/1106 (opt-in live testler normal koşuda skip), ayrı Development live review harness'i 3/3 ve analyzer PASS oldu. Açık release kapıları: fiziksel iki-cihaz QR kabulü, Production smoke, production-like e-posta/SMTP kabulü, deferred `brand-logos`/`avatars`/`review-images` ve ayrı yetkili legacy order final drop.
 
+## Wave 7 Final Entegrasyon Gözlemi
+
+- Agent 1 fiziksel iki-cihaz QR kabulü için kod/diff üretmedi; branch'i Wave 6 main ile aynı kaldığından merge edilmedi. İki kamera-capable fiziksel cihaz bulunmadığı için `PHYSICAL_TWO_DEVICE_ACCEPTANCE: BLOCKED` korunur; otomatik testler bu gate'i kapatmaz.
+- Agent 2 Auth hardening, ardından Agent 3 Production readiness audit branch'i `--no-ff` ile entegre edildi. Android manifestteki örtüşme; INTERNET, coarse/fine location, camera ve tek Auth callback kaydını koruyacak şekilde çözüldü. iOS otomatik birleşimindeki çift `CFBundleURLTypes` semantik olarak tekilleştirildi; location/camera açıklamaları korundu.
+- PKCE recovery callback, Android/iOS `io.supabase.tstore://login-callback/` kaydı, enumeration-safe signup, Android release internet izni ve Development/Production config izolasyonu birleşik durumda doğrulandı. Secret/service-role eklenmedi ve legacy auth hattı geri gelmedi.
+- Agent 3'ün `PRODUCTION_READINESS_AUDIT.md` ve `PRODUCTION_SMOKE_CHECKLIST.md` çıktıları entegre edildi. Gerçek Production config/migration/backup/smoke, Auth/SMTP, signing/app identity, sosyal login kararı, fiziksel QR ve Iconsax default release build sorunu açık gate olarak korundu.
+- Hedefli Auth/platform/config matrisi 186/186, release-readiness sözleşme matrisi 67/67, tam Flutter suite 1113/1113 (4 opt-in Development live skip), analyzer, XML/diff/security taraması PASS oldu. Sentetik client-safe değerlerle `main_production.dart` compile contract'ı `--no-tree-shake-icons` ile geçti; bu Production smoke değildir. Remote backend/config yazması yapılmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

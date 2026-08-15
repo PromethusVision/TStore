@@ -32,10 +32,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 4 teknik ilerleme: Development üzerinde Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime live doğrulamaları geçti; `0008` profile role guard 42883 regresyonunu giderdi; bildirim stream'i geçici kanal hatalarında açık kalacak şekilde düzeltildi. Final entegrasyon hedefli/tam test ve analyzer kapılarını geçti.
 - 2026-08-15 Wave 5 teknik ilerleme: gerçek client-safe Development değerleriyle web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure smoke PASS; Storage contract ve review eligibility/legacy order auditleri entegre edildi. Review için Option A FINAL kaydedildi; uygulama yapılmadı. Hedefli 169/169, tam 1069/1069 test ve analyzer geçti.
 - 2026-08-15 Wave 6 teknik ilerleme: FINAL Option A canonical `0009` backend ve RPC-only istemciyle uygulandı; aktif üç public-read Storage bucket ve exact versioned controlled-path istemci çözümlemesi tamamlandı. Development live review lifecycle 3/3, fixture cleanup residual `0`, hedefli 189/189, tam 1106/1106 test ve analyzer PASS oldu.
+- 2026-08-16 Wave 7 teknik ilerleme: Android/iOS Auth callback kaydı, PKCE recovery fix, enumeration-safe signup ve Android release internet izni entegre edildi; Production readiness audit ve smoke checklist eklendi. Auth hedefli 186/186, release-readiness 67/67, tam 1113/1113 test, analyzer ve sentetik `--no-tree-shake-icons` compile contract PASS; fiziksel QR, SMTP/e-posta ve Production release gate'leri BLOCKED/açık kaldı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
-- Durum: Kod hardening, Development PostgreSQL uygulaması ve gerçek backend concurrent confirm doğrulaması tamamlandı; fiziksel iki cihaz kabulü açık
+- Durum: Kod hardening, Development PostgreSQL uygulaması ve gerçek backend concurrent confirm doğrulaması tamamlandı; iki kamera-capable cihaz bulunmadığı için `PHYSICAL_TWO_DEVICE_ACCEPTANCE: BLOCKED`.
 - Hedef: Müşteri QR oluşturma → merchant QR okutma → merchant onayı → müşteride tamamlanma akışını gerçek hesaplar ve iki fiziksel cihazla doğrulamak.
 - Kabul kapsamında kamera izni, yanlış mağaza, süresi dolmuş/iptal edilmiş/kullanılmış QR ve bağlantı gecikmesi davranışları bulunur.
 
@@ -74,6 +75,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Soru: Sosyal login ilk ticari lansmanda gerekli mi?
 - Karar verilirse ayrıca hangi sağlayıcıların destekleneceği belirlenmeli.
 - Mevcut gerçeklik: Supabase servis metotları var; ekrandaki Google/Facebook düğmeleri işlevsiz.
+- Release kararı: Bir sonraki wave'de düğmeler ya çalışan OAuth akışına bağlanmalı ya da ürün sahibi kararıyla release UI'dan kaldırılmalı/gizlenmeli; mevcut görünür ama işlevsiz durum ticari release blocker'ıdır.
 
 ### B2. Push Notification
 
@@ -99,6 +101,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 ### C1. Gerçek İki Cihaz QR Kabul Testi
 
 - Öncelik: Kritik release doğrulaması
+- Durum: **BLOCKED** — entegrasyon ortamında iki fiziksel kamera-capable cihaz yoktur; otomatik QR/backend testleri bu kabulün yerine geçmez.
 - Müşteri ve merchant için iki ayrı gerçek hesap kullanılmalı.
 - Kamera, izin, QR üretme, okutma, onay, polling ve tamamlanma birlikte doğrulanmalı.
 - Canlı veri silinmemeli; güvenli ve geri alınabilir test verisi kullanılmalı.
@@ -109,6 +112,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Fiziksel kamera ve iki cihaz QR kabulü C1 altında açık kalır.
 - Ürün yorumu Option A backend/client implementasyonu ve normal Auth Development live lifecycle doğrulaması tamamlandı; unverified submit `42501 [REVIEW_NOT_VERIFIED]` ile reddedildi ve create/duplicate/update/delete/recreate aggregate yenilemesi geçti.
 - Production-like e-posta doğrulama/SMTP kabulü, Confirm Email'in kapalı olduğu Development live testlerinden ayrı bir release kapısıdır.
+- Wave 7 kod tarafında PKCE recovery callback, Android/iOS callback registration, enumeration-safe signup ve Android internet izni tamamlandı. Development remote Auth config değiştirilmedi; Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değildir. Gerçek inbox signup/delivery/confirmation/resend/expiry/recovery kabulü `PRODUCTION_LIKE_EMAIL_ACCEPTANCE: BLOCKED` kalır.
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
@@ -133,6 +137,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - `.env` Flutter asset paketinden çıkarıldı; aktif uygulama source taramasında hardcoded Supabase URL/JWT ve çalışma alanında geçici `.env` placeholder bulunmadı.
 - Agent 1 gerçek client-safe Development değerleriyle web release build, Supabase Development startup, Auth/Profile, customer shell, empty backend UX ve config failure sözleşmelerini PASS doğruladı; kod/commit üretmedi.
 - Kalan release gate: gerçek client-safe Production değerleriyle ayrı Production smoke; production backend'e güvenli değer olmadan bağlanılmamalı.
+- Wave 7 audit'i gerçek Production config sağlamadı ve Production'a bağlanmadı. Sentetik client-safe URL/key ile `main_production.dart` compile contract'ı `--no-tree-shake-icons` kullanılarak geçti; bu startup/Auth/Production smoke kanıtı değildir.
 
 ### C6. Lint ve Navigation Lifecycle Borcu
 
@@ -156,8 +161,23 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 4 final sonucu: Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime gated live harness'ları entegre edildi; hedefli 998/998, tam Flutter suite 1069/1069 ve analyzer geçti. Integration live rerun'u client-safe değer bulunmadığı için yapılmadı; bağımsız üç live sonuç PASS.
 - 2026-08-15 Wave 5 final sonucu: Agent 1 Development istemci smoke PASS; Agent 2 Storage contract ve Agent 3 review eligibility/legacy order auditleri entegre edildi. Review/QR/shop rating/Storage contract/legacy architecture hedefli matris 169/169, tam Flutter suite 1069/1069 (3 güvenlik-gated live skip) ve `flutter analyze --no-pub` temiz geçti.
 - 2026-08-15 Wave 6 final sonucu: üç production dalı zorunlu sırayla çatışmasız entegre edildi. Review RPC/client + cart/QR/purchases + Storage resolver/model + canonical migration hedefli matrisi 189/189, tam Flutter suite 1106/1106, ayrı Development live review harness'i 3/3 ve `flutter analyze --no-pub` geçti; fixture cleanup residual `0`, Production erişimi `NO`.
+- 2026-08-16 Wave 7 final sonucu: Agent 2 Auth hardening ve Agent 3 Production readiness çıktıları entegre edildi; Agent 1 diff olmadığı için merge edilmedi. Auth/platform/config matrisi 186/186, release-readiness matrisi 67/67, tam Flutter suite 1113/1113 (4 gated live skip), analyzer, diff/security ve sentetik Production entrypoint compile contract PASS; gerçek Production/Development remote yazması yapılmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
+
+### C9. Production Release Readiness — BLOCKED
+
+- Canonical operasyon kaynakları: `docs/PRODUCTION_READINESS_AUDIT.md` ve `docs/PRODUCTION_SMOKE_CHECKLIST.md`.
+- Gerçek Production URL/client-safe key, remote migration/schema/RLS/RPC/Storage/Realtime envanteri, doğrulanmış backup/restore planı ve Production smoke tamamlanmadan ticari release hazır değildir.
+- Production Auth/SMTP ve redirect/origin acceptance; Android/iOS gerçek application/bundle identity, signing ve distribution kanıtı; fiziksel iki-cihaz QR ve sosyal login kararı açık blocker'dır.
+- Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 7'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
+
+### C10. Iconsax Release Build Hardening
+
+- Durum: **Açık release-hardening işi**.
+- Varsayılan Web release build, `iconsax 0.0.8` içindeki `IconData(0x0)` nedeniyle tree-shaking/font subsetting aşamasında başarısızdır.
+- Geçici compile contract `--no-tree-shake-icons` ile PASS. Sonraki iş; ya güvenli dependency fix/upgrade/refactor yapmak ya da release pipeline workaround'unu kalıcı, testli ve artifact üzerinde doğrulanmış biçimde sabitlemektir.
+- Wave 7 entegrasyonu dependency upgrade/refactor yapmamıştır.
 
 ## Güncelleme Kuralı
 

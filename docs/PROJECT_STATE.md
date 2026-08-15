@@ -2,13 +2,13 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-15
-- Son doğrulanan uygulama commit'i: `781630a46d4dff3059af5902abfbf44c89ae0276`
-- Doğrulanan branch/upstream: `integration/wave-6-final-20260815` / `origin/main`
-- Entegrasyon durumu: **WAVE 6 COMPLETE**
+- Son güncelleme: 2026-08-16
+- Son doğrulanan uygulama commit'i: `ede8b4e7bca9bb6a3c7465a3d724a56a9aec0f1a`
+- Doğrulanan branch/upstream: `integration/wave-7-final-20260816` / `origin/main`
+- Entegrasyon durumu: **WAVE 7 INTEGRATION COMPLETE — COMMERCIAL RELEASE NOT READY**
 - Snapshot oluşturulurken çalışma ağacı: entegrasyon commit'i sonrasında temiz (`+0/-0`)
-- Doğrulama türü: Wave 6 Agent 1 backend/migration, Agent 2 review client ve Agent 3 Storage client dallarının sıralı entegrasyonu; frozen RPC ve controlled-path sözleşme incelemesi; Development `0009` remote migration kaydı; normal Auth istemcileriyle canlı review lifecycle; residual `0` fixture cleanup; hedefli 189/189, tam 1106/1106 test; analyzer, diff ve güvenlik taraması
-- Çalıştırılmayan kontroller: fiziksel iki cihaz QR kabulü; Production smoke; production-like e-posta doğrulama/SMTP kabulü; deferred `brand-logos`, `avatars` ve `review-images` implementasyonu; legacy order final drop
+- Doğrulama türü: Wave 7 Agent 2 Auth hardening ve Agent 3 Production readiness çıktılarının sıralı entegrasyonu; Android/iOS callback ve izin sözleşmesi; PKCE recovery ile enumeration-safe signup incelemesi; Auth hedefli 186/186, release-readiness sözleşmesi 67/67, tam 1113/1113 test (4 opt-in live skip), analyzer, XML, diff ve güvenlik taraması; sentetik client-safe config ile `--no-tree-shake-icons` Production entrypoint compile contract'ı
+- Çalıştırılmayan/BLOCKED kontroller: fiziksel iki kamera-capable cihaz QR kabulü; gerçek Production URL/key, migration/backup postflight ve smoke; production-like SMTP/e-posta inbox kabulü; Android/iOS gerçek signing/app identity. Sosyal login kararı ve varsayılan Iconsax release build sorunu açık; deferred medya ve legacy drop durumları değişmedi.
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -33,7 +33,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
-| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Sosyal giriş düğmeleri backend metotlarına bağlı değil; merchant kayıt akışı açık değil. |
+| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 7'de Android/iOS Auth callback kaydı, PKCE recovery callback ve account-enumeration-safe signup hardening'i tamamlandı; Android release internet izni eklendi. Gerçek SMTP/inbox acceptance BLOCKED. Sosyal giriş düğmeleri görünür fakat callback'leri boş; merchant kayıt akışı açık değil. |
 | Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
@@ -62,11 +62,12 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Önemli Teknik Borçlar
 
 - Ürün yorumu için FINAL Option A uygulandı: yalnız merchant tarafından doğrulanmış server-authoritative fiziksel QR alışverişi ve ilgili durable ürün satırı eligibility verir; aktif yol legacy `orders/order_items` verisini kanıt kabul etmez. Korunan legacy yorumlar doğrulanmamış kalır ve verified aggregate'lere katılmaz.
-- Sosyal giriş düğmeleri görünür fakat callback'leri boş.
+- Sosyal giriş düğmeleri görünür fakat callback'leri boş; ticari release öncesi ya çalışan OAuth akışına bağlanmaları ya da ürün kararıyla UI'dan kaldırılmaları/gizlenmeleri gerekir.
 - Kupon ekranı gerçek veriye bağlı değil.
 - Merchant ürün/stok/fiyat yönetimi bulunmuyor; mevcut merchant altyapısı yalnız mağaza profili ve QR doğrulama seviyesinde.
 - Legacy order/shipping/payment kodu hedef ürün modelinin dışında ve aktif DI grafiğinden çıkarılmış olduğu halde repoda tutuluyor.
 - Development/production config sözleşmesi ayrıldı; Agent 1 gerçek client-safe Development değerleriyle web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure sözleşmelerini PASS olarak doğruladı. Production smoke ayrı release gate olarak açık.
+- Varsayılan Web release build, `iconsax 0.0.8` içindeki `IconData(0x0)` nedeniyle icon tree-shaking aşamasında başarısızdır. `--no-tree-shake-icons` ile compile contract PASS; dependency düzeltmesi veya doğrulanmış release-pipeline workaround'u ayrı açık iştir.
 - `use_build_context_synchronously` global ignore'u kaldırıldı; Wave 3 birleşik durumda lint repo genelinde etkin ve analyzer temiz.
 - Wave 6'da aktif `product-images`, `category-images` ve `banner-images` sözleşmesi kapatıldı: public object read, trusted operations write, exact versioned controlled path, bucket-side MIME/size limiti ve en az yedi günlük orphan retention uygulanır; Flutter istemcisine Storage mutation veya server credential verilmez. `brand-logos`, `avatars` ve `review-images` deferred kalır.
 - Feature flag, analytics/event ve crash reporting altyapısı yok.
@@ -79,13 +80,14 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Ürün yorumu Option A server-authoritative doğrulanmış QR alışverişi/durable ürün satırı üzerinden backend ve istemcide uygulandı; frozen RPC sözleşmesiyle canlı Development lifecycle testi geçti.
 - Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası tam Wave 4 Auth/Profile/RLS canlı harness'i geçti.
 - Gerçek client-safe Development değerleriyle web release build ve istemci smoke PASS; Production smoke yapılmadı.
+- Wave 7 Production readiness audit ve smoke checklist tamamlandı; gerçek Production URL/client-safe key, migration envanteri, doğrulanmış backup/restore, Auth/SMTP, signing/app identity ve gerçek Production smoke kapıları açık kaldı.
 - Canonical `0001`–`0009` zinciri Development Supabase'e uygulandı; remote migration kaydı `20260815000900 0009_verified_product_reviews_storage` olarak doğrulandı ve entegrasyonda yeniden uygulanmadı.
 - Aktif üç Storage bucket ve least-privilege read sözleşmesi `0009` ile uygulandı; client write/update/delete/list kapalıdır. `brand-logos`, `avatars` ve `review-images` bilinçli olarak provision edilmedi.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
 
 ## Test Durumu
 
-- `test/` altında 116 Dart test dosyası; QR, Realtime, Auth/RLS ve Wave 6 ürün yorumu için Development ref'ine kilitli gated live harness'lar bulunuyor.
+- `test/` altında 118 Dart test dosyası; QR, Realtime, Auth/RLS ve Wave 6 ürün yorumu için Development ref'ine kilitli gated live harness'lar bulunuyor.
 - Güçlü alanlar: Shop, Auth, Personalization, Chat ve Cart.
 - Açık doğrulama alanları: fiziksel cihaz/kamera kabulü, deferred Storage özellikleri, merchant ekranları, kupon backend'i, Production smoke ve production-like e-posta/SMTP kabulü.
 - Auth/RLS, QR ve Realtime için Development ref'ine kilitli, açık opt-in gerektiren live harness'lar bulunuyor; normal `flutter test` remote istek yapmadan bunları skip ediyor.
@@ -97,6 +99,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Wave 4 final birleşik durumda hedefli matris 998/998 (4 gated live skip), tam Flutter suite 1069/1069 (3 gated live skip) ve `flutter analyze --no-pub` geçti; global `use_build_context_synchronously` etkin ve temiz kaldı.
 - Wave 5 final birleşik durumda review/QR/shop rating/Storage contract/legacy architecture hedefli matrisi 169/169, tam Flutter suite 1069/1069 (3 güvenlik-gated live skip) ve `flutter analyze --no-pub` geçti; Agent 1 Development istemci smoke sonucu bağımsız olarak PASS.
 - Wave 6 final birleşik durumda review RPC/client, cart/QR/purchases, Storage resolver/model ve canonical migration sözleşmesi hedefli matrisi 189/189; tam Flutter suite 1106/1106 (yaklaşık 4 opt-in live skip) ve `flutter analyze --no-pub` geçti. Ayrı Development live review harness'i 3/3 geçti.
+- Wave 7 final birleşik durumda Auth/callback/config/platform/non-live integration hedefli matrisi 186/186, environment/platform/migration/Storage/review/Auth release-readiness matrisi 67/67; tam Flutter suite 1113/1113 (4 opt-in Development live skip) ve `flutter analyze --no-pub` geçti. Sentetik client-safe değerlerle `main_production.dart` Web release compile contract'ı yalnız `--no-tree-shake-icons` ile PASS; Production smoke yapılmadı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -114,6 +117,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı; Production'a dokunulmadı.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
+- Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Gerçek provider + verified sender + mobile/web redirect ile signup/delivery/confirmation/resend/expiry/recovery inbox acceptance hâlâ BLOCKED.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
 - Gerçek client-safe Development Dart-define değerleriyle web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure smoke PASS; Production smoke yalnız güvenli Production değerleri sağlandığında ayrıca yapılır.
 - Aktif üç public-read Storage bucket uygulandı; `brand-logos`, `avatars` ve `review-images` ürün özelliği ve sözleşmeleri deferred kalır.
@@ -121,6 +125,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-16: **WAVE 7 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Agent 2 Auth callback/PKCE/enumeration hardening branch'i ve Agent 3 Production readiness audit branch'i sıralı entegre edildi; Agent 1 diff üretmediği için merge edilmedi ve fiziksel iki-cihaz gate'i BLOCKED kaldı. Android manifest conflict'i tüm gerekli izinleri ve tek callback kaydını koruyarak çözüldü; iOS duplicate callback kaydı tekilleştirildi. Auth hedefli 186/186, release-readiness 67/67, tam 1113/1113 test, analyzer, diff/security ve sentetik `--no-tree-shake-icons` compile contract'ı geçti. Production/Development remote config yazması yapılmadı.
 - 2026-08-15: **WAVE 6 COMPLETE** — Agent 1 verified review/Storage backend, Agent 2 review client ve Agent 3 Storage client dalları zorunlu sırayla, çatışmasız entegre edildi. RPC sözleşmesi ve exact versioned Storage path'leri hizalandı. Development `0009` kaydı doğrulandı; normal Auth client review lifecycle 3/3 geçti ve yalnız Wave 6 fixture'ları residual `0` ile temizlendi. Hedefli 189/189, tam 1106/1106 test, analyzer, diff ve güvenlik kapıları geçti; Production'a dokunulmadı.
 - 2026-08-15: **WAVE 5 COMPLETE** — Agent 1 Development web release build ve istemci smoke sonucunu PASS teslim etti; kod/merge üretmedi. Agent 2 Storage contract auditi ile Agent 3 review eligibility/legacy order auditi sıralı ve çatışmasız entegre edildi. Ürün yorumu için Option A FINAL olarak kanonikleştirildi ancak uygulanmış sayılmadı; Storage owner kararları gerçek `TBD` olarak korundu. Hedefli 169/169, tam 1069/1069 test, analyzer ve güvenlik/diff kapıları geçti.
 - 2026-08-15: **WAVE 4 COMPLETE** — Live Auth/Profile/RLS, QR/verified purchase ve Chat/Notifications Realtime sonuçları entegre edildi. Development read-only kontrolde 23 tablo, 8 migration ve 23/23 RLS doğrulandı; test verisi temiz. Bildirim stream'i geçici Realtime kanal hatalarında açık kalacak şekilde düzeltildi; birleşik hedefli/tam test ve analyzer kapıları geçti.
