@@ -113,9 +113,12 @@ import 'package:t_store/features/reviews/data/repositories/review_repository_imp
 import 'package:t_store/features/reviews/data/repositories/shop_rating_repository_impl.dart';
 import 'package:t_store/features/reviews/domain/repositories/review_repository.dart';
 import 'package:t_store/features/reviews/domain/repositories/shop_rating_repository.dart';
+import 'package:t_store/features/reviews/domain/usecases/delete_product_review_usecase.dart';
+import 'package:t_store/features/reviews/domain/usecases/get_product_review_eligibility_usecase.dart';
 import 'package:t_store/features/reviews/domain/usecases/get_product_reviews_usecase.dart';
-import 'package:t_store/features/reviews/domain/usecases/add_review_usecase.dart';
+import 'package:t_store/features/reviews/domain/usecases/submit_product_review_usecase.dart';
 import 'package:t_store/features/reviews/domain/usecases/submit_shop_rating_usecase.dart';
+import 'package:t_store/features/reviews/domain/usecases/update_product_review_usecase.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 
@@ -418,12 +421,21 @@ Future<void> setupServiceLocator() async {
 
   // Use Cases
   sl.registerLazySingleton(() => GetProductReviewsUsecase(sl()));
-  sl.registerLazySingleton(() => AddReviewUsecase(sl()));
+  sl.registerLazySingleton(() => GetProductReviewEligibilityUsecase(sl()));
+  sl.registerLazySingleton(() => SubmitProductReviewUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateProductReviewUsecase(sl()));
+  sl.registerLazySingleton(() => DeleteProductReviewUsecase(sl()));
   sl.registerLazySingleton(() => SubmitShopRatingUsecase(sl()));
 
   // Cubit
   sl.registerFactory(
-    () => ReviewsCubit(getProductReviewsUsecase: sl(), addReviewUsecase: sl()),
+    () => ReviewsCubit(
+      getProductReviewsUsecase: sl(),
+      getEligibilityUsecase: sl(),
+      submitReviewUsecase: sl(),
+      updateReviewUsecase: sl(),
+      deleteReviewUsecase: sl(),
+    ),
   );
   sl.registerFactory(() => ShopRatingCubit(submitShopRatingUsecase: sl()));
 

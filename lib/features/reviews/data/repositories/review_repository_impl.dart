@@ -1,280 +1,383 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/reviews/data/models/review_model.dart';
 import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
+import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
 import 'package:t_store/features/reviews/domain/repositories/review_repository.dart';
 
+typedef ReviewRpcCaller =
+    Future<dynamic> Function(String functionName, Map<String, dynamic> params);
+
 class ReviewRepositoryImpl implements ReviewRepository {
+  static const String getReviewsRpc = 'get_product_reviews';
+  static const String getEligibilityRpc = 'get_product_review_eligibility';
+  static const String submitReviewRpc = 'submit_product_review';
+  static const String updateReviewRpc = 'update_product_review';
+  static const String deleteReviewRpc = 'delete_product_review';
+
   final SupabaseService supabaseService;
+  final ReviewRpcCaller _rpcCaller;
 
-  ReviewRepositoryImpl({required this.supabaseService});
+  ReviewRepositoryImpl({
+    required this.supabaseService,
+    ReviewRpcCaller? rpcCaller,
+  }) : _rpcCaller =
+           rpcCaller ??
+           ((functionName, params) =>
+               supabaseService.client.rpc(functionName, params: params));
 
-  String get _userId => supabaseService.currentUser?.id ?? '';
+  bool get _isAuthenticated => supabaseService.currentUser != null;
 
   @override
-  Future<Either<String, List<ReviewEntity>>> getProductReviews(
+  Future<Either<ReviewFailure, ProductReviewsPage>> getProductReviews(
     String productId, {
     int page = 0,
     int limit = 20,
   }) async {
+    final normalizedProductId = productId.trim();
+    if (normalizedProductId.isEmpty || page < 0 || limit < 1 || limit > 50) {
+      return const Left(_invalidArgumentFailure);
+    }
+
     try {
-      final from = page * limit;
-      final to = from + limit - 1;
+      final response = await _rpcCaller(getReviewsRpc, {
+        'p_product_id': normalizedProductId,
+        'p_limit': limit,
+        'p_offset': page * limit,
+      });
+      final json = _jsonObject(response);
+      final reviewsJson = _jsonList(json['reviews'], field: 'reviews');
+      final distributionJson = _jsonObject(
+        json['rating_distribution'],
+        field: 'rating_distribution',
+      );
 
-      final response = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .select()
-          .eq('product_id', productId)
-          .order('created_at', ascending: false)
-          .range(from, to);
-
-      final reviewRows = (response as List)
-          .whereType<Map>()
-          .map((row) => Map<String, dynamic>.from(row))
-          .toList();
-      final profilesById = await _loadReviewerProfiles(reviewRows);
-      final reviews = reviewRows.map((json) {
-        final userId = json['user_id'] as String?;
-        return ReviewModel.fromJson({
-          ...json,
-          if (userId != null && profilesById[userId] != null)
-            'profiles': profilesById[userId],
-        });
-      }).toList();
-
-      return Right(reviews);
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirmeler yüklenemedi. Lütfen tekrar deneyin.',
+      return Right(
+        ProductReviewsPage(
+          productId: _requiredString(json, 'product_id'),
+          reviews: reviewsJson
+              .map(ReviewModel.fromJson)
+              .toList(growable: false),
+          stats: ProductReviewStats(
+            averageRating: _toDouble(json['average_rating']),
+            totalReviews: _toInt(json['review_count']),
+            ratingDistribution: {
+              for (var rating = 1; rating <= 5; rating++)
+                rating: _toInt(distributionJson['$rating']),
+            },
+          ),
         ),
       );
+    } catch (error) {
+      return Left(_mapFailure(error, fallback: _loadFailure));
     }
   }
 
   @override
-  Future<Either<String, ReviewEntity>> addReview({
+  Future<Either<ReviewFailure, ProductReviewEligibility>>
+  getProductReviewEligibility(String productId) async {
+    final normalizedProductId = productId.trim();
+    if (normalizedProductId.isEmpty) {
+      return const Left(_invalidArgumentFailure);
+    }
+    if (!_isAuthenticated) {
+      return Right(ProductReviewEligibility.guest(normalizedProductId));
+    }
+
+    try {
+      final response = await _rpcCaller(getEligibilityRpc, {
+        'p_product_id': normalizedProductId,
+      });
+      final json = _jsonObject(response);
+      return Right(
+        ProductReviewEligibility(
+          productId: _requiredString(json, 'product_id'),
+          eligible: _requiredBool(json, 'eligible'),
+          canSubmit: _requiredBool(json, 'can_submit'),
+          existingReviewId: _optionalString(json['existing_review_id']),
+          verifiedTransactionItemId: _optionalString(
+            json['verified_transaction_item_id'],
+          ),
+          verifiedTransactionId: _optionalString(
+            json['verified_transaction_id'],
+          ),
+          verifiedAt: _optionalDate(json['verified_at']),
+        ),
+      );
+    } catch (error) {
+      return Left(_mapFailure(error, fallback: _eligibilityFailure));
+    }
+  }
+
+  @override
+  Future<Either<ReviewFailure, SubmitProductReviewResult>> submitReview({
     required String productId,
     required int rating,
     String? title,
     String? comment,
-    List<String>? images,
   }) async {
+    final authFailure = _authenticatedMutationFailure();
+    if (authFailure != null) return Left(authFailure);
+    final normalizedProductId = productId.trim();
+    if (normalizedProductId.isEmpty) {
+      return const Left(_invalidArgumentFailure);
+    }
+    if (rating < 1 || rating > 5) {
+      return const Left(_invalidRatingFailure);
+    }
+
     try {
-      if (_userId.isEmpty) {
-        return const Left(CustomerErrorMessage.signInRequired);
-      }
-
-      // Check if user already reviewed
-      final existing = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .select('id')
-          .eq('user_id', _userId)
-          .eq('product_id', productId)
-          .maybeSingle();
-
-      if (existing != null) {
-        return const Left('Bu ürünü daha önce değerlendirdiniz.');
-      }
-
-      // Check if user has purchased this product
-      final hasPurchased = await _checkVerifiedPurchase(productId);
-
-      final response = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .insert({
-            'user_id': _userId,
-            'product_id': productId,
-            'rating': rating,
-            'title': title,
-            'comment': comment,
-            'images': images,
-            'is_verified_purchase': hasPurchased,
-          })
-          .select('*, profiles(full_name, avatar_url)')
-          .single();
-
-      return Right(ReviewModel.fromJson(response));
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirmeniz kaydedilemedi. Lütfen tekrar deneyin.',
+      final response = await _rpcCaller(submitReviewRpc, {
+        'p_product_id': normalizedProductId,
+        'p_rating': rating,
+        'p_title': _optionalInput(title),
+        'p_comment': _optionalInput(comment),
+      });
+      final json = _jsonObject(response);
+      return Right(
+        SubmitProductReviewResult(
+          created: _requiredBool(json, 'created'),
+          review: ReviewModel.fromJson(
+            _jsonObject(json['review'], field: 'review'),
+          ),
         ),
       );
+    } catch (error) {
+      return Left(_mapFailure(error, fallback: _submitFailure));
     }
   }
 
   @override
-  Future<Either<String, ReviewEntity>> updateReview({
+  Future<Either<ReviewFailure, ReviewEntity>> updateReview({
     required String reviewId,
     required int rating,
     String? title,
     String? comment,
-    List<String>? images,
   }) async {
-    try {
-      final response = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .update({
-            'rating': rating,
-            'title': title,
-            'comment': comment,
-            'images': images,
-          })
-          .eq('id', reviewId)
-          .eq('user_id', _userId) // Ensure user owns the review
-          .select('*, profiles(full_name, avatar_url)')
-          .single();
+    final authFailure = _authenticatedMutationFailure();
+    if (authFailure != null) return Left(authFailure);
+    final normalizedReviewId = reviewId.trim();
+    if (normalizedReviewId.isEmpty) {
+      return const Left(_invalidArgumentFailure);
+    }
+    if (rating < 1 || rating > 5) {
+      return const Left(_invalidRatingFailure);
+    }
 
-      return Right(ReviewModel.fromJson(response));
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirmeniz güncellenemedi. Lütfen tekrar deneyin.',
-        ),
-      );
+    try {
+      final response = await _rpcCaller(updateReviewRpc, {
+        'p_review_id': normalizedReviewId,
+        'p_rating': rating,
+        'p_title': _optionalInput(title),
+        'p_comment': _optionalInput(comment),
+      });
+      return Right(ReviewModel.fromJson(_jsonObject(response)));
+    } catch (error) {
+      return Left(_mapFailure(error, fallback: _updateFailure));
     }
   }
 
   @override
-  Future<Either<String, void>> deleteReview(String reviewId) async {
-    try {
-      await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .delete()
-          .eq('id', reviewId)
-          .eq('user_id', _userId);
-
-      return const Right(null);
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirmeniz silinemedi. Lütfen tekrar deneyin.',
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Either<String, ProductReviewStats>> getProductReviewStats(
-    String productId,
+  Future<Either<ReviewFailure, DeleteProductReviewResult>> deleteReview(
+    String reviewId,
   ) async {
+    final authFailure = _authenticatedMutationFailure();
+    if (authFailure != null) return Left(authFailure);
+    final normalizedReviewId = reviewId.trim();
+    if (normalizedReviewId.isEmpty) {
+      return const Left(_invalidArgumentFailure);
+    }
+
     try {
-      final response = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .select('rating')
-          .eq('product_id', productId);
-
-      final ratings = (response as List)
-          .map((e) => e['rating'] as int)
-          .toList();
-
-      if (ratings.isEmpty) {
-        return const Right(
-          ProductReviewStats(
-            averageRating: 0,
-            totalReviews: 0,
-            ratingDistribution: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
-          ),
-        );
-      }
-
-      final average = ratings.reduce((a, b) => a + b) / ratings.length;
-      final distribution = <int, int>{1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-      for (final rating in ratings) {
-        distribution[rating] = (distribution[rating] ?? 0) + 1;
-      }
-
+      final response = await _rpcCaller(deleteReviewRpc, {
+        'p_review_id': normalizedReviewId,
+      });
+      final json = _jsonObject(response);
       return Right(
-        ProductReviewStats(
-          averageRating: average,
-          totalReviews: ratings.length,
-          ratingDistribution: distribution,
+        DeleteProductReviewResult(
+          reviewId: _requiredString(json, 'review_id'),
+          deleted: _requiredBool(json, 'deleted'),
         ),
       );
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirme özeti yüklenemedi.',
-        ),
-      );
+    } catch (error) {
+      return Left(_mapFailure(error, fallback: _deleteFailure));
     }
   }
 
-  @override
-  Future<Either<String, bool>> hasUserReviewed(String productId) async {
-    try {
-      if (_userId.isEmpty) {
-        return const Right(false);
-      }
-
-      final response = await supabaseService.client
-          .from(SupabaseTables.reviews)
-          .select('id')
-          .eq('user_id', _userId)
-          .eq('product_id', productId)
-          .maybeSingle();
-
-      return Right(response != null);
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Değerlendirme durumu kontrol edilemedi.',
-        ),
-      );
-    }
+  ReviewFailure? _authenticatedMutationFailure() {
+    if (_isAuthenticated) return null;
+    return _authFailure;
   }
 
-  Future<bool> _checkVerifiedPurchase(String productId) async {
-    try {
-      final response = await supabaseService.client
-          .from(SupabaseTables.orderItems)
-          .select('id, orders!inner(user_id, status)')
-          .eq('product_id', productId)
-          .eq('orders.user_id', _userId)
-          .eq('orders.status', 'delivered')
-          .limit(1);
-
-      return (response as List).isNotEmpty;
-    } catch (_) {
-      return false;
+  static Map<String, dynamic> _jsonObject(
+    dynamic response, {
+    String field = 'response',
+  }) {
+    if (response is Map<String, dynamic>) return response;
+    if (response is Map) return Map<String, dynamic>.from(response);
+    if (response is List && response.length == 1) {
+      return _jsonObject(response.single, field: field);
     }
+    throw FormatException('$field must be a JSON object.');
   }
 
-  Future<Map<String, Map<String, dynamic>>> _loadReviewerProfiles(
-    List<Map<String, dynamic>> reviews,
-  ) async {
-    final userIds = reviews
-        .map((review) => review['user_id'])
-        .whereType<String>()
-        .where((id) => id.isNotEmpty)
-        .toSet()
+  static List<Map<String, dynamic>> _jsonList(
+    dynamic value, {
+    required String field,
+  }) {
+    if (value is! List) throw FormatException('$field must be a JSON array.');
+    return value
+        .map((item) => _jsonObject(item, field: field))
         .toList(growable: false);
-    if (userIds.isEmpty) return const {};
-
-    try {
-      final response = await supabaseService.client
-          .from(SupabaseTables.profiles)
-          .select('id, full_name, avatar_url')
-          .inFilter('id', userIds);
-      final profiles = (response as List).whereType<Map>().map(
-        (row) => Map<String, dynamic>.from(row),
-      );
-      return {
-        for (final profile in profiles)
-          if (profile['id'] is String) profile['id'] as String: profile,
-      };
-    } catch (_) {
-      // Profil bilgisi yorum listesinin açılmasını engellememelidir.
-      return const {};
-    }
   }
+
+  static String _requiredString(Map<String, dynamic> json, String field) {
+    final value = _optionalString(json[field]);
+    if (value == null) throw FormatException('$field is required.');
+    return value;
+  }
+
+  static String? _optionalString(dynamic value) {
+    final normalized = value?.toString().trim();
+    return normalized == null || normalized.isEmpty ? null : normalized;
+  }
+
+  static bool _requiredBool(Map<String, dynamic> json, String field) {
+    final value = json[field];
+    if (value is bool) return value;
+    throw FormatException('$field must be a boolean.');
+  }
+
+  static int _toInt(dynamic value) {
+    if (value is num) return value.toInt();
+    return int.parse(value.toString());
+  }
+
+  static double _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.parse(value.toString());
+  }
+
+  static DateTime? _optionalDate(dynamic value) {
+    final normalized = _optionalString(value);
+    return normalized == null ? null : DateTime.parse(normalized);
+  }
+
+  static String? _optionalInput(String? value) {
+    final normalized = value?.trim();
+    return normalized == null || normalized.isEmpty ? null : normalized;
+  }
+
+  static ReviewFailure _mapFailure(
+    Object error, {
+    required ReviewFailure fallback,
+  }) {
+    final rawMessage = error.toString();
+    final normalized = rawMessage.toLowerCase();
+    final code = error is PostgrestException
+        ? (error.code ?? '').toUpperCase()
+        : '';
+
+    if (rawMessage.contains('[REVIEW_AUTH_REQUIRED]') || code == '28000') {
+      return _authFailure;
+    }
+    if (rawMessage.contains('[REVIEW_INVALID_RATING]')) {
+      return _invalidRatingFailure;
+    }
+    if (rawMessage.contains('[REVIEW_INVALID_ARGUMENT]') || code == '22023') {
+      return _invalidArgumentFailure;
+    }
+    if (rawMessage.contains('[REVIEW_PRODUCT_NOT_FOUND]')) {
+      return _productNotFoundFailure;
+    }
+    if (rawMessage.contains('[REVIEW_NOT_VERIFIED]')) {
+      return _notVerifiedFailure;
+    }
+    if (rawMessage.contains('[REVIEW_NOT_FOUND]')) {
+      return _reviewNotFoundFailure;
+    }
+    if (rawMessage.contains('[REVIEW_EVIDENCE_IMMUTABLE]') ||
+        rawMessage.contains('[REVIEW_EVIDENCE_MISMATCH]') ||
+        code == '42501') {
+      return _unauthorizedFailure;
+    }
+    if (error is FormatException) return _invalidResponseFailure;
+
+    final friendly = CustomerErrorMessage.from(error, fallback: '');
+    if (friendly == CustomerErrorMessage.connection) {
+      return _networkFailure;
+    }
+    if (friendly == CustomerErrorMessage.serviceUnavailable) {
+      return _unavailableFailure;
+    }
+    if (friendly == CustomerErrorMessage.sessionExpired ||
+        normalized.contains('jwt')) {
+      return _authFailure;
+    }
+    return fallback;
+  }
+
+  static const _authFailure = ReviewFailure(
+    ReviewFailureKind.authRequired,
+    'Devam etmek için lütfen giriş yapın.',
+  );
+  static const _invalidArgumentFailure = ReviewFailure(
+    ReviewFailureKind.invalidArgument,
+    'Değerlendirme bilgileri geçersiz. Lütfen tekrar deneyin.',
+  );
+  static const _invalidRatingFailure = ReviewFailure(
+    ReviewFailureKind.invalidRating,
+    'Lütfen 1 ile 5 arasında bir puan seçin.',
+  );
+  static const _productNotFoundFailure = ReviewFailure(
+    ReviewFailureKind.productNotFound,
+    'Bu ürün artık değerlendirilemiyor.',
+  );
+  static const _notVerifiedFailure = ReviewFailure(
+    ReviewFailureKind.notVerified,
+    'Bu ürünü yalnızca doğrulanmış mağaza içi alışverişten sonra '
+    'değerlendirebilirsiniz.',
+  );
+  static const _reviewNotFoundFailure = ReviewFailure(
+    ReviewFailureKind.reviewNotFound,
+    'Değerlendirme bulunamadı veya bu işlem tamamlanamadı.',
+  );
+  static const _unauthorizedFailure = ReviewFailure(
+    ReviewFailureKind.unauthorized,
+    'Bu değerlendirme için işlem yapılamadı.',
+  );
+  static const _networkFailure = ReviewFailure(
+    ReviewFailureKind.network,
+    CustomerErrorMessage.connection,
+  );
+  static const _unavailableFailure = ReviewFailure(
+    ReviewFailureKind.unavailable,
+    CustomerErrorMessage.serviceUnavailable,
+  );
+  static const _invalidResponseFailure = ReviewFailure(
+    ReviewFailureKind.invalidResponse,
+    'Değerlendirme bilgileri alınamadı. Lütfen tekrar deneyin.',
+  );
+  static const _loadFailure = ReviewFailure(
+    ReviewFailureKind.unknown,
+    'Değerlendirmeler yüklenemedi. Lütfen tekrar deneyin.',
+  );
+  static const _eligibilityFailure = ReviewFailure(
+    ReviewFailureKind.unknown,
+    'Değerlendirme hakkınız kontrol edilemedi. Lütfen tekrar deneyin.',
+  );
+  static const _submitFailure = ReviewFailure(
+    ReviewFailureKind.unknown,
+    'Değerlendirmeniz kaydedilemedi. Lütfen tekrar deneyin.',
+  );
+  static const _updateFailure = ReviewFailure(
+    ReviewFailureKind.unknown,
+    'Değerlendirmeniz güncellenemedi. Lütfen tekrar deneyin.',
+  );
+  static const _deleteFailure = ReviewFailure(
+    ReviewFailureKind.unknown,
+    'Değerlendirmeniz silinemedi. Lütfen tekrar deneyin.',
+  );
 }
