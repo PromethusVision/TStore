@@ -13,6 +13,7 @@ class ReviewModel extends ReviewEntity {
     super.helpfulCount,
     super.createdAt,
     super.updatedAt,
+    super.canEdit,
     super.userName,
     super.userAvatar,
   });
@@ -36,6 +37,7 @@ class ReviewModel extends ReviewEntity {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : null,
+      canEdit: json['can_edit'] as bool? ?? false,
       userName: json['profiles'] != null
           ? (json['profiles'] as Map<String, dynamic>)['full_name'] as String?
           : null,
@@ -43,16 +45,5 @@ class ReviewModel extends ReviewEntity {
           ? (json['profiles'] as Map<String, dynamic>)['avatar_url'] as String?
           : null,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'user_id': userId,
-      'product_id': productId,
-      'rating': rating,
-      'title': title,
-      'comment': comment,
-      'images': images,
-    };
   }
 }
