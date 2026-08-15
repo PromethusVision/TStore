@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -10,8 +11,14 @@ import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 
 class ShopRepositoryImpl implements ShopRepository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  ShopRepositoryImpl({required this.supabaseService});
+  ShopRepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   static const String _shopProductSelect =
       '*, products(*, categories(name), brands(name)), shops(*)';
@@ -221,7 +228,10 @@ class ShopRepositoryImpl implements ShopRepository {
 
       final shopProducts = (response as List)
           .map(
-            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+            (json) => ShopProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
           )
           .toList();
 
@@ -251,7 +261,10 @@ class ShopRepositoryImpl implements ShopRepository {
 
       final shopProducts = (response as List)
           .map(
-            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+            (json) => ShopProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
           )
           .toList();
 
@@ -288,7 +301,10 @@ class ShopRepositoryImpl implements ShopRepository {
 
       final shopProducts = (response as List)
           .map(
-            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+            (json) => ShopProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
           )
           .toList();
 
@@ -318,7 +334,10 @@ class ShopRepositoryImpl implements ShopRepository {
 
       final shopProducts = (response as List)
           .map(
-            (json) => ShopProductModel.fromJson(json as Map<String, dynamic>),
+            (json) => ShopProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
           )
           .toList();
 

@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 
 class ProductModel extends ProductEntity {
@@ -23,9 +24,18 @@ class ProductModel extends ProductEntity {
     super.brandName,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    final id = json['id'] as String;
+    final rawImages = json['images'] != null
+        ? List<String>.from(json['images'] as List)
+        : <String>[];
+    final rawThumbnail = json['thumbnail'] as String?;
+
     return ProductModel(
-      id: json['id'] as String,
+      id: id,
       name: json['name'] as String,
       description: json['description'] as String?,
       price: (json['price'] as num).toDouble(),
@@ -35,10 +45,12 @@ class ProductModel extends ProductEntity {
       categoryId: json['category_id'] as String,
       brandId: json['brand_id'] as String?,
       stock: json['stock'] as int? ?? 0,
-      images: json['images'] != null
-          ? List<String>.from(json['images'] as List)
-          : <String>[],
-      thumbnail: json['thumbnail'] as String?,
+      images:
+          mediaResolver?.resolveCatalogProducts(rawImages, productId: id) ??
+          rawImages,
+      thumbnail:
+          mediaResolver?.resolveCatalogProduct(rawThumbnail, productId: id) ??
+          (mediaResolver == null ? rawThumbnail : null),
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       reviewsCount: json['reviews_count'] as int? ?? 0,
       isFeatured: json['is_featured'] as bool? ?? false,

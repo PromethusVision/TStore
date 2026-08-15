@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/shop/domain/entities/banner_entity.dart';
 
 class BannerModel extends BannerEntity {
@@ -15,17 +16,26 @@ class BannerModel extends BannerEntity {
     super.createdAt,
   });
 
-  factory BannerModel.fromJson(Map<String, dynamic> json) {
-    final model = BannerModel.tryFromJson(json);
+  factory BannerModel.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    final model = BannerModel.tryFromJson(json, mediaResolver: mediaResolver);
     if (model == null) {
       throw const FormatException('Invalid banner payload.');
     }
     return model;
   }
 
-  static BannerModel? tryFromJson(Map<String, dynamic> json) {
+  static BannerModel? tryFromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
     final id = _readString(json['id']);
-    final imageUrl = _readString(json['image_url']);
+    final rawImageUrl = _readString(json['image_url']);
+    final imageUrl =
+        mediaResolver?.resolveBanner(rawImageUrl, bannerId: id) ??
+        (mediaResolver == null ? rawImageUrl : '');
     final startDate = _readDate(json['start_date']);
     final endDate = _readDate(json['end_date']);
     final sortOrder = _readInt(json['sort_order']);

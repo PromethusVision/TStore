@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/cart/domain/entities/cart_item_v2_entity.dart';
 import 'package:t_store/features/shop/data/models/shop_product_model.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
@@ -13,7 +14,10 @@ class CartItemV2Model extends CartItemV2Entity {
     super.shopProduct,
   });
 
-  factory CartItemV2Model.fromJson(Map<String, dynamic> json) {
+  factory CartItemV2Model.fromJson(
+    Map<String, dynamic> json, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
     return CartItemV2Model(
       id: json['id'] as String,
       cartId: json['cart_id'] as String,
@@ -23,6 +27,7 @@ class CartItemV2Model extends CartItemV2Entity {
       updatedAt: _toNullableDateTime(json['updated_at']),
       shopProduct: _parseShopProduct(
         json['shop_products'] ?? json['shopProduct'],
+        mediaResolver: mediaResolver,
       ),
     );
   }
@@ -48,10 +53,18 @@ class CartItemV2Model extends CartItemV2Entity {
     );
   }
 
-  static ShopProductEntity? _parseShopProduct(dynamic value) {
-    if (value is Map<String, dynamic>) return ShopProductModel.fromJson(value);
+  static ShopProductEntity? _parseShopProduct(
+    dynamic value, {
+    PublicMediaSourceResolver? mediaResolver,
+  }) {
+    if (value is Map<String, dynamic>) {
+      return ShopProductModel.fromJson(value, mediaResolver: mediaResolver);
+    }
     if (value is Map) {
-      return ShopProductModel.fromJson(Map<String, dynamic>.from(value));
+      return ShopProductModel.fromJson(
+        Map<String, dynamic>.from(value),
+        mediaResolver: mediaResolver,
+      );
     }
     return null;
   }

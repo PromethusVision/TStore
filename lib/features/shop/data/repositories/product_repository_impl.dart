@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
@@ -8,8 +9,14 @@ import 'package:t_store/features/shop/domain/repositories/product_repository.dar
 
 class ProductRepositoryImpl implements ProductRepository {
   final SupabaseService supabaseService;
+  final PublicMediaSourceResolver mediaResolver;
 
-  ProductRepositoryImpl({required this.supabaseService});
+  ProductRepositoryImpl({
+    required this.supabaseService,
+    PublicMediaSourceResolver? mediaResolver,
+  }) : mediaResolver =
+           mediaResolver ??
+           PublicMediaSourceResolver.fromSupabaseClient(supabaseService.client);
 
   @override
   Future<Either<String, List<ProductEntity>>> getProducts({
@@ -48,7 +55,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .range(from, to);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
@@ -71,7 +83,9 @@ class ProductRepositoryImpl implements ProductRepository {
           .eq('id', id)
           .single();
 
-      return Right(ProductModel.fromJson(response));
+      return Right(
+        ProductModel.fromJson(response, mediaResolver: mediaResolver),
+      );
     } catch (e) {
       return Left(
         CustomerErrorMessage.from(
@@ -96,7 +110,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .inFilter('id', ids);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
@@ -123,7 +142,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .limit(50);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
@@ -150,7 +174,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .order('created_at', ascending: false);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
@@ -177,7 +206,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .order('created_at', ascending: false);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
@@ -203,7 +237,12 @@ class ProductRepositoryImpl implements ProductRepository {
           .limit(20);
 
       final products = (response as List)
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => ProductModel.fromJson(
+              json as Map<String, dynamic>,
+              mediaResolver: mediaResolver,
+            ),
+          )
           .toList();
 
       return Right(products);
