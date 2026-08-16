@@ -50,7 +50,7 @@ kanıtlamaz; schema/function/policy karşılaştırması ayrıca zorunludur.
 
 | Migration | SHA-256 |
 | --- | --- |
-| `20260812000100_0001_core_auth_catalog.sql` | `243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67` |
+| `20260812000100_0001_core_auth_catalog.sql` | `01f775dd5660f63be78842ecd32e3978f6503bb15ccc585cf9a5f0a932d56291` |
 | `20260812000200_0002_shops.sql` | `cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd` |
 | `20260812000300_0003_carts_v2.sql` | `938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056` |
 | `20260812000400_0004_qr_verified_purchases.sql` | `ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0` |
@@ -522,8 +522,9 @@ email-confirm kararı belirsiz; provider key eksik.
 key güvenli CI/release store'da.
 
 **İşlem:** `main_production.dart` artifact; no fallback; secret scan; artifact hash;
-Production ref ile endpoint host eşleşmesi. Mevcut main'deki release build blocker'ı
-güncel branch durumuna göre ayrıca kapatılır.
+Production ref ile endpoint host eşleşmesi. Wave 8'de standart Web release build ek
+icon workaround'u olmadan PASS olmuştur; gerçek Production config/signing ile artifact
+üretimi bu phase'de yeniden kanıtlanır.
 
 **PASS:** Release artifact gerçek Production client-safe config ile açılır; secret/
 service-role yok; Development endpoint yok; signing/app identity ve build gate PASS.

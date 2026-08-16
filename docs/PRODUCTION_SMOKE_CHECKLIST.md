@@ -1,6 +1,6 @@
 # Production Smoke Checklist
 
-Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 7 audit'i
+Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 8 entegrasyonu
 hesap oluşturmadı, migration uygulamadı ve Production'a bağlanmadı. Gerçek çalışmada
 her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
@@ -12,8 +12,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [ ] Production project ref ve HTTPS URL iki kişi/iki bağımsız kaynakla doğrulandı.
 - [ ] Artifact, `main_production.dart` ile güvenli CI secret injection kullanılarak
       üretildi; commit, version/build number ve artifact hash kaydedildi.
-- [ ] Mevcut `iconsax 0.0.8` korunuyorsa release komutu `--no-tree-shake-icons`
-      içeriyor; aksi halde dependency remediation'ın temiz default build kanıtı var.
+- [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;
+      Wave 8'in sentetik config ile standart build kanıtı PASS, gerçek artifact hash'i kayıtlı.
 - [ ] Artifact/service-role, DB password, JWT secret veya signing secret içermiyor.
 - [ ] 0001–0009 remote ledger ve schema diff'i PASS; backup/restore kanıtı mevcut.
 - [ ] Production RLS/RPC/Storage/Realtime/Auth postflight PASS.

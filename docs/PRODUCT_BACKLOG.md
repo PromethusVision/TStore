@@ -33,6 +33,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 5 teknik ilerleme: gerçek client-safe Development değerleriyle web release build/startup/Auth/Profile/customer shell/empty backend UX/config failure smoke PASS; Storage contract ve review eligibility/legacy order auditleri entegre edildi. Review için Option A FINAL kaydedildi; uygulama yapılmadı. Hedefli 169/169, tam 1069/1069 test ve analyzer geçti.
 - 2026-08-15 Wave 6 teknik ilerleme: FINAL Option A canonical `0009` backend ve RPC-only istemciyle uygulandı; aktif üç public-read Storage bucket ve exact versioned controlled-path istemci çözümlemesi tamamlandı. Development live review lifecycle 3/3, fixture cleanup residual `0`, hedefli 189/189, tam 1106/1106 test ve analyzer PASS oldu.
 - 2026-08-16 Wave 7 teknik ilerleme: Android/iOS Auth callback kaydı, PKCE recovery fix, enumeration-safe signup ve Android release internet izni entegre edildi; Production readiness audit ve smoke checklist eklendi. Auth hedefli 186/186, release-readiness 67/67, tam 1113/1113 test, analyzer ve sentetik `--no-tree-shake-icons` compile contract PASS; fiziksel QR, SMTP/e-posta ve Production release gate'leri BLOCKED/açık kaldı.
+- 2026-08-16 Wave 8 teknik ilerleme: `iconsax_flutter 1.0.1` ve sınırlı repo-local compatibility katmanı ile standart Web release build ek workaround olmadan PASS; işlevsiz sosyal login UI release blocker'ı kapandı. Production Supabase cutover planı ile GO/NO-GO checklist'i hazırlandı. Hedefli 56/56, cutover belge/hash 20/20 ve tam 1116/1116 test (4 gated live skip) geçti; Production/Development remote yazması yapılmadı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -70,12 +71,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ## B. PRODUCT DECISION NEEDED
 
-### B1. Sosyal Login
+### B1. Sosyal Login — OPTIONAL / NON-BLOCKING
 
 - Soru: Sosyal login ilk ticari lansmanda gerekli mi?
 - Karar verilirse ayrıca hangi sağlayıcıların destekleneceği belirlenmeli.
-- Mevcut gerçeklik: Supabase servis metotları var; ekrandaki Google/Facebook düğmeleri işlevsiz.
-- Release kararı: Bir sonraki wave'de düğmeler ya çalışan OAuth akışına bağlanmalı ya da ürün sahibi kararıyla release UI'dan kaldırılmalı/gizlenmeli; mevcut görünür ama işlevsiz durum ticari release blocker'ıdır.
+- Mevcut gerçeklik: Supabase servis/repository abstraction'ı korunuyor; Google/Facebook düğmeleri ve ayırıcı aktif Login/Signup UI'dan kaldırıldı.
+- Release durumu: İşlevsiz sosyal UI blocker'ı **CLOSED**. OAuth sağlayıcılarının gelecekte açılması ayrı optional ürün işidir; ilk release'i tek başına bloke etmez.
 
 ### B2. Push Notification
 
@@ -137,7 +138,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - `.env` Flutter asset paketinden çıkarıldı; aktif uygulama source taramasında hardcoded Supabase URL/JWT ve çalışma alanında geçici `.env` placeholder bulunmadı.
 - Agent 1 gerçek client-safe Development değerleriyle web release build, Supabase Development startup, Auth/Profile, customer shell, empty backend UX ve config failure sözleşmelerini PASS doğruladı; kod/commit üretmedi.
 - Kalan release gate: gerçek client-safe Production değerleriyle ayrı Production smoke; production backend'e güvenli değer olmadan bağlanılmamalı.
-- Wave 7 audit'i gerçek Production config sağlamadı ve Production'a bağlanmadı. Sentetik client-safe URL/key ile `main_production.dart` compile contract'ı `--no-tree-shake-icons` kullanılarak geçti; bu startup/Auth/Production smoke kanıtı değildir.
+- Wave 8 standart Web release build'i sentetik client-safe URL/key ile, ek icon workaround'u olmadan PASS oldu. Bu yalnız compile/config contract kanıtıdır; startup/Auth/Production smoke değildir ve gerçek Production config hâlâ açık gate'tir.
 
 ### C6. Lint ve Navigation Lifecycle Borcu
 
@@ -162,22 +163,23 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 5 final sonucu: Agent 1 Development istemci smoke PASS; Agent 2 Storage contract ve Agent 3 review eligibility/legacy order auditleri entegre edildi. Review/QR/shop rating/Storage contract/legacy architecture hedefli matris 169/169, tam Flutter suite 1069/1069 (3 güvenlik-gated live skip) ve `flutter analyze --no-pub` temiz geçti.
 - 2026-08-15 Wave 6 final sonucu: üç production dalı zorunlu sırayla çatışmasız entegre edildi. Review RPC/client + cart/QR/purchases + Storage resolver/model + canonical migration hedefli matrisi 189/189, tam Flutter suite 1106/1106, ayrı Development live review harness'i 3/3 ve `flutter analyze --no-pub` geçti; fixture cleanup residual `0`, Production erişimi `NO`.
 - 2026-08-16 Wave 7 final sonucu: Agent 2 Auth hardening ve Agent 3 Production readiness çıktıları entegre edildi; Agent 1 diff olmadığı için merge edilmedi. Auth/platform/config matrisi 186/186, release-readiness matrisi 67/67, tam Flutter suite 1113/1113 (4 gated live skip), analyzer, diff/security ve sentetik Production entrypoint compile contract PASS; gerçek Production/Development remote yazması yapılmadı.
+- 2026-08-16 Wave 8 final sonucu: Üç teslim dalı zorunlu sırayla çatışmasız entegre edildi. Iconsax/Auth/callback/config/platform/migration matrisi 56/56, cutover belge/hash kontrolü 20/20, tam Flutter suite 1116/1116 (4 gated live skip) ve standart sentetik Production entrypoint Web release build'i ek icon workaround'u olmadan PASS; gerçek Production/Development remote yazması yapılmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
 ### C9. Production Release Readiness — BLOCKED
 
-- Canonical operasyon kaynakları: `docs/PRODUCTION_READINESS_AUDIT.md` ve `docs/PRODUCTION_SMOKE_CHECKLIST.md`.
+- Canonical operasyon kaynakları: `docs/PRODUCTION_READINESS_AUDIT.md`, `docs/PRODUCTION_SMOKE_CHECKLIST.md`, `docs/PRODUCTION_SUPABASE_CUTOVER_PLAN.md` ve `docs/PRODUCTION_GO_NO_GO_CHECKLIST.md`.
 - Gerçek Production URL/client-safe key, remote migration/schema/RLS/RPC/Storage/Realtime envanteri, doğrulanmış backup/restore planı ve Production smoke tamamlanmadan ticari release hazır değildir.
-- Production Auth/SMTP ve redirect/origin acceptance; Android/iOS gerçek application/bundle identity, signing ve distribution kanıtı; fiziksel iki-cihaz QR ve sosyal login kararı açık blocker'dır.
-- Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 7'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
+- Production Auth/SMTP ve redirect/origin acceptance; Android/iOS gerçek application/bundle identity, signing ve distribution kanıtı ile fiziksel iki-cihaz QR açık blocker'dır. İşlevsiz sosyal login UI blocker'ı Wave 8'de kapandı.
+- Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening
 
-- Durum: **Açık release-hardening işi**.
-- Varsayılan Web release build, `iconsax 0.0.8` içindeki `IconData(0x0)` nedeniyle tree-shaking/font subsetting aşamasında başarısızdır.
-- Geçici compile contract `--no-tree-shake-icons` ile PASS. Sonraki iş; ya güvenli dependency fix/upgrade/refactor yapmak ya da release pipeline workaround'unu kalıcı, testli ve artifact üzerinde doğrulanmış biçimde sabitlemektir.
-- Wave 7 entegrasyonu dependency upgrade/refactor yapmamıştır.
+- Durum: **COMPLETED / CLOSED**.
+- Sorunlu `iconsax 0.0.8` kaldırıldı; `iconsax_flutter 1.0.1` lockfile'da direct dependency olarak sabittir.
+- Repo-local `iconsax_compat.dart` yalnız uygulamanın kullandığı icon yüzeyini açar; geçersiz/sıfır codepoint regression testiyle korunur.
+- Sentetik client-safe Production config ile standart Web release build ek icon workaround'u olmadan PASS oldu; gerçek Production artifact/config ve smoke C9 altında açık kalır.
 
 ## Güncelleme Kuralı
 

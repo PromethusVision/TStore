@@ -88,6 +88,15 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Agent 3'ün `PRODUCTION_READINESS_AUDIT.md` ve `PRODUCTION_SMOKE_CHECKLIST.md` çıktıları entegre edildi. Gerçek Production config/migration/backup/smoke, Auth/SMTP, signing/app identity, sosyal login kararı, fiziksel QR ve Iconsax default release build sorunu açık gate olarak korundu.
 - Hedefli Auth/platform/config matrisi 186/186, release-readiness sözleşme matrisi 67/67, tam Flutter suite 1113/1113 (4 opt-in Development live skip), analyzer, XML/diff/security taraması PASS oldu. Sentetik client-safe değerlerle `main_production.dart` compile contract'ı `--no-tree-shake-icons` ile geçti; bu Production smoke değildir. Remote backend/config yazması yapılmadı.
 
+## Wave 8 Final Entegrasyon Gözlemi
+
+- Agent 1 release dependency/compatibility ve import alanını, Agent 2 yalnız aktif Login/Signup sosyal UI temizliğini, Agent 3 yalnız Production cutover/GO-NO-GO belgelerini sahiplendi. Üç dal zorunlu sırayla `--no-ff` ve çatışmasız birleştirildi.
+- Shared `pubspec.yaml`/lockfile yalnız Agent 1'de kaldı. SQL/migration, `service_locator.dart`, shared model veya app bootstrap değişmedi; Agent 1 ve Agent 2'nin Auth dosyalarındaki ayrık değişiklikleri semantik olarak birlikte doğrulandı.
+- Eski `iconsax 0.0.8` ve `IconData(0x0)` yüzeyi kaldırıldı. `iconsax_flutter 1.0.1` yalnız repo-local sınırlı compatibility katmanı üzerinden kullanılıyor; standart Web release build ek icon workaround'u olmadan PASS.
+- Aktif Login/Signup UI'da işlevsiz sosyal düğme/ayırıcı kalmadı; e-posta/parola, kayıt, recovery ve Wave 7 PKCE/deep-link hardening'i korundu. OAuth/provider abstraction gelecekteki optional özellik için silinmedi.
+- Production cutover planı 0001–0009 artifact/hash envanteri, read-only discovery, backup/restore, apply, RLS/RPC/Storage postflight, Auth/email, client config, smoke ve GO/NO-GO kapılarını tahmini Production PASS iddiası olmadan tanımlar. Entegrasyonda yakalanan `0001` hash uyuşmazlığı canonical dosya değeriyle düzeltildi.
+- Hedefli 56/56, cutover belge/hash 20/20 ve tam Flutter suite 1116/1116 (4 opt-in Development live skip) PASS. Fiziksel iki-cihaz QR, production-like email, gerçek Production ref/config, migration inventory/apply, backup/restore, postflight/smoke ve mobil signing/app identity kapıları açık; remote backend/config yazması yapılmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

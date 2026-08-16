@@ -1,8 +1,8 @@
 # Production Readiness Audit
 
-**Audit tarihi:** 2026-08-15
+**Audit tarihi:** 2026-08-16
 
-**Kaynak:** `origin/main@b71bb01cf5bbacdae2c2ad66c6b70d37bf82b0fb`
+**Kaynak:** Wave 8 integration; base `origin/main@7bde429514ab737ff13f5eb5629d73481c3e7cd9`
 
 **Kapsam:** Customer uygulaması için Production smoke öncesi kaynak, yapılandırma,
 migration ve operasyon kapıları
@@ -29,7 +29,7 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | Development / Production namespace ayrımı | PASS | `main_development.dart` yalnız `SUPABASE_DEVELOPMENT_*`, `main_production.dart` yalnız `SUPABASE_PRODUCTION_*` değerlerini okur; karşı ortam fallback'i yoktur. |
 | Client credential doğrulaması | PASS | HTTPS zorunluluğu, placeholder reddi, publishable/legacy anon kabulü ve `sb_secret_`/`service_role` reddi testlidir; hata metni değer sızdırmaz. |
 | Production entrypoint kaynak sözleşmesi | PASS | Ayrı entrypoint production ortamını seçer. Client-safe dummy değerlerle Web release derlenebilirliği doğrulandı; bu yalnız compile/config contract kanıtıdır. |
-| Varsayılan Web icon tree-shaking | BLOCKER | `iconsax 0.0.8` içinde `IconData(0x0)` bulunduğu için normal release build font subsetting aşamasında durur. `--no-tree-shake-icons` ile compile PASS oldu; release pipeline bu flag'i açıkça sabitlemeli veya dependency ayrı kapsamda giderilmelidir. |
+| Standart Web release build / icon tree-shaking | PASS | Sorunlu `iconsax 0.0.8` kaldırıldı; `iconsax_flutter 1.0.1` ve yalnız kullanılan glyph'leri açan repo-local compatibility katmanı devrede. Sentetik client-safe config ile standart build ek icon workaround'u olmadan PASS oldu. |
 | Mobil ağ, konum, kamera ve Auth callback kaydı | PASS | Android main manifest ve iOS plist sözleşmesi bu wave'de tamamlandı ve statik testle korundu. |
 | Canonical migration kaynak zinciri | PASS | Resmi fresh-bootstrap kaynağı sıralı `0001`–`0009` dosyalarıdır; sıralama, RLS ve güvenlik sözleşmeleri repo testleriyle korunur. |
 | Development backend kanıtı | PASS | Proje durumuna göre 0001–0009, 23/23 RLS, QR/Auth/Realtime ve review lifecycle Development'ta doğrulanmıştır. Bu kanıt Production'a taşınmış sayılmaz. |
@@ -39,7 +39,7 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | Production Auth / SMTP / redirects | BLOCKER | Production-like email confirmation, SMTP teslimi, password recovery ve mobile/web redirect allowlist kabulü henüz yapılmamıştır. |
 | Android dağıtım kimliği ve imzası | BLOCKER | `com.example.t_store` hâlâ örnek application id/namespace'tir ve release build debug signing kullanır. Yayın sahibi gerçek id ve release signing'i güvenli keystore/CI ile sağlamalıdır. |
 | iOS dağıtım kimliği ve imzası | BLOCKER | `com.example.tStore` ve development signing ayarları gerçek App Store dağıtım sözleşmesi değildir; bundle id/team/certificate yayın sahibi tarafından tamamlanmalıdır. |
-| Görünür sosyal login düğmeleri | BLOCKER | Kaynak durumuna göre düğmeler görünür fakat callback'leri boş. İlk sürümde uygulanmalı veya ürün sahibi kararıyla görünmez yapılmalıdır. |
+| Sosyal login release UI | PASS | Çalışmayan Google/Facebook düğmeleri ve anlamsız ayırıcı aktif Login/Signup UI'dan kaldırıldı. E-posta/parola, kayıt ve recovery korunur; OAuth/provider altyapısı gelecekteki optional özellik için yerinde kalır. |
 | Fiziksel iki cihaz QR kabulü | BLOCKER | Kamera izni, müşteri QR, merchant okutma/onay ve müşteri tamamlanması iki gerçek cihazda henüz kabul edilmemiştir. |
 | Production RLS / RPC / Storage / Realtime davranışı | NEEDS PRODUCTION VERIFICATION | Statik ve Development kanıtı vardır; Production postflight ve smoke matrisi ayrıca çalıştırılmalıdır. |
 | Kritik customer akışları | NEEDS PRODUCTION VERIFICATION | Kaynak ve yerel test kapsamı vardır; gerçek Production sonuçları `PRODUCTION_SMOKE_CHECKLIST.md` ile kaydedilmelidir. |
@@ -82,13 +82,12 @@ değildir**.
 
 - Target: Web release, `lib/main_production.dart`.
 - Gerçek Production URL/key: kullanılmadı; süreç ortamında ikisi de mevcut değildi.
-- Varsayılan icon tree-shaking: **FAIL** — üçüncü taraf `iconsax 0.0.8`
-  `call_minus4` sabiti `IconData(0x0)` üretti ve font subset bunu geçersiz Unicode
-  codepoint olarak reddetti.
-- `--no-tree-shake-icons` ile compile/config contract: **PASS** (`build/web`).
-- Sonuç: Entry point derlenebilir, ancak release CI komutu flag'i sabitlemeden veya
-  dependency remediation yapılmadan varsayılan build kapısı geçmez. Dummy config ile
-  üretilen artifact dağıtılamaz ve smoke kanıtı değildir.
+- Dependency: `iconsax_flutter 1.0.1`; repo-local `iconsax_compat.dart` yalnız kullanılan
+  icon yüzeyini açar ve sıfır/geçersiz codepoint içermez.
+- Standart icon tree-shaking: **PASS**; `--no-tree-shake-icons` kullanılmadı.
+- Standard Web release compile/config contract: **PASS** (`build/web`).
+- Sonuç: Varsayılan release build blocker'ı kapanmıştır. Dummy config ile üretilen
+  artifact yine de dağıtılamaz ve startup/Auth/Production smoke kanıtı değildir.
 
 ## Canonical migration preflight
 
@@ -160,14 +159,21 @@ login/signup, CartV2, favorites, chat, notifications, QR, verified purchase, sho
 rating, product review, profile/account deletion ve Storage images için operasyonel
 adımlar [Production Smoke Checklist](PRODUCTION_SMOKE_CHECKLIST.md) belgesindedir.
 
-Gerçek smoke ancak bu belgedeki blocker'lar kapandıktan sonra, Production owner'ın
-sağladığı client-safe config ve disposable hesaplarla yürütülmelidir.
+Exact inventory, backup, apply, postflight ve GO/NO-GO sırası
+[Production Supabase Cutover Plan](PRODUCTION_SUPABASE_CUTOVER_PLAN.md) ile
+[Production Go/No-Go Checklist](PRODUCTION_GO_NO_GO_CHECKLIST.md) içinde hazırdır.
+Gerçek smoke ancak bu belgedeki kalan blocker'lar kapandıktan sonra, Production
+owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülmelidir.
 
 ## Audit validation kanıtı
 
-- Environment/platform/migration/Storage/review/Auth hedefli testleri: **58/58 PASS**.
-- Tam Flutter suite: **1108/1108 PASS**, 4 açık opt-in isteyen Development live test
+- Wave 8 Iconsax/Auth/callback/config/platform/migration hedefli testleri: **56/56 PASS**.
+- Cutover doküman yapısı ve canonical 0001–0009 SHA-256 manifest kontrolü:
+  **20/20 PASS**.
+- Tam Flutter suite: **1116/1116 PASS**, 4 açık opt-in isteyen Development live test
   normal koşuda skip.
+- Standart Web release build, sentetik client-safe Production config ile ve ek icon
+  workaround'u olmadan: **PASS**.
 - `flutter analyze --no-pub`: **PASS**, issue yok.
 - Android manifest ve iOS plist XML parse: **PASS**.
 - Değişen dosyalarda gerçek Supabase project URL, JWT-benzeri token, `sb_secret_`

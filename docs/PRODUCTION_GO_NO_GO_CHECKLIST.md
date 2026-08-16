@@ -16,7 +16,7 @@ madde PASS sayılmaz.
 - Incident/rollback owner:
 - Production project ref (secret değildir, yine de doğru kayıt kanalında):
 - Production project name:
-- Commit: `7bde429514ab737ff13f5eb5629d73481c3e7cd9`
+- Commit / release tag:
 - Artifact hash:
 - Backup/restore point:
 
