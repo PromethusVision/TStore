@@ -210,3 +210,31 @@ zorunlu adım cutover planındaki Phase B backup/restore/freeze ve Phase C güve
 comparison'dır. Phase D apply ancak bu kapılar ve ayrı change approval sonrası
 yürütülebilir. Production Auth Site URL/redirect/SMTP ile client config ve smoke
 kapıları commercial release için ayrıca açıktır.
+
+## Wave 10 Phase B/C pre-migration refresh
+
+2026-08-16 `17:41:47 UTC` salt-okunur snapshot'ında fresh baseline değişmemiştir:
+Auth user/identity/session, public application table, Storage bucket/object ve
+Realtime publication member sayıları sıfır; migration ledger relation'ı yoktur.
+Managed `auth.users`, `storage.buckets`, `storage.objects`, `supabase_realtime` ve
+`pgcrypto` prerequisites mevcuttur. Canonical 23 table-name conflict ve existing
+non-internal `auth.users` trigger sayısı sıfırdır.
+
+Free plan scheduled backup sağlamaz; PITR ve restore-to-new-project aktif değildir.
+Credential-free catalog snapshot boşluğu kanıtlar fakat restorable native point
+değildir. Local PGlite safe-equivalent replay exact 0001→0009 zincirinde 9/9 PASS ve
+final 23 tablo/üç bucket/QR-review-Storage behavior PASS verdi.
+
+Ayrıntılı evidence ve restore/failure kararı:
+[Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
+
+`BACKUP_ROLLBACK_PLAN_READY: NO`
+
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+
+Phase A'daki `READY_FOR_CANONICAL_MIGRATION: YES`, yalnız fresh topology'nin doğru
+canonical yolunun 0001→0009 olduğunu belirtir. Free-plan backup/restore, accepted
+RPO/RTO, owner, restore drill ve enforced freeze blocker'ları nedeniyle Phase D apply
+henüz yetkili veya hazır değildir.
