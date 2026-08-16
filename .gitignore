@@ -46,3 +46,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Apple signing material and local release settings
+/ios/Flutter/ReleaseSigning.xcconfig
+/ios/signing/
+**/*.mobileprovision
+**/*.provisionprofile
+**/*.p12
+**/*.pfx
