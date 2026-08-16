@@ -28,6 +28,28 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `COMMERCIAL_RELEASE_READY: NO`
 
+## Wave 10 Phase F2 Production Auth/SMTP read-only precheck
+
+`PRODUCTION_SMTP_PRECHECK: FAIL`
+
+`EMAIL_TEMPLATE_PRECHECK: PASS`
+
+`READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: NO`
+
+Authenticated management read-only inceleme exact `EsnaftaVar Production` /
+`mefhfvrgkwciubeajjeb` projesinde Email provider, Confirm Email ve Custom SMTP'nin
+etkin; SMTP host/port değerlerinin `smtp.resend.com:465` olduğunu doğruladı. Final ve
+legacy mobile callback URL'leri allowlist'te birlikte mevcut. Confirm-signup,
+reset-password ve change-email hosted şablonları `ConfirmationURL` kullanıyor;
+hardcoded localhost/demo/TStore linki bulunmadı.
+
+Bu kanıt canlı teslimat kabulü değildir. Phase F entegrasyonunda Production signup,
+resend, recovery ve PKCE akışları final callback'e açık ve environment-isolated olarak
+bağlanmıştır; ancak Site URL hâlâ `http://localhost:3000`, HTTPS web recovery
+route/allowlist'i yoktur. Resend link-tracking durumu ile dashboard'un geri göstermediği
+exact sender/username ayrıca doğrulanmalıdır. Ayrıntılı kanıt ve kontrollü kabul planı
+[`PRODUCTION_AUTH_EMAIL_PRECHECK.md`](PRODUCTION_AUTH_EMAIL_PRECHECK.md) içindedir.
+
 E1 gerçek Production URL/ref ve client-safe publishable key ile yalnız anonymous
 read-only bağlantı yaptı. Key source/log/belgeye yazılmadı; service-role/server secret
 kullanılmadı. Categories/products/shops/banners request'leri başarılı empty state,
@@ -69,6 +91,10 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
 - [ ] Final callback integration ve signed-artifact confirmation/recovery kabulü
       tamamlandı; ardından legacy Production allowlist kaydı kaldırıldı.
+- [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
+      kullanıcı veya e-posta gönderimi yapılmadı.
+- [ ] Localhost Site URL kaldırıldı; final HTTPS Site URL/fallback kararı, web recovery
+      route/allowlist'i ve Resend link-tracking doğrulaması birlikte PASS.
 - [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
