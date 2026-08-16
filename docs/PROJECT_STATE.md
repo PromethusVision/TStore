@@ -3,12 +3,12 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-16
-- Son doğrulanan teslimler: `122b90c8e2b18e552fcc9762214fd2b90f7bfff9`, `12d6b12f04ddf26c1cffdfc725f2fda3027c7252` ve `86770f743ee27c1edea6e3334fb2cd1c86f17800`
-- Doğrulanan branch/base: `integration/wave-9-final-20260816` / `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
-- Entegrasyon durumu: **WAVE 9 INTEGRATION COMPLETE — COMMERCIAL RELEASE NOT READY**
-- Snapshot oluşturulurken çalışma ağacı: entegrasyon commit'i sonrasında temiz (`+0/-0`)
-- Doğrulama türü: Wave 9 üç teslim dalının sıralı entegrasyonu; Production read-only discovery protokolü; migration hash kök neden/9-of-9 artifact kontrolü; mobile signing fail-safe; Production config/Auth redirect preflight; hedefli 62/62, tam 1136/1136 test (4 opt-in live skip), analyzer, diff/güvenlik taraması; standart Web ve Android production-release compile contract ile Android development debug build
-- Çalıştırılmayan/BLOCKED kontroller: exact Production project kimliği ve remote read-only envanter; gerçek Production ref/URL/key, migration apply/backup/postflight/smoke; final Android/iOS identifier ve gerçek signed artifact; macOS archive; production-like SMTP/e-posta; fiziksel iki-cihaz QR. Production ve Development remote yazması yapılmadı.
+- Son doğrulanan teslimler: `8fb77f7f4c8eff1e62be476a52c3110bb0228c3c` ve `bfafef4a8dd69ae97dc4c91773d5d2cd75e50930`
+- Doğrulanan branch/base: `integration/wave-10-pre-migration-20260816` / `origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
+- Entegrasyon durumu: **WAVE 10 PRE-MIGRATION INTEGRATION COMPLETE — PRODUCTION MIGRATION APPLY NOT READY**
+- Snapshot oluşturulurken çalışma ağacı: final entegrasyon commit'i ve push sonrasında temiz (`+0/-0`)
+- Doğrulama türü: Agent 1'in Phase A + Phase B/C belge teslimi `--no-ff` ve çatışmasız entegre edildi; Production kimliği/fresh baseline kanıtı, canonical Git/LF migration manifesti 9/9, clean-room replay 9/9 ve canonical migration contract testi 18/18 PASS. Belge tutarlılığı, diff ve secret/security taraması uygulandı; kod değişmediği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
+- Çalıştırılmayan/BLOCKED kontroller: linked CLI Production dry-run, kabul edilmiş rollback/RPO/RTO ve restore drill, Production canonical migration apply/postflight, SMTP/e-posta, fiziksel iki-cihaz QR, final app identifier/signing ve Production smoke. Integration sırasında Production/Development remote erişimi veya yazması ve migration apply yapılmadı.
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -28,6 +28,10 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Wave 9 Production preflight yalnız exact `main_production.dart`, ref-host uyumu,
   client-safe key ve canonical Auth redirect kararlarını kabul eder; sentetik
   compile-contract release config olarak kullanılamaz.
+- Wave 10'da canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` /
+  `https://mefhfvrgkwciubeajjeb.supabase.co` / Frankfurt olarak doğrulandı.
+  Production fresh/empty topology'dedir; Development `tnipyxnvhgelwdpykyez` ayrı
+  projedir ve Production değildir.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -83,8 +87,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Ürün yorumu Option A server-authoritative doğrulanmış QR alışverişi/durable ürün satırı üzerinden backend ve istemcide uygulandı; frozen RPC sözleşmesiyle canlı Development lifecycle testi geçti.
 - Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası tam Wave 4 Auth/Profile/RLS canlı harness'i geçti.
 - Gerçek client-safe Development değerleriyle web release build ve istemci smoke PASS; Production smoke yapılmadı.
-- Production discovery protokolü yalnız `EsnaftaVar Development` ref'ini kesin dışlayabildi; doğrulanmamış `ieebtdvvinqfatbhkyqi` projesi envanterlenmedi. `PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED` açık kalır.
-- Production readiness/cutover/smoke belgeleri hazırdır; migration artifact manifesti Git/LF byte sözleşmesi ve 9/9 kontrol aracıyla PASS. Gerçek Production URL/client-safe key, remote envanter/apply, backup/restore, postflight, Auth/SMTP, signing/app identity ve smoke kapıları açık kaldı.
+- Production kimliği exact ref/name/URL/region ile doğrulandı. Fresh baseline'da migration ledger yok; public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği `0`.
+- Production pre-migration baseline ve current-state inventory entegre edildi. Canonical artifact manifesti ve clean-room replay 9/9 PASS; 23 public tablo ve üç active bucket bekleniyor. Free plan scheduled backup/PITR/restorable point sağlamadığından `BACKUP_ROLLBACK_PLAN_READY: NO`; linked CLI dry-run PENDING ve `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO` korunur.
 - Canonical `0001`–`0009` zinciri Development Supabase'e uygulandı; remote migration kaydı `20260815000900 0009_verified_product_reviews_storage` olarak doğrulandı ve entegrasyonda yeniden uygulanmadı.
 - Aktif üç Storage bucket ve least-privilege read sözleşmesi `0009` ile uygulandı; client write/update/delete/list kapalıdır. `brand-logos`, `avatars` ve `review-images` bilinçli olarak provision edilmedi.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
@@ -106,6 +110,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Wave 7 final birleşik durumda Auth/callback/config/platform/non-live integration hedefli matrisi 186/186, environment/platform/migration/Storage/review/Auth release-readiness matrisi 67/67; tam Flutter suite 1113/1113 (4 opt-in Development live skip) ve `flutter analyze --no-pub` geçti. Dönemin sentetik compile contract'ı workaround ile geçmişti; bu eski build engeli Wave 8'de kapatıldı.
 - Wave 8 final birleşik durumda Iconsax/Auth/callback/config/platform/migration hedefli matrisi 56/56, cutover doküman/hash kontrolü 20/20, tam Flutter suite 1116/1116 (4 opt-in Development live skip) ve `flutter analyze --no-pub` geçti. Sentetik client-safe değerlerle `main_production.dart` standart Web release build'i ek icon workaround'u olmadan PASS; Production backend'e bağlanılmadı.
 - Wave 9 final birleşik durumda migration/config/signing/platform/Auth hedefli matrisi 62/62, canonical LF migration manifesti 9/9 ve tam Flutter suite 1136/1136 (4 opt-in Development live skip) PASS. Standart Web Production ve Android production-release compile-only contract, Android development debug build ve analyzer PASS; Android release packaging eksik signing materyalinde beklenen fail-closed sonucu verdi.
+- Wave 10 pre-migration belge entegrasyonunda canonical Git/LF migration manifesti 9/9 ve canonical migration contract testi 18/18 PASS. Agent teslimindeki local safe-equivalent clean-room replay 9/9 PASS olarak korundu; yalnız doküman değiştiği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -121,7 +126,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Canlı Backend ile Kalan Doğrulamalar
 
-- Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı; Production'a dokunulmadı.
+- Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
+- Production Phase A salt-okunur inventory tamamlandı ve fresh/empty topology doğrulandı. Wave 10 integration bunu yalnız dokümantasyon olarak birleştirdi; yeniden remote read yapmadı. Linked CLI dry-run, kabul edilmiş rollback/RPO/RTO, migration apply ve postflight hâlâ açık kapılardır.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Gerçek provider + verified sender + mobile/web redirect ile signup/delivery/confirmation/resend/expiry/recovery inbox acceptance hâlâ BLOCKED.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -131,6 +137,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-16: **WAVE 10 PRE-MIGRATION INTEGRATION COMPLETE / MIGRATION APPLY NOT READY** — Agent 1'in Phase A ve Phase B/C belge commit'leri final branch HEAD üzerinden `--no-ff` ve çatışmasız entegre edildi. Canonical Production kimliği ve fresh/empty baseline doğrulandı; migration ledger, public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği sıfırdır. Migration manifesti 9/9, clean-room replay 9/9 ve integration canonical contract testi 18/18 PASS. Free plan backup/PITR/restorable point sağlamadığından accepted RPO/RTO, restore/incident owner/drill ve enforced change window açık; linked CLI dry-run PENDING, Production migration apply/postflight yapılmadı. SMTP/e-posta, fiziksel iki-cihaz QR, final app identifiers/signing ve Production smoke da açık kaldı.
 - 2026-08-16: **WAVE 9 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Üç agent dalı zorunlu sırayla ve çatışmasız entegre edildi. Production kimliği doğrulanamadığı için Development kesin dışlandı ve belirsiz proje envanterlenmedi. Migration hash farkı Windows CRLF checkout kök nedenine indirildi; Development apply sonrası tracked SQL mutation olmadığı kanıtlandı ve canonical Git/LF manifesti 9/9 PASS oldu. Mobile signing debug fallback'siz fail-closed, Production config/Auth redirect preflight fail-closed durumdadır. Final identifier/signing, exact Production identity/config/inventory/apply/postflight/smoke, SMTP/email ve fiziksel QR açık gate'tir; remote backend yazması yapılmadı.
 - 2026-08-16: **WAVE 8 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Agent 1 release/icons fix, Agent 2 sosyal login UI cleanup ve Agent 3 Production Supabase cutover belgeleri zorunlu sırayla, çatışmasız entegre edildi. `iconsax_flutter 1.0.1` + sınırlı repo compatibility katmanı ile standart Web release build ek workaround olmadan PASS; işlevsiz sosyal UI blocker'ı kapandı, e-posta/parola/PKCE/recovery korundu. Cutover planı ile GO/NO-GO checklist'i hazırlandı ve hatalı `0001` manifest hash'i canonical dosyayla hizalandı. Hedefli 56/56, cutover 20/20 ve tam 1116/1116 test (4 gated live skip) geçti; Production/Development remote yazması yapılmadı.
 - 2026-08-16: **WAVE 7 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Agent 2 Auth callback/PKCE/enumeration hardening branch'i ve Agent 3 Production readiness audit branch'i sıralı entegre edildi; Agent 1 diff üretmediği için merge edilmedi ve fiziksel iki-cihaz gate'i BLOCKED kaldı. Android manifest conflict'i tüm gerekli izinleri ve tek callback kaydını koruyarak çözüldü; iOS duplicate callback kaydı tekilleştirildi. Auth hedefli 186/186, release-readiness 67/67, tam 1113/1113 test, analyzer, diff/security ve sentetik `--no-tree-shake-icons` compile contract'ı geçti. Production/Development remote config yazması yapılmadı.

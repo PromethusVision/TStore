@@ -120,6 +120,28 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Web/Android compile contract ve Android development debug build PASS; backend remote
   write yapılmadı.
 
+## Wave 10 Pre-Migration Entegrasyon Gözlemi
+
+- Agent 1'in `origin/agent1/w10-production-readonly-verification` branch'indeki Phase A
+  `8fb77f7` ve Phase B/C final `bfafef4` commit'leri, final HEAD üzerinden tek
+  `--no-ff` merge ile çatışmasız entegre edildi. Değişiklik yalnız dört Production
+  pre-migration belgesindeydi; SQL/migration, uygulama kodu, `service_locator.dart`
+  veya shared model değişmedi.
+- Canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / Frankfurt
+  olarak doğrulandı; Development `tnipyxnvhgelwdpykyez` Production değildir. Fresh
+  baseline'da migration ledger yok; public application table, Auth user, Storage
+  bucket/object ve Realtime application membership sayıları sıfırdır.
+- Tamamlanan kapılar: Production identity ve fresh baseline doğrulaması, canonical
+  migration integrity 9/9, clean-room replay 9/9 ve pre-migration baseline/current
+  state dokümantasyonu. Integration canonical migration contract testi 18/18 PASS.
+- Açık kapılar: linked CLI Production dry-run; accepted rollback/RPO/RTO, restore ve
+  incident owner/drill; Production canonical migration apply ve postflight; SMTP/email;
+  fiziksel iki-cihaz QR; final app identifiers/signing ve Production smoke.
+- Free plan scheduled backup/PITR/restorable point sağlamadığından
+  `BACKUP_ROLLBACK_PLAN_READY: NO`; local safe-equivalent dry comparison PASS olsa da
+  `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`. Integration sırasında Production veya
+  Development remote erişimi/yazması ve migration apply yapılmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

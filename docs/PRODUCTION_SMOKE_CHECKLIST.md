@@ -1,7 +1,8 @@
 # Production Smoke Checklist
 
-Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 9 entegrasyonu
-hesap oluşturmadı, migration uygulamadı ve Production'a bağlanmadı. Gerçek çalışmada
+Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 10 Agent 1
+evidence çalışması yalnız salt-okunur Production inventory aldı; integration yeniden
+remote erişim yapmadı. Hesap oluşturulmadı ve migration uygulanmadı. Gerçek çalışmada
 her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 ## 1. Başlatma kapıları
@@ -9,9 +10,11 @@ her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdı
 Smoke başlamadan önce tamamı işaretlenmelidir:
 
 - [ ] `PRODUCTION_READINESS_AUDIT.md` içindeki BLOCKER'lar kapatıldı.
-- [ ] Production project ref ve HTTPS URL iki kişi/iki bağımsız kaynakla doğrulandı.
-- [ ] `PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED` kapatıldı; Development veya
-      doğrulanmamış `ieebtdvvinqfatbhkyqi` ref'i Production varsayılmadı.
+- [x] Canonical Production kimliği Wave 10'da `EsnaftaVar Production` /
+      `mefhfvrgkwciubeajjeb` / exact HTTPS ref-host / Frankfurt olarak doğrulandı;
+      Development `tnipyxnvhgelwdpykyez` Production değildir.
+- [ ] Smoke change window'unda Production project ref ve HTTPS URL iki kişi/iki
+      bağımsız kaynakla yeniden doğrulandı.
 - [ ] Artifact, `main_production.dart` ile güvenli CI secret injection kullanılarak
       üretildi; commit, version/build number ve artifact hash kaydedildi.
 - [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;

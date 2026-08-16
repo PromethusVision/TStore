@@ -2,22 +2,25 @@
 
 **Audit tarihi:** 2026-08-16
 
-**Kaynak:** Wave 9 integration; base `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
+**Kaynak:** Wave 10 pre-migration integration; base
+`origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
 
 **Kapsam:** Customer uygulaması için Production smoke öncesi kaynak, yapılandırma,
 migration ve operasyon kapıları
 
-**Production erişimi/yazması:** YOK
+**Wave 10 evidence erişimi:** Agent 1 Phase A/B/C salt-okunur **YES**; remote write
+**NO**. Integration sırasında remote erişim/yazma **YOK**.
 
 ## Sonuç
 
 `PRODUCTION_SMOKE_READY: NO`
 
-Uygulamanın Development kanıtları ve yerel sözleşmeleri güçlüdür; ancak bu audit
-sırasında gerçek Production client değerleri mevcut değildir, Production migration
-durumu bilinmemektedir ve Production'a hiçbir bağlantı kurulmamıştır. Aşağıdaki
-BLOCKER maddeleri kapanmadan gerçek Production smoke başlatılmamalı ve dummy değerle
-alınan build bir smoke PASS olarak yorumlanmamalıdır.
+Uygulamanın Development kanıtları ve yerel sözleşmeleri güçlüdür. Wave 10'da exact
+Production kimliği ve fresh/empty remote baseline doğrulandı; ancak client-safe key
+değeri release kanalında sağlanmadı, Free plan restorable backup/PITR sunmuyor ve
+migration henüz uygulanmadı. Aşağıdaki BLOCKER maddeleri kapanmadan gerçek Production
+smoke başlatılmamalı ve dummy değerle alınan build bir smoke PASS olarak
+yorumlanmamalıdır.
 
 Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 `recommended` olarak işaretlenmiştir.
@@ -34,10 +37,10 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | Canonical migration kaynak zinciri | PASS | Resmi fresh-bootstrap kaynağı sıralı `0001`–`0009` dosyalarıdır; sıralama, RLS ve güvenlik sözleşmeleri repo testleriyle korunur. |
 | Migration artifact manifesti | PASS | Wave 9 kök neden analizi eski hashlerin Windows CRLF checkout'una bağlı olduğunu doğruladı. Git/LF canonical SHA-256 manifesti ve tekrar çalıştırılabilir araç 9/9 PASS; Development apply kanıtından sonra tracked SQL mutation yok. |
 | Development backend kanıtı | PASS | Proje durumuna göre 0001–0009, 23/23 RLS, QR/Auth/Realtime ve review lifecycle Development'ta doğrulanmıştır. Bu kanıt Production'a taşınmış sayılmaz. |
-| Exact Production project identity | BLOCKER | `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) kesin dışlandı. Görülen diğer ref `ieebtdvvinqfatbhkyqi` Production olduğuna dair canonical sahiplik kanıtı olmadığı için envanterlenmedi ve varsayılmadı. |
-| Production URL ve client-safe key | BLOCKER | Bu audit ortamında `SUPABASE_PRODUCTION_URL` ve `SUPABASE_PRODUCTION_ANON_KEY` yoktur. Değerler yalnız güvenli CI/release secret kanalından verilmelidir. |
-| Production migration envanteri | NEEDS PRODUCTION VERIFICATION | Remote erişim kullanılmadı. `supabase_migrations.schema_migrations`, schema, RLS, policy, grant, RPC, trigger, publication ve bucket durumu read-only envanterlenmelidir. |
-| Production backup/restore ve migration apply | BLOCKER | Apply öncesi doğrulanmış backup/PITR veya mantıksal dump, restore hedefi ve forward-fix/restore sahibi yoksa migration çalıştırılmamalıdır. |
+| Exact Production project identity | PASS | `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / ref-host / Frankfurt iki authenticated Dashboard görünümünde doğrulandı. `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) ayrı projedir ve Production değildir. |
+| Production URL ve client-safe key | BLOCKER | URL `https://mefhfvrgkwciubeajjeb.supabase.co` doğrulandı ve publishable key alanının varlığı görüldü; key değeri okunmadı/kopyalanmadı. Gerçek client-safe değer yalnız güvenli CI/release secret kanalından verilmelidir. |
+| Production migration envanteri | PASS — FRESH BASELINE | Migration ledger relation'ı ve public application table yok; Auth user/identity/session, Storage bucket/object ve Realtime application membership sayıları sıfır. Canonical post-apply schema/RLS/RPC/Storage envanteri Phase D/E sonrasında ayrıca doğrulanacaktır. |
+| Production backup/restore ve migration apply | BLOCKER | Free plan scheduled backup/PITR/restorable point sağlamıyor; accepted RPO/RTO, restore/incident owner, restore drill ve enforced change window yok. `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`; apply yapılmadı. |
 | Production Auth / SMTP / redirects | BLOCKER | Production-like email confirmation, SMTP teslimi, password recovery ve mobile/web redirect allowlist kabulü henüz yapılmamıştır. |
 | Android dağıtım kimliği ve imzası | BLOCKER | Debug-signing fallback kaldırıldı ve eksik signing materyali packaging'i fail-closed durdurur; ancak `com.example.t_store` hâlâ geçici id'dir, gerçek upload keystore/alias/parola sağlanmadı ve signed artifact yoktur. |
 | iOS dağıtım kimliği ve imzası | BLOCKER | Release contract manual `Apple Distribution` olarak hazırlandı ve owner/secret hard-code edilmedi; ancak `com.example.tStore`, Team ID, certificate ve profile tamamlanmadı, macOS signed archive yoktur. |
@@ -69,7 +72,8 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 - Allowed origins/CORS listesine yalnız gerçek HTTPS production originleri eklenmeli;
   Development origin veya wildcard Production'a taşınmamalıdır.
 
-Bu audit'te gerçek Production değerleri bulunmadığı için build yalnız canonical
+Bu audit'te Production URL bilinse de client-safe key release kanalında bulunmadığı
+için build yalnız canonical
 [`tool/production_compile_contract.json`](../tool/production_compile_contract.json)
 sentetik fixture'ıyla compile contract doğrular. Fixture exact altı alanlı release
 manifest shape'ini taşır, yalnız `--mode=contract` preflight'ında kabul edilir ve
@@ -79,7 +83,8 @@ sonuç **gerçek startup/Auth/smoke PASS değildir**.
 ### Release build sonucu
 
 - Target: Web release, `lib/main_production.dart`.
-- Gerçek Production URL/key: kullanılmadı; süreç ortamında ikisi de mevcut değildi.
+- Gerçek Production URL/key: artifact build'de kullanılmadı; key süreç ortamında
+  mevcut değildi.
 - Dependency: `iconsax_flutter 1.0.1`; repo-local `iconsax_compat.dart` yalnız kullanılan
   icon yüzeyini açar ve sıfır/geçersiz codepoint içermez.
 - Standart icon tree-shaking: **PASS**; `--no-tree-shake-icons` kullanılmadı.
@@ -170,6 +175,10 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
 
 ## Audit validation kanıtı
 
+- Wave 10 exact Production identity ve fresh/empty read-only baseline: **PASS**.
+- Wave 10 local safe-equivalent clean-room replay: **9/9 PASS**; linked CLI Production
+  dry-run **PENDING**.
+- Wave 10 integration canonical migration contract testi: **18/18 PASS**.
 - Wave 9 migration/config/signing/platform/Auth hedefli testleri: **62/62 PASS**.
 - Canonical Git/LF 0001–0009 SHA-256 manifest kontrolü: **9/9 PASS**.
 - Tam Flutter suite: **1136/1136 PASS**, 4 açık opt-in isteyen Development live test
@@ -183,5 +192,6 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
 - Değişen dosyalarda gerçek Supabase project URL, JWT-benzeri token, `sb_secret_`
   credential veya database URI taraması: **0 bulgu**.
 - `git diff --check`: **PASS**.
-- Production remote read/write, migration, Auth/Storage değişikliği ve test hesabı:
-  **YOK**.
+- Wave 10 Agent evidence remote read: **YES / salt-okunur**. Remote write, migration,
+  Auth/Storage değişikliği ve test hesabı: **YOK**. Integration yeniden remote erişim
+  yapmadı.
