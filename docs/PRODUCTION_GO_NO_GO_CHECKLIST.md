@@ -25,7 +25,7 @@ madde PASS sayılmaz.
 | Gate | PASS evidence | Sonuç |
 | --- | --- | --- |
 | Exact Production project | Management API/Dashboard ref+name ile endpoint host iki bağımsız kaynakta eşleşiyor | [ ] PASS [ ] NO-GO |
-| Migration artifacts | Exact 0001–0009 sıra ve SHA-256 manifesti eşleşiyor | [ ] PASS [ ] NO-GO |
+| Migration artifacts | Exact 0001–0009 sıra ve canonical Git/LF SHA-256 manifesti platformdan bağımsız araçla 9/9 eşleşiyor | [ ] PASS [ ] NO-GO |
 | Remote migration inventory | Ledger ve actual schema birlikte envanterlendi; F/C/L topology kararı kayıtlı | [ ] PASS [ ] NO-GO |
 | Existing data impact | Row counts, legacy order/review ve 0009 aggregate/bucket delta raporu onaylı | [ ] PASS [ ] NO-GO |
 | Backup | Restorable backup/point, kabul edilen RPO/RTO ve restore drill kanıtı var | [ ] PASS [ ] NO-GO |
@@ -40,6 +40,7 @@ madde PASS sayılmaz.
 | Storage | Üç active bucket exact public/size/MIME; no client list/mutation policy; path/fallback tests PASS | [ ] PASS [ ] NO-GO |
 | Auth / email | Production email confirmation, custom SMTP/inbox, resend/expiry/recovery ve redirects PASS | [ ] PASS [ ] NO-GO |
 | Client config | Real Production client-safe URL/key; no secret/fallback/Development endpoint; artifact/signing PASS | [ ] PASS [ ] NO-GO |
+| Mobile identity / signing | Final Android package/namespace ve iOS bundle id onaylı; upload/Distribution signing, signer/team/profile ve macOS archive kanıtı PASS | [ ] PASS [ ] NO-GO |
 | Controlled smoke | Full Production Smoke Checklist, fiziksel QR dahil PASS; cleanup residual kabul edilen değer | [ ] PASS [ ] NO-GO |
 | Rollback readiness | Restore/forward-fix owner, stop criteria ve observation window hazır | [ ] PASS [ ] NO-GO |
 
@@ -48,6 +49,8 @@ madde PASS sayılmaz.
 Aşağıdakilerden biri varsa karar doğrudan NO-GO'dur:
 
 - Production project ref/name/host eşleşmiyor veya tek kaynaktan tahmin ediliyor.
+- `ieebtdvvinqfatbhkyqi` veya başka bir proje canonical sahiplik kanıtı olmadan
+  Production varsayılıyor.
 - Restorable backup, Storage object koruması veya kabul edilmiş RPO/RTO yok.
 - Migration ledger ile schema farklı; 0001 existing schema'ya çarpacak; hash farklı.
 - Partial apply, SQL/lock/statement timeout veya açıklanamayan data delta var.

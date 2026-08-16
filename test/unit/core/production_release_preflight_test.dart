@@ -39,10 +39,11 @@ void main() {
       expect(() => validateRelease(validReleaseManifest()), returnsNormally);
     });
 
-    test('missing URL and missing key fail closed', () {
+    test('missing URL, key, and project ref fail closed', () {
       for (final field in const [
         SupabaseConfig.productionUrlDartDefine,
         SupabaseConfig.productionAnonKeyDartDefine,
+        ProductionReleasePreflight.productionProjectRefField,
       ]) {
         final values = validReleaseManifest()..remove(field);
         expect(
@@ -163,12 +164,18 @@ void main() {
       }
     });
 
-    test('Site URL rejects localhost and non-production suffixes', () {
+    test('Site URL rejects localhost and non-production placeholders', () {
       for (final siteUrl in const [
         'https://localhost/',
         'https://app.example/',
+        'https://example.com/',
         'https://app.invalid/',
         'https://app.test/',
+        'https://dummy.esnaftavar.com/',
+        'https://placeholder.esnaftavar.com/',
+        'https://your-app.esnaftavar.com/',
+        'https://replace-me.esnaftavar.com/',
+        'https://changeme.esnaftavar.com/',
       ]) {
         final values = validReleaseManifest()
           ..[ProductionReleasePreflight.authSiteUrlField] = siteUrl;

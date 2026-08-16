@@ -263,7 +263,13 @@ final class ProductionReleasePreflight {
     return normalized.endsWith('.invalid') ||
         normalized.endsWith('.example') ||
         normalized.endsWith('.test') ||
+        normalized.contains('example') ||
         normalized.contains('dummy') ||
-        normalized.contains('placeholder');
+        normalized.contains('placeholder') ||
+        normalized.contains('replace_me') ||
+        normalized.contains('replace-me') ||
+        normalized.contains('changeme') ||
+        normalized.contains('your_') ||
+        normalized.contains('your-');
   }
 }

@@ -1,6 +1,6 @@
 # Production Smoke Checklist
 
-Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 8 entegrasyonu
+Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 9 entegrasyonu
 hesap oluşturmadı, migration uygulamadı ve Production'a bağlanmadı. Gerçek çalışmada
 her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
@@ -10,12 +10,16 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 
 - [ ] `PRODUCTION_READINESS_AUDIT.md` içindeki BLOCKER'lar kapatıldı.
 - [ ] Production project ref ve HTTPS URL iki kişi/iki bağımsız kaynakla doğrulandı.
+- [ ] `PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED` kapatıldı; Development veya
+      doğrulanmamış `ieebtdvvinqfatbhkyqi` ref'i Production varsayılmadı.
 - [ ] Artifact, `main_production.dart` ile güvenli CI secret injection kullanılarak
       üretildi; commit, version/build number ve artifact hash kaydedildi.
 - [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;
       Wave 8'in sentetik config ile standart build kanıtı PASS, gerçek artifact hash'i kayıtlı.
 - [ ] Artifact/service-role, DB password, JWT secret veya signing secret içermiyor.
 - [ ] 0001–0009 remote ledger ve schema diff'i PASS; backup/restore kanıtı mevcut.
+- [ ] Canonical Git/LF migration manifesti
+      `node tool/verify_migration_artifact_manifest.mjs` ile 9/9 PASS.
 - [ ] Production RLS/RPC/Storage/Realtime/Auth postflight PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.

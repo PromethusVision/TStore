@@ -2,7 +2,7 @@
 
 **Audit tarihi:** 2026-08-16
 
-**Kaynak:** Wave 8 integration; base `origin/main@7bde429514ab737ff13f5eb5629d73481c3e7cd9`
+**Kaynak:** Wave 9 integration; base `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
 
 **Kapsam:** Customer uygulaması için Production smoke öncesi kaynak, yapılandırma,
 migration ve operasyon kapıları
@@ -28,17 +28,19 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | --- | --- | --- |
 | Development / Production namespace ayrımı | PASS | `main_development.dart` yalnız `SUPABASE_DEVELOPMENT_*`, `main_production.dart` yalnız `SUPABASE_PRODUCTION_*` değerlerini okur; karşı ortam fallback'i yoktur. |
 | Client credential doğrulaması | PASS | HTTPS zorunluluğu, placeholder reddi, publishable/legacy anon kabulü ve `sb_secret_`/`service_role` reddi testlidir; hata metni değer sızdırmaz. |
-| Production entrypoint kaynak sözleşmesi | PASS | Ayrı entrypoint production ortamını seçer. Client-safe dummy değerlerle Web release derlenebilirliği doğrulandı; bu yalnız compile/config contract kanıtıdır. |
+| Production config preflight / entrypoint | PASS | Yalnız `lib/main_production.dart`, exact ref-host, client-safe key ve canonical Auth redirect manifesti kabul edilir. Development ref, placeholder/local/malformed değer, server credential ve sentetik fixture'ın release modunda kullanımı fail-closed reddedilir. |
 | Standart Web release build / icon tree-shaking | PASS | Sorunlu `iconsax 0.0.8` kaldırıldı; `iconsax_flutter 1.0.1` ve yalnız kullanılan glyph'leri açan repo-local compatibility katmanı devrede. Sentetik client-safe config ile standart build ek icon workaround'u olmadan PASS oldu. |
 | Mobil ağ, konum, kamera ve Auth callback kaydı | PASS | Android main manifest ve iOS plist sözleşmesi bu wave'de tamamlandı ve statik testle korundu. |
 | Canonical migration kaynak zinciri | PASS | Resmi fresh-bootstrap kaynağı sıralı `0001`–`0009` dosyalarıdır; sıralama, RLS ve güvenlik sözleşmeleri repo testleriyle korunur. |
+| Migration artifact manifesti | PASS | Wave 9 kök neden analizi eski hashlerin Windows CRLF checkout'una bağlı olduğunu doğruladı. Git/LF canonical SHA-256 manifesti ve tekrar çalıştırılabilir araç 9/9 PASS; Development apply kanıtından sonra tracked SQL mutation yok. |
 | Development backend kanıtı | PASS | Proje durumuna göre 0001–0009, 23/23 RLS, QR/Auth/Realtime ve review lifecycle Development'ta doğrulanmıştır. Bu kanıt Production'a taşınmış sayılmaz. |
+| Exact Production project identity | BLOCKER | `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) kesin dışlandı. Görülen diğer ref `ieebtdvvinqfatbhkyqi` Production olduğuna dair canonical sahiplik kanıtı olmadığı için envanterlenmedi ve varsayılmadı. |
 | Production URL ve client-safe key | BLOCKER | Bu audit ortamında `SUPABASE_PRODUCTION_URL` ve `SUPABASE_PRODUCTION_ANON_KEY` yoktur. Değerler yalnız güvenli CI/release secret kanalından verilmelidir. |
 | Production migration envanteri | NEEDS PRODUCTION VERIFICATION | Remote erişim kullanılmadı. `supabase_migrations.schema_migrations`, schema, RLS, policy, grant, RPC, trigger, publication ve bucket durumu read-only envanterlenmelidir. |
 | Production backup/restore ve migration apply | BLOCKER | Apply öncesi doğrulanmış backup/PITR veya mantıksal dump, restore hedefi ve forward-fix/restore sahibi yoksa migration çalıştırılmamalıdır. |
 | Production Auth / SMTP / redirects | BLOCKER | Production-like email confirmation, SMTP teslimi, password recovery ve mobile/web redirect allowlist kabulü henüz yapılmamıştır. |
-| Android dağıtım kimliği ve imzası | BLOCKER | `com.example.t_store` hâlâ örnek application id/namespace'tir ve release build debug signing kullanır. Yayın sahibi gerçek id ve release signing'i güvenli keystore/CI ile sağlamalıdır. |
-| iOS dağıtım kimliği ve imzası | BLOCKER | `com.example.tStore` ve development signing ayarları gerçek App Store dağıtım sözleşmesi değildir; bundle id/team/certificate yayın sahibi tarafından tamamlanmalıdır. |
+| Android dağıtım kimliği ve imzası | BLOCKER | Debug-signing fallback kaldırıldı ve eksik signing materyali packaging'i fail-closed durdurur; ancak `com.example.t_store` hâlâ geçici id'dir, gerçek upload keystore/alias/parola sağlanmadı ve signed artifact yoktur. |
+| iOS dağıtım kimliği ve imzası | BLOCKER | Release contract manual `Apple Distribution` olarak hazırlandı ve owner/secret hard-code edilmedi; ancak `com.example.tStore`, Team ID, certificate ve profile tamamlanmadı, macOS signed archive yoktur. |
 | Sosyal login release UI | PASS | Çalışmayan Google/Facebook düğmeleri ve anlamsız ayırıcı aktif Login/Signup UI'dan kaldırıldı. E-posta/parola, kayıt ve recovery korunur; OAuth/provider altyapısı gelecekteki optional özellik için yerinde kalır. |
 | Fiziksel iki cihaz QR kabulü | BLOCKER | Kamera izni, müşteri QR, merchant okutma/onay ve müşteri tamamlanması iki gerçek cihazda henüz kabul edilmemiştir. |
 | Production RLS / RPC / Storage / Realtime davranışı | NEEDS PRODUCTION VERIFICATION | Statik ve Development kanıtı vardır; Production postflight ve smoke matrisi ayrıca çalıştırılmalıdır. |
@@ -67,16 +69,12 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 - Allowed origins/CORS listesine yalnız gerçek HTTPS production originleri eklenmeli;
   Development origin veya wildcard Production'a taşınmamalıdır.
 
-Bu audit'te gerçek Production değerleri bulunmadığı için release build yalnız şu tip
-sentetik client-safe değerlerle compile contract doğrular:
-
-```text
-SUPABASE_PRODUCTION_URL=https://production-build-contract.example.supabase.co
-SUPABASE_PRODUCTION_ANON_KEY=sb_publishable_production_build_contract
-```
-
-Bu değerlerle uygulama backend'e bağlanmaz ve sonuç **gerçek startup/Auth/smoke PASS
-değildir**.
+Bu audit'te gerçek Production değerleri bulunmadığı için build yalnız canonical
+[`tool/production_compile_contract.json`](../tool/production_compile_contract.json)
+sentetik fixture'ıyla compile contract doğrular. Fixture exact altı alanlı release
+manifest shape'ini taşır, yalnız `--mode=contract` preflight'ında kabul edilir ve
+release modunda fail-closed reddedilir. Uygulama bu değerlerle backend'e bağlanmaz;
+sonuç **gerçek startup/Auth/smoke PASS değildir**.
 
 ### Release build sonucu
 
@@ -85,7 +83,12 @@ değildir**.
 - Dependency: `iconsax_flutter 1.0.1`; repo-local `iconsax_compat.dart` yalnız kullanılan
   icon yüzeyini açar ve sıfır/geçersiz codepoint içermez.
 - Standart icon tree-shaking: **PASS**; `--no-tree-shake-icons` kullanılmadı.
-- Standard Web release compile/config contract: **PASS** (`build/web`).
+- Standard Web release compile/config contract: **PASS** (`build/web`),
+  `--no-tree-shake-icons` kullanılmadı.
+- Android `compileFlutterBuildProductionRelease`: **PASS**; signed artifact değildir.
+- Android development debug APK: **PASS**.
+- Android release packaging: signing materyali olmadığı için beklenen açık hata ile
+  **FAIL-SAFE PASS**; debug key fallback'i yoktur.
 - Sonuç: Varsayılan release build blocker'ı kapanmıştır. Dummy config ile üretilen
   artifact yine de dağıtılamaz ve startup/Auth/Production smoke kanıtı değildir.
 
@@ -167,13 +170,14 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
 
 ## Audit validation kanıtı
 
-- Wave 8 Iconsax/Auth/callback/config/platform/migration hedefli testleri: **56/56 PASS**.
-- Cutover doküman yapısı ve canonical 0001–0009 SHA-256 manifest kontrolü:
-  **20/20 PASS**.
-- Tam Flutter suite: **1116/1116 PASS**, 4 açık opt-in isteyen Development live test
+- Wave 9 migration/config/signing/platform/Auth hedefli testleri: **62/62 PASS**.
+- Canonical Git/LF 0001–0009 SHA-256 manifest kontrolü: **9/9 PASS**.
+- Tam Flutter suite: **1136/1136 PASS**, 4 açık opt-in isteyen Development live test
   normal koşuda skip.
-- Standart Web release build, sentetik client-safe Production config ile ve ek icon
+- Standart Web release build, sentetik client-safe compile fixture'ıyla ve ek icon
   workaround'u olmadan: **PASS**.
+- Android production-release compile-only ve development debug build: **PASS**;
+  release packaging eksik signing materyalinde beklenen fail-closed sonuç.
 - `flutter analyze --no-pub`: **PASS**, issue yok.
 - Android manifest ve iOS plist XML parse: **PASS**.
 - Değişen dosyalarda gerçek Supabase project URL, JWT-benzeri token, `sb_secret_`

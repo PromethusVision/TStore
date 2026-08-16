@@ -2,7 +2,7 @@
 
 **Plan tarihi:** 2026-08-16
 
-**Kaynak commit:** `origin/main@7bde429514ab737ff13f5eb5629d73481c3e7cd9`
+**Kaynak taban:** `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
 
 **Kapsam:** EsnaftaVar Production Supabase keşfi, migration preflight, kontrollü
 uygulama, postflight ve müşteri smoke sıralaması
@@ -44,21 +44,59 @@ düzeltmek için kullanılabilir. SQL uygulamaz; yine de Production write'tır v
 
 ## Canonical artifact manifesti
 
-Cutover runner, checkout edilen dosyaları aşağıdaki SHA-256 değerleriyle eşleştirmeli;
-fark varsa durmalıdır. Supabase migration ledger timestamp tutar, dosya checksum'u
-kanıtlamaz; schema/function/policy karşılaştırması ayrıca zorunludur.
+Cutover runner, aşağıdaki SHA-256 değerlerini migration'ların **Git'te saklanan UTF-8
+ve LF satır sonlu içerik byte'ları** üzerinden doğrulamalı; fark varsa durmalıdır.
+Çalışma ağacı `core.autocrlf` nedeniyle CRLF içerebilir ve raw checkout byte hash'i
+release artifact kimliği değildir. Platformdan bağımsız kontrol:
+
+```text
+node tool/verify_migration_artifact_manifest.mjs
+```
+
+Araç checkout satır sonlarını LF'ye normalize eder, tam dokuz dosyayı ve manifest
+üyeliğini doğrular. İstenirse aynı değer doğrudan tracked blob üzerinden
+`git cat-file blob <release-commit>:supabase/migrations/<file>` çıktısının SHA-256'ı
+alınarak bağımsız doğrulanabilir. Supabase migration ledger timestamp tutar, dosya
+checksum'u kanıtlamaz; schema/function/policy karşılaştırması ayrıca zorunludur.
 
 | Migration | SHA-256 |
 | --- | --- |
-| `20260812000100_0001_core_auth_catalog.sql` | `01f775dd5660f63be78842ecd32e3978f6503bb15ccc585cf9a5f0a932d56291` |
-| `20260812000200_0002_shops.sql` | `cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd` |
-| `20260812000300_0003_carts_v2.sql` | `938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056` |
-| `20260812000400_0004_qr_verified_purchases.sql` | `ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0` |
-| `20260812000500_0005_verified_shop_ratings.sql` | `76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26` |
-| `20260812000600_0006_chat_notifications_account.sql` | `0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7` |
-| `20260812000700_0007_storage_realtime.sql` | `44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e` |
-| `20260814000800_0008_fix_profile_role_guard.sql` | `126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73` |
-| `20260815000900_0009_verified_product_reviews_storage.sql` | `c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc` |
+| `20260812000100_0001_core_auth_catalog.sql` | `783991b4942f3be5cdfa41b3a62285f421383b051812d46d0acfc09f9cecef33` |
+| `20260812000200_0002_shops.sql` | `acab9a5831a1eee600140310e0033375de3f0757df6e869160d9bed8ebb4ce15` |
+| `20260812000300_0003_carts_v2.sql` | `6408d429842eae9a0948b082fdc517c5616b76348afeb9b6ce648ff670cd4e5b` |
+| `20260812000400_0004_qr_verified_purchases.sql` | `93ace2a8ef8783755f4286a0c6cf7d342e436e5c1953f71820baf8ee39e84e67` |
+| `20260812000500_0005_verified_shop_ratings.sql` | `29d721a1326623ea06d960791e3972bc874d4fc182acacd69390a8f498252c85` |
+| `20260812000600_0006_chat_notifications_account.sql` | `29703c4331187a9d37e1a1caa3346aa5508974e53110814d51fc23065dcb36cb` |
+| `20260812000700_0007_storage_realtime.sql` | `b035c05dcfc16836595b195888f208e51fbbd58d32c5f0fc25493aeed2cc702d` |
+| `20260814000800_0008_fix_profile_role_guard.sql` | `e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170` |
+| `20260815000900_0009_verified_product_reviews_storage.sql` | `47df35090bbcfacd305b6a79fecdac88929d67edc4aaa6932f10ae21f45795fa` |
+
+### Wave 9 hash investigation sonucu
+
+`MIGRATION_ARTIFACT_INTEGRITY: PASS`
+
+Wave 8 manifesti Windows CRLF checkout byte'larından üretilmişti. Bu nedenle aynı
+SQL'in tracked Git blob'u ile 0/9 eşleşiyor, manifestin üretildiği Windows çalışma
+ağacında ise 9/9 eşleşiyordu. Fark SQL semantiği veya migration drift'i değil,
+platforma bağlı satır sonu dönüşümüydü. Wave 9 manifesti canonical Git/LF byte
+sözleşmesine geçirildi ve bağımsız doğrulama aracıyla 9/9 PASS oldu.
+
+Git içerik geçmişi ve Development uygulama kanıtı birlikte incelendi:
+
+| Migration | Son içerik commit'i | Development apply kanıtından sonra tracked mutation | Değerlendirme |
+| --- | --- | --- | --- |
+| 0001–0003, 0005, 0007 | `71b01086da2e22e77c6c062875808aad16b6feac` / 0001 grant hardening `1ba10ed79a5d2743c56fd694641a9f476b434784` | NO | Apply öncesi canonical içerik |
+| 0004, 0006 | `372f5160b1b7da7a948fa75caf5dabefaa5e4a8d` | NO | Apply öncesi intentional PostgreSQL isim çakışması düzeltmeleri |
+| 0008 | `f681821d9deb77248c1bd3c3cb930ea08dd49f5a` | NO | Development apply/postflight öncesi role-guard hotfix |
+| 0009 | `203ac8164c51b4c5bfe6c95f0952858502208eaa` | NO | Development apply öncesi intentional Storage path/client contract hizalaması |
+
+Development kanıt commit'leri sırasıyla 0001–0007 için `1b062fa3`, 0008 için
+`c8260114`, 0009 için `b71bb01c` sonrasındadır; bu apply kayıtlarından sonra ilgili
+SQL dosyalarında başka tracked content commit'i yoktur. Sonuç **CASE A**'dır:
+canonical SQL sonradan mutate edilmemiş, eski manifest platforma bağlı/stale kalmıştır.
+Bu Git kronolojisi Development ledger'ının tutmadığı remote byte checksum'unun yerine
+geçmez; Production cutover'da remote schema/function/policy karşılaştırması yine
+zorunludur.
 
 ## Migration inventory
 

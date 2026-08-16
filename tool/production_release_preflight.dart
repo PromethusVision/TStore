@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:t_store/core/supabase/production_release_preflight.dart';
+import 'package:t_store/core/supabase/supabase_config.dart';
 
 void main(List<String> arguments) {
   try {
@@ -54,6 +55,10 @@ void main(List<String> arguments) {
     stderr.writeln('The manifest must be valid JSON with string values.');
     exitCode = 65;
   } on ProductionReleasePreflightException catch (error) {
+    stderr.writeln('Production config preflight: FAIL');
+    stderr.writeln(error);
+    exitCode = 1;
+  } on SupabaseConfigurationException catch (error) {
     stderr.writeln('Production config preflight: FAIL');
     stderr.writeln(error);
     exitCode = 1;

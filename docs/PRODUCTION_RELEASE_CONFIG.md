@@ -91,8 +91,9 @@ flutter build web --release `
   --dart-define-from-file=<secure-config-path>/production-release.json
 ```
 
-`--no-tree-shake-icons` kullanılmaz. Android/iOS identity ve signing bu belgenin ve
-Agent 3 ownership'inin dışındadır.
+`--no-tree-shake-icons` kullanılmaz. Android/iOS identity ve signing bu config
+sözleşmesinin dışındadır; `MOBILE_RELEASE_IDENTITY_SIGNING.md` ve release owner
+kapılarıyla yönetilir.
 
 ### 4. Artifact identification
 

@@ -34,6 +34,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 6 teknik ilerleme: FINAL Option A canonical `0009` backend ve RPC-only istemciyle uygulandı; aktif üç public-read Storage bucket ve exact versioned controlled-path istemci çözümlemesi tamamlandı. Development live review lifecycle 3/3, fixture cleanup residual `0`, hedefli 189/189, tam 1106/1106 test ve analyzer PASS oldu.
 - 2026-08-16 Wave 7 teknik ilerleme: Android/iOS Auth callback kaydı, PKCE recovery fix, enumeration-safe signup ve Android release internet izni entegre edildi; Production readiness audit ve smoke checklist eklendi. Auth hedefli 186/186, release-readiness 67/67, tam 1113/1113 test, analyzer ve sentetik `--no-tree-shake-icons` compile contract PASS; fiziksel QR, SMTP/e-posta ve Production release gate'leri BLOCKED/açık kaldı.
 - 2026-08-16 Wave 8 teknik ilerleme: `iconsax_flutter 1.0.1` ve sınırlı repo-local compatibility katmanı ile standart Web release build ek workaround olmadan PASS; işlevsiz sosyal login UI release blocker'ı kapandı. Production Supabase cutover planı ile GO/NO-GO checklist'i hazırlandı. Hedefli 56/56, cutover belge/hash 20/20 ve tam 1116/1116 test (4 gated live skip) geçti; Production/Development remote yazması yapılmadı.
+- 2026-08-16 Wave 9 teknik ilerleme: Production read-only discovery protokolü, mobile signing fail-safe/secret hygiene ve Production config/Auth redirect preflight entegre edildi. Migration manifesti CRLF kaynaklı platform bağımlılığından canonical Git/LF sözleşmesine geçirildi ve 9/9 PASS; Development apply sonrası tracked SQL mutation yok. Exact Production identity, final mobile identifier/signing ve bütün gerçek Production/SMTP/QR kabul kapıları açık kaldı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -164,6 +165,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-15 Wave 6 final sonucu: üç production dalı zorunlu sırayla çatışmasız entegre edildi. Review RPC/client + cart/QR/purchases + Storage resolver/model + canonical migration hedefli matrisi 189/189, tam Flutter suite 1106/1106, ayrı Development live review harness'i 3/3 ve `flutter analyze --no-pub` geçti; fixture cleanup residual `0`, Production erişimi `NO`.
 - 2026-08-16 Wave 7 final sonucu: Agent 2 Auth hardening ve Agent 3 Production readiness çıktıları entegre edildi; Agent 1 diff olmadığı için merge edilmedi. Auth/platform/config matrisi 186/186, release-readiness matrisi 67/67, tam Flutter suite 1113/1113 (4 gated live skip), analyzer, diff/security ve sentetik Production entrypoint compile contract PASS; gerçek Production/Development remote yazması yapılmadı.
 - 2026-08-16 Wave 8 final sonucu: Üç teslim dalı zorunlu sırayla çatışmasız entegre edildi. Iconsax/Auth/callback/config/platform/migration matrisi 56/56, cutover belge/hash kontrolü 20/20, tam Flutter suite 1116/1116 (4 gated live skip) ve standart sentetik Production entrypoint Web release build'i ek icon workaround'u olmadan PASS; gerçek Production/Development remote yazması yapılmadı.
+- 2026-08-16 Wave 9 final sonucu: Üç teslim dalı zorunlu sırayla çatışmasız entegre edildi. Migration/config/signing/platform/Auth hedefli matrisi 62/62, migration artifact manifesti 9/9, tam Flutter suite 1136/1136 (4 opt-in Development live skip), analyzer, standart Web ve Android production-release compile-only contract ile Android development debug build PASS. Android release packaging eksik signing materyalinde beklenen fail-closed sonucu verdi; remote backend yazması yapılmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -171,7 +173,9 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 - Canonical operasyon kaynakları: `docs/PRODUCTION_READINESS_AUDIT.md`, `docs/PRODUCTION_SMOKE_CHECKLIST.md`, `docs/PRODUCTION_SUPABASE_CUTOVER_PLAN.md` ve `docs/PRODUCTION_GO_NO_GO_CHECKLIST.md`.
 - Gerçek Production URL/client-safe key, remote migration/schema/RLS/RPC/Storage/Realtime envanteri, doğrulanmış backup/restore planı ve Production smoke tamamlanmadan ticari release hazır değildir.
-- Production Auth/SMTP ve redirect/origin acceptance; Android/iOS gerçek application/bundle identity, signing ve distribution kanıtı ile fiziksel iki-cihaz QR açık blocker'dır. İşlevsiz sosyal login UI blocker'ı Wave 8'de kapandı.
+- `PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED`: Development kesin dışlandı; görülen diğer proje canonical sahiplik kanıtı olmadan Production varsayılmadı ve envanterlenmedi.
+- Production Auth/SMTP ve redirect/origin acceptance; Android/iOS gerçek application/bundle identity, upload/Distribution signing ve macOS archive kanıtı ile fiziksel iki-cihaz QR açık blocker'dır. Signing fail-safe ve config preflight Wave 9'da tamamlandı ancak gerçek signed release değildir.
+- Local migration artifact integrity Wave 9'da canonical Git/LF manifestiyle 9/9 PASS; bu remote Production migration inventory/schema diff veya apply kapısını kapatmaz.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening

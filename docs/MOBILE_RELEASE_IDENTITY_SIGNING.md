@@ -140,8 +140,10 @@ veya `SIGNING_READY: YES` raporlanmaz.
 
 ## Wave 9 doğrulama sınırı
 
-- JDK 17 ile `compileFlutterBuildProductionRelease`: **PASS**. Bu yalnız Android
+- Flutter toolchain JDK 21 ve proje Java 17 source/target sözleşmesiyle
+  `compileFlutterBuildProductionRelease`: **PASS**. Bu yalnız Android
   production-release compile contract kanıtıdır.
+- `assembleDevelopmentDebug`: **PASS**; signing hardening Development build'i bozmadı.
 - `assembleProductionRelease`: `android/key.properties` bulunmadığı için beklenen
   açık signing hatasıyla **FAIL-SAFE PASS**; debug signing fallback oluşmadı.
 - Signed AAB/APK üretilmedi ve signer acceptance yapılmadı.

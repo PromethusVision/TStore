@@ -12,6 +12,8 @@ schema, RLS, Auth, Storage, Realtime veya veri yazması yapılmadı.
 
 `PRODUCTION_INVENTORY_READY: NO`
 
+`PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED`
+
 ## Yönetici özeti
 
 Kimliği doğrulanmış Supabase Dashboard oturumunda tek organizasyon altında iki proje
@@ -109,28 +111,21 @@ Canonical final kaynak beklentisi:
 
 ## Local canonical artifact consistency finding
 
-Production ile karşılaştırmaya geçilmeden önce yerel cutover artefact'ında ayrıca bir
-tutarsızlık giderilmelidir. `PRODUCTION_SUPABASE_CUTOVER_PLAN.md` içindeki SHA-256
-manifesti, mevcut base commit'teki tracked migration blob içerikleriyle **0/9**
-eşleşmektedir. Windows checkout dosya byte'larıyla karşılaştırmada da yalnız 0008
-eşleşmekte, diğer sekiz dosya farklıdır. Bu bulgu Production drift'i değildir; yerel
-release artefact manifest drift'idir.
+`MIGRATION_ARTIFACT_INTEGRITY: PASS`
 
-| Migration | Cutover plan SHA-256 | Current tracked blob SHA-256 | Sınıf |
-| --- | --- | --- | --- |
-| 0001 | `01f775dd5660f63be78842ecd32e3978f6503bb15ccc585cf9a5f0a932d56291` | `783991b4942f3be5cdfa41b3a62285f421383b051812d46d0acfc09f9cecef33` | `HIGH RISK` |
-| 0002 | `cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd` | `acab9a5831a1eee600140310e0033375de3f0757df6e869160d9bed8ebb4ce15` | `HIGH RISK` |
-| 0003 | `938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056` | `6408d429842eae9a0948b082fdc517c5616b76348afeb9b6ce648ff670cd4e5b` | `HIGH RISK` |
-| 0004 | `ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0` | `93ace2a8ef8783755f4286a0c6cf7d342e436e5c1953f71820baf8ee39e84e67` | `HIGH RISK` |
-| 0005 | `76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26` | `29d721a1326623ea06d960791e3972bc874d4fc182acacd69390a8f498252c85` | `HIGH RISK` |
-| 0006 | `0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7` | `29703c4331187a9d37e1a1caa3346aa5508974e53110814d51fc23065dcb36cb` | `HIGH RISK` |
-| 0007 | `44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e` | `b035c05dcfc16836595b195888f208e51fbbd58d32c5f0fc25493aeed2cc702d` | `HIGH RISK` |
-| 0008 | `126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73` | `e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170` | `HIGH RISK` |
-| 0009 | `c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc` | `47df35090bbcfacd305b6a79fecdac88929d67edc4aaa6932f10ae21f45795fa` | `HIGH RISK` |
+Agent 1'in base üzerindeki 0/9 bulgusu Wave 9 integration'da kök neden analiziyle
+kapatıldı. Eski cutover manifesti Windows `core.autocrlf` sonrası CRLF checkout
+byte'larını kaydetmiş, karşılaştırma ise Git'te saklanan LF blob byte'larıyla yapılmıştı.
+SQL semantiği veya Production drift'i bulunmadı. Manifest artık platformdan bağımsız
+Git/LF byte sözleşmesini kullanıyor ve
+`node tool/verify_migration_artifact_manifest.mjs` ile **9/9 PASS** veriyor.
 
-Cutover manifesti hangi byte-normalization sözleşmesini kullandığını açıkça belirtmeli,
-mevcut canonical dosyalardan yeniden üretilmeli ve otomatik testle korunmalıdır. Bu
-eşleşme düzelmeden migration artefact gate'i PASS sayılamaz.
+0001–0009 Git içerik geçmişi, Development apply/postflight kanıt commit'leriyle
+karşılaştırıldı. Her migration'ın son intentional içerik değişikliği ilgili apply
+kanıtından öncedir; Development'a uygulama kaydından sonra tracked SQL mutation
+bulunmadı. Ayrıntılı commit/hakikat tablosu cutover planındadır. Supabase ledger
+checksum saklamadığından bu yerel PASS, hâlâ bilinmeyen Production schema ve remote
+object karşılaştırmasının yerine geçmez.
 
 ## Important domain state
 
@@ -183,7 +178,9 @@ ayarlarını upsert ettiği için Production verisi üzerinde sayı alınmadan
    tahminle değil yazılı sahiplik kanıtıyla yapılmalıdır.
 2. Production kimliği doğrulandıktan sonra read-only SQL inventory pack ve non-secret
    Auth/Storage/Realtime discovery yeniden çalıştırılmalıdır.
-3. Canonical 0001–0009 SHA-256 manifest uyuşmazlığı migration dry comparison veya apply
-   öncesinde integration/release sahibi tarafından giderilmeli ve testle korunmalıdır.
+3. Canonical 0001–0009 manifesti Wave 9'da 9/9 doğrulandı; her release commit'inde
+   platformdan bağımsız manifest aracı yeniden çalıştırılmalı ve Production remote
+   schema/object karşılaştırması ayrıca yapılmalıdır.
 
-Bu üç madde tamamlanmadan Production inventory gate ve migration artefact gate kapalıdır.
+İlk iki madde tamamlanmadan Production inventory gate kapalıdır. Yerel migration
+artefact gate'i PASS olsa da bu durum Production migration apply yetkisi vermez.

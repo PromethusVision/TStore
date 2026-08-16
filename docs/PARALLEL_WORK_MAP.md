@@ -97,6 +97,29 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Production cutover planı 0001–0009 artifact/hash envanteri, read-only discovery, backup/restore, apply, RLS/RPC/Storage postflight, Auth/email, client config, smoke ve GO/NO-GO kapılarını tahmini Production PASS iddiası olmadan tanımlar. Entegrasyonda yakalanan `0001` hash uyuşmazlığı canonical dosya değeriyle düzeltildi.
 - Hedefli 56/56, cutover belge/hash 20/20 ve tam Flutter suite 1116/1116 (4 opt-in Development live skip) PASS. Fiziksel iki-cihaz QR, production-like email, gerçek Production ref/config, migration inventory/apply, backup/restore, postflight/smoke ve mobil signing/app identity kapıları açık; remote backend/config yazması yapılmadı.
 
+## Wave 9 Final Entegrasyon Gözlemi
+
+- Agent 1 Production read-only discovery, Agent 2 mobile identity/signing ve Agent 3
+  Production config preflight dalları zorunlu sırayla `--no-ff`, çatışmasız entegre
+  edildi. SQL/migration, `service_locator.dart` ve shared model değiştirilmedi.
+- `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) Production olarak kesin dışlandı;
+  `ieebtdvvinqfatbhkyqi` canonical sahiplik kanıtı olmadığı için Production sayılmadı,
+  envanterlenmedi ve hiç yazılmadı. `PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED`
+  açık kaldı.
+- Migration 0/9 farkının kök nedeni Windows CRLF checkout hash'iydi. Git geçmişi,
+  Development apply kanıtları ve tracked blob'lar karşılaştırıldı; apply sonrası SQL
+  mutation yok. Manifest canonical Git/LF sözleşmesine taşındı ve tekrar çalıştırılabilir
+  araçla 9/9 PASS.
+- Mobile release debug signing fallback'i kaldırıldı; Android packaging eksik
+  credential'da fail-closed, iOS Release manual Apple Distribution contract'ında.
+  `com.example.t_store`, `com.example.tStore` ve callback owner kararı olmadan
+  değiştirilmedi; signed artifact üretilmedi.
+- Production config preflight Development ref, eksik/placeholder/local/malformed
+  config, ref-host farkı, server credential, yanlış target ve Auth redirect farkını
+  fail-closed reddeder. Hedefli 62/62, tam 1136/1136 (4 gated live skip), analyzer,
+  Web/Android compile contract ve Android development debug build PASS; backend remote
+  write yapılmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
