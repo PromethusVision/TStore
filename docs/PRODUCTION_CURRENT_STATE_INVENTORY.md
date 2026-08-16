@@ -1,14 +1,14 @@
 # Production Current State Inventory
 
-**Inventory tarihi:** 2026-08-16 — Phase D1 postflight güncel
+**Inventory tarihi:** 2026-08-16 — Phase E1 read-only client verification güncel
 
-**Kaynak branch/base:** `agent1/w10-production-migration-apply` /
-`origin/main@609a037664f8c001951ba00193e6112989399a9b`
+**Kaynak branch/base:** `agent1/w10-production-client-wiring` /
+`origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
 
-**Yetki sınırı:** Kimliği doğrulanmış Production projesinde yalnız resmi linked CLI ile
-canonical `0001→0009` initial bootstrap apply ve bunun canonical provisioning etkileri;
-diğer bütün postflight işlemleri salt-okunur. Manuel SQL, fixture, Auth/SMTP config veya
-Storage object yazması yapılmadı.
+**Yetki sınırı:** Phase D1'deki yetkili canonical `0001→0009` initial bootstrap sonrası
+Phase E1 yalnız gerçek publishable key ile anonymous read-only client bağlantısı ve
+yerel release build kanıtıdır. Phase E1'de remote write, fixture, Auth/SMTP config,
+Storage object veya migration işlemi yapılmadı.
 
 `PRODUCTION_PROJECT_IDENTIFIED: YES`
 
@@ -28,9 +28,49 @@ Storage object yazması yapılmadı.
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
 
-`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
+`PHASE_E1_PRODUCTION_CLIENT_WIRING: PASS`
 
-## Phase D1 authoritative current state
+`PRODUCTION_CLIENT_SAFE_KEY_PRESENT: YES`
+
+`PRODUCTION_RUNTIME_CONFIG: PASS`
+
+`PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
+
+`READY_FOR_PHASE_E_INTEGRATION: YES`
+
+## Phase E1 authoritative client connection state
+
+Authenticated Supabase CLI exact Production ref'inde bir client-safe publishable key
+bulunduğunu doğruladı. `--reveal` kullanılmadı; değer yalnız süreç belleğinde normal
+anonymous Flutter/Supabase client'a verildi ve source/log/belgeye yazılmadı.
+Service-role, `sb_secret_*` veya server credential kullanılmadı.
+
+| Phase E1 client kontrolü | Production sonucu |
+| --- | --- |
+| Entrypoint/environment | `lib/main_production.dart` / `production`; Development fallback yok |
+| Runtime URL/ref | Exact `https://mefhfvrgkwciubeajjeb.supabase.co`; ref-host PASS |
+| Auth initialization | Anonymous client initialized; current user/session yok |
+| `categories` | Request success; empty list |
+| `products` | Request success; empty list |
+| `shops` | Request success; empty list |
+| `banners` | Request success; empty list |
+| Storage client read | Üç active bucket listesi client-visible empty; canonical public URL contract PASS |
+| Storage object probe | Üç controlled non-existent path güvenli not-found; upload/mutation yok |
+| Standard Web release build | Gerçek URL/publishable key, Production target, icon workaround yok; PASS |
+
+Phase D1 catalog sayımı Storage object `0` olduğunu authoritative metadata ile
+doğrulamıştı; E1 normal client sonucu bu zero-state ve no-client-list policy contract'ı
+ile uyumludur. Production'da Auth user, business row veya Storage object oluşturulmadı.
+Geçici build artifact'ı credential kalıntısı bırakmamak için doğrulama sonrasında
+kaldırıldı.
+
+Bu sonuç yalnız real runtime wiring/read-only connection gate'ini kapatır. Remote Site
+URL hâlâ localhost, redirect allowlist boş ve custom SMTP disabled olduğundan Auth
+acceptance; ayrıca platform signing ve controlled full Production smoke açık kalır.
+`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO` bu daha geniş release anlamında
+korunur.
+
+## Phase D1 authoritative schema state
 
 Product owner'ın yalnız boş ilk bootstrap için verdiği açık risk istisnası kullanıldı.
 Apply öncesi `2026-08-16 18:56:34 UTC` JIT snapshot'ında migration ledger relation

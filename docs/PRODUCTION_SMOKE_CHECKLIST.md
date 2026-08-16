@@ -6,6 +6,26 @@ metadata/security postflight'ı PASS tamamladı. Integration migration'ı yenide
 uygulamadı, remote erişim/yazma yapmadı ve hesap oluşturmadı. Gerçek smoke'taki her
 write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
+## Wave 10 Phase E1 read-only evidence
+
+`PRODUCTION_CLIENT_SAFE_KEY_PRESENT: YES`
+
+`PRODUCTION_RUNTIME_CONFIG: PASS`
+
+`PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
+
+`READY_FOR_PHASE_E_INTEGRATION: YES`
+
+E1 gerçek Production URL/ref ve client-safe publishable key ile yalnız anonymous
+read-only bağlantı yaptı. Key source/log/belgeye yazılmadı; service-role/server secret
+kullanılmadı. Categories/products/shops/banners request'leri başarılı empty state,
+Auth client user/session yok ve üç active Storage bucket public URL/not-found contract'ı
+PASS oldu. Standard `main_production.dart` Web release build'i gerçek runtime injection
+ile icon workaround olmadan PASS; credential taşıyan geçici artifact kaldırıldı.
+
+Bu evidence full smoke veya deploy GO değildir. Auth Site URL/redirect/SMTP, platform
+signing, final artifact record ve kullanıcı oluşturan/write smoke maddeleri açık kalır.
+
 ## 1. Başlatma kapıları
 
 Smoke başlamadan önce tamamı işaretlenmelidir:
@@ -26,6 +46,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Canonical Git/LF migration manifesti
       `node tool/verify_migration_artifact_manifest.mjs` ile 9/9 PASS.
 - [x] Production schema/RLS/RPC/Storage/Realtime metadata/security postflight PASS.
+- [x] Phase E1 gerçek Production runtime config ve anonymous read-only empty-state
+      bağlantısı PASS; Production write/Auth account/Storage mutation yok.
 - [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
