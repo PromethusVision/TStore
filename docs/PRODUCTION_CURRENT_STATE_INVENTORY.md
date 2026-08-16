@@ -191,7 +191,9 @@ historical nullable/legacy review row yoktur; Storage bucket/object yoktur. Bu s
 - Production modified: **NO**.
 - Development touched: **NO**.
 - Unknown/legacy project touched: **NO**.
-- Migration apply/dry-run/repair/push/pull/dump/reset: **NO**.
+- Linked CLI dry-run: **YES / PASS**, yalnız exact canonical `0001→0009`; before/after
+  Production state aynı.
+- Migration apply/repair/push/pull/dump/reset: **NO**.
 - Auth/SMTP, RLS/policy, Storage, Realtime veya schema config değişikliği: **NO**.
 - User/fixture/bucket/key/token oluşturma: **NO**.
 - Secret/service-role key read/log/commit: **NO**.
@@ -205,13 +207,13 @@ historical nullable/legacy review row yoktur; Storage bucket/object yoktur. Bu s
 `READY_FOR_CANONICAL_MIGRATION: YES`
 
 Buradaki `READY`, topology ve artifact açısından canonical 0001→0009 yoluna uygunluğu
-ifade eder. **Migration apply bu görevde yapılmadı ve yetkilendirilmedi.** Sonraki
-zorunlu adım cutover planındaki Phase B backup/restore/freeze ve Phase C güvenli dry
-comparison'dır. Phase D apply ancak bu kapılar ve ayrı change approval sonrası
-yürütülebilir. Production Auth Site URL/redirect/SMTP ile client config ve smoke
-kapıları commercial release için ayrıca açıktır.
+ifade eder. Phase D0 linked dry-run ve owner'ın dar kapsamlı empty-first-bootstrap risk
+kararı daha sonra tamamlandı. **Migration apply bu görevde yapılmadı ve
+yetkilendirilmedi.** Phase D apply ayrı change task/window, exact zero-state recheck ve
+operator/incident owner kaydıyla yürütülebilir. Production Auth Site URL/redirect/SMTP
+ile client config ve smoke kapıları commercial release için ayrıca açıktır.
 
-## Wave 10 Phase B/C pre-migration refresh
+## Wave 10 Phase B/C/D0 pre-migration refresh
 
 2026-08-16 `17:41:47 UTC` salt-okunur snapshot'ında fresh baseline değişmemiştir:
 Auth user/identity/session, public application table, Storage bucket/object ve
@@ -225,16 +227,26 @@ Credential-free catalog snapshot boşluğu kanıtlar fakat restorable native poi
 değildir. Local PGlite safe-equivalent replay exact 0001→0009 zincirinde 9/9 PASS ve
 final 23 tablo/üç bucket/QR-review-Storage behavior PASS verdi.
 
+Phase D0 linked CLI dry-run exact Production ref'inde yalnız canonical `0001→0009`
+pending sırasını gösterdi. Dry-run öncesi/sonrası ledger/public/Auth/Storage/Realtime/
+canonical RPC snapshot'ı değişmedi; remote write `0` ve migration apply `NO`.
+
+Product owner, yalnız bu tamamen boş ilk bootstrap için native backup/PITR olmadan
+ilerleme riskini ve güvenli forward-fix mümkün değilse empty-project recreation
+yolunu kabul etti. Bu dar istisna apply öncesi zero-state recheck'e bağlıdır; gerçek
+kullanıcı/veri görülürse düşer ve sonraki Production migration'larına emsal değildir.
+
 Ayrıntılı evidence ve restore/failure kararı:
 [Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
 
-`BACKUP_ROLLBACK_PLAN_READY: NO`
+`NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
-`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+`BACKUP_ROLLBACK_PLAN_READY: OWNER EXCEPTION — EMPTY FIRST BOOTSTRAP ONLY`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
-Phase A'daki `READY_FOR_CANONICAL_MIGRATION: YES`, yalnız fresh topology'nin doğru
-canonical yolunun 0001→0009 olduğunu belirtir. Free-plan backup/restore, accepted
-RPO/RTO, owner, restore drill ve enforced freeze blocker'ları nedeniyle Phase D apply
-henüz yetkili veya hazır değildir.
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+
+Bu `READY`, yalnız ayrı ve açık yetkili apply görevi/change window'u ile exact ref/hash
+ve just-in-time zero-state recheck sonrasında geçerlidir. Bu D0 işi migration
+uygulamamıştır; Production postflight ve commercial release kapıları ayrıca açıktır.

@@ -21,7 +21,7 @@ uygulama, postflight ve müşteri smoke sıralaması
 
 `PHASE_A_READ_ONLY_INVENTORY: PASS`
 
-`PHASE_B_BACKUP_ROLLBACK: BLOCKED`
+`PHASE_B_BACKUP_ROLLBACK: PASS — OWNER-ACCEPTED EMPTY-FIRST-BOOTSTRAP EXCEPTION`
 
 `PHASE_C_DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
@@ -29,18 +29,19 @@ uygulama, postflight ve müşteri smoke sıralaması
 
 `PRODUCTION_STATE_UNCHANGED: YES`
 
-`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
+`FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
 
 Wave 10 Phase A, Production kimliğini iki Dashboard görünümüyle doğruladı ve remote
 topology'yi **F — Fresh/empty** olarak sınıflandırdı. Phase B/C, Free plan'da native
 backup/PITR/restore point bulunmadığını; local clean-room 0001→0009 replay'in ise PASS
 olduğunu doğruladı. Phase D0, Supabase CLI `2.114.0` ile exact Production ref'e linked
 non-writing dry-run yaptı; yalnız canonical 0001→0009 pending görüldü ve before/after
-remote snapshot değişmedi. Teknik kanıt owner risk kararına hazırdır; gerçek apply
-Free-plan rollback ve operational gate'ler nedeniyle hâlâ kapalıdır. Ayrıntılı güncel
-snapshot:
+remote snapshot değişmedi. Product owner, yalnız tamamen boş ilk `0001→0009`
+bootstrap için Free-plan no-backup riskini ve güvenli forward-fix mümkün olmazsa boş
+projenin yeniden oluşturulmasını kabul etti. Apply ayrı görev/change window ister ve
+hemen önce sıfır-state yeniden doğrulanır. Ayrıntılı güncel snapshot:
 [Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
 
 Bu plan şu belgelerin devamıdır:
@@ -457,6 +458,16 @@ claimed verified sayısı ve cached product summary sayısını en azından içe
 6. Backup doğrulanmadan, restore yolu denenmeden veya kabul edilen RPO sağlanmadan
    migration apply yapılmaz.
 
+### Wave 10 dar kapsamlı empty-bootstrap istisnası
+
+Genel backup/restore kuralı korunur. Product owner yalnız fresh/empty Production'ın ilk
+canonical `0001→0009` bootstrap'ı için native backup/PITR olmadan ilerleme riskini
+kabul etmiştir. Güvenli forward-fix mümkün değilse boş projenin yeniden oluşturulması
+kabul edilen recovery yoludur; süre garantisi yoktur. İstisna apply öncesi ledger,
+public application table, Auth user ve Storage bucket/object sayılarının tekrar `0`
+olmasına bağlıdır. Herhangi bir gerçek veri varsa istisna geçersizdir ve **STOP**.
+Gelecekteki veri içeren Production migration'larına otomatik yetki vermez.
+
 ### Failure ve partial apply davranışı
 
 - Her migration kendi transaction'ında atomiktir; `db push` boyunca önceki migration
@@ -513,12 +524,12 @@ koruma planı; freeze yöntemi ve change window onaylı.
 **STOP:** Backup/PITR varsayımsal; dump kapsamı bilinmiyor; restore denenmemiş; Storage
 objects korunmuyor; freeze uygulanamıyor.
 
-**Wave 10 current evidence — BLOCKED:** Production Free plan scheduled backup içermez;
-PITR Pro add-on ve restore-to-new-project Pro + physical backup gerektirir. Fresh
-snapshot'ta korunacak application row/Storage object yoktur; ancak restorable point,
-accepted RPO/RTO, restore/incident owner ve restore drill bulunmadığı için Phase B PASS
-değildir. Business state quiescent olsa da Auth signup enabled ve enforced freeze
-yoktur. Phase D öncesi count recheck + imzalı change window zorunludur.
+**Wave 10 current evidence — PASS WITH OWNER EXCEPTION:** Production Free plan
+scheduled backup/PITR/restorable point sağlamaz. Fresh snapshot'ta korunacak
+application row/Storage object yoktur. Product owner, yalnız bu ilk empty bootstrap
+için no-backup riskini ve forward-fix mümkün değilse empty-project recreation yolunu
+kabul etti. Phase D öncesi exact zero-state recheck + imzalı change window zorunludur;
+count değişmişse istisna düşer ve işlem durur.
 
 ### Phase C — Migration dry comparison
 
@@ -547,13 +558,15 @@ Realtime/canonical RPC sayıları değişmedi. Automatic-RLS aktif; Data API ena
 auto-expose OFF'tur. Local link artefaktları secret scan sonrası kaldırıldı. Production
 remote write yapılmadı.
 
-`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`; fakat Phase B backup/restore gate'i ve
-enforced freeze hâlâ kapanmadığı için `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`.
+`FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`. Linked dry-run ve owner kararıyla
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES`; bu yalnız ayrı apply görevi ve just-in-time
+zero-state recheck için geçerlidir.
 
 ### Phase D — Canonical migration apply
 
-**Giriş şartı:** A–C PASS; backup restore-ready; freeze aktif; tek migration operator;
-GO/NO-GO checklist pre-apply bölümü imzalı.
+**Giriş şartı:** A–C PASS; backup restore-ready veya yukarıdaki dar kapsamlı empty-first-
+bootstrap owner istisnası geçerli; zero-state recheck PASS; freeze/change window aktif;
+tek migration operator; GO/NO-GO checklist pre-apply bölümü imzalı.
 
 **İşlem:** Exact branch/commit'te son `migration list` ve `db push --linked --dry-run`
 kanıtı alınır. Yetkili operator yalnız onaylanan pending canonical dosyalar için

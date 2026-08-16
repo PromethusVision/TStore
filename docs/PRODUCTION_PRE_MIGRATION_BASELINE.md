@@ -21,9 +21,11 @@ Storage, Realtime veya başka bir remote write yapılmadı.
 
 `PRODUCTION_TOPOLOGY: F — FRESH/EMPTY`
 
-`BACKUP_ROLLBACK_PLAN_READY: NO`
+`NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
-`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+`BACKUP_ROLLBACK_PLAN_READY: OWNER EXCEPTION — EMPTY FIRST BOOTSTRAP ONLY`
+
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
 `LINKED_CLI_DRY_RUN: PASS`
 
@@ -31,9 +33,11 @@ Storage, Realtime veya başka bir remote write yapılmadı.
 
 `PRODUCTION_STATE_UNCHANGED: YES`
 
-`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
+`FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+`EMPTY_PROJECT_RECREATE_FALLBACK_ACCEPTED: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
 
 ## Native backup, PITR ve restore capability
 
@@ -49,10 +53,12 @@ durumu:
 | Restorable native point | Yok | Restore zamanı/point'i kaydedilemedi |
 | Native restore drill | Yapılamadı | Desteklenen source backup yok |
 
-Schema/data logical dump üretilmedi. Yerel makinede Supabase CLI, `pg_dump`/`psql`
-ve Docker bulunmuyor; remote database credential istenmedi veya okunmadı. Fresh
-baseline için bunun yerine exact catalog/count snapshot'ı alındı. Bu snapshot boşluğu
-kanıtlar fakat restorable database backup'ın yerine geçmez.
+Schema/data logical dump üretilmedi. Phase B snapshot'ı sırasında preinstalled
+Supabase CLI, `pg_dump`/`psql` ve Docker bulunmuyordu; remote database credential
+istenmedi veya okunmadı. Fresh baseline için bunun yerine exact catalog/count
+snapshot'ı alındı. Phase D0'da CLI `npx` üzerinden yalnız linked dry-run için
+çalıştırıldı. Bu snapshot boşluğu kanıtlar fakat restorable database backup'ın yerine
+geçmez.
 
 ## Credential-free pre-migration snapshot
 
@@ -141,9 +147,23 @@ Mevcut Free plan için gerçek native restore yolu yoktur. Güvenli failure davr
 5. Production'da veri oluştuğu anda Free-plan recreate yaklaşımı veri restore'u
    değildir ve kabul edilemez.
 
-Pre-migration business-data RPO teorik olarak sıfır row'dur; ancak kabul edilmiş
-RPO/RTO, restore/incident owner, restorable point ve gerçek restore drill yoktur.
-Bu nedenle `BACKUP_ROLLBACK_PLAN_READY: NO` ve apply kapısı kapalıdır.
+Pre-migration business-data RPO sıfır row'dur; restorable point ve gerçek restore
+drill yoktur. Product owner, aşağıdaki dar kapsamlı istisnayla bu riski kabul etmiştir.
+
+## Owner risk acceptance — first empty bootstrap only
+
+Product owner, Production tamamen boşken yalnız ilk canonical `0001→0009` bootstrap
+için Free plan native backup/PITR olmadan migration uygulanması riskini kabul etmiştir.
+Migration başarısız olur ve güvenli forward-fix mümkün olmazsa boş Production
+projesinin yeniden oluşturulması kabul edilen recovery yoludur. Bu yol mevcut ref/URL/
+key değişikliği ve Production yapılandırmasının yeniden kurulması anlamına gelebilir;
+süre garantisi yoktur.
+
+Bu istisna yalnız apply öncesi ledger relation, public application table, Auth user ve
+Storage bucket/object sayıları yeniden `0` doğrulanırsa geçerlidir. Herhangi bir gerçek
+kullanıcı veya veri görülürse istisna otomatik düşer ve **STOP** uygulanır. Karar,
+gerçek veri oluştuktan sonraki Production değişikliklerine emsal veya otomatik yetki
+vermez. Ayrı migration apply görevi/change window'u yine zorunludur.
 
 ## Exact 0001–0009 apply order
 
@@ -264,7 +284,7 @@ local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
 `MIGRATION_ARTIFACT_INTEGRITY: PASS — 9/9`
 
-`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
 `LINKED_CLI_DRY_RUN: PASS`
 
@@ -272,15 +292,18 @@ local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
 `PRODUCTION_STATE_UNCHANGED: YES`
 
-`BACKUP_ROLLBACK_PLAN_READY: NO`
+`NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
-`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
+`BACKUP_ROLLBACK_PLAN_READY: OWNER EXCEPTION — EMPTY FIRST BOOTSTRAP ONLY`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+`FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-Teknik preflight ve linked dry-run owner'ın migration risk kararına hazırdır. Bu ifade
-migration apply yetkisi veya GO değildir. No-go nedeni migration conflict'i değildir;
-blocker Free plan'da restorable native point/PITR bulunmaması, accepted RPO/RTO ve
-restore/incident owner'larının atanmaması, restore drill olmaması ve enforced
-change-window freeze'in henüz kanıtlanmamasıdır. Owner bu riski açıkça karara bağlayıp
-operasyonel gate'leri kapatmadan Phase D migration apply yapılmamalıdır.
+`EMPTY_PROJECT_RECREATE_FALLBACK_ACCEPTED: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+
+Teknik preflight, linked dry-run ve dar kapsamlı owner risk kararı tamamlanmıştır.
+`READY`, yalnız boş ilk bootstrap için ayrı ve açık yetkili apply görevinin
+başlayabileceğini belirtir; bu entegrasyon apply yetkisi değildir ve migration
+uygulamamıştır. Apply başında exact ref/hash ile sıfır-state yeniden doğrulanmalı,
+change window/operator/incident owner kaydedilmeli ve herhangi bir driftte durulmalıdır.

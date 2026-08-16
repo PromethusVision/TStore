@@ -15,27 +15,29 @@ pre-migration evidence durumunu gösterir.
 | Fresh remote inventory | Ledger yok; public application table/user/bucket/object sayıları 0 | PASS |
 | Migration artifacts | Canonical Git/LF SHA-256 manifest 9/9 | PASS |
 | Existing data / 0009 impact | Historical application row ve Storage object yok; affected count 0 | PASS |
-| Native backup / PITR | Free plan scheduled backup yok; PITR yok; restorable point yok | **NO-GO** |
-| Restore drill / RPO / RTO | Native restore kullanılamıyor; accepted RPO/RTO ve owner/drill yok | **NO-GO** |
+| Native backup / PITR | Free plan scheduled backup/PITR/restorable point yok; owner yalnız boş ilk bootstrap için riski kabul etti | **ACCEPTED EXCEPTION** |
+| Recovery / RPO / RTO | Pre-state business data 0; forward-fix yoksa empty-project recreation kabul edildi; süre garantisi yok | **ACCEPTED EXCEPTION** |
 | Storage object protection | Pre-migration object count 0; korunacak blob yok | PASS for current empty snapshot |
-| Write freeze | Business state quiescent; Auth signup enabled ve enforced freeze/change window yok | **NO-GO until window** |
+| Write freeze | Client yayınlanmadı; apply başında ledger/table/Auth/Storage zero-state recheck ve imzalı window zorunlu | **CONDITIONAL PASS** |
 | Local dry comparison | PGlite safe-equivalent replay 0001→0009, final schema/QR/review/Storage PASS | PASS |
 | Linked CLI dry-run | CLI 2.114.0 exact Production ref'e bağlı; `--dry-run --skip-vault` yalnız canonical 0001→0009 gösterdi; before/after remote state aynı | PASS |
 
-`BACKUP_ROLLBACK_PLAN_READY: NO`
+`NATIVE_BACKUP_PITR_AVAILABLE: NO`
+
+`BACKUP_ROLLBACK_PLAN_READY: OWNER EXCEPTION — EMPTY FIRST BOOTSTRAP ONLY`
 
 `DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
 `PRODUCTION_STATE_UNCHANGED: YES`
 
-`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
+`FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
 
-Teknik migration preflight owner risk kararına hazırdır. Mevcut **NO-GO**, migration
-conflict'inden değil Free-plan restore/rollback ve operational freeze kanıtı
-eksikliğinden kaynaklanır. Owner risk kararı apply yetkisi değildir; bu koşullar
-kapanmadan Phase D başlatılmaz.
+Owner istisnası yalnız tamamen boş ilk canonical bootstrap için geçerlidir. Apply ayrı
+görev/change window'unda, exact ref/hash ve zero-state yeniden doğrulandıktan sonra
+başlayabilir. Herhangi bir kullanıcı/veri görülürse istisna düşer ve karar **NO-GO**
+olur. Bu checklist migration uygulamamış ve Production write yetkisi vermemiştir.
 
 ## Cutover kimliği
 
@@ -61,7 +63,7 @@ kapanmadan Phase D başlatılmaz.
 | Migration artifacts | Exact 0001–0009 sıra ve canonical Git/LF SHA-256 manifesti platformdan bağımsız araçla 9/9 eşleşiyor | [ ] PASS [ ] NO-GO |
 | Remote migration inventory | Ledger ve actual schema birlikte envanterlendi; F/C/L topology kararı kayıtlı | [ ] PASS [ ] NO-GO |
 | Existing data impact | Row counts, legacy order/review ve 0009 aggregate/bucket delta raporu onaylı | [ ] PASS [ ] NO-GO |
-| Backup | Restorable backup/point, kabul edilen RPO/RTO ve restore drill kanıtı var | [ ] PASS [ ] NO-GO |
+| Backup / accepted exception | Restorable backup/point ve restore drill var; yalnız Wave 10 empty-first-bootstrap için kayıtlı owner exception alternatif olabilir | [ ] PASS [ ] NO-GO |
 | Storage object protection | Database backup dışında object blob inventory/backup/retention kanıtı var | [ ] PASS [ ] NO-GO |
 | Freeze / window | Write freeze uygulanabilir ve aktif; incident iletişim zinciri hazır | [ ] PASS [ ] NO-GO |
 | Dry comparison | Production-data clone veya güvenli eşdeğerde apply/postflight PASS; dry-run yalnız expected migrations gösteriyor | [ ] PASS [ ] NO-GO |
@@ -75,7 +77,7 @@ kapanmadan Phase D başlatılmaz.
 | Client config | Real Production client-safe URL/key; no secret/fallback/Development endpoint; artifact/signing PASS | [ ] PASS [ ] NO-GO |
 | Mobile identity / signing | Final Android package/namespace ve iOS bundle id onaylı; upload/Distribution signing, signer/team/profile ve macOS archive kanıtı PASS | [ ] PASS [ ] NO-GO |
 | Controlled smoke | Full Production Smoke Checklist, fiziksel QR dahil PASS; cleanup residual kabul edilen değer | [ ] PASS [ ] NO-GO |
-| Rollback readiness | Restore/forward-fix owner, stop criteria ve observation window hazır | [ ] PASS [ ] NO-GO |
+| Rollback readiness | Restore/forward-fix/recreate owner, stop criteria ve observation window hazır | [ ] PASS [ ] NO-GO |
 
 ## Automatic NO-GO conditions
 
@@ -84,7 +86,8 @@ Aşağıdakilerden biri varsa karar doğrudan NO-GO'dur:
 - Production project ref/name/host eşleşmiyor veya tek kaynaktan tahmin ediliyor.
 - `ieebtdvvinqfatbhkyqi` veya başka bir proje canonical sahiplik kanıtı olmadan
   Production varsayılıyor.
-- Restorable backup, Storage object koruması veya kabul edilmiş RPO/RTO yok.
+- Restorable backup, Storage object koruması veya kabul edilmiş recovery/RPO/RTO yok;
+  yalnız Wave 10 empty-first-bootstrap için belgelenmiş dar owner exception geçerlidir.
 - Migration ledger ile schema farklı; 0001 existing schema'ya çarpacak; hash farklı.
 - Partial apply, SQL/lock/statement timeout veya açıklanamayan data delta var.
 - Herhangi bir public tabloda RLS kapalı; cross-user/anon private data erişimi var.

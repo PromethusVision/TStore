@@ -1,8 +1,9 @@
 # Production Smoke Checklist
 
 Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 10 Agent 1
-evidence çalışması yalnız salt-okunur Production inventory aldı; integration yeniden
-remote erişim yapmadı. Hesap oluşturulmadı ve migration uygulanmadı. Gerçek çalışmada
+evidence çalışması yalnız salt-okunur Production inventory ve linked CLI dry-run aldı;
+integration yeniden remote erişim yapmadı. Hesap oluşturulmadı ve migration
+uygulanmadı. Gerçek çalışmada
 her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 ## 1. Başlatma kapıları
@@ -20,7 +21,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;
       Wave 8'in sentetik config ile standart build kanıtı PASS, gerçek artifact hash'i kayıtlı.
 - [ ] Artifact/service-role, DB password, JWT secret veya signing secret içermiyor.
-- [ ] 0001–0009 remote ledger ve schema diff'i PASS; backup/restore kanıtı mevcut.
+- [ ] 0001–0009 apply/postflight ledger ve schema diff'i PASS; backup/restore kanıtı
+      veya yalnız boş ilk bootstrap için kayıtlı owner exception geçerli.
 - [ ] Canonical Git/LF migration manifesti
       `node tool/verify_migration_artifact_manifest.mjs` ile 9/9 PASS.
 - [ ] Production RLS/RPC/Storage/Realtime/Auth postflight PASS.

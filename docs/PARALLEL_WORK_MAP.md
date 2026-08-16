@@ -142,6 +142,22 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`. Integration sırasında Production veya
   Development remote erişimi/yazması ve migration apply yapılmadı.
 
+## Wave 10 D0 Linked Dry-Run Entegrasyon Gözlemi
+
+- Agent 1'in `676ef3e` linked CLI dry-run commit'i tek `--no-ff` merge ile çatışmasız
+  entegre edildi. Değişiklik yalnız üç Production pre-migration belgesindeydi;
+  SQL/migration, uygulama kodu, `service_locator.dart` ve shared model değişmedi.
+- Exact Production `mefhfvrgkwciubeajjeb` üzerinde CLI dry-run yalnız canonical
+  `0001→0009` pending sırasını gösterdi. Before/after remote state aynı, remote write
+  `0`, migration apply `NO`; Development hedeflenmedi.
+- Product owner yalnız tamamen boş ilk Production bootstrap'ı için native backup/PITR
+  olmadan ilerleme riskini ve güvenli forward-fix yoksa empty-project recreation
+  yolunu kabul etti. Bu istisna gerçek kullanıcı/veri sonrası değişikliklere otomatik
+  yetki veya emsal değildir.
+- `READY_FOR_PRODUCTION_MIGRATION_APPLY: YES` yalnız ayrı apply görevi/change window'u,
+  exact ref/hash ve just-in-time zero-state recheck şartıyla geçerlidir. Postflight,
+  SMTP/email, fiziksel QR, app identifiers/signing ve Production smoke açık kalır.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

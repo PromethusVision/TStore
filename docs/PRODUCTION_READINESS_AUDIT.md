@@ -2,13 +2,13 @@
 
 **Audit tarihi:** 2026-08-16
 
-**Kaynak:** Wave 10 pre-migration integration; base
-`origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
+**Kaynak:** Wave 10 D0 integration; base
+`origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
 
 **Kapsam:** Customer uygulaması için Production smoke öncesi kaynak, yapılandırma,
 migration ve operasyon kapıları
 
-**Wave 10 evidence erişimi:** Agent 1 Phase A/B/C salt-okunur **YES**; remote write
+**Wave 10 evidence erişimi:** Agent 1 Phase A/B/C/D0 salt-okunur **YES**; remote write
 **NO**. Integration sırasında remote erişim/yazma **YOK**.
 
 ## Sonuç
@@ -17,8 +17,9 @@ migration ve operasyon kapıları
 
 Uygulamanın Development kanıtları ve yerel sözleşmeleri güçlüdür. Wave 10'da exact
 Production kimliği ve fresh/empty remote baseline doğrulandı; ancak client-safe key
-değeri release kanalında sağlanmadı, Free plan restorable backup/PITR sunmuyor ve
-migration henüz uygulanmadı. Aşağıdaki BLOCKER maddeleri kapanmadan gerçek Production
+değeri release kanalında sağlanmadı ve migration henüz uygulanmadı. Free plan native
+backup/PITR sunmaz; owner yalnız boş ilk bootstrap için bu riski ve gerektiğinde
+empty-project recreation yolunu kabul etti. Aşağıdaki kalan BLOCKER maddeleri kapanmadan gerçek Production
 smoke başlatılmamalı ve dummy değerle alınan build bir smoke PASS olarak
 yorumlanmamalıdır.
 
@@ -40,7 +41,9 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | Exact Production project identity | PASS | `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / ref-host / Frankfurt iki authenticated Dashboard görünümünde doğrulandı. `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) ayrı projedir ve Production değildir. |
 | Production URL ve client-safe key | BLOCKER | URL `https://mefhfvrgkwciubeajjeb.supabase.co` doğrulandı ve publishable key alanının varlığı görüldü; key değeri okunmadı/kopyalanmadı. Gerçek client-safe değer yalnız güvenli CI/release secret kanalından verilmelidir. |
 | Production migration envanteri | PASS — FRESH BASELINE | Migration ledger relation'ı ve public application table yok; Auth user/identity/session, Storage bucket/object ve Realtime application membership sayıları sıfır. Canonical post-apply schema/RLS/RPC/Storage envanteri Phase D/E sonrasında ayrıca doğrulanacaktır. |
-| Production backup/restore ve migration apply | BLOCKER | Free plan scheduled backup/PITR/restorable point sağlamıyor; accepted RPO/RTO, restore/incident owner, restore drill ve enforced change window yok. `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`; apply yapılmadı. |
+| Linked Production CLI dry-run | PASS | Exact `mefhfvrgkwciubeajjeb` ref'inde yalnız canonical `0001→0009` pending; before/after remote state aynı, write `0`. |
+| First empty bootstrap backup/recovery | OWNER-ACCEPTED EXCEPTION | Native backup/PITR yok. Owner yalnız boş ilk bootstrap için no-backup riskini ve güvenli forward-fix yoksa empty-project recreation yolunu kabul etti; gerçek veri sonrası geçersizdir. |
+| Production migration apply | READY / NOT APPLIED | Ayrı apply görevi/change window'u, exact ref/hash ve just-in-time zero-state recheck gerektirir. `READY_FOR_PRODUCTION_MIGRATION_APPLY: YES`; bu audit apply yapmadı. |
 | Production Auth / SMTP / redirects | BLOCKER | Production-like email confirmation, SMTP teslimi, password recovery ve mobile/web redirect allowlist kabulü henüz yapılmamıştır. |
 | Android dağıtım kimliği ve imzası | BLOCKER | Debug-signing fallback kaldırıldı ve eksik signing materyali packaging'i fail-closed durdurur; ancak `com.example.t_store` hâlâ geçici id'dir, gerçek upload keystore/alias/parola sağlanmadı ve signed artifact yoktur. |
 | iOS dağıtım kimliği ve imzası | BLOCKER | Release contract manual `Apple Distribution` olarak hazırlandı ve owner/secret hard-code edilmedi; ancak `com.example.tStore`, Team ID, certificate ve profile tamamlanmadı, macOS signed archive yoktur. |
@@ -176,8 +179,10 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
 ## Audit validation kanıtı
 
 - Wave 10 exact Production identity ve fresh/empty read-only baseline: **PASS**.
-- Wave 10 local safe-equivalent clean-room replay: **9/9 PASS**; linked CLI Production
-  dry-run **PENDING**.
+- Wave 10 local safe-equivalent clean-room replay ve linked CLI Production dry-run:
+  **9/9 PASS**; remote state unchanged, write `0`.
+- Empty-first-bootstrap no-backup/recreate owner risk decision: **ACCEPTED**, yalnız bu
+  ilk bootstrap için.
 - Wave 10 integration canonical migration contract testi: **18/18 PASS**.
 - Wave 9 migration/config/signing/platform/Auth hedefli testleri: **62/62 PASS**.
 - Canonical Git/LF 0001–0009 SHA-256 manifest kontrolü: **9/9 PASS**.
