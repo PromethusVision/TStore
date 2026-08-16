@@ -1,23 +1,75 @@
 # Production Current State Inventory
 
-**Inventory tarihi:** 2026-08-16
+**Inventory tarihi:** 2026-08-16 — Phase D1 postflight güncel
 
-**Kaynak branch/base:** `agent1/w10-production-readonly-verification` /
-`origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
+**Kaynak branch/base:** `agent1/w10-production-migration-apply` /
+`origin/main@609a037664f8c001951ba00193e6112989399a9b`
 
-**Yetki sınırı:** Kimliği doğrulanmış Production projesinde yalnız Dashboard metadata
-okuması ve salt-okunur catalog/count sorguları. Migration, DML, DDL, Auth/SMTP,
-Storage, Realtime veya başka bir remote yapılandırma yazması yapılmadı.
+**Yetki sınırı:** Kimliği doğrulanmış Production projesinde yalnız resmi linked CLI ile
+canonical `0001→0009` initial bootstrap apply ve bunun canonical provisioning etkileri;
+diğer bütün postflight işlemleri salt-okunur. Manuel SQL, fixture, Auth/SMTP config veya
+Storage object yazması yapılmadı.
 
 `PRODUCTION_PROJECT_IDENTIFIED: YES`
 
 `PRODUCTION_INVENTORY_READY: YES`
 
-`PRODUCTION_TOPOLOGY: F — FRESH/EMPTY`
+`PRODUCTION_TOPOLOGY: CANONICAL 0001→0009 — ZERO BUSINESS DATA`
 
 `MIGRATION_ARTIFACT_INTEGRITY: PASS`
 
-## Yönetici özeti
+`PRODUCTION_CANONICAL_MIGRATION: PASS`
+
+`PRODUCTION_POSTFLIGHT: PASS`
+
+`PRODUCTION_SCHEMA_READY: YES`
+
+`READY_FOR_PRODUCTION_CLIENT_CONFIG: NO`
+
+## Phase D1 authoritative current state
+
+Product owner'ın yalnız boş ilk bootstrap için verdiği açık risk istisnası kullanıldı.
+Apply öncesi `2026-08-16 18:56:34 UTC` JIT snapshot'ında migration ledger relation
+`NULL`; public application table, Auth user/identity/session, Storage bucket/object/
+policy ve Realtime member sayıları `0` idi. CLI `2.114.0`, authenticated project list
+ve linked ref ile exact `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` /
+`eu-central-1` hedefini doğruladı; Development `tnipyxnvhgelwdpykyez` dışlandı.
+
+Final `db push --linked --dry-run --skip-vault` yalnız canonical `0001→0009` sırasını
+gösterdi. Ardından resmi linked `db push --linked --skip-vault --yes` aynı dokuz
+migration'ı tek CLI oturumunda sırasıyla uyguladı. Seed, roles, `--include-all`,
+migration repair veya manuel SQL kullanılmadı.
+
+| Phase D1 final kontrol | Production sonucu |
+| --- | --- |
+| Migration ledger | Exact 9 local/remote version: `20260812000100` → `20260815000900` |
+| Public application tables | 23/23; eksik canonical tablo 0 |
+| RLS | 23/23 enabled; disabled 0 |
+| Public policies | Exact final set 52/52; eksik/extra 0 |
+| Public app functions | 28/28 canonical isim; eksik 0 |
+| Canonical triggers | 25/25; eksik 0 |
+| Critical RPC signatures | 15/15; QR, rating/review, account/chat/notification eksik 0 |
+| Policy/grant security | Broad anon write, notification INSERT, direct review mutation ve unexpected RPC execute 0 |
+| SECURITY DEFINER | Unsafe/missing fixed `search_path` 0 |
+| Active Storage buckets | Exact `product-images`, `category-images`, `banner-images` |
+| Bucket contract | Public; 8/2/5 MiB; exact JPEG/PNG/WebP; mismatch 0 |
+| Deferred buckets | `avatars`, `review-images`, `brand-logos` count 0 |
+| Storage objects / policies | 0 / 0 |
+| Realtime | Yalnız `public.chat_messages`, `public.notifications`; eksik/extra 0 |
+| Auth users / identities / sessions | 0 / 0 / 0 |
+| 23 application table total rows | 0 |
+
+Durable QR/review `product_id` ve evidence kolonları, kritik unique constraint'ler ve
+immutable evidence trigger'ları eksiksizdir. Auth URL config
+`http://localhost:3000`, redirect listesi boş ve custom SMTP disabled olarak kaldı;
+Save işlemi yapılmadı. Bu yüzden canonical schema hazırdır fakat gerçek Production Auth
+URL/SMTP, client-safe config, signing ve smoke tamamlanmadan Production client config
+ve commercial release hazır değildir.
+
+## Historical Phase A/D0 pre-apply inventory
+
+Aşağıdaki bölümler apply öncesi fresh/empty baseline'ın tarihsel kanıtıdır. Güncel
+authoritative state yukarıdaki Phase D1 tablosudur.
 
 Product-owner tarafından bildirilen hedef, kimliği doğrulanmış Supabase Dashboard
 oturumunda iki bağımsız görünümle doğrulandı. Organizasyon proje listesi ve Production
@@ -183,7 +235,7 @@ değiştirilmedi.
 historical nullable/legacy review row yoktur; Storage bucket/object yoktur. Bu sonuç
 0009'u tek başına uygulama izni vermez; exact 0001→0009 zinciri gereklidir.
 
-## Security and mutation attestation
+## Historical Phase A/D0 security and mutation attestation
 
 - Production remote reads: **YES**, yalnız bu belgede tanımlanan authenticated
   metadata, non-secret config ve salt-okunur inventory.
@@ -198,7 +250,7 @@ historical nullable/legacy review row yoktur; Storage bucket/object yoktur. Bu s
 - User/fixture/bucket/key/token oluşturma: **NO**.
 - Secret/service-role key read/log/commit: **NO**.
 
-## Gate sonucu ve devam
+## Historical Phase A/D0 gate sonucu ve devam
 
 `PRODUCTION_PROJECT_VERIFIED: YES`
 
@@ -245,8 +297,8 @@ Ayrıntılı evidence ve restore/failure kararı:
 
 `DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+`HISTORICAL_D0_READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — CONSUMED BY D1`
 
-Bu `READY`, yalnız ayrı ve açık yetkili apply görevi/change window'u ile exact ref/hash
-ve just-in-time zero-state recheck sonrasında geçerlidir. Bu D0 işi migration
-uygulamamıştır; Production postflight ve commercial release kapıları ayrıca açıktır.
+Bu tarihsel `READY`, Phase D1'de exact ref/hash ve just-in-time zero-state recheck ile
+kullanıldı. Canonical migration ve metadata postflight artık PASS'tir. Production Auth,
+client config, signing ve controlled smoke kapıları ayrıca açıktır.

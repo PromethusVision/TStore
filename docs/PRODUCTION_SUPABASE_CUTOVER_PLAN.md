@@ -2,7 +2,7 @@
 
 **Plan tarihi:** 2026-08-16
 
-**Kaynak taban:** `origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
+**Kaynak taban:** `origin/main@609a037664f8c001951ba00193e6112989399a9b`
 
 **Kapsam:** EsnaftaVar Production Supabase keşfi, migration preflight, kontrollü
 uygulama, postflight ve müşteri smoke sıralaması
@@ -10,14 +10,14 @@ uygulama, postflight ve müşteri smoke sıralaması
 **Wave 10 doğrulanmış Production:** `EsnaftaVar Production` /
 `mefhfvrgkwciubeajjeb` / `Central EU (Frankfurt)`
 
-**Wave 10 Production erişimi:** Read-only inventory/preflight **YES**; remote write
-**NO**
+**Wave 10 Production erişimi:** Read-only inventory/preflight/postflight **YES**;
+remote write yalnız canonical `0001→0009` initial bootstrap apply **YES**
 
 ## Durum ve kesin sınır
 
 `PRODUCTION_CUTOVER_PLAN_READY: YES`
 
-`PRODUCTION_CUTOVER_AUTHORIZED: NO`
+`PRODUCTION_CUTOVER_AUTHORIZED: D1 CANONICAL APPLY ONLY — COMPLETED`
 
 `PHASE_A_READ_ONLY_INVENTORY: PASS`
 
@@ -27,11 +27,21 @@ uygulama, postflight ve müşteri smoke sıralaması
 
 `PHASE_D0_LINKED_CLI_DRY_RUN: PASS`
 
-`PRODUCTION_STATE_UNCHANGED: YES`
+`PHASE_D1_CANONICAL_MIGRATION_APPLY: PASS`
+
+`PHASE_E_METADATA_SECURITY_POSTFLIGHT: PASS`
+
+`PHASE_D0_PRODUCTION_STATE_UNCHANGED: YES`
+
+`PHASE_D1_PRODUCTION_STATE: CANONICAL SCHEMA / ZERO BUSINESS DATA`
 
 `FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+`PRODUCTION_SCHEMA_READY: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
+
+`READY_FOR_PRODUCTION_CLIENT_CONFIG: NO`
 
 Wave 10 Phase A, Production kimliğini iki Dashboard görünümüyle doğruladı ve remote
 topology'yi **F — Fresh/empty** olarak sınıflandırdı. Phase B/C, Free plan'da native
@@ -40,8 +50,11 @@ olduğunu doğruladı. Phase D0, Supabase CLI `2.114.0` ile exact Production ref
 non-writing dry-run yaptı; yalnız canonical 0001→0009 pending görüldü ve before/after
 remote snapshot değişmedi. Product owner, yalnız tamamen boş ilk `0001→0009`
 bootstrap için Free-plan no-backup riskini ve güvenli forward-fix mümkün olmazsa boş
-projenin yeniden oluşturulmasını kabul etti. Apply ayrı görev/change window ister ve
-hemen önce sıfır-state yeniden doğrulanır. Ayrıntılı güncel snapshot:
+projenin yeniden oluşturulmasını kabul etti. Phase D1'de JIT zero-state tekrar PASS
+oldu ve official linked CLI exact 0001→0009 zincirini uyguladı. Ledger/schema/RLS/
+policy/grant/RPC/Storage/Realtime/Auth/data metadata postflight PASS; business data
+halen sıfırdır. Production Auth/client/signing/smoke gate'leri açık olduğundan ticari
+release hazır değildir. Ayrıntılı güncel snapshot:
 [Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
 
 Bu plan şu belgelerin devamıdır:
@@ -559,8 +572,8 @@ auto-expose OFF'tur. Local link artefaktları secret scan sonrası kaldırıldı
 remote write yapılmadı.
 
 `FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`. Linked dry-run ve owner kararıyla
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES`; bu yalnız ayrı apply görevi ve just-in-time
-zero-state recheck için geçerlidir.
+tarihsel D0 apply gate'i açılmış, Phase D1'de JIT recheck sonrası kullanılıp
+tamamlanmıştır.
 
 ### Phase D — Canonical migration apply
 
@@ -577,6 +590,13 @@ seviyede; error/timeout yok.
 
 **STOP:** Beklenmeyen dosya; project ref değişimi; lock/statement timeout; SQL error;
 partial apply; ledger/schema farkı. Freeze korunur ve failure prosedürü uygulanır.
+
+**Wave 10 Phase D1 evidence — PASS:** `2026-08-16 18:56:34 UTC` JIT snapshot'ında
+ledger relation yok; public/Auth/Storage/Realtime business state sıfır ve exact
+Production ref doğrulandı. Manifest 9/9 ve final linked dry-run exact 0001→0009 idi.
+CLI `2.114.0`, `db push --linked --skip-vault --yes` ile yalnız bu dokuz migration'ı
+sırasıyla uyguladı. Seed/roles/`--include-all`, manual SQL, repair ve retry yoktur.
+Final remote ledger local ile exact 9/9 eşleşir.
 
 ### Phase E — RLS/RPC/Storage postflight
 
@@ -596,6 +616,15 @@ Storage mutation/list yasağı catalog düzeyinde exact; Realtime üyeliği exac
 **STOP:** RLS kapalı tablo; extra/permissive policy; wrong grant/search path; function
 signature drift; unexpected publication member; bucket public/limit/MIME veya object
 policy farkı.
+
+**Wave 10 Phase E metadata evidence — PASS:** 23/23 public table ve RLS, final 52/52
+policy, 28/28 app function, 25/25 canonical trigger ve 15/15 kritik RPC signature
+eşleşti. Missing/extra policy, broad anon write, direct notification INSERT, direct
+review mutation, unexpected function execute ve unsafe SECURITY DEFINER search path
+count'ları sıfırdır. Storage üç exact active bucket'ı public 8/2/5 MiB ve exact
+JPEG/PNG/WebP allowlist ile içerir; deferred bucket, Storage object ve Storage policy
+yoktur. Realtime yalnız chat/notifications; Auth user/identity/session ve bütün
+application row'ları sıfırdır. Fixture/DML behavior testi bu phase'de yapılmadı.
 
 ### Phase F — Auth/SMTP
 

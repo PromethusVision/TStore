@@ -6,20 +6,28 @@
 
 **Phase D0 linked dry-run / post-check zamanı:** `2026-08-16 18:10–18:16 UTC`
 
+**Phase D1 apply / postflight zamanı:** `2026-08-16 18:56–19:03 UTC`
+
 **Phase D0 branch / kaynak taban:**
 `agent1/w10-production-linked-cli-dry-run` /
 `origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
+
+**Phase D1 branch / kaynak taban:**
+`agent1/w10-production-migration-apply` /
+`origin/main@609a037664f8c001951ba00193e6112989399a9b`
 
 **Production:** `EsnaftaVar Production` /
 `mefhfvrgkwciubeajjeb` /
 `https://mefhfvrgkwciubeajjeb.supabase.co` /
 `Central EU (Frankfurt)`
 
-Bu belge Wave 10 Phase B/C ve Phase D0 sırasında alınan, credential içermeyen
-pre-migration evidence snapshot'ıdır. Production'da migration, DML, DDL, Auth/SMTP,
-Storage, Realtime veya başka bir remote write yapılmadı.
+Bu belgenin ana gövdesi Wave 10 Phase B/C ve Phase D0 sırasında alınan, credential
+içermeyen tarihsel pre-migration evidence snapshot'ıdır. Aşağıdaki remote-write-yok
+beyanı bu tarihsel snapshot'a aittir: o fazlarda Production'da migration, DML, DDL,
+Auth/SMTP, Storage, Realtime veya başka bir remote write yapılmadı. Phase D1 sonucu ve
+tek yetkili canonical write ayrı bölümde kaydedilmiştir.
 
-`PRODUCTION_TOPOLOGY: F — FRESH/EMPTY`
+`HISTORICAL_PRE_APPLY_TOPOLOGY: F — FRESH/EMPTY`
 
 `NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
@@ -31,13 +39,19 @@ Storage, Realtime veya başka bir remote write yapılmadı.
 
 `DRY_RUN_SAFE: YES`
 
-`PRODUCTION_STATE_UNCHANGED: YES`
+`PHASE_D0_PRODUCTION_STATE_UNCHANGED: YES`
 
 `FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
 `EMPTY_PROJECT_RECREATE_FALLBACK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+`PRODUCTION_CANONICAL_MIGRATION: PASS`
+
+`PRODUCTION_POSTFLIGHT: PASS`
+
+`PRODUCTION_SCHEMA_READY: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
 
 ## Native backup, PITR ve restore capability
 
@@ -280,6 +294,39 @@ commit kapsamına alınmadı. Remote read yapıldı; remote write yapılmadı. Y
 `db diff`, bu fresh/empty topology ve exact pending-list kanıtına ek güvence sağlamadan
 local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
+## Phase D1 baseline consumption and result
+
+Product owner'ın dar kapsamlı empty-first-bootstrap istisnası bu task'ta kullanıldı.
+Write'tan hemen önce exact Production identity tekrar doğrulandı. JIT remote snapshot:
+
+```text
+2026-08-16 18:56:34.143476+00|NULL|0|0|0|0|0|0|0|0|O
+```
+
+Bu sıra; timestamp, ledger relation, public table, Auth user/identity/session, Storage
+bucket/object/policy, Realtime member ve automatic-RLS state'idir. Final linked
+`--dry-run --skip-vault`, exact dokuz canonical dosyayı tekrar 0001→0009 sırasında
+gösterdi. Resmi `db push --linked --skip-vault --yes` aynı dokuz migration'ı tek
+oturumda başarıyla uyguladı. Seed, roles, `--include-all`, repair veya manuel SQL
+kullanılmadı.
+
+Immediate postflight sonucu:
+
+- migration ledger: exact 9 local/remote version;
+- public schema: 23/23 canonical table, 23/23 RLS, disabled 0;
+- final public policies: 52/52, missing/extra 0;
+- app functions/triggers: 28/28 ve 25/25;
+- critical QR/review/account/chat/notification RPC signature missing: 0;
+- critical grant/policy/search-path drift: 0;
+- Storage: exact üç active bucket, public 8/2/5 MiB ve JPEG/PNG/WebP, mismatch 0;
+- deferred bucket, Storage object ve client Storage policy: 0;
+- Realtime: exact chat/notification membership, missing/extra 0;
+- Auth user/identity/session ve 23 application tablosundaki toplam row: 0.
+
+Owner istisnası yalnız bu initial bootstrap'ta kullanılmıştır. Gelecekteki Production
+migration'larına otomatik yetki vermez. Baseline artık tarihsel pre-state kanıtıdır;
+current state için `PRODUCTION_CURRENT_STATE_INVENTORY.md` authoritative kaynaktır.
+
 ## Gate kararı
 
 `MIGRATION_ARTIFACT_INTEGRITY: PASS — 9/9`
@@ -290,7 +337,7 @@ local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
 `DRY_RUN_SAFE: YES`
 
-`PRODUCTION_STATE_UNCHANGED: YES`
+`PHASE_D0_PRODUCTION_STATE_UNCHANGED: YES`
 
 `NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
@@ -300,10 +347,17 @@ local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
 `EMPTY_PROJECT_RECREATE_FALLBACK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+`OWNER_BOOTSTRAP_RISK_EXCEPTION_USED: YES`
 
-Teknik preflight, linked dry-run ve dar kapsamlı owner risk kararı tamamlanmıştır.
-`READY`, yalnız boş ilk bootstrap için ayrı ve açık yetkili apply görevinin
-başlayabileceğini belirtir; bu entegrasyon apply yetkisi değildir ve migration
-uygulamamıştır. Apply başında exact ref/hash ile sıfır-state yeniden doğrulanmalı,
-change window/operator/incident owner kaydedilmeli ve herhangi bir driftte durulmalıdır.
+`PRODUCTION_CANONICAL_MIGRATION: PASS`
+
+`PRODUCTION_POSTFLIGHT: PASS`
+
+`PRODUCTION_SCHEMA_READY: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
+
+Teknik preflight, linked dry-run, dar kapsamlı owner risk kararı, canonical apply ve
+metadata/security postflight tamamlanmıştır. Bu sonuç yalnız Production schema
+hazırlığını kapatır; Auth/SMTP, gerçek client config/signing ve controlled Production
+smoke ayrı release gate'leridir.
