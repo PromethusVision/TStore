@@ -204,6 +204,7 @@ void main() {
         SupabaseService.passwordRecoveryRedirectFor(
           appUri: Uri.parse(siteUrl),
           isWeb: true,
+          environment: AppEnvironment.production,
         ),
       );
     });

@@ -2,13 +2,13 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-16
+- Son güncelleme: 2026-08-17
 - Son doğrulanan teslimler: `02c6c16ea0411138deb01d72fab3710750ef506a` ve `d2defa35d8dc199cc774453f6244c2e354ff41d6`; integration merge'leri `f8e891c` ve `439a151`
-- Doğrulanan branch/base: `integration/wave-10-phase-e-final-20260816`; Agent kaynakları `agent1/w10-production-client-wiring` + `agent2/w10-final-mobile-identifier` / `origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
-- Entegrasyon durumu: **WAVE 10 PHASE E CLIENT + FINAL MOBILE IDENTITY WIRED — AUTH/EMAIL/SIGNING/COMMERCIAL RELEASE NOT READY**
-- Snapshot oluşturulurken çalışma ağacı: iki Agent teslimi çatışmasız birleşti; Production/Development remote write ve migration apply yapılmadı
-- Doğrulama türü: D1 schema/postflight gerçeği korundu; gerçek client-safe Production config ile anonymous read-only bağlantı ve transient Web release build Agent 1 kanıtında PASS. Android/iOS final kimliği Agent 2 tarafından bağlandı; callback ve signing açık gate olarak korundu.
-- Çalıştırılmayan/BLOCKED kontroller: Production Auth Site URL/redirect/custom SMTP ve gerçek inbox kabulü, signed AAB/APK/IPA, controlled Production write smoke, fixture tabanlı Storage negative listing, fiziksel iki-cihaz QR ve iOS archive (Windows).
+- Doğrulanan branch/base: `agent1/w10-final-auth-callback-cutover` / `origin/main@9206d598291a6ed546149436725afff6e0dc40ae`
+- Entegrasyon durumu: **WAVE 10 PHASE F1 FINAL AUTH CALLBACK SOURCE CUTOVER PASS — INTEGRATION/LIVE EMAIL/SIGNING/COMMERCIAL RELEASE NOT READY**
+- Snapshot oluşturulurken çalışma ağacı: Agent 1 task branch'i; Production/Development remote write, migration apply ve user/fixture oluşturma yapılmadı
+- Doğrulama türü: Production/Development merkezi callback üretimi, explicit signup/resend/recovery yönlendirmeleri, exact PKCE URI filtresi, Android iki-flavor merged manifest'i ve iOS Debug/Profile/Release statik contract'ı PASS. Development debug APK ve Production release compile-only PASS; signed artifact üretilmedi.
+- Çalıştırılmayan/BLOCKED kontroller: final branch integration, legacy Production allowlist removal, Production Auth Site URL/web redirect/custom SMTP ve gerçek inbox kabulü, signed AAB/APK/IPA üzerinde callback, controlled Production write smoke, fixture tabanlı Storage negative listing, fiziksel iki-cihaz QR ve iOS archive (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -16,11 +16,13 @@
 
 `FINAL_APP_IDENTITY_WIRED: YES`
 
-`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+`FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
+
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
 `SIGNING_READY: NO`
 
-`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+`READY_FOR_PHASE_F_INTEGRATION: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -53,8 +55,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Product owner final Android/iOS application/bundle identifier'ını
   `com.esnaftavar.app` olarak kesinleştirdi. Phase E2'de Android namespace,
   applicationId, MainActivity/Fastlane ve iOS Runner/RunnerTests build
-  configuration'ları bu kimliğe bağlandı. Signing materyali ve legacy
-  `io.supabase.tstore` callback'in Phase F remote allowlist cutover'ı açıktır.
+  configuration'ları bu kimliğe bağlandı. Phase F1'de Production istemci/platform
+  callback'i `com.esnaftavar.app://login-callback/` değerine taşındı; Development
+  mevcut `io.supabase.tstore://login-callback/` sözleşmesini ayrı tutar. Signing,
+  canlı callback/email acceptance ve sonrasındaki legacy Production allowlist
+  removal açıktır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -63,7 +68,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
-| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 7'de Android/iOS Auth callback kaydı, PKCE recovery callback ve account-enumeration-safe signup hardening'i tamamlandı; Android release internet izni eklendi. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Gerçek SMTP/inbox acceptance BLOCKED; merchant kayıt akışı açık değil. |
+| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 F1'de Production final callback'i environment-specific merkezi sözleşmeye alındı; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Gerçek SMTP/inbox/signed-artifact callback acceptance BLOCKED; merchant kayıt akışı açık değil. |
 | Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
@@ -118,7 +123,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Test Durumu
 
-- `test/` altında 121 Dart test dosyası; QR, Realtime, Auth/RLS ve Wave 6 ürün yorumu için Development ref'ine kilitli gated live harness'lar bulunuyor.
+- `test/` altında 124 Dart test dosyası; QR, Realtime, Auth/RLS ve Wave 6 ürün yorumu için Development ref'ine kilitli gated live harness'lar bulunuyor.
 - Güçlü alanlar: Shop, Auth, Personalization, Chat ve Cart.
 - Açık doğrulama alanları: fiziksel cihaz/kamera kabulü, deferred Storage özellikleri, merchant ekranları, kupon backend'i, Production smoke ve production-like e-posta/SMTP kabulü.
 - Auth/RLS, QR ve Realtime için Development ref'ine kilitli, açık opt-in gerektiren live harness'lar bulunuyor; normal `flutter test` remote istek yapmadan bunları skip ediyor.
@@ -147,6 +152,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   live skip) ve analyzer temizdir. Gerçek Production Web runtime build, Android
   Development debug ve Production release compile-only PASS; Production packaging
   eksik signing materyalinde beklenen fail-closed sonucu verdi ve artifact üretmedi.
+- Wave 10 Phase F1 Agent 1 task branch'inde callback/email/platform hedefli matris
+  40/40, tam Flutter suite 1154 PASS (5 explicit opt-in live skip), analyzer temiz,
+  Android Development debug APK ve Production release compile-only PASS. Production
+  ve Development merged manifest callback/package ayrımı exact doğrulandı; iOS
+  Windows ortamında statik doğrulandı, signed archive üretilmedi.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -163,7 +173,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight ve Phase E client wiring tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS, final policy/RPC/trigger/Storage/Realtime contract ve zero business data doğrulandı. Production Auth/email, signing ve controlled smoke ayrı gate'lerdir.
+- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F1 final callback source wiring tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS, final policy/RPC/trigger/Storage/Realtime contract ve zero business data doğrulandı. Final callback integration/live acceptance, legacy allowlist removal, Production Auth email/SMTP, signing ve controlled smoke ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Gerçek provider + verified sender + mobile/web redirect ile signup/delivery/confirmation/resend/expiry/recovery inbox acceptance hâlâ BLOCKED.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -173,6 +183,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-17: **WAVE 10 PHASE F1 FINAL AUTH CALLBACK SOURCE CUTOVER PASS / INTEGRATION REQUIRED** — Production callback `com.esnaftavar.app://login-callback/` istemci, Android production flavor, iOS Profile/Release ve release preflight'ta tek merkezi environment sözleşmesine bağlandı. Development mevcut legacy callback'ini ayrı ve fallback'siz korur. Signup, resend, recovery ve mevcut OAuth redirect'leri explicit; broad Supabase URI detector kapalı ve PKCE exact scheme/host/path/code filtresinden sonra exchange edilir. Remote Production/Development Auth yazması yapılmadı. Integration ve signed-artifact kabulü sonrasında legacy Production allowlist kaydı yetkili owner tarafından kaldırılmalıdır.
 - 2026-08-16: **WAVE 10 PHASE E CLIENT + FINAL MOBILE IDENTITY WIRED / PHASE F READY / COMMERCIAL RELEASE NOT READY** — Agent 1 gerçek Production runtime config, anonymous read-only empty-state bağlantısı ve transient Web release build kanıtını; Agent 2 final mobil kimlik ve fail-closed signing sözleşmesini teslim etti. İki branch sırasıyla ve çatışmasız entegre edildi. Production/Development write veya migration apply yapılmadı. Final `com.esnaftavar.app` kimliği wired, callback ve signing kapıları açık kaldı.
 - 2026-08-16: **WAVE 10 PHASE E2 FINAL MOBILE IDENTITY WIRED / SIGNING OPEN** —
   Owner-final `com.esnaftavar.app`, Android namespace/applicationId/MainActivity ve

@@ -18,11 +18,13 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `FINAL_APP_IDENTITY_WIRED: YES`
 
-`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+`FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
+
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
 `SIGNING_READY: NO`
 
-`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+`READY_FOR_PHASE_F_INTEGRATION: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -35,8 +37,10 @@ ile icon workaround olmadan PASS; credential taşıyan geçici artifact kaldır�
 
 Bu evidence full smoke veya deploy GO değildir. Auth Site URL/redirect/SMTP, platform
 signing, final artifact record ve kullanıcı oluşturan/write smoke maddeleri açık kalır.
-Final Android/iOS kimliği `com.esnaftavar.app` olarak wired durumdadır; mevcut
-`io.supabase.tstore://login-callback/` Phase F atomik Auth cutover'ına kadar korunur.
+Final Android/iOS kimliği ve Production callback
+`com.esnaftavar.app://login-callback/` kaynakta wired durumdadır. Development legacy
+callback'i ayrı sözleşmede korunur. Production legacy allowlist kaydı yalnız
+integration/signed-artifact kabulü sonrasında yetkili owner tarafından kaldırılır.
 
 ## 1. Başlatma kapıları
 
@@ -62,8 +66,9 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
       bağlantısı PASS; Production write/Auth account/Storage mutation yok.
 - [x] Android/iOS final application/bundle identity `com.esnaftavar.app` ve Android
       Development `.dev` varyantı kaynak sözleşmesine bağlandı.
-- [ ] `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED`: Site URL, exact redirect allowlist,
-      web recovery callback ve SMTP/e-posta kabulü birlikte tamamlandı.
+- [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
+- [ ] Final callback integration ve signed-artifact confirmation/recovery kabulü
+      tamamlandı; ardından legacy Production allowlist kaydı kaldırıldı.
 - [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.

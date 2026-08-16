@@ -21,8 +21,13 @@ void main() {
         }
 
         expect(manifest, contains('android:name="android.intent.action.VIEW"'));
-        expect(manifest, contains('android:scheme="io.supabase.tstore"'));
+        expect(manifest, contains('android:scheme="\${authCallbackScheme}"'));
         expect(manifest, contains('android:host="login-callback"'));
+
+        final gradle = File('android/app/build.gradle').readAsStringSync();
+        expect(gradle, contains('authCallbackScheme: "com.esnaftavar.app"'));
+        expect(gradle, contains('applicationIdSuffix ".dev"'));
+        expect(gradle, contains('authCallbackScheme: "io.supabase.tstore"'));
       },
     );
 
@@ -35,7 +40,15 @@ void main() {
       );
       expect(infoPlist, contains('<key>NSCameraUsageDescription</key>'));
       expect(infoPlist, contains('<key>CFBundleURLTypes</key>'));
-      expect(infoPlist, contains('<string>io.supabase.tstore</string>'));
+      expect(infoPlist, contains('<string>\$(AUTH_CALLBACK_SCHEME)</string>'));
+      expect(
+        File('ios/Flutter/Release.xcconfig').readAsStringSync(),
+        contains('AUTH_CALLBACK_SCHEME=com.esnaftavar.app'),
+      );
+      expect(
+        File('ios/Flutter/Debug.xcconfig').readAsStringSync(),
+        contains('AUTH_CALLBACK_SCHEME=io.supabase.tstore'),
+      );
     });
   });
 }

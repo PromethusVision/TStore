@@ -19,7 +19,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>io.supabase.tstore</string>
+					<string>$(AUTH_CALLBACK_SCHEME)</string>
 				</array>
 			</dict>
 		</array>

@@ -85,11 +85,13 @@ android {
         production {
             dimension "default"
             resValue "string", "app_name", "EsnaftaVar"
+            manifestPlaceholders = [authCallbackScheme: "com.esnaftavar.app"]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "EsnaftaVar Dev"
+            manifestPlaceholders = [authCallbackScheme: "io.supabase.tstore"]
         }
     }
 
