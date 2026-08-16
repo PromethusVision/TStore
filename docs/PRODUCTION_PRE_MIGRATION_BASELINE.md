@@ -4,24 +4,34 @@
 
 **Remote snapshot zamanı:** `2026-08-16 17:41:47.032246 UTC`
 
-**Branch / önceki Phase A commit:**
-`agent1/w10-production-readonly-verification` /
-`8fb77f7f4c8eff1e62be476a52c3110bb0228c3c`
+**Phase D0 linked dry-run / post-check zamanı:** `2026-08-16 18:10–18:16 UTC`
+
+**Phase D0 branch / kaynak taban:**
+`agent1/w10-production-linked-cli-dry-run` /
+`origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
 
 **Production:** `EsnaftaVar Production` /
 `mefhfvrgkwciubeajjeb` /
 `https://mefhfvrgkwciubeajjeb.supabase.co` /
 `Central EU (Frankfurt)`
 
-Bu belge Wave 10 Phase B/C sırasında alınan, credential içermeyen pre-migration
-evidence snapshot'ıdır. Production'da migration, DML, DDL, Auth/SMTP, Storage,
-Realtime veya başka bir remote write yapılmadı.
+Bu belge Wave 10 Phase B/C ve Phase D0 sırasında alınan, credential içermeyen
+pre-migration evidence snapshot'ıdır. Production'da migration, DML, DDL, Auth/SMTP,
+Storage, Realtime veya başka bir remote write yapılmadı.
 
 `PRODUCTION_TOPOLOGY: F — FRESH/EMPTY`
 
 `BACKUP_ROLLBACK_PLAN_READY: NO`
 
 `DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+
+`LINKED_CLI_DRY_RUN: PASS`
+
+`DRY_RUN_SAFE: YES`
+
+`PRODUCTION_STATE_UNCHANGED: YES`
+
+`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
 
@@ -216,10 +226,39 @@ repo içindeki kontrollü Supabase-compatible stub'ları kullanır; gerçek Supa
 control plane değildir. Buna ek olarak canonical/QR/review-Storage contract testleri
 PASS olmuştur.
 
-Linked Supabase CLI `db push --dry-run` çalıştırılmadı: yerel Supabase CLI/database
-credential yoktur ve secret istenmedi. Phase D yetkilendirmesinden hemen önce exact
-branch/commit üzerinde linked dry-run'ın yalnız beklenen dokuz pending migration'ı
-göstermesi hâlâ zorunludur.
+## Linked Production CLI dry-run
+
+Supabase CLI `2.114.0`, resmi device login ile yetkilendirildi. Access token veya
+database password okunmadı, ekrana/rapora alınmadı. Authenticated project list exact
+`EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / `eu-central-1` eşleşmesini verdi;
+`EsnaftaVar Development` / `tnipyxnvhgelwdpykyez` ayrı proje olarak doğrulandı ve
+bağlantı hedefinden dışlandı.
+
+CLI yalnız exact Production ref'e link edildi. Dry-run komutu:
+
+```text
+npx --yes supabase@latest db push --linked --dry-run --skip-vault --output-format text
+```
+
+`--skip-vault`, dry-run dışında config kaynaklı Vault update olasılığını da kapattı.
+Seed, roles ve `--include-all` kullanılmadı. CLI açıkça migrations'ın push
+edilmeyeceğini bildirdi ve yukarıdaki exact tabloda yer alan dokuz dosyayı 0001→0009
+sırasında gösterdi. Duplicate, skip, out-of-order, remote-only veya beklenmeyen local
+migration yoktur.
+
+Dry-run öncesi remote: ledger relation `NULL`, public application table 0, Auth user 0,
+Storage bucket/object 0. Dry-run sonrası birleşik snapshot:
+`NULL|0|0|0|0|0|0|0|0`; sırasıyla ledger, public table, public policy, Auth user,
+Storage bucket, Storage object, Storage policy, Realtime member ve seçili canonical RPC
+count'larının değişmediğini gösterir. Automatic RLS event trigger sonucu
+`O|rls_auto_enable|rls_auto_enable()`; Dashboard Data API enabled ve
+`Automatically expose new tables` OFF olarak yeniden doğrulandı.
+
+Link'in oluşturduğu yalnız local `supabase/.temp` artefaktları secret pattern ve
+embedded password bakımından 0 bulgu verdi; exact ref kontrolünden sonra kaldırıldı ve
+commit kapsamına alınmadı. Remote read yapıldı; remote write yapılmadı. Yardımcı
+`db diff`, bu fresh/empty topology ve exact pending-list kanıtına ek güvence sağlamadan
+local shadow karmaşıklığı yaratacağı için çalıştırılmadı.
 
 ## Gate kararı
 
@@ -227,11 +266,21 @@ göstermesi hâlâ zorunludur.
 
 `DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
 
+`LINKED_CLI_DRY_RUN: PASS`
+
+`DRY_RUN_SAFE: YES`
+
+`PRODUCTION_STATE_UNCHANGED: YES`
+
 `BACKUP_ROLLBACK_PLAN_READY: NO`
+
+`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
 
-No-go nedeni migration conflict'i değildir. Blocker; Free plan'da restorable native
-point/PITR bulunmaması, accepted RPO/RTO ve restore/incident owner'larının atanmaması,
-restore drill olmaması ve enforced change-window freeze'in henüz kanıtlanmamasıdır.
-Bu koşullar kapanmadan Phase D migration apply yapılmamalıdır.
+Teknik preflight ve linked dry-run owner'ın migration risk kararına hazırdır. Bu ifade
+migration apply yetkisi veya GO değildir. No-go nedeni migration conflict'i değildir;
+blocker Free plan'da restorable native point/PITR bulunmaması, accepted RPO/RTO ve
+restore/incident owner'larının atanmaması, restore drill olmaması ve enforced
+change-window freeze'in henüz kanıtlanmamasıdır. Owner bu riski açıkça karara bağlayıp
+operasyonel gate'leri kapatmadan Phase D migration apply yapılmamalıdır.

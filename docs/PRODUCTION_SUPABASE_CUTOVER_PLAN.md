@@ -2,7 +2,7 @@
 
 **Plan tarihi:** 2026-08-16
 
-**Kaynak taban:** `origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
+**Kaynak taban:** `origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
 
 **Kapsam:** EsnaftaVar Production Supabase keşfi, migration preflight, kontrollü
 uygulama, postflight ve müşteri smoke sıralaması
@@ -23,15 +23,24 @@ uygulama, postflight ve müşteri smoke sıralaması
 
 `PHASE_B_BACKUP_ROLLBACK: BLOCKED`
 
-`PHASE_C_DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+`PHASE_C_DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
+
+`PHASE_D0_LINKED_CLI_DRY_RUN: PASS`
+
+`PRODUCTION_STATE_UNCHANGED: YES`
+
+`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
 
 Wave 10 Phase A, Production kimliğini iki Dashboard görünümüyle doğruladı ve remote
 topology'yi **F — Fresh/empty** olarak sınıflandırdı. Phase B/C, Free plan'da native
 backup/PITR/restore point bulunmadığını; local clean-room 0001→0009 replay'in ise PASS
-olduğunu doğruladı. Cutover yalnız her phase için ayrı PASS kanıtı ve yetkili release
-sahibinin GO kararıyla ilerler. Ayrıntılı güncel snapshot:
+olduğunu doğruladı. Phase D0, Supabase CLI `2.114.0` ile exact Production ref'e linked
+non-writing dry-run yaptı; yalnız canonical 0001→0009 pending görüldü ve before/after
+remote snapshot değişmedi. Teknik kanıt owner risk kararına hazırdır; gerçek apply
+Free-plan rollback ve operational gate'ler nedeniyle hâlâ kapalıdır. Ayrıntılı güncel
+snapshot:
 [Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
 
 Bu plan şu belgelerin devamıdır:
@@ -527,14 +536,19 @@ run edildi.
 **STOP:** 0001 existing schema'ya çarpacak; unknown migration; hash mismatch; 0009 data
 etkisi onaysız; timeout/lock riski window'a sığmıyor; bucket visibility/policy riski.
 
-**Wave 10 current evidence — LOCAL PASS / LINKED DRY-RUN PENDING:** Credential-free
-remote conflict precheck canonical table/trigger/bucket/policy conflict'i bulmadı.
-PGlite 0.5.5 safe-equivalent clean-room replay 9/9 migration, final 23 table, üç active
-bucket ve QR/review/Storage behavior ile PASS verdi. Automatic-RLS double-enable
-idempotent; Data API auto-expose OFF iken canonical explicit grant/RLS contract'ı
-uyumludur. Yerel CLI/database credential olmadığı ve secret istenmediği için linked
-`db push --dry-run` çalıştırılmadı; Phase D öncesi yalnız expected dokuz pending
-migration'ı gösteren linked dry-run kanıtı hâlâ zorunludur.
+**Wave 10 current evidence — LOCAL + LINKED PASS:** Credential-free remote conflict
+precheck canonical table/trigger/bucket/policy conflict'i bulmadı. PGlite 0.5.5
+safe-equivalent clean-room replay 9/9 migration, final 23 table, üç active bucket ve
+QR/review/Storage behavior ile PASS verdi. Supabase CLI `2.114.0`, exact Production
+ref `mefhfvrgkwciubeajjeb` üzerinde `db push --linked --dry-run --skip-vault` ile
+yalnız canonical 0001→0009 sırasını gösterdi. Duplicate/skip/out-of-order/remote-only
+ve unexpected local migration yoktur. Before/after ledger, public/Auth/Storage/
+Realtime/canonical RPC sayıları değişmedi. Automatic-RLS aktif; Data API enabled ve
+auto-expose OFF'tur. Local link artefaktları secret scan sonrası kaldırıldı. Production
+remote write yapılmadı.
+
+`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`; fakat Phase B backup/restore gate'i ve
+enforced freeze hâlâ kapanmadığı için `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`.
 
 ### Phase D — Canonical migration apply
 
