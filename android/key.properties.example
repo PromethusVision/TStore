@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties and provide values through a secure,
+# untracked local or CI mechanism. Never commit the populated file or keystore.
+storeFile=app/upload-keystore.jks
+storePassword=REPLACE_WITH_SECURE_STORE_PASSWORD
+keyAlias=REPLACE_WITH_RELEASE_KEY_ALIAS
+keyPassword=REPLACE_WITH_SECURE_KEY_PASSWORD
