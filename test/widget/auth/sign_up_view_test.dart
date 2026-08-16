@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/signup/sign_up_view.dart';
@@ -61,6 +62,19 @@ void main() {
     expect(find.byKey(const Key('signup-password')), findsOneWidget);
     expect(find.byKey(const Key('signup-confirm-password')), findsOneWidget);
   });
+
+  testWidgets(
+    'müşteri kaydında sosyal sağlayıcıları ve anlamsız ayırıcıyı göstermez',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
+      expect(find.image(const AssetImage(TImages.google)), findsNothing);
+      expect(find.image(const AssetImage(TImages.facebook)), findsNothing);
+      expect(find.image(const AssetImage(TImages.appleLogo)), findsNothing);
+      expect(find.text('veya şununla giriş yap'), findsNothing);
+    },
+  );
 
   testWidgets('geri düğmesi önceki ekrana döner', (tester) async {
     await tester.pumpWidget(

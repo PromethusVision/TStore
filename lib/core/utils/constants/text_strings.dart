@@ -43,8 +43,6 @@ class TTexts {
   static const String signIn = "Giriş Yap";
   static const String createAccount = "Hesap Oluştur";
   static const String loading = "İşleniyor...";
-  static const String orSignInWith = "veya şununla giriş yap";
-  static const String orSignUpWith = "or sign up with";
   static const String iAgreeTo = "I agree to";
   static const String privacyPolicy = "Privacy Policy";
   static const String termsOfUse = "Terms of use";
