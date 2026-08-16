@@ -4,10 +4,10 @@ Bu sayfa release commander tarafından cutover kaydına kopyalanır. Bütün zor
 maddeler PASS değilse GO verilemez. Boş, `N/A` veya “sonra doğrulanacak” bir zorunlu
 madde PASS sayılmaz.
 
-## Wave 10 Phase B/C/D0 current evidence
+## Wave 10 Phase B/C/D0/D1 current evidence
 
 Bu tablo release commander'ın imzalı checklist'inin yerine geçmez; 2026-08-16
-pre-migration evidence durumunu gösterir.
+pre-migration, apply ve metadata postflight evidence durumunu gösterir.
 
 | Pre-apply gate | Current evidence | Durum |
 | --- | --- | --- |
@@ -18,9 +18,14 @@ pre-migration evidence durumunu gösterir.
 | Native backup / PITR | Free plan scheduled backup/PITR/restorable point yok; owner yalnız boş ilk bootstrap için riski kabul etti | **ACCEPTED EXCEPTION** |
 | Recovery / RPO / RTO | Pre-state business data 0; forward-fix yoksa empty-project recreation kabul edildi; süre garantisi yok | **ACCEPTED EXCEPTION** |
 | Storage object protection | Pre-migration object count 0; korunacak blob yok | PASS for current empty snapshot |
-| Write freeze | Client yayınlanmadı; apply başında ledger/table/Auth/Storage zero-state recheck ve imzalı window zorunlu | **CONDITIONAL PASS** |
+| Write freeze | Client yayınlanmadı; apply öncesi JIT ledger/table/Auth/Storage zero-state recheck PASS, yalnız canonical write yapıldı | PASS for D1 |
 | Local dry comparison | PGlite safe-equivalent replay 0001→0009, final schema/QR/review/Storage PASS | PASS |
 | Linked CLI dry-run | CLI 2.114.0 exact Production ref'e bağlı; `--dry-run --skip-vault` yalnız canonical 0001→0009 gösterdi; before/after remote state aynı | PASS |
+| Canonical migration apply | Official linked CLI yalnız 0001→0009 uyguladı; final ledger local/remote 9/9 | PASS |
+| Schema / RLS / policy | 23/23 table, 23/23 RLS, 52/52 final policy; missing/extra/disabled 0 | PASS |
+| RPC / grant security | 28/28 app function, 25/25 trigger, 15/15 kritik signature; broad/unsafe grant-search-path drift 0 | PASS |
+| Storage / Realtime | Exact üç bucket + size/MIME/public; no object/policy/deferred bucket; Realtime exact iki member | PASS |
+| Auth / business data | Auth user/identity/session 0; 23 application table total row 0; Auth URL/SMTP config değiştirilmedi | PASS for schema phase |
 
 `NATIVE_BACKUP_PITR_AVAILABLE: NO`
 
@@ -28,16 +33,26 @@ pre-migration evidence durumunu gösterir.
 
 `DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
 
-`PRODUCTION_STATE_UNCHANGED: YES`
+`PHASE_D0_PRODUCTION_STATE_UNCHANGED: YES`
 
 `FIRST_BOOTSTRAP_NO_BACKUP_RISK_ACCEPTED: YES`
 
-`READY_FOR_PRODUCTION_MIGRATION_APPLY: YES — SEPARATE APPLY TASK REQUIRED`
+`OWNER_BOOTSTRAP_RISK_EXCEPTION_USED: YES`
 
-Owner istisnası yalnız tamamen boş ilk canonical bootstrap için geçerlidir. Apply ayrı
-görev/change window'unda, exact ref/hash ve zero-state yeniden doğrulandıktan sonra
-başlayabilir. Herhangi bir kullanıcı/veri görülürse istisna düşer ve karar **NO-GO**
-olur. Bu checklist migration uygulamamış ve Production write yetkisi vermemiştir.
+`PRODUCTION_CANONICAL_MIGRATION: PASS`
+
+`PRODUCTION_POSTFLIGHT: PASS`
+
+`PRODUCTION_SCHEMA_READY: YES`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
+
+`READY_FOR_PRODUCTION_CLIENT_CONFIG: NO`
+
+Owner istisnası yalnız tamamen boş ilk canonical bootstrap için kullanıldı ve gelecekte
+tekrarlanamaz. Canonical schema gate'i kapanmıştır. Site URL/redirect/SMTP, gerçek
+Production client-safe config, final signing, controlled smoke ve fiziksel QR hâlâ
+mandatory release gate'leridir; bu nedenle commercial GO verilmez.
 
 ## Cutover kimliği
 

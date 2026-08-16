@@ -3,12 +3,12 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-16
-- Son doğrulanan teslim: `676ef3e6317ef41e0c6a258407de280866e1b9bd`
-- Doğrulanan branch/base: `integration/wave-10-d0-dry-run-20260816` / `origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
-- Entegrasyon durumu: **WAVE 10 D0 INTEGRATION COMPLETE — FIRST EMPTY BOOTSTRAP APPLY READY, NOT APPLIED**
-- Snapshot oluşturulurken çalışma ağacı: final entegrasyon commit'i ve push sonrasında temiz (`+0/-0`)
-- Doğrulama türü: Agent 1'in exact Production ref'e linked CLI D0 dry-run kanıtı `--no-ff` ve çatışmasız entegre edildi; pending sıra yalnız canonical `0001→0009`, before/after Production state aynı, remote write `0`. Owner'ın yalnız boş ilk bootstrap'a özgü no-backup/recreate risk kabulü kaydedildi. Migration manifesti 9/9, canonical contract 18/18, belge/diff/security kontrolleri PASS; kod değişmediği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
-- Çalıştırılmayan/BLOCKED kontroller: Production canonical migration apply/postflight, SMTP/e-posta, fiziksel iki-cihaz QR, final app identifier/signing ve Production smoke. Apply ayrı görev/change window'u ile just-in-time zero-state recheck gerektirir. Integration sırasında Production/Development remote erişimi veya yazması ve migration apply yapılmadı.
+- Son doğrulanan teslim: `676ef3e6317ef41e0c6a258407de280866e1b9bd` sonrası Wave 10 D1 live apply/postflight
+- Doğrulanan branch/base: `agent1/w10-production-migration-apply` / `origin/main@609a037664f8c001951ba00193e6112989399a9b`
+- Entegrasyon durumu: **WAVE 10 D1 PRODUCTION CANONICAL SCHEMA READY — CLIENT/COMMERCIAL RELEASE NOT READY**
+- Snapshot oluşturulurken çalışma ağacı: yalnız D1 durum belgeleri değişmiş; migration SQL ve Dart kodu değişmemiş
+- Doğrulama türü: Exact Production ref ve zero-state JIT PASS sonrasında official linked CLI yalnız canonical `0001→0009` zincirini uyguladı. Final ledger 9/9, 23/23 tablo/RLS, 52/52 policy, 28/28 app function, 25/25 trigger, kritik RPC/grant/Storage/Realtime/Auth/data metadata postflight PASS. Auth user ve bütün business row'ları `0`; manual SQL/fixture/Auth config write yok.
+- Çalıştırılmayan/BLOCKED kontroller: Production Auth Site URL/redirect/custom SMTP ve gerçek inbox kabulü, gerçek client-safe Production config/artifact/signing, controlled Production smoke ve fiziksel iki-cihaz QR. D1 metadata postflight fixture/DML davranış testi oluşturmadı.
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -30,8 +30,9 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   compile-contract release config olarak kullanılamaz.
 - Wave 10'da canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` /
   `https://mefhfvrgkwciubeajjeb.supabase.co` / Frankfurt olarak doğrulandı.
-  Production fresh/empty topology'dedir; Development `tnipyxnvhgelwdpykyez` ayrı
-  projedir ve Production değildir.
+  Production canonical `0001→0009` schema/RLS/RPC/Storage contract'ına bootstrap
+  edilmiştir ve business data halen sıfırdır. Development `tnipyxnvhgelwdpykyez`
+  ayrı projedir ve Production değildir.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -62,7 +63,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | COMPLETE | Development projesinde canonical `0001`–`0009` zinciri kayıtlıdır. Önceki postflight 23 public tablo, 23/23 RLS, 55 policy ve canonical grant matrisini doğruladı; `0008` role guard ile Wave 4 Auth/Profile/RLS, Realtime ve QR canlı testleri geçti. `0009`, durable product evidence + review RPC/RLS sözleşmesini ve public-read `product-images`, `category-images`, `banner-images` bucket'larını uygular; client list/write/update/delete policy'si açmaz. Wave 6 review lifecycle normal Auth istemcileriyle canlı doğrulandı. |
+| Supabase / RLS | COMPLETE | Development ve Production projelerinde canonical `0001`–`0009` zinciri kayıtlıdır. Production D1 metadata postflight 23 public tablo, 23/23 RLS, final 52 policy, canonical grant/RPC/trigger seti ve exact üç active Storage bucket'ı doğruladı; Auth/business data sıfırdır. Development'ta `0008` role guard ile Wave 4 Auth/Profile/RLS, Realtime ve QR; `0009` review lifecycle normal Auth istemcileriyle canlı doğrulandı. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit, testler ve shipping/payment alanları repoda duruyor; aktif müşteri navigation'ına ve GetIt DI grafiğine bağlı değil, hedef ürün akışı değil. |
 
@@ -87,8 +88,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Ürün yorumu Option A server-authoritative doğrulanmış QR alışverişi/durable ürün satırı üzerinden backend ve istemcide uygulandı; frozen RPC sözleşmesiyle canlı Development lifecycle testi geçti.
 - Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası tam Wave 4 Auth/Profile/RLS canlı harness'i geçti.
 - Gerçek client-safe Development değerleriyle web release build ve istemci smoke PASS; Production smoke yapılmadı.
-- Production kimliği exact ref/name/URL/region ile doğrulandı. Fresh baseline'da migration ledger yok; public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği `0`.
-- Production pre-migration baseline ve current-state inventory entegre edildi. Canonical artifact manifesti, clean-room replay ve linked CLI dry-run 9/9 PASS; 23 public tablo ve üç active bucket bekleniyor. Native backup/PITR yoktur; owner yalnız boş ilk bootstrap için no-backup riskini ve gerektiğinde empty-project recreation yolunu kabul etti. `READY_FOR_PRODUCTION_MIGRATION_APPLY: YES` ayrı apply görevi ve zero-state recheck şartıyla geçerlidir.
+- Production kimliği exact ref/name/URL/region ile doğrulandı. D1 öncesi fresh baseline ve zero-state JIT PASS; canonical 0001→0009 apply ve metadata/security postflight tamamlandı.
+- Production current state: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger ve exact üç active bucket; Auth/business data `0`. Owner'ın empty-first-bootstrap no-backup istisnası kullanıldı ve gelecekteki migration'lara emsal değildir.
 - Canonical `0001`–`0009` zinciri Development Supabase'e uygulandı; remote migration kaydı `20260815000900 0009_verified_product_reviews_storage` olarak doğrulandı ve entegrasyonda yeniden uygulanmadı.
 - Aktif üç Storage bucket ve least-privilege read sözleşmesi `0009` ile uygulandı; client write/update/delete/list kapalıdır. `brand-logos`, `avatars` ve `review-images` bilinçli olarak provision edilmedi.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
@@ -112,6 +113,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Wave 9 final birleşik durumda migration/config/signing/platform/Auth hedefli matrisi 62/62, canonical LF migration manifesti 9/9 ve tam Flutter suite 1136/1136 (4 opt-in Development live skip) PASS. Standart Web Production ve Android production-release compile-only contract, Android development debug build ve analyzer PASS; Android release packaging eksik signing materyalinde beklenen fail-closed sonucu verdi.
 - Wave 10 pre-migration belge entegrasyonunda canonical Git/LF migration manifesti 9/9 ve canonical migration contract testi 18/18 PASS. Agent teslimindeki local safe-equivalent clean-room replay 9/9 PASS olarak korundu; yalnız doküman değiştiği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
 - Wave 10 D0 entegrasyonunda linked CLI dry-run yalnız exact canonical `0001→0009` pending sırasını gösterdi; remote before/after state aynı ve write `0`. Integration canonical migration contract testi 18/18, manifest 9/9, docs/diff/security kontrolleri PASS; yalnız doküman değiştiği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
+- Wave 10 D1'de Production canonical `0001→0009` official linked CLI ile uygulandı. Final remote metadata postflight ledger 9/9, table/RLS 23/23, policy 52/52, app function 28/28, trigger 25/25, critical RPC 15/15 ve exact Storage/Realtime contract PASS; Auth ve business data `0`. Local canonical/review-Storage contract matrisi 28/28, QR release contract 3/3, PGlite SQL behavioral replay 9/9 ve migration manifesti 9/9 PASS.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -128,7 +130,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A salt-okunur inventory ve Phase D0 linked CLI dry-run tamamlandı. Agent kanıtında exact ref, yalnız `0001→0009` pending sıra ve değişmeyen remote state doğrulandı; Integration yeniden remote read yapmadı. Owner empty-first-bootstrap risk istisnasını kabul etti. Migration apply ve postflight hâlâ ayrı görevlerdir.
+- Production Phase A inventory, D0 linked dry-run ve D1 canonical migration apply/metadata postflight tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS, final policy/RPC/trigger/Storage/Realtime contract ve zero business data doğrulandı. Production Auth/client config/signing/smoke hâlâ ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Gerçek provider + verified sender + mobile/web redirect ile signup/delivery/confirmation/resend/expiry/recovery inbox acceptance hâlâ BLOCKED.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -138,6 +140,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-16: **WAVE 10 D1 PRODUCTION CANONICAL MIGRATION PASS / SCHEMA READY** — Product owner'ın yalnız boş ilk bootstrap için verdiği no-backup istisnası kullanıldı. Exact Production identity, JIT zero-state, manifest 9/9 ve final linked dry-run PASS sonrasında official CLI canonical 0001→0009'u sırasıyla uyguladı. Ledger 9/9; table/RLS 23/23; policy 52/52; app function 28/28; trigger 25/25; critical RPC 15/15; Storage/Realtime/grant/search-path ve zero-data postflight PASS. Manual SQL, fixture, Auth config veya Development write yapılmadı. Site URL/SMTP, Production client config/signing, controlled smoke ve fiziksel QR açık olduğundan commercial release hazır değildir.
 - 2026-08-16: **WAVE 10 D0 INTEGRATION COMPLETE / FIRST EMPTY BOOTSTRAP APPLY READY, NOT APPLIED** — Agent 1 linked Production CLI dry-run commit'i `--no-ff` ve çatışmasız entegre edildi. CLI exact `mefhfvrgkwciubeajjeb` ref'inde yalnız canonical `0001→0009` pending sırasını gösterdi; before/after Production state değişmedi, remote write `0`. Product owner yalnız tamamen boş ilk bootstrap için native backup/PITR olmadan ilerleme riskini ve güvenli forward-fix yoksa empty-project recreation yolunu kabul etti. Bu istisna gerçek veri geldikten sonraki migration'lara emsal değildir. Apply ayrı görev/change window'u ve just-in-time zero-state recheck ister; bu entegrasyonda migration uygulanmadı.
 - 2026-08-16: **WAVE 10 PRE-MIGRATION INTEGRATION COMPLETE / MIGRATION APPLY NOT READY** — Agent 1'in Phase A ve Phase B/C belge commit'leri final branch HEAD üzerinden `--no-ff` ve çatışmasız entegre edildi. Canonical Production kimliği ve fresh/empty baseline doğrulandı; migration ledger, public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği sıfırdır. Migration manifesti 9/9, clean-room replay 9/9 ve integration canonical contract testi 18/18 PASS. Free plan backup/PITR/restorable point sağlamadığından accepted RPO/RTO, restore/incident owner/drill ve enforced change window açık; linked CLI dry-run PENDING, Production migration apply/postflight yapılmadı. SMTP/e-posta, fiziksel iki-cihaz QR, final app identifiers/signing ve Production smoke da açık kaldı.
 - 2026-08-16: **WAVE 9 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Üç agent dalı zorunlu sırayla ve çatışmasız entegre edildi. Production kimliği doğrulanamadığı için Development kesin dışlandı ve belirsiz proje envanterlenmedi. Migration hash farkı Windows CRLF checkout kök nedenine indirildi; Development apply sonrası tracked SQL mutation olmadığı kanıtlandı ve canonical Git/LF manifesti 9/9 PASS oldu. Mobile signing debug fallback'siz fail-closed, Production config/Auth redirect preflight fail-closed durumdadır. Final identifier/signing, exact Production identity/config/inventory/apply/postflight/smoke, SMTP/email ve fiziksel QR açık gate'tir; remote backend yazması yapılmadı.
