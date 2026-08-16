@@ -158,6 +158,25 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   exact ref/hash ve just-in-time zero-state recheck şartıyla geçerlidir. Postflight,
   SMTP/email, fiziksel QR, app identifiers/signing ve Production smoke açık kalır.
 
+## Wave 10 D1 Production Migration Entegrasyon Gözlemi
+
+- Agent 1'in `8e7517c` D1 migration apply/postflight kanıt commit'i tek `--no-ff`
+  merge ile çatışmasız entegre edildi. Değişiklik yalnız beş Production durum
+  belgesindeydi; migration SQL'i, uygulama kodu, `service_locator.dart`, shared model
+  ve platform identifier dosyaları değişmedi.
+- Agent kanıtında exact Production `mefhfvrgkwciubeajjeb` üzerinde canonical
+  `0001→0009` ledger 9/9 ve metadata/security postflight PASS'tir: 23/23 tablo/RLS,
+  52/52 policy, 28/28 app function, 25/25 trigger, 15/15 kritik RPC, exact Storage ve
+  Realtime sözleşmesi; Auth ve business data `0`.
+- Bu integration migration'ı yeniden uygulamadı ve Production/Development remote
+  read/write yapmadı. Auth config, Storage object, fixture ve test user oluşturulmadı.
+- Product owner final application/bundle identifier'ını `com.esnaftavar.app` olarak
+  kesinleştirdi. Platform wiring sonraki Phase E'nin tek sahibinde kalmalıdır; mobil
+  identifier/signing dosyaları başka agentlarla eşzamanlı değiştirilmemelidir.
+- Phase E Production client wiring başlayabilir. Auth Site URL/redirect/SMTP, gerçek
+  client-safe config, signing, controlled Production smoke ve fiziksel iki-cihaz QR
+  commercial release kapıları olarak açık kalır.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

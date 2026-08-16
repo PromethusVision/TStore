@@ -1,8 +1,8 @@
 # Production Release Configuration
 
-**Kaynak taban:** `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
+**Kaynak taban:** Wave 10 D1 integration / `origin/main@609a037664f8c001951ba00193e6112989399a9b`
 
-**Production Supabase erişimi/yazması:** YOK
+**Bu belge güncellemesinde Production Supabase erişimi/yazması:** YOK
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -20,6 +20,18 @@ lib/main_production.dart
 `main_production.dart` yalnız `SUPABASE_PRODUCTION_*` ad alanını okur. Development
 değerlerine fallback yoktur. Preflight farklı target veya manifestte Development
 alanı görürse fail-closed davranır.
+
+## Final mobile identity decision
+
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+
+`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
+
+Canonical Android application ID/namespace ve iOS bundle identifier değeri
+`com.esnaftavar.app` olacaktır. Product owner kararı kapanmıştır; mevcut platform
+dosyaları bu D1 integration görevinde değiştirilmedi. Identifier wiring, callback/
+allowlist uyumluluk kontrolü ve signing kanıtı sonraki Phase E işinin kapsamındadır.
+Bu karar tek başına artifact, Auth config veya commercial release GO vermez.
 
 ## Release manifest sözleşmesi
 
@@ -166,11 +178,13 @@ remote allowlist kanıtı yoksa Auth release gate **BLOCKED** kalır.
 
 ## Kalan zorunlu release kapıları
 
-- Gerçek Production ref/URL/key güvenli kanaldan sağlanmalı ve iki bağımsız kaynakla
-  doğrulanmalı.
+- Production ref/URL doğrulandı; client-safe key güvenli release kanalından sağlanmalı
+  ve değer sohbet/repo/log içine yazılmadan doğrulanmalıdır.
 - Canonical Site URL, web origin ve redirect allowlist kararı verilmelidir.
 - Remote Auth/SMTP config ve gerçek inbox acceptance tamamlanmalıdır.
-- Android/iOS identity/signing Agent 2/release owner tarafından kapatılmalıdır.
-- Wave 8 cutover planı ile Production migration/postflight ve tam smoke PASS olmalıdır.
+- Android/iOS identifier kararı `com.esnaftavar.app` ile FINAL'dır; platform wiring ve
+  signing Phase E/release owner tarafından kapatılmalıdır.
+- Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
+  wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
 
 Bu kapılar kapanmadan gerçek release artifact'ı için GO verilmez.

@@ -41,7 +41,11 @@ remote write yalnız canonical `0001→0009` initial bootstrap apply **YES**
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
 
-`READY_FOR_PRODUCTION_CLIENT_CONFIG: NO`
+`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO`
+
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+
+`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
 
 Wave 10 Phase A, Production kimliğini iki Dashboard görünümüyle doğruladı ve remote
 topology'yi **F — Fresh/empty** olarak sınıflandırdı. Phase B/C, Free plan'da native

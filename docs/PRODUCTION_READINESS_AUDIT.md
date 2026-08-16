@@ -2,26 +2,33 @@
 
 **Audit tarihi:** 2026-08-16
 
-**Kaynak:** Wave 10 D0 integration; base
-`origin/main@80e7c8a537d567669b2486f7e038839ae2077ef9`
+**Kaynak:** Wave 10 D1 integration; base
+`origin/main@609a037664f8c001951ba00193e6112989399a9b`
 
 **Kapsam:** Customer uygulaması için Production smoke öncesi kaynak, yapılandırma,
 migration ve operasyon kapıları
 
-**Wave 10 evidence erişimi:** Agent 1 Phase A/B/C/D0 salt-okunur **YES**; remote write
-**NO**. Integration sırasında remote erişim/yazma **YOK**.
+**Wave 10 evidence erişimi:** Agent 1 Phase A/B/C/D0 salt-okunur **YES**; Phase D1
+canonical `0001→0009` apply **YES**. Bu integration sırasında remote erişim/yazma
+**YOK** ve migration yeniden uygulanmadı.
 
 ## Sonuç
 
 `PRODUCTION_SMOKE_READY: NO`
 
-Uygulamanın Development kanıtları ve yerel sözleşmeleri güçlüdür. Wave 10'da exact
-Production kimliği ve fresh/empty remote baseline doğrulandı; ancak client-safe key
-değeri release kanalında sağlanmadı ve migration henüz uygulanmadı. Free plan native
-backup/PITR sunmaz; owner yalnız boş ilk bootstrap için bu riski ve gerektiğinde
-empty-project recreation yolunu kabul etti. Aşağıdaki kalan BLOCKER maddeleri kapanmadan gerçek Production
-smoke başlatılmamalı ve dummy değerle alınan build bir smoke PASS olarak
-yorumlanmamalıdır.
+`PRODUCTION_SCHEMA_READY: YES`
+
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+
+`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
+
+Uygulamanın Development kanıtları ve yerel sözleşmeleri güçlüdür. Wave 10 D1'de exact
+Production hedefinde canonical migration ve metadata/security postflight tamamlandı;
+ancak client-safe key release kanalında sağlanmadı, Auth Site URL/redirect/SMTP hâlâ
+fresh default durumunda ve platform identifier/signing wiring yapılmadı. Final app
+identifier `com.esnaftavar.app` olarak karara bağlandı. Aşağıdaki kalan BLOCKER
+maddeleri kapanmadan gerçek Production smoke başlatılmamalı ve dummy değerle alınan
+build bir smoke PASS olarak yorumlanmamalıdır.
 
 Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 `recommended` olarak işaretlenmiştir.
@@ -40,16 +47,16 @@ Bu belge mevcut repo gerçekliğini raporlar. Yeni altyapı önerileri ayrıca
 | Development backend kanıtı | PASS | Proje durumuna göre 0001–0009, 23/23 RLS, QR/Auth/Realtime ve review lifecycle Development'ta doğrulanmıştır. Bu kanıt Production'a taşınmış sayılmaz. |
 | Exact Production project identity | PASS | `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / ref-host / Frankfurt iki authenticated Dashboard görünümünde doğrulandı. `EsnaftaVar Development` (`tnipyxnvhgelwdpykyez`) ayrı projedir ve Production değildir. |
 | Production URL ve client-safe key | BLOCKER | URL `https://mefhfvrgkwciubeajjeb.supabase.co` doğrulandı ve publishable key alanının varlığı görüldü; key değeri okunmadı/kopyalanmadı. Gerçek client-safe değer yalnız güvenli CI/release secret kanalından verilmelidir. |
-| Production migration envanteri | PASS — FRESH BASELINE | Migration ledger relation'ı ve public application table yok; Auth user/identity/session, Storage bucket/object ve Realtime application membership sayıları sıfır. Canonical post-apply schema/RLS/RPC/Storage envanteri Phase D/E sonrasında ayrıca doğrulanacaktır. |
+| Production migration envanteri | PASS — CANONICAL 9/9 | Final ledger exact 0001→0009; 23 public tablo, 23/23 RLS, 52/52 policy, 28/28 app function, 25/25 trigger, 15/15 kritik RPC ve zero business data doğrulandı. |
 | Linked Production CLI dry-run | PASS | Exact `mefhfvrgkwciubeajjeb` ref'inde yalnız canonical `0001→0009` pending; before/after remote state aynı, write `0`. |
 | First empty bootstrap backup/recovery | OWNER-ACCEPTED EXCEPTION | Native backup/PITR yok. Owner yalnız boş ilk bootstrap için no-backup riskini ve güvenli forward-fix yoksa empty-project recreation yolunu kabul etti; gerçek veri sonrası geçersizdir. |
-| Production migration apply | READY / NOT APPLIED | Ayrı apply görevi/change window'u, exact ref/hash ve just-in-time zero-state recheck gerektirir. `READY_FOR_PRODUCTION_MIGRATION_APPLY: YES`; bu audit apply yapmadı. |
+| Production migration apply | PASS / COMPLETED | JIT zero-state ve final linked dry-run sonrasında official CLI yalnız canonical 0001→0009'u uyguladı; integration yeniden apply yapmadı. |
 | Production Auth / SMTP / redirects | BLOCKER | Production-like email confirmation, SMTP teslimi, password recovery ve mobile/web redirect allowlist kabulü henüz yapılmamıştır. |
-| Android dağıtım kimliği ve imzası | BLOCKER | Debug-signing fallback kaldırıldı ve eksik signing materyali packaging'i fail-closed durdurur; ancak `com.example.t_store` hâlâ geçici id'dir, gerçek upload keystore/alias/parola sağlanmadı ve signed artifact yoktur. |
-| iOS dağıtım kimliği ve imzası | BLOCKER | Release contract manual `Apple Distribution` olarak hazırlandı ve owner/secret hard-code edilmedi; ancak `com.example.tStore`, Team ID, certificate ve profile tamamlanmadı, macOS signed archive yoktur. |
+| Android dağıtım kimliği ve imzası | BLOCKER — DECISION FINAL / WIRING PENDING | Final identifier `com.esnaftavar.app`; repo platform değeri henüz değiştirilmedi. Gerçek upload keystore/alias/parola ve signed artifact yoktur. |
+| iOS dağıtım kimliği ve imzası | BLOCKER — DECISION FINAL / WIRING PENDING | Final identifier `com.esnaftavar.app`; repo platform değeri henüz değiştirilmedi. Team ID, certificate/profile ve macOS signed archive yoktur. |
 | Sosyal login release UI | PASS | Çalışmayan Google/Facebook düğmeleri ve anlamsız ayırıcı aktif Login/Signup UI'dan kaldırıldı. E-posta/parola, kayıt ve recovery korunur; OAuth/provider altyapısı gelecekteki optional özellik için yerinde kalır. |
 | Fiziksel iki cihaz QR kabulü | BLOCKER | Kamera izni, müşteri QR, merchant okutma/onay ve müşteri tamamlanması iki gerçek cihazda henüz kabul edilmemiştir. |
-| Production RLS / RPC / Storage / Realtime davranışı | NEEDS PRODUCTION VERIFICATION | Statik ve Development kanıtı vardır; Production postflight ve smoke matrisi ayrıca çalıştırılmalıdır. |
+| Production RLS / RPC / Storage / Realtime | PASS — METADATA/SECURITY POSTFLIGHT | 23/23 RLS, final policy/grant/search-path, critical RPC/trigger, exact üç bucket ve exact iki Realtime member doğrulandı. Disposable-principal davranış testi controlled smoke'ta açık kalır. |
 | Kritik customer akışları | NEEDS PRODUCTION VERIFICATION | Kaynak ve yerel test kapsamı vardır; gerçek Production sonuçları `PRODUCTION_SMOKE_CHECKLIST.md` ile kaydedilmelidir. |
 | `brand-logos`, `avatars`, `review-images` | DEFERRED / NON-BLOCKING | Wave 6 kararı gereği provision edilmez ve release gate değildir. |
 | Legacy order final drop | DEFERRED / NON-BLOCKING | Aktif müşteri akışına bağlı değildir; final veri/kod kaldırma ayrı yetkili iştir. |
@@ -114,7 +121,11 @@ sonuç **gerçek startup/Auth/smoke PASS değildir**.
 | 0008 | `20260814000800_0008_fix_profile_role_guard.sql` | Profile role guard function/trigger düzeltmesi. |
 | 0009 | `20260815000900_0009_verified_product_reviews_storage.sql` | 0001–0008, managed Storage tabloları/RLS; verified review RPC'leri ve aktif üç bucket. Mevcut review/product aggregate verisini canonical evidence'a göre günceller. |
 
-### Apply öncesi exact adımlar
+### D1'de tamamlanan apply kontrolü ve gelecek migration şablonu
+
+Bu adımlar D1 initial bootstrap'ta owner'ın yalnız boş proje için verdiği dar backup
+istisnasıyla tamamlandı. Liste gelecekteki Production migration'larında yeniden
+uygulanır; D1 istisnası sonraki değişikliklere taşınmaz.
 
 1. Production project ref/URL, ortam sahibi ve change window yazılı olarak doğrulanır;
    terminal prompt/project adı tek başına kanıt sayılmaz.
@@ -131,7 +142,8 @@ sonuç **gerçek startup/Auth/smoke PASS değildir**.
    geri yükleme adımı denenir ve RTO/RPO sahibi kaydedilir.
 7. Özellikle 0009'un legacy review `is_verified_purchase` ve product aggregate
    düzeltmelerinin sayısal etkisi dry-run/read-only sorgularla raporlanır.
-8. Yetkili migration sahibi onaylı change window'da uygular. Bu audit apply yapmaz.
+8. Yetkili migration sahibi onaylı change window'da uygular. D1'de Agent 1 bu adımı
+   tamamladı; integration audit'i migration'ı yeniden uygulamaz.
 9. Her dosyanın transaction sonucu ve migration ledger kaydı alınır. Postflight;
    schema, RLS, policy/grant, RPC/trigger, publication ve bucket contract testlerini
    tekrarlar.
@@ -183,6 +195,9 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
   **9/9 PASS**; remote state unchanged, write `0`.
 - Empty-first-bootstrap no-backup/recreate owner risk decision: **ACCEPTED**, yalnız bu
   ilk bootstrap için.
+- Wave 10 D1 canonical migration apply ve metadata/security postflight: **PASS**;
+  ledger 9/9, table/RLS 23/23, policy 52/52, app function 28/28, trigger 25/25,
+  critical RPC 15/15, exact Storage/Realtime ve zero business data.
 - Wave 10 integration canonical migration contract testi: **18/18 PASS**.
 - Wave 9 migration/config/signing/platform/Auth hedefli testleri: **62/62 PASS**.
 - Canonical Git/LF 0001–0009 SHA-256 manifest kontrolü: **9/9 PASS**.
@@ -194,9 +209,11 @@ owner'ın sağladığı client-safe config ve disposable hesaplarla yürütülme
   release packaging eksik signing materyalinde beklenen fail-closed sonuç.
 - `flutter analyze --no-pub`: **PASS**, issue yok.
 - Android manifest ve iOS plist XML parse: **PASS**.
-- Değişen dosyalarda gerçek Supabase project URL, JWT-benzeri token, `sb_secret_`
-  credential veya database URI taraması: **0 bulgu**.
+- Değişen dosyalarda JWT-benzeri token, `sb_secret_`/gerçek publishable credential,
+  private key veya credential içeren database URI taraması: **0 bulgu**. Doğrulanmış
+  Production project URL/ref secret değildir ve canonical belgelerde açıkça kayıtlıdır.
 - `git diff --check`: **PASS**.
-- Wave 10 Agent evidence remote read: **YES / salt-okunur**. Remote write, migration,
-  Auth/Storage değişikliği ve test hesabı: **YOK**. Integration yeniden remote erişim
-  yapmadı.
+- Wave 10 Agent evidence remote read: **YES**. Agent Phase D1 remote write yalnız
+  canonical 0001→0009 bootstrap apply'dır; Auth config, Storage object ve test hesabı
+  yazması yoktur. Integration remote erişim/yazma yapmadı ve migration'ı yeniden
+  uygulamadı.

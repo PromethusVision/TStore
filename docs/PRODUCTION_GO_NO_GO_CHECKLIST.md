@@ -47,7 +47,11 @@ pre-migration, apply ve metadata postflight evidence durumunu gösterir.
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: COMPLETED`
 
-`READY_FOR_PRODUCTION_CLIENT_CONFIG: NO`
+`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO`
+
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+
+`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
 
 Owner istisnası yalnız tamamen boş ilk canonical bootstrap için kullanıldı ve gelecekte
 tekrarlanamaz. Canonical schema gate'i kapanmıştır. Site URL/redirect/SMTP, gerçek

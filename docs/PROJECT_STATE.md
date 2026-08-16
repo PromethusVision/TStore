@@ -3,12 +3,16 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-16
-- Son doğrulanan teslim: `676ef3e6317ef41e0c6a258407de280866e1b9bd` sonrası Wave 10 D1 live apply/postflight
-- Doğrulanan branch/base: `agent1/w10-production-migration-apply` / `origin/main@609a037664f8c001951ba00193e6112989399a9b`
+- Son doğrulanan teslim: `8e7517c478426fa70e4e2250f55f47ce2be34afb`; integration merge `46faea95fd79fa2a433991380656f1b0482a14ae`
+- Doğrulanan branch/base: `integration/wave-10-d1-production-migration-20260816`; Agent kaynak `agent1/w10-production-migration-apply` / `origin/main@609a037664f8c001951ba00193e6112989399a9b`
 - Entegrasyon durumu: **WAVE 10 D1 PRODUCTION CANONICAL SCHEMA READY — CLIENT/COMMERCIAL RELEASE NOT READY**
 - Snapshot oluşturulurken çalışma ağacı: yalnız D1 durum belgeleri değişmiş; migration SQL ve Dart kodu değişmemiş
 - Doğrulama türü: Exact Production ref ve zero-state JIT PASS sonrasında official linked CLI yalnız canonical `0001→0009` zincirini uyguladı. Final ledger 9/9, 23/23 tablo/RLS, 52/52 policy, 28/28 app function, 25/25 trigger, kritik RPC/grant/Storage/Realtime/Auth/data metadata postflight PASS. Auth user ve bütün business row'ları `0`; manual SQL/fixture/Auth config write yok.
 - Çalıştırılmayan/BLOCKED kontroller: Production Auth Site URL/redirect/custom SMTP ve gerçek inbox kabulü, gerçek client-safe Production config/artifact/signing, controlled Production smoke ve fiziksel iki-cihaz QR. D1 metadata postflight fixture/DML davranış testi oluşturmadı.
+
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+
+`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
 
@@ -33,6 +37,9 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   Production canonical `0001→0009` schema/RLS/RPC/Storage contract'ına bootstrap
   edilmiştir ve business data halen sıfırdır. Development `tnipyxnvhgelwdpykyez`
   ayrı projedir ve Production değildir.
+- Product owner final Android/iOS application/bundle identifier'ını
+  `com.esnaftavar.app` olarak kesinleştirdi. Platform dosyaları bu D1 integration
+  görevinde değiştirilmedi; wiring ve signing sonraki Phase E kapsamındadır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -140,7 +147,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
-- 2026-08-16: **WAVE 10 D1 PRODUCTION CANONICAL MIGRATION PASS / SCHEMA READY** — Product owner'ın yalnız boş ilk bootstrap için verdiği no-backup istisnası kullanıldı. Exact Production identity, JIT zero-state, manifest 9/9 ve final linked dry-run PASS sonrasında official CLI canonical 0001→0009'u sırasıyla uyguladı. Ledger 9/9; table/RLS 23/23; policy 52/52; app function 28/28; trigger 25/25; critical RPC 15/15; Storage/Realtime/grant/search-path ve zero-data postflight PASS. Manual SQL, fixture, Auth config veya Development write yapılmadı. Site URL/SMTP, Production client config/signing, controlled smoke ve fiziksel QR açık olduğundan commercial release hazır değildir.
+- 2026-08-16: **WAVE 10 D1 PRODUCTION CANONICAL MIGRATION PASS / SCHEMA READY** — Product owner'ın yalnız boş ilk bootstrap için verdiği no-backup istisnası kullanıldı. Exact Production identity, JIT zero-state, manifest 9/9 ve final linked dry-run PASS sonrasında official CLI canonical 0001→0009'u sırasıyla uyguladı. Ledger 9/9; table/RLS 23/23; policy 52/52; app function 28/28; trigger 25/25; critical RPC 15/15; Storage/Realtime/grant/search-path ve zero-data postflight PASS. Manual SQL, fixture, Auth config veya Development write yapılmadı. Final app identifier `com.esnaftavar.app` owner tarafından kesinleştirildi; platform wiring bu görevde yapılmadı. Phase E Production client wiring başlayabilir; Site URL/SMTP, signing, controlled smoke ve fiziksel QR açık olduğundan commercial release hazır değildir.
 - 2026-08-16: **WAVE 10 D0 INTEGRATION COMPLETE / FIRST EMPTY BOOTSTRAP APPLY READY, NOT APPLIED** — Agent 1 linked Production CLI dry-run commit'i `--no-ff` ve çatışmasız entegre edildi. CLI exact `mefhfvrgkwciubeajjeb` ref'inde yalnız canonical `0001→0009` pending sırasını gösterdi; before/after Production state değişmedi, remote write `0`. Product owner yalnız tamamen boş ilk bootstrap için native backup/PITR olmadan ilerleme riskini ve güvenli forward-fix yoksa empty-project recreation yolunu kabul etti. Bu istisna gerçek veri geldikten sonraki migration'lara emsal değildir. Apply ayrı görev/change window'u ve just-in-time zero-state recheck ister; bu entegrasyonda migration uygulanmadı.
 - 2026-08-16: **WAVE 10 PRE-MIGRATION INTEGRATION COMPLETE / MIGRATION APPLY NOT READY** — Agent 1'in Phase A ve Phase B/C belge commit'leri final branch HEAD üzerinden `--no-ff` ve çatışmasız entegre edildi. Canonical Production kimliği ve fresh/empty baseline doğrulandı; migration ledger, public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği sıfırdır. Migration manifesti 9/9, clean-room replay 9/9 ve integration canonical contract testi 18/18 PASS. Free plan backup/PITR/restorable point sağlamadığından accepted RPO/RTO, restore/incident owner/drill ve enforced change window açık; linked CLI dry-run PENDING, Production migration apply/postflight yapılmadı. SMTP/e-posta, fiziksel iki-cihaz QR, final app identifiers/signing ve Production smoke da açık kaldı.
 - 2026-08-16: **WAVE 9 INTEGRATION COMPLETE / COMMERCIAL RELEASE NOT READY** — Üç agent dalı zorunlu sırayla ve çatışmasız entegre edildi. Production kimliği doğrulanamadığı için Development kesin dışlandı ve belirsiz proje envanterlenmedi. Migration hash farkı Windows CRLF checkout kök nedenine indirildi; Development apply sonrası tracked SQL mutation olmadığı kanıtlandı ve canonical Git/LF manifesti 9/9 PASS oldu. Mobile signing debug fallback'siz fail-closed, Production config/Auth redirect preflight fail-closed durumdadır. Final identifier/signing, exact Production identity/config/inventory/apply/postflight/smoke, SMTP/email ve fiziksel QR açık gate'tir; remote backend yazması yapılmadı.

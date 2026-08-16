@@ -1,10 +1,10 @@
 # Production Smoke Checklist
 
 Bu liste **Production'a otomatik apply veya write yetkisi vermez**. Wave 10 Agent 1
-evidence çalışması yalnız salt-okunur Production inventory ve linked CLI dry-run aldı;
-integration yeniden remote erişim yapmadı. Hesap oluşturulmadı ve migration
-uygulanmadı. Gerçek çalışmada
-her write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
+Phase D1'de açık yetkiyle yalnız canonical `0001→0009` initial bootstrap'ı uyguladı ve
+metadata/security postflight'ı PASS tamamladı. Integration migration'ı yeniden
+uygulamadı, remote erişim/yazma yapmadı ve hesap oluşturmadı. Gerçek smoke'taki her
+write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 ## 1. Başlatma kapıları
 
@@ -21,11 +21,12 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;
       Wave 8'in sentetik config ile standart build kanıtı PASS, gerçek artifact hash'i kayıtlı.
 - [ ] Artifact/service-role, DB password, JWT secret veya signing secret içermiyor.
-- [ ] 0001–0009 apply/postflight ledger ve schema diff'i PASS; backup/restore kanıtı
+- [x] 0001–0009 apply/postflight ledger ve schema diff'i PASS; backup/restore kanıtı
       veya yalnız boş ilk bootstrap için kayıtlı owner exception geçerli.
-- [ ] Canonical Git/LF migration manifesti
+- [x] Canonical Git/LF migration manifesti
       `node tool/verify_migration_artifact_manifest.mjs` ile 9/9 PASS.
-- [ ] Production RLS/RPC/Storage/Realtime/Auth postflight PASS.
+- [x] Production schema/RLS/RPC/Storage/Realtime metadata/security postflight PASS.
+- [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
 - [ ] Production owner iki bağımsız disposable müşteri principal'ı ve gerekiyorsa ayrı
