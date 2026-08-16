@@ -1,8 +1,9 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 10 D1 integration / `origin/main@609a037664f8c001951ba00193e6112989399a9b`
+**Kaynak taban:** Wave 10 E1 / `origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
 
-**Bu belge güncellemesinde Production Supabase erişimi/yazması:** YOK
+**Bu belge güncellemesinde Production Supabase erişimi:** Anonymous read-only **YES**;
+remote write **NO**
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -25,13 +26,48 @@ alanı görürse fail-closed davranır.
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
 
-`READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
+`PHASE_E1_PRODUCTION_CLIENT_WIRING: PASS`
+
+`PRODUCTION_CLIENT_SAFE_KEY_PRESENT: YES`
+
+`PRODUCTION_RUNTIME_CONFIG: PASS`
+
+`PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
+
+`READY_FOR_PHASE_E_INTEGRATION: YES`
 
 Canonical Android application ID/namespace ve iOS bundle identifier değeri
 `com.esnaftavar.app` olacaktır. Product owner kararı kapanmıştır; mevcut platform
 dosyaları bu D1 integration görevinde değiştirilmedi. Identifier wiring, callback/
 allowlist uyumluluk kontrolü ve signing kanıtı sonraki Phase E işinin kapsamındadır.
 Bu karar tek başına artifact, Auth config veya commercial release GO vermez.
+
+## Wave 10 Phase E1 real runtime evidence
+
+Authenticated Supabase CLI, exact `EsnaftaVar Production` /
+`mefhfvrgkwciubeajjeb` için client-safe publishable key bulunduğunu doğruladı. CLI
+`--reveal` kullanmadı; publishable key yalnız test/build süreç belleğinde kullanıldı,
+değeri source, manifest, belge veya loga yazılmadı. Service-role, `sb_secret_*` veya
+server credential kullanılmadı.
+
+Opt-in [`production_readonly_integration_test.dart`](../test/live/production_readonly_integration_test.dart)
+şunları gerçek Production runtime değerleriyle PASS doğruladı:
+
+- `main_production.dart` üzerinden `AppEnvironment.production` seçimi ve exact
+  ref-host; Development namespace/fallback yok;
+- anonymous Auth client initialize; current user/session yok;
+- `categories`, `products`, `shops`, `banners` read istekleri başarılı ve boş;
+- exact üç active bucket için client-visible liste boş, public URL host/path contract'ı
+  doğru ve non-existent object GET güvenli not-found;
+- database/Auth/Storage mutation yok.
+
+Standart Web release compile/build, gerçek Production URL ve publishable key runtime
+injection ile `lib/main_production.dart` target'ında, `--no-tree-shake-icons`
+kullanılmadan PASS oldu. Credential taşıyan geçici artifact izole temp dizininde
+üretildi, hash/shape doğrulamasından sonra kaldırıldı. Bu E1 build kanıtı, remote Auth
+Site URL/redirect kararı manifestte henüz tamamlanmadığı için deploy edilebilir final
+release artifact'ı veya full Production smoke değildir. Fail-closed structural release
+preflight gereksinimleri değiştirilmedi.
 
 ## Release manifest sözleşmesi
 
