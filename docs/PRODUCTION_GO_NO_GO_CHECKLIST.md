@@ -4,7 +4,7 @@ Bu sayfa release commander tarafından cutover kaydına kopyalanır. Bütün zor
 maddeler PASS değilse GO verilemez. Boş, `N/A` veya “sonra doğrulanacak” bir zorunlu
 madde PASS sayılmaz.
 
-## Wave 10 Phase B/C current evidence
+## Wave 10 Phase B/C/D0 current evidence
 
 Bu tablo release commander'ın imzalı checklist'inin yerine geçmez; 2026-08-16
 pre-migration evidence durumunu gösterir.
@@ -20,17 +20,22 @@ pre-migration evidence durumunu gösterir.
 | Storage object protection | Pre-migration object count 0; korunacak blob yok | PASS for current empty snapshot |
 | Write freeze | Business state quiescent; Auth signup enabled ve enforced freeze/change window yok | **NO-GO until window** |
 | Local dry comparison | PGlite safe-equivalent replay 0001→0009, final schema/QR/review/Storage PASS | PASS |
-| Linked CLI dry-run | CLI/database credential istenmedi; remote linked dry-run yapılmadı | PENDING |
+| Linked CLI dry-run | CLI 2.114.0 exact Production ref'e bağlı; `--dry-run --skip-vault` yalnız canonical 0001→0009 gösterdi; before/after remote state aynı | PASS |
 
 `BACKUP_ROLLBACK_PLAN_READY: NO`
 
-`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT + LINKED CLI DRY-RUN`
+
+`PRODUCTION_STATE_UNCHANGED: YES`
+
+`READY_FOR_OWNER_MIGRATION_RISK_DECISION: YES`
 
 `READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
 
-Mevcut **NO-GO**, migration conflict'inden değil Free-plan restore/rollback ve
-operational freeze kanıtı eksikliğinden kaynaklanır. Bu koşullar kapanmadan Phase D
-başlatılmaz.
+Teknik migration preflight owner risk kararına hazırdır. Mevcut **NO-GO**, migration
+conflict'inden değil Free-plan restore/rollback ve operational freeze kanıtı
+eksikliğinden kaynaklanır. Owner risk kararı apply yetkisi değildir; bu koşullar
+kapanmadan Phase D başlatılmaz.
 
 ## Cutover kimliği
 
