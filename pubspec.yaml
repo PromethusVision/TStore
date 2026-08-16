@@ -14,7 +14,7 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
-  iconsax: ^0.0.8
+  iconsax_flutter: ^1.0.1
   cached_network_image: ^3.4.1
   capped_progress_indicator: ^0.0.2
   carousel_slider: ^5.0.0

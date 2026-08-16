@@ -1,6 +1,6 @@
 //brand_title_with_verification.dart
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/common/view_models/brand_title_with_verification_view_model.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
