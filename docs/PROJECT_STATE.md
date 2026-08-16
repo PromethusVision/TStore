@@ -10,7 +10,7 @@
 - Doğrulama türü: Exact Production ref ve zero-state JIT PASS sonrasında official linked CLI yalnız canonical `0001→0009` zincirini uyguladı. Final ledger 9/9, 23/23 tablo/RLS, 52/52 policy, 28/28 app function, 25/25 trigger, kritik RPC/grant/Storage/Realtime/Auth/data metadata postflight PASS. Auth user ve bütün business row'ları `0`; manual SQL/fixture/Auth config write yok.
 - Çalıştırılmayan/BLOCKED kontroller: Production Auth Site URL/redirect/custom SMTP ve gerçek inbox kabulü, gerçek client-safe Production config/artifact/signing, controlled Production smoke ve fiziksel iki-cihaz QR. D1 metadata postflight fixture/DML davranış testi oluşturmadı.
 
-`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
 `READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`
 
@@ -38,8 +38,10 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   edilmiştir ve business data halen sıfırdır. Development `tnipyxnvhgelwdpykyez`
   ayrı projedir ve Production değildir.
 - Product owner final Android/iOS application/bundle identifier'ını
-  `com.esnaftavar.app` olarak kesinleştirdi. Platform dosyaları bu D1 integration
-  görevinde değiştirilmedi; wiring ve signing sonraki Phase E kapsamındadır.
+  `com.esnaftavar.app` olarak kesinleştirdi. Phase E2'de Android namespace,
+  applicationId, MainActivity/Fastlane ve iOS Runner/RunnerTests build
+  configuration'ları bu kimliğe bağlandı. Signing materyali ve legacy
+  `io.supabase.tstore` callback'in Phase F remote allowlist cutover'ı açıktır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -121,6 +123,12 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Wave 10 pre-migration belge entegrasyonunda canonical Git/LF migration manifesti 9/9 ve canonical migration contract testi 18/18 PASS. Agent teslimindeki local safe-equivalent clean-room replay 9/9 PASS olarak korundu; yalnız doküman değiştiği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
 - Wave 10 D0 entegrasyonunda linked CLI dry-run yalnız exact canonical `0001→0009` pending sırasını gösterdi; remote before/after state aynı ve write `0`. Integration canonical migration contract testi 18/18, manifest 9/9, docs/diff/security kontrolleri PASS; yalnız doküman değiştiği için full Flutter suite ve analyzer yeniden çalıştırılmadı.
 - Wave 10 D1'de Production canonical `0001→0009` official linked CLI ile uygulandı. Final remote metadata postflight ledger 9/9, table/RLS 23/23, policy 52/52, app function 28/28, trigger 25/25, critical RPC 15/15 ve exact Storage/Realtime contract PASS; Auth ve business data `0`. Local canonical/review-Storage contract matrisi 28/28, QR release contract 3/3, PGlite SQL behavioral replay 9/9 ve migration manifesti 9/9 PASS.
+- Wave 10 Phase E2'de final mobile identity/signing/Auth callback hedefli matrisi
+  35/35, tam Flutter suite 1138/1138 (4 opt-in Development live skip), Android
+  development debug build, production release compile-only contract, eksik signing
+  materyalinde release fail-closed kontrolü ve analyzer PASS. iOS 3+3 bundle-ID
+  configuration/plist/scheme statik doğrulaması PASS; Windows'ta signed archive
+  çalıştırılmadı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -147,6 +155,14 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-16: **WAVE 10 PHASE E2 FINAL MOBILE IDENTITY WIRED / SIGNING OPEN** —
+  Owner-final `com.esnaftavar.app`, Android namespace/applicationId/MainActivity ve
+  iOS Runner/RunnerTests Debug/Profile/Release configuration'larına bağlandı.
+  Android release fail-closed signing ve iOS Apple Distribution/manual signing
+  korundu. `io.supabase.tstore://login-callback/` remote allowlist değiştirilmeden
+  legacy sözleşme olarak bırakıldı; final scheme + Production Auth allowlist Phase F
+  atomik cutover işidir. Gerçek keystore/Apple signing materyali ve signed artifact
+  bulunmadığından commercial release hazır değildir.
 - 2026-08-16: **WAVE 10 D1 PRODUCTION CANONICAL MIGRATION PASS / SCHEMA READY** — Product owner'ın yalnız boş ilk bootstrap için verdiği no-backup istisnası kullanıldı. Exact Production identity, JIT zero-state, manifest 9/9 ve final linked dry-run PASS sonrasında official CLI canonical 0001→0009'u sırasıyla uyguladı. Ledger 9/9; table/RLS 23/23; policy 52/52; app function 28/28; trigger 25/25; critical RPC 15/15; Storage/Realtime/grant/search-path ve zero-data postflight PASS. Manual SQL, fixture, Auth config veya Development write yapılmadı. Final app identifier `com.esnaftavar.app` owner tarafından kesinleştirildi; platform wiring bu görevde yapılmadı. Phase E Production client wiring başlayabilir; Site URL/SMTP, signing, controlled smoke ve fiziksel QR açık olduğundan commercial release hazır değildir.
 - 2026-08-16: **WAVE 10 D0 INTEGRATION COMPLETE / FIRST EMPTY BOOTSTRAP APPLY READY, NOT APPLIED** — Agent 1 linked Production CLI dry-run commit'i `--no-ff` ve çatışmasız entegre edildi. CLI exact `mefhfvrgkwciubeajjeb` ref'inde yalnız canonical `0001→0009` pending sırasını gösterdi; before/after Production state değişmedi, remote write `0`. Product owner yalnız tamamen boş ilk bootstrap için native backup/PITR olmadan ilerleme riskini ve güvenli forward-fix yoksa empty-project recreation yolunu kabul etti. Bu istisna gerçek veri geldikten sonraki migration'lara emsal değildir. Apply ayrı görev/change window'u ve just-in-time zero-state recheck ister; bu entegrasyonda migration uygulanmadı.
 - 2026-08-16: **WAVE 10 PRE-MIGRATION INTEGRATION COMPLETE / MIGRATION APPLY NOT READY** — Agent 1'in Phase A ve Phase B/C belge commit'leri final branch HEAD üzerinden `--no-ff` ve çatışmasız entegre edildi. Canonical Production kimliği ve fresh/empty baseline doğrulandı; migration ledger, public uygulama tablosu, Auth user, Storage bucket/object ve Realtime uygulama üyeliği sıfırdır. Migration manifesti 9/9, clean-room replay 9/9 ve integration canonical contract testi 18/18 PASS. Free plan backup/PITR/restorable point sağlamadığından accepted RPO/RTO, restore/incident owner/drill ve enforced change window açık; linked CLI dry-run PENDING, Production migration apply/postflight yapılmadı. SMTP/e-posta, fiziksel iki-cihaz QR, final app identifiers/signing ve Production smoke da açık kaldı.
