@@ -2,12 +2,16 @@
 
 **Plan tarihi:** 2026-08-16
 
-**Kaynak taban:** `origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
+**Kaynak taban:** `origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
 
 **Kapsam:** EsnaftaVar Production Supabase keşfi, migration preflight, kontrollü
 uygulama, postflight ve müşteri smoke sıralaması
 
-**Bu görevde Production erişimi/yazması:** YOK
+**Wave 10 doğrulanmış Production:** `EsnaftaVar Production` /
+`mefhfvrgkwciubeajjeb` / `Central EU (Frankfurt)`
+
+**Wave 10 Production erişimi:** Read-only inventory/preflight **YES**; remote write
+**NO**
 
 ## Durum ve kesin sınır
 
@@ -15,10 +19,20 @@ uygulama, postflight ve müşteri smoke sıralaması
 
 `PRODUCTION_CUTOVER_AUTHORIZED: NO`
 
-Repo ve mevcut bağlam gerçek Production project ref/name, URL, migration history,
-backup planı veya client-safe key içermiyor. Bu belge bunların hiçbirini tahmin etmez
-ve Production'ın 0001–0009 seviyesinde olduğunu iddia etmez. Cutover yalnız her phase
-için ayrı PASS kanıtı ve yetkili release sahibinin GO kararıyla ilerler.
+`PHASE_A_READ_ONLY_INVENTORY: PASS`
+
+`PHASE_B_BACKUP_ROLLBACK: BLOCKED`
+
+`PHASE_C_DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+
+Wave 10 Phase A, Production kimliğini iki Dashboard görünümüyle doğruladı ve remote
+topology'yi **F — Fresh/empty** olarak sınıflandırdı. Phase B/C, Free plan'da native
+backup/PITR/restore point bulunmadığını; local clean-room 0001→0009 replay'in ise PASS
+olduğunu doğruladı. Cutover yalnız her phase için ayrı PASS kanıtı ve yetkili release
+sahibinin GO kararıyla ilerler. Ayrıntılı güncel snapshot:
+[Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
 
 Bu plan şu belgelerin devamıdır:
 
@@ -490,6 +504,13 @@ koruma planı; freeze yöntemi ve change window onaylı.
 **STOP:** Backup/PITR varsayımsal; dump kapsamı bilinmiyor; restore denenmemiş; Storage
 objects korunmuyor; freeze uygulanamıyor.
 
+**Wave 10 current evidence — BLOCKED:** Production Free plan scheduled backup içermez;
+PITR Pro add-on ve restore-to-new-project Pro + physical backup gerektirir. Fresh
+snapshot'ta korunacak application row/Storage object yoktur; ancak restorable point,
+accepted RPO/RTO, restore/incident owner ve restore drill bulunmadığı için Phase B PASS
+değildir. Business state quiescent olsa da Auth signup enabled ve enforced freeze
+yoktur. Phase D öncesi count recheck + imzalı change window zorunludur.
+
 ### Phase C — Migration dry comparison
 
 **Giriş şartı:** A+B PASS; exact commit/hash manifesti; Production-data clone veya
@@ -505,6 +526,15 @@ run edildi.
 
 **STOP:** 0001 existing schema'ya çarpacak; unknown migration; hash mismatch; 0009 data
 etkisi onaysız; timeout/lock riski window'a sığmıyor; bucket visibility/policy riski.
+
+**Wave 10 current evidence — LOCAL PASS / LINKED DRY-RUN PENDING:** Credential-free
+remote conflict precheck canonical table/trigger/bucket/policy conflict'i bulmadı.
+PGlite 0.5.5 safe-equivalent clean-room replay 9/9 migration, final 23 table, üç active
+bucket ve QR/review/Storage behavior ile PASS verdi. Automatic-RLS double-enable
+idempotent; Data API auto-expose OFF iken canonical explicit grant/RLS contract'ı
+uyumludur. Yerel CLI/database credential olmadığı ve secret istenmediği için linked
+`db push --dry-run` çalıştırılmadı; Phase D öncesi yalnız expected dokuz pending
+migration'ı gösteren linked dry-run kanıtı hâlâ zorunludur.
 
 ### Phase D — Canonical migration apply
 

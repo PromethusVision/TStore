@@ -4,6 +4,34 @@ Bu sayfa release commander tarafından cutover kaydına kopyalanır. Bütün zor
 maddeler PASS değilse GO verilemez. Boş, `N/A` veya “sonra doğrulanacak” bir zorunlu
 madde PASS sayılmaz.
 
+## Wave 10 Phase B/C current evidence
+
+Bu tablo release commander'ın imzalı checklist'inin yerine geçmez; 2026-08-16
+pre-migration evidence durumunu gösterir.
+
+| Pre-apply gate | Current evidence | Durum |
+| --- | --- | --- |
+| Exact Production project | `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / ref-host / Frankfurt doğrulandı | PASS |
+| Fresh remote inventory | Ledger yok; public application table/user/bucket/object sayıları 0 | PASS |
+| Migration artifacts | Canonical Git/LF SHA-256 manifest 9/9 | PASS |
+| Existing data / 0009 impact | Historical application row ve Storage object yok; affected count 0 | PASS |
+| Native backup / PITR | Free plan scheduled backup yok; PITR yok; restorable point yok | **NO-GO** |
+| Restore drill / RPO / RTO | Native restore kullanılamıyor; accepted RPO/RTO ve owner/drill yok | **NO-GO** |
+| Storage object protection | Pre-migration object count 0; korunacak blob yok | PASS for current empty snapshot |
+| Write freeze | Business state quiescent; Auth signup enabled ve enforced freeze/change window yok | **NO-GO until window** |
+| Local dry comparison | PGlite safe-equivalent replay 0001→0009, final schema/QR/review/Storage PASS | PASS |
+| Linked CLI dry-run | CLI/database credential istenmedi; remote linked dry-run yapılmadı | PENDING |
+
+`BACKUP_ROLLBACK_PLAN_READY: NO`
+
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+
+Mevcut **NO-GO**, migration conflict'inden değil Free-plan restore/rollback ve
+operational freeze kanıtı eksikliğinden kaynaklanır. Bu koşullar kapanmadan Phase D
+başlatılmaz.
+
 ## Cutover kimliği
 
 - Tarih / change window:

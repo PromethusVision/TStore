@@ -2,185 +2,239 @@
 
 **Inventory tarihi:** 2026-08-16
 
-**Kaynak branch/base:** `agent1/w9-production-readonly-inventory` /
-`origin/main@b793aeab5174733d329df7743d86e73b0c68eced`
+**Kaynak branch/base:** `agent1/w10-production-readonly-verification` /
+`origin/main@71c7ed6c2429c92ecf6732b7f5845a716a460263`
 
-**Yetki sınırı:** Yalnız read-only project discovery. Production SQL, migration,
-schema, RLS, Auth, Storage, Realtime veya veri yazması yapılmadı.
+**Yetki sınırı:** Kimliği doğrulanmış Production projesinde yalnız Dashboard metadata
+okuması ve salt-okunur catalog/count sorguları. Migration, DML, DDL, Auth/SMTP,
+Storage, Realtime veya başka bir remote yapılandırma yazması yapılmadı.
 
-`PRODUCTION_PROJECT_IDENTIFIED: NO`
+`PRODUCTION_PROJECT_IDENTIFIED: YES`
 
-`PRODUCTION_INVENTORY_READY: NO`
+`PRODUCTION_INVENTORY_READY: YES`
 
-`PRODUCTION_PROJECT_IDENTIFICATION_REQUIRED`
-
-## Yönetici özeti
-
-Kimliği doğrulanmış Supabase Dashboard oturumunda tek organizasyon altında iki proje
-görüldü. Bunlardan yalnız `EsnaftaVar Development` açıkça tanımlıdır. Diğer proje,
-hesap e-posta adresinden türetilmiş varsayılan bir ada sahiptir ve hiçbir Dashboard
-etiketi, repo kaydı, release kaydı veya Production configuration contract değeri onu
-`EsnaftaVar Production` olarak doğrulamamaktadır.
-
-Belirsiz projeyi Production kabul etmek tahmin olacağından o projede project detail,
-Management API, database catalog, migration ledger, Auth, Storage veya Realtime
-envanter sorgusu çalıştırılmadı. Bu belgedeki uzak durum alanları bu nedenle bilinçli
-olarak `UNKNOWN` veya `NOT RUN` durumundadır.
-
-## Project discovery
-
-| Gözlem | Read-only sonuç | Karar |
-| --- | --- | --- |
-| Organizasyon | `Musaki bilisim`; Dashboard proje listesi iki proje gösterdi | Yalnız project-list discovery |
-| Development | Ad `EsnaftaVar Development`; ref `tnipyxnvhgelwdpykyez`; AWS `eu-central-1` | **Production değildir; kesin olarak dışlandı** |
-| Diğer erişilebilir proje | Dashboard adı hesap e-posta adresinden türetilmiş varsayılan proje adı; ref `ieebtdvvinqfatbhkyqi`; AWS `eu-west-1` | Production olduğuna dair açık kanıt yok; aday üzerinde envanter yapılmadı |
-| Production adı | Bilinmiyor | `UNKNOWN` |
-| Production ref | Bilinmiyor | `UNKNOWN` |
-| Production URL | Bilinmiyor; ref'ten URL türetilmedi | `UNKNOWN` |
-
-Hesap e-posta adresi credential değildir ancak gereksiz kişisel veri olduğu için
-varsayılan proje adının e-posta bölümü bu committed belgede redakte edilmiştir. Project
-ref secret değildir ve adayın neden ayırt edilemediğini göstermek için kaydedilmiştir.
-
-### Bağımsız yerel kanıt kontrolü
-
-- Tracked repo içinde `ieebtdvvinqfatbhkyqi` ref'i bulunmuyor.
-- Tracked Production configuration değerleri gerçek endpoint/key içermez;
-  `.env.example` yalnız placeholder contract taşır.
-- Mevcut readiness ve cutover belgeleri gerçek Production ref/name/URL'nin bilinmediğini
-  söylüyor.
-- Supabase CLI `2.114.0` kullanılabilir; ancak CLI için access token kurulmamıştır.
-  Yeni token oluşturulmadı. Discovery mevcut, kimliği doğrulanmış Dashboard oturumuyla
-  sınırlı tutuldu.
-
-## Production remote inventory
-
-Production project kesin tanımlanmadığı için aşağıdaki kontrollerin hiçbiri belirsiz
-aday üzerinde çalıştırılmadı.
-
-| Alan | Sonuç | Drift sınıfı | Eksik kanıt |
-| --- | --- | --- | --- |
-| Migration ledger/history | `NOT RUN` | `UNKNOWN` | `supabase_migrations.schema_migrations` ve exact 0001–0009 kayıtları |
-| Public tables/columns | `NOT RUN` | `UNKNOWN` | Catalog table/column inventory |
-| PK/FK/constraints/indexes | `NOT RUN` | `UNKNOWN` | Catalog constraint ve index inventory |
-| Row counts | `NOT RUN` | `UNKNOWN` | Doğrulanmış Production üzerindeki read-only counts |
-| RLS/policies | `NOT RUN` | `UNKNOWN` | Table RLS flags ve final policy definitions |
-| Functions/RPC/triggers | `NOT RUN` | `UNKNOWN` | Signatures, definitions, search paths, ACL ve triggers |
-| Anon/auth grants | `NOT RUN` | `UNKNOWN` | Table, column ve function grants |
-| Storage buckets/objects/policies | `NOT RUN` | `UNKNOWN` | Bucket flags/limits/MIME, object counts ve Storage policies |
-| Realtime | `NOT RUN` | `UNKNOWN` | Publication ve table membership |
-| Auth non-secret config | `NOT RUN` | `UNKNOWN` | Email confirmation, providers, Site URL/redirects ve custom SMTP presence |
-
-Production migration topology'si `F — fresh`, `C — canonical prefix` veya
-`L — legacy/drifted` olarak sınıflandırılamaz. Production project kimliği ve catalog
-kanıtı olmadan canonical migration'ların hiçbiri `SAFE FORWARD MIGRATION CANDIDATE`
-olarak işaretlenmemelidir.
-
-## Canonical 0001–0009 expected state
-
-Bu bölüm yalnız repo kaynak sözleşmesini özetler; Production'ın bu durumda olduğunu
-iddia etmez.
-
-| Sürüm | Canonical ana sözleşme | Production durumu |
-| --- | --- | --- |
-| 0001 | Core Auth/profile/legal consent, catalog, saved data, legacy order/review, chat/notification temel tabloları | `UNKNOWN` |
-| 0002 | `shops`, `shop_products` ve merchant role-gated ownership | `UNKNOWN` |
-| 0003 | `carts`, `cart_items_v2` ve tek-mağaza Cart V2 | `UNKNOWN` |
-| 0004 | QR sessions/items, verified transactions/items ve race-safe RPC'ler | `UNKNOWN` |
-| 0005 | Verified shop ratings ve aggregate contract | `UNKNOWN` |
-| 0006 | Chat summary, trusted notifications ve customer account deletion | `UNKNOWN` |
-| 0007 | `chat_messages` + `notifications` Realtime publication üyeliği | `UNKNOWN` |
-| 0008 | Client profile role escalation guard düzeltmesi | `UNKNOWN` |
-| 0009 | Durable `product_id`, RPC-only verified reviews ve üç active Storage bucket | `UNKNOWN` |
-
-Canonical final kaynak beklentisi:
-
-- 23 public tablo: `profiles`, `legal_consents`, `categories`, `brands`,
-  `products`, `addresses`, `customer_saved_locations`, `wishlist`, `orders`,
-  `order_items`, `reviews`, `banners`, `chat_messages`, `notifications`, `shops`,
-  `shop_products`, `carts`, `cart_items_v2`, `qr_sessions`, `qr_session_items`,
-  `verified_transactions`, `verified_transaction_items`, `shop_ratings`;
-- 23/23 public tabloda RLS enabled;
-- canonical final public policy sayısı 52;
-- Realtime publication üyeleri yalnız `public.chat_messages` ve
-  `public.notifications`;
-- aktif Storage contract: public-read `product-images` (8 MiB),
-  `category-images` (2 MiB), `banner-images` (5 MiB), yalnız JPEG/PNG/WebP;
-- client Storage list/write/update/delete policy'si yok;
-- `brand-logos`, `avatars` ve `review-images` deferred.
-
-## Local canonical artifact consistency finding
+`PRODUCTION_TOPOLOGY: F — FRESH/EMPTY`
 
 `MIGRATION_ARTIFACT_INTEGRITY: PASS`
 
-Agent 1'in base üzerindeki 0/9 bulgusu Wave 9 integration'da kök neden analiziyle
-kapatıldı. Eski cutover manifesti Windows `core.autocrlf` sonrası CRLF checkout
-byte'larını kaydetmiş, karşılaştırma ise Git'te saklanan LF blob byte'larıyla yapılmıştı.
-SQL semantiği veya Production drift'i bulunmadı. Manifest artık platformdan bağımsız
-Git/LF byte sözleşmesini kullanıyor ve
-`node tool/verify_migration_artifact_manifest.mjs` ile **9/9 PASS** veriyor.
+## Yönetici özeti
 
-0001–0009 Git içerik geçmişi, Development apply/postflight kanıt commit'leriyle
-karşılaştırıldı. Her migration'ın son intentional içerik değişikliği ilgili apply
-kanıtından öncedir; Development'a uygulama kaydından sonra tracked SQL mutation
-bulunmadı. Ayrıntılı commit/hakikat tablosu cutover planındadır. Supabase ledger
-checksum saklamadığından bu yerel PASS, hâlâ bilinmeyen Production schema ve remote
-object karşılaştırmasının yerine geçmez.
+Product-owner tarafından bildirilen hedef, kimliği doğrulanmış Supabase Dashboard
+oturumunda iki bağımsız görünümle doğrulandı. Organizasyon proje listesi ve Production
+project overview/general settings aynı adı, ref'i, URL hostunu ve bölgeyi gösteriyor.
+Development ayrı proje olarak görüldü ve sorgu hedefi yapılmadı.
 
-## Important domain state
+Production migration açısından temizdir: Dashboard `No migrations` gösteriyor ve
+`supabase_migrations.schema_migrations` relation'ı yoktur. `public` şemasında uygulama
+tablosu, view, index, constraint, table trigger veya policy yoktur. Auth user, identity
+ve session sayıları sıfırdır; Storage bucket/object yoktur; Realtime publication'ında
+uygulama tablosu yoktur. Bu kanıtlar cutover planındaki **F — Fresh/empty** yolunu
+destekler.
 
-| Domain | Production row count / state | Sınıf |
+Canonical 0001–0009 zinciri bu fresh hedef için uygun forward migration yoludur.
+Bu sonuç migration apply yetkisi değildir: gerçek apply öncesinde cutover planındaki
+Phase B backup/restore/freeze ve Phase C dry comparison kapıları ayrıca geçmelidir.
+
+## Authenticated project identity
+
+| Alan | Doğrulanmış değer | Kanıt |
 | --- | --- | --- |
-| Profiles/legal consent | `UNKNOWN` | `UNKNOWN` |
-| Shops/products/shop_products | `UNKNOWN` | `UNKNOWN` |
-| Cart V2 (`carts`, `cart_items_v2`) | `UNKNOWN` | `UNKNOWN` |
-| QR sessions/items | `UNKNOWN` | `UNKNOWN` |
-| Verified transactions/items | `UNKNOWN` | `UNKNOWN` |
-| Reviews/product aggregates | `UNKNOWN` | `UNKNOWN` |
-| Chat/notifications | `UNKNOWN` | `UNKNOWN` |
-| Shop ratings | `UNKNOWN` | `UNKNOWN` |
-| Legacy orders/order_items | `UNKNOWN` | `UNKNOWN` |
+| Organizasyon | `Musaki bilisim` | Authenticated Dashboard project list |
+| Project name | `EsnaftaVar Production` | Project list + overview/general settings |
+| Project ref | `mefhfvrgkwciubeajjeb` | Project link + Project ID |
+| Project URL | `https://mefhfvrgkwciubeajjeb.supabase.co` | Project overview |
+| URL/ref eşleşmesi | Host prefix exact project ref ile aynı | **PASS** |
+| Region | `Central EU (Frankfurt)` / `eu-central-1` | Overview + general settings |
+| Development exclusion | `EsnaftaVar Development`; ref `tnipyxnvhgelwdpykyez` | Ayrı project card; **Production değildir** |
 
-## 0009 special check
+Production URL/ref metadata dışında credential okunmadı. API Keys ekranında
+publishable/client-safe key alanının varlığı doğrulandı; key değeri kopyalanmadı,
+görüntülenmedi, loglanmadı veya belgeye yazılmadı. Secret/service-role key değerleri
+incelenmedi.
 
-Production project bilinmediği için 0009 öncesi/sonrası etkilenebilecek satır sayısı
-ölçülmedi.
+## Read-only evidence method
 
-| 0009 kontrolü | Read-only count | Sınıf |
+- Identity doğrulaması remote query öncesinde tamamlandı.
+- Dashboard project list, overview, general settings, Auth, Data API ve API key metadata
+  ekranları yalnız görüntülendi; hiçbir `Save`/mutation işlemi kullanılmadı.
+- Database inventory saf `SELECT` catalog sorgularıyla alındı. Sorgular kaydedilmedi;
+  SQL Editor'daki geçici metinler sonuç alındıktan sonra `Discard changes` ile kapatıldı.
+- `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `ALTER`, `DROP`, migration CLI apply/repair,
+  kullanıcı/fixture veya bucket işlemi çalıştırılmadı.
+
+## Migration ledger ve public schema
+
+| Kontrol | Production sonucu | Canonical fark / sınıf |
 | --- | --- | --- |
-| `qr_session_items.product_id` kolon varlığı ve historical NULL | `NOT RUN` | `UNKNOWN` |
-| `verified_transaction_items.product_id` kolon varlığı ve historical NULL | `NOT RUN` | `UNKNOWN` |
-| Legacy review toplamı / claimed verified | `NOT RUN` | `REQUIRES DATA ANALYSIS` |
-| Evidence-backed / evidence'sız review | `NOT RUN` | `REQUIRES DATA ANALYSIS` |
-| Cached product aggregate delta | `NOT RUN` | `REQUIRES DATA ANALYSIS` |
-| Active/deferred bucket varlığı ve ayarları | `NOT RUN` | `UNKNOWN` |
-| Existing Storage object path/policy etkisi | `NOT RUN` | `REQUIRES DATA ANALYSIS` |
+| Dashboard migration history | `No migrations` | F — fresh |
+| `supabase_migrations.schema_migrations` | Relation yok (`NULL`) | 0001–0009'un hiçbiri kayıtlı değil |
+| Public tables/partitioned tables | 0 | Canonical 23 tablo eksik; `SAFE FORWARD MIGRATION CANDIDATE` |
+| Public views/materialized views/foreign tables | 0 | Beklenmeyen user view yok; `MATCH` fresh baseline |
+| Public columns/constraints/indexes | 0 / 0 / 0 | Uygulama nesnesi yok |
+| Public table triggers | 0 | Uygulama trigger'ı yok |
+| Public table policies | 0 | Policy uygulanacak user table yok |
+| Public table grants | 0 | Uygulama tablosunda broad grant yok |
+| Public functions | Yalnız platform baseline `rls_auto_enable()` | Automatic-RLS mekanizması; canonical app RPC'si değil |
 
-0009, verified flag ve product aggregate değerlerini değiştirebildiği ve mevcut bucket
-ayarlarını upsert ettiği için Production verisi üzerinde sayı alınmadan
-`SAFE FORWARD MIGRATION CANDIDATE` değildir.
+Installed extensions yalnız fresh Supabase platform baseline'ıdır:
+`pg_stat_statements`, `pgcrypto`, `plpgsql`, `supabase_vault` ve `uuid-ossp`.
+Canonical uygulamaya ait beklenmeyen tablo, view veya RPC bulunmadı.
+
+## RLS, policies, grants ve Data API
+
+Automatic RLS durumu read-only catalog ile gözlemlendi:
+
+- enabled event trigger `ensure_rls`, `CREATE TABLE`, `CREATE TABLE AS` ve
+  `SELECT INTO` sonrasında çalışır;
+- `public.rls_auto_enable()` `SECURITY DEFINER` ve sabit
+  `search_path = pg_catalog` ile yalnız `public` içindeki yeni tablolar için RLS'i
+  enable eder;
+- mevcut public user table olmadığı için table-level RLS/policy sayısı sıfırdır;
+- Data API function exposure `0 of 1`; automatic-RLS hook Data API'ye expose değildir.
+
+`anon`, `authenticated` ve `service_role` rolleri `public`/`storage` şemalarında
+`USAGE` sahibidir, `CREATE` sahibi değildir. Bu roller database'e bağlanabilir ve
+temporary nesne kullanabilir; database `CREATE` yetkileri yoktur. Uygulama tablosu
+olmadığı için anon/auth table veya column grant'i yoktur.
+
+Catalog ACL, platformun automatic-RLS event-trigger function'ı
+`rls_auto_enable()` için `PUBLIC` ve `postgres` `EXECUTE` grant'i gösteriyor. Bu
+canonical uygulama RPC'si değildir; sabit `pg_catalog` search path kullanır ve Data
+API function exposure `0 of 1` olduğu için API'ye expose değildir. Yine de bu platform
+baseline grant'i postflight security inventory'de yeniden karşılaştırılmalıdır.
+
+Data API installed ve enabled durumdadır. `graphql_public` ile `public` şemaları
+seçilidir; expose edilecek tablo yoktur ve public function exposure sıfırdır.
+`Automatically expose new tables` **OFF** durumundadır. Böylece yeni tabloların
+Data API rollerine otomatik grant edilmemesi yönündeki güvenli başlangıç ayarıyla
+uyumludur. Extra search path `public, extensions`; max rows `1000`.
+
+## Storage ve Realtime
+
+| Alan | Read-only sonuç | Canonical fark / sınıf |
+| --- | --- | --- |
+| Storage buckets | 0 | 0009'un üç active bucket'ı henüz yok; `SAFE FORWARD MIGRATION CANDIDATE` |
+| Storage objects | 0 | Taşınacak/etkilenecek object yok |
+| Storage bucket/object policies | 0 | Uygulama Storage policy'si yok |
+| `supabase_realtime` publication | Var; INSERT/UPDATE/DELETE/TRUNCATE açık, `all_tables = false` | Platform baseline |
+| Realtime table membership | 0 | 0007'nin `chat_messages`/`notifications` üyeliği henüz yok; `SAFE FORWARD MIGRATION CANDIDATE` |
+
+Deferred `brand-logos`, `avatars` ve `review-images` bucket'ları da yoktur. Bu görevde
+hiçbir bucket veya policy oluşturulmadı.
+
+## Auth non-secret state
+
+| Auth alanı | Production read-only sonucu |
+| --- | --- |
+| New user signup | Enabled |
+| Email provider | Enabled |
+| Confirm email | Enabled |
+| Phone/provider login | Disabled |
+| Social providers | Dashboard'da listelenen provider'ların tümü disabled |
+| Custom OAuth/OIDC providers | 0 |
+| Anonymous sign-in | Disabled |
+| Manual identity linking | Disabled |
+| Site URL | `http://localhost:3000` |
+| Redirect allowlist | Boş (`No Redirect URLs`) |
+| Custom SMTP | Not configured / disabled |
+
+Site URL ve redirect allowlist fresh default durumundadır ve Production client/Auth
+cutover'ı için uygun değildir. Bu, fresh canonical migration yolunu engellemez; ancak
+Phase F Auth/SMTP ve Phase G client configuration tamamlanmadan commercial release
+GO verilemez. SMTP credential veya başka secret okunmadı.
+
+## Application data state
+
+Public application tablosu bulunmadığından canonical domain'lerin tamamı absent ve
+uygulama row count'u sıfırdır.
+
+| Domain | Production state |
+| --- | --- |
+| Profiles/legal consent | Tablolar yok; 0 application row |
+| Shops/products/shop_products | Tablolar yok; 0 application row |
+| Cart V2 | Tablolar yok; 0 application row |
+| QR sessions/items | Tablolar yok; 0 application row |
+| Verified transactions/items | Tablolar yok; 0 application row |
+| Reviews/product aggregates | Tablolar yok; 0 application row |
+| Chat/notifications | Tablolar yok; 0 application row |
+| Shop ratings | Tablo yok; 0 application row |
+| Legacy orders/order_items | Tablolar yok; 0 application row |
+
+Ek aggregate doğrulama: `auth.users = 0`, `auth.identities = 0`,
+`auth.sessions = 0`, `storage.objects = 0`. Kullanıcı, fixture veya session
+oluşturulmadı.
+
+## Canonical 0001–0009 comparison
+
+Local canonical chain'in Git/LF SHA-256 manifesti yeniden çalıştırıldı ve
+**9/9 PASS** verdi. Canonical contract testi tam **18/18 PASS** verdi; 23 tablo,
+23/23 RLS, revoke baseline, SECURITY DEFINER/search-path/ACL, role guard, QR,
+Realtime ve üç frozen Storage bucket sözleşmeleri doğrulandı. Migration SQL'leri
+değiştirilmedi.
+
+| Canonical sürüm | Production pre-state | Sınıf |
+| --- | --- | --- |
+| 0001 | Fresh/empty public schema ve Auth user 0 | `SAFE FORWARD MIGRATION CANDIDATE` |
+| 0002–0008 | Önkoşul uygulama nesneleri henüz yok; 0001'den sıralı zincir gerekli | `SAFE FORWARD MIGRATION CANDIDATE` yalnız exact order ile |
+| 0009 | Historical data ve Storage object yok; active bucket'lar yok | `SAFE FORWARD MIGRATION CANDIDATE` yalnız exact order ile |
+
+0009 özel impact sayıları sıfırdır: `qr_session_items`,
+`verified_transaction_items`, `reviews` ve aggregate hedef tabloları yoktur;
+historical nullable/legacy review row yoktur; Storage bucket/object yoktur. Bu sonuç
+0009'u tek başına uygulama izni vermez; exact 0001→0009 zinciri gereklidir.
 
 ## Security and mutation attestation
 
-- Production SQL çalıştırılmadı.
-- Migration list/apply/dry-run, repair, push, pull, dump veya reset çalıştırılmadı.
-- Management API project-detail/Auth/backup çağrısı yapılmadı.
-- Database, Auth, Storage veya Realtime üzerinde INSERT/UPDATE/DELETE/DDL yapılmadı.
-- User, fixture, bucket, policy, token veya access key oluşturulmadı.
-- Mevcut secret dosyaları okunmadı; credential, token veya key belgeye/loga yazılmadı.
-- Remote read yalnız Supabase Dashboard organization/project listesiyle sınırlıdır.
-- Belirsiz ikinci projenin iç kaynaklarına erişilmedi.
+- Production remote reads: **YES**, yalnız bu belgede tanımlanan authenticated
+  metadata, non-secret config ve salt-okunur inventory.
+- Production remote writes: **NO**.
+- Production modified: **NO**.
+- Development touched: **NO**.
+- Unknown/legacy project touched: **NO**.
+- Migration apply/dry-run/repair/push/pull/dump/reset: **NO**.
+- Auth/SMTP, RLS/policy, Storage, Realtime veya schema config değişikliği: **NO**.
+- User/fixture/bucket/key/token oluşturma: **NO**.
+- Secret/service-role key read/log/commit: **NO**.
 
-## Blockers and required continuation
+## Gate sonucu ve devam
 
-1. Release sahibi exact Production project name, ref ve HTTPS URL'yi onaylı release
-   kaydında açıkça tanımlamalı. Belirsiz varsayılan proje Production ise bu eşleştirme
-   tahminle değil yazılı sahiplik kanıtıyla yapılmalıdır.
-2. Production kimliği doğrulandıktan sonra read-only SQL inventory pack ve non-secret
-   Auth/Storage/Realtime discovery yeniden çalıştırılmalıdır.
-3. Canonical 0001–0009 manifesti Wave 9'da 9/9 doğrulandı; her release commit'inde
-   platformdan bağımsız manifest aracı yeniden çalıştırılmalı ve Production remote
-   schema/object karşılaştırması ayrıca yapılmalıdır.
+`PRODUCTION_PROJECT_VERIFIED: YES`
 
-İlk iki madde tamamlanmadan Production inventory gate kapalıdır. Yerel migration
-artefact gate'i PASS olsa da bu durum Production migration apply yetkisi vermez.
+`PRODUCTION_FRESH_BASELINE: YES`
+
+`READY_FOR_CANONICAL_MIGRATION: YES`
+
+Buradaki `READY`, topology ve artifact açısından canonical 0001→0009 yoluna uygunluğu
+ifade eder. **Migration apply bu görevde yapılmadı ve yetkilendirilmedi.** Sonraki
+zorunlu adım cutover planındaki Phase B backup/restore/freeze ve Phase C güvenli dry
+comparison'dır. Phase D apply ancak bu kapılar ve ayrı change approval sonrası
+yürütülebilir. Production Auth Site URL/redirect/SMTP ile client config ve smoke
+kapıları commercial release için ayrıca açıktır.
+
+## Wave 10 Phase B/C pre-migration refresh
+
+2026-08-16 `17:41:47 UTC` salt-okunur snapshot'ında fresh baseline değişmemiştir:
+Auth user/identity/session, public application table, Storage bucket/object ve
+Realtime publication member sayıları sıfır; migration ledger relation'ı yoktur.
+Managed `auth.users`, `storage.buckets`, `storage.objects`, `supabase_realtime` ve
+`pgcrypto` prerequisites mevcuttur. Canonical 23 table-name conflict ve existing
+non-internal `auth.users` trigger sayısı sıfırdır.
+
+Free plan scheduled backup sağlamaz; PITR ve restore-to-new-project aktif değildir.
+Credential-free catalog snapshot boşluğu kanıtlar fakat restorable native point
+değildir. Local PGlite safe-equivalent replay exact 0001→0009 zincirinde 9/9 PASS ve
+final 23 tablo/üç bucket/QR-review-Storage behavior PASS verdi.
+
+Ayrıntılı evidence ve restore/failure kararı:
+[Production Pre-Migration Baseline](PRODUCTION_PRE_MIGRATION_BASELINE.md).
+
+`BACKUP_ROLLBACK_PLAN_READY: NO`
+
+`DRY_COMPARISON: PASS — LOCAL SAFE EQUIVALENT`
+
+`READY_FOR_PRODUCTION_MIGRATION_APPLY: NO`
+
+Phase A'daki `READY_FOR_CANONICAL_MIGRATION: YES`, yalnız fresh topology'nin doğru
+canonical yolunun 0001→0009 olduğunu belirtir. Free-plan backup/restore, accepted
+RPO/RTO, owner, restore drill ve enforced freeze blocker'ları nedeniyle Phase D apply
+henüz yetkili veya hazır değildir.
