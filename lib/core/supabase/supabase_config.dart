@@ -33,6 +33,7 @@ final class SupabaseConfig {
   static const developmentAnonKeyDartDefine = 'SUPABASE_DEVELOPMENT_ANON_KEY';
   static const productionUrlDartDefine = 'SUPABASE_PRODUCTION_URL';
   static const productionAnonKeyDartDefine = 'SUPABASE_PRODUCTION_ANON_KEY';
+  static const developmentProjectRef = 'tnipyxnvhgelwdpykyez';
 
   final AppEnvironment environment;
   final String supabaseUrl;
@@ -127,6 +128,13 @@ final class SupabaseConfig {
         '$variableName cannot target a local backend in production.',
       );
     }
+    if (environment == AppEnvironment.production &&
+        uri.host.toLowerCase() == '$developmentProjectRef.supabase.co') {
+      throw SupabaseConfigurationException(
+        environment,
+        '$variableName cannot target the Development project in production.',
+      );
+    }
 
     return value;
   }
@@ -149,7 +157,9 @@ final class SupabaseConfig {
 
     final lowerValue = value.toLowerCase();
     final jwtRole = _readJwtRole(value);
-    final isPublishableKey = lowerValue.startsWith('sb_publishable_');
+    final isPublishableKey = RegExp(
+      r'^sb_publishable_[A-Za-z0-9_-]{12,}$',
+    ).hasMatch(value);
     final isLegacyAnonKey = jwtRole == 'anon';
     final isServerOnlyKey =
         lowerValue.startsWith('sb_secret_') ||
@@ -175,6 +185,10 @@ final class SupabaseConfig {
   static bool _looksLikePlaceholder(String value) {
     final lowerValue = value.toLowerCase();
     return lowerValue.contains('placeholder') ||
+        lowerValue.contains('example') ||
+        lowerValue.contains('dummy') ||
+        lowerValue.contains('change_me') ||
+        lowerValue.contains('changeme') ||
         lowerValue.contains('replace_me') ||
         lowerValue.contains('your_') ||
         lowerValue.contains('your-') ||
@@ -185,7 +199,8 @@ final class SupabaseConfig {
   static bool _isLoopbackHost(String host) {
     final normalizedHost = host.toLowerCase();
     return normalizedHost == 'localhost' ||
-        normalizedHost == '127.0.0.1' ||
+        normalizedHost.startsWith('127.') ||
+        normalizedHost == '0.0.0.0' ||
         normalizedHost == '::1';
   }
 

@@ -1,0 +1,8 @@
+{
+  "SUPABASE_PRODUCTION_URL": "https://w9compilecontract001.supabase.co",
+  "SUPABASE_PRODUCTION_ANON_KEY": "sb_publishable_w9_compile_contract_public_client",
+  "PRODUCTION_PROJECT_REF": "w9compilecontract001",
+  "PRODUCTION_AUTH_SITE_URL": "https://w9-compile-contract.invalid/",
+  "PRODUCTION_AUTH_WEB_REDIRECT_URL": "https://w9-compile-contract.invalid/?auth_action=password_recovery",
+  "PRODUCTION_AUTH_MOBILE_CALLBACK_URL": "io.supabase.tstore://login-callback/"
+}
