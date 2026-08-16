@@ -1,16 +1,19 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/auth_callback_contract.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 
 enum PasswordRecoveryLaunchStatus { none, verified, invalid }
 
 /// Supabase Service - Singleton class for Supabase operations
 class SupabaseService {
-  static const _passwordRecoveryAction = 'password_recovery';
-  static const _authActionQueryParameter = 'auth_action';
-
   static SupabaseService? _instance;
   static SupabaseClient? _client;
+  static AuthCallbackContract? _authCallbackContract;
+  static StreamSubscription<Uri>? _authCallbackSubscription;
   static PasswordRecoveryLaunchStatus _initialPasswordRecoveryStatus =
       PasswordRecoveryLaunchStatus.none;
 
@@ -23,13 +26,22 @@ class SupabaseService {
 
   /// Initialize Supabase - Call this in main()
   static Future<void> initialize({required SupabaseConfig config}) async {
-    final launchUri = Uri.base;
+    await _authCallbackSubscription?.cancel();
+    _authCallbackSubscription = null;
+    _authCallbackContract = AuthCallbackContract.forEnvironment(
+      config.environment,
+    );
+    _initialPasswordRecoveryStatus = PasswordRecoveryLaunchStatus.none;
 
     await Supabase.initialize(
       url: config.supabaseUrl,
       anonKey: config.supabaseAnonKey,
       authOptions: const FlutterAuthClientOptions(
         authFlowType: AuthFlowType.pkce,
+        // Supabase Flutter accepts any URI containing `code` by default. The
+        // app-owned observer below validates exact environment scheme/host/path
+        // before allowing PKCE exchange.
+        detectSessionInUri: false,
       ),
       realtimeClientOptions: const RealtimeClientOptions(
         logLevel: RealtimeLogLevel.info,
@@ -37,21 +49,84 @@ class SupabaseService {
     );
     _client = Supabase.instance.client;
 
-    final latestAuthState = await _client!.auth.onAuthStateChange.first;
+    if (kIsWeb) {
+      await _handleAuthCallbackUri(
+        uri: Uri.base,
+        appUri: Uri.base,
+        isWeb: true,
+      );
+    } else {
+      _authCallbackSubscription = AppLinks().uriLinkStream.listen(
+        (uri) => unawaited(
+          _handleAuthCallbackUri(uri: uri, appUri: Uri.base, isWeb: false),
+        ),
+        onError: (Object _, StackTrace stackTrace) {
+          debugPrint('Auth callback could not be read safely.');
+        },
+      );
+    }
+  }
 
-    _initialPasswordRecoveryStatus = await resolvePasswordRecoveryLaunch(
-      uri: launchUri,
-      recoverySessionVerified:
-          latestAuthState.event == AuthChangeEvent.passwordRecovery &&
-          latestAuthState.session != null,
-      verifyToken: (tokenHash) async {
-        final response = await _client!.auth.verifyOTP(
-          tokenHash: tokenHash,
-          type: OtpType.recovery,
-        );
-        return response.session != null;
-      },
+  static Future<void> _handleAuthCallbackUri({
+    required Uri uri,
+    required Uri appUri,
+    required bool isWeb,
+  }) async {
+    final contract = _requiredAuthCallbackContract;
+    final isRecovery = contract.isPasswordRecoveryLaunch(
+      uri: uri,
+      appUri: appUri,
+      isWeb: isWeb,
     );
+
+    try {
+      AuthSessionUrlResponse? response;
+      final exchanged = await exchangeValidatedPkceCallback(
+        uri: uri,
+        appUri: appUri,
+        isWeb: isWeb,
+        contract: contract,
+        exchangeCode: (validatedUri) async {
+          response = await _client!.auth.getSessionFromUrl(validatedUri);
+        },
+      );
+      if (exchanged) {
+        if (isRecovery) {
+          _initialPasswordRecoveryStatus = response?.session != null
+              ? PasswordRecoveryLaunchStatus.verified
+              : PasswordRecoveryLaunchStatus.invalid;
+        }
+        return;
+      }
+
+      if (isRecovery) {
+        _initialPasswordRecoveryStatus = await resolvePasswordRecoveryLaunch(
+          uri: uri,
+          appUri: appUri,
+          isWeb: isWeb,
+          contract: contract,
+          verifyToken: (tokenHash) async {
+            final verification = await _client!.auth.verifyOTP(
+              tokenHash: tokenHash,
+              type: OtpType.recovery,
+            );
+            return verification.session != null;
+          },
+        );
+      }
+    } on AuthException catch (error, stackTrace) {
+      if (isRecovery) {
+        _initialPasswordRecoveryStatus = PasswordRecoveryLaunchStatus.invalid;
+      }
+      // Keep the established Supabase Auth error channel without logging the
+      // callback URI or its one-time code.
+      // ignore: invalid_use_of_internal_member
+      _client!.auth.notifyException(error, stackTrace);
+    } catch (_) {
+      if (isRecovery) {
+        _initialPasswordRecoveryStatus = PasswordRecoveryLaunchStatus.invalid;
+      }
+    }
   }
 
   /// Get Supabase Client
@@ -62,6 +137,14 @@ class SupabaseService {
       );
     }
     return _client!;
+  }
+
+  static AuthCallbackContract get _requiredAuthCallbackContract {
+    final contract = _authCallbackContract;
+    if (contract == null) {
+      throw StateError('Supabase Auth callback contract is not initialized.');
+    }
+    return contract;
   }
 
   /// Get current user
@@ -81,18 +164,47 @@ class SupabaseService {
   Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
 
   @visibleForTesting
-  static bool isPasswordRecoveryLaunchUri(Uri uri) {
-    return uri.queryParameters[_authActionQueryParameter] ==
-        _passwordRecoveryAction;
+  static Future<bool> exchangeValidatedPkceCallback({
+    required Uri uri,
+    required Uri appUri,
+    required bool isWeb,
+    required AuthCallbackContract contract,
+    required Future<void> Function(Uri validatedUri) exchangeCode,
+  }) async {
+    if (!contract.acceptsPkceCallback(uri: uri, appUri: appUri, isWeb: isWeb)) {
+      return false;
+    }
+
+    await exchangeCode(uri);
+    return true;
+  }
+
+  @visibleForTesting
+  static bool isPasswordRecoveryLaunchUri({
+    required Uri uri,
+    required Uri appUri,
+    required bool isWeb,
+    required AppEnvironment environment,
+  }) {
+    return AuthCallbackContract.forEnvironment(
+      environment,
+    ).isPasswordRecoveryLaunch(uri: uri, appUri: appUri, isWeb: isWeb);
   }
 
   @visibleForTesting
   static Future<PasswordRecoveryLaunchStatus> resolvePasswordRecoveryLaunch({
     required Uri uri,
+    required Uri appUri,
+    required bool isWeb,
+    required AuthCallbackContract contract,
     required Future<bool> Function(String tokenHash) verifyToken,
     bool recoverySessionVerified = false,
   }) async {
-    if (!isPasswordRecoveryLaunchUri(uri)) {
+    if (!contract.isPasswordRecoveryLaunch(
+      uri: uri,
+      appUri: appUri,
+      isWeb: isWeb,
+    )) {
       return PasswordRecoveryLaunchStatus.none;
     }
 
@@ -124,22 +236,33 @@ class SupabaseService {
   static String passwordRecoveryRedirectFor({
     required Uri appUri,
     required bool isWeb,
+    required AppEnvironment environment,
   }) {
-    if (!isWeb) {
-      return 'io.supabase.tstore://login-callback/'
-          '?$_authActionQueryParameter=$_passwordRecoveryAction';
-    }
-
-    return Uri(
-      scheme: appUri.scheme,
-      host: appUri.host,
-      port: appUri.hasPort ? appUri.port : null,
-      path: '/',
-      queryParameters: const {
-        _authActionQueryParameter: _passwordRecoveryAction,
-      },
-    ).toString();
+    return AuthCallbackContract.forEnvironment(environment).emailRedirectFor(
+      appUri: appUri,
+      isWeb: isWeb,
+      action: AuthEmailRedirectAction.passwordRecovery,
+    );
   }
+
+  @visibleForTesting
+  static String emailConfirmationRedirectFor({
+    required Uri appUri,
+    required bool isWeb,
+    required AppEnvironment environment,
+  }) {
+    return AuthCallbackContract.forEnvironment(environment).emailRedirectFor(
+      appUri: appUri,
+      isWeb: isWeb,
+      action: AuthEmailRedirectAction.confirmation,
+    );
+  }
+
+  String get _emailConfirmationRedirect => emailConfirmationRedirectFor(
+    appUri: Uri.base,
+    isWeb: kIsWeb,
+    environment: _requiredAuthCallbackContract.environment,
+  );
 
   // ============== AUTH METHODS ==============
 
@@ -153,6 +276,7 @@ class SupabaseService {
       email: email,
       password: password,
       data: data,
+      emailRedirectTo: _emailConfirmationRedirect,
     );
   }
 
@@ -171,7 +295,7 @@ class SupabaseService {
   Future<bool> signInWithGoogle() async {
     return await client.auth.signInWithOAuth(
       OAuthProvider.google,
-      redirectTo: 'io.supabase.tstore://login-callback/',
+      redirectTo: _emailConfirmationRedirect,
     );
   }
 
@@ -179,7 +303,7 @@ class SupabaseService {
   Future<bool> signInWithFacebook() async {
     return await client.auth.signInWithOAuth(
       OAuthProvider.facebook,
-      redirectTo: 'io.supabase.tstore://login-callback/',
+      redirectTo: _emailConfirmationRedirect,
     );
   }
 
@@ -187,7 +311,7 @@ class SupabaseService {
   Future<bool> signInWithApple() async {
     return await client.auth.signInWithOAuth(
       OAuthProvider.apple,
-      redirectTo: 'io.supabase.tstore://login-callback/',
+      redirectTo: _emailConfirmationRedirect,
     );
   }
 
@@ -207,6 +331,7 @@ class SupabaseService {
     final redirectTo = passwordRecoveryRedirectFor(
       appUri: Uri.base,
       isWeb: kIsWeb,
+      environment: _requiredAuthCallbackContract.environment,
     );
 
     await client.auth.resetPasswordForEmail(email, redirectTo: redirectTo);
@@ -230,7 +355,11 @@ class SupabaseService {
 
   /// Resend confirmation email
   Future<ResendResponse> resendConfirmation(String email) async {
-    return await client.auth.resend(type: OtpType.signup, email: email);
+    return await client.auth.resend(
+      type: OtpType.signup,
+      email: email,
+      emailRedirectTo: _emailConfirmationRedirect,
+    );
   }
 
   // ============== DATABASE METHODS ==============

@@ -46,8 +46,9 @@ doğrulanmalıdır.
 - `compileSdk = 36`, `targetSdk = 36`; minimum SDK Flutter'ın
   `flutter.minSdkVersion` değeriyle yönetilir.
 - Main manifest internet, coarse/fine location ve kamera izinlerini korur.
-- Auth callback `io.supabase.tstore://login-callback/` için browsable VIEW intent'i
-  korunur.
+- Production Auth callback `com.esnaftavar.app://login-callback/`, Development
+  callback `io.supabase.tstore://login-callback/` olarak flavor manifest
+  placeholder'larıyla ayrılır. Production merged manifest legacy scheme içermez.
 - Release yapılandırmasında debug signing fallback'i yoktur.
 - APK/AAB release packaging; `android/key.properties`, dört gerekli değer veya
   keystore dosyası eksikse secret değerlerini yazdırmadan açık hata ile durur.
@@ -75,34 +76,37 @@ gösterir. Doldurulmuş `key.properties`, `.jks` ve `.keystore` dosyaları ignor
   App ID/provisioning profile ile birlikte ayrıca doğrulanmalıdır.
 - Runner scheme Archive action için `Release` kullanır; location/camera kullanım
   metinleri korunur.
+- Ayrı iOS product flavor bulunmadığı için mevcut build configuration sözleşmesi
+  kullanılır: Debug mevcut Development callback scheme'ini, Profile/Release final
+  Production callback scheme'ini `AUTH_CALLBACK_SCHEME` build setting'i üzerinden
+  Info.plist'e verir. Runner/RunnerTests bundle kimlikleri ve manual signing
+  sözleşmesi değişmez.
 
-## Auth callback — Phase F açık
+## Auth callback — Phase F1 istemci cutover
 
-`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+`FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
 
-`LEGACY_CALLBACK_SCHEME_PHASE_F_CUTOVER_REQUIRED`
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
-Android, iOS ve Flutter istemcisi bugün aynı callback'i kullanmaya devam eder:
+Final Production istemci callback'i:
+
+`com.esnaftavar.app://login-callback/`
+
+Development'ın çalışan callback'i ayrı sözleşmede korunur:
 
 `io.supabase.tstore://login-callback/`
 
-Bu değer final app identifier değildir; Wave 7 PKCE/confirmation/recovery
-sözleşmesini ve mevcut remote allowlist bağımlılığını taşıyan legacy callback
-scheme'idir. Bu Phase E2 görevinde Supabase Auth remote ayarı değiştirilmediği için
-scheme tek taraflı değiştirilmedi.
+Flutter signup, resend, recovery ve mevcut OAuth yönlendirmeleri environment-owned
+tek callback sözleşmesini kullanır. Supabase Flutter'ın scheme/host ayrımı yapmayan
+otomatik PKCE URI algılaması kapalıdır; uygulama yalnız exact environment
+scheme/host/root path ve dolu PKCE code doğrulandıktan sonra session exchange yapar.
+Yabancı scheme, host, path ve web origin güvenli biçimde yok sayılır.
 
-Phase F Auth cutover tek atomik değişiklik/change window olarak şunları yapmalıdır:
-
-1. final mobile callback scheme ve ownership sözleşmesini product/security owner ile
-   karara bağlamak;
-2. Android manifest, iOS Info.plist, Flutter redirect üretimi ve Production release
-   config preflight değerini birlikte güncellemek;
-3. Supabase Production Auth redirect allowlist'i aynı exact URI ile güncellemek;
-4. confirmation, duplicate/invalid/expired link ve password recovery dönüşlerini
-   gerçek signed artifact üzerinde doğrulamak;
-5. legacy scheme'in kaldırılma/geri dönüş planını kaydetmek.
-
-Agent Phase F kararı olmadan yeni callback scheme üretmez.
+Product owner bildirimiyle Production redirect allowlist final callback'i zaten
+içerir; bu görevde Dashboard/Management API yazması yapılmadı. Legacy Production
+allowlist kaydı rollback penceresi için geçici kalır. Integration ve gerçek signed
+artifact confirmation/recovery kabulü tamamlandıktan sonra yetkili release owner
+tarafından kaldırılması açık operasyon adımıdır.
 
 ## Signing durumu — açık
 
@@ -123,7 +127,8 @@ Agent Phase F kararı olmadan yeni callback scheme üretmez.
 
 1. Play Console kaydının `com.esnaftavar.app` ile exact eşleşmesi.
 2. Apple App ID/App Store Connect kaydının `com.esnaftavar.app` ile exact eşleşmesi.
-3. Phase F final callback scheme ve Supabase Production Auth allowlist cutover onayı.
+3. Integration/live acceptance sonrasında legacy Production Auth allowlist kaydının
+   kaldırılması.
 4. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
 5. Android upload keystore, alias ve parolaların güvenli secret-store/CI kaynağı.
 6. Apple Team ID, Distribution certificate/private key ve provisioning profile'ın
@@ -141,7 +146,8 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
    güvenli konuma getirir; iş bitiminde ikisini de temizler.
 4. iOS CI, certificate/private key'i geçici keychain'e ve provisioning profile'ı
    standart dizine kurar; build settings'i secure runtime mekanizmasıyla sağlar.
-5. Phase F callback ve remote allowlist cutover'ı atomik uygulanıp kabul edilir.
+5. Final callback integration'ı ve signed-artifact confirmation/recovery kabulü
+   tamamlanır; ardından legacy Production allowlist kaydı kaldırılır.
 6. Signed AAB ve IPA üretilir; signer/team/profile kimliği secret göstermeden
    doğrulanır. Artifact hash, commit ve build number kaydedilir.
 
@@ -157,7 +163,9 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [ ] Apple App ID, provisioning profile ve App Store Connect exact eşleşiyor.
 - [ ] Android upload signer doğrulandı ve signed AAB üretildi.
 - [ ] iOS doğru Team/profile ile signed archive üretti.
-- [ ] Phase F callback/Production Auth allowlist atomik cutover tamamlandı.
+- [x] Production callback istemci/platform/preflight wiring'i final scheme'e taşındı.
+- [ ] Final callback integration ve signed-artifact canlı kabulü tamamlandı.
+- [ ] Legacy Production redirect allowlist kaydı kaldırıldı.
 - [ ] Signed artifact üzerinde signup confirmation ve recovery callback PASS.
 - [ ] Version/build number, artifact hash ve CI provenance kaydedildi.
 

@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/auth_callback_contract.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 
 enum ProductionReleasePreflightMode { release, compileContract }
@@ -27,7 +28,8 @@ final class ProductionReleasePreflight {
   static const authMobileCallbackUrlField =
       'PRODUCTION_AUTH_MOBILE_CALLBACK_URL';
 
-  static const canonicalMobileCallback = 'io.supabase.tstore://login-callback/';
+  static const canonicalMobileCallback =
+      AuthCallbackContract.productionMobileCallback;
   static const passwordRecoveryAction = 'password_recovery';
 
   static const compileContractProjectRef = 'w9compilecontract001';

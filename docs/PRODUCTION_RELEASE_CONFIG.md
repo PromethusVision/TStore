@@ -1,10 +1,9 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 10 Phase E final integration /
-`origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
+**Kaynak taban:** Wave 10 Phase F1 Agent 1 /
+`origin/main@9206d598291a6ed546149436725afff6e0dc40ae`
 
-**Bu belge güncellemesinde Production Supabase erişimi:** Anonymous read-only **YES**;
-remote write **NO**
+**Bu belge güncellemesinde Production Supabase erişimi:** **NO**; remote write **NO**
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -39,20 +38,28 @@ alanı görürse fail-closed davranır.
 
 `PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
 
-`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+`FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
+
+`FINAL_PRODUCTION_AUTH_CALLBACK: com.esnaftavar.app://login-callback/`
+
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
 `SIGNING_READY: NO`
 
-`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+`READY_FOR_PHASE_F_INTEGRATION: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
 Canonical Android application ID/namespace, Development `.dev` varyantı ve iOS
 Runner/RunnerTests bundle identifier değerleri final `com.esnaftavar.app` kimliğine
-bağlandı. Callback `io.supabase.tstore://login-callback/` bu aşamada bilinçli olarak
-değiştirilmedi; Site URL, redirect allowlist, web recovery ve SMTP ile birlikte Phase F
-atomik cutover kapısıdır. Gerçek Android/Apple signing materyali yoktur. Client wiring
-ve kimlik wiring'in tamamlanması tek başına deploy veya commercial release GO vermez.
+bağlandı. Production callback istemci, Android production flavor, iOS Profile/Release
+ve release preflight'ta final `com.esnaftavar.app://login-callback/` değerine taşındı.
+Development istemcisi, Android development flavor ve iOS Debug mevcut
+`io.supabase.tstore://login-callback/` sözleşmesini korur; ortamlar arasında fallback
+yoktur. Product owner bildirimiyle Production allowlist final URI'yi zaten içerir,
+ancak legacy kayıt integration/live acceptance sonrasına kadar geçici kalır. Bu
+görevde remote Auth yazması yapılmadı. Gerçek Android/Apple signing materyali yoktur;
+client/kimlik/callback wiring tek başına deploy veya commercial release GO vermez.
 
 ## Wave 10 Phase E1 real runtime evidence
 
@@ -98,7 +105,7 @@ bir JSON dosyası aşağıdaki altı alanı taşımalıdır:
 | `PRODUCTION_PROJECT_REF` | Preflight evidence | 20 karakter lowercase Supabase ref; Development ref olamaz |
 | `PRODUCTION_AUTH_SITE_URL` | Auth release gate | Canonical Production HTTPS web origin root |
 | `PRODUCTION_AUTH_WEB_REDIRECT_URL` | Auth allowlist gate | Aynı origin üzerinde `/?auth_action=password_recovery` |
-| `PRODUCTION_AUTH_MOBILE_CALLBACK_URL` | Auth allowlist gate | Exact `io.supabase.tstore://login-callback/` |
+| `PRODUCTION_AUTH_MOBILE_CALLBACK_URL` | Auth allowlist gate | Exact `com.esnaftavar.app://login-callback/` |
 
 [`tool/production_release_config.example.json`](../tool/production_release_config.example.json)
 yalnız shape template'idir ve placeholder içerdiği için bilerek FAIL olur. `.env.example`
@@ -205,11 +212,15 @@ kanıtıyla şunları ayrıca doğrulamalıdır:
 2. Additional Redirect URLs allowlist exact web recovery URL'sini içerir:
    `https://<production-origin>/?auth_action=password_recovery`.
 3. Mobile callback allowlist uygulama kaydıyla eşleşir:
-   `io.supabase.tstore://login-callback/`. Password recovery'nin ürettiği aynı callback
+   `com.esnaftavar.app://login-callback/`. Password recovery'nin ürettiği aynı callback
    üzerindeki `?auth_action=password_recovery` dönüşü de kabul edilmelidir.
 4. Production'da geniş Development wildcard'ı kullanılmaz; exact Production path
    tercih edilir.
-5. Email confirmation, custom SMTP, recovery template ve gerçek inbox kabulü ayrıca
+5. Legacy `io.supabase.tstore://login-callback/` Production allowlist kaydı yalnız
+   integration/signed-artifact kabul penceresi boyunca tutulur ve kabul sonrasında
+   yetkili release owner tarafından kaldırılır. Development remote config'i bu
+   operasyona dahil değildir.
+6. Email confirmation, custom SMTP, recovery template ve gerçek inbox kabulü ayrıca
    test edilir.
 
 Canonical Site URL/web origin henüz ürün-release sahibi tarafından belirlenmemişse veya
@@ -237,8 +248,10 @@ remote allowlist kanıtı yoksa Auth release gate **BLOCKED** kalır.
 - Remote Auth/SMTP config ve gerçek inbox acceptance tamamlanmalıdır.
 - Android/iOS identifier kararı ve platform wiring `com.esnaftavar.app` ile
   tamamlandı; Android upload ve Apple Distribution signing materyali hâlâ açıktır.
-- `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED`: Site URL, exact redirect allowlist, web
-  recovery callback ve SMTP/e-posta kabulü Phase F'te birlikte kapatılmalıdır.
+- Final callback kaynak cutover'ı tamamlandı; integration/signed-artifact callback
+  kabulü ve sonrasındaki legacy Production allowlist removal hâlâ açık operasyondur.
+- Site URL, web recovery allowlist, SMTP/e-posta delivery ve gerçek inbox kabulü ayrı
+  Phase F release gate'leri olarak kapanmalıdır.
 - Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
   wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
 - Fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing kabulü, controlled

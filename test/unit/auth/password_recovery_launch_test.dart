@@ -1,30 +1,46 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:t_store/core/supabase/auth_callback_contract.dart';
+import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 
 void main() {
+  final webAppUri = Uri.parse('http://127.0.0.1:7357/');
+  final developmentContract = AuthCallbackContract.forEnvironment(
+    AppEnvironment.development,
+  );
+
   group('password recovery launch', () {
     test('recognizes only the password recovery action', () {
       expect(
         SupabaseService.isPasswordRecoveryLaunchUri(
-          Uri.parse(
+          uri: Uri.parse(
             'http://127.0.0.1:7357/'
             '?auth_action=password_recovery&code=temporary-code',
           ),
+          appUri: webAppUri,
+          isWeb: true,
+          environment: AppEnvironment.development,
         ),
         isTrue,
       );
       expect(
         SupabaseService.isPasswordRecoveryLaunchUri(
-          Uri.parse(
+          uri: Uri.parse(
             'http://127.0.0.1:7357/'
             '?auth_action=email_confirmation&code=temporary-code',
           ),
+          appUri: webAppUri,
+          isWeb: true,
+          environment: AppEnvironment.development,
         ),
         isFalse,
       );
       expect(
         SupabaseService.isPasswordRecoveryLaunchUri(
-          Uri.parse('http://127.0.0.1:7357/'),
+          uri: Uri.parse('http://127.0.0.1:7357/'),
+          appUri: webAppUri,
+          isWeb: true,
+          environment: AppEnvironment.development,
         ),
         isFalse,
       );
@@ -42,6 +58,9 @@ void main() {
             '&token_hash=one-time-token'
             '&type=recovery',
           ),
+          appUri: webAppUri,
+          isWeb: true,
+          contract: developmentContract,
           verifyToken: (tokenHash) async {
             receivedTokenHash = tokenHash;
             return true;
@@ -63,6 +82,9 @@ void main() {
             'http://127.0.0.1:7357/'
             '?auth_action=password_recovery&code=one-time-code',
           ),
+          appUri: webAppUri,
+          isWeb: true,
+          contract: developmentContract,
           recoverySessionVerified: true,
           verifyToken: (_) async {
             verifierCalled = true;
@@ -81,6 +103,9 @@ void main() {
           'http://127.0.0.1:7357/'
           '?auth_action=password_recovery&code=expired-code',
         ),
+        appUri: webAppUri,
+        isWeb: true,
+        contract: developmentContract,
         verifyToken: (_) async => true,
       );
 
@@ -93,6 +118,9 @@ void main() {
           'http://127.0.0.1:7357/'
           '?auth_action=password_recovery&type=recovery',
         ),
+        appUri: webAppUri,
+        isWeb: true,
+        contract: developmentContract,
         verifyToken: (_) async => true,
       );
 
@@ -107,6 +135,9 @@ void main() {
           '&token_hash=expired-token'
           '&type=recovery',
         ),
+        appUri: webAppUri,
+        isWeb: true,
+        contract: developmentContract,
         verifyToken: (_) async => throw Exception('expired'),
       );
 
@@ -118,6 +149,9 @@ void main() {
 
       final status = await SupabaseService.resolvePasswordRecoveryLaunch(
         uri: Uri.parse('http://127.0.0.1:7357/'),
+        appUri: webAppUri,
+        isWeb: true,
+        contract: developmentContract,
         verifyToken: (_) async {
           verifierCalled = true;
           return true;
@@ -132,6 +166,7 @@ void main() {
       final redirect = SupabaseService.passwordRecoveryRedirectFor(
         appUri: Uri.parse('http://127.0.0.1:7357/products/42?existing=value'),
         isWeb: true,
+        environment: AppEnvironment.development,
       );
 
       expect(redirect, 'http://127.0.0.1:7357/?auth_action=password_recovery');
@@ -141,6 +176,7 @@ void main() {
       final redirect = SupabaseService.passwordRecoveryRedirectFor(
         appUri: Uri.parse('http://127.0.0.1:7357/'),
         isWeb: false,
+        environment: AppEnvironment.development,
       );
 
       expect(

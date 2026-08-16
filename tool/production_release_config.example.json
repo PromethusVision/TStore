@@ -4,5 +4,5 @@
   "PRODUCTION_PROJECT_REF": "your-production-ref",
   "PRODUCTION_AUTH_SITE_URL": "https://your-production-site.example/",
   "PRODUCTION_AUTH_WEB_REDIRECT_URL": "https://your-production-site.example/?auth_action=password_recovery",
-  "PRODUCTION_AUTH_MOBILE_CALLBACK_URL": "io.supabase.tstore://login-callback/"
+  "PRODUCTION_AUTH_MOBILE_CALLBACK_URL": "com.esnaftavar.app://login-callback/"
 }
