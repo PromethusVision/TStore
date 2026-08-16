@@ -38,6 +38,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-16 Wave 10 pre-migration ilerlemesi: Canonical Production kimliği ve fresh/empty baseline doğrulandı; migration ledger, public application table, Auth user, Storage bucket/object ve Realtime application membership sayıları sıfır. Canonical hash ve local clean-room replay 9/9 PASS; pre-migration baseline/current-state belgeleri entegre edildi. Free plan backup/PITR/restorable point sağlamadığından rollback/RPO/RTO, linked CLI dry-run, migration apply/postflight, SMTP/e-posta, fiziksel QR, final identifier/signing ve Production smoke açık kaldı.
 - 2026-08-16 Wave 10 D0 ilerlemesi: Exact Production ref'inde linked CLI dry-run yalnız canonical `0001→0009` pending sırasını gösterdi; remote state değişmedi ve write `0`. Owner, yalnız boş ilk bootstrap için no-backup riskini ve gerektiğinde empty-project recreation yolunu kabul etti. Apply ayrı görev/zero-state recheck ile hazırdır; migration uygulanmadı ve bu istisna gerçek veri sonrası değişikliklere taşınmaz.
 - 2026-08-16 Wave 10 D1 ilerlemesi: Owner'ın boş ilk bootstrap istisnası altında canonical Production migration `0001→0009` uygulandı. Ledger 9/9; 23/23 tablo/RLS, 52/52 policy, 28/28 app function, 25/25 trigger, 15/15 kritik RPC ve exact Storage/Realtime metadata postflight PASS; Auth/business data `0`. Final app identifier `com.esnaftavar.app` owner tarafından kesinleştirildi, ancak platform wiring Phase E'ye bırakıldı.
+- 2026-08-16 Wave 10 Phase E ilerlemesi: Gerçek client-safe Production config ile
+  anonymous read-only empty-state bağlantısı ve transient standart Web release build
+  PASS. Final Android/iOS kimliği `com.esnaftavar.app` olarak wired; Development
+  `com.esnaftavar.app.dev`. Callback bilinçli olarak korunup Phase F atomik cutover'a,
+  mobil signing ve signed artifact'lar release sahibine açık bırakıldı. Remote write,
+  migration apply, Auth/Storage config veya fixture işlemi yapılmadı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -172,6 +178,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - 2026-08-16 Wave 10 pre-migration sonucu: Agent 1 Phase A + Phase B/C dokümantasyonu çatışmasız entegre edildi. Migration artifact manifesti 9/9 ve canonical migration contract testi 18/18 PASS; Agent clean-room replay kanıtı 9/9 PASS olarak korundu. Kod değişmediğinden full Flutter suite ve analyzer yeniden çalıştırılmadı; integration sırasında remote backend erişimi/yazması veya migration apply yapılmadı.
 - 2026-08-16 Wave 10 D0 sonucu: Linked Production CLI dry-run kanıtı çatışmasız entegre edildi; pending sıra exact `0001→0009`, Production before/after state aynı ve remote write `0`. Owner'ın empty-first-bootstrap risk istisnası canonical belgelere kaydedildi. Manifest 9/9, canonical contract 18/18, docs/diff/security PASS; migration uygulanmadı.
 - 2026-08-16 Wave 10 D1 sonucu: Production canonical migration apply ve metadata/security postflight kanıtı çatışmasız entegre edildi. Integration migration'ı yeniden uygulamadı ve remote erişim/yazma yapmadı. Manifest 9/9, canonical contract ve belge/güvenlik kontrolleri PASS sonrasında Phase E Production client wiring kapısı açıldı; full Flutter suite kod değişmediği için yeniden çalıştırılmadı.
+- 2026-08-16 Wave 10 Phase E sonucu: Agent 1 Production client wiring ve Agent 2
+  final mobile identity branch'leri zorunlu sırayla çatışmasız entegre edildi.
+  Production client ve final app identity wired; Auth/email callback cutover, signing,
+  controlled Production smoke ve commercial GO açık kaldı. Hedefli matris 61 PASS +
+  1 güvenli live skip, tam suite 1142 PASS + 5 opt-in live skip, analyzer, gerçek
+  Production Web build, Android Development debug ve Production compile-only PASS;
+  eksik signing materyalinde release packaging fail-closed PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -181,10 +194,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / `https://mefhfvrgkwciubeajjeb.supabase.co` / Frankfurt olarak doğrulandı; Development ref'i `tnipyxnvhgelwdpykyez` Production değildir.
 - Production canonical `0001→0009` schema durumundadır: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger, exact üç active bucket ve iki Realtime member doğrulandı; Auth user/identity/session, Storage object ve business row sayıları sıfırdır.
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
-- Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmıştır. Android/iOS platform wiring, upload/Distribution signing ve macOS archive kanıtı Phase E/release kapsamında hâlâ açık blocker'dır.
-- Production Auth/SMTP ve redirect/origin acceptance, gerçek client-safe Production config, fiziksel iki-cihaz QR ve controlled Production smoke açık blocker'dır.
+- Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve Android/iOS platform wiring tamamlanmıştır. Android upload signing, Apple Team/certificate/profile ve signed AAB/APK/IPA hâlâ açık blocker'dır.
+- Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production Auth Site URL/redirect allowlist/final callback, SMTP/e-posta, fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled Production write smoke açık blocker'dır.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
-- `READY_FOR_PHASE_E_PRODUCTION_CLIENT_WIRING: YES`; bu yalnız sonraki wiring işinin başlayabileceğini gösterir, commercial release GO değildir.
+- `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES` ve
+  `READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`; `SIGNING_READY: NO` ve
+  `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening

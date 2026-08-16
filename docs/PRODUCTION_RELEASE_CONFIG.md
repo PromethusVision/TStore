@@ -1,6 +1,7 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 10 E1 / `origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
+**Kaynak taban:** Wave 10 Phase E final integration /
+`origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
 
 **Bu belge güncellemesinde Production Supabase erişimi:** Anonymous read-only **YES**;
 remote write **NO**
@@ -24,9 +25,13 @@ alanı görürse fail-closed davranır.
 
 ## Final mobile identity decision
 
-`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING COMPLETE`
 
 `PHASE_E1_PRODUCTION_CLIENT_WIRING: PASS`
+
+`PRODUCTION_CLIENT_WIRED: YES`
+
+`FINAL_APP_IDENTITY_WIRED: YES`
 
 `PRODUCTION_CLIENT_SAFE_KEY_PRESENT: YES`
 
@@ -34,13 +39,20 @@ alanı görürse fail-closed davranır.
 
 `PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
 
-`READY_FOR_PHASE_E_INTEGRATION: YES`
+`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
 
-Canonical Android application ID/namespace ve iOS bundle identifier değeri
-`com.esnaftavar.app` olacaktır. Product owner kararı kapanmıştır; mevcut platform
-dosyaları bu D1 integration görevinde değiştirilmedi. Identifier wiring, callback/
-allowlist uyumluluk kontrolü ve signing kanıtı sonraki Phase E işinin kapsamındadır.
-Bu karar tek başına artifact, Auth config veya commercial release GO vermez.
+`SIGNING_READY: NO`
+
+`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+
+`COMMERCIAL_RELEASE_READY: NO`
+
+Canonical Android application ID/namespace, Development `.dev` varyantı ve iOS
+Runner/RunnerTests bundle identifier değerleri final `com.esnaftavar.app` kimliğine
+bağlandı. Callback `io.supabase.tstore://login-callback/` bu aşamada bilinçli olarak
+değiştirilmedi; Site URL, redirect allowlist, web recovery ve SMTP ile birlikte Phase F
+atomik cutover kapısıdır. Gerçek Android/Apple signing materyali yoktur. Client wiring
+ve kimlik wiring'in tamamlanması tek başına deploy veya commercial release GO vermez.
 
 ## Wave 10 Phase E1 real runtime evidence
 
@@ -68,6 +80,11 @@ kullanılmadan PASS oldu. Credential taşıyan geçici artifact izole temp dizin
 Site URL/redirect kararı manifestte henüz tamamlanmadığı için deploy edilebilir final
 release artifact'ı veya full Production smoke değildir. Fail-closed structural release
 preflight gereksinimleri değiştirilmedi.
+
+Phase E final integration aynı gerçek runtime Web build'ini standart tree-shaking ile
+yeniden PASS doğruladı. Exact Production endpoint ve publishable runtime injection
+artifact içinde doğrulandı; gerçek server-side API key değerleri bulunmadı. Geçici
+config ve artifact doğrulama sonrasında yeniden tamamen silindi.
 
 ## Release manifest sözleşmesi
 
@@ -218,9 +235,13 @@ remote allowlist kanıtı yoksa Auth release gate **BLOCKED** kalır.
   ve değer sohbet/repo/log içine yazılmadan doğrulanmalıdır.
 - Canonical Site URL, web origin ve redirect allowlist kararı verilmelidir.
 - Remote Auth/SMTP config ve gerçek inbox acceptance tamamlanmalıdır.
-- Android/iOS identifier kararı `com.esnaftavar.app` ile FINAL'dır; platform wiring ve
-  signing Phase E/release owner tarafından kapatılmalıdır.
+- Android/iOS identifier kararı ve platform wiring `com.esnaftavar.app` ile
+  tamamlandı; Android upload ve Apple Distribution signing materyali hâlâ açıktır.
+- `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED`: Site URL, exact redirect allowlist, web
+  recovery callback ve SMTP/e-posta kabulü Phase F'te birlikte kapatılmalıdır.
 - Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
   wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
+- Fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing kabulü, controlled
+  Production write smoke ve signed AAB/APK/IPA henüz tamamlanmadı.
 
 Bu kapılar kapanmadan gerçek release artifact'ı için GO verilmez.

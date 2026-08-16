@@ -1,8 +1,9 @@
 # Production Current State Inventory
 
-**Inventory tarihi:** 2026-08-16 — Phase E1 read-only client verification güncel
+**Inventory tarihi:** 2026-08-16 — Phase E final integration güncel
 
-**Kaynak branch/base:** `agent1/w10-production-client-wiring` /
+**Kaynak branch/base:** `agent1/w10-production-client-wiring` +
+`agent2/w10-final-mobile-identifier` /
 `origin/main@eda5759ff2b19ea02cb38db2d50d5df69f887685`
 
 **Yetki sınırı:** Phase D1'deki yetkili canonical `0001→0009` initial bootstrap sonrası
@@ -24,9 +25,9 @@ Storage object veya migration işlemi yapılmadı.
 
 `PRODUCTION_SCHEMA_READY: YES`
 
-`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO`
+`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO — AUTH/EMAIL/SMOKE OPEN`
 
-`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING PENDING`
+`FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / PLATFORM WIRING COMPLETE`
 
 `PHASE_E1_PRODUCTION_CLIENT_WIRING: PASS`
 
@@ -36,7 +37,17 @@ Storage object veya migration işlemi yapılmadı.
 
 `PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
 
-`READY_FOR_PHASE_E_INTEGRATION: YES`
+`PRODUCTION_CLIENT_WIRED: YES`
+
+`FINAL_APP_IDENTITY_WIRED: YES`
+
+`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+
+`SIGNING_READY: NO`
+
+`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+
+`COMMERCIAL_RELEASE_READY: NO`
 
 ## Phase E1 authoritative client connection state
 
@@ -54,7 +65,7 @@ Service-role, `sb_secret_*` veya server credential kullanılmadı.
 | `products` | Request success; empty list |
 | `shops` | Request success; empty list |
 | `banners` | Request success; empty list |
-| Storage client read | Üç active bucket listesi client-visible empty; canonical public URL contract PASS |
+| Storage client read | Üç active bucket listesi client-visible empty; canonical public URL contract PASS; fixture tabanlı negative listing denial test edilmedi |
 | Storage object probe | Üç controlled non-existent path güvenli not-found; upload/mutation yok |
 | Standard Web release build | Gerçek URL/publishable key, Production target, icon workaround yok; PASS |
 
@@ -64,10 +75,14 @@ ile uyumludur. Production'da Auth user, business row veya Storage object oluştu
 Geçici build artifact'ı credential kalıntısı bırakmamak için doğrulama sonrasında
 kaldırıldı.
 
+Phase E final integration bu gerçek runtime Web build'ini yeniden PASS doğruladı;
+exact Production endpoint ve publishable injection mevcut, gerçek server credential
+değeri yok ve geçici config/artifact cleanup tamamlandı.
+
 Bu sonuç yalnız real runtime wiring/read-only connection gate'ini kapatır. Remote Site
 URL hâlâ localhost, redirect allowlist boş ve custom SMTP disabled olduğundan Auth
 acceptance; ayrıca platform signing ve controlled full Production smoke açık kalır.
-`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO` bu daha geniş release anlamında
+`PRODUCTION_CLIENT_CONFIGURATION_COMPLETE: NO — AUTH/EMAIL/SMOKE OPEN` bu daha geniş release anlamında
 korunur.
 
 ## Phase D1 authoritative schema state

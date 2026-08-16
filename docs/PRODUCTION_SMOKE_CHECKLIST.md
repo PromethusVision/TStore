@@ -6,7 +6,7 @@ metadata/security postflight'ı PASS tamamladı. Integration migration'ı yenide
 uygulamadı, remote erişim/yazma yapmadı ve hesap oluşturmadı. Gerçek smoke'taki her
 write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
-## Wave 10 Phase E1 read-only evidence
+## Wave 10 Phase E integrated read-only/client identity evidence
 
 `PRODUCTION_CLIENT_SAFE_KEY_PRESENT: YES`
 
@@ -14,7 +14,17 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PRODUCTION_CLIENT_CONNECTION_READONLY: PASS`
 
-`READY_FOR_PHASE_E_INTEGRATION: YES`
+`PRODUCTION_CLIENT_WIRED: YES`
+
+`FINAL_APP_IDENTITY_WIRED: YES`
+
+`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+
+`SIGNING_READY: NO`
+
+`READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`
+
+`COMMERCIAL_RELEASE_READY: NO`
 
 E1 gerçek Production URL/ref ve client-safe publishable key ile yalnız anonymous
 read-only bağlantı yaptı. Key source/log/belgeye yazılmadı; service-role/server secret
@@ -25,6 +35,8 @@ ile icon workaround olmadan PASS; credential taşıyan geçici artifact kaldır�
 
 Bu evidence full smoke veya deploy GO değildir. Auth Site URL/redirect/SMTP, platform
 signing, final artifact record ve kullanıcı oluşturan/write smoke maddeleri açık kalır.
+Final Android/iOS kimliği `com.esnaftavar.app` olarak wired durumdadır; mevcut
+`io.supabase.tstore://login-callback/` Phase F atomik Auth cutover'ına kadar korunur.
 
 ## 1. Başlatma kapıları
 
@@ -48,6 +60,10 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Production schema/RLS/RPC/Storage/Realtime metadata/security postflight PASS.
 - [x] Phase E1 gerçek Production runtime config ve anonymous read-only empty-state
       bağlantısı PASS; Production write/Auth account/Storage mutation yok.
+- [x] Android/iOS final application/bundle identity `com.esnaftavar.app` ve Android
+      Development `.dev` varyantı kaynak sözleşmesine bağlandı.
+- [ ] `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED`: Site URL, exact redirect allowlist,
+      web recovery callback ve SMTP/e-posta kabulü birlikte tamamlandı.
 - [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
@@ -115,6 +131,8 @@ içermeyen ekran/log kanıtı eklenir.
 - [ ] User B, User A'nın private satırlarını okuyamaz veya değiştiremez.
 - [ ] Müşteri merchant/admin rolüne client payload ile yükselemez.
 - [ ] Direct notification INSERT ve client Storage write/update/delete/list reddedilir.
+- [ ] Disposable fixture ile Storage negative listing denial kabulü doğrulandı;
+      Phase E empty-list sonucu bu davranışın kanıtı olarak kullanılmaz.
 - [ ] QR token, Auth token, e-posta, parola ve kişisel veri uygulama/edge/CI logunda yoktur.
 - [ ] Offline/timeout sonrası retry aynı QR, mesaj, bildirim, rating veya review kaydını
       iki kez oluşturmaz.

@@ -78,6 +78,8 @@ gösterir. Doldurulmuş `key.properties`, `.jks` ve `.keystore` dosyaları ignor
 
 ## Auth callback — Phase F açık
 
+`FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED: YES`
+
 `LEGACY_CALLBACK_SCHEME_PHASE_F_CUTOVER_REQUIRED`
 
 Android, iOS ve Flutter istemcisi bugün aynı callback'i kullanmaya devam eder:
@@ -105,6 +107,10 @@ Agent Phase F kararı olmadan yeni callback scheme üretmez.
 ## Signing durumu — açık
 
 `SIGNING_READY: NO`
+
+`FINAL_APP_IDENTITY_WIRED: YES`
+
+`COMMERCIAL_RELEASE_READY: NO`
 
 - Android upload keystore, alias ve parolaları mevcut değildir.
 - Apple Developer Team ID, Distribution certificate/private key ve provisioning
@@ -173,3 +179,16 @@ Signing ve Phase F maddeleri tamamlanmadan `SIGNED_RELEASE: PASS` veya
   configuration kimlikleri statik/XML olarak **PASS**.
 - Windows ortamında iOS compile/archive çalıştırılmadı; signed IPA acceptance değildir.
 - `flutter analyze --no-pub`: **PASS**.
+
+## Wave 10 Phase E final integration doğrulaması
+
+- Config/Auth/platform/harness hedefli matris: **61 PASS**, Production live test
+  explicit opt-in verilmediği için **1 güvenli skip**.
+- Birleşik tam Flutter suite: **1142 PASS**, **5 opt-in live skip**.
+- Gerçek client-safe Production runtime injection ile standart Web release build:
+  **PASS**; server credential değeri artifact'a girmedi, geçici config/artifact silindi.
+- Android Development debug APK: **PASS**; Production release compile-only:
+  **PASS**; Production release packaging eksik signing materyalinde beklenen açık
+  mesajla **FAIL-CLOSED PASS**, production APK/AAB üretilmedi.
+- `flutter analyze --no-pub`: **PASS**. iOS doğrulaması Windows'ta statik sözleşme
+  kapsamındadır; signed archive/IPA kabulü değildir.

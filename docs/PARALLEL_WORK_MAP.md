@@ -177,6 +177,31 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   client-safe config, signing, controlled Production smoke ve fiziksel iki-cihaz QR
   commercial release kapıları olarak açık kalır.
 
+## Wave 10 Phase E Final Entegrasyon Gözlemi
+
+- Agent 1'in Production client wiring teslimi ve Agent 2'nin final mobile identity
+  teslimi bu sırayla `--no-ff` ve çatışmasız entegre edildi. SQL/migration,
+  `service_locator.dart`, shared model veya Supabase remote config değişmedi.
+- Agent 1 kanıtında exact Production URL/ref ve değeri açığa çıkarılmayan client-safe
+  publishable key ile anonymous read-only categories/products/shops/banners
+  empty-state bağlantısı ve transient standart Web release build PASS'tir. Remote
+  write, Auth user, business fixture veya Storage mutation `0` kaldı.
+- Agent 2 final `com.esnaftavar.app` Android namespace/applicationId/MainActivity ve
+  iOS Runner/RunnerTests kimliklerini bağladı; Development ID
+  `com.esnaftavar.app.dev` oldu. Android signing fail-closed, iOS manual Apple
+  Distribution sözleşmesi korunur; signing materyali ve signed artifact yoktur.
+- Callback `io.supabase.tstore://login-callback/` değiştirilmedi.
+  `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED` Site URL, redirect allowlist, web recovery
+  ve SMTP/e-posta ile Phase F'in tek Auth/config sahibinde atomik yürütülmelidir.
+- Birleşik config/Auth/platform/harness hedefli matris 61 PASS + 1 güvenli live skip,
+  tam Flutter suite 1142 PASS + 5 opt-in live skip ve analyzer temizdir. Gerçek
+  Production Web build, Android Development debug ve Production compile-only PASS;
+  Production release packaging signing yokluğunda fail-closed kaldı.
+- Açık commercial release kapıları: Auth Site URL/redirect allowlist/final callback,
+  SMTP/e-posta, Android signing, Apple Team/certificate/profile, fiziksel iki-cihaz QR,
+  controlled Production write smoke, fixture tabanlı Storage negative listing kabulü,
+  signed AAB/APK/IPA ve commercial GO.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
