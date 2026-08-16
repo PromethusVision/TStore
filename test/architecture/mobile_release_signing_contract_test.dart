@@ -4,18 +4,68 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('mobile release identity and signing contract', () {
-    test('temporary identifiers remain explicit until the owner decides', () {
+    test('final mobile identifiers match the product-owner decision', () {
       final androidGradle = File('android/app/build.gradle').readAsStringSync();
+      final fastlaneAppfile = File(
+        'android/fastlane/Appfile',
+      ).readAsStringSync();
       final xcodeProject = File(
         'ios/Runner.xcodeproj/project.pbxproj',
       ).readAsStringSync();
 
-      expect(androidGradle, contains('namespace = "com.example.t_store"'));
-      expect(androidGradle, contains('applicationId = "com.example.t_store"'));
+      expect(androidGradle, contains('namespace = "com.esnaftavar.app"'));
+      expect(androidGradle, contains('applicationId = "com.esnaftavar.app"'));
+      expect(fastlaneAppfile, contains('package_name("com.esnaftavar.app")'));
       expect(
-        xcodeProject,
-        contains('PRODUCT_BUNDLE_IDENTIFIER = com.example.tStore;'),
+        RegExp(
+          r'PRODUCT_BUNDLE_IDENTIFIER = com\.esnaftavar\.app;',
+        ).allMatches(xcodeProject),
+        hasLength(3),
       );
+      expect(
+        RegExp(
+          r'PRODUCT_BUNDLE_IDENTIFIER = com\.esnaftavar\.app\.RunnerTests;',
+        ).allMatches(xcodeProject),
+        hasLength(3),
+      );
+    });
+
+    test('MainActivity follows the final Android namespace path', () {
+      final mainActivity = File(
+        'android/app/src/main/kotlin/com/esnaftavar/app/MainActivity.kt',
+      );
+
+      expect(mainActivity.existsSync(), isTrue);
+      expect(
+        mainActivity.readAsStringSync(),
+        contains('package com.esnaftavar.app'),
+      );
+      expect(
+        File(
+          'android/app/src/main/kotlin/com/example/t_store/MainActivity.kt',
+        ).existsSync(),
+        isFalse,
+      );
+    });
+
+    test('legacy demo identifiers are absent from runtime platform files', () {
+      final runtimeFiles = [
+        'android/app/build.gradle',
+        'android/fastlane/Appfile',
+        'android/app/src/main/kotlin/com/esnaftavar/app/MainActivity.kt',
+        'ios/Runner.xcodeproj/project.pbxproj',
+        'linux/CMakeLists.txt',
+        'macos/Runner/Configs/AppInfo.xcconfig',
+        'macos/Runner.xcodeproj/project.pbxproj',
+        'windows/runner/Runner.rc',
+      ];
+      final runtimeIdentity = runtimeFiles
+          .map((path) => File(path).readAsStringSync())
+          .join('\n');
+
+      expect(runtimeIdentity, isNot(contains('com.example.t_store')));
+      expect(runtimeIdentity, isNot(contains('com.example.tStore')));
+      expect(runtimeIdentity, isNot(contains('com.example')));
     });
 
     test('Android release packaging never falls back to debug signing', () {
