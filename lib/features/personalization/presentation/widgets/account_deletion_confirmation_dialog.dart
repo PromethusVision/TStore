@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 
 typedef AccountDeletionSubmitter = Future<String?> Function();
