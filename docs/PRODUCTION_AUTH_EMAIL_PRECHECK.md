@@ -1,8 +1,9 @@
 # Production Auth / SMTP Read-Only Acceptance Precheck
 
-**Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration
+**Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
+Phase F3 live acceptance pre-write gate
 
-**Kaynak taban:** `origin/main@9206d598291a6ed546149436725afff6e0dc40ae`;
+**Kaynak taban:** Phase F3 `origin/main@b24f761881730159035a619822bf753b84ead6c3`;
 callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
@@ -10,7 +11,9 @@ callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
 **İnceleme türü:** Authenticated management read-only; Production write ve gerçek
 e-posta gönderimi yapılmadı.
 
-Bu belge canlı e-posta kabulünün yerine geçmez. Yalnız Production Auth/SMTP
+Bu belge canlı e-posta kabulünün yerine geçmez. Phase F3 canlı kabul denemesi,
+Production'a herhangi bir yazma yapılmadan pre-write safety gate'te durmuştur. Belge
+Production Auth/SMTP
 yapılandırmasının, hosted e-posta şablonlarının ve mevcut Flutter Auth istemcisinin
 canlı kabul öncesi sözleşmesini kaydeder. Bu çalışma sırasında Auth ayarı, kullanıcı,
 e-posta, SQL, Storage veya başka bir Production verisi oluşturulmadı/değiştirilmedi.
@@ -34,6 +37,25 @@ Authenticated Supabase project inventory, exact Production projesini
 
 Social-login görünür release UI'sı daha önce kaldırılmıştır; bu precheck provider
 kurulumu veya remote provider değişikliği yapmadı.
+
+## Phase F3 pre-write safety gate
+
+2026-08-17 authenticated Dashboard salt-okunur tekrar kontrolü:
+
+| Gate | Güncel bulgu | Sonuç |
+| --- | --- | --- |
+| Production identity | `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` | PASS |
+| Development exclusion | `tnipyxnvhgelwdpykyez` farklı projedir | PASS |
+| Custom SMTP | Enabled | PASS |
+| Confirm email | Enabled | PASS |
+| Site URL | `com.esnaftavar.app://login-callback/` | PASS |
+| Redirect allowlist | Legacy ve final callback; toplam 2 exact URL | PASS |
+| Auth user baseline | Refresh sonrasında `10 users (estimated)` | **FAIL / DRIFT** |
+
+Phase F3 görevinde beklenen pre-write başlangıcı `0` Auth user idi. Görülen 10 hesabın
+kimliği veya sahipliği incelenmedi; hiçbir hesaba dokunma yetkisi varsayılmadı. Bu
+nedenle disposable inbox istenmeden ve normal-client signup/resend/recovery çağrısı
+yapılmadan test durduruldu. Production write ve e-posta gönderimi `0` kaldı.
 
 ## Custom SMTP and domain evidence
 
@@ -68,10 +90,10 @@ kabul öncesinde doğrulanmalıdır.
 
 | Ayar | Salt-okunur Production değeri | Sonuç |
 | --- | --- | --- |
-| Site URL | `http://localhost:3000` | Release için blocker |
+| Site URL | `com.esnaftavar.app://login-callback/` | Phase F3 mobile gate için PASS |
 | Legacy mobile callback | `io.supabase.tstore://login-callback/` | Allowlist'te mevcut |
 | Final mobile callback | `com.esnaftavar.app://login-callback/` | Allowlist'te mevcut |
-| HTTPS web recovery URL | Yok | Web recovery için blocker |
+| HTTPS web recovery URL | Yok | Ayrı Web acceptance için açık |
 | Redirect allowlist toplamı | 2 exact URL | Yukarıdaki iki mobile callback |
 
 Phase F intermediate integration sonrasında Flutter Auth istemcisinin redirect
@@ -86,17 +108,17 @@ davranışı:
   fallback yoktur;
 - web signup/resend mevcut app originini, web recovery aynı originin
   `/?auth_action=password_recovery` adresini explicit gönderir; remote allowlist'te
-  owner-onaylı HTTPS web URL bulunmadığı ve Site URL localhost kaldığı için web canlı
-  kabulü başlatılamaz;
+  owner-onaylı HTTPS web URL bulunmadığı için ayrı web canlı kabulü başlatılamaz;
 - broad otomatik callback algılama kapalıdır; PKCE exchange yalnız seçili environment'ın
   exact scheme/host/root path ve dolu `code` değerinden sonra yapılır;
 - aktif magic-link/OTP login akışı yok;
 - client tarafında aktif email-change çağrı yüzeyi bulunmadı; gelecekte aktive
   edilirse redirect sözleşmesi ayrıca denetlenmelidir.
 
-Sonuç: kaynak callback/client cutover'ı entegredir; ancak `http://localhost:3000`
-değiştirilmeden, final HTTPS Site URL/fallback kararı ve web recovery route/allowlist'i
-kapanmadan gerçek signup/resend/recovery e-posta kabulü başlatılmaz.
+Sonuç: kaynak callback/client cutover'ı entegredir ve remote Site URL exact final mobile
+callback'e geçirilmiştir. Phase F3 gerçek signup/resend/recovery e-posta kabulü ise
+beklenmeyen 10-user Auth baseline drift'i nedeniyle herhangi bir write öncesinde
+başlatılmamıştır. Web kabulü için ayrı HTTPS route/allowlist kararı açık kalır.
 
 ## Hosted email template audit
 
@@ -127,8 +149,9 @@ bırakmalı ve bilinmeyen hourly limitte kontrollü tek hesap/az sayıda e-posta
 
 ## Production live email acceptance plan
 
-Bu plan yalnız remote URL cutover'ı tamamlandıktan, Resend link tracking davranışı
-doğrulandıktan ve ayrı bir write yetkili change window açıldıktan sonra uygulanır.
+Bu plan yalnız beklenmeyen Auth user baseline'ı product owner tarafından
+sınıflandırıldıktan, Resend link tracking davranışı doğrulandıktan ve ayrı bir write
+yetkili change window açıldıktan sonra uygulanır. Mobile remote URL cutover'ı tamamdır.
 
 ### Güvenli hazırlık
 
@@ -168,9 +191,10 @@ doğrulandıktan ve ayrı bir write yetkili change window açıldıktan sonra uy
 
 ### Stop criteria
 
-Yanlış project ref, sender/domain uyuşmazlığı, localhost dönüşü, tracking kaynaklı link
-rewrite, secret/PII logu, role escalation, cross-user erişim veya temizlenemeyen residual
-görülürse test hemen durdurulur ve release kapısı açılmaz.
+Yanlış project ref, beklenmeyen Auth user baseline'ı, sender/domain uyuşmazlığı,
+localhost dönüşü, tracking kaynaklı link rewrite, secret/PII logu, role escalation,
+cross-user erişim veya temizlenemeyen residual görülürse test hemen durdurulur ve
+release kapısı açılmaz.
 
 ## Precheck decision
 
@@ -183,6 +207,8 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
 `READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: NO`
+
+`PHASE_F3_PREWRITE_GATE: FAIL — AUTH BASELINE DRIFT (10 ESTIMATED USERS)`
 
 `PHASE_F_CALLBACK_INTEGRATED: YES`
 
@@ -197,8 +223,9 @@ Tamamlanan kaynak/config gözlemleri:
 
 Canlı kabul öncesi zorunlu açıklar:
 
-- localhost Site URL yerine owner-onaylı canonical HTTPS Site URL;
-- final HTTPS Site URL/fallback kararı ve HTTPS web recovery route/allowlist'i;
+- görülen 10 Production Auth user'ın owner tarafından sınıflandırılması ve kontrollü
+  kabul başlangıç baseline'ının yeniden onaylanması;
+- Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı;
 - Resend link tracking ile masked sender/provider durumunun bağımsız doğrulanması;
 - write yetkili ayrı canlı kabul penceresi ve disposable inbox;
 - gerçek inbox confirmation, resend ve password-recovery kabulü;
@@ -210,3 +237,9 @@ Canlı kabul öncesi zorunlu açıklar:
 Integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/platform/preflight
 hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer
 PASS. Bu yerel doğrulamalar gerçek e-posta gönderimi veya canlı inbox kabulü değildir.
+
+Phase F3 blocker kaydı sonrasında callback/PKCE/deep-link, signup/resend/recovery,
+account deletion, Production preflight, kontrollü Auth flow ve profile hedefli yerel
+matris 129 PASS, 1 gated Development live test skip sonucu verdi. `git diff --check`,
+doküman marker kontrolü ve yalnız eklenen satırlara uygulanan secret/credential shape
+taraması PASS oldu. Dart kodu değişmediği için full suite/analyzer tekrarlanmadı.
