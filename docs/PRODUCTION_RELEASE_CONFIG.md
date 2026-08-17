@@ -1,9 +1,11 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 10 Phase F1 Agent 1 /
+**Kaynak taban:** Wave 10 Phase F intermediate integration /
 `origin/main@9206d598291a6ed546149436725afff6e0dc40ae`
 
-**Bu belge güncellemesinde Production Supabase erişimi:** **NO**; remote write **NO**
+**Integration sırasında Production Supabase erişimi:** **NO**; remote write **NO**.
+Agent 2'nin authenticated management **read-only** Auth/SMTP/template kanıtı ayrıca
+entegre edilmiştir.
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -40,13 +42,21 @@ alanı görürse fail-closed davranır.
 
 `FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
 
+`PHASE_F_CALLBACK_INTEGRATED: YES`
+
 `FINAL_PRODUCTION_AUTH_CALLBACK: com.esnaftavar.app://login-callback/`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
-`SIGNING_READY: NO`
+`SMTP_CONFIGURATION_PRESENT: YES`
 
-`READY_FOR_PHASE_F_INTEGRATION: YES`
+`PRODUCTION_SMTP_PRECHECK: FAIL`
+
+`EMAIL_TEMPLATE_PRECHECK: PASS`
+
+`LIVE_EMAIL_ACCEPTANCE_READY: NO`
+
+`SIGNING_READY: NO`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -58,8 +68,13 @@ Development istemcisi, Android development flavor ve iOS Debug mevcut
 `io.supabase.tstore://login-callback/` sözleşmesini korur; ortamlar arasında fallback
 yoktur. Product owner bildirimiyle Production allowlist final URI'yi zaten içerir,
 ancak legacy kayıt integration/live acceptance sonrasına kadar geçici kalır. Bu
-görevde remote Auth yazması yapılmadı. Gerçek Android/Apple signing materyali yoktur;
-client/kimlik/callback wiring tek başına deploy veya commercial release GO vermez.
+görevde remote Auth yazması yapılmadı. Read-only precheck Custom SMTP'nin açık,
+`smtp.resend.com:465` ve sender name'in `EsnaftaVar` olduğunu; Confirm Email'in açık
+ve üç hosted email template'inin canonical `ConfirmationURL` kullandığını doğruladı.
+Site URL halen localhost, HTTPS web recovery yok, masked sender/provider/link-tracking
+final kanıtı ve gerçek inbox acceptance tamamlanmadığı için SMTP precheck FAIL kalır.
+Gerçek Android/Apple signing materyali yoktur; client/kimlik/callback wiring tek başına
+deploy veya commercial release GO vermez.
 
 ## Wave 10 Phase E1 real runtime evidence
 
@@ -245,13 +260,15 @@ remote allowlist kanıtı yoksa Auth release gate **BLOCKED** kalır.
 - Production ref/URL doğrulandı; client-safe key güvenli release kanalından sağlanmalı
   ve değer sohbet/repo/log içine yazılmadan doğrulanmalıdır.
 - Canonical Site URL, web origin ve redirect allowlist kararı verilmelidir.
-- Remote Auth/SMTP config ve gerçek inbox acceptance tamamlanmalıdır.
+- Production Custom SMTP config mevcuttur; ancak masked sender/provider/link-tracking
+  final doğrulaması ve gerçek inbox confirmation/resend/recovery acceptance
+  tamamlanmalıdır.
 - Android/iOS identifier kararı ve platform wiring `com.esnaftavar.app` ile
   tamamlandı; Android upload ve Apple Distribution signing materyali hâlâ açıktır.
-- Final callback kaynak cutover'ı tamamlandı; integration/signed-artifact callback
+- Final callback kaynak cutover ve integration'ı tamamlandı; signed-artifact callback
   kabulü ve sonrasındaki legacy Production allowlist removal hâlâ açık operasyondur.
-- Site URL, web recovery allowlist, SMTP/e-posta delivery ve gerçek inbox kabulü ayrı
-  Phase F release gate'leri olarak kapanmalıdır.
+- Final HTTPS Site URL/fallback kararı, web recovery route/allowlist, SMTP/e-posta
+  delivery ve gerçek inbox kabulü ayrı release gate'leri olarak kapanmalıdır.
 - Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
   wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
 - Fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing kabulü, controlled

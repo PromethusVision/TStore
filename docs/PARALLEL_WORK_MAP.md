@@ -190,9 +190,9 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   iOS Runner/RunnerTests kimliklerini bağladı; Development ID
   `com.esnaftavar.app.dev` oldu. Android signing fail-closed, iOS manual Apple
   Distribution sözleşmesi korunur; signing materyali ve signed artifact yoktur.
-- Callback `io.supabase.tstore://login-callback/` değiştirilmedi.
-  `FINAL_AUTH_CALLBACK_CUTOVER_REQUIRED` Site URL, redirect allowlist, web recovery
-  ve SMTP/e-posta ile Phase F'in tek Auth/config sahibinde atomik yürütülmelidir.
+- Phase E anında callback `io.supabase.tstore://login-callback/` olarak kalmış ve
+  final callback cutover, Site URL, web recovery ile SMTP/e-posta Phase F'e açık iş
+  olarak devredilmişti.
 - Birleşik config/Auth/platform/harness hedefli matris 61 PASS + 1 güvenli live skip,
   tam Flutter suite 1142 PASS + 5 opt-in live skip ve analyzer temizdir. Gerçek
   Production Web build, Android Development debug ve Production compile-only PASS;
@@ -201,6 +201,38 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   SMTP/e-posta, Android signing, Apple Team/certificate/profile, fiziksel iki-cihaz QR,
   controlled Production write smoke, fixture tabanlı Storage negative listing kabulü,
   signed AAB/APK/IPA ve commercial GO.
+
+## Wave 10 Phase F Intermediate Entegrasyon Gözlemi
+
+- Agent 1'in final Auth callback cutover teslimi (`44a83c5`) ve Agent 2'nin Production
+  Auth/SMTP read-only precheck teslimi (`0881e5b`) zorunlu sırayla `--no-ff`
+  entegre edildi. Tek conflict `PRODUCTION_SMOKE_CHECKLIST.md` içindeydi; callback'in
+  artık kaynakta entegre olduğu güncel gerçek ile `PRODUCTION_SMTP_PRECHECK: FAIL`
+  sonucu birlikte korunarak çözüldü.
+- Callback/hot-spot kodunun tek sahibi Agent 1 olarak kaldı: `SupabaseService`, yeni
+  merkezi callback contract'ı, `pubspec.yaml`/lockfile ve Android/iOS callback
+  configuration. Agent 2 yalnız read-only remote kanıt ve release belgelerini
+  değiştirdi. SQL/migration, `service_locator.dart`, shared model veya backend
+  schema değişmedi.
+- Production `com.esnaftavar.app://login-callback/`; Development
+  `io.supabase.tstore://login-callback/` kullanır. Signup, resend ve recovery explicit
+  environment redirect'i gönderir; broad otomatik URI algılama kapalı ve PKCE yalnız
+  exact environment callback'inden sonra exchange edilir. Android Production/Dev ve
+  iOS Profile/Release/Debug ayrımı aynı sözleşmeye bağlıdır.
+- Read-only Production kanıtında Custom SMTP açıktır (`smtp.resend.com:465`, sender
+  name `EsnaftaVar`), Confirm Email açıktır ve üç email template precheck'i PASS'tir.
+  Site URL hâlâ localhost, HTTPS web recovery yok ve gerçek inbox kabulü yapılmadığı
+  için live email readiness NO ve SMTP precheck FAIL kalır.
+- Integration Production/Development remote read veya write, Auth config write,
+  e-posta gönderimi, Auth user/fixture, Storage mutation ya da migration apply yapmadı.
+- Birleşik Auth callback/PKCE/signup-resend-recovery/platform/preflight hedefli matrisi
+  118/118, tam Flutter suite 1154 PASS (5 opt-in live skip), sentetik Production
+  config contract preflight, analyzer, docs/diff ve security/secret scan PASS'tir.
+- Açık Auth kapıları: final HTTPS Site URL/fallback kararı; web recovery route ve
+  allowlist; real inbox confirmation/resend/password-recovery; sender/link-tracking
+  final verification; kabul sonrasında legacy Production callback allowlist removal.
+  Android/iOS signing, fiziksel iki-cihaz QR ve kontrollü Production smoke ayrıca
+  açık commercial release kapılarıdır.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 

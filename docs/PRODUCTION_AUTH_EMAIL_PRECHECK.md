@@ -1,8 +1,9 @@
 # Production Auth / SMTP Read-Only Acceptance Precheck
 
-**Görev:** Wave 10 Phase F2
+**Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration
 
-**Kaynak taban:** `origin/main@9206d598291a6ed546149436725afff6e0dc40ae`
+**Kaynak taban:** `origin/main@9206d598291a6ed546149436725afff6e0dc40ae`;
+callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
@@ -73,27 +74,29 @@ kabul öncesinde doğrulanmalıdır.
 | HTTPS web recovery URL | Yok | Web recovery için blocker |
 | Redirect allowlist toplamı | 2 exact URL | Yukarıdaki iki mobile callback |
 
-Final app identifier remote allowlist'te yer alıyor, ancak mevcut Flutter kodu hâlâ
-legacy callback sözleşmesini kullanıyor. Agent 1 için ayrılmış
-`agent1/w10-final-auth-callback-cutover` branch'i inceleme anında kaynak tabanla aynı
-committeydi ve cutover diff/commit'i yoktu. Phase F callback entegrasyonu tamamlanmış
-kabul edilmemelidir.
+Phase F intermediate integration sonrasında Flutter Auth istemcisinin redirect
+davranışı:
 
-Mevcut `origin/main` Auth istemcisinin redirect davranışı:
-
-- signup explicit `emailRedirectTo` göndermiyor; hosted ConfirmationURL, Site URL
-  fallback'ına bağımlı;
-- confirmation resend explicit redirect göndermiyor ve aynı fallback'a bağımlı;
-- mobile password recovery explicit legacy callback ve
-  `auth_action=password_recovery` kullanıyor; allowlist ile uyumlu;
-- web password recovery mevcut web originini explicit redirect olarak gönderiyor;
-  allowlist'te bir HTTPS web URL olmadığı için localhost Site URL fallback riski var;
+- Production signup ve confirmation resend explicit final
+  `com.esnaftavar.app://login-callback/` `emailRedirectTo` gönderir;
+- Production mobile password recovery aynı final callback'i ve
+  `auth_action=password_recovery` kullanır;
+- Development signup/resend/recovery yalnız mevcut
+  `io.supabase.tstore://login-callback/` callback'ini kullanır; Production callback'ine
+  fallback yoktur;
+- web signup/resend mevcut app originini, web recovery aynı originin
+  `/?auth_action=password_recovery` adresini explicit gönderir; remote allowlist'te
+  owner-onaylı HTTPS web URL bulunmadığı ve Site URL localhost kaldığı için web canlı
+  kabulü başlatılamaz;
+- broad otomatik callback algılama kapalıdır; PKCE exchange yalnız seçili environment'ın
+  exact scheme/host/root path ve dolu `code` değerinden sonra yapılır;
 - aktif magic-link/OTP login akışı yok;
 - client tarafında aktif email-change çağrı yüzeyi bulunmadı; gelecekte aktive
   edilirse redirect sözleşmesi ayrıca denetlenmelidir.
 
-Sonuç: `http://localhost:3000` değiştirilmeden ve callback/client cutover atomik
-biçimde entegre edilmeden gerçek signup/resend/recovery e-posta kabulü başlatılmaz.
+Sonuç: kaynak callback/client cutover'ı entegredir; ancak `http://localhost:3000`
+değiştirilmeden, final HTTPS Site URL/fallback kararı ve web recovery route/allowlist'i
+kapanmadan gerçek signup/resend/recovery e-posta kabulü başlatılmaz.
 
 ## Hosted email template audit
 
@@ -124,9 +127,8 @@ bırakmalı ve bilinmeyen hourly limitte kontrollü tek hesap/az sayıda e-posta
 
 ## Production live email acceptance plan
 
-Bu plan yalnız callback entegrasyonu ve remote URL cutover'ı tamamlandıktan, Resend
-link tracking davranışı doğrulandıktan ve ayrı bir write yetkili change window
-açıldıktan sonra uygulanır.
+Bu plan yalnız remote URL cutover'ı tamamlandıktan, Resend link tracking davranışı
+doğrulandıktan ve ayrı bir write yetkili change window açıldıktan sonra uygulanır.
 
 ### Güvenli hazırlık
 
@@ -182,11 +184,29 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: NO`
 
+`PHASE_F_CALLBACK_INTEGRATED: YES`
+
+`SMTP_CONFIGURATION_PRESENT: YES`
+
+Tamamlanan kaynak/config gözlemleri:
+
+- Production final callback code/platform/preflight wiring;
+- Development callback isolation ve PKCE exact callback hardening;
+- Production Custom SMTP'nin görünür host/port/name düzeyinde mevcut olması;
+- Confirm-signup, reset-password ve change-email template precheck'i.
+
 Canlı kabul öncesi zorunlu açıklar:
 
 - localhost Site URL yerine owner-onaylı canonical HTTPS Site URL;
-- final callback/client cutover entegrasyonu ve HTTPS web recovery allowlist'i;
+- final HTTPS Site URL/fallback kararı ve HTTPS web recovery route/allowlist'i;
 - Resend link tracking ile masked sender/provider durumunun bağımsız doğrulanması;
-- write yetkili ayrı canlı kabul penceresi ve disposable inbox.
+- write yetkili ayrı canlı kabul penceresi ve disposable inbox;
+- gerçek inbox confirmation, resend ve password-recovery kabulü;
+- signed-artifact kabulünden sonra legacy Production callback allowlist kaydının
+  yetkili remote config adımıyla kaldırılması.
 
-`INTEGRATION_REQUIRED`
+`CALLBACK_INTEGRATED — LIVE_ACCEPTANCE_BLOCKED`
+
+Integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/platform/preflight
+hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer
+PASS. Bu yerel doğrulamalar gerçek e-posta gönderimi veya canlı inbox kabulü değildir.

@@ -82,9 +82,11 @@ gösterir. Doldurulmuş `key.properties`, `.jks` ve `.keystore` dosyaları ignor
   Info.plist'e verir. Runner/RunnerTests bundle kimlikleri ve manual signing
   sözleşmesi değişmez.
 
-## Auth callback — Phase F1 istemci cutover
+## Auth callback — Phase F intermediate integration
 
 `FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
+
+`PHASE_F_CALLBACK_INTEGRATED: YES`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
@@ -104,9 +106,9 @@ Yabancı scheme, host, path ve web origin güvenli biçimde yok sayılır.
 
 Product owner bildirimiyle Production redirect allowlist final callback'i zaten
 içerir; bu görevde Dashboard/Management API yazması yapılmadı. Legacy Production
-allowlist kaydı rollback penceresi için geçici kalır. Integration ve gerçek signed
-artifact confirmation/recovery kabulü tamamlandıktan sonra yetkili release owner
-tarafından kaldırılması açık operasyon adımıdır.
+allowlist kaydı rollback penceresi için geçici kalır. Kaynak integration tamamlandı;
+legacy kayıt gerçek signed-artifact confirmation/recovery kabulünden sonra yetkili
+release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 
 ## Signing durumu — açık
 
@@ -127,7 +129,7 @@ tarafından kaldırılması açık operasyon adımıdır.
 
 1. Play Console kaydının `com.esnaftavar.app` ile exact eşleşmesi.
 2. Apple App ID/App Store Connect kaydının `com.esnaftavar.app` ile exact eşleşmesi.
-3. Integration/live acceptance sonrasında legacy Production Auth allowlist kaydının
+3. Signed-artifact/live acceptance sonrasında legacy Production Auth allowlist kaydının
    kaldırılması.
 4. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
 5. Android upload keystore, alias ve parolaların güvenli secret-store/CI kaynağı.
@@ -146,8 +148,8 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
    güvenli konuma getirir; iş bitiminde ikisini de temizler.
 4. iOS CI, certificate/private key'i geçici keychain'e ve provisioning profile'ı
    standart dizine kurar; build settings'i secure runtime mekanizmasıyla sağlar.
-5. Final callback integration'ı ve signed-artifact confirmation/recovery kabulü
-   tamamlanır; ardından legacy Production allowlist kaydı kaldırılır.
+5. Entegre final callback'in signed-artifact confirmation/recovery kabulü tamamlanır;
+   ardından legacy Production allowlist kaydı kaldırılır.
 6. Signed AAB ve IPA üretilir; signer/team/profile kimliği secret göstermeden
    doğrulanır. Artifact hash, commit ve build number kaydedilir.
 
@@ -164,7 +166,8 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [ ] Android upload signer doğrulandı ve signed AAB üretildi.
 - [ ] iOS doğru Team/profile ile signed archive üretti.
 - [x] Production callback istemci/platform/preflight wiring'i final scheme'e taşındı.
-- [ ] Final callback integration ve signed-artifact canlı kabulü tamamlandı.
+- [x] Final callback kaynak integration'ı tamamlandı.
+- [ ] Final callback signed-artifact canlı kabulü tamamlandı.
 - [ ] Legacy Production redirect allowlist kaydı kaldırıldı.
 - [ ] Signed artifact üzerinde signup confirmation ve recovery callback PASS.
 - [ ] Version/build number, artifact hash ve CI provenance kaydedildi.
@@ -200,3 +203,12 @@ Signing ve Phase F maddeleri tamamlanmadan `SIGNED_RELEASE: PASS` veya
   mesajla **FAIL-CLOSED PASS**, production APK/AAB üretilmedi.
 - `flutter analyze --no-pub`: **PASS**. iOS doğrulaması Windows'ta statik sözleşme
   kapsamındadır; signed archive/IPA kabulü değildir.
+
+## Wave 10 Phase F intermediate integration doğrulaması
+
+- Auth callback/PKCE/signup-resend-recovery/platform/preflight hedefli matrisi:
+  **118/118 PASS**.
+- Birleşik tam Flutter suite: **1154 PASS**, **5 opt-in live skip**.
+- `flutter analyze --no-pub`: **PASS**.
+- Android Production/Development ve iOS Profile/Release/Debug callback ayrımı statik
+  contract testlerinde PASS; signed artifact veya canlı callback acceptance değildir.

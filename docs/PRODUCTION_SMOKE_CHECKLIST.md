@@ -20,11 +20,13 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `FINAL_AUTH_CALLBACK_IMPLEMENTATION: PASS`
 
+`PHASE_F_CALLBACK_INTEGRATED: YES`
+
+`SMTP_CONFIGURATION_PRESENT: YES`
+
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
 `SIGNING_READY: NO`
-
-`READY_FOR_PHASE_F_INTEGRATION: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -89,13 +91,14 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Android/iOS final application/bundle identity `com.esnaftavar.app` ve Android
       Development `.dev` varyantı kaynak sözleşmesine bağlandı.
 - [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
-- [ ] Final callback integration ve signed-artifact confirmation/recovery kabulü
-      tamamlandı; ardından legacy Production allowlist kaydı kaldırıldı.
+- [ ] Final callback signed-artifact confirmation/recovery kabulü tamamlandı; ardından
+      legacy Production allowlist kaydı kaldırıldı.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
 - [ ] Localhost Site URL kaldırıldı; final HTTPS Site URL/fallback kararı, web recovery
       route/allowlist'i ve Resend link-tracking doğrulaması birlikte PASS.
-- [ ] Production Auth Site URL/redirect/custom SMTP ve gerçek inbox acceptance PASS.
+- [ ] Production Auth Site URL/redirect, SMTP sender/link-tracking final verification
+      ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
 - [ ] Production owner iki bağımsız disposable müşteri principal'ı ve gerekiyorsa ayrı

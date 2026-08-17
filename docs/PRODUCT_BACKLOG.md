@@ -185,6 +185,18 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   1 güvenli live skip, tam suite 1142 PASS + 5 opt-in live skip, analyzer, gerçek
   Production Web build, Android Development debug ve Production compile-only PASS;
   eksik signing materyalinde release packaging fail-closed PASS.
+- 2026-08-17 Wave 10 Phase F intermediate sonucu: Agent 1 final callback cutover ve
+  Agent 2 Production Auth/SMTP read-only precheck branch'leri zorunlu sırayla
+  entegre edildi. Production callback `com.esnaftavar.app://login-callback/`,
+  Development callback `io.supabase.tstore://login-callback/` olarak izole; explicit
+  signup/resend/recovery redirect ve exact PKCE filtresi kaynakta tamamlandı. Custom
+  SMTP config mevcut ve template precheck PASS; ancak Site URL localhost, web recovery
+  HTTPS route/allowlist, canlı inbox acceptance, sender/link-tracking final kanıtı ve
+  legacy allowlist removal açık olduğundan SMTP precheck FAIL ve live email readiness
+  NO kaldı. Hedefli Auth/platform/preflight matrisi 118/118, tam Flutter suite 1154
+  PASS (5 opt-in live skip), sentetik Production config preflight, analyzer,
+  docs/diff ve security/secret scan temizdir. Integration remote backend
+  erişimi/yazması veya e-posta göndermedi.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -195,11 +207,17 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Production canonical `0001→0009` schema durumundadır: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger, exact üç active bucket ve iki Realtime member doğrulandı; Auth user/identity/session, Storage object ve business row sayıları sıfırdır.
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
 - Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve Android/iOS platform wiring tamamlanmıştır. Android upload signing, Apple Team/certificate/profile ve signed AAB/APK/IPA hâlâ açık blocker'dır.
-- Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production Auth Site URL/redirect allowlist/final callback, SMTP/e-posta, fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled Production write smoke açık blocker'dır.
+- Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production final
+  callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
+  Production HTTPS Site URL/fallback kararı, web recovery route/allowlist, gerçek
+  inbox confirmation/resend/recovery, SMTP sender/link-tracking final doğrulaması,
+  legacy callback allowlist removal, fiziksel iki-cihaz QR, fixture tabanlı Storage
+  negative listing ve controlled Production write smoke açık blocker'dır.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
-- `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES` ve
-  `READY_FOR_PHASE_F_AUTH_EMAIL_CUTOVER: YES`; `SIGNING_READY: NO` ve
-  `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
+- `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
+  `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
+  `PRODUCTION_SMTP_PRECHECK: FAIL`, `LIVE_EMAIL_ACCEPTANCE_READY: NO`,
+  `SIGNING_READY: NO` ve `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening
