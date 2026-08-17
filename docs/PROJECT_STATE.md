@@ -3,12 +3,12 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-17
-- Son doğrulanan teslimler: callback cutover `44a83c5e1e5c13003fba6145d5aa18fd6f226f67`, Auth/SMTP precheck `0881e5bba2603af974d13c676eac014855d75f55` ve Phase F3 salt-okunur pre-write gate
+- Son doğrulanan teslimler: callback cutover `44a83c5e1e5c13003fba6145d5aa18fd6f226f67`, Auth/SMTP precheck `0881e5bba2603af974d13c676eac014855d75f55` ve Phase F3A exact Auth inventory
 - Doğrulanan branch/base: `agent1/w10-production-live-email-acceptance` / `origin/main@b24f761881730159035a619822bf753b84ead6c3`
-- Entegrasyon durumu: **WAVE 10 PHASE F CALLBACK INTEGRATED / REMOTE SITE URL FINAL / LIVE EMAIL AUTH BASELINE DRIFT NEDENİYLE BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 1 worktree; Production yalnız Auth config/user baseline salt-okunur incelendi. Production/Development write, migration apply, Auth config write, e-posta gönderimi ve user/fixture oluşturma yapılmadı
-- Doğrulama türü: exact Production identity, Development exclusion, Custom SMTP, Confirm Email, final remote Site URL, redirect allowlist ve Auth user baseline authenticated Dashboard üzerinden salt-okunur incelendi. Signed artifact veya canlı e-posta kabulü üretilmedi.
-- Çalıştırılmayan/BLOCKED kontroller: beklenmeyen 10-user Auth baseline sınıflandırması, real inbox confirmation/resend/recovery, Resend sender/link-tracking final verification, legacy Production allowlist removal, signed AAB/APK/IPA callback kabulü, controlled Production write smoke, fixture tabanlı Storage negative listing, fiziksel iki-cihaz QR ve iOS archive (Windows).
+- Entegrasyon durumu: **WAVE 10 PHASE F CALLBACK INTEGRATED / REMOTE SITE URL FINAL / EXACT AUTH BASELINE ZERO / LIVE EMAIL READY TO RESUME**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 1 worktree; Production yalnız Auth/config/user-linked relation salt-okunur incelendi. Production/Development write, migration apply, Auth config write, e-posta gönderimi ve user/fixture oluşturma yapılmadı
+- Doğrulama türü: exact Production identity, Auth user/identity/session/profile/consent ve user-linked business relation count'ları salt-okunur SQL; migration timeline ile karşılaştırıldı. Signed artifact veya canlı e-posta kabulü üretilmedi.
+- Çalıştırılmayan/BLOCKED kontroller: real inbox confirmation/resend/recovery, Resend sender/link-tracking final verification, legacy Production allowlist removal, signed AAB/APK/IPA callback kabulü, controlled Production write smoke, fixture tabanlı Storage negative listing, fiziksel iki-cihaz QR ve iOS archive (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -24,13 +24,17 @@
 
 `PRODUCTION_SITE_URL_FINAL_CALLBACK: PASS`
 
-`PHASE_F3_PREWRITE_GATE: FAIL — AUTH USERS 10 (ESTIMATED), EXPECTED 0`
+`PHASE_F3_PREWRITE_GATE: PASS — EXACT AUTH/IDENTITY/SESSION 0/0/0`
+
+`AUTH_USER_BASELINE_EXPLAINED: YES`
+
+`LIVE_EMAIL_TEST_CAN_RESUME: YES`
 
 `PRODUCTION_SMTP_PRECHECK: FAIL`
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`LIVE_EMAIL_ACCEPTANCE_READY: NO`
+`LIVE_EMAIL_ACCEPTANCE_READY: YES — SECURE RUNTIME INBOX REQUIRED`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
@@ -131,7 +135,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 - Development Supabase schema/RLS/RPC nesne sözleşmesi repo dosyalarından bağımsız remote audit ile doğrulandı; `0008` sonrası tam Wave 4 Auth/Profile/RLS canlı harness'i geçti.
 - Gerçek client-safe Development değerleriyle web release build ve istemci smoke PASS; Production smoke yapılmadı.
 - Production kimliği exact ref/name/URL/region ile doğrulandı. D1 öncesi fresh baseline ve zero-state JIT PASS; canonical 0001→0009 apply ve metadata/security postflight tamamlandı.
-- Production current schema state: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger ve exact üç active bucket. D1 postflight anında Auth/business data `0` idi; Phase F3 salt-okunur kontrolde Auth Users toplamı `10 (estimated)` görüldü. Bu hesaplar sınıflandırılmadı, business data bu görevde yeniden envanterlenmedi. Owner'ın empty-first-bootstrap no-backup istisnası kullanıldı ve gelecekteki migration'lara emsal değildir.
+- Production current schema state: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger ve exact üç active bucket. Phase F3A exact SQL Auth user/identity/session `0/0/0`, profiles/consents `0/0` ve bütün user-linked business relations `0` doğruladı. F3 Dashboard `10 users (estimated)` göstergesi actual relation count değildi; D1 zero baseline geçerlidir. Owner'ın empty-first-bootstrap no-backup istisnası kullanıldı ve gelecekteki migration'lara emsal değildir.
 - Canonical `0001`–`0009` zinciri Development Supabase'e uygulandı; remote migration kaydı `20260815000900 0009_verified_product_reviews_storage` olarak doğrulandı ve entegrasyonda yeniden uygulanmadı.
 - Aktif üç Storage bucket ve least-privilege read sözleşmesi `0009` ile uygulandı; client write/update/delete/list kapalıdır. `brand-logos`, `avatars` ve `review-images` bilinçli olarak provision edilmedi.
 - Merchant ürün yönetimi müşteri keşif ve ShopProduct modeliyle bütünleşmiş değil.
@@ -183,6 +187,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   signup öncesi safety gate FAIL oldu; Production write/e-posta/user/fixture `0` kaldı.
   Callback/Auth/preflight/profile hedefli yerel matris 129 PASS, 1 gated Development
   live test skip; docs/diff ve secret scan PASS oldu.
+- Wave 10 Phase F3A `2026-08-17 00:59:49 UTC` exact salt-okunur SQL snapshot'ı
+  Auth user/identity/session `0/0/0`, profiles/consents `0/0`, user-linked business
+  relation'ları `0` ve ledger 9/9 doğruladı. D1 zero-state current state ile
+  tutarlıdır; Dashboard estimated user göstergesi actual count değildir. Production
+  write/user/email `0`, Development erişimi `0` kaldı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -199,7 +208,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template read-only precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3'te remote Site URL final mobile callback olarak PASS; Auth user baseline ise `10 (estimated)` ile beklenen sıfırdan saptı. Hesap sınıflandırması, gerçek inbox confirmation/resend/recovery, sender/link-tracking final verification, legacy allowlist removal, signing ve controlled smoke ayrı gate'lerdir.
+- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template read-only precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3A exact SQL Auth baseline'ı `0/0/0` ve user-linked business state'i `0` doğruladı; Dashboard estimated user sinyali kapanmıştır. Gerçek inbox confirmation/resend/recovery, sender/link-tracking final verification, legacy allowlist removal, signing ve controlled smoke ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Gerçek provider + verified sender + mobile/web redirect ile signup/delivery/confirmation/resend/expiry/recovery inbox acceptance hâlâ BLOCKED.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -209,7 +218,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
-- 2026-08-17: **WAVE 10 PHASE F3 PRE-WRITE GATE BLOCKED / NO PRODUCTION WRITE** — Exact Production name/ref, Development exclusion, Custom SMTP, Confirm Email, final Site URL ve final+legacy allowlist salt-okunur PASS oldu. Auth Users ekranı refresh sonrasında beklenen `0` yerine `10 users (estimated)` gösterdi. Hesap kimlikleri incelenmedi; disposable signup, inbox gönderimi, resend, recovery veya cleanup başlatılmadı. Owner baseline sınıflandırması olmadan canlı kabul devam etmez.
+- 2026-08-17: **WAVE 10 PHASE F3A AUTH BASELINE EXPLAINED / LIVE EMAIL CAN RESUME** — Authoritative salt-okunur SQL `auth.users/identities/sessions = 0/0/0`, profiles/consents ve tüm user-linked business relation'ları `0` doğruladı. D1 zero-state current state ile tutarlı; Dashboard `10 users (estimated)` actual relation count değildi. User inventory boştur, cleanup adayı yoktur. Production/Development write, user mutation veya e-posta gönderimi yapılmadı.
+- 2026-08-17: **WAVE 10 PHASE F3 PRE-WRITE GATE BLOCKED / NO PRODUCTION WRITE — F3A İLE ÇÖZÜLDÜ** — Exact Production name/ref, Development exclusion, Custom SMTP, Confirm Email, final Site URL ve final+legacy allowlist salt-okunur PASS oldu. Auth Users ekranı refresh sonrasında beklenen `0` yerine `10 users (estimated)` gösterdiği için güvenli stop uygulandı; disposable signup, inbox gönderimi, resend, recovery veya cleanup başlatılmadı. Sonraki F3A exact SQL bu UI sinyalinin gerçek user count olmadığını doğruladı.
 - 2026-08-17: **WAVE 10 PHASE F INTERMEDIATE INTEGRATION / CALLBACK INTEGRATED / LIVE EMAIL NOT READY** — Agent 1 final callback cutover ve Agent 2 Production Auth/SMTP read-only precheck branch'leri zorunlu sırayla `--no-ff` entegre edildi; tek doküman çakışması final callback kaynak gerçeği ile SMTP precheck FAIL sonucunu birlikte koruyacak şekilde çözüldü. Production signup/resend/recovery ve PKCE final callback'e bağlı, Development legacy callback'i izoledir. Custom SMTP ve email template precheck kanıtı mevcut; Site URL localhost, HTTPS web recovery, gerçek inbox kabulü, legacy allowlist removal ve signing açık kaldı. Integration sırasında Production/Development remote erişimi veya write yapılmadı.
 - 2026-08-17: **WAVE 10 PHASE F1 FINAL AUTH CALLBACK SOURCE CUTOVER PASS / INTEGRATION REQUIRED** — Production callback `com.esnaftavar.app://login-callback/` istemci, Android production flavor, iOS Profile/Release ve release preflight'ta tek merkezi environment sözleşmesine bağlandı. Development mevcut legacy callback'ini ayrı ve fallback'siz korur. Signup, resend, recovery ve mevcut OAuth redirect'leri explicit; broad Supabase URI detector kapalı ve PKCE exact scheme/host/path/code filtresinden sonra exchange edilir. Remote Production/Development Auth yazması yapılmadı. Integration ve signed-artifact kabulü sonrasında legacy Production allowlist kaydı yetkili owner tarafından kaldırılmalıdır.
 - 2026-08-16: **WAVE 10 PHASE E CLIENT + FINAL MOBILE IDENTITY WIRED / PHASE F READY / COMMERCIAL RELEASE NOT READY** — Agent 1 gerçek Production runtime config, anonymous read-only empty-state bağlantısı ve transient Web release build kanıtını; Agent 2 final mobil kimlik ve fail-closed signing sözleşmesini teslim etti. İki branch sırasıyla ve çatışmasız entegre edildi. Production/Development write veya migration apply yapılmadı. Final `com.esnaftavar.app` kimliği wired, callback ve signing kapıları açık kaldı.

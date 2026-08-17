@@ -1,7 +1,7 @@
 # Production Auth / SMTP Read-Only Acceptance Precheck
 
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
-Phase F3 live acceptance pre-write gate
+Phase F3 live acceptance pre-write gate + Phase F3A exact Auth inventory
 
 **Kaynak taban:** Phase F3 `origin/main@b24f761881730159035a619822bf753b84ead6c3`;
 callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
@@ -12,11 +12,12 @@ callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
 e-posta gönderimi yapılmadı.
 
 Bu belge canlı e-posta kabulünün yerine geçmez. Phase F3 canlı kabul denemesi,
-Production'a herhangi bir yazma yapılmadan pre-write safety gate'te durmuştur. Belge
-Production Auth/SMTP
-yapılandırmasının, hosted e-posta şablonlarının ve mevcut Flutter Auth istemcisinin
-canlı kabul öncesi sözleşmesini kaydeder. Bu çalışma sırasında Auth ayarı, kullanıcı,
-e-posta, SQL, Storage veya başka bir Production verisi oluşturulmadı/değiştirilmedi.
+Dashboard'daki estimated user göstergesi nedeniyle Production'a herhangi bir yazma
+yapılmadan pre-write safety gate'te durmuştur. Phase F3A bu sinyali exact salt-okunur
+SQL ile çözmüştür. Belge Production Auth/SMTP yapılandırmasının, hosted e-posta
+şablonlarının ve mevcut Flutter Auth istemcisinin canlı kabul öncesi sözleşmesini
+kaydeder. Bu çalışma sırasında Auth ayarı, kullanıcı, e-posta, SQL mutation, Storage
+veya başka bir Production verisi oluşturulmadı/değiştirilmedi.
 
 ## Project identity and provider state
 
@@ -50,12 +51,62 @@ kurulumu veya remote provider değişikliği yapmadı.
 | Confirm email | Enabled | PASS |
 | Site URL | `com.esnaftavar.app://login-callback/` | PASS |
 | Redirect allowlist | Legacy ve final callback; toplam 2 exact URL | PASS |
-| Auth user baseline | Refresh sonrasında `10 users (estimated)` | **FAIL / DRIFT** |
+| Auth user Dashboard sinyali | Refresh sonrasında `10 users (estimated)` | F3'ü durdurdu; exact count değildir |
 
-Phase F3 görevinde beklenen pre-write başlangıcı `0` Auth user idi. Görülen 10 hesabın
-kimliği veya sahipliği incelenmedi; hiçbir hesaba dokunma yetkisi varsayılmadı. Bu
-nedenle disposable inbox istenmeden ve normal-client signup/resend/recovery çağrısı
-yapılmadan test durduruldu. Production write ve e-posta gönderimi `0` kaldı.
+Phase F3 görevinde beklenen pre-write başlangıcı `0` Auth user idi. Dashboard'da
+gösterilen 10 tahmini kaydın kimliği veya sahipliği incelenmedi; hiçbir hesaba dokunma
+yetkisi varsayılmadı. Bu nedenle disposable inbox istenmeden ve normal-client
+signup/resend/recovery çağrısı yapılmadan test durduruldu. Production write ve e-posta
+gönderimi `0` kaldı.
+
+## Phase F3A exact Auth inventory resolution
+
+2026-08-17 `00:59:49 UTC` snapshot'ında yalnız aggregate/masked sonuç üreten exact
+salt-okunur SQL çalıştırıldı. Sonuçlar:
+
+| Authoritative relation | Exact count |
+| --- | ---: |
+| `auth.users` | 0 |
+| `auth.identities` | 0 |
+| `auth.sessions` | 0 |
+| `public.profiles` | 0 |
+| `public.legal_consents` | 0 |
+
+Kullanıcı envanteri boştur; masked email, domain, provider, confirmation/sign-in,
+anonymous, banned/deleted, role veya profile-link satırı yoktur. Confirmed,
+unconfirmed, ever-signed-in, never-signed-in, anonymous, currently-banned ve deleted
+state dağılımlarının her biri exact `0`'dır. Email/OAuth identity ve
+customer/merchant/admin profile dağılımları da exact `0`'dır.
+
+İlişkili business count'larının hem toplamı hem mevcut Auth user'a bağlı satır sayısı
+exact `0` doğrulandı: addresses, saved locations, wishlist, carts/cart items, legacy
+orders/order items, reviews, chat messages, notifications, shop ownership/shops/shop
+products, QR sessions/items, verified transactions/items ve shop ratings.
+
+Kronoloji:
+
+- `2026-08-16 17:41:47 UTC` pre-migration snapshot: Auth `0/0/0`;
+- `2026-08-16 18:56:34 UTC` D1 JIT gate ve `18:56–19:03 UTC` apply/postflight:
+  Auth `0/0/0`, application rows `0`;
+- `2026-08-17 00:59:49 UTC` Phase F3A: Auth `0/0/0`, profiles/business rows `0`,
+  ledger exact 9 version (`20260812000100` → `20260815000900`).
+
+Current Auth state'te earliest/latest `created_at` değerleri `NULL` olduğundan proje
+oluşumundan önce, migration sırasında/sonrasında veya SMTP/redirect konfigürasyonu
+sırasında oluşmuş gerçek bir user yoktur. General Settings exact project identity ve
+region'u doğrular; exact project-created timestamp bu yüzeyde gösterilmez, fakat proje
+en geç ilk `2026-08-16 17:41:47 UTC` snapshot'ında mevcuttu ve o anda da Auth sıfırdı.
+
+Sonuç: önceki zero baseline doğrudur ve hâlâ geçerlidir. Dashboard'daki
+`10 users (estimated)` değeri gerçek relation count değildir; gerçek user silinmiş,
+gizlenmiş veya sınıflandırılmayı bekliyor değildir. Silinecek kullanıcı/cleanup adayı
+yoktur. Phase F canlı e-posta testi exact SQL zero baseline ile güvenle yeniden
+başlayabilir; test inbox ve normal-client write'ları yalnız ayrı F3 kabul kapsamındadır.
+
+Owner cleanup seçenekleri A/B/C, en az bir gerçek Auth user bulunduğunu varsayar;
+exact envanter boş olduğu için üç seçenekten hiçbiri uygulanmaz. Teknik karar
+**NO CLEANUP / NO DELETE**'tir. Cleanup için owner kararı gerekmez; sonraki canlı
+testin tek disposable principal kapsamı ayrıca F3 yetkisiyle yürütülür.
 
 ## Custom SMTP and domain evidence
 
@@ -149,9 +200,9 @@ bırakmalı ve bilinmeyen hourly limitte kontrollü tek hesap/az sayıda e-posta
 
 ## Production live email acceptance plan
 
-Bu plan yalnız beklenmeyen Auth user baseline'ı product owner tarafından
-sınıflandırıldıktan, Resend link tracking davranışı doğrulandıktan ve ayrı bir write
-yetkili change window açıldıktan sonra uygulanır. Mobile remote URL cutover'ı tamamdır.
+Bu plan Phase F3A exact Auth zero baseline'ı tekrar doğrulandıktan, Resend link
+tracking davranışı doğrulandıktan ve ayrı bir write yetkili change window açıldıktan
+sonra uygulanır. Mobile remote URL cutover'ı tamamdır.
 
 ### Güvenli hazırlık
 
@@ -206,9 +257,15 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: NO`
+`READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: YES — EXACT AUTH BASELINE ZERO`
 
-`PHASE_F3_PREWRITE_GATE: FAIL — AUTH BASELINE DRIFT (10 ESTIMATED USERS)`
+`PHASE_F3_PREWRITE_GATE: PASS — F3A EXACT AUTH/IDENTITY/SESSION 0/0/0`
+
+`AUTH_USER_BASELINE_EXPLAINED: YES`
+
+`SAFE_TO_DELETE_ANY_USER: NO — USER YOK`
+
+`LIVE_EMAIL_TEST_CAN_RESUME: YES`
 
 `PHASE_F_CALLBACK_INTEGRATED: YES`
 
@@ -223,8 +280,6 @@ Tamamlanan kaynak/config gözlemleri:
 
 Canlı kabul öncesi zorunlu açıklar:
 
-- görülen 10 Production Auth user'ın owner tarafından sınıflandırılması ve kontrollü
-  kabul başlangıç baseline'ının yeniden onaylanması;
 - Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı;
 - Resend link tracking ile masked sender/provider durumunun bağımsız doğrulanması;
 - write yetkili ayrı canlı kabul penceresi ve disposable inbox;
@@ -232,7 +287,7 @@ Canlı kabul öncesi zorunlu açıklar:
 - signed-artifact kabulünden sonra legacy Production callback allowlist kaydının
   yetkili remote config adımıyla kaldırılması.
 
-`CALLBACK_INTEGRATED — LIVE_ACCEPTANCE_BLOCKED`
+`CALLBACK_INTEGRATED — LIVE_ACCEPTANCE_READY_TO_RESUME`
 
 Integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/platform/preflight
 hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer

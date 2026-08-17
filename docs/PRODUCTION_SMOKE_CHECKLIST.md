@@ -34,9 +34,13 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PRODUCTION_SITE_URL_FINAL_CALLBACK: PASS`
 
-`PHASE_F3_PREWRITE_GATE: FAIL`
+`PHASE_F3_PREWRITE_GATE: PASS — EXACT SQL ZERO`
 
-`PHASE_F_LIVE_EMAIL_ACCEPTANCE: BLOCKED`
+`AUTH_USER_BASELINE_EXPLAINED: YES`
+
+`LIVE_EMAIL_TEST_CAN_RESUME: YES`
+
+`PHASE_F_LIVE_EMAIL_ACCEPTANCE: PENDING`
 
 2026-08-17 salt-okunur tekrar kontrolde exact Production name/ref, Development
 exclusion, Custom SMTP, Confirm Email, final Site URL ve iki callback'li allowlist PASS
@@ -45,9 +49,12 @@ pre-write baseline `0` idi. Mevcut hesapların kimliği incelenmedi ve hiçbir h
 dokunulmadı. Disposable signup, inbox gönderimi, resend, recovery ve cleanup akışları
 başlatılmadı; Production write `0`, Development erişimi/yazması `0` kaldı.
 
-Canlı kabul yeniden başlamadan önce bu 10-user baseline product owner tarafından
-sınıflandırılmalı ve güvenli başlangıç koşulu açıkça yeniden onaylanmalıdır. Legacy
-Production callback allowlist kaydı korunur.
+Phase F3A exact salt-okunur SQL snapshot'ı (`2026-08-17 00:59:49 UTC`)
+`auth.users/identities/sessions = 0/0/0`, profiles/consents `0/0` ve bütün user-linked
+business relation count'larını `0` doğruladı. Dashboard estimated değeri gerçek user
+relation count'u değildir; sınıflandırılacak veya silinecek kullanıcı yoktur. D1
+zero-state kanıtı current state ile tutarlıdır. Canlı e-posta testi exact SQL zero
+baseline ile yeniden başlayabilir. Legacy Production callback allowlist kaydı korunur.
 
 ## Wave 10 Phase F2 Production Auth/SMTP read-only precheck
 
@@ -119,8 +126,9 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
       callback allowlist'te birlikte doğrulandı.
 - [ ] Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı ve
       Resend link-tracking doğrulaması birlikte PASS.
-- [ ] Phase F3'te görülen 10-user Production Auth baseline drift'i product owner
-      tarafından sınıflandırıldı ve canlı kabul başlangıcı yeniden onaylandı.
+- [x] Phase F3A exact SQL `auth.users/identities/sessions = 0/0/0`; Dashboard
+      `10 users (estimated)` sinyali authoritative user count değildir ve baseline
+      contradiction kapanmıştır.
 - [ ] Production Auth Site URL/redirect, SMTP sender/link-tracking final verification
       ve gerçek inbox acceptance PASS.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
