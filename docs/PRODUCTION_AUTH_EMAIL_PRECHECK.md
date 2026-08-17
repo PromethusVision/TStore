@@ -1,23 +1,23 @@
-# Production Auth / SMTP Read-Only Acceptance Precheck
+# Production Auth / SMTP Acceptance Evidence
 
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
-Phase F3 live acceptance pre-write gate + Phase F3A exact Auth inventory
+Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
+authorized disposable-user cleanup
 
 **Kaynak taban:** Phase F3 `origin/main@b24f761881730159035a619822bf753b84ead6c3`;
 callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
-**İnceleme türü:** Authenticated management read-only; Production write ve gerçek
-e-posta gönderimi yapılmadı.
+**İnceleme türü:** F2/F3A authenticated management read-only; F3B owner-authorized
+normal-client Auth/email acceptance; F3D owner-authorized exact Auth Admin cleanup.
 
-Bu belge canlı e-posta kabulünün yerine geçmez. Phase F3 canlı kabul denemesi,
-Dashboard'daki estimated user göstergesi nedeniyle Production'a herhangi bir yazma
-yapılmadan pre-write safety gate'te durmuştur. Phase F3A bu sinyali exact salt-okunur
-SQL ile çözmüştür. Belge Production Auth/SMTP yapılandırmasının, hosted e-posta
-şablonlarının ve mevcut Flutter Auth istemcisinin canlı kabul öncesi sözleşmesini
-kaydeder. Bu çalışma sırasında Auth ayarı, kullanıcı, e-posta, SQL mutation, Storage
-veya başka bir Production verisi oluşturulmadı/değiştirilmedi.
+Bu belge F2/F3A salt-okunur kanıtını, F3B canlı teslimat/server confirmation sonucunu
+ve F3D cleanup sonucunu birlikte kaydeder. F3B'de yalnız tek disposable customer normal
+istemci yolu ile oluşturuldu; F3D'de fresh exact safety gate sonrasında yalnız bu hesap
+Supabase Dashboard Auth Admin yoluyla silindi. Auth/SMTP ayarı, migration, schema,
+Storage veya unrelated business verisi değiştirilmedi. Personal email, UUID, token,
+parola ve secret kaydedilmez.
 
 ## Project identity and provider state
 
@@ -108,6 +108,56 @@ exact envanter boş olduğu için üç seçenekten hiçbiri uygulanmaz. Teknik k
 **NO CLEANUP / NO DELETE**'tir. Cleanup için owner kararı gerekmez; sonraki canlı
 testin tek disposable principal kapsamı ayrıca F3 yetkisiyle yürütülür.
 
+## Phase F3B live acceptance and Phase F3D authorized cleanup
+
+F3A zero baseline sonrasında yalnız masked `d***@outlook.com.tr` disposable customer
+normal Production istemcisiyle oluşturuldu. Otomatik profile ve canonical legal-consent
+satırları oluştu; rol `customer` kaldı ve merchant/admin rolü görülmedi. Confirmation
+e-postası gerçek inbox'a ulaştı, fakat Spam klasörüne düştü. Gözlenen sender adı/domain
+beklenen sözleşmeyle uyumluydu. Confirmation linki Supabase server tarafında hesabı
+confirmed state'e geçirdi ve final `com.esnaftavar.app://login-callback/` redirect
+sözleşmesini taşıdı.
+
+Windows Chrome'da Production mobil scheme'ini karşılayan uygulama bulunmadığı için
+callback sonrası uygulama açılması doğrulanamadı. Bu durum Auth confirmation failure
+değildir. Recovery isteği server tarafından kabul edildi, ancak recovery linki
+kullanılmadı; gerçek Production mobil build olmadan PKCE recovery lifecycle PASS
+sayılmaz.
+
+F3D fresh pre-delete gate, exact Production ref'inde yalnız bu fixture'ı doğruladı:
+
+| Authoritative relation/state | Delete öncesi exact count |
+| --- | ---: |
+| `auth.users` | 1 |
+| `auth.identities` | 1 |
+| `auth.sessions` | 2 |
+| `public.profiles` / customer role | 1 / 1 |
+| Merchant/admin role | 0 |
+| `public.legal_consents` | 2 |
+| User-linked business rows toplamı | 0 |
+| `storage.objects` | 0 |
+
+Product owner'ın exact fixture için verdiği açık yetkiyle Supabase Dashboard Auth Admin
+`Delete user` yöntemi kullanıldı. Delete sonrasında yeni bir authoritative SQL snapshot
+şu sonucu verdi:
+
+| Authoritative relation/state | Delete sonrası exact count |
+| --- | ---: |
+| `auth.users` | 0 |
+| `auth.identities` | 0 |
+| `auth.sessions` | 0 |
+| `public.profiles` | 0 |
+| `public.legal_consents` | 0 |
+| User-linked business rows toplamı | 0 |
+| `storage.objects` | 0 |
+
+User-linked business toplamı addresses/saved locations, wishlist, carts/items, legacy
+orders/items, reviews, chat, notifications, shops/ownership, shop products, QR
+sessions/items, verified transactions/items ve ratings ilişkilerini kapsar. Başka Auth
+user veya unrelated business verisi bulunmadı. F3D sırasında yeni signup, resend,
+recovery ya da e-posta gönderimi; Auth config, migration, schema veya Storage write
+yapılmadı. Development'a erişilmedi.
+
 ## Custom SMTP and domain evidence
 
 Supabase dashboard'ında Custom SMTP **ON** durumundadır. Salt-okunur görünür alanlar:
@@ -167,9 +217,10 @@ davranışı:
   edilirse redirect sözleşmesi ayrıca denetlenmelidir.
 
 Sonuç: kaynak callback/client cutover'ı entegredir ve remote Site URL exact final mobile
-callback'e geçirilmiştir. Phase F3 gerçek signup/resend/recovery e-posta kabulü ise
-beklenmeyen 10-user Auth baseline drift'i nedeniyle herhangi bir write öncesinde
-başlatılmamıştır. Web kabulü için ayrı HTTPS route/allowlist kararı açık kalır.
+callback'e geçirilmiştir. F3B gerçek SMTP teslimatı, server-side confirmation ve final
+callback e-posta URL sözleşmesini doğruladı. Signed Production mobil uygulamada actual
+app opening ve full recovery PKCE lifecycle; Web içinse ayrı HTTPS route/allowlist
+kararı açık kalır.
 
 ## Hosted email template audit
 
@@ -263,9 +314,23 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `AUTH_USER_BASELINE_EXPLAINED: YES`
 
-`SAFE_TO_DELETE_ANY_USER: NO — USER YOK`
+`SAFE_TO_DELETE_ANY_USER: NO — F3D ZERO BASELINE; NO CURRENT USER`
 
-`LIVE_EMAIL_TEST_CAN_RESUME: YES`
+`REAL_SMTP_DELIVERY: PASS`
+
+`SERVER_SIDE_EMAIL_CONFIRMATION: PASS`
+
+`FINAL_CALLBACK_EMAIL_CONTRACT: PASS`
+
+`FINAL_CALLBACK_APP_OPENING: BLOCKED`
+
+`PRODUCTION_PASSWORD_RECOVERY: BLOCKED`
+
+`AUTHORIZED_TEST_USER_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES`
+
+`TEST_FIXTURE_CLEANUP: PASS`
 
 `PHASE_F_CALLBACK_INTEGRATED: YES`
 
@@ -278,16 +343,17 @@ Tamamlanan kaynak/config gözlemleri:
 - Production Custom SMTP'nin görünür host/port/name düzeyinde mevcut olması;
 - Confirm-signup, reset-password ve change-email template precheck'i.
 
-Canlı kabul öncesi zorunlu açıklar:
+Kalan canlı kabul açıkları:
 
 - Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı;
 - Resend link tracking ile masked sender/provider durumunun bağımsız doğrulanması;
-- write yetkili ayrı canlı kabul penceresi ve disposable inbox;
-- gerçek inbox confirmation, resend ve password-recovery kabulü;
+- signed Production mobil artifact ile actual callback app opening;
+- full password-recovery link/PKCE/new-password lifecycle;
+- resend eski/yeni link semantiği ve duplicate/expired link kabulü;
 - signed-artifact kabulünden sonra legacy Production callback allowlist kaydının
   yetkili remote config adımıyla kaldırılması.
 
-`CALLBACK_INTEGRATED — LIVE_ACCEPTANCE_READY_TO_RESUME`
+`CALLBACK_INTEGRATED — DELIVERY_AND_SERVER_CONFIRMATION_PASS — MOBILE_LIFECYCLE_BLOCKED`
 
 Integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/platform/preflight
 hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer
@@ -298,3 +364,9 @@ account deletion, Production preflight, kontrollü Auth flow ve profile hedefli 
 matris 129 PASS, 1 gated Development live test skip sonucu verdi. `git diff --check`,
 doküman marker kontrolü ve yalnız eklenen satırlara uygulanan secret/credential shape
 taraması PASS oldu. Dart kodu değişmediği için full suite/analyzer tekrarlanmadı.
+
+F3D sonrasında account-deletion, Auth/profile ve canonical RLS contract hedefli matrisi
+90 PASS verdi; `live_development_auth_rls_test.dart` remote opt-in kapalı olduğu için
+beklenen 1 skip üretti. Böylece Development remote erişimi yapılmadı. Authoritative
+Production residual SQL, diff ve secret/PII kontrolleri PASS; yalnız belge değiştiği
+için full suite/analyzer tekrarlanmadı.
