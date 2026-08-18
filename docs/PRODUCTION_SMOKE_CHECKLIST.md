@@ -30,6 +30,62 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `COMMERCIAL_RELEASE_READY: NO`
 
+## Wave 10 Phase F3 live email acceptance and authorized cleanup
+
+`PRODUCTION_SITE_URL_FINAL_CALLBACK: PASS`
+
+`PHASE_F3_PREWRITE_GATE: PASS — EXACT SQL ZERO`
+
+`AUTH_USER_BASELINE_EXPLAINED: YES`
+
+`REAL_SMTP_DELIVERY: PASS`
+
+`SERVER_SIDE_EMAIL_CONFIRMATION: PASS`
+
+`FINAL_CALLBACK_EMAIL_CONTRACT: PASS`
+
+`FINAL_CALLBACK_APP_OPENING: BLOCKED`
+
+`PRODUCTION_PASSWORD_RECOVERY: BLOCKED`
+
+`AUTHORIZED_TEST_USER_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES`
+
+`TEST_FIXTURE_CLEANUP: PASS`
+
+`PHASE_F_LIVE_EMAIL_ACCEPTANCE: PARTIAL`
+
+2026-08-17 salt-okunur tekrar kontrolde exact Production name/ref, Development
+exclusion, Custom SMTP, Confirm Email, final Site URL ve iki callback'li allowlist PASS
+oldu. Auth Users ekranı refresh sonrasında `10 users (estimated)` gösterdi; beklenen
+pre-write baseline `0` idi. Mevcut hesapların kimliği incelenmedi ve hiçbir hesaba
+dokunulmadı. Disposable signup, inbox gönderimi, resend, recovery ve cleanup akışları
+başlatılmadı; Production write `0`, Development erişimi/yazması `0` kaldı.
+
+Phase F3A exact salt-okunur SQL snapshot'ı (`2026-08-17 00:59:49 UTC`)
+`auth.users/identities/sessions = 0/0/0`, profiles/consents `0/0` ve bütün user-linked
+business relation count'larını `0` doğruladı. Dashboard estimated değeri gerçek user
+relation count'u değildir; sınıflandırılacak veya silinecek kullanıcı yoktur. D1
+zero-state kanıtı current state ile tutarlıdır.
+
+F3B'de yalnız bir disposable normal-client customer oluşturuldu. Gerçek confirmation
+e-postası inbox'a ulaştı (Spam klasörü), sender adı/domain beklenen sözleşmeyle uyumluydu
+ve link Supabase server-side confirmation'ı tamamladı. Link final
+`com.esnaftavar.app://login-callback/` contract'ını taşıdı; Windows Chrome'da bu mobile
+scheme'i karşılayan Production uygulaması bulunmadığından actual app opening BLOCKED
+kaldı. Recovery isteği kabul edildi, fakat link kullanılmadı ve full mobile PKCE
+recovery lifecycle doğrulanmadı.
+
+F3D fresh gate'te yalnız masked disposable fixture doğrulandı: Auth user/identity/
+profile `1/1/1`, customer role `1`, merchant/admin `0`, legal consent `2`, session `2`,
+user-linked business ve Storage object `0`. Owner'ın açık exact-account yetkisiyle
+Supabase Dashboard Auth Admin delete uygulandı. Authoritative post-delete SQL sonucu
+Auth user/identity/session/profile/legal consent/business residual/Storage object
+`0/0/0/0/0/0/0` oldu. Başka user/veri bulunmadı; Auth config, schema, migration,
+Storage ve Development değiştirilmedi. Legacy Production callback allowlist kaydı
+korunur.
+
 ## Wave 10 Phase F2 Production Auth/SMTP read-only precheck
 
 `PRODUCTION_SMTP_PRECHECK: FAIL`
@@ -45,12 +101,13 @@ legacy mobile callback URL'leri allowlist'te birlikte mevcut. Confirm-signup,
 reset-password ve change-email hosted şablonları `ConfirmationURL` kullanıyor;
 hardcoded localhost/demo/TStore linki bulunmadı.
 
-Bu kanıt canlı teslimat kabulü değildir. Phase F entegrasyonunda Production signup,
-resend, recovery ve PKCE akışları final callback'e açık ve environment-isolated olarak
-bağlanmıştır; ancak Site URL hâlâ `http://localhost:3000`, HTTPS web recovery
-route/allowlist'i yoktur. Resend link-tracking durumu ile dashboard'un geri göstermediği
-exact sender/username ayrıca doğrulanmalıdır. Ayrıntılı kanıt ve kontrollü kabul planı
-[`PRODUCTION_AUTH_EMAIL_PRECHECK.md`](PRODUCTION_AUTH_EMAIL_PRECHECK.md) içindedir.
+Bu F2 kanıtı tek başına canlı teslimat kabulü değildir; sonraki F3B gerçek SMTP
+teslimatı ve server-side confirmation'ı doğruladı. Production signup, resend, recovery
+ve PKCE akışları final callback'e açık ve environment-isolated olarak bağlıdır. Site URL
+final mobile callback'tir; HTTPS web recovery route/allowlist'i yoktur. Resend
+link-tracking durumu ile dashboard'un geri göstermediği exact sender/username ayrıca
+doğrulanmalıdır. Ayrıntılı kanıt [`PRODUCTION_AUTH_EMAIL_PRECHECK.md`](PRODUCTION_AUTH_EMAIL_PRECHECK.md)
+içindedir.
 
 E1 gerçek Production URL/ref ve client-safe publishable key ile yalnız anonymous
 read-only bağlantı yaptı. Key source/log/belgeye yazılmadı; service-role/server secret
@@ -91,14 +148,23 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Android/iOS final application/bundle identity `com.esnaftavar.app` ve Android
       Development `.dev` varyantı kaynak sözleşmesine bağlandı.
 - [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
-- [ ] Final callback signed-artifact confirmation/recovery kabulü tamamlandı; ardından
+- [ ] Final callback signed-artifact app-opening/recovery kabulü tamamlandı; ardından
       legacy Production allowlist kaydı kaldırıldı.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
-- [ ] Localhost Site URL kaldırıldı; final HTTPS Site URL/fallback kararı, web recovery
-      route/allowlist'i ve Resend link-tracking doğrulaması birlikte PASS.
-- [ ] Production Auth Site URL/redirect, SMTP sender/link-tracking final verification
-      ve gerçek inbox acceptance PASS.
+- [x] Supabase remote Site URL localhost'tan exact final mobile callback
+      `com.esnaftavar.app://login-callback/` değerine geçirildi; final ve legacy
+      callback allowlist'te birlikte doğrulandı.
+- [ ] Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı ve
+      Resend link-tracking doğrulaması birlikte PASS.
+- [x] Phase F3A exact SQL `auth.users/identities/sessions = 0/0/0`; Dashboard
+      `10 users (estimated)` sinyali authoritative user count değildir ve baseline
+      contradiction kapanmıştır.
+- [x] F3B gerçek SMTP teslimatı, gözlenen sender adı/domain, server-side confirmation
+      ve final callback e-posta URL contract'ı PASS; F3D exact authorized fixture
+      cleanup sonrası Auth/profile/consent/business/Storage baseline yeniden sıfır.
+- [ ] Signed Production mobil uygulamada final callback app opening ve full recovery
+      PKCE lifecycle PASS; Resend link-tracking ayrıca doğrulanmalı.
 - [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
 - [ ] Production owner iki bağımsız disposable müşteri principal'ı ve gerekiyorsa ayrı
