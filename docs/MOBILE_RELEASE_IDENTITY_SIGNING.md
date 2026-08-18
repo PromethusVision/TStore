@@ -110,18 +110,24 @@ allowlist kaydı rollback penceresi için geçici kalır. Kaynak integration tam
 legacy kayıt gerçek signed-artifact confirmation/recovery kabulünden sonra yetkili
 release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 
-## Signing durumu — açık
+## Signing durumu
 
-`SIGNING_READY: NO`
+`ANDROID_SIGNING_READY: YES`
+
+`IOS_SIGNING_READY: NO`
+
+`KEYSTORE_BACKUP_REQUIRED: YES`
 
 `FINAL_APP_IDENTITY_WIRED: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
-- Android upload keystore, alias ve parolaları mevcut değildir.
+- Android upload keystore güvenli repo-dışı kullanıcı dizininde oluşturuldu; upload
+  alias'ı doğrulandı ve ilk imzalı Production APK/AAB üretildi. Keystore, parolalar ve
+  geçici `key.properties` source control'e alınmadı.
 - Apple Developer Team ID, Distribution certificate/private key ve provisioning
   profile mevcut değildir.
-- Signed AAB/APK/IPA üretilmemiştir.
+- Signed APK/AAB üretilmiştir; signed IPA üretilmemiştir.
 - Android fail-closed release packaging ve iOS Apple Distribution/manual signing
   kaynak sözleşmeleri hazırdır.
 
@@ -132,7 +138,8 @@ release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 3. Signed-artifact/live acceptance sonrasında legacy Production Auth allowlist kaydının
    kaldırılması.
 4. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
-5. Android upload keystore, alias ve parolaların güvenli secret-store/CI kaynağı.
+5. Mevcut Android upload keystore'un şifreli harici yedeği, parola yöneticisi kaydı,
+   ikinci güvenli yedeği ve CI secret-store kurulumu.
 6. Apple Team ID, Distribution certificate/private key ve provisioning profile'ın
    güvenli keychain/CI kaynağı.
 
@@ -163,17 +170,62 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [x] Keystore, private key, provisioning profile ve parolalar tracked değil.
 - [ ] Play Console package kaydı exact eşleşiyor.
 - [ ] Apple App ID, provisioning profile ve App Store Connect exact eşleşiyor.
-- [ ] Android upload signer doğrulandı ve signed AAB üretildi.
+- [x] Android upload signer doğrulandı ve signed AAB üretildi.
 - [ ] iOS doğru Team/profile ile signed archive üretti.
 - [x] Production callback istemci/platform/preflight wiring'i final scheme'e taşındı.
 - [x] Final callback kaynak integration'ı tamamlandı.
 - [ ] Final callback signed-artifact canlı kabulü tamamlandı.
 - [ ] Legacy Production redirect allowlist kaydı kaldırıldı.
 - [ ] Signed artifact üzerinde signup confirmation ve recovery callback PASS.
-- [ ] Version/build number, artifact hash ve CI provenance kaydedildi.
+- [x] İlk Android version/build number ve artifact hash'i kaydedildi; kalıcı CI
+      provenance kurulumu ayrıca açıktır.
 
-Signing ve Phase F maddeleri tamamlanmadan `SIGNED_RELEASE: PASS` veya
-`SIGNING_READY: YES` raporlanmaz.
+Android signing tamamlanmış olsa da iOS signing, physical-device acceptance ve Phase F
+callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporlanmaz.
+
+## Wave 11 Phase A — ilk imzalı Android Production artifact'leri
+
+`ANDROID_SIGNING_READY: YES`
+
+`SIGNED_PRODUCTION_APK: PASS`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+
+- Build kaynağı: `origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`,
+  branch `agent1/w11-android-production-signing`.
+- Production application ID/label: `com.esnaftavar.app` / `EsnaftaVar`.
+- Version: `versionName 1.0.0`, `versionCode 1`.
+- Upload key: repo dışında kalıcı `.jks`, alias `esnaftavar-upload`, RSA 4096.
+  Signer certificate SHA-256 fingerprint:
+  `3b83d98ab8d32e0f3b9930fa837636e0e9e13219784ffca39cef8cae82a6669b`;
+  SHA-1 fingerprint: `3ed8d3c5ff1e9e6eb2d1b5742234b6c9d6e092f3`.
+- APK: `build/app/outputs/flutter-apk/app-production-release.apk`, 122,640,821
+  byte, SHA-256
+  `E1A3E801FD648AE4665E9E2B6D5D88BF15350A3B75A388C94AC5B43701A88C25`.
+  `apksigner` sonucu PASS; tek signer ve APK Signature Scheme v2 doğrulandı.
+- AAB: `build/app/outputs/bundle/productionRelease/app-production-release.aab`,
+  99,288,532 byte, SHA-256
+  `0F34958E3F739E887C34E70E627FB75082EC4AE601D89346F1CC1B695E7B88CB`.
+  JAR signature doğrulaması PASS. Upload certificate'ın self-signed olması Android
+  upload key sözleşmesinin beklenen özelliğidir.
+- Standard Production release build `main_production.dart`, production flavor ve
+  client-safe gerçek Production runtime injection ile ek icon workaround'u olmadan
+  PASS. Supabase ref/URL exact `mefhfvrgkwciubeajjeb`; Development endpoint'i
+  artifact'e runtime backend olarak girmedi.
+- Merged manifest/package incelemesi internet, camera, coarse/fine location
+  izinlerini; final `com.esnaftavar.app://login-callback/` callback'ini ve legacy
+  callback'in bulunmadığını doğruladı. Release artifact `debuggable` değildir.
+- APK/AAB scan'i signing parolası, private key, service-role/server-only credential
+  veya Development URL bulmadı. Client-safe publishable key build contract'ı gereği
+  artifact içinde bulunur; repo, belge veya loga yazılmadı.
+- Geçici `android/key.properties` ve repo-dışı runtime JSON build sonrasında silindi.
+  Kalıcı keystore repo dışında bırakıldı ve Git tarafından izlenmiyor.
+- Bağlı Android cihazı bulunmadığı için install/startup, gerçek callback opening ve
+  fiziksel smoke çalıştırılmadı. Bu durum imzalı artifact üretimini geçersiz kılmaz;
+  fiziksel Android acceptance gate'i açık kalır.
+- Production yönetim ekranından yalnız client-safe publishable key salt-okunur
+  alındı. Production veri isteği/yazması, Auth işlemi, migration veya config değişimi
+  yapılmadı; Development'a dokunulmadı.
 
 ## Wave 10 Phase E2 doğrulama sınırı
 
