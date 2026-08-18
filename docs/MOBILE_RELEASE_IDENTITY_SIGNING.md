@@ -116,7 +116,11 @@ release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 
 `IOS_SIGNING_READY: NO`
 
-`KEYSTORE_BACKUP_REQUIRED: YES`
+`SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`
+
+`KEYSTORE_PRIMARY_BACKUP: COMPLETED`
+
+`KEYSTORE_SECOND_OFFLINE_BACKUP: RECOMMENDED / OPEN`
 
 `FINAL_APP_IDENTITY_WIRED: YES`
 
@@ -125,6 +129,9 @@ release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 - Android upload keystore güvenli repo-dışı kullanıcı dizininde oluşturuldu; upload
   alias'ı doğrulandı ve ilk imzalı Production APK/AAB üretildi. Keystore, parolalar ve
   geçici `key.properties` source control'e alınmadı.
+- Product owner signing password kaydını parola yöneticisinde ve `.jks` birincil
+  yedeğini repo-dışı bulut depoda tamamladığını bildirdi. Secret değer veya yedek
+  bağlantısı bu belgeye yazılmadı; ikinci offline yedek öneri/açık durumdadır.
 - Apple Developer Team ID, Distribution certificate/private key ve provisioning
   profile mevcut değildir.
 - Signed APK/AAB üretilmiştir; signed IPA üretilmemiştir.
@@ -138,8 +145,8 @@ release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 3. Signed-artifact/live acceptance sonrasında legacy Production Auth allowlist kaydının
    kaldırılması.
 4. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
-5. Mevcut Android upload keystore'un şifreli harici yedeği, parola yöneticisi kaydı,
-   ikinci güvenli yedeği ve CI secret-store kurulumu.
+5. Mevcut Android upload keystore'un ikinci offline yedeği ve CI secret-store
+   kurulumu. Birincil repo-dışı yedek ve parola yöneticisi kaydı tamamlanmıştır.
 6. Apple Team ID, Distribution certificate/private key ve provisioning profile'ın
    güvenli keychain/CI kaynağı.
 
@@ -171,6 +178,8 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [ ] Play Console package kaydı exact eşleşiyor.
 - [ ] Apple App ID, provisioning profile ve App Store Connect exact eşleşiyor.
 - [x] Android upload signer doğrulandı ve signed AAB üretildi.
+- [x] Keystore birincil repo-dışı yedeği ve parola yöneticisi kaydı tamamlandı.
+- [ ] İkinci offline keystore yedeği ve kalıcı CI secret-store/provenance tamamlandı.
 - [ ] iOS doğru Team/profile ile signed archive üretti.
 - [x] Production callback istemci/platform/preflight wiring'i final scheme'e taşındı.
 - [x] Final callback kaynak integration'ı tamamlandı.
@@ -188,6 +197,14 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
 `ANDROID_SIGNING_READY: YES`
 
 `SIGNED_PRODUCTION_APK: PASS`
+
+`SIGNED_PRODUCTION_AAB: PASS`
+
+`SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`
+
+`KEYSTORE_PRIMARY_BACKUP: COMPLETED`
+
+`ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
 `READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
 
@@ -219,13 +236,27 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   veya Development URL bulmadı. Client-safe publishable key build contract'ı gereği
   artifact içinde bulunur; repo, belge veya loga yazılmadı.
 - Geçici `android/key.properties` ve repo-dışı runtime JSON build sonrasında silindi.
-  Kalıcı keystore repo dışında bırakıldı ve Git tarafından izlenmiyor.
+  Kalıcı keystore repo dışında bırakıldı ve Git tarafından izlenmiyor. Owner birincil
+  yedeği ve parola yöneticisi kaydını tamamladı; parola, yedek bağlantısı ve secret
+  materyal belgelenmedi. İkinci offline yedek öneri/açık olarak kalır.
 - Bağlı Android cihazı bulunmadığı için install/startup, gerçek callback opening ve
   fiziksel smoke çalıştırılmadı. Bu durum imzalı artifact üretimini geçersiz kılmaz;
   fiziksel Android acceptance gate'i açık kalır.
 - Production yönetim ekranından yalnız client-safe publishable key salt-okunur
   alındı. Production veri isteği/yazması, Auth işlemi, migration veya config değişimi
   yapılmadı; Development'a dokunulmadı.
+
+## Wave 11 Phase A final integration doğrulaması
+
+- Agent 1 evidence commit'i exact base üzerinden `--no-ff` ve çatışmasız entegre
+  edildi; integration signed artifact'ı yeniden üretmedi.
+- Android identity/signing, callback/deep-link, Production preflight ve ilgili Auth
+  hedefli matrisi: **62/62 PASS**.
+- Tam Flutter suite: **1154 PASS**, **5 opt-in live skip**.
+- `flutter analyze --no-pub`, `git diff --check`, conflict-marker, private-key/secret
+  ve tracked `.jks`/`.keystore`/`key.properties`/APK/AAB scan'leri: **PASS**.
+- Integration Production/Development remote erişimi veya write, e-posta, Auth config
+  ya da migration işlemi yapmadı.
 
 ## Wave 10 Phase E2 doğrulama sınırı
 

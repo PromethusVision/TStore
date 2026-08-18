@@ -263,6 +263,41 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   merge'i olduğu için full suite/analyzer yeniden çalıştırılmadı; Development live
   harness'i çağrılmadı.
 
+## Wave 11 Phase A Final Entegrasyon Gözlemi
+
+`ANDROID_SIGNING_READY: YES`
+
+`SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`
+
+`KEYSTORE_PRIMARY_BACKUP: COMPLETED`
+
+`COMMERCIAL_RELEASE_READY: NO`
+
+- Agent 1'in `b56b9fe` Android signing/artifact evidence commit'i exact
+  `460c81e` tabanından tek `--no-ff` merge ile çatışmasız entegre edildi. Input
+  değişikliği yalnız üç release/coordination belgesindeydi; Gradle/platform/Auth
+  kodu, dependency, SQL/migration, `service_locator.dart` ve shared model değişmedi.
+- Agent kanıtında repo-dışı RSA-4096 upload key ve `esnaftavar-upload` alias'ıyla
+  `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` Production APK ve AAB imzalandı.
+  APK/AAB signature, artifact hash, final callback, no-legacy-callback ve
+  non-debuggable sözleşmeleri PASS'tir.
+- Integration `git status` ve `git ls-files` ile `.jks`, `.keystore`, populated
+  `key.properties`, APK/AAB, private key, signing password, geçici Production config
+  veya gerçek publishable key'in tracked olmadığını doğruladı. Binary artifact
+  yeniden üretilmedi veya Git'e eklenmedi.
+- Product owner birincil repo-dışı keystore yedeği ve parola yöneticisi kaydını
+  tamamladı; secret değer ve yedek bağlantısı belgelenmedi. İkinci offline yedek ve
+  kalıcı CI signing provenance öneri/açık durumdadır.
+- Android signing hazırdır; fiziksel install/startup, actual mobile callback opening,
+  full recovery, Play Console/Play App Signing, legacy callback removal, iOS signing,
+  fiziksel iki-cihaz QR, broader Production smoke ve commercial GO açık kalır.
+- Final integration Production/Development remote erişimi veya write, e-posta, Auth
+  config ya da migration işlemi yapmadı. Mobil signing/release dosyaları sonraki
+  wave'lerde aynı anda yalnız tek atanmış agent tarafından değiştirilmelidir.
+- Integration hedefli identity/signing/callback/preflight/Auth matrisi 62/62, tam
+  Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer PASS'tir. Diff,
+  secret/private-key ve tracked signing/binary artifact scan'leri temizdir.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

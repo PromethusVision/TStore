@@ -52,6 +52,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   exact `0`; Production zero-auth baseline restore PASS. Actual mobile callback app
   opening, full recovery lifecycle, legacy callback removal, deliverability tuning,
   signing, fiziksel QR ve broader Production smoke açık kaldı.
+- 2026-08-18 Wave 11 Phase A ilerlemesi: Repo-dışı gerçek Android upload key ile
+  `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` signed Production APK ve AAB
+  üretildi; APK/AAB signature, hash, final callback, legacy callback absence,
+  non-debuggable ve secret scan kanıtları PASS. Keystore, populated `key.properties`
+  ve binary artifact'lar tracked değildir. Owner birincil keystore yedeğini ve parola
+  yöneticisi kaydını tamamladı; fiziksel Android kabulü, Play Console/Play App
+  Signing, iOS signing, callback/recovery lifecycle ve commercial GO açık kaldı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -219,6 +226,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   Callback/PKCE/signup-recovery/account-deletion/profile/canonical RLS hedefli yerel
   matris 151/151, docs/diff ve secret/PII scan PASS; integration remote backend işlemi
   yapmadı.
+- 2026-08-18 Wave 11 Phase A sonucu: Agent 1 signed Android artifact evidence
+  commit'i `--no-ff` ve çatışmasız entegre edildi. Android identity/signing,
+  callback/deep-link, Production preflight ve Auth hedefli matris 62/62; tam Flutter
+  suite 1154 PASS (5 opt-in live skip), analyzer, diff, secret/private-key ve tracked
+  artifact scan kapıları PASS oldu. Integration binary artifact üretmedi ve
+  Production/Development remote erişimi veya write yapmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -228,7 +241,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / `https://mefhfvrgkwciubeajjeb.supabase.co` / Frankfurt olarak doğrulandı; Development ref'i `tnipyxnvhgelwdpykyez` Production değildir.
 - Production canonical `0001→0009` schema durumundadır: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger, exact üç active bucket ve iki Realtime member doğrulandı; Auth user/identity/session, Storage object ve business row sayıları sıfırdır.
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
-- Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve Android/iOS platform wiring tamamlanmıştır. Android upload signing, Apple Team/certificate/profile ve signed AAB/APK/IPA hâlâ açık blocker'dır.
+- Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve
+  Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
+  keystore yedeği ve ilk signed APK/AAB PASS'tir. Fiziksel Android kabulü, Google Play
+  Console/Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve
+  signed IPA hâlâ açık release kapılarıdır.
 - Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production final
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
   Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery ve
@@ -241,7 +258,9 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
   `PRODUCTION_EMAIL_INFRASTRUCTURE: READY`, `PRODUCTION_ZERO_TEST_RESIDUAL: YES`,
   `MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`,
-  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `SIGNING_READY: NO` ve
+  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `ANDROID_SIGNING_READY: YES`,
+  `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
+  `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 

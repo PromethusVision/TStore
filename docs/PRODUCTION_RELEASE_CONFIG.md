@@ -1,11 +1,11 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 10 Phase F final integration /
-`origin/main@b24f761881730159035a619822bf753b84ead6c3`
+**Kaynak taban:** Wave 11 Phase A final integration /
+`origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`
 
 **Integration sırasında Production Supabase erişimi:** **NO**; remote write **NO**.
-Agent 2'nin authenticated management **read-only** Auth/SMTP/template kanıtı ayrıca
-entegre edilmiştir.
+Önceki authenticated management **read-only** Auth/SMTP/template kanıtı ile Agent 1'in
+salt-okunur client-safe publishable-key/build kanıtı ayrıca entegre edilmiştir.
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -74,7 +74,13 @@ alanı görürse fail-closed davranır.
 
 `EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
-`SIGNING_READY: NO`
+`ANDROID_SIGNING_READY: YES`
+
+`SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`
+
+`KEYSTORE_PRIMARY_BACKUP: COMPLETED`
+
+`IOS_SIGNING_READY: NO`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -286,12 +292,15 @@ canonical HTTPS origin/route kararı yoksa yalnız web Auth gate'i **BLOCKED** k
 - Production Custom SMTP, gerçek inbox delivery ve server-side confirmation PASS'tir.
   Full mobile recovery lifecycle ve email deliverability/spam tuning açıktır.
 - Android/iOS identifier kararı ve platform wiring `com.esnaftavar.app` ile
-  tamamlandı; Android upload ve Apple Distribution signing materyali hâlâ açıktır.
+  tamamlandı. Android upload signing, birincil keystore yedeği ve ilk signed APK/AAB
+  PASS; fiziksel Android kabulü, Play Console/Play App Signing, kalıcı CI provenance
+  ve Apple Distribution signing materyali hâlâ açıktır.
 - Final callback kaynak cutover ve email URL contract'ı tamamlandı; actual signed-app
   opening PASS olmadan legacy Production callback allowlist kaydı kaldırılmaz.
 - Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
   wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
 - Fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing kabulü, controlled
-  Production write smoke ve signed AAB/APK/IPA henüz tamamlanmadı.
+  Production write smoke, signed Android artifact'ın fiziksel kabulü ve signed IPA
+  henüz tamamlanmadı.
 
 Bu kapılar kapanmadan gerçek release artifact'ı için GO verilmez.

@@ -32,9 +32,17 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `SIGNED_PRODUCTION_APK: PASS`
 
-`KEYSTORE_BACKUP_REQUIRED: YES`
+`SIGNED_PRODUCTION_AAB: PASS`
+
+`SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`
+
+`KEYSTORE_PRIMARY_BACKUP: COMPLETED`
+
+`KEYSTORE_SECOND_OFFLINE_BACKUP: RECOMMENDED / OPEN`
 
 `READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+
+`ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -53,8 +61,10 @@ runtime config ile standart release yolunda, `--no-tree-shake-icons` olmadan PAS
 Artifact scan'i signing parolası, private key, service-role/server-only credential
 ve Development URL bulmadı. Final callback mevcut, legacy callback yok. Geçici
 `key.properties` ve runtime config build sonrasında silindi; keystore Git dışında ve
-yedeklenmesi zorunlu. ADB'de fiziksel cihaz bulunmadığından install/startup, actual
-mobile callback opening ve recovery acceptance bu build kanıtının parçası değildir.
+owner tarafından birincil repo-dışı yedek/parola yöneticisi kaydı tamamlandı. Secret
+değer veya yedek bağlantısı belgelenmedi; ikinci offline yedek öneri/açık kaldı.
+ADB'de fiziksel cihaz bulunmadığından install/startup, actual mobile callback opening
+ve recovery acceptance bu build kanıtının parçası değildir.
 Bu bölüm Production smoke PASS veya commercial release GO ilan etmez.
 
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
@@ -213,6 +223,9 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [ ] Signed Production mobil uygulamada final callback app opening ve full recovery
       PKCE lifecycle PASS; Resend link-tracking ayrıca doğrulanmalı.
 - [x] Android gerçek application ID ve upload-key release signing PASS.
+- [x] Android keystore birincil repo-dışı yedeği ve parola yöneticisi kaydı tamamlandı.
+- [ ] Android ikinci offline keystore yedeği ve kalıcı CI signing provenance tamamlandı.
+- [ ] Google Play Console package / Play App Signing kabulü tamamlandı.
 - [ ] iOS gerçek bundle ID ile Distribution signing/archive PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
 - [ ] Production owner iki bağımsız disposable müşteri principal'ı ve gerekiyorsa ayrı
