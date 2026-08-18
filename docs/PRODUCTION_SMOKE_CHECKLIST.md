@@ -26,9 +26,36 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
-`SIGNING_READY: NO`
+`ANDROID_SIGNING_READY: YES`
+
+`IOS_SIGNING_READY: NO`
+
+`SIGNED_PRODUCTION_APK: PASS`
+
+`KEYSTORE_BACKUP_REQUIRED: YES`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
+
+## Wave 11 Phase A signed Android artifact evidence
+
+Wave 11'de repo-dışı kalıcı upload keystore ve `esnaftavar-upload` alias'ı ile exact
+Production kimliğinde ilk imzalı APK/AAB üretildi. APK `com.esnaftavar.app`, label
+`EsnaftaVar`, `versionName 1.0.0` ve `versionCode 1` taşıyor; `apksigner` tek signer ve
+v2 signature doğrulamasını PASS tamamladı. APK SHA-256 değeri
+`E1A3E801FD648AE4665E9E2B6D5D88BF15350A3B75A388C94AC5B43701A88C25`, AAB SHA-256
+değeri `0F34958E3F739E887C34E70E627FB75082EC4AE601D89346F1CC1B695E7B88CB` olarak
+kaydedildi.
+
+Build `main_production.dart`, production flavor ve client-safe gerçek Production
+runtime config ile standart release yolunda, `--no-tree-shake-icons` olmadan PASS.
+Artifact scan'i signing parolası, private key, service-role/server-only credential
+ve Development URL bulmadı. Final callback mevcut, legacy callback yok. Geçici
+`key.properties` ve runtime config build sonrasında silindi; keystore Git dışında ve
+yedeklenmesi zorunlu. ADB'de fiziksel cihaz bulunmadığından install/startup, actual
+mobile callback opening ve recovery acceptance bu build kanıtının parçası değildir.
+Bu bölüm Production smoke PASS veya commercial release GO ilan etmez.
 
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
 
@@ -134,7 +161,8 @@ ile icon workaround olmadan PASS; credential taşıyan geçici artifact kaldır�
 
 Bu evidence full smoke veya deploy GO değildir. SMTP delivery ve server-side
 confirmation PASS olsa da actual mobile callback opening, full recovery lifecycle,
-platform signing, final artifact record ve broader Production smoke açık kalır.
+iOS signing ve broader Production smoke açık kalır. Android signing ve ilk artifact
+record Wave 11'de PASS olmuştur.
 Final Android/iOS kimliği ve Production callback
 `com.esnaftavar.app://login-callback/` kaynakta wired durumdadır. Development legacy
 callback'i ayrı sözleşmede korunur. Production legacy allowlist kaydı yalnız gerçek
@@ -150,11 +178,13 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
       Development `tnipyxnvhgelwdpykyez` Production değildir.
 - [ ] Smoke change window'unda Production project ref ve HTTPS URL iki kişi/iki
       bağımsız kaynakla yeniden doğrulandı.
-- [ ] Artifact, `main_production.dart` ile güvenli CI secret injection kullanılarak
-      üretildi; commit, version/build number ve artifact hash kaydedildi.
-- [ ] Artifact standart release komutuyla ve ek icon workaround'u olmadan üretildi;
-      Wave 8'in sentetik config ile standart build kanıtı PASS, gerçek artifact hash'i kayıtlı.
-- [ ] Artifact/service-role, DB password, JWT secret veya signing secret içermiyor.
+- [x] İlk Android artifact'i `main_production.dart` ile güvenli geçici local secret
+      injection kullanılarak üretildi; base, version/build number ve hash kaydedildi.
+      Kalıcı CI provenance ayrıca açıktır.
+- [x] İlk Android artifact'i standart release komutuyla ve ek icon workaround'u
+      olmadan üretildi; gerçek APK/AAB hash'leri kayıtlı.
+- [x] Android artifact scan'i service-role, DB password, private key veya signing
+      secret bulmadı.
 - [x] 0001–0009 apply/postflight ledger ve schema diff'i PASS; backup/restore kanıtı
       veya yalnız boş ilk bootstrap için kayıtlı owner exception geçerli.
 - [x] Canonical Git/LF migration manifesti
@@ -182,7 +212,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
       cleanup sonrası Auth/profile/consent/business/Storage baseline yeniden sıfır.
 - [ ] Signed Production mobil uygulamada final callback app opening ve full recovery
       PKCE lifecycle PASS; Resend link-tracking ayrıca doğrulanmalı.
-- [ ] Android/iOS kullanılıyorsa gerçek application/bundle id ve release signing PASS.
+- [x] Android gerçek application ID ve upload-key release signing PASS.
+- [ ] iOS gerçek bundle ID ile Distribution signing/archive PASS.
 - [ ] Web kullanılıyorsa HTTPS origin, allowed origins ve Auth redirect allowlist PASS.
 - [ ] Production owner iki bağımsız disposable müşteri principal'ı ve gerekiyorsa ayrı
       merchant principal'ı onaylı güvenli yöntemle hazırladı.

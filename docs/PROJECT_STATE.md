@@ -3,12 +3,19 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-18
-- Son doğrulanan teslim: Agent 1 Phase F3/F3A/F3B/F3D final evidence `8a23c237a16e144fb346f725d27837fb93c8695e`; integration merge `3735fb9`
-- Doğrulanan branch/base: `integration/wave-10-phase-f-final-20260818` / `origin/main@b24f761881730159035a619822bf753b84ead6c3`
-- Entegrasyon durumu: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL / MOBILE CALLBACK + RECOVERY BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. F3B/F3D owner-authorized canlı işlemleri Agent 1 kanıtında tamamlanmıştır; final integration Production/Development remote erişimi, write, e-posta, user mutation, Auth config veya migration işlemi yapmadı
-- Doğrulama türü: exact Production identity; gerçek SMTP inbox teslimatı; server-side email confirmation; final callback email URL contract; Auth user/identity/session/profile/consent, user-linked business ve Storage before/after authoritative count'ları. Final integration bunları Git/doküman ve yerel sözleşme testleriyle doğrular; signed Production mobil artifact app opening ve full recovery lifecycle üretilmedi.
-- Çalıştırılmayan/BLOCKED kontroller: final callback actual mobile app opening, full mobile recovery PKCE lifecycle, legacy Production allowlist removal, email deliverability/spam tuning, Resend link-tracking final verification, signed AAB/APK/IPA callback kabulü, controlled broader Production smoke, fiziksel iki-cihaz QR ve iOS archive (Windows).
+- Son doğrulanan teslim: Wave 11 Agent 1 ilk imzalı Android Production APK/AAB
+- Doğrulanan branch/base: `agent1/w11-android-production-signing` / `origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`
+- Entegrasyon durumu: **WAVE 11 PHASE A ANDROID SIGNING READY / SIGNED APK+AAB PASS / PHYSICAL ANDROID ACCEPTANCE OPEN**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 1 worktree. Production yönetim
+  ekranından client-safe publishable key salt-okunur alındı; Production veri write,
+  Auth, e-posta, config veya migration işlemi ve Development erişimi yapılmadı.
+- Doğrulama türü: fail-closed signing contract; repo-dışı RSA-4096 upload key;
+  imzalı APK/AAB; package/label/version/manifest/callback; artifact signature/hash ve
+  secret scan; hedefli/tam Flutter test paketi ve analyzer.
+- Çalıştırılmayan/BLOCKED kontroller: bağlı fiziksel Android cihazı bulunmadığı için
+  install/startup, final callback actual mobile app opening ve full mobile recovery
+  PKCE lifecycle; legacy Production allowlist removal; deliverability tuning; broader
+  Production smoke; fiziksel iki-cihaz QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -64,7 +71,15 @@
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
-`SIGNING_READY: NO`
+`ANDROID_SIGNING_READY: YES`
+
+`IOS_SIGNING_READY: NO`
+
+`SIGNED_PRODUCTION_APK: PASS`
+
+`KEYSTORE_BACKUP_REQUIRED: YES`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -105,8 +120,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   mevcuttur; Site URL exact final mobile callback'tir. F3B gerçek SMTP teslimatı,
   server-side confirmation ve final callback email URL contract'ını doğruladı. F3D
   exact disposable fixture'ı temizledi ve Auth/business/Storage zero baseline'ını
-  yeniden kurdu. Signed Production mobil uygulamada app opening, full recovery PKCE,
-  Resend link-tracking ve kabul sonrasındaki legacy allowlist removal açıktır.
+  yeniden kurdu. Wave 11'de repo-dışı upload key ile ilk signed Android Production
+  APK/AAB üretildi; exact Production application ID, version, manifest, callback,
+  signature, hash ve artifact secret scan PASS. Signed Production mobil uygulamada
+  fiziksel install/startup, app opening, full recovery PKCE, Resend link-tracking ve
+  kabul sonrasındaki legacy allowlist removal açıktır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -235,6 +253,12 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   secret/PII scan PASS. Kod değişmediği için full Flutter suite ve analyzer formalite
   amacıyla yeniden çalıştırılmadı; Development live harness'i çağrılmadı ve remote
   erişim yapılmadı.
+- Wave 11 Phase A'da hedefli signing/callback/config/Auth matrisi 67/67, tam Flutter
+  suite 1154 PASS (5 opt-in live skip) ve `flutter analyze --no-pub` PASS. Standard
+  Production APK/AAB release build'i gerçek client-safe runtime injection ile ek icon
+  workaround'u olmadan PASS; package `com.esnaftavar.app`, version `1.0.0+1`, signer
+  certificate ve artifact hash'leri doğrulandı. Secret scan server-only/signing secret
+  bulmadı. Bağlı Android cihazı olmadığından fiziksel install/startup çalıştırılmadı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -251,7 +275,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Signed Production mobile app opening, full recovery PKCE, resend/link-tracking final verification, legacy allowlist removal, signing ve controlled smoke ayrı gate'lerdir.
+- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. Physical Android app opening, full recovery PKCE, resend/link-tracking final verification, legacy allowlist removal, iOS signing ve controlled smoke ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Production F3B kanıtı Development'a genellenmez.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -261,6 +285,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-18: **WAVE 11 PHASE A ANDROID SIGNING READY / FIRST SIGNED APK+AAB PASS / PHYSICAL ACCEPTANCE OPEN** — Repo-dışı kalıcı RSA-4096 upload key ve `esnaftavar-upload` alias'ıyla `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` signed Production APK ve AAB üretildi. APK signer v2, package/manifest/final callback, artifact hash ve secret scan PASS; legacy callback ve server-only/signing secret yok. Geçici credential/config dosyaları silindi, keystore Git dışında kaldı. Hedefli 67/67, tam suite 1154 PASS (5 skip), analyzer temiz. Fiziksel Android cihazı bağlı olmadığından install/startup/callback acceptance açık; Production backend write/Auth/config/migration ve Development erişimi yapılmadı.
 - 2026-08-18: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL** — Agent 1 final F3/F3A/F3B/F3D evidence HEAD'i `--no-ff` ve çatışmasız entegre edildi. Gerçek inbox teslimatı, server-side confirmation, final callback email contract'ı ve customer role/profile davranışı PASS; authorized disposable fixture cleanup sonrası Auth user/identity/session/profile/consent, linked business ve Storage residual exact `0`. Spam teslimatı Auth failure değildir ve deliverability tuning açık follow-up'tır. Actual mobile app opening, full recovery lifecycle, legacy callback removal, signing ve broader Production smoke açık kalır. Integration remote backend işlemi yapmadı.
 - 2026-08-18: **WAVE 10 PHASE F3D AUTHORIZED ADMIN CLEANUP PASS / ZERO AUTH BASELINE RESTORED** — Fresh exact gate yalnız masked F3 disposable customer'ı doğruladı: Auth user/identity/profile `1/1/1`, customer `1`, merchant/admin `0`, legal consent `2`, session `2`, linked business ve Storage `0`. Owner'ın exact-account yetkisiyle Supabase Dashboard Auth Admin delete uygulandı. Authoritative post-delete state Auth user/identity/session/profile/consent/business/Storage `0/0/0/0/0/0/0`; başka user/veri yok. F3D'de email/config/schema/migration/Storage/Development write yapılmadı.
 - 2026-08-18: **WAVE 10 PHASE F3B REAL SMTP + SERVER CONFIRMATION PASS / MOBILE LIFECYCLE BLOCKED** — Tek disposable normal-client customer için confirmation e-postası gerçek inbox'a ulaştı (Spam); sender adı/domain beklenen contract ile uyumluydu. Link server-side confirmation'ı tamamladı ve final callback URL contract'ını taşıdı. Windows'ta Production mobile scheme handler bulunmadığı için actual app opening; kullanılmayan recovery linki nedeniyle full mobile PKCE recovery BLOCKED kaldı. Bu durum Auth delivery/confirmation failure değildir.
