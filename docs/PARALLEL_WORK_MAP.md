@@ -234,6 +234,35 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Android/iOS signing, fiziksel iki-cihaz QR ve kontrollü Production smoke ayrıca
   açık commercial release kapılarıdır.
 
+## Wave 10 Phase F Final Entegrasyon Gözlemi
+
+- Agent 1'in F3/F3A/F3B/F3D canlı email acceptance ve cleanup evidence final HEAD'i
+  (`8a23c23`) exact `b24f761` tabanından tek `--no-ff` merge ile çatışmasız entegre
+  edildi. Input ve integration değişiklikleri yalnız canonical release/coordination
+  belgeleridir; uygulama kodu, SQL/migration, `service_locator.dart`, shared model,
+  dependency veya platform config değişmedi.
+- F3 Dashboard `10 users (estimated)` sinyali F3A authoritative SQL ile
+  `auth.users = 0` olarak çözüldü; estimated metric gerçek Auth row count değildir ve
+  D1 zero baseline ile çelişmez.
+- F3B Custom SMTP/Resend üzerinden gerçek inbox delivery, server-side confirmation,
+  final callback email URL contract'ı ve default customer profile/role davranışını
+  PASS doğruladı. Confirmation e-postasının Spam'e düşmesi Auth failure değil,
+  `EMAIL_DELIVERABILITY_TUNING` açık release follow-up'ıdır.
+- F3D yalnız owner-authorized disposable fixture'ı trusted Auth Admin yöntemiyle
+  temizledi. Post-delete Auth user/identity/session/profile/consent, linked business
+  ve Storage residual count'ları exact `0`; Production zero-auth baseline restore
+  PASS'tir. Başka user/data değişmedi.
+- Actual final mobile app callback opening ve full password-recovery mobile lifecycle
+  BLOCKED kalır. Legacy Production callback allowlist kaydı actual app opening PASS
+  olmadan kaldırılmaz. Signing, fiziksel iki-cihaz QR, broader Production smoke ve
+  signed AAB/APK/IPA ayrıca açıktır.
+- Final integration Production/Development remote erişimi veya write, Auth config
+  change, e-posta gönderimi, user create/delete ya da migration apply yapmadı.
+- Callback/PKCE/signup-recovery/account-deletion/profile/canonical RLS hedefli yerel
+  matris 151/151, docs consistency, diff ve secret/PII scan PASS. Yalnız doküman
+  merge'i olduğu için full suite/analyzer yeniden çalıştırılmadı; Development live
+  harness'i çağrılmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

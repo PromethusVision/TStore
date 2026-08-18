@@ -56,6 +56,18 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PHASE_F_LIVE_EMAIL_ACCEPTANCE: PARTIAL`
 
+`PRODUCTION_EMAIL_INFRASTRUCTURE: READY`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
+
+`EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
+
 2026-08-17 salt-okunur tekrar kontrolde exact Production name/ref, Development
 exclusion, Custom SMTP, Confirm Email, final Site URL ve iki callback'li allowlist PASS
 oldu. Auth Users ekranı refresh sonrasında `10 users (estimated)` gösterdi; beklenen
@@ -77,6 +89,10 @@ scheme'i karşılayan Production uygulaması bulunmadığından actual app openi
 kaldı. Recovery isteği kabul edildi, fakat link kullanılmadı ve full mobile PKCE
 recovery lifecycle doğrulanmadı.
 
+Spam klasörüne teslim, SMTP veya Auth confirmation failure değildir. Bu sonuç ayrı
+`EMAIL_DELIVERABILITY_TUNING` release follow-up'ı olarak açık tutulur; bu integration
+provider planı veya DNS ayarı değiştirmez.
+
 F3D fresh gate'te yalnız masked disposable fixture doğrulandı: Auth user/identity/
 profile `1/1/1`, customer role `1`, merchant/admin `0`, legal consent `2`, session `2`,
 user-linked business ve Storage object `0`. Owner'ın açık exact-account yetkisiyle
@@ -88,11 +104,11 @@ korunur.
 
 ## Wave 10 Phase F2 Production Auth/SMTP read-only precheck
 
-`PRODUCTION_SMTP_PRECHECK: FAIL`
+`F2_PRODUCTION_SMTP_PRECHECK: FAIL — HISTORICAL PRE-LIVE CHECK`
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: NO`
+`F2_LIVE_EMAIL_ACCEPTANCE_READY: NO — HISTORICAL; F3B LATER EXECUTED`
 
 Authenticated management read-only inceleme exact `EsnaftaVar Production` /
 `mefhfvrgkwciubeajjeb` projesinde Email provider, Confirm Email ve Custom SMTP'nin
@@ -116,12 +132,13 @@ Auth client user/session yok ve üç active Storage bucket public URL/not-found 
 PASS oldu. Standard `main_production.dart` Web release build'i gerçek runtime injection
 ile icon workaround olmadan PASS; credential taşıyan geçici artifact kaldırıldı.
 
-Bu evidence full smoke veya deploy GO değildir. Auth Site URL/redirect/SMTP, platform
-signing, final artifact record ve kullanıcı oluşturan/write smoke maddeleri açık kalır.
+Bu evidence full smoke veya deploy GO değildir. SMTP delivery ve server-side
+confirmation PASS olsa da actual mobile callback opening, full recovery lifecycle,
+platform signing, final artifact record ve broader Production smoke açık kalır.
 Final Android/iOS kimliği ve Production callback
 `com.esnaftavar.app://login-callback/` kaynakta wired durumdadır. Development legacy
-callback'i ayrı sözleşmede korunur. Production legacy allowlist kaydı yalnız
-integration/signed-artifact kabulü sonrasında yetkili owner tarafından kaldırılır.
+callback'i ayrı sözleşmede korunur. Production legacy allowlist kaydı yalnız gerçek
+final mobile app callback opening PASS sonrasında yetkili owner tarafından kaldırılır.
 
 ## 1. Başlatma kapıları
 
@@ -268,9 +285,11 @@ Smoke sonunda:
 
 - [ ] Yalnız onaylı test prefix'li chat/notification/cart/QR/rating/review verisi canonical
       cleanup yoluyla temizlendi; gerçek müşteri verisine dokunulmadı.
-- [ ] Account-deletion testi dışındaki disposable principal cleanup'ını Auth sahibi yaptı.
-- [ ] Residual sayımları kaydedildi; beklenmeyen residual varsa release durduruldu.
-- [ ] Log ve ekran kanıtları secret/PII açısından redakte edildi.
+- [x] Phase F3 disposable principal cleanup'ını yetkili Auth sahibi exact fixture ile
+      sınırlı tuttu; broader smoke principal'ları için bu madde yeniden uygulanır.
+- [x] Phase F3 residual sayımları kaydedildi ve Auth/business/Storage exact `0` bulundu;
+      broader smoke sonrasında residual kontrolü yeniden zorunludur.
+- [x] Phase F3 Git kanıtı secret/PII açısından redakte edildi.
 - [ ] PASS/FAIL ve açık incidentler release sahibi tarafından imzalandı.
 
 **Final karar**

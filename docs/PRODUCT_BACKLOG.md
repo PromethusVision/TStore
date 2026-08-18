@@ -44,6 +44,14 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `com.esnaftavar.app.dev`. Callback bilinçli olarak korunup Phase F atomik cutover'a,
   mobil signing ve signed artifact'lar release sahibine açık bırakıldı. Remote write,
   migration apply, Auth/Storage config veya fixture işlemi yapılmadı.
+- 2026-08-18 Wave 10 Phase F final ilerlemesi: Final callback code/remote Site URL
+  wiring, Custom SMTP/Resend, gerçek inbox delivery, server-side confirmation ve
+  customer role/profile acceptance PASS. Dashboard `10 users (estimated)` göstergesi
+  authoritative SQL `auth.users = 0` ile açıklandı. Tek owner-authorized disposable
+  fixture cleanup sonrası Auth/profile/consent, linked business ve Storage residual
+  exact `0`; Production zero-auth baseline restore PASS. Actual mobile callback app
+  opening, full recovery lifecycle, legacy callback removal, deliverability tuning,
+  signing, fiziksel QR ve broader Production smoke açık kaldı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -122,8 +130,14 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Wave 4 tamamlanan Development doğrulamaları: Auth signup/session, otomatik profil/legal consent, own/cross-user/anon RLS, saved locations/addresses/wishlist, merchant/admin escalation reddi; QR create/confirm/negative state'ler/immutable snapshot/gerçek concurrency; Chat ve Notifications Realtime delivery/isolation/reconnect/dedup/lifecycle.
 - Fiziksel kamera ve iki cihaz QR kabulü C1 altında açık kalır.
 - Ürün yorumu Option A backend/client implementasyonu ve normal Auth Development live lifecycle doğrulaması tamamlandı; unverified submit `42501 [REVIEW_NOT_VERIFIED]` ile reddedildi ve create/duplicate/update/delete/recreate aggregate yenilemesi geçti.
-- Production-like e-posta doğrulama/SMTP kabulü, Confirm Email'in kapalı olduğu Development live testlerinden ayrı bir release kapısıdır.
-- Wave 7 kod tarafında PKCE recovery callback, Android/iOS callback registration, enumeration-safe signup ve Android internet izni tamamlandı. Development remote Auth config değiştirilmedi; Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değildir. Gerçek inbox signup/delivery/confirmation/resend/expiry/recovery kabulü `PRODUCTION_LIKE_EMAIL_ACCEPTANCE: BLOCKED` kalır.
+- Production Phase F gerçek SMTP delivery, server-side signup confirmation ve final
+  callback email contract'ı PASS'tir. Confirm Email'in kapalı olduğu Development live
+  testleri bu kanıtın yerine geçmez ve Phase F Production sonucu Development'a
+  genellenmez.
+- PKCE recovery callback, Android/iOS callback registration, enumeration-safe signup
+  ve Android internet izni kodda tamamdır. Actual Production mobile app opening ve
+  full recovery link/PKCE/password-change lifecycle `BLOCKED`; resend duplicate/expiry
+  ve spam/deliverability tuning broader acceptance kapsamında açıktır.
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
@@ -197,6 +211,14 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   PASS (5 opt-in live skip), sentetik Production config preflight, analyzer,
   docs/diff ve security/secret scan temizdir. Integration remote backend
   erişimi/yazması veya e-posta göndermedi.
+- 2026-08-18 Wave 10 Phase F final sonucu: Agent 1 final live email/cleanup evidence
+  HEAD'i `--no-ff` ve çatışmasız entegre edildi. Real SMTP delivery, server-side
+  confirmation, final callback email URL contract'ı ve customer role/profile PASS;
+  exact cleanup sonrası Production Auth/business/Storage test residual `0`. Mobile
+  app opening ve full recovery BLOCKED; legacy callback removal ve spam tuning OPEN.
+  Callback/PKCE/signup-recovery/account-deletion/profile/canonical RLS hedefli yerel
+  matris 151/151, docs/diff ve secret/PII scan PASS; integration remote backend işlemi
+  yapmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -209,15 +231,18 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve Android/iOS platform wiring tamamlanmıştır. Android upload signing, Apple Team/certificate/profile ve signed AAB/APK/IPA hâlâ açık blocker'dır.
 - Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production final
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
-  Production HTTPS Site URL/fallback kararı, web recovery route/allowlist, gerçek
-  inbox confirmation/resend/recovery, SMTP sender/link-tracking final doğrulaması,
-  legacy callback allowlist removal, fiziksel iki-cihaz QR, fixture tabanlı Storage
-  negative listing ve controlled Production write smoke açık blocker'dır.
+  Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery ve
+  server-side confirmation PASS'tir. Actual mobile app opening, full recovery
+  lifecycle, legacy callback allowlist removal, deliverability/spam tuning,
+  fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
+  broader Production smoke açık blocker'dır.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
 - `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
-  `PRODUCTION_SMTP_PRECHECK: FAIL`, `LIVE_EMAIL_ACCEPTANCE_READY: NO`,
-  `SIGNING_READY: NO` ve `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
+  `PRODUCTION_EMAIL_INFRASTRUCTURE: READY`, `PRODUCTION_ZERO_TEST_RESIDUAL: YES`,
+  `MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`,
+  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `SIGNING_READY: NO` ve
+  `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening

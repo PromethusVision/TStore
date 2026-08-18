@@ -2,15 +2,17 @@
 
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
-authorized disposable-user cleanup
+authorized disposable-user cleanup + Phase F final integration
 
-**Kaynak taban:** Phase F3 `origin/main@b24f761881730159035a619822bf753b84ead6c3`;
-callback cutover `44a83c5`, Auth/SMTP precheck `0881e5b`
+**Kaynak taban:** Phase F final integration
+`origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
+`8a23c237a16e144fb346f725d27837fb93c8695e`
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
 **İnceleme türü:** F2/F3A authenticated management read-only; F3B owner-authorized
 normal-client Auth/email acceptance; F3D owner-authorized exact Auth Admin cleanup.
+Final integration remote backend erişimi veya write yapmadı.
 
 Bu belge F2/F3A salt-okunur kanıtını, F3B canlı teslimat/server confirmation sonucunu
 ve F3D cleanup sonucunu birlikte kaydeder. F3B'de yalnız tek disposable customer normal
@@ -110,8 +112,8 @@ testin tek disposable principal kapsamı ayrıca F3 yetkisiyle yürütülür.
 
 ## Phase F3B live acceptance and Phase F3D authorized cleanup
 
-F3A zero baseline sonrasında yalnız masked `d***@outlook.com.tr` disposable customer
-normal Production istemcisiyle oluşturuldu. Otomatik profile ve canonical legal-consent
+F3A zero baseline sonrasında yalnız tek disposable customer normal Production
+istemcisiyle oluşturuldu. Otomatik profile ve canonical legal-consent
 satırları oluştu; rol `customer` kaldı ve merchant/admin rolü görülmedi. Confirmation
 e-postası gerçek inbox'a ulaştı, fakat Spam klasörüne düştü. Gözlenen sender adı/domain
 beklenen sözleşmeyle uyumluydu. Confirmation linki Supabase server tarafında hesabı
@@ -300,7 +302,7 @@ release kapısı açılmaz.
 
 ## Precheck decision
 
-`PRODUCTION_SMTP_PRECHECK: FAIL`
+`F2_PRODUCTION_SMTP_PRECHECK: FAIL — HISTORICAL PRE-LIVE CHECK`
 
 Custom SMTP ON ve görünür host/port/name wiring'i doğrulandı. Buna rağmen exact masked
 sender/username ile Resend dashboard verified/link-tracking durumu bağımsız
@@ -308,7 +310,7 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`READY_FOR_LIVE_EMAIL_ACCEPTANCE_AFTER_INTEGRATION: YES — EXACT AUTH BASELINE ZERO`
+`LIVE_EMAIL_ACCEPTANCE_EXECUTED: YES — DELIVERY/SERVER CONFIRMATION PASS`
 
 `PHASE_F3_PREWRITE_GATE: PASS — F3A EXACT AUTH/IDENTITY/SESSION 0/0/0`
 
@@ -326,11 +328,23 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `PRODUCTION_PASSWORD_RECOVERY: BLOCKED`
 
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+
 `AUTHORIZED_TEST_USER_CLEANUP: PASS`
 
 `PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES`
 
 `TEST_FIXTURE_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`PRODUCTION_EMAIL_INFRASTRUCTURE: READY`
+
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
+
+`EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
 `PHASE_F_CALLBACK_INTEGRATED: YES`
 
@@ -355,9 +369,9 @@ Kalan canlı kabul açıkları:
 
 `CALLBACK_INTEGRATED — DELIVERY_AND_SERVER_CONFIRMATION_PASS — MOBILE_LIFECYCLE_BLOCKED`
 
-Integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/platform/preflight
-hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer
-PASS. Bu yerel doğrulamalar gerçek e-posta gönderimi veya canlı inbox kabulü değildir.
+Intermediate integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/
+platform/preflight hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in
+live skip) ve analyzer PASS. F3B'nin gerçek teslimat kanıtı bundan ayrıdır.
 
 Phase F3 blocker kaydı sonrasında callback/PKCE/deep-link, signup/resend/recovery,
 account deletion, Production preflight, kontrollü Auth flow ve profile hedefli yerel
@@ -370,3 +384,8 @@ F3D sonrasında account-deletion, Auth/profile ve canonical RLS contract hedefli
 beklenen 1 skip üretti. Böylece Development remote erişimi yapılmadı. Authoritative
 Production residual SQL, diff ve secret/PII kontrolleri PASS; yalnız belge değiştiği
 için full suite/analyzer tekrarlanmadı.
+
+Phase F final integration callback/PKCE/signup-recovery/account-deletion/profile ve
+canonical RLS hedefli yerel matrisi 151/151, docs consistency, diff ve secret/PII scan
+PASS doğruladı. Kod değişmediği için full suite/analyzer yeniden çalıştırılmadı;
+Production/Development remote test çağrılmadı.

@@ -3,12 +3,12 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-18
-- Son doğrulanan teslimler: callback cutover `44a83c5e1e5c13003fba6145d5aa18fd6f226f67`, Auth/SMTP precheck `0881e5bba2603af974d13c676eac014855d75f55`, Phase F3A exact Auth inventory, Phase F3B live SMTP/server confirmation ve Phase F3D authorized fixture cleanup
-- Doğrulanan branch/base: `agent1/w10-production-live-email-acceptance` / `origin/main@b24f761881730159035a619822bf753b84ead6c3`
-- Entegrasyon durumu: **WAVE 10 PHASE F CALLBACK INTEGRATED / REAL SMTP + SERVER CONFIRMATION PASS / ZERO AUTH BASELINE RESTORED / MOBILE CALLBACK + RECOVERY BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 1 worktree. F3B'de yalnız tek owner-authorized disposable customer normal client ile oluşturuldu ve confirmation/recovery e-postaları istendi; F3D'de fresh safety gate sonrasında yalnız bu exact fixture trusted Auth Admin yöntemiyle silindi. Başka Production write, Auth config/schema/migration/Storage write veya Development erişimi yapılmadı
-- Doğrulama türü: exact Production identity; gerçek SMTP inbox teslimatı; server-side email confirmation; final callback email URL contract; Auth user/identity/session/profile/consent, user-linked business ve Storage before/after authoritative count'ları. Signed Production mobil artifact app opening ve full recovery lifecycle üretilmedi.
-- Çalıştırılmayan/BLOCKED kontroller: final callback actual mobile app opening, full mobile recovery PKCE lifecycle, Resend link-tracking final verification, legacy Production allowlist removal, signed AAB/APK/IPA callback kabulü, controlled Production business write smoke, fixture tabanlı Storage negative listing, fiziksel iki-cihaz QR ve iOS archive (Windows).
+- Son doğrulanan teslim: Agent 1 Phase F3/F3A/F3B/F3D final evidence `8a23c237a16e144fb346f725d27837fb93c8695e`; integration merge `3735fb9`
+- Doğrulanan branch/base: `integration/wave-10-phase-f-final-20260818` / `origin/main@b24f761881730159035a619822bf753b84ead6c3`
+- Entegrasyon durumu: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL / MOBILE CALLBACK + RECOVERY BLOCKED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. F3B/F3D owner-authorized canlı işlemleri Agent 1 kanıtında tamamlanmıştır; final integration Production/Development remote erişimi, write, e-posta, user mutation, Auth config veya migration işlemi yapmadı
+- Doğrulama türü: exact Production identity; gerçek SMTP inbox teslimatı; server-side email confirmation; final callback email URL contract; Auth user/identity/session/profile/consent, user-linked business ve Storage before/after authoritative count'ları. Final integration bunları Git/doküman ve yerel sözleşme testleriyle doğrular; signed Production mobil artifact app opening ve full recovery lifecycle üretilmedi.
+- Çalıştırılmayan/BLOCKED kontroller: final callback actual mobile app opening, full mobile recovery PKCE lifecycle, legacy Production allowlist removal, email deliverability/spam tuning, Resend link-tracking final verification, signed AAB/APK/IPA callback kabulü, controlled broader Production smoke, fiziksel iki-cihaz QR ve iOS archive (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -44,11 +44,23 @@
 
 `TEST_FIXTURE_CLEANUP: PASS`
 
-`PRODUCTION_SMTP_PRECHECK: FAIL`
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`PRODUCTION_EMAIL_INFRASTRUCTURE: READY`
+
+`F2_PRODUCTION_SMTP_PRECHECK: FAIL — HISTORICAL PRE-LIVE CHECK`
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
 `PHASE_F_LIVE_EMAIL_ACCEPTANCE: PARTIAL — MOBILE APP OPENING/RECOVERY BLOCKED`
+
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
+
+`EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
 
@@ -218,6 +230,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   Auth config/schema/migration ve Development değiştirilmedi. Account-deletion,
   Auth/profile ve canonical RLS contract hedefli matrisi 90 PASS; Development live RLS
   harness'i opt-in kapalı olduğu için beklenen 1 skip verdi.
+- Wave 10 Phase F final integration'da callback/PKCE/signup-recovery/account-deletion/
+  profile/canonical RLS hedefli yerel matris 151/151, docs consistency, diff ve
+  secret/PII scan PASS. Kod değişmediği için full Flutter suite ve analyzer formalite
+  amacıyla yeniden çalıştırılmadı; Development live harness'i çağrılmadı ve remote
+  erişim yapılmadı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -244,6 +261,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-18: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL** — Agent 1 final F3/F3A/F3B/F3D evidence HEAD'i `--no-ff` ve çatışmasız entegre edildi. Gerçek inbox teslimatı, server-side confirmation, final callback email contract'ı ve customer role/profile davranışı PASS; authorized disposable fixture cleanup sonrası Auth user/identity/session/profile/consent, linked business ve Storage residual exact `0`. Spam teslimatı Auth failure değildir ve deliverability tuning açık follow-up'tır. Actual mobile app opening, full recovery lifecycle, legacy callback removal, signing ve broader Production smoke açık kalır. Integration remote backend işlemi yapmadı.
 - 2026-08-18: **WAVE 10 PHASE F3D AUTHORIZED ADMIN CLEANUP PASS / ZERO AUTH BASELINE RESTORED** — Fresh exact gate yalnız masked F3 disposable customer'ı doğruladı: Auth user/identity/profile `1/1/1`, customer `1`, merchant/admin `0`, legal consent `2`, session `2`, linked business ve Storage `0`. Owner'ın exact-account yetkisiyle Supabase Dashboard Auth Admin delete uygulandı. Authoritative post-delete state Auth user/identity/session/profile/consent/business/Storage `0/0/0/0/0/0/0`; başka user/veri yok. F3D'de email/config/schema/migration/Storage/Development write yapılmadı.
 - 2026-08-18: **WAVE 10 PHASE F3B REAL SMTP + SERVER CONFIRMATION PASS / MOBILE LIFECYCLE BLOCKED** — Tek disposable normal-client customer için confirmation e-postası gerçek inbox'a ulaştı (Spam); sender adı/domain beklenen contract ile uyumluydu. Link server-side confirmation'ı tamamladı ve final callback URL contract'ını taşıdı. Windows'ta Production mobile scheme handler bulunmadığı için actual app opening; kullanılmayan recovery linki nedeniyle full mobile PKCE recovery BLOCKED kaldı. Bu durum Auth delivery/confirmation failure değildir.
 - 2026-08-17: **WAVE 10 PHASE F3A AUTH BASELINE EXPLAINED / LIVE EMAIL CAN RESUME** — Authoritative salt-okunur SQL `auth.users/identities/sessions = 0/0/0`, profiles/consents ve tüm user-linked business relation'ları `0` doğruladı. D1 zero-state current state ile tutarlı; Dashboard `10 users (estimated)` actual relation count değildi. User inventory boştur, cleanup adayı yoktur. Production/Development write, user mutation veya e-posta gönderimi yapılmadı.
