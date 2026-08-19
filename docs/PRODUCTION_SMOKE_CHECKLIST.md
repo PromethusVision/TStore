@@ -44,9 +44,9 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
-`READY_FOR_PHYSICAL_B2_RETEST: YES`
+`READY_FOR_PHYSICAL_B2_RETEST: COMPLETED`
 
-`PHYSICAL_DEVICE_REGRESSION: BLOCKED`
+`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -93,18 +93,36 @@ Agent hedefli testleri 88/88 ve kayıtlı konum widget regresyonu 13/13; integra
 hedefli matrisi 118/118 ve tam Flutter suite 1177 PASS (5 explicit opt-in live skip)
 tamamladı. Analyzer ve Agent'ın secretsız Development debug APK derlemesi PASS.
 Production/Development remote erişimi veya write, signup ya da e-posta yoktur.
-ADB'de cihaz bulunmadığı ve geçici Production runtime/signing girdileri güvenlik gereği
-repo dışında olduğu için yeni signed Production APK/install yapılmadı. Aşağıdaki
-fiziksel kabul halen zorunludur; mevcut uygulama verisi silinmemelidir:
+Wave 11 B2R'de POCO X7 Pro / Android 16 fiziksel cihaz olarak ADB ve Flutter tarafından
+doğrulandı. Canonical repo-dışı keystore ile current main'den yeni Production APK
+üretildi; `com.esnaftavar.app` üzerine uninstall/clear-data olmadan normal upgrade
+kuruldu. APK signature/package/final callback ve artifact secret scan PASS; geçici
+`key.properties` ve runtime config build sonrasında silindi.
 
-- [ ] Login/signup alanlarında yazı görünür; parola maskesi doğru (signup submit yok).
-- [ ] Konum aksiyonu Android izin dialog'unu açar; izin sonrası sonuç gelir ve crash yok.
+- [x] Erişilebilir Home arama input'unda yazılan değer, hint ve cursor açık zeminde
+      fiziksel olarak okunabilir. Mevcut oturum korunarak login/signup açılmadı;
+      parola maskelemesi widget testinde PASS kaldı.
+- [x] Konum aksiyonu Android runtime izin dialog'unu açtı. “Uygulamayı kullanırken izin
+      ver” sonrasında fine/coarse izin, gerçek location access ve çalışan app process'i
+      ADB ile doğrulandı; product-owner konum sonucunu, hata/crash olmadığını fiziksel
+      olarak onayladı. Exact koordinat kaydedilmedi.
 - [ ] Ayrı yetkili canlı Auth turunda final callback app-opening/waiting-state kapanışı
-      doğrulanır; bu B2 turunda yeni signup/e-posta yoktur.
+      doğrulanır; B2R yeni signup/e-posta/confirmation üretmedi.
+
+Fiziksel denied/deniedForever ve Settings-return negatif turu çalıştırılmadı; bu akışın
+service/widget sözleşmeleri hedefli testlerde PASS. B2R hedefli paket 114 PASS, tam
+Flutter suite 1177 PASS (5 explicit opt-in live skip) ve analyzer PASS. Production veya
+Development backend write, Auth e-postası, yeni user, QR ya da Storage işlemi yoktur.
 
 `WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
 
-`PHYSICAL_DEVICE_REGRESSION: BLOCKED — ADB DEVICE NOT ATTACHED`
+`INPUT_PHYSICAL_VISIBILITY: PASS`
+
+`LOCATION_PHYSICAL_ACCEPTANCE: PASS`
+
+`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED — NO AUTH/EMAIL FIXTURE CREATED`
+
+`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
 
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
 

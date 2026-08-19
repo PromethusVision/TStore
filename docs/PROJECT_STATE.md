@@ -3,23 +3,23 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-19
-- Son doğrulanan teslim: Wave 11 Agent 2 fiziksel cihaz B2 bugfix commit'i
-  `fa074a8d70ec54f24663fbe7838348275ccbd907`; integration merge `74a8ed3`
-- Doğrulanan branch/base: `integration/wave-11-phase-b2-bugfix-20260819` /
-  `origin/main@8f0adeba7b1b1cc9a5f4b1dbde7b6f94e030181f`
-- Entegrasyon durumu: **WAVE 11 PHASE B2 CODE FIX PASS / PHYSICAL B2 RETEST READY / PHYSICAL DEVICE REGRESSION BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Input
-  görünürlüğü, confirmation callback UI/state yenilemesi ve konum izin/settings
-  akışı çatışmasız entegre edildi; Production/Development remote erişimi, write,
-  Auth signup, e-posta, QR, Storage, config veya migration işlemi yapılmadı.
+- Son doğrulanan teslim: Wave 11 Phase B2R POCO X7 Pro fiziksel input/location retest
+- Doğrulanan branch/base: `agent1/w11-b2-physical-retest` /
+  `origin/main@4d3542903ef6e6cb861723100ce69113b19c28cc`
+- Entegrasyon durumu: **WAVE 11 PHASE B2 CODE FIX PASS / PHYSICAL INPUT+LOCATION PASS / CONFIRMATION PHYSICAL BLOCKED**
+- Snapshot oluşturulurken çalışma ağacı: Agent 1 B2R task worktree. Current main'den
+  canonical keystore ile signed Production APK üretildi, mevcut uygulamanın üzerine
+  data silmeden kuruldu ve input/location fiziksel retest tamamlandı. Production veya
+  Development backend write, Auth signup/e-posta, QR, Storage, config veya migration
+  işlemi yapılmadı.
 - Doğrulama türü: input/theme/widget, callback/confirmation, PKCE, konum
   servis/izin/settings ve Android platform/signing hedefli matrisi; tam Flutter suite,
   analyzer, diff ve secret/private-key/tracked signing artifact kontrolleri.
-- Çalıştırılmayan/BLOCKED kontroller: bağlı fiziksel Android cihazı bulunmadığı için
-  gerçek cihazda input görünürlüğü, confirmation success/app opening ve location
-  permission/acquisition; full mobile recovery PKCE lifecycle; legacy Production
-  allowlist removal; deliverability tuning; broader Production smoke; fiziksel
-  iki-cihaz QR ve iOS archive/signing (Windows).
+- Çalıştırılmayan/BLOCKED kontroller: yeni Production signup/e-posta üretilmediği için
+  confirmation success/app opening fiziksel UI kabulü; physical deniedForever/
+  Settings-return negatif turu; full mobile recovery PKCE lifecycle; legacy Production
+  allowlist removal; deliverability tuning; broader Production smoke; fiziksel iki-cihaz
+  QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -101,7 +101,13 @@
 
 `LOCATION_PERMISSION_BUG: FIXED`
 
-`PHYSICAL_DEVICE_REGRESSION: BLOCKED — ADB DEVICE NOT ATTACHED`
+`INPUT_PHYSICAL_VISIBILITY: PASS`
+
+`LOCATION_PHYSICAL_ACCEPTANCE: PASS`
+
+`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED — NO AUTH/EMAIL FIXTURE CREATED`
+
+`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -292,8 +298,13 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   servis/izin/request/denied-forever/settings-resume/last-known akışı doğrulandı.
   Hedefli matris 88/88, kayıtlı konum regresyonu 13/13, tam Flutter suite 1177 PASS
   (5 opt-in live skip), analyzer ve Development debug Android build PASS. Production ve
-  Development remote yazması, Auth user/e-posta oluşturma yoktur. ADB'de cihaz
-  bulunmadığından POCO X7 Pro install ve fiziksel regression BLOCKED kalır.
+  Development remote yazması, Auth user/e-posta oluşturma yoktur. Sonraki B2R turunda
+  POCO X7 Pro / Android 16 cihaz algılama, signed Production APK rebuild, data koruyan
+  normal upgrade ve startup PASS oldu. Home arama input'unda değer/hint/cursor fiziksel
+  görünürlüğü; Android runtime location dialog'u, izin sonrası location access ve
+  product-owner'ın konum sonucu/hata yok gözlemi PASS. Login/signup oturum korunarak
+  açılmadı; parola maskelemesi otomatik testle PASS. Confirmation UI için yeni Auth/
+  e-posta fixture üretilmediğinden fiziksel kabul BLOCKED kaldı.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -320,6 +331,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-19: **WAVE 11 PHASE B2R PHYSICAL INPUT/LOCATION PASS / CONFIRMATION UI PHYSICAL BLOCKED** — POCO X7 Pro / Android 16 hem ADB hem Flutter ile fiziksel cihaz olarak doğrulandı. Current main'den canonical repo-dışı keystore ve client-safe Production runtime config ile signed APK üretildi; signature, `com.esnaftavar.app`, final callback ve artifact secret scan PASS. Geçici signing/runtime dosyaları silindi, kalıcı keystore korundu. Mevcut uygulamaya uninstall/clear-data olmadan upgrade yapıldı; startup/process ve crash kontrolü PASS. Home arama input'unda değer/hint/cursor görünürlük checklist'i product-owner tarafından PASS edildi. Konum dialog'u açıldı, izin verildi; sistem servisi, permission, location access ve crash-free process ADB'de, başarı sonucu/hata yok durumu product-owner tarafından doğrulandı. Hedefli paket 114 PASS, tam suite 1177 PASS (5 opt-in live skip), analyzer PASS. Yeni signup/e-posta/confirmation veya remote backend write yapılmadı; confirmation UI fiziksel kabulü bu nedenle BLOCKED.
 - 2026-08-19: **WAVE 11 PHASE B2 INPUT/AUTH CALLBACK/LOCATION AUTOMATED FIX PASS / PHYSICAL REGRESSION BLOCKED** — Açık müşteri form yüzeylerinde değer/hint/error/cursor/selection görünürlüğü merkezi yerel theme ile sabitlendi. Confirmation callback Auth/profile state'ini yeniden değerlendirir, waiting route'u kapatır, session durumuna göre shell/login hedefini seçer ve tek başarı mesajı gösterir; malformed/duplicate ve environment isolation korunur. Konum akışı cihaz servisi → runtime permission request → current/last-known position sırasına, denied-forever settings aksiyonuna ve resume refresh'e bağlandı. Remote backend yazması, signup veya e-posta yoktur. ADB cihazı olmadığından signed Production rebuild/install ve POCO X7 Pro fiziksel doğrulama yapılmadı.
 - 2026-08-18: **WAVE 11 PHASE A FINAL INTEGRATION / ANDROID SIGNING READY / FIRST SIGNED APK+AAB PASS / PHYSICAL ACCEPTANCE OPEN** — Agent 1 `b56b9fe` teslimi `18f7e03` ile `--no-ff` ve çatışmasız entegre edildi. Repo-dışı kalıcı RSA-4096 upload key ve `esnaftavar-upload` alias'ıyla `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` signed Production APK ve AAB üretildi. APK signer v2, AAB signature, package/manifest/final callback, artifact hash ve secret scan PASS; legacy callback ve server-only/signing secret yok. Geçici credential/config dosyaları silindi; keystore, `key.properties` ve APK/AAB Git dışında kaldı. Owner birincil keystore yedeği ile parola yöneticisi kaydını tamamladı; ikinci offline yedek öneri/açık olarak korunur. Fiziksel Android install/startup/callback acceptance, Play Console/Play App Signing, iOS signing ve commercial GO açıktır. Integration Production/Development remote erişimi veya write yapmadı.
 - 2026-08-18: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL** — Agent 1 final F3/F3A/F3B/F3D evidence HEAD'i `--no-ff` ve çatışmasız entegre edildi. Gerçek inbox teslimatı, server-side confirmation, final callback email contract'ı ve customer role/profile davranışı PASS; authorized disposable fixture cleanup sonrası Auth user/identity/session/profile/consent, linked business ve Storage residual exact `0`. Spam teslimatı Auth failure değildir ve deliverability tuning açık follow-up'tır. Actual mobile app opening, full recovery lifecycle, legacy callback removal, signing ve broader Production smoke açık kalır. Integration remote backend işlemi yapmadı.
