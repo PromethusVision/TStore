@@ -59,6 +59,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   ve binary artifact'lar tracked değildir. Owner birincil keystore yedeğini ve parola
   yöneticisi kaydını tamamladı; fiziksel Android kabulü, Play Console/Play App
   Signing, iOS signing, callback/recovery lifecycle ve commercial GO açık kaldı.
+- 2026-08-19 Wave 11 Phase B2 ilerlemesi: Fiziksel cihazda bildirilen açık yüzey
+  input görünürlüğü, e-posta confirmation callback sonrası waiting-state/navigation
+  ve Android location runtime permission/settings-resume akışları kodda düzeltildi.
+  Hedefli 118/118, tam Flutter suite 1177 PASS (5 opt-in live skip) ve analyzer PASS.
+  Fiziksel input, confirmation success/app opening ve location acquisition retest'i;
+  mobile recovery, fiziksel iki-cihaz QR ve broader Production smoke açık kalır.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -232,6 +238,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   suite 1154 PASS (5 opt-in live skip), analyzer, diff, secret/private-key ve tracked
   artifact scan kapıları PASS oldu. Integration binary artifact üretmedi ve
   Production/Development remote erişimi veya write yapmadı.
+- 2026-08-19 Wave 11 Phase B2 sonucu: Agent 2 input/Auth confirmation/location
+  bugfix commit'i `--no-ff` ve çatışmasız entegre edildi. Üç code-fix PASS ve fiziksel
+  B2 retest'e hazırdır; bağlı cihaz kanıtı olmadığından
+  `PHYSICAL_DEVICE_REGRESSION: BLOCKED` korunur. Integration remote backend işlemi,
+  signup/e-posta, QR, Storage, migration, Auth config veya signing materyali üretmedi.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -260,6 +271,9 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`,
   `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `ANDROID_SIGNING_READY: YES`,
   `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
+  `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
+  `LOCATION_PERMISSION_CODE_FIX: PASS`, `READY_FOR_PHYSICAL_B2_RETEST: YES`,
+  `PHYSICAL_DEVICE_REGRESSION: BLOCKED`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

@@ -3,23 +3,23 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-19
-- Son doğrulanan teslim: Wave 11 Agent 1 ilk imzalı Android Production APK/AAB
-  kanıtı `b56b9fe46b1beb8e9b0955dfef8893e8e4f9c7e3`; integration merge `18f7e03`
-- Doğrulanan branch/base: `integration/wave-11-phase-a-android-signing-20260818` /
-  `origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`
-- Entegrasyon durumu: **WAVE 11 PHASE A ANDROID SIGNING READY / SIGNED APK+AAB PASS / PHYSICAL ANDROID ACCEPTANCE OPEN**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in
-  salt-okunur client-safe publishable-key/build kanıtı Git ve yerel sözleşme
-  kontrolleriyle entegre edildi; integration Production/Development remote erişimi,
-  write, Auth, e-posta, config veya migration işlemi yapmadı.
-- Doğrulama türü: Agent 1 fail-closed signing ve repo-dışı RSA-4096 upload key
-  kanıtı; imzalı APK/AAB package/label/version/manifest/callback/signature/hash ve
-  artifact secret scan'i; integration hedefli/tam Flutter testleri, analyzer,
-  tracked-file/private-key ve secret scan'i.
+- Son doğrulanan teslim: Wave 11 Agent 2 fiziksel cihaz B2 bugfix commit'i
+  `fa074a8d70ec54f24663fbe7838348275ccbd907`; integration merge `74a8ed3`
+- Doğrulanan branch/base: `integration/wave-11-phase-b2-bugfix-20260819` /
+  `origin/main@8f0adeba7b1b1cc9a5f4b1dbde7b6f94e030181f`
+- Entegrasyon durumu: **WAVE 11 PHASE B2 CODE FIX PASS / PHYSICAL B2 RETEST READY / PHYSICAL DEVICE REGRESSION BLOCKED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Input
+  görünürlüğü, confirmation callback UI/state yenilemesi ve konum izin/settings
+  akışı çatışmasız entegre edildi; Production/Development remote erişimi, write,
+  Auth signup, e-posta, QR, Storage, config veya migration işlemi yapılmadı.
+- Doğrulama türü: input/theme/widget, callback/confirmation, PKCE, konum
+  servis/izin/settings ve Android platform/signing hedefli matrisi; tam Flutter suite,
+  analyzer, diff ve secret/private-key/tracked signing artifact kontrolleri.
 - Çalıştırılmayan/BLOCKED kontroller: bağlı fiziksel Android cihazı bulunmadığı için
-  install/startup, final callback actual mobile app opening ve full mobile recovery
-  PKCE lifecycle; legacy Production allowlist removal; deliverability tuning; broader
-  Production smoke; fiziksel iki-cihaz QR ve iOS archive/signing (Windows).
+  gerçek cihazda input görünürlüğü, confirmation success/app opening ve location
+  permission/acquisition; full mobile recovery PKCE lifecycle; legacy Production
+  allowlist removal; deliverability tuning; broader Production smoke; fiziksel
+  iki-cihaz QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 

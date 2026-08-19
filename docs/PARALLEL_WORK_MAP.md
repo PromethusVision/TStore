@@ -298,6 +298,39 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Flutter suite 1154 PASS (5 opt-in live skip) ve analyzer PASS'tir. Diff,
   secret/private-key ve tracked signing/binary artifact scan'leri temizdir.
 
+## Wave 11 Phase B2 Final Entegrasyon Gözlemi
+
+`INPUT_VISIBILITY_CODE_FIX: PASS`
+
+`EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`
+
+`LOCATION_PERMISSION_CODE_FIX: PASS`
+
+`READY_FOR_PHYSICAL_B2_RETEST: YES`
+
+`PHYSICAL_DEVICE_REGRESSION: BLOCKED`
+
+- Agent 2'nin `fa074a8` input/Auth confirmation/location bugfix commit'i exact
+  `8f0adeb` tabanından tek `--no-ff` merge ile çatışmasız entegre edildi.
+- Açık müşteri input yüzeyleri koyu sistem temasından bağımsız okunabilir değer,
+  hint/label/error, cursor ve selection renkleri taşır; parola maskelemesi korunur.
+- Exact environment confirmation callback'i Auth/profile durumunu yeniler, session
+  sonucuna göre customer shell veya Login'e tek yönlendirme yapar ve exact başarı
+  mesajını gösterir. Malformed/duplicate callback, PKCE ve Production/Development
+  izolasyon sözleşmeleri korunur.
+- Konum akışı servis kontrolü, runtime izin isteği, kalıcı ret için App Settings,
+  servis kapalıyken location settings, resume refresh ve güvenli last-known fallback
+  sırasını uygular; doğrudan permission bypass veya tekrar istek döngüsü yoktur.
+- Integration hedefli matrisi 118/118, tam Flutter suite 1177 PASS (5 explicit
+  opt-in live skip) ve analyzer PASS'tir. Production/Development remote erişimi veya
+  write, signup, e-posta, QR, Storage, migration ya da Auth config işlemi yapılmadı.
+- Fiziksel input, confirmation success/app opening ve location acquisition retest'i;
+  full mobile recovery, fiziksel iki-cihaz QR ve broader Production smoke açık kalır.
+  Otomatik PASS fiziksel cihaz sonucunun yerine kullanılmaz.
+- `lib/t_store.dart` bu wave'in global listener/navigation hot-spot'udur; input theme
+  ve location service/state dosyalarıyla birlikte sonraki paralel işlerde tek sahipli
+  tutulmalıdır. SQL/migration, `service_locator.dart` ve shared model değişmedi.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

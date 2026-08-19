@@ -44,6 +44,10 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
+`READY_FOR_PHYSICAL_B2_RETEST: YES`
+
+`PHYSICAL_DEVICE_REGRESSION: BLOCKED`
+
 `COMMERCIAL_RELEASE_READY: NO`
 
 ## Wave 11 Phase A signed Android artifact evidence
@@ -69,8 +73,8 @@ Bu bölüm Production smoke PASS veya commercial release GO ilan etmez.
 
 ## Wave 11 Phase B2 physical bugfix automated evidence
 
-Wave 11 B2 task branch'inde fiziksel cihazda bildirilen üç client bug'ı için otomatik
-regression PASS oldu:
+Wave 11 B2 final integration'da fiziksel cihazda bildirilen üç client bug'ı için
+otomatik regression PASS oldu:
 
 - Açık renk müşteri input yüzeylerinde değer, hint/label, error, cursor ve selection
   koyu sistem temasında da okunabilir; login/signup/recovery ve parola maskeleme
@@ -85,9 +89,10 @@ regression PASS oldu:
   location settings'i açar; resume sonrasında durumu yeniden okur. Current-position
   timeout/unavailable halinde geçerli last-known position güvenli fallback'tir.
 
-Hedefli testler 88/88, kayıtlı konum widget regresyonu 13/13 ve tam Flutter suite
-1177 PASS (5 explicit opt-in live skip); analyzer ve secretsız Development debug APK
-derlemesi PASS. Production/Development remote write, signup veya e-posta yoktur.
+Agent hedefli testleri 88/88 ve kayıtlı konum widget regresyonu 13/13; integration
+hedefli matrisi 118/118 ve tam Flutter suite 1177 PASS (5 explicit opt-in live skip)
+tamamladı. Analyzer ve Agent'ın secretsız Development debug APK derlemesi PASS.
+Production/Development remote erişimi veya write, signup ya da e-posta yoktur.
 ADB'de cihaz bulunmadığı ve geçici Production runtime/signing girdileri güvenlik gereği
 repo dışında olduğu için yeni signed Production APK/install yapılmadı. Aşağıdaki
 fiziksel kabul halen zorunludur; mevcut uygulama verisi silinmemelidir:
