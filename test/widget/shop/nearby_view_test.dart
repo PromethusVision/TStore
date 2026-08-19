@@ -61,6 +61,12 @@ void main() {
 
     when(() => nearbyShopsCubit.loadShops()).thenAnswer((_) async {});
     when(() => nearbyShopsCubit.useCurrentLocation()).thenAnswer((_) async {});
+    when(
+      () => nearbyShopsCubit.openAppSettings(),
+    ).thenAnswer((_) async => true);
+    when(
+      () => nearbyShopsCubit.openLocationSettings(),
+    ).thenAnswer((_) async => true);
     when(() => nearbyShopsCubit.close()).thenAnswer((_) async {});
     whenListen(
       cartV2Cubit,
@@ -793,9 +799,65 @@ void main() {
       expect(find.text('Konum izni verilmedi'), findsOneWidget);
       expect(find.text('Mahalle Kahvecisi'), findsOneWidget);
       expect(find.text('Tekrar Kontrol Et'), findsOneWidget);
-      expect(find.textContaining('site ayarlarından konumu'), findsOneWidget);
+      expect(
+        find.textContaining('Android konum izni ekranını'),
+        findsOneWidget,
+      );
 
       await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('kalıcı izin reddinde uygulama ayarlarını açar', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.permissionDeniedForever),
+      );
+
+      expect(find.text('Uygulama Ayarlarını Aç'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('nearby-location-action')));
+      await tester.pump();
+
+      verify(() => nearbyShopsCubit.openAppSettings()).called(1);
+      verifyNever(() => nearbyShopsCubit.openLocationSettings());
+    });
+
+    testWidgets('kapalı cihaz servisinde konum ayarlarını açar', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.servicesDisabled),
+      );
+
+      expect(find.text('Konum Ayarlarını Aç'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('nearby-location-action')));
+      await tester.pump();
+
+      verify(() => nearbyShopsCubit.openLocationSettings()).called(1);
+      verifyNever(() => nearbyShopsCubit.openAppSettings());
+    });
+
+    testWidgets('ayar dönüşünde servis ve izin durumunu yeniden kontrol eder', (
+      tester,
+    ) async {
+      await pumpNearbyView(
+        tester,
+        const NearbyShopsLoaded([
+          completeShop,
+        ], locationStatus: NearbyLocationStatus.servicesDisabled),
+      );
+
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+
+      verify(() => nearbyShopsCubit.useCurrentLocation()).called(1);
     });
 
     testWidgets(

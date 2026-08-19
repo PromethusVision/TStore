@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -767,115 +768,117 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
           CustomerHomeV1Tokens.space20,
           CustomerHomeV1Tokens.space24 + bottomInset,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              _isEditing
-                  ? 'Değerlendirmenizi Düzenleyin'
-                  : 'Ürünü Değerlendirin',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: CustomerHomeV1Tokens.navy,
-                fontWeight: FontWeight.w700,
+        child: CustomerLightInputTheme(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                _isEditing
+                    ? 'Değerlendirmenizi Düzenleyin'
+                    : 'Ürünü Değerlendirin',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space4),
-            Text(
-              widget.productName,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: CustomerHomeV1Tokens.muted,
+              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              Text(
+                widget.productName,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: CustomerHomeV1Tokens.muted,
+                ),
               ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space20),
-            const Text(
-              'Puanınız *',
-              style: TextStyle(
-                color: CustomerHomeV1Tokens.navy,
-                fontWeight: FontWeight.w700,
+              const SizedBox(height: CustomerHomeV1Tokens.space20),
+              const Text(
+                'Puanınız *',
+                style: TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space8),
-            Wrap(
-              alignment: WrapAlignment.center,
-              children: List.generate(5, (index) {
-                final value = index + 1;
-                return IconButton(
-                  key: Key('product-review-rating-$value'),
-                  tooltip: '$value yıldız',
-                  onPressed: _isSaving
-                      ? null
-                      : () => setState(() => _rating = value),
-                  iconSize: 36,
-                  color: CustomerHomeV1Tokens.yellow,
-                  icon: Icon(
-                    value <= _rating
-                        ? Icons.star_rounded
-                        : Icons.star_border_rounded,
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space12),
-            TextField(
-              key: const Key('product-review-title-field'),
-              controller: _titleController,
-              enabled: !_isSaving,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'Kısa başlık (isteğe bağlı)',
-                hintText: 'Deneyiminizi özetleyin',
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: List.generate(5, (index) {
+                  final value = index + 1;
+                  return IconButton(
+                    key: Key('product-review-rating-$value'),
+                    tooltip: '$value yıldız',
+                    onPressed: _isSaving
+                        ? null
+                        : () => setState(() => _rating = value),
+                    iconSize: 36,
+                    color: CustomerHomeV1Tokens.yellow,
+                    icon: Icon(
+                      value <= _rating
+                          ? Icons.star_rounded
+                          : Icons.star_border_rounded,
+                    ),
+                  );
+                }),
               ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space12),
-            TextField(
-              key: const Key('product-review-comment-field'),
-              controller: _commentController,
-              enabled: !_isSaving,
-              minLines: 3,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Yorum (isteğe bağlı)',
-                hintText: 'Ürünle ilgili deneyiminizi paylaşın',
-                alignLabelWithHint: true,
-              ),
-            ),
-            if (_errorMessage != null) ...[
               const SizedBox(height: CustomerHomeV1Tokens.space12),
-              _InlineMessage(
-                key: const Key('product-review-editor-error'),
-                message: _errorMessage!,
+              TextField(
+                key: const Key('product-review-title-field'),
+                controller: _titleController,
+                enabled: !_isSaving,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  labelText: 'Kısa başlık (isteğe bağlı)',
+                  hintText: 'Deneyiminizi özetleyin',
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              TextField(
+                key: const Key('product-review-comment-field'),
+                controller: _commentController,
+                enabled: !_isSaving,
+                minLines: 3,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Yorum (isteğe bağlı)',
+                  hintText: 'Ürünle ilgili deneyiminizi paylaşın',
+                  alignLabelWithHint: true,
+                ),
+              ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                _InlineMessage(
+                  key: const Key('product-review-editor-error'),
+                  message: _errorMessage!,
+                ),
+              ],
+              const SizedBox(height: CustomerHomeV1Tokens.space20),
+              FilledButton.icon(
+                key: const Key('product-review-submit'),
+                onPressed: _isSaving ? null : _save,
+                style: FilledButton.styleFrom(
+                  backgroundColor: CustomerHomeV1Tokens.petrol,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                icon: _isSaving
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.send_rounded),
+                label: Text(
+                  _isSaving
+                      ? 'Kaydediliyor...'
+                      : _isEditing
+                      ? 'Değişiklikleri Kaydet'
+                      : 'Değerlendirmeyi Gönder',
+                ),
               ),
             ],
-            const SizedBox(height: CustomerHomeV1Tokens.space20),
-            FilledButton.icon(
-              key: const Key('product-review-submit'),
-              onPressed: _isSaving ? null : _save,
-              style: FilledButton.styleFrom(
-                backgroundColor: CustomerHomeV1Tokens.petrol,
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              icon: _isSaving
-                  ? const SizedBox.square(
-                      dimension: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.send_rounded),
-              label: Text(
-                _isSaving
-                    ? 'Kaydediliyor...'
-                    : _isEditing
-                    ? 'Değişiklikleri Kaydet'
-                    : 'Değerlendirmeyi Gönder',
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

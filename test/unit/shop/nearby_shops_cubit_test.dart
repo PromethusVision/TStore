@@ -84,6 +84,12 @@ void main() {
       when(
         () => customerLocationService.getPreferredLocation(),
       ).thenAnswer((_) async => null);
+      when(
+        () => customerLocationService.openAppSettings(),
+      ).thenAnswer((_) async => true);
+      when(
+        () => customerLocationService.openLocationSettings(),
+      ).thenAnswer((_) async => true);
     });
 
     test('başlangıç durumu NearbyShopsInitial olur', () async {
@@ -139,7 +145,9 @@ void main() {
           state.shops.map((shop) => shop.id),
           orderedEquals(const ['near-shop', 'far-shop']),
         );
-        verifyNever(() => customerLocationService.getCurrentLocation());
+        verifyNever(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        );
         await cubit.close();
       },
     );
@@ -313,7 +321,9 @@ void main() {
         when(
           () => getShopsUsecase(const NoParams()),
         ).thenAnswer((_) async => const Right(distanceShops));
-        when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+        when(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        ).thenAnswer(
           (_) async => const CustomerLocationResult.success(
             CustomerCoordinates(latitude: 41, longitude: 29),
           ),
@@ -341,7 +351,9 @@ void main() {
         expect(state.distanceForShop('far-shop'), greaterThan(11000));
         expect(state.distanceForShop('without-location'), isNull);
         expect(state.distanceForShop('invalid-shop'), isNull);
-        verify(() => customerLocationService.getCurrentLocation()).called(1);
+        verify(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        ).called(1);
 
         await cubit.close();
       },
@@ -350,6 +362,8 @@ void main() {
     const failureCases = <CustomerLocationFailure, NearbyLocationStatus>{
       CustomerLocationFailure.permissionDenied:
           NearbyLocationStatus.permissionDenied,
+      CustomerLocationFailure.permissionDeniedForever:
+          NearbyLocationStatus.permissionDeniedForever,
       CustomerLocationFailure.servicesDisabled:
           NearbyLocationStatus.servicesDisabled,
       CustomerLocationFailure.timedOut: NearbyLocationStatus.timedOut,
@@ -363,7 +377,10 @@ void main() {
           when(
             () => getShopsUsecase(const NoParams()),
           ).thenAnswer((_) async => const Right(shops));
-          when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+          when(
+            () =>
+                customerLocationService.getCurrentLocation(forceRefresh: true),
+          ).thenAnswer(
             (_) async => CustomerLocationResult.failed(failureCase.key),
           );
           final cubit = NearbyShopsCubit(
@@ -378,7 +395,10 @@ void main() {
             cubit.state,
             NearbyShopsLoaded(shops, locationStatus: failureCase.value),
           );
-          verify(() => customerLocationService.getCurrentLocation()).called(1);
+          verify(
+            () =>
+                customerLocationService.getCurrentLocation(forceRefresh: true),
+          ).called(1);
           await cubit.close();
         },
       );
@@ -390,7 +410,7 @@ void main() {
         () => getShopsUsecase(const NoParams()),
       ).thenAnswer((_) async => const Right(shops));
       when(
-        () => customerLocationService.getCurrentLocation(),
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
       ).thenAnswer((_) => locationRequest.future);
       final cubit = NearbyShopsCubit(
         getShopsUsecase: getShopsUsecase,
@@ -406,7 +426,9 @@ void main() {
         NearbyLocationStatus.requesting,
       );
       await secondRequest;
-      verify(() => customerLocationService.getCurrentLocation()).called(1);
+      verify(
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
+      ).called(1);
 
       locationRequest.complete(
         const CustomerLocationResult.success(
@@ -420,7 +442,9 @@ void main() {
         (cubit.state as NearbyShopsLoaded).locationStatus,
         NearbyLocationStatus.ready,
       );
-      verifyNever(() => customerLocationService.getCurrentLocation());
+      verifyNever(
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
+      );
       await cubit.close();
     });
 
@@ -430,7 +454,7 @@ void main() {
         () => getShopsUsecase(const NoParams()),
       ).thenAnswer((_) async => const Right(shops));
       when(
-        () => customerLocationService.getCurrentLocation(),
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
       ).thenAnswer((_) => locationRequest.future);
       final cubit = NearbyShopsCubit(
         getShopsUsecase: getShopsUsecase,
@@ -446,7 +470,9 @@ void main() {
         NearbyLocationStatus.requesting,
       );
       verify(() => getShopsUsecase(const NoParams())).called(1);
-      verify(() => customerLocationService.getCurrentLocation()).called(1);
+      verify(
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
+      ).called(1);
 
       locationRequest.complete(
         const CustomerLocationResult.success(
@@ -459,7 +485,9 @@ void main() {
         (cubit.state as NearbyShopsLoaded).locationStatus,
         NearbyLocationStatus.ready,
       );
-      verifyNever(() => customerLocationService.getCurrentLocation());
+      verifyNever(
+        () => customerLocationService.getCurrentLocation(forceRefresh: true),
+      );
       await cubit.close();
     });
 
@@ -486,7 +514,9 @@ void main() {
         final state = cubit.state as NearbyShopsLoaded;
         expect(state.locationStatus, NearbyLocationStatus.ready);
         expect(state.distanceForShop('shop-1'), isNotNull);
-        verifyNever(() => customerLocationService.getCurrentLocation());
+        verifyNever(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        );
         await cubit.close();
       },
     );
@@ -511,7 +541,9 @@ void main() {
         when(
           () => getShopsUsecase(const NoParams()),
         ).thenAnswer((_) async => const Right(refreshShops));
-        when(() => customerLocationService.getCurrentLocation()).thenAnswer(
+        when(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        ).thenAnswer(
           (_) async => const CustomerLocationResult.success(
             CustomerCoordinates(latitude: 41, longitude: 29),
           ),
@@ -532,9 +564,25 @@ void main() {
           orderedEquals(const ['near-shop', 'far-shop']),
         );
         verify(() => getShopsUsecase(const NoParams())).called(2);
-        verify(() => customerLocationService.getCurrentLocation()).called(1);
+        verify(
+          () => customerLocationService.getCurrentLocation(forceRefresh: true),
+        ).called(1);
         await cubit.close();
       },
     );
+
+    test('uygulama ve konum ayarlarını servis katmanına yönlendirir', () async {
+      final cubit = NearbyShopsCubit(
+        getShopsUsecase: getShopsUsecase,
+        customerLocationService: customerLocationService,
+      );
+
+      expect(await cubit.openAppSettings(), isTrue);
+      expect(await cubit.openLocationSettings(), isTrue);
+
+      verify(() => customerLocationService.openAppSettings()).called(1);
+      verify(() => customerLocationService.openLocationSettings()).called(1);
+      await cubit.close();
+    });
   });
 }

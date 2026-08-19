@@ -85,7 +85,9 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
       ),
     );
 
-    final result = await customerLocationService.getCurrentLocation();
+    final result = await customerLocationService.getCurrentLocation(
+      forceRefresh: true,
+    );
 
     if (isClosed || requestId != _locationRequestId) return;
     _isLocationRequestInProgress = false;
@@ -112,6 +114,14 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
         distanceMetersByShopId: const <String, double>{},
       ),
     );
+  }
+
+  Future<bool> openAppSettings() {
+    return customerLocationService.openAppSettings();
+  }
+
+  Future<bool> openLocationSettings() {
+    return customerLocationService.openLocationSettings();
   }
 
   NearbyShopsLoaded _buildLocationReadyState(
@@ -171,6 +181,8 @@ class NearbyShopsCubit extends Cubit<NearbyShopsState> {
     return switch (failure) {
       CustomerLocationFailure.permissionDenied =>
         NearbyLocationStatus.permissionDenied,
+      CustomerLocationFailure.permissionDeniedForever =>
+        NearbyLocationStatus.permissionDeniedForever,
       CustomerLocationFailure.servicesDisabled =>
         NearbyLocationStatus.servicesDisabled,
       CustomerLocationFailure.timedOut => NearbyLocationStatus.timedOut,

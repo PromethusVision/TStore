@@ -179,5 +179,102 @@ void main() {
       expect(exchangeCount, 1);
       expect(status, PasswordRecoveryLaunchStatus.verified);
     });
+
+    test(
+      'valid confirmation callback reports the refreshed session state',
+      () async {
+        final callback = Uri.parse(
+          'com.esnaftavar.app://login-callback/?code=one-time-code',
+        );
+
+        expect(
+          await SupabaseService.resolveEmailConfirmationCallback(
+            uri: callback,
+            appUri: Uri.base,
+            isWeb: false,
+            contract: production,
+            exchangeCode: (_) async => true,
+          ),
+          EmailConfirmationCallbackStatus.authenticated,
+        );
+        expect(
+          await SupabaseService.resolveEmailConfirmationCallback(
+            uri: callback,
+            appUri: Uri.base,
+            isWeb: false,
+            contract: production,
+            exchangeCode: (_) async => false,
+          ),
+          EmailConfirmationCallbackStatus.confirmedWithoutSession,
+        );
+      },
+    );
+
+    test(
+      'malformed confirmation is rejected without attempting exchange',
+      () async {
+        var exchangeCount = 0;
+
+        final status = await SupabaseService.resolveEmailConfirmationCallback(
+          uri: Uri.parse('com.esnaftavar.app://login-callback/'),
+          appUri: Uri.base,
+          isWeb: false,
+          contract: production,
+          exchangeCode: (_) async {
+            exchangeCount++;
+            return true;
+          },
+        );
+
+        expect(status, EmailConfirmationCallbackStatus.invalid);
+        expect(exchangeCount, 0);
+      },
+    );
+
+    test('Production ignores Development and recovery callbacks', () async {
+      var exchangeCount = 0;
+
+      for (final callback in [
+        Uri.parse('io.supabase.tstore://login-callback/?code=development-code'),
+        Uri.parse(
+          'com.esnaftavar.app://login-callback/'
+          '?auth_action=password_recovery&code=recovery-code',
+        ),
+      ]) {
+        expect(
+          await SupabaseService.resolveEmailConfirmationCallback(
+            uri: callback,
+            appUri: Uri.base,
+            isWeb: false,
+            contract: production,
+            exchangeCode: (_) async {
+              exchangeCount++;
+              return true;
+            },
+          ),
+          isNull,
+        );
+      }
+
+      expect(exchangeCount, 0);
+    });
+
+    test(
+      'missing local PKCE verifier falls back to confirmed login safely',
+      () {
+        expect(
+          SupabaseService.emailConfirmationStatusForExchangeError(
+            'PKCE code verifier not found in local storage',
+          ),
+          EmailConfirmationCallbackStatus.confirmedWithoutSession,
+        );
+        expect(
+          SupabaseService.emailConfirmationStatusForExchangeError(
+            'invalid authorization code',
+          ),
+          EmailConfirmationCallbackStatus.invalid,
+        );
+      },
+    );
   });
 }

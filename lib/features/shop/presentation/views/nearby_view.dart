@@ -77,11 +77,43 @@ class _NearbyContent extends StatefulWidget {
   State<_NearbyContent> createState() => _NearbyContentState();
 }
 
-class _NearbyContentState extends State<_NearbyContent> {
+class _NearbyContentState extends State<_NearbyContent>
+    with WidgetsBindingObserver {
   bool _isOpeningCart = false;
   bool _isOpeningSavedLocations = false;
   bool _isRequestingCurrentLocation = false;
+  bool _isOpeningLocationSettings = false;
+  bool _refreshLocationOnResume = false;
   final Set<String> _openingShopIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      final currentState = context.read<NearbyShopsCubit>().state;
+      if (currentState is NearbyShopsLoaded &&
+          _requiresSettingsRefresh(currentState.locationStatus)) {
+        _refreshLocationOnResume = true;
+      }
+      return;
+    }
+
+    if (state == AppLifecycleState.resumed && _refreshLocationOnResume) {
+      _refreshLocationOnResume = false;
+      unawaited(_refreshLocationAfterSettings());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +173,8 @@ class _NearbyContentState extends State<_NearbyContent> {
                             state: state,
                             onLocationRequested: () =>
                                 _showLocationExplanation(context),
+                            onLocationSettingsRequested: (status) =>
+                                _openLocationSettings(context, status),
                             onSavedLocationRequested: () =>
                                 _openSavedLocations(context),
                             onRefresh: context
@@ -331,6 +365,51 @@ class _NearbyContentState extends State<_NearbyContent> {
       _isOpeningSavedLocations = false;
     }
   }
+
+  Future<void> _openLocationSettings(
+    BuildContext context,
+    NearbyLocationStatus status,
+  ) async {
+    if (_isOpeningLocationSettings) return;
+    _isOpeningLocationSettings = true;
+    _refreshLocationOnResume = true;
+    final cubit = context.read<NearbyShopsCubit>();
+
+    try {
+      final opened = status == NearbyLocationStatus.permissionDeniedForever
+          ? await cubit.openAppSettings()
+          : await cubit.openLocationSettings();
+      if (!context.mounted) return;
+      if (!opened) {
+        _refreshLocationOnResume = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Ayarlar açılamadı. Lütfen cihaz ayarlarından konumu kontrol edin.',
+            ),
+          ),
+        );
+      }
+    } finally {
+      _isOpeningLocationSettings = false;
+    }
+  }
+
+  Future<void> _refreshLocationAfterSettings() async {
+    if (!mounted || _isRequestingCurrentLocation) return;
+    _isRequestingCurrentLocation = true;
+    try {
+      await context.read<NearbyShopsCubit>().useCurrentLocation();
+    } finally {
+      _isRequestingCurrentLocation = false;
+    }
+  }
+
+  bool _requiresSettingsRefresh(NearbyLocationStatus status) {
+    return status == NearbyLocationStatus.permissionDenied ||
+        status == NearbyLocationStatus.permissionDeniedForever ||
+        status == NearbyLocationStatus.servicesDisabled;
+  }
 }
 
 class _NearbyHeader extends StatelessWidget {
@@ -429,6 +508,7 @@ class _NearbyLoading extends StatelessWidget {
 class _LoadedNearbyShops extends StatelessWidget {
   final NearbyShopsLoaded state;
   final VoidCallback onLocationRequested;
+  final ValueChanged<NearbyLocationStatus> onLocationSettingsRequested;
   final VoidCallback onSavedLocationRequested;
   final Future<void> Function() onRefresh;
   final ValueChanged<ShopEntity> onShopSelected;
@@ -436,6 +516,7 @@ class _LoadedNearbyShops extends StatelessWidget {
   const _LoadedNearbyShops({
     required this.state,
     required this.onLocationRequested,
+    required this.onLocationSettingsRequested,
     required this.onSavedLocationRequested,
     required this.onRefresh,
     required this.onShopSelected,
@@ -461,6 +542,7 @@ class _LoadedNearbyShops extends StatelessWidget {
               locationSource: state.locationSource,
               locationLabel: state.locationLabel,
               onLocationRequested: onLocationRequested,
+              onLocationSettingsRequested: onLocationSettingsRequested,
               onSavedLocationRequested: onSavedLocationRequested,
             );
           }
@@ -542,6 +624,7 @@ class _NearbyLocationCard extends StatelessWidget {
   final NearbyLocationSource? locationSource;
   final String? locationLabel;
   final VoidCallback onLocationRequested;
+  final ValueChanged<NearbyLocationStatus> onLocationSettingsRequested;
   final VoidCallback onSavedLocationRequested;
 
   const _NearbyLocationCard({
@@ -550,6 +633,7 @@ class _NearbyLocationCard extends StatelessWidget {
     required this.locationSource,
     required this.locationLabel,
     required this.onLocationRequested,
+    required this.onLocationSettingsRequested,
     required this.onSavedLocationRequested,
   });
 
@@ -620,7 +704,9 @@ class _NearbyLocationCard extends StatelessWidget {
                   const SizedBox(height: CustomerHomeV1Tokens.space12),
                   FilledButton.icon(
                     key: const Key('nearby-location-action'),
-                    onPressed: onLocationRequested,
+                    onPressed: _opensSettings
+                        ? () => onLocationSettingsRequested(status)
+                        : onLocationRequested,
                     style: FilledButton.styleFrom(
                       backgroundColor: CustomerHomeV1Tokens.petrol,
                       foregroundColor: Colors.white,
@@ -634,7 +720,12 @@ class _NearbyLocationCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    icon: const Icon(Icons.my_location_rounded, size: 17),
+                    icon: Icon(
+                      _opensSettings
+                          ? Icons.settings_outlined
+                          : Icons.my_location_rounded,
+                      size: 17,
+                    ),
                     label: Text(content.actionLabel!),
                   ),
                 ] else if (canChangeSavedLocation) ...[
@@ -699,17 +790,25 @@ class _NearbyLocationCard extends StatelessWidget {
         icon: Icons.location_off_outlined,
         title: 'Konum izni verilmedi',
         message:
-            'Mağazaları ada göre göstermeye devam ediyoruz. İzin vermek '
-            'istersen Chrome adres çubuğundaki site ayarlarından konumu açabilirsin.',
+            'Mağazaları göstermeye devam ediyoruz. Tekrar deneyerek Android '
+            'konum izni ekranını açabilirsin.',
         actionLabel: 'Tekrar Kontrol Et',
       ),
+      NearbyLocationStatus.permissionDeniedForever =>
+        const _NearbyLocationCardContent(
+          icon: Icons.app_settings_alt_outlined,
+          title: 'Konum izni uygulama ayarlarında kapalı',
+          message:
+              'Konumu kullanmak için uygulama ayarlarından izni açıp geri dönebilirsin.',
+          actionLabel: 'Uygulama Ayarlarını Aç',
+        ),
       NearbyLocationStatus.servicesDisabled => const _NearbyLocationCardContent(
         icon: Icons.location_disabled_outlined,
         title: 'Cihaz konumu kapalı',
         message:
             'Mağazaları ada göre göstermeye devam ediyoruz. Cihaz konumunu '
             'açtıktan sonra yeniden deneyebilirsin.',
-        actionLabel: 'Tekrar Dene',
+        actionLabel: 'Konum Ayarlarını Aç',
       ),
       NearbyLocationStatus.timedOut => const _NearbyLocationCardContent(
         icon: Icons.timer_off_outlined,
@@ -727,6 +826,10 @@ class _NearbyLocationCard extends StatelessWidget {
       ),
     };
   }
+
+  bool get _opensSettings =>
+      status == NearbyLocationStatus.permissionDeniedForever ||
+      status == NearbyLocationStatus.servicesDisabled;
 }
 
 class _NearbyLocationCardContent {

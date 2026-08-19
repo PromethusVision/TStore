@@ -290,7 +290,7 @@ void main() {
 
     expect(
       find.text(
-        'Konum izni verilmedi. Tarayıcı izinlerinden konuma izin verebilirsin.',
+        'Konum izni verilmedi. Tekrar deneyerek sistem izin ekranını açabilirsin.',
       ),
       findsOneWidget,
     );

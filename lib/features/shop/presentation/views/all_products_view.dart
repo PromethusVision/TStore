@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
@@ -213,62 +214,66 @@ class _AllProductsContentState extends State<_AllProductsContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    key: const Key('all-products-search-field'),
-                    controller: _searchController,
-                    focusNode: _searchFocusNode,
-                    enabled: true,
-                    readOnly: false,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.search,
-                    autofocus: widget.autoFocusSearch,
-                    onTap: () {
-                      if (!_searchFocusNode.hasFocus) {
-                        _searchFocusNode.requestFocus();
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: widget.isSearchMode
-                          ? 'Ürün, kategori veya mağaza ara'
-                          : 'Tüm ürünlerde ara',
-                      hintStyle: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 13,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search_rounded,
-                        color: CustomerHomeV1Tokens.petrol,
-                      ),
-                      suffixIcon: _searchController.text.trim().isEmpty
-                          ? null
-                          : IconButton(
-                              tooltip: 'Aramayı temizle',
-                              onPressed: _clearSearch,
-                              icon: const Icon(Icons.close_rounded),
-                            ),
-                      filled: true,
-                      fillColor: CustomerHomeV1Tokens.surface,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radius16,
+                  CustomerLightInputTheme(
+                    child: TextFormField(
+                      key: const Key('all-products-search-field'),
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      enabled: true,
+                      readOnly: false,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.search,
+                      autofocus: widget.autoFocusSearch,
+                      onTap: () {
+                        if (!_searchFocusNode.hasFocus) {
+                          _searchFocusNode.requestFocus();
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: widget.isSearchMode
+                            ? 'Ürün, kategori veya mağaza ara'
+                            : 'Tüm ürünlerde ara',
+                        hintStyle: const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 13,
                         ),
-                        borderSide: const BorderSide(
-                          color: CustomerHomeV1Tokens.border,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radius16,
-                        ),
-                        borderSide: const BorderSide(
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
                           color: CustomerHomeV1Tokens.petrol,
-                          width: 1.4,
+                        ),
+                        suffixIcon: _searchController.text.trim().isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: 'Aramayı temizle',
+                                onPressed: _clearSearch,
+                                icon: const Icon(Icons.close_rounded),
+                              ),
+                        filled: true,
+                        fillColor: CustomerHomeV1Tokens.surface,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radius16,
+                          ),
+                          borderSide: const BorderSide(
+                            color: CustomerHomeV1Tokens.border,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radius16,
+                          ),
+                          borderSide: const BorderSide(
+                            color: CustomerHomeV1Tokens.petrol,
+                            width: 1.4,
+                          ),
                         ),
                       ),
+                      onChanged: _onSearchChanged,
+                      onFieldSubmitted: _submitSearch,
                     ),
-                    onChanged: _onSearchChanged,
-                    onFieldSubmitted: _submitSearch,
                   ),
                   if (_shouldShowRecentSearches) ...[
                     const SizedBox(height: CustomerHomeV1Tokens.space16),
