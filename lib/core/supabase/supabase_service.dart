@@ -8,14 +8,36 @@ import 'package:t_store/core/supabase/supabase_config.dart';
 
 enum PasswordRecoveryLaunchStatus { none, verified, invalid }
 
+enum EmailConfirmationCallbackStatus {
+  authenticated,
+  confirmedWithoutSession,
+  invalid,
+}
+
+class EmailConfirmationCallbackResult {
+  const EmailConfirmationCallbackResult({
+    required this.sequence,
+    required this.status,
+  });
+
+  final int sequence;
+  final EmailConfirmationCallbackStatus status;
+}
+
 /// Supabase Service - Singleton class for Supabase operations
 class SupabaseService {
   static SupabaseService? _instance;
   static SupabaseClient? _client;
   static AuthCallbackContract? _authCallbackContract;
   static StreamSubscription<Uri>? _authCallbackSubscription;
+  static final StreamController<EmailConfirmationCallbackResult>
+  _emailConfirmationCallbackController =
+      StreamController<EmailConfirmationCallbackResult>.broadcast();
   static PasswordRecoveryLaunchStatus _initialPasswordRecoveryStatus =
       PasswordRecoveryLaunchStatus.none;
+  static EmailConfirmationCallbackResult? _latestEmailConfirmationCallback;
+  static String? _lastEmailConfirmationCallbackUri;
+  static int _emailConfirmationCallbackSequence = 0;
 
   SupabaseService._();
 
@@ -32,6 +54,9 @@ class SupabaseService {
       config.environment,
     );
     _initialPasswordRecoveryStatus = PasswordRecoveryLaunchStatus.none;
+    _latestEmailConfirmationCallback = null;
+    _lastEmailConfirmationCallbackUri = null;
+    _emailConfirmationCallbackSequence = 0;
 
     await Supabase.initialize(
       url: config.supabaseUrl,
@@ -78,6 +103,42 @@ class SupabaseService {
       appUri: appUri,
       isWeb: isWeb,
     );
+    final isEmailConfirmation =
+        !isRecovery &&
+        contract.acceptsCallbackBase(uri: uri, appUri: appUri, isWeb: isWeb);
+
+    if (isEmailConfirmation) {
+      final callbackUri = uri.toString();
+      if (_lastEmailConfirmationCallbackUri == callbackUri) return;
+      _lastEmailConfirmationCallbackUri = callbackUri;
+
+      try {
+        final status = await resolveEmailConfirmationCallback(
+          uri: uri,
+          appUri: appUri,
+          isWeb: isWeb,
+          contract: contract,
+          exchangeCode: (validatedUri) async {
+            await _client!.auth.getSessionFromUrl(validatedUri);
+            return true;
+          },
+        );
+        if (status != null) _publishEmailConfirmationCallback(status);
+      } on AuthException catch (error, stackTrace) {
+        _publishEmailConfirmationCallback(
+          emailConfirmationStatusForExchangeError(error.message),
+        );
+        // Keep the established Supabase Auth error channel without logging the
+        // callback URI or its one-time code.
+        // ignore: invalid_use_of_internal_member
+        _client!.auth.notifyException(error, stackTrace);
+      } catch (_) {
+        _publishEmailConfirmationCallback(
+          EmailConfirmationCallbackStatus.invalid,
+        );
+      }
+      return;
+    }
 
     try {
       AuthSessionUrlResponse? response;
@@ -160,6 +221,12 @@ class SupabaseService {
   PasswordRecoveryLaunchStatus get initialPasswordRecoveryStatus =>
       _initialPasswordRecoveryStatus;
 
+  EmailConfirmationCallbackResult? get latestEmailConfirmationCallback =>
+      _latestEmailConfirmationCallback;
+
+  Stream<EmailConfirmationCallbackResult> get emailConfirmationCallbacks =>
+      _emailConfirmationCallbackController.stream;
+
   /// Auth state changes stream
   Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
 
@@ -177,6 +244,64 @@ class SupabaseService {
 
     await exchangeCode(uri);
     return true;
+  }
+
+  @visibleForTesting
+  static Future<EmailConfirmationCallbackStatus?>
+  resolveEmailConfirmationCallback({
+    required Uri uri,
+    required Uri appUri,
+    required bool isWeb,
+    required AuthCallbackContract contract,
+    required Future<bool> Function(Uri validatedUri) exchangeCode,
+  }) async {
+    if (contract.isPasswordRecoveryLaunch(
+      uri: uri,
+      appUri: appUri,
+      isWeb: isWeb,
+    )) {
+      return null;
+    }
+    if (!contract.acceptsCallbackBase(uri: uri, appUri: appUri, isWeb: isWeb)) {
+      return null;
+    }
+    if (!contract.acceptsPkceCallback(uri: uri, appUri: appUri, isWeb: isWeb)) {
+      return EmailConfirmationCallbackStatus.invalid;
+    }
+
+    final hasSession = await exchangeCode(uri);
+    return hasSession
+        ? EmailConfirmationCallbackStatus.authenticated
+        : EmailConfirmationCallbackStatus.confirmedWithoutSession;
+  }
+
+  @visibleForTesting
+  static EmailConfirmationCallbackStatus
+  emailConfirmationStatusForExchangeError(String message) {
+    final normalized = message.toLowerCase();
+    final verifierUnavailable =
+        normalized.contains('code verifier') &&
+        (normalized.contains('missing') ||
+            normalized.contains('not found') ||
+            normalized.contains('empty'));
+
+    // Supabase confirms the address before redirecting back to the app. If
+    // the locally persisted PKCE verifier is no longer available, no session
+    // can be restored, but the customer can safely continue from Login.
+    return verifierUnavailable
+        ? EmailConfirmationCallbackStatus.confirmedWithoutSession
+        : EmailConfirmationCallbackStatus.invalid;
+  }
+
+  static void _publishEmailConfirmationCallback(
+    EmailConfirmationCallbackStatus status,
+  ) {
+    final result = EmailConfirmationCallbackResult(
+      sequence: ++_emailConfirmationCallbackSequence,
+      status: status,
+    );
+    _latestEmailConfirmationCallback = result;
+    _emailConfirmationCallbackController.add(result);
   }
 
   @visibleForTesting

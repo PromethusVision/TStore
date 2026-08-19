@@ -35,6 +35,7 @@ class CustomerPreferredLocation extends Equatable {
 
 enum CustomerLocationFailure {
   permissionDenied,
+  permissionDeniedForever,
   servicesDisabled,
   timedOut,
   unavailable,
@@ -66,4 +67,8 @@ abstract class CustomerLocationService {
   Future<CustomerLocationResult> getCurrentLocation({
     bool forceRefresh = false,
   });
+
+  Future<bool> openAppSettings();
+
+  Future<bool> openLocationSettings();
 }

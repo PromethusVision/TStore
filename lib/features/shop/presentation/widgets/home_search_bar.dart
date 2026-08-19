@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
@@ -108,63 +109,65 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                 border: Border.all(color: CustomerHomeV1Tokens.border),
                 boxShadow: CustomerHomeV1Tokens.softShadow,
               ),
-              child: TextField(
-                key: const Key('home-search-input'),
-                controller: _controller,
-                focusNode: _focusNode,
-                textInputAction: TextInputAction.search,
-                keyboardType: TextInputType.text,
-                onChanged: _handleQueryChanged,
-                onSubmitted: _submitQuery,
-                onTapOutside: (_) => _focusNode.unfocus(),
-                decoration: InputDecoration(
-                  hintText: 'Ürün, kategori veya mağaza ara',
-                  hintStyle: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search_rounded,
-                    color: CustomerHomeV1Tokens.petrol,
-                    size: 22,
-                  ),
-                  suffixIcon: _query.isEmpty
-                      ? IconButton(
-                          key: const Key('home-search-submit'),
-                          tooltip: 'Arama sayfasını aç',
-                          onPressed: null,
-                          icon: const Icon(
-                            Icons.arrow_forward_rounded,
-                            color: CustomerHomeV1Tokens.muted,
-                            size: 18,
-                          ),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              key: const Key('clear-home-search'),
-                              tooltip: 'Aramayı temizle',
-                              onPressed: _clearQuery,
-                              icon: const Icon(Icons.close_rounded, size: 19),
+              child: CustomerLightInputTheme(
+                child: TextField(
+                  key: const Key('home-search-input'),
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  textInputAction: TextInputAction.search,
+                  keyboardType: TextInputType.text,
+                  onChanged: _handleQueryChanged,
+                  onSubmitted: _submitQuery,
+                  onTapOutside: (_) => _focusNode.unfocus(),
+                  decoration: InputDecoration(
+                    hintText: 'Ürün, kategori veya mağaza ara',
+                    hintStyle: const TextStyle(
+                      color: CustomerHomeV1Tokens.muted,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      color: CustomerHomeV1Tokens.petrol,
+                      size: 22,
+                    ),
+                    suffixIcon: _query.isEmpty
+                        ? IconButton(
+                            key: const Key('home-search-submit'),
+                            tooltip: 'Arama sayfasını aç',
+                            onPressed: null,
+                            icon: const Icon(
+                              Icons.arrow_forward_rounded,
+                              color: CustomerHomeV1Tokens.muted,
+                              size: 18,
                             ),
-                            IconButton(
-                              key: const Key('home-search-submit'),
-                              tooltip: 'Tüm sonuçları gör',
-                              onPressed: () => _submitQuery(_query),
-                              icon: const Icon(
-                                Icons.arrow_forward_rounded,
-                                color: CustomerHomeV1Tokens.petrol,
-                                size: 18,
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                key: const Key('clear-home-search'),
+                                tooltip: 'Aramayı temizle',
+                                onPressed: _clearQuery,
+                                icon: const Icon(Icons.close_rounded, size: 19),
                               ),
-                            ),
-                          ],
-                        ),
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                              IconButton(
+                                key: const Key('home-search-submit'),
+                                tooltip: 'Tüm sonuçları gör',
+                                onPressed: () => _submitQuery(_query),
+                                icon: const Icon(
+                                  Icons.arrow_forward_rounded,
+                                  color: CustomerHomeV1Tokens.petrol,
+                                  size: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                 ),
               ),
             ),

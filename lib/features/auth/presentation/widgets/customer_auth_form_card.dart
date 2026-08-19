@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 
 class CustomerAuthFormCard extends StatelessWidget {
@@ -96,7 +97,7 @@ class CustomerAuthFormCard extends StatelessWidget {
             }),
           ),
         ),
-        child: child,
+        child: CustomerLightInputTheme(child: child),
       ),
     );
   }

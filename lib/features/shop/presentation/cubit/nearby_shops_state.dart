@@ -6,6 +6,7 @@ enum NearbyLocationStatus {
   requesting,
   ready,
   permissionDenied,
+  permissionDeniedForever,
   servicesDisabled,
   timedOut,
   unavailable,

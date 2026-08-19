@@ -2,7 +2,7 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-18
+- Son güncelleme: 2026-08-19
 - Son doğrulanan teslim: Wave 11 Agent 1 ilk imzalı Android Production APK/AAB
   kanıtı `b56b9fe46b1beb8e9b0955dfef8893e8e4f9c7e3`; integration merge `18f7e03`
 - Doğrulanan branch/base: `integration/wave-11-phase-a-android-signing-20260818` /
@@ -93,6 +93,16 @@
 
 `ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
+`WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
+
+`INPUT_VISIBILITY_BUG: FIXED`
+
+`EMAIL_CONFIRMATION_UI_BUG: FIXED`
+
+`LOCATION_PERMISSION_BUG: FIXED`
+
+`PHYSICAL_DEVICE_REGRESSION: BLOCKED — ADB DEVICE NOT ATTACHED`
+
 `COMMERCIAL_RELEASE_READY: NO`
 
 Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirleri burada implemented gibi gösterilmez. Kod gerçeği ile ürün backlog'u ayrıdır; tamamlanmamış ürün işleri için `PRODUCT_BACKLOG.md` kullanılır.
@@ -145,11 +155,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
-| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Production Custom SMTP mevcut, template precheck PASS; F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS. F3D authorized fixture cleanup sonrası Auth/profile/consent/business/Storage zero baseline restore PASS. Signed Production mobil app opening, full recovery PKCE ve sender/link-tracking final doğrulaması BLOCKED. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
+| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 11 B2'de confirmation callback sonucu Auth/profile yeniden değerlendirmesi, waiting-state kapatma, authenticated shell veya güvenli login hedefi, tekil başarı mesajı ve duplicate/invalid callback koruması eklendi. Production Custom SMTP mevcut, template precheck PASS; F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS. F3D authorized fixture cleanup sonrası Auth/profile/consent/business/Storage zero baseline restore PASS. Signed Production mobil app opening, full recovery PKCE ve sender/link-tracking final doğrulaması BLOCKED. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
 | Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
-| Yakındakiler / location | COMPLETE | GPS, izin durumları, kayıtlı/manuel konum, mesafe sıralaması, hata/fallback, dispose sonrası async completion ve duplicate dialog/navigation korumaları var. |
+| Yakındakiler / location | COMPLETE | GPS, cihaz servis kontrolü, runtime izin isteği, kalıcı ret/app settings, location settings, ayar dönüşünde lifecycle refresh, last-known fallback, kayıtlı/manuel konum, mesafe sıralaması, hata/fallback, dispose sonrası async completion ve duplicate dialog/navigation korumaları var. |
 | Mağaza profili | PARTIAL | Müşteri mağaza profili ve mesaj başlatma var; merchant ürün/stok yönetimi yok. |
 | Ürün listeleme | COMPLETE | Liste, kategori, arama, sıralama, gerçek satıcı fiyatları, fallback ve state'ler var. |
 | Ürün detay | COMPLETE | Satıcılar, stok/fiyat, favori, sepet, ürün bağlantılı chat ve yorum ekranı bağlı. |
@@ -276,6 +286,14 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   `flutter analyze --no-pub` PASS. Diff, conflict marker, private-key/secret ve
   tracked keystore/key.properties/APK/AAB scan'leri temizdir; remote harness
   çağrılmadı.
+- Wave 11 Phase B2 task branch'inde açık yüzeylerdeki müşteri input'ları için koyu
+  sistem temasından bağımsız yerel değer/cursor/selection teması; confirmation callback
+  sonrası Auth/profile refresh, tekil feedback ve güvenli route replacement; Geolocator
+  servis/izin/request/denied-forever/settings-resume/last-known akışı doğrulandı.
+  Hedefli matris 88/88, kayıtlı konum regresyonu 13/13, tam Flutter suite 1177 PASS
+  (5 opt-in live skip), analyzer ve Development debug Android build PASS. Production ve
+  Development remote yazması, Auth user/e-posta oluşturma yoktur. ADB'de cihaz
+  bulunmadığından POCO X7 Pro install ve fiziksel regression BLOCKED kalır.
 - Açık `TODO`, `FIXME` veya `UnimplementedError` işareti bulunmadı; boş callback ve statik ekran gibi örtük skeleton'lar mevcut.
 
 ## Hot-Spot / Shared Alanlar
@@ -302,6 +320,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-19: **WAVE 11 PHASE B2 INPUT/AUTH CALLBACK/LOCATION AUTOMATED FIX PASS / PHYSICAL REGRESSION BLOCKED** — Açık müşteri form yüzeylerinde değer/hint/error/cursor/selection görünürlüğü merkezi yerel theme ile sabitlendi. Confirmation callback Auth/profile state'ini yeniden değerlendirir, waiting route'u kapatır, session durumuna göre shell/login hedefini seçer ve tek başarı mesajı gösterir; malformed/duplicate ve environment isolation korunur. Konum akışı cihaz servisi → runtime permission request → current/last-known position sırasına, denied-forever settings aksiyonuna ve resume refresh'e bağlandı. Remote backend yazması, signup veya e-posta yoktur. ADB cihazı olmadığından signed Production rebuild/install ve POCO X7 Pro fiziksel doğrulama yapılmadı.
 - 2026-08-18: **WAVE 11 PHASE A FINAL INTEGRATION / ANDROID SIGNING READY / FIRST SIGNED APK+AAB PASS / PHYSICAL ACCEPTANCE OPEN** — Agent 1 `b56b9fe` teslimi `18f7e03` ile `--no-ff` ve çatışmasız entegre edildi. Repo-dışı kalıcı RSA-4096 upload key ve `esnaftavar-upload` alias'ıyla `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` signed Production APK ve AAB üretildi. APK signer v2, AAB signature, package/manifest/final callback, artifact hash ve secret scan PASS; legacy callback ve server-only/signing secret yok. Geçici credential/config dosyaları silindi; keystore, `key.properties` ve APK/AAB Git dışında kaldı. Owner birincil keystore yedeği ile parola yöneticisi kaydını tamamladı; ikinci offline yedek öneri/açık olarak korunur. Fiziksel Android install/startup/callback acceptance, Play Console/Play App Signing, iOS signing ve commercial GO açıktır. Integration Production/Development remote erişimi veya write yapmadı.
 - 2026-08-18: **WAVE 10 PHASE F FINAL INTEGRATION / EMAIL INFRASTRUCTURE READY / ZERO TEST RESIDUAL** — Agent 1 final F3/F3A/F3B/F3D evidence HEAD'i `--no-ff` ve çatışmasız entegre edildi. Gerçek inbox teslimatı, server-side confirmation, final callback email contract'ı ve customer role/profile davranışı PASS; authorized disposable fixture cleanup sonrası Auth user/identity/session/profile/consent, linked business ve Storage residual exact `0`. Spam teslimatı Auth failure değildir ve deliverability tuning açık follow-up'tır. Actual mobile app opening, full recovery lifecycle, legacy callback removal, signing ve broader Production smoke açık kalır. Integration remote backend işlemi yapmadı.
 - 2026-08-18: **WAVE 10 PHASE F3D AUTHORIZED ADMIN CLEANUP PASS / ZERO AUTH BASELINE RESTORED** — Fresh exact gate yalnız masked F3 disposable customer'ı doğruladı: Auth user/identity/profile `1/1/1`, customer `1`, merchant/admin `0`, legal consent `2`, session `2`, linked business ve Storage `0`. Owner'ın exact-account yetkisiyle Supabase Dashboard Auth Admin delete uygulandı. Authoritative post-delete state Auth user/identity/session/profile/consent/business/Storage `0/0/0/0/0/0/0`; başka user/veri yok. F3D'de email/config/schema/migration/Storage/Development write yapılmadı.

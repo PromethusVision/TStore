@@ -67,6 +67,40 @@ ADB'de fiziksel cihaz bulunmadığından install/startup, actual mobile callback
 ve recovery acceptance bu build kanıtının parçası değildir.
 Bu bölüm Production smoke PASS veya commercial release GO ilan etmez.
 
+## Wave 11 Phase B2 physical bugfix automated evidence
+
+Wave 11 B2 task branch'inde fiziksel cihazda bildirilen üç client bug'ı için otomatik
+regression PASS oldu:
+
+- Açık renk müşteri input yüzeylerinde değer, hint/label, error, cursor ve selection
+  koyu sistem temasında da okunabilir; login/signup/recovery ve parola maskeleme
+  widget testleri kapsanır.
+- Exact environment confirmation callback'i Auth/profile state'ini yeniden yükler;
+  authenticated kullanıcı shell'e, session oluşmayan confirmed kullanıcı Login'e
+  gider. Waiting state kapanır, başarı mesajı bir kez gösterilir; malformed/duplicate
+  callback güvenle ele alınır. Production final ve Development legacy callback
+  izolasyonu korunur.
+- Konum akışı cihaz servisini kontrol eder, `denied` durumunda Android runtime izin
+  isteğini başlatır, `deniedForever` için uygulama ayarlarını ve servis kapalıyken
+  location settings'i açar; resume sonrasında durumu yeniden okur. Current-position
+  timeout/unavailable halinde geçerli last-known position güvenli fallback'tir.
+
+Hedefli testler 88/88, kayıtlı konum widget regresyonu 13/13 ve tam Flutter suite
+1177 PASS (5 explicit opt-in live skip); analyzer ve secretsız Development debug APK
+derlemesi PASS. Production/Development remote write, signup veya e-posta yoktur.
+ADB'de cihaz bulunmadığı ve geçici Production runtime/signing girdileri güvenlik gereği
+repo dışında olduğu için yeni signed Production APK/install yapılmadı. Aşağıdaki
+fiziksel kabul halen zorunludur; mevcut uygulama verisi silinmemelidir:
+
+- [ ] Login/signup alanlarında yazı görünür; parola maskesi doğru (signup submit yok).
+- [ ] Konum aksiyonu Android izin dialog'unu açar; izin sonrası sonuç gelir ve crash yok.
+- [ ] Ayrı yetkili canlı Auth turunda final callback app-opening/waiting-state kapanışı
+      doğrulanır; bu B2 turunda yeni signup/e-posta yoktur.
+
+`WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
+
+`PHYSICAL_DEVICE_REGRESSION: BLOCKED — ADB DEVICE NOT ATTACHED`
+
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
 
 `PRODUCTION_SITE_URL_FINAL_CALLBACK: PASS`

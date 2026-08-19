@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/personalization/domain/entities/customer_saved_location_entity.dart';
@@ -761,204 +762,208 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
                 CustomerHomeV1Tokens.space20,
           ),
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: CustomerHomeV1Tokens.border,
-                        borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radiusPill,
+            child: CustomerLightInputTheme(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: CustomerHomeV1Tokens.border,
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radiusPill,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  const Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: CustomerHomeV1Tokens.mint,
-                        child: Icon(
-                          Icons.add_location_alt_outlined,
-                          color: CustomerHomeV1Tokens.petrol,
-                          size: 22,
+                    const SizedBox(height: CustomerHomeV1Tokens.space16),
+                    const Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: CustomerHomeV1Tokens.mint,
+                          child: Icon(
+                            Icons.add_location_alt_outlined,
+                            color: CustomerHomeV1Tokens.petrol,
+                            size: 22,
+                          ),
+                        ),
+                        SizedBox(width: CustomerHomeV1Tokens.space12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konum Ekle',
+                                style: TextStyle(
+                                  color: CustomerHomeV1Tokens.navy,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(height: CustomerHomeV1Tokens.space4),
+                              Text(
+                                'Mevcut GPS konumunu kaydet',
+                                style: TextStyle(
+                                  color: CustomerHomeV1Tokens.muted,
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space12),
+                    const Text(
+                      'Konumunu bulduktan sonra kolay hatırlayacağın bir ad ve adres açıklaması ekle.',
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 12,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space16),
+                    TextFormField(
+                      key: const Key('saved-location-name-field'),
+                      controller: _nameController,
+                      textInputAction: TextInputAction.next,
+                      maxLength: 50,
+                      decoration: _inputDecoration(
+                        label: 'Konum Adı',
+                        hint: 'Ev, İş veya başka bir ad',
+                        icon: Icons.label_outline_rounded,
+                      ),
+                      validator: (value) =>
+                          value == null || value.trim().isEmpty
+                          ? 'Konum adı gerekli.'
+                          : null,
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    TextFormField(
+                      key: const Key('saved-location-address-field'),
+                      controller: _addressController,
+                      textInputAction: TextInputAction.done,
+                      minLines: 2,
+                      maxLines: 3,
+                      maxLength: 200,
+                      decoration: _inputDecoration(
+                        label: 'Adres Açıklaması',
+                        hint: 'Örn. Esenler, İstanbul',
+                        icon: Icons.location_on_outlined,
+                      ).copyWith(alignLabelWithHint: true),
+                      validator: (value) =>
+                          value == null || value.trim().isEmpty
+                          ? 'Adres açıklaması gerekli.'
+                          : null,
+                    ),
+                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        key: const Key('saved-location-capture-button'),
+                        onPressed: _isLocating || _isSaving
+                            ? null
+                            : _captureLocation,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: CustomerHomeV1Tokens.petrol,
+                          side: const BorderSide(
+                            color: CustomerHomeV1Tokens.petrol,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: CustomerHomeV1Tokens.space12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              CustomerHomeV1Tokens.radius12,
+                            ),
+                          ),
+                        ),
+                        icon: _isLocating
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: CustomerHomeV1Tokens.petrol,
+                                ),
+                              )
+                            : Icon(
+                                _coordinates == null
+                                    ? Icons.my_location_rounded
+                                    : Icons.check_circle_rounded,
+                              ),
+                        label: Text(
+                          _coordinates == null
+                              ? 'Mevcut Konumumu Al'
+                              : 'Konum Alındı',
                         ),
                       ),
-                      SizedBox(width: CustomerHomeV1Tokens.space12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Konum Ekle',
-                              style: TextStyle(
-                                color: CustomerHomeV1Tokens.navy,
-                                fontSize: 19,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: CustomerHomeV1Tokens.space4),
-                            Text(
-                              'Mevcut GPS konumunu kaydet',
-                              style: TextStyle(
-                                color: CustomerHomeV1Tokens.muted,
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                    ),
+                    if (_locationError != null) ...[
+                      const SizedBox(height: CustomerHomeV1Tokens.space8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(
+                          CustomerHomeV1Tokens.space12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFE4DE),
+                          borderRadius: BorderRadius.circular(
+                            CustomerHomeV1Tokens.radius12,
+                          ),
+                        ),
+                        child: Text(
+                          _locationError!,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.coral,
+                            fontSize: 11,
+                            height: 1.35,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
-                  const Text(
-                    'Konumunu bulduktan sonra kolay hatırlayacağın bir ad ve adres açıklaması ekle.',
-                    style: TextStyle(
-                      color: CustomerHomeV1Tokens.muted,
-                      fontSize: 12,
-                      height: 1.4,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  TextFormField(
-                    key: const Key('saved-location-name-field'),
-                    controller: _nameController,
-                    textInputAction: TextInputAction.next,
-                    maxLength: 50,
-                    decoration: _inputDecoration(
-                      label: 'Konum Adı',
-                      hint: 'Ev, İş veya başka bir ad',
-                      icon: Icons.label_outline_rounded,
-                    ),
-                    validator: (value) => value == null || value.trim().isEmpty
-                        ? 'Konum adı gerekli.'
-                        : null,
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space8),
-                  TextFormField(
-                    key: const Key('saved-location-address-field'),
-                    controller: _addressController,
-                    textInputAction: TextInputAction.done,
-                    minLines: 2,
-                    maxLines: 3,
-                    maxLength: 200,
-                    decoration: _inputDecoration(
-                      label: 'Adres Açıklaması',
-                      hint: 'Örn. Esenler, İstanbul',
-                      icon: Icons.location_on_outlined,
-                    ).copyWith(alignLabelWithHint: true),
-                    validator: (value) => value == null || value.trim().isEmpty
-                        ? 'Adres açıklaması gerekli.'
-                        : null,
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      key: const Key('saved-location-capture-button'),
-                      onPressed: _isLocating || _isSaving
-                          ? null
-                          : _captureLocation,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: CustomerHomeV1Tokens.petrol,
-                        side: const BorderSide(
-                          color: CustomerHomeV1Tokens.petrol,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: CustomerHomeV1Tokens.space12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius12,
+                    const SizedBox(height: CustomerHomeV1Tokens.space16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        key: const Key('saved-location-save-button'),
+                        onPressed: _isSaving || _isLocating ? null : _save,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: CustomerHomeV1Tokens.petrol,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: CustomerHomeV1Tokens.space12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              CustomerHomeV1Tokens.radius12,
+                            ),
                           ),
                         ),
-                      ),
-                      icon: _isLocating
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: CustomerHomeV1Tokens.petrol,
-                              ),
-                            )
-                          : Icon(
-                              _coordinates == null
-                                  ? Icons.my_location_rounded
-                                  : Icons.check_circle_rounded,
-                            ),
-                      label: Text(
-                        _coordinates == null
-                            ? 'Mevcut Konumumu Al'
-                            : 'Konum Alındı',
-                      ),
-                    ),
-                  ),
-                  if (_locationError != null) ...[
-                    const SizedBox(height: CustomerHomeV1Tokens.space8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(
-                        CustomerHomeV1Tokens.space12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFE4DE),
-                        borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radius12,
-                        ),
-                      ),
-                      child: Text(
-                        _locationError!,
-                        style: const TextStyle(
-                          color: CustomerHomeV1Tokens.coral,
-                          fontSize: 11,
-                          height: 1.35,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        child: _isSaving
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: CustomerHomeV1Tokens.petrol,
+                                ),
+                              )
+                            : const Text('Konumu Kaydet'),
                       ),
                     ),
                   ],
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      key: const Key('saved-location-save-button'),
-                      onPressed: _isSaving || _isLocating ? null : _save,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: CustomerHomeV1Tokens.petrol,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: CustomerHomeV1Tokens.mint,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: CustomerHomeV1Tokens.space12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius12,
-                          ),
-                        ),
-                      ),
-                      child: _isSaving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: CustomerHomeV1Tokens.petrol,
-                              ),
-                            )
-                          : const Text('Konumu Kaydet'),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -1052,7 +1057,9 @@ class _AddSavedLocationSheetState extends State<_AddSavedLocationSheet> {
   String _messageForLocationFailure(CustomerLocationFailure? failure) {
     return switch (failure) {
       CustomerLocationFailure.permissionDenied =>
-        'Konum izni verilmedi. Tarayıcı izinlerinden konuma izin verebilirsin.',
+        'Konum izni verilmedi. Tekrar deneyerek sistem izin ekranını açabilirsin.',
+      CustomerLocationFailure.permissionDeniedForever =>
+        'Konum izni uygulama ayarlarında kapalı. Ayarlardan izni açıp tekrar dene.',
       CustomerLocationFailure.servicesDisabled =>
         'Cihazının konum hizmeti kapalı. Açtıktan sonra tekrar dene.',
       CustomerLocationFailure.timedOut =>
