@@ -44,9 +44,11 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
 
-`READY_FOR_PHYSICAL_B2_RETEST: COMPLETED`
+`READY_FOR_PHYSICAL_B2_RETEST: COMPLETED — INPUT/LOCATION PASS`
 
-`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
+`PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
+
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -111,18 +113,29 @@ kuruldu. APK signature/package/final callback ve artifact secret scan PASS; geç
 
 Fiziksel denied/deniedForever ve Settings-return negatif turu çalıştırılmadı; bu akışın
 service/widget sözleşmeleri hedefli testlerde PASS. B2R hedefli paket 114 PASS, tam
-Flutter suite 1177 PASS (5 explicit opt-in live skip) ve analyzer PASS. Production veya
-Development backend write, Auth e-postası, yeni user, QR ya da Storage işlemi yoktur.
+Flutter suite 1177 PASS (5 explicit opt-in live skip) ve analyzer PASS; integration
+B2 hedefli matrisi 118/118 PASS. Production veya Development backend write, Auth
+e-postası, yeni user, QR ya da Storage işlemi yoktur.
+Confirmation/recovery canlı turundan önce mevcut Production test-user inventory ve
+gerekiyorsa exact scoped cleanup durumu yeniden doğrulanmalıdır.
 
 `WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
 
-`INPUT_PHYSICAL_VISIBILITY: PASS`
+`ANDROID_SIGNED_APK_INSTALL_UPGRADE: PASS`
+
+`ANDROID_STARTUP_PHYSICAL_ACCEPTANCE: PASS`
+
+`INPUT_PHYSICAL_ACCEPTANCE: PASS — HOME SEARCH VALUE/HINT/CURSOR`
 
 `LOCATION_PHYSICAL_ACCEPTANCE: PASS`
 
 `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED — NO AUTH/EMAIL FIXTURE CREATED`
 
-`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
+`SETTINGS_RETURN_NEGATIVE_PHYSICAL_ACCEPTANCE: OPEN`
+
+`PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
+
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
 
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
 

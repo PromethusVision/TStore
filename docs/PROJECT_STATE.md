@@ -3,21 +3,25 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-19
-- Son doğrulanan teslim: Wave 11 Phase B2R POCO X7 Pro fiziksel input/location retest
-- Doğrulanan branch/base: `agent1/w11-b2-physical-retest` /
+- Son doğrulanan teslim: Wave 11 Agent 1 B2R fiziksel kabul commit'i
+  `9d600cf343257a6a308730f40da7c2996b2dcc41`; integration merge `60db4bf`
+- Doğrulanan branch/base: `integration/wave-11-phase-b2r-physical-20260819` /
   `origin/main@4d3542903ef6e6cb861723100ce69113b19c28cc`
-- Entegrasyon durumu: **WAVE 11 PHASE B2 CODE FIX PASS / PHYSICAL INPUT+LOCATION PASS / CONFIRMATION PHYSICAL BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: Agent 1 B2R task worktree. Current main'den
-  canonical keystore ile signed Production APK üretildi, mevcut uygulamanın üzerine
-  data silmeden kuruldu ve input/location fiziksel retest tamamlandı. Production veya
-  Development backend write, Auth signup/e-posta, QR, Storage, config veya migration
-  işlemi yapılmadı.
-- Doğrulama türü: input/theme/widget, callback/confirmation, PKCE, konum
-  servis/izin/settings ve Android platform/signing hedefli matrisi; tam Flutter suite,
-  analyzer, diff ve secret/private-key/tracked signing artifact kontrolleri.
+- Entegrasyon durumu: **WAVE 11 PHASE B2R INPUT+LOCATION PHYSICAL PASS / CONFIRMATION+RECOVERY PHYSICAL BLOCKED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in
+  current main'den canonical repo-dışı keystore ile ürettiği signed Production APK,
+  data koruyan install/upgrade, startup ve input/location fiziksel retest kanıtı
+  çatışmasız entegre edildi. Production veya Development backend erişimi/write,
+  Auth signup/e-posta, QR, Storage, config veya migration işlemi yapılmadı.
+- Doğrulama türü: POCO X7 Pro / Android 16 fiziksel kanıt ve belge tutarlılığı;
+  input/theme, callback/confirmation, PKCE, konum servis/izin/settings ve Android
+  platform/signing hedefli sözleşmeler; diff ve secret/private-key/tracked artifact
+  kontrolleri. Agent B2R hedefli 114, tam suite 1177 ve analyzer PASS kanıtı korundu;
+  integration B2 hedefli matrisi 118/118 PASS oldu.
 - Çalıştırılmayan/BLOCKED kontroller: yeni Production signup/e-posta üretilmediği için
   confirmation success/app opening fiziksel UI kabulü; physical deniedForever/
-  Settings-return negatif turu; full mobile recovery PKCE lifecycle; legacy Production
+  Settings-return negatif turu; full mobile recovery PKCE lifecycle; olası canlı Auth
+  turu öncesi mevcut Production test-user inventory/cleanup kontrolü; legacy Production
   allowlist removal; deliverability tuning; broader Production smoke; fiziksel iki-cihaz
   QR ve iOS archive/signing (Windows).
 
@@ -101,13 +105,21 @@
 
 `LOCATION_PERMISSION_BUG: FIXED`
 
-`INPUT_PHYSICAL_VISIBILITY: PASS`
+`ANDROID_SIGNED_APK_INSTALL_UPGRADE: PASS`
+
+`ANDROID_STARTUP_PHYSICAL_ACCEPTANCE: PASS`
+
+`INPUT_PHYSICAL_ACCEPTANCE: PASS — HOME SEARCH VALUE/HINT/CURSOR`
 
 `LOCATION_PHYSICAL_ACCEPTANCE: PASS`
 
 `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED — NO AUTH/EMAIL FIXTURE CREATED`
 
-`PHYSICAL_DEVICE_REGRESSION: PASS — B2R INPUT/LOCATION`
+`SETTINGS_RETURN_NEGATIVE_PHYSICAL_ACCEPTANCE: OPEN`
+
+`PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
+
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -150,9 +162,10 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   exact disposable fixture'ı temizledi ve Auth/business/Storage zero baseline'ını
   yeniden kurdu. Wave 11'de repo-dışı upload key ile ilk signed Android Production
   APK/AAB üretildi; exact Production application ID, version, manifest, callback,
-  signature, hash ve artifact secret scan PASS. Signed Production mobil uygulamada
-  fiziksel install/startup, app opening, full recovery PKCE, Resend link-tracking ve
-  kabul sonrasındaki legacy allowlist removal açıktır.
+  signature, hash ve artifact secret scan PASS. B2R'de fiziksel install/upgrade,
+  startup, Home input görünürlüğü ve runtime location acquisition PASS oldu. Signed
+  Production mobil uygulamada confirmation callback app opening, full recovery PKCE,
+  Resend link-tracking ve kabul sonrasındaki legacy allowlist removal açıktır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları

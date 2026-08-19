@@ -331,6 +331,40 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   ve location service/state dosyalarıyla birlikte sonraki paralel işlerde tek sahipli
   tutulmalıdır. SQL/migration, `service_locator.dart` ve shared model değişmedi.
 
+## Wave 11 Phase B2R Fiziksel Kabul Entegrasyon Gözlemi
+
+`INPUT_PHYSICAL_ACCEPTANCE: PASS`
+
+`LOCATION_PHYSICAL_ACCEPTANCE: PASS`
+
+`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED`
+
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+
+- Agent 1'in `9d600cf` fiziksel acceptance belge commit'i exact `4d35429`
+  tabanından tek `--no-ff` merge ile çatışmasız entegre edildi. Kod, migration,
+  fixture, dependency, shared model veya `service_locator.dart` değişmedi.
+- POCO X7 Pro / Android 16 üzerinde signed Production APK normal upgrade ile mevcut
+  `com.esnaftavar.app` kurulumunun üzerine yüklendi; uninstall, clear-data veya wipe
+  yapılmadı. Startup ve çalışan uygulama süreci PASS oldu.
+- Home search input'unda typed value, hint ve cursor fiziksel olarak görünür. Login
+  yüzeyi açılmadığından parola maskelemesinin fiziksel kabulü iddia edilmez; mevcut
+  widget sözleşmesi PASS'tir.
+- Android runtime location permission dialog'u, izin grant'i ve gerçek location
+  acquisition fiziksel olarak PASS; crash veya generic location error yok. Settings
+  return negatif fiziksel turu yapılmadı ve OPEN kalır; otomatik sözleşmesi PASS'tir.
+- Yeni signup/e-posta/confirmation oluşturulmadığından confirmation success UI ve
+  actual callback app opening fiziksel kabulü BLOCKED; full mobile recovery de OPEN/
+  BLOCKED kalır. Mevcut Production test-user inventory/cleanup kontrolü olası canlı
+  Auth turunun ayrı preflight'ıdır.
+- Production/Development erişimi veya write, Auth user/e-posta değişikliği, QR,
+  Storage, migration ya da config işlemi yapılmadı. Fiziksel iki-cihaz QR, broader
+  Production smoke, legacy callback removal ve deliverability tuning açıktır.
+- Agent B2R kanıtında hedefli 114, tam suite 1177 PASS (5 opt-in live skip) ve analyzer
+  PASS'tir. Integration kod değişikliği olmadan ilgili B2 sözleşmelerini 118/118 PASS
+  ile yeniden doğruladı; otomatik sonuçlar yapılmayan fiziksel Auth/settings turunu
+  kapatmaz.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

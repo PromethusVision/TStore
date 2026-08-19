@@ -65,6 +65,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   Hedefli 118/118, tam Flutter suite 1177 PASS (5 opt-in live skip) ve analyzer PASS.
   Fiziksel input, confirmation success/app opening ve location acquisition retest'i;
   mobile recovery, fiziksel iki-cihaz QR ve broader Production smoke açık kalır.
+- 2026-08-19 Wave 11 Phase B2R ilerlemesi: POCO X7 Pro / Android 16 üzerinde signed
+  Production APK uninstall/clear-data olmadan upgrade edildi ve startup PASS oldu.
+  Home search typed value/hint/cursor fiziksel görünürlüğü ile runtime location izin
+  dialog'u, grant ve gerçek location acquisition PASS. Login yüzeyi ve Settings-return
+  negatif turu çalıştırılmadı. Confirmation success UI/app opening için yeni Auth/
+  e-posta fixture oluşturulmadığından BLOCKED; mobile recovery OPEN/BLOCKED kaldı.
+  Integration ilgili B2 sözleşme matrisini 118/118 PASS ile yeniden doğruladı.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -243,6 +250,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   B2 retest'e hazırdır; bağlı cihaz kanıtı olmadığından
   `PHYSICAL_DEVICE_REGRESSION: BLOCKED` korunur. Integration remote backend işlemi,
   signup/e-posta, QR, Storage, migration, Auth config veya signing materyali üretmedi.
+- 2026-08-19 Wave 11 Phase B2R sonucu: Agent 1 fiziksel acceptance commit'i `--no-ff`
+  ve çatışmasız entegre edildi. Signed APK install/upgrade, startup, Home input ve
+  gerçek location acquisition fiziksel PASS; confirmation UI ve recovery fiziksel
+  kabulü yapılmadığı için BLOCKED/OPEN korundu. Integration backend erişimi/yazması,
+  Auth/e-posta, QR, Storage, migration veya config işlemi yapmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -254,14 +266,17 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
 - Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
-  keystore yedeği ve ilk signed APK/AAB PASS'tir. Fiziksel Android kabulü, Google Play
-  Console/Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve
-  signed IPA hâlâ açık release kapılarıdır.
+  keystore yedeği ve ilk signed APK/AAB PASS'tir. B2R signed APK install/upgrade,
+  startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
+  app opening, recovery lifecycle, Settings-return negatif turu, Google Play Console/
+  Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve signed IPA
+  hâlâ açık release kapılarıdır.
 - Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production final
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
   Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery ve
   server-side confirmation PASS'tir. Actual mobile app opening, full recovery
-  lifecycle, legacy callback allowlist removal, deliverability/spam tuning,
+  lifecycle, olası yeni canlı Auth turu öncesi mevcut Production test-user inventory/
+  cleanup kontrolü, legacy callback allowlist removal, deliverability/spam tuning,
   fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
   broader Production smoke açık blocker'dır.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
@@ -272,8 +287,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `ANDROID_SIGNING_READY: YES`,
   `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
   `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
-  `LOCATION_PERMISSION_CODE_FIX: PASS`, `READY_FOR_PHYSICAL_B2_RETEST: YES`,
-  `PHYSICAL_DEVICE_REGRESSION: BLOCKED`,
+  `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
+  `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,
+  `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED`,
+  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`,
+  `PHYSICAL_DEVICE_REGRESSION: PARTIAL`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
