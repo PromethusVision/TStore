@@ -2,7 +2,8 @@
 
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
-authorized disposable-user cleanup + Phase F final integration
+authorized disposable-user cleanup + Phase F final integration + Wave 11 B3A
+authorized physical-test fixture cleanup
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
@@ -20,6 +21,10 @@ istemci yolu ile oluşturuldu; F3D'de fresh exact safety gate sonrasında yalnı
 Supabase Dashboard Auth Admin yoluyla silindi. Auth/SMTP ayarı, migration, schema,
 Storage veya unrelated business verisi değiştirilmedi. Personal email, UUID, token,
 parola ve secret kaydedilmez.
+
+Wave 11 B3A'da daha sonraki fiziksel testten kalan tek disposable customer, fresh
+authoritative gate sonrasında canonical uygulama self-delete akışıyla temizlendi.
+Bu ikinci cleanup, aşağıdaki F3D tarihsel fixture'ından ayrıdır.
 
 ## Project identity and provider state
 
@@ -159,6 +164,48 @@ sessions/items, verified transactions/items ve ratings ilişkilerini kapsar. Ba�
 user veya unrelated business verisi bulunmadı. F3D sırasında yeni signup, resend,
 recovery ya da e-posta gönderimi; Auth config, migration, schema veya Storage write
 yapılmadı. Development'a erişilmedi.
+
+## Wave 11 B3A authorized physical-test fixture cleanup
+
+2026-08-20 fresh authoritative Production gate, yalnız masked fiziksel-test customer
+fixture'ını ve ona ait tek saved-location satırını doğruladı:
+
+| Authoritative relation/state | Cleanup öncesi exact count |
+| --- | ---: |
+| `auth.users` | 1 |
+| `auth.identities` | 1 |
+| `auth.sessions` | 2 |
+| `public.profiles` / customer role | 1 / 1 |
+| Merchant/admin role | 0 |
+| `public.legal_consents` | 2 |
+| `public.saved_locations` | 1 |
+| Diğer user-linked business rows | 0 |
+| `storage.objects` | 0 |
+
+Product owner'ın exact fixture için verdiği açık yetkiyle uygulamadaki canonical
+`delete_current_customer_account` self-delete yolu kullanıldı. Ek Auth Admin veya
+ad-hoc SQL delete çalıştırılmadı. Saved-location satırı canonical cascade ile
+temizlendi; ayrı hedefli delete gerekmedi.
+
+| Authoritative relation/state | Cleanup sonrası exact count |
+| --- | ---: |
+| `auth.users` | 0 |
+| `auth.identities` | 0 |
+| `auth.sessions` | 0 |
+| `public.profiles` | 0 |
+| `public.legal_consents` | 0 |
+| `public.saved_locations` | 0 |
+| Diğer user-linked business rows | 0 |
+| `storage.objects` | 0 |
+
+Diğer user-linked business kontrolü addresses, wishlist, carts/items, legacy
+orders/items, reviews, chat, notifications, shops/ownership, QR sessions/items,
+verified transactions/items ve ratings ilişkilerini kapsar. Başka kullanıcı veya
+unrelated data bulunmadı. Bu görevde yeni signup/e-posta/recovery, Auth config,
+migration, schema, Storage veya Development işlemi yapılmadı. Production write yalnız
+exact authorized fixture'ın canonical self-delete işlemidir. B3 mobile Auth kabulü
+zero-test baseline ile yeniden başlatılabilir; app-opening ve full recovery lifecycle
+bu cleanup ile PASS sayılmaz.
 
 ## Custom SMTP and domain evidence
 

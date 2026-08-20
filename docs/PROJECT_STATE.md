@@ -2,28 +2,25 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-19
-- Son doğrulanan teslim: Wave 11 Agent 1 B2R fiziksel kabul commit'i
-  `9d600cf343257a6a308730f40da7c2996b2dcc41`; integration merge `60db4bf`
-- Doğrulanan branch/base: `integration/wave-11-phase-b2r-physical-20260819` /
-  `origin/main@4d3542903ef6e6cb861723100ce69113b19c28cc`
-- Entegrasyon durumu: **WAVE 11 PHASE B2R INPUT+LOCATION PHYSICAL PASS / CONFIRMATION+RECOVERY PHYSICAL BLOCKED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in
-  current main'den canonical repo-dışı keystore ile ürettiği signed Production APK,
-  data koruyan install/upgrade, startup ve input/location fiziksel retest kanıtı
-  çatışmasız entegre edildi. Production veya Development backend erişimi/write,
-  Auth signup/e-posta, QR, Storage, config veya migration işlemi yapılmadı.
-- Doğrulama türü: POCO X7 Pro / Android 16 fiziksel kanıt ve belge tutarlılığı;
-  input/theme, callback/confirmation, PKCE, konum servis/izin/settings ve Android
-  platform/signing hedefli sözleşmeler; diff ve secret/private-key/tracked artifact
-  kontrolleri. Agent B2R hedefli 114, tam suite 1177 ve analyzer PASS kanıtı korundu;
-  integration B2 hedefli matrisi 118/118 PASS oldu.
+- Son güncelleme: 2026-08-20
+- Son doğrulanan teslim: Wave 11 Agent 1 B3A authorized physical-test fixture cleanup
+- Doğrulanan branch/base: `agent1/w11-live-mobile-auth-acceptance` /
+  `origin/main@4c187cfda14c20cb4adf4f618cb2095a5937f535`
+- Entegrasyon durumu: **WAVE 11 PHASE B3A FIXTURE CLEANUP PASS / B3 MOBILE AUTH ACCEPTANCE READY TO RESTART**
+- Snapshot oluşturulurken çalışma ağacı: Agent 1 task worktree. Fresh authoritative
+  Production gate exact tek disposable fiziksel-test customer'ını ve ona ait tek
+  saved-location satırını doğruladı. Owner yetkisiyle uygulamadaki canonical
+  self-delete çalıştırıldı; post-delete Auth, profil, consent, saved-location, diğer
+  user-linked business ve Storage sayımlarının tamamı `0` oldu. Development'a
+  erişilmedi; e-posta, Auth config, migration, schema veya Storage write yapılmadı.
+- Doğrulama türü: cleanup öncesi/sonrası authoritative relation sayımları; account
+  deletion, profile/Auth, saved-location ve canonical migration contract hedefli
+  yerel testler; diff ve secret/PII kontrolleri. Hedefli paket 96/96 PASS oldu.
 - Çalıştırılmayan/BLOCKED kontroller: yeni Production signup/e-posta üretilmediği için
-  confirmation success/app opening fiziksel UI kabulü; physical deniedForever/
-  Settings-return negatif turu; full mobile recovery PKCE lifecycle; olası canlı Auth
-  turu öncesi mevcut Production test-user inventory/cleanup kontrolü; legacy Production
-  allowlist removal; deliverability tuning; broader Production smoke; fiziksel iki-cihaz
-  QR ve iOS archive/signing (Windows).
+  confirmation success/app opening fiziksel UI kabulü; full mobile recovery PKCE
+  lifecycle; physical deniedForever/Settings-return negatif turu; legacy Production
+  allowlist removal; deliverability tuning; broader Production smoke; fiziksel
+  iki-cihaz QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -120,6 +117,14 @@
 `PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
 
 `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+
+`WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
+
+`SAVED_LOCATION_RESIDUAL: ZERO`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -344,6 +349,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-20: **WAVE 11 PHASE B3A AUTHORIZED PHYSICAL-TEST FIXTURE CLEANUP PASS / ZERO TEST BASELINE RESTORED** — Fresh exact Production gate yalnız masked fiziksel-test customer fixture'ını doğruladı: Auth user/identity/profile `1/1/1`, session `2`, customer role `1`, merchant/admin `0`, legal consent `2`, saved location `1`; diğer user-linked business ve Storage satırları `0`. Product owner'ın exact fixture yetkisiyle uygulamadaki canonical `delete_current_customer_account` self-delete akışı kullanıldı. Authoritative post-delete state Auth user/identity/session/profile/legal consent/saved location, diğer user-linked business ve Storage için tamamen `0` oldu; saved location cascade ile temizlendi ve ek hedefli delete gerekmedi. Yeni signup/e-posta/recovery, Auth config, migration, schema, Storage veya Development işlemi yapılmadı. B3 mobile confirmation/recovery kabulü yeniden başlatılabilir; henüz PASS ilan edilmedi.
 - 2026-08-19: **WAVE 11 PHASE B2R PHYSICAL INPUT/LOCATION PASS / CONFIRMATION UI PHYSICAL BLOCKED** — POCO X7 Pro / Android 16 hem ADB hem Flutter ile fiziksel cihaz olarak doğrulandı. Current main'den canonical repo-dışı keystore ve client-safe Production runtime config ile signed APK üretildi; signature, `com.esnaftavar.app`, final callback ve artifact secret scan PASS. Geçici signing/runtime dosyaları silindi, kalıcı keystore korundu. Mevcut uygulamaya uninstall/clear-data olmadan upgrade yapıldı; startup/process ve crash kontrolü PASS. Home arama input'unda değer/hint/cursor görünürlük checklist'i product-owner tarafından PASS edildi. Konum dialog'u açıldı, izin verildi; sistem servisi, permission, location access ve crash-free process ADB'de, başarı sonucu/hata yok durumu product-owner tarafından doğrulandı. Hedefli paket 114 PASS, tam suite 1177 PASS (5 opt-in live skip), analyzer PASS. Yeni signup/e-posta/confirmation veya remote backend write yapılmadı; confirmation UI fiziksel kabulü bu nedenle BLOCKED.
 - 2026-08-19: **WAVE 11 PHASE B2 INPUT/AUTH CALLBACK/LOCATION AUTOMATED FIX PASS / PHYSICAL REGRESSION BLOCKED** — Açık müşteri form yüzeylerinde değer/hint/error/cursor/selection görünürlüğü merkezi yerel theme ile sabitlendi. Confirmation callback Auth/profile state'ini yeniden değerlendirir, waiting route'u kapatır, session durumuna göre shell/login hedefini seçer ve tek başarı mesajı gösterir; malformed/duplicate ve environment isolation korunur. Konum akışı cihaz servisi → runtime permission request → current/last-known position sırasına, denied-forever settings aksiyonuna ve resume refresh'e bağlandı. Remote backend yazması, signup veya e-posta yoktur. ADB cihazı olmadığından signed Production rebuild/install ve POCO X7 Pro fiziksel doğrulama yapılmadı.
 - 2026-08-18: **WAVE 11 PHASE A FINAL INTEGRATION / ANDROID SIGNING READY / FIRST SIGNED APK+AAB PASS / PHYSICAL ACCEPTANCE OPEN** — Agent 1 `b56b9fe` teslimi `18f7e03` ile `--no-ff` ve çatışmasız entegre edildi. Repo-dışı kalıcı RSA-4096 upload key ve `esnaftavar-upload` alias'ıyla `com.esnaftavar.app` / `EsnaftaVar` / `1.0.0+1` signed Production APK ve AAB üretildi. APK signer v2, AAB signature, package/manifest/final callback, artifact hash ve secret scan PASS; legacy callback ve server-only/signing secret yok. Geçici credential/config dosyaları silindi; keystore, `key.properties` ve APK/AAB Git dışında kaldı. Owner birincil keystore yedeği ile parola yöneticisi kaydını tamamladı; ikinci offline yedek öneri/açık olarak korunur. Fiziksel Android install/startup/callback acceptance, Play Console/Play App Signing, iOS signing ve commercial GO açıktır. Integration Production/Development remote erişimi veya write yapmadı.
