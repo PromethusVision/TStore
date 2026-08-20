@@ -440,3 +440,47 @@ Phase F final integration callback/PKCE/signup-recovery/account-deletion/profile
 canonical RLS hedefli yerel matrisi 151/151, docs consistency, diff ve secret/PII scan
 PASS doğruladı. Kod değişmediği için full suite/analyzer yeniden çalıştırılmadı;
 Production/Development remote test çağrılmadı.
+
+## Wave 11 Phase B3R physical mobile acceptance sonucu
+
+Exact Production `mefhfvrgkwciubeajjeb` üzerinde fresh zero baseline sonrasında
+yalnız bir disposable customer normal client ile oluşturuldu. Personal email,
+password, token ve UUID bu belgeye alınmadı.
+
+- Signup, confirmation-required waiting UI, Inbox teslimatı, sender adı/domain,
+  server-side confirmation, final mobile callback app opening, authenticated Home,
+  automatic profile ve default `customer` role: **PASS**.
+- Confirmation callback sonrasında canonical kısa başarı mesajı: **FAIL**. Home açıldı
+  ancak mesaj gözlenmedi. Destination render sonrasına taşınan listener düzeltmesi
+  otomatik testlerde PASS; ikinci signup yasak olduğu için fiziksel tekrar kabulü
+  **BLOCKED**.
+- Tek recovery e-postası Inbox'a ulaştı; final callback uygulamada update-password
+  ekranını açtı ve password update server tarafında başarıyla işlendi: **PASS**.
+- Eski credential reddi: **PASS**.
+- Yeni credential login: **FAIL**. Normal uygulama ve password değerini opaque olarak
+  aynen gönderen patched signed APK denemeleri authoritative Production Auth logunda
+  `invalid_credentials` olarak doğrulandı.
+- Client hardening: login/signup/recovery password değerleri trim edilmez; password
+  klavyelerinde autocorrect ve suggestion kapalıdır. Bu düzeltmeler mevcut fixture'ın
+  yeni credential login'ini kurtarmadı.
+- İkinci recovery/signup/resend/admin delete: **YAPILMADI**.
+- Canonical authenticated self-delete ve zero residual restore: **BLOCKED**. Exact B3R
+  fixture için owner-onaylı ayrı cleanup gerekir.
+- Production Auth config/SMTP/schema/migration/Storage değişikliği: **YOK**.
+- Development erişimi/yazması: **YOK**.
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL`
+
+`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+
+`PRODUCTION_AUTH_ROLE_SECURITY: PASS`
+
+`TEST_FIXTURE_CLEANUP: FAIL`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: NO`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: NO`
+
+`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED`

@@ -59,7 +59,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
     if (formIsValid && _privacyNoticeAcknowledged && _termsAccepted) {
       context.read<AuthCubit>().signUp(
         email: _emailController.text.trim().toLowerCase(),
-        password: _passwordController.text.trim(),
+        password: _passwordController.text,
         fullName:
             '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}',
         phone: _phoneController.text.trim(),
@@ -169,6 +169,8 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               controller: _passwordController,
               validator: (value) => TValidator.validatePassword(value),
               obscureText: _obscurePassword,
+              autocorrect: false,
+              enableSuggestions: false,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Iconsax.password_check),
                 suffixIcon: IconButton(
@@ -194,6 +196,8 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
                 _passwordController,
               ),
               obscureText: _obscurePassword,
+              autocorrect: false,
+              enableSuggestions: false,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Iconsax.password_check),
                 labelText: 'Şifre Tekrarı',

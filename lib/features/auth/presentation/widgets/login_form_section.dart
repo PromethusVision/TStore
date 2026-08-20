@@ -50,7 +50,9 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().signIn(
         email: _emailController.text.trim().toLowerCase(),
-        password: _passwordController.text.trim(),
+        // Passwords are opaque credentials. Trimming here breaks accounts
+        // whose password was set verbatim by the recovery flow.
+        password: _passwordController.text,
       );
     }
   }
@@ -193,7 +195,10 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                 TextFormField(
                   key: const Key('login-password'),
                   controller: _passwordController,
+                  keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscurePassword,
+                  autocorrect: false,
+                  enableSuggestions: false,
                   autofillHints: const [AutofillHints.password],
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: state is AuthLoading

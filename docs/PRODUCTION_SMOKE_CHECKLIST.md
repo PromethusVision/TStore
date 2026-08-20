@@ -269,7 +269,27 @@ record Wave 11'de PASS olmuştur.
 Final Android/iOS kimliği ve Production callback
 `com.esnaftavar.app://login-callback/` kaynakta wired durumdadır. Development legacy
 callback'i ayrı sözleşmede korunur. Production legacy allowlist kaydı yalnız gerçek
-final mobile app callback opening PASS sonrasında yetkili owner tarafından kaldırılır.
+final mobile Auth acceptance ve fixture cleanup tamamlandıktan sonra yetkili owner
+tarafından kaldırılır.
+
+## Wave 11 B3R physical mobile Auth kanıtı
+
+| Kontrol | Sonuç |
+| --- | --- |
+| Exact Production / Development exclusion | PASS; `mefhfvrgkwciubeajjeb`, Development write yok |
+| Normal signup / waiting UI / profile / role | PASS; exact bir disposable customer, role `customer` |
+| Confirmation Inbox / sender / domain | PASS; Spam değil, kişisel veri belgelenmedi |
+| Confirmation final callback / app opening | PASS; POCO X7 Pro doğrudan Production uygulamasını açtı |
+| Confirmation canonical başarı mesajı | FAIL; Home açıldı fakat kısa başarı mesajı görünmedi |
+| Recovery Inbox / final callback / update UI | PASS; tek recovery e-postası ve tek link kullanımı |
+| Eski credential login | PASS; reddedildi |
+| Yeni credential login | FAIL; patched signed build dahil Auth `invalid_credentials` |
+| Role escalation | PASS; kullanıcı `customer` kaldı, merchant/admin olmadı |
+| Canonical self-delete / zero residual | BLOCKED; authenticated session kurulamadı |
+
+İkinci recovery, resend, signup veya admin cleanup çalıştırılmadı. Exact B3R fixture
+owner-onaylı ayrı cleanup gerektirir. Bu nedenle legacy callback removal ve Wave 11
+mobile Auth acceptance gate'i açık kalır.
 
 ## 1. Başlatma kapıları
 
@@ -298,8 +318,10 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Android/iOS final application/bundle identity `com.esnaftavar.app` ve Android
       Development `.dev` varyantı kaynak sözleşmesine bağlandı.
 - [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
-- [ ] Final callback signed-artifact app-opening/recovery kabulü tamamlandı; ardından
-      legacy Production allowlist kaydı kaldırıldı.
+- [x] Final callback signed-artifact confirmation app opening POCO X7 Pro üzerinde
+      PASS.
+- [ ] Full recovery kabulü yeni credential login ile tamamlandı; ardından legacy
+      Production allowlist kaydı kaldırıldı. B3R'de callback/update UI PASS, login FAIL.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
 - [x] Supabase remote Site URL localhost'tan exact final mobile callback
@@ -313,8 +335,9 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] F3B gerçek SMTP teslimatı, gözlenen sender adı/domain, server-side confirmation
       ve final callback e-posta URL contract'ı PASS; F3D exact authorized fixture
       cleanup sonrası Auth/profile/consent/business/Storage baseline yeniden sıfır.
-- [ ] Signed Production mobil uygulamada final callback app opening ve full recovery
-      PKCE lifecycle PASS; Resend link-tracking ayrıca doğrulanmalı.
+- [x] Signed Production mobil uygulamada confirmation final callback app opening PASS.
+- [ ] Full recovery PKCE lifecycle yeni credential login ve cleanup ile PASS;
+      Resend link-tracking ayrıca doğrulanmalı.
 - [x] Android gerçek application ID ve upload-key release signing PASS.
 - [x] Android keystore birincil repo-dışı yedeği ve parola yöneticisi kaydı tamamlandı.
 - [ ] Android ikinci offline keystore yedeği ve kalıcı CI signing provenance tamamlandı.
@@ -363,8 +386,8 @@ içermeyen ekran/log kanıtı eklenir.
 | Search | Var olan, olmayan ve özel karakterli sorgu dene | Sonuç/empty state doğru; duplicate ve beklenmeyen private veri yok | |
 | ProductDetails | Guest olarak ürün detayına gir | Ürün, fiyat ve satıcılar doğru; legacy HTTPS/canonical product image güvenli görüntülenir | |
 | Sellers | Aynı ürünün satıcılarını ve mağaza detayını aç | Yalnız aktif/görünür satıcılar, konum/mesafe izin akışı ve fallback doğru | |
-| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | |
-| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | |
+| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; canonical success mesajı FAIL |
+| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS; yeni credential login FAIL |
 | CartV2 | User A bir shop-product ekler, miktar değiştirir/siler; başka mağaza eklemeyi dener | Tek-mağaza kuralı, stok/fiyat revalidation ve duplicate tap koruması çalışır; legacy checkout açılmaz | |
 | Favorites | User A ekler/çıkarır; User B ile izolasyonu kontrol et | Own CRUD çalışır; B, A'nın favorisini okuyamaz/değiştiremez | |
 | Chat | A ve B aynı conversation'da mesajlaşır; üçüncü conversation ile izolasyonu dene | Real event bir kez gelir; RLS, unread/summary, unsubscribe/reconnect/dedup doğru | |
@@ -375,7 +398,7 @@ içermeyen ekran/log kanıtı eklenir.
 | Shop rating | Doğrulanmış işlem sonrası mağaza puanı oluştur/güncelle | Eligibility server-derived; yetkisiz, başka kullanıcı ve duplicate davranışı kontrollü | |
 | Product review | Yalnız doğrulanmış transaction item ürünü için create/read/update/delete/recreate yap | RPC-only eligibility, server-derived verified flag, idempotent duplicate ve aggregate tutarlılığı çalışır | |
 | Profile | Profil görüntüle/düzenle; adres/konum izin reddi ve kabulünü dene | Own data çalışır; cross-user RLS reddeder; izin reddi kontrollü fallback verir | |
-| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | |
+| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | B3R: authenticated self-delete yapılamadı; owner cleanup yetkisi gerekli |
 | Storage images | Product/category/banner için controlled path ve legacy HTTPS örneği aç; malformed kaynak dene | Public GET çalışır; doğru ortam URL'si kullanılır; malformed/unsupported kaynak fallback verir; list/write/update/delete yoktur | |
 
 ## 4. Negatif güvenlik ve yaşam döngüsü

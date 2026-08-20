@@ -391,6 +391,25 @@ void main() {
     expect(isObscured(const Key('update-password-confirm')), isFalse);
   });
 
+  testWidgets('new password inputs disable keyboard rewriting', (tester) async {
+    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+
+    for (final fieldKey in const [
+      Key('update-password-new'),
+      Key('update-password-confirm'),
+    ]) {
+      final field = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byKey(fieldKey),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(field.keyboardType, TextInputType.visiblePassword);
+      expect(field.autocorrect, isFalse);
+      expect(field.enableSuggestions, isFalse);
+    }
+  });
+
   testWidgets('submits a valid new password only once', (tester) async {
     await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
 

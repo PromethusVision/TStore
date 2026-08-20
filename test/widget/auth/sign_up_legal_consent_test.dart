@@ -183,6 +183,82 @@ void main() {
     ).called(1);
   });
 
+  testWidgets('preserves the password exactly during registration', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+
+    await tester.enterText(find.byKey(const Key('signup-first-name')), 'Ayşe');
+    await tester.enterText(find.byKey(const Key('signup-last-name')), 'Yılmaz');
+    await tester.enterText(
+      find.byKey(const Key('signup-email')),
+      'ayse@example.com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('signup-phone')),
+      '05551234567',
+    );
+    await tester.enterText(
+      find.byKey(const Key('signup-password')),
+      ' Strong1! ',
+    );
+    await tester.enterText(
+      find.byKey(const Key('signup-confirm-password')),
+      ' Strong1! ',
+    );
+
+    await tester.ensureVisible(
+      find.byKey(const Key('privacy-notice-agreement')),
+    );
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const Key('privacy-notice-agreement')),
+        matching: find.byType(Checkbox),
+      ),
+    );
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const Key('terms-of-use-agreement')),
+        matching: find.byType(Checkbox),
+      ),
+    );
+    await tester.ensureVisible(find.byKey(const Key('signup-submit')));
+    await tester.tap(find.byKey(const Key('signup-submit')));
+    await tester.pump();
+
+    verify(
+      () => authCubit.signUp(
+        email: 'ayse@example.com',
+        password: ' Strong1! ',
+        fullName: 'Ayşe Yılmaz',
+        phone: '05551234567',
+        privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+        termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+      ),
+    ).called(1);
+  });
+
+  testWidgets('registration password inputs disable keyboard rewriting', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+
+    for (final fieldKey in const [
+      Key('signup-password'),
+      Key('signup-confirm-password'),
+    ]) {
+      final field = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byKey(fieldKey),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(field.keyboardType, TextInputType.visiblePassword);
+      expect(field.autocorrect, isFalse);
+      expect(field.enableSuggestions, isFalse);
+    }
+  });
+
   testWidgets('loading state prevents a second registration submission', (
     tester,
   ) async {
