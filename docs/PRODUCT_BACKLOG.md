@@ -72,6 +72,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   negatif turu çalıştırılmadı. Confirmation success UI/app opening için yeni Auth/
   e-posta fixture oluşturulmadığından BLOCKED; mobile recovery OPEN/BLOCKED kaldı.
   Integration ilgili B2 sözleşme matrisini 118/118 PASS ile yeniden doğruladı.
+- 2026-08-20 Wave 11 Phase B3A ilerlemesi: Önceki disposable fiziksel-test customer'ı
+  fresh authoritative gate ve owner yetkisiyle canonical self-delete yolundan
+  temizlendi. Saved-location cascade ile silindi; ek targeted/admin/manual SQL delete
+  yok. Auth user/identity/session/profile/consent/saved-location, diğer user-linked
+  business ve Storage post-state exact `0`; Production zero-test baseline restore PASS.
+  Confirmation callback app-opening/UI ve full recovery kabulü henüz açık kalır.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -255,6 +261,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   gerçek location acquisition fiziksel PASS; confirmation UI ve recovery fiziksel
   kabulü yapılmadığı için BLOCKED/OPEN korundu. Integration backend erişimi/yazması,
   Auth/e-posta, QR, Storage, migration veya config işlemi yapmadı.
+- 2026-08-20 Wave 11 Phase B3A sonucu: Agent 1 authorized fixture cleanup kanıtı
+  `--no-ff` ve çatışmasız entegre edildi. Canonical self-delete, saved-location
+  cascade ve zero Auth/business/Storage residual PASS. Integration cleanup'ı tekrar
+  çalıştırmadı; Production remote read/write ve Development erişimi olmadı. B3 mobile
+  Auth acceptance zero-test baseline ile yeniden başlatılabilir. Agent hedefli kanıtı
+  96/96, Integration yeniden doğrulama paketi 63/63 PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -275,10 +287,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
   Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery ve
   server-side confirmation PASS'tir. Actual mobile app opening, full recovery
-  lifecycle, olası yeni canlı Auth turu öncesi mevcut Production test-user inventory/
-  cleanup kontrolü, legacy callback allowlist removal, deliverability/spam tuning,
+  lifecycle, legacy callback allowlist removal, deliverability/spam tuning,
   fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
   broader Production smoke açık blocker'dır.
+- Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
+  saved-location dahil Auth/business/Storage residual exact `0`. Sonraki canlı Auth
+  turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
 - `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
@@ -292,6 +306,10 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED`,
   `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`,
   `PHYSICAL_DEVICE_REGRESSION: PARTIAL`,
+  `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`,
+  `B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`,
+  `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`,
+  `READY_TO_RESTART_B3_MOBILE_AUTH: YES`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

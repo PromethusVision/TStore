@@ -207,6 +207,10 @@ exact authorized fixture'ın canonical self-delete işlemidir. B3 mobile Auth ka
 zero-test baseline ile yeniden başlatılabilir; app-opening ve full recovery lifecycle
 bu cleanup ile PASS sayılmaz.
 
+Wave 11 B3A integration yalnız bu kanıtı Git/dokümantasyon düzeyinde birleştirdi;
+Production remote read/write, yeni Auth/email/recovery işlemi veya Development erişimi
+yapmadı.
+
 ## Custom SMTP and domain evidence
 
 Supabase dashboard'ında Custom SMTP **ON** durumundadır. Salt-okunur görünür alanlar:

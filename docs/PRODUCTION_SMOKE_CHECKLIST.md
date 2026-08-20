@@ -52,6 +52,8 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
 
+`B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`
+
 `SAVED_LOCATION_RESIDUAL: ZERO`
 
 `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
@@ -137,6 +139,8 @@ business ve Storage exact `0` doğrulandı. Saved location cascade ile temizlend
 targeted/admin delete gerekmedi. Yeni signup/e-posta/recovery, Auth config, migration,
 schema, Storage veya Development işlemi yapılmadı. B3 mobile acceptance yeniden
 başlatılabilir; confirmation app-opening ve full recovery lifecycle hâlâ açık gate'tir.
+B3A integration bu cleanup'ı tekrar çalıştırmadı ve Production remote read/write
+yapmadı.
 
 `WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
 

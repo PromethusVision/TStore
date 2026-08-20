@@ -365,6 +365,36 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   ile yeniden doğruladı; otomatik sonuçlar yapılmayan fiziksel Auth/settings turunu
   kapatmaz.
 
+## Wave 11 Phase B3A Cleanup Entegrasyon Gözlemi
+
+`WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
+
+`B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
+
+- Agent 1'in `628118e` cleanup evidence commit'i exact `4c187cf` tabanından tek
+  `--no-ff` merge ile çatışmasız entegre edildi. Değişiklik yalnız üç canonical
+  belgeydi; kod, migration, fixture, dependency veya shared model değişmedi.
+- Fresh Production gate önceki disposable fiziksel-test customer'ı için Auth user/
+  identity/profile `1/1/1`, session `2`, customer role `1`, legal consent `2`, saved
+  location `1`; merchant/admin, diğer user-linked business ve Storage `0` doğruladı.
+- Owner-authorized canonical `delete_current_customer_account` self-delete çalıştı.
+  Trusted admin/manual SQL delete veya ek hedefli delete yok; saved-location canonical
+  cascade ile temizlendi.
+- Authoritative post-state Auth user/identity/session/profile/legal consent/saved
+  location, diğer user-linked business ve Storage için exact `0`; Production zero-test
+  baseline restore PASS.
+- Integration cleanup'ı tekrar çalıştırmadı: Production remote read/write, Auth user/
+  email/recovery, config, migration, Storage veya Development işlemi `0` kaldı.
+- Agent kanıtındaki hedefli paket 96/96, Integration account deletion/Auth/profile/
+  saved-location/canonical migration yeniden doğrulama paketi 63/63 PASS.
+- Live physical confirmation callback app-opening, confirmation success UI ve full
+  mobile recovery; legacy Production callback removal, deliverability tuning,
+  fiziksel iki-cihaz QR ve broader Production smoke açık kalır.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

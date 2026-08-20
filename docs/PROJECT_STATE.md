@@ -3,19 +3,22 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-20
-- Son doğrulanan teslim: Wave 11 Agent 1 B3A authorized physical-test fixture cleanup
-- Doğrulanan branch/base: `agent1/w11-live-mobile-auth-acceptance` /
+- Son doğrulanan teslim: Wave 11 Agent 1 B3A cleanup commit'i
+  `628118efe2a7df9b611dee49f6ef14b3f9bf7c93`; integration merge `6baaaaf`
+- Doğrulanan branch/base: `integration/wave-11-phase-b3a-cleanup-20260820` /
   `origin/main@4c187cfda14c20cb4adf4f618cb2095a5937f535`
 - Entegrasyon durumu: **WAVE 11 PHASE B3A FIXTURE CLEANUP PASS / B3 MOBILE AUTH ACCEPTANCE READY TO RESTART**
-- Snapshot oluşturulurken çalışma ağacı: Agent 1 task worktree. Fresh authoritative
-  Production gate exact tek disposable fiziksel-test customer'ını ve ona ait tek
-  saved-location satırını doğruladı. Owner yetkisiyle uygulamadaki canonical
-  self-delete çalıştırıldı; post-delete Auth, profil, consent, saved-location, diğer
-  user-linked business ve Storage sayımlarının tamamı `0` oldu. Development'a
-  erişilmedi; e-posta, Auth config, migration, schema veya Storage write yapılmadı.
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in fresh
+  authoritative Production gate ile exact tek disposable fiziksel-test customer'ı ve
+  tek saved-location satırı için kaydettiği canonical self-delete kanıtı çatışmasız
+  entegre edildi. Post-delete Auth, profil, consent, saved-location, diğer user-linked
+  business ve Storage sayımlarının tamamı `0`. Integration Production remote read/
+  write yapmadı; Development'a dokunmadı ve e-posta, Auth config, migration, schema
+  veya Storage işlemi çalıştırmadı.
 - Doğrulama türü: cleanup öncesi/sonrası authoritative relation sayımları; account
   deletion, profile/Auth, saved-location ve canonical migration contract hedefli
-  yerel testler; diff ve secret/PII kontrolleri. Hedefli paket 96/96 PASS oldu.
+  yerel testler; diff ve secret/PII kontrolleri. Agent kanıtındaki hedefli paket
+  96/96, Integration yeniden doğrulama paketi 63/63 PASS oldu.
 - Çalıştırılmayan/BLOCKED kontroller: yeni Production signup/e-posta üretilmediği için
   confirmation success/app opening fiziksel UI kabulü; full mobile recovery PKCE
   lifecycle; physical deniedForever/Settings-return negatif turu; legacy Production
@@ -119,6 +122,8 @@
 `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
+
+`B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`
 
 `SAVED_LOCATION_RESIDUAL: ZERO`
 
