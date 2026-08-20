@@ -50,6 +50,14 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
 
+`WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
+
+`SAVED_LOCATION_RESIDUAL: ZERO`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
+
 `COMMERCIAL_RELEASE_READY: NO`
 
 ## Wave 11 Phase A signed Android artifact evidence
@@ -118,6 +126,17 @@ B2 hedefli matrisi 118/118 PASS. Production veya Development backend write, Auth
 e-postası, yeni user, QR ya da Storage işlemi yoktur.
 Confirmation/recovery canlı turundan önce mevcut Production test-user inventory ve
 gerekiyorsa exact scoped cleanup durumu yeniden doğrulanmalıdır.
+
+Wave 11 B3A'da fresh authoritative gate bu fiziksel testten kalan tek disposable
+customer'ı doğruladı: Auth user/identity/profile `1/1/1`, session `2`, customer role
+`1`, merchant/admin `0`, legal consent `2`, saved location `1`; diğer user-linked
+business ve Storage satırları `0`. Owner'ın exact fixture yetkisiyle uygulamadaki
+canonical `delete_current_customer_account` self-delete akışı kullanıldı. Sonrasında
+Auth user/identity/session/profile/legal consent/saved location, diğer user-linked
+business ve Storage exact `0` doğrulandı. Saved location cascade ile temizlendi; ek
+targeted/admin delete gerekmedi. Yeni signup/e-posta/recovery, Auth config, migration,
+schema, Storage veya Development işlemi yapılmadı. B3 mobile acceptance yeniden
+başlatılabilir; confirmation app-opening ve full recovery lifecycle hâlâ açık gate'tir.
 
 `WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
 
