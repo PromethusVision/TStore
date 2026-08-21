@@ -285,11 +285,14 @@ tarafından kaldırılır.
 | Eski credential login | PASS; reddedildi |
 | Yeni credential login | FAIL; patched signed build dahil Auth `invalid_credentials` |
 | Role escalation | PASS; kullanıcı `customer` kaldı, merchant/admin olmadı |
-| Canonical self-delete / zero residual | BLOCKED; authenticated session kurulamadı |
+| Canonical self-delete / zero residual | Self-delete session yoktu; owner-authorized exact Auth Admin cleanup ve zero residual PASS |
 
-İkinci recovery, resend, signup veya admin cleanup çalıştırılmadı. Exact B3R fixture
-owner-onaylı ayrı cleanup gerektirir. Bu nedenle legacy callback removal ve Wave 11
-mobile Auth acceptance gate'i açık kalır.
+Acceptance turunda ikinci recovery, resend, signup veya admin cleanup çalıştırılmadı.
+2026-08-22 ayrı owner-authorized cleanup görevinde fresh gate yalnız exact B3R fixture'ı
+doğruladı; Supabase Dashboard Auth Admin delete sonrasında Auth user/identity/session/
+profile/consent, bütün user-linked business rows ve Storage objects exact `0` oldu.
+Cleanup PASS olsa da recovery final login ve confirmation success feedback FAIL/OPEN
+kaldığı için legacy callback removal ve Wave 11 mobile Auth acceptance gate'i açıktır.
 
 ## 1. Başlatma kapıları
 
@@ -335,6 +338,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] F3B gerçek SMTP teslimatı, gözlenen sender adı/domain, server-side confirmation
       ve final callback e-posta URL contract'ı PASS; F3D exact authorized fixture
       cleanup sonrası Auth/profile/consent/business/Storage baseline yeniden sıfır.
+- [x] B3R owner-authorized exact fixture cleanup sonrası Auth user/identity/session/
+      profile/consent, bütün user-linked business ve Storage residual exact sıfır.
 - [x] Signed Production mobil uygulamada confirmation final callback app opening PASS.
 - [ ] Full recovery PKCE lifecycle yeni credential login ve cleanup ile PASS;
       Resend link-tracking ayrıca doğrulanmalı.
@@ -398,7 +403,7 @@ içermeyen ekran/log kanıtı eklenir.
 | Shop rating | Doğrulanmış işlem sonrası mağaza puanı oluştur/güncelle | Eligibility server-derived; yetkisiz, başka kullanıcı ve duplicate davranışı kontrollü | |
 | Product review | Yalnız doğrulanmış transaction item ürünü için create/read/update/delete/recreate yap | RPC-only eligibility, server-derived verified flag, idempotent duplicate ve aggregate tutarlılığı çalışır | |
 | Profile | Profil görüntüle/düzenle; adres/konum izin reddi ve kabulünü dene | Own data çalışır; cross-user RLS reddeder; izin reddi kontrollü fallback verir | |
-| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | B3R: authenticated self-delete yapılamadı; owner cleanup yetkisi gerekli |
+| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | B3R: self-delete session yoktu; owner-authorized exact Auth Admin cleanup ve authoritative zero residual PASS |
 | Storage images | Product/category/banner için controlled path ve legacy HTTPS örneği aç; malformed kaynak dene | Public GET çalışır; doğru ortam URL'si kullanılır; malformed/unsupported kaynak fallback verir; list/write/update/delete yoktur | |
 
 ## 4. Negatif güvenlik ve yaşam döngüsü
@@ -449,6 +454,8 @@ Smoke sonunda:
       sınırlı tuttu; broader smoke principal'ları için bu madde yeniden uygulanır.
 - [x] Phase F3 residual sayımları kaydedildi ve Auth/business/Storage exact `0` bulundu;
       broader smoke sonrasında residual kontrolü yeniden zorunludur.
+- [x] B3R disposable principal owner-authorized exact Auth Admin cleanup ile silindi;
+      Auth/profile/consent/business/Storage residual exact `0`, Development write `0`.
 - [x] Phase F3 Git kanıtı secret/PII açısından redakte edildi.
 - [ ] PASS/FAIL ve açık incidentler release sahibi tarafından imzalandı.
 
