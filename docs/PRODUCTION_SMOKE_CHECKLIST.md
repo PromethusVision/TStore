@@ -46,9 +46,9 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `READY_FOR_PHYSICAL_B2_RETEST: COMPLETED — INPUT/LOCATION PASS`
 
-`PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
+`PHYSICAL_DEVICE_REGRESSION: PARTIAL — CALLBACK PASS; SUCCESS MESSAGE/RECOVERY LOGIN FAIL`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: NO — B3R BUGS OPEN`
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
 
@@ -58,7 +58,23 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
 
-`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
+`AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`
+
+`WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL`
+
+`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+
+`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`
+
+`V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`
+
+`READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`
+
+`READY_TO_RESTART_B3_MOBILE_AUTH: NO — ROOT CAUSE/FIX REQUIRED`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -158,7 +174,7 @@ yapmadı.
 
 `PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — HISTORICAL B2R GATE`
 
 ## Wave 10 Phase F3 live email acceptance and authorized cleanup
 
@@ -293,6 +309,29 @@ doğruladı; Supabase Dashboard Auth Admin delete sonrasında Auth user/identity
 profile/consent, bütün user-linked business rows ve Storage objects exact `0` oldu.
 Cleanup PASS olsa da recovery final login ve confirmation success feedback FAIL/OPEN
 kaldığı için legacy callback removal ve Wave 11 mobile Auth acceptance gate'i açıktır.
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL`
+
+`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+
+`AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`
+
+`V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`
+
+`READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: NO`
+
+B3R integration bu fiziksel kabulü veya cleanup'ı tekrar çalıştırmadı; Production/
+Development remote read/write, Auth user/e-posta/recovery/config veya Storage işlemi
+yapmadı. İlgili Auth matrisi 67/67, tam suite 1182 PASS (5 explicit opt-in live skip)
+ve analyzer PASS; fiziksel FAIL'ler açık kalır.
 
 ## 1. Başlatma kapıları
 

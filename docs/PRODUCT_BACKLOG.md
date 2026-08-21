@@ -78,6 +78,21 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   yok. Auth user/identity/session/profile/consent/saved-location, diğer user-linked
   business ve Storage post-state exact `0`; Production zero-test baseline restore PASS.
   Confirmation callback app-opening/UI ve full recovery kabulü henüz açık kalır.
+- 2026-08-22 Wave 11 B3R ilerlemesi: POCO X7 Pro'da confirmation ve recovery
+  e-postaları, final callback app-opening, server confirmation, authenticated customer
+  session/profile/role ve recovery update UI PASS. Confirmation başarı mesajı fiziksel
+  olarak görünmedi. Password update HTTP `200` dönmesine rağmen yeni credential iki
+  fresh login'de `invalid_credentials` aldı. Owner-authorized exact Auth Admin cleanup
+  sonrası Auth/business/Storage residual exact `0`; legacy callback korunur.
+
+#### Wave 11 B3R V1.0 Auth Bugs — OPEN
+
+1. Confirmation callback server/session ve Home navigation'ı tamamlıyor; canonical
+   başarı feedback'i destination UI'da kayboluyor veya gösterilmiyor. Kod düzeyindeki
+   destination-render koruması otomatik PASS olsa da fiziksel kabul FAIL'dir.
+2. Recovery password-update isteği HTTP `200` / `user_modified` döndürüyor; buna rağmen
+   yeni credential temiz login'de reddediliyor. HTTP başarısı password-hash persistence
+   kanıtı değildir; istemci/Auth log zinciriyle root-cause analizi gerekir.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -267,6 +282,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   çalıştırmadı; Production remote read/write ve Development erişimi olmadı. B3 mobile
   Auth acceptance zero-test baseline ile yeniden başlatılabilir. Agent hedefli kanıtı
   96/96, Integration yeniden doğrulama paketi 63/63 PASS.
+- 2026-08-22 Wave 11 B3R evidence + cleanup sonucu: Agent final HEAD'i `--no-ff` ve
+  çatışmasız entegre edildi. Physical confirmation callback, server confirmation,
+  customer role/profile ve recovery callback/update UI PASS; success feedback ve yeni
+  credential login FAIL. Exact B3R fixture trusted Auth Admin yoluyla temizlendi,
+  Production zero-test baseline restore PASS. Integration remote backend işlemi
+  yapmadı; Auth matrisi 67/67, tam suite 1182 PASS (5 live skip) ve analyzer PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -280,36 +301,47 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
   keystore yedeği ve ilk signed APK/AAB PASS'tir. B2R signed APK install/upgrade,
   startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
-  app opening, recovery lifecycle, Settings-return negatif turu, Google Play Console/
+  app opening PASS; confirmation success feedback ve recovery credential login FAIL.
+  Settings-return negatif turu, Google Play Console/
   Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve signed IPA
   hâlâ açık release kapılarıdır.
 - Gerçek client-safe Production config/read-only bağlantı PASS'tir. Production final
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
-  Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery ve
-  server-side confirmation PASS'tir. Actual mobile app opening, full recovery
-  lifecycle, legacy callback allowlist removal, deliverability/spam tuning,
+  Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery,
+  server-side confirmation ve actual mobile app opening PASS'tir. Confirmation
+  success feedback ve recovery credential persistence/login V1.0 bug'ları; legacy
+  callback allowlist removal, deliverability/spam tuning,
   fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
   broader Production smoke açık blocker'dır.
 - Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
   saved-location dahil Auth/business/Storage residual exact `0`. Sonraki canlı Auth
   turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
+- B3R disposable principal'ı owner-authorized trusted Auth Admin delete ile temizlendi;
+  Auth user/identity/session/profile/consent, bütün linked business ve Storage residual
+  exact `0`. Yeni canlı write yerine önce iki açık Auth bug'ının root-cause/fix turu
+  gerekir; legacy callback bu kabul tamamlanmadan kaldırılmaz.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
 - `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
   `PRODUCTION_EMAIL_INFRASTRUCTURE: READY`, `PRODUCTION_ZERO_TEST_RESIDUAL: YES`,
-  `MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`,
-  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`, `ANDROID_SIGNING_READY: YES`,
+  `MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS`,
+  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: FAIL`, `ANDROID_SIGNING_READY: YES`,
   `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
   `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
   `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
   `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,
-  `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED`,
-  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`,
+  `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: FAIL`,
+  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: NO — B3R BUGS OPEN`,
   `PHYSICAL_DEVICE_REGRESSION: PARTIAL`,
   `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`,
   `B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`,
+  `AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`,
+  `WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`,
   `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`,
-  `READY_TO_RESTART_B3_MOBILE_AUTH: YES`,
+  `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`,
+  `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`,
+  `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`,
+  `READY_TO_RESTART_B3_MOBILE_AUTH: NO — ROOT CAUSE/FIX REQUIRED`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

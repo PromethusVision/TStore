@@ -339,7 +339,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — HISTORICAL B2R GATE`
 
 - Agent 1'in `9d600cf` fiziksel acceptance belge commit'i exact `4d35429`
   tabanından tek `--no-ff` merge ile çatışmasız entegre edildi. Kod, migration,
@@ -373,7 +373,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
 
-`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
+`READY_TO_RESTART_B3_MOBILE_AUTH: YES — HISTORICAL B3A GATE`
 
 - Agent 1'in `628118e` cleanup evidence commit'i exact `4c187cf` tabanından tek
   `--no-ff` merge ile çatışmasız entegre edildi. Değişiklik yalnız üç canonical
@@ -394,6 +394,44 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Live physical confirmation callback app-opening, confirmation success UI ve full
   mobile recovery; legacy Production callback removal, deliverability tuning,
   fiziksel iki-cihaz QR ve broader Production smoke açık kalır.
+
+## Wave 11 B3R Evidence + Cleanup Entegrasyon Gözlemi
+
+`WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL`
+
+`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+
+`AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`
+
+- Agent 1 final HEAD'i `0f94596`, exact `76acad4` tabanından `59acbec` ile tek
+  `--no-ff` ve çatışmasız merge olarak entegre edildi. Branch üç canonical kanıt
+  belgesi yanında dört Auth UI dosyasında password opaque-value/keyboard hardening ve
+  destination-render sonrası confirmation feedback değişiklikleri ile üç test dosyası
+  içerir; SQL/migration, shared model, DI veya dependency değişmedi.
+- POCO X7 Pro / Android 16 fiziksel kanıtında confirmation e-postası, final callback
+  ile EsnaftaVar'ın açılması, server confirmation, authenticated Home/session ve
+  customer role/profile güvenliği PASS. Canonical confirmation success mesajı Home'da
+  görünmedi: `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`.
+- Recovery e-postası, final callback ve update-password UI PASS. HTTP `200` /
+  `user_modified` gerçek password-hash değişimi kanıtı sayılmadı; iki fresh login yeni
+  credential'ı `invalid_credentials` ile reddetti:
+  `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`.
+- Fresh cleanup gate exact B3R disposable fixture'ını doğruladı. Session olmadığı için
+  canonical self-delete kullanılamadı; owner-authorized trusted Dashboard Auth Admin
+  delete sonrası Auth user/identity/session/profile/legal consent, bütün linked
+  business ve Storage residual exact `0`. Legacy callback kaldırılmadı.
+- Integration canlı kabulü veya cleanup'ı tekrar çalıştırmadı: Production remote
+  read/write, Auth user/e-posta/recovery/config, Storage ve Development işlemi `0`.
+  İlgili Auth matrisi 67/67, tam suite 1182 PASS (5 explicit opt-in live skip) ve
+  analyzer temiz; bu sonuçlar fiziksel iki bug'ı kapatmaz.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
