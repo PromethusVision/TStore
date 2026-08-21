@@ -157,7 +157,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
           TextFormField(
             key: const Key('update-password-new'),
             controller: _passwordController,
+            keyboardType: TextInputType.visiblePassword,
             obscureText: _hidePassword,
+            autocorrect: false,
+            enableSuggestions: false,
             autofillHints: const [AutofillHints.newPassword],
             textInputAction: TextInputAction.next,
             validator: TValidator.validatePassword,
@@ -177,7 +180,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
           TextFormField(
             key: const Key('update-password-confirm'),
             controller: _confirmPasswordController,
+            keyboardType: TextInputType.visiblePassword,
             obscureText: _hideConfirmation,
+            autocorrect: false,
+            enableSuggestions: false,
             autofillHints: const [AutofillHints.newPassword],
             textInputAction: TextInputAction.done,
             onFieldSubmitted: isLoading ? null : (_) => _submit(),

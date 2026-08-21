@@ -94,14 +94,18 @@ class _EmailConfirmationListenerState extends State<EmailConfirmationListener> {
         : widget.unauthenticatedDestinationBuilder;
     unawaited(
       navigator.pushAndRemoveUntil<void>(
-        MaterialPageRoute<void>(builder: destinationBuilder),
+        MaterialPageRoute<void>(
+          builder: (_) => _EmailConfirmationDestination(
+            destinationBuilder: destinationBuilder,
+            onPresented: () {
+              if (!mounted) return;
+              _showMessage('E-posta adresiniz başarıyla doğrulandı.');
+            },
+          ),
+        ),
         (_) => false,
       ),
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _showMessage('E-posta adresiniz başarıyla doğrulandı.');
-    });
   }
 
   void _showMessage(String message) {
@@ -118,4 +122,32 @@ class _EmailConfirmationListenerState extends State<EmailConfirmationListener> {
 
   @override
   Widget build(BuildContext context) => widget.child;
+}
+
+class _EmailConfirmationDestination extends StatefulWidget {
+  const _EmailConfirmationDestination({
+    required this.destinationBuilder,
+    required this.onPresented,
+  });
+
+  final WidgetBuilder destinationBuilder;
+  final VoidCallback onPresented;
+
+  @override
+  State<_EmailConfirmationDestination> createState() =>
+      _EmailConfirmationDestinationState();
+}
+
+class _EmailConfirmationDestinationState
+    extends State<_EmailConfirmationDestination> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onPresented();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.destinationBuilder(context);
 }

@@ -84,6 +84,43 @@ void main() {
     ).called(1);
   });
 
+  testWidgets('preserves the password exactly when signing in', (tester) async {
+    await tester.pumpWidget(buildSubject());
+
+    await tester.enterText(
+      find.byKey(const Key('login-email')),
+      'musteri@example.com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('login-password')),
+      ' Strong1! ',
+    );
+    await tester.tap(find.byKey(const Key('login-submit')));
+    await tester.pump();
+
+    verify(
+      () => authCubit.signIn(
+        email: 'musteri@example.com',
+        password: ' Strong1! ',
+      ),
+    ).called(1);
+  });
+
+  testWidgets('password input disables keyboard rewriting', (tester) async {
+    await tester.pumpWidget(buildSubject());
+
+    final passwordField = tester.widget<EditableText>(
+      find.descendant(
+        of: find.byKey(const Key('login-password')),
+        matching: find.byType(EditableText),
+      ),
+    );
+
+    expect(passwordField.keyboardType, TextInputType.visiblePassword);
+    expect(passwordField.autocorrect, isFalse);
+    expect(passwordField.enableSuggestions, isFalse);
+  });
+
   testWidgets('loading disables sign in and communicates progress', (
     tester,
   ) async {

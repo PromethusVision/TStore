@@ -2,28 +2,28 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-20
-- Son doğrulanan teslim: Wave 11 Agent 1 B3A cleanup commit'i
-  `628118efe2a7df9b611dee49f6ef14b3f9bf7c93`; integration merge `6baaaaf`
-- Doğrulanan branch/base: `integration/wave-11-phase-b3a-cleanup-20260820` /
-  `origin/main@4c187cfda14c20cb4adf4f618cb2095a5937f535`
-- Entegrasyon durumu: **WAVE 11 PHASE B3A FIXTURE CLEANUP PASS / B3 MOBILE AUTH ACCEPTANCE READY TO RESTART**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in fresh
-  authoritative Production gate ile exact tek disposable fiziksel-test customer'ı ve
-  tek saved-location satırı için kaydettiği canonical self-delete kanıtı çatışmasız
-  entegre edildi. Post-delete Auth, profil, consent, saved-location, diğer user-linked
-  business ve Storage sayımlarının tamamı `0`. Integration Production remote read/
-  write yapmadı; Development'a dokunmadı ve e-posta, Auth config, migration, schema
-  veya Storage işlemi çalıştırmadı.
-- Doğrulama türü: cleanup öncesi/sonrası authoritative relation sayımları; account
-  deletion, profile/Auth, saved-location ve canonical migration contract hedefli
-  yerel testler; diff ve secret/PII kontrolleri. Agent kanıtındaki hedefli paket
-  96/96, Integration yeniden doğrulama paketi 63/63 PASS oldu.
-- Çalıştırılmayan/BLOCKED kontroller: yeni Production signup/e-posta üretilmediği için
-  confirmation success/app opening fiziksel UI kabulü; full mobile recovery PKCE
-  lifecycle; physical deniedForever/Settings-return negatif turu; legacy Production
-  allowlist removal; deliverability tuning; broader Production smoke; fiziksel
-  iki-cihaz QR ve iOS archive/signing (Windows).
+- Son güncelleme: 2026-08-22
+- Son doğrulanan teslim: Wave 11 Agent 1 B3R authorized fixture cleanup kanıtı.
+- Doğrulanan branch/base: `agent1/w11-b3r-live-mobile-auth` /
+  `origin/main@76acad47203619225dc660d016c9d0d7abc3e64a`.
+- Entegrasyon durumu: **WAVE 11 PHASE B3R CONFIRMATION CALLBACK PASS / RECOVERY FINAL LOGIN FAIL / AUTHORIZED FIXTURE CLEANUP PASS / ZERO BASELINE RESTORED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 1 worktree. Fresh zero baseline
+  sonrasında exact bir disposable customer normal signup ile oluşturuldu. Gerçek
+  confirmation ve recovery e-postaları Inbox'a ulaştı; final mobile callback iki
+  akışta da Production uygulamasını açtı. Confirmation server-side session/profile/
+  customer role PASS oldu. Recovery update isteğinde HTTP `200` / `user_modified`
+  gözlendi; yeni credential login başarısız olduğu için gerçek parola değişimi
+  kanıtlanmış sayılmaz. Eski ve yeni credential login'leri Supabase Auth tarafından
+  `invalid_credentials` ile reddedildi. İkinci recovery yapılmadı. 2026-08-22 fresh
+  authoritative gate exact tek B3R fixture'ını doğruladı; owner-authorized Supabase
+  Dashboard Auth Admin delete ve cascade sonrası Auth/profile/consent/business/
+  Storage test residual tamamen sıfırlandı.
+- Doğrulama türü: POCO X7 Pro Android 16 signed APK upgrade; normal-client live Auth;
+  authoritative Auth logları; callback/PKCE, login/password, signup ve confirmation
+  UI hedefli testler; tam Flutter suite, analyzer, diff ve secret/PII kontrolleri.
+- BLOCKED kontroller: yeni credential login/session, confirmation başarı SnackBar'ının
+  yeni signup olmadan fiziksel yeniden kabulü, legacy Production allowlist removal, broader
+  Production smoke, fiziksel iki-cihaz QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -39,7 +39,7 @@
 
 `PRODUCTION_SITE_URL_FINAL_CALLBACK: PASS`
 
-`PHASE_F3_PREWRITE_GATE: PASS — EXACT AUTH/IDENTITY/SESSION 0/0/0`
+`PHASE_F3_PREWRITE_GATE: PASS — HISTORICAL ZERO BASELINE BEFORE B3R`
 
 `AUTH_USER_BASELINE_EXPLAINED: YES`
 
@@ -49,15 +49,15 @@
 
 `FINAL_CALLBACK_EMAIL_CONTRACT: PASS`
 
-`FINAL_CALLBACK_APP_OPENING: BLOCKED`
+`FINAL_CALLBACK_APP_OPENING: PASS`
 
-`PRODUCTION_PASSWORD_RECOVERY: BLOCKED`
+`PRODUCTION_PASSWORD_RECOVERY: FAIL — CALLBACK/UPDATE UI PASS; NEW LOGIN FAIL`
 
-`AUTHORIZED_TEST_USER_CLEANUP: PASS`
+`AUTHORIZED_TEST_USER_CLEANUP: PASS — F3D/B3A/B3R`
 
-`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES`
+`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES — B3R ADMIN CLEANUP EXACT ZERO`
 
-`TEST_FIXTURE_CLEANUP: PASS`
+`TEST_FIXTURE_CLEANUP: PASS — OWNER-AUTHORIZED EXACT AUTH ADMIN DELETE`
 
 `PRODUCTION_ZERO_TEST_RESIDUAL: YES`
 
@@ -67,11 +67,11 @@
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`PHASE_F_LIVE_EMAIL_ACCEPTANCE: PARTIAL — MOBILE APP OPENING/RECOVERY BLOCKED`
+`PHASE_F_LIVE_EMAIL_ACCEPTANCE: PARTIAL — CONFIRMATION OPENING PASS; RECOVERY LOGIN FAIL`
 
-`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS`
 
-`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: FAIL — POST-UPDATE LOGIN REJECTED`
 
 `LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
 
@@ -113,13 +113,25 @@
 
 `LOCATION_PHYSICAL_ACCEPTANCE: PASS`
 
-`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: BLOCKED — NO AUTH/EMAIL FIXTURE CREATED`
+`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: FAIL — HOME OPENED WITHOUT SUCCESS MESSAGE`
 
 `SETTINGS_RETURN_NEGATIVE_PHYSICAL_ACCEPTANCE: OPEN`
 
-`PHYSICAL_DEVICE_REGRESSION: PARTIAL — INPUT/LOCATION PASS; CONFIRMATION BLOCKED`
+`PHYSICAL_DEVICE_REGRESSION: PARTIAL — CALLBACK PASS; SUCCESS MESSAGE/RECOVERY LOGIN FAIL`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES`
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL — CALLBACK OPENED HOME WITHOUT CANONICAL MESSAGE`
+
+`PRODUCTION_AUTH_ROLE_SECURITY: PASS — CUSTOMER REMAINED CUSTOMER`
+
+`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED`
+
+`AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`
+
+`READY_FOR_RECOVERY_BUG_INVESTIGATION: YES`
+
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: NO — B3R BLOCKED`
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
 
@@ -127,9 +139,9 @@
 
 `SAVED_LOCATION_RESIDUAL: ZERO`
 
-`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED — B3R CLEANUP`
 
-`READY_TO_RESTART_B3_MOBILE_AUTH: YES`
+`READY_TO_RESTART_B3_MOBILE_AUTH: YES — FRESH LIVE-WRITE AUTHORIZATION STILL REQUIRED`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -174,8 +186,10 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
   APK/AAB üretildi; exact Production application ID, version, manifest, callback,
   signature, hash ve artifact secret scan PASS. B2R'de fiziksel install/upgrade,
   startup, Home input görünürlüğü ve runtime location acquisition PASS oldu. Signed
-  Production mobil uygulamada confirmation callback app opening, full recovery PKCE,
-  Resend link-tracking ve kabul sonrasındaki legacy allowlist removal açıktır.
+  Production mobil uygulamada confirmation callback app opening PASS oldu. B3R
+  authorized cleanup Auth/business/Storage zero baseline'ını tekrar kurdu; full
+  recovery PKCE, confirmation success feedback, Resend link-tracking ve kabul
+  sonrasındaki legacy allowlist removal açıktır.
 - Feature flag, remote config, analytics/event tracking veya crash reporting altyapısı bulunamadı.
 
 ## Modül Durumları
@@ -184,7 +198,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
-| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 11 B2'de confirmation callback sonucu Auth/profile yeniden değerlendirmesi, waiting-state kapatma, authenticated shell veya güvenli login hedefi, tekil başarı mesajı ve duplicate/invalid callback koruması eklendi. Production Custom SMTP mevcut, template precheck PASS; F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS. F3D authorized fixture cleanup sonrası Auth/profile/consent/business/Storage zero baseline restore PASS. Signed Production mobil app opening, full recovery PKCE ve sender/link-tracking final doğrulaması BLOCKED. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
+| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 11 B2'de confirmation callback sonucu Auth/profile yeniden değerlendirmesi, waiting-state kapatma, authenticated shell veya güvenli login hedefi, tekil başarı mesajı ve duplicate/invalid callback koruması eklendi. Production Custom SMTP mevcut, template precheck PASS; F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS. B3R owner-authorized Auth Admin cleanup sonrası Auth/profile/consent/business/Storage zero baseline yeniden exact sıfırdır. Signed Production mobil app opening PASS; full recovery PKCE, confirmation success feedback ve sender/link-tracking final doğrulaması BLOCKED. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
 | Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
@@ -354,6 +368,8 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-22: **WAVE 11 PHASE B3R AUTHORIZED FIXTURE CLEANUP PASS / ZERO TEST BASELINE RESTORED** — Fresh authoritative Production gate exact tek masked B3R disposable customer'ı doğruladı: Auth user/identity/session/profile/legal consent `1/1/0/1/2`, customer role `1`, merchant/admin `0`; bütün user-linked business tabloları ve Storage objects `0`. Authenticated session bulunmadığından canonical self-delete kullanılamadı. Product owner'ın exact fixture yetkisi ve ayrı action-time onayıyla Supabase Dashboard Auth Admin delete uygulandı. Post-delete authoritative state Auth user/identity/session/profile/legal consent, bütün business tabloları ve Storage objects için exact `0` oldu. Başka kullanıcı/veri etkilenmedi; yeni signup/recovery/email/login, Auth config, schema, migration, SMTP, Storage veya Development write yapılmadı. B3R recovery final login ve confirmation success feedback açık kalır; cleanup bu iki kabulü PASS yapmaz.
+- 2026-08-20: **WAVE 11 PHASE B3R PHYSICAL CONFIRMATION CALLBACK PASS / PASSWORD RECOVERY FINAL LOGIN FAIL / CLEANUP BLOCKED** — POCO X7 Pro / Android 16 üzerinde exact bir disposable Production customer normal signup ile oluşturuldu; waiting UI, Inbox sender/domain, final callback app opening, server confirmation, authenticated Home, profile ve default customer role PASS oldu. Canonical confirmation başarı mesajı Home'da gözlenmedi; route-lifecycle yarışı destination-first mesajlama ile düzeltildi ancak ikinci signup yapılmadığından fiziksel tekrar kabulü BLOCKED kaldı. Tek recovery e-postası final callback ile update-password ekranını açtı; HTTP `200` / `user_modified` gözlendi fakat yeni credential login başarısız olduğu için gerçek parola değişimi kanıtlanmış sayılmaz. Eski credential beklendiği gibi, yeni credential ise beklenmedik biçimde `invalid_credentials` ile reddedildi. Login/signup/recovery parola alanlarında opaque değer korunumu ve klavye rewrite koruması eklendi; buna rağmen patched signed APK'daki yeni login denemeleri de authoritative Auth tarafından reddedildi. Görev sınırı gereği ikinci recovery, admin delete veya yeni kullanıcı oluşturulmadı. Canonical self-delete çalıştırılamadı; exact B3R fixture ve ilişkili profil/consent satırları owner-onaylı sonraki cleanup'a kaldı. Production Auth/config/schema/Storage ve Development değişmedi.
 - 2026-08-20: **WAVE 11 PHASE B3A AUTHORIZED PHYSICAL-TEST FIXTURE CLEANUP PASS / ZERO TEST BASELINE RESTORED** — Fresh exact Production gate yalnız masked fiziksel-test customer fixture'ını doğruladı: Auth user/identity/profile `1/1/1`, session `2`, customer role `1`, merchant/admin `0`, legal consent `2`, saved location `1`; diğer user-linked business ve Storage satırları `0`. Product owner'ın exact fixture yetkisiyle uygulamadaki canonical `delete_current_customer_account` self-delete akışı kullanıldı. Authoritative post-delete state Auth user/identity/session/profile/legal consent/saved location, diğer user-linked business ve Storage için tamamen `0` oldu; saved location cascade ile temizlendi ve ek hedefli delete gerekmedi. Yeni signup/e-posta/recovery, Auth config, migration, schema, Storage veya Development işlemi yapılmadı. B3 mobile confirmation/recovery kabulü yeniden başlatılabilir; henüz PASS ilan edilmedi.
 - 2026-08-19: **WAVE 11 PHASE B2R PHYSICAL INPUT/LOCATION PASS / CONFIRMATION UI PHYSICAL BLOCKED** — POCO X7 Pro / Android 16 hem ADB hem Flutter ile fiziksel cihaz olarak doğrulandı. Current main'den canonical repo-dışı keystore ve client-safe Production runtime config ile signed APK üretildi; signature, `com.esnaftavar.app`, final callback ve artifact secret scan PASS. Geçici signing/runtime dosyaları silindi, kalıcı keystore korundu. Mevcut uygulamaya uninstall/clear-data olmadan upgrade yapıldı; startup/process ve crash kontrolü PASS. Home arama input'unda değer/hint/cursor görünürlük checklist'i product-owner tarafından PASS edildi. Konum dialog'u açıldı, izin verildi; sistem servisi, permission, location access ve crash-free process ADB'de, başarı sonucu/hata yok durumu product-owner tarafından doğrulandı. Hedefli paket 114 PASS, tam suite 1177 PASS (5 opt-in live skip), analyzer PASS. Yeni signup/e-posta/confirmation veya remote backend write yapılmadı; confirmation UI fiziksel kabulü bu nedenle BLOCKED.
 - 2026-08-19: **WAVE 11 PHASE B2 INPUT/AUTH CALLBACK/LOCATION AUTOMATED FIX PASS / PHYSICAL REGRESSION BLOCKED** — Açık müşteri form yüzeylerinde değer/hint/error/cursor/selection görünürlüğü merkezi yerel theme ile sabitlendi. Confirmation callback Auth/profile state'ini yeniden değerlendirir, waiting route'u kapatır, session durumuna göre shell/login hedefini seçer ve tek başarı mesajı gösterir; malformed/duplicate ve environment isolation korunur. Konum akışı cihaz servisi → runtime permission request → current/last-known position sırasına, denied-forever settings aksiyonuna ve resume refresh'e bağlandı. Remote backend yazması, signup veya e-posta yoktur. ADB cihazı olmadığından signed Production rebuild/install ve POCO X7 Pro fiziksel doğrulama yapılmadı.

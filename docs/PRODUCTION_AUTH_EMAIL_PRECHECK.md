@@ -3,7 +3,7 @@
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
 authorized disposable-user cleanup + Phase F final integration + Wave 11 B3A
-authorized physical-test fixture cleanup
+authorized physical-test fixture cleanup + Wave 11 B3R authorized fixture cleanup
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
@@ -25,6 +25,12 @@ parola ve secret kaydedilmez.
 Wave 11 B3A'da daha sonraki fiziksel testten kalan tek disposable customer, fresh
 authoritative gate sonrasında canonical uygulama self-delete akışıyla temizlendi.
 Bu ikinci cleanup, aşağıdaki F3D tarihsel fixture'ından ayrıdır.
+
+Wave 11 B3R'de oluşturulan daha sonraki disposable customer'ın recovery kabulü yeni
+credential login'de başarısız oldu. 2026-08-22 fresh authoritative gate bu exact
+fixture dışında user/business/Storage verisi olmadığını doğruladı; owner-authorized
+Supabase Dashboard Auth Admin delete sonrasında Production test baseline'ı yeniden
+exact sıfıra döndü. Bu cleanup recovery kabulünü PASS yapmaz.
 
 ## Project identity and provider state
 
@@ -440,3 +446,85 @@ Phase F final integration callback/PKCE/signup-recovery/account-deletion/profile
 canonical RLS hedefli yerel matrisi 151/151, docs consistency, diff ve secret/PII scan
 PASS doğruladı. Kod değişmediği için full suite/analyzer yeniden çalıştırılmadı;
 Production/Development remote test çağrılmadı.
+
+## Wave 11 Phase B3R physical mobile acceptance sonucu
+
+Exact Production `mefhfvrgkwciubeajjeb` üzerinde fresh zero baseline sonrasında
+yalnız bir disposable customer normal client ile oluşturuldu. Personal email,
+password, token ve UUID bu belgeye alınmadı.
+
+- Signup, confirmation-required waiting UI, Inbox teslimatı, sender adı/domain,
+  server-side confirmation, final mobile callback app opening, authenticated Home,
+  automatic profile ve default `customer` role: **PASS**.
+- Confirmation callback sonrasında canonical kısa başarı mesajı: **FAIL**. Home açıldı
+  ancak mesaj gözlenmedi. Destination render sonrasına taşınan listener düzeltmesi
+  otomatik testlerde PASS; ikinci signup yasak olduğu için fiziksel tekrar kabulü
+  **BLOCKED**.
+- Tek recovery e-postası Inbox'a ulaştı ve final callback uygulamada update-password
+  ekranını açtı: **PASS**. Update isteğinde HTTP `200` / `user_modified` gözlendi;
+  ancak yeni credential login başarısız olduğu için gerçek credential değişimi
+  kanıtlanmış sayılmaz.
+- Eski credential reddi: **PASS**.
+- Yeni credential login: **FAIL**. Normal uygulama ve password değerini opaque olarak
+  aynen gönderen patched signed APK denemeleri authoritative Production Auth logunda
+  `invalid_credentials` olarak doğrulandı.
+- Client hardening: login/signup/recovery password değerleri trim edilmez; password
+  klavyelerinde autocorrect ve suggestion kapalıdır. Bu düzeltmeler mevcut fixture'ın
+  yeni credential login'ini kurtarmadı.
+- İkinci recovery/signup/resend/admin delete: **YAPILMADI**.
+- Canonical authenticated self-delete ve zero residual restore: **BLOCKED**. Exact B3R
+  fixture için owner-onaylı ayrı cleanup gerekir.
+- Production Auth config/SMTP/schema/migration/Storage değişikliği: **YOK**.
+- Development erişimi/yazması: **YOK**.
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI: FAIL`
+
+`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+
+`PRODUCTION_AUTH_ROLE_SECURITY: PASS`
+
+`TEST_FIXTURE_CLEANUP: FAIL`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: NO`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: NO`
+
+`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED`
+
+## Wave 11 Phase B3R authorized fixture cleanup sonucu
+
+2026-08-22 fresh read-only gate exact Production ref'inde yalnız masked B3R
+disposable customer'ı doğruladı. Dashboard estimated değerleri kullanılmadı;
+authoritative aggregate SQL sonucu şöyledir:
+
+| Relation / state | Pre-delete exact count |
+| --- | ---: |
+| `auth.users` | 1 |
+| `auth.identities` | 1 |
+| `auth.sessions` | 0 |
+| `public.profiles` / customer / privileged | 1 / 1 / 0 |
+| `public.legal_consents` | 2 |
+| Bütün user-linked business rows | 0 |
+| `storage.objects` | 0 |
+
+Masked email, created-at B3R zaman çizelgesi, confirmed email, tek email identity ve
+customer profile birlikte exact fixture eşleşmesini doğruladı. Geçerli authenticated
+session bulunmadığından canonical `delete_current_customer_account` çağrılamadı.
+Product owner'ın exact fixture yetkisi ve ayrı action-time onayıyla yalnız bu kullanıcı
+Supabase Dashboard Auth Admin yoluyla silindi.
+
+Authoritative post-delete SQL sonucu Auth user/identity/session/profile/legal consent,
+adres/saved-location/wishlist/cart/order/review/chat/notification/QR/verified purchase/
+rating/shop ownership ve Storage objects için tamamen `0` oldu. Başka user veya veri
+yoktu ve etkilenmedi. Yeni signup, recovery, resend, login, e-posta, Auth config,
+SMTP, schema, migration, Storage write veya Development erişimi yapılmadı.
+
+`AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED`
+
+`READY_FOR_RECOVERY_BUG_INVESTIGATION: YES`
+
+`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED`
