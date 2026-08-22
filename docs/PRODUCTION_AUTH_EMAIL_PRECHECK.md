@@ -4,7 +4,7 @@
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
 authorized disposable-user cleanup + Phase F final integration + Wave 11 B3A
 authorized physical-test fixture cleanup + Wave 11 B3R authorized fixture cleanup +
-Wave 11 B4 Auth root-cause evidence
+Wave 11 B4/B5 Auth root-cause/fix evidence + Wave 11 B6 final physical acceptance
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
@@ -32,6 +32,32 @@ credential login'de başarısız oldu. 2026-08-22 fresh authoritative gate bu ex
 fixture dışında user/business/Storage verisi olmadığını doğruladı; owner-authorized
 Supabase Dashboard Auth Admin delete sonrasında Production test baseline'ı yeniden
 exact sıfıra döndü. Bu cleanup recovery kabulünü PASS yapmaz.
+
+## Wave 11 Phase B6 final physical Auth acceptance
+
+2026-08-22 B5 düzeltmelerini içeren canonical signed Production APK POCO X7 Pro /
+Android 16 üzerinde veri silmeden upgrade edildi. Exact pre-write baseline Auth,
+profile, consent, business ve Storage için tamamen sıfırdı. Yalnız bir disposable
+customer kullanıldı; kişisel e-posta, UUID, token veya parola bu belgeye alınmadı.
+
+| Kontrol | Fiziksel / authoritative sonuç |
+| --- | --- |
+| Signup / waiting UI | PASS; bir disposable customer |
+| Profile / role | PASS; linked profile, `customer`, merchant/admin `0` |
+| Confirmation delivery | PASS; Inbox, `EsnaftaVar`, `auth.esnaftavar.com` |
+| Confirmation callback | PASS; telefonda final callback uygulamayı açtı |
+| Confirmation success notice | PASS; destination sonrasında görüldü ve hemen kaybolmadı |
+| Recovery delivery / callback / UI | PASS; tek e-posta, Inbox, uygulama update-password UI'ını açtı |
+| Authoritative recovery | PASS; provenance + expected-user update + local cleanup + same credential fresh login + same identity |
+| Final recovery UI / normal login | PASS; final başarı görüldü, aynı yeni parola ile normal giriş başarılı |
+| Cleanup | PASS; canonical `delete_current_customer_account` self-delete |
+| Final residual | Auth/identity/session/profile/consent/business/Storage exact `0` |
+
+Canlı confirmation ve recovery linkleri yalnız birer kez kullanıldı. Duplicate,
+malformed ve wrong-scheme/path callback reddi B5 regression testleriyle PASS'tir.
+Auth/SMTP/config/schema/migration/Storage ayarı değiştirilmedi; Development'a
+dokunulmadı. B3R'nin tarihsel server persistence nedeni `NOT_FOUND` kalır; B6 yalnız
+current B5 davranışının fiziksel PASS kanıtıdır.
 
 ## Project identity and provider state
 
@@ -621,6 +647,20 @@ yeni Auth user/e-posta veya config işlemi yapmadı ve zero-test baseline korunu
 
 `RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`
 
-`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+`PHYSICAL_AUTH_RETEST_REQUIRED: NO — B6 PASS`
 
-`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI_PHYSICAL: PASS`
+
+`PHYSICAL_PASSWORD_RECOVERY: PASS`
+
+`RECOVERY_FRESH_LOGIN_PHYSICAL: PASS`
+
+`TEST_FIXTURE_CLEANUP: PASS — canonical self-delete`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
