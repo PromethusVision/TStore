@@ -1,0 +1,3 @@
+tool/demo_seed/esenler_demo_v1.json text eol=lf
+supabase/seeds/esenler_demo_v1.sql text eol=lf
+supabase/seeds/esenler_demo_v1_cleanup.sql text eol=lf

@@ -3,29 +3,28 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 11 Phase B7 legacy Production Auth callback removal.
+- Son doğrulanan teslim: Wave 12 Phase A Esenler demo dataset tasarımı.
 - Doğrulanan integration branch/base:
-  `integration/wave-11-phase-b7-callback-cleanup-20260822` /
-  `origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`.
-- Input: `origin/agent1/w11-remove-legacy-production-callback@11c3ab6fb891a73ceeac7e460a650b3a8c489545`;
-  çatışmasız `--no-ff` merge `2e62bb49fe7e1dc020e5a6c098b75c7d4cd63639`.
-- Entegrasyon durumu: **WAVE 11 PHASE B7 LEGACY CALLBACK REMOVAL PASS /
-  FINAL PRODUCTION CALLBACK ONLY**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Exact Production
-  `mefhfvrgkwciubeajjeb` pre-write gate'inde final Site URL, final+legacy iki kayıtlı
-  allowlist, Custom SMTP ve Confirm Email doğrulandı. Owner-authorized tek Dashboard
-  Auth config write ile yalnız legacy Production callback kaldırıldı.
-- Doğrulama türü: fresh authenticated Dashboard pre/postflight. Postflight allowlist
-  yalnız `com.esnaftavar.app://login-callback/`; Site URL değişmedi, Custom SMTP ve
-  Confirm Email açık kaldı. Development callback kaynak sözleşmesi
-  `io.supabase.tstore://login-callback/` olarak korundu; Development remote'a
-  erişilmedi. User, e-posta, database, Storage veya başka Auth config write yapılmadı.
-  Integration remote sonucu tekrar okumadı/değiştirmedi; callback/platform/environment/
-  PKCE/release-config hedefli yerel matris 45/45 PASS'tir.
-- BLOCKED/açık kontroller: Esenler demo dataset'in ayrı yetkili hazırlanması, broader
-  Production smoke, fiziksel iki-cihaz QR, Play Console/Play App Signing, iOS
-  archive/signing ve final commercial GO. Tarihsel B3R password persistence nedeni `NOT_FOUND`
-  olarak korunur; current B5/B6 recovery davranışı fiziksel PASS'tir.
+  `integration/wave-12-phase-a-demo-dataset` /
+  `origin/main@4232a6e16815ba25b3870b306620f19604a27f3e`.
+- Input: `origin/agent3/w12-esenler-demo-dataset-design@0edb615fe57c004a16beffd195c4a75f94b467cb`;
+  çatışmasız `--no-ff` merge `6394f8f54421ba46d139d7f5827995f71f4f176a`.
+- Entegrasyon durumu: **WAVE 12 PHASE A ESENLER DEMO DATASET DESIGN PASS /
+  LOCAL ARTIFACT READY / REMOTE SEED NOT APPLIED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Deterministik
+  UUIDv5 manifest, seed, exact cleanup, generator, validator ve contract testleri
+  entegre edildi. 19 mahalle, 4 kategori, 20 ürün, 57 sentetik mağaza ve 285 listing
+  sözleşmesi yerel temiz-oda replay'inde doğrulandı.
+- Doğrulama türü: canonical migration `0001→0009` üzerine dedicated local PGlite;
+  ilk/ikinci seed `4/20/57/285`, representative customer read `4/20/57/285`, ürün
+  başına 14–15 seller ve çoklu fiyat, 57 unique valid coordinate, cleanup exact sıfır
+  ve canonical public table count `23`. Hedefli matris 268/268, tam Flutter suite
+  1210 PASS (5 opt-in live skip) ve analyzer PASS. Production/Development remote read
+  veya write, seed/cleanup apply, Auth/merchant hesabı ya da migration yapılmadı.
+- BLOCKED/açık kontroller: Production demo seed Phase B ancak ayrı Production safety
+  review ve açık owner yetkisiyle başlayabilir. Broader Production smoke, fiziksel
+  iki-cihaz QR, Play Console/Play App Signing, iOS archive/signing ve final commercial
+  GO ayrıca açıktır.
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -91,7 +90,15 @@
 
 `PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
 
-`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
+`READY_FOR_ESENLER_DEMO_DATASET: COMPLETED — PHASE A ARTIFACT READY`
+
+`WAVE_12_PHASE_A_INTEGRATION: PASS`
+
+`DEMO_DATASET_ARTIFACT: READY`
+
+`PRODUCTION_DEMO_SEED_APPLIED: NO`
+
+`READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
@@ -436,6 +443,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-22: **WAVE 12 PHASE A INTEGRATION PASS / ESENLER DEMO DATASET ARTIFACT READY / REMOTE NOT APPLIED** — Agent 3'ün `0edb615` teslimi exact `4232a6e` tabanına `6394f8f` ile `--no-ff` ve çatışmasız entegre edildi. Fixed namespace UUIDv5/SHA-1 manifest, `[DEMO]` mağaza kimliği, product JSONB marker, deterministic fiyat varyasyonları, 57 unique `NEIGHBORHOOD_CENTER` koordinatı, fail-closed seed ve exact-ID cleanup sözleşmesi doğrulandı. Şehitler ve Yeşil Vadi için ayrı current polygon bulunmaması limitation olarak korundu. Dedicated local PGlite temiz-oda replay'i canonical migration 9/9, iki kez aynı `4/20/57/285`, representative read, seller comparison ve cleanup sonrası `0/0/0/0` + 23 public table PASS verdi. Windows fresh-checkout'ta generator byte-equivalence korunsun diye üç generated artifact LF'e sabitlendi. Dataset contract 16/16, ilgili migration/shop/model/nearby/Home matrisi 268/268, tam suite 1210 PASS (5 opt-in live skip) ve analyzer temizdir. Production/Development remote erişimi, seed/cleanup apply, Auth/merchant hesabı veya migration yapılmadı; Phase B ayrı safety review ve açık owner yetkisi gerektirir.
 - 2026-08-22: **WAVE 11 PHASE B7 FINAL INTEGRATION PASS / FINAL PRODUCTION CALLBACK ONLY** — Agent 1'in `11c3ab6` teslimi exact `21f7224` tabanına `2e62bb4` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production `mefhfvrgkwciubeajjeb` fresh pre-write gate'i Site URL `com.esnaftavar.app://login-callback/`, final+legacy iki exact allowlist kaydı, Custom SMTP ON ve Confirm Email ON durumunu doğruladı. Product owner'ın action-time onayıyla Agent 1 Supabase Dashboard URL Configuration üzerinden yalnız `io.supabase.tstore://login-callback/` kaydını kaldırdı. Fresh postflight allowlist'in yalnız final callback'i içerdiğini, Site URL'nin değişmediğini, Custom SMTP ve Confirm Email'in açık kaldığını doğruladı. Development `tnipyxnvhgelwdpykyez` remote'a erişilmedi; Development kaynak callback'i değişmedi. Integration remote sonucu tekrar okumadı/değiştirmedi; user/e-posta, database/schema/migration, Storage veya Auth config işlemi yapmadı. Hedefli callback/platform/environment/PKCE/release-config matrisi 45/45, diff ve security/PII kontrolleri PASS'tir. Esenler demo dataset ayrı yetkili göreve hazırdır; commercial release GO değildir.
 - 2026-08-22: **WAVE 11 PHASE B6 FINAL INTEGRATION PASS / PHYSICAL MOBILE AUTH PASS / ZERO TEST RESIDUAL** — Agent 1'in `af1708c` teslimi exact `31f4ac1` tabanına `d3b9cac` ile `--no-ff` ve çatışmasız entegre edildi. POCO X7 Pro / Android 16 üzerindeki final confirmation callback ve destination notice, canonical five-step recovery, aynı yeni credential ile fresh/normal login, same-user identity ve customer role güvenliği PASS olarak korundu. B6 disposable fixture canonical `delete_current_customer_account` ile temizlendi; Auth/identity/session/profile/consent/business/Storage residual exact `0`. Integration remote backend'e erişmedi/yazmadı ve Development'a dokunmadı. Hedefli Auth/account-deletion matrisi 266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff ve security/PII kontrolleri PASS. Legacy callback remote allowlist'te korunur ve ayrı yetkili removal görevine hazırdır; commercial release hâlâ hazır değildir.
 - 2026-08-22: **WAVE 11 PHASE B4 AUTH ROOT-CAUSE INTEGRATION / FIX IMPLEMENTATION READY** — Agent 2'nin `f545ab4` canonical analiz belgesi `0df5c99` ile exact `cd3e141` tabanına `--no-ff` ve çatışmasız entegre edildi. Confirmation feedback root cause FOUND: callback/session/profile/Home yolu çalışıyor; geçici Snackbar route transition tamamlanmadan tüketiliyor ve destination-owned durable one-shot state yok. Recovery false-success root cause FOUND: no-exception `updateUser` response/provenance/fresh login doğrulanmadan final success üretiyor. Actual Production password persistence root cause NOT_FOUND ve password-specific audit UNKNOWN kaldı. Beş adımlı authoritative recovery success criterion ve regression test boşlukları canonicalleştirildi. Yerel Auth matrisi 199/199 ve Auth redirect wiring contract 4/4 PASS; Integration Production/Development remote işlemi yapmadı ve zero-test baseline korundu.

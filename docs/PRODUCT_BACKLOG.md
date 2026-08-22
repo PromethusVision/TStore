@@ -84,6 +84,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   olarak görünmedi. Password update HTTP `200` dönmesine rağmen yeni credential iki
   fresh login'de `invalid_credentials` aldı. Owner-authorized exact Auth Admin cleanup
   sonrası Auth/business/Storage residual exact `0`; legacy callback korunur.
+- 2026-08-22 Wave 12 Phase A ilerlemesi: Esenler'in resmi 19 mahallesi için 4 kategori,
+  20 ortak ürün, 57 sentetik `[DEMO]` mağaza ve 285 listing içeren deterministic
+  UUIDv5 dataset artefaktı tamamlandı. Fiyat, konum, demo marker, exact cleanup ve
+  Home featured-discovery sınırı canonical belgede sabittir; featured sponsorlu/
+  reklam/paid ranking değildir. Local clean-room ve tüm test kapıları PASS; Production
+  veya Development'a seed uygulanmadı. Phase B ayrı güvenlik incelemesi ve açık owner
+  yetkisi gerektirir.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -333,6 +340,14 @@ HTTP `200` / no-exception final success değildir.
   ON olduğunu doğruladı. Development callback'i kendi ortamında izole biçimde korundu.
   Integration remote işlemi tekrarlamadı; hedefli callback/platform/environment/PKCE/
   release-config matrisi 45/45, diff ve security/PII scan PASS.
+- 2026-08-22 Wave 12 Phase A final integration sonucu: Agent 3'ün deterministic
+  Esenler dataset artefaktı `--no-ff` ve çatışmasız entegre edildi. Generator/manifest,
+  fail-closed idempotent seed, dependency-guarded exact-ID cleanup ve canonical veri
+  belgesi birlikte doğrulandı. Local PGlite replay'i migration 9/9, iki kez
+  `4/20/57/285`, representative read, ürün başına 14–15 seller ve çoklu fiyat,
+  57 unique coordinate, cleanup exact sıfır ve 23 canonical public table PASS verdi.
+  Dataset contract 16/16, ilgili regresyon paketi 268/268, tam Flutter suite 1210 PASS
+  (5 opt-in live skip) ve analyzer temizdir. Remote read/write veya seed apply yoktur.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -418,11 +433,16 @@ HTTP `200` / no-exception final success değildir.
   `FINAL_PRODUCTION_CALLBACK_ONLY: YES`,
   `PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`,
   `WAVE_11_PHASE_B7_INTEGRATION: PASS`,
-  `READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`,
+  `READY_FOR_ESENLER_DEMO_DATASET: COMPLETED — PHASE A ARTIFACT READY`,
+  `WAVE_12_PHASE_A_INTEGRATION: PASS`,
+  `DEMO_DATASET_ARTIFACT: READY`,
+  `PRODUCTION_DEMO_SEED_APPLIED: NO`,
+  `READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
-- Esenler demo dataset hazırlanması sıradaki açık ve ayrı yetki gerektiren Production
-  veri işidir; bu B7 entegrasyonu dataset yazması yapmaz. Fiziksel iki-cihaz QR,
+- Esenler demo dataset Phase A artefaktı hazırdır fakat Production seed uygulanmamıştır.
+  Olası Phase B ayrı güvenlik incelemesi ve açık owner yetkisi gerektiren Production
+  veri işidir. Fiziksel iki-cihaz QR,
   broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
   final commercial GO ayrıca açık kalır.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

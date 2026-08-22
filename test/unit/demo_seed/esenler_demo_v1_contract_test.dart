@@ -78,6 +78,17 @@ void main() {
       expect(cleanupSql, seed.renderCleanupSql(dataset));
     });
 
+    test('generated artifacts remain LF-pinned across platforms', () {
+      final attributes = File('.gitattributes').readAsStringSync();
+      for (final path in [
+        'tool/demo_seed/esenler_demo_v1.json',
+        'supabase/seeds/esenler_demo_v1.sql',
+        'supabase/seeds/esenler_demo_v1_cleanup.sql',
+      ]) {
+        expect(attributes, contains('$path text eol=lf'));
+      }
+    });
+
     test('all materialized identifiers are stable UUIDv5 values', () {
       final ids = <String>[
         ...categories.map((row) => row['id'] as String),
@@ -271,6 +282,13 @@ void main() {
               .toSet();
           expect(prices.length, greaterThan(1), reason: product['name']);
         }
+
+        expect(
+          listings
+              .map((listing) => listing['price_variation_basis_points'])
+              .toSet(),
+          {-800, -500, -300, 300, 500, 800, 1000},
+        );
       },
     );
 

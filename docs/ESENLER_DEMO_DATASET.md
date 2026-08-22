@@ -135,6 +135,10 @@ E:\Esnaftavar\src\flutter\flutter\bin\cache\dart-sdk\bin\dart.exe tool\demo_seed
 `--check`, tracked JSON ve SQL dosyaları fresh generation ile byte-for-byte aynı değilse
 başarısız olur.
 
+Repository kökündeki `.gitattributes`, bu üç generated JSON/SQL artefaktını LF satır
+sonuna sabitler. Böylece Windows `core.autocrlf` checkout'larında da byte-for-byte
+generator kontrolü aynı sonucu verir.
+
 ## Seed idempotency ve cleanup
 
 Seed önce dört canonical tablonun varlığını ve generator count'larını doğrular. Exact

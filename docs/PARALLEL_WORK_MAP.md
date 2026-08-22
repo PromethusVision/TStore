@@ -510,7 +510,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
 
-`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
+`B7_HANDOFF_READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -534,6 +534,35 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Esenler demo dataset ayrı yetkili iş paketine hazırdır. Fiziksel iki-cihaz QR,
   broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
   final commercial GO açık kalır.
+
+## Wave 12 Phase A Esenler Demo Dataset Entegrasyon Gözlemi
+
+`WAVE_12_PHASE_A_INTEGRATION: PASS`
+
+`DEMO_DATASET_ARTIFACT: READY`
+
+`PRODUCTION_DEMO_SEED_APPLIED: NO`
+
+`READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`
+
+- Agent 3'ün `0edb615` dataset tasarımı exact current main `4232a6e` tabanından
+  `6394f8f` ile tek `--no-ff` ve çatışmasız merge olarak entegre edildi.
+- Phase A artefakt sahipliği yalnız `docs/ESENLER_DEMO_DATASET.md`, `tool/demo_seed/`,
+  `supabase/seeds/` ve ilgili contract testindedir. Canonical migration zinciri,
+  shared model/repository, `service_locator.dart`, app code ve dependency dosyaları
+  değiştirilmedi. Üretilmiş artefaktların platformlar arası byte-equivalence'ı için
+  yalnız üç exact JSON/SQL yolu LF olarak sabitlendi.
+- Local PGlite temiz-oda replay'i canonical 9 migration, ilk/ikinci seed
+  `4/20/57/285`, representative customer reads, seller comparison, 57 unique valid
+  coordinate ve exact cleanup sonrası demo row `0` + canonical public table `23`
+  sonuçlarını PASS doğruladı. Hedefli matris 268/268, tam suite 1210 PASS (5 opt-in
+  live skip) ve analyzer temizdir.
+- `is_featured = true` yalnız sentetik Home discovery görünürlüğü içindir; sponsorlu,
+  reklam veya paid ranking değildir. Şehitler ve Yeşil Vadi separate-current-polygon
+  limitation'ı `NEIGHBORHOOD_CENTER` güven düzeyiyle korunur.
+- Production/Development remote read/write, seed veya cleanup apply, Auth/merchant
+  hesabı ve migration yapılmadı. Phase B bu entegrasyondan otomatik yetki almaz;
+  ayrı Production safety review ve açık owner authorization zorunludur.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
