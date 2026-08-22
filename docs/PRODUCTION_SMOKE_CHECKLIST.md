@@ -48,7 +48,7 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PHYSICAL_DEVICE_REGRESSION: PARTIAL — CALLBACK PASS; SUCCESS MESSAGE/RECOVERY LOGIN FAIL`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: NO — B3R BUGS OPEN`
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — B5 CODE FIX INTEGRATED; PHYSICAL RETEST REQUIRED`
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
 
@@ -68,7 +68,7 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PHYSICAL_PASSWORD_RECOVERY: FAIL`
 
-`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`
+`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED IN B5 CODE — PHYSICAL RETEST OPEN`
 
 `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`
 
@@ -82,11 +82,21 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`
 
-`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 INTEGRATED`
 
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
 
-`READY_TO_RESTART_B3_MOBILE_AUTH: NO — ROOT CAUSE/FIX REQUIRED`
+`WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
+
+`RECOVERY_FALSE_SUCCESS_GUARD: PASS`
+
+`RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`
+
+`AUTH_REGRESSION: PASS`
+
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -383,13 +393,27 @@ Auth user veya e-posta işlemi yapmadı ve Production zero-test baseline korunur
   terminal failure'dır.
 - Aynı opaque in-memory credential update ve fresh login adımlarında birebir korunur;
   password state/log/test diagnostic'ine yazılmaz.
-- Bu local implementation fiziksel Production kabulü değildir. Yeni authorized
+- Bu integrated implementation fiziksel Production kabulü değildir. Yeni authorized
   disposable fixture ile confirmation notice ve recovery fresh-login same-user
   davranışı signed Android build'de yeniden doğrulanmalıdır.
+- Hedefli Auth matrisi 215/215, tam Flutter suite 1194/1194 (5 explicit opt-in live
+  skip) ve analyzer PASS; bunlar fiziksel Production kabulünün yerine geçmez.
 
-`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — LOCAL`
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — INTEGRATED`
+
+`WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
+
+`RECOVERY_FALSE_SUCCESS_GUARD: PASS`
+
+`RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`
+
+`AUTH_REGRESSION: PASS`
 
 `PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
 
 ## 1. Başlatma kapıları
 
@@ -422,7 +446,7 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
       PASS.
 - [ ] Full recovery kabulü yeni credential login ile tamamlandı; ardından legacy
       Production allowlist kaydı kaldırıldı. B3R'de callback/update UI PASS, login FAIL;
-      B5 false-success guard local PASS, physical retest OPEN.
+      B5 false-success guard integrated PASS, physical retest OPEN.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
 - [x] Supabase remote Site URL localhost'tan exact final mobile callback
@@ -489,8 +513,8 @@ içermeyen ekran/log kanıtı eklenir.
 | Search | Var olan, olmayan ve özel karakterli sorgu dene | Sonuç/empty state doğru; duplicate ve beklenmeyen private veri yok | |
 | ProductDetails | Guest olarak ürün detayına gir | Ürün, fiyat ve satıcılar doğru; legacy HTTPS/canonical product image güvenli görüntülenir | |
 | Sellers | Aynı ürünün satıcılarını ve mağaza detayını aç | Yalnız aktif/görünür satıcılar, konum/mesafe izin akışı ve fallback doğru | |
-| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; B5 destination-owned success notice local PASS, physical retest OPEN |
-| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS, yeni credential login FAIL; B5 authoritative success guard local PASS, physical retest OPEN |
+| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; B5 destination-owned success notice integrated PASS, physical retest OPEN |
+| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS, yeni credential login FAIL; B5 authoritative success guard integrated PASS, physical retest OPEN |
 | CartV2 | User A bir shop-product ekler, miktar değiştirir/siler; başka mağaza eklemeyi dener | Tek-mağaza kuralı, stok/fiyat revalidation ve duplicate tap koruması çalışır; legacy checkout açılmaz | |
 | Favorites | User A ekler/çıkarır; User B ile izolasyonu kontrol et | Own CRUD çalışır; B, A'nın favorisini okuyamaz/değiştiremez | |
 | Chat | A ve B aynı conversation'da mesajlaşır; üçüncü conversation ile izolasyonu dene | Real event bir kez gelir; RLS, unread/summary, unsubscribe/reconnect/dedup doğru | |

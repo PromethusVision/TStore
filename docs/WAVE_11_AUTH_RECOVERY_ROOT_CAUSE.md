@@ -381,9 +381,11 @@ ve same-user identity'yi birlikte kanıtlar. Identity mismatch, cleanup failure,
 expired/missing recovery provenance, duplicate submit, Home/Login confirmation,
 duplicate/malformed callback ve destination notice lifecycle testleri de kapsanır.
 
-Bu değişiklik yerel false-success ve confirmation-feedback bug'larını kapatır. Gerçek
+Bu değişiklik client false-success ve confirmation-feedback bug'larını kapatır. Gerçek
 Production password persistence davranışı ancak ayrı yetkili disposable fixture ve
 fiziksel cihaz retest'iyle kabul edilebilir; Phase B5 remote sistemlere dokunmamıştır.
+Hedefli Auth matrisi 215/215, tam Flutter suite 1194/1194 (5 explicit opt-in live
+skip) ve analyzer PASS'tir.
 
 ## Son durum
 
@@ -395,16 +397,28 @@ fiziksel cihaz retest'iyle kabul edilebilir; Phase B5 remote sistemlere dokunmam
 
 `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`
 
-`SAFE_TO_IMPLEMENT_FIX: YES — confirmation durability ve recovery authoritative-success guard`
+`SAFE_TO_IMPLEMENT_FIX: COMPLETED — B5 INTEGRATED`
 
-`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 INTEGRATED`
 
 `NEW_PRODUCTION_FIXTURE_REQUIRED_FOR_ANALYSIS: NO`
 
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
 
-`AUTH_FIX_IMPLEMENTATION_REQUIRED: NO — Phase B5 task branch'inde tamamlandı`
+`AUTH_FIX_IMPLEMENTATION_REQUIRED: NO — Phase B5 final integration'da tamamlandı`
 
-`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — local implementation/test contract`
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — INTEGRATED`
+
+`WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
+
+`RECOVERY_FALSE_SUCCESS_GUARD: PASS`
+
+`RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`
+
+`AUTH_REGRESSION: PASS`
 
 `PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`

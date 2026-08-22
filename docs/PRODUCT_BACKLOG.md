@@ -306,6 +306,14 @@ HTTP `200` / no-exception final success değildir.
   kaydedildi. Yerel Auth unit/widget/integration matrisi 199/199 ve Auth redirect
   wiring contract 4/4 PASS; Integration Production/Development remote erişimi veya
   write yapmadı.
+- 2026-08-22 Wave 11 B5 final integration sonucu: Agent 2'nin authoritative
+  confirmation/recovery fix'i `--no-ff` ve çatışmasız entegre edildi. Destination-
+  owned kalıcı confirmation notice, duplicate/invalid callback güvenliği, recovery
+  false-success guard ve aynı opaque credential ile fresh same-user login kanıtı kod
+  ve regression düzeyinde PASS. Gerçek Production password persistence root cause'u
+  NOT_FOUND kalır; confirmation/recovery son fiziksel kabul turu açıktır. Integration
+  Production/Development remote erişimi, Auth user/e-posta veya config işlemi yapmadı.
+  Hedefli Auth matrisi 215/215, tam suite 1194/1194 (5 live skip) ve analyzer PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -319,7 +327,8 @@ HTTP `200` / no-exception final success değildir.
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
   keystore yedeği ve ilk signed APK/AAB PASS'tir. B2R signed APK install/upgrade,
   startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
-  app opening PASS; confirmation success feedback ve recovery credential login FAIL.
+  app opening PASS; historical B3R turunda confirmation success feedback ve recovery
+  credential login FAIL. B5 code fix entegre edildi; final fiziksel retest açıktır.
   Settings-return negatif turu, Google Play Console/
   Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve signed IPA
   hâlâ açık release kapılarıdır.
@@ -327,8 +336,9 @@ HTTP `200` / no-exception final success değildir.
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
   Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery,
   server-side confirmation ve actual mobile app opening PASS'tir. Confirmation
-  success feedback ve recovery credential persistence/login V1.0 bug'ları; legacy
-  callback allowlist removal, deliverability/spam tuning,
+  success feedback code bug'ı ve recovery false-success guard B5'te kapanmıştır;
+  gerçek recovery credential persistence davranışının ve confirmation notice'ın
+  fiziksel retest'i, legacy callback allowlist removal, deliverability/spam tuning,
   fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
   broader Production smoke açık blocker'dır.
 - Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
@@ -336,12 +346,14 @@ HTTP `200` / no-exception final success değildir.
   turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
 - B3R disposable principal'ı owner-authorized trusted Auth Admin delete ile temizlendi;
   Auth user/identity/session/profile/consent, bütün linked business ve Storage residual
-  exact `0`. Yeni canlı write yerine önce iki açık Auth bug'ının root-cause/fix turu
-  gerekir; legacy callback bu kabul tamamlanmadan kaldırılmaz.
-- B4 analizi confirmation durability ve recovery false-success kök nedenlerini kapattı;
-  implementasyon/retest açıktır. Actual Production password persistence kök nedeni
-  NOT_FOUND ve password-specific audit UNKNOWN kaldığından server davranışı hakkında
-  yeni bir neden uydurulmaz.
+  exact `0`. B4 root-cause ve B5 client fix turu tamamlandı; yeni canlı write yalnız
+  son fiziksel Auth retest'in scoped fixture planında yapılabilir. Legacy callback bu
+  kabul tamamlanmadan kaldırılmaz.
+- B4 analizi confirmation durability ve recovery false-success kök nedenlerini buldu;
+  B5 destination-owned notice ve canonical fresh-login verification implementasyonunu
+  entegre etti. Fiziksel retest açıktır. Actual Production password persistence kök
+  nedeni NOT_FOUND ve password-specific audit UNKNOWN kaldığından server davranışı
+  hakkında yeni bir neden uydurulmaz.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
 - `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
@@ -353,25 +365,30 @@ HTTP `200` / no-exception final success değildir.
   `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
   `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,
   `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: FAIL`,
-  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: NO — B3R BUGS OPEN`,
+  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — B5 CODE FIX INTEGRATED; PHYSICAL RETEST REQUIRED`,
   `PHYSICAL_DEVICE_REGRESSION: PARTIAL`,
   `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`,
   `B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`,
   `AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`,
   `WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`,
   `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`,
-  `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`,
+  `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED IN B5 CODE — PHYSICAL RETEST OPEN`,
   `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`,
   `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: COMPLETED — B4`,
   `CONFIRMATION_UI_ROOT_CAUSE: FOUND`,
   `RECOVERY_FALSE_SUCCESS_ROOT_CAUSE: FOUND`,
   `RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`,
   `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`,
-  `V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: OPEN`,
+  `V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: CLOSED IN B5 CODE`,
   `V1_0_AUTH_RETEST_PASSWORD_PERSISTENCE_BEHAVIOR: OPEN`,
-  `READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`,
+  `READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 INTEGRATED`,
   `WAVE_11_PHASE_B4_INTEGRATION: PASS`,
-  `READY_TO_RESTART_B3_MOBILE_AUTH: NO — ROOT CAUSE/FIX REQUIRED`,
+  `WAVE_11_PHASE_B5_INTEGRATION: PASS`,
+  `CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`,
+  `RECOVERY_FALSE_SUCCESS_GUARD: PASS`,
+  `RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`,
+  `AUTH_REGRESSION: PASS`,
+  `READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

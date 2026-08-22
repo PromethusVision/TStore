@@ -581,6 +581,46 @@ yeni Auth user/e-posta veya config işlemi yapmadı ve zero-test baseline korunu
 
 `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`
 
-`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 INTEGRATED`
 
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
+
+## Wave 11 Phase B5 confirmation/recovery fix integration sonucu
+
+- Confirmation başarı geri bildirimi callback kaynağındaki geçici mesajdan çıkarıldı.
+  Home/Login destination route görünür olduktan sonra destination-owned tek kullanımlık
+  notice gösterilir; kullanıcı dismiss edene kadar kalır. Duplicate sequence ve invalid
+  callback başarı mesajı üretmez.
+- Recovery final başarı yalnız valid recovery provenance/session, expected-user ile
+  tutarlı update response, kontrollü local session cleanup, aynı opaque in-memory
+  password ile fresh normal login ve same-user identity doğrulamasının tamamından sonra
+  gösterilir. HTTP `200` veya no-exception tek başına başarı değildir.
+- Update response success olduğu halde password store değişmeyen stateful fake,
+  cleanup failure ve identity mismatch final başarı üretmez. Password state, equality,
+  diagnostic veya log alanlarına alınmaz.
+- Bu integration Production/Development remote read/write, Auth user/e-posta/recovery,
+  Auth config, SMTP, Storage veya migration işlemi yapmadı. Production zero-test
+  baseline korunur.
+- Historical Production password persistence root cause'u NOT_FOUND ve audit event
+  state'i UNKNOWN kalır. B5 yalnız client false-success ve confirmation durability
+  bug'larını kod/test düzeyinde kapatır; signed Android fiziksel retest açıktır.
+- Hedefli Auth matrisi 215/215, tam Flutter suite 1194/1194 (5 explicit opt-in live
+  skip) ve analyzer PASS.
+
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — INTEGRATED`
+
+`WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
+
+`RECOVERY_FALSE_SUCCESS_GUARD: PASS`
+
+`RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`
+
+`AUTH_REGRESSION: PASS`
+
+`RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`
+
+`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`

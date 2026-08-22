@@ -433,6 +433,42 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   İlgili Auth matrisi 67/67, tam suite 1182 PASS (5 explicit opt-in live skip) ve
   analyzer temiz; bu sonuçlar fiziksel iki bug'ı kapatmaz.
 
+## Wave 11 Phase B5 Auth Fix Entegrasyon Gözlemi
+
+`WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
+
+`RECOVERY_FALSE_SUCCESS_GUARD: PASS`
+
+`RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`
+
+`AUTH_REGRESSION: PASS`
+
+`RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`
+
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
+
+- Agent 2'nin `793f0dc` teslimi exact `bb3e7e5` tabanından `5461d77` ile tek
+  `--no-ff` ve çatışmasız merge olarak entegre edildi.
+- Confirmation notice sahipliği destination Home/Login ekranına taşındı; route
+  görünür olduktan sonra bir kez render edilir, dismiss edilene kadar kalır ve aynı
+  callback sequence'i veya invalid callback ikinci başarı üretmez.
+- Recovery repository/use-case/Cubit zinciri valid provenance, expected-user update
+  response, local session cleanup, aynı opaque credential ile fresh login ve same-user
+  identity doğrulamasının tamamı bitmeden başarı üretmez. False-success, cleanup ve
+  identity mismatch regression'ları typed failure olarak doğrulanır.
+- Shared/hotspot sahipliği yalnız Agent 2'de kaldı: `lib/t_store.dart`, Auth callback/
+  recovery listener'ları, Auth domain repository/use-case/entity ve Auth Cubit. Aynı
+  dosyalara paralel ikinci agent değişikliği yoktu. `service_locator.dart`, shared
+  uygulama modelleri, SQL/migration, dependency ve platform config değişmedi.
+- Integration Production/Development remote read/write, Auth user/e-posta/recovery,
+  config, Storage veya migration işlemi yapmadı. Historical Production password
+  persistence root cause'u NOT_FOUND kalır; son fiziksel Auth retest'i ayrı yetkili
+  görevdir.
+- Hedefli Auth matrisi 215/215, tam Flutter suite 1194/1194 (5 explicit opt-in live
+  skip), analyzer, diff ve secret/PII kontrolleri PASS.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
