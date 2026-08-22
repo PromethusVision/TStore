@@ -4,19 +4,22 @@
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
 authorized disposable-user cleanup + Phase F final integration + Wave 11 B3A
 authorized physical-test fixture cleanup + Wave 11 B3R authorized fixture cleanup +
-Wave 11 B4/B5 Auth root-cause/fix evidence + Wave 11 B6 final physical acceptance
+Wave 11 B4/B5 Auth root-cause/fix evidence + Wave 11 B6 final physical acceptance +
+Wave 11 B7 authorized legacy Production callback removal
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
 `8a23c237a16e144fb346f725d27837fb93c8695e`. B6 input
 `origin/agent1/w11-final-physical-auth-acceptance@af1708c6bec1c1f1817e911f600f775810cc12fe`,
 integration base `origin/main@31f4ac166b8178eb7576c9315da4382b9b5bc4a9` ve
-`--no-ff` merge `d3b9cac0fc5248e8ea45ef36a5587484ea661b42`.
+`--no-ff` merge `d3b9cac0fc5248e8ea45ef36a5587484ea661b42`. B7 task base
+`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`.
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
 **İnceleme türü:** F2/F3A authenticated management read-only; F3B owner-authorized
-normal-client Auth/email acceptance; F3D owner-authorized exact Auth Admin cleanup.
+normal-client Auth/email acceptance; F3D owner-authorized exact Auth Admin cleanup;
+B7 owner-authorized exact Auth URL allowlist write ve authenticated postflight.
 Final integration remote backend erişimi veya write yapmadı.
 
 Bu belge F2/F3A salt-okunur kanıtını, F3B canlı teslimat/server confirmation sonucunu
@@ -79,6 +82,37 @@ korundu; ayrı yetkili removal görevine hazırdır.
 `READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
 
 `COMMERCIAL_RELEASE_READY: NO`
+
+## Wave 11 Phase B7 legacy Production callback removal
+
+2026-08-22 authenticated Supabase Dashboard fresh pre-write gate'i exact Production
+`EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` için şu durumu doğruladı:
+
+| Ayar | Pre-write | Postflight |
+| --- | --- | --- |
+| Site URL | `com.esnaftavar.app://login-callback/` | Değişmedi |
+| Legacy callback | Mevcut | Kaldırıldı |
+| Final callback | Mevcut | Korundu; allowlist'teki tek URL |
+| Redirect URL toplamı | 2 | 1 |
+| Custom SMTP | Enabled | Enabled |
+| Confirm Email | Enabled | Enabled |
+
+Product owner'ın action-time onayıyla yalnız
+`io.supabase.tstore://login-callback/` Supabase Dashboard URL Configuration üzerinden
+kaldırıldı. Site URL, final callback, SMTP/sender, Confirm Email, provider, template,
+rate-limit veya başka Auth config değeri değiştirilmedi. Development remote'a
+erişilmedi; kaynakta Development callback'i aynı legacy URI'yi kendi environment'ı
+için kullanmaya devam eder. Bu, Production legacy kaydının geri döndüğü anlamına
+gelmez. User, e-posta veya test fixture oluşturulmadı.
+
+Callback, deep-link/platform, Production/Development isolation, Supabase config ve
+release-preflight hedefli yerel matris 45/45 PASS'tir.
+
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED`
+
+`FINAL_PRODUCTION_CALLBACK_ONLY: YES`
+
+`AUTH_CONFIG_POSTFLIGHT: PASS`
 
 ## Project identity and provider state
 
@@ -299,10 +333,10 @@ kabul öncesinde doğrulanmalıdır.
 | Ayar | Salt-okunur Production değeri | Sonuç |
 | --- | --- | --- |
 | Site URL | `com.esnaftavar.app://login-callback/` | Phase F3 mobile gate için PASS |
-| Legacy mobile callback | `io.supabase.tstore://login-callback/` | Allowlist'te mevcut |
+| Legacy mobile callback | Yok | B7'de Production allowlist'ten kaldırıldı |
 | Final mobile callback | `com.esnaftavar.app://login-callback/` | Allowlist'te mevcut |
 | HTTPS web recovery URL | Yok | Ayrı Web acceptance için açık |
-| Redirect allowlist toplamı | 2 exact URL | Yukarıdaki iki mobile callback |
+| Redirect allowlist toplamı | 1 exact URL | Yalnız final mobile callback |
 
 Phase F intermediate integration sonrasında Flutter Auth istemcisinin redirect
 davranışı:
@@ -325,9 +359,10 @@ davranışı:
 
 Sonuç: kaynak callback/client cutover'ı entegredir ve remote Site URL exact final mobile
 callback'e geçirilmiştir. F3B gerçek SMTP teslimatı, server-side confirmation ve final
-callback e-posta URL sözleşmesini doğruladı. Signed Production mobil uygulamada actual
-app opening ve full recovery PKCE lifecycle; Web içinse ayrı HTTPS route/allowlist
-kararı açık kalır.
+callback e-posta URL sözleşmesini doğruladı; B6 signed Production mobil uygulamada app
+opening ve full recovery PKCE lifecycle'ı PASS tamamladı. B7 legacy Production
+callback'i kaldırdı ve allowlist'i yalnız final callback'e indirdi. Web için ayrı HTTPS
+route/allowlist kararı açık kalır.
 
 ## Hosted email template audit
 
@@ -429,13 +464,13 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `FINAL_CALLBACK_EMAIL_CONTRACT: PASS`
 
-`FINAL_CALLBACK_APP_OPENING: BLOCKED`
+`FINAL_CALLBACK_APP_OPENING: PASS — B6 PHYSICAL`
 
-`PRODUCTION_PASSWORD_RECOVERY: BLOCKED`
+`PRODUCTION_PASSWORD_RECOVERY: PASS — B6 PHYSICAL`
 
-`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS — B6 PHYSICAL`
 
-`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: PASS — B6 PHYSICAL`
 
 `AUTHORIZED_TEST_USER_CLEANUP: PASS`
 
@@ -447,7 +482,7 @@ doğrulanamadığı için tam SMTP precheck PASS verilmedi.
 
 `PRODUCTION_EMAIL_INFRASTRUCTURE: READY`
 
-`LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED — B7`
 
 `EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
@@ -466,13 +501,9 @@ Kalan canlı kabul açıkları:
 
 - Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı;
 - Resend link tracking ile masked sender/provider durumunun bağımsız doğrulanması;
-- signed Production mobil artifact ile actual callback app opening;
-- full password-recovery link/PKCE/new-password lifecycle;
 - resend eski/yeni link semantiği ve duplicate/expired link kabulü;
-- signed-artifact kabulünden sonra legacy Production callback allowlist kaydının
-  yetkili remote config adımıyla kaldırılması.
 
-`CALLBACK_INTEGRATED — DELIVERY_AND_SERVER_CONFIRMATION_PASS — MOBILE_LIFECYCLE_BLOCKED`
+`CALLBACK_INTEGRATED — MOBILE_LIFECYCLE_PASS — FINAL_PRODUCTION_CALLBACK_ONLY`
 
 Intermediate integration doğrulaması: Auth callback/PKCE/signup-resend-recovery/
 platform/preflight hedefli matrisi 118/118, tam Flutter suite 1154 PASS (5 opt-in
