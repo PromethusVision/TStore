@@ -173,7 +173,7 @@ Beklenen sonuç:
 6. Auth/trust tabloları: sıfır.
 7. Cleanup: demo satırları 0/0/0/0; canonical public tablo sayısı 23.
 
-## Olası Production Phase B prosedürü — bu görevde uygulanmadı
+## Production apply prosedürü — Phase B safety review tamamlandı, apply yetkilendirilmedi
 
 Production apply ancak ayrı, açık owner yetkili görevde yapılabilir:
 

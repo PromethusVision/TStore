@@ -3,28 +3,31 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 12 Phase A Esenler demo dataset tasarımı.
+- Son doğrulanan teslim: Wave 12 Phase B Production demo seed safety review.
 - Doğrulanan integration branch/base:
-  `integration/wave-12-phase-a-demo-dataset` /
-  `origin/main@4232a6e16815ba25b3870b306620f19604a27f3e`.
-- Input: `origin/agent3/w12-esenler-demo-dataset-design@0edb615fe57c004a16beffd195c4a75f94b467cb`;
-  çatışmasız `--no-ff` merge `6394f8f54421ba46d139d7f5827995f71f4f176a`.
-- Entegrasyon durumu: **WAVE 12 PHASE A ESENLER DEMO DATASET DESIGN PASS /
-  LOCAL ARTIFACT READY / REMOTE SEED NOT APPLIED**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Deterministik
-  UUIDv5 manifest, seed, exact cleanup, generator, validator ve contract testleri
-  entegre edildi. 19 mahalle, 4 kategori, 20 ürün, 57 sentetik mağaza ve 285 listing
-  sözleşmesi yerel temiz-oda replay'inde doğrulandı.
-- Doğrulama türü: canonical migration `0001→0009` üzerine dedicated local PGlite;
-  ilk/ikinci seed `4/20/57/285`, representative customer read `4/20/57/285`, ürün
-  başına 14–15 seller ve çoklu fiyat, 57 unique valid coordinate, cleanup exact sıfır
-  ve canonical public table count `23`. Hedefli matris 268/268, tam Flutter suite
-  1210 PASS (5 opt-in live skip) ve analyzer PASS. Production/Development remote read
-  veya write, seed/cleanup apply, Auth/merchant hesabı ya da migration yapılmadı.
-- BLOCKED/açık kontroller: Production demo seed Phase B ancak ayrı Production safety
-  review ve açık owner yetkisiyle başlayabilir. Broader Production smoke, fiziksel
-  iki-cihaz QR, Play Console/Play App Signing, iOS archive/signing ve final commercial
-  GO ayrıca açıktır.
+  `integration/wave-12-phase-b-demo-safety` /
+  `origin/main@edc0999f52d08b63af580504bd1271574e269304`.
+- Input: `origin/agent1/w12-production-demo-seed-safety-review@0383782d8b0d004acdeb2e5ba91d6e81845a43b8`;
+  çatışmasız `--no-ff` merge `f53e584d40fb1dbd6d0742d341091c182eb9323d`.
+- Entegrasyon durumu: **WAVE 12 PHASE B PRODUCTION DEMO SEED SAFETY REVIEW PASS /
+  OWNER AUTHORIZATION READY / SEED NOT AUTHORIZED OR APPLIED**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. Agent 1'in
+  authenticated read-only Production evidence'i canonical ref üzerinde katalog
+  `0/0/0/0`, Auth/profile/business-linked rows `0`, üç canonical bucket ve Storage
+  object `0` durumunu; deterministic ID collision `0/366`, natural-key collision `0`
+  ve exact existing demo row `0` sonucunu kaydetti. Integration bu remote okumaları
+  tekrarlamadı.
+- Doğrulama türü: seed kontrollü single-writer apply için transactional/fail-closed
+  PASS; exact cleanup yalnız pre-launch zero-activity durumda PASS. Yerel generator,
+  dataset/canonical migration matrisi 37/37; PGlite clean-room iki kez
+  `4/20/57/285`, cleanup `0/0/0/0`, seller 14–15 ve public table `23`; tam Flutter
+  suite 1210 PASS (5 opt-in live skip) ve analyzer PASS. Integration Production veya
+  Development remote read/write, seed/cleanup, Auth ya da config işlemi yapmadı.
+- BLOCKED/açık kontroller: owner Production demo seed yetkisi henüz verilmedi. Gerçek
+  kullanıcı aktivitesi başladıktan sonra blind destructive cleanup önerilmez; olası
+  soft-retire/deactivate davranışı ayrı owner kararıdır. Broader Production smoke,
+  fiziksel iki-cihaz QR, Play Console/Play App Signing, iOS archive/signing ve final
+  commercial GO ayrıca açıktır.
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -98,7 +101,15 @@
 
 `PRODUCTION_DEMO_SEED_APPLIED: NO`
 
-`READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`
+`READY_FOR_DEMO_DATASET_PHASE_B: COMPLETED — SAFETY REVIEW INTEGRATED`
+
+`WAVE_12_PHASE_B_INTEGRATION: PASS`
+
+`DEMO_SEED_SAFETY_REVIEW_INTEGRATED: YES`
+
+`READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`
+
+`OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
@@ -443,6 +454,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-22: **WAVE 12 PHASE B INTEGRATION PASS / PRODUCTION DEMO SEED SAFETY REVIEW INTEGRATED / SEED NOT APPLIED** — Agent 1'in `0383782` read-only safety review teslimi exact `edc0999` tabanına `f53e584` ile `--no-ff` ve çatışmasız entegre edildi. Agent evidence canonical Production `mefhfvrgkwciubeajjeb` üzerinde categories/products/shops/shop_products `0/0/0/0`, Auth/profile/business-linked `0`, üç canonical Storage bucket ve object `0`; UUID collision `0/366`, natural-key collision `0` ve exact existing demo row `0` gösterir. Seed yalnız controlled single-writer apply için deterministic, transactional ve fail-closed PASS; cleanup yalnız fresh pre-launch zero-activity state için PASS. `owner_user_id = NULL` customer discovery/shop/seller comparison'ı destekler fakat merchant QR confirmation ve verified transaction üretmez; bu intentional sınır korunur. Local generator ve migration/demo matrisi 37/37, PGlite replay iki kez `4/20/57/285`, cleanup sıfır ve 23 table, tam suite 1210 PASS (5 opt-in live skip), analyzer/diff/security temizdir. Integration remote read/write yapmadı; owner seed authorization henüz verilmedi. User activity sonrasında blind cleanup önerilmez ve gerekirse soft-retire/deactivate ayrı owner kararıdır.
 - 2026-08-22: **WAVE 12 PHASE A INTEGRATION PASS / ESENLER DEMO DATASET ARTIFACT READY / REMOTE NOT APPLIED** — Agent 3'ün `0edb615` teslimi exact `4232a6e` tabanına `6394f8f` ile `--no-ff` ve çatışmasız entegre edildi. Fixed namespace UUIDv5/SHA-1 manifest, `[DEMO]` mağaza kimliği, product JSONB marker, deterministic fiyat varyasyonları, 57 unique `NEIGHBORHOOD_CENTER` koordinatı, fail-closed seed ve exact-ID cleanup sözleşmesi doğrulandı. Şehitler ve Yeşil Vadi için ayrı current polygon bulunmaması limitation olarak korundu. Dedicated local PGlite temiz-oda replay'i canonical migration 9/9, iki kez aynı `4/20/57/285`, representative read, seller comparison ve cleanup sonrası `0/0/0/0` + 23 public table PASS verdi. Windows fresh-checkout'ta generator byte-equivalence korunsun diye üç generated artifact LF'e sabitlendi. Dataset contract 16/16, ilgili migration/shop/model/nearby/Home matrisi 268/268, tam suite 1210 PASS (5 opt-in live skip) ve analyzer temizdir. Production/Development remote erişimi, seed/cleanup apply, Auth/merchant hesabı veya migration yapılmadı; Phase B ayrı safety review ve açık owner yetkisi gerektirir.
 - 2026-08-22: **WAVE 11 PHASE B7 FINAL INTEGRATION PASS / FINAL PRODUCTION CALLBACK ONLY** — Agent 1'in `11c3ab6` teslimi exact `21f7224` tabanına `2e62bb4` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production `mefhfvrgkwciubeajjeb` fresh pre-write gate'i Site URL `com.esnaftavar.app://login-callback/`, final+legacy iki exact allowlist kaydı, Custom SMTP ON ve Confirm Email ON durumunu doğruladı. Product owner'ın action-time onayıyla Agent 1 Supabase Dashboard URL Configuration üzerinden yalnız `io.supabase.tstore://login-callback/` kaydını kaldırdı. Fresh postflight allowlist'in yalnız final callback'i içerdiğini, Site URL'nin değişmediğini, Custom SMTP ve Confirm Email'in açık kaldığını doğruladı. Development `tnipyxnvhgelwdpykyez` remote'a erişilmedi; Development kaynak callback'i değişmedi. Integration remote sonucu tekrar okumadı/değiştirmedi; user/e-posta, database/schema/migration, Storage veya Auth config işlemi yapmadı. Hedefli callback/platform/environment/PKCE/release-config matrisi 45/45, diff ve security/PII kontrolleri PASS'tir. Esenler demo dataset ayrı yetkili göreve hazırdır; commercial release GO değildir.
 - 2026-08-22: **WAVE 11 PHASE B6 FINAL INTEGRATION PASS / PHYSICAL MOBILE AUTH PASS / ZERO TEST RESIDUAL** — Agent 1'in `af1708c` teslimi exact `31f4ac1` tabanına `d3b9cac` ile `--no-ff` ve çatışmasız entegre edildi. POCO X7 Pro / Android 16 üzerindeki final confirmation callback ve destination notice, canonical five-step recovery, aynı yeni credential ile fresh/normal login, same-user identity ve customer role güvenliği PASS olarak korundu. B6 disposable fixture canonical `delete_current_customer_account` ile temizlendi; Auth/identity/session/profile/consent/business/Storage residual exact `0`. Integration remote backend'e erişmedi/yazmadı ve Development'a dokunmadı. Hedefli Auth/account-deletion matrisi 266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff ve security/PII kontrolleri PASS. Legacy callback remote allowlist'te korunur ve ayrı yetkili removal görevine hazırdır; commercial release hâlâ hazır değildir.

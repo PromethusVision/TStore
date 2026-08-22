@@ -91,6 +91,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   reklam/paid ranking değildir. Local clean-room ve tüm test kapıları PASS; Production
   veya Development'a seed uygulanmadı. Phase B ayrı güvenlik incelemesi ve açık owner
   yetkisi gerektirir.
+- 2026-08-22 Wave 12 Phase B ilerlemesi: Agent 1 read-only Production safety review'i
+  fresh katalog `0/0/0/0`, Auth/profile/business `0`, Storage bucket/object `3/0`,
+  deterministic collision `0/366`, natural-key collision `0` ve existing demo row `0`
+  kanıtladı. Seed controlled single-writer apply için PASS; exact cleanup yalnız
+  pre-launch zero-activity durumunda PASS. Owner seed authorization henüz verilmedi ve
+  Production seed uygulanmadı. User activity sonrasında blind cleanup yerine olası
+  soft-retire/deactivate davranışı ayrı owner kararıdır.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -348,6 +355,15 @@ HTTP `200` / no-exception final success değildir.
   57 unique coordinate, cleanup exact sıfır ve 23 canonical public table PASS verdi.
   Dataset contract 16/16, ilgili regresyon paketi 268/268, tam Flutter suite 1210 PASS
   (5 opt-in live skip) ve analyzer temizdir. Remote read/write veya seed apply yoktur.
+- 2026-08-22 Wave 12 Phase B final integration sonucu: Agent 1'in canonical Production
+  read-only seed safety review belgesi `--no-ff` ve çatışmasız entegre edildi. Seed
+  deterministic/transactional/fail-closed ve yalnız dört business tabloya insert eden
+  controlled single-writer apply olarak PASS; exact cleanup yalnız pre-launch state
+  için PASS sınıflandırıldı. `owner_user_id = NULL` customer discovery/seller compare
+  için geçerli, merchant QR/verified transaction için intentional unavailable kaldı.
+  Local dataset/migration matrisi 37/37, clean-room replay, tam suite 1210 PASS (5
+  opt-in live skip), analyzer, diff ve security scan temizdir. Integration remote
+  backend işlemi yapmadı; Production seed owner tarafından henüz yetkilendirilmedi.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -437,12 +453,17 @@ HTTP `200` / no-exception final success değildir.
   `WAVE_12_PHASE_A_INTEGRATION: PASS`,
   `DEMO_DATASET_ARTIFACT: READY`,
   `PRODUCTION_DEMO_SEED_APPLIED: NO`,
-  `READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`,
+  `READY_FOR_DEMO_DATASET_PHASE_B: COMPLETED — SAFETY REVIEW INTEGRATED`,
+  `WAVE_12_PHASE_B_INTEGRATION: PASS`,
+  `DEMO_SEED_SAFETY_REVIEW_INTEGRATED: YES`,
+  `OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`,
+  `READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
-- Esenler demo dataset Phase A artefaktı hazırdır fakat Production seed uygulanmamıştır.
-  Olası Phase B ayrı güvenlik incelemesi ve açık owner yetkisi gerektiren Production
-  veri işidir. Fiziksel iki-cihaz QR,
+- Esenler demo dataset Phase A artefaktı ve Phase B safety review'i hazırdır fakat
+  Production seed uygulanmamıştır. Bir sonraki Production veri adımı ancak açık owner
+  seed authorization sonrasında ayrı controlled apply görevi olabilir. User activity
+  sonrası blind cleanup otomatik yetkili değildir. Fiziksel iki-cihaz QR,
   broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
   final commercial GO ayrıca açık kalır.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.

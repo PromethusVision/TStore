@@ -281,5 +281,9 @@ All Phase B decision inputs are known without changing Production:
 
 `READY_FOR_OWNER_DEMO_SEED_DECISION: YES`
 
+`READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`
+
+`OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`
+
 This is readiness for an owner decision only. It is not authorization or a
 record of a Production seed apply.

@@ -543,7 +543,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `PRODUCTION_DEMO_SEED_APPLIED: NO`
 
-`READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`
+`PHASE_A_HANDOFF_READY_FOR_DEMO_DATASET_PHASE_B: NO — SEPARATE PRODUCTION SAFETY REVIEW + EXPLICIT OWNER AUTHORIZATION REQUIRED`
 
 - Agent 3'ün `0edb615` dataset tasarımı exact current main `4232a6e` tabanından
   `6394f8f` ile tek `--no-ff` ve çatışmasız merge olarak entegre edildi.
@@ -563,6 +563,40 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Production/Development remote read/write, seed veya cleanup apply, Auth/merchant
   hesabı ve migration yapılmadı. Phase B bu entegrasyondan otomatik yetki almaz;
   ayrı Production safety review ve açık owner authorization zorunludur.
+
+## Wave 12 Phase B Production Demo Seed Safety Entegrasyon Gözlemi
+
+`WAVE_12_PHASE_B_INTEGRATION: PASS`
+
+`DEMO_SEED_SAFETY_REVIEW_INTEGRATED: YES`
+
+`PRODUCTION_DEMO_SEED_APPLIED: NO`
+
+`OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`
+
+`READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`
+
+- Agent 1'in `0383782` read-only safety review belgesi exact current main `edc0999`
+  tabanından `f53e584` ile tek `--no-ff` ve çatışmasız merge olarak entegre edildi.
+  Agent evidence canonical Production'da katalog `0/0/0/0`, Auth/profile/business
+  ilişkileri `0`, üç canonical bucket/object `3/0`, deterministic ID collision
+  `0/366`, natural-key collision `0` ve existing exact demo row `0` gösterir.
+- Seed dört business tabloyla sınırlı, deterministic, transactional ve fail-closed;
+  controlled single-writer apply için safety PASS'tir. Cleanup yalnız pre-launch
+  zero-user/zero-activity state'te exact-ID safety PASS'tir. User activity sonrasında
+  blind destructive cleanup pre-authorized değildir; soft-retire/deactivate ayrı
+  owner kararı gerektirir.
+- `owner_user_id = NULL` intentional customer-demo sınırıdır: discovery, shop detail,
+  nearby ve seller comparison çalışır; merchant QR confirmation ve demo shop üzerinden
+  verified transaction çalışmaz. Shared model/schema veya runtime wiring değiştirilmedi.
+- Featured yalnız demo Home discovery görünürlüğüdür; sponsored, advertising engine
+  veya paid ranking değildir. 19 mahalle/57 unique point `NEIGHBORHOOD_CENTER`
+  confidence'ı ve Şehitler/Yeşil Vadi polygon limitation'ı değişmedi.
+- Local generator + dataset/migration matrisi 37/37, PGlite first/second seed
+  `4/20/57/285`, seller 14–15/multiple prices, cleanup `0/0/0/0`, canonical public
+  table `23`, tam Flutter suite 1210 PASS (5 opt-in live skip) ve analyzer temizdir.
+- Integration Production/Development remote read/write, seed/cleanup, Auth, Storage
+  veya config işlemi yapmadı. Safety readiness owner authorization değildir.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
