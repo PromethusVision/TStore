@@ -189,6 +189,23 @@ transaction çalıştırılmasıyla yapıldı. Cleanup yetkilendirilmedi ve
 sonra blind destructive cleanup önerilmez; olası soft-retire/deactivate davranışı ayrı
 owner kararıdır.
 
+Phase C final integration, Agent 1 kanıtını çatışmasız `--no-ff` merge ile kabul etti.
+Integration sırasında Production/Development remote erişimi yapılmadı, seed yeniden
+çalıştırılmadı ve cleanup uygulanmadı. Yerel generator check, hedefli dataset/Home/
+seller/canonical matrisi `284/284`, tam Flutter suite `1210` PASS (`5` explicit opt-in
+live skip) ve analyzer temizdir. Dataset canlıdır; gerçek cihazdaki broader visual
+smoke ayrı kabul adımıdır.
+
+`WAVE_12_PHASE_C_INTEGRATION: PASS`
+
+`PRODUCTION_DEMO_DATASET_LIVE: YES`
+
+`PRODUCTION_DEMO_SEED_REAPPLIED: NO`
+
+`PRODUCTION_DEMO_CLEANUP_RUN: NO`
+
+`READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`
+
 ## Controlled apply/cleanup prosedürü
 
 Production apply ancak ayrı, açık owner yetkili görevde yapılabilir:

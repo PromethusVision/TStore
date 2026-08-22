@@ -105,7 +105,10 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   mismatch/unexpected row `0`; Auth/profile/merchant ve Storage object `0` doğruladı.
   Gerçek `anon` RLS rolü 20 featured product, 57 shop, 285 listing, ürün başına 14–15
   seller ve multiple price sonucunu PASS okudu. Cleanup çalıştırılmadı; Development,
-  migration/schema/config/Auth/Storage değiştirilmedi. Task branch entegrasyonu açıktır.
+  migration/schema/config/Auth/Storage değiştirilmedi. Agent teslimi `fad75a7` no-ff
+  merge'i, hedefli `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve temiz
+  analyzer ile final integration olarak kapatıldı; Integration remote işlem yapmadı,
+  seed'i tekrarlamadı ve cleanup çalıştırmadı.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -372,6 +375,15 @@ HTTP `200` / no-exception final success değildir.
   Local dataset/migration matrisi 37/37, clean-room replay, tam suite 1210 PASS (5
   opt-in live skip), analyzer, diff ve security scan temizdir. Integration remote
   backend işlemi yapmadı; Production seed owner tarafından henüz yetkilendirilmedi.
+- 2026-08-22 Wave 12 Phase C final integration sonucu: Agent 1'in owner-authorized
+  exact seed apply ve postflight kanıtı `--no-ff` ve çatışmasız entegre edildi.
+  Production demo katalog `4/20/57/285`, manifest `366/366`, marker'lar `20/57/285`,
+  owner-null shop `57/57`, Auth/profile/merchant ve Storage object `0` olarak
+  authoritative kalır. Anon customer read, Home discovery, ürün başına 14–15 seller
+  ve 20/20 multiple price PASS'tir. Generator check, hedefli matris `284/284`, tam
+  suite `1210` PASS (`5` opt-in live skip), analyzer, diff ve security scan temizdir.
+  Integration remote read/write yapmadı; seed tekrar uygulanmadı ve cleanup
+  çalıştırılmadı. Broader fiziksel/mobile demo visual smoke açık kabul adımıdır.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -468,6 +480,10 @@ HTTP `200` / no-exception final success değildir.
   `READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: COMPLETED — PHASE C`,
   `PRODUCTION_DEMO_CUSTOMER_READ: PASS — ANON RLS ROLE`,
   `PRODUCTION_DEMO_CLEANUP_RUN: NO`,
+  `WAVE_12_PHASE_C_INTEGRATION: PASS`,
+  `PRODUCTION_DEMO_DATASET_LIVE: YES`,
+  `PRODUCTION_DEMO_SEED_REAPPLIED: NO`,
+  `READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Esenler demo dataset Phase A artefaktı ve Phase B safety review'i ardından owner

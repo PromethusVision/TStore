@@ -598,6 +598,44 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Integration Production/Development remote read/write, seed/cleanup, Auth, Storage
   veya config işlemi yapmadı. Safety readiness owner authorization değildir.
 
+## Wave 12 Phase C Production Demo Seed State Entegrasyon Gözlemi
+
+`WAVE_12_PHASE_C_INTEGRATION: PASS`
+
+`PRODUCTION_DEMO_DATASET_LIVE: YES`
+
+`PRODUCTION_DEMO_CUSTOMER_READ: PASS — ANON RLS ROLE`
+
+`PRODUCTION_DEMO_SEED_REAPPLIED: NO`
+
+`PRODUCTION_DEMO_CLEANUP_RUN: NO`
+
+`READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`
+
+- Agent 1'in `26defb1` Production seed/postflight kanıtı exact current main `580552f`
+  tabanından `fad75a7` ile tek `--no-ff` ve çatışmasız merge olarak entegre edildi.
+  Agent turundaki owner-authorized exact seed bir kez uygulanmıştır; Integration turu
+  uzak backend'e bağlanmadı, seed'i tekrarlamadı ve cleanup çalıştırmadı.
+- Authoritative durum categories/products/shops/shop_products `4/20/57/285`, active
+  ve featured products `20/20`, deterministic manifest `366/366`, unexpected row `0`,
+  Auth user/profile/merchant ve Storage object `0` olarak korunur. Gerçek `anon` rolü
+  aynı katalog sayılarını, ürün başına 14–15 seller ve 20/20 multiple-price sonucunu
+  PASS okumuştur.
+- `[DEMO]` shop `57/57`, `owner_user_id = NULL` `57/57`, product/listing marker
+  `20/20` ve `285/285` kalır. Customer discovery/Home/shop detail/seller comparison
+  hazırdır; merchant ownership, demo merchant QR confirmation ve verified purchase
+  intentional unavailable'dır.
+- Featured yalnız demo Home discovery görünürlüğüdür; sponsored, advertising engine
+  veya paid ranking değildir. 19 mahalle, 57 unique valid coordinate,
+  `NEIGHBORHOOD_CENTER` confidence ve Şehitler/Yeşil Vadi polygon limitation'ı korundu.
+- Generator check, hedefli dataset/Home/seller/canonical matrisi `284/284`, tam Flutter
+  suite `1210` PASS (`5` opt-in live skip) ve analyzer temizdir. Shared runtime code,
+  model/schema, migration zinciri, `service_locator.dart` ve dependency dosyaları
+  değiştirilmedi; bu entegrasyonun shared sahipliği yalnız coordination docs'tur.
+- Demo cleanup ayrı açık owner yetkisi olmadan çalıştırılmaz. Gerçek kullanıcı
+  aktivitesi sonrası blind destructive cleanup önerilmez; soft-retire/deactivate
+  gerekirse ayrı ürün kararıdır. Broader fiziksel/mobile visual smoke açık kalır.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

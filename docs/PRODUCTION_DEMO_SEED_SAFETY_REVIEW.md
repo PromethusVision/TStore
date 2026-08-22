@@ -303,7 +303,7 @@ All Phase C apply and postflight gates completed without an unauthorized write:
 
 `DEMO_CLEANUP_SQL_SAFETY: PASS`
 
-`READY_FOR_OWNER_DEMO_SEED_DECISION: YES`
+`READY_FOR_OWNER_DEMO_SEED_DECISION: COMPLETED — PHASE C`
 
 `READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: COMPLETED — PHASE C`
 
@@ -319,3 +319,17 @@ All Phase C apply and postflight gates completed without an unauthorized write:
 
 This document now records the Phase B safety evidence and the Phase C controlled
 Production apply. It does not authorize cleanup or any future Production write.
+
+Phase C final integration accepted the Agent 1 evidence without any Production or
+Development remote access. The seed was not reapplied, cleanup was not run, and no
+Auth, Storage, migration, schema, or configuration operation was performed during
+integration. Local generator, targeted `284/284`, full Flutter `1210` PASS with `5`
+explicit opt-in live skips, and analyzer gates passed.
+
+`WAVE_12_PHASE_C_INTEGRATION: PASS`
+
+`PRODUCTION_DEMO_DATASET_LIVE: YES`
+
+`PRODUCTION_DEMO_SEED_REAPPLIED: NO`
+
+`READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`

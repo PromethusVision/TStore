@@ -3,12 +3,16 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 12 Phase C owner-authorized Production demo seed apply.
-- Doğrulanan task branch/base:
-  `agent1/w12-production-demo-seed-apply` /
+- Son doğrulanan teslim: Wave 12 Phase C Production Esenler demo seed state final
+  integration.
+- Integration branch/base:
+  `integration/wave-12-phase-c-production-demo-seed` /
   `origin/main@580552f0ab1fa8091c3ebc9bc8cabe33ced9d5cc`.
-- Entegrasyon durumu: **WAVE 12 PHASE C PRODUCTION DEMO SEED APPLY PASS /
-  TASK BRANCH INTEGRATION REQUIRED**
+- Input/merge:
+  `origin/agent1/w12-production-demo-seed-apply@26defb1fd16813626c00e2f1f13394bf0f3f2444`
+  / `fad75a7d326c4614e246d6b4d04d3aa64a37f07a` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO
+  DATASET LIVE**
 - Agent 1, exact `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` ref'inde fresh
   single-writer ve zero-baseline gate'lerini tekrarladı. Deterministic collision
   `0/366`, natural-key collision `0`, existing demo row `0` kaldı; Development'a
@@ -20,7 +24,10 @@
   aynı sayıları, 20 featured ürünü, ürün başına 14–15 satıcıyı ve çoklu fiyatı okudu.
 - Cleanup yetkilendirilmedi ve çalıştırılmadı; Auth/merchant user, migration, schema,
   Storage object veya config değişikliği yapılmadı. Yerel generator/contract ve
-  canonical regresyon matrisi ile clean-room replay PASS'tir.
+  canonical regresyon matrisi PASS'tir. Integration turu Production/Development
+  remote erişimi yapmadı, seed'i tekrar çalıştırmadı ve cleanup uygulamadı. Hedefli
+  testler `284/284`, tam Flutter suite `1210` PASS (`5` explicit opt-in live skip) ve
+  analyzer sıfır bulguyla tamamlandı.
 - BLOCKED/açık kontroller: gerçek kullanıcı aktivitesi başladıktan sonra blind
   destructive cleanup önerilmez; olası
   soft-retire/deactivate davranışı ayrı owner kararıdır. Broader Production smoke,
@@ -112,6 +119,14 @@
 `PRODUCTION_DEMO_CUSTOMER_READ: PASS — ANON RLS ROLE`
 
 `PRODUCTION_DEMO_CLEANUP_RUN: NO`
+
+`WAVE_12_PHASE_C_INTEGRATION: PASS`
+
+`PRODUCTION_DEMO_DATASET_LIVE: YES`
+
+`PRODUCTION_DEMO_SEED_REAPPLIED: NO`
+
+`READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
@@ -456,7 +471,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
-- 2026-08-22: **WAVE 12 PHASE C OWNER-AUTHORIZED PRODUCTION DEMO SEED PASS / INTEGRATION REQUIRED** — Exact Production ref ve Development dışlama, single-writer, fresh zero business baseline, collision `0/366`, natural-key collision `0`, artifact integrity ve final clean-room kapıları PASS sonrasında tracked `esenler_demo_v1.sql` tek transaction olarak bir kez uygulandı. Authoritative postflight categories/products/shops/shop_products `4/20/57/285`, active/featured products `20/20`, active shops `57`, deterministic manifest `366/366`, mismatch ve unexpected row `0` doğruladı. Product marker `20`, `[DEMO]` shop/owner-null `57/57`, listing marker `285`; 57 coordinate valid/unique ve 19 mahallenin her birinde üç shop vardır. Gerçek `anon` RLS rolü aynı katalog sayılarını, ürün başına 14–15 seller ve multiple price sonucunu PASS okudu. Auth user/profile/merchant ve Storage object `0`; cleanup, migration/schema/config/Auth/Storage veya Development write yapılmadı. Demo shops owner-less olduğundan discovery/shop/seller comparison PASS, merchant ownership/QR/verified transaction intentional unavailable'dır. Cleanup yetkisiz ve çalıştırılmamıştır; task branch entegrasyonu açıktır.
+- 2026-08-22: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO DATASET LIVE** — Agent 1'in `26defb1` Production seed/postflight kanıtı exact `580552f` tabanına `fad75a7` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production ref ve Development dışlama, single-writer, fresh zero business baseline, collision `0/366`, natural-key collision `0`, artifact integrity ve clean-room kapıları PASS sonrasında tracked `esenler_demo_v1.sql` Agent 1 turunda tek transaction olarak bir kez uygulanmıştı. Authoritative postflight categories/products/shops/shop_products `4/20/57/285`, active/featured products `20/20`, active shops `57`, deterministic manifest `366/366`, mismatch ve unexpected row `0` doğruladı. Product marker `20`, `[DEMO]` shop/owner-null `57/57`, listing marker `285`; 57 coordinate valid/unique ve 19 mahallenin her birinde üç shop vardır. Gerçek `anon` RLS rolü aynı katalog sayılarını, ürün başına 14–15 seller ve multiple price sonucunu PASS okudu. Auth user/profile/merchant ve Storage object `0`; demo shops owner-less olduğundan discovery/shop/seller comparison PASS, merchant ownership/QR/verified transaction intentional unavailable'dır. Integration remote read/write yapmadı; seed yeniden uygulanmadı, cleanup çalıştırılmadı ve Development'a dokunulmadı. Generator check, hedefli matris `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve analyzer temizdir. Broader fiziksel/mobile visual smoke ayrı açık kabul adımıdır.
 - 2026-08-22: **WAVE 12 PHASE B INTEGRATION PASS / PRODUCTION DEMO SEED SAFETY REVIEW INTEGRATED / SEED NOT APPLIED** — Agent 1'in `0383782` read-only safety review teslimi exact `edc0999` tabanına `f53e584` ile `--no-ff` ve çatışmasız entegre edildi. Agent evidence canonical Production `mefhfvrgkwciubeajjeb` üzerinde categories/products/shops/shop_products `0/0/0/0`, Auth/profile/business-linked `0`, üç canonical Storage bucket ve object `0`; UUID collision `0/366`, natural-key collision `0` ve exact existing demo row `0` gösterir. Seed yalnız controlled single-writer apply için deterministic, transactional ve fail-closed PASS; cleanup yalnız fresh pre-launch zero-activity state için PASS. `owner_user_id = NULL` customer discovery/shop/seller comparison'ı destekler fakat merchant QR confirmation ve verified transaction üretmez; bu intentional sınır korunur. Local generator ve migration/demo matrisi 37/37, PGlite replay iki kez `4/20/57/285`, cleanup sıfır ve 23 table, tam suite 1210 PASS (5 opt-in live skip), analyzer/diff/security temizdir. Integration remote read/write yapmadı; owner seed authorization henüz verilmedi. User activity sonrasında blind cleanup önerilmez ve gerekirse soft-retire/deactivate ayrı owner kararıdır.
 - 2026-08-22: **WAVE 12 PHASE A INTEGRATION PASS / ESENLER DEMO DATASET ARTIFACT READY / REMOTE NOT APPLIED** — Agent 3'ün `0edb615` teslimi exact `4232a6e` tabanına `6394f8f` ile `--no-ff` ve çatışmasız entegre edildi. Fixed namespace UUIDv5/SHA-1 manifest, `[DEMO]` mağaza kimliği, product JSONB marker, deterministic fiyat varyasyonları, 57 unique `NEIGHBORHOOD_CENTER` koordinatı, fail-closed seed ve exact-ID cleanup sözleşmesi doğrulandı. Şehitler ve Yeşil Vadi için ayrı current polygon bulunmaması limitation olarak korundu. Dedicated local PGlite temiz-oda replay'i canonical migration 9/9, iki kez aynı `4/20/57/285`, representative read, seller comparison ve cleanup sonrası `0/0/0/0` + 23 public table PASS verdi. Windows fresh-checkout'ta generator byte-equivalence korunsun diye üç generated artifact LF'e sabitlendi. Dataset contract 16/16, ilgili migration/shop/model/nearby/Home matrisi 268/268, tam suite 1210 PASS (5 opt-in live skip) ve analyzer temizdir. Production/Development remote erişimi, seed/cleanup apply, Auth/merchant hesabı veya migration yapılmadı; Phase B ayrı safety review ve açık owner yetkisi gerektirir.
 - 2026-08-22: **WAVE 11 PHASE B7 FINAL INTEGRATION PASS / FINAL PRODUCTION CALLBACK ONLY** — Agent 1'in `11c3ab6` teslimi exact `21f7224` tabanına `2e62bb4` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production `mefhfvrgkwciubeajjeb` fresh pre-write gate'i Site URL `com.esnaftavar.app://login-callback/`, final+legacy iki exact allowlist kaydı, Custom SMTP ON ve Confirm Email ON durumunu doğruladı. Product owner'ın action-time onayıyla Agent 1 Supabase Dashboard URL Configuration üzerinden yalnız `io.supabase.tstore://login-callback/` kaydını kaldırdı. Fresh postflight allowlist'in yalnız final callback'i içerdiğini, Site URL'nin değişmediğini, Custom SMTP ve Confirm Email'in açık kaldığını doğruladı. Development `tnipyxnvhgelwdpykyez` remote'a erişilmedi; Development kaynak callback'i değişmedi. Integration remote sonucu tekrar okumadı/değiştirmedi; user/e-posta, database/schema/migration, Storage veya Auth config işlemi yapmadı. Hedefli callback/platform/environment/PKCE/release-config matrisi 45/45, diff ve security/PII kontrolleri PASS'tir. Esenler demo dataset ayrı yetkili göreve hazırdır; commercial release GO değildir.
