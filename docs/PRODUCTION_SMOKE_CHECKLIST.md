@@ -24,7 +24,7 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `SMTP_CONFIGURATION_PRESENT: YES`
 
-`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
 `ANDROID_SIGNING_READY: YES`
 
@@ -100,7 +100,11 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PRODUCTION_ZERO_TEST_RESIDUAL: YES`
 
-`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED — B7`
+
+`FINAL_PRODUCTION_CALLBACK_ONLY: YES`
+
+`AUTH_CONFIG_POSTFLIGHT: PASS`
 
 `CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
 
@@ -481,6 +485,34 @@ security/PII scan PASS'tir.
 
 `WAVE_11_FINAL_MOBILE_AUTH_ACCEPTANCE: PASS`
 
+## Wave 11 Phase B7 legacy Production callback removal
+
+Exact Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` fresh pre-write
+gate'inde Site URL final callback, allowlist final+legacy iki exact URL, Custom SMTP
+Enabled ve Confirm Email Enabled doğrulandı. Product owner'ın action-time onayıyla
+Supabase Dashboard URL Configuration üzerinden yalnız
+`io.supabase.tstore://login-callback/` kaldırıldı.
+
+Fresh reload/postflight sonucu:
+
+- Site URL değişmedi: `com.esnaftavar.app://login-callback/`;
+- redirect allowlist toplamı `1` ve tek kayıt final Production callback;
+- legacy Production callback yok;
+- Custom SMTP ve Confirm Email açık;
+- başka Auth config drift yok;
+- Development remote erişimi/yazması yok; kaynak Development callback'i
+  `io.supabase.tstore://login-callback/` olarak ayrı environment'ta korunur;
+- user, e-posta, database, Storage veya başka Production write yok.
+
+Callback, deep-link/platform, Production/Development isolation, Supabase config ve
+release-preflight hedefli yerel matris 45/45 PASS'tir.
+
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED`
+
+`FINAL_PRODUCTION_CALLBACK_ONLY: YES`
+
+`AUTH_CONFIG_POSTFLIGHT: PASS`
+
 ## 1. Başlatma kapıları
 
 Smoke başlamadan önce tamamı işaretlenmelidir:
@@ -511,13 +543,12 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Final callback signed-artifact confirmation app opening POCO X7 Pro üzerinde
       PASS.
 - [x] Full recovery kabulü B6'da aynı yeni credential fresh login ve ayrıca normal
-      login ile PASS. Legacy Production allowlist removal ayrı yetkili görev olarak
-      hâlâ uygulanmadı.
+      login ile PASS. B7'de legacy Production callback allowlist'ten kaldırıldı.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
-- [x] Supabase remote Site URL localhost'tan exact final mobile callback
-      `com.esnaftavar.app://login-callback/` değerine geçirildi; final ve legacy
-      callback allowlist'te birlikte doğrulandı.
+- [x] Supabase remote Site URL exact final mobile callback
+      `com.esnaftavar.app://login-callback/` değerindedir; B7 postflight allowlist'in
+      yalnız bu final callback'i içerdiğini doğruladı.
 - [ ] Web release kapsamındaysa HTTPS Site URL/recovery route/allowlist kararı ve
       Resend link-tracking doğrulaması birlikte PASS.
 - [x] Phase F3A exact SQL `auth.users/identities/sessions = 0/0/0`; Dashboard

@@ -1,11 +1,13 @@
 # Production Release Configuration
 
-**Kaynak taban:** Wave 11 Phase A final integration /
-`origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`
+**Kaynak taban:** Wave 11 Phase B7 /
+`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`
 
-**Integration sırasında Production Supabase erişimi:** **NO**; remote write **NO**.
-Önceki authenticated management **read-only** Auth/SMTP/template kanıtı ile Agent 1'in
-salt-okunur client-safe publishable-key/build kanıtı ayrıca entegre edilmiştir.
+**B7 sırasında Production Supabase erişimi:** authenticated read **YES**; remote write
+**YES — yalnız owner-authorized exact legacy callback removal**. Database, Storage,
+user/e-posta ve diğer Auth config write **NO**. Önceki authenticated management
+**read-only** Auth/SMTP/template kanıtı ile Agent 1'in salt-okunur client-safe
+publishable-key/build kanıtı ayrıca korunur.
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -46,7 +48,7 @@ alanı görürse fail-closed davranır.
 
 `FINAL_PRODUCTION_AUTH_CALLBACK: com.esnaftavar.app://login-callback/`
 
-`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
 `SMTP_CONFIGURATION_PRESENT: YES`
 
@@ -66,11 +68,15 @@ alanı görürse fail-closed davranır.
 
 `EMAIL_TEMPLATE_PRECHECK: PASS`
 
-`MOBILE_AUTH_CALLBACK_ACCEPTANCE: BLOCKED`
+`MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS — B6 PHYSICAL`
 
-`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: BLOCKED`
+`PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: PASS — B6 PHYSICAL`
 
-`LEGACY_PRODUCTION_CALLBACK_REMOVAL: OPEN`
+`LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED — B7`
+
+`FINAL_PRODUCTION_CALLBACK_ONLY: YES`
+
+`AUTH_CONFIG_POSTFLIGHT: PASS`
 
 `EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
@@ -90,18 +96,36 @@ bağlandı. Production callback istemci, Android production flavor, iOS Profile/
 ve release preflight'ta final `com.esnaftavar.app://login-callback/` değerine taşındı.
 Development istemcisi, Android development flavor ve iOS Debug mevcut
 `io.supabase.tstore://login-callback/` sözleşmesini korur; ortamlar arasında fallback
-yoktur. Product owner bildirimiyle Production allowlist final URI'yi zaten içerir,
-ancak legacy kayıt integration/live acceptance sonrasına kadar geçici kalır. Bu
-görevde remote Auth yazması yapılmadı. Read-only precheck Custom SMTP'nin açık,
+yoktur. B6 final mobile confirmation/recovery acceptance sonrasında B7 owner-authorized
+remote Auth write yalnız legacy Production allowlist kaydını kaldırdı; Production
+allowlist artık yalnız final callback'i içerir. Read-only precheck Custom SMTP'nin açık,
 `smtp.resend.com:465` ve sender name'in `EsnaftaVar` olduğunu; Confirm Email'in açık
 ve üç hosted email template'inin canonical `ConfirmationURL` kullandığını doğruladı.
 F3 remote Site URL'yi exact final mobile callback olarak doğruladı. F3B gerçek inbox
 SMTP teslimatı, server-side confirmation, final callback email contract'ı ve customer
 role/profile davranışını PASS doğruladı; F3D cleanup Production Auth/business/Storage
 zero baseline'ını geri kurdu. Confirmation e-postasının Spam'e düşmesi Auth failure
-değildir; deliverability tuning açık follow-up'tır. Actual mobile app opening, full
-recovery lifecycle, legacy allowlist removal ve signing açık olduğundan bu kanıt tek
-başına deploy veya commercial release GO vermez.
+değildir; deliverability tuning açık follow-up'tır. B6 actual mobile app opening ve
+full recovery lifecycle'ı PASS tamamladı; B7 legacy allowlist removal ve Auth config
+postflight PASS'tir. Kalan release kapıları nedeniyle bu kanıt tek başına deploy veya
+commercial release GO vermez.
+
+## Wave 11 Phase B7 remote Auth callback postflight
+
+Authenticated Supabase Dashboard fresh pre-write gate exact Production
+`EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` için Site URL'nin final callback,
+allowlist'in final+legacy iki exact URI, Custom SMTP'nin Enabled ve Confirm Email'in
+Enabled olduğunu doğruladı. Owner-authorized tek config write yalnız
+`io.supabase.tstore://login-callback/` kaydını kaldırdı.
+
+Fresh reload/postflight allowlist'in yalnız
+`com.esnaftavar.app://login-callback/` değerini içerdiğini; Site URL, Custom SMTP ve
+Confirm Email'in değişmediğini doğruladı. Development remote'a erişilmedi ve kaynak
+Development callback'i `io.supabase.tstore://login-callback/` olarak korunur. User,
+e-posta, database, Storage, migration veya başka Auth config write yapılmadı.
+
+Callback, deep-link/platform, Production/Development isolation, Supabase config ve
+release-preflight hedefli yerel matris 45/45 PASS'tir.
 
 ## Wave 10 Phase E1 real runtime evidence
 
@@ -259,10 +283,10 @@ kanıtıyla şunları ayrıca doğrulamalıdır:
    üzerindeki `?auth_action=password_recovery` dönüşü de kabul edilmelidir.
 4. Production'da geniş Development wildcard'ı kullanılmaz; exact Production path
    tercih edilir.
-5. Legacy `io.supabase.tstore://login-callback/` Production allowlist kaydı yalnız
-   integration/signed-artifact kabul penceresi boyunca tutulur ve kabul sonrasında
-   yetkili release owner tarafından kaldırılır. Development remote config'i bu
-   operasyona dahil değildir.
+5. Legacy `io.supabase.tstore://login-callback/` Production allowlist kaydı B7'de
+   kaldırıldı; Production allowlist yalnız final callback'i içerir. Aynı URI'nin
+   Development kaynak sözleşmesinde bulunması Production remote config'ine geri
+   eklendiği anlamına gelmez. Development remote config'i bu operasyona dahil değildir.
 6. Email confirmation, custom SMTP, recovery template ve gerçek inbox kabulü ayrıca
    test edilir.
 
@@ -289,14 +313,14 @@ canonical HTTPS origin/route kararı yoksa yalnız web Auth gate'i **BLOCKED** k
   ve değer sohbet/repo/log içine yazılmadan doğrulanmalıdır.
 - Mobile Site URL ve final callback remote'da hizalıdır. Web release kapsamındaysa
   canonical HTTPS origin/recovery route ve allowlist kararı ayrıca verilmelidir.
-- Production Custom SMTP, gerçek inbox delivery ve server-side confirmation PASS'tir.
-  Full mobile recovery lifecycle ve email deliverability/spam tuning açıktır.
+- Production Custom SMTP, gerçek inbox delivery, server-side confirmation ve B6 full
+  mobile recovery lifecycle PASS'tir. Email deliverability/spam tuning izlenir.
 - Android/iOS identifier kararı ve platform wiring `com.esnaftavar.app` ile
   tamamlandı. Android upload signing, birincil keystore yedeği ve ilk signed APK/AAB
   PASS; fiziksel Android kabulü, Play Console/Play App Signing, kalıcı CI provenance
   ve Apple Distribution signing materyali hâlâ açıktır.
-- Final callback kaynak cutover ve email URL contract'ı tamamlandı; actual signed-app
-  opening PASS olmadan legacy Production callback allowlist kaydı kaldırılmaz.
+- Final callback kaynak cutover, email URL contract'ı, actual signed-app opening ve
+  legacy Production callback removal tamamlandı; Auth config postflight PASS'tir.
 - Production canonical migration ve metadata/security postflight PASS'tir; Auth/client
   wiring sonrasında kontrollü Production smoke ayrıca PASS olmalıdır.
 - Fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing kabulü, controlled
