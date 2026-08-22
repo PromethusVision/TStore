@@ -3,27 +3,24 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 11 Agent 2 B4 root-cause commit'i
-  `f545ab40a7520b4140cfe9f1d22f18d0c9f7fb14`; integration merge `0df5c99`.
-- Doğrulanan branch/base: `integration/wave-11-phase-b4-auth-root-cause-20260822` /
-  `origin/main@cd3e14138137c0d07a5050e094125b8a9fda0af8`.
-- Entegrasyon durumu: **WAVE 11 PHASE B4 CONFIRMATION ROOT CAUSE FOUND / RECOVERY FALSE-SUCCESS ROOT CAUSE FOUND / ACTUAL PASSWORD PERSISTENCE ROOT CAUSE NOT FOUND**
-- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. B3R fiziksel
-  callback ve cleanup kanıtı korunurken Agent 2'nin salt-okunur kod/test/Production
-  log-retention analizi entegre edildi. Confirmation success feedback'in route
-  transition tamamlanmadan geçici Snackbar olarak tüketilmesi ve destination-owned
-  durable one-shot state bulunmaması yüksek güvenle doğrulandı. Recovery client'ının
-  `UserResponse` içeriğini ve fresh credential login'i doğrulamadan no-exception
-  sonucunu final success saydığı bulundu. Gerçek server password persistence kök
-  nedeni ve password-specific audit olayı kanıtlanamadı; sırasıyla NOT_FOUND ve
-  UNKNOWN kaldı. Integration Production/Development remote read/write veya Auth/e-posta
-  işlemi yapmadı; Production zero-test baseline korunur.
-- Doğrulama türü: canonical B4 raporunun mevcut callback/recovery kodu ve Auth test
-  varsayımlarıyla çapraz kontrolü; yerel Auth unit/widget/integration matrisi 199/199
-  ve Auth redirect wiring contract 4/4 PASS; docs consistency, diff ve secret/PII
-  kontrolleri.
-- BLOCKED kontroller: yeni credential login/session, confirmation başarı SnackBar'ının
-  yeni signup olmadan fiziksel yeniden kabulü, legacy Production allowlist removal,
+- Son doğrulanan teslim: Wave 11 Agent 2 B5 confirmation/recovery authoritative
+  success fix task branch'i.
+- Doğrulanan branch/base: `agent2/w11-auth-confirmation-recovery-fix` /
+  `origin/main@bb3e7e529fa9fbe24306f98a0cf37ad9d26caf41`.
+- Entegrasyon durumu: **WAVE 11 PHASE B5 LOCAL FIX PASS / INTEGRATION REQUIRED /
+  PHYSICAL AUTH RETEST OPEN**
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Agent 2 task worktree. B4 source-of-
+  truth korunarak confirmation sonucu destination-owned kalıcı one-shot notice'a;
+  recovery sonucu canonical beş adımlı authoritative proof'a bağlandı. No-exception
+  veya HTTP success artık final başarı değildir. Gerçek server password persistence
+  nedeni ve password-specific audit olayı sırasıyla NOT_FOUND ve UNKNOWN kalır. Bu
+  task Production/Development remote read/write veya Auth/e-posta işlemi yapmadı;
+  Production zero-test baseline korunur.
+- Doğrulama türü: Auth repository/use-case/Cubit, recovery/confirmation/session widget
+  ve integration regression testleri; full Flutter suite, analyzer, diff ve secret/PII
+  kontrolleri. Final sayılar task tamamlandığında TASK_RESULT'ta kaydedilir.
+- BLOCKED kontroller: yeni credential'ın gerçek Production Auth'ta fiziksel kalıcılığı,
+  confirmation notice'ın yeni signup ile fiziksel yeniden kabulü, legacy Production allowlist removal,
   broader Production smoke, fiziksel iki-cihaz QR ve iOS archive/signing (Windows).
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
@@ -124,9 +121,9 @@
 
 `WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`
 
-`CONFIRMATION_SUCCESS_UI: FAIL — CALLBACK OPENED HOME WITHOUT CANONICAL MESSAGE`
+`CONFIRMATION_SUCCESS_UI: FIXED IN B5 TASK BRANCH — PHYSICAL RETEST OPEN`
 
-`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`
+`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED IN B5 TASK BRANCH`
 
 `PRODUCTION_AUTH_ROLE_SECURITY: PASS — CUSTOMER REMAINED CUSTOMER`
 
@@ -148,11 +145,17 @@
 
 `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`
 
-`V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: OPEN`
+`V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: CLOSED IN B5 TASK BRANCH`
 
 `V1_0_AUTH_RETEST_PASSWORD_PERSISTENCE_BEHAVIOR: OPEN`
 
-`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 TASK BRANCH`
+
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — LOCAL`
+
+`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+
+`READY_FOR_PHASE_B_INTEGRATION: YES`
 
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
 
@@ -400,6 +403,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Son Geliştirme Odağı
 
 - 2026-08-22: **WAVE 11 PHASE B4 AUTH ROOT-CAUSE INTEGRATION / FIX IMPLEMENTATION READY** — Agent 2'nin `f545ab4` canonical analiz belgesi `0df5c99` ile exact `cd3e141` tabanına `--no-ff` ve çatışmasız entegre edildi. Confirmation feedback root cause FOUND: callback/session/profile/Home yolu çalışıyor; geçici Snackbar route transition tamamlanmadan tüketiliyor ve destination-owned durable one-shot state yok. Recovery false-success root cause FOUND: no-exception `updateUser` response/provenance/fresh login doğrulanmadan final success üretiyor. Actual Production password persistence root cause NOT_FOUND ve password-specific audit UNKNOWN kaldı. Beş adımlı authoritative recovery success criterion ve regression test boşlukları canonicalleştirildi. Yerel Auth matrisi 199/199 ve Auth redirect wiring contract 4/4 PASS; Integration Production/Development remote işlemi yapmadı ve zero-test baseline korundu.
+- 2026-08-22: **WAVE 11 PHASE B5 AUTH CONFIRMATION/RECOVERY LOCAL FIX PASS / INTEGRATION REQUIRED** — Confirmation sonucu Home/Login destination route tamamlandıktan sonra destination-owned, dismiss edilene kadar kalıcı ve sequence-deduped notice olarak gösterilir. Recovery final başarı valid provenance/session + expected-user update response + local session cleanup + aynı opaque credential ile fresh normal login + same-user identity zincirinin tamamına bağlandı. No-exception/HTTP success tek başına başarı değildir; typed terminal failures invalid-link ekranına gider ve kontrollü Auth event'leri navigation/customer-data yarışından izole edilir. Stateful password-store fake false-success, same-password parity, cleanup ve identity mismatch regression'larını doğrular. Task remote Production/Development işlem yapmadı; actual Production password persistence nedeni NOT_FOUND kalır ve fiziksel retest açıktır.
 - 2026-08-22: **WAVE 11 B3R EVIDENCE + CLEANUP INTEGRATION PASS / TWO V1.0 AUTH BUGS OPEN** — Agent 1'in `0f94596` final HEAD'i `59acbec` ile exact `76acad4` tabanına `--no-ff` ve çatışmasız entegre edildi. Physical confirmation final callback, server confirmation, authenticated session/Home ve customer role/profile PASS; confirmation success feedback FAIL. Recovery email/final callback/update UI PASS; HTTP `200` gerçek password-hash değişimi sayılmadı ve yeni credential iki fresh login'de `invalid_credentials` ile reddedildi. Bu iki sonuç explicit V1.0 Auth bug'ı olarak açık. Owner-authorized B3R Auth Admin cleanup sonrası Auth/business/Storage residual exact `0`; legacy callback korundu. Integration Auth matrisi 67/67, tam suite 1182 PASS (5 live skip) ve analyzer PASS; Production/Development remote işlemi yapmadı.
 - 2026-08-22: **WAVE 11 PHASE B3R AUTHORIZED FIXTURE CLEANUP PASS / ZERO TEST BASELINE RESTORED** — Fresh authoritative Production gate exact tek masked B3R disposable customer'ı doğruladı: Auth user/identity/session/profile/legal consent `1/1/0/1/2`, customer role `1`, merchant/admin `0`; bütün user-linked business tabloları ve Storage objects `0`. Authenticated session bulunmadığından canonical self-delete kullanılamadı. Product owner'ın exact fixture yetkisi ve ayrı action-time onayıyla Supabase Dashboard Auth Admin delete uygulandı. Post-delete authoritative state Auth user/identity/session/profile/legal consent, bütün business tabloları ve Storage objects için exact `0` oldu. Başka kullanıcı/veri etkilenmedi; yeni signup/recovery/email/login, Auth config, schema, migration, SMTP, Storage veya Development write yapılmadı. B3R recovery final login ve confirmation success feedback açık kalır; cleanup bu iki kabulü PASS yapmaz.
 - 2026-08-20: **WAVE 11 PHASE B3R PHYSICAL CONFIRMATION CALLBACK PASS / PASSWORD RECOVERY FINAL LOGIN FAIL / CLEANUP BLOCKED** — POCO X7 Pro / Android 16 üzerinde exact bir disposable Production customer normal signup ile oluşturuldu; waiting UI, Inbox sender/domain, final callback app opening, server confirmation, authenticated Home, profile ve default customer role PASS oldu. Canonical confirmation başarı mesajı Home'da gözlenmedi; route-lifecycle yarışı destination-first mesajlama ile düzeltildi ancak ikinci signup yapılmadığından fiziksel tekrar kabulü BLOCKED kaldı. Tek recovery e-postası final callback ile update-password ekranını açtı; HTTP `200` / `user_modified` gözlendi fakat yeni credential login başarısız olduğu için gerçek parola değişimi kanıtlanmış sayılmaz. Eski credential beklendiği gibi, yeni credential ise beklenmedik biçimde `invalid_credentials` ile reddedildi. Login/signup/recovery parola alanlarında opaque değer korunumu ve klavye rewrite koruması eklendi; buna rağmen patched signed APK'daki yeni login denemeleri de authoritative Auth tarafından reddedildi. Görev sınırı gereği ikinci recovery, admin delete veya yeni kullanıcı oluşturulmadı. Canonical self-delete çalıştırılamadı; exact B3R fixture ve ilişkili profil/consent satırları owner-onaylı sonraki cleanup'a kaldı. Production Auth/config/schema/Storage ve Development değişmedi.

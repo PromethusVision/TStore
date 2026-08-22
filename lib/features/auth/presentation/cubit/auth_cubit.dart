@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/usecases/usecase.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_up_usecase.dart';
@@ -23,6 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
   final UpdatePasswordUsecase updatePasswordUsecase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
   DateTime? _userInitiatedSignOutAt;
+  bool _passwordRecoveryVerificationInProgress = false;
 
   AuthCubit({
     required this.signInUsecase,
@@ -132,6 +134,13 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   bool handleSignedOutEvent() {
+    if (_passwordRecoveryVerificationInProgress) {
+      // The repository intentionally signs out the recovery session before
+      // proving the new credential with a normal, fresh login. Keep the
+      // recovery route and Cubit state alive during that controlled handoff.
+      return true;
+    }
+
     final requestedAt = _userInitiatedSignOutAt;
     final isUserInitiated =
         requestedAt != null &&
@@ -158,17 +167,38 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> updatePassword(String newPassword) async {
-    if (state is AuthLoading) return;
+  Future<void> updatePassword(
+    String newPassword, {
+    required PasswordRecoveryIdentity recoveryIdentity,
+  }) async {
+    if (state is AuthLoading || state is AuthPasswordRecoveryVerifying) return;
 
-    emit(AuthLoading());
+    _passwordRecoveryVerificationInProgress = true;
+    emit(AuthPasswordRecoveryVerifying());
 
-    final result = await updatePasswordUsecase(newPassword);
-
-    result.fold(
-      (error) => emit(AuthError(error)),
-      (_) => emit(AuthPasswordUpdated()),
-    );
+    try {
+      final result = await updatePasswordUsecase(
+        UpdatePasswordParams(
+          newPassword: newPassword,
+          recoveryIdentity: recoveryIdentity,
+        ),
+      );
+      result.fold(
+        (failure) => emit(AuthPasswordRecoveryFailed(failure)),
+        (_) => emit(AuthPasswordUpdated()),
+      );
+    } catch (_) {
+      emit(
+        const AuthPasswordRecoveryFailed(
+          PasswordRecoveryFailure(
+            reason: PasswordRecoveryFailureReason.passwordUpdateRejected,
+            message: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+          ),
+        ),
+      );
+    } finally {
+      _passwordRecoveryVerificationInProgress = false;
+    }
   }
 
   Future<void> resendConfirmation(String email) async {

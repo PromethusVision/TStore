@@ -4,6 +4,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/auth/data/models/user_model.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/repositories/auth_repository.dart';
 
@@ -270,19 +271,130 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<String, void>> updatePassword(String newPassword) async {
-    try {
-      await supabaseService.updatePassword(newPassword);
-      return const Right(null);
-    } on AuthException catch (e) {
-      return Left(_getAuthErrorMessage(e.message));
-    } catch (e) {
-      return Left(
-        CustomerErrorMessage.from(
-          e,
-          fallback: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+  Future<Either<PasswordRecoveryFailure, PasswordRecoveryVerification>>
+  updatePassword(UpdatePasswordParams params) async {
+    final expectedIdentity = params.recoveryIdentity;
+    final recoveryUser = supabaseService.currentSession?.user;
+    if (!expectedIdentity.isValid ||
+        recoveryUser == null ||
+        recoveryUser.id != expectedIdentity.userId ||
+        recoveryUser.email?.toLowerCase() !=
+            expectedIdentity.email.toLowerCase()) {
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.invalidRecoverySession,
+          message:
+              'Şifre yenileme bağlantısı geçersiz veya süresi dolmuş. '
+              'Lütfen yeni bir bağlantı isteyin.',
         ),
       );
+    }
+
+    late final UserResponse updateResponse;
+    try {
+      updateResponse = await supabaseService.updatePassword(params.newPassword);
+    } on AuthException catch (error) {
+      return Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.passwordUpdateRejected,
+          message: _getAuthErrorMessage(
+            error.message,
+            fallbackMessage: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+          ),
+        ),
+      );
+    } catch (_) {
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.passwordUpdateRejected,
+          message: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+        ),
+      );
+    }
+
+    final updatedUser = updateResponse.user;
+    if (updatedUser == null ||
+        updatedUser.id != expectedIdentity.userId ||
+        updatedUser.email?.toLowerCase() !=
+            expectedIdentity.email.toLowerCase()) {
+      await _clearLocalAuthSession();
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.invalidUpdateResponse,
+          message:
+              'Şifre yenileme işlemi doğrulanamadı. '
+              'Lütfen yeni bir bağlantı isteyin.',
+        ),
+      );
+    }
+
+    if (!await _clearLocalAuthSession()) {
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.sessionCleanupFailed,
+          message:
+              'Şifre yenileme oturumu güvenle kapatılamadı. '
+              'Lütfen işlemi yeniden deneyin.',
+        ),
+      );
+    }
+
+    late final AuthResponse signInResponse;
+    try {
+      signInResponse = await supabaseService.signIn(
+        email: expectedIdentity.email,
+        password: params.newPassword,
+      );
+    } on AuthException catch (error) {
+      final invalidCredentials = error.message.toLowerCase().contains(
+        'invalid login credentials',
+      );
+      return Left(
+        PasswordRecoveryFailure(
+          reason: invalidCredentials
+              ? PasswordRecoveryFailureReason.freshLoginInvalidCredentials
+              : PasswordRecoveryFailureReason.freshLoginFailed,
+          message: invalidCredentials
+              ? 'Parola değişikliği doğrulanamadı. '
+                    'Lütfen yeni bir bağlantı isteyin.'
+              : 'Parola değişikliği doğrulaması tamamlanamadı. '
+                    'Lütfen yeni bir bağlantı isteyin.',
+        ),
+      );
+    } catch (_) {
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.freshLoginFailed,
+          message:
+              'Parola değişikliği doğrulaması tamamlanamadı. '
+              'Lütfen yeni bir bağlantı isteyin.',
+        ),
+      );
+    }
+
+    final verifiedUser = signInResponse.user;
+    if (verifiedUser == null || verifiedUser.id != expectedIdentity.userId) {
+      await _clearLocalAuthSession();
+      return const Left(
+        PasswordRecoveryFailure(
+          reason: PasswordRecoveryFailureReason.identityMismatch,
+          message:
+              'Parola değişikliği doğru hesap için doğrulanamadı. '
+              'Lütfen yeni bir bağlantı isteyin.',
+        ),
+      );
+    }
+
+    return Right(PasswordRecoveryVerification(userId: verifiedUser.id));
+  }
+
+  Future<bool> _clearLocalAuthSession() async {
+    try {
+      await supabaseService.clearLocalAuthSession();
+      return supabaseService.currentSession == null &&
+          supabaseService.currentUser == null;
+    } catch (_) {
+      return false;
     }
   }
 

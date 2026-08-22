@@ -8,11 +8,15 @@ import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/core/utils/validators/validation.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
+import 'package:t_store/features/auth/presentation/views/password_configuration/invalid_password_recovery_view.dart';
 import 'package:t_store/features/auth/presentation/widgets/customer_auth_form_card.dart';
 
 class UpdatePasswordView extends StatefulWidget {
-  const UpdatePasswordView({super.key});
+  const UpdatePasswordView({super.key, required this.recoveryIdentity});
+
+  final PasswordRecoveryIdentity recoveryIdentity;
 
   @override
   State<UpdatePasswordView> createState() => _UpdatePasswordViewState();
@@ -27,6 +31,7 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
   bool _hideConfirmation = true;
   bool _passwordUpdated = false;
   bool _returningToLogin = false;
+  bool _openingInvalidRecovery = false;
 
   @override
   void dispose() {
@@ -39,7 +44,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     FocusScope.of(context).unfocus();
-    context.read<AuthCubit>().updatePassword(_passwordController.text);
+    context.read<AuthCubit>().updatePassword(
+      _passwordController.text,
+      recoveryIdentity: widget.recoveryIdentity,
+    );
   }
 
   Future<void> _returnToLogin() async {
@@ -63,12 +71,39 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
     );
   }
 
+  void _openInvalidRecovery() {
+    if (_openingInvalidRecovery) return;
+    _openingInvalidRecovery = true;
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    Navigator.of(context).pushAndRemoveUntil<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => const InvalidPasswordRecoveryView(),
+      ),
+      (_) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthPasswordUpdated) {
+          _passwordController.clear();
+          _confirmPasswordController.clear();
           setState(() => _passwordUpdated = true);
+        } else if (state is AuthPasswordRecoveryFailed) {
+          if (state.failure.reason !=
+              PasswordRecoveryFailureReason.passwordUpdateRejected) {
+            _openInvalidRecovery();
+            return;
+          }
+          setState(() => _returningToLogin = false);
+          THelperFunctions.showSnackBar(
+            context: context,
+            message: state.failure.message,
+            type: SnackBarType.error,
+          );
         } else if (state is AuthError) {
           setState(() => _returningToLogin = false);
           THelperFunctions.showSnackBar(
@@ -81,7 +116,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
         }
       },
       builder: (context, state) {
-        final isLoading = state is AuthLoading || _returningToLogin;
+        final isLoading =
+            state is AuthLoading ||
+            state is AuthPasswordRecoveryVerifying ||
+            _returningToLogin;
 
         return Scaffold(
           backgroundColor: CustomerHomeV1Tokens.cream,

@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
@@ -44,6 +45,8 @@ class FakeSignUpParams extends Fake implements SignUpParams {}
 
 class FakeNoParams extends Fake implements NoParams {}
 
+class FakeUpdatePasswordParams extends Fake implements UpdatePasswordParams {}
+
 void main() {
   late AuthCubit authCubit;
   late MockSignInUsecase mockSignInUsecase;
@@ -59,6 +62,7 @@ void main() {
     registerFallbackValue(FakeSignInParams());
     registerFallbackValue(FakeSignUpParams());
     registerFallbackValue(FakeNoParams());
+    registerFallbackValue(FakeUpdatePasswordParams());
   });
 
   setUp(() {
@@ -444,39 +448,98 @@ void main() {
 
     group('updatePassword', () {
       const newPassword = 'NewStrong1!';
-
-      blocTest<AuthCubit, AuthState>(
-        'emits success when the recovery password is updated',
-        build: () {
-          when(
-            () => mockUpdatePasswordUsecase(newPassword),
-          ).thenAnswer((_) async => const Right(null));
-          return authCubit;
-        },
-        act: (cubit) => cubit.updatePassword(newPassword),
-        expect: () => [AuthLoading(), AuthPasswordUpdated()],
+      const recoveryIdentity = PasswordRecoveryIdentity(
+        userId: 'test-id',
+        email: testEmail,
+      );
+      const verification = PasswordRecoveryVerification(userId: 'test-id');
+      const failure = PasswordRecoveryFailure(
+        reason: PasswordRecoveryFailureReason.invalidRecoverySession,
+        message: 'Bağlantı geçersiz.',
       );
 
       blocTest<AuthCubit, AuthState>(
-        'emits error when the recovery password cannot be updated',
+        'emits success only after recovery verification completes',
         build: () {
           when(
-            () => mockUpdatePasswordUsecase(newPassword),
-          ).thenAnswer((_) async => const Left('Bağlantı geçersiz.'));
+            () => mockUpdatePasswordUsecase(any()),
+          ).thenAnswer((_) async => const Right(verification));
           return authCubit;
         },
-        act: (cubit) => cubit.updatePassword(newPassword),
-        expect: () => [AuthLoading(), const AuthError('Bağlantı geçersiz.')],
+        act: (cubit) => cubit.updatePassword(
+          newPassword,
+          recoveryIdentity: recoveryIdentity,
+        ),
+        expect: () => [AuthPasswordRecoveryVerifying(), AuthPasswordUpdated()],
+        verify: (_) {
+          final params =
+              verify(
+                    () => mockUpdatePasswordUsecase(captureAny()),
+                  ).captured.single
+                  as UpdatePasswordParams;
+          expect(params.newPassword, same(newPassword));
+          expect(params.recoveryIdentity, recoveryIdentity);
+        },
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'emits typed failure when recovery cannot be verified',
+        build: () {
+          when(
+            () => mockUpdatePasswordUsecase(any()),
+          ).thenAnswer((_) async => const Left(failure));
+          return authCubit;
+        },
+        act: (cubit) => cubit.updatePassword(
+          newPassword,
+          recoveryIdentity: recoveryIdentity,
+        ),
+        expect: () => [
+          AuthPasswordRecoveryVerifying(),
+          const AuthPasswordRecoveryFailed(failure),
+        ],
       );
 
       blocTest<AuthCubit, AuthState>(
         'ignores a second password update while loading',
         build: () => authCubit,
-        seed: AuthLoading.new,
-        act: (cubit) => cubit.updatePassword(newPassword),
+        seed: AuthPasswordRecoveryVerifying.new,
+        act: (cubit) => cubit.updatePassword(
+          newPassword,
+          recoveryIdentity: recoveryIdentity,
+        ),
         expect: () => <AuthState>[],
         verify: (_) {
           verifyNever(() => mockUpdatePasswordUsecase(any()));
+        },
+      );
+
+      test(
+        'controlled recovery sign-out does not replace recovery state',
+        () async {
+          authCubit.emit(AuthPasswordRecoveryVerifying());
+          // The marker is activated by updatePassword, not by externally forcing
+          // the state, so start a pending verification request.
+          final pending =
+              Completer<
+                Either<PasswordRecoveryFailure, PasswordRecoveryVerification>
+              >();
+          when(
+            () => mockUpdatePasswordUsecase(any()),
+          ).thenAnswer((_) => pending.future);
+
+          authCubit.emit(AuthInitial());
+          authCubit.updatePassword(
+            newPassword,
+            recoveryIdentity: recoveryIdentity,
+          );
+
+          expect(authCubit.handleSignedOutEvent(), isTrue);
+          expect(authCubit.state, AuthPasswordRecoveryVerifying());
+          pending.complete(const Right(verification));
+          await authCubit.stream.firstWhere(
+            (state) => state is AuthPasswordUpdated,
+          );
         },
       );
     });

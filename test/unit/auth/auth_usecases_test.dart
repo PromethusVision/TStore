@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 import 'package:t_store/features/auth/domain/repositories/auth_repository.dart';
@@ -15,8 +16,14 @@ import 'package:t_store/features/auth/domain/usecases/get_current_user_usecase.d
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
+class FakeUpdatePasswordParams extends Fake implements UpdatePasswordParams {}
+
 void main() {
   late MockAuthRepository mockRepository;
+
+  setUpAll(() {
+    registerFallbackValue(FakeUpdatePasswordParams());
+  });
 
   setUp(() {
     mockRepository = MockAuthRepository();
@@ -312,27 +319,38 @@ void main() {
     });
 
     const newPassword = 'NewStrong1!';
+    const params = UpdatePasswordParams(
+      newPassword: newPassword,
+      recoveryIdentity: PasswordRecoveryIdentity(
+        userId: 'customer-1',
+        email: 'customer@example.com',
+      ),
+    );
 
-    test('updates the current recovery session password', () async {
-      when(
-        () => mockRepository.updatePassword(newPassword),
-      ).thenAnswer((_) async => const Right(null));
+    test('returns the authoritative recovery verification', () async {
+      when(() => mockRepository.updatePassword(any())).thenAnswer(
+        (_) async =>
+            const Right(PasswordRecoveryVerification(userId: 'customer-1')),
+      );
 
-      final result = await usecase(newPassword);
+      final result = await usecase(params);
 
       expect(result.isRight(), true);
-      verify(() => mockRepository.updatePassword(newPassword)).called(1);
+      verify(() => mockRepository.updatePassword(params)).called(1);
     });
 
     test('returns the password update error', () async {
-      const errorMessage = 'Şifre güvenlik şartlarını karşılamıyor.';
+      const failure = PasswordRecoveryFailure(
+        reason: PasswordRecoveryFailureReason.passwordUpdateRejected,
+        message: 'Şifre güvenlik şartlarını karşılamıyor.',
+      );
       when(
-        () => mockRepository.updatePassword(newPassword),
-      ).thenAnswer((_) async => const Left(errorMessage));
+        () => mockRepository.updatePassword(any()),
+      ).thenAnswer((_) async => const Left(failure));
 
-      final result = await usecase(newPassword);
+      final result = await usecase(params);
 
-      expect(result, const Left(errorMessage));
+      expect(result, const Left(failure));
     });
   });
 

@@ -97,10 +97,6 @@ class _EmailConfirmationListenerState extends State<EmailConfirmationListener> {
         MaterialPageRoute<void>(
           builder: (_) => _EmailConfirmationDestination(
             destinationBuilder: destinationBuilder,
-            onPresented: () {
-              if (!mounted) return;
-              _showMessage('E-posta adresiniz başarıyla doğrulandı.');
-            },
           ),
         ),
         (_) => false,
@@ -125,13 +121,9 @@ class _EmailConfirmationListenerState extends State<EmailConfirmationListener> {
 }
 
 class _EmailConfirmationDestination extends StatefulWidget {
-  const _EmailConfirmationDestination({
-    required this.destinationBuilder,
-    required this.onPresented,
-  });
+  const _EmailConfirmationDestination({required this.destinationBuilder});
 
   final WidgetBuilder destinationBuilder;
-  final VoidCallback onPresented;
 
   @override
   State<_EmailConfirmationDestination> createState() =>
@@ -140,14 +132,99 @@ class _EmailConfirmationDestination extends StatefulWidget {
 
 class _EmailConfirmationDestinationState
     extends State<_EmailConfirmationDestination> {
+  Animation<double>? _routeAnimation;
+  bool _noticeVisible = false;
+  bool _noticeDismissed = false;
+  bool _visibilityScheduled = false;
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final animation = ModalRoute.of(context)?.animation;
+    if (identical(animation, _routeAnimation)) return;
+
+    _routeAnimation?.removeStatusListener(_onRouteAnimationStatus);
+    _routeAnimation = animation;
+    if (animation == null || animation.status == AnimationStatus.completed) {
+      _scheduleNoticeVisibility();
+    } else {
+      animation.addStatusListener(_onRouteAnimationStatus);
+    }
+  }
+
+  void _onRouteAnimationStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed) _scheduleNoticeVisibility();
+  }
+
+  void _scheduleNoticeVisibility() {
+    if (_visibilityScheduled || _noticeDismissed || _noticeVisible) return;
+    _visibilityScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) widget.onPresented();
+      _visibilityScheduled = false;
+      if (!mounted || _noticeDismissed || _noticeVisible) return;
+      setState(() => _noticeVisible = true);
+    });
+  }
+
+  void _dismissNotice() {
+    if (_noticeDismissed) return;
+    setState(() {
+      _noticeDismissed = true;
+      _noticeVisible = false;
     });
   }
 
   @override
-  Widget build(BuildContext context) => widget.destinationBuilder(context);
+  void dispose() {
+    _routeAnimation?.removeStatusListener(_onRouteAnimationStatus);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.destinationBuilder(context),
+        if (_noticeVisible)
+          Positioned(
+            top: 0,
+            left: 12,
+            right: 12,
+            child: SafeArea(
+              child: Material(
+                key: const Key('email-confirmation-success-notice'),
+                elevation: 6,
+                color: const Color(0xFF176B5B),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'E-posta adresiniz başarıyla doğrulandı.',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        key: const Key(
+                          'email-confirmation-success-notice-dismiss',
+                        ),
+                        tooltip: 'Bildirimi kapat',
+                        onPressed: _dismissNotice,
+                        color: Colors.white,
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/usecases/usecase.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 import 'package:t_store/features/auth/domain/usecases/sign_in_usecase.dart';
@@ -41,6 +42,8 @@ class FakeSignUpParams extends Fake implements SignUpParams {}
 
 class FakeNoParams extends Fake implements NoParams {}
 
+class FakeUpdatePasswordParams extends Fake implements UpdatePasswordParams {}
+
 void main() {
   late AuthCubit authCubit;
   late MockSignInUsecase mockSignInUsecase;
@@ -56,6 +59,7 @@ void main() {
     registerFallbackValue(FakeSignInParams());
     registerFallbackValue(FakeSignUpParams());
     registerFallbackValue(FakeNoParams());
+    registerFallbackValue(FakeUpdatePasswordParams());
   });
 
   setUp(() {
@@ -226,11 +230,19 @@ void main() {
 
       test('user can set a new password after opening recovery link', () async {
         const newPassword = 'NewStrong1!';
-        when(
-          () => mockUpdatePasswordUsecase(newPassword),
-        ).thenAnswer((_) async => const Right(null));
+        const recoveryIdentity = PasswordRecoveryIdentity(
+          userId: 'test-id',
+          email: testEmail,
+        );
+        when(() => mockUpdatePasswordUsecase(any())).thenAnswer(
+          (_) async =>
+              const Right(PasswordRecoveryVerification(userId: 'test-id')),
+        );
 
-        await authCubit.updatePassword(newPassword);
+        await authCubit.updatePassword(
+          newPassword,
+          recoveryIdentity: recoveryIdentity,
+        );
 
         expect(authCubit.state, isA<AuthPasswordUpdated>());
       });

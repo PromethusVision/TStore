@@ -372,6 +372,25 @@ B4 integration yerel Auth unit/widget/integration matrisini 199/199 ve Auth redi
 wiring contract'ını 4/4 PASS doğruladı; Production/Development remote read/write,
 Auth user veya e-posta işlemi yapmadı ve Production zero-test baseline korunur.
 
+## Wave 11 Phase B5 Auth confirmation/recovery fix
+
+- Confirmation canonical başarı notice'ı Home/Login destination route tamamlandıktan
+  sonra görünür; dismiss edilene kadar kalır, duplicate callback ikinci notice üretmez
+  ve malformed callback başarı üretemez.
+- Recovery success yalnız canonical beş koşulun tamamı PASS olduğunda gösterilir.
+  Stateful fake'te update success/password store unchanged sonucu fresh login'de
+  reddedilir ve final başarı oluşmaz. Cleanup failure ve identity mismatch de typed
+  terminal failure'dır.
+- Aynı opaque in-memory credential update ve fresh login adımlarında birebir korunur;
+  password state/log/test diagnostic'ine yazılmaz.
+- Bu local implementation fiziksel Production kabulü değildir. Yeni authorized
+  disposable fixture ile confirmation notice ve recovery fresh-login same-user
+  davranışı signed Android build'de yeniden doğrulanmalıdır.
+
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — LOCAL`
+
+`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+
 ## 1. Başlatma kapıları
 
 Smoke başlamadan önce tamamı işaretlenmelidir:
@@ -402,7 +421,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Final callback signed-artifact confirmation app opening POCO X7 Pro üzerinde
       PASS.
 - [ ] Full recovery kabulü yeni credential login ile tamamlandı; ardından legacy
-      Production allowlist kaydı kaldırıldı. B3R'de callback/update UI PASS, login FAIL.
+      Production allowlist kaydı kaldırıldı. B3R'de callback/update UI PASS, login FAIL;
+      B5 false-success guard local PASS, physical retest OPEN.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
 - [x] Supabase remote Site URL localhost'tan exact final mobile callback
@@ -469,8 +489,8 @@ içermeyen ekran/log kanıtı eklenir.
 | Search | Var olan, olmayan ve özel karakterli sorgu dene | Sonuç/empty state doğru; duplicate ve beklenmeyen private veri yok | |
 | ProductDetails | Guest olarak ürün detayına gir | Ürün, fiyat ve satıcılar doğru; legacy HTTPS/canonical product image güvenli görüntülenir | |
 | Sellers | Aynı ürünün satıcılarını ve mağaza detayını aç | Yalnız aktif/görünür satıcılar, konum/mesafe izin akışı ve fallback doğru | |
-| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; canonical success mesajı FAIL |
-| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS; yeni credential login FAIL |
+| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; B5 destination-owned success notice local PASS, physical retest OPEN |
+| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS, yeni credential login FAIL; B5 authoritative success guard local PASS, physical retest OPEN |
 | CartV2 | User A bir shop-product ekler, miktar değiştirir/siler; başka mağaza eklemeyi dener | Tek-mağaza kuralı, stok/fiyat revalidation ve duplicate tap koruması çalışır; legacy checkout açılmaz | |
 | Favorites | User A ekler/çıkarır; User B ile izolasyonu kontrol et | Own CRUD çalışır; B, A'nın favorisini okuyamaz/değiştiremez | |
 | Chat | A ve B aynı conversation'da mesajlaşır; üçüncü conversation ile izolasyonu dene | Real event bir kez gelir; RLS, unread/summary, unsubscribe/reconnect/dedup doğru | |

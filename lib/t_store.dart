@@ -8,6 +8,7 @@ import 'package:t_store/core/utils/theme/theme.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
 import 'package:t_store/features/auth/presentation/views/on_boarding/customer_launch_gate.dart';
 import 'package:t_store/features/auth/presentation/widgets/customer_session_listener.dart';
@@ -68,6 +69,7 @@ class TStore extends StatelessWidget {
         navigatorKey: tStoreNavigatorKey,
         initialPasswordRecoveryStatus:
             SupabaseService.instance.initialPasswordRecoveryStatus,
+        initialRecoveryIdentity: _initialRecoveryIdentity(),
         child: EmailConfirmationListener(
           callbacks: SupabaseService.instance.emailConfirmationCallbacks,
           initialCallback:
@@ -105,5 +107,12 @@ class TStore extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  PasswordRecoveryIdentity? _initialRecoveryIdentity() {
+    final user = SupabaseService.instance.currentSession?.user;
+    final email = user?.email;
+    if (user == null || email == null) return null;
+    return PasswordRecoveryIdentity(userId: user.id, email: email);
   }
 }

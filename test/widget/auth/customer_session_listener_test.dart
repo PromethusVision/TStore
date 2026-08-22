@@ -47,6 +47,7 @@ void main() {
     scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
     when(() => authCubit.stream).thenAnswer((_) => const Stream.empty());
+    when(() => authCubit.state).thenReturn(AuthInitial());
     when(() => cartCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => wishlistCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => navigationCubit.stream).thenAnswer((_) => const Stream.empty());
@@ -202,6 +203,31 @@ void main() {
 
     verifyNever(() => cartCubit.clearLocalCart());
     verifyNever(() => wishlistCubit.clearLocalWishlist());
+    verifyNever(() => navigationCubit.changeIndex(0));
+  });
+
+  testWidgets('fresh login proof does not load customer data mid-recovery', (
+    tester,
+  ) async {
+    when(() => authCubit.state).thenReturn(AuthPasswordRecoveryVerifying());
+    await pumpApp(
+      tester,
+      initiallyAuthenticated: true,
+      initialUserId: authenticatedUser.id,
+    );
+
+    authStateController.add(
+      supabase.AuthState(
+        supabase.AuthChangeEvent.signedIn,
+        _sessionFor('customer-2'),
+      ),
+    );
+    await tester.pump();
+
+    verifyNever(() => cartCubit.clearLocalCart());
+    verifyNever(() => wishlistCubit.clearLocalWishlist());
+    verifyNever(() => cartCubit.getActiveCartItems());
+    verifyNever(() => wishlistCubit.getWishlist());
     verifyNever(() => navigationCubit.changeIndex(0));
   });
 
