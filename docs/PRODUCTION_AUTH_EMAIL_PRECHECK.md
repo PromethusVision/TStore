@@ -8,7 +8,10 @@ Wave 11 B4/B5 Auth root-cause/fix evidence + Wave 11 B6 final physical acceptanc
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
-`8a23c237a16e144fb346f725d27837fb93c8695e`
+`8a23c237a16e144fb346f725d27837fb93c8695e`. B6 input
+`origin/agent1/w11-final-physical-auth-acceptance@af1708c6bec1c1f1817e911f600f775810cc12fe`,
+integration base `origin/main@31f4ac166b8178eb7576c9315da4382b9b5bc4a9` ve
+`--no-ff` merge `d3b9cac0fc5248e8ea45ef36a5587484ea661b42`.
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
@@ -58,6 +61,24 @@ malformed ve wrong-scheme/path callback reddi B5 regression testleriyle PASS'tir
 Auth/SMTP/config/schema/migration/Storage ayarı değiştirilmedi; Development'a
 dokunulmadı. B3R'nin tarihsel server persistence nedeni `NOT_FOUND` kalır; B6 yalnız
 current B5 davranışının fiziksel PASS kanıtıdır.
+
+B6 final integration canlı acceptance veya cleanup'ı tekrar çalıştırmadı; Production
+ve Development remote read/write `0` kaldı. Hedefli Auth/account-deletion matrisi
+266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff ve
+security/PII scan PASS'tir. Legacy callback remote allowlist'te değiştirilmeden
+korundu; ayrı yetkili removal görevine hazırdır.
+
+`WAVE_11_PHASE_B6_INTEGRATION: PASS`
+
+`PHYSICAL_MOBILE_AUTH_ACCEPTANCE: PASS`
+
+`PRODUCTION_PASSWORD_RECOVERY_ACCEPTANCE: PASS`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
+
+`COMMERCIAL_RELEASE_READY: NO`
 
 ## Project identity and provider state
 

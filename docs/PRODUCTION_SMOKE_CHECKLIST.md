@@ -90,6 +90,12 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `WAVE_11_PHASE_B6_PHYSICAL_ACCEPTANCE: PASS`
 
+`WAVE_11_PHASE_B6_INTEGRATION: PASS`
+
+`PHYSICAL_MOBILE_AUTH_ACCEPTANCE: PASS`
+
+`PRODUCTION_PASSWORD_RECOVERY_ACCEPTANCE: PASS`
+
 `RECOVERY_FRESH_LOGIN_PHYSICAL: PASS`
 
 `PRODUCTION_ZERO_TEST_RESIDUAL: YES`
@@ -104,7 +110,7 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `AUTH_REGRESSION: PASS`
 
-`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`
 
 `COMMERCIAL_RELEASE_READY: NO`
 
@@ -452,6 +458,11 @@ sayılmadı. Tarihsel B3R password persistence nedeni `NOT_FOUND` kalır; curren
 davranışı fiziksel PASS'tir. Legacy Production callback'i bu görevde değiştirilmedi;
 ayrı yetkili removal görevine hazırdır.
 
+B6 final integration acceptance veya cleanup'ı tekrar çalıştırmadı; Production ve
+Development remote read/write `0` kaldı. Hedefli Auth/account-deletion matrisi
+266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff ve
+security/PII scan PASS'tir.
+
 `PHYSICAL_CONFIRMATION_CALLBACK: PASS`
 
 `CONFIRMATION_SUCCESS_UI_PHYSICAL: PASS`
@@ -568,8 +579,8 @@ içermeyen ekran/log kanıtı eklenir.
 | Search | Var olan, olmayan ve özel karakterli sorgu dene | Sonuç/empty state doğru; duplicate ve beklenmeyen private veri yok | |
 | ProductDetails | Guest olarak ürün detayına gir | Ürün, fiyat ve satıcılar doğru; legacy HTTPS/canonical product image güvenli görüntülenir | |
 | Sellers | Aynı ürünün satıcılarını ve mağaza detayını aç | Yalnız aktif/görünür satıcılar, konum/mesafe izin akışı ve fallback doğru | |
-| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B3R: delivery/callback/session/profile/customer role PASS; B5 destination-owned success notice integrated PASS, physical retest OPEN |
-| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B3R: callback/update UI PASS, yeni credential login FAIL; B5 authoritative success guard integrated PASS, physical retest OPEN |
+| Login/signup | Disposable User A ile signup/email confirmation/login/logout yap | SMTP/link/session/profile/legal consent çalışır; yanlış veya kullanılmış link reddedilir | B6: Inbox delivery, final callback app opening, destination-owned visible notice, session/profile/customer role PASS; canonical self-delete sonrası residual `0` |
+| Password recovery | Web ve/veya mobile recovery linkini aç | Allowlist'teki origin/scheme uygulamaya döner; token bir kez kullanılır, loga sızmaz | B6: callback/update UI, canonical five-step proof, same-credential fresh/normal login ve same-user identity physical PASS |
 | CartV2 | User A bir shop-product ekler, miktar değiştirir/siler; başka mağaza eklemeyi dener | Tek-mağaza kuralı, stok/fiyat revalidation ve duplicate tap koruması çalışır; legacy checkout açılmaz | |
 | Favorites | User A ekler/çıkarır; User B ile izolasyonu kontrol et | Own CRUD çalışır; B, A'nın favorisini okuyamaz/değiştiremez | |
 | Chat | A ve B aynı conversation'da mesajlaşır; üçüncü conversation ile izolasyonu dene | Real event bir kez gelir; RLS, unread/summary, unsubscribe/reconnect/dedup doğru | |
@@ -580,7 +591,7 @@ içermeyen ekran/log kanıtı eklenir.
 | Shop rating | Doğrulanmış işlem sonrası mağaza puanı oluştur/güncelle | Eligibility server-derived; yetkisiz, başka kullanıcı ve duplicate davranışı kontrollü | |
 | Product review | Yalnız doğrulanmış transaction item ürünü için create/read/update/delete/recreate yap | RPC-only eligibility, server-derived verified flag, idempotent duplicate ve aggregate tutarlılığı çalışır | |
 | Profile | Profil görüntüle/düzenle; adres/konum izin reddi ve kabulünü dene | Own data çalışır; cross-user RLS reddeder; izin reddi kontrollü fallback verir | |
-| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | B3R: self-delete session yoktu; owner-authorized exact Auth Admin cleanup ve authoritative zero residual PASS |
+| Account deletion | Ayrı disposable hesapta uyarıyı kabul edip sil | Auth/profile ilişkili veri canonical sözleşmeye göre temizlenir; tekrar login olmaz; başka principal etkilenmez | B6: canonical `delete_current_customer_account` self-delete ve Auth/identity/session/profile/consent/business/Storage exact zero PASS |
 | Storage images | Product/category/banner için controlled path ve legacy HTTPS örneği aç; malformed kaynak dene | Public GET çalışır; doğru ortam URL'si kullanılır; malformed/unsupported kaynak fallback verir; list/write/update/delete yoktur | |
 
 ## 4. Negatif güvenlik ve yaşam döngüsü
@@ -633,6 +644,8 @@ Smoke sonunda:
       broader smoke sonrasında residual kontrolü yeniden zorunludur.
 - [x] B3R disposable principal owner-authorized exact Auth Admin cleanup ile silindi;
       Auth/profile/consent/business/Storage residual exact `0`, Development write `0`.
+- [x] B6 disposable principal canonical `delete_current_customer_account` ile silindi;
+      Auth/identity/session/profile/consent/business/Storage residual exact `0`.
 - [x] Phase F3 Git kanıtı secret/PII açısından redakte edildi.
 - [ ] PASS/FAIL ve açık incidentler release sahibi tarafından imzalandı.
 

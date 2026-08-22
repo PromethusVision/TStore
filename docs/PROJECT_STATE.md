@@ -4,11 +4,14 @@
 
 - Son güncelleme: 2026-08-22
 - Son doğrulanan teslim: Wave 11 Phase B6 final physical Auth acceptance.
-- Doğrulanan branch/base: `agent1/w11-final-physical-auth-acceptance` /
+- Doğrulanan integration branch/base:
+  `integration/wave-11-phase-b6-final-auth-20260822` /
   `origin/main@31f4ac166b8178eb7576c9315da4382b9b5bc4a9`.
+- Input: `origin/agent1/w11-final-physical-auth-acceptance@af1708c6bec1c1f1817e911f600f775810cc12fe`;
+  çatışmasız `--no-ff` merge `d3b9cac0fc5248e8ea45ef36a5587484ea661b42`.
 - Entegrasyon durumu: **WAVE 11 PHASE B6 PHYSICAL CONFIRMATION + RECOVERY PASS /
   ZERO TEST RESIDUAL RESTORED**
-- Snapshot oluşturulurken çalışma ağacı: Agent 1 task worktree. B5'i içeren canonical
+- Snapshot oluşturulurken çalışma ağacı: kalıcı Integration worktree. B5'i içeren canonical
   signed Production APK POCO X7 Pro / Android 16 cihazına veri silmeden kuruldu.
   Confirmation callback uygulamayı açtı ve destination-owned başarı notice'ı fiziksel
   olarak görüldü. Recovery canonical beş adımlı authoritative proof'u tamamladı;
@@ -16,7 +19,9 @@
 - Doğrulama türü: exact pre/post Production sayımları, fiziksel SMTP/callback/UI/login,
   customer role/profile ve canonical self-delete. Pre-test ve final state Auth,
   identity, session, profile, consent, bütün user-linked business tabloları ve Storage
-  için exact sıfırdır. Development, Auth config, SMTP, schema ve migration değişmedi.
+  için exact sıfırdır. Integration hedefli Auth/account-deletion matrisi 266/266, tam
+  Flutter suite 1194/1194 (5 explicit opt-in live skip) ve analyzer PASS'tir.
+  Development, Auth config, SMTP, schema ve migration değişmedi.
 - BLOCKED/açık kontroller: legacy Production allowlist kaydının ayrı yetkili görevde
   kaldırılması, broader Production smoke, fiziksel iki-cihaz QR ve iOS
   archive/signing (Windows). Tarihsel B3R password persistence nedeni `NOT_FOUND`
@@ -50,11 +55,11 @@
 
 `PRODUCTION_PASSWORD_RECOVERY: PASS — B6 SAME-CREDENTIAL FRESH LOGIN + NORMAL LOGIN`
 
-`AUTHORIZED_TEST_USER_CLEANUP: PASS — F3D/B3A/B3R`
+`AUTHORIZED_TEST_USER_CLEANUP: PASS — F3D/B3A/B3R/B6`
 
-`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES — B3R ADMIN CLEANUP EXACT ZERO`
+`PRODUCTION_ZERO_AUTH_BASELINE_RESTORED: YES — B6 CANONICAL SELF-DELETE EXACT ZERO`
 
-`TEST_FIXTURE_CLEANUP: PASS — OWNER-AUTHORIZED EXACT AUTH ADMIN DELETE`
+`TEST_FIXTURE_CLEANUP: PASS — B6 CANONICAL delete_current_customer_account`
 
 `PRODUCTION_ZERO_TEST_RESIDUAL: YES`
 
@@ -104,7 +109,7 @@
 
 `INPUT_VISIBILITY_BUG: FIXED`
 
-`EMAIL_CONFIRMATION_UI_CODE_FIX: PASS — PHYSICAL SUCCESS FEEDBACK FAIL`
+`EMAIL_CONFIRMATION_UI_CODE_FIX: PASS — B6 PHYSICAL SUCCESS FEEDBACK PASS`
 
 `LOCATION_PERMISSION_BUG: FIXED`
 
@@ -116,7 +121,7 @@
 
 `LOCATION_PHYSICAL_ACCEPTANCE: PASS`
 
-`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: FAIL — HOME OPENED WITHOUT SUCCESS MESSAGE`
+`CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: PASS — B6 DESTINATION NOTICE VISIBLE`
 
 `SETTINGS_RETURN_NEGATIVE_PHYSICAL_ACCEPTANCE: OPEN`
 
@@ -132,7 +137,7 @@
 
 `PRODUCTION_AUTH_ROLE_SECURITY: PASS — CUSTOMER REMAINED CUSTOMER`
 
-`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED`
+`WAVE_11_B3R_MOBILE_AUTH_ACCEPTANCE: BLOCKED — HISTORICAL B3R RESULT`
 
 `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: CLOSED FOR CURRENT B5/B6 FLOW`
 
@@ -168,6 +173,12 @@
 
 `AUTH_REGRESSION: PASS`
 
+`WAVE_11_PHASE_B6_INTEGRATION: PASS`
+
+`PHYSICAL_MOBILE_AUTH_ACCEPTANCE: PASS`
+
+`PRODUCTION_PASSWORD_RECOVERY_ACCEPTANCE: PASS`
+
 `PHYSICAL_AUTH_RETEST_REQUIRED: NO — B6 PASS`
 
 `READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`
@@ -182,7 +193,7 @@
 
 `SAVED_LOCATION_RESIDUAL: ZERO`
 
-`PRODUCTION_ZERO_TEST_BASELINE: RESTORED — B3R CLEANUP`
+`PRODUCTION_ZERO_TEST_BASELINE: RESTORED — B6 CANONICAL SELF-DELETE`
 
 `READY_TO_RESTART_B3_MOBILE_AUTH: COMPLETED — B6 PASS`
 
@@ -247,7 +258,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 | Modül | Durum | Koddan doğrulanan durum |
 |---|---|---|
-| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 11 B2'de confirmation callback sonucu Auth/profile yeniden değerlendirmesi, waiting-state kapatma, authenticated shell veya güvenli login hedefi, tekil başarı mesajı ve duplicate/invalid callback koruması eklendi. Production Custom SMTP mevcut, template precheck PASS; F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS. B3R owner-authorized Auth Admin cleanup sonrası Auth/profile/consent/business/Storage zero baseline yeniden exact sıfırdır. Signed Production mobil app opening PASS; full recovery PKCE, confirmation success feedback ve sender/link-tracking final doğrulaması BLOCKED. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
+| Authentication / login / signup | PARTIAL | E-posta/parola, kayıt, doğrulama, parola kurtarma, session listener ve legal consent var. Wave 10 Phase F'te Production final callback'i environment-specific merkezi sözleşmeyle entegre edildi; signup/resend/recovery explicit redirect kullanır ve PKCE yalnız exact scheme/host/path sonrası işlenir. Development callback'i korunur. Wave 11 B5 destination-owned confirmation notice ve authoritative recovery success guard'ını tamamladı. B6'da POCO X7 Pro / Android 16 üzerinde confirmation callback, görünür/kalıcı başarı feedback'i, recovery callback/update UI, aynı credential ile fresh normal login, same-user identity ve customer role güvenliği fiziksel PASS oldu. B6 canonical self-delete sonrası Auth/profile/consent/business/Storage residual exact sıfırdır. Tarihsel B3R persistence nedeni `NOT_FOUND` kalır; legacy callback remote removal ve broader smoke açıktır. Wave 8'de işlevsiz sosyal giriş düğmeleri/ayırıcı aktif UI'dan kaldırıldı; provider abstraction gelecekteki optional özellik için korundu. Merchant kayıt akışı açık değil. |
 | Ana sayfa | COMPLETE | Supabase ürünleri, kategoriler, banner'lar, yakındaki mağazalar, konum, arama ve temel state'ler bağlı; banner sıralama/tarih/bozuk veri/stale response/fallback ile async session ve duplicate navigation korumaları var. |
 | Arama | COMPLETE | Ürün/kategori/mağaza birleşik araması, istek yarışı ve stale history snapshot koruması, cache, kısmi hata ve son aramalar var. |
 | Kategoriler | COMPLETE | Repository, Cubit/use-case, kategori/alt kategori ekranları, satıcı fiyatları ve testler var. |
@@ -407,7 +418,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. Physical Android app opening, full recovery PKCE, resend/link-tracking final verification, legacy allowlist removal, iOS signing ve controlled smoke ayrı gate'lerdir.
+- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. B6 physical Android confirmation notice ve authoritative full recovery lifecycle PASS; B6 canonical self-delete sonrasında zero-test residual yeniden sağlandı. Legacy allowlist removal, fiziksel iki-cihaz QR, broader controlled smoke, Play Console/Play App Signing ve iOS signing ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Production F3B kanıtı Development'a genellenmez.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -417,6 +428,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-22: **WAVE 11 PHASE B6 FINAL INTEGRATION PASS / PHYSICAL MOBILE AUTH PASS / ZERO TEST RESIDUAL** — Agent 1'in `af1708c` teslimi exact `31f4ac1` tabanına `d3b9cac` ile `--no-ff` ve çatışmasız entegre edildi. POCO X7 Pro / Android 16 üzerindeki final confirmation callback ve destination notice, canonical five-step recovery, aynı yeni credential ile fresh/normal login, same-user identity ve customer role güvenliği PASS olarak korundu. B6 disposable fixture canonical `delete_current_customer_account` ile temizlendi; Auth/identity/session/profile/consent/business/Storage residual exact `0`. Integration remote backend'e erişmedi/yazmadı ve Development'a dokunmadı. Hedefli Auth/account-deletion matrisi 266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff ve security/PII kontrolleri PASS. Legacy callback remote allowlist'te korunur ve ayrı yetkili removal görevine hazırdır; commercial release hâlâ hazır değildir.
 - 2026-08-22: **WAVE 11 PHASE B4 AUTH ROOT-CAUSE INTEGRATION / FIX IMPLEMENTATION READY** — Agent 2'nin `f545ab4` canonical analiz belgesi `0df5c99` ile exact `cd3e141` tabanına `--no-ff` ve çatışmasız entegre edildi. Confirmation feedback root cause FOUND: callback/session/profile/Home yolu çalışıyor; geçici Snackbar route transition tamamlanmadan tüketiliyor ve destination-owned durable one-shot state yok. Recovery false-success root cause FOUND: no-exception `updateUser` response/provenance/fresh login doğrulanmadan final success üretiyor. Actual Production password persistence root cause NOT_FOUND ve password-specific audit UNKNOWN kaldı. Beş adımlı authoritative recovery success criterion ve regression test boşlukları canonicalleştirildi. Yerel Auth matrisi 199/199 ve Auth redirect wiring contract 4/4 PASS; Integration Production/Development remote işlemi yapmadı ve zero-test baseline korundu.
 - 2026-08-22: **WAVE 11 PHASE B6 FINAL PHYSICAL AUTH ACCEPTANCE PASS / ZERO TEST RESIDUAL** — Exact zero baseline sonrasında POCO X7 Pro / Android 16 üzerinde yalnız bir disposable Production customer oluşturuldu. Confirmation e-postası Inbox'a doğru sender/domain ile ulaştı; final callback uygulamayı açtı ve kalıcı başarı notice'ı fiziksel olarak görüldü. Tek recovery callback'i update-password UI'ını açtı; B5'in provenance, expected-user update, local cleanup, aynı credential fresh login ve same-identity zinciri tamamlandı. Final başarı UI'ı ve aynı yeni parola ile normal login fiziksel PASS oldu. Rol `customer`, merchant/admin `0` kaldı. Canonical `delete_current_customer_account` self-delete sonrasında Auth/identity/session/profile/consent, bütün user-linked business ve Storage exact sıfıra döndü. Development/Auth config/SMTP/schema/migration değişmedi; legacy callback yalnız ayrı yetkili cleanup görevine hazırdır.
 - 2026-08-22: **WAVE 11 PHASE B5 AUTH CONFIRMATION/RECOVERY FINAL INTEGRATION PASS / PHYSICAL RETEST READY** — Agent 2'nin `793f0dc` teslimi `5461d77` ile exact `bb3e7e5` tabanına `--no-ff` ve çatışmasız entegre edildi. Confirmation sonucu Home/Login destination route tamamlandıktan sonra destination-owned, dismiss edilene kadar kalıcı ve sequence-deduped notice olarak gösterilir. Recovery final başarı valid provenance/session + expected-user update response + local session cleanup + aynı opaque credential ile fresh normal login + same-user identity zincirinin tamamına bağlandı. No-exception/HTTP success tek başına başarı değildir; typed terminal failures invalid-link ekranına gider ve kontrollü Auth event'leri navigation/customer-data yarışından izole edilir. Stateful password-store fake false-success, same-password parity, cleanup ve identity mismatch regression'larını doğrular. Hedefli Auth matrisi 215/215, tam suite 1194/1194 (5 explicit opt-in live skip) ve analyzer PASS. Integration Production/Development remote işlem yapmadı; actual Production password persistence nedeni NOT_FOUND kalır ve son fiziksel confirmation/recovery retest'i açıktır.

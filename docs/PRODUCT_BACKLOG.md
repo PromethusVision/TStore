@@ -85,19 +85,22 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   fresh login'de `invalid_credentials` aldı. Owner-authorized exact Auth Admin cleanup
   sonrası Auth/business/Storage residual exact `0`; legacy callback korunur.
 
-#### Wave 11 B3R/B4 V1.0 Auth Bugs — ROOT CAUSE / FIX OPEN
+#### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
 1. Confirmation callback server/session ve Home navigation'ı tamamlıyor; canonical
    başarı feedback'i destination UI'da kayboluyor veya gösterilmiyor. B4 root cause
    FOUND: mesaj route transition tamamlanmadan geçici Snackbar olarak tüketiliyor ve
-   destination-owned durable one-shot success state yok. Fix/physical retest açık.
+   destination-owned durable one-shot success state yok. B5 destination-owned fix ve
+   B6 görünür/kalıcı physical success notice PASS; bu bug current flow için kapalıdır.
 2. Recovery client'ı `updateUser` exception üretmediğinde response/fresh login
    doğrulaması olmadan final success gösteriyor. B4 false-success root cause FOUND;
-   authoritative-success guard ve stateful regression testleri açık.
+   B5 authoritative-success guard/stateful regression ve B6 same-credential fresh
+   login + same-user identity physical acceptance PASS; false-success bug'ı kapalıdır.
 3. B3R'deki gerçek Production password persistence davranışının server-side kök nedeni
    NOT_FOUND. Password-specific audit event retention dışında ve DB audit yazımı
-   kapalı olduğundan `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`; fix sonrasında
-   yetkili disposable fixture ile fiziksel retest gerekir.
+   kapalı olduğundan `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`. B6 current B5
+   recovery flow'u fiziksel PASS yaptı; tarihsel B3R nedeni kanıtsız biçimde yeniden
+   sınıflandırılmaz ve `NOT_FOUND` kalır.
 
 Canonical recovery final success kriteri: valid recovery session/provenance → başarılı
 ve expected-user ile tutarlı update response → controlled recovery-session cleanup →
@@ -186,9 +189,10 @@ HTTP `200` / no-exception final success değildir.
   testleri bu kanıtın yerine geçmez ve Phase F Production sonucu Development'a
   genellenmez.
 - PKCE recovery callback, Android/iOS callback registration, enumeration-safe signup
-  ve Android internet izni kodda tamamdır. Actual Production mobile app opening ve
-  full recovery link/PKCE/password-change lifecycle `BLOCKED`; resend duplicate/expiry
-  ve spam/deliverability tuning broader acceptance kapsamında açıktır.
+  ve Android internet izni kodda tamamdır. B6'da actual Production mobile app opening,
+  destination-owned confirmation feedback ve canonical full recovery/fresh-login/
+  same-user lifecycle fiziksel PASS oldu. Resend duplicate/expiry ve deliverability
+  izleme broader acceptance kapsamında açıktır; B6 e-postaları Inbox'a ulaştı.
 
 ### C3. RLS ve Canlı Schema Doğrulaması
 
@@ -314,6 +318,14 @@ HTTP `200` / no-exception final success değildir.
   NOT_FOUND kalır; confirmation/recovery son fiziksel kabul turu açıktır. Integration
   Production/Development remote erişimi, Auth user/e-posta veya config işlemi yapmadı.
   Hedefli Auth matrisi 215/215, tam suite 1194/1194 (5 live skip) ve analyzer PASS.
+- 2026-08-22 Wave 11 B6 final integration sonucu: Agent 1'in final physical Auth
+  evidence commit'i `--no-ff` ve çatışmasız entegre edildi. POCO X7 Pro / Android 16
+  üzerinde confirmation callback + destination success notice, canonical five-step
+  recovery, aynı credential ile fresh/normal login, same-user identity ve customer
+  role güvenliği PASS. Canonical self-delete sonrası Production Auth/business/Storage
+  test residual exact `0`; Integration remote backend'e erişmedi/yazmadı. Hedefli
+  Auth/account-deletion matrisi 266/266, tam suite 1194/1194 (5 live skip), analyzer,
+  diff ve security/PII scan PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -328,7 +340,8 @@ HTTP `200` / no-exception final success değildir.
   keystore yedeği ve ilk signed APK/AAB PASS'tir. B2R signed APK install/upgrade,
   startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
   app opening PASS; historical B3R turunda confirmation success feedback ve recovery
-  credential login FAIL. B5 code fix entegre edildi; final fiziksel retest açıktır.
+  credential login FAIL. B5 code fix entegre edildi; B6 final fiziksel confirmation
+  ve recovery acceptance PASS oldu.
   Settings-return negatif turu, Google Play Console/
   Play App Signing, kalıcı CI provenance, Apple Team/certificate/profile ve signed IPA
   hâlâ açık release kapılarıdır.
@@ -336,9 +349,9 @@ HTTP `200` / no-exception final success değildir.
   callback code/platform wiring tamamlanmıştır ve Development callback'i izoledir.
   Mobile Site URL exact final callback'e geçirilmiştir; real SMTP delivery,
   server-side confirmation ve actual mobile app opening PASS'tir. Confirmation
-  success feedback code bug'ı ve recovery false-success guard B5'te kapanmıştır;
-  gerçek recovery credential persistence davranışının ve confirmation notice'ın
-  fiziksel retest'i, legacy callback allowlist removal, deliverability/spam tuning,
+  success feedback code bug'ı ve recovery false-success guard B5'te kapanmış; B6
+  destination notice, same-credential fresh login ve same-user identity'yi fiziksel
+  PASS doğrulamıştır. Legacy callback allowlist removal, deliverability izleme,
   fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
   broader Production smoke açık blocker'dır.
 - Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
@@ -346,12 +359,13 @@ HTTP `200` / no-exception final success değildir.
   turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
 - B3R disposable principal'ı owner-authorized trusted Auth Admin delete ile temizlendi;
   Auth user/identity/session/profile/consent, bütün linked business ve Storage residual
-  exact `0`. B4 root-cause ve B5 client fix turu tamamlandı; yeni canlı write yalnız
-  son fiziksel Auth retest'in scoped fixture planında yapılabilir. Legacy callback bu
-  kabul tamamlanmadan kaldırılmaz.
+  exact `0`. B4 root-cause ve B5 client fix turu tamamlandı. B6 scoped fixture ile
+  final fiziksel kabulü tamamladı ve canonical self-delete sonrası Auth/identity/
+  session/profile/consent/business/Storage residual exact `0` oldu. Legacy callback
+  bu görevde kaldırılmadı; ayrı yetkili remote config görevi için hazırdır.
 - B4 analizi confirmation durability ve recovery false-success kök nedenlerini buldu;
   B5 destination-owned notice ve canonical fresh-login verification implementasyonunu
-  entegre etti. Fiziksel retest açıktır. Actual Production password persistence kök
+  entegre etti; B6 current flow'u fiziksel PASS doğruladı. Actual Production password persistence kök
   nedeni NOT_FOUND ve password-specific audit UNKNOWN kaldığından server davranışı
   hakkında yeni bir neden uydurulmaz.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
@@ -359,28 +373,28 @@ HTTP `200` / no-exception final success değildir.
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
   `PRODUCTION_EMAIL_INFRASTRUCTURE: READY`, `PRODUCTION_ZERO_TEST_RESIDUAL: YES`,
   `MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS`,
-  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: FAIL`, `ANDROID_SIGNING_READY: YES`,
+  `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: PASS`, `ANDROID_SIGNING_READY: YES`,
   `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
   `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
   `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
   `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,
-  `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: FAIL`,
-  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — B5 CODE FIX INTEGRATED; PHYSICAL RETEST REQUIRED`,
-  `PHYSICAL_DEVICE_REGRESSION: PARTIAL`,
+  `CONFIRMATION_UI_PHYSICAL_ACCEPTANCE: PASS`,
+  `READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: COMPLETED — B6 PASS`,
+  `PHYSICAL_DEVICE_REGRESSION: PASS`,
   `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`,
   `B3A_CANONICAL_SELF_DELETE_ACCEPTANCE: PASS`,
   `AUTHORIZED_B3R_FIXTURE_CLEANUP: PASS`,
   `WAVE_11_B3R_EVIDENCE_INTEGRATION: PASS`,
   `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`,
-  `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED IN B5 CODE — PHYSICAL RETEST OPEN`,
-  `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`,
+  `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED — B5 CODE + B6 PHYSICAL PASS`,
+  `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: CLOSED FOR CURRENT B5/B6 FLOW`,
   `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: COMPLETED — B4`,
   `CONFIRMATION_UI_ROOT_CAUSE: FOUND`,
   `RECOVERY_FALSE_SUCCESS_ROOT_CAUSE: FOUND`,
   `RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`,
   `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`,
   `V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: CLOSED IN B5 CODE`,
-  `V1_0_AUTH_RETEST_PASSWORD_PERSISTENCE_BEHAVIOR: OPEN`,
+  `V1_0_AUTH_RETEST_PASSWORD_PERSISTENCE_BEHAVIOR: PASS — B6`,
   `READY_FOR_AUTH_FIX_IMPLEMENTATION: COMPLETED — B5 INTEGRATED`,
   `WAVE_11_PHASE_B4_INTEGRATION: PASS`,
   `WAVE_11_PHASE_B5_INTEGRATION: PASS`,
@@ -388,7 +402,11 @@ HTTP `200` / no-exception final success değildir.
   `RECOVERY_FALSE_SUCCESS_GUARD: PASS`,
   `RECOVERY_FRESH_LOGIN_VERIFICATION: PASS`,
   `AUTH_REGRESSION: PASS`,
-  `READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`,
+  `WAVE_11_PHASE_B6_INTEGRATION: PASS`,
+  `PHYSICAL_MOBILE_AUTH_ACCEPTANCE: PASS`,
+  `PRODUCTION_PASSWORD_RECOVERY_ACCEPTANCE: PASS`,
+  `READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`,
+  `READY_TO_REMOVE_LEGACY_CALLBACK: YES — SEPARATE AUTHORIZED TASK`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
