@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
@@ -40,7 +41,8 @@ abstract class AuthRepository {
   Future<Either<String, void>> resetPassword(String email);
 
   /// Update password
-  Future<Either<String, void>> updatePassword(String newPassword);
+  Future<Either<PasswordRecoveryFailure, PasswordRecoveryVerification>>
+  updatePassword(UpdatePasswordParams params);
 
   /// Resend confirmation email
   Future<Either<String, void>> resendConfirmation(String email);

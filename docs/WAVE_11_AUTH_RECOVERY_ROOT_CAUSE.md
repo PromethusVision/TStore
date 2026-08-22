@@ -353,6 +353,38 @@ Bu planın confirmation feedback ve false-success guard kısmı implementasyona 
 Ancak implementation tamamlanınca bile yeni physical retest olmadan Production parola
 kalıcılığı PASS ilan edilmemelidir.
 
+## Phase B5 authoritative success implementation
+
+Phase B5, bu belgedeki kök nedenleri aşağıdaki dar Auth sözleşmesiyle kapattı:
+
+- Confirmation başarı sonucu artık callback kaynağındaki geçici Snackbar ile tüketilmez.
+  Home veya Login destination route'u tamamlandıktan sonraki görünür frame'de,
+  destination-owned ve kullanıcı kapatana kadar kalıcı tek kullanımlık notice render
+  edilir. Sequence dedupe korunur; invalid callback başarı notice'ı üretemez.
+- Recovery listener yalnız `passwordRecovery` olayı/verified startup durumu ile gelen
+  geçerli session user id + email identity'sini update ekranına taşır. Identity/session
+  yoksa update ekranı yerine invalid-link ekranı açılır.
+- Repository final başarıyı sırasıyla recovery session identity, expected-user ile
+  tutarlı `UserResponse`, yalnız yerel recovery-session cleanup, API'ye gönderilen aynı
+  opaque in-memory password ile fresh normal login ve expected user-id eşleşmesiyle
+  doğrular. Bu zincirin herhangi bir halkası başarısızsa `AuthPasswordUpdated` üretilmez.
+- Kontrollü cleanup/fresh-login Auth event'leri recovery route'unu kapatmaz ve ara
+  kullanıcı session'ı customer verisi yüklemez. Terminal doğrulama hataları kullanıcıyı
+  yeni recovery linki isteyebileceği güvenli ekrana götürür.
+- Password değerleri state/equality/diagnostic modellere alınmaz; loglanmaz ve test
+  çıktısına yazılmaz.
+
+Stateful fake regression'ı özellikle “update response success fakat password store
+değişmedi” durumunda fresh login reddini ve final başarının oluşmadığını doğrular.
+Başarı testi update ve fresh login'e aynı opaque değerin aktarıldığını, session cleanup'ı
+ve same-user identity'yi birlikte kanıtlar. Identity mismatch, cleanup failure,
+expired/missing recovery provenance, duplicate submit, Home/Login confirmation,
+duplicate/malformed callback ve destination notice lifecycle testleri de kapsanır.
+
+Bu değişiklik yerel false-success ve confirmation-feedback bug'larını kapatır. Gerçek
+Production password persistence davranışı ancak ayrı yetkili disposable fixture ve
+fiziksel cihaz retest'iyle kabul edilebilir; Phase B5 remote sistemlere dokunmamıştır.
+
 ## Son durum
 
 `CONFIRMATION_UI_ROOT_CAUSE: FOUND`
@@ -371,4 +403,8 @@ kalıcılığı PASS ilan edilmemelidir.
 
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
 
-`AUTH_FIX_IMPLEMENTATION_REQUIRED: YES — Auth-scope implementation ve regression testleri`
+`AUTH_FIX_IMPLEMENTATION_REQUIRED: NO — Phase B5 task branch'inde tamamlandı`
+
+`AUTH_CONFIRMATION_RECOVERY_FIX: PASS — local implementation/test contract`
+
+`PHYSICAL_AUTH_RETEST_REQUIRED: YES`

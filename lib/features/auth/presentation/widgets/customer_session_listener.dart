@@ -75,6 +75,12 @@ class _CustomerSessionListenerState extends State<CustomerSessionListener> {
       return;
     }
 
+    if (context.read<AuthCubit>().state is AuthPasswordRecoveryVerifying) {
+      // The fresh sign-in is an internal credential proof. Do not load
+      // customer-scoped data until recovery has reached a final state.
+      return;
+    }
+
     final userId = authState.session?.user.id.trim();
     if (userId == null || userId.isEmpty) return;
 

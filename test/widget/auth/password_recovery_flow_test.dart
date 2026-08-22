@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/forget_password_view.dart';
+import 'package:t_store/features/auth/presentation/views/password_configuration/invalid_password_recovery_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/reset_password_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/update_password_view.dart';
 
@@ -18,8 +20,16 @@ class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 void main() {
   const email = 'musteri@example.com';
   const newPassword = 'NewStrong1!';
+  const recoveryIdentity = PasswordRecoveryIdentity(
+    userId: 'customer-1',
+    email: email,
+  );
 
   late MockAuthCubit authCubit;
+
+  setUpAll(() {
+    registerFallbackValue(recoveryIdentity);
+  });
 
   setUp(() {
     authCubit = MockAuthCubit();
@@ -29,7 +39,12 @@ void main() {
       initialState: AuthInitial(),
     );
     when(() => authCubit.resetPassword(any())).thenAnswer((_) async {});
-    when(() => authCubit.updatePassword(any())).thenAnswer((_) async {});
+    when(
+      () => authCubit.updatePassword(
+        any(),
+        recoveryIdentity: any(named: 'recoveryIdentity'),
+      ),
+    ).thenAnswer((_) async {});
     when(() => authCubit.signOut()).thenAnswer((_) async {});
   });
 
@@ -328,7 +343,11 @@ void main() {
   testWidgets('new password form validates strength and confirmation', (
     tester,
   ) async {
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
 
     expect(
       find.byKey(const Key('customer-update-password-content')),
@@ -357,13 +376,22 @@ void main() {
     await tester.pump();
 
     expect(find.text('Şifreler eşleşmiyor.'), findsOneWidget);
-    verifyNever(() => authCubit.updatePassword(any()));
+    verifyNever(
+      () => authCubit.updatePassword(
+        any(),
+        recoveryIdentity: any(named: 'recoveryIdentity'),
+      ),
+    );
   });
 
   testWidgets('new password visibility controls work independently', (
     tester,
   ) async {
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
 
     bool isObscured(Key fieldKey) {
       return tester
@@ -392,7 +420,11 @@ void main() {
   });
 
   testWidgets('new password inputs disable keyboard rewriting', (tester) async {
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
 
     for (final fieldKey in const [
       Key('update-password-new'),
@@ -411,7 +443,11 @@ void main() {
   });
 
   testWidgets('submits a valid new password only once', (tester) async {
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
 
     await tester.enterText(
       find.byKey(const Key('update-password-new')),
@@ -425,7 +461,12 @@ void main() {
     await tester.tap(find.byKey(const Key('update-password-submit')));
     await tester.pump();
 
-    verify(() => authCubit.updatePassword(newPassword)).called(1);
+    verify(
+      () => authCubit.updatePassword(
+        newPassword,
+        recoveryIdentity: recoveryIdentity,
+      ),
+    ).called(1);
   });
 
   testWidgets('loading prevents a second password update', (tester) async {
@@ -435,7 +476,11 @@ void main() {
       initialState: AuthLoading(),
     );
 
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
 
     final button = tester.widget<ElevatedButton>(
       find.byKey(const Key('update-password-submit')),
@@ -457,7 +502,11 @@ void main() {
       initialState: AuthLoading(),
     );
 
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
     expect(find.text('Şifreniz yenilendi'), findsNothing);
 
     await tester.pump();
@@ -468,6 +517,65 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('update-password-new')), findsNothing);
+  });
+
+  testWidgets('terminal verification failure opens the invalid-link screen', (
+    tester,
+  ) async {
+    whenListen(
+      authCubit,
+      Stream<AuthState>.value(
+        const AuthPasswordRecoveryFailed(
+          PasswordRecoveryFailure(
+            reason: PasswordRecoveryFailureReason.freshLoginInvalidCredentials,
+            message: 'Parola değişikliği doğrulanamadı.',
+          ),
+        ),
+      ),
+      initialState: AuthPasswordRecoveryVerifying(),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(InvalidPasswordRecoveryView), findsOneWidget);
+    expect(find.byKey(const Key('update-password-success')), findsNothing);
+  });
+
+  testWidgets('pre-update rejection stays retryable and never shows success', (
+    tester,
+  ) async {
+    whenListen(
+      authCubit,
+      Stream<AuthState>.value(
+        const AuthPasswordRecoveryFailed(
+          PasswordRecoveryFailure(
+            reason: PasswordRecoveryFailureReason.passwordUpdateRejected,
+            message: 'Şifreniz yenilenemedi. Lütfen tekrar deneyin.',
+          ),
+        ),
+      ),
+      initialState: AuthPasswordRecoveryVerifying(),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(UpdatePasswordView), findsOneWidget);
+    expect(find.byType(InvalidPasswordRecoveryView), findsNothing);
+    expect(find.byKey(const Key('update-password-success')), findsNothing);
+    expect(
+      find.text('Şifreniz yenilenemedi. Lütfen tekrar deneyin.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('signs out before returning to the login screen', (tester) async {
@@ -497,7 +605,11 @@ void main() {
       await loginAuthCubit.close();
     });
 
-    await tester.pumpWidget(buildSubject(const UpdatePasswordView()));
+    await tester.pumpWidget(
+      buildSubject(
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
+      ),
+    );
     stateController.add(AuthPasswordUpdated());
     await tester.pump();
     await tester.tap(find.byKey(const Key('update-password-back-to-login')));
@@ -518,7 +630,7 @@ void main() {
 
     await tester.pumpWidget(
       buildSubject(
-        const UpdatePasswordView(),
+        const UpdatePasswordView(recoveryIdentity: recoveryIdentity),
         textScaler: const TextScaler.linear(1.4),
       ),
     );

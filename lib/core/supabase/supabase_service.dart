@@ -445,6 +445,11 @@ class SupabaseService {
     await client.auth.signOut();
   }
 
+  /// Clear only the local recovery session before fresh credential proof.
+  Future<void> clearLocalAuthSession() async {
+    await client.auth.signOut(scope: SignOutScope.local);
+  }
+
   /// Permanently delete the signed-in customer and clear the local session.
   Future<void> deleteCurrentCustomerAccount() async {
     await client.rpc<void>('delete_current_customer_account');

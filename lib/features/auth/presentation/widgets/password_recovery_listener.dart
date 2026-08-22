@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/browser_url_sanitizer.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/invalid_password_recovery_view.dart';
 import 'package:t_store/features/auth/presentation/views/password_configuration/update_password_view.dart';
 
@@ -13,12 +14,14 @@ class PasswordRecoveryListener extends StatefulWidget {
     required this.authStateChanges,
     required this.navigatorKey,
     required this.initialPasswordRecoveryStatus,
+    this.initialRecoveryIdentity,
     required this.child,
   });
 
   final Stream<supabase.AuthState> authStateChanges;
   final GlobalKey<NavigatorState> navigatorKey;
   final PasswordRecoveryLaunchStatus initialPasswordRecoveryStatus;
+  final PasswordRecoveryIdentity? initialRecoveryIdentity;
   final Widget child;
 
   @override
@@ -36,7 +39,7 @@ class _PasswordRecoveryListenerState extends State<PasswordRecoveryListener> {
     _listenForPasswordRecovery();
     if (widget.initialPasswordRecoveryStatus ==
         PasswordRecoveryLaunchStatus.verified) {
-      _openRecoveryScreen();
+      _openRecoveryScreen(widget.initialRecoveryIdentity);
     } else if (widget.initialPasswordRecoveryStatus ==
         PasswordRecoveryLaunchStatus.invalid) {
       _openInvalidRecoveryScreen();
@@ -54,7 +57,7 @@ class _PasswordRecoveryListenerState extends State<PasswordRecoveryListener> {
             widget.initialPasswordRecoveryStatus &&
         widget.initialPasswordRecoveryStatus ==
             PasswordRecoveryLaunchStatus.verified) {
-      _openRecoveryScreen();
+      _openRecoveryScreen(widget.initialRecoveryIdentity);
     } else if (oldWidget.initialPasswordRecoveryStatus !=
             widget.initialPasswordRecoveryStatus &&
         widget.initialPasswordRecoveryStatus ==
@@ -71,7 +74,12 @@ class _PasswordRecoveryListenerState extends State<PasswordRecoveryListener> {
           return;
         }
 
-        _openRecoveryScreen();
+        final user = authState.session?.user;
+        final email = user?.email;
+        final identity = user == null || email == null
+            ? null
+            : PasswordRecoveryIdentity(userId: user.id, email: email);
+        _openRecoveryScreen(identity);
       },
       onError: (Object error, StackTrace stackTrace) {
         debugPrint('Şifre yenileme bağlantısı dinlenemedi: $error');
@@ -79,8 +87,12 @@ class _PasswordRecoveryListenerState extends State<PasswordRecoveryListener> {
     );
   }
 
-  void _openRecoveryScreen() {
-    _openScreen((_) => const UpdatePasswordView());
+  void _openRecoveryScreen(PasswordRecoveryIdentity? identity) {
+    if (identity == null || !identity.isValid) {
+      _openInvalidRecoveryScreen();
+      return;
+    }
+    _openScreen((_) => UpdatePasswordView(recoveryIdentity: identity));
   }
 
   void _openInvalidRecoveryScreen() {

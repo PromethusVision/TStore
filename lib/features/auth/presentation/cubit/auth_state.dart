@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthState extends Equatable {
@@ -11,6 +12,9 @@ abstract class AuthState extends Equatable {
 class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
+
+/// Keeps the recovery route stable while its session is cleaned and verified.
+class AuthPasswordRecoveryVerifying extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
   final UserEntity user;
@@ -42,6 +46,15 @@ class AuthPasswordResetSent extends AuthState {
 }
 
 class AuthPasswordUpdated extends AuthState {}
+
+class AuthPasswordRecoveryFailed extends AuthState {
+  const AuthPasswordRecoveryFailed(this.failure);
+
+  final PasswordRecoveryFailure failure;
+
+  @override
+  List<Object?> get props => [failure];
+}
 
 class AuthEmailConfirmationRequired extends AuthState {
   final String email;

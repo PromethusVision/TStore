@@ -80,6 +80,10 @@ void main() {
       find.text('E-posta adresiniz başarıyla doğrulandı.'),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('email-confirmation-success-notice')),
+      findsOneWidget,
+    );
     verify(() => authCubit.checkAuthStatus()).called(1);
   });
 
@@ -105,6 +109,51 @@ void main() {
     );
     verify(() => authCubit.checkAuthStatus()).called(1);
   });
+
+  testWidgets(
+    'success notice skips the first navigation frame and remains until dismissed',
+    (tester) async {
+      when(() => authCubit.state).thenReturn(const AuthAuthenticated(user));
+      await tester.pumpWidget(buildSubject());
+
+      const result = EmailConfirmationCallbackResult(
+        sequence: 20,
+        status: EmailConfirmationCallbackStatus.authenticated,
+      );
+      callbacks.add(result);
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('email-confirmation-success-notice')),
+        findsNothing,
+      );
+
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('email-confirmation-success-notice')),
+        findsOneWidget,
+      );
+
+      await tester.pump(const Duration(seconds: 10));
+      expect(
+        find.byKey(const Key('email-confirmation-success-notice')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('email-confirmation-success-notice-dismiss')),
+      );
+      await tester.pump();
+      callbacks.add(result);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('email-confirmation-success-notice')),
+        findsNothing,
+      );
+      verify(() => authCubit.checkAuthStatus()).called(1);
+    },
+  );
 
   testWidgets('an initial callback is handled after the navigator is ready', (
     tester,

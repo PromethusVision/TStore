@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/auth/domain/entities/password_recovery_verification.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -19,6 +20,11 @@ import 'package:t_store/features/auth/presentation/widgets/password_recovery_lis
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 void main() {
+  const recoveryIdentity = PasswordRecoveryIdentity(
+    userId: 'customer-1',
+    email: 'customer@example.com',
+  );
+
   testWidgets('password recovery link opens the new password screen', (
     tester,
   ) async {
@@ -53,12 +59,21 @@ void main() {
     );
 
     authEvents.add(
-      const supabase.AuthState(supabase.AuthChangeEvent.passwordRecovery, null),
+      supabase.AuthState(
+        supabase.AuthChangeEvent.passwordRecovery,
+        _sessionFor(recoveryIdentity),
+      ),
     );
     await tester.pump();
     await tester.pumpAndSettle();
 
     expect(find.byType(UpdatePasswordView), findsOneWidget);
+    expect(
+      tester
+          .widget<UpdatePasswordView>(find.byType(UpdatePasswordView))
+          .recoveryIdentity,
+      recoveryIdentity,
+    );
     expect(find.text('Yeni şifrenizi belirleyin'), findsOneWidget);
     expect(find.text('Ana sayfa'), findsNothing);
   });
@@ -88,6 +103,7 @@ void main() {
           authStateChanges: authEvents.stream,
           navigatorKey: navigatorKey,
           initialPasswordRecoveryStatus: PasswordRecoveryLaunchStatus.verified,
+          initialRecoveryIdentity: recoveryIdentity,
           child: MaterialApp(
             navigatorKey: navigatorKey,
             home: const Scaffold(body: Text('Ana sayfa')),
@@ -99,6 +115,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(UpdatePasswordView), findsOneWidget);
+    expect(
+      tester
+          .widget<UpdatePasswordView>(find.byType(UpdatePasswordView))
+          .recoveryIdentity,
+      recoveryIdentity,
+    );
     expect(find.text('Ana sayfa'), findsNothing);
   });
 
@@ -129,6 +151,7 @@ void main() {
             navigatorKey: navigatorKey,
             initialPasswordRecoveryStatus:
                 PasswordRecoveryLaunchStatus.verified,
+            initialRecoveryIdentity: recoveryIdentity,
             child: MaterialApp(
               navigatorKey: navigatorKey,
               home: CustomerLaunchGate(
@@ -394,4 +417,63 @@ void main() {
     expect(find.text('Ana sayfa'), findsOneWidget);
     expect(find.byType(UpdatePasswordView), findsNothing);
   });
+
+  testWidgets(
+    'recovery event without a session opens only the invalid screen',
+    (tester) async {
+      final authCubit = MockAuthCubit();
+      final authEvents = StreamController<supabase.AuthState>();
+      final navigatorKey = GlobalKey<NavigatorState>();
+      whenListen(
+        authCubit,
+        const Stream<AuthState>.empty(),
+        initialState: AuthInitial(),
+      );
+      addTearDown(() async {
+        await authEvents.close();
+        await authCubit.close();
+      });
+
+      await tester.pumpWidget(
+        BlocProvider<AuthCubit>.value(
+          value: authCubit,
+          child: PasswordRecoveryListener(
+            authStateChanges: authEvents.stream,
+            navigatorKey: navigatorKey,
+            initialPasswordRecoveryStatus: PasswordRecoveryLaunchStatus.none,
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              home: const Scaffold(body: Text('Ana sayfa')),
+            ),
+          ),
+        ),
+      );
+
+      authEvents.add(
+        const supabase.AuthState(
+          supabase.AuthChangeEvent.passwordRecovery,
+          null,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(InvalidPasswordRecoveryView), findsOneWidget);
+      expect(find.byType(UpdatePasswordView), findsNothing);
+    },
+  );
+}
+
+supabase.Session _sessionFor(PasswordRecoveryIdentity identity) {
+  return supabase.Session(
+    accessToken: 'test-recovery-access-token',
+    tokenType: 'bearer',
+    user: supabase.User(
+      id: identity.userId,
+      email: identity.email,
+      appMetadata: const {},
+      userMetadata: const {},
+      aud: 'authenticated',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    ),
+  );
 }
