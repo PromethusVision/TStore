@@ -109,6 +109,15 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   merge'i, hedefli `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve temiz
   analyzer ile final integration olarak kapatıldı; Integration remote işlem yapmadı,
   seed'i tekrarlamadı ve cleanup çalıştırmadı.
+- 2026-08-22 Wave 12 Phase D ilerlemesi: Gerçek Production Web release functional
+  smoke ve exact-ref read-only live harness Startup/Home, dört kategori, ProductDetails,
+  seller/shop, nearby, search, anonymous wishlist/cart/profile login gate, Cart V2 ve
+  navigation davranışlarını PASS doğruladı. Functional release blocker bulunmadı.
+  Kozmetik spacing/font/color/card/icon/padding bulguları owner kararıyla final UI kit'e
+  kadar deferred'dır ve functional backlog değildir. Agent teslimi `42774fe` no-ff
+  merge'i, local hedefli `552` PASS (`2` remote live skip), tam suite `1213` PASS (`6`
+  live skip) ve temiz analyzer ile final integration olarak kapatıldı. Integration
+  remote işlem yapmadı; seed/cleanup veya fixture oluşturmadı.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -384,6 +393,15 @@ HTTP `200` / no-exception final success değildir.
   suite `1210` PASS (`5` opt-in live skip), analyzer, diff ve security scan temizdir.
   Integration remote read/write yapmadı; seed tekrar uygulanmadı ve cleanup
   çalıştırılmadı. Broader fiziksel/mobile demo visual smoke açık kabul adımıdır.
+- 2026-08-22 Wave 12 Phase D final integration sonucu: Agent 1'in Production demo
+  functional smoke raporu, stale empty-catalog expectation düzeltmesi ve exact-ref /
+  opt-in / mutation-free read harness'ı `--no-ff` ve çatışmasız entegre edildi. Agent
+  kanıtı hedefli `564/564`, Production harness `4/4`, full suite `1213` PASS ve hiçbir
+  functional blocker gösterir. Integration remote define vermeden safety/customer
+  matrisini `552` PASS (`2` Production live skip), full suite'i `1213` PASS (`6` live
+  skip) ve analyzer'ı temiz doğruladı. Production/Development remote işlem, seed,
+  cleanup, Auth/Storage/config/migration veya fixture yoktur. Kozmetik UI final kit'e
+  kadar deferred; sonraki release gate hazırdır.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -484,6 +502,11 @@ HTTP `200` / no-exception final success değildir.
   `PRODUCTION_DEMO_DATASET_LIVE: YES`,
   `PRODUCTION_DEMO_SEED_REAPPLIED: NO`,
   `READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`,
+  `WAVE_12_PHASE_D_INTEGRATION: PASS`,
+  `PRODUCTION_DEMO_FUNCTIONAL_SMOKE: PASS`,
+  `FUNCTIONAL_RELEASE_BLOCKERS: NONE`,
+  `COSMETIC_UI_POLISH: DEFERRED`,
+  `READY_FOR_NEXT_RELEASE_GATE: YES`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
 - Esenler demo dataset Phase A artefaktı ve Phase B safety review'i ardından owner

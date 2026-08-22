@@ -636,6 +636,43 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   aktivitesi sonrası blind destructive cleanup önerilmez; soft-retire/deactivate
   gerekirse ayrı ürün kararıdır. Broader fiziksel/mobile visual smoke açık kalır.
 
+## Wave 12 Phase D Production Demo Functional Smoke Entegrasyon Gözlemi
+
+`WAVE_12_PHASE_D_INTEGRATION: PASS`
+
+`PRODUCTION_DEMO_FUNCTIONAL_SMOKE: PASS`
+
+`FUNCTIONAL_RELEASE_BLOCKERS: NONE`
+
+`COSMETIC_UI_POLISH: DEFERRED`
+
+`READY_FOR_NEXT_RELEASE_GATE: YES`
+
+- Agent 1'in `8c869e5` Production functional smoke, rapor ve read-only harness teslimi
+  exact current main `609e555` tabanından `42774fe` ile tek `--no-ff` ve çatışmasız
+  merge olarak entegre edildi.
+- Agent evidence gerçek Production Web release runtime'ında Startup, Home, kategori,
+  ProductDetails, seller/shop, nearby, search, anonymous wishlist/cart/profile gate ve
+  navigation akışlarını PASS; functional release blocker'ı `NONE` doğrular. Demo
+  katalog `4/20/57/285`, kategori başına `5`, ürün başına `14–15` seller, 20/20 çoklu
+  fiyat, mağaza başına `5` listing ve `57` valid/unique coordinate olarak korunur.
+- Production harness exact `mefhfvrgkwciubeajjeb` ref'ine ve explicit opt-in'e
+  fail-closed kilitlidir. Varsayılan test koşusu remote'a bağlanmaz; harness yalnız
+  read yüzeylerini kullanır ve kaynak-seviyesi database/Auth/Storage mutation yasağı
+  taşır. Client-safe key hard-code edilmez ve fixture oluşturulmaz.
+- Agent Production read-only smoke kanıtı `564/564` hedefli + live `4/4`; Integration
+  doğrulaması remote define olmadan `552` PASS (`2` Production live skip), tam suite
+  `1213` PASS (`6` live skip) ve temiz analyzer sonucudur. Integration Production veya
+  Development remote read/write, seed/cleanup, Auth, Storage, migration ya da config
+  işlemi yapmadı.
+- Runtime/shared app code, model/schema/migration zinciri, `service_locator.dart` ve
+  dependency dosyaları değişmedi. Yeni sahiplik yalnız `test/live` harness'ları ile
+  Production smoke/coordination docs'tur.
+- `owner_user_id = NULL` merchant ownership/QR/verified purchase sınırı intentional
+  unavailable kalır ve regression değildir. Renk/font/spacing/kart/ikon/padding gibi
+  kozmetik değerlendirmeler owner kararıyla final UI kit'e kadar deferred'dır; yeni
+  functional backlog işi açılmaz.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
