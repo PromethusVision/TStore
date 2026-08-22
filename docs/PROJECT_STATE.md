@@ -3,36 +3,31 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 12 Phase C Production Esenler demo seed state final
-  integration.
-- Integration branch/base:
-  `integration/wave-12-phase-c-production-demo-seed` /
-  `origin/main@580552f0ab1fa8091c3ebc9bc8cabe33ced9d5cc`.
-- Input/merge:
-  `origin/agent1/w12-production-demo-seed-apply@26defb1fd16813626c00e2f1f13394bf0f3f2444`
-  / `fad75a7d326c4614e246d6b4d04d3aa64a37f07a` (`--no-ff`, conflict yok).
-- Entegrasyon durumu: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO
-  DATASET LIVE**
-- Agent 1, exact `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` ref'inde fresh
-  single-writer ve zero-baseline gate'lerini tekrarladı. Deterministic collision
-  `0/366`, natural-key collision `0`, existing demo row `0` kaldı; Development'a
-  erişilmedi.
-- Product-owner'ın exact artefakt yetkisiyle tracked `esenler_demo_v1.sql` tek
-  transaction olarak bir kez çalıştırıldı. Authoritative postflight katalog durumunu
-  `4/20/57/285`, manifest kimliğini `366/366`, mismatch/unexpected row'u `0`;
-  Auth/profile/merchant ve Storage object sayısını `0` doğruladı. Gerçek `anon` rolü
-  aynı sayıları, 20 featured ürünü, ürün başına 14–15 satıcıyı ve çoklu fiyatı okudu.
-- Cleanup yetkilendirilmedi ve çalıştırılmadı; Auth/merchant user, migration, schema,
-  Storage object veya config değişikliği yapılmadı. Yerel generator/contract ve
-  canonical regresyon matrisi PASS'tir. Integration turu Production/Development
-  remote erişimi yapmadı, seed'i tekrar çalıştırmadı ve cleanup uygulamadı. Hedefli
-  testler `284/284`, tam Flutter suite `1210` PASS (`5` explicit opt-in live skip) ve
-  analyzer sıfır bulguyla tamamlandı.
-- BLOCKED/açık kontroller: gerçek kullanıcı aktivitesi başladıktan sonra blind
-  destructive cleanup önerilmez; olası
-  soft-retire/deactivate davranışı ayrı owner kararıdır. Broader Production smoke,
-  fiziksel iki-cihaz QR, Play Console/Play App Signing, iOS archive/signing ve final
-  commercial GO ayrıca açıktır.
+- Son doğrulanan teslim: Wave 12 Phase D Production demo functional smoke Agent 1
+  task sonucu.
+- Task branch/base: `agent1/w12-production-demo-functional-smoke` /
+  `origin/main@609e55572faa10b9608cc8eda16c6c8061180261`.
+- Entegrasyon durumu: **WAVE 12 PHASE D AGENT PASS / INTEGRATION PENDING**
+- Gerçek `main_production.dart` Web release runtime'ı canonical `EsnaftaVar
+  Production` / `mefhfvrgkwciubeajjeb` ref'inde yalnız read-only çalıştı. Startup,
+  Home, dört kategori, ProductDetails, seller comparison, shop, search, nearby ve
+  anonymous wishlist/cart/profile login gate akışları PASS; dead-end, wrong route,
+  crash, wrong/eksik veri veya unusable layout görülmedi.
+- Exact-ref fail-closed live harness gerçek anonymous Production read contract'ında
+  `4/20/57/285`, her kategoride `5` ürün, ürün başına `14–15` seller, `20/20`
+  multiple price, mağaza başına `5` listing ve `57` valid/unique coordinate
+  doğruladı. Development'a erişilmedi; Production/Auth/business/Storage write veya
+  fixture oluşturulmadı.
+- Runtime functional bug/release blocker bulunmadı. Phase C öncesinden kalan stale
+  empty-catalog harness beklentisi current demo baseline'ına güncellendi ve kapsamlı
+  müşteri read harness'ı eklendi. Renk/font/spacing/kart/ikon/padding ve genel görsel
+  redesign product-owner kararıyla final UI kit'e ertelendi. Hedefli matris `564/564`,
+  Production live harness `4/4`, tam Flutter suite `1213` PASS (`6` explicit opt-in
+  live skip) ve analyzer sıfır bulguyla tamamlandı.
+- BLOCKED/açık kontroller: `owner_user_id = NULL` demo shop'lar için merchant
+  ownership/QR/verified purchase intentional unavailable; fiziksel iki-cihaz QR,
+  Play Console/Play App Signing, iOS archive/signing ve final commercial GO ayrıca
+  açıktır.
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -127,6 +122,14 @@
 `PRODUCTION_DEMO_SEED_REAPPLIED: NO`
 
 `READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`
+
+`PRODUCTION_DEMO_FUNCTIONAL_SMOKE: PASS — WEB RELEASE + ANON LIVE HARNESS`
+
+`FUNCTIONAL_RELEASE_BLOCKERS_FOUND: NO`
+
+`COSMETIC_UI_POLISH_DEFERRED: YES — UNTIL FINAL UI KIT`
+
+`READY_FOR_WAVE_12_PHASE_D_INTEGRATION: YES`
 
 `LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO`
 
@@ -471,6 +474,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-22: **WAVE 12 PHASE D AGENT PASS / PRODUCTION DEMO FUNCTIONAL SMOKE** — Agent 1 exact `origin/main@609e555` tabanında gerçek Production Web release istemcisini ve explicit opt-in anonymous read harness'ını canonical `mefhfvrgkwciubeajjeb` ref'ine kilitleyerek çalıştırdı. Startup/Home, dört kategorinin her birinde beş doğru ürün, ProductDetails, 20/20 üründe 14–15 seller ve multiple price, representative seller→shop→beş listing, exact/generic/category/no-result search, 57-shop nearby, anonymous wishlist/cart/profile login gate ve customer back stack PASS oldu. Authoritative remote read `4/20/57/285`, 57 null-owner demo shop ve 57 valid/unique coordinate doğruladı. Runtime functional bug veya release blocker bulunmadı; stale empty-catalog live harness current demo baseline'ına güncellendi ve full manifest/relationship/search/nearby harness'ı eklendi. Production write, Auth/business/Storage fixture, Development erişimi, seed/cleanup/config/migration işlemi `0` kaldı. Kozmetik UI değerlendirmesi product-owner kararıyla `DEFERRED UNTIL FINAL UI KIT`; merchant/QR/verified purchase null owner nedeniyle intentional unavailable'dır. Task integration bekliyor.
 - 2026-08-22: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO DATASET LIVE** — Agent 1'in `26defb1` Production seed/postflight kanıtı exact `580552f` tabanına `fad75a7` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production ref ve Development dışlama, single-writer, fresh zero business baseline, collision `0/366`, natural-key collision `0`, artifact integrity ve clean-room kapıları PASS sonrasında tracked `esenler_demo_v1.sql` Agent 1 turunda tek transaction olarak bir kez uygulanmıştı. Authoritative postflight categories/products/shops/shop_products `4/20/57/285`, active/featured products `20/20`, active shops `57`, deterministic manifest `366/366`, mismatch ve unexpected row `0` doğruladı. Product marker `20`, `[DEMO]` shop/owner-null `57/57`, listing marker `285`; 57 coordinate valid/unique ve 19 mahallenin her birinde üç shop vardır. Gerçek `anon` RLS rolü aynı katalog sayılarını, ürün başına 14–15 seller ve multiple price sonucunu PASS okudu. Auth user/profile/merchant ve Storage object `0`; demo shops owner-less olduğundan discovery/shop/seller comparison PASS, merchant ownership/QR/verified transaction intentional unavailable'dır. Integration remote read/write yapmadı; seed yeniden uygulanmadı, cleanup çalıştırılmadı ve Development'a dokunulmadı. Generator check, hedefli matris `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve analyzer temizdir. Broader fiziksel/mobile visual smoke ayrı açık kabul adımıdır.
 - 2026-08-22: **WAVE 12 PHASE B INTEGRATION PASS / PRODUCTION DEMO SEED SAFETY REVIEW INTEGRATED / SEED NOT APPLIED** — Agent 1'in `0383782` read-only safety review teslimi exact `edc0999` tabanına `f53e584` ile `--no-ff` ve çatışmasız entegre edildi. Agent evidence canonical Production `mefhfvrgkwciubeajjeb` üzerinde categories/products/shops/shop_products `0/0/0/0`, Auth/profile/business-linked `0`, üç canonical Storage bucket ve object `0`; UUID collision `0/366`, natural-key collision `0` ve exact existing demo row `0` gösterir. Seed yalnız controlled single-writer apply için deterministic, transactional ve fail-closed PASS; cleanup yalnız fresh pre-launch zero-activity state için PASS. `owner_user_id = NULL` customer discovery/shop/seller comparison'ı destekler fakat merchant QR confirmation ve verified transaction üretmez; bu intentional sınır korunur. Local generator ve migration/demo matrisi 37/37, PGlite replay iki kez `4/20/57/285`, cleanup sıfır ve 23 table, tam suite 1210 PASS (5 opt-in live skip), analyzer/diff/security temizdir. Integration remote read/write yapmadı; owner seed authorization henüz verilmedi. User activity sonrasında blind cleanup önerilmez ve gerekirse soft-retire/deactivate ayrı owner kararıdır.
 - 2026-08-22: **WAVE 12 PHASE A INTEGRATION PASS / ESENLER DEMO DATASET ARTIFACT READY / REMOTE NOT APPLIED** — Agent 3'ün `0edb615` teslimi exact `4232a6e` tabanına `6394f8f` ile `--no-ff` ve çatışmasız entegre edildi. Fixed namespace UUIDv5/SHA-1 manifest, `[DEMO]` mağaza kimliği, product JSONB marker, deterministic fiyat varyasyonları, 57 unique `NEIGHBORHOOD_CENTER` koordinatı, fail-closed seed ve exact-ID cleanup sözleşmesi doğrulandı. Şehitler ve Yeşil Vadi için ayrı current polygon bulunmaması limitation olarak korundu. Dedicated local PGlite temiz-oda replay'i canonical migration 9/9, iki kez aynı `4/20/57/285`, representative read, seller comparison ve cleanup sonrası `0/0/0/0` + 23 public table PASS verdi. Windows fresh-checkout'ta generator byte-equivalence korunsun diye üç generated artifact LF'e sabitlendi. Dataset contract 16/16, ilgili migration/shop/model/nearby/Home matrisi 268/268, tam suite 1210 PASS (5 opt-in live skip) ve analyzer temizdir. Production/Development remote erişimi, seed/cleanup apply, Auth/merchant hesabı veya migration yapılmadı; Phase B ayrı safety review ve açık owner yetkisi gerektirir.

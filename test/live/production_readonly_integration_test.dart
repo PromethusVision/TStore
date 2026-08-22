@@ -19,12 +19,12 @@ const _productionAnonKey = String.fromEnvironment(
   SupabaseConfig.productionAnonKeyDartDefine,
 );
 
-const _readOnlyTables = <String>[
-  SupabaseTables.categories,
-  SupabaseTables.products,
-  SupabaseTables.shops,
-  SupabaseTables.banners,
-];
+const _readOnlyTableCounts = <String, int>{
+  SupabaseTables.categories: 4,
+  SupabaseTables.products: 20,
+  SupabaseTables.shops: 57,
+  SupabaseTables.banners: 0,
+};
 
 const _storageProbePaths = <String, String>{
   SupabaseConfig.productImagesBucket:
@@ -80,12 +80,12 @@ void main() {
       expect(production_entrypoint.appEnvironment, AppEnvironment.production);
       expect(config.environment, AppEnvironment.production);
       expect(config.supabaseUrl, _expectedUrl);
-      expect(_readOnlyTables, const [
-        'categories',
-        'products',
-        'shops',
-        'banners',
-      ]);
+      expect(_readOnlyTableCounts, const {
+        'categories': 4,
+        'products': 20,
+        'shops': 57,
+        'banners': 0,
+      });
       expect(_storageProbePaths.keys, const [
         'product-images',
         'category-images',
@@ -129,7 +129,7 @@ void main() {
   });
 
   test(
-    'anonymous Production client initializes and sees canonical empty reads',
+    'anonymous Production client initializes and sees canonical demo reads',
     () async {
       final config = _requireProductionConfig(
         enabled: _runLive,
@@ -146,9 +146,13 @@ void main() {
       expect(client.auth.currentSession, isNull);
       expect(client.auth.currentUser, isNull);
 
-      for (final table in _readOnlyTables) {
-        final rows = await client.from(table).select('id').limit(1);
-        expect(rows, isEmpty, reason: '$table should be an empty public read.');
+      for (final entry in _readOnlyTableCounts.entries) {
+        final rows = await client.from(entry.key).select('id');
+        expect(
+          rows,
+          hasLength(entry.value),
+          reason: '${entry.key} must match the canonical demo baseline.',
+        );
       }
 
       for (final entry in _storageProbePaths.entries) {

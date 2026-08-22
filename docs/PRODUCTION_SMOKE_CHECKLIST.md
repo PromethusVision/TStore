@@ -571,6 +571,44 @@ sonrası blind destructive cleanup önerilmez.
 
 `READY_FOR_PRODUCTION_DEMO_VISUAL_SMOKE: YES`
 
+## Wave 12 Phase D Production demo functional smoke
+
+Gerçek `main_production.dart` Web release runtime'ı ve exact-ref fail-closed anonymous
+live harness canonical `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` üzerinde
+yalnız read-only çalıştırıldı. Development ref'ine erişilmedi ve remote write
+yapılmadı.
+
+- Startup/Home ve canonical demo katalog: `4/20/57/285` PASS;
+- dört kategori: her birinde doğru `5` ürün, leakage/false empty/error `0`;
+- ProductDetails, ürün başına `14–15` seller, `20/20` multiple price PASS;
+- temsilî seller → doğru shop → `5` listing ve back stack PASS;
+- search exact/generic/category/no-result ve result → ProductDetails PASS;
+- nearby `57` shop, valid/unique coordinate contract ve representative shop PASS;
+- anonymous wishlist/cart/profile login gate ve customer navigation PASS;
+- Production Auth/business/Storage fixture ve mutation `0`.
+
+Hedefli müşteri/dataset matrisi `564/564`, gerçek Production demo harness'ı `4/4`,
+tam Flutter suite `1213` PASS (`6` explicit opt-in live skip) ve analyzer sıfır
+bulguyla tamamlandı.
+
+Runtime functional bug veya release blocker bulunmadı. Phase C öncesinden kalan
+empty-catalog live harness beklentisi current demo baseline'ına güncellendi; tam
+manifest/relationship/search/nearby müşteri read contract harness'ı eklendi.
+`owner_user_id = NULL` demo mağazalar customer keşif için uygundur; merchant
+ownership, merchant QR confirmation ve verified purchase intentional unavailable
+kalmaya devam eder.
+
+Renk, font, spacing, kart/ikon estetiği, padding/margin ve genel redesign:
+`DEFERRED UNTIL FINAL UI KIT`.
+
+`PRODUCTION_DEMO_FUNCTIONAL_SMOKE: PASS`
+
+`FUNCTIONAL_RELEASE_BLOCKERS_FOUND: NO`
+
+`COSMETIC_UI_POLISH_DEFERRED: YES`
+
+`READY_FOR_WAVE_12_PHASE_D_INTEGRATION: YES`
+
 ## 1. Başlatma kapıları
 
 Smoke başlamadan önce tamamı işaretlenmelidir:
