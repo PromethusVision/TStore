@@ -3,7 +3,8 @@
 **Görev:** Wave 10 Phase F2 read-only precheck + Phase F intermediate integration +
 Phase F3/F3A gate ve inventory + Phase F3B live email acceptance + Phase F3D
 authorized disposable-user cleanup + Phase F final integration + Wave 11 B3A
-authorized physical-test fixture cleanup + Wave 11 B3R authorized fixture cleanup
+authorized physical-test fixture cleanup + Wave 11 B3R authorized fixture cleanup +
+Wave 11 B4 Auth root-cause evidence
 
 **Kaynak taban:** Phase F final integration
 `origin/main@b24f761881730159035a619822bf753b84ead6c3`; live evidence final HEAD
@@ -529,7 +530,7 @@ SMTP, schema, migration, Storage write veya Development erişimi yapılmadı.
 
 `READY_FOR_RECOVERY_BUG_INVESTIGATION: YES`
 
-`READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`
+`READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: COMPLETED — B4`
 
 `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`
 
@@ -542,3 +543,44 @@ birleştirdi. Integration Production/Development remote read/write, yeni Auth us
 e-posta, recovery, Auth config veya Storage işlemi yapmadı. İlgili Auth sözleşme
 matrisi 67/67, tam Flutter suite 1182 PASS (5 explicit opt-in live skip) ve analyzer
 temizdir; bu otomatik sonuçlar iki fiziksel V1.0 bug'ı PASS'e çevirmez.
+
+## Wave 11 Phase B4 Auth root-cause integration sonucu
+
+Canonical analiz `docs/WAVE_11_AUTH_RECOVERY_ROOT_CAUSE.md` içinde entegre edildi.
+Confirmation success event yolu, callback/session/profile refresh, Home navigation ve
+kalıcı root listener çalışır; eski BuildContext kaybı ana neden değildir. High-confidence
+root cause, mesajın route transition tamamlanmadan geçici Snackbar olarak tüketilmesi ve
+destination-owned durable one-shot state bulunmamasıdır.
+
+Recovery client'ı
+`client.auth.updateUser(UserAttributes(password: newPassword))` çağrısı exception
+üretmediğinde `UserResponse`, recovery provenance ve fresh credential login'i
+doğrulamadan final success gösterir. Bu false-success root cause FOUND'tur. B3R'deki
+gerçek Production password persistence root cause'u NOT_FOUND kalır. Free-plan log
+retention penceresi geçtiği ve database audit writing kapalı olduğu için
+password-specific audit event state'i UNKNOWN'dır.
+
+Canonical recovery final success yalnız şu sırayla gösterilir:
+
+1. Valid recovery session/provenance.
+2. Successful password update request ve expected-user ile tutarlı response.
+3. Controlled recovery-session cleanup.
+4. Aynı yeni password ile fresh normal login success.
+5. Login user identity ile expected user identity equality.
+
+HTTP `200`, generic `user_modified` veya no-exception tek başına final success değildir.
+B4 integration yerel Auth unit/widget/integration matrisini 199/199 ve Auth redirect
+wiring contract'ını 4/4 PASS doğruladı; Production/Development remote read/write,
+yeni Auth user/e-posta veya config işlemi yapmadı ve zero-test baseline korunur.
+
+`CONFIRMATION_UI_ROOT_CAUSE: FOUND`
+
+`RECOVERY_FALSE_SUCCESS_ROOT_CAUSE: FOUND`
+
+`RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`
+
+`PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`
+
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+
+`WAVE_11_PHASE_B4_INTEGRATION: PASS`

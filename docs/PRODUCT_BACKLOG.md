@@ -85,14 +85,24 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   fresh login'de `invalid_credentials` aldı. Owner-authorized exact Auth Admin cleanup
   sonrası Auth/business/Storage residual exact `0`; legacy callback korunur.
 
-#### Wave 11 B3R V1.0 Auth Bugs — OPEN
+#### Wave 11 B3R/B4 V1.0 Auth Bugs — ROOT CAUSE / FIX OPEN
 
 1. Confirmation callback server/session ve Home navigation'ı tamamlıyor; canonical
-   başarı feedback'i destination UI'da kayboluyor veya gösterilmiyor. Kod düzeyindeki
-   destination-render koruması otomatik PASS olsa da fiziksel kabul FAIL'dir.
-2. Recovery password-update isteği HTTP `200` / `user_modified` döndürüyor; buna rağmen
-   yeni credential temiz login'de reddediliyor. HTTP başarısı password-hash persistence
-   kanıtı değildir; istemci/Auth log zinciriyle root-cause analizi gerekir.
+   başarı feedback'i destination UI'da kayboluyor veya gösterilmiyor. B4 root cause
+   FOUND: mesaj route transition tamamlanmadan geçici Snackbar olarak tüketiliyor ve
+   destination-owned durable one-shot success state yok. Fix/physical retest açık.
+2. Recovery client'ı `updateUser` exception üretmediğinde response/fresh login
+   doğrulaması olmadan final success gösteriyor. B4 false-success root cause FOUND;
+   authoritative-success guard ve stateful regression testleri açık.
+3. B3R'deki gerçek Production password persistence davranışının server-side kök nedeni
+   NOT_FOUND. Password-specific audit event retention dışında ve DB audit yazımı
+   kapalı olduğundan `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`; fix sonrasında
+   yetkili disposable fixture ile fiziksel retest gerekir.
+
+Canonical recovery final success kriteri: valid recovery session/provenance → başarılı
+ve expected-user ile tutarlı update response → controlled recovery-session cleanup →
+aynı yeni password ile fresh normal login → expected user identity equality. Yalnız
+HTTP `200` / no-exception final success değildir.
 
 ### A2. QR Fiziksel Doğrulama Kabulünün Tamamlanması
 
@@ -288,6 +298,14 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   credential login FAIL. Exact B3R fixture trusted Auth Admin yoluyla temizlendi,
   Production zero-test baseline restore PASS. Integration remote backend işlemi
   yapmadı; Auth matrisi 67/67, tam suite 1182 PASS (5 live skip) ve analyzer PASS.
+- 2026-08-22 Wave 11 B4 root-cause sonucu: Agent 2'nin canonical analiz belgesi
+  `--no-ff` ve çatışmasız entegre edildi. Confirmation feedback durability ve recovery
+  false-success client root cause'ları FOUND; gerçek Production password persistence
+  root cause'u NOT_FOUND, audit event UNKNOWN. Beş adımlı authoritative recovery
+  success criterion ve yeni regression test boşlukları source-of-truth olarak
+  kaydedildi. Yerel Auth unit/widget/integration matrisi 199/199 ve Auth redirect
+  wiring contract 4/4 PASS; Integration Production/Development remote erişimi veya
+  write yapmadı.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -320,6 +338,10 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   Auth user/identity/session/profile/consent, bütün linked business ve Storage residual
   exact `0`. Yeni canlı write yerine önce iki açık Auth bug'ının root-cause/fix turu
   gerekir; legacy callback bu kabul tamamlanmadan kaldırılmaz.
+- B4 analizi confirmation durability ve recovery false-success kök nedenlerini kapattı;
+  implementasyon/retest açıktır. Actual Production password persistence kök nedeni
+  NOT_FOUND ve password-specific audit UNKNOWN kaldığından server davranışı hakkında
+  yeni bir neden uydurulmaz.
 - Local migration artifact integrity, safe-equivalent clean-room replay ve linked CLI kontrolleri 9/9 PASS; gerçek apply ve metadata/security postflight D1'de PASS olmuştur.
 - `PRODUCTION_CLIENT_WIRED: YES`, `FINAL_APP_IDENTITY_WIRED: YES`,
   `PHASE_F_CALLBACK_INTEGRATED: YES`, `SMTP_CONFIGURATION_PRESENT: YES`,
@@ -340,7 +362,15 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `PRODUCTION_ZERO_TEST_BASELINE: RESTORED`,
   `V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: OPEN`,
   `V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`,
-  `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: YES`,
+  `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: COMPLETED — B4`,
+  `CONFIRMATION_UI_ROOT_CAUSE: FOUND`,
+  `RECOVERY_FALSE_SUCCESS_ROOT_CAUSE: FOUND`,
+  `RECOVERY_PASSWORD_ROOT_CAUSE: NOT_FOUND`,
+  `PASSWORD_UPDATE_AUDIT_EVENT_PRESENT: UNKNOWN`,
+  `V1_0_AUTH_BUG_RECOVERY_FALSE_SUCCESS_GUARD: OPEN`,
+  `V1_0_AUTH_RETEST_PASSWORD_PERSISTENCE_BEHAVIOR: OPEN`,
+  `READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`,
+  `WAVE_11_PHASE_B4_INTEGRATION: PASS`,
   `READY_TO_RESTART_B3_MOBILE_AUTH: NO — ROOT CAUSE/FIX REQUIRED`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.

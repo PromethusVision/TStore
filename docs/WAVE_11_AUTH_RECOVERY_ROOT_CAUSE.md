@@ -37,6 +37,20 @@ Bu analiz iki farklı sonucu özellikle ayırır:
 | Production'da görülen yanlış başarı neden oldu? | HTTP/no-exception sonucu doğrudan `AuthPasswordUpdated` yapıldı | Yüksek |
 | Sunucunun hangi parolayı sakladığı / neden saklamadığı | Belirlenemedi | — |
 
+## Canonical recovery başarı kriteri
+
+Password recovery UI yalnız aşağıdaki beş koşul sırasıyla doğrulandığında final başarı
+gösterebilir:
+
+1. Geçerli ve beklenen kullanıcıya ait recovery session/provenance mevcuttur.
+2. Password update request başarılıdır ve response beklenen kullanıcıyla tutarlıdır.
+3. Recovery session kontrollü biçimde temizlenmiştir.
+4. API'ye gönderilen aynı yeni password ile fresh normal login başarılıdır.
+5. Fresh login edilen user identity beklenen kullanıcı identity'siyle eşleşir.
+
+Yalnız HTTP `200`, generic `user_modified` veya exception oluşmaması final recovery
+success değildir.
+
 ## 1. Confirmation başarı geri bildirimi
 
 ### Runtime zaman çizelgesi
@@ -261,11 +275,11 @@ invalid_credentials” sonucunu tek başına açıklamıyor.
 9. **Testler neden yakalamadı?** Mock/use case `Right(null)` döndürür dönmez başarı
    bekleniyor. Stateful bir auth fake ve update sonrası temiz `signInWithPassword`
    adımı yok.
-10. **Yeni canonical başarı kriteri ne olmalı?** Başarı ancak (a) update response
-    beklenen recovery user ile tutarlıysa ve (b) mevcut recovery session'dan bağımsız
-    fresh password login, API'ye gönderilen aynı in-memory credential ile başarılı olup
-    aynı user id'yi doğrularsa gösterilmelidir. HTTP 200 veya generic `user_modified`
-    tek başına yeterli değildir.
+10. **Yeni canonical başarı kriteri ne olmalı?** Geçerli recovery session/provenance,
+    başarılı ve expected-user ile tutarlı update response, kontrollü recovery-session
+    cleanup, API'ye gönderilen aynı in-memory credential ile fresh normal login ve aynı
+    user identity sırasıyla doğrulanmalıdır. HTTP 200 veya generic `user_modified` tek
+    başına yeterli değildir.
 
 ### Recovery hipotez sıralaması
 
@@ -323,13 +337,15 @@ Eksik regression testleri:
    ordinary authenticated session'ın recovery ekranını kullanmasına izin verme.
 3. `updateUser` response user'ını expected user ile doğrula; bunu tek başına final
    başarı sayma.
-4. Credential'ı loglamadan aynı in-memory değerle clean/fresh
+4. Update response sonrasında recovery session ve stale recovery status/event'ini
+   kontrollü biçimde temizle.
+5. Credential'ı loglamadan aynı in-memory değerle clean/fresh
    `signInWithPassword` yap ve aynı user id'yi doğrula. Verification başarısızsa
-   `AuthPasswordUpdated` üretme; güvenli, tekrar recovery isteyen hata göster.
-5. Başarılı verification sonrasında canonical session cleanup ve Login'e dönüş
-   davranışını tek bir atomik Cubit akışında tamamla. Stale recovery status/event'i
-   temizle.
-6. Stateful fake regression testlerini ekle. Gerçek acceptance için sonraki ayrı,
+   final success/`AuthPasswordUpdated` üretme; güvenli, tekrar recovery isteyen hata
+   göster.
+6. Yalnız bu beş canonical koşul tamamlandığında final success ve sonraki navigation
+   davranışını tek bir atomik Cubit akışında tamamla.
+7. Stateful fake regression testlerini ekle. Gerçek acceptance için sonraki ayrı,
    yetkili görevde yeni disposable Production fixture ile physical update + sign-out +
    iki fresh login ve hemen alınan password-specific audit evidence gerekir.
 
@@ -349,6 +365,10 @@ kalıcılığı PASS ilan edilmemelidir.
 
 `SAFE_TO_IMPLEMENT_FIX: YES — confirmation durability ve recovery authoritative-success guard`
 
+`READY_FOR_AUTH_FIX_IMPLEMENTATION: YES`
+
 `NEW_PRODUCTION_FIXTURE_REQUIRED_FOR_ANALYSIS: NO`
 
-`INTEGRATION_REQUIRED: YES — sonraki görevde Auth-scope implementation ve regression testleri`
+`WAVE_11_PHASE_B4_INTEGRATION: PASS`
+
+`AUTH_FIX_IMPLEMENTATION_REQUIRED: YES — Auth-scope implementation ve regression testleri`
