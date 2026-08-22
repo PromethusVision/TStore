@@ -326,6 +326,13 @@ HTTP `200` / no-exception final success değildir.
   test residual exact `0`; Integration remote backend'e erişmedi/yazmadı. Hedefli
   Auth/account-deletion matrisi 266/266, tam suite 1194/1194 (5 live skip), analyzer,
   diff ve security/PII scan PASS.
+- 2026-08-22 Wave 11 B7 final integration sonucu: Agent 1'in owner-authorized legacy
+  Production callback removal kanıtı `--no-ff` ve çatışmasız entegre edildi. Remote
+  postflight Production allowlist'in yalnız `com.esnaftavar.app://login-callback/`
+  içerdiğini; Site URL'nin aynı kaldığını, Custom SMTP'nin Enabled ve Confirm Email'in
+  ON olduğunu doğruladı. Development callback'i kendi ortamında izole biçimde korundu.
+  Integration remote işlemi tekrarlamadı; hedefli callback/platform/environment/PKCE/
+  release-config matrisi 45/45, diff ve security/PII scan PASS.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -351,9 +358,10 @@ HTTP `200` / no-exception final success değildir.
   server-side confirmation ve actual mobile app opening PASS'tir. Confirmation
   success feedback code bug'ı ve recovery false-success guard B5'te kapanmış; B6
   destination notice, same-credential fresh login ve same-user identity'yi fiziksel
-  PASS doğrulamıştır. Legacy callback allowlist removal, deliverability izleme,
-  fiziksel iki-cihaz QR, fixture tabanlı Storage negative listing ve controlled
-  broader Production smoke açık blocker'dır.
+  PASS doğrulamıştır. B7 legacy Production callback'i kaldırmış ve final callback-only
+  postflight'ı PASS tamamlamıştır. Deliverability izleme, fiziksel iki-cihaz QR,
+  fixture tabanlı Storage negative listing ve controlled broader Production smoke açık
+  blocker'dır.
 - Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
   saved-location dahil Auth/business/Storage residual exact `0`. Sonraki canlı Auth
   turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
@@ -362,7 +370,7 @@ HTTP `200` / no-exception final success değildir.
   exact `0`. B4 root-cause ve B5 client fix turu tamamlandı. B6 scoped fixture ile
   final fiziksel kabulü tamamladı ve canonical self-delete sonrası Auth/identity/
   session/profile/consent/business/Storage residual exact `0` oldu. Legacy callback
-  bu görevde kaldırılmadı; ayrı yetkili remote config görevi için hazırdır.
+  B7'de owner-authorized remote config göreviyle kaldırıldı; final callback korundu.
 - B4 analizi confirmation durability ve recovery false-success kök nedenlerini buldu;
   B5 destination-owned notice ve canonical fresh-login verification implementasyonunu
   entegre etti; B6 current flow'u fiziksel PASS doğruladı. Actual Production password persistence kök
@@ -406,9 +414,17 @@ HTTP `200` / no-exception final success değildir.
   `PHYSICAL_MOBILE_AUTH_ACCEPTANCE: PASS`,
   `PRODUCTION_PASSWORD_RECOVERY_ACCEPTANCE: PASS`,
   `READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`,
-  `READY_TO_REMOVE_LEGACY_CALLBACK: YES — SEPARATE AUTHORIZED TASK`,
+  `LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED — B7`,
+  `FINAL_PRODUCTION_CALLBACK_ONLY: YES`,
+  `PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`,
+  `WAVE_11_PHASE_B7_INTEGRATION: PASS`,
+  `READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
+- Esenler demo dataset hazırlanması sıradaki açık ve ayrı yetki gerektiren Production
+  veri işidir; bu B7 entegrasyonu dataset yazması yapmaz. Fiziksel iki-cihaz QR,
+  broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
+  final commercial GO ayrıca açık kalır.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening

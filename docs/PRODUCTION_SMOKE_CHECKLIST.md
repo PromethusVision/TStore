@@ -106,6 +106,12 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `AUTH_CONFIG_POSTFLIGHT: PASS`
 
+`WAVE_11_PHASE_B7_INTEGRATION: PASS`
+
+`PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
+
+`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
+
 `CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
 
 `RECOVERY_FALSE_SUCCESS_GUARD: PASS`
@@ -507,11 +513,23 @@ Fresh reload/postflight sonucu:
 Callback, deep-link/platform, Production/Development isolation, Supabase config ve
 release-preflight hedefli yerel matris 45/45 PASS'tir.
 
+B7 final Integration bu remote Auth config change/postflight'ını tekrar çalıştırmadı.
+Yerel 45/45 callback/platform/environment/PKCE/release-config matrisi yeniden PASS;
+Production/Development remote erişimi/yazımı, Auth config, user/e-posta, database veya
+Storage işlemi yoktur. Esenler demo dataset ayrı yetkili görevde ele alınabilir;
+broader smoke ve commercial release kapıları açık kalır.
+
 `LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED`
 
 `FINAL_PRODUCTION_CALLBACK_ONLY: YES`
 
 `AUTH_CONFIG_POSTFLIGHT: PASS`
+
+`WAVE_11_PHASE_B7_INTEGRATION: PASS`
+
+`PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
+
+`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
 
 ## 1. Başlatma kapıları
 

@@ -502,6 +502,39 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   266/266, tam Flutter suite 1194/1194 (5 explicit opt-in live skip), analyzer, diff
   ve security/PII kontrolleri PASS.
 
+## Wave 11 Phase B7 Production Callback Cleanup Entegrasyon Gözlemi
+
+`WAVE_11_PHASE_B7_INTEGRATION: PASS`
+
+`FINAL_PRODUCTION_CALLBACK_ONLY: YES`
+
+`PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
+
+`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
+
+`COMMERCIAL_RELEASE_READY: NO`
+
+- Agent 1'in `11c3ab6` callback-removal kanıtı exact `21f7224` tabanından
+  `2e62bb4` ile tek `--no-ff` ve çatışmasız merge olarak entegre edildi.
+- Agent 1'in owner-authorized remote adımı yalnız Production allowlist'teki
+  `io.supabase.tstore://login-callback/` kaydını kaldırdı. Postflight Site URL ve tek
+  allowlist kaydını `com.esnaftavar.app://login-callback/`, Custom SMTP'yi Enabled ve
+  Confirm Email'i ON doğruladı; başka Auth config drift yoktur.
+- Development remote'a dokunulmadı. Development istemci/platform callback'i aynı
+  `io.supabase.tstore://login-callback/` URI'sini kendi environment'ında bilinçli
+  olarak korur; Production/Development fallback veya callback karışması yoktur.
+- Agent teslimi yalnız dört Production/Auth belgesini değiştirdi. Integration iki
+  merkezi coordination belgesini hizaladı; uygulama kodu, `service_locator.dart`,
+  shared model, SQL/migration, platform config ve dependency değişmedi. Shared/hotspot
+  çakışması yoktur.
+- Integration remote change/postflight'ı tekrar çalıştırmadı: Production/Development
+  remote read/write, Auth config, user/e-posta, database ve Storage işlemi `0`.
+  Callback/platform/environment/PKCE/release-config matrisi 45/45, diff ve
+  security/PII kontrolleri PASS.
+- Esenler demo dataset ayrı yetkili iş paketine hazırdır. Fiziksel iki-cihaz QR,
+  broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
+  final commercial GO açık kalır.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

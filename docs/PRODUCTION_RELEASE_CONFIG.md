@@ -1,13 +1,18 @@
 # Production Release Configuration
 
 **Kaynak taban:** Wave 11 Phase B7 /
-`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`
+`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`; input
+`origin/agent1/w11-remove-legacy-production-callback@11c3ab6fb891a73ceeac7e460a650b3a8c489545`;
+integration merge `2e62bb49fe7e1dc020e5a6c098b75c7d4cd63639`.
 
-**B7 sırasında Production Supabase erişimi:** authenticated read **YES**; remote write
+**B7 Agent uygulaması sırasında Production Supabase erişimi:** authenticated read **YES**; remote write
 **YES — yalnız owner-authorized exact legacy callback removal**. Database, Storage,
 user/e-posta ve diğer Auth config write **NO**. Önceki authenticated management
 **read-only** Auth/SMTP/template kanıtı ile Agent 1'in salt-okunur client-safe
 publishable-key/build kanıtı ayrıca korunur.
+
+**B7 final Integration sırasında:** Production remote read/write **NO**; Auth config,
+user/e-posta, database, Storage ve Development işlemi **NO**.
 
 Bu sözleşme Production Flutter artifact'ının yanlış Development, placeholder veya
 server credential ile üretilmesini build öncesinde durdurur. Preflight'ın PASS olması
@@ -78,6 +83,12 @@ alanı görürse fail-closed davranır.
 
 `AUTH_CONFIG_POSTFLIGHT: PASS`
 
+`WAVE_11_PHASE_B7_INTEGRATION: PASS`
+
+`PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
+
+`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
+
 `EMAIL_DELIVERABILITY_TUNING: OPEN — CONFIRMATION EMAIL REACHED SPAM`
 
 `ANDROID_SIGNING_READY: YES`
@@ -126,6 +137,12 @@ e-posta, database, Storage, migration veya başka Auth config write yapılmadı.
 
 Callback, deep-link/platform, Production/Development isolation, Supabase config ve
 release-preflight hedefli yerel matris 45/45 PASS'tir.
+
+B7 final Integration Agent 1 remote write/postflight'ını tekrar çalıştırmadı. Aynı
+45/45 callback/platform/environment/PKCE/release-config matrisi yeniden PASS oldu;
+Production/Development remote erişimi veya değişikliği yapılmadı. Final callback-only
+durumu Esenler demo dataset'in ayrı yetkili görevine geçiş için hazırdır; bu durum
+commercial release GO vermez.
 
 ## Wave 10 Phase E1 real runtime evidence
 

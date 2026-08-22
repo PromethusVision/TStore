@@ -13,7 +13,9 @@ Wave 11 B7 authorized legacy Production callback removal
 `origin/agent1/w11-final-physical-auth-acceptance@af1708c6bec1c1f1817e911f600f775810cc12fe`,
 integration base `origin/main@31f4ac166b8178eb7576c9315da4382b9b5bc4a9` ve
 `--no-ff` merge `d3b9cac0fc5248e8ea45ef36a5587484ea661b42`. B7 task base
-`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`.
+`origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`; input
+`origin/agent1/w11-remove-legacy-production-callback@11c3ab6fb891a73ceeac7e460a650b3a8c489545`;
+integration merge `2e62bb49fe7e1dc020e5a6c098b75c7d4cd63639`.
 
 **Production:** `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb`
 
@@ -108,11 +110,22 @@ gelmez. User, e-posta veya test fixture oluşturulmadı.
 Callback, deep-link/platform, Production/Development isolation, Supabase config ve
 release-preflight hedefli yerel matris 45/45 PASS'tir.
 
+B7 final Integration remote change/postflight'ı tekrar çalıştırmadı. Aynı 45/45
+callback/platform/environment/PKCE/release-config matrisi yeniden PASS oldu;
+Production/Development remote read/write, Auth config, user/e-posta, database veya
+Storage işlemi yapılmadı. Esenler demo dataset yalnız ayrı yetkili görevde hazırlanır.
+
 `LEGACY_PRODUCTION_CALLBACK_REMOVAL: COMPLETED`
 
 `FINAL_PRODUCTION_CALLBACK_ONLY: YES`
 
 `AUTH_CONFIG_POSTFLIGHT: PASS`
+
+`WAVE_11_PHASE_B7_INTEGRATION: PASS`
+
+`PRODUCTION_AUTH_CALLBACK_CUTOVER: COMPLETE`
+
+`READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
 
 ## Project identity and provider state
 
