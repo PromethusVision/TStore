@@ -46,9 +46,9 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `READY_FOR_PHYSICAL_B2_RETEST: COMPLETED — INPUT/LOCATION PASS`
 
-`PHYSICAL_DEVICE_REGRESSION: PARTIAL — CALLBACK PASS; SUCCESS MESSAGE/RECOVERY LOGIN FAIL`
+`PHYSICAL_DEVICE_REGRESSION: PASS — B6 CONFIRMATION + RECOVERY`
 
-`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: YES — B5 CODE FIX INTEGRATED; PHYSICAL RETEST REQUIRED`
+`READY_FOR_MOBILE_AUTH_LIVE_ACCEPTANCE: COMPLETED — B6 PASS`
 
 `WAVE_11_B3A_AUTHORIZED_FIXTURE_CLEANUP: PASS`
 
@@ -64,13 +64,13 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `PHYSICAL_CONFIRMATION_CALLBACK: PASS`
 
-`CONFIRMATION_SUCCESS_UI: FAIL`
+`CONFIRMATION_SUCCESS_UI: PASS — B6 PHYSICAL`
 
-`PHYSICAL_PASSWORD_RECOVERY: FAIL`
+`PHYSICAL_PASSWORD_RECOVERY: PASS — B6 PHYSICAL`
 
-`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED IN B5 CODE — PHYSICAL RETEST OPEN`
+`V1_0_AUTH_BUG_CONFIRMATION_SUCCESS_FEEDBACK: CLOSED — B5 CODE + B6 PHYSICAL PASS`
 
-`V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: OPEN`
+`V1_0_AUTH_BUG_RECOVERY_CREDENTIAL_PERSISTENCE: CLOSED FOR CURRENT B5/B6 FLOW`
 
 `READY_FOR_AUTH_RECOVERY_ROOT_CAUSE_ANALYSIS: COMPLETED — B4`
 
@@ -87,6 +87,14 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 `WAVE_11_PHASE_B4_INTEGRATION: PASS`
 
 `WAVE_11_PHASE_B5_INTEGRATION: PASS`
+
+`WAVE_11_PHASE_B6_PHYSICAL_ACCEPTANCE: PASS`
+
+`RECOVERY_FRESH_LOGIN_PHYSICAL: PASS`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
 
 `CONFIRMATION_SUCCESS_FEEDBACK_CODE_FIX: PASS`
 
@@ -411,9 +419,56 @@ Auth user veya e-posta işlemi yapmadı ve Production zero-test baseline korunur
 
 `AUTH_REGRESSION: PASS`
 
-`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+`PHYSICAL_AUTH_RETEST_REQUIRED: NO — B6 PASS`
 
-`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`
+
+## Wave 11 Phase B6 final physical Auth acceptance
+
+Canonical B5 signed Production APK POCO X7 Pro / Android 16 cihazına mevcut uygulama
+verisi silinmeden upgrade edildi. Exact Production `mefhfvrgkwciubeajjeb`; Development
+remote erişimi/yazımı yoktur. İlk canlı write öncesi ve canonical self-delete sonrası
+Auth, identity, session, profile, legal consent, bütün user-linked business tabloları
+ve Storage exact sıfırdır.
+
+| Kontrol | Sonuç |
+| --- | --- |
+| Exactly one signup / waiting UI | PASS |
+| Confirmation delivery | PASS; Inbox, doğru sender/domain |
+| Final callback app opening | PASS |
+| Destination-owned success notice | PASS; fiziksel görüldü ve hemen kaybolmadı |
+| Customer role/profile | PASS; customer `1`, merchant/admin `0` |
+| Exactly one recovery delivery/callback/UI | PASS; Inbox ve final app callback |
+| Canonical five-step recovery proof | PASS |
+| Final recovery success UI | PASS |
+| Same new credential normal login | PASS |
+| Duplicate/malformed callback regression | PASS; canlı linkler yalnız birer kez kullanıldı |
+| Canonical self-delete / final residual | PASS / exact zero |
+
+Recovery success yalnız valid provenance/session, expected-user update response,
+controlled local cleanup, API'ye gönderilen aynı opaque credential ile fresh normal
+login ve same-user identity eşleşmesinden sonra gösterildi. Yalnız HTTP success kanıt
+sayılmadı. Tarihsel B3R password persistence nedeni `NOT_FOUND` kalır; current B5/B6
+davranışı fiziksel PASS'tir. Legacy Production callback'i bu görevde değiştirilmedi;
+ayrı yetkili removal görevine hazırdır.
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI_PHYSICAL: PASS`
+
+`PHYSICAL_PASSWORD_RECOVERY: PASS`
+
+`RECOVERY_FRESH_LOGIN_PHYSICAL: PASS`
+
+`PRODUCTION_AUTH_ROLE_SECURITY: PASS`
+
+`TEST_FIXTURE_CLEANUP: PASS`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
+
+`WAVE_11_FINAL_MOBILE_AUTH_ACCEPTANCE: PASS`
 
 ## 1. Başlatma kapıları
 
@@ -444,9 +499,9 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] Final Production callback istemci/platform/preflight kaynak wiring'i tamamlandı.
 - [x] Final callback signed-artifact confirmation app opening POCO X7 Pro üzerinde
       PASS.
-- [ ] Full recovery kabulü yeni credential login ile tamamlandı; ardından legacy
-      Production allowlist kaydı kaldırıldı. B3R'de callback/update UI PASS, login FAIL;
-      B5 false-success guard integrated PASS, physical retest OPEN.
+- [x] Full recovery kabulü B6'da aynı yeni credential fresh login ve ayrıca normal
+      login ile PASS. Legacy Production allowlist removal ayrı yetkili görev olarak
+      hâlâ uygulanmadı.
 - [x] Phase F2 read-only Auth/SMTP/template precheck tamamlandı; Production write,
       kullanıcı veya e-posta gönderimi yapılmadı.
 - [x] Supabase remote Site URL localhost'tan exact final mobile callback
@@ -463,8 +518,8 @@ Smoke başlamadan önce tamamı işaretlenmelidir:
 - [x] B3R owner-authorized exact fixture cleanup sonrası Auth user/identity/session/
       profile/consent, bütün user-linked business ve Storage residual exact sıfır.
 - [x] Signed Production mobil uygulamada confirmation final callback app opening PASS.
-- [ ] Full recovery PKCE lifecycle yeni credential login ve cleanup ile PASS;
-      Resend link-tracking ayrıca doğrulanmalı.
+- [x] Full recovery PKCE lifecycle yeni credential login ve canonical self-delete
+      cleanup ile B6'da PASS; Resend link-tracking ayrıca doğrulanmalı.
 - [x] Android gerçek application ID ve upload-key release signing PASS.
 - [x] Android keystore birincil repo-dışı yedeği ve parola yöneticisi kaydı tamamlandı.
 - [ ] Android ikinci offline keystore yedeği ve kalıcı CI signing provenance tamamlandı.

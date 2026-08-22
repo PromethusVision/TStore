@@ -387,6 +387,37 @@ fiziksel cihaz retest'iyle kabul edilebilir; Phase B5 remote sistemlere dokunmam
 Hedefli Auth matrisi 215/215, tam Flutter suite 1194/1194 (5 explicit opt-in live
 skip) ve analyzer PASS'tir.
 
+## Phase B6 fiziksel Production kabul sonucu
+
+2026-08-22 tarihinde B5'i içeren canonical signed Production APK, POCO X7 Pro / Android
+16 cihazına mevcut uygulama verisi silinmeden upgrade edildi. Exact Production
+`mefhfvrgkwciubeajjeb`; Development erişimi veya yazımı yoktur. İlk write öncesi Auth,
+profile, consent, bütün user-linked business tabloları ve Storage exact sıfırdı.
+
+Yalnız bir disposable customer ile aşağıdaki fiziksel zincir PASS oldu:
+
+- Confirmation e-postası Inbox'a doğru `EsnaftaVar` gönderici adı ve
+  `auth.esnaftavar.com` domain'iyle ulaştı. Telefon linki final callback üzerinden
+  uygulamayı açtı; Home/canonical destination sonrasında
+  `E-posta adresiniz başarıyla doğrulandı.` notice'ı gerçekten görüldü ve hemen
+  kaybolmadı.
+- Profil Auth identity ile bağlı ve rol `customer` kaldı; merchant/admin sayısı
+  sıfırdı.
+- Tek recovery e-postası Inbox'a ulaştı, telefon callback'i update-password UI'ını
+  açtı. Valid provenance/session, expected-user update response, local recovery
+  session cleanup, aynı opaque yeni credential ile fresh normal login ve same-user
+  identity zinciri tamamlandı. Final başarı UI'ı görüldü ve product owner aynı yeni
+  parola ile ayrıca normal giriş yaptı.
+- Callback duplicate/malformed/wrong-scheme güvenliği B5 regression matrisiyle PASS;
+  canlı linkler yalnız birer kez kullanıldı.
+- Kabul sonrasında uygulamadaki canonical `delete_current_customer_account` self-delete
+  kullanıldı. Final authoritative sayımlar Auth user/identity/session/profile/consent,
+  bütün user-linked business tabloları ve Storage için exact sıfıra döndü.
+
+Bu B6 sonucu current recovery davranışını fiziksel olarak PASS yapar; tarihsel B3R
+password persistence root cause'u kanıt olmadan geriye dönük açıklanmış sayılmaz ve
+`NOT_FOUND` olarak korunur.
+
 ## Son durum
 
 `CONFIRMATION_UI_ROOT_CAUSE: FOUND`
@@ -419,6 +450,18 @@ skip) ve analyzer PASS'tir.
 
 `AUTH_REGRESSION: PASS`
 
-`PHYSICAL_AUTH_RETEST_REQUIRED: YES`
+`PHYSICAL_AUTH_RETEST_REQUIRED: NO — B6 PASS`
 
-`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: YES`
+`READY_FOR_FINAL_PHYSICAL_AUTH_RETEST: COMPLETED — B6 PASS`
+
+`PHYSICAL_CONFIRMATION_CALLBACK: PASS`
+
+`CONFIRMATION_SUCCESS_UI_PHYSICAL: PASS`
+
+`PHYSICAL_PASSWORD_RECOVERY: PASS`
+
+`RECOVERY_FRESH_LOGIN_PHYSICAL: PASS`
+
+`PRODUCTION_ZERO_TEST_RESIDUAL: YES`
+
+`READY_TO_REMOVE_LEGACY_CALLBACK: YES — ayrı yetkili görev gerekir`
