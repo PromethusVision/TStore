@@ -2,8 +2,9 @@
 
 Bu paket yalnız müşteri uygulamasındaki katalog, keşif, arama, yakınlık ve aynı ürünü
 satan esnafların fiyat/mesafe karşılaştırmasını doğrulamak için hazırlanmış sentetik
-veridir. Kayıtların hiçbiri gerçek bir işletmeyi temsil etmez. Bu Phase A çalışması
-Production veya Development ortamına uygulanmamıştır.
+veridir. Kayıtların hiçbiri gerçek bir işletmeyi temsil etmez. Canonical artefakt,
+owner'ın açık Phase C yetkisiyle 22 Ağustos 2026'da yalnız `EsnaftaVar Production`
+(`mefhfvrgkwciubeajjeb`) ortamına uygulanmıştır. Development ortamına uygulanmamıştır.
 
 ## Sabit veri sözleşmesi
 
@@ -173,7 +174,22 @@ Beklenen sonuç:
 6. Auth/trust tabloları: sıfır.
 7. Cleanup: demo satırları 0/0/0/0; canonical public tablo sayısı 23.
 
-## Production apply prosedürü — Phase B safety review tamamlandı, apply yetkilendirilmedi
+## Production apply durumu — Phase C tamamlandı
+
+22 Ağustos 2026 saat 20:56 TRT authoritative postflight'ı Production'da exact
+`4 / 20 / 57 / 285` sayısını doğruladı. Manifest kimlikleri `366/366`, kontrollü alan
+uyuşmazlığı ve manifest dışı beklenmeyen katalog satırı `0` idi. `anon` veritabanı
+rolüyle public-read postflight'ı 4 kategori, 20 aktif/featured ürün, 57 aktif mağaza,
+285 aktif/available listing, ürün başına 14–15 satıcı ve her üründe birden fazla fiyat
+gösterdi. Auth user/profile/merchant ve Storage object sayıları `0` kaldı.
+
+Apply yalnız tracked canonical `supabase/seeds/esenler_demo_v1.sql` artefaktının tek
+transaction çalıştırılmasıyla yapıldı. Cleanup yetkilendirilmedi ve
+`esenler_demo_v1_cleanup.sql` çalıştırılmadı. Gerçek kullanıcı aktivitesi başladıktan
+sonra blind destructive cleanup önerilmez; olası soft-retire/deactivate davranışı ayrı
+owner kararıdır.
+
+## Controlled apply/cleanup prosedürü
 
 Production apply ancak ayrı, açık owner yetkili görevde yapılabilir:
 

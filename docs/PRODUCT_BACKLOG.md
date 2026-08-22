@@ -98,6 +98,14 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   pre-launch zero-activity durumunda PASS. Owner seed authorization henüz verilmedi ve
   Production seed uygulanmadı. User activity sonrasında blind cleanup yerine olası
   soft-retire/deactivate davranışı ayrı owner kararıdır.
+- 2026-08-22 Wave 12 Phase C ilerlemesi: Product-owner'ın exact seed yetkisiyle JIT
+  single-writer, zero-baseline, `0/366` collision, artifact integrity ve clean-room
+  kapıları PASS sonrasında canonical `esenler_demo_v1.sql` Production'a tek
+  transaction olarak uygulandı. Postflight katalog `4/20/57/285`, manifest `366/366`,
+  mismatch/unexpected row `0`; Auth/profile/merchant ve Storage object `0` doğruladı.
+  Gerçek `anon` RLS rolü 20 featured product, 57 shop, 285 listing, ürün başına 14–15
+  seller ve multiple price sonucunu PASS okudu. Cleanup çalıştırılmadı; Development,
+  migration/schema/config/Auth/Storage değiştirilmedi. Task branch entegrasyonu açıktır.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -371,7 +379,7 @@ HTTP `200` / no-exception final success değildir.
 
 - Canonical operasyon kaynakları: `docs/PRODUCTION_READINESS_AUDIT.md`, `docs/PRODUCTION_SMOKE_CHECKLIST.md`, `docs/PRODUCTION_PRE_MIGRATION_BASELINE.md`, `docs/PRODUCTION_CURRENT_STATE_INVENTORY.md`, `docs/PRODUCTION_SUPABASE_CUTOVER_PLAN.md` ve `docs/PRODUCTION_GO_NO_GO_CHECKLIST.md`.
 - Canonical Production `EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` / `https://mefhfvrgkwciubeajjeb.supabase.co` / Frankfurt olarak doğrulandı; Development ref'i `tnipyxnvhgelwdpykyez` Production değildir.
-- Production canonical `0001→0009` schema durumundadır: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger, exact üç active bucket ve iki Realtime member doğrulandı; Auth user/identity/session, Storage object ve business row sayıları sıfırdır.
+- Production canonical `0001→0009` schema durumundadır: ledger 9/9, 23 public tablo, 23/23 RLS, final 52 policy, 28 app function, 25 trigger, exact üç active bucket ve iki Realtime member doğrulandı. Wave 12 Phase C sonrası demo katalog exact `4/20/57/285`; Auth user/profile/merchant ve Storage object sayıları sıfırdır.
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
 - Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
@@ -452,18 +460,20 @@ HTTP `200` / no-exception final success değildir.
   `READY_FOR_ESENLER_DEMO_DATASET: COMPLETED — PHASE A ARTIFACT READY`,
   `WAVE_12_PHASE_A_INTEGRATION: PASS`,
   `DEMO_DATASET_ARTIFACT: READY`,
-  `PRODUCTION_DEMO_SEED_APPLIED: NO`,
+  `PRODUCTION_DEMO_SEED_APPLIED: YES — 4/20/57/285`,
   `READY_FOR_DEMO_DATASET_PHASE_B: COMPLETED — SAFETY REVIEW INTEGRATED`,
   `WAVE_12_PHASE_B_INTEGRATION: PASS`,
   `DEMO_SEED_SAFETY_REVIEW_INTEGRATED: YES`,
-  `OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`,
-  `READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`,
+  `OWNER_DEMO_SEED_AUTHORIZATION: GRANTED_AND_CONSUMED_FOR_EXACT_SEED`,
+  `READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: COMPLETED — PHASE C`,
+  `PRODUCTION_DEMO_CUSTOMER_READ: PASS — ANON RLS ROLE`,
+  `PRODUCTION_DEMO_CLEANUP_RUN: NO`,
   `KEYSTORE_PRIMARY_BACKUP: COMPLETED`, `IOS_SIGNING_READY: NO` ve
   `COMMERCIAL_RELEASE_READY: NO` olarak korunur.
-- Esenler demo dataset Phase A artefaktı ve Phase B safety review'i hazırdır fakat
-  Production seed uygulanmamıştır. Bir sonraki Production veri adımı ancak açık owner
-  seed authorization sonrasında ayrı controlled apply görevi olabilir. User activity
-  sonrası blind cleanup otomatik yetkili değildir. Fiziksel iki-cihaz QR,
+- Esenler demo dataset Phase A artefaktı ve Phase B safety review'i ardından owner
+  yetkili Phase C Production apply `4/20/57/285` ve anon customer-read postflight ile
+  PASS tamamlanmıştır. Cleanup uygulanmamıştır ve ayrı owner yetkisi olmadan çalışmaz;
+  user activity sonrası blind cleanup otomatik yetkili değildir. Fiziksel iki-cihaz QR,
   broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
   final commercial GO ayrıca açık kalır.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
