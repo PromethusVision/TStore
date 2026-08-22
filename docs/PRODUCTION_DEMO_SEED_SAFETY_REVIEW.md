@@ -7,15 +7,18 @@
 - Production ref: `mefhfvrgkwciubeajjeb`
 - Development ref excluded from all remote access: `tnipyxnvhgelwdpykyez`
 - Dataset: `esenler_demo_v1`
-- Production seed applied: **NO**
+- Production seed applied: **YES — owner-authorized Phase C exact artifact**
 - Production cleanup applied: **NO**
-- Production database/Auth/Storage/config writes: **NO**
+- Production database writes: **YES — only the exact four-table demo seed transaction**
+- Production Auth/Storage/config writes: **NO**
 
-This review used authenticated Supabase Dashboard access only for read-only
-`SELECT` queries. No seed, cleanup, migration, DDL, DML, Auth operation,
-Storage mutation, or configuration change was executed remotely.
+Phase B used authenticated Supabase Dashboard access only for read-only `SELECT`
+queries. Phase C repeated every just-in-time safety gate and then executed the tracked
+`supabase/seeds/esenler_demo_v1.sql` artifact once as one transaction. No cleanup,
+migration, schema change, Auth operation, Storage mutation, configuration change, or
+other DML was executed remotely.
 
-## Authoritative Production baseline
+## Authoritative Production pre-apply baseline
 
 The fresh Production query returned the following exact counts:
 
@@ -227,11 +230,16 @@ Additional results:
 - unique valid shop coordinates: 57/57; and
 - Auth/order/review/rating/QR/verified/chat/notification trust rows: 0.
 
-## Production dry preview
+## Production apply and authoritative postflight
 
-No remote apply was performed.
+Product-owner authorization was granted for the exact deterministic seed only. The
+single-writer gate found zero other active write statements and zero other target-table
+write locks. Immediately before apply, the exact baseline remained empty, all 366
+manifest IDs had zero intersections, all natural-key collision counts were zero, and
+there were no existing demo rows. The tracked artifact hash and clean-room replay were
+unchanged from Phase B.
 
-| Relation | Current | Expected delta | Expected after seed |
+| Relation | Pre-apply | Applied delta | Authoritative postflight |
 | --- | ---: | ---: | ---: |
 | `categories` | 0 | +4 | 4 |
 | `products` | 0 | +20 | 20 |
@@ -239,8 +247,21 @@ No remote apply was performed.
 | `shop_products` | 0 | +285 | 285 |
 
 Auth users/profiles, customer/trust rows, Storage buckets, and Storage objects
-have expected delta `0`. Storage remains three canonical buckets and zero
-objects.
+had delta `0`. At `2026-08-22T17:56:01.453527Z`, Production returned exact
+`4/20/57/285`, Auth users/profiles/merchant profiles `0`, three canonical buckets and
+Storage objects `0`.
+
+Manifest-backed postflight matched all `366/366` deterministic IDs and returned zero
+controlled-field mismatches and zero non-manifest rows. Product demo markers were
+`20/20`, `[DEMO]` shop names and null owners were `57/57`, and listing markers were
+`285/285`. Coordinates were valid and unique `57/57`; all 19 neighborhoods contained
+three shops. The observed shop distribution was Ayakkabı 15, Elektronik 14, Gıda 14,
+Kırtasiye 14.
+
+A separate read-only transaction executed under the actual database `anon` role. It
+could see 4 active categories, 20 active and featured products, 57 active shops, and
+285 active/available listings. All 20 products had 14–15 sellers and multiple prices.
+This is an RLS/grant-enforced anonymous customer-read proof, not an admin-only result.
 
 ## Cleanup policy recommendation
 
@@ -261,7 +282,7 @@ requires a new complete dependency and data-retention analysis.
 
 ## Gate result
 
-All Phase B decision inputs are known without changing Production:
+All Phase C apply and postflight gates completed without an unauthorized write:
 
 - exact Production ref confirmed;
 - fresh baseline known;
@@ -270,8 +291,11 @@ All Phase B decision inputs are known without changing Production:
 - seed SQL controlled-apply safety: PASS;
 - pre-launch exact cleanup safety: PASS;
 - expected delta known;
-- clean-room replay: PASS; and
-- Production writes: 0.
+- clean-room replay: PASS;
+- exact owner-authorized seed transaction: PASS;
+- authoritative Production counts and manifest identity: PASS;
+- anonymous customer read: PASS; and
+- cleanup: not authorized and not run.
 
 `PRODUCTION_DEMO_COLLISION_CHECK: PASS`
 
@@ -281,9 +305,17 @@ All Phase B decision inputs are known without changing Production:
 
 `READY_FOR_OWNER_DEMO_SEED_DECISION: YES`
 
-`READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: YES`
+`READY_FOR_OWNER_DEMO_SEED_AUTHORIZATION: COMPLETED — PHASE C`
 
-`OWNER_DEMO_SEED_AUTHORIZATION: NOT_YET_GRANTED`
+`OWNER_DEMO_SEED_AUTHORIZATION: GRANTED_AND_CONSUMED_FOR_EXACT_SEED`
 
-This is readiness for an owner decision only. It is not authorization or a
-record of a Production seed apply.
+`PRODUCTION_DEMO_SEED_APPLIED: YES`
+
+`PRODUCTION_DEMO_COUNTS: PASS`
+
+`PRODUCTION_DEMO_CUSTOMER_READ: PASS`
+
+`PRODUCTION_DEMO_CLEANUP_RUN: NO`
+
+This document now records the Phase B safety evidence and the Phase C controlled
+Production apply. It does not authorize cleanup or any future Production write.

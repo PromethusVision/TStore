@@ -531,6 +531,38 @@ broader smoke ve commercial release kapıları açık kalır.
 
 `READY_FOR_ESENLER_DEMO_DATASET: YES — SEPARATE AUTHORIZED TASK`
 
+## Wave 12 Phase C Production Esenler demo seed
+
+Product-owner'ın exact seed yetkisiyle, JIT single-writer/zero-baseline/collision ve
+artifact-integrity kapıları PASS sonrasında canonical `esenler_demo_v1.sql` yalnız
+`EsnaftaVar Production` / `mefhfvrgkwciubeajjeb` ref'ine tek transaction olarak bir
+kez uygulandı. Cleanup çalıştırılmadı; Development'a erişilmedi.
+
+Authoritative postflight:
+
+- categories/products/shops/listings: `4/20/57/285`;
+- active/featured products: `20/20`; active shops/listings: `57/285`;
+- deterministic manifest IDs: `366/366`; controlled mismatch ve unexpected row: `0`;
+- product marker `20`, `[DEMO]` shop ve null owner `57/57`, listing marker `285`;
+- Auth user/profile/merchant ve Storage object: `0`;
+- coordinates valid/unique: `57/57`; 19 mahallede üçer shop;
+- actual database `anon` rolüyle visible counts: `4/20/57/285`;
+- seller range: 14–15; 20/20 product multiple price.
+
+Bu sonuç guest discovery/read contract'ını database grant/RLS düzeyinde doğrular;
+henüz tam fiziksel/mobile broader Production smoke değildir. `owner_user_id = NULL`
+nedeniyle demo shop ownership, merchant QR confirmation ve verified transaction doğal
+olarak unavailable'dır. Cleanup ayrı owner yetkisi ister; gerçek kullanıcı aktivitesi
+sonrası blind destructive cleanup önerilmez.
+
+`PRODUCTION_DEMO_SEED: PASS`
+
+`PRODUCTION_DEMO_COUNTS: PASS`
+
+`PRODUCTION_DEMO_CUSTOMER_READ: PASS — ANON RLS ROLE`
+
+`PRODUCTION_DEMO_CLEANUP_RUN: NO`
+
 ## 1. Başlatma kapıları
 
 Smoke başlamadan önce tamamı işaretlenmelidir:
