@@ -189,7 +189,7 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [x] İlk Android version/build number ve artifact hash'i kaydedildi; kalıcı CI
       provenance kurulumu ayrıca açıktır.
 
-Android signing tamamlanmış olsa da iOS signing, physical-device acceptance ve Phase F
+Android signing ve customer physical-device acceptance tamamlanmış olsa da iOS signing ve Phase F
 callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporlanmaz.
 
 ## Wave 11 Phase A — ilk imzalı Android Production artifact'leri
@@ -204,9 +204,9 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
 
 `KEYSTORE_PRIMARY_BACKUP: COMPLETED`
 
-`ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
+`ANDROID_PHYSICAL_ACCEPTANCE: PASS — WAVE 13 PHASE B CUSTOMER RELEASE SMOKE`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
 - Build kaynağı: `origin/main@460c81e3bd8d24dcfea180da8d7c29637918b1af`,
   branch `agent1/w11-android-production-signing`.
@@ -331,6 +331,52 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   callback/recovery acceptance ve Play Console upload yapılmadı. Fiziksel iki-cihaz
   QR, ikinci offline keystore yedeği, iOS signing/archive ve final commercial GO da
   açık kalır.
+
+## Wave 13 Phase B — fiziksel signed APK acceptance
+
+Exact korunmuş APK yeniden build edilmeden POCO X7 Pro (`2412DPC0AG`) / Android 16
+(API 36) fiziksel cihazında doğrulandı ve veri koruyan normal `adb install -r` ile
+kuruldu.
+
+- APK SHA-256 exact
+  `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`;
+  boyut `122,739,377` byte.
+- `apksigner`: tek RSA-4096 signer, APK Signature Scheme v2 PASS; certificate SHA-256
+  canonical upload fingerprint'iyle eşleşti.
+- `aapt`: `com.esnaftavar.app`, `EsnaftaVar`, `1.0.0 (1)`, min/target SDK `24/36`,
+  `debuggable` attribute absent.
+- Cihazdaki mevcut aynı-version paket install öncesi salt okunur çekilip doğrulandı;
+  signer birebir eşleşti. Uninstall, clear-data veya rebuild yapılmadı. Normal reinstall
+  `Success` verdi; post-install package/version doğru kaldı.
+- İlk launch foreground `com.esnaftavar.app/.MainActivity`, process canlı ve startup
+  crash/config error logu temizdi. Gerçek Production Home demo verisi yüklendi.
+- Fiziksel customer smoke Home, kategori, ProductDetails, çoklu seller/fiyat, shop,
+  `Defter` araması, nearby ve back stack için PASS. Konum runtime izin dialog'u tekrar
+  gösterildi; izin sonrası `57 mağaza` yakınlığa göre sıralandı ve crash/error olmadı.
+- Camera permission manifestte mevcut fakat guest customer session'ında `granted=false`.
+  Scanner yalnız merchant-owned aktif shop ekranından açılır; Production demo
+  shop'ların owner'ı yoktur ve bu görev Auth/merchant fixture oluşturmayı yasaklar.
+  Bu yüzden scanner surface Auth bypass edilmeden çalıştırılmadı; functional bug değil,
+  ayrı merchant/two-device acceptance sınırıdır.
+- Production read `YES`; Production write, Auth/business/Storage fixture, Development
+  erişimi, rebuild ve APK Git takibi `NO`.
+- Android/platform/location/QR/Production-smoke hedefli testler `87` PASS (`2` gated
+  live skip); tam Flutter suite `1213` PASS (`6` gated live skip); analyzer, diff ve
+  security scan PASS.
+
+`PHYSICAL_SIGNED_APK_INSTALL: PASS`
+
+`PHYSICAL_PRODUCTION_STARTUP: PASS`
+
+`PHYSICAL_PRODUCTION_CUSTOMER_SMOKE: PASS`
+
+`CAMERA_SCANNER_SURFACE: NOT RUN — MERCHANT PRINCIPAL REQUIRED`
+
+`FUNCTIONAL_BLOCKERS_FOUND: NO`
+
+`COSMETIC_UI_POLISH: DEFERRED`
+
+`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: YES`
 
 ## Wave 10 Phase E2 doğrulama sınırı
 

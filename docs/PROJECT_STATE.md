@@ -3,14 +3,34 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-23
-- Son doğrulanan teslim: Wave 13 Phase A Android gerçek release signing kanıtı ve
-  korunmuş Production signed APK/AAB final entegrasyonu.
+- Son doğrulanan teslim: Wave 13 Phase B korunmuş signed Production APK fiziksel
+  Android customer acceptance Agent 1 task sonucu.
+- Task branch/base: `agent1/w13-physical-android-apk-acceptance` /
+  `origin/main@22c78c65a1fc479d81da7c88c9f27531b345e522`.
+- Entegrasyon durumu: **WAVE 13 PHASE B AGENT PASS / INTEGRATION PENDING**.
+- Korunmuş exact SHA-256 APK yeniden build edilmeden POCO X7 Pro / Android 16
+  (API 36) cihazına aynı signer doğrulaması sonrası uninstall/clear-data olmadan
+  normal reinstall edildi. Hash, v2/tek signer, package `com.esnaftavar.app`, label
+  `EsnaftaVar`, version `1.0.0 (1)` ve non-debuggable contract PASS.
+- Fiziksel startup/foreground/process, gerçek Production Home, kategori,
+  ProductDetails, multiple seller/price, shop, `Defter` araması, Yakındakiler ve back
+  stack PASS. Konum runtime permission yeniden istendi; izin sonrası `57 mağaza`
+  yakınlığa göre sıralandı, crash/error görülmedi.
+- Camera permission manifestte mevcut; scanner yalnız merchant-owned aktif shop
+  ekranından erişilebilir. Demo shop owner'ları `NULL`, merchant principal yok ve
+  görev Auth/merchant fixture yazmasını yasakladığından scanner Auth bypass edilmeden
+  açılmadı. Bu functional blocker değil, ayrı merchant/two-device acceptance sınırı.
+- Production reads `YES`; Production writes/Auth/business/Storage fixture,
+  Development erişimi ve rebuild `NO`. Hedefli test `87` PASS (`2` gated live skip),
+  tam suite `1213` PASS (`6` gated live skip), analyzer/diff/security temiz.
+- Bir önceki entegre baseline: Wave 13 Phase A Android gerçek release signing kanıtı
+  ve korunmuş Production signed APK/AAB final entegrasyonu.
 - Integration branch/base: `integration/wave-13-phase-a-android-signing` /
   `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45`.
 - Input/merge:
   `origin/agent2/w13-android-real-release-signing@d966f55f2793c08eb05d9527b8c11d8c5b18b5f2`
   / `52f1e98946938f9f656fc5f6a4bac80c98e90bf1` (`--no-ff`, conflict yok).
-- Entegrasyon durumu: **WAVE 13 PHASE A FINAL INTEGRATION PASS / SIGNED ANDROID
+- Önceki entegrasyon durumu: **WAVE 13 PHASE A FINAL INTEGRATION PASS / SIGNED ANDROID
   ARTIFACTS PRESERVED / ANDROID SIGNING RELEASE GATE PASS**.
 - Mevcut repo-dışı owner upload keystore yeniden kullanıldı; yeni key üretilmedi.
   `com.esnaftavar.app`, `1.0.0 (1)`, final callback ve canonical upload certificate
@@ -199,9 +219,23 @@
 
 `KEYSTORE_SECOND_OFFLINE_BACKUP: RECOMMENDED / OPEN`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
-`ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
+`ANDROID_PHYSICAL_ACCEPTANCE: PASS — SIGNED APK CUSTOMER RELEASE SMOKE`
+
+`PHYSICAL_SIGNED_APK_INSTALL: PASS`
+
+`PHYSICAL_PRODUCTION_STARTUP: PASS`
+
+`PHYSICAL_PRODUCTION_CUSTOMER_SMOKE: PASS`
+
+`CAMERA_SCANNER_SURFACE: NOT RUN — MERCHANT PRINCIPAL REQUIRED`
+
+`FUNCTIONAL_BLOCKERS_FOUND: NO`
+
+`COSMETIC_UI_POLISH: DEFERRED`
+
+`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: YES`
 
 `WAVE_11_B2_AUTOMATED_REGRESSION: PASS`
 
@@ -516,7 +550,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 ## Canlı Backend ile Kalan Doğrulamalar
 
 - Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
-- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. B6 physical Android confirmation notice ve authoritative full recovery lifecycle PASS; B6 canonical self-delete sonrasında zero-test residual yeniden sağlandı. B7 legacy Production callback removal PASS ve allowlist artık yalnız final callback'i içerir. Fiziksel iki-cihaz QR, broader controlled smoke, Play Console/Play App Signing ve iOS signing ayrı gate'lerdir.
+- Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. B6 physical Android confirmation notice ve authoritative full recovery lifecycle PASS; B6 canonical self-delete sonrasında zero-test residual yeniden sağlandı. B7 legacy Production callback removal PASS ve allowlist artık yalnız final callback'i içerir. Wave 13 Phase B korunmuş signed APK fiziksel customer startup/demo/location smoke'u PASS. Merchant-owned scanner/kamera ve iki-cihaz QR, Play Console/Play App Signing ve iOS signing ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Production F3B kanıtı Development'a genellenmez.
 - QR doğrulamasının iki gerçek hesap ve iki fiziksel cihazla kamera dahil uçtan uca davranışı.
@@ -526,6 +560,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-23: **WAVE 13 PHASE B AGENT PASS / PHYSICAL SIGNED APK CUSTOMER ACCEPTANCE** — Exact korunmuş SHA-256 APK yeniden build edilmeden POCO X7 Pro / Android 16 (API 36) fiziksel cihazında doğrulandı. Cihazdaki mevcut `1.0.0 (1)` paket aynı upload certificate taşıdığı için uninstall/clear-data olmadan `adb install -r` Success verdi. Hash, APK v2/tek signer, `com.esnaftavar.app`, `EsnaftaVar`, non-debuggable, foreground process ve crash/config logu PASS. Gerçek Production Home/kategori/ProductDetails/multiple seller-price/shop/`Defter` search/Yakındakiler/back stack fiziksel PASS; konum izni yeniden istendi ve izin sonrası `57 mağaza` yakınlığa göre sıralandı. Production write/Auth/business/Storage fixture/Development/rebuild `0`. Scanner yalnız merchant-owned shop'tan erişildiği, demo owner `NULL` ve görev merchant fixture'ı yasakladığı için Auth bypass edilmeden açılmadı; functional blocker değildir ve merchant/two-device acceptance'a kalır. Hedefli test `87` PASS (`2` gated live skip), tam suite `1213` PASS (`6` gated live skip), analyzer/diff/security temiz. Kozmetik UI final UI kit'e ertelendi; task integration bekliyor.
 - 2026-08-23: **WAVE 13 PHASE A FINAL INTEGRATION PASS / SIGNED ANDROID ARTIFACTS PRESERVED / ANDROID SIGNING RELEASE GATE PASS** — Agent 2'nin `d966f55` gerçek Android release signing kanıtı exact `305dd74` tabanına `52f1e98` ile `--no-ff` ve çatışmasız entegre edildi. Final `com.esnaftavar.app` / `1.0.0 (1)` APK ve AAB repo/Git dışında `C:\Users\Mustafa\EsnaftavarReleases\1.0.0` altında korunur; SHA-256 değerleri sırasıyla `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA` ve `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9` olarak yeniden doğrulandı. APK v2/tek signer ve AAB `jar verified`, canonical upload certificate fingerprint'i, final callback, non-debuggable ve forbidden identity/secret taraması PASS. Integration artifact rebuild, signing credential erişimi veya Production/Development remote işlem yapmadı. Hedefli matris `50/50`, tam suite `1213` PASS (`6` opt-in live skip), analyzer/diff/security temizdir. Fiziksel APK/final Auth, iki-cihaz QR, Play Console kabulü, ikinci offline keystore yedeği, iOS signing/archive ve commercial GO açıktır.
 - 2026-08-22: **WAVE 12 PHASE D FINAL INTEGRATION PASS / PRODUCTION DEMO FUNCTIONAL SMOKE PASS** — Agent 1'in `8c869e5` functional smoke/harness teslimi exact `609e555` tabanına `42774fe` ile `--no-ff` ve çatışmasız entegre edildi. Gerçek Production Web release istemcisi ve explicit opt-in anonymous read harness canonical `mefhfvrgkwciubeajjeb` ref'inde Startup/Home, dört kategorinin her birinde beş doğru ürün, ProductDetails, 20/20 üründe 14–15 seller ve multiple price, representative seller→shop→beş listing, exact/generic/category/no-result search, 57-shop nearby, anonymous wishlist/cart/profile login gate ve customer back stack'i PASS doğruladı. Authoritative remote read `4/20/57/285`, 57 null-owner demo shop ve 57 valid/unique coordinate gösterdi; runtime functional bug/release blocker bulunmadı. Stale empty-catalog harness current demo baseline'ına güncellendi ve full manifest/relationship/search/nearby read harness'ı eklendi. Integration remote define veya credential kullanmadı; Production/Development read/write, seed/cleanup, fixture, Auth/Storage/config/migration işlemi yapmadı. Yerel hedefli matris `552` PASS (`2` Production live skip), tam suite `1213` PASS (`6` live skip), analyzer/diff/security temizdir. Kozmetik UI product-owner kararıyla `DEFERRED UNTIL FINAL UI KIT`; merchant/QR/verified purchase null owner nedeniyle intentional unavailable'dır. Sonraki release kapısına hazırdır.
 - 2026-08-22: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO DATASET LIVE** — Agent 1'in `26defb1` Production seed/postflight kanıtı exact `580552f` tabanına `fad75a7` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production ref ve Development dışlama, single-writer, fresh zero business baseline, collision `0/366`, natural-key collision `0`, artifact integrity ve clean-room kapıları PASS sonrasında tracked `esenler_demo_v1.sql` Agent 1 turunda tek transaction olarak bir kez uygulanmıştı. Authoritative postflight categories/products/shops/shop_products `4/20/57/285`, active/featured products `20/20`, active shops `57`, deterministic manifest `366/366`, mismatch ve unexpected row `0` doğruladı. Product marker `20`, `[DEMO]` shop/owner-null `57/57`, listing marker `285`; 57 coordinate valid/unique ve 19 mahallenin her birinde üç shop vardır. Gerçek `anon` RLS rolü aynı katalog sayılarını, ürün başına 14–15 seller ve multiple price sonucunu PASS okudu. Auth user/profile/merchant ve Storage object `0`; demo shops owner-less olduğundan discovery/shop/seller comparison PASS, merchant ownership/QR/verified transaction intentional unavailable'dır. Integration remote read/write yapmadı; seed yeniden uygulanmadı, cleanup çalıştırılmadı ve Development'a dokunulmadı. Generator check, hedefli matris `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve analyzer temizdir. Broader fiziksel/mobile visual smoke ayrı açık kabul adımıdır.
