@@ -681,7 +681,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `ANDROID_SIGNING_RELEASE_GATE: PASS`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
 - Agent 2'nin `d966f55` signing kanıtı exact `305dd74` tabanına `52f1e98` ile tek
   `--no-ff` ve çatışmasız merge olarak entegre edildi. Runtime kod, platform kimliği,
@@ -696,10 +696,44 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Development remote read/write, Auth/SMTP, migration, Storage veya config işlemi
   yoktur. Hedefli matris `50/50`, tam suite `1213` PASS (`6` opt-in live skip),
   analyzer/diff/security temizdir.
-- Sonraki bağımsız release kabul paketi korunmuş APK'nın fiziksel install/startup ve
-  final callback/recovery kabulüdür. Fiziksel iki-cihaz QR, Play Console AAB kabulü,
-  ikinci offline keystore yedeği, iOS signing/archive ve final commercial GO açık
-  kalır. Bu açık işler signing/artifact gate PASS sonucunu geri çevirmez.
+- Korunmuş APK'nın fiziksel install/startup/customer/location kabulü Wave 13 Phase
+  B'de PASS; final callback/recovery authoritative B6 PASS durumundadır. Fiziksel
+  merchant scanner/iki-cihaz QR, Play Console AAB kabulü, ikinci offline keystore
+  yedeği, iOS signing/archive ve final commercial GO açık kalır. Bu açık işler
+  signing/artifact gate PASS sonucunu geri çevirmez.
+
+## Wave 13 Phase B Fiziksel Android Entegrasyon Gözlemi
+
+`WAVE_13_PHASE_B_INTEGRATION: PASS`
+
+`PHYSICAL_ANDROID_RELEASE_ACCEPTANCE: PASS`
+
+`PHYSICAL_LOCATION_ACCEPTANCE: PASS`
+
+`PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`
+
+`FUNCTIONAL_ANDROID_BLOCKERS: NONE`
+
+`READY_FOR_NEXT_RELEASE_GATE: YES`
+
+- Agent 1'in `920b95e` fiziksel kabul kanıtı exact `22c78c6` tabanına `6c15e02` ile
+  tek `--no-ff` ve çatışmasız merge olarak entegre edildi. Runtime/platform kodu,
+  schema/model, migration, `service_locator.dart`, dependency veya signed binary
+  değişmedi; shared sahiplik yalnız release ve coordination belgelerindedir.
+- Exact korunmuş `com.esnaftavar.app` / `1.0.0 (1)` APK POCO X7 Pro / Android 16
+  (API 36) cihazına uninstall/clear-data olmadan normal upgrade ile kuruldu. Startup,
+  Production Home/kategori/ProductDetails/seller/shop/search/nearby/navigation ve
+  fiziksel location izin/acquisition PASS; functional blocker yoktur. Kozmetik UI
+  final UI kit'e deferred'dır.
+- Agent fiziksel turu yalnız customer read yüzeylerini kullandı ve remote write,
+  Auth/merchant/QR/Storage fixture, Development erişimi veya rebuild yapmadı. Final
+  Integration remote read/write yapmadan hedefli `143` PASS (`2` gated live skip),
+  tam suite `1213` PASS (`6` gated live skip), analyzer/diff/security PASS doğruladı.
+- Camera/scanner merchant-owned aktif shop principal'ı gerektirdiğinden çalıştırılmadı;
+  fail sayılmaz. Merchant scanner ve fiziksel iki-cihaz QR tek ayrı acceptance gate'i
+  olarak OPEN kalır. Play Console, ikinci offline keystore yedeği, iOS signing/archive
+  ve commercial GO da ayrık release kapılarıdır; B6 Auth confirmation/recovery PASS
+  durumu yeniden açılmaz.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 

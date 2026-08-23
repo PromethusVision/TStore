@@ -125,9 +125,21 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   final callback ve secret/identity taraması PASS. Integration rebuild, credential
   erişimi veya remote backend işlemi yapmadı; hedefli `50/50`, tam suite `1213` PASS
   (`6` opt-in live skip), analyzer/diff/security temizdir. Android signing/artifact
-  release gate kapandı. Korunmuş APK fiziksel kabulü, final callback/recovery fiziksel
-  turu, iki-cihaz QR, Play Console AAB kabulü, ikinci offline keystore yedeği, iOS
-  signing/archive ve final commercial GO açık kalır.
+  release gate kapandı. Korunmuş APK customer/location fiziksel kabulü sonraki Phase
+  B'de PASS; final callback/recovery authoritative B6 PASS olarak korunur. İki-cihaz
+  QR, Play Console AAB kabulü, ikinci offline keystore yedeği, iOS signing/archive ve
+  final commercial GO açık kalır.
+- 2026-08-23 Wave 13 Phase B ilerlemesi: Exact korunmuş signed Production APK POCO X7
+  Pro / Android 16 (API 36) cihazına rebuild/uninstall/clear-data olmadan normal
+  upgrade ile kuruldu. Startup, Production customer Home/kategori/ProductDetails/
+  seller/shop/search/nearby/navigation ve physical location izin/acquisition PASS;
+  functional blocker `NONE`. Agent customer read dışında Production write, Auth/
+  merchant/QR/Storage fixture veya Development işlemi yapmadı. Final Integration
+  input'u çatışmasız no-ff merge etti; remote read/write olmadan hedefli `143` PASS
+  (`2` gated live skip), tam suite `1213` PASS (`6` gated live skip), analyzer/diff/
+  security temizdir. B6 confirmation/recovery PASS olarak korunur. Merchant scanner
+  ve iki-cihaz QR ayrı OPEN gate; Play Console, ikinci offline keystore yedeği, iOS
+  signing/archive, final UI kit ve commercial GO da açık kalır.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -421,6 +433,15 @@ HTTP `200` / no-exception final success değildir.
   PASS (`6` opt-in live skip), analyzer, diff ve security scan temizdir. Signing/
   artifact kapısı kapalı; fiziksel artifact, Play Console, ikinci offline backup,
   iOS ve final commercial kabul kapıları açıktır.
+- 2026-08-23 Wave 13 Phase B final integration sonucu: Agent 1'in `920b95e` physical
+  signed APK acceptance kanıtı exact `22c78c6` tabanına `6c15e02` ile `--no-ff` ve
+  çatışmasız entegre edildi. POCO X7 Pro / Android 16 (API 36) üzerinde exact korunmuş
+  `com.esnaftavar.app` / `1.0.0 (1)` APK install/startup, customer discovery/search/
+  nearby/navigation ve location acceptance PASS; functional blocker yoktur. Agent
+  yalnız Production customer reads yaptı; write/fixture/rebuild/Development yoktur.
+  Integration remote read/write yapmadan hedefli `143` PASS (`2` gated live skip),
+  full suite `1213` PASS (`6` gated live skip), analyzer/diff/security temizdir.
+  Camera/scanner çalıştırılmadı ve fail değildir; merchant/two-device QR OPEN kalır.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -434,7 +455,9 @@ HTTP `200` / no-exception final success değildir.
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
   keystore yedeği ve Wave 13'te Git dışında kalıcı release dizinine alınan güncel
   signed APK/AAB PASS'tir. Wave 13 signing/artifact gate kapanmıştır; korunmuş güncel
-  APK'nın fiziksel install/startup ve final callback/recovery kabulü ayrıca açıktır.
+  APK'nın fiziksel install/startup/customer/location kabulü Phase B'de PASS olmuştur.
+  Final callback/recovery authoritative B6 PASS durumu korunur ve yeniden açık gate
+  değildir.
   B2R önceki signed APK install/upgrade,
   startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
   app opening PASS; historical B3R turunda confirmation success feedback ve recovery
@@ -450,9 +473,9 @@ HTTP `200` / no-exception final success değildir.
   success feedback code bug'ı ve recovery false-success guard B5'te kapanmış; B6
   destination notice, same-credential fresh login ve same-user identity'yi fiziksel
   PASS doğrulamıştır. B7 legacy Production callback'i kaldırmış ve final callback-only
-  postflight'ı PASS tamamlamıştır. Deliverability izleme, fiziksel iki-cihaz QR,
-  fixture tabanlı Storage negative listing ve controlled broader Production smoke açık
-  blocker'dır.
+  postflight'ı PASS tamamlamıştır. Deliverability izleme, fiziksel merchant scanner/
+  iki-cihaz QR, fixture tabanlı Storage negative listing, Play Console AAB kabulü ve
+  iOS release kabulü açık kapılardır.
 - Önceki B3 fiziksel-test principal'ı B3A'da canonical self-delete ile temizlendi;
   saved-location dahil Auth/business/Storage residual exact `0`. Sonraki canlı Auth
   turu kendi fresh pre-write inventory ve scoped cleanup planını yeniden uygulamalıdır.
@@ -477,7 +500,12 @@ HTTP `200` / no-exception final success değildir.
   `WAVE_13_PHASE_A_INTEGRATION: PASS`,
   `SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`,
   `ANDROID_SIGNING_RELEASE_GATE: PASS`,
-  `READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`,
+  `READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`,
+  `WAVE_13_PHASE_B_INTEGRATION: PASS`,
+  `PHYSICAL_ANDROID_RELEASE_ACCEPTANCE: PASS`,
+  `PHYSICAL_LOCATION_ACCEPTANCE: PASS`,
+  `PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`,
+  `FUNCTIONAL_ANDROID_BLOCKERS: NONE`,
   `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
   `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
   `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,
@@ -538,9 +566,9 @@ HTTP `200` / no-exception final success değildir.
 - Esenler demo dataset Phase A artefaktı ve Phase B safety review'i ardından owner
   yetkili Phase C Production apply `4/20/57/285` ve anon customer-read postflight ile
   PASS tamamlanmıştır. Cleanup uygulanmamıştır ve ayrı owner yetkisi olmadan çalışmaz;
-  user activity sonrası blind cleanup otomatik yetkili değildir. Fiziksel iki-cihaz QR,
-  broader Production smoke, Play Console/Play App Signing, iOS signing/archive ve
-  final commercial GO ayrıca açık kalır.
+  user activity sonrası blind cleanup otomatik yetkili değildir. Fiziksel merchant
+  scanner/iki-cihaz QR, Play Console/Play App Signing, ikinci offline keystore yedeği,
+  iOS signing/archive, final UI kit ve final commercial GO ayrıca açık kalır.
 - Deferred `brand-logos`, `avatars`, `review-images` ile legacy order final drop durumları Wave 8'de değiştirilmedi ve bu başlık altında yanlışlıkla blocker'a yükseltilmedi.
 
 ### C10. Iconsax Release Build Hardening

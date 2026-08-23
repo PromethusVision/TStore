@@ -88,7 +88,7 @@ gösterir. Doldurulmuş `key.properties`, `.jks` ve `.keystore` dosyaları ignor
 
 `PHASE_F_CALLBACK_INTEGRATED: YES`
 
-`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: YES`
+`LEGACY_PRODUCTION_ALLOWLIST_REMOVAL_REQUIRED: NO — B7 COMPLETED`
 
 Final Production istemci callback'i:
 
@@ -104,11 +104,11 @@ otomatik PKCE URI algılaması kapalıdır; uygulama yalnız exact environment
 scheme/host/root path ve dolu PKCE code doğrulandıktan sonra session exchange yapar.
 Yabancı scheme, host, path ve web origin güvenli biçimde yok sayılır.
 
-Product owner bildirimiyle Production redirect allowlist final callback'i zaten
-içerir; bu görevde Dashboard/Management API yazması yapılmadı. Legacy Production
-allowlist kaydı rollback penceresi için geçici kalır. Kaynak integration tamamlandı;
-legacy kayıt gerçek signed-artifact confirmation/recovery kabulünden sonra yetkili
-release owner tarafından kaldırılması gereken açık operasyon adımıdır.
+Phase F intermediate turunda Production redirect allowlist final ve legacy callback'i
+rollback penceresi için birlikte taşıyordu. Sonraki B6 signed-artifact confirmation/
+recovery kabulü PASS, B7 yetkili cutover ise legacy kaydı kaldırıp allowlist'i yalnız
+`com.esnaftavar.app://login-callback/` olarak doğruladı. Bu tarihsel ara durum güncel
+bir açık operasyon adımı değildir.
 
 ## Signing durumu
 
@@ -142,12 +142,10 @@ release owner tarafından kaldırılması gereken açık operasyon adımıdır.
 
 1. Play Console kaydının `com.esnaftavar.app` ile exact eşleşmesi.
 2. Apple App ID/App Store Connect kaydının `com.esnaftavar.app` ile exact eşleşmesi.
-3. Signed-artifact/live acceptance sonrasında legacy Production Auth allowlist kaydının
-   kaldırılması.
-4. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
-5. Mevcut Android upload keystore'un ikinci offline yedeği ve CI secret-store
+3. Play App Signing modeli, upload key sahibi ve rotasyon/recovery sorumlusu.
+4. Mevcut Android upload keystore'un ikinci offline yedeği ve CI secret-store
    kurulumu. Birincil repo-dışı yedek ve parola yöneticisi kaydı tamamlanmıştır.
-6. Apple Team ID, Distribution certificate/private key ve provisioning profile'ın
+5. Apple Team ID, Distribution certificate/private key ve provisioning profile'ın
    güvenli keychain/CI kaynağı.
 
 Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yazılmaz.
@@ -162,8 +160,9 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
    güvenli konuma getirir; iş bitiminde ikisini de temizler.
 4. iOS CI, certificate/private key'i geçici keychain'e ve provisioning profile'ı
    standart dizine kurar; build settings'i secure runtime mekanizmasıyla sağlar.
-5. Entegre final callback'in signed-artifact confirmation/recovery kabulü tamamlanır;
-   ardından legacy Production allowlist kaydı kaldırılır.
+5. Signed-artifact confirmation/recovery kabulü B6'da, legacy Production callback
+   kaldırılması B7'de tamamlanmıştır; yeni artifact'ta gerçek regression bulunmadıkça
+   bu gate'ler yeniden açılmaz.
 6. Signed AAB ve IPA üretilir; signer/team/profile kimliği secret göstermeden
    doğrulanır. Artifact hash, commit ve build number kaydedilir.
 
@@ -183,14 +182,16 @@ Secret materyal source'a, template'e, terminal çıktısına veya CI loguna yaz�
 - [ ] iOS doğru Team/profile ile signed archive üretti.
 - [x] Production callback istemci/platform/preflight wiring'i final scheme'e taşındı.
 - [x] Final callback kaynak integration'ı tamamlandı.
-- [ ] Final callback signed-artifact canlı kabulü tamamlandı.
-- [ ] Legacy Production redirect allowlist kaydı kaldırıldı.
-- [ ] Signed artifact üzerinde signup confirmation ve recovery callback PASS.
+- [x] Final callback signed-artifact canlı kabulü B6'da tamamlandı.
+- [x] Legacy Production redirect allowlist kaydı B7'de kaldırıldı.
+- [x] Signed artifact üzerinde signup confirmation ve recovery callback B6 PASS.
 - [x] İlk Android version/build number ve artifact hash'i kaydedildi; kalıcı CI
       provenance kurulumu ayrıca açıktır.
 
-Android signing ve customer physical-device acceptance tamamlanmış olsa da iOS signing ve Phase F
-callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporlanmaz.
+Android signing, customer physical-device acceptance ve authoritative confirmation/
+recovery tamamlanmıştır. Play Console AAB kabulü, merchant/two-device QR, ikinci
+offline keystore yedeği, iOS signing/archive ve final commercial karar tamamlanmadan
+`COMMERCIAL_RELEASE_READY: YES` raporlanmaz.
 
 ## Wave 11 Phase A — ilk imzalı Android Production artifact'leri
 
@@ -239,9 +240,10 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   Kalıcı keystore repo dışında bırakıldı ve Git tarafından izlenmiyor. Owner birincil
   yedeği ve parola yöneticisi kaydını tamamladı; parola, yedek bağlantısı ve secret
   materyal belgelenmedi. İkinci offline yedek öneri/açık olarak kalır.
-- Bağlı Android cihazı bulunmadığı için install/startup, gerçek callback opening ve
-  fiziksel smoke çalıştırılmadı. Bu durum imzalı artifact üretimini geçersiz kılmaz;
-  fiziksel Android acceptance gate'i açık kalır.
+- Wave 11 turunda bağlı Android cihazı bulunmadığı için install/startup, gerçek
+  callback opening ve fiziksel smoke çalıştırılmadı. Bu tarihsel açık gate, B6 Auth ve
+  Wave 13 Phase B customer/location physical acceptance sonuçlarıyla daha sonra PASS
+  tamamlandı.
 - Production yönetim ekranından yalnız client-safe publishable key salt-okunur
   alındı. Production veri isteği/yazması, Auth işlemi, migration veya config değişimi
   yapılmadı; Development'a dokunulmadı.
@@ -276,7 +278,7 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
 
 `ANDROID_SIGNING_RELEASE_GATE: PASS`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
 - Build kaynağı: `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45`,
   task branch `agent2/w13-android-real-release-signing`.
@@ -327,10 +329,11 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   Tam Flutter suite **1213 PASS**, **6 opt-in live skip**; analyzer, diff ve
   artifact/security kontrolleri PASS. Integration artifact rebuild veya signing
   credential erişimi yapmadı; Production/Development remote read/write yoktur.
-  Fiziksel Android cihaz bağlı olmadığından bu turda APK install/startup/final
-  callback/recovery acceptance ve Play Console upload yapılmadı. Fiziksel iki-cihaz
-  QR, ikinci offline keystore yedeği, iOS signing/archive ve final commercial GO da
-  açık kalır.
+  Phase A turunda fiziksel Android cihaz bağlı olmadığından APK install/startup
+  yapılmadı; bunlar customer/location smoke ile Wave 13 Phase B'de PASS tamamlandı.
+  Confirmation/recovery authoritative B6 PASS durumu korunur. Fiziksel merchant/
+  iki-cihaz QR, Play Console upload, ikinci offline keystore yedeği, iOS signing/
+  archive ve final commercial GO açık kalır.
 
 ## Wave 13 Phase B — fiziksel signed APK acceptance
 
@@ -358,11 +361,25 @@ kuruldu.
   shop'ların owner'ı yoktur ve bu görev Auth/merchant fixture oluşturmayı yasaklar.
   Bu yüzden scanner surface Auth bypass edilmeden çalıştırılmadı; functional bug değil,
   ayrı merchant/two-device acceptance sınırıdır.
-- Production read `YES`; Production write, Auth/business/Storage fixture, Development
-  erişimi, rebuild ve APK Git takibi `NO`.
-- Android/platform/location/QR/Production-smoke hedefli testler `87` PASS (`2` gated
-  live skip); tam Flutter suite `1213` PASS (`6` gated live skip); analyzer, diff ve
-  security scan PASS.
+- Agent fiziksel turunda yalnız customer yüzeyleri için Production read `YES`;
+  Production write, Auth/business/Storage fixture, Development erişimi, rebuild ve APK
+  Git takibi `NO`. Final Integration remote read/write yapmadı.
+- Agent Android/platform/location/QR/Production-smoke hedefli testleri `87` PASS (`2`
+  gated live skip). Final Integration hedefli matrisi `143` PASS (`2` gated live
+  skip), tam Flutter suite'i `1213` PASS (`6` gated live skip), analyzer, diff ve
+  security scan'i PASS doğruladı.
+
+`WAVE_13_PHASE_B_INTEGRATION: PASS`
+
+`PHYSICAL_ANDROID_RELEASE_ACCEPTANCE: PASS`
+
+`PHYSICAL_LOCATION_ACCEPTANCE: PASS`
+
+`PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`
+
+`FUNCTIONAL_ANDROID_BLOCKERS: NONE`
+
+`READY_FOR_NEXT_RELEASE_GATE: YES`
 
 `PHYSICAL_SIGNED_APK_INSTALL: PASS`
 
@@ -376,7 +393,7 @@ kuruldu.
 
 `COSMETIC_UI_POLISH: DEFERRED`
 
-`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: YES`
+`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: COMPLETED — FINAL INTEGRATION PASS`
 
 ## Wave 10 Phase E2 doğrulama sınırı
 

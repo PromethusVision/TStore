@@ -132,7 +132,7 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `ANDROID_SIGNING_RELEASE_GATE: PASS`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
 Exact `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45` tabanında mevcut owner
 upload keystore yeniden kullanılarak Production APK ve AAB tekrar üretildi; yeni key
@@ -162,8 +162,10 @@ canonical Wave 11 upload certificate kaydıyla birebir eşleşti.
   `50/50`, tam Flutter suite `1213` PASS (`6` opt-in live skip), analyzer, diff ve
   security scan PASS. Artifact rebuild, signing credential erişimi veya Production/
   Development remote read/write yapılmadı.
-- Fiziksel Android cihaz bağlı değildi. APK install/startup/final callback physical
-  acceptance, recovery fiziksel kabulü, iki-cihaz QR ve Play Console upload açık kalır.
+- Phase A turunda fiziksel Android cihaz bağlı değildi. Sonraki Wave 13 Phase B exact
+  korunmuş APK install/startup/customer/location smoke'unu PASS tamamladı. Final
+  callback ve recovery authoritative B6 PASS durumu korunur; iki-cihaz QR ve Play
+  Console upload açık kalır.
 - Keystore repo dışında en az iki güvenli yerde yedeklenmelidir. Birincil yedek ve
   parola yöneticisi kaydı mevcut; ikinci offline yedek/CI provenance owner
   sorumluluğunda açıktır.
@@ -194,10 +196,25 @@ Fiziksel release smoke:
 - Auth confirmation/recovery B6 authoritative PASS kanıtı korunur ve yeniden
   çalıştırılmadı.
 
-Production reads `YES`; Production writes, Auth user, cart/wishlist/review/QR,
-merchant, Storage, Development ve rebuild `NO`. Hedefli matris `87` PASS (`2` gated
-live skip), tam Flutter suite `1213` PASS (`6` gated live skip), analyzer/diff/
-security scan PASS. Kozmetik UI değerlendirmesi `DEFERRED UNTIL FINAL UI KIT`.
+Agent fiziksel acceptance sırasında yalnız customer yüzeyleri için Production reads
+`YES`; Production writes, Auth user, cart/wishlist/review/QR, merchant, Storage,
+Development ve rebuild `NO`. Agent hedefli matrisi `87` PASS (`2` gated live skip).
+Final Integration remote read/write yapmadan hedefli matrisi `143` PASS (`2` gated
+live skip), tam Flutter suite'i `1213` PASS (`6` gated live skip), analyzer/diff/
+security scan'i PASS yeniden doğruladı. Kozmetik UI değerlendirmesi
+`DEFERRED UNTIL FINAL UI KIT`.
+
+`WAVE_13_PHASE_B_INTEGRATION: PASS`
+
+`PHYSICAL_ANDROID_RELEASE_ACCEPTANCE: PASS`
+
+`PHYSICAL_LOCATION_ACCEPTANCE: PASS`
+
+`PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`
+
+`FUNCTIONAL_ANDROID_BLOCKERS: NONE`
+
+`READY_FOR_NEXT_RELEASE_GATE: YES`
 
 `PHYSICAL_SIGNED_APK_INSTALL: PASS`
 
@@ -211,7 +228,7 @@ security scan PASS. Kozmetik UI değerlendirmesi `DEFERRED UNTIL FINAL UI KIT`.
 
 `COSMETIC_UI_POLISH: DEFERRED`
 
-`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: YES`
+`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: COMPLETED — FINAL INTEGRATION PASS`
 
 ## Wave 11 Phase A signed Android artifact evidence
 
