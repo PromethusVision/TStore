@@ -40,9 +40,9 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `KEYSTORE_SECOND_OFFLINE_BACKUP: RECOMMENDED / OPEN`
 
-`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: COMPLETED — WAVE 13 PHASE B`
 
-`ANDROID_PHYSICAL_ACCEPTANCE: OPEN`
+`ANDROID_PHYSICAL_ACCEPTANCE: PASS — SIGNED APK CUSTOMER RELEASE SMOKE`
 
 `READY_FOR_PHYSICAL_B2_RETEST: COMPLETED — INPUT/LOCATION PASS`
 
@@ -169,6 +169,49 @@ canonical Wave 11 upload certificate kaydıyla birebir eşleşti.
   sorumluluğunda açıktır.
 
 Bu bölüm signing/artifact gate'ini PASS eder; tek başına commercial release GO vermez.
+
+## Wave 13 Phase B physical signed APK acceptance
+
+Korunmuş Production APK yeniden build edilmeden POCO X7 Pro / Android 16 (API 36)
+fiziksel cihazında doğrulandı. Exact hash, v2/tek signer, canonical upload certificate,
+`com.esnaftavar.app`, `EsnaftaVar`, `1.0.0 (1)` ve non-debuggable contract PASS.
+Cihazdaki önceki aynı-version paket aynı signer taşıdığı için uninstall/clear-data
+yapılmadan normal `adb install -r` başarıyla tamamlandı.
+
+Fiziksel release smoke:
+
+- startup/foreground/process ve crash/config logu: PASS;
+- gerçek Production Home'da dört kategori ve demo ürünler: PASS;
+- kategori → ProductDetails → multiple seller/price → shop → back stack: PASS;
+- `Defter` search → result → ProductDetails: PASS;
+- Yakındakiler mağazaları: PASS;
+- location izin reset/istek/`Uygulamayı kullanırken izin ver`/acquisition: PASS;
+- izin sonrası yakınlığa göre sıralanan `57 mağaza`, crash/error `0`: PASS;
+- camera permission manifestte mevcut; scanner surface yalnız merchant-owned aktif
+  shop'tan erişilebilir. Auth/merchant fixture yasak ve demo owner `NULL` olduğundan
+  scanner fiziksel olarak açılmadı; bu bir functional blocker değil, ayrı merchant/
+  iki-cihaz acceptance sınırıdır;
+- Auth confirmation/recovery B6 authoritative PASS kanıtı korunur ve yeniden
+  çalıştırılmadı.
+
+Production reads `YES`; Production writes, Auth user, cart/wishlist/review/QR,
+merchant, Storage, Development ve rebuild `NO`. Hedefli matris `87` PASS (`2` gated
+live skip), tam Flutter suite `1213` PASS (`6` gated live skip), analyzer/diff/
+security scan PASS. Kozmetik UI değerlendirmesi `DEFERRED UNTIL FINAL UI KIT`.
+
+`PHYSICAL_SIGNED_APK_INSTALL: PASS`
+
+`PHYSICAL_PRODUCTION_STARTUP: PASS`
+
+`PHYSICAL_PRODUCTION_CUSTOMER_SMOKE: PASS`
+
+`CAMERA_SCANNER_SURFACE: NOT RUN — MERCHANT PRINCIPAL REQUIRED`
+
+`FUNCTIONAL_BLOCKERS_FOUND: NO`
+
+`COSMETIC_UI_POLISH: DEFERRED`
+
+`READY_FOR_ANDROID_PHYSICAL_INTEGRATION: YES`
 
 ## Wave 11 Phase A signed Android artifact evidence
 
