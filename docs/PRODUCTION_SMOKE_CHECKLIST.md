@@ -124,6 +124,35 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 `COMMERCIAL_RELEASE_READY: NO`
 
+## Wave 13 Phase A signed Android artifact evidence
+
+Exact `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45` tabanında mevcut owner
+upload keystore yeniden kullanılarak Production APK ve AAB tekrar üretildi; yeni key
+oluşturulmadı. Final package `com.esnaftavar.app`, callback
+`com.esnaftavar.app://login-callback/`, version `1.0.0 (1)` ve signer fingerprint'i
+canonical Wave 11 upload certificate kaydıyla birebir eşleşti.
+
+- APK: `build/app/outputs/flutter-apk/app-production-release.apk`, SHA-256
+  `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`;
+  `apksigner` v2/tek signer PASS, `debuggable=false`.
+- AAB: `build/app/outputs/bundle/productionRelease/app-production-release.aab`,
+  SHA-256
+  `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9`;
+  `jarsigner` verified ve certificate fingerprint eşleşmesi PASS.
+- Production structural preflight, exact ref/URL ve client-safe publishable key
+  injection PASS. Development URL/package/callback artifact manifestinde aktif değil;
+  Production/Development backend write yapılmadı.
+- Artifact/tracked scan signing password, private/server key, service-role JWT,
+  keystore, populated key.properties veya gerçek publishable key sızıntısı bulmadı.
+  Geçici signing/runtime dosyaları kaldırıldı; yalnız APK/AAB local output'ta bırakıldı.
+- Fiziksel Android cihaz bağlı değildi. APK install/startup/final callback physical
+  acceptance ve Play Console upload açık kalır.
+- Keystore repo dışında en az iki güvenli yerde yedeklenmelidir. Birincil yedek ve
+  parola yöneticisi kaydı mevcut; ikinci offline yedek/CI provenance owner
+  sorumluluğunda açıktır.
+
+Bu bölüm signing/artifact gate'ini PASS eder; tek başına commercial release GO vermez.
+
 ## Wave 11 Phase A signed Android artifact evidence
 
 Wave 11'de repo-dışı kalıcı upload keystore ve `esnaftavar-upload` alias'ı ile exact

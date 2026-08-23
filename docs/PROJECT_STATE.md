@@ -2,8 +2,27 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-22
-- Son doğrulanan teslim: Wave 12 Phase D Production demo functional smoke final
+- Son güncelleme: 2026-08-23
+- Son doğrulanan teslim: Wave 13 Phase A Android real release signing ve güncel
+  Production signed APK/AAB task branch kanıtı.
+- Task branch/base: `agent2/w13-android-real-release-signing` /
+  `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45`.
+- Entegrasyon durumu: **WAVE 13 PHASE A SIGNED APK/AAB PASS / SIGNING SECURITY PASS /
+  INTEGRATION REQUIRED**.
+- Mevcut repo-dışı owner upload keystore yeniden kullanıldı; yeni key üretilmedi.
+  `com.esnaftavar.app`, `1.0.0 (1)`, final callback ve canonical upload certificate
+  fingerprint'i resmi artifact araçlarıyla PASS. Güncel local APK SHA-256
+  `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`; AAB SHA-256
+  `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9`.
+- Production structural preflight ve client-safe runtime injection PASS. Artifact ve
+  Git scan'leri Development URL/package/callback aktivasyonu, server/private key,
+  service-role JWT, signing parolası veya tracked signing materyali bulmadı.
+  Production/Development write, Auth, SMTP, migration ve Storage işlemi yapılmadı.
+- Hedefli matris `38/38`, tam Flutter suite `1213` PASS (`6` opt-in live skip),
+  analyzer PASS. Fiziksel cihaz bağlı olmadığından APK install/startup/final callback
+  physical acceptance ve Play Console upload açık; ikinci offline keystore yedeği ve
+  kalıcı CI signing provenance owner sorumluluğunda.
+- Bir önceki entegre baseline: Wave 12 Phase D Production demo functional smoke final
   integration.
 - Integration branch/base: `integration/wave-12-phase-d-functional-smoke` /
   `origin/main@609e55572faa10b9608cc8eda16c6c8061180261`.
