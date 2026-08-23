@@ -3,25 +3,35 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-23
-- Son doğrulanan teslim: Wave 13 Phase A Android real release signing ve güncel
-  Production signed APK/AAB task branch kanıtı.
-- Task branch/base: `agent2/w13-android-real-release-signing` /
+- Son doğrulanan teslim: Wave 13 Phase A Android gerçek release signing kanıtı ve
+  korunmuş Production signed APK/AAB final entegrasyonu.
+- Integration branch/base: `integration/wave-13-phase-a-android-signing` /
   `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45`.
-- Entegrasyon durumu: **WAVE 13 PHASE A SIGNED APK/AAB PASS / SIGNING SECURITY PASS /
-  INTEGRATION REQUIRED**.
+- Input/merge:
+  `origin/agent2/w13-android-real-release-signing@d966f55f2793c08eb05d9527b8c11d8c5b18b5f2`
+  / `52f1e98946938f9f656fc5f6a4bac80c98e90bf1` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 13 PHASE A FINAL INTEGRATION PASS / SIGNED ANDROID
+  ARTIFACTS PRESERVED / ANDROID SIGNING RELEASE GATE PASS**.
 - Mevcut repo-dışı owner upload keystore yeniden kullanıldı; yeni key üretilmedi.
   `com.esnaftavar.app`, `1.0.0 (1)`, final callback ve canonical upload certificate
-  fingerprint'i resmi artifact araçlarıyla PASS. Güncel local APK SHA-256
+  fingerprint'i resmi artifact araçlarıyla PASS. Korunmuş APK
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.apk`,
+  SHA-256
   `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`; AAB SHA-256
-  `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9`.
+  `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9` ve yolu
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.aab`.
 - Production structural preflight ve client-safe runtime injection PASS. Artifact ve
   Git scan'leri Development URL/package/callback aktivasyonu, server/private key,
   service-role JWT, signing parolası veya tracked signing materyali bulmadı.
-  Production/Development write, Auth, SMTP, migration ve Storage işlemi yapılmadı.
-- Hedefli matris `38/38`, tam Flutter suite `1213` PASS (`6` opt-in live skip),
-  analyzer PASS. Fiziksel cihaz bağlı olmadığından APK install/startup/final callback
-  physical acceptance ve Play Console upload açık; ikinci offline keystore yedeği ve
-  kalıcı CI signing provenance owner sorumluluğunda.
+  Entegrasyon Production/Development remote read/write, Auth, SMTP, migration ve
+  Storage işlemi yapmadı; artifact'ları yeniden üretmedi ve signing credential'a
+  erişmedi.
+- Korunmuş binary'ler üzerinde APK v2/tek signer ve AAB `jar verified`, exact package,
+  version, callback, certificate fingerprint ve secret/identity taraması yeniden PASS.
+  Hedefli matris `50/50`, tam Flutter suite `1213` PASS (`6` opt-in live skip),
+  analyzer PASS. Fiziksel APK install/startup/final callback/recovery kabulü, fiziksel
+  iki-cihaz QR, Play Console AAB kabulü, ikinci offline keystore yedeği, iOS signing/
+  archive ve final commercial GO açık kalır.
 - Bir önceki entegre baseline: Wave 12 Phase D Production demo functional smoke final
   integration.
 - Integration branch/base: `integration/wave-12-phase-d-functional-smoke` /
@@ -54,6 +64,14 @@
   ownership/QR/verified purchase intentional unavailable; fiziksel iki-cihaz QR,
   Play Console/Play App Signing, iOS archive/signing ve final commercial GO ayrıca
   açıktır.
+
+`WAVE_13_PHASE_A_INTEGRATION: PASS`
+
+`SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`
+
+`ANDROID_SIGNING_RELEASE_GATE: PASS`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 
@@ -508,6 +526,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Son Geliştirme Odağı
 
+- 2026-08-23: **WAVE 13 PHASE A FINAL INTEGRATION PASS / SIGNED ANDROID ARTIFACTS PRESERVED / ANDROID SIGNING RELEASE GATE PASS** — Agent 2'nin `d966f55` gerçek Android release signing kanıtı exact `305dd74` tabanına `52f1e98` ile `--no-ff` ve çatışmasız entegre edildi. Final `com.esnaftavar.app` / `1.0.0 (1)` APK ve AAB repo/Git dışında `C:\Users\Mustafa\EsnaftavarReleases\1.0.0` altında korunur; SHA-256 değerleri sırasıyla `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA` ve `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9` olarak yeniden doğrulandı. APK v2/tek signer ve AAB `jar verified`, canonical upload certificate fingerprint'i, final callback, non-debuggable ve forbidden identity/secret taraması PASS. Integration artifact rebuild, signing credential erişimi veya Production/Development remote işlem yapmadı. Hedefli matris `50/50`, tam suite `1213` PASS (`6` opt-in live skip), analyzer/diff/security temizdir. Fiziksel APK/final Auth, iki-cihaz QR, Play Console kabulü, ikinci offline keystore yedeği, iOS signing/archive ve commercial GO açıktır.
 - 2026-08-22: **WAVE 12 PHASE D FINAL INTEGRATION PASS / PRODUCTION DEMO FUNCTIONAL SMOKE PASS** — Agent 1'in `8c869e5` functional smoke/harness teslimi exact `609e555` tabanına `42774fe` ile `--no-ff` ve çatışmasız entegre edildi. Gerçek Production Web release istemcisi ve explicit opt-in anonymous read harness canonical `mefhfvrgkwciubeajjeb` ref'inde Startup/Home, dört kategorinin her birinde beş doğru ürün, ProductDetails, 20/20 üründe 14–15 seller ve multiple price, representative seller→shop→beş listing, exact/generic/category/no-result search, 57-shop nearby, anonymous wishlist/cart/profile login gate ve customer back stack'i PASS doğruladı. Authoritative remote read `4/20/57/285`, 57 null-owner demo shop ve 57 valid/unique coordinate gösterdi; runtime functional bug/release blocker bulunmadı. Stale empty-catalog harness current demo baseline'ına güncellendi ve full manifest/relationship/search/nearby read harness'ı eklendi. Integration remote define veya credential kullanmadı; Production/Development read/write, seed/cleanup, fixture, Auth/Storage/config/migration işlemi yapmadı. Yerel hedefli matris `552` PASS (`2` Production live skip), tam suite `1213` PASS (`6` live skip), analyzer/diff/security temizdir. Kozmetik UI product-owner kararıyla `DEFERRED UNTIL FINAL UI KIT`; merchant/QR/verified purchase null owner nedeniyle intentional unavailable'dır. Sonraki release kapısına hazırdır.
 - 2026-08-22: **WAVE 12 PHASE C FINAL INTEGRATION PASS / PRODUCTION DEMO DATASET LIVE** — Agent 1'in `26defb1` Production seed/postflight kanıtı exact `580552f` tabanına `fad75a7` ile `--no-ff` ve çatışmasız entegre edildi. Exact Production ref ve Development dışlama, single-writer, fresh zero business baseline, collision `0/366`, natural-key collision `0`, artifact integrity ve clean-room kapıları PASS sonrasında tracked `esenler_demo_v1.sql` Agent 1 turunda tek transaction olarak bir kez uygulanmıştı. Authoritative postflight categories/products/shops/shop_products `4/20/57/285`, active/featured products `20/20`, active shops `57`, deterministic manifest `366/366`, mismatch ve unexpected row `0` doğruladı. Product marker `20`, `[DEMO]` shop/owner-null `57/57`, listing marker `285`; 57 coordinate valid/unique ve 19 mahallenin her birinde üç shop vardır. Gerçek `anon` RLS rolü aynı katalog sayılarını, ürün başına 14–15 seller ve multiple price sonucunu PASS okudu. Auth user/profile/merchant ve Storage object `0`; demo shops owner-less olduğundan discovery/shop/seller comparison PASS, merchant ownership/QR/verified transaction intentional unavailable'dır. Integration remote read/write yapmadı; seed yeniden uygulanmadı, cleanup çalıştırılmadı ve Development'a dokunulmadı. Generator check, hedefli matris `284/284`, tam suite `1210` PASS (`5` opt-in live skip) ve analyzer temizdir. Broader fiziksel/mobile visual smoke ayrı açık kabul adımıdır.
 - 2026-08-22: **WAVE 12 PHASE B INTEGRATION PASS / PRODUCTION DEMO SEED SAFETY REVIEW INTEGRATED / SEED NOT APPLIED** — Agent 1'in `0383782` read-only safety review teslimi exact `edc0999` tabanına `f53e584` ile `--no-ff` ve çatışmasız entegre edildi. Agent evidence canonical Production `mefhfvrgkwciubeajjeb` üzerinde categories/products/shops/shop_products `0/0/0/0`, Auth/profile/business-linked `0`, üç canonical Storage bucket ve object `0`; UUID collision `0/366`, natural-key collision `0` ve exact existing demo row `0` gösterir. Seed yalnız controlled single-writer apply için deterministic, transactional ve fail-closed PASS; cleanup yalnız fresh pre-launch zero-activity state için PASS. `owner_user_id = NULL` customer discovery/shop/seller comparison'ı destekler fakat merchant QR confirmation ve verified transaction üretmez; bu intentional sınır korunur. Local generator ve migration/demo matrisi 37/37, PGlite replay iki kez `4/20/57/285`, cleanup sıfır ve 23 table, tam suite 1210 PASS (5 opt-in live skip), analyzer/diff/security temizdir. Integration remote read/write yapmadı; owner seed authorization henüz verilmedi. User activity sonrasında blind cleanup önerilmez ve gerekirse soft-retire/deactivate ayrı owner kararıdır.

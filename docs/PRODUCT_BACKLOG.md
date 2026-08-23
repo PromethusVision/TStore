@@ -118,6 +118,16 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   merge'i, local hedefli `552` PASS (`2` remote live skip), tam suite `1213` PASS (`6`
   live skip) ve temiz analyzer ile final integration olarak kapatıldı. Integration
   remote işlem yapmadı; seed/cleanup veya fixture oluşturmadı.
+- 2026-08-23 Wave 13 Phase A ilerlemesi: Agent 2'nin gerçek Android release signing
+  kanıtı çatışmasız entegre edildi. Final `com.esnaftavar.app` / `1.0.0 (1)` APK ve
+  AAB sabit repo-dışı `C:\Users\Mustafa\EsnaftavarReleases\1.0.0` dizininde korunur;
+  exact SHA-256, canonical upload certificate, APK v2/tek signer, AAB `jar verified`,
+  final callback ve secret/identity taraması PASS. Integration rebuild, credential
+  erişimi veya remote backend işlemi yapmadı; hedefli `50/50`, tam suite `1213` PASS
+  (`6` opt-in live skip), analyzer/diff/security temizdir. Android signing/artifact
+  release gate kapandı. Korunmuş APK fiziksel kabulü, final callback/recovery fiziksel
+  turu, iki-cihaz QR, Play Console AAB kabulü, ikinci offline keystore yedeği, iOS
+  signing/archive ve final commercial GO açık kalır.
 
 #### Wave 11 B3R/B4 V1.0 Auth Bugs — B5 FIX + B6 PHYSICAL ACCEPTANCE COMPLETE
 
@@ -402,6 +412,15 @@ HTTP `200` / no-exception final success değildir.
   skip) ve analyzer'ı temiz doğruladı. Production/Development remote işlem, seed,
   cleanup, Auth/Storage/config/migration veya fixture yoktur. Kozmetik UI final kit'e
   kadar deferred; sonraki release gate hazırdır.
+- 2026-08-23 Wave 13 Phase A final integration sonucu: Agent 2'nin `d966f55` Android
+  real release signing kanıtı exact `305dd74` tabanına `52f1e98` ile `--no-ff` ve
+  çatışmasız entegre edildi. Final Production APK/AAB Git dışında sabit release
+  dizininde korundu ve exact hash/signature/certificate/manifest sonuçları yeniden
+  PASS doğrulandı. Integration artifact rebuild, signing credential erişimi veya
+  Production/Development remote işlem yapmadı. Hedefli `50/50`, tam suite `1213`
+  PASS (`6` opt-in live skip), analyzer, diff ve security scan temizdir. Signing/
+  artifact kapısı kapalı; fiziksel artifact, Play Console, ikinci offline backup,
+  iOS ve final commercial kabul kapıları açıktır.
 - Büyük view dosyalarının conflict/testability riskini görev bazında azaltmak; geniş refactor'ı ayrı ve kontrollü yürütmek.
 - Release öncesinde working tree, migration durumu ve canlı kabul sonuçlarını birlikte raporlamak.
 
@@ -413,7 +432,10 @@ HTTP `200` / no-exception final success değildir.
 - Free plan scheduled backup/PITR/restorable point sağlamaz. Owner'ın yalnız tamamen boş ilk bootstrap için verdiği no-backup/recreate istisnası D1'de kullanıldı; gerçek veri sonrası veya gelecekteki Production migration'ları için yetki ya da emsal değildir.
 - Final application/bundle identifier `com.esnaftavar.app` owner kararıyla kapanmış ve
   Android/iOS platform wiring tamamlanmıştır. Android gerçek upload signing, birincil
-  keystore yedeği ve ilk signed APK/AAB PASS'tir. B2R signed APK install/upgrade,
+  keystore yedeği ve Wave 13'te Git dışında kalıcı release dizinine alınan güncel
+  signed APK/AAB PASS'tir. Wave 13 signing/artifact gate kapanmıştır; korunmuş güncel
+  APK'nın fiziksel install/startup ve final callback/recovery kabulü ayrıca açıktır.
+  B2R önceki signed APK install/upgrade,
   startup, Home input ve location fiziksel kabulü PASS'tir. Confirmation callback
   app opening PASS; historical B3R turunda confirmation success feedback ve recovery
   credential login FAIL. B5 code fix entegre edildi; B6 final fiziksel confirmation
@@ -452,6 +474,10 @@ HTTP `200` / no-exception final success değildir.
   `MOBILE_AUTH_CALLBACK_ACCEPTANCE: PASS`,
   `PASSWORD_RECOVERY_MOBILE_ACCEPTANCE: PASS`, `ANDROID_SIGNING_READY: YES`,
   `SIGNED_ANDROID_ARTIFACT_EVIDENCE: PASS`,
+  `WAVE_13_PHASE_A_INTEGRATION: PASS`,
+  `SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`,
+  `ANDROID_SIGNING_RELEASE_GATE: PASS`,
+  `READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`,
   `INPUT_VISIBILITY_CODE_FIX: PASS`, `EMAIL_CONFIRMATION_UI_CODE_FIX: PASS`,
   `LOCATION_PERMISSION_CODE_FIX: PASS`, `INPUT_PHYSICAL_ACCEPTANCE: PASS`,
   `LOCATION_PHYSICAL_ACCEPTANCE: PASS`,

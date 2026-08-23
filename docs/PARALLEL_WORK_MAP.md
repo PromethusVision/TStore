@@ -673,6 +673,34 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   kozmetik değerlendirmeler owner kararıyla final UI kit'e kadar deferred'dır; yeni
   functional backlog işi açılmaz.
 
+## Wave 13 Phase A Android Release Signing Entegrasyon Gözlemi
+
+`WAVE_13_PHASE_A_INTEGRATION: PASS`
+
+`SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`
+
+`ANDROID_SIGNING_RELEASE_GATE: PASS`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+
+- Agent 2'nin `d966f55` signing kanıtı exact `305dd74` tabanına `52f1e98` ile tek
+  `--no-ff` ve çatışmasız merge olarak entegre edildi. Runtime kod, platform kimliği,
+  schema/model, migration, `service_locator.dart` veya dependency dosyası değişmedi;
+  shared sahiplik yalnız mobile release ve coordination belgelerindedir.
+- Final `com.esnaftavar.app` / `1.0.0 (1)` APK ve AAB Git/worktree dışında
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0` altında korunur. Exact hash, APK v2/
+  tek signer, AAB `jar verified`, canonical upload certificate fingerprint'i, final
+  callback ve forbidden identity/secret taraması Integration tarafından yeniden PASS
+  doğrulandı. Artifact ve keystore Git'e alınmadı.
+- Integration artifact rebuild veya signing credential erişimi yapmadı. Production ve
+  Development remote read/write, Auth/SMTP, migration, Storage veya config işlemi
+  yoktur. Hedefli matris `50/50`, tam suite `1213` PASS (`6` opt-in live skip),
+  analyzer/diff/security temizdir.
+- Sonraki bağımsız release kabul paketi korunmuş APK'nın fiziksel install/startup ve
+  final callback/recovery kabulüdür. Fiziksel iki-cihaz QR, Play Console AAB kabulü,
+  ikinci offline keystore yedeği, iOS signing/archive ve final commercial GO açık
+  kalır. Bu açık işler signing/artifact gate PASS sonucunu geri çevirmez.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

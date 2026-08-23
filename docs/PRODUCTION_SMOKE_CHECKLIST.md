@@ -126,16 +126,27 @@ write önceden onaylı disposable principal/veriyle sınırlı tutulmalıdır.
 
 ## Wave 13 Phase A signed Android artifact evidence
 
+`WAVE_13_PHASE_A_INTEGRATION: PASS`
+
+`SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`
+
+`ANDROID_SIGNING_RELEASE_GATE: PASS`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
+
 Exact `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45` tabanında mevcut owner
 upload keystore yeniden kullanılarak Production APK ve AAB tekrar üretildi; yeni key
 oluşturulmadı. Final package `com.esnaftavar.app`, callback
 `com.esnaftavar.app://login-callback/`, version `1.0.0 (1)` ve signer fingerprint'i
 canonical Wave 11 upload certificate kaydıyla birebir eşleşti.
 
-- APK: `build/app/outputs/flutter-apk/app-production-release.apk`, SHA-256
+- Korunmuş APK:
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.apk`,
+  SHA-256
   `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`;
   `apksigner` v2/tek signer PASS, `debuggable=false`.
-- AAB: `build/app/outputs/bundle/productionRelease/app-production-release.aab`,
+- Korunmuş AAB:
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.aab`,
   SHA-256
   `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9`;
   `jarsigner` verified ve certificate fingerprint eşleşmesi PASS.
@@ -144,9 +155,15 @@ canonical Wave 11 upload certificate kaydıyla birebir eşleşti.
   Production/Development backend write yapılmadı.
 - Artifact/tracked scan signing password, private/server key, service-role JWT,
   keystore, populated key.properties veya gerçek publishable key sızıntısı bulmadı.
-  Geçici signing/runtime dosyaları kaldırıldı; yalnız APK/AAB local output'ta bırakıldı.
+  Geçici signing/runtime dosyaları kaldırıldı; APK/AAB sabit repo-dışı release
+  dizinine taşınmadan kopyalanıp exact hash ile doğrulandı ve Git'e alınmadı.
+- Final Integration `d966f55` input'unu `52f1e98` no-ff merge'iyle çatışmasız
+  entegre etti. Korunmuş artifact signature/manifest/hash doğrulaması, hedefli
+  `50/50`, tam Flutter suite `1213` PASS (`6` opt-in live skip), analyzer, diff ve
+  security scan PASS. Artifact rebuild, signing credential erişimi veya Production/
+  Development remote read/write yapılmadı.
 - Fiziksel Android cihaz bağlı değildi. APK install/startup/final callback physical
-  acceptance ve Play Console upload açık kalır.
+  acceptance, recovery fiziksel kabulü, iki-cihaz QR ve Play Console upload açık kalır.
 - Keystore repo dışında en az iki güvenli yerde yedeklenmelidir. Birincil yedek ve
   parola yöneticisi kaydı mevcut; ikinci offline yedek/CI provenance owner
   sorumluluğunda açıktır.

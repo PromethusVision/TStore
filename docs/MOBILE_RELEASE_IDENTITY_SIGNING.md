@@ -268,7 +268,15 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
 
 `ANDROID_SIGNING_SECURITY: PASS`
 
-`READY_FOR_ANDROID_SIGNING_INTEGRATION: YES`
+`READY_FOR_ANDROID_SIGNING_INTEGRATION: COMPLETED`
+
+`WAVE_13_PHASE_A_INTEGRATION: PASS`
+
+`SIGNED_ANDROID_ARTIFACTS_PRESERVED: YES`
+
+`ANDROID_SIGNING_RELEASE_GATE: PASS`
+
+`READY_FOR_PHYSICAL_ANDROID_ACCEPTANCE: YES`
 
 - Build kaynağı: `origin/main@305dd74d4e94c77a1144955eadd856c3f760bb45`,
   task branch `agent2/w13-android-real-release-signing`.
@@ -282,13 +290,16 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   `3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B`;
   SHA-1
   `3E:D8:D3:C5:FF:1E:9E:6E:B2:D1:B5:74:22:34:B6:C9:D6:E0:92:F3`.
-- APK: `build/app/outputs/flutter-apk/app-production-release.apk`, 122,739,377
+- Korunmuş APK:
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.apk`,
+  122,739,377
   byte, SHA-256
   `47650AB049F8212DB05EEFE382689B8EB3321C1799AAE8C797C125D63CA534DA`.
   `apksigner` tek signer ve APK Signature Scheme v2 ile PASS; signer certificate
   canonical upload fingerprint'iyle birebir eşleşti. Package, version, label,
   permission, final callback ve `debuggable=false` kontrolleri PASS.
-- AAB: `build/app/outputs/bundle/productionRelease/app-production-release.aab`,
+- Korunmuş AAB:
+  `C:\Users\Mustafa\EsnaftavarReleases\1.0.0\EsnaftaVar-1.0.0-production.aab`,
   99,337,105 byte, SHA-256
   `0621845CF387CB8C6CE69E04A0F991DF8EB95DC864DAD2EA0D8B0E6FD9DE54F9`.
   `jarsigner` sonucu `jar verified`; embedded certificate aynı upload fingerprint'i
@@ -305,15 +316,21 @@ callback/recovery maddeleri tamamlanmadan `COMMERCIAL_RELEASE_READY: YES` raporl
   bulmadı. Tracked keystore/key.properties/APK/AAB, gerçek signing password ve
   publishable key eşleşmeleri exact `0`.
 - `android/key.properties`, DPAPI runtime credential kayıtları ve repo-dışı geçici
-  Production JSON build/doğrulama sonrasında kaldırıldı. APK/AAB owner kullanımı için
-  local build output'ta bırakıldı; binary'ler Git'e alınmadı.
+  Production JSON build/doğrulama sonrasında kaldırıldı. Final APK/AAB yukarıdaki
+  sabit repo-dışı release dizinine kopyalanıp exact hash ile yeniden doğrulandı;
+  binary'ler Git'e alınmadı.
 - Keystore birincil repo-dışı yedek/parola yöneticisi kaydı mevcut canonical kanıttır.
   Owner upload keystore'u repo dışında **en az iki güvenli yerde yedeklemeli**;
   ikinci offline yedek ve kalıcı CI secret-store/provenance açık kalır.
-- Hedefli signing/identity/callback/preflight matrisi **38/38 PASS**; tam Flutter
-  suite **1213 PASS**, **6 opt-in live skip**; analyzer ve artifact/security
-  kontrolleri PASS. Fiziksel Android cihaz bağlı olmadığından bu turda APK install,
-  startup/final callback acceptance ve Play Console upload yapılmadı.
+- Agent hedefli signing/identity/callback/preflight matrisi **38/38 PASS**; final
+  Integration aynı sözleşmeleri genişletilmiş **50/50 PASS** matrisiyle doğruladı.
+  Tam Flutter suite **1213 PASS**, **6 opt-in live skip**; analyzer, diff ve
+  artifact/security kontrolleri PASS. Integration artifact rebuild veya signing
+  credential erişimi yapmadı; Production/Development remote read/write yoktur.
+  Fiziksel Android cihaz bağlı olmadığından bu turda APK install/startup/final
+  callback/recovery acceptance ve Play Console upload yapılmadı. Fiziksel iki-cihaz
+  QR, ikinci offline keystore yedeği, iOS signing/archive ve final commercial GO da
+  açık kalır.
 
 ## Wave 10 Phase E2 doğrulama sınırı
 
