@@ -769,6 +769,36 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   ayrı UI işidir. Shop-type taxonomy product taxonomy'den ayrı future merchant-domain
   işi olarak kalır ve LANE E ile aynı shared modellerde paralel yürütülmez.
 
+## Wave 14 Phase B2 Design Tokens V1 Final Entegrasyon Gözlemi
+
+`WAVE_14_PHASE_B2_INTEGRATION: PASS`
+
+`DESIGN_TOKENS_V1_CANONICAL: YES`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`READY_FOR_CANONICAL_COMPONENT_LAYER: YES`
+
+- Agent UI'nin proposal/history ve final token docs/data artefaktları güncel Wave 15
+  main üzerine tek `--no-ff` merge ile çatışmasız entegre edildi. Eski-base farkı
+  taxonomy dosyalarını silmedi; Wave 15 canonical taxonomy ve coordination durumu
+  korunmuştur.
+- Mahalle Terracotta finaldir: primary `#B54732`, accent `#1F6B5D`, Poppins-only,
+  dokuz spacing, dört radius ve `44/48 px` touch sözleşmesi. Canonical foundation
+  `38` color + `15` dimension variable, `12` type ve `3` shadow style taşır.
+- Token manifesti toplam `68` final token, duplicate name `0`, intentional alias `12`,
+  broken alias/cycle `0` sonucuyla PASS. Primary/white `5.37:1`, accent/white `6.33:1`
+  ve bütün approved strong/soft pair kontrastları PASS'tir.
+- Input Figma değişiklikleri yalnız izole EsnaftaVar foundation ve proposal binding
+  alanındadır. Existing K'pasa screen/component/instance/style fingerprint'leri
+  değişmemiştir; Integration Figma write, runtime veya remote backend işlemi yapmadı.
+- Canonical component layer tek UI-system sahibinde ilerlemelidir. İlk sıra Button →
+  TextField → Navbar → ProductCard → SellerPriceRow; token manifesti, component source
+  ve Flutter mapping aynı anda farklı agentlar tarafından değiştirilmemelidir.
+- Critical screen pilot, taxonomy category/search/filter UI ve full Flutter migration
+  component-level kabul sonrasında sıralı yürütülür. Wave 15 taxonomy source-of-truth
+  korunur; taxonomy UI projection canonical ağaçtan bağımsız ürün kuralı uydurmaz.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

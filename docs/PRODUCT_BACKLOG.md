@@ -241,6 +241,40 @@ HTTP `200` / no-exception final success değildir.
 
 `READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
 
+### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / COMPONENT MIGRATION OPEN
+
+- Durum: Design Tokens V1 **FINAL / CANONICAL**; Flutter runtime ve mevcut K'pasa
+  component/screen sistemi henüz migrate edilmedi.
+- Canonical source-of-truth:
+  `docs/ESNAFTAVAR_DESIGN_TOKENS_V1_FINAL.md` ve
+  `docs/data/esnaftavar_design_tokens_v1.json`.
+- Final görsel dil **Mahalle Terracotta**: primary `#B54732`, accent `#1F6B5D`,
+  yalnız Poppins; spacing `4/8/12/16/20/24/32/40/48`, radius `8/12/16/999`, touch
+  target `44 px` minimum ve `48 px` preferred.
+- Figma canonical foundation: `EsnaftaVar / Color` `38` variable,
+  `EsnaftaVar / Dimension` `15` variable, `12` canonical `EsnaftaVar/type/*` style
+  ve `shadow/xs`, `shadow/sm`, `shadow/md`. Manifest toplam `68` final token içerir.
+- Primary/white `5.37:1`, accent/white `6.33:1`; approved primary/accent/state
+  strong/soft çiftlerinin tamamı PASS. State ve commerce anlamı yalnız renkle
+  taşınmaz; label/icon kuralı korunur.
+- Source safety finaldir: existing K'pasa screen, component, instance ve styles
+  değiştirilmedi. Yalnız izole EsnaftaVar token foundation ve proposal binding'i
+  oluşturuldu; Figma redesign ve Flutter migration başlamış sayılmaz.
+- Açık implementation işleri:
+  - canonical EsnaftaVar component layer ve source-component token binding'i,
+  - Button → TextField → Navbar → ProductCard → SellerPriceRow sıralı redesign,
+  - gerçek Türkçe içerik/accessibility state'leriyle critical screen pilot,
+  - Wave 15 canonical taxonomy'ye bağlı category/search/filter UI uyarlaması,
+  - component-level kabul sonrası full Flutter token/UI migration.
+
+`WAVE_14_PHASE_B2_INTEGRATION: PASS`
+
+`DESIGN_TOKENS_V1_CANONICAL: YES`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`READY_FOR_CANONICAL_COMPONENT_LAYER: YES`
+
 ## B. PRODUCT DECISION NEEDED
 
 ### B1. Sosyal Login — OPTIONAL / NON-BLOCKING

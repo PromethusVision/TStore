@@ -3,7 +3,34 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-25
-- Son doğrulanan teslim: Wave 15 Category Taxonomy V1.0.0 final entegrasyonu.
+- Son doğrulanan teslim: Wave 14 Phase B2 Design Tokens V1 final entegrasyonu.
+- Integration branch/base: `integration/wave-14-design-tokens-v1-final` /
+  `origin/main@63d86a6df168b35e77c151dae0c620704f654e29`.
+- Input/merge:
+  `origin/agent-ui/w14-design-tokens-v1-proposal@bf31c4ae9703e4c3c9819557ee7976944e37ba18`
+  / `f20718d1d9d170ef43c30e73f9acbb6dde52e736` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 14 PHASE B2 FINAL INTEGRATION PASS / DESIGN TOKENS
+  V1.0.0 FINAL + CANONICAL / SOURCE K'PASA UNCHANGED / RUNTIME MIGRATION NO**.
+- Product-owner final görsel dili **Mahalle Terracotta**; primary `#B54732`, accent
+  `#1F6B5D`, yalnız Poppins typography, spacing `4/8/12/16/20/24/32/40/48`, radius
+  `8/12/16/999`, touch target `44 px` minimum ve `48 px` preferred olarak sabittir.
+- Canonical foundation `EsnaftaVar / Color` içinde `38`, `EsnaftaVar / Dimension`
+  içinde `15` variable; `12` `EsnaftaVar/type/*` style ve `shadow/xs`, `shadow/sm`,
+  `shadow/md` effect style'larını taşır. Manifest toplam `68` final token içerir;
+  duplicate name `0`, intentional alias `12`, broken alias/cycle `0` doğrulandı.
+- Primary/white `5.37:1`, accent/white `6.33:1`; primary, accent ve dört state
+  strong/soft çiftinin tamamı normal metin AA eşiğini geçer. Touch standardı ürün
+  kuralı olarak korunur ve anlam yalnız renkle taşınmaz.
+- Input Figma kanıtında yalnız izole EsnaftaVar token foundation + proposal binding'i
+  oluşturulmuştur. K'pasa source screen, component, instance ve mevcut style
+  değişikliği `0`; dört protected page fingerprint'i değişmemiştir. Integration Figma
+  write yapmadı.
+- Bu entegrasyon docs/data ve coordination ile sınırlıdır. Flutter runtime,
+  Production ve Development değişmedi. Canonical EsnaftaVar component layer,
+  ProductCard/SellerPriceRow/Navbar/TextField redesign, critical screen pilot,
+  taxonomy UI implementation ve full Flutter UI migration açık kalır.
+- Bir önceki canonical product kararı Wave 15 Category Taxonomy V1.0.0 final
+  entegrasyonudur.
 - Integration branch/base: `integration/wave-15-category-taxonomy-v1-final` /
   `origin/main@a3cc0971175f5401b1cf0cbe5b914e42d5dc0088`.
 - Input/merge:
@@ -141,6 +168,14 @@
 `PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`
 
 `FUNCTIONAL_ANDROID_BLOCKERS: NONE`
+
+`WAVE_14_PHASE_B2_INTEGRATION: PASS`
+
+`DESIGN_TOKENS_V1_CANONICAL: YES`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`READY_FOR_CANONICAL_COMPONENT_LAYER: YES`
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 
