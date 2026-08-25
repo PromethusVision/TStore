@@ -2,9 +2,40 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-23
-- Son doğrulanan teslim: Wave 13 Phase B korunmuş signed Production APK fiziksel
-  Android customer acceptance final entegrasyonu.
+- Son güncelleme: 2026-08-25
+- Son doğrulanan teslim: Wave 15 Category Taxonomy V1.0.0 final entegrasyonu.
+- Integration branch/base: `integration/wave-15-category-taxonomy-v1-final` /
+  `origin/main@a3cc0971175f5401b1cf0cbe5b914e42d5dc0088`.
+- Input/merge:
+  `origin/agent-taxonomy/w15-category-taxonomy-research@9a68bc9a7e43441daf971f09d5784cf4a9fc8e4e`
+  / `eedfc60f79c0136759e5383da0c628f5e48f8285` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 15 CATEGORY TAXONOMY V1 FINAL INTEGRATION PASS /
+  CATEGORY TAXONOMY V1.0.0 FINAL + CANONICAL / RUNTIME DEPLOYED NO**.
+- Canonical JSON exact `L1/L2/L3/L4 = 23/91/505/32`, toplam `651` node,
+  `525` leaf, `524` aktif atanabilir leaf ve tek `inactive_review` / non-assignable
+  `hediyelik-obje` taşır. Owner kararları `24/24` uygulanmış; duplicate slug/sibling,
+  cycle, orphan ve invalid filter/risk reference sayıları `0`, max depth `4` olarak
+  bağımsız doğrulanmıştır.
+- Canonical Git/LF JSON SHA-256
+  `182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08`.
+  Stable immutable slug, PATCH/MINOR/MAJOR versioning, deprecation/replacement ve
+  alias governance sözleşmeleri `v1.0.0` baseline olarak finaldir.
+- Her canonical ürün tam bir primary aktif atanabilir leaf'e bağlanır; marka,
+  varyant, attribute/filter, alias, offer ve shop type taxonomy değildir. Riskli
+  yayın fail-closed; ikinci el/yenilenmiş V1'de deferred ve gelecekte `condition`
+  attribute'u; shop-type ayrı merchant-domain çalışmasıdır.
+- Home projection canonical ağaç değildir: availability-gated sekiz organik kısayol
+  ve bütün 23 L1'i açan Tüm Kategoriler kararı korunur; sponsorlu yerleşim canonical
+  veya organik sıralamayı değiştirmez.
+- Bu entegrasyon yalnız docs/data ve coordination değişikliğidir. Flutter runtime,
+  Figma, migration, seed, Production ve Development değişmedi. DB taxonomy schema/
+  migration, Production seed/migration, search/index, filter-family implementation,
+  sekiz-leaf attribute pilotu, Figma category/search/filter uyarlaması ve ayrı
+  shop-type taxonomy açık kalır.
+- Bir önceki dokümantasyon baseline'ı Wave 14 K'pasa design-system audit'idir;
+  Figma redesign bu Wave 15 entegrasyonunda başlatılmadı.
+- Bir önceki release baseline'ı Wave 13 Phase B korunmuş signed Production APK
+  fiziksel Android customer acceptance final entegrasyonudur.
 - Integration branch/base: `integration/wave-13-phase-b-physical-android` /
   `origin/main@22c78c65a1fc479d81da7c88c9f27531b345e522`.
 - Input/merge:
@@ -110,6 +141,14 @@
 `PHYSICAL_TWO_DEVICE_QR_ACCEPTANCE: OPEN`
 
 `FUNCTIONAL_ANDROID_BLOCKERS: NONE`
+
+`WAVE_15_TAXONOMY_INTEGRATION: PASS`
+
+`CATEGORY_TAXONOMY_V1_CANONICAL: YES`
+
+`TAXONOMY_DEPLOYED_TO_RUNTIME: NO`
+
+`READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
 
 `FINAL_APP_IDENTIFIER: com.esnaftavar.app — OWNER FINAL / ANDROID-IOS WIRING COMPLETE`
 

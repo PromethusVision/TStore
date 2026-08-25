@@ -197,6 +197,50 @@ HTTP `200` / no-exception final success değildir.
 - Müşteri/canonical ürün başına bir aktif yorum vardır; duplicate/concurrent submit mevcut satırı değiştirmeden `created: false` döndürür. Owner rating/title/comment alanlarını güncelleyebilir, yorumu silebilir ve durable evidence kaldığı sürece yeniden oluşturabilir; expiry yoktur.
 - Korunan legacy yorumlar otomatik backfill edilmez, doğrulanmamış kalır ve verified aggregate'lere katılmaz. UI'daki verified bilgi yalnız server response'undan gelir. Mağaza puanı mevcut doğrulanmış QR akışında server-authoritative çalışmayı sürdürür.
 
+### A6. Canonical Category Taxonomy V1.0.0 — FINAL / IMPLEMENTATION OPEN
+
+- Durum: Ürün taxonomy kararı **FINAL / CANONICAL**; runtime, veritabanı ve Production
+  deploy edilmedi.
+- Canonical source-of-truth:
+  `docs/ESNAFTAVAR_CATEGORY_TAXONOMY_V1_FINAL.md` ve
+  `docs/data/esnaftavar_category_taxonomy_v1_final.json`.
+- Final sözleşme: `L1/L2/L3/L4 = 23/91/505/32`, toplam `651` node, `525` leaf,
+  `524` aktif atanabilir leaf; `hediyelik-obje` tek `inactive_review` ve non-assignable
+  leaf'tir. Owner branch kararları `24/24` uygulanmıştır.
+- Her canonical product tam bir primary assignable leaf kullanır. Brand, variant,
+  attribute/filter, aliases ve merchant offer/listing taxonomy değildir. Stable slug
+  immutable; PATCH/MINOR/MAJOR versioning ile deprecation/replacement ve backward
+  compatibility mapping'leri zorunludur.
+- Final split/move'lar: Kitap ile Kırtasiye & Ofis; Optik ile Saat & Takı; Çiçek &
+  Bahçe ile Hediyelik & Parti ayrıdır. Termos ile Spor Matarası ayrılmıştır.
+  `dokunmatik-kalem`, Bilgisayar & Tablet > Bilgisayar Çevre Birimleri > Tablet &
+  Giriş Aksesuarları altındadır.
+- `kisisellestirilebilir-hediye` gerçek ürün tipine manual reclassification,
+  `mevsimsel-susleme` gerçek ürün tipi + occasion/collection modeline remap edilir;
+  `hediyelik-obje` yeniden aktive edilmez. Riskli/regüle leaf yayını fail-closed'dır;
+  V1 excluded/prohibited domainler korunur.
+- Home canonical taxonomy değildir: availability-gated sekiz organik category shortcut
+  kullanır; Tüm Kategoriler bütün 23 L1'i gösterir. Sponsored placement canonical veya
+  organik sıralamayı değiştirmez.
+- Sonraki onaylı tasarım/contract işi sekiz representative leaf attribute pilotudur:
+  Akıllı Telefon, Günlük Sneaker, Tişört, Peynir, Defter, Fren Balatası, Tansiyon
+  Aleti ve Tencere Seti. Bütün 62 filter family henüz implement edilmez.
+- Açık implementation işleri:
+  - DB taxonomy schema ve tek-sahipli migration tasarımı/uygulaması,
+  - ayrı yetkili Production taxonomy seed/migration ve postflight,
+  - search/index ile category/product read-path entegrasyonu,
+  - filter-family sözleşmesi ve sekiz-leaf attribute pilotu,
+  - Design Tokens V1'e bağlı Figma category/search/filter UI uyarlaması,
+  - ayrı future shop-type merchant taxonomy çalışması.
+
+`WAVE_15_TAXONOMY_INTEGRATION: PASS`
+
+`CATEGORY_TAXONOMY_V1_CANONICAL: YES`
+
+`TAXONOMY_DEPLOYED_TO_RUNTIME: NO`
+
+`READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
+
 ## B. PRODUCT DECISION NEEDED
 
 ### B1. Sosyal Login — OPTIONAL / NON-BLOCKING

@@ -735,6 +735,40 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   ve commercial GO da ayrık release kapılarıdır; B6 Auth confirmation/recovery PASS
   durumu yeniden açılmaz.
 
+## Wave 15 Category Taxonomy V1 Final Entegrasyon Gözlemi
+
+`WAVE_15_TAXONOMY_INTEGRATION: PASS`
+
+`CATEGORY_TAXONOMY_V1_CANONICAL: YES`
+
+`TAXONOMY_DEPLOYED_TO_RUNTIME: NO`
+
+`READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
+
+- Agent Taxonomy'nin research, owner-review, draft/history ve final V1 artefaktları
+  exact current main tabanından tek `--no-ff` merge ile çatışmasız entegre edildi.
+  Runtime Flutter, shared model/schema, migration, seed, Figma, dependency veya remote
+  backend değişikliği yoktur.
+- Canonical `v1.0.0` ağaç `23/91/505/32`, toplam `651` node, `525` leaf, `524`
+  aktif atanabilir leaf ve tek inactive/non-assignable `hediyelik-obje` taşır.
+  Owner kararları `24/24`; canonical Git/LF SHA-256
+  `182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08` PASS.
+- Bir canonical product yalnız bir primary assignable leaf kullanır. Brand, variant,
+  attribute/filter, alias, offer ve shop type ayrı domainlerdir. Home'daki sekiz
+  availability-gated organik kısayol canonical L1 ağacının yerine geçmez; Tüm
+  Kategoriler bütün 23 L1'i açar ve sponsored placement organic/canonical sırayı
+  yeniden yazmaz.
+- DB taxonomy schema/migration ve Production seed/migration işi aynı wave'de yalnız
+  tek SQL/migration sahibine verilmelidir. Migration zinciri, category/product shared
+  model ve `service_locator.dart` başka agentlarla eşzamanlı değiştirilmemelidir.
+- Search/index ve category read-path entegrasyonu LANE A/shared Shop modelleriyle
+  aynı sahipte veya sıralı yürütülmelidir. Sekiz representative leaf attribute pilotu
+  önce tasarım/contract çalışmasıdır; 62 filter family topluca implement edilmiş
+  sayılmaz.
+- Figma category/search/filter uyarlaması canonical JSON ve Design Tokens V1'e bağımlı
+  ayrı UI işidir. Shop-type taxonomy product taxonomy'den ayrı future merchant-domain
+  işi olarak kalır ve LANE E ile aynı shared modellerde paralel yürütülmez.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
