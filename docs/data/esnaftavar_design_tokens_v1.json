@@ -1,0 +1,1777 @@
+{
+  "schemaVersion": "1.0",
+  "name": "EsnaftaVar Design Tokens V1",
+  "version": "1.0.0",
+  "status": "final",
+  "designLanguage": "Mahalle Terracotta",
+  "approved": {
+    "primary": "#B54732",
+    "accent": "#1F6B5D",
+    "typography": "Poppins only",
+    "spacing": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ],
+    "radius": [
+      8,
+      12,
+      16,
+      999
+    ],
+    "touchTarget": {
+      "minimum": 44,
+      "preferred": 48,
+      "unit": "px"
+    }
+  },
+  "source": {
+    "proposalDocument": "docs/ESNAFTAVAR_DESIGN_TOKENS_V1_PROPOSAL.md",
+    "finalDocument": "docs/ESNAFTAVAR_DESIGN_TOKENS_V1_FINAL.md",
+    "figmaFileKey": "O8MIn0KyQfFoPA3EnhiWii",
+    "figmaProposalPage": {
+      "name": "EsnaftaVar — Tokens V1 Proposal",
+      "nodeId": "52748:2"
+    },
+    "figmaProposalBoard": {
+      "name": "Proposal Board / EsnaftaVar Tokens V1",
+      "nodeId": "52748:3"
+    }
+  },
+  "figmaCollections": [
+    {
+      "name": "EsnaftaVar / Color",
+      "id": "VariableCollectionId:52766:2",
+      "mode": "Light",
+      "modeId": "52766:0"
+    },
+    {
+      "name": "EsnaftaVar / Dimension",
+      "id": "VariableCollectionId:52769:16",
+      "mode": "Default",
+      "modeId": "52769:0"
+    }
+  ],
+  "counts": {
+    "totalTokens": 68,
+    "color": 38,
+    "dimension": 15,
+    "typography": 12,
+    "shadow": 3
+  },
+  "tokens": [
+    {
+      "name": "brand/primary",
+      "type": "color",
+      "value": "#B54732",
+      "semanticRole": "Primary CTA and core brand emphasis",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/primary",
+        "variableId": "VariableID:52766:3",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-primary)"
+        }
+      }
+    },
+    {
+      "name": "brand/primaryHover",
+      "type": "color",
+      "value": "#A33F2C",
+      "semanticRole": "Primary hover state",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/primaryHover",
+        "variableId": "VariableID:52766:4",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-primary-hover)"
+        }
+      }
+    },
+    {
+      "name": "brand/primaryPressed",
+      "type": "color",
+      "value": "#873425",
+      "semanticRole": "Primary pressed state",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/primaryPressed",
+        "variableId": "VariableID:52766:5",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-primary-pressed)"
+        }
+      }
+    },
+    {
+      "name": "brand/primarySoft",
+      "type": "color",
+      "value": "#FBE9E4",
+      "semanticRole": "Low-emphasis primary surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/primarySoft",
+        "variableId": "VariableID:52766:6",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-primary-soft)"
+        }
+      }
+    },
+    {
+      "name": "brand/accent",
+      "type": "color",
+      "value": "#1F6B5D",
+      "semanticRole": "Secondary action and merchant identity",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/accent",
+        "variableId": "VariableID:52766:7",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-accent)"
+        }
+      }
+    },
+    {
+      "name": "brand/accentHover",
+      "type": "color",
+      "value": "#195C50",
+      "semanticRole": "Accent hover state",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/accentHover",
+        "variableId": "VariableID:52766:8",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-accent-hover)"
+        }
+      }
+    },
+    {
+      "name": "brand/accentPressed",
+      "type": "color",
+      "value": "#144A41",
+      "semanticRole": "Accent pressed state",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/accentPressed",
+        "variableId": "VariableID:52766:9",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-accent-pressed)"
+        }
+      }
+    },
+    {
+      "name": "brand/accentSoft",
+      "type": "color",
+      "value": "#E5F2EF",
+      "semanticRole": "Low-emphasis accent surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "brand/accentSoft",
+        "variableId": "VariableID:52766:10",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-brand-accent-soft)"
+        }
+      }
+    },
+    {
+      "name": "surface/background",
+      "type": "color",
+      "value": "#FFF8F3",
+      "semanticRole": "Application background",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "surface/background",
+        "variableId": "VariableID:52767:2",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-surface-background)"
+        }
+      }
+    },
+    {
+      "name": "surface/surface",
+      "type": "color",
+      "value": "#FFFFFF",
+      "semanticRole": "Standard card and sheet surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "surface/surface",
+        "variableId": "VariableID:52767:3",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-surface-surface)"
+        }
+      }
+    },
+    {
+      "name": "surface/surfaceAlt",
+      "type": "color",
+      "value": "#F6EEE7",
+      "semanticRole": "Grouped alternate surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "surface/surfaceAlt",
+        "variableId": "VariableID:52767:4",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-surface-surface-alt)"
+        }
+      }
+    },
+    {
+      "name": "surface/elevated",
+      "type": "color",
+      "value": "#FFFFFF",
+      "aliasOf": "surface/surface",
+      "semanticRole": "Elevated surface used with shadow",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "surface/elevated",
+        "variableId": "VariableID:52767:5",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-surface-elevated)"
+        },
+        "aliasTargetId": "VariableID:52767:3"
+      }
+    },
+    {
+      "name": "text/primary",
+      "type": "color",
+      "value": "#2B211C",
+      "semanticRole": "Primary heading and body text",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "text/primary",
+        "variableId": "VariableID:52767:6",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "TEXT_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-text-primary)"
+        }
+      }
+    },
+    {
+      "name": "text/secondary",
+      "type": "color",
+      "value": "#5F514A",
+      "semanticRole": "Secondary explanatory text",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "text/secondary",
+        "variableId": "VariableID:52767:7",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "TEXT_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-text-secondary)"
+        }
+      }
+    },
+    {
+      "name": "text/muted",
+      "type": "color",
+      "value": "#75675E",
+      "semanticRole": "Non-critical metadata",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "text/muted",
+        "variableId": "VariableID:52767:8",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "TEXT_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-text-muted)"
+        }
+      }
+    },
+    {
+      "name": "text/onPrimary",
+      "type": "color",
+      "value": "#FFFFFF",
+      "semanticRole": "Text and icon on primary",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "text/onPrimary",
+        "variableId": "VariableID:52767:9",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "TEXT_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-text-on-primary)"
+        }
+      }
+    },
+    {
+      "name": "text/onAccent",
+      "type": "color",
+      "value": "#FFFFFF",
+      "aliasOf": "text/onPrimary",
+      "semanticRole": "Text and icon on accent",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "text/onAccent",
+        "variableId": "VariableID:52767:10",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "TEXT_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-text-on-accent)"
+        },
+        "aliasTargetId": "VariableID:52767:9"
+      }
+    },
+    {
+      "name": "border/default",
+      "type": "color",
+      "value": "#DCCFC5",
+      "semanticRole": "Subtle card and field border",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "border/default",
+        "variableId": "VariableID:52768:2",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-border-default)"
+        }
+      }
+    },
+    {
+      "name": "border/strong",
+      "type": "color",
+      "value": "#A08B7D",
+      "semanticRole": "High-emphasis control border",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "border/strong",
+        "variableId": "VariableID:52768:3",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-border-strong)"
+        }
+      }
+    },
+    {
+      "name": "border/divider",
+      "type": "color",
+      "value": "#E9DED5",
+      "semanticRole": "Decorative divider",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "border/divider",
+        "variableId": "VariableID:52768:4",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-border-divider)"
+        }
+      }
+    },
+    {
+      "name": "state/success",
+      "type": "color",
+      "value": "#287A4B",
+      "semanticRole": "Success label and indicator",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/success",
+        "variableId": "VariableID:52768:5",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-success)"
+        }
+      }
+    },
+    {
+      "name": "state/successSoft",
+      "type": "color",
+      "value": "#E6F4EA",
+      "semanticRole": "Success supporting surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/successSoft",
+        "variableId": "VariableID:52768:6",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-success-soft)"
+        }
+      }
+    },
+    {
+      "name": "state/warning",
+      "type": "color",
+      "value": "#8A5100",
+      "semanticRole": "Warning label and indicator",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/warning",
+        "variableId": "VariableID:52768:7",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-warning)"
+        }
+      }
+    },
+    {
+      "name": "state/warningSoft",
+      "type": "color",
+      "value": "#FFF0D1",
+      "semanticRole": "Warning supporting surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/warningSoft",
+        "variableId": "VariableID:52768:8",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-warning-soft)"
+        }
+      }
+    },
+    {
+      "name": "state/error",
+      "type": "color",
+      "value": "#B42318",
+      "semanticRole": "Error label and indicator",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/error",
+        "variableId": "VariableID:52769:2",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-error)"
+        }
+      }
+    },
+    {
+      "name": "state/errorSoft",
+      "type": "color",
+      "value": "#FDEAE7",
+      "semanticRole": "Error supporting surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/errorSoft",
+        "variableId": "VariableID:52769:3",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-error-soft)"
+        }
+      }
+    },
+    {
+      "name": "state/info",
+      "type": "color",
+      "value": "#24677A",
+      "semanticRole": "Informational label and indicator",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/info",
+        "variableId": "VariableID:52769:4",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-info)"
+        }
+      }
+    },
+    {
+      "name": "state/infoSoft",
+      "type": "color",
+      "value": "#E5F2F5",
+      "semanticRole": "Information supporting surface",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "state/infoSoft",
+        "variableId": "VariableID:52769:5",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-state-info-soft)"
+        }
+      }
+    },
+    {
+      "name": "commerce/price",
+      "type": "color",
+      "value": "#873425",
+      "aliasOf": "brand/primaryPressed",
+      "semanticRole": "Primary product price",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "commerce/price",
+        "variableId": "VariableID:52769:6",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-commerce-price)"
+        },
+        "aliasTargetId": "VariableID:52766:5"
+      }
+    },
+    {
+      "name": "commerce/discount",
+      "type": "color",
+      "value": "#B42318",
+      "aliasOf": "state/error",
+      "semanticRole": "Discount amount or rate",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "commerce/discount",
+        "variableId": "VariableID:52769:7",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-commerce-discount)"
+        },
+        "aliasTargetId": "VariableID:52769:2"
+      }
+    },
+    {
+      "name": "commerce/stockAvailable",
+      "type": "color",
+      "value": "#287A4B",
+      "aliasOf": "state/success",
+      "semanticRole": "Available stock status",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "commerce/stockAvailable",
+        "variableId": "VariableID:52769:8",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-commerce-stock-available)"
+        },
+        "aliasTargetId": "VariableID:52768:5"
+      }
+    },
+    {
+      "name": "commerce/stockLow",
+      "type": "color",
+      "value": "#8A5100",
+      "aliasOf": "state/warning",
+      "semanticRole": "Low stock status",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "commerce/stockLow",
+        "variableId": "VariableID:52769:9",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-commerce-stock-low)"
+        },
+        "aliasTargetId": "VariableID:52768:7"
+      }
+    },
+    {
+      "name": "commerce/unavailable",
+      "type": "color",
+      "value": "#75675E",
+      "aliasOf": "text/muted",
+      "semanticRole": "Unavailable product metadata",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "commerce/unavailable",
+        "variableId": "VariableID:52769:10",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-commerce-unavailable)"
+        },
+        "aliasTargetId": "VariableID:52767:8"
+      }
+    },
+    {
+      "name": "future/sponsored",
+      "type": "color",
+      "value": "#8A5100",
+      "aliasOf": "state/warning",
+      "semanticRole": "Reserved sponsored disclosure color slot; no advertising behavior",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "future/sponsored",
+        "variableId": "VariableID:52769:11",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-future-sponsored)"
+        },
+        "aliasTargetId": "VariableID:52768:7"
+      }
+    },
+    {
+      "name": "future/verifiedPurchase",
+      "type": "color",
+      "value": "#287A4B",
+      "aliasOf": "state/success",
+      "semanticRole": "Reserved verified purchase visual slot",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "future/verifiedPurchase",
+        "variableId": "VariableID:52769:12",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-future-verified-purchase)"
+        },
+        "aliasTargetId": "VariableID:52768:5"
+      }
+    },
+    {
+      "name": "future/merchantBadge",
+      "type": "color",
+      "value": "#1F6B5D",
+      "aliasOf": "brand/accent",
+      "semanticRole": "Reserved merchant badge visual slot",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "future/merchantBadge",
+        "variableId": "VariableID:52769:13",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-future-merchant-badge)"
+        },
+        "aliasTargetId": "VariableID:52766:7"
+      }
+    },
+    {
+      "name": "future/customerBadge",
+      "type": "color",
+      "value": "#B54732",
+      "aliasOf": "brand/primary",
+      "semanticRole": "Reserved customer badge visual slot",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "future/customerBadge",
+        "variableId": "VariableID:52769:14",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-future-customer-badge)"
+        },
+        "aliasTargetId": "VariableID:52766:3"
+      }
+    },
+    {
+      "name": "future/rewardProgress",
+      "type": "color",
+      "value": "#B54732",
+      "aliasOf": "brand/primary",
+      "semanticRole": "Reserved reward progress visual slot; no gamification behavior",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Color",
+        "collectionId": "VariableCollectionId:52766:2",
+        "variableName": "future/rewardProgress",
+        "variableId": "VariableID:52769:15",
+        "mode": "Light",
+        "modeId": "52766:0",
+        "scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "TEXT_FILL",
+          "STROKE_COLOR"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-future-reward-progress)"
+        },
+        "aliasTargetId": "VariableID:52766:3"
+      }
+    },
+    {
+      "name": "space/4",
+      "type": "dimension",
+      "value": {
+        "amount": 4,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 4 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/4",
+        "variableId": "VariableID:52769:17",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-4)"
+        }
+      }
+    },
+    {
+      "name": "space/8",
+      "type": "dimension",
+      "value": {
+        "amount": 8,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 8 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/8",
+        "variableId": "VariableID:52769:18",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-8)"
+        }
+      }
+    },
+    {
+      "name": "space/12",
+      "type": "dimension",
+      "value": {
+        "amount": 12,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 12 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/12",
+        "variableId": "VariableID:52769:19",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-12)"
+        }
+      }
+    },
+    {
+      "name": "space/16",
+      "type": "dimension",
+      "value": {
+        "amount": 16,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 16 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/16",
+        "variableId": "VariableID:52769:20",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-16)"
+        }
+      }
+    },
+    {
+      "name": "space/20",
+      "type": "dimension",
+      "value": {
+        "amount": 20,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 20 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/20",
+        "variableId": "VariableID:52769:21",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-20)"
+        }
+      }
+    },
+    {
+      "name": "space/24",
+      "type": "dimension",
+      "value": {
+        "amount": 24,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 24 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/24",
+        "variableId": "VariableID:52769:22",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-24)"
+        }
+      }
+    },
+    {
+      "name": "space/32",
+      "type": "dimension",
+      "value": {
+        "amount": 32,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 32 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/32",
+        "variableId": "VariableID:52769:23",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-32)"
+        }
+      }
+    },
+    {
+      "name": "space/40",
+      "type": "dimension",
+      "value": {
+        "amount": 40,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 40 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/40",
+        "variableId": "VariableID:52769:24",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-40)"
+        }
+      }
+    },
+    {
+      "name": "space/48",
+      "type": "dimension",
+      "value": {
+        "amount": 48,
+        "unit": "px"
+      },
+      "semanticRole": "Spacing scale: 48 px",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "space/48",
+        "variableId": "VariableID:52769:25",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-space-48)"
+        }
+      }
+    },
+    {
+      "name": "radius/small",
+      "type": "dimension",
+      "value": {
+        "amount": 8,
+        "unit": "px"
+      },
+      "semanticRole": "Small input and compact container radius",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "radius/small",
+        "variableId": "VariableID:52769:26",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-radius-small)"
+        }
+      }
+    },
+    {
+      "name": "radius/medium",
+      "type": "dimension",
+      "value": {
+        "amount": 12,
+        "unit": "px"
+      },
+      "semanticRole": "Button and compact card radius",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "radius/medium",
+        "variableId": "VariableID:52769:27",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-radius-medium)"
+        }
+      }
+    },
+    {
+      "name": "radius/large",
+      "type": "dimension",
+      "value": {
+        "amount": 16,
+        "unit": "px"
+      },
+      "semanticRole": "Product card and panel radius",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "radius/large",
+        "variableId": "VariableID:52769:28",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-radius-large)"
+        }
+      }
+    },
+    {
+      "name": "radius/pill",
+      "type": "dimension",
+      "value": {
+        "amount": 999,
+        "unit": "px"
+      },
+      "semanticRole": "Pill, chip, and avatar radius",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "radius/pill",
+        "variableId": "VariableID:52769:29",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-radius-pill)"
+        }
+      }
+    },
+    {
+      "name": "touch/min",
+      "type": "dimension",
+      "value": {
+        "amount": 44,
+        "unit": "px"
+      },
+      "semanticRole": "Minimum product touch target",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "touch/min",
+        "variableId": "VariableID:52769:30",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-touch-min)"
+        }
+      }
+    },
+    {
+      "name": "touch/preferred",
+      "type": "dimension",
+      "value": {
+        "amount": 48,
+        "unit": "px"
+      },
+      "semanticRole": "Preferred product touch target",
+      "status": "final",
+      "figma": {
+        "kind": "variable",
+        "collection": "EsnaftaVar / Dimension",
+        "collectionId": "VariableCollectionId:52769:16",
+        "variableName": "touch/preferred",
+        "variableId": "VariableID:52769:31",
+        "mode": "Default",
+        "modeId": "52769:0",
+        "scopes": [
+          "WIDTH_HEIGHT"
+        ],
+        "codeSyntax": {
+          "web": "var(--esnaftavar-touch-preferred)"
+        }
+      }
+    },
+    {
+      "name": "type/display",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "SemiBold",
+        "fontSize": {
+          "amount": 32,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 40,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Hero and high-emphasis display",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/display",
+        "styleId": "S:10d208d89f055e5c554934ba73c2cc305776e105,"
+      }
+    },
+    {
+      "name": "type/headingLg",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "SemiBold",
+        "fontSize": {
+          "amount": 28,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 36,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Screen title",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/headingLg",
+        "styleId": "S:b16c810136e673ad3e34c0a3a12075cfd9fd4c2c,"
+      }
+    },
+    {
+      "name": "type/headingMd",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "SemiBold",
+        "fontSize": {
+          "amount": 24,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 32,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Major section title",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/headingMd",
+        "styleId": "S:e5bc4e3e43a12519770f2f6446e617be9184e1a1,"
+      }
+    },
+    {
+      "name": "type/headingSm",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "SemiBold",
+        "fontSize": {
+          "amount": 20,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 28,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Card group and compact section title",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/headingSm",
+        "styleId": "S:df501ff45c53bf27425eec72254711354599e184,"
+      }
+    },
+    {
+      "name": "type/bodyLg",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Regular",
+        "fontSize": {
+          "amount": 16,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 24,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Primary body copy",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/bodyLg",
+        "styleId": "S:9075951ac72fb229cce145c243187b4a4898e187,"
+      }
+    },
+    {
+      "name": "type/bodyMd",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Regular",
+        "fontSize": {
+          "amount": 14,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 22,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Standard supporting body copy",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/bodyMd",
+        "styleId": "S:200317c537d4bd1013eb8c1771a1fc59b5e2aee8,"
+      }
+    },
+    {
+      "name": "type/bodySm",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Regular",
+        "fontSize": {
+          "amount": 12,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 18,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Compact body and metadata",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/bodySm",
+        "styleId": "S:c172dc79ee373ab2125b3f2b6c09b1b49a8c0d51,"
+      }
+    },
+    {
+      "name": "type/label",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Medium",
+        "fontSize": {
+          "amount": 14,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 20,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Field label, badge, and compact action",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/label",
+        "styleId": "S:1f49e605c1f77a5f4b20d2d4e1b0798be1616caf,"
+      }
+    },
+    {
+      "name": "type/caption",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Regular",
+        "fontSize": {
+          "amount": 12,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 16,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Date, source, and secondary metadata",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/caption",
+        "styleId": "S:f38ee7451010c9a77e47fdd9cd27eda315544f39,"
+      }
+    },
+    {
+      "name": "type/priceHero",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Bold",
+        "fontSize": {
+          "amount": 24,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 32,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Product detail hero price",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/priceHero",
+        "styleId": "S:9147218e1fadf019d7041d2933222289f420c338,"
+      }
+    },
+    {
+      "name": "type/price",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "SemiBold",
+        "fontSize": {
+          "amount": 18,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 24,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "NONE"
+      },
+      "semanticRole": "Product card and merchant row price",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/price",
+        "styleId": "S:342ee0e9079bd1445091781c0d36cba078ac1d9c,"
+      }
+    },
+    {
+      "name": "type/priceOld",
+      "type": "typography",
+      "value": {
+        "fontFamily": "Poppins",
+        "fontStyle": "Regular",
+        "fontSize": {
+          "amount": 14,
+          "unit": "px"
+        },
+        "lineHeight": {
+          "amount": 20,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "amount": 0,
+          "unit": "px"
+        },
+        "textDecoration": "STRIKETHROUGH"
+      },
+      "semanticRole": "Previous price with strikethrough",
+      "status": "final",
+      "figma": {
+        "kind": "textStyle",
+        "styleName": "EsnaftaVar/type/priceOld",
+        "styleId": "S:058ba333db0dad089b85c34ebeab2436c518d3b6,"
+      }
+    },
+    {
+      "name": "shadow/xs",
+      "type": "shadow",
+      "value": {
+        "color": "#2B211C",
+        "opacity": 0.08,
+        "offsetX": 0,
+        "offsetY": 1,
+        "blur": 2,
+        "spread": 0
+      },
+      "semanticRole": "Subtle card separation",
+      "status": "final",
+      "figma": {
+        "kind": "effectStyle",
+        "styleName": "EsnaftaVar/shadow/xs",
+        "styleId": "S:222fbea80c286018a9054cef2bcc4fdcfe7274e8,"
+      }
+    },
+    {
+      "name": "shadow/sm",
+      "type": "shadow",
+      "value": {
+        "color": "#2B211C",
+        "opacity": 0.1,
+        "offsetX": 0,
+        "offsetY": 4,
+        "blur": 12,
+        "spread": -2
+      },
+      "semanticRole": "Elevated card and floating action",
+      "status": "final",
+      "figma": {
+        "kind": "effectStyle",
+        "styleName": "EsnaftaVar/shadow/sm",
+        "styleId": "S:213fb1fbefa093858a6c4a8047dfa7257d7ad5b0,"
+      }
+    },
+    {
+      "name": "shadow/md",
+      "type": "shadow",
+      "value": {
+        "color": "#2B211C",
+        "opacity": 0.14,
+        "offsetX": 0,
+        "offsetY": 12,
+        "blur": 28,
+        "spread": -6
+      },
+      "semanticRole": "Modal and sheet elevation",
+      "status": "final",
+      "figma": {
+        "kind": "effectStyle",
+        "styleName": "EsnaftaVar/shadow/md",
+        "styleId": "S:fc0077df5b9afe132a76a2bc4ef563b6921b4c8f,"
+      }
+    }
+  ]
+}
