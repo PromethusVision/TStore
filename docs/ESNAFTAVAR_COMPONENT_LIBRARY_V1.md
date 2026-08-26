@@ -18,7 +18,7 @@ Mahalle Terracotta foundation üzerinde, mevcut K'pasa kaynak UI kitini değişt
 | Page node | `52790:2` |
 | Canonical board | `EsnaftaVar — Components V1 / Canonical Board` |
 | Board node | `52790:3` |
-| Board size | `2520 × 5004` |
+| Board size | `2520 × 5036` |
 | Public component family | `14` |
 | Component set | `11` |
 | Component node | `79` |
@@ -52,14 +52,14 @@ Bu faz component-only'dir. Final ekran, Flutter widget, taxonomy motoru, reklam 
 | `EsnaftaVar/CategoryCard` | `52799:46` | Component set | 4 | 2 availability × 2 density |
 | `EsnaftaVar/CategoryRow` | `52799:71` | Component set | 2 | 2 availability |
 | `EsnaftaVar/ProductCard` | `52800:92` | Component set | 4 | 2 layout × 2 image state |
-| `EsnaftaVar/SellerPriceRow` | `52801:71` | Component set | 3 | 3 availability |
+| `EsnaftaVar/SellerPriceRow` | `52801:71` | Component set | 3 | Default, BestPrice, Unavailable |
 | `EsnaftaVar/MerchantCard` | `52801:120` | Component set | 2 | 2 image state |
 | `EsnaftaVar/ShopRatingSummary` | `52802:87` | Component set | 2 | 2 density |
 | `EsnaftaVar/VerifiedPurchaseBadge` | `52802:88` | Standalone component | 1 | Server-authoritative marker |
 | `EsnaftaVar/CartShopHeader` | `52803:22` | Standalone component | 1 | Single-store cart merchant header |
 | `EsnaftaVar/CartItem` | `52803:102` | Component set | 3 | 3 availability |
 | `EsnaftaVar/SingleStoreConflictState` | `52803:103` | Standalone component | 1 | Explicit cart replacement confirmation |
-| `EsnaftaVar/StatusChip` | `52804:55` | Component set | 5 | 5 semantic tone |
+| `EsnaftaVar/StatusChip` | `52804:55` | Component set | 5 | Commerce/trust semantic states |
 
 Toplam: **11 component set, 79 component node, 14 public family**.
 
@@ -110,12 +110,14 @@ Toplam: **11 component set, 79 component node, 14 public family**.
 
 ### 4.6 SellerPriceRow / MerchantCard
 
-- SellerPriceRow: `Availability=Available|LowStock|Unavailable`
+- SellerPriceRow: `State=Default|BestPrice|Unavailable`
 - MerchantCard: `Image=Available|Fallback`
-- Seller properties: `Merchant name`, `Price`
+- Seller properties: `Merchant name`, `Price`, `Show sponsored`
 - Merchant properties: `Merchant name`, `Show merchant badge`
-- CTA'lar canonical Button instance'larıdır.
+- Seller row; rating, distance, price, availability ve canonical `Mağazayı Gör` Button instance'ını birlikte taşır.
+- MerchantCard; canonical `Yol Tarifi` ve `Mağazayı Gör` Button instance'larını taşır.
 - `En uygun fiyat` etiketi yalnız presentational örnektir; sıralama/auction/advertising algoritması tanımlamaz.
+- `Sponsorlu` etiketi optional visual disclosure slot'udur; default olarak kapalıdır.
 - Merchant badge `future/merchantBadge` görsel slotunu kullanır; bir badge engine tanımlamaz.
 
 ### 4.7 ShopRatingSummary / VerifiedPurchaseBadge
@@ -139,8 +141,9 @@ Toplam: **11 component set, 79 component node, 14 public family**.
 
 ### 4.9 StatusChip
 
-- `Tone`: `Success`, `Warning`, `Error`, `Info`, `Neutral`
-- Her tone farklı icon shape, açık text label ve strong/soft token çifti kullanır.
+- `Semantic`: `Available`, `LowStock`, `Unavailable`, `Verified`, `Sponsored`
+- Her semantic state farklı icon shape, açık text label ve uygun commerce/future token çifti kullanır.
+- `Verified` server-authoritative trust state'idir; `Sponsored` yalnız future disclosure slot'udur.
 - StatusChip display-only'dir; interaktif chip olarak kullanılacaksa ayrı 44 px hit-area gerekir.
 
 ## 5. Token dependency mapping
@@ -156,11 +159,27 @@ Toplam: **11 component set, 79 component node, 14 public family**.
 | MerchantCard | surface/surfaceAlt, accentSoft, merchantBadge | `touch/preferred`, `space/*`, radius medium/large/pill, label/caption, shadow/xs |
 | Rating / verified | primary, surfaceAlt, divider, verifiedPurchase | `space/*`, radius large/pill, heading/label/caption |
 | Cart V2 | surface/surfaceAlt, price, stock*, warning*, error* | `touch/min|preferred`, `space/*`, radius medium/large/pill, heading/body/label/price/caption, shadow/xs |
-| StatusChip | success/warning/error/info strong+soft, surfaceAlt/textSecondary | `space/*`, `radius/pill`, `type/label` |
+| StatusChip | stockAvailable, stockLow, unavailable, verifiedPurchase, sponsored ve supporting soft surfaces | `space/*`, `radius/pill`, `type/label` |
 
 Canonical foundation toplamı değişmemiştir: `38` color variable, `15` dimension variable, `12` Poppins text style ve `3` effect style.
 
-## 6. Product-state mapping
+## 6. K'pasa source/reference mapping
+
+| Canonical family | K'pasa reference | Korunan / değiştirilen yaklaşım |
+|---|---|---|
+| Button | `Button` (`418:4001`) | Variant-matrix fikri referans alındı; token, state, 48 px target ve Poppins API'si yeniden kuruldu. |
+| TextField | `text-field building block` (`908:9716`) | Field anatomy referans alındı; type/state kapsamı, ölçü, Auto Layout ve typography değiştirildi. |
+| BottomNav | `Bars` (`913:7501`) | Eşit dağılım fikri referans alındı; actual five-item IA ve labels ile yeniden kuruldu. |
+| CategoryCard/Row | `Category` (`940:2872`) | Yalnız compact visual pattern referans alındı; demo taxonomy kullanılmadı. |
+| ProductCard | `Product Card` (`940:2875`) | Temel bilgi hiyerarşisi referans alındı; local merchant count, stock, fallback ve canonical tokens eklendi. |
+| SellerPriceRow | `Product and Price` (`940:2998`) | Row yapısı referans alındı; merchant identity, rating, distance, state ve CTA sözleşmesi yeniden kuruldu. |
+| ShopRatingSummary | `Rating Preview` (`940:2959`) | Rating presentation fikri referans alındı; aggregate summary ayrı canonical family oldu. |
+| StatusChip | `Status` (`418:5362`) | Semantic badge fikri referans alındı; commerce/trust states ve canonical variables ile yeniden kuruldu. |
+| MerchantCard / Verified / Cart V2 | Dedicated K'pasa karşılığı yok | EsnaftaVar ürün sözleşmesi için sıfırdan canonical componentler oluşturuldu. |
+
+Hiçbir reference component veya instance mutate edilmedi; bütün canonical family'ler yeni page altında yereldir.
+
+## 7. Product-state mapping
 
 | Product/domain durumu | Canonical component karşılığı |
 |---|---|
@@ -176,8 +195,9 @@ Canonical foundation toplamı değişmemiştir: `38` color variable, `15` dimens
 | Different-store add attempt | SingleStoreConflictState; explicit replacement confirmation |
 | Dynamic category availability | CategoryCard/Row `Available|Unavailable` |
 | Customer main navigation | BottomNav exact five-destination contract |
+| Compact availability/trust disclosure | StatusChip `Available|LowStock|Unavailable|Verified|Sponsored` |
 
-## 7. Screen usage mapping
+## 8. Screen usage mapping
 
 | Ekran/akış | Önerilen canonical families |
 |---|---|
@@ -191,7 +211,7 @@ Canonical foundation toplamı değişmemiştir: `38` color variable, `15` dimens
 
 Bu tablo implementation mapping'idir; bu fazda yukarıdaki ekranların hiçbiri oluşturulmamıştır.
 
-## 8. Accessibility and usability
+## 9. Accessibility and usability
 
 - Primary `#B54732` / white: `5.37:1` — WCAG AA normal text PASS.
 - Accent `#1F6B5D` / white: `6.33:1` — PASS.
@@ -203,9 +223,9 @@ Bu tablo implementation mapping'idir; bu fazda yukarıdaki ekranların hiçbiri 
 - Uzun Türkçe ürün, kategori ve esnaf adlarıyla wrapping/overflow denetimi yapılmıştır.
 - Product image bölgeleri warm-neutral surface kullanır; brand renkleri ürün fotoğrafına baskın filtre olarak uygulanmaz.
 
-## 9. Figma validation evidence
+## 10. Figma validation evidence
 
-### 9.1 Canonical page audit
+### 10.1 Canonical page audit
 
 | Kontrol | Sonuç |
 |---|---|
@@ -225,7 +245,7 @@ Bu tablo implementation mapping'idir; bu fazda yukarıdaki ekranların hiçbiri 
 | Section-by-section render | PASS |
 | Full canonical board render | PASS |
 
-### 9.2 Protected source fingerprints
+### 10.2 Protected source fingerprints
 
 B3 task-local fingerprint; node ID/type/name, 2-decimal geometry, child count ve instance main-component ID alanlarından hesaplanmıştır.
 
@@ -238,7 +258,7 @@ B3 task-local fingerprint; node ID/type/name, 2-decimal geometry, child count ve
 
 K'pasa source component, instance, screen ve style'larında mutation yapılmamıştır.
 
-## 10. Deferred component families
+## 11. Deferred component families
 
 V1 component layer dışında bırakılan başlıca alanlar:
 
@@ -258,7 +278,7 @@ V1 component layer dışında bırakılan başlıca alanlar:
 
 Future semantic variables (`sponsored`, `verifiedPurchase`, `merchantBadge`, `customerBadge`, `rewardProgress`) korunur; bu doküman bunlara engine davranışı eklemez.
 
-## 11. Implementation prerequisites
+## 12. Implementation prerequisites
 
 1. Bu task branch'i integration/release süreciyle main'e alınmalıdır.
 2. Product owner, Figma `EsnaftaVar — Components V1` board'unu görsel olarak onaylamalıdır.
@@ -269,7 +289,7 @@ Future semantic variables (`sponsored`, `verifiedPurchase`, `merchantBadge`, `cu
 7. Screen-wide recolor/redesign yalnız canonical component instance'ları kabul edildikten sonra başlatılmalıdır.
 8. Canonical taxonomy UI entegrasyonu taxonomy verisini dinamik kullanmalı; kategori başına ekran/component üretmemelidir.
 
-## 12. Final status
+## 13. Final status
 
 - `CANONICAL_COMPONENT_LAYER_V1: PASS`
 - `SOURCE_KPASA_UNCHANGED: YES`
