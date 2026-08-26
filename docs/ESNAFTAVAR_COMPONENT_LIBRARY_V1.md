@@ -1,10 +1,12 @@
 # EsnaftaVar Canonical Component Library V1
 
 > WAVE 14 — PHASE B3 · Canonical Component Layer V1
+> PHASE C extension · Approved Mobile variants for Critical Screen Pilot V1
 > Tarih: 2026-08-26
-> Durum: **CANONICAL V1 / PRODUCT OWNER VISUAL REVIEW READY**
+> Durum: **CANONICAL V1 + PHASE C MOBILE EXTENSION / PRODUCT OWNER VISUAL REVIEW READY**
 > Git base: `origin/main@911e326609fed85e3d6b55be6d27d75a91ce2176`
 > Task branch: `agent-ui/w14-canonical-component-layer-v1`
+> Phase C branch/base: `agent-ui/w14-critical-screen-pilot-v1` / `origin/main@7992dee8fb6512c53a94e8a094ab2b729a49bc3a`
 > Figma: [EsnaftaVar — Final UI System](https://www.figma.com/design/O8MIn0KyQfFoPA3EnhiWii/EsnaftaVar-%E2%80%94-Final-UI-System)
 > Token foundation: [ESNAFTAVAR_DESIGN_TOKENS_V1_FINAL.md](./ESNAFTAVAR_DESIGN_TOKENS_V1_FINAL.md)
 
@@ -18,16 +20,20 @@ Mahalle Terracotta foundation üzerinde, mevcut K'pasa kaynak UI kitini değişt
 | Page node | `52790:2` |
 | Canonical board | `EsnaftaVar — Components V1 / Canonical Board` |
 | Board node | `52790:3` |
-| Board size | `2520 × 5036` |
+| Board size | `2520 × 6124` |
 | Public component family | `14` |
-| Component set | `11` |
-| Component node | `79` |
+| Component set | `13` |
+| Component node | `89` |
 | Canonical font | Poppins only |
 | Canonical color direction | Mahalle Terracotta: primary `#B54732`, accent `#1F6B5D` |
 | Source K'pasa component/screen/style mutation | `0` |
 | Flutter/runtime mutation | `0` |
 
-Bu faz component-only'dir. Final ekran, Flutter widget, taxonomy motoru, reklam motoru, ödül/gamification davranışı veya ödeme/checkout akışı üretilmemiştir.
+Canonical B3 katmanına Phase C'de yalnız onaylı beş aile için toplam 10
+`Layout=Mobile` varyantı eklenmiştir. Critical-screen çıktısı ayrı
+`EsnaftaVar — Critical Screens V1` page'inde tutulur; Flutter widget, taxonomy
+motoru, reklam motoru, ödül/gamification davranışı veya ödeme/checkout akışı
+üretilmemiştir.
 
 ## 2. Mimari kurallar
 
@@ -52,16 +58,18 @@ Bu faz component-only'dir. Final ekran, Flutter widget, taxonomy motoru, reklam 
 | `EsnaftaVar/CategoryCard` | `52799:46` | Component set | 4 | 2 availability × 2 density |
 | `EsnaftaVar/CategoryRow` | `52799:71` | Component set | 2 | 2 availability |
 | `EsnaftaVar/ProductCard` | `52800:92` | Component set | 4 | 2 layout × 2 image state |
-| `EsnaftaVar/SellerPriceRow` | `52801:71` | Component set | 3 | Default, BestPrice, Unavailable |
-| `EsnaftaVar/MerchantCard` | `52801:120` | Component set | 2 | 2 image state |
+| `EsnaftaVar/SellerPriceRow` | `52801:71` | Component set | 6 | 2 layout × 3 state |
+| `EsnaftaVar/MerchantCard` | `52801:120` | Component set | 4 | 2 layout × 2 image state |
 | `EsnaftaVar/ShopRatingSummary` | `52802:87` | Component set | 2 | 2 density |
 | `EsnaftaVar/VerifiedPurchaseBadge` | `52802:88` | Standalone component | 1 | Server-authoritative marker |
-| `EsnaftaVar/CartShopHeader` | `52803:22` | Standalone component | 1 | Single-store cart merchant header |
-| `EsnaftaVar/CartItem` | `52803:102` | Component set | 3 | 3 availability |
-| `EsnaftaVar/SingleStoreConflictState` | `52803:103` | Standalone component | 1 | Explicit cart replacement confirmation |
+| `EsnaftaVar/CartShopHeader` | `52832:86` | Component set | 2 | `Layout=Wide|Mobile` |
+| `EsnaftaVar/CartItem` | `52803:102` | Component set | 6 | 2 layout × 3 availability |
+| `EsnaftaVar/SingleStoreConflictState` | `52833:107` | Component set | 2 | `Layout=Wide|Mobile` |
 | `EsnaftaVar/StatusChip` | `52804:55` | Component set | 5 | Commerce/trust semantic states |
 
-Toplam: **11 component set, 79 component node, 14 public family**.
+Toplam: **13 component set, 89 component node, 14 public family**. Phase C
+extension yeni public family oluşturmaz; yalnız mevcut beş aileye exact 10 Mobile
+varyantı ekler.
 
 ## 4. Varyant ve property sözleşmeleri
 
@@ -110,6 +118,7 @@ Toplam: **11 component set, 79 component node, 14 public family**.
 
 ### 4.6 SellerPriceRow / MerchantCard
 
+- Her iki ailede `Layout=Wide|Mobile`
 - SellerPriceRow: `State=Default|BestPrice|Unavailable`
 - MerchantCard: `Image=Available|Fallback`
 - Seller properties: `Merchant name`, `Price`, `Show sponsored`
@@ -130,11 +139,14 @@ Toplam: **11 component set, 79 component node, 14 public family**.
 
 ### 4.8 Cart V2
 
+- CartShopHeader: `Layout=Wide|Mobile`
 - CartShopHeader property: `Merchant name`
+- CartItem: `Layout=Wide|Mobile`
 - CartItem: `Availability=Available|LowStock|Unavailable`
 - CartItem properties: `Product name`, `Quantity`
 - Quantity stepper ve remove action `44 px`'dir.
 - Unavailable item sepette görünür ve kaldırılabilir; stock state açık text ile verilir.
+- SingleStoreConflictState: `Layout=Wide|Mobile`
 - SingleStoreConflictState property: `Description`
 - Conflict state, mevcut mağazayı ve yeni mağazayı açıklayarak `Vazgeç` / `Sepeti Değiştir` onayı ister.
 - Checkout, ödeme, shipping veya order tracking davranışı bu componentlerde yoktur.
@@ -209,7 +221,10 @@ Hiçbir reference component veya instance mutate edilmedi; bütün canonical fam
 | Auth/profile/merchant forms | TextField, Button, StatusChip |
 | Review surface | ShopRatingSummary, VerifiedPurchaseBadge; review editor/card ayrı faz |
 
-Bu tablo implementation mapping'idir; bu fazda yukarıdaki ekranların hiçbiri oluşturulmamıştır.
+Bu mapping Phase C critical-screen pilotunda Home, Category Listing, Product
+Details, Shop Details ve Cart V2 için doğrulanmıştır. Pilot node envanteri ve
+ekran-spesifik kararlar
+`docs/ESNAFTAVAR_CRITICAL_SCREEN_PILOT_V1.md` içindedir.
 
 ## 9. Accessibility and usability
 
@@ -229,7 +244,8 @@ Bu tablo implementation mapping'idir; bu fazda yukarıdaki ekranların hiçbiri 
 
 | Kontrol | Sonuç |
 |---|---|
-| Component set / component / public family | `11 / 79 / 14` — PASS |
+| Component set / component / public family | `13 / 89 / 14` — PASS |
+| Exact Phase C `Layout=Mobile` addition | `10` — PASS |
 | Expected variant matrix | PASS |
 | Duplicate public family name | `0` |
 | Duplicate full component key | `0` |
@@ -258,6 +274,25 @@ B3 task-local fingerprint; node ID/type/name, 2-decimal geometry, child count ve
 
 K'pasa source component, instance, screen ve style'larında mutation yapılmamıştır.
 
+### 10.3 Phase C Mobile extension evidence
+
+- Component root Auto Layout: `89/89` — PASS.
+- Duplicate public family: `0`.
+- Visible solid paint without canonical variable: `0`.
+- Non-Poppins text / missing font: `0 / 0`.
+- Legacy `#FF8523`: `0`.
+- Interactive target below `44 px`: `0`.
+- Full Components V1 board render: PASS.
+
+Phase C task-local protected source fingerprint'leri:
+
+| Protected page | Node | Pre-write | Post-write | Sonuç |
+|---|---:|---:|---:|---|
+| Cover | `458:7710` | `25ec69c9` | `25ec69c9` | UNCHANGED |
+| UI | `401:358` | `13b5524b` | `13b5524b` | UNCHANGED |
+| Components | `401:359` | `cbc628af` | `cbc628af` | UNCHANGED |
+| Styles Guide | `16:3` | `7347b88b` | `7347b88b` | UNCHANGED |
+
 ## 11. Deferred component families
 
 V1 component layer dışında bırakılan başlıca alanlar:
@@ -281,8 +316,10 @@ Future semantic variables (`sponsored`, `verifiedPurchase`, `merchantBadge`, `cu
 ## 12. Implementation prerequisites
 
 1. Bu task branch'i integration/release süreciyle main'e alınmalıdır.
-2. Product owner, Figma `EsnaftaVar — Components V1` board'unu görsel olarak onaylamalıdır.
-3. İlk critical-screen pilot tek bir akışta yapılmalıdır; önerilen pilot Product Detail + SellerPriceRow veya Cart V2'dir.
+2. Product owner, Figma `EsnaftaVar — Components V1` ve
+   `EsnaftaVar — Critical Screens V1` board'larını görsel olarak onaylamalıdır.
+3. Critical-screen pilot Phase C'de tamamlanmıştır; full rollout öncesi product-owner
+   kabulü ve integration gereklidir.
 4. Flutter tarafında semantic token isimleri machine-readable manifestten map edilmelidir; raw hex ve px kopyalanmamalıdır.
 5. Figma variant/property sözleşmeleri Flutter widget API'lerinde aynı semantik adlarla korunmalıdır.
 6. Pilot; loading, empty, error, success, disabled, uzun Türkçe text, missing image, low/unavailable stock ve 44–48 px hedef doğrulaması içermelidir.
@@ -292,7 +329,9 @@ Future semantic variables (`sponsored`, `verifiedPurchase`, `merchantBadge`, `cu
 ## 13. Final status
 
 - `CANONICAL_COMPONENT_LAYER_V1: PASS`
+- `PHASE_C_MOBILE_EXTENSION: PASS`
 - `SOURCE_KPASA_UNCHANGED: YES`
 - `RUNTIME_CODE_CHANGED: NO`
-- `READY_FOR_CRITICAL_SCREEN_PILOT: YES`
+- `CRITICAL_SCREEN_PILOT_CREATED: YES`
+- `READY_FOR_PRODUCT_OWNER_VISUAL_REVIEW: YES`
 - `INTEGRATION_REQUIRED`

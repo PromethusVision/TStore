@@ -3,6 +3,30 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-26
+- En güncel task teslimi: **WAVE 14 PHASE C CRITICAL SCREEN PILOT V1 PASS /
+  PRODUCT OWNER VISUAL REVIEW READY / INTEGRATION REQUIRED**.
+- Task branch/base: `agent-ui/w14-critical-screen-pilot-v1` /
+  `origin/main@7992dee8fb6512c53a94e8a094ab2b729a49bc3a`.
+- Figma `EsnaftaVar — Critical Screens V1` page `52825:2`, pilot board
+  `52825:3` (`2520 × 5212`) üzerinde 5 bölüm ve 9 adet `390 × 844` mobile
+  screen/state taşır: Home 2, Category 1, Product Details 2, Shop Details 1,
+  Cart V2 3.
+- Canonical public family sayısı `14` olarak korunmuştur. Yalnız SellerPriceRow,
+  MerchantCard, CartItem, CartShopHeader ve SingleStoreConflictState ailelerine
+  exact `10` `Layout=Mobile` varyantı eklenmiş; toplam `13` component set ve `89`
+  component node doğrulanmıştır.
+- Phase C kalite kanıtı: screen-local Auto Layout offender `0`, non-Poppins/missing
+  font `0/0`, unbound visible solid paint `0`, duplicate public family `0`, legacy
+  `#FF8523` `0`, sub-44 interactive target `0`, Turkish text-risk `0`; dokuz
+  screen renderı ve full-board render PASS. Protected K'pasa fingerprint'leri
+  pre/post aynıdır.
+- Category pilot canonical taxonomy derinliğini dinamik tüketmeye hazırdır; görünen
+  etiketler temsili/provisional content'tir. Home konum kişiselleştirmesi guest →
+  location action → AuthGuard olarak görselleştirilmiştir. Cart V2 tek-mağaza ve
+  fiziksel satın alma hazırlığı semantiğini korur.
+- Phase C Figma-only'dir. Flutter rollout **NOT STARTED**; Flutter/runtime,
+  backend/migration, Production ve Development operation `NO`'dur. Full UI rollout
+  product-owner görsel kabulü ve integration sonrasına bırakılmıştır.
 - Son doğrulanan teslim: Wave 14 Phase B3 Canonical Component Layer V1 final
   entegrasyonu.
 - Integration branch/base: `integration/wave-14-b3-component-layer` /

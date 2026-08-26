@@ -838,6 +838,38 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   JSON'u dinamik tüketir; shared navigation/theme/widget alanları farklı agentlarca
   aynı anda değiştirilmez.
 
+## Wave 14 Phase C Critical Screen Pilot V1 Task Gözlemi
+
+`CRITICAL_SCREEN_PILOT_V1: PASS`
+
+`TAXONOMY_READY_UI_STRUCTURE: YES`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`READY_FOR_PRODUCT_OWNER_VISUAL_REVIEW: YES`
+
+`READY_FOR_FULL_UI_ROLLOUT: NO`
+
+`INTEGRATION_REQUIRED`
+
+- Task branch/base `agent-ui/w14-critical-screen-pilot-v1` /
+  `origin/main@7992dee8fb6512c53a94e8a094ab2b729a49bc3a`.
+- Figma `EsnaftaVar — Critical Screens V1` page `52825:2`, board `52825:3`
+  üzerinde Home, Category Listing, Product Details + Seller Comparison, Shop Details
+  ve Cart V2 için 9 mobile screen/state oluşturuldu.
+- Canonical public family `14` olarak korundu. Yalnız onaylı beş aileye exact `10`
+  `Layout=Mobile` varyantı eklendi; library `13` set / `89` component node oldu.
+  Yeni public family ve K'pasa source mutation yoktur.
+- Pilot; dynamic taxonomy projection, guest location AuthGuard temsili, 15 satıcıya
+  ölçeklenen seller comparison ve tek-mağazalı fiziksel alışveriş hazırlığı Cart V2
+  sözleşmesini birlikte doğrular.
+- Figma kalite kapıları Auto Layout, canonical token binding, Poppins, contrast,
+  44 px touch, Turkish overflow, screen/full-board render ve protected source
+  fingerprint kontrollerinde PASS'tir.
+- Flutter/runtime, shared navigation/theme/widget, backend/migration, Production ve
+  Development değişmedi. Integration ve product-owner görsel kabulünden önce full
+  Flutter/UI rollout paralel başlatılmaz.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

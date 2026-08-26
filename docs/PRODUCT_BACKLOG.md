@@ -272,9 +272,16 @@ HTTP `200` / no-exception final success değildir.
   name `0`, legacy `#FF8523` `0`, `44 px` altı interactive target `0` ve Turkish
   overflow/clipping `0` PASS. K'pasa source fingerprint'leri ve source screen,
   component, instance, style içeriği değişmemiştir.
+- Wave 14 Phase C task branch'inde Critical Screen Pilot V1 tamamlandı: Figma
+  `52825:2` / board `52825:3`, 5 kritik bölüm, 9 mobile screen/state. Public family
+  `14` olarak korunurken yalnız SellerPriceRow, MerchantCard, CartItem,
+  CartShopHeader ve SingleStoreConflictState ailelerine exact `10`
+  `Layout=Mobile` varyantı eklendi; branch library sonucu `13` set / `89` component
+  node'dur. Task integration ve product-owner visual review bekler; Flutter rollout
+  başlamamıştır.
 - Açık implementation/acceptance işleri:
-  - product-owner visual review ve gerçek Türkçe içerik/accessibility state'leriyle
-    tek-akışlı critical screen pilot,
+  - tamamlanan Critical Screen Pilot V1 için product-owner visual review ve task
+    branch integration,
   - Wave 15 canonical taxonomy'ye bağlı category/search/filter UI uyarlaması,
   - component-level kabul sonrası full Flutter token/UI migration.
 
