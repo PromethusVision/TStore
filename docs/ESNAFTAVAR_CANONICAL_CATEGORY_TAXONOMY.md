@@ -1,6 +1,6 @@
 # EsnaftaVar Canonical Category Taxonomy — Architecture + L1
 
-**Wave:** 15 / Phase A
+**Wave:** 15 / Phase A1
 
 **Belge tarihi:** 27 Ağustos 2026
 
@@ -8,22 +8,28 @@
 
 **Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
 
-> Current main notu: Bu Phase A görevi başladığında repo zaten owner-approved
-> `v1.0.0` full taxonomy artefaktını içeriyordu. Bu belge mevcut 23 L1 canonical
-> baselineını geriye götürmez, L2/L3/L4 ağacını yeniden üretmez ve
+> Current main notu: Phase A başladığında repo owner-approved `v1.0.0` full taxonomy
+> artefaktını içeriyordu. Phase A1 product-owner review girdisi, Product Taxonomy L1
+> adlarını ve bir split kararını **24 maddelik yeni bir proposal** olarak refine eder.
+> Bu proposal henüz FINAL değildir; mevcut L2/L3/L4 ağacını yeniden üretmez ve
 > `docs/data/esnaftavar_category_taxonomy_v1_final.json` dosyasını değiştirmez.
-> Belgenin yeni girdisi; mimariyi kısa bir sözleşmede toplamak ve teyit edilen
-> merchant-sector hizmet kapsamını product taxonomy'den ayrı kaydetmektir.
+> Final owner approval ve ayrı integration olmadan current canonical/runtime state'i
+> değiştirmez.
 
 ## Karar etiketleri
 
-- **CONFIRMED:** Product owner'ın bu görevde açıkça teyit ettiği veya current main'deki
-  canonical V1.0.0 kararı.
-- **PROPOSED:** Runtime uygulamasından önce owner/integration review gerektiren mimari
-  öneri.
+- **CONFIRMED:** Product owner'ın bu görevde açıkça teyit ettiği karar; bu belgede
+  özellikle Merchant/Sector hizmet kapsamı için kullanılır.
+- **PROPOSED / technically accepted:** Phase A'da kabul edilen, bu refinement'ta
+  yeniden tasarlanmayan taxonomy mimarisi.
+- **PROPOSED FOR FINAL OWNER APPROVAL:** Phase A1'de refine edilen 24 L1 adı ve sınırı;
+  FINAL veya runtime-deployed değildir.
 - **TBD:** Ürün, hukuk, operasyon veya implementation kararı henüz verilmemiş alan.
 
 ## 1. Purpose
+
+**Architecture status: PROPOSED / technically accepted.** Phase A1 bu mimariyi
+yeniden tasarlamaz; yalnız L1 customer-facing adlarını ve sınırlarını refine eder.
 
 Bu belgenin amacı EsnaftaVar'ın fiziksel yerel ticaret modelinde:
 
@@ -55,7 +61,7 @@ API örneğinden wholesale taxonomy sonucu çıkarılmamıştır.
 | [Hepsiburada Katalog Ürün Giriş Önemli Bilgiler](https://developers.hepsiburada.com/tr/companies/hepsiburada?guide=katalog-onemli-bilgiler&product=katalog-urun-entegrasyonu&view=guide) — erişim 2026-08-27 | `categoryId`, `parentCategoryId`, `paths`; ürün girişi için `leaf=true`, `status=active`, `available=true` birlikte gerekir. Category ürün data modelini ve attribute gereksinimlerini belirler. | Turkish catalog label + explicit path; assignability adın değil ayrı status alanlarının sonucudur. | Public rehber tüm L1 ağacını statik olarak göstermediğinden L1 bazında wholesale fragmentation iddiası yapılmadı. Leaf ve attribute şemasının birlikte büyümesi operasyon yükü yaratabilir. | Merchant türü ile ürün kategorisini ve customer-nearby projection'ını ayıran EsnaftaVar domain sözleşmesi ayrıca gerekir. |
 | [n11 Kategori Ağacı](https://developer.n11.com/documentation/n11-marketplace-entegrasyonu/kategori-agaci-listeleme/) ve [Kategori Özellikleri](https://developer.n11.com/documentation/n11-marketplace-entegrasyonu/kategori-ozellikleri-listeleme/) — erişim 2026-08-27 | Nested `id`, `parentId`, `subCategories`; `null` child leaf'tir ve ürün yalnız leaf ID'ye gönderilir. Attribute servisi mandatory, variant, slicer ve custom value rollerini ayırır. | Türkçe compound adlar; örneklerde `Banyo & Tuvalet`, `Erkek Giyim & Aksesuar` gibi browse/merchant dili kullanılır. | Cinsiyetin L1'e kadar taşınması veya her browse ayrımının node yapılması EsnaftaVar için tekrar ve multi-category riski doğurur; gender facet kalmalıdır. | Shop/sector identity, fiziksel yakınlık ve local availability ayrı katmandır; product tree bu görevleri üstlenmemelidir. |
 
-### Araştırma sentezi — CONFIRMED
+### Araştırma sentezi — PROPOSED / technically accepted
 
 - Ürün, tam olarak bir primary canonical leaf'e atanır.
 - Leaf olup olmama ile aktif/atanabilir olma ayrı kavramlardır.
@@ -68,15 +74,15 @@ API örneğinden wholesale taxonomy sonucu çıkarılmamıştır.
 
 | Sistem | Soru | Örnek | Canonical rol | Durum |
 |---|---|---|---|---|
-| **Product Taxonomy** | Bu ürün nedir? | Elektronik → Telefon & Giyilebilir Teknoloji → Akıllı Telefon | Customer browse, search context, merchant product entry, analytics | **CONFIRMED** |
+| **Product Taxonomy** | Bu ürün nedir? | Elektronik → Telefon & Giyilebilir Teknoloji → Akıllı Telefon | Customer browse, search context, merchant product entry, analytics | **PROPOSED / technically accepted** |
 | **Merchant / Sector Taxonomy** | Bu işletme ne tür bir işletmedir? | Telefoncu, Kırtasiye, Pet Shop, Erkek Berberi | Merchant onboarding, shop profile, sector filter ve future policy routing | **CONFIRMED — ayrı sistem** |
-| **Facet / Attribute System** | Bu ürünün seçilebilir/filtrelenebilir özelliği nedir? | marka, renk, beden, kapasite, materyal, uyumluluk | Filter, variant, validation ve structured search | **CONFIRMED — category değildir** |
+| **Facet / Attribute System** | Bu ürünün seçilebilir/filtrelenebilir özelliği nedir? | marka, renk, beden, kapasite, materyal, uyumluluk | Filter, variant, validation ve structured search | **PROPOSED / technically accepted — category değildir** |
 
 Bir merchant birden fazla product L1 altında ürün satabilir. Bu nedenle merchant
 sector ile product category ilişkisi future modelde many-to-many olabilir; sector
 ürünün primary category'sini otomatik belirlemez.
 
-### Category olmayan kavramlar — CONFIRMED
+### Category olmayan kavramlar — PROPOSED / technically accepted
 
 - marka, renk, beden, ayakkabı numarası, kapasite, materyal, uyumluluk;
 - cinsiyet, yaş grubu ve teknik özellik;
@@ -98,7 +104,7 @@ Maximum supported depth **4** seviyedir; her dalın dört seviyeye zorlanması y
 | L3 | Ürün grubu | Akıllı Telefon | **Evet** |
 | L4 | Ürün tipi | Gerçekten ayrı şema gerektiren dar tip | **Evet** |
 
-### Invariants — CONFIRMED
+### Invariants — PROPOSED / technically accepted
 
 - Root yalnız L1'dir; her L2–L4 node'un tam bir parent'ı vardır.
 - Child level her zaman `parent.level + 1` olur; cycle ve orphan kabul edilmez.
@@ -158,7 +164,7 @@ taşır.
 
 ## 6. Product assignment rules
 
-### Primary category — CONFIRMED
+### Primary category — PROPOSED / technically accepted
 
 Her canonical product **exactly one** aktif ve atanabilir primary canonical leaf'e
 bağlanır. Product bir ancestor'a atanmaz; ancestor browse/analytics roll-up ile
@@ -233,83 +239,88 @@ için future `category request → taxonomy review` workflow'u **TBD**'dir.
 
 ## 9. L1 hypothesis evaluation
 
-Başlangıç hipotezi current canonical V1.0.0 ve araştırma ilkeleriyle challenge edildi.
-Sonuç, 18–25 hedef aralığında **23 L1**'dir.
+Phase A1 product-owner review, previous 23-name L1 setini FINAL kabul etmez. Mimariyi
+değiştirmeden customer-facing product terminology'yi düzeltir ve müzik domainini
+ayırarak sonucu **24 L1**'e çıkarır.
 
-| Başlangıç hipotezi | Karar | Recommended/current L1 sonucu | Gerekçe |
+| Previous Phase A adı | Phase A1 action | Proposed owner-review adı | Gerekçe |
 |---|---|---|---|
-| Elektronik | **SPLIT** | Elektronik; Bilgisayar & Tablet | Telefon/audio/camera ile bilgisayar bileşen ve peripheral şemaları yeterince farklıdır. |
-| Beyaz Eşya & Ev Aletleri | **KEEP** | Beyaz Eşya & Ev Aletleri | Dayanıklı appliance ve küçük ev aleti tek anlaşılır departmenttır. |
-| Ev & Yaşam | **KEEP + SCOPE** | Ev & Yaşam | Mobilya, ev tekstili, dekorasyon ve ev tüketim ürünleri bu sınırdadır. |
-| Mobilya & Dekorasyon | **MERGE** | Ev & Yaşam altında | Ayrı L1, yerel katalogda Ev & Yaşam ile kalıcı overlap yaratır. |
-| Yapı Market, Hırdavat & Tesisat | **RENAME** | Yapı & Hırdavat | “Market” satış kanalı çağrışımı yapar; tesisat L2 kapsamı olabilir. |
-| Giyim & Moda | **RENAME** | Moda & Giyim | Türkçe browse kullanımı ve final canonical adla hizalanır. |
-| Ayakkabı, Çanta & Aksesuar | **SPLIT** | Ayakkabı; Çanta & Giyim Aksesuarı | Ayakkabı numarası/fit ile çanta/aksesuar attribute şemaları ve browse niyeti ayrıdır. |
-| Kozmetik & Kişisel Bakım | **RENAME** | Kişisel Bakım & Kozmetik | Bakım domainini önceleyen final canonical ad; kapsam korunur. |
-| Sağlık & Medikal | **KEEP** | Sağlık & Medikal | Regulated policy ile ürün domaini birlikte görünür, satış izni ayrıca değerlendirilir. |
-| Anne, Bebek & Çocuk | **RENAME** | Bebek & Çocuk | “Anne” hedef kullanıcı facet'i olmamalı; ürün fonksiyonu bebek/çocuk kapsamıdır. |
-| Oyuncak & Hobi | **MERGE/EXPAND** | Oyuncak, Hobi & Müzik | Ayrı müzik L1'i yerel coverage için seyrek; enstrümanlar aynı hobby departmentında yönetilebilir. |
-| Kitap, Kırtasiye & Ofis | **SPLIT** | Kitap; Kırtasiye & Ofis | Kitabın shelf/genre modeli ile ofis/kırtasiye attribute ve merchant giriş modeli farklıdır. |
-| Gıda & İçecek | **RENAME/EXPAND** | Market & Gıda | Mahalle marketi/bakkal dilini ve içecek/atıştırmalık/taze gıda kapsamını birlikte taşır. |
-| Spor & Outdoor | **KEEP** | Spor & Outdoor | Kullanıcı niyeti ve ürün özellikleri tutarlı department oluşturur. |
-| Otomotiv & Motosiklet | **KEEP** | Otomotiv & Motosiklet | Vehicle fitment ortak altyapısı, alt domain sınırları L2'de çözülür. |
-| Evcil Hayvan | **RENAME** | Pet Shop | Türkiye'deki gerçek mağaza dilini tanır; canlı hayvan satışı kapsam dışıdır. |
-| Takı, Saat & Gözlük | **SPLIT** | Optik; Saat & Takı | Optiğin regulated/ölçülü ürün sözleşmesi saat/takıdan ayrıdır. |
-| Bahçe, Çiçek & Bitki | **RENAME** | Çiçek & Bahçe | Bitki ve yetiştirme ürünleri aynı domain; daha kısa Türkçe browse adı. |
-| Müzik & Enstrüman | **MERGE** | Oyuncak, Hobi & Müzik altında | Mahalle coverage ve L1 sadeliği; enstrüman ürün grupları kaybolmaz. |
-| Hediyelik, Parti & Organizasyon | **RENAME/SCOPE** | Hediyelik & Parti | Fiziksel ürünler kalır; organizasyon hizmeti Product Taxonomy değildir. |
-| İş Güvenliği & Endüstriyel | **DISTRIBUTE / REMOVE L1** | Fonksiyona göre Giyim, Ayakkabı, Yapı & Hırdavat, Otomotiv | “Endüstriyel” aşırı geniş satış kanalıdır; safety bir policy/attribute, ürünün ana fonksiyonu değil. |
-| — | **ADD/SPLIT** | Züccaciye & Mutfak | Kitchenware ile furniture/decor ve elektrikli appliance ayrımını netleştirir. |
+| Market & Gıda | **RENAME / terminology correction** | Gıda & İçecek | “Market” ürün ailesi değil satış kanalı/merchant formatıdır. |
+| Moda & Giyim | **RENAME** | Giyim & Moda | Türkçe customer-facing adlandırma sırası. |
+| Çanta & Giyim Aksesuarı | **RENAME / scope clarity** | Çanta & Aksesuar | Daha temiz müşteri adı; saat/takı ayrı L1'de kalır. |
+| Yapı & Hırdavat | **RENAME / local scope** | Yapı, Hırdavat & Tesisat | Mahalle tesisatçısı/nalbur ürünlerinin discoverability'sini başlıkta görünür kılar. |
+| Kişisel Bakım & Kozmetik | **RENAME** | Kozmetik & Kişisel Bakım | Product-owner tarafından seçilen customer-facing canonical sıra. |
+| Bebek & Çocuk | **RENAME / boundary refinement** | Anne & Bebek | Çocuk giyimi, ayakkabısı, oyuncağı ve okul ürünü kendi fonksiyonel L1'lerine gider. |
+| Oyuncak, Hobi & Müzik | **SPLIT** | Oyuncak & Hobi; Müzik & Enstrüman | Attribute, search intent, merchant type ve filter sözleşmeleri önemli ölçüde ayrıdır. |
+| Pet Shop | **RENAME / mandatory terminology correction** | Evcil Hayvan Ürünleri | `Pet Shop` merchant type'tır; product node ürün ailesini ifade etmelidir. |
+| Optik | **RENAME / clarity** | Gözlük & Optik | Customer-facing ürün kapsamını açıklar; regulated sınırlar Phase B/legal review'dedir. |
 
-No unexplained L1 overlap kuralı: sınır vakaları satış kanalına veya mağaza türüne göre
-değil ürünün ana fonksiyonuna göre çözülür. Cross-discovery alias/attribute/collection
-ile sağlanır; ikinci primary category oluşturulmaz.
+İsim değişikliği stable node identity'yi değiştirmez. Combined oyuncak/hobi/müzik
+node'unun split mapping'i ise final approval sonrasında ayrı identity/migration
+tasarımı gerektirir; bu belge yeni runtime ID üretmez.
+
+### Overlap audit — 24/24 reviewed
+
+| Kritik sınır | Phase B boundary principle | Multi-category önleme kuralı |
+|---|---|---|
+| Elektronik ↔ Bilgisayar & Tablet | Telefon, giyilebilir teknoloji, ses/görüntü ve camera Elektronik; bilgisayar, tablet, core component, storage ve peripheral Bilgisayar & Tablet. | Ana cihaz fonksiyonu belirler; “akıllı” veya bağlantılı olmak tek başına Elektronik'e taşımaz. |
+| Ev & Yaşam ↔ Züccaciye & Mutfak | Mobilya, ev tekstili, dekorasyon, düzenleme ve genel ev bakımı Ev & Yaşam; pişirme, hazırlama, servis ve gıda saklama Züccaciye & Mutfak. | Kullanıldığı oda değil ana işlev belirler; elektrikli appliance ayrıca Beyaz Eşya & Ev Aletleri'ne gider. |
+| Giyim & Moda ↔ Çanta & Aksesuar ↔ Ayakkabı | Giyilen tekstil Giyim & Moda; taşınan/tamamlayıcı aksesuar Çanta & Aksesuar; footwear Ayakkabı. | Cinsiyet, beden, renk ve stil facet'tir; saat/takı kendi L1'inde kalır. |
+| Anne & Bebek ↔ Giyim/Oyuncak/Ayakkabı/Kırtasiye | Bez, emzirme, beslenme, bakım, güvenlik ve taşıma Anne & Bebek; çocuk giysisi/ayakkabısı/oyuncağı/okul ürünü kendi fonksiyonel L1'ine gider. | Hedef yaş tek başına category ownership üretmez; yaş grubu facet olarak kalabilir. |
+| Gözlük & Optik ↔ Sağlık & Medikal | Gözlük, çerçeve ve optik aksesuar Gözlük & Optik; genel ölçüm, takip, destek ve medikal cihaz Sağlık & Medikal. | Kontakt lens, numaralı ürün ve medical claim sınırı Phase B + legal policy review olmadan assignable sayılmaz. |
+
+Diğer 19 L1'in boundary guard'ı aşağıdaki recommendation tablosunda kayıtlıdır.
+Sınır vakaları satış kanalına veya merchant type'a göre değil ürünün ana fonksiyonuna
+göre çözülür. Cross-discovery alias/attribute/collection ile sağlanır; ikinci primary
+category oluşturulmaz.
 
 ## 10. Recommended L1 V1
 
-**Durum: CONFIRMED — current repo canonical V1.0.0 baseline.** Bu belge L1 adlarını
-yeniden açmaz; owner review için öneri mevcut 23 L1'in korunmasıdır.
+**Durum: PROPOSED FOR FINAL OWNER APPROVAL.** Aşağıdaki 24 L1 henüz FINAL değildir ve
+current canonical JSON/runtime state'ini değiştirmez.
 
-| # | L1 | Stable V1 source slug | Boundary guard |
+| # | Proposed L1 | Proposed display slug | Boundary guard |
 |---:|---|---|---|
-| 1 | Market & Gıda | `market-gida` | Gıda/market ürünü; restoran hizmeti, ilaç ve yasak hassas domain değil. |
-| 2 | Moda & Giyim | `moda-giyim` | Giyim ürünü; gender/size/renk facet'tir. |
+| 1 | Gıda & İçecek | `gida-icecek` | Yenebilir/içilebilir perakende ürünü; `Market` merchant type'tır, category değildir. |
+| 2 | Giyim & Moda | `giyim-moda` | Giyilen tekstil ürünü; gender/size/renk facet'tir. |
 | 3 | Ayakkabı | `ayakkabi` | Ayakkabı türü; numara ve hedef cinsiyet facet'tir. |
-| 4 | Çanta & Giyim Aksesuarı | `canta-giyim-aksesuari` | Taşıma/giyim aksesuarı; cihaz uyumluluğu attribute'tur. |
+| 4 | Çanta & Aksesuar | `canta-aksesuar` | Çanta, cüzdan, kemer, şemsiye ve moda aksesuarı; saat/takı burada değildir. |
 | 5 | Elektronik | `elektronik` | Telefon, audio, camera ve consumer electronics; bilgisayar ayrı L1. |
 | 6 | Bilgisayar & Tablet | `bilgisayar-tablet` | Bilgisayar/tablet, bileşen, depolama ve peripheral. |
 | 7 | Beyaz Eşya & Ev Aletleri | `beyaz-esya-ev-aletleri` | Elektrikli dayanıklı/küçük ev cihazı; non-electric kitchenware ayrı. |
 | 8 | Ev & Yaşam | `ev-yasam` | Mobilya, tekstil, dekorasyon, düzenleme ve ev tüketim ürünleri. |
 | 9 | Züccaciye & Mutfak | `zuccaciye-mutfak` | Pişirme, servis, saklama ve non-electric kitchenware. |
-| 10 | Yapı & Hırdavat | `yapi-hirdavat` | Yapı, el aleti, bağlantı, elektrik/tesisat malzemesi; broad industrial channel değil. |
+| 10 | Yapı, Hırdavat & Tesisat | `yapi-hirdavat-tesisat` | Yapı, el aleti, bağlantı, elektrik ve tesisat ürünü; broad industrial channel değil. |
 | 11 | Otomotiv & Motosiklet | `otomotiv-motosiklet` | Araç parçası/aksesuarı/bakım; fitment attribute'tur. |
-| 12 | Kişisel Bakım & Kozmetik | `kisisel-bakim-kozmetik` | Bakım/kozmetik ürünü; salon hizmeti değildir. |
-| 13 | Bebek & Çocuk | `bebek-cocuk` | Bebek bakım/taşıma/beslenme ürünleri; yaş grubu gerektiğinde facet'tir. |
-| 14 | Oyuncak, Hobi & Müzik | `oyuncak-hobi-muzik` | Oyuncak, fiziksel hobi ve enstrüman; dijital hizmet değildir. |
-| 15 | Spor & Outdoor | `spor-outdoor` | Spor/outdoor ekipmanı ve specialist ürün; apparel sınırı ana fonksiyonla çözülür. |
-| 16 | Kitap | `kitap` | Fiziksel kitap; tek primary shelf + multi-value genre facet yaklaşımı. |
-| 17 | Kırtasiye & Ofis | `kirtasiye-ofis` | Kâğıt, yazım, dosyalama, sanat sarfı ve ofis ürünü. |
-| 18 | Pet Shop | `pet-shop` | Evcil hayvan ürünü; canlı hayvan ve veteriner ilacı excluded. |
-| 19 | Optik | `optik` | Gözlük/optik ürün; regulated policy olmadan yayın izni yok. |
-| 20 | Saat & Takı | `saat-taki` | Klasik saat ve takı; smart watch Elektronik'tedir. |
-| 21 | Sağlık & Medikal | `saglik-medikal` | Sağlık/medikal ürün; claim/evidence ve policy fail-closed. |
-| 22 | Çiçek & Bahçe | `cicek-bahce` | Çiçek, bitki ve yetiştirme/bahçe ürünü; bahçe el aleti ana kullanımına göre burada olabilir. |
-| 23 | Hediyelik & Parti | `hediyelik-parti` | Fiziksel hediye/parti ürünü; organizasyon hizmeti ve seasonal state category değildir. |
+| 12 | Kozmetik & Kişisel Bakım | `kozmetik-kisisel-bakim` | Bakım/kozmetik ürünü; salon hizmeti değildir. |
+| 13 | Anne & Bebek | `anne-bebek` | Emzirme, beslenme, bez, bakım, güvenlik ve bebek taşıma; genel çocuk ürünü domaini değildir. |
+| 14 | Oyuncak & Hobi | `oyuncak-hobi` | Oyuncak, oyun, koleksiyon ve fiziksel hobi; gerçek enstrüman ayrı L1. |
+| 15 | Müzik & Enstrüman | `muzik-enstruman` | Müzik enstrümanı ve çalma/performans aksesuarı; oyuncak enstrüman Phase B'de ana fonksiyonla ayrılır. |
+| 16 | Spor & Outdoor | `spor-outdoor` | Spor/outdoor ekipmanı ve specialist ürün; apparel sınırı ana fonksiyonla çözülür. |
+| 17 | Kitap | `kitap` | Fiziksel kitap; tek primary shelf + multi-value genre facet yaklaşımı. |
+| 18 | Kırtasiye & Ofis | `kirtasiye-ofis` | Kâğıt, yazım, dosyalama, sanat sarfı ve ofis ürünü. |
+| 19 | Evcil Hayvan Ürünleri | `evcil-hayvan-urunleri` | Pet ürünü; `Pet Shop` merchant type'tır, canlı hayvan ve veteriner ilacı excluded. |
+| 20 | Gözlük & Optik | `gozluk-optik` | Gözlük/optik ürün; regulated/contact-lens sınırı legal review ister. |
+| 21 | Saat & Takı | `saat-taki` | Klasik saat ve takı; smart watch Elektronik'tedir. |
+| 22 | Sağlık & Medikal | `saglik-medikal` | Sağlık/medikal ürün; claim/evidence ve policy fail-closed. |
+| 23 | Çiçek & Bahçe | `cicek-bahce` | Çiçek, bitki ve yetiştirme/bahçe ürünü; bahçe el aleti ana kullanımına göre burada olabilir. |
+| 24 | Hediyelik & Parti | `hediyelik-parti` | Fiziksel hediye/parti ürünü; organizasyon hizmeti ve seasonal state category değildir. |
 
-Duplicate L1 name yoktur. Birleşik adlar kullanıcı tarafından birlikte aranan ve aynı
-attribute/merchant-entry bağlamını paylaşan yakın domainlerle sınırlıdır; category
-scope notları bilinen overlapleri açıklar.
+Duplicate L1 name yoktur. `Market` ve `Pet Shop` Product Taxonomy L1 adı değildir.
+Birleşik adlar kullanıcı tarafından birlikte aranan ve aynı attribute/merchant-entry
+bağlamını paylaşan yakın domainlerle sınırlıdır; scope notları bütün 24 L1 için
+boundary guard sağlar.
 
 ## 11. Demo category mapping
 
 Bu eşleme conceptual/read-only'dir; Production/Development migration veya demo data
 değişikliği yapılmaz.
 
-| Current demo category | Canonical L1 | Mapping | Not |
+| Current demo category | Proposed canonical L1 | Mapping | Not |
 |---|---|---|---|
 | Elektronik | Elektronik (`elektronik`) | Direct | Demo ürünün leaf'i sonraki controlled mapping çalışmasında doğrulanır. |
 | Kırtasiye | Kırtasiye & Ofis (`kirtasiye-ofis`) | Rename/broaden | Demo `Defter` ürünü canonical `defter` leaf'ine conceptual olarak uygundur. |
-| Gıda | Market & Gıda (`market-gida`) | Rename/broaden | İçerik L2/L3 leaf'e göre ayrıca sınıflandırılır. |
+| Gıda | Gıda & İçecek (`gida-icecek`) | Rename/broaden | İçerik L2/L3 leaf'e göre ayrıca sınıflandırılır. |
 | Ayakkabı | Ayakkabı (`ayakkabi`) | Direct | Numara/renk/gender category değil facet olarak kalır. |
 
 Dört demo category de exactly one canonical L1'e temiz eşlenir; hiçbir mapping
@@ -326,10 +337,19 @@ Merchant/Sector Taxonomy future scope'una aşağıdaki ana başlık kaydedilmiş
   - **Kadın Kuaförü**
   - **Güzellik Salonu**
 
-`Unisex Kuaför` subtype'ı **EKLENMEYECEK**. Bu hizmet sektörü Product Taxonomy L1
+`Unisex Kuaför`: **ABSENT / DO NOT ADD / EKLENMEYECEK**. Bu hizmet sektörü Product Taxonomy L1
 listesinde yer almaz. Bir salonun sattığı fiziksel şampuan, bakım veya kozmetik ürünü
 ürünün kendi Product Taxonomy leaf'ine bağlanır; salon sector identity'si product
 category olmaz.
+
+Terminoloji örnekleri:
+
+- `Market`, future Merchant/Sector Taxonomy'de işletme tipi olabilir; Product
+  Taxonomy L1'i değildir.
+- `Pet Shop`, future Merchant/Sector Taxonomy'de işletme tipi olabilir; Product
+  Taxonomy karşılığı **Evcil Hayvan Ürünleri** proposalıdır.
+
+Bu iki örnek full Merchant/Sector Taxonomy tasarımı değildir.
 
 Şunlar **TBD / future product decision** olarak kalır:
 
@@ -351,7 +371,7 @@ Bu belge booking veya Merchant App implementation'ı başlatmaz.
 | Category/Product Listing | **PASS** | Primary leaf ve descendant roll-up ile beslenebilir; listing/offer data category'den ayrıdır. |
 | Filters | **PASS — architecture** | Facet/attribute profile leaf'ten açılır; brand/size/color node yapılmaz. Filter backend bu görevde yoktur. |
 | Search | **PASS — architecture** | Canonical name, synonyms ve aliases için ayrı contract vardır; backend implementation yoktur. |
-| Home projection | **PASS** | Availability-gated shortcut canonical 23 L1'in yerini almaz; sponsored ayrı ve etiketlidir. |
+| Home projection | **PASS** | Availability-gated shortcut proposed 24 L1 registry'nin yerini almaz; sponsored ayrı ve etiketlidir. |
 
 İstenen `docs/ESNAFTAVAR_CRITICAL_SCREEN_PILOT_V1.md` current main'de mevcut değildir;
 bu yüzden o spesifik artefakt için görsel kabul iddiası yapılmaz. Mevcut canonical
@@ -361,50 +381,60 @@ Critical Screen Pilot davranışı değiştirilmemiştir.
 
 ## 14. Open owner decisions
 
-1. **Stable ID bridge — PROPOSED / integration gate:** Current immutable V1 source
+1. **24 L1 final approval — OPEN:** Phase A1 seti `PROPOSED FOR FINAL OWNER APPROVAL`;
+   Product Owner açık final karar vermeden canonical V1/runtime state değişmez.
+2. **Rename/split identity mapping — PROPOSED / integration gate:** Current immutable
+   V1 source identity'leri korunurken dokuz rename ve combined oyuncak/hobi/müzik
+   split'i hangi successor mapping'lerle yayınlanacak?
+3. **Stable ID bridge — PROPOSED / integration gate:** Current immutable V1 source
    slug ile future immutable opaque `id` ve mutable display slug nasıl bağlanacak?
-2. **Policy governance — TBD:** `REGULATED` ve `LEGAL_REVIEW_REQUIRED` node'larda belge,
+4. **Policy governance — TBD:** `REGULATED` ve `LEGAL_REVIEW_REQUIRED` node'larda belge,
    moderator, audit/recall ve approval sahibi kim olacak?
-3. **Sensitive domain permanence — TBD + legal:** Current excluded domainler kalıcı mı,
+5. **Sensitive domain permanence — TBD + legal:** Current excluded domainler kalıcı mı,
    yoksa yalnız V1 launch exclusion mı? Relaxation otomatik yapılamaz.
-4. **Attribute profiles — TBD:** İlk typed `attribute_profile_id` pilotları ve value
+6. **Attribute profiles — TBD:** İlk typed `attribute_profile_id` pilotları ve value
    registry owner'ı kim olacak?
-5. **Google mapping — TBD:** Google ID/path mapping hangi release ihtiyacında ve hangi
+7. **Google mapping — TBD:** Google ID/path mapping hangi release ihtiyacında ve hangi
    taxonomy snapshot/version ile üretilecek?
-6. **Merchant-sector breadth — TBD:** Teyit edilen salon başlığı dışında shop type
+8. **Merchant-sector breadth — TBD:** Teyit edilen salon başlığı dışında shop type
    L1/L2 seti ve many-to-many product recommendation kuralları ayrı çalışmada tasarlanmalı.
-7. **Service capabilities — TBD:** Booking, hizmet kataloğu/fiyatı, çalışan ve slot
+9. **Service capabilities — TBD:** Booking, hizmet kataloğu/fiyatı, çalışan ve slot
    modeli bu taxonomy kararından bağımsız owner review ister.
-8. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
+10. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
    deprecation/replacement onayı ve sürüm yayın sahibi belirlenmeli.
 
-Current 23 Product Taxonomy L1 adı/sınırı repo canonical V1.0.0 kararıdır; bu Phase A
-belgesi owner'dan aynı L1 listesini yeniden onaylamasını gerektirmez. Yukarıdaki açık
-kararlar runtime ve merchant-sector sonraki fazları içindir.
+Phase A1'deki 24 L1, Product Owner'ın açık final onayını bekler. Bu onay olmadan belge
+current V1.0.0 full tree, JSON, runtime, Production veya Development state'ini
+değiştirmez.
 
 ## 15. Next-phase plan
 
-Bu görev Phase B L2/L3/L4 üretimi yapmaz. Current main zaten ayrı owner kararlarıyla
-finalize edilmiş full V1.0.0 tree taşır; onu paralel bir Phase B ağacıyla çoğaltmak
-yasaktır.
+Bu görev Phase B L2/L3/L4 üretimi yapmaz. Current main full V1.0.0 tree taşır; Phase A1
+24 L1 proposalı final onay almadan bu ağacı paralel bir ağaçla çoğaltmak veya yeniden
+yazmak yasaktır.
 
-1. Product owner/integration owner bu architecture companion ve merchant-sector
-   karar kaydını review eder.
-2. Runtime öncesi stable ID/slug bridge kesinleştirilir.
-3. Full V1.0.0 tree yeniden açılacaksa yalnız açık owner change request ile, öncelik
-   sırası Elektronik → Ev & Yaşam → Moda & Giyim → Market & Gıda olacak şekilde
-   mevcut L2 dalları review edilir; sıfırdan ikinci ağaç üretilmez.
-4. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
+1. Product Owner 24 L1 adını/sınırını final onaylar veya açık değişiklik talebi verir.
+2. Integration/taxonomy owner rename ve split successor mapping'ini current V1.0.0
+   tree ile reconcile eder; stable identity'leri korur.
+3. Ancak final onaydan sonra Elektronik → Ev & Yaşam → Giyim & Moda → Gıda & İçecek
+   önceliğiyle mevcut L2 dalları Phase B'de review edilir; sıfırdan ikinci ağaç
+   üretilmez.
+4. Runtime öncesi stable ID/slug bridge kesinleştirilir.
+5. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
    ID mapping, read path ve seed planını hazırlar. Bu adım remote apply değildir.
-5. Merchant/Sector Taxonomy ayrı lane'de, Product Taxonomy node'larını tekrar kullanmadan
+6. Merchant/Sector Taxonomy ayrı lane'de, Product Taxonomy node'larını tekrar kullanmadan
    tasarlanır; salon hizmet capability'leri owner kararı gelmeden modellenmez.
 
 `TAXONOMY_ARCHITECTURE: PASS`
 
-`L1_RECOMMENDATION_READY_FOR_OWNER_REVIEW: YES`
+`L1_OWNER_REFINEMENT: PASS`
+
+`PRODUCT_VS_MERCHANT_TAXONOMY_CONSISTENT: YES`
 
 `MERCHANT_SECTOR_SCOPE_DECISION_RECORDED: YES`
 
 `DEMO_CATEGORY_MAPPING_READY: YES`
+
+`L1_READY_FOR_FINAL_OWNER_APPROVAL: YES`
 
 `READY_FOR_TAXONOMY_PHASE_B: NO`
