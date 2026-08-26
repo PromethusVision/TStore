@@ -2,8 +2,42 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-25
-- Son doğrulanan teslim: Wave 14 Phase B2 Design Tokens V1 final entegrasyonu.
+- Son güncelleme: 2026-08-26
+- Son doğrulanan teslim: Wave 14 Phase B3 Canonical Component Layer V1 final
+  entegrasyonu.
+- Integration branch/base: `integration/wave-14-b3-component-layer` /
+  `origin/main@911e326609fed85e3d6b55be6d27d75a91ce2176`.
+- Input/merge:
+  `origin/agent-ui/w14-canonical-component-layer-v1@c9ce40c74b974fb91f1101d95e36718930c71b6c`
+  / `a16ef712a85ba84dcdf38a970aee440675ce2596` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 14 PHASE B3 FINAL INTEGRATION PASS / CANONICAL
+  COMPONENT LAYER V1 INTEGRATED / SOURCE K'PASA UNCHANGED / RUNTIME CODE NO**.
+- Canonical source-of-truth `docs/ESNAFTAVAR_COMPONENT_LIBRARY_V1.md`; Figma
+  `EsnaftaVar — Components V1` page `52790:2`, canonical board `52790:3`
+  (`2520 × 5036`) üzerinde `14` public family, `11` component set ve `79`
+  canonical component node taşır.
+- Button, TextField, actual five-target BottomNav, dynamic/availability-aware
+  CategoryCard/CategoryRow, Grid/List + image-fallback ProductCard,
+  SellerPriceRow, MerchantCard, ShopRatingSummary, server-authoritative
+  VerifiedPurchaseBadge, single-store Cart V2 ve StatusChip sözleşmeleri
+  canonical V1 olarak korunur.
+- Component root Auto Layout `79/79`, canonical token binding, Poppins-only,
+  duplicate public/full component name `0`, legacy `#FF8523` `0`, `44 px` altı
+  interactive target `0` ve Turkish overflow/clipping `0` PASS'tir. Primary/white
+  `5.37:1`, accent/white `6.33:1` korunur.
+- Protected K'pasa Cover/UI/Components/Styles fingerprint'leri input kanıtında
+  değişmemiştir; source screen/component/instance/style mutation `0` ve
+  Integration Figma write `0`'dır.
+- `Sponsored` yalnız future visual disclosure state'idir; advertising engine veya
+  paid ranking implementasyonu değildir. Verified state istemciden üretilemez;
+  server-authoritative kalır. Category componentleri Wave 15 canonical taxonomy'yi
+  dinamik tüketmeye hazırdır ve hierarchy hard-code etmez.
+- Bu entegrasyon docs/coordination ile sınırlıdır. Flutter runtime, backend,
+  Production ve Development değişmedi. Product-owner visual review, critical
+  screen pilot, taxonomy UI implementation ve full Flutter token/component migration
+  açık kalır.
+- Bir önceki doğrulanan teslim Wave 14 Phase B2 Design Tokens V1 final
+  entegrasyonudur.
 - Integration branch/base: `integration/wave-14-design-tokens-v1-final` /
   `origin/main@63d86a6df168b35e77c151dae0c620704f654e29`.
 - Input/merge:
@@ -176,6 +210,16 @@
 `SOURCE_KPASA_UNCHANGED: YES`
 
 `READY_FOR_CANONICAL_COMPONENT_LAYER: YES`
+
+`WAVE_14_PHASE_B3_INTEGRATION: PASS`
+
+`CANONICAL_COMPONENT_LAYER_V1: PASS`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`RUNTIME_CODE_CHANGED: NO`
+
+`READY_FOR_CRITICAL_SCREEN_PILOT: YES`
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 

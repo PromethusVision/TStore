@@ -241,7 +241,7 @@ HTTP `200` / no-exception final success değildir.
 
 `READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
 
-### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / COMPONENT MIGRATION OPEN
+### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / CANONICAL COMPONENT LAYER V1 FINAL
 
 - Durum: Design Tokens V1 **FINAL / CANONICAL**; Flutter runtime ve mevcut K'pasa
   component/screen sistemi henüz migrate edilmedi.
@@ -258,12 +258,23 @@ HTTP `200` / no-exception final success değildir.
   strong/soft çiftlerinin tamamı PASS. State ve commerce anlamı yalnız renkle
   taşınmaz; label/icon kuralı korunur.
 - Source safety finaldir: existing K'pasa screen, component, instance ve styles
-  değiştirilmedi. Yalnız izole EsnaftaVar token foundation ve proposal binding'i
-  oluşturuldu; Figma redesign ve Flutter migration başlamış sayılmaz.
-- Açık implementation işleri:
-  - canonical EsnaftaVar component layer ve source-component token binding'i,
-  - Button → TextField → Navbar → ProductCard → SellerPriceRow sıralı redesign,
-  - gerçek Türkçe içerik/accessibility state'leriyle critical screen pilot,
+  değiştirilmedi. İzole EsnaftaVar token foundation ve canonical component layer
+  oluşturuldu; screen redesign ve Flutter migration başlamış sayılmaz.
+- Canonical Component Layer V1 tamamlandı: `14` public family, `11` component set,
+  `79` component node; source-of-truth `docs/ESNAFTAVAR_COMPONENT_LIBRARY_V1.md`.
+  Actual five-target BottomNav, dynamic/availability-aware category family'leri,
+  ProductCard, SellerPriceRow, MerchantCard, verified/rating, single-store Cart V2 ve
+  StatusChip sözleşmeleri canonical'dır.
+- `Verified` server-authoritative kalır. `Sponsored` yalnız future visual disclosure
+  state'idir; advertising engine, paid ranking veya sponsored placement davranışı
+  implement edilmiş sayılmaz.
+- Component root Auto Layout `79/79`, canonical token binding, Poppins-only, duplicate
+  name `0`, legacy `#FF8523` `0`, `44 px` altı interactive target `0` ve Turkish
+  overflow/clipping `0` PASS. K'pasa source fingerprint'leri ve source screen,
+  component, instance, style içeriği değişmemiştir.
+- Açık implementation/acceptance işleri:
+  - product-owner visual review ve gerçek Türkçe içerik/accessibility state'leriyle
+    tek-akışlı critical screen pilot,
   - Wave 15 canonical taxonomy'ye bağlı category/search/filter UI uyarlaması,
   - component-level kabul sonrası full Flutter token/UI migration.
 
@@ -274,6 +285,16 @@ HTTP `200` / no-exception final success değildir.
 `SOURCE_KPASA_UNCHANGED: YES`
 
 `READY_FOR_CANONICAL_COMPONENT_LAYER: YES`
+
+`WAVE_14_PHASE_B3_INTEGRATION: PASS`
+
+`CANONICAL_COMPONENT_LAYER_V1: PASS`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`RUNTIME_CODE_CHANGED: NO`
+
+`READY_FOR_CRITICAL_SCREEN_PILOT: YES`
 
 ## B. PRODUCT DECISION NEEDED
 

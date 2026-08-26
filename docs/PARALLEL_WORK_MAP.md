@@ -799,6 +799,45 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   component-level kabul sonrasında sıralı yürütülür. Wave 15 taxonomy source-of-truth
   korunur; taxonomy UI projection canonical ağaçtan bağımsız ürün kuralı uydurmaz.
 
+## Wave 14 Phase B3 Canonical Component Layer V1 Entegrasyon Gözlemi
+
+`WAVE_14_PHASE_B3_INTEGRATION: PASS`
+
+`CANONICAL_COMPONENT_LAYER_V1: PASS`
+
+`SOURCE_KPASA_UNCHANGED: YES`
+
+`RUNTIME_CODE_CHANGED: NO`
+
+`READY_FOR_CRITICAL_SCREEN_PILOT: YES`
+
+- Agent UI'nin `e4664c5` ve `c9ce40c` commitleri güncel Design Tokens V1 + Wave 15
+  taxonomy main tabanından tek `--no-ff` merge ile çatışmasız entegre edildi.
+  Runtime Flutter, shared model/schema, migration, dependency ve remote backend
+  değişikliği yoktur.
+- Figma `EsnaftaVar — Components V1` page `52790:2`, canonical board `52790:3`
+  (`2520 × 5036`) üzerinde `14` public family, `11` component set ve `79`
+  component node taşır. Canonical source-of-truth
+  `docs/ESNAFTAVAR_COMPONENT_LIBRARY_V1.md`'dir.
+- Actual five-target BottomNav; dynamic taxonomy + availability-aware CategoryCard/
+  CategoryRow; Grid/List + fallback ProductCard; Default/BestPrice/Unavailable
+  SellerPriceRow; MerchantCard; server-authoritative verified state; single-store
+  Cart V2 ve StatusChip sözleşmeleri korunur.
+- `Sponsored` yalnız future visual disclosure state'idir. Advertising engine, paid
+  ranking, reward/gamification veya checkout/payment davranışı bu fazda yoktur.
+  Canonical taxonomy hierarchy component içine hard-code edilmez.
+- Kalite kanıtı: component root Auto Layout `79/79`, canonical token binding,
+  Poppins-only, duplicate name `0`, legacy `#FF8523` `0`, sub-44 interactive target
+  `0`, Turkish overflow/clipping `0`; primary/white `5.37:1`, accent/white `6.33:1`.
+- Protected K'pasa Cover/UI/Components/Styles fingerprint'leri değişmemiş;
+  source screen/component/instance/style mutation `0`'dır. Integration Figma write
+  yapmadı.
+- Sonraki UI işi tek UI-system sahibiyle product-owner visual review ve bir critical
+  screen pilotudur. Pilot kabul edilmeden full Flutter token/component migration veya
+  screen-wide redesign paralel başlatılmaz. Wave 15 taxonomy UI uyarlaması canonical
+  JSON'u dinamik tüketir; shared navigation/theme/widget alanları farklı agentlarca
+  aynı anda değiştirilmez.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |
