@@ -197,41 +197,52 @@ HTTP `200` / no-exception final success değildir.
 - Müşteri/canonical ürün başına bir aktif yorum vardır; duplicate/concurrent submit mevcut satırı değiştirmeden `created: false` döndürür. Owner rating/title/comment alanlarını güncelleyebilir, yorumu silebilir ve durable evidence kaldığı sürece yeniden oluşturabilir; expiry yoktur.
 - Korunan legacy yorumlar otomatik backfill edilmez, doğrulanmamış kalır ve verified aggregate'lere katılmaz. UI'daki verified bilgi yalnız server response'undan gelir. Mağaza puanı mevcut doğrulanmış QR akışında server-authoritative çalışmayı sürdürür.
 
-### A6. Canonical Category Taxonomy V1.0.0 — FINAL / IMPLEMENTATION OPEN
+### A6. Canonical Category Taxonomy — 24 L1 OWNER FINAL / RUNTIME RECONCILIATION OPEN
 
-- Durum: Ürün taxonomy kararı **FINAL / CANONICAL**; runtime, veritabanı ve Production
-  deploy edilmedi.
-- Canonical source-of-truth:
+- Durum: Wave 15 Phase A taxonomy architecture ve exact 24 Product L1 adı/sırası
+  **FINAL / CANONICAL / PRODUCT OWNER LOCKED**; runtime, veritabanı, Production ve
+  demo migration başlatılmadı.
+- Phase A canonical source-of-truth:
+  `docs/ESNAFTAVAR_CANONICAL_CATEGORY_TAXONOMY.md`.
+- Exact L1 sırası: Gıda & İçecek; Giyim & Moda; Ayakkabı; Çanta & Aksesuar;
+  Elektronik; Bilgisayar & Tablet; Beyaz Eşya & Ev Aletleri; Ev & Yaşam; Zücaciye &
+  Mutfak; Yapı, Hırdavat & Tesisat; Otomotiv & Motosiklet; Kozmetik & Kişisel
+  Bakım; Anne & Bebek; Oyuncak & Hobi; Müzik & Enstrüman; Spor & Outdoor; Kitap;
+  Kırtasiye & Ofis; Evcil Hayvan Ürünleri; Gözlük & Optik; Saat & Takı; Sağlık &
+  Medikal; Çiçek & Bahçe; Hediyelik & Parti. Count `24`, duplicate `0`; sıra
+  değiştirilemez.
+- Architecture finaldir: variable-depth `L1 → L2 → L3 → optional L4`, max
+  depth `4`, leaf `L2/L3/L4` olabilir ve her canonical product exactly one primary
+  assignable leaf kullanır.
+- Product Taxonomy, Merchant/Sector Taxonomy ve Facet/Attribute sistemi ayrıdır.
+  Brand, color, size, shoe size, capacity, material ve compatibility category
+  değildir. Sponsored/Featured/Popular/Nearby de category değildir.
+- `Market` ve `Pet Shop` Product L1 değildir; product adları `Gıda & İçecek` ve
+  `Evcil Hayvan Ürünleri`'dir. Merchant/Sector scope'unda `Berber, Kuaför &
+  Güzellik Salonu` ile `Erkek Berberi`, `Kadın Kuaförü`, `Güzellik Salonu`
+  confirmed; `Unisex Kuaför` eklenmez. Booking/rezervasyon/hizmet fiyatı TBD'dir.
+- Stable identity future contract'ı current V1 source slug'larını korur; display
+  rename identity değiştirmez. Future opaque ID, permanent alias/redirect,
+  stable-ID product FK/analytics ve identity-safe rename mapping zorunludur.
+  Oyuncak/Hobi/Müzik split successor mapping'i ayrı controlled runtime task'tır.
+- Önceki full-tree V1.0.0 artefaktları
   `docs/ESNAFTAVAR_CATEGORY_TAXONOMY_V1_FINAL.md` ve
-  `docs/data/esnaftavar_category_taxonomy_v1_final.json`.
-- Final sözleşme: `L1/L2/L3/L4 = 23/91/505/32`, toplam `651` node, `525` leaf,
-  `524` aktif atanabilir leaf; `hediyelik-obje` tek `inactive_review` ve non-assignable
-  leaf'tir. Owner branch kararları `24/24` uygulanmıştır.
-- Her canonical product tam bir primary assignable leaf kullanır. Brand, variant,
-  attribute/filter, aliases ve merchant offer/listing taxonomy değildir. Stable slug
-  immutable; PATCH/MINOR/MAJOR versioning ile deprecation/replacement ve backward
-  compatibility mapping'leri zorunludur.
-- Final split/move'lar: Kitap ile Kırtasiye & Ofis; Optik ile Saat & Takı; Çiçek &
-  Bahçe ile Hediyelik & Parti ayrıdır. Termos ile Spor Matarası ayrılmıştır.
-  `dokunmatik-kalem`, Bilgisayar & Tablet > Bilgisayar Çevre Birimleri > Tablet &
-  Giriş Aksesuarları altındadır.
-- `kisisellestirilebilir-hediye` gerçek ürün tipine manual reclassification,
-  `mevsimsel-susleme` gerçek ürün tipi + occasion/collection modeline remap edilir;
-  `hediyelik-obje` yeniden aktive edilmez. Riskli/regüle leaf yayını fail-closed'dır;
-  V1 excluded/prohibited domainler korunur.
-- Home canonical taxonomy değildir: availability-gated sekiz organik category shortcut
-  kullanır; Tüm Kategoriler bütün 23 L1'i gösterir. Sponsored placement canonical veya
-  organik sıralamayı değiştirmez.
-- Sonraki onaylı tasarım/contract işi sekiz representative leaf attribute pilotudur:
-  Akıllı Telefon, Günlük Sneaker, Tişört, Peynir, Defter, Fren Balatası, Tansiyon
-  Aleti ve Tencere Seti. Bütün 62 filter family henüz implement edilmez.
+  `docs/data/esnaftavar_category_taxonomy_v1_final.json` bu entegrasyonda değişmeden
+  korundu. Mevcut `23/91/505/32`, `651` node baseline 24-L1 owner lock ile henüz
+  reconcile edilmedi ve runtime source olarak deploy edilmedi.
+- Demo conceptual mapping `4/4` PASS: Elektronik → Elektronik, Kırtasiye →
+  Kırtasiye & Ofis, Gıda → Gıda & İçecek, Ayakkabı → Ayakkabı. Production
+  demo data değiştirilmedi.
+- Phase B, önce Elektronik ve ardından Bilgisayar & Tablet L2/L3/L4 metodolojisiyle
+  başlar; bu entegrasyonda L2 tree üretilmedi.
 - Açık implementation işleri:
+  - current 23-L1 full tree ile 24-L1 lock için rename/split successor reconciliation,
+  - current source slug → stable opaque ID bridge ve backward-compatible adapter,
   - DB taxonomy schema ve tek-sahipli migration tasarımı/uygulaması,
   - ayrı yetkili Production taxonomy seed/migration ve postflight,
-  - search/index ile category/product read-path entegrasyonu,
-  - filter-family sözleşmesi ve sekiz-leaf attribute pilotu,
-  - Design Tokens V1'e bağlı Figma category/search/filter UI uyarlaması,
-  - ayrı future shop-type merchant taxonomy çalışması.
+  - search/index, category/product read-path ve typed facet-profile entegrasyonu,
+  - Design Tokens/Component Library V1'e bağlı Figma category/search/filter UI,
+  - ayrı full Merchant/Sector taxonomy ve hizmet capability owner kararları.
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 
@@ -240,6 +251,20 @@ HTTP `200` / no-exception final success değildir.
 `TAXONOMY_DEPLOYED_TO_RUNTIME: NO`
 
 `READY_FOR_TAXONOMY_IMPLEMENTATION_DESIGN: YES`
+
+`WAVE_15_PHASE_A_INTEGRATION: PASS`
+
+`CANONICAL_L1_LOCK: PASS`
+
+`CANONICAL_L1_COUNT: 24`
+
+`PRODUCT_MERCHANT_FACET_SEPARATION: PASS`
+
+`CURRENT_FULL_TREE_JSON_RECONCILED_TO_24_L1: NO`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_TAXONOMY_PHASE_B: YES`
 
 ### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / CANONICAL COMPONENT LAYER V1 FINAL
 

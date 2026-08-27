@@ -838,6 +838,49 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   JSON'u dinamik tüketir; shared navigation/theme/widget alanları farklı agentlarca
   aynı anda değiştirilmez.
 
+## Wave 15 Phase A Canonical Taxonomy Architecture + 24 L1 Lock
+
+`WAVE_15_PHASE_A_INTEGRATION: PASS`
+
+`CANONICAL_L1_LOCK: PASS`
+
+`CANONICAL_L1_COUNT: 24`
+
+`PRODUCT_MERCHANT_FACET_SEPARATION: PASS`
+
+`CURRENT_FULL_TREE_JSON_RECONCILED_TO_24_L1: NO`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_TAXONOMY_PHASE_B: YES`
+
+- Agent 3'ün `4081781`, `2e50120` ve `5bb2fdb` commitleri current main tabanından
+  tek `--no-ff` merge ile çatışmasız entegre edildi. Exact 24 Product L1 adı ve
+  sırası Product Owner tarafından FINAL/CANONICAL olarak kilitlidir; integration
+  yeniden isimlendirme yapmadı.
+- Product Taxonomy, Merchant/Sector Taxonomy ve Facet/Attribute separation finaldir.
+  Tree variable-depth `L1 → L2 → L3 → optional L4`, max depth `4`; leaf
+  `L2/L3/L4` olabilir ve her canonical product exactly one primary leaf kullanır.
+- Current 23-L1 full-tree V1.0.0 JSON ve final belge Git blob-level korunmuştur. Bu
+  artefakt 24-L1 owner lock ile reconcile edilmiş sayılmaz; rename/split successor
+  mapping ve stable opaque-ID bridge ayrı controlled taxonomy/runtime işidir.
+- Demo conceptual mapping `4/4` PASS ve remote demo data değişikliği yoktur.
+  Merchant scope'unda Berber/Kuaför/Güzellik ana başlığı ile Erkek Berberi,
+  Kadın Kuaförü ve Güzellik Salonu confirmed; Unisex Kuaför eklenmez. Booking,
+  rezervasyon ve hizmet fiyatı TBD'dir.
+- Phase B tek taxonomy-design lane'inde önce Elektronik, sonra Bilgisayar & Tablet
+  L2 metodolojisini kurar. L2/L3/L4 tasarımı, current-tree reconciliation ve
+  stable-ID bridge aynı taxonomy owner'ında ya da sıralı yürütülmelidir.
+- Runtime implementation ayrı pakettir. DB schema/migration zinciri tek SQL sahibi;
+  category/product shared model, search/index ve `service_locator.dart` başka
+  agentlarla eşzamanlı değiştirilmez. Production/demo apply için ayrı owner yetkisi
+  gerekir.
+- Figma/category UI lane'i canonical 24-L1 registry ve Component Library V1'in
+  dynamic/max-4/variable-depth contract'ını tüketir; hierarchy, Sponsored,
+  Featured, Popular veya Nearby component içinde category olarak hard-code edilmez.
+  Bu integration Flutter, Figma, schema/migration, JSON veya remote backend
+  değişikliği yapmadı.
+
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
 | Alan | Neden shared | Varsayılan sahip |

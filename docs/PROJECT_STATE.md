@@ -2,9 +2,50 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-26
-- Son doğrulanan teslim: Wave 14 Phase B3 Canonical Component Layer V1 final
-  entegrasyonu.
+- Son güncelleme: 2026-08-27
+- Son doğrulanan teslim: Wave 15 Phase A Canonical Taxonomy Architecture + final
+  24 Product L1 owner lock entegrasyonu.
+- Integration branch/base: `integration/wave-15-phase-a-taxonomy` /
+  `origin/main@7992dee8fb6512c53a94e8a094ab2b729a49bc3a`.
+- Input/merge:
+  `origin/agent3/w15-canonical-taxonomy-architecture-l1@5bb2fdba30ed1c00801f061c008373471884a42f`
+  / `430bc3aeb51c6d465a4ad63ee9b162d664705fb0` (`--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 15 PHASE A FINAL INTEGRATION PASS / TAXONOMY
+  ARCHITECTURE CANONICAL / 24 PRODUCT L1 OWNER FINAL / RUNTIME NOT STARTED**.
+- Canonical Phase A source-of-truth
+  `docs/ESNAFTAVAR_CANONICAL_CATEGORY_TAXONOMY.md`; exact owner-approved L1 adı ve
+  sırası `24/24`, duplicate `0` ve yeniden isimlendirme olmadan kilitlidir.
+- Product Taxonomy ("bu ürün nedir?"), Merchant/Sector Taxonomy ("bu işletme
+  nedir?") ve Facet/Attribute (brand, color, size, capacity, material,
+  compatibility) ayrımı **FINAL**'dir. Her canonical product exactly one primary
+  canonical leaf'e bağlanır; tree variable-depth `L1 → L2 → L3 → optional
+  L4`, max depth `4` ve leaf `L2/L3/L4` olabilir.
+- Stable identity future contract'ı current V1 source slug'larını korur; display
+  rename identity'yi değiştirmez, future opaque ID + permanent alias/redirect,
+  stable-ID product FK/analytics ve identity-safe rename mapping gerekir. Combined
+  `Oyuncak, Hobi & Müzik` → `Oyuncak & Hobi` + `Müzik & Enstrüman` successor
+  mapping'i ayrı controlled runtime task'tır.
+- Current `docs/data/esnaftavar_category_taxonomy_v1_final.json` bu turda Git blob-level
+  değiştirilmedi: korunmuş full-tree baseline `23/91/505/32`, `651` node ve
+  SHA-256 `182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08`
+  olarak kalır. Bu baseline 24-L1 owner lock ile reconcile edilmiş veya runtime'a
+  deploy edilmiş sayılmaz.
+- Demo mapping conceptual `4/4` PASS: Elektronik → Elektronik, Kırtasiye →
+  Kırtasiye & Ofis, Gıda → Gıda & İçecek, Ayakkabı → Ayakkabı. Production
+  demo dataset'i değişmedi.
+- Merchant/Sector future scope'unda `Berber, Kuaför & Güzellik Salonu` ile
+  `Erkek Berberi`, `Kadın Kuaförü`, `Güzellik Salonu` **CONFIRMED**;
+  `Unisex Kuaför` **ABSENT / DO NOT ADD**. Booking, rezervasyon ve hizmet fiyat
+  modeli TBD kalır. `Market` ve `Pet Shop` product L1 değildir.
+- Figma/runtime uyumluluğu data-driven, max-4 ve variable-depth'tir;
+  CategoryCard/CategoryRow ile category/product listing ve search/filter mimarisi
+  hazırdır. Bu integration Figma, Flutter, DB/schema/migration, canonical JSON,
+  demo data veya remote backend değişikliği yapmadı.
+- Phase B, ayrı taxonomy-design turunda önce Elektronik, sonra Bilgisayar & Tablet
+  L2/L3/L4 metodolojisiyle başlar. Runtime schema/ID bridge/reconciliation,
+  Production/demo migration ve deploy ayrı yetki gerektirir.
+- Bir önceki doğrulanan teslim Wave 14 Phase B3 Canonical Component Layer V1 final
+  entegrasyonudur.
 - Integration branch/base: `integration/wave-14-b3-component-layer` /
   `origin/main@911e326609fed85e3d6b55be6d27d75a91ce2176`.
 - Input/merge:
@@ -220,6 +261,20 @@
 `RUNTIME_CODE_CHANGED: NO`
 
 `READY_FOR_CRITICAL_SCREEN_PILOT: YES`
+
+`WAVE_15_PHASE_A_INTEGRATION: PASS`
+
+`CANONICAL_L1_LOCK: PASS`
+
+`CANONICAL_L1_COUNT: 24`
+
+`PRODUCT_MERCHANT_FACET_SEPARATION: PASS`
+
+`CURRENT_FULL_TREE_JSON_RECONCILED_TO_24_L1: NO`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_TAXONOMY_PHASE_B: YES`
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 

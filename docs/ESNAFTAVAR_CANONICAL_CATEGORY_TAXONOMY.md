@@ -10,6 +10,10 @@
 
 **Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
 
+**Integration durumu:** Wave 15 Phase A final integration tamamlandı; taxonomy
+architecture ve 24 Product L1 owner lock canonical'dır. Current full-tree JSON ile
+rename/split reconciliation ve runtime implementation ayrı controlled task'tır.
+
 > Current main notu: Phase A başladığında repo önceki `v1.0.0` full taxonomy
 > artefaktını içeriyordu. Phase A1'de refine edilen 24 Product Taxonomy L1 adı ve
 > sırası, Product Owner tarafından Phase A2'de açıkça **CONFIRMED / FINAL / CANONICAL
@@ -23,15 +27,18 @@
   özellikle Merchant/Sector hizmet kapsamı için kullanılır.
 - **CONFIRMED — PRODUCT OWNER FINAL:** Phase A2'de kilitlenen 24 Product Taxonomy L1
   adı, sırası ve L1 sınırı; **CANONICAL V1 product decision**'dır.
-- **PROPOSED / technically accepted:** Phase A'da kabul edilen, bu refinement'ta
-  yeniden tasarlanmayan taxonomy mimarisi.
+- **CANONICAL / FINAL:** Product/Merchant/Facet ayrımı, variable-depth max-4 model,
+  exactly-one primary leaf ve bu Phase A'da kilitlenen taxonomy mimarisi.
+- **PROPOSED:** Runtime schema, stable-ID bridge, search ve governance gibi ayrı
+  implementation/design kararları.
 - **TBD:** Ürün, hukuk, operasyon veya implementation kararı henüz verilmemiş alan.
 
 ## 1. Purpose
 
-**Architecture status: PROPOSED / technically accepted.** Phase A2 bu mimariyi
-yeniden tasarlamaz; yalnız owner-approved 24 L1 product decision'ını canonical olarak
-kilitler.
+**Architecture status: CANONICAL / FINAL.** Phase A2, owner-approved 24 L1 product
+decision'ı ile birlikte Product/Merchant/Facet ayrımını, variable-depth max-4
+modelini ve exactly-one primary leaf kuralını canonical olarak kilitler. Runtime
+schema ve migration ayrı implementation işidir.
 
 Bu belgenin amacı EsnaftaVar'ın fiziksel yerel ticaret modelinde:
 
@@ -63,7 +70,7 @@ API örneğinden wholesale taxonomy sonucu çıkarılmamıştır.
 | [Hepsiburada Katalog Ürün Giriş Önemli Bilgiler](https://developers.hepsiburada.com/tr/companies/hepsiburada?guide=katalog-onemli-bilgiler&product=katalog-urun-entegrasyonu&view=guide) — erişim 2026-08-27 | `categoryId`, `parentCategoryId`, `paths`; ürün girişi için `leaf=true`, `status=active`, `available=true` birlikte gerekir. Category ürün data modelini ve attribute gereksinimlerini belirler. | Turkish catalog label + explicit path; assignability adın değil ayrı status alanlarının sonucudur. | Public rehber tüm L1 ağacını statik olarak göstermediğinden L1 bazında wholesale fragmentation iddiası yapılmadı. Leaf ve attribute şemasının birlikte büyümesi operasyon yükü yaratabilir. | Merchant türü ile ürün kategorisini ve customer-nearby projection'ını ayıran EsnaftaVar domain sözleşmesi ayrıca gerekir. |
 | [n11 Kategori Ağacı](https://developer.n11.com/documentation/n11-marketplace-entegrasyonu/kategori-agaci-listeleme/) ve [Kategori Özellikleri](https://developer.n11.com/documentation/n11-marketplace-entegrasyonu/kategori-ozellikleri-listeleme/) — erişim 2026-08-27 | Nested `id`, `parentId`, `subCategories`; `null` child leaf'tir ve ürün yalnız leaf ID'ye gönderilir. Attribute servisi mandatory, variant, slicer ve custom value rollerini ayırır. | Türkçe compound adlar; örneklerde `Banyo & Tuvalet`, `Erkek Giyim & Aksesuar` gibi browse/merchant dili kullanılır. | Cinsiyetin L1'e kadar taşınması veya her browse ayrımının node yapılması EsnaftaVar için tekrar ve multi-category riski doğurur; gender facet kalmalıdır. | Shop/sector identity, fiziksel yakınlık ve local availability ayrı katmandır; product tree bu görevleri üstlenmemelidir. |
 
-### Araştırma sentezi — PROPOSED / technically accepted
+### Araştırma sentezi — CANONICAL ARCHITECTURE BASIS
 
 - Ürün, tam olarak bir primary canonical leaf'e atanır.
 - Leaf olup olmama ile aktif/atanabilir olma ayrı kavramlardır.
@@ -76,15 +83,15 @@ API örneğinden wholesale taxonomy sonucu çıkarılmamıştır.
 
 | Sistem | Soru | Örnek | Canonical rol | Durum |
 |---|---|---|---|---|
-| **Product Taxonomy** | Bu ürün nedir? | Elektronik → Telefon & Giyilebilir Teknoloji → Akıllı Telefon | Customer browse, search context, merchant product entry, analytics | **PROPOSED / technically accepted** |
-| **Merchant / Sector Taxonomy** | Bu işletme ne tür bir işletmedir? | Telefoncu, Kırtasiye, Pet Shop, Erkek Berberi | Merchant onboarding, shop profile, sector filter ve future policy routing | **CONFIRMED — ayrı sistem** |
-| **Facet / Attribute System** | Bu ürünün seçilebilir/filtrelenebilir özelliği nedir? | marka, renk, beden, kapasite, materyal, uyumluluk | Filter, variant, validation ve structured search | **PROPOSED / technically accepted — category değildir** |
+| **Product Taxonomy** | Bu ürün nedir? | Elektronik → Telefon & Giyilebilir Teknoloji → Akıllı Telefon | Customer browse, search context, merchant product entry, analytics | **CANONICAL / FINAL** |
+| **Merchant / Sector Taxonomy** | Bu işletme ne tür bir işletmedir? | Telefoncu, Kırtasiye, Pet Shop, Erkek Berberi | Merchant onboarding, shop profile, sector filter ve future policy routing | **CONFIRMED / FINAL — ayrı sistem** |
+| **Facet / Attribute System** | Bu ürünün seçilebilir/filtrelenebilir özelliği nedir? | marka, renk, beden, kapasite, materyal, uyumluluk | Filter, variant, validation ve structured search | **FINAL SEPARATION — category değildir; profile implementation ayrıdır** |
 
 Bir merchant birden fazla product L1 altında ürün satabilir. Bu nedenle merchant
 sector ile product category ilişkisi future modelde many-to-many olabilir; sector
 ürünün primary category'sini otomatik belirlemez.
 
-### Category olmayan kavramlar — PROPOSED / technically accepted
+### Category olmayan kavramlar — CANONICAL / FINAL SEPARATION
 
 - marka, renk, beden, ayakkabı numarası, kapasite, materyal, uyumluluk;
 - cinsiyet, yaş grubu ve teknik özellik;
@@ -106,7 +113,7 @@ Maximum supported depth **4** seviyedir; her dalın dört seviyeye zorlanması y
 | L3 | Ürün grubu | Akıllı Telefon | **Evet** |
 | L4 | Ürün tipi | Gerçekten ayrı şema gerektiren dar tip | **Evet** |
 
-### Invariants — PROPOSED / technically accepted
+### Invariants — CANONICAL / FINAL ARCHITECTURE
 
 - Root yalnız L1'dir; her L2–L4 node'un tam bir parent'ı vardır.
 - Child level her zaman `parent.level + 1` olur; cycle ve orphan kabul edilmez.
@@ -168,7 +175,7 @@ taşır.
 
 ## 6. Product assignment rules
 
-### Primary category — PROPOSED / technically accepted
+### Primary category — CANONICAL / FINAL
 
 Her canonical product **exactly one** aktif ve atanabilir primary canonical leaf'e
 bağlanır. Product bir ancestor'a atanmaz; ancestor browse/analytics roll-up ile
@@ -429,7 +436,8 @@ bu Phase A2 görevi hiçbir L2/L3/L4 node üretmez. Current main full V1.0.0 tre
 onu bu decision-lock görevinde paralel bir ağaçla çoğaltmak veya yeniden yazmak
 yasaktır.
 
-1. Integration/taxonomy owner final 24 L1 decision lock'ını review ve integrate eder.
+1. Integration/taxonomy owner final 24 L1 decision lock'ını review edip main'e
+   entegre etti.
 2. Rename ve split successor mapping'i current V1.0.0 tree ile reconcile edilir;
    stable identity'ler korunur.
 3. Ayrı Phase B görevinde ilk olarak **Elektronik**, ardından **Bilgisayar & Tablet**
@@ -442,16 +450,24 @@ yasaktır.
 
 `TAXONOMY_ARCHITECTURE: PASS`
 
+`WAVE_15_PHASE_A_INTEGRATION: PASS`
+
+`CANONICAL_L1_LOCK: PASS`
+
 `L1_CANONICAL_OWNER_APPROVAL: FINAL`
 
 `L1_COUNT: 24`
 
+`CANONICAL_L1_COUNT: 24`
+
 `PRODUCT_MERCHANT_SEPARATION: PASS`
+
+`PRODUCT_MERCHANT_FACET_SEPARATION: PASS`
 
 `MERCHANT_SECTOR_SCOPE_DECISION_RECORDED: YES`
 
 `DEMO_CATEGORY_MAPPING_READY: YES`
 
-`READY_FOR_PHASE_A_INTEGRATION: YES`
+`READY_FOR_PHASE_A_INTEGRATION: COMPLETED`
 
-`READY_FOR_TAXONOMY_PHASE_B: NO`
+`READY_FOR_TAXONOMY_PHASE_B: YES`
