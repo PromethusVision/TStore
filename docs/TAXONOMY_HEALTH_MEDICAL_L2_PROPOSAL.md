@@ -80,7 +80,8 @@ Normalized duplicate: **0**. Hastalık-as-category: **0**. İlaç/supplement L2:
 - Rehabilitasyon/fizik tedavi ürünleri egzersiz/terapi işlevlidir; cihaz claimi ve
   profesyonel gözetim ayrıca policy'dir.
 - Solunum/evde bakım cihazları nebulizer, suction, oxygen/airway ve sleep-respiratory
-  sistemlerin teknik/consumable compatibility'sini toplar.
+  sistemlerin teknik/consumable compatibility'sini toplar; genel ölçüm cihazı,
+  mobilite yardımı ve disposable hasta bakım sarfını kapsamaz.
 - Medikal sarf/hasta bakım, disposable/non-device bakım ürünlerini; PPE ise temas/
   koruma standardı ve kullanım rolünü ayrı taşır.
 - Günlük yaşam/erişilebilirlik yardımları; reacher, transfer, banyo/tuvalet ve günlük
@@ -95,7 +96,7 @@ Normalized duplicate: **0**. Hastalık-as-category: **0**. İlaç/supplement L2:
 | Ortopedik Destekler & Kompresyon | Dizlik, bileklik, korse, atel, ortopedik tabanlık, boyunluk ve kompresyon çorabı |
 | Hareket & Mobilite Yardımcıları | Tekerlekli sandalye, yürüteç, rollator, baston, koltuk değneği ve mobilite aksesuarı |
 | Rehabilitasyon & Fizik Tedavi Ürünleri | TENS/EMS cihazı, terapi bandı/topu, el egzersiz ürünü, fizik tedavi yardımcı ekipmanı |
-| Solunum & Evde Bakım Cihazları | Nebulizer, aspiratör, oxygen concentrator/aksesuarı, CPAP/BPAP cihaz/maske ve home-care monitoring support |
+| Solunum & Evde Bakım Cihazları | Nebulizer, aspiratör, oxygen concentrator/aksesuarı, CPAP/BPAP cihaz/maske ve solunum sistemine özgü home-care aksesuarı |
 | Medikal Sarf & Hasta Bakım Ürünleri | Enjektör/kanül gibi eligibility-gated sarf, hasta alt bezi/örtü, idrar/ostomi bakım sarfı, muayene sarfı ve bakım seti |
 | Kişisel Koruyucu Medikal Ürünler | Medical mask/respirator, muayene eldiveni, koruyucu önlük, bone, galoş ve yüz siperi |
 | Günlük Yaşam & Erişilebilirlik Yardımcıları | Tutunma/transfer yardımcısı, tuvalet yükseltici, banyo oturağı, kavrama/uzanma aracı, yeme-içme ve giyinme yardımcısı |

@@ -62,7 +62,7 @@ kâğıt boyları, boya teknikleri ve sınıf seviyelerini L2 yapmaz.
 8. Sanat & Çizim Malzemeleri
 9. Sunum, Pano & Yazı Tahtası Ürünleri
 10. Ofis Makineleri & Ciltleme Ekipmanları
-11. Paketleme, Postalama & Organizasyon
+11. Paketleme & Postalama Ürünleri
 
 Normalized duplicate: **0**. Marka-as-category: **0**. Okul seviyesi-as-category:
 **0**.
@@ -101,7 +101,7 @@ Normalized duplicate: **0**. Marka-as-category: **0**. Okul seviyesi-as-category
 | Sanat & Çizim Malzemeleri | Sanat boyası, fırça, kalem, pastel, tuval, eskiz yüzeyi, medium ve çizim aracı |
 | Sunum, Pano & Yazı Tahtası Ürünleri | Whiteboard, mantar pano, flipchart, tahta kalemi/silgisi, sunum panosu ve aksesuarı |
 | Ofis Makineleri & Ciltleme Ekipmanları | Hesap makinesi, laminasyon, ciltleme, evrak imha, etiketleme ve para sayma makinesi; sarfları |
-| Paketleme, Postalama & Organizasyon | Kargo zarfı/poşeti, paketleme kâğıdı, ip, lastik, gönderi etiketi, masa/evrak organizasyon malzemesi |
+| Paketleme & Postalama Ürünleri | Kargo zarfı/poşeti, paketleme kâğıdı, ip, lastik, gönderi etiketi ve postalama aksesuarı |
 
 ## 8. Exclusions
 
@@ -159,7 +159,7 @@ Aşağıdakiler category değil facet/attribute'tur:
 | Sanat & Çizim Malzemeleri | resim malzemesi, sanat malzemesi, boya, tuval, çizim |
 | Sunum, Pano & Yazı Tahtası Ürünleri | whiteboard, yazı tahtası, mantar pano, flipchart |
 | Ofis Makineleri & Ciltleme Ekipmanları | laminasyon, ciltleme, shredder, evrak imha, hesap makinesi |
-| Paketleme, Postalama & Organizasyon | kargo zarfı, paketleme, postalama, gönderi malzemesi |
+| Paketleme & Postalama Ürünleri | kargo zarfı, paketleme, postalama, gönderi malzemesi |
 
 `Printer kağıdı` burada arama alias'ıdır; `printer` cihazı bu L1'e taşınmaz.
 

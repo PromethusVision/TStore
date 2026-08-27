@@ -78,8 +78,11 @@ leakage: **0**.
 - Saksı/kap, sulama, el aleti ve sera ekipmanı bağımsız durable-product families'dir.
 - Toprak/gübre/besleme chemical/composition/regulatory profile nedeniyle bakım
   aksesuarından ayrılır.
-- Bitki bakım/yetiştirme yalnız plant support, propagation, tying, pruning accessory,
-  grow light/support gibi fiziksel yardımcıları toplar; pesticide catch-all değildir.
+- Bitki bakım/yetiştirme yalnız tek bitki/saksı düzeyindeki support, propagation,
+  tying, pruning accessory ve bitki-özel grow light gibi fiziksel yardımcıları
+  toplar; sera/enclosure sistemi veya pesticide catch-all değildir.
+- Sera/yetiştirme ekipmanı, birden çok bitkiyi barındıran enclosure, raf, örtü,
+  havalandırma ve iklim sistemidir; tek bitki destek çubuğu ya da fide kabı değildir.
 - Bahçe dekorasyonu garden-specific ornament/edging/trellis/peyzaj aksesuarını
   kapsar; mobilya ve power tool'u yutmaz.
 

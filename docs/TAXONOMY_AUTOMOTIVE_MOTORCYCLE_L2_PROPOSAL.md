@@ -52,7 +52,7 @@ filtre, egzoz veya motor parçası gibi gelecek L3'leri L2'ye taşımaz.
 
 1. Otomobil Yedek Parçaları
 2. Motosiklet Yedek Parçaları
-3. Araç İçi Aksesuarlar
+3. Araç İçi Aksesuarları
 4. Araç Dış Aksesuarları
 5. Lastik, Jant & Tekerlek Ürünleri
 6. Akü & Araç Elektriği
@@ -87,7 +87,7 @@ Normalized duplicate: **0**. Marka-as-category: **0**. Attribute-as-category:
 |---|---|
 | Otomobil Yedek Parçaları | Motor, fren, süspansiyon, direksiyon, debriyaj, egzoz, filtre, kaporta ve araç-model uyumlu mekanik parçalar |
 | Motosiklet Yedek Parçaları | Motor, aktarma, fren, süspansiyon, egzoz, filtre, aydınlatma gövdesi ve motosiklet-model uyumlu parçalar |
-| Araç İçi Aksesuarlar | Paspas, koltuk kılıfı, organizer, güneşlik, araç içi tutucu ve iç trim aksesuarı |
+| Araç İçi Aksesuarları | Paspas, koltuk kılıfı, organizer, güneşlik, araç içi tutucu ve iç trim aksesuarı |
 | Araç Dış Aksesuarları | Portbagaj, tavan barı, araç örtüsü, dış trim, çamurluk ve model uyumlu dış koruma |
 | Lastik, Jant & Tekerlek Ürünleri | Otomobil/motosiklet lastiği, jant, zincir, bijon ve lastik/jant aksesuarı |
 | Akü & Araç Elektriği | Marş aküsü, motosiklet aküsü, alternatör, marş motoru, sigorta, röle ve araç elektrik parçası |
@@ -95,7 +95,7 @@ Normalized duplicate: **0**. Marka-as-category: **0**. Attribute-as-category:
 | Araç Bakım & Temizlik | Şampuan, cila, temizleyici, mikrofiber, fırça, bakım aparatı ve araç yüzey koruma ürünü |
 | Motor Yağı, Sıvı & Katkılar | Motor/şanzıman yağı, antifriz, fren/hidrolik sıvısı, cam suyu ve araç sistemi katkıları |
 | Motosiklet Kask & Koruma Ekipmanları | Motosiklet kaskı; sertifikalı mont/pantolon/eldiven/bot; dizlik, dirseklik ve sırt koruyucu |
-| Araç Güvenlik & Acil Durum Ürünleri | Araç ilk yardım seti, reflektif yelek/üçgen, takoz, çekme halatı, araç tipi yangın söndürücü, kilit ve alarm |
+| Araç Güvenlik & Acil Durum Ürünleri | Araç ilk yardım seti, reflektif yelek/üçgen, takoz, çekme halatı, araç tipi yangın söndürücü ve mekanik araç güvenlik kilidi |
 
 ## 8. Exclusions
 
@@ -145,7 +145,7 @@ Category ürünün ne olduğudur; aşağıdakiler facet/compatibility alanıdır
 |---|---|
 | Otomobil Yedek Parçaları | oto yedek parça, araba parçası, otomobil parçası |
 | Motosiklet Yedek Parçaları | motor yedek parça, motosiklet parçası, moto parça |
-| Araç İçi Aksesuarlar | oto iç aksesuar, araba içi aksesuar, iç trim |
+| Araç İçi Aksesuarları | oto iç aksesuar, araba içi aksesuar, iç trim |
 | Araç Dış Aksesuarları | oto dış aksesuar, dış trim, tavan aksesuarı |
 | Lastik, Jant & Tekerlek Ürünleri | oto lastik, motor lastiği, jant, teker ekipmanı |
 | Akü & Araç Elektriği | oto akü, motosiklet aküsü, marş elektriği |
