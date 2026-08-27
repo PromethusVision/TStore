@@ -11,7 +11,7 @@
 
 ## 2. Scope
 
-Bu alan ürün kimliği kutlama, parti düzenleme, hediye sunumu veya hatıra/commemorative obje olan fiziksel ürünleri kapsar. “Hediye” bir kullanım amacı veya occasion facet'i olduğunda ürün burada duplicate edilmez: hediye edilen oyuncak Toys, takı Saat & Takı, çikolata Gıda ve kitap Kitap altında kalır.
+Bu alan ürün kimliği kutlama, parti düzenleme, hediye sunumu veya hatıra niteliğindeki obje olan fiziksel ürünleri kapsar. “Hediye” bir kullanım amacı veya kutlama facet'i olduğunda ürün burada duplicate edilmez: hediye edilen oyuncak Oyuncak & Hobi, takı Saat & Takı, çikolata Gıda & İçecek ve kitap Kitap altında kalır.
 
 ## 3. Sources reviewed
 
@@ -49,19 +49,19 @@ Bu alan ürün kimliği kutlama, parti düzenleme, hediye sunumu veya hatıra/co
 
 ## 7. Inclusions
 
-1. **Hatıra & Hediyelik Objeler:** hatıra plaketi, dekoratif souvenir, anı kutusu ve ürün kimliği commemorative olan fiziksel obje.
+1. **Hatıra & Hediyelik Objeler:** hatıra plaketi, dekoratif souvenir, anı kutusu ve ürün kimliği anma/hatıra olan fiziksel obje.
 2. **Hediye Paketleme & Sunum:** hediye kutusu/çantası, paket kâğıdı, kurdele, fiyonk, pelür ve sunum dolgusu.
 3. **Tebrik Kartları, Davetiyeler & Kutlama Yazıları:** fiziksel tebrik kartı, davetiye, masa isimliği ve kutlama yazısı/pankart harfleri.
 4. **Balon & Balon Aksesuarları:** normal parti balonu, balon pompası, bağlama aparatı, ağırlık ve stand; gaz tüpü hariç.
 5. **Parti Süsleri & Mekân Dekorasyonu:** banner, girland, konfeti (piroteknik olmayan), perde, masa/duvar süsü ve parti dekor kiti.
 6. **Parti Sofrası & Servis Ürünleri:** etkinliğe özgü tek kullanımlık veya koordineli tabak, bardak, peçete, masa örtüsü ve servis seti.
 7. **Kostüm, Maske & Parti Aksesuarları:** kostüm, parti maskesi, parti şapkası, peruk ve yalnız kutlama/rol amaçlı giyilebilir aksesuar.
-8. **Pasta Süsleme & Kutlama Aksesuarları:** pasta mumu, topper, doğum günü rakamı ve occasion'a özgü pasta süsü.
+8. **Pasta Süsleme & Kutlama Aksesuarları:** pasta mumu, topper, doğum günü rakamı ve kutlamaya özgü pasta süsü.
 9. **Parti Eğlence & Fotoğraf Aksesuarları:** photo booth aksesuarı, pinyata, piroteknik olmayan parti üflemelisi ve fiziksel kutlama oyun aksesuarı.
 
 ## 8. Exclusions
 
-- Hediye edilen oyuncak → `Oyuncak & Hobi`; kitap → `Kitap`; çikolata/gıda sepeti → `Gıda`.
+- Hediye edilen oyuncak → `Oyuncak & Hobi`; kitap → `Kitap`; çikolata/gıda sepeti → `Gıda & İçecek`.
 - Takı ve saat → `Saat & Takı`; çiçek ve canlı bitki → `Çiçek & Bahçe`.
 - Genel ev dekoru, çerçeve ve yeniden kullanılabilir ev eşyası → `Ev & Yaşam`.
 - Genel yeniden kullanılabilir tabak/servis gereci ve pişirme aparatı → `Züccaciye & Mutfak`.
@@ -75,13 +75,13 @@ Bu alan ürün kimliği kutlama, parti düzenleme, hediye sunumu veya hatıra/co
 
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
-| Gifts vs tüm ürün L1'leri | “Hediye” kullanım amacı ürünü buraya taşımaz; ürün kendi kimliğinin L1'inde kalır. |
-| Gifts vs Ev & Yaşam | Occasion'a özgü geçici parti dekoru burada; genel/kalıcı ev dekoru Ev & Yaşam'da. |
-| Gifts vs Züccaciye & Mutfak | Parti temalı tek kullanımlık/koordineli sofra ürünü burada; genel yeniden kullanılabilir servis/pişirme ürünü Züccaciye'de. |
-| Gifts vs Oyuncak & Hobi | Kutu oyunu/oyuncak Toys'ta; pinyata ve kutlamanın sahne/fotoğraf aksesuarı burada. |
-| Gifts vs Giyim/Ayakkabı | Gerçek günlük ürün kendi L1'inde; yalnız kostüm/parti kimliği baskın ürün burada. |
-| Gifts vs Çiçek & Bahçe | Canlı/kesme çiçek ve bitki Flowers alanında; hediye sunum paketi burada olabilir. |
-| Gifts vs Hizmet | Fiziksel kişiselleştirilmiş ürün temel ürün kimliğinde kalır; tasarım/baskı/organizasyon emeği ayrı hizmet olarak bu ağaca girmez. |
+| Hediyelik & Parti vs tüm ürün L1'leri | “Hediye” kullanım amacı ürünü buraya taşımaz; ürün kendi kimliğinin L1'inde kalır. |
+| Hediyelik & Parti vs Ev & Yaşam | Kutlamaya özgü geçici parti dekoru burada; genel/kalıcı ev dekoru Ev & Yaşam'da. |
+| Hediyelik & Parti vs Züccaciye & Mutfak | Parti temalı tek kullanımlık/koordineli sofra ürünü burada; genel yeniden kullanılabilir servis/pişirme ürünü Züccaciye & Mutfak'ta. |
+| Hediyelik & Parti vs Oyuncak & Hobi | Kutu oyunu/oyuncak Oyuncak & Hobi'de; pinyata ve kutlamanın sahne/fotoğraf aksesuarı burada. |
+| Hediyelik & Parti vs Giyim & Moda/Ayakkabı | Gerçek günlük ürün kendi L1'inde; yalnız kostüm/parti kimliği baskın ürün burada. |
+| Hediyelik & Parti vs Çiçek & Bahçe | Canlı/kesme çiçek ve bitki Çiçek & Bahçe alanında; hediye sunum paketi burada olabilir. |
+| Hediyelik & Parti vs Hizmet | Fiziksel kişiselleştirilmiş ürün temel ürün kimliğinde kalır; tasarım/baskı/organizasyon emeği ayrı hizmet olarak bu ağaca girmez. |
 
 ## 10. Category vs facet
 
@@ -116,12 +116,12 @@ Facet/attribute: occasion (doğum günü, düğün, nişan, baby shower, yılba�
 
 | Ürün | Önerilen yer | Gerekçe / owner konusu |
 |---|---|---|
-| Hediye edilen kahve makinesi | Beyaz Eşya & Ev Aletleri | Hediye olması occasion facet'idir. |
+| Hediye edilen kahve makinesi | Beyaz Eşya & Ev Aletleri | Hediye olması kutlama/alıcı facet'idir. |
 | Kişiselleştirilmiş kupa | Züccaciye & Mutfak | Temel ürün kupadır; kişiselleştirme facet. Hatıra objesi olarak kullanılmayan normal ürün duplicate edilmez. |
-| Hatıra plaketi | Hatıra & Hediyelik Objeler | Ürün kimliği commemorative nesnedir. |
+| Hatıra plaketi | Hatıra & Hediyelik Objeler | Ürün kimliği anma/hatıra nesnesidir. |
 | Yeniden kullanılabilir servis tabağı | Züccaciye & Mutfak | Genel sofra ürünü; tek kullanımlık parti seti burada. |
-| Kostüm ayakkabısı | Gifts veya Ayakkabı | Yalnız kostüm işlevi varsa burada; gerçek giyilebilir ayakkabı Shoes. |
-| Parti kutu oyunu | Oyuncak & Hobi | Oyun kimliği baskın; occasion facet. |
+| Kostüm ayakkabısı | Hediyelik & Parti veya Ayakkabı | Yalnız kostüm işlevi varsa burada; gerçek giyilebilir ayakkabı Ayakkabı. |
+| Parti kutu oyunu | Oyuncak & Hobi | Oyun kimliği baskın; kutlama facet'i. |
 | Pasta kalıbı | Züccaciye & Mutfak | Pişirme aracı; event-specific topper/mum burada. |
 | Helyum tüpü | Normal sınıflandırma yok | Basınçlı gaz policy ve muhtemel endüstriyel sahiplik gerekir. |
 
@@ -148,7 +148,7 @@ Facet/attribute: occasion (doğum günü, düğün, nişan, baby shower, yılba�
 - Canonical L1 adı değişmedi: **PASS**
 - L2 sayısı 9, duplicate yok: **PASS**
 - “Hediye” amacı diğer L1 ürünlerini duplicate etmedi: **PASS**
-- Ev, Züccaciye, Toys, Giyim, Flowers ve hizmet sınırları yazıldı: **PASS**
+- Ev & Yaşam, Züccaciye & Mutfak, Oyuncak & Hobi, Giyim & Moda, Çiçek & Bahçe ve hizmet sınırları yazıldı: **PASS**
 - Occasion, tema ve kişiselleştirme facet olarak korundu: **PASS**
 - Piroteknik/patlayıcı ve basınçlı gaz riski fail-closed: **PASS**
 - Hizmetler dışlandı, full L3/L4 finalize edilmedi: **PASS**

@@ -98,9 +98,9 @@ Bağcık, tabanlık, ayakkabı çekeceği, kalıp, ayakkabı fırçası, cila ve
 ## 8. Exclusions
 
 - Çanta, cüzdan, kemer ve genel moda aksesuarları → `Çanta & Aksesuar`.
-- Spor kıyafetleri → `Giyim`; spor ekipmanları → `Spor & Outdoor`.
+- Spor kıyafetleri → `Giyim & Moda`; spor ekipmanları → `Spor & Outdoor`.
 - Medikal ortopedik cihaz veya tedavi iddialı ürün → `Sağlık & Medikal` ve ilgili politika incelemesi.
-- Çorap ve genel giyim tamamlayıcıları → `Giyim`.
+- Çorap ve genel giyim tamamlayıcıları → `Giyim & Moda`.
 - Kostümün ayrılmaz parçası olan, normal ayakkabı olarak kullanılmayan parti ürünü → `Hediyelik & Parti`.
 - Ürün olmayan tamir, boya, lostra veya kişiselleştirme hizmeti → ürün taksonomisinin dışında.
 - Doğa yürüyüşü tozluğu gibi ayakkabı olmayan uzman outdoor koruması → `Spor & Outdoor`.
@@ -110,11 +110,11 @@ Bağcık, tabanlık, ayakkabı çekeceği, kalıp, ayakkabı fırçası, cila ve
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
 | Ayakkabı vs Spor & Outdoor | Ürün ayakta giyilen bir ayakkabıysa burada kalır; spor dalı facet/L3 olur. Ayakkabı olmayan spor ekipmanı Spor & Outdoor'a gider. |
-| Ayakkabı vs Giyim | Ayakkabı burada; çorap, tayt ve giysi Giyim'de kalır. |
+| Ayakkabı vs Giyim & Moda | Ayakkabı burada; çorap, tayt ve giysi Giyim & Moda'da kalır. |
 | Ayakkabı vs Anne & Bebek | Bebek/çocuk ayakkabısı burada; bebek taşıma, bakım ve beslenme ürünü Anne & Bebek'tedir. |
 | Ayakkabı vs Sağlık & Medikal | Konfor tabanlığı burada olabilir; teşhis/tedavi iddialı ortez ve medikal cihaz Sağlık & Medikal'e gider. |
 | Ayakkabı vs Hediyelik & Parti | Giyilebilir gerçek ayakkabı burada; yalnız kostüm/parti dekoru niteliğindeki ayak aksesuarı Hediyelik & Parti'dedir. |
-| Ayakkabı vs Hırdavat & Yapı Market | Sertifikalı kişisel iş ayakkabısı burada; iş güvenliği ekipmanı ve donanımının geri kalanı Hırdavat sınırında ayrıca değerlendirilir. |
+| Ayakkabı vs Yapı, Hırdavat & Tesisat | Sertifikalı kişisel iş ayakkabısı burada; iş güvenliği ekipmanı ve donanımının geri kalanı Yapı, Hırdavat & Tesisat sınırında ayrıca değerlendirilir. |
 
 Her ürün tek bir primary leaf almalıdır. Mağaza türü veya satış kanalı sınıflandırmayı değiştirmez.
 
@@ -183,7 +183,7 @@ Bu örnekler canonical L3/L4 listesi değildir. Her L2'nin zorunlu aynı derinli
 
 1. Sertifikalı trekking ayakkabıları spor ayakkabısı altında mı kalmalı, yoksa ileride ayrı bir `Outdoor Ayakkabıları` L3'ü mü açılmalı?
 2. Konfor tabanlığı ile medikal ortez sınırı için hangi iddia/sertifika alanları zorunlu olmalı?
-3. İş güvenliği ürünleri Ayakkabı altında mı kalmalı, yoksa ileride Hırdavat ile ortak yönlendirme kuralı mı isteniyor?
+3. İş güvenliği ürünleri Ayakkabı altında mı kalmalı, yoksa ileride Yapı, Hırdavat & Tesisat ile ortak yönlendirme kuralı mı isteniyor?
 4. Kostüm ayakkabısında “normal kullanım mümkün” ölçütünü operasyonel olarak hangi alan belirlemeli?
 
 Owner kararı verilmeden bu konular final kabul edilmez.

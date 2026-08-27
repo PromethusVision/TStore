@@ -87,12 +87,12 @@ Hamile destek yastığı, lohusa pedi, fiziksel emzirme/lohusalık yardımcılar
 
 ## 8. Exclusions
 
-- Bebek/çocuk giysileri → `Giyim`.
+- Bebek/çocuk giysileri → `Giyim & Moda`.
 - Bebek/çocuk ayakkabıları → `Ayakkabı`.
 - Bebek oyuncakları → `Oyuncak & Hobi`.
 - Bebek monitörü, bağlı kamera ve akıllı sensör → `Elektronik > Akıllı Ev & Güvenlik`.
 - Termometre, nebulizatör ve tanı/tedavi cihazı → `Sağlık & Medikal`.
-- Hamile kıyafeti ve emzirme sütyeni → `Giyim`.
+- Hamile kıyafeti ve emzirme sütyeni → `Giyim & Moda`.
 - Genel oda mobilyası/dekoru → `Ev & Yaşam`; bebek güvenliği sözleşmesi baskın ürün burada.
 - Çocuk kitabı → `Kitap`.
 - Bakıcılık, doğum eğitimi, danışmanlık veya araç koltuğu montaj hizmeti → ürün taksonomisi dışında.
@@ -101,13 +101,13 @@ Hamile destek yastığı, lohusa pedi, fiziksel emzirme/lohusalık yardımcılar
 
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
-| Anne & Bebek vs Giyim/Ayakkabı | Giysi Giyim'e, ayakkabı Ayakkabı'ya gider; hedef yaş yalnız facet olur. |
-| Anne & Bebek vs Oyuncak & Hobi | Oyun/gelişim amacı baskın fiziksel oyuncak Toys alanına; beslenme/bakım/güvenlik ürünü burada. |
-| Anne & Bebek vs Sağlık & Medikal | Tanı, tedavi, rehabilitasyon veya medikal iddia baskınsa Health; normal bakım ürünü burada. |
+| Anne & Bebek vs Giyim & Moda/Ayakkabı | Giysi Giyim & Moda'ya, ayakkabı Ayakkabı'ya gider; hedef yaş yalnız facet olur. |
+| Anne & Bebek vs Oyuncak & Hobi | Oyun/gelişim amacı baskın fiziksel oyuncak Oyuncak & Hobi alanına; beslenme/bakım/güvenlik ürünü burada. |
+| Anne & Bebek vs Sağlık & Medikal | Tanı, tedavi, rehabilitasyon veya medikal iddia baskınsa Sağlık & Medikal; normal bakım ürünü burada. |
 | Anne & Bebek vs Elektronik | Bebek monitörü/bağlı kamera Elektronik; göğüs pompası gibi anne-bebek işlevine özgü cihaz burada. |
 | Anne & Bebek vs Otomotiv | Çocuk oto koltuğu burada; aracın parçası, koltuk kılıfı veya araç içi genel aksesuar Otomotiv'de. |
 | Anne & Bebek vs Ev & Yaşam | Bebeğe özgü güvenli uyku/bakım mobilyası burada; genel mobilya ve dekor Ev & Yaşam'da. |
-| Anne & Bebek vs Gıda | Bebek maması owner/policy kararı gerektirir; genel gıda Gıda'da kalır. |
+| Anne & Bebek vs Gıda & İçecek | Bebek maması owner/policy kararı gerektirir; genel gıda Gıda & İçecek'te kalır. |
 
 ## 10. Category vs facet
 
@@ -149,13 +149,13 @@ Aşağıdakiler facet/attribute olarak önerilir:
 
 | Ürün | Önerilen yer | Gerekçe / owner konusu |
 |---|---|---|
-| Bebek maması/formül | Bebek Beslenme veya Gıda | Bebek işlevi güçlü; regülasyon ve Gıda sahipliği owner kararı gerektirir. |
+| Bebek maması/formül | Bebek Beslenme veya Gıda & İçecek | Bebek işlevi güçlü; regülasyon ve Gıda & İçecek sahipliği owner kararı gerektirir. |
 | Bebek monitörü | Elektronik > Akıllı Ev & Güvenlik | Bağlı izleme cihazı; “bebek” kullanım senaryosu facet'tir. |
 | Göğüs pompası | Emzirme & Anne Sütü | Elektrikli olsa da işlevsel anne-bebek cihazıdır; medikal iddialar policy katmanıdır. |
-| Burun aspiratörü | Bebek Banyo, Bakım & Hijyen veya Sağlık | Basit bakım ürünü burada; tedavi/medikal cihaz iddiası Health'e taşır. |
-| Hamile destek kemeri | Anne & Bebek veya Sağlık | Konfor desteği burada; tedavi/ortez iddiası Health. |
+| Burun aspiratörü | Bebek Banyo, Bakım & Hijyen veya Sağlık & Medikal | Basit bakım ürünü burada; tedavi/medikal cihaz iddiası Sağlık & Medikal'e taşır. |
+| Hamile destek kemeri | Anne & Bebek veya Sağlık & Medikal | Konfor desteği burada; tedavi/ortez iddiası Sağlık & Medikal. |
 | Bebek bakım çantası | Çanta & Aksesuar veya Anne & Bebek | Çanta kimliği ile bakım bağlamı arasında owner kararı gerekir. |
-| Bebek oyun halısı | Oyuncak & Hobi veya Anne & Bebek | Oyun/gelişim baskınsa Toys; uyku/bakım matıysa burada. |
+| Bebek oyun halısı | Oyuncak & Hobi veya Anne & Bebek | Oyun/gelişim baskınsa Oyuncak & Hobi; uyku/bakım matıysa burada. |
 
 ## 14. Future L3/L4 examples
 
@@ -169,7 +169,7 @@ Aşağıdakiler facet/attribute olarak önerilir:
 
 ## 15. Open owner decisions
 
-1. Bebek maması/formül Anne & Bebek altında mı, Gıda altında mı primary leaf almalı?
+1. Bebek maması/formül Anne & Bebek altında mı, Gıda & İçecek altında mı primary leaf almalı?
 2. Bebek bakım çantası Çanta & Aksesuar'da mı kalmalı, bu alanda mı sahiplenilmeli?
 3. Hamile destek ürününde konfor ile medikal ortez ayrımını hangi ilan alanları belirlemeli?
 4. Burun aspiratörü ve benzeri bakım cihazlarında medikal sınıra geçiş kuralı nedir?

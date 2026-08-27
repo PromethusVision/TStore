@@ -66,7 +66,7 @@ Bu alan oyunun, eğlencenin, koleksiyonun veya yönlendirilmiş hobi üretiminin
 
 - Gerçek oyun konsolu, kontrolcü ve video oyun donanımı → `Elektronik > Oyun Konsolu & Aksesuarları`.
 - Gerçek müzik enstrümanı ve stüdyo ürünü → `Müzik & Enstrüman`.
-- Genel kalem, boya, kâğıt ve bağımsız sanat sarfı → `Kırtasiye`.
+- Genel kalem, boya, kâğıt ve bağımsız sanat sarfı → `Kırtasiye & Ofis`.
 - Gerçek spor, kamp ve outdoor ekipmanı → `Spor & Outdoor`.
 - Bebek bakım/beslenme ürünü → `Anne & Bebek`.
 - Kamera/çekim drone'u → `Elektronik > Fotoğraf & Kamera`; oyuncak drone burada.
@@ -78,13 +78,13 @@ Bu alan oyunun, eğlencenin, koleksiyonun veya yönlendirilmiş hobi üretiminin
 
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
-| Toys vs Anne & Bebek | Oyun/gelişim amacı baskınsa burada; bakım, beslenme, uyku ve güvenlik ürünü Anne & Bebek'te. |
-| Toys vs Elektronik | Oyuncak sınıfı düşük riskli oyun cihazı burada; gerçek kamera drone'u, konsol ve genel elektronik kendi L1'inde. |
-| Toys vs Müzik & Enstrüman | Ses çıkaran rol oyuncağı burada; akort/performans amacı taşıyan gerçek enstrüman Music'te. |
-| Toys vs Kırtasiye | Tam, yönlendirilmiş hobi/üretim kiti burada; genel sanat-kırtasiye malzemesi Kırtasiye'de. |
-| Toys vs Spor & Outdoor | Oyun ölçekli aktivite ürünü burada; performans veya güvenlik standardı taşıyan gerçek ekipman Sports'ta. |
-| Toys vs Hediyelik & Parti | Kutu/parti oyunu burada; dekor, kostüm ve kutlama sarfı Gifts & Party'de. |
-| Toys vs Koleksiyon/Saat-Takı | Oyuncak/lisanslı koleksiyon nesnesi burada; değerli takı/saat kendi L1'inde. |
+| Oyuncak & Hobi vs Anne & Bebek | Oyun/gelişim amacı baskınsa burada; bakım, beslenme, uyku ve güvenlik ürünü Anne & Bebek'te. |
+| Oyuncak & Hobi vs Elektronik | Oyuncak sınıfı düşük riskli oyun cihazı burada; gerçek kamera drone'u, konsol ve genel elektronik kendi L1'inde. |
+| Oyuncak & Hobi vs Müzik & Enstrüman | Ses çıkaran rol oyuncağı burada; akort/performans amacı taşıyan gerçek enstrüman Müzik & Enstrüman'da. |
+| Oyuncak & Hobi vs Kırtasiye & Ofis | Tam, yönlendirilmiş hobi/üretim kiti burada; genel sanat-kırtasiye malzemesi Kırtasiye & Ofis'te. |
+| Oyuncak & Hobi vs Spor & Outdoor | Oyun ölçekli aktivite ürünü burada; performans veya güvenlik standardı taşıyan gerçek ekipman Spor & Outdoor'da. |
+| Oyuncak & Hobi vs Hediyelik & Parti | Kutu/parti oyunu burada; dekor, kostüm ve kutlama sarfı Hediyelik & Parti'de. |
+| Oyuncak & Hobi vs Saat & Takı | Oyuncak/lisanslı koleksiyon nesnesi burada; değerli takı/saat Saat & Takı'da. |
 
 ## 10. Category vs facet
 
@@ -121,12 +121,12 @@ Facet/attribute olarak kalır: yaş, gelişim seviyesi, marka, lisans/karakter, 
 | Ürün | Önerilen yer | Gerekçe / owner konusu |
 |---|---|---|
 | Kamera drone'u | Elektronik > Fotoğraf & Kamera | Çekim yeteneği ana ürün kimliği; oyuncak drone burada. |
-| Çocuk ukulelesi | Music veya Toys | Akort/performance mümkünse Music; rol oyuncağıysa Toys. |
-| Boya kalemleri | Kırtasiye | Genel sarf; yalnız tamamlanmış yönlendirilmiş kit burada. |
-| Futbol topu | Spor & Outdoor | Gerçek spor ekipmanı; yumuşak bebek oyun topu yaşa özgü Toys olabilir. |
+| Çocuk ukulelesi | Müzik & Enstrüman veya Oyuncak & Hobi | Akort/performans mümkünse Müzik & Enstrüman; rol oyuncağıysa Oyuncak & Hobi. |
+| Boya kalemleri | Kırtasiye & Ofis | Genel sarf; yalnız tamamlanmış yönlendirilmiş kit burada. |
+| Futbol topu | Spor & Outdoor | Gerçek spor ekipmanı; yumuşak bebek oyun topu yaşa özgü Oyuncak & Hobi olabilir. |
 | Koleksiyon figürü | Koleksiyon Ürünleri | Sergileme/edinme amacı; oynanabilir figür L2 3. Facet ile sınır güçlendirilmeli. |
 | Airsoft oyuncak görünümlü ürün | Otomatik sınıflandırma yok | Silah-benzeri politika incelemesi gerekir. |
-| Parti kutu oyunu | Kutu Oyunları | Parti kullanım amacı facet; dekor/sarf olmadığı için Gifts alanına gitmez. |
+| Parti kutu oyunu | Kutu Oyunları | Parti kullanım amacı facet; dekor/sarf olmadığı için Hediyelik & Parti alanına gitmez. |
 
 ## 14. Future L3/L4 examples
 
@@ -151,7 +151,7 @@ Bu örnekler final değildir; maksimum gelecek derinlik L4'tür.
 - Canonical L1 adı değişmedi: **PASS**
 - L2 sayısı 11, duplicate yok: **PASS**
 - Yaş/karakter/marka facet olarak korundu: **PASS**
-- Elektronik, Music, Kırtasiye, Sports ve Anne & Bebek sınırları yazıldı: **PASS**
+- Elektronik, Müzik & Enstrüman, Kırtasiye & Ofis, Spor & Outdoor ve Anne & Bebek sınırları yazıldı: **PASS**
 - Oyuncak drone/kamera drone ayrımı açık: **PASS**
 - Silah/patlayıcı riskleri fail-closed: **PASS**
 - Hizmet/dijital abonelik dışlandı: **PASS**

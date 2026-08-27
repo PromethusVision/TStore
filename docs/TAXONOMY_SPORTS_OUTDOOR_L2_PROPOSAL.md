@@ -65,7 +65,7 @@ Avcılık ürünlerinin tümü normal katalog ürünü değildir. Silah, mühimm
 
 ## 8. Exclusions
 
-- Spor ayakkabısı → `Ayakkabı`; spor giyimi → `Giyim`.
+- Spor ayakkabısı → `Ayakkabı`; spor giyimi → `Giyim & Moda`.
 - Akıllı saat/fitness bandı → `Elektronik > Giyilebilir Teknoloji`.
 - Genel GPS, kamera, kulaklık ve tüketici elektroniği → ilgili `Elektronik` dalı.
 - Medikal ortez, rehabilitasyon veya tedavi cihazı → `Sağlık & Medikal`.
@@ -78,13 +78,13 @@ Avcılık ürünlerinin tümü normal katalog ürünü değildir. Silah, mühimm
 
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
-| Sports vs Ayakkabı | Ayakta giyilen ayakkabı Ayakkabı'da; spor dalı facet/L3 olur. Spor ekipmanı burada. |
-| Sports vs Giyim | Giyilen genel spor tekstili Giyim'de; spora özgü sert koruyucu ekipman burada. |
-| Sports vs Elektronik | Akıllı saat ve genel elektronik Electronics'te; sporun ana mekanik ekipmanı burada. Entegre sensör ürünü otomatik taşımaz. |
-| Sports vs Oyuncak & Hobi | Gerçek performans/güvenlik ekipmanı burada; oyun ölçekli oyuncak Toys alanında. |
-| Sports vs Sağlık & Medikal | Performans/koruma ekipmanı burada; tedavi, rehabilitasyon ve medikal iddia Health'te. |
-| Sports vs Otomotiv | Motorsuz bisiklet burada; motorlu araç ve fitment gerektiren taşıt parçası Automotive'te. E-bike/e-scooter owner kararı bekler. |
-| Sports vs Ev Aletleri/Züccaciye | Uzman taşınabilir kamp ocağı burada; genel mutfak cihazı/gereci kendi L1'inde. |
+| Spor & Outdoor vs Ayakkabı | Ayakta giyilen ayakkabı Ayakkabı'da; spor dalı facet/L3 olur. Spor ekipmanı burada. |
+| Spor & Outdoor vs Giyim & Moda | Giyilen genel spor tekstili Giyim & Moda'da; spora özgü sert koruyucu ekipman burada. |
+| Spor & Outdoor vs Elektronik | Akıllı saat ve genel elektronik Elektronik'te; sporun ana mekanik ekipmanı burada. Entegre sensör ürünü otomatik taşımaz. |
+| Spor & Outdoor vs Oyuncak & Hobi | Gerçek performans/güvenlik ekipmanı burada; oyun ölçekli oyuncak Oyuncak & Hobi alanında. |
+| Spor & Outdoor vs Sağlık & Medikal | Performans/koruma ekipmanı burada; tedavi, rehabilitasyon ve medikal iddia Sağlık & Medikal'de. |
+| Spor & Outdoor vs Otomotiv & Motosiklet | Motorsuz bisiklet burada; motorlu araç ve fitment gerektiren taşıt parçası Otomotiv & Motosiklet'te. E-bike/e-scooter owner kararı bekler. |
+| Spor & Outdoor vs Beyaz Eşya & Ev Aletleri/Züccaciye & Mutfak | Uzman taşınabilir kamp ocağı burada; genel mutfak cihazı/gereci kendi L1'inde. |
 
 ## 10. Category vs facet
 
@@ -114,7 +114,7 @@ Facet/attribute: marka, spor dalı alt türü, yaş, cinsiyet sunumu, beden, ren
 - Airsoft/paintball, yay/arbalet, güçlü fırlatıcı, av bıçağı ve silah-benzeri ürün: `LEGAL_REVIEW_REQUIRED`; otomatik normal ilan yoktur.
 - Dalış, tırmanış, kış ve su güvenliği ürünlerinde standart/sertifika ve kullanım sınırı gerekir.
 - Gıda yakıt kartuşu, basınçlı tüp, lityum batarya veya kimyasal içeren outdoor ürünleri taşıma/depolama politikası gerektirebilir.
-- “Zayıflatır”, “tedavi eder” veya rehabilitasyon iddiaları Health sınırına ve policy review'a gider.
+- “Zayıflatır”, “tedavi eder” veya rehabilitasyon iddiaları Sağlık & Medikal sınırına ve policy review'a gider.
 
 ## 13. Ambiguous products
 
@@ -122,12 +122,12 @@ Facet/attribute: marka, spor dalı alt türü, yaş, cinsiyet sunumu, beden, ren
 |---|---|---|
 | Trekking ayakkabısı | Ayakkabı > Spor Ayakkabıları | Ürün kimliği ayakkabıdır; trekking facet/L3. |
 | Akıllı spor saati | Elektronik > Giyilebilir Teknoloji | Elektronik cihaz kimliği baskın. |
-| Hidrasyon sırt çantası | Sports veya Çanta & Aksesuar | Entegre teknik sistem baskınsa burada; genel çantaysa Bags. |
+| Hidrasyon sırt çantası | Spor & Outdoor veya Çanta & Aksesuar | Entegre teknik sistem baskınsa burada; genel çantaysa Çanta & Aksesuar. |
 | E-bike / e-scooter | Owner kararı gerekli | Bisiklet ile motorlu taşıt/şehir mobilitesi sınırı. |
 | Kamp ocağı | Outdoor, Kamp & Trekking | Uzman taşınabilir outdoor ekipmanı; genel tezgâh cihazı değildir. |
 | Oyuncak çadır | Oyuncak & Hobi | Oyun ölçekli ve güvenlik sözleşmesi farklıdır. |
 | Ok/yay veya airsoft ürünü | Otomatik kategori yok | Legal/policy review tamamlanmadan normal yayınlanamaz. |
-| Spor dizliği | Sports veya Sağlık | Darbe koruması/performance burada; tedavi/ortez iddiası Health. |
+| Spor dizliği | Spor & Outdoor veya Sağlık & Medikal | Darbe koruması/performance burada; tedavi/ortez iddiası Sağlık & Medikal. |
 
 ## 14. Future L3/L4 examples
 
@@ -143,8 +143,8 @@ Facet/attribute: marka, spor dalı alt türü, yaş, cinsiyet sunumu, beden, ren
 
 1. Avcılık kelimesi L2'de tutulmalı mı, yoksa V1'de yalnız `Balıkçılık` olarak mı açılmalı?
 2. Airsoft/paintball, okçuluk ve av bıçakları için exact izin/dışlama matrisi nedir?
-3. E-bike ve e-scooter Sports mu, Otomotiv mi sahiplenmeli?
-4. Hidrasyon/teknik bisiklet çantasında Sports sahipliğini tetikleyen kriter nedir?
+3. E-bike ve e-scooter Spor & Outdoor mı, Otomotiv & Motosiklet mi sahiplenmeli?
+4. Hidrasyon/teknik bisiklet çantasında Spor & Outdoor sahipliğini tetikleyen kriter nedir?
 5. Koruyucu dizlik/bileklikte performans koruması ile medikal ortez sınırı hangi alanlarla doğrulanmalı?
 
 ## 16. Validation summary
@@ -152,7 +152,7 @@ Facet/attribute: marka, spor dalı alt türü, yaş, cinsiyet sunumu, beden, ren
 - Canonical L1 adı değişmedi: **PASS**
 - L2 sayısı 10, duplicate yok: **PASS**
 - Spor ayakkabısı ve giyimi ilgili L1'lerde tutuldu: **PASS**
-- Elektronik, Toys, Health ve Automotive sınırları yazıldı: **PASS**
+- Elektronik, Oyuncak & Hobi, Sağlık & Medikal ve Otomotiv & Motosiklet sınırları yazıldı: **PASS**
 - Marka, yaş, malzeme ve seviye facet olarak korundu: **PASS**
 - Ateşli silah/mühimmat/patlayıcı dışlandı: **PASS**
 - Belirsiz riskli ürünler fail-closed: **PASS**

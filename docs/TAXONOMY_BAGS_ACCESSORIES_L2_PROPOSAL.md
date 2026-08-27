@@ -102,7 +102,7 @@ Bagaj etiketi, valiz kılıfı/kemeri, seyahat organizeri, boyun yastığı ve s
 
 - Ayakkabı ve ayakkabı bakım ürünü → `Ayakkabı`.
 - Takı ve kol saati → `Saat & Takı`; akıllı saat → `Elektronik > Giyilebilir Teknoloji`.
-- Genel giysi → `Giyim`.
+- Genel giysi → `Giyim & Moda`.
 - Telefon modeline özgü kılıf → `Elektronik > Telefon & Aksesuarları`.
 - Alışveriş/çöp/saklama poşeti gibi ev sarfı → `Ev & Yaşam` veya ilgili sarf alanı.
 - Bebek arabası, taşıyıcı ve çocuk oto koltuğu → `Anne & Bebek`.
@@ -115,10 +115,10 @@ Bagaj etiketi, valiz kılıfı/kemeri, seyahat organizeri, boyun yastığı ve s
 |---|---|
 | Çanta & Aksesuar vs Bilgisayar & Tablet | Laptop çantası burada; laptop, donanım ve cihaz parçası Bilgisayar & Tablet'te. Cihaz modeli uyumluluk facet'idir. |
 | Çanta & Aksesuar vs Fotoğraf & Kamera | Bağımsız kamera taşıma çantası burada; kamera, lens ve çekim donanımı Fotoğraf & Kamera'da. |
-| Çanta & Aksesuar vs Müzik & Enstrüman | Enstrüman çantası bağımsız taşıma ürünü olarak burada; enstrümanın sabit/özel aksesuar setinin parçasıysa Music ağacında değerlendirilebilir. |
-| Çanta & Aksesuar vs Spor & Outdoor | Genel sırt/duffel çantası burada; sporun teknik güvenlik ekipmanı veya entegre hidrasyon sistemi Sports alanında olabilir. |
+| Çanta & Aksesuar vs Müzik & Enstrüman | Enstrüman çantası bağımsız taşıma ürünü olarak burada; enstrümanın sabit/özel aksesuar setinin parçasıysa Müzik & Enstrüman ağacında değerlendirilebilir. |
+| Çanta & Aksesuar vs Spor & Outdoor | Genel sırt/duffel çantası burada; sporun teknik güvenlik ekipmanı veya entegre hidrasyon sistemi Spor & Outdoor alanında olabilir. |
 | Çanta & Aksesuar vs Anne & Bebek | Bebek bakım çantası ürün kimliği bakımından çantadır; owner kararıyla Anne & Bebek'e ayrılmadıkça burada önerilir. |
-| Çanta & Aksesuar vs Giyim | Giyimi tamamlayan aksesuarlar burada; ana gövde giysi Giyim'de. |
+| Çanta & Aksesuar vs Giyim & Moda | Giyimi tamamlayan aksesuarlar burada; ana gövde giysi Giyim & Moda'da. |
 | Çanta & Aksesuar vs Hediyelik & Parti | Ürünün hediye edilmesi kategori değildir. Parti kostümünün tek kullanımlık aksesuarı Hediyelik & Parti'ye gider. |
 | Çanta & Aksesuar vs Otomotiv | Araç içine sabitlenen organizer Otomotiv; kişisel seyahat organizeri burada. |
 
@@ -170,7 +170,7 @@ Eş anlamlılar arama ipucudur; backend sözlüğü bu görevde uygulanmamışt�
 | Ürün | Önerilen yer | Gerekçe / owner konusu |
 |---|---|---|
 | Bebek bakım çantası | Çanta & Aksesuar | Ana kimliği çantadır; bebek kullanım amacı facet. Owner Anne & Bebek'e taşımayı seçebilir. |
-| Hidrasyon sırt çantası | Spor & Outdoor veya Sırt Çantaları | Entegre spor/hidrasyon sistemi baskınsa Sports; genel taşıma ürünü ise burada. |
+| Hidrasyon sırt çantası | Spor & Outdoor veya Sırt Çantaları | Entegre spor/hidrasyon sistemi baskınsa Spor & Outdoor; genel taşıma ürünü ise burada. |
 | Sert kamera ekipman çantası | Evrak, Laptop & Ekipman Çantaları | Bağımsız taşıma ürünü; cihaz uyumluluğu facet. |
 | Enstrüman gig bag | Bu alan veya Müzik & Enstrüman | Genel taşıma ilkesi burada; enstrümana özel satış deneyimi için owner kararı gerekir. |
 | Akıllı takip özellikli valiz | Valiz & Seyahat Çantaları | “Akıllı” özellik ürünü Elektronik yapmaz; batarya/seyahat uyumluluğu facet/policy olur. |
@@ -193,7 +193,7 @@ Bu örnekler final L3/L4 ağacı değildir. Değişken derinlik ve maksimum L4 i
 
 1. Bebek bakım çantası ürün kimliğiyle burada mı kalmalı, yoksa Anne & Bebek altında özel L3'e mi taşınmalı?
 2. Enstrüman ve kamera gibi cihaza form verilmiş çantalar genel taşıma dalında mı kalmalı, yoksa ilgili uzman L1'e mi ait olmalı?
-3. Hidrasyon sırt çantası ve bisiklet çantası için hangi teknik özellik Sports sahipliğini tetiklemeli?
+3. Hidrasyon sırt çantası ve bisiklet çantası için hangi teknik özellik Spor & Outdoor sahipliğini tetiklemeli?
 4. Kemer/kravat gibi moda aksesuarları uzun vadede ayrı bir moda L1 mimarisine taşınacak mı?
 5. Silah/av ekipmanı taşıma kılıfları V1'de tamamen dışlanmalı mı?
 

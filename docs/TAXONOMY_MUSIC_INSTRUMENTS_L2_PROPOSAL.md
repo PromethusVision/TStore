@@ -74,12 +74,12 @@ Bu alan çalınabilir müzik enstrümanlarını, performans/kayıt amacı baskı
 
 | Sınır | Canonical yönlendirme kuralı |
 |---|---|
-| Music vs Elektronik/Ses | Dinleme amaçlı genel tüketici sesi Elektronik; müzik üretimi, kayıt, canlı performans veya enstrüman sinyal zinciri burada. |
-| Music vs Bilgisayar & Tablet | Genel PC bileşeni/çevre birimi Computer; kayıt amacı baskın audio interface ve stüdyo ekipmanı burada. |
-| Music vs Oyuncak & Hobi | Akort edilebilir ve performans amacı taşıyan gerçek enstrüman burada; rol oyuncağı Toys alanında. |
-| Music vs Kitap | Fiziksel enstrüman/aksesuar burada; nota, metot ve müzik kitabı Kitap'ta. |
-| Music vs Çanta & Aksesuar | Enstrümana özgü gig bag owner kararına bağlı; genel taşıma ilkesi Bags, enstrüman satış bağlamı burada olabilir. |
-| Music internal boundary | Owner onaylı geleneksel registry, yapısal telli/nefesli/vurmalı dallardan öncelikli ve tek primary leaf üretir. |
+| Müzik & Enstrüman vs Elektronik/Ses | Dinleme amaçlı genel tüketici sesi Elektronik; müzik üretimi, kayıt, canlı performans veya enstrüman sinyal zinciri burada. |
+| Müzik & Enstrüman vs Bilgisayar & Tablet | Genel PC bileşeni/çevre birimi Bilgisayar & Tablet; kayıt amacı baskın audio interface ve stüdyo ekipmanı burada. |
+| Müzik & Enstrüman vs Oyuncak & Hobi | Akort edilebilir ve performans amacı taşıyan gerçek enstrüman burada; rol oyuncağı Oyuncak & Hobi alanında. |
+| Müzik & Enstrüman vs Kitap | Fiziksel enstrüman/aksesuar burada; nota, metot ve müzik kitabı Kitap'ta. |
+| Müzik & Enstrüman vs Çanta & Aksesuar | Enstrümana özgü gig bag owner kararına bağlı; genel taşıma ilkesi Çanta & Aksesuar, enstrüman satış bağlamı burada olabilir. |
+| Müzik & Enstrüman iç sınırı | Owner onaylı geleneksel registry, yapısal telli/nefesli/vurmalı dallardan öncelikli ve tek primary leaf üretir. |
 
 ## 10. Category vs facet
 
@@ -119,8 +119,8 @@ Facet/attribute olarak kalır: marka, model, seviye, yaş, sağ/sol el, boyut, a
 | MIDI klavye | Elektronik Müzik & DJ veya Klavyeli | Nota/performance klavyesiyse L2 2; salt kontrol yüzeyiyse L2 7. |
 | USB stüdyo mikrofonu | Stüdyo, Kayıt & Canlı Ses | Bağlantı tipi facet; kayıt amacı primary. |
 | Karaoke mikrofon/hoparlör seti | Elektronik > Ses & Kulaklık | Genel tüketici eğlence ürünü; profesyonel kayıt/PA değil. |
-| Çocuk ukulelesi | Music veya Toys | Akort ve gerçek performans mümkünse burada; rol oyuncağıysa Toys. |
-| Enstrüman çantası | Music veya Çanta & Aksesuar | Uzman satış bağlamı ile genel taşıma ilkesi owner kararı gerektirir. |
+| Çocuk ukulelesi | Müzik & Enstrüman veya Oyuncak & Hobi | Akort ve gerçek performans mümkünse burada; rol oyuncağıysa Oyuncak & Hobi. |
+| Enstrüman çantası | Müzik & Enstrüman veya Çanta & Aksesuar | Uzman satış bağlamı ile genel taşıma ilkesi owner kararı gerektirir. |
 
 ## 14. Future L3/L4 examples
 
@@ -137,7 +137,7 @@ Facet/attribute olarak kalır: marka, model, seviye, yaş, sağ/sol el, boyut, a
 1. `Geleneksel Türk Müziği Enstrümanları` ayrı L2 olarak kalmalı mı, yoksa geleneksel tür facet'iyle yapısal ailelere mi dağıtılmalı?
 2. Ayrı L2 kalırsa exact geleneksel enstrüman registry'sinde hangi adlar bulunmalı?
 3. MIDI klavye için “çalınabilir enstrüman” ile “kontrol yüzeyi” eşiği nasıl uygulanmalı?
-4. Enstrümana özgü taşıma çantası Music mi, Çanta & Aksesuar mı sahiplenmeli?
+4. Enstrümana özgü taşıma çantası Müzik & Enstrüman mı, Çanta & Aksesuar mı sahiplenmeli?
 5. Karaoke tüketici ürünü ile canlı ses/PA ekipmanı sınırını hangi teknik alanlar belirlemeli?
 
 ## 16. Validation summary
@@ -145,7 +145,7 @@ Facet/attribute olarak kalır: marka, model, seviye, yaş, sağ/sol el, boyut, a
 - Canonical L1 adı değişmedi: **PASS**
 - L2 sayısı 10, duplicate başlık yok: **PASS**
 - Geleneksel dal için tek-primary-leaf registry şartı yazıldı: **PASS**
-- Tüketici sesi, Computer, Toys, Books ve Bags sınırları yazıldı: **PASS**
+- Tüketici sesi, Bilgisayar & Tablet, Oyuncak & Hobi, Kitap ve Çanta & Aksesuar sınırları yazıldı: **PASS**
 - Marka, seviye, bağlantı ve müzik türü facet olarak korundu: **PASS**
 - Hizmet/dijital abonelik dışlandı: **PASS**
 - Materyal/frekans/güvenlik riskleri fail-closed: **PASS**

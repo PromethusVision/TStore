@@ -101,7 +101,7 @@ Süpürge torbası, cihaz filtresi, kullanıcı değişimli aparat, makine kire�
 - Akıllı ampul, akıllı priz, bağlı kilit ve güvenlik kamerası → `Elektronik > Akıllı Ev & Güvenlik`.
 - Genel kablo, adaptör, pil ve powerbank → `Elektronik > Güç, Şarj & Bağlantı`.
 - Elektronik kart, röle, sensör ve devre elemanı → `Elektronik > Elektronik Bileşenler`.
-- Tesisat borusu, vana ve montaj malzemesi → `Hırdavat & Yapı Market`.
+- Tesisat borusu, vana ve montaj malzemesi → `Yapı, Hırdavat & Tesisat`.
 - Kozmetik, şampuan ve bakım sıvısı → `Kozmetik & Kişisel Bakım`.
 - Teşhis/tedavi amacı baskın cihaz → `Sağlık & Medikal`.
 - Kurulum, tamir, bakım veya kuaför hizmeti → ürün taksonomisi dışında.
@@ -113,8 +113,8 @@ Süpürge torbası, cihaz filtresi, kullanıcı değişimli aparat, makine kire�
 | Ev Aletleri vs Elektronik | Ev işini yapan bitmiş cihaz burada; genel bağlantı/akıllı ev/görüntü-ses ürünü Elektronik'te. “Akıllı” tek başına yönlendirme kuralı değildir. |
 | Ev Aletleri vs Ev & Yaşam | Enerjili ev işi cihazı burada; pasif eşya, dekor ve ev tekstili Ev & Yaşam'da. |
 | Ev Aletleri vs Züccaciye & Mutfak | Elektrikli/enerjili yiyecek hazırlama cihazı burada; elektriksiz pişirme ve servis gereci Züccaciye'de. |
-| Ev Aletleri vs Hırdavat & Yapı Market | Bitmiş tüketici cihazı burada; boru, vana, kablo tesisatı ve montaj donanımı Hırdavat'ta. |
-| Ev Aletleri vs Kozmetik | Elektrikli bakım cihazı burada; sürülen/tüketilen bakım ürünü Kozmetik'te. |
+| Ev Aletleri vs Yapı, Hırdavat & Tesisat | Bitmiş tüketici cihazı burada; boru, vana, kablo tesisatı ve montaj donanımı Yapı, Hırdavat & Tesisat'ta. |
+| Ev Aletleri vs Kozmetik & Kişisel Bakım | Elektrikli bakım cihazı burada; sürülen/tüketilen bakım ürünü Kozmetik & Kişisel Bakım'da. |
 | Ev Aletleri vs Sağlık & Medikal | Günlük bakım cihazı burada; tanı, tedavi, rehabilitasyon veya tıbbi iddia baskınsa Sağlık & Medikal. |
 
 ## 10. Category vs facet
@@ -160,11 +160,11 @@ Aşağıdakiler L2 değil facet/attribute olmalıdır:
 | Robot süpürge | Temizlik Cihazları | Bağlantılı olması Elektronik'e taşımaz; birincil işi temizliktir. |
 | Akıllı klima | İklimlendirme & Hava Kalitesi | Akıllı bağlantı facet'tir. |
 | Kahve makinesi | Küçük Mutfak Aletleri | Ev işi/yiyecek hazırlama cihazıdır. |
-| Şofben/termosifon | Su Isıtma & Sıcak Su Cihazları | Bitmiş cihaz burada; tesisat parçası Hırdavat'ta. Sabit kurulum policy gerektirir. |
+| Şofben/termosifon | Su Isıtma & Sıcak Su Cihazları | Bitmiş cihaz burada; tesisat parçası Yapı, Hırdavat & Tesisat'ta. Sabit kurulum policy gerektirir. |
 | Elektrikli diş fırçası | Elektrikli Kişisel Bakım Cihazları | Günlük bakım; tıbbi iddia yoksa burada. |
 | Masaj cihazı | Owner kararı gerekli | Rahatlama amaçlı kişisel bakım ile medikal/fitness cihazı sınırı iddiaya bağlıdır. |
 | Airfryer kâğıdı | Ev Aleti Aksesuar/Sarf veya Züccaciye | Belirli cihaza özgüyse burada; genel pişirme kâğıdı Züccaciye/sarf alanında. |
-| İç elektronik kontrol kartı | Elektronik Bileşenler / Hırdavat | Son kullanıcı aksesuarı değil, onarım parçasıdır; burada önerilmez. |
+| İç elektronik kontrol kartı | Elektronik Bileşenler / Yapı, Hırdavat & Tesisat | Son kullanıcı aksesuarı değil, onarım parçasıdır; burada önerilmez. |
 
 ## 14. Future L3/L4 examples
 
@@ -178,9 +178,9 @@ Aşağıdakiler L2 değil facet/attribute olmalıdır:
 
 ## 15. Open owner decisions
 
-1. Sabit tesisata bağlanan şofben/termosifonun ürün sahipliği bu L1'de mi kalmalı, Hırdavat ile hangi eşik kullanılmalı?
+1. Sabit tesisata bağlanan şofben/termosifonun ürün sahipliği bu L1'de mi kalmalı, Yapı, Hırdavat & Tesisat ile hangi eşik kullanılmalı?
 2. Masaj ve rahatlama cihazlarında Ev Aletleri, Spor ve Sağlık sınırını hangi iddia/ürün biçimi belirlemeli?
-3. Enstrümantal “kişisel bakım” kapsamı elektrikli diş bakımını içerirken oral medikal cihaz sınırı nasıl uygulanmalı?
+3. Önerilen “kişisel bakım” kapsamı elektrikli diş bakımını içerirken oral medikal cihaz sınırı nasıl uygulanmalı?
 4. Kullanıcı değişimli cihaz aksesuarı ile profesyonel onarım parçası arasındaki operasyonel alanlar neler olmalı?
 5. Büyük ve küçük cihaz ayrımı müşteri navigasyonunda facet olarak ayrıca gösterilmeli mi?
 
@@ -190,7 +190,7 @@ Aşağıdakiler L2 değil facet/attribute olmalıdır:
 - L2 sayısı 10, duplicate yok: **PASS**
 - Robot süpürge, klima ve kahve makinesi bu alanda tutuldu: **PASS**
 - Akıllı özellik kategori yapılmadı: **PASS**
-- Elektronik, Ev, Züccaciye, Hırdavat, Kozmetik ve Sağlık sınırları yazıldı: **PASS**
+- Elektronik, Ev & Yaşam, Züccaciye & Mutfak, Yapı, Hırdavat & Tesisat, Kozmetik & Kişisel Bakım ve Sağlık & Medikal sınırları yazıldı: **PASS**
 - Servis/kurulum ürün taksonomisi dışında bırakıldı: **PASS**
 - Regülasyon ve güvenlik riskleri fail-closed: **PASS**
 - Full L3/L4 finalize edilmedi: **PASS**
