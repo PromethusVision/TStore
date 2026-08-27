@@ -6,13 +6,15 @@
 
 **Owner approval:** 27 Ağustos 2026 / Wave 15 Phase A2 — **CONFIRMED — PRODUCT OWNER FINAL**
 
-**Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti ve merchant-sector ayrımı
+**Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti, merchant-sector ayrımı
+ve owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları
 
 **Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
 
-**Integration durumu:** Wave 15 Phase A final integration tamamlandı; taxonomy
-architecture ve 24 Product L1 owner lock canonical'dır. Current full-tree JSON ile
-rename/split reconciliation ve runtime implementation ayrı controlled task'tır.
+**Integration durumu:** Wave 15 Phase A ile B1+B2 final integration tamamlandı;
+taxonomy architecture, 24 Product L1 owner lock, Elektronik `9` L2 ve Bilgisayar &
+Tablet `11` L2 canonical'dır. Current full-tree JSON ile rename/split reconciliation,
+L3/L4 design ve runtime implementation ayrı controlled task'lardır.
 
 > Current main notu: Phase A başladığında repo önceki `v1.0.0` full taxonomy
 > artefaktını içeriyordu. Phase A1'de refine edilen 24 Product Taxonomy L1 adı ve
@@ -401,7 +403,71 @@ bu yüzden o spesifik artefakt için görsel kabul iddiası yapılmaz. Mevcut ca
 ve availability sözleşmesini doğrular. Figma'ya bu görevde yazılmamış ve mevcut
 Critical Screen Pilot davranışı değiştirilmemiştir.
 
-## 14. Open owner decisions
+## 14. Phase B1+B2 owner-final L2 locks
+
+### Elektronik — 9 L2 / CONFIRMED — PRODUCT OWNER FINAL
+
+1. Telefon & Aksesuarları
+2. TV & Görüntü Sistemleri
+3. Ses & Kulaklık
+4. Fotoğraf & Kamera
+5. Oyun Konsolu & Aksesuarları
+6. Giyilebilir Teknoloji
+7. Akıllı Ev & Güvenlik
+8. Güç, Şarj & Bağlantı
+9. Elektronik Bileşenler
+
+Canonical karar belgesi:
+`docs/TAXONOMY_ELECTRONICS_L2_PROPOSAL.md`. Exact ad/sıra `9/9`, duplicate `0`.
+
+### Bilgisayar & Tablet — 11 L2 / CONFIRMED — PRODUCT OWNER FINAL
+
+1. Dizüstü Bilgisayar
+2. Masaüstü Bilgisayar
+3. Tablet
+4. E-Kitap Okuyucu
+5. Monitör
+6. Bilgisayar Bileşenleri
+7. Veri Depolama
+8. Klavye, Mouse & Çevre Birimleri
+9. Bilgisayar Aksesuarları
+10. Yazıcı, Tarayıcı & Sarf Malzemeleri
+11. Ağ & İnternet Ürünleri
+
+Canonical karar belgesi:
+`docs/TAXONOMY_COMPUTER_TABLET_L2_PROPOSAL.md`. Exact ad/sıra `11/11`, duplicate
+`0`.
+
+### Canonical cross-domain boundary
+
+- PC-specific/computer-primary cihaz veya aksesuar **Bilgisayar & Tablet**;
+  general consumer electronics **Elektronik** kapsamındadır.
+- Arduino/ESP ve general electronics development board **Elektronik → Elektronik
+  Bileşenler**; Raspberry Pi/SBC **Bilgisayar & Tablet → Bilgisayar Bileşenleri**.
+- Webcam, computer dock/USB hub ve PC-first gaming peripheral **Bilgisayar &
+  Tablet**; console ve console-first controller **Elektronik → Oyun Konsolu &
+  Aksesuarları**.
+- Generic headphone/audio **Elektronik → Ses & Kulaklık**; generic powerbank,
+  cable ve charging adapter **Elektronik → Güç, Şarj & Bağlantı**;
+  phone-model-specific case/protector/accessory **Telefon & Aksesuarları**.
+- Smart bulb/plug/connected lock **Akıllı Ev & Güvenlik**; camera drone
+  **Fotoğraf & Kamera**, toy drone **Oyuncak & Hobi**; vehicle-fitment electronics
+  **Otomotiv & Motosiklet**; robot vacuum/klima/coffee machine **Beyaz Eşya & Ev
+  Aletleri**; classic watch **Saat & Takı**, smartwatch **Giyilebilir Teknoloji**.
+- Gaming laptop/desktop/monitor/keyboard/mouse kendi functional computer L2'sinde;
+  `gaming` facet/discovery signal olarak kalır.
+- Toner/kartuş ve 3D printer/filament **Yazıcı, Tarayıcı & Sarf
+  Malzemeleri**; kâğıt, etiket, termal rulo ve general office consumable
+  **Kırtasiye & Ofis** kapsamındadır.
+- Rack/enterprise server exact L3/L4 boundary ve assignability **TBD**; bank/payment
+  POS terminal **TBD / consumer taxonomy'ye atanmamış** kalır.
+- Brand, color, size, capacity, CPU/GPU, connector, wattage, Bluetooth, 5G, refresh
+  rate, OS ve compatibility facet/attribute'tur; L2 category değildir.
+
+Bu kararlar L2 omurgasını kilitler; full L3/L4 node, leaf/assignability, ID/slug,
+JSON reconciliation, migration veya runtime davranışı üretmez.
+
+## 15. Open owner decisions
 
 24 L1 ad/sıra kararı **RESOLVED — CONFIRMED — PRODUCT OWNER FINAL** durumundadır.
 Aşağıdaki runtime, policy ve governance kararları açık kalır:
@@ -429,19 +495,20 @@ Aşağıdaki runtime, policy ve governance kararları açık kalır:
 Phase A2 owner approval product decision'ı kilitler; current V1.0.0 full tree, JSON,
 runtime, Production veya Development state'ini bu dokümantasyon görevi değiştirmez.
 
-## 15. Next-phase plan
+## 16. Next-phase plan
 
-Phase A product decision tamamlanmıştır. Sıradaki taxonomy tasarım çalışması L2'dir;
-bu Phase A2 görevi hiçbir L2/L3/L4 node üretmez. Current main full V1.0.0 tree taşır;
-onu bu decision-lock görevinde paralel bir ağaçla çoğaltmak veya yeniden yazmak
-yasaktır.
+Phase A ve owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları tamamlanmıştır.
+Sıradaki taxonomy tasarım çalışması controlled L3/L4'tür. Current main full
+V1.0.0 tree taşır; onu decision-lock görevinde paralel ağaçla çoğaltmak veya
+yeniden yazmak yasaktır.
 
 1. Integration/taxonomy owner final 24 L1 decision lock'ını review edip main'e
    entegre etti.
 2. Rename ve split successor mapping'i current V1.0.0 tree ile reconcile edilir;
    stable identity'ler korunur.
-3. Ayrı Phase B görevinde ilk olarak **Elektronik**, ardından **Bilgisayar & Tablet**
-   L2 tasarımı ele alınır; bu belgede L2 üretilmez.
+3. **Elektronik** `9` L2 ve **Bilgisayar & Tablet** `11` L2 owner-final olarak
+   entegre edildi; ayrı controlled turda L3/L4 adı, sırası, variable-depth leaf ve
+   assignability tasarlanır.
 4. Runtime öncesi current source slug → stable opaque ID bridge kesinleştirilir.
 5. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
    ID mapping, read path ve seed planını hazırlar. Bu adım remote apply değildir.
@@ -470,4 +537,22 @@ yasaktır.
 
 `READY_FOR_PHASE_A_INTEGRATION: COMPLETED`
 
-`READY_FOR_TAXONOMY_PHASE_B: YES`
+`READY_FOR_TAXONOMY_PHASE_B: COMPLETED`
+
+`WAVE_15_B1_B2_INTEGRATION: PASS`
+
+`ELECTRONICS_L2_CANONICAL: PASS`
+
+`ELECTRONICS_L2_COUNT: 9`
+
+`COMPUTER_TABLET_L2_CANONICAL: PASS`
+
+`COMPUTER_TABLET_L2_COUNT: 11`
+
+`CROSS_DOMAIN_BOUNDARY: PASS`
+
+`L3_L4_STATE: NOT_STARTED`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_L3_L4_DESIGN: YES`

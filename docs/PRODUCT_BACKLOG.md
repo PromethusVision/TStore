@@ -197,7 +197,7 @@ HTTP `200` / no-exception final success değildir.
 - Müşteri/canonical ürün başına bir aktif yorum vardır; duplicate/concurrent submit mevcut satırı değiştirmeden `created: false` döndürür. Owner rating/title/comment alanlarını güncelleyebilir, yorumu silebilir ve durable evidence kaldığı sürece yeniden oluşturabilir; expiry yoktur.
 - Korunan legacy yorumlar otomatik backfill edilmez, doğrulanmamış kalır ve verified aggregate'lere katılmaz. UI'daki verified bilgi yalnız server response'undan gelir. Mağaza puanı mevcut doğrulanmış QR akışında server-authoritative çalışmayı sürdürür.
 
-### A6. Canonical Category Taxonomy — 24 L1 OWNER FINAL / RUNTIME RECONCILIATION OPEN
+### A6. Canonical Category Taxonomy — 24 L1 + Elektronik/Bilgisayar L2 OWNER FINAL / RUNTIME RECONCILIATION OPEN
 
 - Durum: Wave 15 Phase A taxonomy architecture ve exact 24 Product L1 adı/sırası
   **FINAL / CANONICAL / PRODUCT OWNER LOCKED**; runtime, veritabanı, Production ve
@@ -233,8 +233,25 @@ HTTP `200` / no-exception final success değildir.
 - Demo conceptual mapping `4/4` PASS: Elektronik → Elektronik, Kırtasiye →
   Kırtasiye & Ofis, Gıda → Gıda & İçecek, Ayakkabı → Ayakkabı. Production
   demo data değiştirilmedi.
-- Phase B, önce Elektronik ve ardından Bilgisayar & Tablet L2/L3/L4 metodolojisiyle
-  başlar; bu entegrasyonda L2 tree üretilmedi.
+- Wave 15 Phase B1+B2 owner-final L2 spine'ları canonical olarak kilitlendi:
+  - Elektronik (`9`): Telefon & Aksesuarları; TV & Görüntü Sistemleri; Ses &
+    Kulaklık; Fotoğraf & Kamera; Oyun Konsolu & Aksesuarları; Giyilebilir Teknoloji;
+    Akıllı Ev & Güvenlik; Güç, Şarj & Bağlantı; Elektronik Bileşenler.
+  - Bilgisayar & Tablet (`11`): Dizüstü Bilgisayar; Masaüstü Bilgisayar; Tablet;
+    E-Kitap Okuyucu; Monitör; Bilgisayar Bileşenleri; Veri Depolama; Klavye, Mouse &
+    Çevre Birimleri; Bilgisayar Aksesuarları; Yazıcı, Tarayıcı & Sarf Malzemeleri;
+    Ağ & İnternet Ürünleri.
+- Cross-domain sınırı finaldir: PC-specific/computer-primary ürün Bilgisayar & Tablet;
+  general consumer electronics Elektronik altında kalır. Arduino/ESP Elektronik
+  Bileşenler, Raspberry Pi/SBC Bilgisayar Bileşenleri; webcam, dock/USB hub ve
+  PC-first gaming peripheral Bilgisayar & Tablet; console-first ürün Oyun Konsolu &
+  Aksesuarları altındadır. Generic audio ile generic güç/şarj/bağlantı Elektronik;
+  telefon-model-specific aksesuar Telefon & Aksesuarları kapsamındadır.
+- Toner/kartuş/3D printer/filament Yazıcı, Tarayıcı & Sarf Malzemeleri kapsamındadır.
+  Rack/server ve POS owner kararı TBD/unassigned kalır. Brand, color, capacity,
+  compatibility gibi facets category ağacına taşınmaz.
+- L3/L4 tasarımı henüz başlamadı. JSON/runtime, DB/schema/migration, Flutter/Figma
+  ve Production/Development durumu bu entegrasyonda değişmedi.
 - Açık implementation işleri:
   - current 23-L1 full tree ile 24-L1 lock için rename/split successor reconciliation,
   - current source slug → stable opaque ID bridge ve backward-compatible adapter,
@@ -264,7 +281,23 @@ HTTP `200` / no-exception final success değildir.
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_TAXONOMY_PHASE_B: YES`
+`READY_FOR_TAXONOMY_PHASE_B: COMPLETED`
+
+`WAVE_15_B1_B2_INTEGRATION: PASS`
+
+`ELECTRONICS_L2_CANONICAL: PASS`
+
+`ELECTRONICS_L2_COUNT: 9`
+
+`COMPUTER_TABLET_L2_CANONICAL: PASS`
+
+`COMPUTER_TABLET_L2_COUNT: 11`
+
+`CROSS_DOMAIN_BOUNDARY: PASS`
+
+`L3_L4_STATE: NOT_STARTED`
+
+`READY_FOR_L3_L4_DESIGN: YES`
 
 ### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / CANONICAL COMPONENT LAYER V1 FINAL
 

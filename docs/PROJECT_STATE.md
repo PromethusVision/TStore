@@ -3,8 +3,48 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-27
-- Son doğrulanan teslim: Wave 15 Phase A Canonical Taxonomy Architecture + final
-  24 Product L1 owner lock entegrasyonu.
+- Son doğrulanan teslim: Wave 15 Phase B1+B2 Elektronik + Bilgisayar & Tablet
+  owner-final L2 canonical lock entegrasyonu.
+- Integration branch/base: `integration/wave-15-b12-l2-taxonomy` /
+  `origin/main@d9fefc70099a8e1809611f11d75829e60fecd6ef`.
+- Input/merge sırası:
+  `origin/agent1/w15-electronics-l2-taxonomy@ab943301d85a17ab39a0c49603dbe9eaca88fb65`
+  / `6ecba73aae5c675d0e258e1b56806959dca748ae`, ardından
+  `origin/agent2/w15-computer-tablet-l2-taxonomy@acdf444fd1e6a3d9a3df1113ec627498bc626005`
+  / `911b553b403fe9af5f5af246edb1e0732ab06d1b` (ikisi de `--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 15 B1+B2 FINAL INTEGRATION PASS / ELECTRONICS 9 L2
+  OWNER FINAL / COMPUTER & TABLET 11 L2 OWNER FINAL / CROSS-DOMAIN BOUNDARY
+  CANONICAL / RUNTIME NOT STARTED**.
+- Elektronik exact `9/9`: Telefon & Aksesuarları; TV & Görüntü Sistemleri; Ses &
+  Kulaklık; Fotoğraf & Kamera; Oyun Konsolu & Aksesuarları; Giyilebilir Teknoloji;
+  Akıllı Ev & Güvenlik; Güç, Şarj & Bağlantı; Elektronik Bileşenler.
+- Bilgisayar & Tablet exact `11/11`: Dizüstü Bilgisayar; Masaüstü Bilgisayar;
+  Tablet; E-Kitap Okuyucu; Monitör; Bilgisayar Bileşenleri; Veri Depolama; Klavye,
+  Mouse & Çevre Birimleri; Bilgisayar Aksesuarları; Yazıcı, Tarayıcı & Sarf
+  Malzemeleri; Ağ & İnternet Ürünleri. Her iki listede duplicate `0`.
+- Cross-domain canonical kuralı: PC-specific/computer-primary cihaz ve aksesuar
+  Bilgisayar & Tablet; general consumer electronics Elektronik. Arduino/ESP
+  Elektronik Bileşenler, Raspberry Pi/SBC Bilgisayar Bileşenleri; webcam, dock/USB
+  hub ve PC-first gaming peripheral Bilgisayar & Tablet; console-first cihaz ve
+  controller Elektronik'tedir.
+- Generic audio/headphone Ses & Kulaklık; generic powerbank/kablo/şarj adaptörü Güç,
+  Şarj & Bağlantı; phone-model-specific aksesuar Telefon & Aksesuarları; smart-home
+  endpoint Akıllı Ev & Güvenlik kapsamındadır. Camera drone Fotoğraf & Kamera,
+  toy drone Oyuncak & Hobi; vehicle-fitment electronics Otomotiv & Motosiklet;
+  appliance Beyaz Eşya & Ev Aletleri; classic watch Saat & Takı, smartwatch
+  Giyilebilir Teknoloji'dedir.
+- Toner/kartuş ile 3D printer/filament Yazıcı, Tarayıcı & Sarf Malzemeleri;
+  general paper/office consumable Kırtasiye & Ofis'tedir. Gaming laptop/desktop/
+  monitor/keyboard/mouse kendi functional computer L2'sinde kalır.
+- Rack/enterprise server future L3/L4 boundary review ve bank/payment POS terminal
+  merchant-equipment/policy review bekler; ikisi de consumer taxonomy'ye sessizce
+  atanmaz. Brand/color/size/capacity/CPU/GPU/connector/wattage/Bluetooth/5G/refresh
+  rate/OS/compatibility facet'tir, L2 değildir.
+- Bu entegrasyon L3/L4 node, ID/slug, JSON reconciliation, Flutter/Figma, DB/schema,
+  migration veya Production/Development değişikliği yapmadı. L3/L4 design
+  sıradaki controlled taxonomy turudur; runtime taxonomy hâlâ başlamadı.
+- Bir önceki doğrulanan teslim Wave 15 Phase A Canonical Taxonomy Architecture +
+  final 24 Product L1 owner lock entegrasyonudur.
 - Integration branch/base: `integration/wave-15-phase-a-taxonomy` /
   `origin/main@7992dee8fb6512c53a94e8a094ab2b729a49bc3a`.
 - Input/merge:
@@ -274,7 +314,25 @@
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_TAXONOMY_PHASE_B: YES`
+`READY_FOR_TAXONOMY_PHASE_B: COMPLETED`
+
+`WAVE_15_B1_B2_INTEGRATION: PASS`
+
+`ELECTRONICS_L2_CANONICAL: PASS`
+
+`ELECTRONICS_L2_COUNT: 9`
+
+`COMPUTER_TABLET_L2_CANONICAL: PASS`
+
+`COMPUTER_TABLET_L2_COUNT: 11`
+
+`CROSS_DOMAIN_BOUNDARY: PASS`
+
+`L3_L4_STATE: NOT_STARTED`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_L3_L4_DESIGN: YES`
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 

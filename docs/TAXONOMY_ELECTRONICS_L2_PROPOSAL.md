@@ -404,6 +404,6 @@ Bu maddeler owner-final L2 kararını değiştirmez ve bu görevde çözülmez:
 
 `RUNTIME_IMPLEMENTATION: NOT STARTED`
 
-`READY_FOR_B1_INTEGRATION: YES`
+`READY_FOR_B1_INTEGRATION: COMPLETED`
 
-`READY_FOR_L3_L4: NO`
+`READY_FOR_L3_L4: YES`

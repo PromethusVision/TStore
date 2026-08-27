@@ -852,7 +852,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_TAXONOMY_PHASE_B: YES`
+`READY_FOR_TAXONOMY_PHASE_B: COMPLETED`
 
 - Agent 3'ün `4081781`, `2e50120` ve `5bb2fdb` commitleri current main tabanından
   tek `--no-ff` merge ile çatışmasız entegre edildi. Exact 24 Product L1 adı ve
@@ -880,6 +880,55 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Featured, Popular veya Nearby component içinde category olarak hard-code edilmez.
   Bu integration Flutter, Figma, schema/migration, JSON veya remote backend
   değişikliği yapmadı.
+
+## Wave 15 Phase B1+B2 Elektronik + Bilgisayar/Tablet L2 Kilitleri
+
+`WAVE_15_B1_B2_INTEGRATION: PASS`
+
+`ELECTRONICS_L2_CANONICAL: PASS`
+
+`ELECTRONICS_L2_COUNT: 9`
+
+`COMPUTER_TABLET_L2_CANONICAL: PASS`
+
+`COMPUTER_TABLET_L2_COUNT: 11`
+
+`CROSS_DOMAIN_BOUNDARY: PASS`
+
+`L3_L4_STATE: NOT_STARTED`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_L3_L4_DESIGN: YES`
+
+- Current `origin/main@d9fefc70099a8e1809611f11d75829e60fecd6ef` üzerine Agent 1
+  Electronics branch'i `6ecba73` ve ardından Agent 2 Computer/Tablet branch'i
+  `911b553` no-ff merge commitleriyle, çatışmasız ve owner-final sırayı değiştirmeden
+  entegre edildi.
+- Elektronik owner-final spine exact `9`: Telefon & Aksesuarları; TV & Görüntü
+  Sistemleri; Ses & Kulaklık; Fotoğraf & Kamera; Oyun Konsolu & Aksesuarları;
+  Giyilebilir Teknoloji; Akıllı Ev & Güvenlik; Güç, Şarj & Bağlantı; Elektronik
+  Bileşenler.
+- Bilgisayar & Tablet owner-final spine exact `11`: Dizüstü Bilgisayar; Masaüstü
+  Bilgisayar; Tablet; E-Kitap Okuyucu; Monitör; Bilgisayar Bileşenleri; Veri
+  Depolama; Klavye, Mouse & Çevre Birimleri; Bilgisayar Aksesuarları; Yazıcı,
+  Tarayıcı & Sarf Malzemeleri; Ağ & İnternet Ürünleri.
+- Cross-domain rule: PC-specific/computer-primary ürün Bilgisayar & Tablet; general
+  consumer electronics Elektronik. Arduino/ESP → Elektronik Bileşenler; Raspberry
+  Pi/SBC → Bilgisayar Bileşenleri; webcam ve dock/USB hub → Bilgisayar; PC-first
+  gaming peripheral → Bilgisayar, console-first → Elektronik/Oyun Konsolu &
+  Aksesuarları. Generic audio ve generic güç/şarj/bağlantı Elektronik; telefon-model-
+  specific aksesuar Telefon & Aksesuarları kapsamındadır.
+- Toner/kartuş/3D printer/filament → Yazıcı, Tarayıcı & Sarf Malzemeleri. Rack/server
+  ve POS TBD/unassigned; brand/color/capacity/compatibility gibi facets category
+  değildir.
+- Sonraki iş tek taxonomy owner'ı altında veya açıkça sıralı biçimde L3/L4 tasarımıdır.
+  Aynı anda current-tree reconciliation, stable-ID bridge, shared category/product
+  model, search/index, DB migration veya UI taxonomy projection farklı agentlara
+  dağıtılmaz. SQL/migration yalnız tek agentta; `service_locator.dart` ve shared
+  models aynı anda birden fazla agentta değişmez.
+- Bu entegrasyon yalnız dokümantasyon/state bütünleştirmesidir; JSON/full-tree baseline,
+  Flutter, Figma, schema/migration, Production ve Development değiştirilmedi.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
