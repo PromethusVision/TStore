@@ -1,26 +1,30 @@
-# EsnaftaVar Canonical Taxonomy — Telefon & Aksesuarları L3/L4 Proposal
+# EsnaftaVar Canonical Taxonomy — Telefon & Aksesuarları L3/L4 Owner Final
 
-**Wave:** 15 / Phase C1
+**Wave:** 15 / Phase C1A
 
-**Belge tarihi:** 27 Ağustos 2026
+**Belge tarihi:** 28 Ağustos 2026
+
+**Product owner onayı:** 28 Ağustos 2026 / Wave 15 Phase C1A
 
 **Canonical path:** **Elektronik → Telefon & Aksesuarları — PRODUCT OWNER FINAL**
 
-**Karar durumu:** **PROPOSED FOR OWNER REVIEW**
+**Karar durumu:** **CONFIRMED — PRODUCT OWNER FINAL**
 
 **Kapsam:** Yalnız owner-final `Telefon & Aksesuarları` L2 altındaki L3/L4,
 leaf assignment, category/facet ayrımı, synonym ve ürün sınırları. Runtime taxonomy
 JSON'u, stable ID/slug, DB, migration, search, Flutter, Figma, Production ve
 Development değiştirilmez.
 
-> Bu belge canonical path'i değiştirmez ve önerilen alt ağacı FINAL ilan etmez.
-> Current `v1.0.0` full-tree artefaktı yalnız reconciliation girdisi olarak salt
-> okunur incelenmiştir; bu görevde yeniden yazılmamıştır.
+> Phase C1'deki proposal owner kararıyla **SUPERSEDED** durumundadır. Product owner
+> bu belgede kayıtlı dokuz L3'ü, yedi L4'ü ve sınır kararlarını FINAL olarak
+> onaylamıştır. Canonical path değişmemiştir. Current `v1.0.0` full-tree artefaktı
+> yalnız reconciliation girdisidir ve bu görevde yeniden yazılmamıştır.
 
 ## 1. Scope
 
-Amaç; Türkiye'deki müşteri diline ve yerel telefoncu envanterine uygun, uzun ömürlü
-ve artificial depth üretmeyen bir Telefon & Aksesuarları ürün ağacı önermektir.
+Amaç; Türkiye'deki müşteri diline ve yerel telefoncu envanterine uygun, uzun ömürlü,
+artificial depth üretmeyen owner-final Telefon & Aksesuarları L3/L4 kararını
+kaydetmektir.
 
 Canonical mimari kuralları:
 
@@ -80,11 +84,11 @@ Internal source-of-truth:
    authenticity, uyumluluk ile visibility politikası olmadan normal aksesuar gibi
    yayımlanmamalıdır.
 
-## 3. L3 proposal
+## 3. Final L3
 
-**Önerilen L3 sayısı: 9.** Exact sıra owner review'a tabidir.
+**Owner-final L3 sayısı: 9.** Aşağıdaki adlar ve exact sıra canonical'dır.
 
-| # | Proposed L3 | Yapısal rol | Leaf? | Kapsam / gerekçe |
+| # | Final L3 | Yapısal rol | Leaf? | Kapsam / gerekçe |
 |---:|---|---|---|---|
 | 1 | **Cep Telefonları** | Device group | Hayır | Akıllı ve tuşlu cihazları ortak cihaz girişinde toplar; gerçek product type ayrımı L4'tedir. |
 | 2 | **Telefon Kılıfları** | Product type | **Evet** | Modele/form-factor'a göre fiziksel koruma sağlayan kılıf, kapak ve battery-case olmayan koruma gövdeleri. Alt türler facet'tir. |
@@ -94,7 +98,7 @@ Internal source-of-truth:
 | 6 | **Telefon Modeline Özgü Şarj Aksesuarları** | Compatibility-bound product family | **Evet** | Exact telefon/model ailesi için tasarlanmış charging case, cradle veya proprietary dock. Generic charger/kablo/powerbank değildir. |
 | 7 | **Telefon Kamera & Çekim Aksesuarları** | Product type family | **Evet** | Phone-first selfie stick, telefon gimbalı, clip-on telefon lensi ve phone-first çekim aparatı. |
 | 8 | **Telefon Kalemleri** | Product type | **Evet** | Telefon-first veya exact telefon modeliyle çalışan stylus/dokunmatik kalem. Tablet-first/generic computing stylus burada değildir. |
-| 9 | **Telefon Yedek Parçaları** | Controlled spare-part group | Hayır | Ayrı satılan fiziksel telefon replacement part'larını toplar; servis emeğini kapsamaz ve policy-gated L4 leaf'lere açılır. |
+| 9 | **Telefon Yedek Parçaları** | Physical spare-part group | Hayır | Ayrı satılan fiziksel telefon replacement part'larını toplar; servis emeğini kapsamaz ve beş L4 leaf'e açılır. |
 
 ### Neden daha fazla L3 yok?
 
@@ -109,28 +113,28 @@ Internal source-of-truth:
 - `Diğer Telefon Aksesuarları` açılmaz: bilinmeyen ürün için fail-open catch-all
   yerine taxonomy review gerekir.
 
-## 4. L4 proposal where needed
+## 4. Final L4 where needed
 
 Yalnız iki L3 gerçek product-type ayrımı gerektirir. Diğer yedi L3'ün altına yapay
 L4 eklenmez.
 
-| Parent L3 | # | Proposed L4 | Leaf? | Gerekçe |
+| Parent L3 | # | Final L4 | Leaf? | Gerekçe |
 |---|---:|---|---|---|
 | Cep Telefonları | 1 | **Akıllı Telefonlar** | **Evet** | App/OS, storage, RAM, screen ve network profiliyle güçlü customer intent. |
 | Cep Telefonları | 2 | **Tuşlu Telefonlar** | **Evet** | Feature-phone kullanım niyeti, form, input ve teknik profil akıllı telefondan anlamlı biçimde farklıdır. |
-| Telefon Yedek Parçaları | 3 | **Telefon Bataryaları** | **Evet / policy-gated** | Physical replacement battery; lithium/safety, provenance ve exact compatibility kanıtı gerekir. |
-| Telefon Yedek Parçaları | 4 | **Ekran & Dokunmatik Modülleri** | **Evet / controlled** | Replacement display/digitizer assembly; ekran koruyucu değildir. |
-| Telefon Yedek Parçaları | 5 | **Şarj Soketi & Bağlantı Parçaları** | **Evet / controlled** | Dahili port, daughterboard ve replacement connector assembly. Generic charging cable değildir. |
-| Telefon Yedek Parçaları | 6 | **Kamera Modülleri** | **Evet / controlled** | Dahili replacement camera module; clip-on çekim aksesuarı veya lens koruyucu değildir. |
-| Telefon Yedek Parçaları | 7 | **Flex Kablo & Dahili Parçalar** | **Evet / controlled** | Button/sensor/speaker flex ve diğer açıkça tanımlı dahili replacement assembly; catch-all açıklamasıyla yayımlanamaz. |
+| Telefon Yedek Parçaları | 3 | **Telefon Bataryaları** | **Evet** | Product Taxonomy'de izin verilen physical replacement battery; future lithium/safety/compliance metadata gerekir. |
+| Telefon Yedek Parçaları | 4 | **Ekran & Dokunmatik Modülleri** | **Evet** | Product Taxonomy'de izin verilen replacement display/digitizer assembly; ekran koruyucu değildir. |
+| Telefon Yedek Parçaları | 5 | **Şarj Soketi & Bağlantı Parçaları** | **Evet** | Product Taxonomy'de izin verilen dahili port, daughterboard ve replacement connector assembly. Generic charging cable değildir. |
+| Telefon Yedek Parçaları | 6 | **Kamera Modülleri** | **Evet** | Product Taxonomy'de izin verilen dahili replacement camera module; clip-on çekim aksesuarı veya lens koruyucu değildir. |
+| Telefon Yedek Parçaları | 7 | **Flex Kablo & Dahili Parçalar** | **Evet** | Product Taxonomy'de izin verilen button/sensor/speaker flex ve açıkça tanımlı dahili replacement assembly; catch-all açıklamasıyla yayımlanamaz. |
 
-**Önerilen L4 sayısı: 7.** `Android`, `iOS`, `5G`, `dual SIM`, `128 GB`, brand,
+**Owner-final L4 sayısı: 7.** `Android`, `iOS`, `5G`, `dual SIM`, `128 GB`, brand,
 model, kılıf formu, koruyucu materyali veya connector tipi L4 değildir.
 
-### Phone-device structure decision
+### Phone-device structure — owner final
 
-**Öneri:** `Cep Telefonları` L3 non-leaf; `Akıllı Telefonlar` ve `Tuşlu Telefonlar`
-L4 leaf olsun. Bu ayrım yalnız teknik attribute değildir: müşteri arama niyeti,
+`Cep Telefonları` L3 non-leaf; `Akıllı Telefonlar` ve `Tuşlu Telefonlar` L4 leaf'tir.
+Bu owner-final ayrım yalnız teknik attribute değildir: müşteri arama niyeti,
 girdi şeması ve yerel stok/mağaza sunumu farklıdır. Buna karşılık Android/iOS,
 5G, storage, RAM, SIM configuration ve brand aynı product type içindeki facet'tir.
 
@@ -139,10 +143,10 @@ telefon category değildir; condition, warranty, offer veya service/contract ver
 
 ## 5. Leaf-node assignments
 
-Her proposed product node ya doğrudan L3 leaf'tir ya da L4 leaf'e iner. L3 container'a
+Her final product node ya doğrudan L3 leaf'tir ya da L4 leaf'e iner. L3 container'a
 ürün atanmaz.
 
-| # | Proposed canonical leaf path | Level | Assignment / policy proposal | Representative products |
+| # | Final canonical leaf path | Level | Assignment / metadata state | Representative products |
 |---:|---|---:|---|---|
 | 1 | Telefon & Aksesuarları → Cep Telefonları → **Akıllı Telefonlar** | L4 | Assignable / normal product | Smartphone |
 | 2 | Telefon & Aksesuarları → Cep Telefonları → **Tuşlu Telefonlar** | L4 | Assignable / normal product | Feature phone, klasik tuşlu cep telefonu |
@@ -153,13 +157,13 @@ Her proposed product node ya doğrudan L3 leaf'tir ya da L4 leaf'e iner. L3 cont
 | 7 | Telefon & Aksesuarları → **Telefon Modeline Özgü Şarj Aksesuarları** | L3 | Assignable / compatibility-critical | Model-specific battery case, charging cradle/dock |
 | 8 | Telefon & Aksesuarları → **Telefon Kamera & Çekim Aksesuarları** | L3 | Assignable / normal product | Phone-first selfie stick, telefon gimbalı, clip-on lens |
 | 9 | Telefon & Aksesuarları → **Telefon Kalemleri** | L3 | Assignable / compatibility-critical | Phone-specific active/passive stylus |
-| 10 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Telefon Bataryaları** | L4 | Proposed controlled assignment; `REGULATED`/safety review | Replacement phone battery |
-| 11 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Ekran & Dokunmatik Modülleri** | L4 | Proposed controlled assignment; compatibility/provenance evidence | LCD/OLED/digitizer assembly |
-| 12 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Şarj Soketi & Bağlantı Parçaları** | L4 | Proposed controlled assignment; compatibility/provenance evidence | Charging-port flex/daughterboard |
-| 13 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Kamera Modülleri** | L4 | Proposed controlled assignment; compatibility/provenance evidence | Front/rear replacement camera module |
-| 14 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Flex Kablo & Dahili Parçalar** | L4 | Proposed controlled assignment; exact part type required | Button/sensor/speaker flex, internal assembly |
+| 10 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Telefon Bataryaları** | L4 | Assignable physical product; future safety/compliance metadata required | Replacement phone battery |
+| 11 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Ekran & Dokunmatik Modülleri** | L4 | Assignable physical product; compatibility/provenance metadata required | LCD/OLED/digitizer assembly |
+| 12 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Şarj Soketi & Bağlantı Parçaları** | L4 | Assignable physical product; compatibility/provenance metadata required | Charging-port flex/daughterboard |
+| 13 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Kamera Modülleri** | L4 | Assignable physical product; compatibility/provenance metadata required | Front/rear replacement camera module |
+| 14 | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Flex Kablo & Dahili Parçalar** | L4 | Assignable physical product; exact part-type metadata required | Button/sensor/speaker flex, internal assembly |
 
-**Toplam proposed leaf: 14** — `7` direct L3 leaf + `7` L4 leaf.
+**Toplam owner-final leaf: 14** — `7` direct L3 leaf + `7` L4 leaf.
 
 `Cep Telefonları` ve `Telefon Yedek Parçaları` non-leaf container'dır; doğrudan
 ürün assignment kabul etmez.
@@ -174,13 +178,15 @@ telefon-first fiziksel forma** mı bağlı? Hayırsa generic/cross-device L2'ye 
 | Generic powerbank | Elektronik → **Güç, Şarj & Bağlantı** | Telefonla kullanılabilmesi phone-specific ownership üretmez. |
 | Generic USB-C, Lightning, Micro-USB veya çoklu kablo | Elektronik → **Güç, Şarj & Bağlantı** | Connector/protocol ve supported devices facet'tir. `Lightning` tek başına exact phone-model specificity değildir. |
 | Generic duvar tipi şarj adaptörü | Elektronik → **Güç, Şarj & Bağlantı** | Wattage/protocol/device compatibility facet'tir. |
-| Multi-device kablosuz şarj pedi/standı | Elektronik → **Güç, Şarj & Bağlantı** | Telefon, kulaklık ve saat gibi birden fazla device family'yi şarj eder. |
+| Generic Qi/Qi2 veya multi-device kablosuz şarj cihazı/pedi/standı | Elektronik → **Güç, Şarj & Bağlantı** | Telefon, kulaklık ve saat gibi birden fazla device family'yi şarj eder; Qi/Qi2 protocol facet'tir. |
 | Exact modele/form ailesine göre üretilmiş battery case | Telefon & Aksesuarları → **Telefon Modeline Özgü Şarj Aksesuarları** | Charging işlevi fiziksel phone compatibility'ye gömülüdür. |
 | Exact modele özgü charging cradle/dock | Telefon & Aksesuarları → **Telefon Modeline Özgü Şarj Aksesuarları** | Başka consumer device family'de generic kullanılamaz. |
 | Replacement phone battery | Telefon & Aksesuarları → Telefon Yedek Parçaları → **Telefon Bataryaları** | Şarj accessory değil, dahili replacement part'tır. |
 | Vehicle-only phone charger veya mount | **Otomotiv & Motosiklet** | Araç fitment'i, sabit montajı veya araç elektrik sistemi ana şemadır. |
 | Generic headphone/earbuds | Elektronik → **Ses & Kulaklık** | Telefon compatibility'si audio ownership'i değiştirmez. |
 | Memory card | Bilgisayar & Tablet → **Veri Depolama** | Telefonla kullanılabilmesi storage product type'ını değiştirmez. |
+| Phone/model-specific active stylus | Telefon & Aksesuarları → **Telefon Kalemleri** | Exact telefon compatibility'si product ownership'i belirler. |
+| Generic multi-device stylus | **Future Tablet/Accessory boundary review** | Bu dala zorla atanmaz; owner-final olmayan mixed-use boundary ayrıca tasarlanır. |
 
 Phone-model-specific olma iddiası title metniyle değil structured compatibility ve
 ürünün fiziksel/elektriksel tasarımıyla doğrulanmalıdır. Kanıt yoksa ürün bu dala
@@ -188,7 +194,7 @@ fail-open atanmaz.
 
 ## 7. Repair/spare-part boundary
 
-### Recommendation
+### Owner-final decision
 
 Fiziksel, ayrı satılan replacement part Product Taxonomy'de kalabilir; fakat normal
 consumer-installable accessory gibi sunulmamalıdır. `Telefon Yedek Parçaları` bu
@@ -206,39 +212,41 @@ olabilir; montaj emeği ise ürün değildir. Bir servis ilanı yedek parça lea
 olarak girilemez. Parça + montaj paketi ana işlevi hizmetse Service Taxonomy review'ına
 gider; içindeki fiziksel parça ayrıca canonical product olabilir.
 
-### Safety and authenticity proposal
+### Future safety, compliance and authenticity metadata
 
-- Telefon bataryaları: `REGULATED`/hazmat ve safety review; chemistry, capacity,
-  voltage, compatibility, provenance ve taşıma kuralları gerekir.
+- Telefon bataryaları Product Taxonomy'de izin verilen spare-part leaf'tir; chemistry,
+  capacity, voltage, compatibility, provenance, safety/compliance ve taşıma metadata'sı
+  ileriki implementation'da gerekir. Bu node servis semantics'i üretmez.
 - Diğer internal parçalar: compatibility-critical; OEM/original/aftermarket durumu,
   part number, condition ve warranty structured evidence olmalıdır.
 - Counterfeit veya doğrulanamayan `orijinal` claim'i category alanıyla çözülemez.
-- Public customer browse visibility ve hangi merchant'ların assign edebileceği owner,
-  legal ve operations kararı gelmeden FINAL değildir.
+- Physical spare-part'ın Product Taxonomy üyeliği FINAL'dır; browse visibility,
+  merchant eligibility ve metadata enforcement runtime/policy implementation'ıdır.
 - `Flex Kablo & Dahili Parçalar` çıplak catch-all değildir; exact component type ve
   compatible model olmadan yayınlanamaz.
 
 ## 8. Product vs service boundary
 
-| Alan | Proposal state | Gerekçe |
+| Alan | Final state | Gerekçe |
 |---|---|---|
-| Fiziksel boş SIM eject tool | **TBD / dedicated node yok** | Tek başına L3 açacak coverage kanıtı yoktur; category request ile review edilir veya ilgili ürünle bundle component'i olarak kalır. |
-| Physical SIM starter card | **LEGAL_REVIEW_REQUIRED / normal product leaf yok** | Fiziksel kart carrier activation, kimlik doğrulama ve telekom service contract'ından ayrı düşünülemez. |
+| Fiziksel boş SIM eject tool | **Dedicated node yok / future coverage review** | Tek başına L3 açacak coverage kanıtı yoktur; category request ile review edilir veya ilgili ürünle bundle component'i olarak kalır. |
+| Physical SIM starter kit | **EXCLUDED FROM PRODUCT TAXONOMY V1** | Operator activation, kimlik doğrulama ve telekom service-policy domain'idir. |
 | eSIM activation/QR | **EXCLUDED FROM PRODUCT TAXONOMY** | Digital service/credential'dır; fiziksel retail product değildir. |
 | Hat, tarife, paket, kontör/top-up | **EXCLUDED FROM PRODUCT TAXONOMY** | Telecom service/contract veya stored-value işlemidir. |
 | Cihaz sigortası/uzatılmış garanti | **EXCLUDED FROM PRODUCT TAXONOMY** | Financial/service contract'tır; phone product node değildir. |
 | Telefon onarım/kurulum hizmeti | **EXCLUDED FROM PRODUCT TAXONOMY** | Merchant capability/service taxonomy konusudur. |
 
 Google ve n11'de SIM/prepaid/plan browse ayrımlarının bulunması EsnaftaVar için
-otomatik inclusion üretmez. Türkiye telekom mevzuatı, activation/KYC, ödeme ve
-consumer protection modeli ayrı owner/legal review olmadan tasarlanmaz.
+otomatik inclusion üretmez. Owner-final V1 kararı physical SIM starter kit'i,
+eSIM'i, hattı, tarifeyi, paketi ve top-up'ı Product Taxonomy dışında tutar. Bunların
+operator/activation/service-policy modeli ayrı görevdir.
 
 ## 9. Facet profiles
 
 Facet'ler implementation değildir; future typed `attribute_profile_id` tasarımına
 girdi sağlar. Hiçbiri category node değildir.
 
-| Proposed leaf/family | Required/strong facet candidates | Optional/discovery facets |
+| Final leaf/family | Required/strong facet candidates | Optional/discovery facets |
 |---|---|---|
 | Akıllı Telefonlar | brand, model, operating system, storage, RAM, screen size, network generation, SIM configuration | color, connector, battery capacity, eSIM support, NFC, warranty, condition |
 | Tuşlu Telefonlar | brand, model, network generation, SIM configuration, screen size, connector | color, battery capacity, radio, camera presence, ruggedness, warranty, condition |
@@ -286,7 +294,7 @@ attribute, typo ve promotional term synonym registry'ye yazılmaz.
 | Kamera Modülleri | telefon kamera modülü, replacement camera module | Clip-on lens/koruyucu synonym değildir. |
 | Flex Kablo & Dahili Parçalar | flex kablo, fleks kablo, dahili telefon parçası | Exact part type olmadan broad search sonucu assign edilemez. |
 
-Proposed search precedence: exact canonical name > exact semantic synonym > alias >
+Canonical search guidance: exact canonical name > exact semantic synonym > alias >
 normalized token. Typo/fuzzy ve brand/model matching search engine/structured index
 katmanında ölçülür; synonym source-of-truth'una yazılmaz.
 
@@ -307,14 +315,15 @@ katmanında ölçülür; synonym source-of-truth'una yazılmaz.
 | Phone-first selfie stick / gimbal / clip-on lens | Telefon Kamera & Çekim Aksesuarları | Ana kullanım telefonla görüntü üretimidir. |
 | Camera-first tripod/gimbal | **Fotoğraf & Kamera** | Ana kullanım camera equipment'tır. |
 | Phone-specific active stylus | Telefon Kalemleri | Exact phone compatibility gerekir. |
-| Generic/tablet-first stylus | **Bilgisayar & Tablet** | Computing/tablet input ana işlevi. |
-| Internal replacement battery | Telefon Bataryaları | Physical repair part; safety/policy gate gerekir. |
+| Tablet-first stylus | **Bilgisayar & Tablet** | Tablet/computing input ana işlevi. |
+| Generic multi-device stylus | **Future Tablet/Accessory boundary review** | Bu dala zorla atanmaz; primary ownership sonraki boundary tasarımında kesinleşir. |
+| Internal replacement battery | Telefon Bataryaları | İzin verilen physical spare part; future safety/compliance metadata gerekir ve service semantics üretmez. |
 | Replacement OLED + digitizer | Ekran & Dokunmatik Modülleri | Ekran koruyucu değil technician replacement part. |
 | Charging-port daughterboard | Şarj Soketi & Bağlantı Parçaları | Generic charging accessory değil dahili parça. |
 | Front camera replacement module | Kamera Modülleri | Clip-on camera accessory değildir. |
 | Button/sensor flex | Flex Kablo & Dahili Parçalar | Exact part type/model evidence gerekir. |
 | Ekran değişimi hizmeti | **Product Taxonomy dışında** | Service/merchant capability'dir. |
-| Physical SIM starter pack | **LEGAL_REVIEW_REQUIRED / unassigned** | Telecom activation/service contract içerir. |
+| Physical SIM starter kit | **Product Taxonomy V1 dışında** | Operator activation/service-policy domain'idir. |
 | eSIM QR, tarife, paket, kontör | **Product Taxonomy dışında** | Digital telecom service/stored-value işlemidir. |
 | microSD memory card | **Bilgisayar & Tablet → Veri Depolama** | Storage product type'ıdır; phone usage ownership üretmez. |
 | Bluetooth earbuds | **Ses & Kulaklık** | Audio ana işlevdir. |
@@ -330,41 +339,61 @@ katmanında ölçülür; synonym source-of-truth'una yazılmaz.
 5. Safety, authenticity ve regulated policy'yi category'den ayrı değerlendir.
 6. Tek leaf kesinleşmiyorsa duplicate assignment yapma; taxonomy review'a gönder.
 
-## 12. Open owner decisions
+## 12. Owner-final decisions and remaining implementation TBDs
 
-Bu belge aşağıdaki kararları product owner'a taşır; hiçbiri henüz FINAL değildir:
+### Product owner tarafından FINAL onaylanan kararlar
 
-1. **Exact L3 seti:** Önerilen dokuz L3 adı, sırası ve scope'u onaylanacak mı?
-2. **Phone device depth:** `Cep Telefonları` L3 container altında `Akıllı Telefonlar`
-   ve `Tuşlu Telefonlar` L4 leaf yaklaşımı onaylanacak mı? Öneri: evet.
-3. **Spare-part tree:** Beş yedek parça L4 leaf'i Product Taxonomy'de kalsın mı?
-   Öneri: fiziksel parça olarak kalsın; normal aksesuar gibi görünmesin.
-4. **Spare-part assignability/visibility:** Hangi merchant, provenance, warranty,
-   condition ve compatibility evidence'iyle yedek parça yayımlayabilir?
-5. **Battery policy:** Telefon bataryası için `REGULATED`/hazmat/safety owner'ı ve
-   taşıma/yayın kuralı kim olacak?
-6. **Phone-specific charging threshold:** Model-family charging case/cradle bu dalda,
-   generic cable/adapter/powerbank ayrı L2'de kalma kuralı aynen onaylanacak mı?
-7. **Phone-first capture/stylus:** Phone-first gimbal/lens ve phone-specific stylus
-   proposed leaf'leri onaylanacak mı; mixed-use SKU review eşiği nasıl ölçülecek?
-8. **SIM/telecom exclusion:** Physical SIM starter kit `LEGAL_REVIEW_REQUIRED`,
-   eSIM/plan/package/top-up Product Taxonomy dışında kalsın mı? Öneri: evet.
-9. **Small installation tools:** SIM eject tool gibi düşük-coverage ürünler için
-   dedicated node açılmaması ve category-request review yaklaşımı onaylanacak mı?
-10. **Coverage pilot:** Final karar öncesi yerel telefoncu/servislerden representative
-    SKU pilotu ve zero-result/category-request analizi istenecek mi?
+1. Dokuz L3 adı, kapsamı ve exact sırası canonical'dır.
+2. `Cep Telefonları` non-leaf L3; `Akıllı Telefonlar` ve `Tuşlu Telefonlar` L4
+   leaf'tir.
+3. `Telefon Yedek Parçaları` non-leaf L3 ve altındaki beş physical spare-part L4
+   Product Taxonomy'de kalır.
+4. Telefon bataryası izin verilen spare-part leaf'tir; future safety/compliance
+   metadata gerektirir ve service semantics üretmez.
+5. Generic USB-C/Lightning-compatible multi-device cable, charger, powerbank ve
+   Qi/Qi2 charger **Güç, Şarj & Bağlantı** kapsamındadır.
+6. Phone-family/model/form-factor specific charging accessory **Telefon Modeline
+   Özgü Şarj Aksesuarları** kapsamındadır.
+7. Phone-specific lens, mobile gimbal ve selfie capture accessory **Telefon Kamera
+   & Çekim Aksesuarları**; general camera/tripod equipment **Fotoğraf & Kamera**
+   kapsamındadır.
+8. Phone/model-specific active stylus **Telefon Kalemleri** kapsamındadır. Generic
+   multi-device stylus bu dala zorlanmaz ve future Tablet/Accessory boundary
+   review'a bırakılır.
+9. Physical repair part ürün olabilir; repair labor/service Product Taxonomy'den
+   dışlanır ve future Merchant/Service scope'a gider.
+10. Physical SIM starter kit **EXCLUDED FROM PRODUCT TAXONOMY V1** durumundadır.
+    eSIM, line, tariff, package ve top-up da Product Taxonomy dışındadır.
+11. Brand, model compatibility, OS, storage, RAM, network, SIM configuration, color,
+    material, MagSafe/Qi compatibility ve benzeri değerler facet/attribute'tur.
 
-### Proposal outcome markers
+### Remaining implementation TBDs
+
+Bu maddeler owner-final L3/L4 kararını değiştirmez ve bu görevde çözülmez:
+
+- Node ID/slug/sort order ve current JSON successor/reconciliation mapping'i.
+- Phone battery safety/compliance metadata şeması ve enforcement sahibi.
+- Spare-part provenance, compatibility, warranty ve merchant eligibility kontrolleri.
+- Generic multi-device stylus için Tablet/Accessory boundary tasarımı.
+- SIM/telecom operator, activation ve service-policy modeli.
+- Small installation tool coverage ve category-request governance.
+- Runtime taxonomy, search, DB, migration, Flutter ve Figma implementation'ı.
+
+### Final outcome markers
 
 `CANONICAL_PATH: ELEKTRONİK → TELEFON & AKSESUARLARI — UNCHANGED`
 
-`PHONE_ACCESSORIES_L34_STATE: PROPOSED FOR OWNER REVIEW`
+`PHONE_ACCESSORIES_C1_PROPOSAL: SUPERSEDED`
 
-`PROPOSED_L3_COUNT: 9`
+`PHONE_ACCESSORIES_L34_OWNER_APPROVAL: FINAL`
 
-`PROPOSED_L4_COUNT: 7`
+`PHONE_ACCESSORIES_L34_STATE: CONFIRMED — PRODUCT OWNER FINAL`
 
-`PROPOSED_LEAF_COUNT: 14`
+`PHONE_ACCESSORIES_L3_COUNT: 9`
+
+`PHONE_ACCESSORIES_L4_COUNT: 7`
+
+`PHONE_ACCESSORIES_LEAF_COUNT: 14`
 
 `MAX_DEPTH: 4 — PASS`
 
@@ -376,8 +405,16 @@ Bu belge aşağıdaki kararları product owner'a taşır; hiçbiri henüz FINAL 
 
 `GENERIC_CHARGING_BOUNDARY: PASS`
 
-`LEAF_ASSIGNMENT: COMPLETE FOR PROPOSED SCOPE`
+`SIM_V1_PRODUCT_TAXONOMY: EXCLUDED`
+
+`SPARE_PARTS_PRODUCT_TAXONOMY: RETAINED`
+
+`PHONE_SERVICE_PRODUCT_BOUNDARY: PASS`
+
+`LEAF_ASSIGNMENT: COMPLETE`
 
 `SYNONYM_MODEL: CONTROLLED / NOT IMPLEMENTED`
+
+`READY_FOR_C1_INTEGRATION: YES`
 
 `RUNTIME_IMPLEMENTATION: NO`
