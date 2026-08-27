@@ -1,20 +1,26 @@
-# EsnaftaVar Canonical Category Taxonomy — Architecture + L1
+# EsnaftaVar Canonical Category Taxonomy — Architecture + Owner-Final Pilots
 
 **Wave:** 15 / Phase A2
 
 **Belge tarihi:** 27 Ağustos 2026
 
+**Son canonical güncelleme:** 28 Ağustos 2026 / Wave 15 Phase C1+C2
+
 **Owner approval:** 27 Ağustos 2026 / Wave 15 Phase A2 — **CONFIRMED — PRODUCT OWNER FINAL**
 
-**Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti, merchant-sector ayrımı
-ve owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları
+**Pilot owner approvals:** 28 Ağustos 2026 / Wave 15 Phase C1A + C2 —
+**CONFIRMED — PRODUCT OWNER FINAL**
+
+**Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti, merchant-sector ayrımı,
+owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları ve ilk iki full L3/L4 pilotu
 
 **Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
 
-**Integration durumu:** Wave 15 Phase A ile B1+B2 final integration tamamlandı;
-taxonomy architecture, 24 Product L1 owner lock, Elektronik `9` L2 ve Bilgisayar &
-Tablet `11` L2 canonical'dır. Current full-tree JSON ile rename/split reconciliation,
-L3/L4 design ve runtime implementation ayrı controlled task'lardır.
+**Integration durumu:** Wave 15 Phase A, B1+B2 ve C1+C2 final integration tamamlandı;
+taxonomy architecture, 24 Product L1, Elektronik `9` L2, Bilgisayar & Tablet `11`
+L2 ve Telefon/Bilgisayar Bileşenleri ilk full L3/L4 pilotları canonical'dır. Current
+full-tree JSON ile rename/split/stable-ID reconciliation ve runtime implementation
+ayrı controlled task'lardır.
 
 > Current main notu: Phase A başladığında repo önceki `v1.0.0` full taxonomy
 > artefaktını içeriyordu. Phase A1'de refine edilen 24 Product Taxonomy L1 adı ve
@@ -464,10 +470,87 @@ Canonical karar belgesi:
 - Brand, color, size, capacity, CPU/GPU, connector, wattage, Bluetooth, 5G, refresh
   rate, OS ve compatibility facet/attribute'tur; L2 category değildir.
 
-Bu kararlar L2 omurgasını kilitler; full L3/L4 node, leaf/assignability, ID/slug,
-JSON reconciliation, migration veya runtime davranışı üretmez.
+Bu kararlar L2 omurgasını kilitler. Phase B1+B2 kararları tek başına full L3/L4 node,
+leaf/assignability, ID/slug, JSON reconciliation, migration veya runtime davranışı
+üretmez; ilk iki ayrı owner-final L3/L4 pilotu aşağıda kayıtlıdır.
 
-## 15. Open owner decisions
+## 15. Phase C1+C2 owner-final L3/L4 pilots
+
+İlk full L3/L4 pilotları **CONFIRMED — PRODUCT OWNER FINAL** durumundadır. Her iki
+pilot da variable-depth, max-4 ve exactly-one-primary-leaf sözleşmesini uygular;
+runtime JSON, stable ID, DB, Flutter, Figma veya remote state üretmez.
+
+### Elektronik → Telefon & Aksesuarları
+
+Owner-final L3 exact `9`:
+
+1. Cep Telefonları
+2. Telefon Kılıfları
+3. Ekran Koruyucular
+4. Kamera Lens Koruyucuları
+5. Telefon Tutucu, Stand & Askıları
+6. Telefon Modeline Özgü Şarj Aksesuarları
+7. Telefon Kamera & Çekim Aksesuarları
+8. Telefon Kalemleri
+9. Telefon Yedek Parçaları
+
+Owner-final L4 exact `7`: Cep Telefonları altında Akıllı Telefonlar ve Tuşlu
+Telefonlar; Telefon Yedek Parçaları altında Telefon Bataryaları, Ekran & Dokunmatik
+Modülleri, Şarj Soketi & Bağlantı Parçaları, Kamera Modülleri ve Flex Kablo & Dahili
+Parçalar. `7` direct L3 leaf + `7` L4 leaf = exact `14` assignable leaf; duplicate
+node `0`, maksimum depth `4`.
+
+Generic charger/kablo/powerbank **Güç, Şarj & Bağlantı**; exact phone-model/form-
+specific charging ürünü **Telefon Modeline Özgü Şarj Aksesuarları** altındadır.
+Fiziksel replacement part Product Taxonomy'de tutulabilir; repair labor/service,
+physical SIM starter kit V1, eSIM/hat/tarife/paket/top-up Product Taxonomy dışındadır.
+Brand/model/compatibility/OS/capacity/technical özellik facet'tir. Generic multi-
+device stylus boundary'si future review olarak `TBD` kalır.
+
+Canonical karar belgesi:
+`docs/TAXONOMY_PHONE_ACCESSORIES_L34_PROPOSAL.md`.
+
+### Bilgisayar & Tablet → Bilgisayar Bileşenleri
+
+Owner-final L3 exact `9`:
+
+1. İşlemci
+2. Ekran Kartı
+3. Anakart
+4. RAM Bellek
+5. Güç Kaynağı
+6. Bilgisayar Kasası
+7. Soğutma
+8. Genişleme Kartları
+9. Tek Kart Bilgisayar (SBC)
+
+Owner-final L4 exact `7`: Soğutma altında İşlemci Soğutucu, Kasa Fanı, Sıvı Soğutma
+ve Termal Macun & Ped; Genişleme Kartları altında Ses Kartı, Görüntü Yakalama Kartı
+ve Bağlantı & Denetleyici Kartları. `7` direct L3 leaf + `7` L4 leaf = exact `14`
+assignable leaf; duplicate node `0`, maksimum depth `4`.
+
+SSD/HDD/NVMe/optical storage **Veri Depolama**; Arduino/ESP/microcontroller
+**Elektronik → Elektronik Bileşenler**; Raspberry Pi/SBC/Compute Module **Tek Kart
+Bilgisayar (SBC)** altındadır. Dahili PCIe cards ilgili Genişleme Kartları leaf'ine;
+external USB PC-primary capture/audio future **Bilgisayar Aksesuarları** tasarımına
+gider. Bundle/kit category değildir; principal leaf + facet/tag kullanır.
+Compatibility `compatible / incompatible / conditional / unknown` relationship/facet
+modelidir, taxonomy depth değildir. Full rack server, blade ve rackmount server
+chassis `TBD / current consumer taxonomy dışında` kalır.
+
+Canonical karar belgesi:
+`docs/TAXONOMY_COMPUTER_COMPONENTS_L34_PROPOSAL.md`.
+
+### Reusable design method
+
+Gelecekteki proposal ve unattended/overnight taxonomy batch'leri
+`docs/TAXONOMY_L34_DESIGN_METHOD.md` yöntemini kullanır. Bu yöntem artificial depth
+ve L5'i yasaklar; category/facet, product/service, generic/specific accessory,
+primary leaf, compatibility, bundle, synonym, research ve owner-state kapılarını
+operasyonel olarak tanımlar. Agent açık owner kararı olmadan `PROPOSED` durumu
+`FINAL` yapamaz.
+
+## 16. Open owner decisions
 
 24 L1 ad/sıra kararı **RESOLVED — CONFIRMED — PRODUCT OWNER FINAL** durumundadır.
 Aşağıdaki runtime, policy ve governance kararları açık kalır:
@@ -491,24 +574,30 @@ Aşağıdaki runtime, policy ve governance kararları açık kalır:
    modeli bu taxonomy kararından bağımsız owner review ister.
 9. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
    deprecation/replacement onayı ve sürüm yayın sahibi belirlenmeli.
+10. **Generic multi-device stylus — TBD:** Telefon, tablet veya future shared
+    accessory ownership'i ayrı boundary review gerektirir.
+11. **External USB PC-primary capture/audio — TBD:** Bilgisayar Aksesuarları yönü
+    finaldir; exact future L3/L4 leaf adları ayrıca tasarlanır.
+12. **Enterprise/rack systems — TBD:** Full rack server, blade ve rackmount server
+    chassis current consumer taxonomy'ye sessizce atanamaz.
 
 Phase A2 owner approval product decision'ı kilitler; current V1.0.0 full tree, JSON,
 runtime, Production veya Development state'ini bu dokümantasyon görevi değiştirmez.
 
-## 16. Next-phase plan
+## 17. Next-phase plan
 
-Phase A ve owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları tamamlanmıştır.
-Sıradaki taxonomy tasarım çalışması controlled L3/L4'tür. Current main full
-V1.0.0 tree taşır; onu decision-lock görevinde paralel ağaçla çoğaltmak veya
-yeniden yazmak yasaktır.
+Phase A, owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları ve ilk iki full
+L3/L4 pilotu tamamlanmıştır. Sonraki domain L3/L4 batch'leri canonical reusable
+method ile kontrollü ilerler. Current main full V1.0.0 tree taşır; onu decision-lock
+görevinde paralel ağaçla çoğaltmak veya yeniden yazmak yasaktır.
 
 1. Integration/taxonomy owner final 24 L1 decision lock'ını review edip main'e
    entegre etti.
 2. Rename ve split successor mapping'i current V1.0.0 tree ile reconcile edilir;
    stable identity'ler korunur.
 3. **Elektronik** `9` L2 ve **Bilgisayar & Tablet** `11` L2 owner-final olarak
-   entegre edildi; ayrı controlled turda L3/L4 adı, sırası, variable-depth leaf ve
-   assignability tasarlanır.
+   entegre edildi; Telefon & Aksesuarları ile Bilgisayar Bileşenleri `9/7/14`
+   L3/L4/leaf pilotları reusable yöntemle tamamlandı.
 4. Runtime öncesi current source slug → stable opaque ID bridge kesinleştirilir.
 5. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
    ID mapping, read path ve seed planını hazırlar. Bu adım remote apply değildir.
@@ -551,8 +640,38 @@ yeniden yazmak yasaktır.
 
 `CROSS_DOMAIN_BOUNDARY: PASS`
 
-`L3_L4_STATE: NOT_STARTED`
+`L3_L4_STATE: FIRST_PILOTS_COMPLETE`
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_L3_L4_DESIGN: YES`
+`READY_FOR_L3_L4_DESIGN: COMPLETED — FIRST TWO PILOTS`
+
+`WAVE_15_C1_C2_INTEGRATION: PASS`
+
+`FIRST_L34_PILOTS: COMPLETE`
+
+`FIRST_L3_L4_PILOTS: COMPLETE`
+
+`PHONE_ACCESSORIES_L34_CANONICAL: PASS`
+
+`PHONE_ACCESSORIES_L3_COUNT: 9`
+
+`PHONE_ACCESSORIES_L4_COUNT: 7`
+
+`PHONE_ACCESSORIES_LEAF_COUNT: 14`
+
+`COMPUTER_COMPONENTS_L34_CANONICAL: PASS`
+
+`COMPUTER_COMPONENTS_L3_COUNT: 9`
+
+`COMPUTER_COMPONENTS_L4_COUNT: 7`
+
+`COMPUTER_COMPONENTS_LEAF_COUNT: 14`
+
+`L34_DESIGN_METHOD_CANONICAL: PASS`
+
+`STABLE_ID_RUNTIME_RECONCILIATION: NOT_STARTED`
+
+`RUNTIME_TAXONOMY: NOT_STARTED`
+
+`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: YES`

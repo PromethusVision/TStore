@@ -197,7 +197,7 @@ HTTP `200` / no-exception final success değildir.
 - Müşteri/canonical ürün başına bir aktif yorum vardır; duplicate/concurrent submit mevcut satırı değiştirmeden `created: false` döndürür. Owner rating/title/comment alanlarını güncelleyebilir, yorumu silebilir ve durable evidence kaldığı sürece yeniden oluşturabilir; expiry yoktur.
 - Korunan legacy yorumlar otomatik backfill edilmez, doğrulanmamış kalır ve verified aggregate'lere katılmaz. UI'daki verified bilgi yalnız server response'undan gelir. Mağaza puanı mevcut doğrulanmış QR akışında server-authoritative çalışmayı sürdürür.
 
-### A6. Canonical Category Taxonomy — 24 L1 + Elektronik/Bilgisayar L2 OWNER FINAL / RUNTIME RECONCILIATION OPEN
+### A6. Canonical Category Taxonomy — L1/L2 + First L3/L4 Pilots OWNER FINAL / RUNTIME RECONCILIATION OPEN
 
 - Durum: Wave 15 Phase A taxonomy architecture ve exact 24 Product L1 adı/sırası
   **FINAL / CANONICAL / PRODUCT OWNER LOCKED**; runtime, veritabanı, Production ve
@@ -250,8 +250,26 @@ HTTP `200` / no-exception final success değildir.
 - Toner/kartuş/3D printer/filament Yazıcı, Tarayıcı & Sarf Malzemeleri kapsamındadır.
   Rack/server ve POS owner kararı TBD/unassigned kalır. Brand, color, capacity,
   compatibility gibi facets category ağacına taşınmaz.
-- L3/L4 tasarımı henüz başlamadı. JSON/runtime, DB/schema/migration, Flutter/Figma
-  ve Production/Development durumu bu entegrasyonda değişmedi.
+- Wave 15 Phase C1+C2 ilk full L3/L4 pilotları owner-final olarak tamamlandı:
+  - Elektronik → Telefon & Aksesuarları: `9` L3, `7` L4, `14` assignable leaf.
+    Generic charging Güç, Şarj & Bağlantı; phone-model-specific charging kendi
+    accessory leaf'inde. Physical spare part product olabilir; repair service,
+    SIM starter kit V1, eSIM/hat/tarife/paket/top-up Product Taxonomy dışındadır.
+  - Bilgisayar & Tablet → Bilgisayar Bileşenleri: `9` L3, `7` L4, `14` assignable
+    leaf. Storage Veri Depolama; Arduino/ESP Elektronik Bileşenler; Raspberry Pi/SBC
+    Tek Kart Bilgisayar (SBC). Bundle principal leaf + facet/tag kullanır;
+    compatibility category depth değildir.
+- Her iki pilotta duplicate `0`, maksimum depth `4`, category/facet ve product/service
+  separation PASS. Full rack/blade/rackmount server chassis ile generic multi-device
+  stylus açık `TBD`; external USB PC-primary capture/audio için Bilgisayar Aksesuarları
+  yönü final, exact future leaf adı TBD'dir.
+- Future attended/unattended domain proposal'ları canonical
+  `docs/TAXONOMY_L34_DESIGN_METHOD.md` yöntemini kullanır. Agent owner kararı
+  uyduramaz; unresolved karar `OPEN/TBD` kalır ve domain checkpoint'i scoped
+  commit/push ile kaydedilir.
+- Stable ID/runtime/current-tree reconciliation henüz başlamadı. JSON/runtime,
+  DB/schema/migration, Flutter/Figma ve Production/Development durumu bu
+  entegrasyonda değişmedi.
 - Açık implementation işleri:
   - current 23-L1 full tree ile 24-L1 lock için rename/split successor reconciliation,
   - current source slug → stable opaque ID bridge ve backward-compatible adapter,
@@ -295,9 +313,39 @@ HTTP `200` / no-exception final success değildir.
 
 `CROSS_DOMAIN_BOUNDARY: PASS`
 
-`L3_L4_STATE: NOT_STARTED`
+`L3_L4_STATE: FIRST_PILOTS_COMPLETE`
 
-`READY_FOR_L3_L4_DESIGN: YES`
+`READY_FOR_L3_L4_DESIGN: COMPLETED — FIRST TWO PILOTS`
+
+`WAVE_15_C1_C2_INTEGRATION: PASS`
+
+`FIRST_L34_PILOTS: COMPLETE`
+
+`FIRST_L3_L4_PILOTS: COMPLETE`
+
+`PHONE_ACCESSORIES_L34_CANONICAL: PASS`
+
+`PHONE_ACCESSORIES_L3_COUNT: 9`
+
+`PHONE_ACCESSORIES_L4_COUNT: 7`
+
+`PHONE_ACCESSORIES_LEAF_COUNT: 14`
+
+`COMPUTER_COMPONENTS_L34_CANONICAL: PASS`
+
+`COMPUTER_COMPONENTS_L3_COUNT: 9`
+
+`COMPUTER_COMPONENTS_L4_COUNT: 7`
+
+`COMPUTER_COMPONENTS_LEAF_COUNT: 14`
+
+`L34_DESIGN_METHOD_CANONICAL: PASS`
+
+`STABLE_ID_RUNTIME_RECONCILIATION: NOT_STARTED`
+
+`RUNTIME_TAXONOMY: NOT_STARTED`
+
+`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: YES`
 
 ### A7. EsnaftaVar Design Tokens V1.0.0 — FINAL / CANONICAL COMPONENT LAYER V1 FINAL
 

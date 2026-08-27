@@ -2,12 +2,49 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-27
-- Son doğrulanan teslim: Wave 15 Phase B1+B2 Elektronik + Bilgisayar & Tablet
-  owner-final L2 canonical lock entegrasyonu.
-- Integration branch/base: `integration/wave-15-b12-l2-taxonomy` /
-  `origin/main@d9fefc70099a8e1809611f11d75829e60fecd6ef`.
+- Son güncelleme: 2026-08-28
+- Son doğrulanan teslim: Wave 15 Phase C1+C2 first full L3/L4 pilots canonical
+  lock ve reusable design method entegrasyonu.
+- Integration branch/base: `integration/wave-15-c1-c2-l34-pilots` /
+  `origin/main@847442e9d5e8b35cf6d83a1c1ea31b625811f38f`.
 - Input/merge sırası:
+  `origin/agent1/w15-phone-accessories-l34-taxonomy@907521e2213127ca1c765215c17e36ad6a207afe`
+  / `34e781308786745bbde26aff0d9edc9ec1257375`, ardından
+  `origin/agent2/w15-computer-components-l34-taxonomy@e1f2298eebfaeeda3287e6180b948c5a67ae9742`
+  / `2d32ce3b1fa58a75471a385d3492e3ede50745e0` (ikisi de `--no-ff`, conflict yok).
+- Entegrasyon durumu: **WAVE 15 C1+C2 FINAL INTEGRATION PASS / FIRST FULL L3/L4
+  PILOTS COMPLETE / REUSABLE METHOD CANONICAL / RUNTIME NOT STARTED**.
+- Elektronik → Telefon & Aksesuarları owner-final pilotu exact `L3/L4/leaf =
+  9/7/14`, duplicate `0`, max depth `4`. Cep Telefonları ve Telefon Yedek Parçaları
+  non-leaf L3; diğer yedi L3 ve yedi L4 assignable leaf'tir.
+- Telefon sınırları: generic şarj/kablo/powerbank Güç, Şarj & Bağlantı; exact phone-
+  model charging Telefon Modeline Özgü Şarj Aksesuarları. Fiziksel spare part ürün
+  olabilir; repair labor/service, SIM starter kit V1, eSIM/hat/tarife/paket/top-up
+  Product Taxonomy dışındadır. Generic multi-device stylus future review/TBD'dir.
+- Bilgisayar & Tablet → Bilgisayar Bileşenleri owner-final pilotu exact
+  `L3/L4/leaf = 9/7/14`, duplicate `0`, max depth `4`. Soğutma ve Genişleme
+  Kartları non-leaf L3; diğer yedi L3 ve yedi L4 assignable leaf'tir.
+- Computer boundaries: SSD/HDD/NVMe/optical storage Veri Depolama; Arduino/ESP/
+  microcontroller Elektronik Bileşenler; Raspberry Pi/SBC/Compute Module Tek Kart
+  Bilgisayar (SBC). Dahili PCIe kartlar Genişleme Kartları; external USB PC-primary
+  capture/audio future Bilgisayar Aksesuarları yönündedir. Full rack/blade/rackmount
+  server chassis TBD ve current consumer taxonomy dışındadır.
+- Compatibility `compatible/incompatible/conditional/unknown` typed relationship/
+  facet modelidir; category depth değildir. Bundle/kit principal product leaf +
+  facet/tag kullanır ve yeni category üretmez.
+- `docs/TAXONOMY_L34_DESIGN_METHOD.md`, future unattended/overnight taxonomy
+  proposal'ları için canonical çalışma yöntemidir. Max-4/variable-depth, exactly-one
+  primary leaf, category/facet, product/service, generic/specific accessory,
+  compatibility, bundle, synonym, research ve owner-state kapılarını tanımlar;
+  agent açık owner kararı olmadan proposal'ı final yapamaz.
+- Stable ID/current-tree/runtime reconciliation başlamadı. Bu entegrasyon yalnız
+  docs/canonical kararları değiştirdi; runtime JSON, Flutter, Figma, DB/migration,
+  Production ve Development'a dokunulmadı.
+- Bir önceki doğrulanan teslim: Wave 15 Phase B1+B2 Elektronik + Bilgisayar & Tablet
+  owner-final L2 canonical lock entegrasyonu.
+- Önceki integration branch/base: `integration/wave-15-b12-l2-taxonomy` /
+  `origin/main@d9fefc70099a8e1809611f11d75829e60fecd6ef`.
+- Önceki input/merge sırası:
   `origin/agent1/w15-electronics-l2-taxonomy@ab943301d85a17ab39a0c49603dbe9eaca88fb65`
   / `6ecba73aae5c675d0e258e1b56806959dca748ae`, ardından
   `origin/agent2/w15-computer-tablet-l2-taxonomy@acdf444fd1e6a3d9a3df1113ec627498bc626005`
@@ -328,11 +365,41 @@
 
 `CROSS_DOMAIN_BOUNDARY: PASS`
 
-`L3_L4_STATE: NOT_STARTED`
+`L3_L4_STATE: FIRST_PILOTS_COMPLETE`
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_L3_L4_DESIGN: YES`
+`READY_FOR_L3_L4_DESIGN: COMPLETED — FIRST TWO PILOTS`
+
+`WAVE_15_C1_C2_INTEGRATION: PASS`
+
+`FIRST_L34_PILOTS: COMPLETE`
+
+`FIRST_L3_L4_PILOTS: COMPLETE`
+
+`PHONE_ACCESSORIES_L34_CANONICAL: PASS`
+
+`PHONE_ACCESSORIES_L3_COUNT: 9`
+
+`PHONE_ACCESSORIES_L4_COUNT: 7`
+
+`PHONE_ACCESSORIES_LEAF_COUNT: 14`
+
+`COMPUTER_COMPONENTS_L34_CANONICAL: PASS`
+
+`COMPUTER_COMPONENTS_L3_COUNT: 9`
+
+`COMPUTER_COMPONENTS_L4_COUNT: 7`
+
+`COMPUTER_COMPONENTS_LEAF_COUNT: 14`
+
+`L34_DESIGN_METHOD_CANONICAL: PASS`
+
+`STABLE_ID_RUNTIME_RECONCILIATION: NOT_STARTED`
+
+`RUNTIME_TAXONOMY: NOT_STARTED`
+
+`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: YES`
 
 `WAVE_15_TAXONOMY_INTEGRATION: PASS`
 

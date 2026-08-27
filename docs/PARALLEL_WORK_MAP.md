@@ -895,11 +895,11 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `CROSS_DOMAIN_BOUNDARY: PASS`
 
-`L3_L4_STATE: NOT_STARTED`
+`L3_L4_STATE: FIRST_PILOTS_COMPLETE`
 
 `RUNTIME_TAXONOMY_IMPLEMENTED: NO`
 
-`READY_FOR_L3_L4_DESIGN: YES`
+`READY_FOR_L3_L4_DESIGN: COMPLETED — FIRST TWO PILOTS`
 
 - Current `origin/main@d9fefc70099a8e1809611f11d75829e60fecd6ef` üzerine Agent 1
   Electronics branch'i `6ecba73` ve ardından Agent 2 Computer/Tablet branch'i
@@ -929,6 +929,66 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   models aynı anda birden fazla agentta değişmez.
 - Bu entegrasyon yalnız dokümantasyon/state bütünleştirmesidir; JSON/full-tree baseline,
   Flutter, Figma, schema/migration, Production ve Development değiştirilmedi.
+
+## Wave 15 Phase C1+C2 First Full L3/L4 Pilots
+
+`WAVE_15_C1_C2_INTEGRATION: PASS`
+
+`FIRST_L34_PILOTS: COMPLETE`
+
+`FIRST_L3_L4_PILOTS: COMPLETE`
+
+`PHONE_ACCESSORIES_L34_CANONICAL: PASS`
+
+`PHONE_ACCESSORIES_L3_COUNT: 9`
+
+`PHONE_ACCESSORIES_L4_COUNT: 7`
+
+`PHONE_ACCESSORIES_LEAF_COUNT: 14`
+
+`COMPUTER_COMPONENTS_L34_CANONICAL: PASS`
+
+`COMPUTER_COMPONENTS_L3_COUNT: 9`
+
+`COMPUTER_COMPONENTS_L4_COUNT: 7`
+
+`COMPUTER_COMPONENTS_LEAF_COUNT: 14`
+
+`L34_DESIGN_METHOD_CANONICAL: PASS`
+
+`STABLE_ID_RUNTIME_RECONCILIATION: NOT_STARTED`
+
+`RUNTIME_TAXONOMY: NOT_STARTED`
+
+`RUNTIME_TAXONOMY_IMPLEMENTED: NO`
+
+`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: YES`
+
+- Current `origin/main@847442e9d5e8b35cf6d83a1c1ea31b625811f38f` üzerine Phone
+  Accessories branch'i `34e7813`, ardından Computer Components branch'i `2d32ce3`
+  no-ff merge commitleriyle, çatışmasız ve owner-final kararlar değiştirilmeden
+  entegre edildi.
+- Telefon & Aksesuarları pilotu exact `9` L3, `7` L4 ve `14` leaf; Bilgisayar
+  Bileşenleri pilotu exact `9` L3, `7` L4 ve `14` leaf taşır. Her ikisinde max depth
+  `4`, duplicate `0` ve exactly-one-primary-leaf sözleşmesi PASS'tir.
+- Phone pilotunda generic charging genel Güç, Şarj & Bağlantı domain'ine, phone-
+  model-specific charging kendi L3 leaf'ine gider. Physical spare part ürün olabilir;
+  repair labor/service ve SIM/telecom service ürün değildir.
+- Computer pilotunda storage sibling Veri Depolama; Arduino/ESP Elektronik
+  Bileşenler; Raspberry Pi/SBC/Compute Module Tek Kart Bilgisayar (SBC) leaf'indedir.
+  Bundle category değildir; compatibility typed relationship/facet'tir. Rack/server
+  current consumer taxonomy dışında `TBD` kalır.
+- `docs/TAXONOMY_L34_DESIGN_METHOD.md` future taxonomy agentları için canonical
+  çalışma yöntemidir. Ayrı domain proposal'ları yalnız dosya kapsamları ayrıkken
+  parallel araştırılabilir; owner-final durumunu agent uyduramaz. Non-fatal owner
+  blocker'ı `OPEN/TBD` kaydedilir ve diğer bağımsız domaine geçilir. Her completed
+  domain scoped checkpoint commit/push üretir.
+- Canonical merkezi belgeler, stable-ID/runtime reconciliation, shared category/
+  product model, search/index, DB migration ve UI projection tek owner'da veya sıralı
+  yürütülür. SQL/migration yalnız tek agentta; `service_locator.dart` ve shared models
+  aynı anda birden fazla agentta değişmez.
+- Bu integration yalnız docs/canonical kararları değiştirdi; runtime JSON, Flutter,
+  Figma, DB/schema/migration, Production ve Development değiştirilmedi.
 
 ## Merkezi Sahiplik / Hot-Spot Haritası
 
