@@ -1,26 +1,30 @@
-# EsnaftaVar Canonical Taxonomy — Elektronik L2 Proposal
+# EsnaftaVar Canonical Taxonomy — Elektronik L2 Owner Final
 
-**Wave:** 15 / Phase B1
+**Wave:** 15 / Phase B1A
 
 **Belge tarihi:** 27 Ağustos 2026
 
+**Product owner onayı:** 27 Ağustos 2026 / Wave 15 Phase B1A
+
 **Canonical L1:** **Elektronik — CONFIRMED / PRODUCT OWNER FINAL**
 
-**Öneri durumu:** **PROPOSED FOR OWNER REVIEW**
+**Karar durumu:** **CONFIRMED — PRODUCT OWNER FINAL**
 
 **Kapsam:** Yalnız Elektronik L1 altındaki L2 mimarisi. Bu belge L3/L4 ağacını,
 runtime şemasını, migration'ı, taxonomy JSON'unu, Flutter/Figma'yı veya remote
 ortamları değiştirmez.
 
-> Bu öneri mevcut `v1.0.0` full-tree artefaktının replacement'ı veya deploy planı
-> değildir. Mevcut altı Elektronik L2 yalnız karşılaştırma girdisidir. L2 adları,
-> sırası ve sınırları product owner kararı gelmeden canonical/final sayılmaz.
+> Phase B1'deki sekiz L2 önerisi **SUPERSEDED** durumundadır. Product owner bu
+> belgede kayıtlı dokuz L2 adını, sırasını ve sınır kararlarını FINAL olarak
+> onaylamıştır. Bu karar mevcut `v1.0.0` full-tree artefaktının replacement'ı,
+> runtime implementation'ı veya deploy planı değildir.
 
 ## 1. Scope
 
 Bu çalışmanın amacı, owner-final **Elektronik** L1'i altında Türkiye'deki müşteri
-diline yakın, yerel telefoncu/elektronikçi envanterini bulunabilir kılan ve ileride
-variable-depth L3/L4'e sağlıklı açılabilen bir L2 seti önermektir.
+diline yakın, yerel telefoncu/elektronikçi ve consumer-facing maker envanterini
+bulunabilir kılan, ileride variable-depth L3/L4'e sağlıklı açılabilen owner-final
+dokuz L2'yi kaydetmektir.
 
 Canonical Phase A kuralları aynen korunur:
 
@@ -79,7 +83,10 @@ Kaynakların ortaklaştırdığı bölüm sınırları:
    bir kontrol/izleme/güvenlik sınırıyla anlamlıdır.
 7. Generic accessory ağacı catch-all olmamalı; güç, şarj ve bağlantı işlevleriyle
    sınırlandırılmalıdır.
-8. Marketplace'lerin Bilgisayar, Tablet, Beyaz Eşya ve küçük ev aletlerini Elektronik
+8. Yerel maker/elektronikçi envanterindeki geliştirme kartı, sensör, modül ve devre
+   elemanları ayrı bir consumer-facing `Elektronik Bileşenler` sınırına ihtiyaç
+   duyar; Raspberry Pi/SBC gibi bilgisayar platformları bu sınıra girmez.
+9. Marketplace'lerin Bilgisayar, Tablet, Beyaz Eşya ve küçük ev aletlerini Elektronik
    şemsiyesinde göstermesi EsnaftaVar için bilinçli olarak reddedilir.
 
 ## 3. Boundary with other L1s
@@ -88,10 +95,10 @@ Kaynakların ortaklaştırdığı bölüm sınırları:
 
 | Sınır | Elektronik'te kalır | Diğer L1'e gider | Karar testi |
 |---|---|---|---|
-| **Elektronik vs Bilgisayar & Tablet** | Telefon, TV/projeksiyon/medya oynatıcı, consumer audio, fotoğraf makinesi, konsol, giyilebilir cihaz, consumer smart-home/security ve generic AV/güç bağlantısı | Bilgisayar, tablet, e-kitap okuyucu, monitör, yazıcı/tarayıcı, webcam, modem/router/ağ, depolama, PC bileşeni, klavye/mouse, bilgisayar dock/hub ve PC'ye özgü gaming peripheral | Ürünün ana işi computing, tablet kullanımı, computer input/output, network veya computer storage ise **Bilgisayar & Tablet**. Yalnız “akıllı”, USB'li veya Bluetooth'lu olması Elektronik'e taşımaz. |
+| **Elektronik vs Bilgisayar & Tablet** | Telefon, TV/projeksiyon/medya oynatıcı, consumer audio, fotoğraf makinesi, konsol, giyilebilir cihaz, consumer smart-home/security, generic AV/güç bağlantısı; Arduino/ESP, breadboard, sensör/modül ve genel devre elemanları | Bilgisayar, tablet, e-kitap okuyucu, monitör, yazıcı/tarayıcı, webcam, modem/router/ağ, depolama, PC bileşeni, Raspberry Pi/SBC, klavye/mouse, bilgisayar dock/hub ve PC-first gaming peripheral | Ürünün ana işi computing, SBC kullanımı, tablet kullanımı, computer input/output, network veya computer storage ise **Bilgisayar & Tablet**. Maker prototipleme/devre işlevi taşıyan Arduino/ESP sınıfı ise **Elektronik Bileşenler**. Yalnız “akıllı”, USB'li veya Bluetooth'lu olması Elektronik'e taşımaz. |
 | **Elektronik vs Beyaz Eşya & Ev Aletleri** | TV, consumer audio/video, home-control hub/sensor ve elektronik güvenlik/izleme | Buzdolabı, çamaşır/bulaşık makinesi, klima, süpürge, kahve makinesi, blender ve diğer büyük/küçük ev cihazı | Ana işlev ev işi, iklimlendirme, temizlik veya gıda hazırlama ise bağlantılı/akıllı olsa da **Beyaz Eşya & Ev Aletleri**. |
 | **Elektronik vs Ev & Yaşam** | Elektronik kontrol, iletişim, görüntüleme, ses ve izleme cihazı | Mobilya, ev tekstili, pasif dekorasyon, düzenleme, mekanik ev gereci | Ürünün elektronik sinyal/işlem/kontrol işlevi olmadan temel faydası aynı kalıyorsa **Ev & Yaşam**. “Akıllı” etiketi tek başına ownership üretmez. |
-| **Elektronik vs Oyuncak & Hobi** | Gerçek consumer cihaz, oyun konsolu ve platforma bağlı fiziksel video oyunu | Ana işlevi oyun/rol yapma/çocuk eğlencesi olan oyuncak elektronik, basit oyuncak drone veya maker activity kit'i | Ürün gerçek cihaz işlevi ve teknik/uyumluluk şemasıyla mı, oyun/aktivite amacıyla mı satın alınıyor? İkinci durumda **Oyuncak & Hobi**. |
+| **Elektronik vs Oyuncak & Hobi** | Gerçek consumer cihaz, oyun konsolu, platforma bağlı fiziksel video oyunu ve gerçek Arduino/ESP/devre bileşeni | Ana işlevi oyun/rol yapma/çocuk eğlencesi olan oyuncak elektronik, basit oyuncak drone veya yönlendirmeli oyun/aktivite kiti | Ürün gerçek cihaz/devre işlevi ve teknik şemasıyla mı, oyun/aktivite amacıyla mı satın alınıyor? İkinci durumda **Oyuncak & Hobi**. Arduino/ESP içermesi tek başına oyuncak ownership'i üretmez. |
 | **Elektronik vs Otomotiv & Motosiklet** | Araçtan bağımsız taşınabilir consumer cihaz ve birden çok bağlamda kullanılan generic telefon aksesuarı | Araç fitment'i, sabit montajı veya araç elektrik sistemi gerektiren head unit, dashcam, araç navigasyonu, araç ses sistemi, araç alarmı/trackeri, araç kablo demeti ve vehicle-only charger/mount | Marka-model-yıl/araç tesisatı uyumluluğu ana şema ise **Otomotiv & Motosiklet**. |
 
 ### Additional collision guards
@@ -101,7 +108,7 @@ Kaynakların ortaklaştırdığı bölüm sınırları:
 | **Elektronik vs Saat & Takı** | Akıllı saat/bileklik/ring Elektronik → Giyilebilir Teknoloji; klasik analog/dijital kol saati Saat & Takı. |
 | **Elektronik vs Müzik & Enstrüman** | Genel amaçlı kulaklık, mikrofon, speaker ve audio recorder Elektronik; enstrüman, enstrümana özgü pickup/pedal/amfi ve performans aksesuarı Müzik & Enstrüman. |
 | **Elektronik vs Sağlık & Medikal** | Genel wellness özellikli smartwatch Elektronik; ana amacı teşhis/ölçüm/tedavi olan regüle medikal cihaz Sağlık & Medikal. Medical claim facet değil policy/evidence gerektirir. |
-| **Elektronik vs Yapı, Hırdavat & Tesisat** | Plug-and-play consumer control/monitoring cihazı Elektronik; sabit elektrik tesisatı, priz/anahtar, yapı kablosu, mekanik kilit ve montaj donanımı Yapı, Hırdavat & Tesisat. |
+| **Elektronik vs Yapı, Hırdavat & Tesisat** | Plug-and-play consumer control/monitoring cihazı ile prototipleme/devre amaçlı sensör, röle, breadboard, pasif/aktif eleman Elektronik; sabit elektrik tesisatı, bina prizi/anahtarı, yapı kablosu, mekanik kilit ve montaj donanımı Yapı, Hırdavat & Tesisat. |
 | **Elektronik vs Çanta & Aksesuar** | Elektronik cihazın işlevsel parçası Elektronik; ana işlevi taşıma olan telefon/laptop/kamera çantası Çanta & Aksesuar. Cihaz compatibility facet olabilir. |
 
 ### Bilgisayar & Tablet leakage gate
@@ -111,7 +118,7 @@ Aşağıdaki ürünler **Elektronik L2'lerinin hiçbirine alınmamalıdır**:
 - dizüstü/masaüstü bilgisayar, tablet ve e-kitap okuyucu;
 - monitör, yazıcı, tarayıcı ve webcam;
 - klavye, mouse, grafik tablet, PC game controller/peripheral;
-- işlemci, RAM, ekran kartı, anakart ve diğer computer component;
+- işlemci, RAM, ekran kartı, anakart, Raspberry Pi/SBC ve diğer computer component;
 - HDD/SSD, flash drive, memory card ve computer storage;
 - modem, router, switch, access point ve network equipment;
 - laptop/tablet dock, computer-specific USB hub ve computer power supply.
@@ -120,6 +127,11 @@ Bir generic USB/HDMI kablo birden çok consumer cihaz arasında kullanılabiliyo
 Elektronik → Güç, Şarj & Bağlantı'ya adaydır. Bir dock/hub bilgisayarın port ve
 ekran/input genişletmesiyse Bilgisayar & Tablet'tir. Bu ayrım connector adına göre
 değil ana kullanım şemasına göre yapılır.
+
+Arduino/ESP geliştirme kartı, breadboard, sensör/modül, röle, direnç, kondansatör,
+diyot, transistör ve entegre **Elektronik → Elektronik Bileşenler** kapsamındadır;
+bu owner-final istisna Bilgisayar & Tablet'e ürün sızıntısı değildir. Raspberry Pi
+ve diğer SBC'ler ise **Bilgisayar & Tablet → Bilgisayar Bileşenleri** kapsamındadır.
 
 ## 4. Candidate L2 comparison
 
@@ -135,6 +147,7 @@ değil ana kullanım şemasına göre yapılır.
 | Giyilebilir Teknoloji | Official snapshot modern wearable'ı iyi temsil etmiyor | Açık browse adı | Akıllı saat yoğun aranan | Popüler smart-watch intent | Phone/accessory ile yakın | **KEEP / legacy telefondan ayır** |
 | Akıllı Ev & Güvenlik | Security/home automation farklı top-level'lara dağılmış | Tek, açık üst bölüm kanıtı zayıf | Akıllı yaşam sinyali var | Üst nav kanıtı zayıf | Electronics accessory içinde dağılabilir | **KEEP / yalnız dar scope ile** |
 | Generic Elektronik Aksesuar | Electronics Accessories çok geniş | Açık browse adı | Accessory talebi var | Dallara dağılmış | Çok geniş accessory category'si | **NARROW → Güç, Şarj & Bağlantı** |
+| Elektronik Bileşenler | Circuit boards/components farklı dallarda bulunabilir | Üst browse kanıtı sınırlı | Kamu L2 ağacı kanıtı sınırlı | Üst nav kanıtı sınırlı | Generic electronics/accessory içinde dağılabilir | **OWNER FINAL / yerel maker-elektronikçi sınırı** |
 | Bilgisayar / Tablet | Google Electronics içinde | Elektronik browse içinde | Teknoloji talebinde | Elektronik nav içinde | Ayrı sales category | **REJECT — ayrı owner-final L1** |
 | Beyaz Eşya / Ev Aletleri | Farklı function branches | Elektronik browse içinde | Ayrı demand/category | Elektronik nav içinde | Ev/Mutfak category'si | **REJECT — ayrı owner-final L1** |
 
@@ -144,15 +157,16 @@ değil ana kullanım şemasına göre yapılır.
 |---|---:|---|---|---|
 | Legacy full-tree yaklaşımı | 6 | Küçük ve mevcut artefakta yakın | Telefon+wearable, audio+video, camera+security gibi farklı intent/schema'ları birleştirir; generic component catch-all taşır | **REJECT AS CANONICAL PROPOSAL** |
 | Marketplace compact mirror | 6–7 | Müşteriye tanıdık üst menü | Bilgisayar, beyaz eşya, dijital ürün ve küçük ev aleti sızıntısı; merchant merchandising'i canonical ownership yapar | **REJECT** |
-| Telefon cihazı ve aksesuarını iki ayrı L2 yapmak | 9 | Accessory hacmi görünür | Yerel telefoncu keşfini böler; L3 ile çözülebilecek ayrımı L2'ye taşır | **DEFER / telemetry ile yeniden bakılabilir** |
+| Telefon cihazı ve aksesuarını iki ayrı L2 yapmak | 10 | Accessory hacmi görünür | Yerel telefoncu keşfini böler; L3 ile çözülebilecek ayrımı L2'ye taşır | **REJECTED BY OWNER-FINAL BOUNDARY** |
 | Her küçük accessory'yi L2 yapmak | 10+ | Marketplace filtre derinliğine benzer | Boş dallar, duplicate ürün, yanlış merchant seçimi, category/facet karışması | **REJECT** |
-| **Önerilen dengeli model** | **8** | Güçlü müşteri intent'leri ayrılır; L1 sınırları temiz; L3/L4'e açılabilir | Smart-home ve generic charging sınırları owner review ister | **RECOMMENDED** |
+| Phase B1 dengeli öneri | 8 | Güçlü müşteri intent'leri ayrılır; L1 sınırları temiz | Yerel maker/devre ürünleri için açık ownership üretmez | **SUPERSEDED** |
+| **Owner-final dengeli model** | **9** | Güçlü müşteri intent'leri ile consumer-facing maker domain'i ayrılır; L1 sınırları ve gelecekteki L3/L4 açılımı nettir | Full L3/L4, stable identity ve attribute profile kararları sonraki fazdadır | **CONFIRMED — PRODUCT OWNER FINAL** |
 
-## 5. Recommended Electronics L2
+## 5. Final Electronics L2
 
-**State: PROPOSED FOR OWNER REVIEW — NOT FINAL**
+**State: CONFIRMED — PRODUCT OWNER FINAL**
 
-Önerilen sıra ve sekiz L2:
+Owner tarafından onaylanan exact sıra ve dokuz L2:
 
 1. **Telefon & Aksesuarları**
 2. **TV & Görüntü Sistemleri**
@@ -162,8 +176,11 @@ değil ana kullanım şemasına göre yapılır.
 6. **Giyilebilir Teknoloji**
 7. **Akıllı Ev & Güvenlik**
 8. **Güç, Şarj & Bağlantı**
+9. **Elektronik Bileşenler**
 
-### Neden sekiz?
+Phase B1'deki sekiz L2 önerisi **SUPERSEDED** durumundadır.
+
+### Neden dokuz?
 
 - Telefon cihazı ve aksesuarı aynı local-shop/customer entry'sinde kalır; ileride L3
   ile ayrılır.
@@ -176,19 +193,21 @@ değil ana kullanım şemasına göre yapılır.
   bağlanır.
 - “Elektronik Aksesuar” catch-all'ı yerine gerçek ortak işlevler olan güç, şarj ve
   bağlantı açıkça adlandırılır.
+- Arduino/ESP, sensör/modül ve devre elemanları yerel elektronikçi/maker keşfinde
+  görünür olur; Raspberry Pi/SBC ve bilgisayar bileşenleriyle karışmaz.
 
 Local discoverability, taxonomy'yi shop type'a çevirmeden korunur: telefoncu,
 elektronikçi, güvenlik sistemleri satıcısı veya fotoğrafçı merchant-sector kimliği
-ayrı kalır; mağazanın ürünleri bu sekiz L2 altındaki gerçek product leaf'lerine
+ayrı kalır; mağazanın ürünleri bu dokuz L2 altındaki gerçek product leaf'lerine
 bağlanır. Customer browse yalnız yakında aktif offer bulunan L2'leri öne çıkarabilir;
-bu availability projection canonical ağacı veya L2 sırasını değiştirmez.
+bu availability projection canonical ağacı veya owner-final L2 sırasını değiştirmez.
 
-Bu sıra discovery/ranking puanı değildir. Runtime `sort_order` kararı ve bölgesel
-availability projection'ı ayrı implementation/owner review konusudur.
+Bu exact sıra canonical karardır; discovery/ranking puanı değildir. Runtime
+`sort_order` implementation'ı ve bölgesel availability projection'ı ayrı görevdir.
 
 ## 6. Per-L2 definition
 
-| # | Proposed L2 | Canonical kapsam | Kısa boundary rule |
+| # | Final L2 | Canonical kapsam | Kısa boundary rule |
 |---:|---|---|---|
 | 1 | **Telefon & Aksesuarları** | Mobil telefon cihazları ile özellikle telefon formuna/modeline bağlı koruma, montaj, şarj ve replacement aksesuarları | Tablet/e-reader bilgisayara; wearable ayrı L2'ye; vehicle-only fitment otomotive gider. Generic multi-device güç/kablo L2 8'e gider. |
 | 2 | **TV & Görüntü Sistemleri** | Televizyon, projector, media/streaming player, uydu/alıcı ve TV/görüntüye özgü aksesuar | Computer monitor Bilgisayar & Tablet; camera L2 4; ses-only ürün L2 3; ev aleti bu L1'e girmez. |
@@ -196,15 +215,17 @@ availability projection'ı ayrı implementation/owner review konusudur.
 | 4 | **Fotoğraf & Kamera** | Fotoğraf/video/aksiyon camera, lens ve çekim işlevine özgü optik/lighting/support accessory | Security/baby camera L2 7; webcam Bilgisayar; dashcam Otomotiv; camera bag Çanta & Aksesuar; toy drone Oyuncak & Hobi. |
 | 5 | **Oyun Konsolu & Aksesuarları** | Ev/taşınabilir oyun konsolu, console-specific controller/VR/charging accessory ve platforma bağlı fiziksel video oyunu | Gaming PC, monitor, keyboard/mouse ve PC-only peripheral Bilgisayar & Tablet; kutu/masa oyunu Oyuncak & Hobi. `Gaming` pazarlama etiketi category değildir. |
 | 6 | **Giyilebilir Teknoloji** | Akıllı saat, akıllı bileklik, smart ring ve insana takılan consumer connected cihaz ile doğrudan aksesuarı | Klasik saat Saat & Takı; medical-purpose monitor Sağlık & Medikal; phone L2 1; yalnız spor ekipmanı olan cihaz ana işleve göre Spor & Outdoor review'ına gider. |
-| 7 | **Akıllı Ev & Güvenlik** | Consumer automation hub/controller/sensor, security camera/recorder, electronic alarm, video doorbell, intercom ve baby monitor | Connected household appliance yine Beyaz Eşya; passive home product Ev & Yaşam; sabit tesisat/mekanik kilit/safe Hırdavat; vehicle alarm/camera Otomotiv. |
-| 8 | **Güç, Şarj & Bağlantı** | Birden çok consumer electronics ailesinde kullanılan pil/şarjlı pil, powerbank, universal charger/adaptor, AV/data cable, converter ve generic connection accessory | Phone/camera/console'a özgü accessory kendi device L2'sine; computer dock/hub/network Bilgisayar; yapı kablosu/priz Hırdavat; vehicle harness/charger Otomotiv. |
+| 7 | **Akıllı Ev & Güvenlik** | Consumer automation hub/controller/sensor; smart bulb, smart plug, connected lock; security camera/recorder, electronic alarm, video doorbell, intercom ve baby monitor | Robot vacuum/klima/kahve makinesi Beyaz Eşya; passive home product Ev & Yaşam; sabit tesisat/mekanik kilit/safe Hırdavat; vehicle alarm/camera Otomotiv. |
+| 8 | **Güç, Şarj & Bağlantı** | Birden çok consumer electronics ailesinde kullanılan pil/şarjlı pil, generic powerbank, generic şarj adaptörü, AV/data kablosu, converter ve generic connection accessory | Telefon modeline özgü accessory L2 1'e; camera/console-specific accessory kendi device L2'sine; computer dock/hub/network Bilgisayar; yapı kablosu/priz Hırdavat; vehicle harness/charger Otomotiv. |
+| 9 | **Elektronik Bileşenler** | Consumer-facing maker ve yerel elektronikçi domain'indeki Arduino/ESP geliştirme kartı, breadboard/prototipleme ürünü, sensör/modül, röle/anahtarlama, direnç, kondansatör, diyot, transistör, entegre ve component-level konnektör | Raspberry Pi/SBC ve computer component Bilgisayar & Tablet; sabit bina tesisatı Hırdavat; toy/activity kit Oyuncak & Hobi; generic bitmiş kablo/şarj ürünü L2 8'e gider. |
 
 ### Catch-all yasağı
 
-L2 8, “hangi dala koyacağımız bilinmeyen elektronik” deposu değildir. Ürün güç,
-şarj veya cihazlar arası sinyal/bağlantı işlevlerinden birine açıkça girmiyorsa
-taxonomy review gerekir. `Diğer Elektronik`, `Elektronik Ürünler`, `Parça` veya
-`Aksesuar` gibi çıplak leaf'ler üretilmemelidir.
+L2 8 ve L2 9, “hangi dala koyacağımız bilinmeyen elektronik” depoları değildir.
+L2 8 ürünün güç, şarj veya cihazlar arası sinyal/bağlantı işlevine; L2 9 ise
+tanımlanmış devre/prototipleme bileşeni ailesine açıkça girmesini gerektirir.
+`Diğer Elektronik`, `Elektronik Ürünler`, `Parça` veya `Aksesuar` gibi çıplak
+leaf'ler üretilmemelidir.
 
 ## 7. Product inclusion/exclusion examples
 
@@ -216,7 +237,7 @@ taxonomy review gerekir. `Diğer Elektronik`, `Elektronik Ürünler`, `Parça` v
 | Akıllı saat / akıllı bileklik | Elektronik → Giyilebilir Teknoloji | Connected wearable şeması; klasik saatten ayrıdır. |
 | Klasik quartz/dijital kol saati | **Saat & Takı** | Elektronik display taşıması smart-device yapmaz. |
 | TWS earbuds / Bluetooth kulaklık | Elektronik → Ses & Kulaklık | `Bluetooth`, TWS ve connector category değil attribute/search alias'tır. |
-| Universal gaming headset | Elektronik → Ses & Kulaklık | Ana işlev audio'dur; “oyuncu” kullanım niyeti category ownership üretmez. Proprietary console-only bundle ayrıca review edilir. |
+| Universal gaming headset | Elektronik → Ses & Kulaklık | Ana işlev audio'dur; “oyuncu” kullanım niyeti category ownership üretmez. |
 | TV, projector, TV box, uydu alıcısı | Elektronik → TV & Görüntü Sistemleri | Görüntüleme/media-consumption ana işlevi. |
 | Computer monitor | **Bilgisayar & Tablet** | Computer display/peripheral şeması. TV tuner'lı sınır vakası ana marketed function ile review edilir. |
 | Fotoğraf makinesi, aksiyon camera, lens | Elektronik → Fotoğraf & Kamera | Görüntü üretme/çekim ana işlevi. |
@@ -226,15 +247,17 @@ taxonomy review gerekir. `Diğer Elektronik`, `Elektronik Ürünler`, `Parça` v
 | Camera drone | Elektronik → Fotoğraf & Kamera | Ana ürün vaadi gerçek görüntü çekimi ise. |
 | Basit oyuncak drone | **Oyuncak & Hobi** | Ana işlev oyun/aktivite; camera eklenmesi tek başına Elektronik yapmaz. |
 | Oyun konsolu, console controller, fiziksel console game | Elektronik → Oyun Konsolu & Aksesuarları | Platform/format compatibility ana şemadır. |
-| Gaming laptop, PC keyboard/mouse, PC graphics card | **Bilgisayar & Tablet** | “Gaming” category değil kullanım/merchandising sinyalidir. |
+| Console-first controller | Elektronik → Oyun Konsolu & Aksesuarları | Birincil platform ve compatibility console'dur. |
+| Gaming laptop, PC keyboard/mouse, PC-first controller/peripheral, PC graphics card | **Bilgisayar & Tablet** | “Gaming” category değil kullanım/merchandising sinyalidir; birincil platform PC'dir. |
 | Robot süpürge, smart coffee machine, connected klima | **Beyaz Eşya & Ev Aletleri** | Connectivity ana appliance işlevini değiştirmez. |
-| Generic powerbank / multi-device USB charger | Elektronik → Güç, Şarj & Bağlantı | Device-agnostic güç sağlama ana işlevi. |
+| Generic powerbank / kablo / multi-device şarj adaptörü | Elektronik → Güç, Şarj & Bağlantı | Device-agnostic güç, şarj veya bağlantı ana işlevi. |
 | Phone battery case / phone-specific charging cradle | Elektronik → Telefon & Aksesuarları | Telefon modeline özgü compatibility. |
 | HDMI/AUX/generic USB cable | Elektronik → Güç, Şarj & Bağlantı | Generic signal/power link. `USB-C` leaf değil connector facet'tir. |
 | Laptop dock / computer-specific USB hub | **Bilgisayar & Tablet** | Computer I/O expansion ana işlevi. |
+| Raspberry Pi / diğer SBC | **Bilgisayar & Tablet → Bilgisayar Bileşenleri** | Ana işlev single-board computing platformudur. |
 | Kamera çantası | **Çanta & Aksesuar** | Ana işlev taşıma; camera compatibility facet'tir. |
-| Arduino board, çıplak devre elemanı, maker kit | **OWNER DECISION / taxonomy review** | Legacy generic electronics component leaf'i korunmamalı. Educational kit Oyuncak & Hobi'ye, computer board Bilgisayar'a, electrical-installation parçası Hırdavat'a gidebilir; gerçek SKU ana işlevi gerekir. |
-| Smart bulb, smart plug, connected lock | **OWNER DECISION / main-function rule proposed** | “Smart” tek başına Elektronik'e taşımaz. Automation endpoint ile lighting/electrical/lock ana işlevi arasındaki final rule owner tarafından onaylanmalıdır. |
+| Arduino/ESP, breadboard, röle, sensör, direnç, kondansatör, diyot, transistör, entegre ve genel elektronik modül | Elektronik → Elektronik Bileşenler | Consumer-facing maker/devre elemanı domain'i. Gerçek toy/activity kit, SBC veya bina tesisatı ürünü bu L2'ye girmez. |
+| Smart bulb, smart plug, connected lock | Elektronik → Akıllı Ev & Güvenlik | Owner-final sınır: consumer connected home control/security endpoint'i. |
 
 ### Ambiguous-product adjudication order
 
@@ -260,10 +283,16 @@ listesi değildir, ID/slug/sort-order kararı üretmez.
 | Giyilebilir Teknoloji | Elektronik → Giyilebilir Teknoloji → Akıllı Saat | L3 doğal leaf ise yapay L4 açılmaz. |
 | Akıllı Ev & Güvenlik | Elektronik → Akıllı Ev & Güvenlik → Ev Güvenliği → Görüntülü Kapı Zili | Protocol/ecosystem category değil facet'tir. |
 | Güç, Şarj & Bağlantı | Elektronik → Güç, Şarj & Bağlantı → Taşınabilir Güç → Powerbank | Capacity, watt ve connector facet'tir. |
+| Elektronik Bileşenler | Elektronik → Elektronik Bileşenler → Geliştirme Kartları → Arduino/ESP Kartları | Board family, işlemci, pin ve interface facet olabilir; bu yol Raspberry Pi/SBC'yi kapsamaz. |
+| Elektronik Bileşenler | Elektronik → Elektronik Bileşenler → Pasif Devre Elemanları → Direnç | Component family yapısal node olabilir; resistance, tolerance, power ve package facet'tir. |
 
-L3/L4 tasarımına geçmeden önce sekiz L2 owner approval almalı, gerçek yerel merchant
-SKU örnekleriyle coverage pilotu yapılmalı ve current full-tree stable identity
-reconciliation planı tamamlanmalıdır.
+Dokuz L2 için owner approval tamamlanmıştır. Gelecekteki L3/L4 adayları yalnız örnek
+olarak **Geliştirme Kartları**, **Sensör & Modüller**, **Pasif Devre Elemanları**,
+**Aktif Devre Elemanları**, **Röle & Anahtarlama**, **Breadboard & Prototipleme**
+ve **Konnektör & Elektronik Bağlantı** başlıklarını içerebilir. Bunlar bu görevde
+final node, sıra, ID veya leaf değildir. Full L3/L4'e geçmeden önce gerçek yerel
+merchant SKU coverage pilotu ve current full-tree stable identity reconciliation
+planı tamamlanmalıdır.
 
 ## 9. Facet hints
 
@@ -280,6 +309,7 @@ tasarımına girdi sağlar.
 | Giyilebilir Teknoloji | device type, phone/OS compatibility, case size, display, sensor set, GPS/cellular, water resistance, battery life, band compatibility |
 | Akıllı Ev & Güvenlik | device type, protocol, ecosystem compatibility, indoor/outdoor, power source, camera resolution, recording/storage mode, detection type, installation |
 | Güç, Şarj & Bağlantı | product type, input/output connector, charging protocol, wattage, capacity, voltage/current, cable length, signal standard, battery chemistry, device compatibility |
+| Elektronik Bileşenler | component family, board/module family, mounting/package type, resistance/capacitance, voltage/current/power tolerance, pin count, interface/protocol, dimensions, maker compatibility |
 
 ### Explicit non-category facets
 
@@ -308,46 +338,61 @@ uygulanmaz. Marka adı synonym olarak kaydedilmez.
 | Giyilebilir teknoloji | giyilebilir teknoloji, akıllı saat, smartwatch, smart watch, akıllı bileklik, smart band | Klasik saat sorgusu Saat & Takı'ya gider. |
 | Akıllı ev & güvenlik | akıllı ev, ev otomasyonu, güvenlik kamerası, IP kamera, alarm sistemi, görüntülü kapı zili, bebek kamerası | `kamera` tek başına Photo ve Security intent'ini disambiguate etmelidir. |
 | Güç/şarj/bağlantı | powerbank, power bank, taşınabilir şarj, şarj aleti, şarj cihazı, adaptör, dönüştürücü, kablo | USB-C/HDMI gibi standardlar facet ve leaf-search token'ı olabilir. |
+| Elektronik bileşen | elektronik bileşen, devre elemanı, geliştirme kartı, development board, deney tahtası, breadboard, sensör, sensor, modül, röle, relay, entegre, IC | Raspberry Pi/SBC computer path'ine gider; marka/platform adı category veya synonym değildir. |
 
 Search implementation'ı canonical ad > exact semantic synonym > alias > normalized
 token ağırlığını korumalı; typo/fuzzy ve marka sorguları synonym registry'ye
 yazılmamalıdır.
 
-## 11. Open owner decisions
+## 11. Owner-final decisions and remaining TBDs
 
-Bu belge aşağıdaki kararları product owner'a taşır; hiçbirini FINAL ilan etmez:
+### Product owner tarafından FINAL onaylanan sınırlar
 
-1. **Sekiz L2 adı ve kapsamı:** Önerilen liste ve customer-facing Türkçe adlar aynen
-   kabul edilecek mi?
-2. **Telefon/accessory birleşimi:** Telefon ve aksesuarları L2'de birlikte kalıp L3'te
-   mi ayrılmalı, yoksa iki L2 mi olmalı? Öneri: birlikte kalsın.
-3. **TV ile ses ayrımı:** Marketplace'lerin birleşik `TV&Görüntü&Ses` yaklaşımına
-   rağmen `Ses & Kulaklık` bağımsız L2 olarak onaylanacak mı? Öneri: evet.
-4. **Fotoğraf & Kamera konumu:** Google/Amazon'daki daha üst ayrışmaya rağmen
-   owner-final 24 L1 seti içinde Elektronik L2 olarak onaylanacak mı? Öneri: evet.
-5. **Gaming adı:** PC gaming sızıntısını önlemek için L2'nin `Oyun Konsolu &
-   Aksesuarları` olarak dar tutulması onaylanacak mı? Öneri: evet.
-6. **Akıllı ev endpoint sınırı:** Smart bulb, smart plug ve connected lock gibi ana
-   işlevi lighting/electrical/lock olan ürünler Elektronik'e mi, işlevsel L1'e mi
-   gidecek? Öneri: yalnız hub/control/monitoring/security-first cihaz Elektronik;
-   “smart” etiketi tek başına taşıma yapmasın.
-7. **Generic power/accessory sınırı:** Powerbank ve multi-device charger L2 8'e,
-   phone-specific charging accessory L2 1'e gitsin mi? Öneri: evet.
-8. **Bare component/maker product:** Legacy `Hobi Elektronik Bileşeni` kaldırılıp
-   gerçek SKU ana işlevine göre Oyuncak & Hobi / Bilgisayar & Tablet / Hırdavat
-   review'ına mı yönlendirilecek? Öneri: generic component catch-all korunmasın.
-9. **Mixed-use VR/controller:** Standalone/console-specific cihaz L2 5; PC-only
-   peripheral Bilgisayar & Tablet kuralı onaylanacak mı?
-10. **L3/L4 başlangıç kapısı:** Owner L2 approval sonrası 6–10 yerel merchant'tan
-    temsilî SKU coverage pilotu yapılmadan full L3/L4'e geçilmemesi onaylanacak mı?
+- Smart bulb, smart plug ve connected lock → **Akıllı Ev & Güvenlik**.
+- Generic powerbank, kablo ve şarj adaptörü → **Güç, Şarj & Bağlantı**.
+- Telefon modeline özgü kılıf, ekran koruyucu ve device-specific accessory →
+  **Telefon & Aksesuarları**.
+- Camera drone → **Fotoğraf & Kamera**; toy drone → **Oyuncak & Hobi**.
+- Arduino, ESP, breadboard, röle, sensör, direnç, kondansatör, diyot, transistör,
+  entegre ve genel elektronik modüller → **Elektronik Bileşenler**.
+- Raspberry Pi ve diğer SBC'ler → **Bilgisayar & Tablet → Bilgisayar Bileşenleri**.
+- Console-first controller → **Oyun Konsolu & Aksesuarları**; PC-first gaming
+  peripheral → **Bilgisayar & Tablet**.
+- General audio/headphone → **Ses & Kulaklık**.
+- Fitment veya installation gerektiren vehicle-specific electronics →
+  **Otomotiv & Motosiklet**.
+- Robot vacuum, klima ve coffee machine → **Beyaz Eşya & Ev Aletleri**.
+- Classic watch → **Saat & Takı**; smartwatch → **Giyilebilir Teknoloji**.
 
-### Review outcome markers
+### Remaining TBDs
+
+Bu maddeler owner-final L2 kararını değiştirmez ve bu görevde çözülmez:
+
+1. Full L3/L4 adları, sırası, leaf/assignability ve variable-depth kararları.
+2. Stable ID/slug üretimi ile current taxonomy JSON reconciliation planı.
+3. Per-category typed attribute profile, compatibility ve synonym registry tasarımı.
+4. Elektronik bileşenlerde mains voltage, battery ve wireless ürünleri için safety,
+   compliance ve evidence kuralları.
+5. Gerçek yerel merchant SKU coverage pilotu ve taxonomy governance süreci.
+6. Runtime, DB, migration, search, Flutter ve Figma uygulaması için ayrı yetki.
+
+### Final outcome markers
 
 `ELECTRONICS_L1_NAME: UNCHANGED — ELEKTRONİK`
 
-`ELECTRONICS_L2_STATE: PROPOSED FOR OWNER REVIEW`
+`ELECTRONICS_B1_8_L2_PROPOSAL: SUPERSEDED`
 
-`RECOMMENDED_ELECTRONICS_L2_COUNT: 8`
+`ELECTRONICS_L2_OWNER_APPROVAL: FINAL`
+
+`ELECTRONICS_L2_STATE: CONFIRMED — PRODUCT OWNER FINAL`
+
+`ELECTRONICS_L2_COUNT: 9`
+
+`ELECTRONICS_COMPUTER_BOUNDARY: PASS`
+
+`ARDUINO_ESP_BOUNDARY: PASS — ELEKTRONİK BİLEŞENLER`
+
+`RASPBERRY_PI_SBC_BOUNDARY: PASS — BİLGİSAYAR & TABLET`
 
 `COMPUTER_TABLET_LEAKAGE_AUDIT: PASS`
 
@@ -358,5 +403,7 @@ Bu belge aşağıdaki kararları product owner'a taşır; hiçbirini FINAL ilan 
 `VARIABLE_DEPTH_FEASIBILITY: PASS`
 
 `RUNTIME_IMPLEMENTATION: NOT STARTED`
+
+`READY_FOR_B1_INTEGRATION: YES`
 
 `READY_FOR_L3_L4: NO`
