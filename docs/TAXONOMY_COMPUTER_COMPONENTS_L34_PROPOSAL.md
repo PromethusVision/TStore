@@ -1,19 +1,20 @@
-# Bilgisayar Bileşenleri L3/L4 Taksonomi Önerisi
+# Bilgisayar Bileşenleri L3/L4 Canonical Tasarımı
 
-**Durum:** PROPOSED FOR OWNER REVIEW
-**Araştırma ve öneri tarihi:** 2026-08-27
+**Durum:** CONFIRMED — PRODUCT OWNER FINAL
+**Araştırma tarihi:** 2026-08-27
+**Product owner onayı:** 2026-08-28
 **Kapsam:** Yalnız taksonomi, facet ve uyumluluk sözleşmesi; runtime uygulaması değildir.
 
 ## 1. Scope
 
-Bu belge aşağıdaki owner-final yolu değiştirmeden, yalnız bu yolun altındaki L3/L4 omurgasını önerir:
+Bu belge aşağıdaki owner-final yolu değiştirmeden, yalnız bu yolun altındaki owner-final L3/L4 omurgasını tanımlar:
 
 ```text
 Bilgisayar & Tablet (L1)
 └── Bilgisayar Bileşenleri (L2)
 ```
 
-Amaç; fiziksel perakendede anlaşılır, aynı ürünü birden fazla dala kopyalamayan ve ileride uyumluluk kontrollerine veri sağlayabilen bir ürün ağacı kurmaktır. Öneri:
+Amaç; fiziksel perakendede anlaşılır, aynı ürünü birden fazla dala kopyalamayan ve ileride uyumluluk kontrollerine veri sağlayabilen bir ürün ağacı kurmaktır. Owner-final tasarım:
 
 - 9 L3,
 - yalnız iki L3 altında gerekçelendirilmiş 7 L4,
@@ -39,7 +40,7 @@ Bu belge L1/L2 adlarını, sırasını veya owner-final sınırlarını yeniden 
 
 Kaynaklar 2026-08-27 tarihinde yeniden erişilerek incelendi. Platformlar birebir kopyalanmadı; yerel müşteri dili, owner-final L2 sınırları ve tek-leaf ilkesi birlikte değerlendirildi.
 
-| Kaynak | İncelenen kanıt | Bu önerideki kullanımı |
+| Kaynak | İncelenen kanıt | Canonical tasarımdaki kullanımı |
 |---|---|---|
 | [Google Merchant Center — Google product category](https://support.google.com/merchants/answer/6324436?hl=en-GB) | Ürün başına tek kategori, ana işleve göre seçim ve mümkün olan en spesifik kategori ilkeleri | Tek birincil leaf ve ana işlev kurallarının dış referansı |
 | [Google Product Taxonomy — public text file](https://www.google.com/basepages/producttype/taxonomy-with-ids.en-US.txt) | Computer Components altında işlemci, güç kaynağı, soğutma, kasa ve I/O kartları; ayrıca storage/input-device dalları | Küresel ürün ailesi karşılaştırması; EsnaftaVar'ın sibling L2 kararlarına uymayan dallar kopyalanmadı |
@@ -57,9 +58,9 @@ Kaynaklar 2026-08-27 tarihinde yeniden erişilerek incelendi. Platformlar birebi
 - Üretici örnekleri marka kategorisi üretmek için değil, SBC ile microcontroller arasındaki işlev farkını doğrulamak için kullanılmıştır.
 - PCIe sürümleri kategori dalı değildir. Standart geliştiğinde facet sözlüğü sürümlenir; kategori ağacı yeniden parçalanmaz.
 
-## 3. L3 proposal
+## 3. L3 owner-final architecture
 
-### Önerilen L3 listesi
+### Owner-final L3 listesi
 
 | Sıra | L3 | Leaf mi? | Karar özeti |
 |---:|---|:---:|---|
@@ -73,7 +74,7 @@ Kaynaklar 2026-08-27 tarihinde yeniden erişilerek incelendi. Platformlar birebi
 | 8 | Genişleme Kartları | Hayır | Düşük/orta hacimli iç kartları mikro L3 şişmesi olmadan toplar |
 | 9 | Tek Kart Bilgisayar (SBC) | Evet | Genel amaçlı işletim sistemi çalıştırabilen kart bilgisayar sınıfı; marka bağımsız ad |
 
-**Önerilen L3 sayısı: 9.**
+**Owner-final L3 sayısı: 9.**
 
 ### Başlangıç hipotezlerinin değerlendirilmesi
 
@@ -92,7 +93,7 @@ Kaynaklar 2026-08-27 tarihinde yeniden erişilerek incelendi. Platformlar birebi
 | Genişleme Kartları | L3, leaf değil | Ses/yakalama/bağlantı-denetleyici kartları için anlamlı üst dal |
 | Raspberry Pi / SBC | Marka bağımsız L3 | Canonical ad `Tek Kart Bilgisayar (SBC)`; Raspberry Pi synonym/örnektir |
 
-## 4. L4 where justified
+## 4. L4 owner-final architecture
 
 L4 yalnız L3 düzeyi müşteriyi birbirinden farklı ürün tiplerine yönlendirmeye yetmediğinde kullanılır.
 
@@ -111,11 +112,11 @@ L4 yalnız L3 düzeyi müşteriyi birbirinden farklı ürün tiplerine yönlendi
 
 | L4 | Gerekçe | Çakışmayı önleyen leaf kuralı |
 |---|---|---|
-| Ses Kartı | Dahili ses işleme/giriş-çıkış kartlarının müşteride yerleşik adı | Harici USB ses arayüzleri ve genel ses cihazları hariç |
-| Görüntü Yakalama Kartı | Dahili PCIe video capture/stream kartlarının ana işlevi belirgin | Ekran kartı, TV tuner ve harici capture box hariç |
+| Ses Kartı | Dahili ses işleme/giriş-çıkış kartlarının müşteride yerleşik adı | Harici USB PC-primary audio aksesuarı ve genel audio/hi-fi cihazı hariç |
+| Görüntü Yakalama Kartı | Dahili PCIe video capture/stream kartlarının ana işlevi belirgin | Ekran kartı, TV tuner ve harici USB capture aksesuarı hariç |
 | Bağlantı & Denetleyici Kartları | USB/Thunderbolt/seri port, HBA/RAID/SATA denetleyici, riser ve benzeri iç genişleme kartları | Ağ kartı, GPU, ses kartı ve capture kartı hariç |
 
-**Önerilen L4 sayısı: 7.**
+**Owner-final L4 sayısı: 7.**
 
 ### Neden daha fazla L4 yok?
 
@@ -126,7 +127,7 @@ L4 yalnız L3 düzeyi müşteriyi birbirinden farklı ürün tiplerine yönlendi
 
 ## 5. Leaf assignments
 
-### Tam öneri ağacı
+### Tam owner-final ağaç
 
 ```text
 Bilgisayar & Tablet (L1)
@@ -162,9 +163,11 @@ Bilgisayar & Tablet (L1)
 
 ### Paket ve kit ataması
 
+**Owner-final bundle kuralı:** Bundle/kit kategori değildir. Ürün, paketin principal ürününe karşılık gelen tek canonical leaf'e atanır; bundle/kit durumu facet/tag olarak tutulur.
+
 - Bir CPU'nun kutusundan stok soğutucu çıkması ürünü `İşlemci Soğutucu` yapmaz; ana ürün `İşlemci` leaf'inde kalır ve `included_cooler=true` facet/bundle metadata olarak tutulur.
-- Kasa + PSU paketinde ana ürün satıcı beyanı ve ticari ana işleve göre seçilir; bileşenler eşdeğer paket ise owner-approved bundle policy gerekir.
-- Anakart + CPU + RAM yükseltme setleri yeni bir “set” kategorisi üretmez. Birincil ürün açık değilse yayın öncesi katalog incelemesine gider; rastgele leaf atanmaz.
+- Kasa + PSU paketinde principal ürün satıcı beyanı, ürün başlığı ve ticari ana işleve göre seçilir; bundle durumu facet/tag olarak tutulur.
+- Anakart + CPU + RAM yükseltme setleri yeni bir “set” kategorisi üretmez. Principal ürün açık değilse yayın öncesi katalog incelemesine gider; rastgele leaf atanmaz.
 - SBC başlangıç seti, ana ürün SBC kartıysa `Tek Kart Bilgisayar (SBC)` leaf'inde kalır; kutu içeriği bundle metadata'dır.
 
 ## 6. Storage/accessory boundaries
@@ -201,7 +204,8 @@ Bir ürünün anakarta SATA, SAS, M.2 veya PCIe ile bağlanması onu otomatik ol
 - harici çoklayıcı/adaptör ve genel bilgisayar kablosu,
 - laptop soğutma standı/padı,
 - GPU destek braketi gibi ana işlevi montaj/destek olan aksesuar,
-- harici capture box.
+- harici USB PC-primary capture aksesuarı,
+- harici USB PC-primary audio aksesuarı.
 
 Harici disk kutusu ve disk dock'u ise yukarıdaki daha spesifik depolama sınırı nedeniyle `Veri Depolama` L2'sinde kalır; genel aksesuar dalına taşınmaz.
 
@@ -225,7 +229,7 @@ Dahili PCIe formunda olsa bile Ethernet kartı, Wi-Fi kartı ve ağ adaptörün�
 Bilgisayar & Tablet → Ağ & İnternet Ürünleri → gelecekteki ilgili leaf
 ```
 
-Bu nedenle `Ağ Kartı` bu öneride L3 veya L4 değildir.
+Bu nedenle `Ağ Kartı` bu canonical tasarımda L3 veya L4 değildir.
 
 ## 7. Arduino/SBC boundary
 
@@ -268,7 +272,7 @@ Bu bölüm gelecekteki veri sözleşmesini tarif eder; parça seçici, öneri mo
 
 Her leaf kendi facet profilini ilan eder. Uyumluluk değerlendirmesi, ürünler arası serbest metin eşleşmesi yerine normalize edilmiş değerler ve sürümlü kurallar üzerinden yapılır.
 
-Önerilen ilişki türleri:
+Gelecekteki model için ilişki türleri:
 
 | İlişki | Anlam | Örnek |
 |---|---|---|
@@ -324,7 +328,7 @@ Bu alanların hiçbiri kategori alt dalı değildir. Liste, owner onayı sonras�
 
 ### Leaf bazlı facet profilleri
 
-| Leaf | Zorunlu/öncelikli facet önerileri | İkincil facet önerileri |
+| Leaf | Zorunlu/öncelikli facet hints | İkincil facet hints |
 |---|---|---|
 | İşlemci | socket, model family, generation, core count, thread count, base/boost clock, TDP | integrated graphics, cache, architecture, unlocked, included cooler |
 | Ekran Kartı | GPU family/model, VRAM capacity/type, PCIe interface, card length/height/slot width, power connector, recommended PSU | output ports, boost clock, cooling design, workstation/gaming class, ray-tracing support |
@@ -360,7 +364,7 @@ Bu alanların hiçbiri kategori alt dalı değildir. Liste, owner onayı sonras�
 - ECC bellek → `RAM Bellek`; ECC, registered/unbuffered ve DIMM form facet'leriyle.
 - Workstation GPU → `Ekran Kartı`; GPU class/use facet'iyle.
 - Server uyumlu CPU → `İşlemci`; socket, generation, core/TDP facet'leriyle.
-- Rackmount biçimli boş chassis → owner kararı verilene kadar otomatik `Bilgisayar Kasası` ataması yapılmaz; standard consumer case ile aynı kabul edilmez.
+- Rackmount biçimli boş server chassis → owner-final sınır gereği `TBD / current consumer taxonomy dışında`; otomatik `Bilgisayar Kasası` ataması yapılmaz.
 
 ### Bu L2'ye atanmayacak tam sistemler
 
@@ -427,31 +431,41 @@ Synonym eşleşmesi exact leaf atamasını tek başına otomatikleştirmez. Örn
 | Laptop cooling pad | Bu L2 dışında → `Bilgisayar Aksesuarları` | İç sistem soğutma bileşeni değildir |
 | Klavye / mouse | Bu L2 dışında → `Klavye, Mouse & Çevre Birimleri` | Owner-final sibling sınırı |
 | Raspberry Pi 5 kartı | `Tek Kart Bilgisayar (SBC)` | Genel amaçlı kart bilgisayar; marka synonym'dir |
-| Raspberry Pi Compute Module | Öneri: `Tek Kart Bilgisayar (SBC)` | Genel amaçlı OS stack'i sunan compute module; owner onayı bekler |
+| Raspberry Pi Compute Module | `Tek Kart Bilgisayar (SBC)` | Genel amaçlı OS stack'i sunan compute module; owner-final kapsam |
 | Raspberry Pi Pico | Bu L2 dışında → `Elektronik → Elektronik Bileşenler` | Microcontroller board'dur |
 | Arduino UNO / ESP32 board | Bu L2 dışında → `Elektronik → Elektronik Bileşenler` | Elektronik geliştirme/microcontroller ürünüdür |
-| Harici USB capture box | Bu L2 dışında → öneri `Bilgisayar Aksesuarları` | Dahili genişleme kartı değildir; owner onayı bekler |
+| Harici USB PC-primary capture aksesuarı | Bu L2 dışında → future `Bilgisayar Aksesuarları` classification | Dahili genişleme kartı değildir; exact future leaf bu çalışmanın dışında |
+| Harici USB PC-primary audio aksesuarı | Bu L2 dışında → future `Bilgisayar Aksesuarları` classification | Dahili ses kartı değildir; exact future leaf bu çalışmanın dışında |
+| Genel audio/hi-fi cihazı | Bu L2 dışında → uygun `Elektronik` alanı | PC-primary bileşen/aksesuar değildir |
 | TV tuner card | Bu L2 dışında → `Elektronik → TV & Görüntü` policy review | Ana işlev TV yayını alımıdır; exact future leaf açık |
 | Full rack server | `TBD / enterprise policy review` | Bu L2 bir tam sistem yolu değildir |
 | Rackmount empty server chassis | `TBD / enterprise policy review` | Consumer kasa leaf'ine sessiz atama yapılmaz |
 
-## 13. Open owner decisions
+## 13. Owner-final decisions and remaining policy TBDs
 
-Owner review aşağıdaki kararları vermelidir; bu belge bunları FINAL saymaz:
+Product owner 2026-08-28 tarihinde aşağıdaki kararları FINAL olarak onayladı:
 
-1. **L3/L4 omurgası:** 9 L3, 7 L4 ve 14 leaf listesi/adları/sırası onaylanmalı mı?
-2. **Soğutma ayrımı:** `İşlemci Soğutucu` leaf'inin sıvı ürünleri dışlaması ve tüm AIO/custom-loop ürünlerinin `Sıvı Soğutma` leaf'ine gitmesi onaylanmalı mı?
-3. **Termal ürünler:** `Termal Macun & Ped` soğutma altında kalıcı L4 olmalı mı, yoksa gelecekte Bilgisayar Aksesuarları yönüne mi taşınmalı?
-4. **Genişleme kartı derinliği:** Ses, görüntü yakalama ve bağlantı/denetleyici kartlarının ayrı L3 yerine L4 olması onaylanmalı mı?
-5. **Harici capture/audio:** Harici USB capture box'ın Bilgisayar Aksesuarları, harici profesyonel audio interface'in Elektronik/Müzik policy review yönünde olması onaylanmalı mı?
-6. **SBC kapsamı:** Genel amaçlı OS çalıştıran compute module'lerin `Tek Kart Bilgisayar (SBC)` leaf'ine alınması onaylanmalı mı?
-7. **Enterprise parça politikası:** Ordinary server motherboard, ECC RAM, server CPU ve workstation GPU'nun mevcut leaf'lerde facet ile yer alması onaylanmalı mı?
-8. **Rack enterprise:** Full rack server, blade enclosure ve rackmount empty chassis için ayrı enterprise L1/L2/policy yolu daha sonraki owner çalışmasına bırakılmalı mı?
-9. **Kit/bundle policy:** Birincil bileşeni açık olmayan anakart+CPU+RAM setlerinin yayın öncesi manuel review'a gitmesi onaylanmalı mı?
+1. **L3/L4 omurgası:** 9 L3, 7 L4 ve 14 leaf; bu belgedeki exact ad, sıra ve parent ilişkileriyle canonical'dır.
+2. **Soğutma ayrımı:** Hava/pasif CPU ürünleri `İşlemci Soğutucu`; tüm AIO/custom-loop ürünleri `Sıvı Soğutma`; kasa fanları ayrı L4'tür.
+3. **Termal ürünler:** `Termal Macun & Ped`, `Soğutma` altında kalıcı L4'tür.
+4. **Genişleme kartları:** Dahili PCIe ses, görüntü yakalama ve bağlantı/denetleyici kartları ilgili L4 leaf'lerine gider.
+5. **Harici PC-primary capture/audio:** Dahili kart leaf'lerine girmez; future `Bilgisayar Aksesuarları` classification kapsamındadır.
+6. **SBC kapsamı:** Raspberry Pi, diğer genel amaçlı SBC'ler ve Compute Module ürünleri `Tek Kart Bilgisayar (SBC)` leaf'ine gider. Microcontroller board'lar hariçtir.
+7. **Enterprise/workstation parçaları:** Workstation bileşenleri mevcut işlevsel leaf'lerde facet ile yer alır.
+8. **Bundle/kit:** Kategori değildir; principal canonical leaf'e atanır ve bundle/kit durumu facet/tag olarak saklanır.
+9. **Uyumluluk:** `compatible / incompatible / conditional / unknown` modeli korunur; uyumluluk category depth değildir.
 
-### Proposal acceptance gates
+### Kalan policy TBD'leri
 
-Owner finalization öncesi bu önerinin kendi iç doğrulaması:
+- Full rack server, blade enclosure ve rackmount server chassis mevcut consumer taxonomy dışındadır; gelecekteki enterprise policy çalışmasına kadar `TBD` kalır.
+- Harici USB PC-primary capture/audio aksesuarlarının exact future L3/L4 leaf adları bu belgede oluşturulmaz; yalnız `Bilgisayar Aksesuarları` yönü sabittir.
+- Genel audio/hi-fi cihazlarının exact Elektronik L3/L4 ataması ilgili domain çalışmasında belirlenir.
+
+Bu TBD'ler, bu belgedeki Bilgisayar Bileşenleri L3/L4 ağacını yeniden açmaz.
+
+### Canonical acceptance gates
+
+Owner-final tasarımın iç doğrulaması:
 
 - canonical path değişmedi,
 - L3 duplicate: 0,
@@ -460,8 +474,9 @@ Owner finalization öncesi bu önerinin kendi iç doğrulaması:
 - Arduino/ESP leakage: 0,
 - marka-as-category: 0,
 - compatibility attribute-as-category: 0,
+- bundle-as-category: 0,
 - maksimum derinlik: 4,
 - rack/enterprise tam katalog kararı: açık ve sessizce finalize edilmedi,
 - runtime implementation: yok.
 
-Bu belge owner kararı gelene kadar **PROPOSED FOR OWNER REVIEW** durumundadır.
+Bu belge **CONFIRMED — PRODUCT OWNER FINAL** durumundadır.
