@@ -1,35 +1,37 @@
 # EsnaftaVar Canonical Category Taxonomy — Architecture + L1
 
-**Wave:** 15 / Phase A1
+**Wave:** 15 / Phase A2
 
 **Belge tarihi:** 27 Ağustos 2026
+
+**Owner approval:** 27 Ağustos 2026 / Wave 15 Phase A2 — **CONFIRMED — PRODUCT OWNER FINAL**
 
 **Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti ve merchant-sector ayrımı
 
 **Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
 
-> Current main notu: Phase A başladığında repo owner-approved `v1.0.0` full taxonomy
-> artefaktını içeriyordu. Phase A1 product-owner review girdisi, Product Taxonomy L1
-> adlarını ve bir split kararını **24 maddelik yeni bir proposal** olarak refine eder.
-> Bu proposal henüz FINAL değildir; mevcut L2/L3/L4 ağacını yeniden üretmez ve
+> Current main notu: Phase A başladığında repo önceki `v1.0.0` full taxonomy
+> artefaktını içeriyordu. Phase A1'de refine edilen 24 Product Taxonomy L1 adı ve
+> sırası, Product Owner tarafından Phase A2'de açıkça **CONFIRMED / FINAL / CANONICAL
+> V1** olarak onaylandı. Bu decision lock mevcut L2/L3/L4 ağacını yeniden üretmez ve
 > `docs/data/esnaftavar_category_taxonomy_v1_final.json` dosyasını değiştirmez.
-> Final owner approval ve ayrı integration olmadan current canonical/runtime state'i
-> değiştirmez.
+> Full tree/JSON/runtime reconciliation ayrı controlled integration görevidir.
 
 ## Karar etiketleri
 
 - **CONFIRMED:** Product owner'ın bu görevde açıkça teyit ettiği karar; bu belgede
   özellikle Merchant/Sector hizmet kapsamı için kullanılır.
+- **CONFIRMED — PRODUCT OWNER FINAL:** Phase A2'de kilitlenen 24 Product Taxonomy L1
+  adı, sırası ve L1 sınırı; **CANONICAL V1 product decision**'dır.
 - **PROPOSED / technically accepted:** Phase A'da kabul edilen, bu refinement'ta
   yeniden tasarlanmayan taxonomy mimarisi.
-- **PROPOSED FOR FINAL OWNER APPROVAL:** Phase A1'de refine edilen 24 L1 adı ve sınırı;
-  FINAL veya runtime-deployed değildir.
 - **TBD:** Ürün, hukuk, operasyon veya implementation kararı henüz verilmemiş alan.
 
 ## 1. Purpose
 
-**Architecture status: PROPOSED / technically accepted.** Phase A1 bu mimariyi
-yeniden tasarlamaz; yalnız L1 customer-facing adlarını ve sınırlarını refine eder.
+**Architecture status: PROPOSED / technically accepted.** Phase A2 bu mimariyi
+yeniden tasarlamaz; yalnız owner-approved 24 L1 product decision'ını canonical olarak
+kilitler.
 
 Bu belgenin amacı EsnaftaVar'ın fiziksel yerel ticaret modelinde:
 
@@ -156,7 +158,9 @@ kesinleştirilmelidir:
 3. kullanıcı-facing `slug` daha sonra değişirse eski slug'ı permanent alias/redirect
    olarak sakla;
 4. analytics, product foreign key ve external mappings'i `id` üzerinden bağla;
-5. mevcut final JSON'u bu Phase A'da yeniden yazma; schema/migration tasarımında
+5. `Oyuncak, Hobi & Müzik` split successor mapping'ini ayrı controlled runtime
+   task'ında tasarla ve doğrula;
+6. mevcut final JSON'u bu Phase A2'de yeniden yazma; schema/migration tasarımında
    backward-compatible adapter tanımla.
 
 Bu bridge kararı verilmeden taxonomy'yi runtime'a deploy etmek identity drift riski
@@ -239,11 +243,11 @@ için future `category request → taxonomy review` workflow'u **TBD**'dir.
 
 ## 9. L1 hypothesis evaluation
 
-Phase A1 product-owner review, previous 23-name L1 setini FINAL kabul etmez. Mimariyi
-değiştirmeden customer-facing product terminology'yi düzeltir ve müzik domainini
-ayırarak sonucu **24 L1**'e çıkarır.
+Phase A1 product-owner review, previous 23-name L1 setini refine etti. Product Owner,
+bu refinement sonucundaki customer-facing terminology ve müzik domain split'ini
+Phase A2'de açıkça onayladı. Sonuç **24 L1 / CONFIRMED / FINAL / CANONICAL V1**'dir.
 
-| Previous Phase A adı | Phase A1 action | Proposed owner-review adı | Gerekçe |
+| Previous Phase A adı | Phase A1 action | Phase A2 final canonical adı | Gerekçe |
 |---|---|---|---|
 | Market & Gıda | **RENAME / terminology correction** | Gıda & İçecek | “Market” ürün ailesi değil satış kanalı/merchant formatıdır. |
 | Moda & Giyim | **RENAME** | Giyim & Moda | Türkçe customer-facing adlandırma sırası. |
@@ -256,8 +260,8 @@ ayırarak sonucu **24 L1**'e çıkarır.
 | Optik | **RENAME / clarity** | Gözlük & Optik | Customer-facing ürün kapsamını açıklar; regulated sınırlar Phase B/legal review'dedir. |
 
 İsim değişikliği stable node identity'yi değiştirmez. Combined oyuncak/hobi/müzik
-node'unun split mapping'i ise final approval sonrasında ayrı identity/migration
-tasarımı gerektirir; bu belge yeni runtime ID üretmez.
+node'unun split successor mapping'i ayrı controlled runtime task gerektirir; bu belge
+yeni runtime ID üretmez.
 
 ### Overlap audit — 24/24 reviewed
 
@@ -276,10 +280,14 @@ category oluşturulmaz.
 
 ## 10. Recommended L1 V1
 
-**Durum: PROPOSED FOR FINAL OWNER APPROVAL.** Aşağıdaki 24 L1 henüz FINAL değildir ve
-current canonical JSON/runtime state'ini değiştirmez.
+**Durum: CONFIRMED — PRODUCT OWNER FINAL / CANONICAL V1.** Aşağıdaki 24 L1 adı ve
+sırası kilitlidir. Bu karar tek başına current full-tree JSON/runtime state'ini
+değiştirmez.
 
-| # | Proposed L1 | Proposed display slug | Boundary guard |
+Tablodaki her L1 satırı bu ortak durumu taşır: **CONFIRMED — PRODUCT OWNER FINAL —
+CANONICAL V1**.
+
+| # | Final canonical L1 | Display-route candidate (identity değildir) | Boundary guard |
 |---:|---|---|---|
 | 1 | Gıda & İçecek | `gida-icecek` | Yenebilir/içilebilir perakende ürünü; `Market` merchant type'tır, category değildir. |
 | 2 | Giyim & Moda | `giyim-moda` | Giyilen tekstil ürünü; gender/size/renk facet'tir. |
@@ -306,6 +314,10 @@ current canonical JSON/runtime state'ini değiştirmez.
 | 23 | Çiçek & Bahçe | `cicek-bahce` | Çiçek, bitki ve yetiştirme/bahçe ürünü; bahçe el aleti ana kullanımına göre burada olabilir. |
 | 24 | Hediyelik & Parti | `hediyelik-parti` | Fiziksel hediye/parti ürünü; organizasyon hizmeti ve seasonal state category değildir. |
 
+Owner approval bu tablodaki L1 adlarını ve sırasını kilitler. Display-route candidate
+değerleri stable identity değildir; existing V1 source slugs korunur ve runtime alias/
+redirect kararı ayrı integration task'ında verilir.
+
 Duplicate L1 name yoktur. `Market` ve `Pet Shop` Product Taxonomy L1 adı değildir.
 Birleşik adlar kullanıcı tarafından birlikte aranan ve aynı attribute/merchant-entry
 bağlamını paylaşan yakın domainlerle sınırlıdır; scope notları bütün 24 L1 için
@@ -316,7 +328,7 @@ boundary guard sağlar.
 Bu eşleme conceptual/read-only'dir; Production/Development migration veya demo data
 değişikliği yapılmaz.
 
-| Current demo category | Proposed canonical L1 | Mapping | Not |
+| Current demo category | Final canonical L1 | Mapping | Not |
 |---|---|---|---|
 | Elektronik | Elektronik (`elektronik`) | Direct | Demo ürünün leaf'i sonraki controlled mapping çalışmasında doğrulanır. |
 | Kırtasiye | Kırtasiye & Ofis (`kirtasiye-ofis`) | Rename/broaden | Demo `Defter` ürünü canonical `defter` leaf'ine conceptual olarak uygundur. |
@@ -325,6 +337,9 @@ değişikliği yapılmaz.
 
 Dört demo category de exactly one canonical L1'e temiz eşlenir; hiçbir mapping
 merchant-sector node'a veya multi-primary category'ye gitmez.
+
+**Demo mapping state: CONFIRMED — PRODUCT OWNER FINAL / conceptual only.** Production
+ve demo dataset migration'ı bu decision-lock görevinde yapılmaz.
 
 ## 12. Confirmed Merchant/Sector Scope Decisions
 
@@ -371,7 +386,7 @@ Bu belge booking veya Merchant App implementation'ı başlatmaz.
 | Category/Product Listing | **PASS** | Primary leaf ve descendant roll-up ile beslenebilir; listing/offer data category'den ayrıdır. |
 | Filters | **PASS — architecture** | Facet/attribute profile leaf'ten açılır; brand/size/color node yapılmaz. Filter backend bu görevde yoktur. |
 | Search | **PASS — architecture** | Canonical name, synonyms ve aliases için ayrı contract vardır; backend implementation yoktur. |
-| Home projection | **PASS** | Availability-gated shortcut proposed 24 L1 registry'nin yerini almaz; sponsored ayrı ve etiketlidir. |
+| Home projection | **PASS** | Availability-gated shortcut canonical 24 L1 registry'nin yerini almaz; sponsored ayrı ve etiketlidir. |
 
 İstenen `docs/ESNAFTAVAR_CRITICAL_SCREEN_PILOT_V1.md` current main'de mevcut değildir;
 bu yüzden o spesifik artefakt için görsel kabul iddiası yapılmaz. Mevcut canonical
@@ -381,45 +396,45 @@ Critical Screen Pilot davranışı değiştirilmemiştir.
 
 ## 14. Open owner decisions
 
-1. **24 L1 final approval — OPEN:** Phase A1 seti `PROPOSED FOR FINAL OWNER APPROVAL`;
-   Product Owner açık final karar vermeden canonical V1/runtime state değişmez.
-2. **Rename/split identity mapping — PROPOSED / integration gate:** Current immutable
+24 L1 ad/sıra kararı **RESOLVED — CONFIRMED — PRODUCT OWNER FINAL** durumundadır.
+Aşağıdaki runtime, policy ve governance kararları açık kalır:
+
+1. **Rename/split identity mapping — PROPOSED / integration gate:** Current immutable
    V1 source identity'leri korunurken dokuz rename ve combined oyuncak/hobi/müzik
    split'i hangi successor mapping'lerle yayınlanacak?
-3. **Stable ID bridge — PROPOSED / integration gate:** Current immutable V1 source
+2. **Stable ID bridge — PROPOSED / integration gate:** Current immutable V1 source
    slug ile future immutable opaque `id` ve mutable display slug nasıl bağlanacak?
-4. **Policy governance — TBD:** `REGULATED` ve `LEGAL_REVIEW_REQUIRED` node'larda belge,
+3. **Policy governance — TBD:** `REGULATED` ve `LEGAL_REVIEW_REQUIRED` node'larda belge,
    moderator, audit/recall ve approval sahibi kim olacak?
-5. **Sensitive domain permanence — TBD + legal:** Current excluded domainler kalıcı mı,
+4. **Sensitive domain permanence — TBD + legal:** Current excluded domainler kalıcı mı,
    yoksa yalnız V1 launch exclusion mı? Relaxation otomatik yapılamaz.
-6. **Attribute profiles — TBD:** İlk typed `attribute_profile_id` pilotları ve value
+5. **Attribute profiles — TBD:** İlk typed `attribute_profile_id` pilotları ve value
    registry owner'ı kim olacak?
-7. **Google mapping — TBD:** Google ID/path mapping hangi release ihtiyacında ve hangi
+6. **Google mapping — TBD:** Google ID/path mapping hangi release ihtiyacında ve hangi
    taxonomy snapshot/version ile üretilecek?
-8. **Merchant-sector breadth — TBD:** Teyit edilen salon başlığı dışında shop type
+7. **Merchant-sector breadth — TBD:** Teyit edilen salon başlığı dışında shop type
    L1/L2 seti ve many-to-many product recommendation kuralları ayrı çalışmada tasarlanmalı.
-9. **Service capabilities — TBD:** Booking, hizmet kataloğu/fiyatı, çalışan ve slot
+8. **Service capabilities — TBD:** Booking, hizmet kataloğu/fiyatı, çalışan ve slot
    modeli bu taxonomy kararından bağımsız owner review ister.
-10. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
+9. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
    deprecation/replacement onayı ve sürüm yayın sahibi belirlenmeli.
 
-Phase A1'deki 24 L1, Product Owner'ın açık final onayını bekler. Bu onay olmadan belge
-current V1.0.0 full tree, JSON, runtime, Production veya Development state'ini
-değiştirmez.
+Phase A2 owner approval product decision'ı kilitler; current V1.0.0 full tree, JSON,
+runtime, Production veya Development state'ini bu dokümantasyon görevi değiştirmez.
 
 ## 15. Next-phase plan
 
-Bu görev Phase B L2/L3/L4 üretimi yapmaz. Current main full V1.0.0 tree taşır; Phase A1
-24 L1 proposalı final onay almadan bu ağacı paralel bir ağaçla çoğaltmak veya yeniden
-yazmak yasaktır.
+Phase A product decision tamamlanmıştır. Sıradaki taxonomy tasarım çalışması L2'dir;
+bu Phase A2 görevi hiçbir L2/L3/L4 node üretmez. Current main full V1.0.0 tree taşır;
+onu bu decision-lock görevinde paralel bir ağaçla çoğaltmak veya yeniden yazmak
+yasaktır.
 
-1. Product Owner 24 L1 adını/sınırını final onaylar veya açık değişiklik talebi verir.
-2. Integration/taxonomy owner rename ve split successor mapping'ini current V1.0.0
-   tree ile reconcile eder; stable identity'leri korur.
-3. Ancak final onaydan sonra Elektronik → Ev & Yaşam → Giyim & Moda → Gıda & İçecek
-   önceliğiyle mevcut L2 dalları Phase B'de review edilir; sıfırdan ikinci ağaç
-   üretilmez.
-4. Runtime öncesi stable ID/slug bridge kesinleştirilir.
+1. Integration/taxonomy owner final 24 L1 decision lock'ını review ve integrate eder.
+2. Rename ve split successor mapping'i current V1.0.0 tree ile reconcile edilir;
+   stable identity'ler korunur.
+3. Ayrı Phase B görevinde ilk olarak **Elektronik**, ardından **Bilgisayar & Tablet**
+   L2 tasarımı ele alınır; bu belgede L2 üretilmez.
+4. Runtime öncesi current source slug → stable opaque ID bridge kesinleştirilir.
 5. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
    ID mapping, read path ve seed planını hazırlar. Bu adım remote apply değildir.
 6. Merchant/Sector Taxonomy ayrı lane'de, Product Taxonomy node'larını tekrar kullanmadan
@@ -427,14 +442,16 @@ yazmak yasaktır.
 
 `TAXONOMY_ARCHITECTURE: PASS`
 
-`L1_OWNER_REFINEMENT: PASS`
+`L1_CANONICAL_OWNER_APPROVAL: FINAL`
 
-`PRODUCT_VS_MERCHANT_TAXONOMY_CONSISTENT: YES`
+`L1_COUNT: 24`
+
+`PRODUCT_MERCHANT_SEPARATION: PASS`
 
 `MERCHANT_SECTOR_SCOPE_DECISION_RECORDED: YES`
 
 `DEMO_CATEGORY_MAPPING_READY: YES`
 
-`L1_READY_FOR_FINAL_OWNER_APPROVAL: YES`
+`READY_FOR_PHASE_A_INTEGRATION: YES`
 
 `READY_FOR_TAXONOMY_PHASE_B: NO`
