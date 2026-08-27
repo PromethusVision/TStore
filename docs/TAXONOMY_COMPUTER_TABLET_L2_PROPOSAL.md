@@ -4,7 +4,9 @@
 
 **Belge tarihi:** 27 Ağustos 2026
 
-**Karar durumu:** **PROPOSED FOR OWNER REVIEW**
+**Karar durumu:** **CONFIRMED — PRODUCT OWNER FINAL**
+
+**Owner approval:** 27 Ağustos 2026 / Wave 15 Phase B2A — **FINAL**
 
 **Canonical L1:** **Bilgisayar & Tablet — CONFIRMED / PRODUCT OWNER FINAL**
 
@@ -58,14 +60,17 @@ tek başına ürünü Bilgisayar & Tablet'e taşımaz.
 | Webcam | Güvenlik/IP kamera, aksiyon/dijital kamera, bebek kamerası | PC'ye canlı görüntü girdisi veren webcam burada; bağımsız kayıt/güvenlik/camera cihazı Elektronik'te. |
 | PC-primary USB/kablolu iletişim veya gaming headset | Genel Bluetooth/TWS/hi-fi kulaklık, hoparlör, standalone mikrofon | Açık PC-primary uyumluluk ve bilgisayar giriş/çıkış rolü gerekir. Belirgin PC primacy yoksa ana ses işlevi nedeniyle Elektronik. |
 | USB hub, bilgisayar dock istasyonu, PC-specific adapter | Genel AV switch/splitter, TV cihazı, power bank ve genel şarj ürünü | Bilgisayar port/iş akışını çoğaltan ürün aksesuar; genel audio/video veya power ürünü Elektronik. |
-| PC-primary gamepad/joystick | PlayStation, Xbox, Nintendo konsolu ve console-primary kontrolcü/oyun | Gaming kendi başına category değildir. Platformun ana fonksiyonu/uyumluluğu belirler; belirsiz cross-platform ürün owner review'e gider. |
+| PC-primary gamepad/joystick | PlayStation, Xbox, Nintendo konsolu ve console-first kontrolcü/oyun | Gaming kendi başına category değildir. Primary platform/uyumluluk belirler; console-first ürün Elektronik'tedir. |
 | Bilgisayar monitörü | TV, projektör ve genel digital signage | Monitor bilgisayar görüntü çıkışıdır; tuner/TV veya projection primary ise Elektronik. |
+| Raspberry Pi ve diğer single-board computer (SBC) | Arduino, ESP ve generic elektronik development board | İşletim sistemi çalıştıran genel amaçlı SBC, Bilgisayar Bileşenleri; microcontroller/development board, Elektronik → Elektronik Bileşenler. |
 
-**Gaming canonical rule — öneri:** Gaming laptop, gaming PC, gaming monitor ve gaming
+**Gaming canonical rule — PRODUCT OWNER FINAL:** Gaming laptop, gaming PC, gaming monitor ve gaming
 keyboard/mouse kendi fonksiyonel L2'sinde kalır. `gaming`, `oyuncu`, RGB, yenileme hızı
 ve benzeri nitelikler facet/search sinyalidir. PlayStation/Xbox/Nintendo konsolları,
-console-primary controller'lar ve fiziksel konsol oyunları **Elektronik** tarafında
-kalır. Böylece aynı gaming ürünü ikinci bir L2 altında çoğaltılmaz.
+console-first controller'lar ve fiziksel konsol oyunları **Elektronik → Oyun Konsolu
+& Aksesuarları** tarafında kalır. PC-primary gaming headset **Klavye, Mouse & Çevre
+Birimleri** altında veya gelecek L3 contract'ındaki PC peripheral child'ında kalır.
+Böylece aynı gaming ürünü ikinci bir L2 altında çoğaltılmaz.
 
 ## 4. Boundary with Kırtasiye & Ofis
 
@@ -79,21 +84,20 @@ kalır. Böylece aynı gaming ürünü ikinci bir L2 altında çoğaltılmaz.
 - **Baskı dışı ofis cihazı → Kırtasiye & Ofis.** Hesap makinesi, evrak imha makinesi,
   laminasyon cihazı ve ciltleme makinesi computer peripheral sayılmaz.
 
-### Toner/kartuş için owner-review önerisi
+### Toner/kartuş ve 3D baskı — PRODUCT OWNER FINAL
 
-**Preferred proposal:** Toner, kartuş, mürekkep dolumu, drum, yazıcı şeridi ve
+Toner, kartuş, mürekkep dolumu, drum, yazıcı şeridi ve
 device-specific printhead; model/teknoloji uyumluluğu baskı cihazıyla birlikte arandığı
 için **Bilgisayar & Tablet → Yazıcı, Tarayıcı & Sarf Malzemeleri** altında kalmalıdır.
 Kâğıt/etiket/rulo ise Kırtasiye & Ofis'te kalır.
 
-Bu karar henüz final değildir. Owner bütün baskı sarfını satış kanalına göre
-Kırtasiye & Ofis'e taşımayı seçerse L2 adı `Yazıcı & Tarayıcı` olarak daraltılmalı ve
-printer-model compatibility araması cross-discovery ile çözülmelidir. Aynı sarf iki
-L1'e atanamaz.
+3D printer ve 3D filament de aynı L2 altında kalır. Gelecek L3 ayrımı yapılabilir;
+yeni L2 oluşturulmaz. Genel paper/notebook/office consumable her durumda **Kırtasiye
+& Ofis**'tedir. Aynı sarf iki L1'e atanamaz.
 
 ## 5. Candidate L2 comparison
 
-| Candidate | Karar önerisi | Gerekçe / challenge sonucu |
+| Candidate | Final sonuç | Gerekçe / challenge sonucu |
 |---|---|---|
 | Dizüstü Bilgisayar | **KEEP** | Güçlü Türkçe arama niyeti, taşınabilir form ve ayrı facet profili. Gaming/iş/öğrenci alt category değil facet'tir. |
 | Masaüstü Bilgisayar | **KEEP** | Hazır sistem, all-in-one, mini PC ve barebone için kalıcı cihaz omurgası. Gaming ayrı L2 yapılmaz. |
@@ -104,7 +108,7 @@ L1'e atanamaz.
 | Depolama | **KEEP, adı `Veri Depolama`** | Internal/external SSD/HDD, flash, memory card, optical ve NAS'ın ortak ana işlevi veri saklamadır. Internal disk Bileşenler'de ikinci kez yer almaz. |
 | Bilgisayar Aksesuarları | **KEEP WITH NARROW BOUNDARY** | Hub/dock/stand/cooling/privacy/PC-specific adapter gibi destek ürünleri. Aktif input/output peripheral ve taşıma çantası burada değildir. |
 | Klavye, Mouse & Çevre Birimleri | **KEEP** | Klavye/mouse müşteri anchor'ı; graphics tablet, webcam ve açık PC-primary headset/controller gibi aktif giriş/çıkış ürünlerini kapsar. Monitor ve printer ayrı L2'dir. |
-| Yazıcı, Tarayıcı & Sarf | **KEEP, owner decision required** | Cihazlar kesinlikle burada; device-specific toner/kartuş için preferred include önerisi vardır. Genel paper/office sarf excluded. |
+| Yazıcı, Tarayıcı & Sarf | **KEEP — OWNER FINAL** | Cihazlar, device-specific toner/kartuş ve 3D filament burada; genel paper/office sarf excluded. |
 | Ağ & İnternet Ürünleri | **KEEP** | Modem/router/mesh/AP/switch/network adapter ayrı compatibility/topology facet ailesidir. Consumer smart-home ve telecom cihazlarına genişlemez. |
 | Sunucu & Kurumsal Sistemler | **DEFER / NOT L2 NOW** | Local B2C launch discoverability'si belirsiz; rack/server/UPS kurumsal şema ve policy gerektirir. Ölçülmüş merchant/catalog talebiyle ayrıca açılabilir. |
 | Oyun & Yazılım | **REJECT AS L2** | Gaming attribute/use-case'tir; console Elektronik'tedir. Digital-only yazılım canonical V1 excluded baseline ile çelişir. |
@@ -112,7 +116,8 @@ L1'e atanamaz.
 
 ## 6. Recommended L2
 
-**Durum: PROPOSED FOR OWNER REVIEW.** Önerilen L2 sayısı **11**'dir.
+**Durum: CONFIRMED — PRODUCT OWNER FINAL.** Final L2 sayısı **11**'dir; ad ve sıra
+aşağıdaki biçimde kilitlidir.
 
 | # | Recommended L2 | Display-route candidate (identity değildir) | Ana customer intent |
 |---:|---|---|---|
@@ -130,7 +135,7 @@ L1'e atanamaz.
 
 Normalized duplicate L2 adı: **0**. Marka-as-category: **0**. Attribute-as-category:
 **0**. Sıra commercial ranking değildir; cihaz → görüntü → internal hardware →
-supporting hardware akışı için deterministic proposal sırasıdır.
+supporting hardware akışı için deterministic canonical sıradır.
 
 ## 7. Per-L2 definitions
 
@@ -141,11 +146,11 @@ supporting hardware akışı için deterministic proposal sırasıdır.
 | Tablet | Dokunmatik ekranlı tablet bilgisayar; detachable keyboard aksesuar olduğunda cihaz yine Tablet'tir. | Grafik tablet bir input peripheral; e-reader ayrı; telefon Elektronik. |
 | E-Kitap Okuyucu | Ana fonksiyonu elektronik metin/kitap okumak olan e-reader cihazı. | Digital e-book/service; tablet; device case/stand Bilgisayar Aksesuarları. |
 | Monitör | Bilgisayar görüntü çıkışı için tasarlanan standart, gaming, professional veya portable monitor. | TV/projector/digital signage Elektronik; refresh rate ve panel technology facet. |
-| Bilgisayar Bileşenleri | Bilgisayar sisteminin core compute/memory/power/enclosure/cooling parçaları. | Persistent storage Veri Depolama; external peripheral; generic hobby electronic component Elektronik. |
+| Bilgisayar Bileşenleri | Bilgisayar sisteminin core compute/memory/power/enclosure/cooling parçaları ile Raspberry Pi ve genel amaçlı SBC ürünleri. | Persistent storage Veri Depolama; external peripheral; Arduino/ESP/generic electronic development board Elektronik → Elektronik Bileşenler. |
 | Veri Depolama | Internal/external persistent storage, flash media, optical storage ve network storage. | RAM Bileşenler; cloud/digital storage service excluded; boş disk enclosure aksesuar olabilir. |
 | Klavye, Mouse & Çevre Birimleri | Bilgisayarla aktif user input/output/communication kuran peripheral: keyboard, mouse, graphics tablet, webcam ve açık PC-primary headset/controller. | Monitor ve printer ayrı; general audio/camera Elektronik; hub/dock pasif destek olduğu için Aksesuarlar. |
 | Bilgisayar Aksesuarları | Bilgisayarı/tableti destekleyen, bağlayan, koruyan veya ergonomisini artıran ikincil ürün: USB hub, dock, PC-specific adapter, stand, cooling pad, privacy filter, tablet stylus. | Laptop/tablet taşıma çantası Çanta & Aksesuar; active peripheral ayrı; general AV/power Electronics. |
-| Yazıcı, Tarayıcı & Sarf Malzemeleri | 2D/3D/label/receipt printer, multi-function printer, scanner ve owner onayına bağlı device-specific consumables. | Paper, label roll ve general office supply Kırtasiye & Ofis; projector Elektronik. |
+| Yazıcı, Tarayıcı & Sarf Malzemeleri | 2D/3D/label/receipt printer, multi-function printer, scanner, device-specific consumables ve 3D filament. | Paper, label roll, notebook ve general office supply Kırtasiye & Ofis; projector Elektronik. |
 | Ağ & İnternet Ürünleri | Modem, router, mesh, access point, repeater, switch, network adapter, network cable ve network-security appliance. | Smart-home hub/camera Elektronik; mobile phone/telephony Elektronik; USB hub Bilgisayar Aksesuarları. |
 
 ## 8. Inclusion/exclusion examples
@@ -174,9 +179,15 @@ supporting hardware akışı için deterministic proposal sırasıdır.
 | Grafik tablet | Klavye, Mouse & Çevre Birimleri | Tablet bilgisayar değil, çizim input device. |
 | E-kitap okuyucu | E-Kitap Okuyucu | Okuma cihazı; digital book içeriği değildir. |
 | Lazer yazıcı / scanner | Yazıcı, Tarayıcı & Sarf Malzemeleri | Dijital baskı/tarama cihazı. |
-| Toner / kartuş | Yazıcı, Tarayıcı & Sarf Malzemeleri — **PROPOSED** | Device-model compatibility baskın; owner approval bekler. |
+| Toner / kartuş | Yazıcı, Tarayıcı & Sarf Malzemeleri — **FINAL** | Device-model compatibility baskın. |
+| 3D printer / 3D filament | Yazıcı, Tarayıcı & Sarf Malzemeleri — **FINAL** | Cihaz ve device-specific print sarfı aynı L2; gelecek L3 ayrımı mümkündür. |
 | Fotokopi kâğıdı / termal rulo | Kırtasiye & Ofis | Genel paper/office consumable; printer device part değildir. |
 | Standalone mikrofon / PC hoparlörü | Elektronik | Canonical ana işlev audio capture/output; PC bağlantısı tek başına peripheral ownership üretmez. |
+| Raspberry Pi / genel amaçlı SBC | Bilgisayar Bileşenleri | İşletim sistemi çalıştırabilen general-purpose single-board computer. |
+| Arduino / ESP / generic development board | Elektronik → Elektronik Bileşenler | Ana işlev microcontroller/electronics development; consumer computer değildir. |
+| Workstation | Masaüstü Bilgisayar | Masaüstü bilgisayar formu; profesyonel kullanım facet/attribute olabilir. |
+| Rack server / enterprise-heavy ürün | Future L3/L4 policy/boundary review | Ayrı L2 yok; assignability ve kapsam daha sonra kararlaştırılır. |
+| Bank/payment POS terminal | **TBD — merchant-equipment/policy review** | Consumer taxonomy'ye sessizce atanamaz ve bu fazda L2 oluşturmaz. |
 
 ## 9. Future L3/L4 examples
 
@@ -190,11 +201,11 @@ assignable node kararı değildir. L2'nin leaf kalabildiği unutulmamalıdır.
 | Tablet | Belirgin form/schema farkı kanıtlanırsa standard tablet; detachable/2-in-1 tablet | OS, ekran boyutu, hedef yaş ve cellular support facet. |
 | E-Kitap Okuyucu | Gerekirse reader device leaf; başka child zorunlu değil | Marka veya ekran boyutuna göre node yok. |
 | Monitör | Gerekirse standard/portable/professional form family | Gaming/refresh/panel/resolution facet. |
-| Bilgisayar Bileşenleri | İşlemci; ekran kartı; anakart; RAM; güç kaynağı; kasa; soğutma; expansion card | CPU/GPU brand/model/socket/clock category yapılmaz. |
+| Bilgisayar Bileşenleri | İşlemci; ekran kartı; anakart; RAM; güç kaynağı; kasa; soğutma; expansion card; SBC | CPU/GPU brand/model/socket/clock category yapılmaz; Arduino/ESP Elektronik'te kalır. |
 | Veri Depolama | Dahili SSD/HDD; harici depolama; USB flash & memory card; optical drive; NAS | Capacity/interface/form factor facet; internal disk Bileşenler'e kopyalanmaz. |
 | Klavye, Mouse & Çevre Birimleri | Klavye; mouse/trackball; graphics tablet; webcam; PC-primary headset; PC-primary controller | Gaming ve connection type facet. |
 | Bilgisayar Aksesuarları | Hub & dock; stand & cooling pad; adapter & PC cable; stylus; screen/privacy protection | Active peripheral veya taşıma bag'i bu dala alınmaz. |
-| Yazıcı, Tarayıcı & Sarf Malzemeleri | Yazıcı & multifunction; scanner; 3D printer; owner onaylı cartridge/toner/ink/ribbon/printhead | Paper/label/roll office tarafında; 3D filament için owner kararı gerekir. |
+| Yazıcı, Tarayıcı & Sarf Malzemeleri | Yazıcı & multifunction; scanner; 3D printer; cartridge/toner/ink/ribbon/printhead; 3D filament | Paper/label/roll/notebook Kırtasiye & Ofis'te kalır. |
 | Ağ & İnternet Ürünleri | Modem & router; mesh/AP/repeater; switch; network adapter; network cable; firewall appliance | Smart-home/telephony/camera ürünlerine genişlemez. |
 
 ## 10. Facet hints
@@ -241,40 +252,47 @@ Marka adı synonym yapılmaz.
 `bilgisayar kasası` Bileşenler'e gider. Benzer çok-anlamlı alias'larda exact product
 title ve attribute context ile disambiguation gerekir.
 
-## 12. Open owner decisions
+## 12. Final owner decisions and remaining TBDs
 
-Bu belge L2'leri **FINAL** yapmaz. Owner review için gereken kararlar:
+### Confirmed — Product Owner Final
 
-1. **Toner/kartuş boundary — preferred INCLUDE:** Device-specific toner, kartuş,
-   ink, drum, ribbon ve printhead `Yazıcı, Tarayıcı & Sarf Malzemeleri` altında mı
-   kalacak? Preferred yes; paper/label/roll Kırtasiye & Ofis'te kalır.
-2. **3D printer consumables — preferred SPLIT BY FUNCTION:** 3D printer cihazı burada;
-   filament/resin device-specific print sarfı olarak burada mı, yoksa maker/hobby
-   material olarak Oyuncak & Hobi'de mi tutulacak? Tek primary ownership seçilmelidir.
-3. **E-Kitap Okuyucu L2 — preferred KEEP:** Ayrı L2 leaf olarak onaylanacak mı?
-   Catalog hacmi çok düşükse Tablet'e yanlış bir child yapmak yerine active L2
-   visibility availability-gated olabilir.
-4. **Server/enterprise breadth — preferred DEFER:** Server, rack, thin client,
-   enterprise UPS ve kurumsal network equipment V1 local-retail kapsamına alınacak mı?
-   Ölçülmüş supply olmadan ayrı L2 önerilmez.
-5. **PC headset/controller boundary — preferred PRIMARY-PLATFORM RULE:** PC-primary
-   ürün peripheral; console-primary/general audio Elektronik. Cross-platform eşit
-   ürünler için default owner ve merchant validation kuralı onaylanmalıdır.
-6. **POS/data-capture products — preferred FUNCTIONAL ROUTING:** Barcode scanner
-   computer input ise peripheral; label/receipt printer baskı L2'si; complete POS
-   terminal için ayrı office/merchant boundary review gerekir.
+1. Exact 11 L2 adı ve sırası Section 6'daki haliyle finaldir.
+2. Toner/kartuş ve diğer device-specific printer consumable, **Yazıcı, Tarayıcı &
+   Sarf Malzemeleri** altındadır; general paper/notebook/office consumable **Kırtasiye
+   & Ofis**'tedir.
+3. 3D printer ve 3D filament aynı baskı L2'sindedir; yeni L2 yoktur.
+4. Gaming cihaz/peripheral, kendi primary functional L2'sinde kalır. Console ve
+   console-first controller **Elektronik → Oyun Konsolu & Aksesuarları** altındadır.
+5. Webcam Bilgisayar & Tablet kapsamındadır; docking station/USB hub **Bilgisayar
+   Aksesuarları** altındadır.
+6. Raspberry Pi/genel amaçlı SBC **Bilgisayar Bileşenleri**; Arduino/ESP/generic
+   electronics development board **Elektronik → Elektronik Bileşenler** altındadır.
+7. Workstation **Masaüstü Bilgisayar** altındadır. Enterprise/server için yeni L2
+   oluşturulmaz.
 
-Owner kararı sonrası tek taxonomy owner; display adlarını, stable identity bridge'i,
-eski dört-L2 tree ile move/rename/successor mapping'ini ve gerçek L3/L4 ağacını
-controlled biçimde tasarlamalıdır. Bu proposal tek başına JSON/runtime'a uygulanmaz.
+### Remaining TBD / deferred
 
-### Owner-review acceptance checklist
+- Rack server ve enterprise-heavy ürünlerin gelecek L3/L4 assignability, policy ve
+  exact boundary'si ayrıca review edilecektir.
+- Bank/payment POS terminal consumer taxonomy'ye sessizce atanmaz; merchant-equipment
+  veya policy review tamamlanana kadar **TBD** kalır ve L2 oluşturmaz.
+- Full L3/L4 tree, stable identity bridge ve eski dört-L2 tree için move/rename/
+  successor mapping ayrı controlled taxonomy/integration işidir.
+
+Tek taxonomy owner; final L2 kararını mevcut tree ile reconcile etmeli ve gerçek
+L3/L4 ağacını controlled biçimde tasarlamalıdır. Bu owner-final belge tek başına
+JSON/runtime'a uygulanmaz.
+
+### Finalization acceptance checklist
 
 - Canonical L1 **Bilgisayar & Tablet** değişmedi: **PASS**
-- Önerilen L2: **11**; duplicate L2: **0**
+- Final L2: **11**; exact name/order: **PASS**; duplicate L2: **0**
 - Electronics leakage guard: **PASS**
 - Gaming boundary: **PASS**
-- Printer / Kırtasiye & Ofis boundary: **PASS — toner/kartuş owner decision open**
+- Printer / Kırtasiye & Ofis boundary: **PASS — toner/kartuş resolved**
+- 3D printer / filament boundary: **PASS — resolved**
+- Raspberry Pi / Arduino separation: **PASS — resolved**
+- POS: **TBD — intentionally unassigned**
 - Brand-as-category: **0**
 - Attribute-as-category: **0**
 - Components micro-L2 inflation: **0**
@@ -283,7 +301,13 @@ controlled biçimde tasarlamalıdır. Bu proposal tek başına JSON/runtime'a uy
 
 `COMPUTER_TABLET_L2_ARCHITECTURE: PASS`
 
-`COMPUTER_TABLET_L2_READY_FOR_OWNER_REVIEW: YES`
+`COMPUTER_TABLET_L2_OWNER_APPROVAL: FINAL`
+
+`COMPUTER_TABLET_L2_COUNT: 11`
+
+`ELECTRONICS_COMPUTER_BOUNDARY: PASS`
+
+`READY_FOR_B2_INTEGRATION: YES`
 
 `READY_FOR_L3_L4: NO`
 
