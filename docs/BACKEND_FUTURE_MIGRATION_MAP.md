@@ -19,4 +19,3 @@
 
 Each row requires a per-wave migration owner, read/write compatibility test,
 backfill counts, reconciliation and rollback/forward-fix plan.
-

@@ -18,4 +18,3 @@
 New tables are justified only by a stable identity, lifecycle, authorization or
 transaction boundary that current rows cannot express safely. Derived state should
 be recomputable and not duplicate canonical truth without reconciliation.
-

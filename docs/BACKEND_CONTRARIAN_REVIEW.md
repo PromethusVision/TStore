@@ -25,4 +25,3 @@ complex organization hierarchies, universal variants, automated moderation,
 Reward, Ads billing and public reputation until actual usage proves the need.
 
 `OWNER_SELECTIONS: 0`
-

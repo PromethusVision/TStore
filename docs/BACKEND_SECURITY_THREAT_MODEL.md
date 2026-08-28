@@ -35,4 +35,3 @@
 Security controls remain layered: authentication, RLS, RPC authorization,
 constraints, idempotency, audit, monitoring and safe client behavior. No single
 layer, including UI hiding, is sufficient.
-

@@ -25,4 +25,3 @@ cursor order. Partial/covering/geospatial/text indexes are candidates only after
 query-plan evidence. Every index has write/storage cost, deployment lock/build
 risk, rollback and duplicate-index audit. Exact additions are implementation
 decisions, not Product Owner decisions.
-

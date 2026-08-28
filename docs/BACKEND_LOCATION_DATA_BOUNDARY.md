@@ -23,4 +23,3 @@ labelled synthetic/approximate and never become exact address claims.
 Saved addresses/locations are `CUSTOMER_PRIVATE`; shipping/fulfilment is not
 implicitly authorized by nearby search. Precise retention, coarse-cell size and
 location analytics are `OWNER_DECISION_REQUIRED` with privacy/legal review.
-

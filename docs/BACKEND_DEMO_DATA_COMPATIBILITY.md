@@ -23,4 +23,3 @@ fixed namespace; products carry explicit demo marker and shops use `[DEMO]` name
 Organization/variant backfills must leave these rows null/unresolved unless a new
 owner-authorized demo artifact supplies evidence. Existing cleanup is exact-ID and
 must not run after user dependencies without fresh impact analysis.
-

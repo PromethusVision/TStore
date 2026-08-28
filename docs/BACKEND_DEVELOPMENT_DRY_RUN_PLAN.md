@@ -17,4 +17,3 @@
 
 Development remote use, if later authorized, follows exact project identity and
 fixture cleanup. This document performs no local or remote database execution.
-

@@ -32,4 +32,3 @@
 Every RPC still requires execute-grant tests, invoker identity, exact resource
 scope, validation, safe errors and search-path review. The review does not propose
 deleting currently used RPCs.
-

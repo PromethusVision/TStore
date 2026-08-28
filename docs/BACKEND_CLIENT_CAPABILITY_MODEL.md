@@ -20,4 +20,3 @@ cursor version or push delivery. They do not represent user permission.
 Do not negotiate every field or create combinatorial flags. Prefer additive API
 compatibility; use capability checks for genuinely optional/incompatible behavior.
 User membership/capability is evaluated separately on every mutation.
-

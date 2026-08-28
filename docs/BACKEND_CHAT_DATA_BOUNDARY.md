@@ -21,4 +21,3 @@ the minimum needed fields.
 Metrics use counts/latency/outcomes, not message meaning by default. Automated
 content analysis, encryption model, retention and customer deletion behavior are
 `OWNER_DECISION_REQUIRED` with privacy/policy review.
-

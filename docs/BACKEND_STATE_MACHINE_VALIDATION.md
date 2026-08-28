@@ -23,4 +23,3 @@ Transition checks occur atomically with effects and audit/outbox where required.
 Concurrent stale transitions return conflict; they are not coerced to the latest
 state. Exact state names remain domain implementation choices unless already
 canonical.
-

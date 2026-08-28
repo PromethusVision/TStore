@@ -21,4 +21,3 @@ Merchant cannot edit canonical product truth, customer reviews/ratings, reward
 ledger, reputation projection or customer private history. Campaign/ads, complex
 organization, bulk imports and advanced analytics are separately gated. Exact V1
 surface is `OWNER_DECISION_REQUIRED`.
-

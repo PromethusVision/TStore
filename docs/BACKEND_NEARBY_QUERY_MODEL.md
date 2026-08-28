@@ -27,4 +27,3 @@ public only at the approved precision.
 The demo `NEIGHBORHOOD_CENTER` coordinates support functional distance behavior
 but are not exact addresses. Precision, maximum radius and personalized retention
 are `OWNER_DECISION_REQUIRED` with privacy review.
-

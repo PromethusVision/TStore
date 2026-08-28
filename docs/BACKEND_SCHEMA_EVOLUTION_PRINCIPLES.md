@@ -19,4 +19,3 @@
 
 Avoid default values that invent business truth, trigger-based dual-write without
 reconciliation, silent enum coercion and rewriting applied migrations.
-

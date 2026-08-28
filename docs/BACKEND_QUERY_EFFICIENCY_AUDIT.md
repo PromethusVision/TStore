@@ -25,4 +25,3 @@ that leaks cross-shop/customer data is a failure.
 
 Pilot demo cardinality is insufficient proof of future scale, but also insufficient
 reason for an external search/cache platform now.
-

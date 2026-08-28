@@ -20,4 +20,3 @@ Options include fixed periods, event-driven deletion, tiered raw→aggregate and
 legal/policy hold. Holds are scoped, approved and audited; they do not silently
 retain everything. Exact periods, jurisdictional duties and user disclosures are
 `OWNER_DECISION_REQUIRED` with qualified legal/privacy review.
-

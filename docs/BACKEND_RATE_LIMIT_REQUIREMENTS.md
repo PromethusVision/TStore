@@ -20,4 +20,3 @@ Distributed/account-rotation abuse needs aggregate detection, but device/IP data
 privacy-sensitive. Accessibility, shared networks, retry storms and emergency
 operations require safe exceptions. Exact thresholds and customer messaging are
 `OWNER_DECISION_REQUIRED` only where they materially change product access.
-

@@ -27,4 +27,3 @@ Inactive/policy-blocked rows fail closed even when the index is stale. Sponsored
 ranking is separately labelled and cannot replace organic relevance. Mutable names
 are not identity. Raw query retention and personalization remain
 `OWNER_DECISION_REQUIRED`.
-

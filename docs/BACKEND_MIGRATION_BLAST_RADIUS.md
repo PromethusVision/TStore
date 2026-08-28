@@ -22,4 +22,3 @@
 - RLS/RPC/concurrency and Customer N/N-1 matrix;
 - canary/read-first postflight, explicit abort owner and forward-repair plan;
 - destructive retirement only in a later separately authorized wave.
-

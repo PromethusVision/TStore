@@ -26,4 +26,3 @@ precise location.
 Search text, IP/network, device/session and coarse geography can still be personal
 or sensitive. Exact consent/legal basis and retention require policy/legal review;
 this document does not finalize them.
-

@@ -21,4 +21,3 @@ and product purpose. They are not migrations or shortcuts around Auth/RLS/trust.
 
 Generated artifact, generator and validator must agree byte-for-byte. Real customer
 activity makes destructive cleanup a new risk decision, not an automatic seed step.
-

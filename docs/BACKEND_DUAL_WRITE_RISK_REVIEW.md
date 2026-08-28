@@ -21,4 +21,3 @@ retirement criterion. Two independent client requests are prohibited. Trigger
 mirroring is not automatically safer and can hide recursion/lock/failure behavior.
 
 No current transition is proven to require long-lived dual-write.
-

@@ -18,4 +18,3 @@ Search, dashboard and analytics projections do not require the originating busin
 transaction unless they become authoritative. Asynchronous derivation must be
 idempotent, observable and reconcilable. Cross-service/distributed transactions
 are not proposed for V1.
-

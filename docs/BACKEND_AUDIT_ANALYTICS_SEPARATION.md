@@ -21,4 +21,3 @@ Never copy passwords, tokens, raw QR, private chat/review content, full evidence
 documents or precise unnecessary location into either system. Audit export and
 analytics re-identification are privileged, recorded actions. Retention and legal
 hold classes remain `OWNER_DECISION_REQUIRED`.
-

@@ -28,4 +28,3 @@ idempotency/revisions, focused audit and data classification. Keep public reads
 simple. Defer infrastructure and automation until measurable threats/scale justify
 them. P0 trust boundaries fail closed; low-risk availability failures degrade
 safely and remain observable.
-

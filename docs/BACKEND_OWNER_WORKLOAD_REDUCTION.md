@@ -21,4 +21,3 @@ not auto-resolved by an architecture recommendation.
 Recommended review order: ROOT-01, ROOT-03, ROOT-05, ROOT-07, ROOT-02, ROOT-04,
 ROOT-06, ROOT-12, ROOT-09, ROOT-08; ROOT-10 and ROOT-11 may follow when their
 features/lifecycle become active.
-

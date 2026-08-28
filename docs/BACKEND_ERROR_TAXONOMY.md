@@ -21,4 +21,3 @@ Each response includes stable code, safe localized message key/details, optional
 field/retry/correlation and contract version. It excludes raw SQL, stack, policy
 internals, another subject's existence and abuse signals. Domain success-with-
 original-result is not mislabeled as duplicate failure.
-

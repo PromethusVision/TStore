@@ -20,4 +20,3 @@ derived customer behavior public. Pseudonymous IDs remain personal when linkable
 Every class defines collection purpose, owner, authorized roles, encryption/logging
 posture, export, retention/deletion and incident handling before implementation.
 Unknown fields fail to the more restrictive class.
-

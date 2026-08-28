@@ -21,4 +21,3 @@ and unsupported-client error before introducing a new version.
 QR/review current RPCs should evolve additively where possible; merchant organization
 and variant commands may justify new versioned surfaces. Exact version set is a
 technical design decision following caller inventory.
-

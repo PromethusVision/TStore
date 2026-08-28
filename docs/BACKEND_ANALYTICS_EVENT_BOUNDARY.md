@@ -33,4 +33,3 @@ Use a selective transactional outbox only where losing a committed domain fact
 would break a required downstream contract. Best-effort telemetry must never be
 placed inside a critical purchase transaction. Exact pilot registry and retention
 remain `OWNER_DECISION_REQUIRED`.
-

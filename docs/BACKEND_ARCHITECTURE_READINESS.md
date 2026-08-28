@@ -26,4 +26,3 @@
 No area is marked implementation-complete. `MINOR_GAP` denotes an external policy
 decision, not missing runtime work. There are no architecture `MAJOR_GAP` findings
 after the QA audits.
-

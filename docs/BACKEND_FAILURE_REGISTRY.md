@@ -30,4 +30,3 @@ would become a product/security failure if the required control were absent.
 
 No P0 is accepted as pilot debt. P1 requires mitigation/test before the affected
 feature launches. P2/P3 may be scheduled with explicit bounds and monitoring.
-

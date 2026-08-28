@@ -26,4 +26,3 @@
 
 Remaining owner decisions concern visibility/retention policy, not ambiguous
 authorization mechanics.
-

@@ -24,4 +24,3 @@ Low-count customer breakdowns, UUID/contact, exact journey/location and private
 review/chat content are prohibited. Complete local-day and 7/30-day windows are
 preferred over misleading partial comparisons. Final metrics and thresholds are
 `OWNER_DECISION_REQUIRED`.
-

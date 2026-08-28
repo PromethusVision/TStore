@@ -24,4 +24,3 @@ Offset pagination is acceptable only for small, immutable/admin-bounded sets or
 diagnostics with documented limits. Cursor contents must not expose PII, raw query
 text or authorization secrets. Counts are separately costed and may be estimated
 only when labelled.
-

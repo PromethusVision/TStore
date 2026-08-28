@@ -21,4 +21,3 @@ coexist for customer discovery only when clearly labelled and policy-approved.
 
 Public UI labelling and whether demo entities remain after real onboarding are
 `OWNER_DECISION_REQUIRED`. Historical events preserve their demo/test flag.
-

@@ -18,4 +18,3 @@
 Highest leverage for Merchant V1 is RF-01 + RF-02 + RF-10. Highest leverage for
 safe catalog evolution is RF-03 + RF-04 + RF-09. These are architectural rules,
 not a proposal to implement every future subsystem before the pilot.
-

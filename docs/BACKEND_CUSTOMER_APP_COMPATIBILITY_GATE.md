@@ -34,4 +34,3 @@
 
 No migration is “successful” until both schema postflight and client behavior
 pass. A UI feature flag cannot compensate for broken authorization.
-

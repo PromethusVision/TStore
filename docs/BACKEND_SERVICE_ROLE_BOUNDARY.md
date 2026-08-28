@@ -25,4 +25,3 @@ Suspected client/log exposure is P0: stop affected automation, revoke/rotate thr
 authorized secret management, inspect access/audit and notify security owner. Do
 not print the value while diagnosing. Secret scanners test patterns and forbidden
 client initialization without reading unrelated `.env` values.
-

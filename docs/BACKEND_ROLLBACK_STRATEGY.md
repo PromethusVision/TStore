@@ -18,4 +18,3 @@ Rollback must not re-enable a security vulnerability, accept weaker authorizatio
 or make new-client writes unreadable. Define trigger, decision owner, maximum time,
 data-loss expectation, client compatibility, audit and post-rollback reconciliation.
 Production rollback remains a separately authorized operational action.
-

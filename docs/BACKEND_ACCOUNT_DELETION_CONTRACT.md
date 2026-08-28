@@ -24,4 +24,3 @@ Deletion must preview dependencies, be idempotent, block new sessions/mutations 
 reconcile partial external Auth/Storage effects. Exact historical retention,
 pseudonymization and user-visible explanations are `OWNER_DECISION_REQUIRED` with
 legal/privacy review. This design authorizes no deletion implementation.
-

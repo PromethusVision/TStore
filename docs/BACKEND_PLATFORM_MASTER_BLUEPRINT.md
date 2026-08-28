@@ -132,4 +132,3 @@ physical QR, Development and Production acceptance remain mandatory before launc
 `OWNER_FINALIZATION_PERFORMED: NO`
 
 `RUNTIME_IMPLEMENTATION: NO`
-

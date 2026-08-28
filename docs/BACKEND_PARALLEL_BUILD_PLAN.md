@@ -30,4 +30,3 @@
   commits and owns combined backward-compatibility evidence.
 - Remote apply, Production write and destructive cleanup always require separate
   explicit authority.
-

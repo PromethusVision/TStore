@@ -20,4 +20,3 @@ validity internals, another subject's existence or abuse thresholds.
 Wrong-shop/QR replay may use product-safe specific wording only for an already
 authorized verifier; unauthenticated probing receives a non-enumerating result.
 Fraud suspicion, watchlists and internal policy logic are never sent to clients.
-

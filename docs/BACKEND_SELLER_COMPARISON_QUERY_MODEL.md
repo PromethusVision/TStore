@@ -29,4 +29,3 @@ active shops.
 Whether unavailable/unknown listings appear and default sort are
 `OWNER_DECISION_REQUIRED`. The current 14–15 demo sellers per product remain a
 useful query-contract fixture, not a production cardinality promise.
-

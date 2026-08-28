@@ -32,4 +32,3 @@
 
 Implementation details such as exact index type, lock primitive, function name,
 batch size or outbox transport are deliberately excluded from Product Owner work.
-

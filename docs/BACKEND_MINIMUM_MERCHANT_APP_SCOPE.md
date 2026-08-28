@@ -33,4 +33,3 @@
 Merchant additions must be additive. Existing Customer reads and canonical QR,
 verified-purchase and review behavior remain valid while Merchant App versions
 roll out independently.
-

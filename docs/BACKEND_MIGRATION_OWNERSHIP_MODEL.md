@@ -28,4 +28,3 @@
 
 Changing an already-applied migration is prohibited. Correct it with a new
 forward migration and preserve the ledger/history evidence.
-

@@ -20,4 +20,3 @@ Use exact read-only postflight queries and bounded logs. Row samples use synthet
 opaque references with restricted access. Alert thresholds and dashboards exist
 before Production apply; an absence of application errors is not proof of complete
 backfill. Observability is evidence, not permission to auto-remediate.
-

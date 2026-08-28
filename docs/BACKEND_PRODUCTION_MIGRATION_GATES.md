@@ -21,4 +21,3 @@ rewrite migration history. After apparent success, authoritative postflight and
 customer/merchant smoke are required before PASS.
 
 Committing this plan or a future migration file never authorizes Production apply.
-

@@ -23,4 +23,3 @@ may call the backend simultaneously.
 Test N/N-1 overlap, old customer with new schema, new merchant with old customer,
 offline/retry after deployment and rollback. Forced upgrade is reserved for an
 incompatible security/data-integrity requirement and needs an owner release decision.
-

@@ -22,4 +22,3 @@ Reject duplicate JSON keys, unexpected free-form metadata for authoritative even
 unsafe wildcard/filter/sort expressions and dynamic SQL identifiers. Error output
 identifies a safe field/reason class, not internal constraint/row data. Validation
 changes are versioned and backward-compatible or explicitly gated.
-

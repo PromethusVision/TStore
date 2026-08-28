@@ -23,4 +23,3 @@ No generic table editor, arbitrary SQL endpoint, bucket-wide upload/delete or
 unsafe conflicts. Production use requires separate authorization and change
 window. Whether the pilot needs a dedicated service or controlled operator
 functions is implementation planning, not an owner product choice.
-

@@ -25,4 +25,3 @@ The backend may optimize a read behind a compatible projection/RPC only after re
 ordering, filtering, pagination and error equivalence tests. A security requirement
 may require upgrade, but never a silent weaker fallback. Legacy orders stay clearly
 separate from verified physical-purchase truth.
-

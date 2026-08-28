@@ -26,4 +26,3 @@
 
 The committed stress matrices are design coverage, not substitutes for executable
 database or physical-device acceptance.
-

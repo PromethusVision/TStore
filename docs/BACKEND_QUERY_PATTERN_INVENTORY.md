@@ -34,4 +34,3 @@ Each query needs owner, cardinality assumption, selected fields, order, paginati
 freshness, authorization, expected index evidence and a slow-query threshold.
 Current generic Supabase helpers do not justify selecting `*` on growing/private
 tables.
-

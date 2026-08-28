@@ -25,4 +25,3 @@ all fields; each surface uses purpose-specific projections.
 No shared service-role client, global mutable cache across users or one generic
 “user role” authorization helper. Contract packages may share enums/value objects
 only after unknown-version behavior and backward compatibility are proven.
-

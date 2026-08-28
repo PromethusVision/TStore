@@ -26,4 +26,3 @@
 Any project mismatch, unexplained drift, cross-tenant access, duplicate verified
 purchase, review eligibility regression, residual fixture or rollback uncertainty
 is a STOP condition. This document grants no remote access or apply authority.
-

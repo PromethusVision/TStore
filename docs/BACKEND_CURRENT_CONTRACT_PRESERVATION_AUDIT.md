@@ -23,4 +23,3 @@ to client-defined roles, introducing universal variants, or forcing an event
 platform before consumers exist.
 
 No A–CA document required correction in this audit.
-
