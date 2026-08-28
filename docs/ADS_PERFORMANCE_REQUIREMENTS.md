@@ -15,7 +15,7 @@ priority; ad selection runs within a strict sub-budget and fails open to organic
 | Candidate retrieval | Bounded result count, stable IDs, indexed context |
 | Eligibility | Batched/current projections; no N+1 per candidate |
 | Selection | Deterministic bounded work; no auction network chain in V1 |
-| Disclosure render | Local component contract; no late label fetch |
+| Disclosure render | Local component contract with textual `Sponsorlu`; no late label fetch |
 | Measurement | Async/non-blocking after qualified client/server event |
 | Deadline | Ad work must finish materially inside organic end-to-end SLO |
 

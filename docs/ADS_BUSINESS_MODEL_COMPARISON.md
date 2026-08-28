@@ -1,6 +1,6 @@
 # EsnaftaVar Monetization — Business Model Comparison
 
-**State:** PROPOSED FOR PRODUCT OWNER REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER REVIEW
 **Scope:** Qualitative business-model comparison. No price, forecast, revenue promise, payment implementation, or owner-final choice.
 
 ## 1. Context and Unknowns
@@ -164,4 +164,3 @@ Revenue alone is insufficient; margin after operating/risk costs and impact on t
 ## 11. Conclusion
 
 There is no evidence-backed basis here for selecting ads, subscription, a price, or a revenue forecast as final. The lowest-complexity path is to validate organic marketplace value and subscription willingness first. If advertising learning is still desired, use shadow measurement and then a tightly bounded non-auction flat pilot. Auction and combined subscription-plus-ads models should wait for density and operating evidence.
-

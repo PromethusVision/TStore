@@ -1,6 +1,6 @@
 # Sponsored Advertising — Product Domain Eligibility Matrix
 
-**State:** PROPOSED FOR PRODUCT OWNER AND POLICY REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER AND POLICY REVIEW
 **Scope:** Design-only risk triage across the 24 owner-final Product Taxonomy L1 domains. This is not a runtime allowlist, legal opinion, or product-level approval.
 
 ## 1. Interpretation
@@ -114,4 +114,3 @@ Unknown evidence is not positive evidence.
 ## 8. Recommendation
 
 Treat the matrix as conservative policy routing. Start V1 with a narrow owner-approved product allowlist, not an L1-wide opt-in. Expand only after exact evidence, moderation, dispute, and audit controls are proven.
-

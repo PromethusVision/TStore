@@ -1,6 +1,6 @@
 # Sponsored Advertising — Reward and Gamification Decoupling
 
-**State:** PROPOSED FOR PRODUCT OWNER REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER REVIEW
 **Scope:** Design only; no reward, loyalty, advertising, billing, or verified-purchase runtime change.
 
 ## 1. Purpose
@@ -130,4 +130,3 @@ Until that gate is complete, such mechanics remain prohibited rather than merely
 ## 12. Recommendation
 
 Launch advertising and rewards as fully decoupled V1 systems. Allow only privacy-minimized reporting of independently verified outcomes. Do not reward impressions/clicks, sell reputation, or change reward value based on sponsorship.
-

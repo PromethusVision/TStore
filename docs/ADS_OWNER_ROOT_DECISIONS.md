@@ -1,6 +1,6 @@
 # Sponsored Advertising — Root Owner Decisions
 
-**State:** OPEN — PRODUCT OWNER DECISIONS REQUIRED  
+**State:** OPEN — PRODUCT OWNER DECISIONS REQUIRED
 **Scope:** Decision digest only. Recommendations are research/design proposals, not owner choices or implementation authority.
 
 ## 1. Priority Meaning
@@ -283,4 +283,3 @@ No item below is marked approved. A recommendation records the design team's pre
 ## 4. Go/No-Go Rule
 
 If a P0 choice remains unresolved, any dependent design remains proposal-only. If merchant/product policy, listing freshness, disclosure, organic fallback, budget integrity, privacy, invalid traffic, billing dispute, or operational kill-switch contracts remain unresolved, customer-facing paid serving should not launch.
-

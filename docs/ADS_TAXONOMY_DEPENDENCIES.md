@@ -1,6 +1,6 @@
 # Sponsored Advertising — Taxonomy Dependencies
 
-**State:** PROPOSED FOR PRODUCT OWNER REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER REVIEW
 **Scope:** Design only; no runtime, database, ranking, billing, or taxonomy mutation.
 
 ## 1. Purpose
@@ -141,4 +141,3 @@ If taxonomy resolution fails, is stale, or becomes ambiguous:
 ## 11. Recommendation
 
 For V1, allow only owner-final Product Taxonomy stable targets after stable IDs exist, use Merchant Taxonomy only as an eligibility/review signal, and keep facets as contextual refinements. Any split, unresolved proposal, or policy-sensitive taxonomy change should fail closed for the sponsored candidate while organic discovery continues unchanged.
-

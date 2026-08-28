@@ -1,6 +1,6 @@
 # Sponsored Advertising — V1 vs Future Scope
 
-**State:** PROPOSED FOR PRODUCT OWNER REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER REVIEW
 **Scope:** Deliberate scope minimization; no roadmap item is owner-final or implemented.
 
 ## 1. V1 Challenge
@@ -115,4 +115,3 @@ Before expanding surface, pricing, targeting, or self-service scope:
 ## 8. Recommendation
 
 Do not implement a broad “simple ads” feature. Either launch without ads or conduct a narrow, manually controlled, non-auction sponsored-listing pilot after every MUST_HAVE contract and root owner decision is closed. Defer behavioral targeting, auctions, CPA, rewards, seller comparison, and multi-surface expansion.
-

@@ -34,7 +34,7 @@
   dedup/label handling;
 - exact same product required for seller comparison;
 - no empty sponsored placeholder;
-- label present before measurement as qualified impression.
+- textual `Sponsorlu` label present before measurement as qualified impression.
 
 Exact density and thresholds require owner/usability testing.
 

@@ -1,6 +1,6 @@
 # Sponsored Advertising — Merchant Sector Eligibility Matrix
 
-**State:** PROPOSED FOR PRODUCT OWNER AND POLICY REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER AND POLICY REVIEW
 **Scope:** Design-only risk triage over the 67 proposed assignable merchant-sector leaves. No merchant taxonomy finalization, runtime allowlist, or legal conclusion.
 
 ## 1. Interpretation
@@ -176,4 +176,3 @@ Unknown status is not approval.
 ## 9. Recommendation
 
 Use Merchant Taxonomy only to route eligibility and review. Start with a narrow owner-approved intersection of merchant sectors and product types. Never let sector self-selection create product authority, regulated permission, or ranking advantage.
-

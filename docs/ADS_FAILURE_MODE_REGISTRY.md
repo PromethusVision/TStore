@@ -1,6 +1,6 @@
 # Sponsored Advertising — Failure Mode Registry
 
-**State:** PROPOSED FOR PRODUCT OWNER REVIEW  
+**State:** PROPOSED FOR PRODUCT OWNER REVIEW
 **Scope:** Architecture and operations design only; no runtime, schema, alert, or policy implementation.
 
 ## 1. Safety Invariants
@@ -109,4 +109,3 @@ Alerts and dashboards must use aggregate identifiers and role-scoped access. The
 3. What evidence qualifies an impression as billable when tracking acknowledgement is delayed?
 4. What are the merchant credit/refund rules for reporting or delivery disputes?
 5. What retention and access model applies to security, billing, and policy incident evidence?
-

@@ -26,7 +26,8 @@ disclosure gates.
    repeated or low-integrity candidates and apply new-merchant-safe thresholds.
 8. **Pacing/selection:** choose from remaining campaigns under budget/frequency/ad
    density controls. Bid is optional future input, never the only rank signal.
-9. **Interleave:** place the limited sponsored result with persistent disclosure;
+9. **Interleave:** place the limited sponsored result with persistent textual
+   `Sponsorlu` disclosure;
    leave the organic order unchanged below/around it.
 10. **Record decision:** immutable IDs, revision, eligibility reasons, context class
     and measurement event—not raw unnecessary personal data.

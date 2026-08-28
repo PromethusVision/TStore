@@ -1,6 +1,6 @@
 # Sponsored Advertising — Contrarian Review
 
-**State:** CHALLENGE FOR PRODUCT OWNER REVIEW  
+**State:** CHALLENGE FOR PRODUCT OWNER REVIEW
 **Scope:** Deliberately argues against premature advertising implementation. No owner decision, financial promise, or runtime change.
 
 ## 1. Executive Challenge
@@ -141,4 +141,3 @@ Failure to answer these is evidence for postponement, not a reason to implement 
 Prefer subscription/organic discovery or no monetized promotion at initial release. Complete catalog, merchant, organic search, policy, and analytics foundations first. If the owner still wants ad learning, run a Development-only shadow experiment followed by a tiny, non-auction, Search-only, low-risk, manually reviewed pilot. Keep seller comparison, behavioral targeting, auctions, CPA, and multi-surface expansion out.
 
 The appropriate outcome of owner review may be **DO NOT BUILD ADS YET**. This foundation remains useful as a future risk map even if that is the decision.
-

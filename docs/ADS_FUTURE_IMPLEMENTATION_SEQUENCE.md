@@ -1,6 +1,6 @@
 # Sponsored Advertising — Future Implementation Sequence
 
-**State:** PROPOSED SEQUENCE AFTER OWNER REVIEW  
+**State:** PROPOSED SEQUENCE AFTER OWNER REVIEW
 **Scope:** Analysis only. This is not authorization to implement schema, payments, environment configuration, or Production advertising.
 
 ## 1. Sequencing Principle
@@ -241,4 +241,3 @@ Run a product-owner decision workshop using `ADS_OWNER_ROOT_DECISIONS.md`, `ADS_
 `NEXT_GATE: PRODUCT_OWNER_DECISIONS`
 
 `PRODUCTION_CHANGE_AUTHORIZED: NO`
-
