@@ -1,0 +1,22 @@
+DOMAIN,RESOURCE,OPERATION,ANON,CUSTOMER_OWN,CUSTOMER_OTHER,MERCHANT,OPERATOR,CONTRACT
+Identity,profile,read,DENY,ALLOW_SAFE_PRIVATE,DENY,DENY,CASE_SCOPED,Own profile only
+Identity,profile,update,DENY,ALLOW_ALLOWLIST,DENY,DENY,DEDICATED_ACTION,Role and ownership immutable
+Identity,legal_consent,read,DENY,ALLOW,DENY,DENY,CASE_SCOPED,Own consent history
+Location,address_saved_location,crud,DENY,ALLOW,DENY,DENY,CASE_SCOPED,Owner ID server bound
+Wishlist,wishlist,crud,DENY,ALLOW,DENY,DENY,DENY,Own rows only
+Cart,cart_cart_item,read_write,DENY,ALLOW_ACTIVE,DENY,DENY,CASE_SCOPED,One customer and one shop
+Catalog,category_product,read,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_SCOPED,Public projection only
+Marketplace,shop_listing,read,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_ACTIVE,ALLOW_SCOPED,Public active projection
+QR,qr_session,issue,DENY,RPC_OWN_CART,DENY,DENY,DENY,Server issues opaque token
+QR,qr_session,read,DENY,ALLOW_PARTICIPANT,DENY,ALLOW_EXACT_SHOP,CASE_SCOPED,No raw token disclosure
+Purchase,verified_purchase,read,DENY,ALLOW_PARTICIPANT,DENY,ALLOW_EXACT_SHOP,CASE_SCOPED,Historical safe projection
+Review,review,read,ALLOW_VISIBLE,ALLOW_VISIBLE,ALLOW_VISIBLE,ALLOW_VISIBLE,ALLOW_SCOPED,Public visible review
+Review,review,create_update_delete,DENY,RPC_VERIFIED_OWNER,DENY,DENY,DEDICATED_ACTION,No direct mutation
+Rating,shop_rating,submit,DENY,RPC_VERIFIED_PARTICIPANT,DENY,DENY,DENY,One governed rating contract
+Chat,chat_message,read,DENY,ALLOW_PARTICIPANT,DENY,ALLOW_ASSIGNED_PARTICIPANT,CASE_SCOPED,No organization-wide browse
+Chat,chat_message,send,DENY,ALLOW_PARTICIPANT,DENY,ALLOW_ASSIGNED_PARTICIPANT,DENY,Server validates recipient context
+Notification,notification,read_mutate,DENY,ALLOW_RECIPIENT,DENY,DENY,CASE_SCOPED,Recipient only
+Media,public_media,read,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_SCOPED,Canonical buckets and safe paths
+Media,media_object,write,DENY,DENY,DENY,CAPABILITY_SCOPED,DEDICATED_ACTION,No broad authenticated CRUD
+Account,customer_account,delete,DENY,RPC_CURRENT_CUSTOMER,DENY,DENY,DEDICATED_ACTION,Fresh auth and exact cascade contract
+

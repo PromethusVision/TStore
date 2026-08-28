@@ -1,0 +1,19 @@
+ACTION,SUPPORT,MODERATOR,MERCHANT_VERIFICATION,CATALOG_REVIEWER,POLICY_REVIEWER,BREAK_GLASS,SERVER_REQUIREMENT
+View assigned case,ALLOW,ALLOW,PROPOSE,PROPOSE,PROPOSE,ALLOW,Case and field scope
+View minimized customer or merchant,ALLOW,ALLOW,ALLOW,ALLOW,ALLOW,ALLOW,Purpose and access audit
+Verify ordinary merchant,PROPOSE,DENY,ALLOW,DENY,PROPOSE,ALLOW,Policy and evidence
+Verify regulated merchant,DENY,DENY,PROPOSE,DENY,TWO_PERSON_CANDIDATE,ALLOW,Policy legal owner gate
+Suspend merchant,PROPOSE,PROPOSE,PROPOSE,DENY,TWO_PERSON_CANDIDATE,ALLOW,Case impact and expiry
+Review listing or media,PROPOSE,ALLOW,PROPOSE,PROPOSE,PROPOSE,ALLOW,Dedicated action
+Approve product candidate,PROPOSE,DENY,DENY,ALLOW,PROPOSE,ALLOW,Provenance and version
+Merge canonical product,DENY,DENY,DENY,TWO_PERSON_CANDIDATE,PROPOSE,TWO_PERSON_CANDIDATE,Preview lineage idempotency
+Split canonical product,DENY,DENY,DENY,TWO_PERSON_CANDIDATE,TWO_PERSON_CANDIDATE,TWO_PERSON_CANDIDATE,No default child
+Moderate review,PROPOSE,ALLOW,DENY,DENY,PROPOSE,ALLOW,Review history retained
+Correct verified purchase,PROPOSE,PROPOSE,PROPOSE,DENY,TWO_PERSON_CANDIDATE,TWO_PERSON_CANDIDATE,Append correction only
+Adjust reward or reputation,PROPOSE,PROPOSE,PROPOSE,DENY,TWO_PERSON_CANDIDATE,TWO_PERSON_CANDIDATE,Ledger or signal correction
+Review ad campaign,PROPOSE,ALLOW,PROPOSE,DENY,ALLOW,ALLOW,Ads cannot buy trust
+Export PII or evidence,DENY,PROPOSE,PROPOSE,PROPOSE,PROPOSE,TWO_PERSON_CANDIDATE,Minimized time-bound audited
+Grant operator capability,DENY,DENY,DENY,DENY,DENY,TWO_PERSON_CANDIDATE,Fresh auth and expiry
+Use break glass,DENY,DENY,DENY,DENY,DENY,ALLOW,Time-bound alerted retrospective review
+Erase audit,DENY,DENY,DENY,DENY,DENY,DENY,Superseding event only
+

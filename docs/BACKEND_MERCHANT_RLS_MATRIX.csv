@@ -1,0 +1,22 @@
+DOMAIN,RESOURCE,OPERATION,UNAUTH,ACTIVE_EXACT_SHOP,ACTIVE_SIBLING_SHOP,REVOKED,SUSPENDED,CONTRACT
+Organization,organization_private,read,DENY,CAPABILITY_SCOPED,CAPABILITY_SCOPED,DENY,DENY,Minimum fields only
+Membership,membership,read,DENY,SELF_OR_STAFF_MANAGE,SELF_OR_STAFF_MANAGE,SELF_HISTORY_ONLY,DENY,No broad staff directory
+Membership,membership,grant_revoke,DENY,STAFF_MANAGE_SCOPED,DENY,DENY,DENY,Cannot delegate broader authority
+Shop,shop_private,read,DENY,SHOP_VIEW,DENY,DENY,DENY,Exact shop scope
+Shop,shop_profile,update,DENY,SHOP_MANAGE,DENY,DENY,DENY,Ownership and policy immutable
+Listing,listing,read_private,DENY,LISTING_VIEW,DENY,DENY,DENY,Exact shop
+Listing,listing,create_update_retire,DENY,LISTING_MANAGE,DENY,DENY,DENY,Revision and idempotency required
+Catalog,canonical_product,mutate,DENY,DENY,DENY,DENY,DENY,Submit candidate only
+Catalog,product_candidate,submit,DENY,LISTING_MANAGE,DENY,DENY,DENY,Server provenance
+QR,qr_preview,read,DENY,QR_VERIFY,DENY,DENY,DENY,Minimal customer-safe data
+QR,qr_confirm,execute,DENY,QR_VERIFY,DENY,DENY,DENY,Atomic server RPC
+Purchase,verified_purchase,read,DENY,SHOP_VIEW,DENY,DENY,CASE_SCOPED,Exact shop projection
+Review,review,mutate,DENY,DENY,DENY,DENY,DENY,Merchant cannot edit customer review
+Review,review,report,DENY,SHOP_VIEW,DENY,DENY,DENY,Creates ops case only
+Chat,shop_chat,read_send,DENY,ASSIGNED_CHAT_SCOPE,DENY,DENY,DENY,Participant assignment
+Analytics,merchant_aggregate,read,DENY,ANALYTICS_VIEW,DENY,DENY,DENY,Thresholded exact scope
+Ads,campaign,manage,DENY,CAMPAIGN_MANAGE,DENY,DENY,DENY,Listing eligibility independent
+Reward,reward_ledger,mutate,DENY,DENY,DENY,DENY,DENY,Merchant config cannot edit earned value
+Reputation,reputation,mutate,DENY,DENY,DENY,DENY,DENY,Dispute via case not direct edit
+Media,listing_media,write,DENY,LISTING_MANAGE,DENY,DENY,DENY,Prefix and ownership validated
+
