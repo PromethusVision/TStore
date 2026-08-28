@@ -33,4 +33,3 @@ State: `PROPOSED — NO TEST EXECUTION IN THIS WAVE`
 - Production smoke is read/minimal authorized journey only and cannot replace Development tests.
 
 Stress CSVs are conceptual coverage inventory; their `RESULT` remains `NOT_RUN` and must not be reported as executed runtime tests.
-

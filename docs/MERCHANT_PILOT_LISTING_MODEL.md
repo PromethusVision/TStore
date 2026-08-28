@@ -40,4 +40,3 @@ Operatör kaynak belge/foto/barcode ile başlangıç listingi hazırlayabilir; m
 ## Freshness
 
 Fiyat ve uygunluk ayrı ayrı doğrulanabilir. Freshness süresi owner kararıdır; sistem süresi geçmiş beyanı doğruymuş gibi parlatmamalı, notification üretmeli ve gerekirse availability'yi bilinmeyene indirmelidir.
-

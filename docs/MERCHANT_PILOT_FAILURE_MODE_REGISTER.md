@@ -24,4 +24,3 @@ State: `DESIGN REVIEW`
 | MPF-018 | Old client incompatible with migration | P1 | N/N-1 contract tests | Feature disable/hotfix |
 | MPF-019 | Merchant sees chart as audited revenue | P1 | Wording/tests | Correct UI/communication |
 | MPF-020 | Camera/device fleet incompatible | P1 | Physical matrix | Replace/defer shop/device |
-

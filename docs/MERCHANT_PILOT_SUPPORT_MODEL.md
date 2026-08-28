@@ -26,4 +26,3 @@ Actionable notifications: verification/suspension change, ownership/capability c
 ## Load expectation
 
 Model B'de yük ilk shop/listing bootstrap ve auth/QR eğitiminde yoğunlaşır; self-service freshness bunu azaltır. Model C'de her fiyat/availability değişimi operatöre akar, gecikme ile customer truth bozulur ve support ölçeklenmez. Support load pilot KPI'dır, başarıya makyaj yapılmaz.
-

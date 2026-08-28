@@ -33,4 +33,3 @@ Grant, revoke, suspend, shop change ve policy change actor/reason/evidence/befor
 - Capability eksik: güvenli açıklama + correlation ID; veri sızıntısı yok.
 - Birden fazla shop döndü: pilot UI rastgele seçmez; güvenli seçim veya ops review gerekir.
 - Membership belirsiz: allow değil deny.
-

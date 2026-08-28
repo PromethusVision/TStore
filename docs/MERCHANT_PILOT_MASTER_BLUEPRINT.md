@@ -75,4 +75,3 @@ Measure onboarding contacts, time-to-first-current-listing, stale/unknown rate, 
 ## Non-final recommendation
 
 Model B, Android-only merchant pilot option, single-owner ordinary shops and staged QR subset are the smallest trustworthy configuration. This is an agent recommendation, not Product Owner approval.
-

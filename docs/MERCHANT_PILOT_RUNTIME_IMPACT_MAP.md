@@ -35,4 +35,3 @@ Bu harita uygulama sırasında incelenecek mevcut alanları gösterir; dosya sah
 3. Customer app merchant routes retained temporarily (highest boundary confusion).
 
 Dedicated Merchant App remains architectural direction; exact packaging is engineering/integration decision. Pilot scope must not become a reason to expose merchant controls to customer users.
-

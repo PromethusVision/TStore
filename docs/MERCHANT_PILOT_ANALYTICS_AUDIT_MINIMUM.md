@@ -17,4 +17,3 @@ High-risk event: immutable event ID, actor/role, shop/listing/session reference,
 ## Separation
 
 Product analytics, operator audit ve security telemetry aynı amaç gibi kullanılmaz. Test/demo traffic işaretlenir; dashboard metriği server authority'nin yerini tutmaz.
-

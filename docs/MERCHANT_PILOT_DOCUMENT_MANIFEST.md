@@ -66,4 +66,3 @@ State: `39 ARTIFACTS — COMPLETE`
 - Total artifacts: 39.
 - All paths use the required `docs/MERCHANT_PILOT_*` namespace.
 - Existing canonical and coordination documents are not modified.
-

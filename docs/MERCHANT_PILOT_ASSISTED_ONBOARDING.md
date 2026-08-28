@@ -37,4 +37,3 @@ Küçük cohorttaki esnafın ilk shop ve listing verisini hızla kurmasına yard
 ## Zaman kutusu ve çıkış
 
 Assisted model her shop için ölçülür: onboarding dakika/temas sayısı, listing correction, freshness lapse ve QR support. Merchant temel listing doğruluğunu kendi sürdüremiyorsa Model C kalıcılaştırılmaz; capability veya cohort kararı yeniden incelenir. Operator path için kapatma hedefi owner gate'idir, takvim vaadi değildir.
-

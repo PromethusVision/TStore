@@ -26,4 +26,3 @@ Bu çalışma 28 Ağustos 2026 tarihinde `origin/main@fca935fdbe3053d2d9aa4bbb7a
 - Kaynaklardaki gelecek mimarileri mevcut runtime gerçeği gibi sunmaz.
 - Güncel runtime yalnız statik incelenmiştir; Development/Production'a erişilmemiştir.
 - Uygulama anında kaynak HEAD'ler yeniden doğrulanmalı, çatışan owner-final karar varsa bu öneri güncellenmelidir.
-

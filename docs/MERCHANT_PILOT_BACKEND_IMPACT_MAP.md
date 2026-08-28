@@ -34,4 +34,3 @@ Likely additive schema/RPC work exists, but exact DDL is deferred. Do not rewrit
 - Pilot merchants/shops verified and allowlisted.
 - Exact signed artifact, remote config and support/monitoring readiness.
 - Explicit Production migration/release authorization; never unattended.
-

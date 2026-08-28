@@ -28,4 +28,3 @@ State: `PASS`
 ## Known intentional gaps
 
 Thresholds for listing freshness, cohort size, support hours, history depth and rollout dates remain owner/implementation decisions. Exact migration files, API names, app packaging and UI screens remain future engineering work.
-

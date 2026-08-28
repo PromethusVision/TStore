@@ -24,4 +24,3 @@ UI merchant buttons do not precede server authority. QR physical test does not p
 ## Integration gates
 
 Each wave owns targeted tests and task branch. Integration verifies source compatibility, combined diff, migrations, analyzer/tests and release artifacts. Production apply/release is an explicit human authorization separate from merge.
-

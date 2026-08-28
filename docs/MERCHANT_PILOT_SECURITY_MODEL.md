@@ -30,4 +30,3 @@ Merchant can revoke sessions through supported auth controls; support verifies i
 ## Security acceptance
 
 Cross-shop read/write/confirm, customer-as-merchant, suspended merchant, stale session, duplicate tap, real concurrent confirm, token replay, malformed QR and operator bypass all deny. Any positive path that only succeeds due to client role checks is a release blocker.
-

@@ -34,4 +34,3 @@ State: `PROPOSED — OWNER REVIEW REQUIRED`
 ## Trigger rules
 
 Staff UI only when multiple real users per shop are admitted. Multi-branch only when cohort contains multi-branch organizations. Dashboard only after actionable data and merchant questions exist. Candidate automation only after review volume is measured. Reputation/badges only after minimum sample/fraud/policy decisions.
-

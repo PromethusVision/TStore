@@ -33,4 +33,3 @@ State: `PROPOSED FOR OWNER REVIEW — NON-FINAL`
 Self-service MUST: auth, logout, listing gerçeğini görme, kritik listing doğrulama, QR scan/confirm, belirsiz QR sonucu görme ve support request.
 
 Operator-assisted olabilir: ilk shop kaydı, belge/profil kontrolü, başlangıç listing importu, canonical eşleştirme ve candidate düzeltme. Her assisted işlem actor, reason, source, before/after, merchant attestation ve correlation içermelidir.
-

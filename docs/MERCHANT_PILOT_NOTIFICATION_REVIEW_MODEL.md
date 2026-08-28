@@ -19,4 +19,3 @@ Pilot notificationları eylem odaklıdır: critical auth/security, shop state, l
 ## Reputation boundary
 
 Badge, composite score ve reputation dashboard pilot minimumu değildir. Ads harcaması, reward participation, quantity veya basket value merchant değerlendirmesine ağırlık vermez. Evaluation görünürse sample size ve “platform garantisi değildir” açıklaması bulunmalıdır.
-

@@ -36,4 +36,3 @@ Merchant son işlemlerde time, item summary, total snapshot ve status görür; c
 ## Fiziksel gate
 
 Gerçek customer ve merchant cihazı, gerçek kamera, signed exact artifact, yavaş/ağ değişimi, background/resume, replay, wrong shop, expiry ve concurrent confirm görülmeden pilot QR gate PASS değildir.
-

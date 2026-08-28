@@ -49,4 +49,3 @@ State: `OWNER_DECISION_REQUIRED — NO OPTION SELECTED`
 | MPR-12 | 06, 24 | Production authority ve stop/governance? |
 
 Counts: 24 raw; 12 root; P0 raw 7; P1 raw 13; P2 raw 4. Hiçbir seçenek owner adına seçilmemiştir.
-

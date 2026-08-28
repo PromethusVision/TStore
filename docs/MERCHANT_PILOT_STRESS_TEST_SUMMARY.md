@@ -27,4 +27,3 @@ State: `DESIGN SCENARIOS VALIDATED — RUNTIME NOT RUN`
 ## Interpretation
 
 `NOT_RUN` is intentional. These rows are a future implementation/QA coverage inventory, not evidence that Merchant App, backend migration, physical devices or Production have passed. Runtime results may be populated only by the authorized test phase with environment/artifact evidence.
-

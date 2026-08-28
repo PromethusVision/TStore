@@ -30,4 +30,3 @@ Record artifact hash, device/OS, accounts/shops as synthetic identifiers, timest
 ## Acceptance boundary
 
 Windows compile, mocks or one-device scan cannot mark this gate PASS. Signed artifact and real devices remain future human work.
-

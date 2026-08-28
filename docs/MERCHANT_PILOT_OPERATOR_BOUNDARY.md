@@ -19,4 +19,3 @@ State: `PROPOSED — LEAST PRIVILEGE`
 Support veriyi açıklayabilir, request'i tekrar deneyebilir ve case'e evidence ekleyebilir. Yetki veremez, RLS aşamaz, doğrulanmış geçmişi keyfi değiştiremez veya merchant adına müşteri deneyimi üretmez.
 
 Tek kişinin pilotta support + verification rolünü üstlenmesi mümkünse her high-risk işlem reason/evidence/before-after ile loglanmalı, düzenli örneklem incelemesi ve geri alma/correction yolu bulunmalıdır. Bu birleşik rol kalıcı yetki tasarımı değildir.
-

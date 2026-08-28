@@ -64,4 +64,3 @@ Pilot merchant yüzeyi şu kritik yolculuğu kesintisiz sağlamalıdır:
 ## Ticari ifade sınırı
 
 QR doğrulaması ödeme, mali fiş, teslimat, gelir veya denetlenmiş satış kanıtı değildir. Merchant history ve analytics yüzeyleri bu iddiayı üretmemelidir.
-

@@ -51,4 +51,3 @@ Merchant yalnız auth/QR verifier kullanır; shop/listing işlemlerini operatör
 ## Non-final recommendation
 
 Tek-owner shop cohortu için Model B önerilir. Model C yalnız zaman kutulu onboarding/bootstrap fallback'i olmalı; QR onayı, yetki ve verified history hiçbir zaman operatör yardımıyla taklit edilmemelidir. Model A, kanıtlanmış ihtiyaç oluştuğunda Model B'nin üzerine kademeli kurulmalıdır. Bu seçim Product Owner tarafından henüz onaylanmamıştır.
-

@@ -33,4 +33,3 @@ Auth + exact shop status + listing truth + QR verifier/reconciliation + support.
 ## Karşı bulguların öneriye etkisi
 
 Model B non-final önerisi korunur. Model C'nin pilotun tamamı değil, ilk bootstrap fallback'i olduğu daha sert tanımlanmıştır. Model A'nın ön yatırımı ticari öğrenmeyi geciktirdiği için pilot önkoşulu sayılmamıştır.
-

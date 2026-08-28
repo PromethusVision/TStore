@@ -32,4 +32,3 @@ State: `PASS — DOCUMENTATION ONLY`
 ## Remaining human/implementation gates
 
 Owner decisions, runtime/backend implementation, Development acceptance, signed exact artifact, two-device physical testing, cohort verification, support readiness and explicit Production go/no-go remain open and are not disguised as blockers to document review.
-

@@ -12,4 +12,3 @@ State: `FUTURE COORDINATION PROPOSAL`
 Ops/compliance can prepare cohort/verification/support runbooks independently. QA can build matrices and fixture contract before runtime. Physical two-device and Production gates remain human/integration activities, not unattended agent work.
 
 No two agents should independently edit migration chain, `pubspec`, shared auth models, route bootstrap or QR RPC signatures. Contract docs precede parallel implementation; additive backward-compatible seams are preferred.
-
