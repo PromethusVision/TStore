@@ -369,6 +369,29 @@ void main() {
     },
   );
 
+  test('rapid double delete ikinci RPC çağrısını engeller', () async {
+    final completer =
+        Completer<Either<ReviewFailure, DeleteProductReviewResult>>();
+    when(() => deleteReview(review.id)).thenAnswer((_) => completer.future);
+    await cubit.getProductReviews(productId);
+
+    final first = cubit.deleteReview(productId: productId, reviewId: review.id);
+    final second = await cubit.deleteReview(
+      productId: productId,
+      reviewId: review.id,
+    );
+
+    expect(second.ignored, isTrue);
+    verify(() => deleteReview(review.id)).called(1);
+
+    completer.complete(
+      const Right(
+        DeleteProductReviewResult(reviewId: 'review-1', deleted: true),
+      ),
+    );
+    expect((await first).succeeded, isTrue);
+  });
+
   test(
     'quantity semantiği client API sinde entitlement parametresi üretmez',
     () {

@@ -95,37 +95,39 @@ class CartV2Cubit extends Cubit<CartV2State> {
     required String shopProductId,
     required int quantity,
   }) async {
-    final dataGeneration = _dataGeneration;
-    final result = await replaceActiveCartWithShopProductV2Usecase(
-      ReplaceActiveCartWithShopProductV2Params(
-        shopProductId: shopProductId,
-        quantity: quantity,
-      ),
-    );
-    if (!_canApply(dataGeneration)) return;
+    await _runExclusiveCartMutation(() async {
+      final dataGeneration = _dataGeneration;
+      final result = await replaceActiveCartWithShopProductV2Usecase(
+        ReplaceActiveCartWithShopProductV2Params(
+          shopProductId: shopProductId,
+          quantity: quantity,
+        ),
+      );
+      if (!_canApply(dataGeneration)) return;
 
-    await result.fold((error) async => emit(CartV2Error(error)), (
-      replaceResult,
-    ) async {
-      if (replaceResult is CartV2AddSuccess) {
-        emit(
-          CartV2ItemAdded(
-            cartId: replaceResult.cartId,
-            shopId: replaceResult.shopId,
-            shopProductId: replaceResult.shopProductId,
-            quantity: replaceResult.quantity,
-          ),
-        );
-        await getActiveCartItems();
-        return;
-      }
+      await result.fold((error) async => emit(CartV2Error(error)), (
+        replaceResult,
+      ) async {
+        if (replaceResult is CartV2AddSuccess) {
+          emit(
+            CartV2ItemAdded(
+              cartId: replaceResult.cartId,
+              shopId: replaceResult.shopId,
+              shopProductId: replaceResult.shopProductId,
+              quantity: replaceResult.quantity,
+            ),
+          );
+          await getActiveCartItems();
+          return;
+        }
 
-      if (replaceResult is CartV2ShopConflict) {
-        emit(CartV2ShopConflictState(replaceResult));
-        return;
-      }
+        if (replaceResult is CartV2ShopConflict) {
+          emit(CartV2ShopConflictState(replaceResult));
+          return;
+        }
 
-      emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
+        emit(const CartV2Error('Sepet güncellenemedi. Lütfen tekrar deneyin.'));
+      });
     });
   }
 

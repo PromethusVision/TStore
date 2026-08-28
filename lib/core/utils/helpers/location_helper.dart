@@ -280,9 +280,7 @@ class LocationHelper {
 
         closeLoadingDialog();
 
-        LoggerHelper.debug(
-          'Konum belirlendi: enlem ${position.latitude}, boylam ${position.longitude}',
-        );
+        LoggerHelper.debug('Konum güvenli biçimde belirlendi.');
 
         LoggerHelper.info('Konum bilgisi adrese dönüştürülüyor...');
 
@@ -313,7 +311,7 @@ class LocationHelper {
               message: 'Konumunuz başarıyla belirlendi.',
             );
           }
-          LoggerHelper.info('Adres bulundu: $address');
+          LoggerHelper.info('Konum için adres gösterimi hazırlandı.');
           return address;
         }
 

@@ -38,6 +38,9 @@ class FakeNoParams extends Fake implements NoParams {}
 class FakeAddShopProductToCartV2Params extends Fake
     implements AddShopProductToCartV2Params {}
 
+class FakeReplaceActiveCartWithShopProductV2Params extends Fake
+    implements ReplaceActiveCartWithShopProductV2Params {}
+
 class FakeUpdateCartItemQuantityV2Params extends Fake
     implements UpdateCartItemQuantityV2Params {}
 
@@ -63,6 +66,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeNoParams());
     registerFallbackValue(FakeAddShopProductToCartV2Params());
+    registerFallbackValue(FakeReplaceActiveCartWithShopProductV2Params());
     registerFallbackValue(FakeUpdateCartItemQuantityV2Params());
     registerFallbackValue(FakeRemoveCartItemV2Params());
   });
@@ -179,6 +183,27 @@ void main() {
     final repeatedRequest = cartCubit.incrementItemQuantity(oldCartItem);
 
     verify(() => updateQuantityUsecase(any())).called(1);
+
+    result.complete(const Left('Bağlantı hatası'));
+    await Future.wait([firstRequest, repeatedRequest]);
+
+    expect(cartCubit.state, const CartV2Error('Bağlantı hatası'));
+  });
+
+  test('ignores repeated cart replacement while one is pending', () async {
+    final result = Completer<Either<String, CartV2AddResult>>();
+    when(() => replaceCartUsecase(any())).thenAnswer((_) => result.future);
+
+    final firstRequest = cartCubit.replaceActiveCartWithShopProduct(
+      shopProductId: 'replacement-shop-product',
+      quantity: 1,
+    );
+    final repeatedRequest = cartCubit.replaceActiveCartWithShopProduct(
+      shopProductId: 'replacement-shop-product',
+      quantity: 1,
+    );
+
+    verify(() => replaceCartUsecase(any())).called(1);
 
     result.complete(const Left('Bağlantı hatası'));
     await Future.wait([firstRequest, repeatedRequest]);

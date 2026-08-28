@@ -86,7 +86,9 @@ class SupabaseService {
           _handleAuthCallbackUri(uri: uri, appUri: Uri.base, isWeb: false),
         ),
         onError: (Object _, StackTrace stackTrace) {
-          debugPrint('Auth callback could not be read safely.');
+          if (kDebugMode) {
+            debugPrint('Auth callback could not be read safely.');
+          }
         },
       );
     }

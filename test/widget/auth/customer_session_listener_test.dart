@@ -184,6 +184,27 @@ void main() {
     verifyNever(() => authCubit.handleSignedOutEvent());
   });
 
+  testWidgets('guest login clears and loads customer-scoped data', (
+    tester,
+  ) async {
+    await pumpApp(tester, initiallyAuthenticated: false);
+
+    authStateController.add(
+      supabase.AuthState(
+        supabase.AuthChangeEvent.signedIn,
+        _sessionFor(authenticatedUser.id),
+      ),
+    );
+    await tester.pump();
+
+    verify(() => cartCubit.clearLocalCart()).called(1);
+    verify(() => wishlistCubit.clearLocalWishlist()).called(1);
+    verify(() => cartCubit.getActiveCartItems()).called(1);
+    verify(() => wishlistCubit.getWishlist()).called(1);
+    verify(() => navigationCubit.changeIndex(0)).called(1);
+    verifyNever(() => authCubit.handleSignedOutEvent());
+  });
+
   testWidgets('refreshing the same customer session keeps local data', (
     tester,
   ) async {

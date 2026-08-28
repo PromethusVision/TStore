@@ -77,6 +77,8 @@ class AuthCubit extends Cubit<AuthState> {
     required String termsOfUseVersion,
     String? phone,
   }) async {
+    if (state is AuthLoading) return;
+
     emit(AuthLoading());
 
     final result = await signUpUsecase(
