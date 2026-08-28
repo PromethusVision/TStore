@@ -45,5 +45,23 @@ void main() {
       expect(message, fallback);
       expect(message, isNot(contains('database-password-was-visible')));
     });
+
+    test('service failures hide the remote response body', () {
+      final message = CustomerErrorMessage.from(
+        Exception('statusCode: 503 upstream-body-was-visible'),
+      );
+
+      expect(message, CustomerErrorMessage.serviceUnavailable);
+      expect(message, isNot(contains('upstream-body-was-visible')));
+    });
+
+    test('not-found failures hide backend identifiers', () {
+      final message = CustomerErrorMessage.from(
+        Exception('statusCode: 404 internal-row-id-was-visible'),
+      );
+
+      expect(message, CustomerErrorMessage.notFound);
+      expect(message, isNot(contains('internal-row-id-was-visible')));
+    });
   });
 }

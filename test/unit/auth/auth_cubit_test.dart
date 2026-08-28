@@ -277,6 +277,32 @@ void main() {
           expect(captured.termsOfUseVersion, LegalDocumentVersions.termsOfUse);
         },
       );
+
+      test('ignores a second sign up while the first one is loading', () async {
+        final result = Completer<Either<String, UserEntity>>();
+        when(() => mockSignUpUsecase(any())).thenAnswer((_) => result.future);
+
+        final firstRequest = authCubit.signUp(
+          email: testEmail,
+          password: testPassword,
+          fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+        );
+        final repeatedRequest = authCubit.signUp(
+          email: testEmail,
+          password: testPassword,
+          fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+        );
+
+        verify(() => mockSignUpUsecase(any())).called(1);
+
+        result.complete(Right(testUser));
+        await Future.wait([firstRequest, repeatedRequest]);
+        expect(authCubit.state, const AuthEmailConfirmationRequired(testEmail));
+      });
     });
 
     group('signOut', () {

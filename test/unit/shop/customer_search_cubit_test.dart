@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -225,6 +227,52 @@ void main() {
       const CustomerSearchError('Arama tamamlanamadı. Lütfen tekrar deneyin.'),
     ],
   );
+
+  test('whitespace query resets without calling a data source', () async {
+    final cubit = buildCubit();
+
+    await cubit.search('   ');
+
+    expect(cubit.state, isA<CustomerSearchInitial>());
+    verifyNever(() => searchProductsUsecase(any()));
+    verifyNever(() => getCategoriesUsecase(any()));
+    verifyNever(() => getShopsUsecase(any()));
+    await cubit.close();
+  });
+
+  test('a late old query cannot replace the latest search result', () async {
+    final oldResult = Completer<Either<String, List<ProductEntity>>>();
+    when(
+      () => searchProductsUsecase('eski'),
+    ).thenAnswer((_) => oldResult.future);
+    when(
+      () => searchProductsUsecase('mahalle'),
+    ).thenAnswer((_) async => const Right([product]));
+    when(
+      () => getCategoriesUsecase(any()),
+    ).thenAnswer((_) async => const Right([category]));
+    when(
+      () => getShopsUsecase(any()),
+    ).thenAnswer((_) async => const Right([shop]));
+
+    final cubit = buildCubit();
+    final oldRequest = cubit.search('eski');
+    await cubit.search('mahalle');
+
+    oldResult.complete(const Right([]));
+    await oldRequest;
+
+    expect(
+      cubit.state,
+      const CustomerSearchLoaded(
+        query: 'mahalle',
+        products: [product],
+        categories: [],
+        shops: [shop],
+      ),
+    );
+    await cubit.close();
+  });
 
   test(
     'kategori ve mağaza listesini sonraki aramada önbellekten kullanır',
