@@ -1,6 +1,6 @@
 # Customer App Production Config Manual Checklist
 
-Status: **MANUAL — NOT EXECUTED IN WAVE 16**  
+Status: **MANUAL — NOT EXECUTED IN WAVE 16**
 Production ref expected by release documents: `mefhfvrgkwciubeajjeb`
 
 Wave 16 performed no Production or Development access. This checklist must be

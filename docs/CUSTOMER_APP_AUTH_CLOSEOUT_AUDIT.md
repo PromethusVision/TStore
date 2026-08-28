@@ -32,6 +32,6 @@ Status: PASS — static/local contract; remote configuration remains manual
 - iOS physical callback acceptance remains platform/release work.
 - Wave 16 performs no signup, email send, recovery, or remote Auth read/write.
 
-`AUTH_CLOSEOUT_AUDIT: PASS`  
-`REMOTE_AUTH_RECONFIGURED: NO`  
+`AUTH_CLOSEOUT_AUDIT: PASS`
+`REMOTE_AUTH_RECONFIGURED: NO`
 `NEW_AUTH_FIXTURE: NO`

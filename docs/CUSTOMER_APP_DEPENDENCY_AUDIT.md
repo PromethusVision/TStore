@@ -19,6 +19,6 @@ Command: `flutter pub outdated --no-dev-dependencies` on 2026-08-28. The command
 
 After feature freeze, run small grouped upgrades: (1) Auth/Supabase/app-links, (2) location/permissions, (3) camera/media, (4) UI-only packages. Each group requires targeted physical/static tests and lockfile review. Do not mass-upgrade during closeout.
 
-`DEPENDENCY_AUDIT: PASS`  
-`MASS_UPGRADE_PERFORMED: NO`  
+`DEPENDENCY_AUDIT: PASS`
+`MASS_UPGRADE_PERFORMED: NO`
 `DEDICATED_UPGRADE_BACKLOG: YES`

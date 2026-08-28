@@ -22,5 +22,5 @@ Status: PASS WITH LEGACY/LOW-RISK DEBT
 
 No active deterministic emit-after-close, double-write, or late-response overwrite was reproduced. No broad async refactor was justified.
 
-`ASYNC_RACE_AUDIT: PASS`  
+`ASYNC_RACE_AUDIT: PASS`
 `ACTIVE_P0_P1_RACE_FOUND: NO`

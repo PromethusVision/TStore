@@ -1,6 +1,6 @@
 # Customer App Physical Acceptance Plan
 
-Status: **PLAN — UNEXECUTED IN WAVE 16**  
+Status: **PLAN — UNEXECUTED IN WAVE 16**
 Wave: **16 — Customer App Commercialization Closeout**
 
 Prior-wave physical results are useful evidence, but the current release

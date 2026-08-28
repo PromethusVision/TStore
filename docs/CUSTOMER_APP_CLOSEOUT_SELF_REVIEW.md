@@ -30,10 +30,12 @@ Base: `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`
 
 ## Final technical gates
 
-- `flutter analyze --no-pub`: **PASS**, zero issues, 6.0 seconds.
-- `flutter test --no-pub`: **1224 PASS**, **0 FAIL**, **6 explicit
+- Source `flutter analyze --no-pub` and final integration `flutter analyze`:
+  **PASS**, zero issues.
+- Final integration `flutter test`: **1226 PASS**, **0 FAIL**, **6 explicit
   live/remote skips**.
-- High-risk targeted suites: **165 PASS**.
+- High-risk targeted suites: source **165 PASS**; integration-critical
+  release-logging/Auth/Cart package **48 PASS**.
 - `git diff --check`: **PASS**.
 - Standard synthetic web release compile: **PASS**, 41.1 seconds, icon tree
   shaking enabled, deployment authorization NO.

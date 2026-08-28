@@ -1,6 +1,6 @@
 # Customer App Journey Failure Registry
 
-Status: **DEDUPLICATED**  
+Status: **DEDUPLICATED**
 Wave: **16 — Customer App Commercialization Closeout**
 
 | FAILURE_ID | FEATURE | SEVERITY | ROOT_CAUSE | AUTO_FIXABLE | DEPENDENCY | TEST | STATUS |

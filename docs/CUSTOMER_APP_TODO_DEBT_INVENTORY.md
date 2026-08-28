@@ -17,5 +17,5 @@ Broader words such as temporary/legacy/deprecated were reviewed by cluster rathe
 | Web deprecated-library ignore | TOOLCHAIN_DEBT | Isolated conditional web sanitizer; revisit with Flutter web API migration. |
 | Dormant postal address/avatar/Dio/location helpers | DEAD_CODE CANDIDATE | Do not revive without contract review; cleanup separately. |
 
-`TODO_DEBT_INVENTORY: PASS`  
+`TODO_DEBT_INVENTORY: PASS`
 `BLOCKING_TODO: 0`

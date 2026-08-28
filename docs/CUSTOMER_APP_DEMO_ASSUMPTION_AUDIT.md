@@ -14,6 +14,6 @@ Runtime source scan found no hardcoded demo counts (`57` shops, `285` listings, 
 
 The deterministic demo dataset and Production were not changed or contacted.
 
-`DEMO_ASSUMPTION_AUDIT: PASS`  
-`RUNTIME_DEMO_COUNT_HARDCODE: NO`  
+`DEMO_ASSUMPTION_AUDIT: PASS`
+`RUNTIME_DEMO_COUNT_HARDCODE: NO`
 `DEMO_DATASET_CHANGED: NO`

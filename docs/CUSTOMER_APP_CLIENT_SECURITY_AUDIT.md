@@ -22,6 +22,6 @@ Status: PASS WITH PRIVACY POLICY FOLLOW-UP
 
 Owner should finalize the device-local search/draft retention policy. No encryption dependency or behavioral change was introduced without that decision.
 
-`CLIENT_SECURITY_AUDIT: PASS`  
-`CLIENT_ADMIN_SECRET: NO`  
+`CLIENT_SECURITY_AUDIT: PASS`
+`CLIENT_ADMIN_SECRET: NO`
 `OWNER_DECISION_REQUIRED: DEVICE_LOCAL_HISTORY_POLICY`

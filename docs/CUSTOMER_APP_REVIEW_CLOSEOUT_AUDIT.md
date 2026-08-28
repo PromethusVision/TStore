@@ -27,6 +27,6 @@ Status: PASS — canonical backend contract preserved
 
 Architecture tests prevent direct review-table writes and enforce the canonical RPC/function names. No backend/schema/policy change was made.
 
-`REVIEW_CLOSEOUT_AUDIT: PASS`  
-`VERIFIED_PURCHASE_CONTRACT_PRESERVED: YES`  
+`REVIEW_CLOSEOUT_AUDIT: PASS`
+`VERIFIED_PURCHASE_CONTRACT_PRESERVED: YES`
 `BACKEND_CHANGED: NO`

@@ -18,6 +18,6 @@ Ignore rules cover real `.env`, signing properties, keystores, and build outputs
 
 No secret was printed, opened, moved, regenerated, or committed.
 
-`SECRET_SCAN: PASS`  
-`REAL_SECRET_FOUND: NO`  
+`SECRET_SCAN: PASS`
+`REAL_SECRET_FOUND: NO`
 `PRIVATE_KEY_TOUCHED: NO`

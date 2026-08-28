@@ -16,5 +16,5 @@ Status: PASS — broad deletion intentionally avoided
 
 No active import was removed. Architecture tests already protect the highest-risk legacy order boundary. A later cleanup should be one root-area at a time with dependency removal and full regression, not a bulk delete.
 
-`LEGACY_CODE_AUDIT: PASS`  
+`LEGACY_CODE_AUDIT: PASS`
 `BROAD_CLEANUP_PERFORMED: NO`

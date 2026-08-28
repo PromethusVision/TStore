@@ -29,6 +29,6 @@ The bootstrap does not currently present a bespoke Flutter error screen for inva
 - Global state is initialized only after Supabase and DI.
 - Root application tests cover loading, onboarding, Home, Auth callback, and session transitions.
 
-`STARTUP_AUDIT: PASS`  
-`HIDDEN_BACKEND_FALLBACK: NO`  
+`STARTUP_AUDIT: PASS`
+`HIDDEN_BACKEND_FALLBACK: NO`
 `STARTUP_REMOTE_WRITE: NO`

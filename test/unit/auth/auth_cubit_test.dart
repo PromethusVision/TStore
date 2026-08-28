@@ -303,6 +303,36 @@ void main() {
         await Future.wait([firstRequest, repeatedRequest]);
         expect(authCubit.state, const AuthEmailConfirmationRequired(testEmail));
       });
+
+      test('allows sign up to be retried after a failed request', () async {
+        var attempt = 0;
+        when(() => mockSignUpUsecase(any())).thenAnswer((_) async {
+          attempt += 1;
+          return attempt == 1
+              ? const Left('Temporary sign up failure')
+              : Right(testUser);
+        });
+
+        await authCubit.signUp(
+          email: testEmail,
+          password: testPassword,
+          fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+        );
+        expect(authCubit.state, const AuthError('Temporary sign up failure'));
+
+        await authCubit.signUp(
+          email: testEmail,
+          password: testPassword,
+          fullName: testFullName,
+          privacyNoticeVersion: LegalDocumentVersions.privacyNotice,
+          termsOfUseVersion: LegalDocumentVersions.termsOfUse,
+        );
+
+        verify(() => mockSignUpUsecase(any())).called(2);
+        expect(authCubit.state, const AuthEmailConfirmationRequired(testEmail));
+      });
     });
 
     group('signOut', () {

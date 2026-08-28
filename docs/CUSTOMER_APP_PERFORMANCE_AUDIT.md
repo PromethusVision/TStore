@@ -21,6 +21,6 @@ Status: PASS WITH SCALE BACKLOG
 
 No premature architecture rewrite was made. Before materially larger catalog/user volumes, define backend-supported cursors/limits and measure representative devices.
 
-`PERFORMANCE_STATIC_AUDIT: PASS`  
-`CURRENT_DATASET_SCALE_BLOCKER: NO`  
+`PERFORMANCE_STATIC_AUDIT: PASS`
+`CURRENT_DATASET_SCALE_BLOCKER: NO`
 `LARGE_SCALE_BACKLOG: YES`

@@ -1,6 +1,6 @@
 # Customer App Definition of Done
 
-Status: **CANONICAL CLOSEOUT PROPOSAL**  
+Status: **CANONICAL CLOSEOUT PROPOSAL**
 Wave: **16 — Customer App Commercialization Closeout**
 
 ## Customer V1 feature freeze

@@ -27,6 +27,6 @@ Home suggestions use a short debounce and bounded price enrichment. The full all
 
 Canonical taxonomy synonyms/facets and Turkish locale-specific folding are future taxonomy/search integration work. Implementing provisional L3/L4-aware search now would encode unapproved runtime assumptions.
 
-`SEARCH_FUNCTIONAL_AUDIT: PASS`  
-`STALE_QUERY_PROTECTION: PASS`  
+`SEARCH_FUNCTIONAL_AUDIT: PASS`
+`STALE_QUERY_PROTECTION: PASS`
 `TAXONOMY_SEARCH_DEFER: YES`

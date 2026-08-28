@@ -1,6 +1,6 @@
 # Customer App UI-Kit Rollout Map
 
-Status: **PREPARATION ONLY — NO VISUAL CHANGE**  
+Status: **PREPARATION ONLY — NO VISUAL CHANGE**
 Wave: **16 — Customer App Commercialization Closeout**
 
 The current UI kit is explicitly non-final. Functional defects and cosmetic

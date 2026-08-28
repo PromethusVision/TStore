@@ -19,6 +19,6 @@ Inactive-shop filtering occurs before customer navigation in Nearby/search/selle
 
 The Production demo dataset has no shop owner accounts. Customer discovery, shop detail, inventory, price comparison, directions, and contact are valid. Merchant ownership, QR confirmation, and verified purchase through those demo shops are unavailable by design.
 
-`SHOP_DETAILS_AUDIT: PASS`  
-`CUSTOMER_DISCOVERY_READY: YES`  
+`SHOP_DETAILS_AUDIT: PASS`
+`CUSTOMER_DISCOVERY_READY: YES`
 `MERCHANT_OWNERSHIP_READY: NO`

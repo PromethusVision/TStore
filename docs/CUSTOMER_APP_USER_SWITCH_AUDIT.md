@@ -22,6 +22,6 @@ Five recent search queries are device-wide because search is a guest feature. A 
 
 Recommended before feature freeze: explicitly accept guest/device-local history semantics or require logout/account-switch clearing and a shorter pending-draft retention. Changing it now would be a product/privacy decision, not a deterministic bug fix.
 
-`USER_SWITCH_AUDIT: PASS`  
-`CROSS_USER_SERVER_DATA_LEAK_FOUND: NO`  
+`USER_SWITCH_AUDIT: PASS`
+`CROSS_USER_SERVER_DATA_LEAK_FOUND: NO`
 `OWNER_DECISION_REQUIRED: DEVICE_LOCAL_HISTORY_POLICY`

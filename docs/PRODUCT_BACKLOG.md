@@ -18,7 +18,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 
 ### A1. Mevcut Müşteri Uygulamasının Ticari Hazırlığı
 
-- Durum: Açık
+- Durum: **CONDITIONAL — Customer core functionally complete; feature freeze ve
+  commercialization gate'leri açık**
 - Öncelik: Mevcut ana ürün önceliği
 - Hedef: Çalışan müşteri discovery, sepet, QR, alışveriş geçmişi, chat, profil ve destek akışlarını ticari kullanıma güvenilir hâle getirmek.
 - Kapsam ilkeleri:
@@ -26,6 +27,25 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   - Duplicate-submit/double-navigation korumalarını sürdürmek.
   - Canlı backend/RLS bütünlüğünü ve kritik entegrasyonları doğrulamak.
   - Klasik online ödeme, kargo veya checkout akışı eklememek.
+- 2026-08-28 Wave 16 closeout integration: Customer App core functional audit
+  `PASS`, P0 `0` ve üç safe runtime remediation integrated. Release diagnostics
+  hassas URL/body/Auth/location detayını taşımaz; duplicate in-flight signup
+  guard'lıdır ve retry açılır; Cart V2 replace işlemi ortak exclusive mutation
+  guard'ını kullanır ve completion/failure sonrasında unlock olur. Hedefli paket
+  `48/48`, tam suite `1226` PASS / `0` FAIL / `6` explicit live skip, analyzer
+  `PASS`.
+- Customer core **FUNCTIONALLY COMPLETE = YES**; ancak feature freeze ve
+  commercialization **CONDITIONAL** kalır. `OWNER_DECISION_REQUIRED:
+  RECENT_SEARCH_HISTORY`, `OWNER_DECISION_REQUIRED: PRE_LOGIN_CHAT_DRAFT` ve
+  çelişkili Nearby guest/personalized-auth policy için `OWNER_DECISION_REQUIRED:
+  NEARBY_GUEST_POLICY` yeni karar uydurulmadan owner review'da tutulur.
+- Kalan major gate'ler: owner micro-policy kararları; taxonomy runtime milestone;
+  final UI-kit rollout; fiziksel iki-cihaz QR; final Android/iOS artifact, device ve
+  store kabulü; JIT Production manual go/no-go. Commercialization complete veya
+  final commercial GO olarak işaretlenmez.
+- Wave 16 taxonomy runtime, final UI kit, Ads, gamification/reward, Merchant App,
+  DB/schema/migration, Production/Development remote state veya korunmuş release
+  artifact'larını değiştirmedi.
 - 2026-08-11 Wave 1 teknik ilerleme: chat Realtime/reconnect/dedup ve async lifecycle hardening, in-app notification Realtime/pagination/session/mutation hardening ve QR/verified purchase client + RPC contract hardening tamamlandı; birleşik analyzer ve tam test suite geçti.
 - 2026-08-11 Wave 2 teknik ilerleme: development/production config sözleşmesi ayrıldı, discovery ekranlarındaki 5 lifecycle/race problemi giderildi ve legacy order aktif müşteri navigation'ı ile DI grafiğinden izole edildi; birleşik analyzer ve tam test suite geçti.
 - 2026-08-12 Wave 3 teknik ilerleme: 7 dosyalı canonical Supabase migration zinciri ve 23 tabloluk fresh bootstrap sözleşmesi hazırlandı, banner okuma yolu sertleştirildi, kalan 9 async-context ihlali temizlendi ve global lint etkinleştirildi; birleşik analyzer ve tam test suite geçti. Remote Supabase'e migration uygulanmadı.

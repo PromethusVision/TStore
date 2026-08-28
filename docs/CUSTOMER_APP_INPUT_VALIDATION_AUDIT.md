@@ -17,5 +17,5 @@ The unreachable postal-address prototype is not counted as an active commercial 
 
 Server validation, database constraints, and RLS remain mandatory; client validation is usability, not authorization.
 
-`INPUT_VALIDATION_AUDIT: PASS`  
+`INPUT_VALIDATION_AUDIT: PASS`
 `DUPLICATE_SUBMIT_CRITICAL_GAP: NO`

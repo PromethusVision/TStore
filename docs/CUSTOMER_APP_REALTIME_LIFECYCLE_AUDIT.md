@@ -20,5 +20,5 @@ Status: PASS
 
 Supabase's socket ownership is shared by the initialized client; feature channels are still explicitly unsubscribed. No duplicate active-subscription or memory-leak defect was reproduced.
 
-`REALTIME_LIFECYCLE_AUDIT: PASS`  
+`REALTIME_LIFECYCLE_AUDIT: PASS`
 `DUPLICATE_SUBSCRIPTION_FOUND: NO`

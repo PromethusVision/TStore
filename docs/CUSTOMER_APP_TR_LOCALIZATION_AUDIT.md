@@ -10,6 +10,6 @@ Status: PASS FOR FUNCTIONAL COPY
 
 Class/type names, enum names, test descriptions, third-party error categories, and legacy isolated source identifiers are developer artifacts, not customer copy. Final tone, capitalization, microcopy, and taxonomy labels are deferred to owner-final taxonomy/UI rollout.
 
-`TR_LOCALIZATION_AUDIT: PASS`  
-`TECHNICAL_ERROR_LEAK_FOUND: NO`  
+`TR_LOCALIZATION_AUDIT: PASS`
+`TECHNICAL_ERROR_LEAK_FOUND: NO`
 `FINAL_COPYWRITING: DEFERRED`

@@ -15,6 +15,6 @@ Status: PASS
 
 Production demo evidence previously showed 14–15 sellers per product and deterministic price variation for all 20 products. This is discovery evidence only; demo shops have `owner_user_id = NULL` and cannot complete merchant QR confirmation.
 
-`SELLER_COMPARISON_AUDIT: PASS`  
-`SPONSORED_RANKING_IMPLEMENTED: NO`  
+`SELLER_COMPARISON_AUDIT: PASS`
+`SPONSORED_RANKING_IMPLEMENTED: NO`
 `MERCHANT_DEMO_LIMITATION: NOT_A_BUG`

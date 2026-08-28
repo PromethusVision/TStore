@@ -57,6 +57,6 @@ Most transitions are direct `MaterialPageRoute` calls; no string route names or 
 
 No route was deleted and no broad router refactor was justified.
 
-`NAVIGATION_AUDIT: PASS`  
-`DETERMINISTIC_NAVIGATION_BUG_FOUND: NO`  
+`NAVIGATION_AUDIT: PASS`
+`DETERMINISTIC_NAVIGATION_BUG_FOUND: NO`
 `OWNER_DECISION_REQUIRED: NEARBY_GUEST_POLICY`

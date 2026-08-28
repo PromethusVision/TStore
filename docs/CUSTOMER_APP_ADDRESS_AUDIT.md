@@ -25,7 +25,7 @@ The repository should not claim that postal-address CRUD is shipped. This is con
 
 No shipping-address module is required for Minimal Commercial V1. If a future owner need emerges (billing, delivery, or merchant service address), define the product contract first rather than reviving the prototype.
 
-`SAVED_LOCATION_AUDIT: PASS`  
-`POSTAL_ADDRESS_RUNTIME: INACTIVE`  
-`LEGACY_ADDRESS_CLEANUP: DEFERRED`  
+`SAVED_LOCATION_AUDIT: PASS`
+`POSTAL_ADDRESS_RUNTIME: INACTIVE`
+`LEGACY_ADDRESS_CLEANUP: DEFERRED`
 `MAJOR_V1_MODULE_REQUIRED: NO`

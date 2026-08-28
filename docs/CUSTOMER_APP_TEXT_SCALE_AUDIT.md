@@ -15,5 +15,5 @@ Common protections include `Expanded/Flexible`, bounded customer content width, 
 
 A full every-screen 2.0 traversal on Android and iOS remains part of final UI/accessibility acceptance, but no current functional overflow blocker was found.
 
-`TEXT_SCALE_AUDIT: PASS`  
+`TEXT_SCALE_AUDIT: PASS`
 `UNREACHABLE_CRITICAL_CONTROL: NO`

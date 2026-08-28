@@ -1,6 +1,6 @@
 # Customer App Release Build Audit
 
-Status: **AUDIT PASS — COMMERCIAL RELEASE STILL CONDITIONAL**  
+Status: **AUDIT PASS — COMMERCIAL RELEASE STILL CONDITIONAL**
 Wave: **16 — Customer App Commercialization Closeout**
 
 ## Identity and entrypoints

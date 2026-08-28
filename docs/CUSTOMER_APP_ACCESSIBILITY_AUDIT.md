@@ -15,6 +15,6 @@ Status: PASS WITH UI-KIT FOLLOW-UP
 
 A full screen-reader traversal, contrast-token certification, focus-order audit, and platform accessibility acceptance should accompany final UI-kit rollout. These are `UI_KIT_DEFER/PHYSICAL_TEST_REQUIRED`; no unreachable critical control was found in current automated coverage.
 
-`ACCESSIBILITY_FUNCTIONAL_AUDIT: PASS`  
-`CRITICAL_UNLABELED_ACTION_FOUND: NO`  
+`ACCESSIBILITY_FUNCTIONAL_AUDIT: PASS`
+`CRITICAL_UNLABELED_ACTION_FOUND: NO`
 `FINAL_ACCESSIBILITY_CERTIFICATION: DEFERRED`

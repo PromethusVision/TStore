@@ -15,6 +15,6 @@ Denied, denied-forever, service-disabled, settings, settings-return, timeout, an
 
 The shared customer repository contains verifier-scanner code, but this is not proof of a finished Merchant App. A real two-device camera acceptance remains `PHYSICAL_TEST_REQUIRED`.
 
-`PERMISSION_AUDIT: PASS`  
-`UNNECESSARY_PERMISSION_FOUND: NO`  
+`PERMISSION_AUDIT: PASS`
+`UNNECESSARY_PERMISSION_FOUND: NO`
 `BACKGROUND_LOCATION_PERMISSION: NO`

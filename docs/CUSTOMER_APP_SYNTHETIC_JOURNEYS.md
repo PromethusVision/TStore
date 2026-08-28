@@ -1,6 +1,6 @@
 # Customer App Synthetic Journeys
 
-Status: **EXECUTED AGAINST LOCAL/CONTROLLED CONTRACTS**  
+Status: **EXECUTED AGAINST LOCAL/CONTROLLED CONTRACTS**
 Wave: **16 — Customer App Commercialization Closeout**
 
 `CURRENT_RESULT` is based on automated local tests and static contracts unless

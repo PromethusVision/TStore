@@ -14,6 +14,6 @@ Status: PASS
 
 The client does not use optimistic success that could survive a failed write. No Production fixture or remote read/write was used.
 
-`WISHLIST_AUDIT: PASS`  
-`CROSS_USER_STALE_STATE: COVERED`  
+`WISHLIST_AUDIT: PASS`
+`CROSS_USER_STALE_STATE: COVERED`
 `SAFE_FIX_REQUIRED: NO`

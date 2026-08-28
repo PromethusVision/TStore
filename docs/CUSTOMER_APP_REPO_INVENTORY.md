@@ -1,7 +1,7 @@
 # Customer App Repository Inventory
 
-Status: AUDITED — Wave 16 Work Package 1  
-Baseline: `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`  
+Status: AUDITED — Wave 16 Work Package 1
+Baseline: `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`
 Audit date: 2026-08-28
 
 ## Scope and method
@@ -135,9 +135,9 @@ Live tests are environment-gated and must not be interpreted as remote execution
 
 ## Work Package 1 result
 
-`REPO_INVENTORY: PASS`  
-`ACTIVE_MODULES_MAPPED: YES`  
-`LEGACY_ISOLATION_RETAINED: YES`  
-`DELETION_PERFORMED: NO`  
-`PRODUCTION_TOUCHED: NO`  
+`REPO_INVENTORY: PASS`
+`ACTIVE_MODULES_MAPPED: YES`
+`LEGACY_ISOLATION_RETAINED: YES`
+`DELETION_PERFORMED: NO`
+`PRODUCTION_TOUCHED: NO`
 `DEVELOPMENT_TOUCHED: NO`

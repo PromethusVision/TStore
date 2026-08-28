@@ -1,7 +1,7 @@
 # Customer App Analyzer Baseline
 
-Status: **PASS**  
-Wave: **16 — Customer App Commercialization Closeout**  
+Status: **PASS**
+Wave: **16 — Customer App Commercialization Closeout**
 Baseline revision: `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`
 
 ## Command and result

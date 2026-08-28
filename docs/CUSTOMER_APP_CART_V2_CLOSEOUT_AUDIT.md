@@ -28,7 +28,7 @@ Cart V2 is a single-store preparation list for an in-person purchase. A cart ite
 
 QR session creation/status and customer completion UI have broad unit/widget coverage. Logical expiry/retry/reconciliation behavior is covered. A physical camera scan with two real devices, wrong merchant, replay, concurrent confirmation, durable product evidence, and customer refresh is still `PHYSICAL_TEST_REQUIRED`; this audit does not convert emulator/unit evidence into a physical PASS.
 
-`CART_V2_CLOSEOUT_AUDIT: PASS`  
-`SINGLE_STORE_SEMANTICS: PASS`  
-`ONLINE_CHECKOUT_PRESENT: NO`  
+`CART_V2_CLOSEOUT_AUDIT: PASS`
+`SINGLE_STORE_SEMANTICS: PASS`
+`ONLINE_CHECKOUT_PRESENT: NO`
 `PHYSICAL_QR_GATE: BLOCKED`

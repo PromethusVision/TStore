@@ -16,5 +16,5 @@ Status: PASS
 
 The client cannot guarantee freshness between every read and tap; backend RLS/RPC/state constraints remain authoritative. Audited actions fail closed without crashing or creating a different entity.
 
-`STALE_ENTITY_AUDIT: PASS`  
+`STALE_ENTITY_AUDIT: PASS`
 `UNSAFE_STALE_WRITE_FOUND: NO`

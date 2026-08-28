@@ -15,6 +15,6 @@ Issue `CUST-REL-001` (`P1`, `FIX_WITH_LOCAL_TESTS`): shared Logger helpers used 
 
 `debugShowCheckedModeBanner` is false. Remaining debug diagnostics are generic and release-disabled. Supabase configuration exceptions deliberately omit values. No token, email, password, credential URL, Auth secret, or precise location is intentionally logged by the audited active paths.
 
-`RELEASE_LOGGING_AUDIT: PASS`  
-`SENSITIVE_RELEASE_LOGGING: BLOCKED_BY_CONTRACT`  
+`RELEASE_LOGGING_AUDIT: PASS`
+`SENSITIVE_RELEASE_LOGGING: BLOCKED_BY_CONTRACT`
 `FIX_ID: CUST-REL-001`

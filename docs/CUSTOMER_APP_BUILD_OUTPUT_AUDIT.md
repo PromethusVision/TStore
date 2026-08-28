@@ -1,6 +1,6 @@
 # Customer App Build Output Audit
 
-Status: **PASS — SYNTHETIC COMPILE OUTPUT ONLY**  
+Status: **PASS — SYNTHETIC COMPILE OUTPUT ONLY**
 Wave: **16 — Customer App Commercialization Closeout**
 
 ## Output

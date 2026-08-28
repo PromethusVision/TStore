@@ -20,5 +20,5 @@ Status: PASS WITH DEFERRED DEAD-CANDIDATE CAPABILITIES
 
 No active legacy order repository leaked into the customer graph. No return-semantic mismatch justified runtime modification.
 
-`REPOSITORY_AUDIT: PASS`  
+`REPOSITORY_AUDIT: PASS`
 `ACTIVE_LEGACY_REPOSITORY_LEAK: NO`

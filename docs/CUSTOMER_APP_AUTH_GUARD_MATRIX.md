@@ -26,6 +26,6 @@ Owner question: should anonymous users keep Nearby/current-device sorting while 
 
 Recommended: keep public Nearby discovery and gate only persistence/personalization. This matches the O2O discovery proposition and existing physical acceptance, but requires explicit owner confirmation.
 
-`AUTH_GUARD_CONSISTENCY: PASS`  
-`AUTH_GUARD_BYPASS_FOUND: NO`  
+`AUTH_GUARD_CONSISTENCY: PASS`
+`AUTH_GUARD_BYPASS_FOUND: NO`
 `OWNER_DECISION_REQUIRED: NEARBY_GUEST_POLICY`

@@ -21,6 +21,6 @@ Status: STATIC PASS; STORE OPERATIONS REMAIN MANUAL
 - Version code/name must be deliberately selected for the store candidate.
 - AAB generation, Play Console upload, listing/content/privacy declarations, device-catalog review, and second secure keystore backup are manual release tasks.
 
-`ANDROID_STATIC_READINESS: PASS`  
-`ANDROID_SIGNING_FAIL_CLOSED: PASS`  
+`ANDROID_STATIC_READINESS: PASS`
+`ANDROID_SIGNING_FAIL_CLOSED: PASS`
 `PLAY_CONSOLE_READY: BLOCKED_BY_MANUAL_WORK`

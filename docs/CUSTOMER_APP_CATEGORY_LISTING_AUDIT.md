@@ -22,7 +22,7 @@ The owner-final canonical taxonomy documentation is not the runtime taxonomy. No
 - Large catalogues will require a unified pagination/filter contract for category lists rather than relying on current bounded data size.
 - Deleted/inactive nodes are backend-authoritative; the client already avoids navigation for invalid identities but cannot substitute for RLS/query filters.
 
-`CATEGORY_LISTING_AUDIT: PASS`  
-`CURRENT_TAXONOMY_ONLY: YES`  
-`TAXONOMY_RUNTIME_IMPLEMENTED: NO`  
+`CATEGORY_LISTING_AUDIT: PASS`
+`CURRENT_TAXONOMY_ONLY: YES`
+`TAXONOMY_RUNTIME_IMPLEMENTED: NO`
 `TAXONOMY_DEFER: YES`

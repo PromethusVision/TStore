@@ -23,6 +23,6 @@ Status: LOGICAL CLIENT PASS; PHYSICAL TWO-DEVICE GATE OPEN
 
 Unit/widget/database contract evidence covers state logic, but the following remain one physical gate: two distinct devices, real camera scan, wrong merchant, replay, concurrent double confirmation, exactly one verified transaction, durable `product_id`, and customer state refresh. Demo Production shops cannot run this because their owner is null. Do not fake PASS.
 
-`QR_CLIENT_AUDIT: PASS`  
-`QR_TOKEN_OPAQUE: PASS`  
+`QR_CLIENT_AUDIT: PASS`
+`QR_TOKEN_OPAQUE: PASS`
 `PHYSICAL_TWO_DEVICE_ACCEPTANCE: BLOCKED`

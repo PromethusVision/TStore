@@ -19,6 +19,6 @@ No duplicate registration or singleton Cubit was found. Active repositories reso
 
 Removing the postal/merchant-capability registrations would be a cleanup/refactor with shared composition-root conflict risk and no current functional benefit. They remain classified `LEGACY/UNCLEAR`; no broad DI rewrite was made.
 
-`DI_AUDIT: PASS`  
-`DUPLICATE_REGISTRATION: NO`  
+`DI_AUDIT: PASS`
+`DUPLICATE_REGISTRATION: NO`
 `LEGACY_ORDER_WIRING: NO`

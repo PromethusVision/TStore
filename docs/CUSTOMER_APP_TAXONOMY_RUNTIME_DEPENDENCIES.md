@@ -1,6 +1,6 @@
 # Customer App Taxonomy Runtime Dependencies
 
-Status: **DEPENDENCY MAP — TAXONOMY NOT IMPLEMENTED**  
+Status: **DEPENDENCY MAP — TAXONOMY NOT IMPLEMENTED**
 Wave: **16 — Customer App Commercialization Closeout**
 
 ## Current assumptions

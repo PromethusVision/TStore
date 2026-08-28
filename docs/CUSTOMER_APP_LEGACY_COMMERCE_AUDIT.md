@@ -25,6 +25,6 @@ Terms such as checkout/payment/shipping may occur in historical documentation, d
 
 Deletion is not performed: retained schema/data compatibility and historical evidence require a separate deprecation plan. Reconnection is prohibited without an owner-final product decision.
 
-`LEGACY_COMMERCE_AUDIT: PASS`  
-`ACTIVE_ONLINE_CHECKOUT: NO`  
+`LEGACY_COMMERCE_AUDIT: PASS`
+`ACTIVE_ONLINE_CHECKOUT: NO`
 `O2O_CONTRACT_PRESERVED: YES`

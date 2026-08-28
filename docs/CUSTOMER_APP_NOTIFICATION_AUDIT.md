@@ -15,6 +15,6 @@ Status: PASS FOR IN-APP NOTIFICATIONS
 
 Push notification delivery, OS permission prompting, and background push routing are not implemented and are `FUTURE_FEATURE`, not a regression in the active in-app feed.
 
-`NOTIFICATION_AUDIT: PASS`  
-`IN_APP_REALTIME: PASS`  
+`NOTIFICATION_AUDIT: PASS`
+`IN_APP_REALTIME: PASS`
 `PUSH_NOTIFICATIONS: DEFERRED`

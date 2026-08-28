@@ -24,5 +24,5 @@ Status: PASS
 
 No singleton Cubit registration, duplicate active realtime subscription, or proven cross-user state leak was found.
 
-`STATE_LIFECYCLE_AUDIT: PASS`  
+`STATE_LIFECYCLE_AUDIT: PASS`
 `CROSS_USER_GLOBAL_STATE_LEAK: NONE_FOUND`

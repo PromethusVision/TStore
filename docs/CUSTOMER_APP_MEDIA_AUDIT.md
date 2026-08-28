@@ -16,6 +16,6 @@ Status: PASS FOR ACTIVE BUCKETS
 - No bucket/policy/object was created, changed, uploaded, or deleted.
 - Cache tuning and final image proportions are UI/performance follow-up, not a current functional blocker.
 
-`MEDIA_AUDIT: PASS`  
-`ACTIVE_MEDIA_FALLBACK: PASS`  
+`MEDIA_AUDIT: PASS`
+`ACTIVE_MEDIA_FALLBACK: PASS`
 `STORAGE_POLICY_CHANGED: NO`

@@ -18,6 +18,6 @@ The callback contract validates environment-specific scheme, host, root path, qu
 
 Prior signed Android physical confirmation/recovery passed. iOS cold/warm physical callback behavior remains `PHYSICAL_TEST_REQUIRED`.
 
-`DEEP_LINK_MATRIX: PASS`  
-`ANDROID_AUTH_CALLBACK: PASS`  
+`DEEP_LINK_MATRIX: PASS`
+`ANDROID_AUTH_CALLBACK: PASS`
 `IOS_AUTH_CALLBACK_PHYSICAL: BLOCKED`

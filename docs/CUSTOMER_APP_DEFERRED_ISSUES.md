@@ -1,6 +1,6 @@
 # Customer App Deferred Issues
 
-Status: **CLASSIFIED — NO ORPHAN ISSUE**  
+Status: **CLASSIFIED — NO ORPHAN ISSUE**
 Wave: **16 — Customer App Commercialization Closeout**
 
 | ID | Classification | Decision / reason | Release effect |

@@ -21,6 +21,6 @@ Status: PASS FOR CUSTOMER IN-APP CHAT CONTRACT
 
 Inactive/deleted shop handling is customer-safe at discovery/enrichment boundaries. End-to-end delivery against a live customer/merchant pair is outside this no-remote-write wave.
 
-`CHAT_AUDIT: PASS`  
-`DUPLICATE_MESSAGE_PROTECTION: PASS`  
+`CHAT_AUDIT: PASS`
+`DUPLICATE_MESSAGE_PROTECTION: PASS`
 `REMOTE_CHAT_FIXTURE: NO`

@@ -27,6 +27,6 @@ Realtime channels exist for customer-filtered chat messages and notifications. P
 
 No remote project was queried or mutated.
 
-`SUPABASE_CLIENT_AUDIT: PASS`  
-`SERVICE_ROLE_REFERENCE_IN_CLIENT: NO`  
+`SUPABASE_CLIENT_AUDIT: PASS`
+`SERVICE_ROLE_REFERENCE_IN_CLIENT: NO`
 `REMOTE_ACCESS: NO`

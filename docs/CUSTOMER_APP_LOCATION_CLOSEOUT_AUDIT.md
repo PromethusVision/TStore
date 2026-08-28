@@ -25,6 +25,6 @@ The Geolocator service and Nearby Cubit have focused tests for permission transi
 
 Current runtime allows guest Nearby/current-device sorting, while saved locations are authenticated. Wave 16 wording suggests login-gating personalization only if canonical evidence establishes that rule. No conclusive owner-final rule was found. Do not change the shipped guest discovery contract without owner confirmation.
 
-`LOCATION_CLOSEOUT_AUDIT: PASS`  
-`FAKE_GPS_USED: NO`  
+`LOCATION_CLOSEOUT_AUDIT: PASS`
+`FAKE_GPS_USED: NO`
 `OWNER_DECISION_REQUIRED: NEARBY_GUEST_POLICY`

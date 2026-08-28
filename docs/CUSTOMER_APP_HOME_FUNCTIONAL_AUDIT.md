@@ -22,6 +22,6 @@ Global Home Cubits are long-lived by design. View-local async price requests car
 
 Card spacing, typography, media proportions, icon treatment, and token migration are `UI_KIT_DEFER`. They are not functional blockers.
 
-`HOME_FUNCTIONAL_AUDIT: PASS`  
-`FUNCTIONAL_HOME_BLOCKER: NO`  
+`HOME_FUNCTIONAL_AUDIT: PASS`
+`FUNCTIONAL_HOME_BLOCKER: NO`
 `COSMETIC_REVIEW: DEFERRED`

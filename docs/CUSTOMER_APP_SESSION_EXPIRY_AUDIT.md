@@ -13,5 +13,5 @@ Status: PASS
 
 Local tests simulate expiry and Auth state transitions. Remote refresh-token expiration is not induced in this no-remote-write wave.
 
-`SESSION_EXPIRY_AUDIT: PASS`  
+`SESSION_EXPIRY_AUDIT: PASS`
 `STALE_AUTHENTICATED_UI_FOUND: NO`

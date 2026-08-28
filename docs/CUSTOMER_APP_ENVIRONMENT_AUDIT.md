@@ -26,7 +26,7 @@ Status: PASS
 
 Real Production URL/public-key injection remains a controlled build responsibility. The values must be supplied outside source control and validated by the existing release preflight. This audit intentionally did not inspect or print real secrets.
 
-`ENVIRONMENT_SEPARATION: PASS`  
-`DEVELOPMENT_FALLBACK: NO`  
-`PRODUCTION_SECRET_COMMITTED: NO`  
+`ENVIRONMENT_SEPARATION: PASS`
+`DEVELOPMENT_FALLBACK: NO`
+`PRODUCTION_SECRET_COMMITTED: NO`
 `PRODUCTION_TOUCHED: NO`

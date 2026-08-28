@@ -211,6 +211,52 @@ void main() {
     expect(cartCubit.state, const CartV2Error('Bağlantı hatası'));
   });
 
+  test(
+    'unlocks cart replacement after failure and preserves shop conflict',
+    () async {
+      var attempt = 0;
+      when(() => replaceCartUsecase(any())).thenAnswer((_) async {
+        attempt += 1;
+        return attempt == 1
+            ? const Left('Geçici bağlantı hatası')
+            : const Right(
+                CartV2ShopConflict(
+                  existingCartId: 'existing-cart',
+                  existingShopId: 'existing-shop',
+                  newShopId: 'new-shop',
+                  shopProductId: 'replacement-shop-product',
+                  quantity: 2,
+                ),
+              );
+      });
+
+      await cartCubit.replaceActiveCartWithShopProduct(
+        shopProductId: 'replacement-shop-product',
+        quantity: 2,
+      );
+      expect(cartCubit.state, const CartV2Error('Geçici bağlantı hatası'));
+
+      await cartCubit.replaceActiveCartWithShopProduct(
+        shopProductId: 'replacement-shop-product',
+        quantity: 2,
+      );
+
+      verify(() => replaceCartUsecase(any())).called(2);
+      expect(
+        cartCubit.state,
+        const CartV2ShopConflictState(
+          CartV2ShopConflict(
+            existingCartId: 'existing-cart',
+            existingShopId: 'existing-shop',
+            newShopId: 'new-shop',
+            shopProductId: 'replacement-shop-product',
+            quantity: 2,
+          ),
+        ),
+      );
+    },
+  );
+
   test('blocks item removal while a quantity update is pending', () async {
     final result = Completer<Either<String, Unit>>();
     when(() => updateQuantityUsecase(any())).thenAnswer((_) => result.future);

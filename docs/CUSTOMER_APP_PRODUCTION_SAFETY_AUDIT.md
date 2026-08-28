@@ -15,6 +15,6 @@ Client checks are usability only. The report relies on canonical migration/RLS/R
 
 No Production or Development remote read/write occurred.
 
-`PRODUCTION_SAFETY_AUDIT: PASS`  
-`UNSCOPED_ACTIVE_DELETE_FOUND: NO`  
+`PRODUCTION_SAFETY_AUDIT: PASS`
+`UNSCOPED_ACTIVE_DELETE_FOUND: NO`
 `PRODUCTION_TOUCHED: NO`

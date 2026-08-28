@@ -18,5 +18,5 @@ Status: PASS
 
 No deterministic null crash was reproduced. Backend integrity and RLS remain authoritative; the client does not fabricate a replacement entity for a missing record.
 
-`NULL_EDGE_AUDIT: PASS`  
+`NULL_EDGE_AUDIT: PASS`
 `DETERMINISTIC_NULL_CRASH_FOUND: NO`

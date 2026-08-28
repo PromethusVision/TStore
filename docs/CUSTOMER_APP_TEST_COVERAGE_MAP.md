@@ -1,6 +1,6 @@
 # Customer App Test Coverage Map
 
-Status: **AUDITED**  
+Status: **AUDITED**
 Wave: **16 — Customer App Commercialization Closeout**
 
 This map is evidence-based and does not claim line or branch percentages. The

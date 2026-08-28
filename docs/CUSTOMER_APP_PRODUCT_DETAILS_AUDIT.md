@@ -19,6 +19,6 @@ Status: PASS
 
 Product details intentionally acts as an O2O comparison surface, not an online checkout. Existing layout tests include narrow mobile width; cosmetic redesign is deferred to the final UI-kit rollout.
 
-`PRODUCT_DETAILS_AUDIT: PASS`  
-`ONLINE_CHECKOUT_SEMANTICS_FOUND: NO`  
+`PRODUCT_DETAILS_AUDIT: PASS`
+`ONLINE_CHECKOUT_SEMANTICS_FOUND: NO`
 `SAFE_FIX_REQUIRED: NO`

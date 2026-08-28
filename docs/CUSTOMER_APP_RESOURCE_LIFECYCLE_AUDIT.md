@@ -15,5 +15,5 @@ Status: PASS
 
 Delayed UI callbacks generally check `mounted`; critical Cubits check `isClosed`/generation where responses can arrive after disposal. The unreachable legacy postal Cubit lacks modern guards and must be remediated before any revival.
 
-`RESOURCE_LIFECYCLE_AUDIT: PASS`  
+`RESOURCE_LIFECYCLE_AUDIT: PASS`
 `ACTIVE_RESOURCE_LEAK_FOUND: NO`

@@ -18,6 +18,6 @@ Status: PASS FOR CURRENT V1 SCALE; BACKLOG FOR GROWTH
 
 No backend pagination contract was invented and no remote/schema work was done. Commercial monitoring should establish thresholds before changing these semantics.
 
-`PAGINATION_AUDIT: PASS`  
-`CURRENT_V1_PAGINATION_BLOCKER: NO`  
+`PAGINATION_AUDIT: PASS`
+`CURRENT_V1_PAGINATION_BLOCKER: NO`
 `GROWTH_PAGINATION_BACKLOG: YES`

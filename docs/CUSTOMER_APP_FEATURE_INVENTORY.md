@@ -1,6 +1,6 @@
 # Customer App Feature Inventory
 
-Status: AUDITED  
+Status: AUDITED
 Baseline: `f092cf8fe7431f812a017d4cbc9b538775bb41e6`
 
 This inventory follows runtime wiring and call sites, not feature-folder names alone.
@@ -39,5 +39,5 @@ This inventory follows runtime wiring and call sites, not feature-folder names a
 - Production demo shops support discovery and comparison but not merchant ownership or QR confirmation.
 - Final UI-kit rollout and canonical taxonomy runtime are separate future integration programs.
 
-`FEATURE_INVENTORY: PASS`  
+`FEATURE_INVENTORY: PASS`
 `MAJOR_UNMAPPED_CUSTOMER_MODULE: NO`

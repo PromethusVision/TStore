@@ -23,5 +23,5 @@ Status: PASS FOR LOCAL CONTRACT
 
 Remote fault injection was not authorized. Existing mocks cover timeout/error/stale/reconnect-like transitions; Production/Development were not contacted.
 
-`NETWORK_RESILIENCE_AUDIT: PASS`  
+`NETWORK_RESILIENCE_AUDIT: PASS`
 `UNCAUGHT_CRITICAL_NETWORK_EXCEPTION: NONE_FOUND`

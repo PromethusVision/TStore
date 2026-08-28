@@ -17,5 +17,5 @@ Status: PASS
 
 The active customer tests include rapid-tap cases for all commercial high-risk paths above. The unreachable postal address prototype is excluded; it must not be shipped without modern busy-state coverage.
 
-`DOUBLE_ACTION_AUDIT: PASS`  
+`DOUBLE_ACTION_AUDIT: PASS`
 `DUPLICATE_CRITICAL_WRITE_FOUND: NO`

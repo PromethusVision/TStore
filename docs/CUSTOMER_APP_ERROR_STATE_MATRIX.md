@@ -24,5 +24,5 @@ Legend: `Y` explicit/covered, `N/A` not a meaningful state, `B` backend/manual b
 
 Functional retry/state gaps were not reproduced in active routes. Visual consistency between older and newer empty/error components is `UI_KIT_DEFER`.
 
-`ERROR_STATE_MATRIX: PASS`  
+`ERROR_STATE_MATRIX: PASS`
 `FUNCTIONAL_RETRY_BLOCKER: NO`

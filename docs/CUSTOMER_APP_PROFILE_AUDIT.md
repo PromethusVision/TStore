@@ -25,6 +25,6 @@ The root session listener clears Cart, Wishlist, and selected navigation state o
 - Missing-profile repair is a client write and depends on canonical RLS; current live historical evidence confirms user ownership rules. No remote verification is performed here.
 - Phone validation is customer-facing and local; any future international format policy is an owner decision.
 
-`PROFILE_AUDIT: PASS`  
-`STALE_USER_PROFILE_RISK: COVERED`  
+`PROFILE_AUDIT: PASS`
+`STALE_USER_PROFILE_RISK: COVERED`
 `AVATAR_RUNTIME_STATE: DEFERRED`
