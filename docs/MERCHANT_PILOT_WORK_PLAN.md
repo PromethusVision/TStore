@@ -1,6 +1,6 @@
 # Wave 30 Minimum Merchant Pilot Surface Work Plan
 
-**State:** EXECUTION PLAN — 80 SUBSTANTIVE PACKAGES — NO RUNTIME/OWNER FINALIZATION
+**State:** COMPLETED — 80/80 SUBSTANTIVE PACKAGES — NO RUNTIME/OWNER FINALIZATION
 
 ## Phase 0 — Baseline and source reconciliation
 
@@ -112,5 +112,6 @@ Checkpoint after planning/sources, product/authority/listing, QR/support/securit
 stress matrices and final assurance. No source branch is merged and no runtime state is touched.
 
 `WORK_PACKAGES: 80`
+`WORK_PACKAGES_COMPLETED: 80`
 `OWNER_FINALIZATION: NO`
 `RUNTIME_IMPLEMENTATION: NO`
