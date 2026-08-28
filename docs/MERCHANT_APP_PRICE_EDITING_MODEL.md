@@ -1,6 +1,6 @@
 # Merchant App Price Editing Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP19
 
 ## Contract
@@ -28,4 +28,3 @@ Price is a timestamped shop-listing claim. It is not a universal product propert
 - Network timeout is `UNKNOWN_OUTCOME`; re-read authoritative listing before retry.
 - Validation failure does not mutate local “saved” state.
 - Suspended shop/listing cannot update customer-visible price.
-

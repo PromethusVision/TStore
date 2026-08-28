@@ -1,6 +1,6 @@
 # Merchant App Availability Management
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP20
 
 ## Proposed semantics
@@ -24,4 +24,3 @@ Do not require exact stock counts. Use explicit availability plus `updated_at` f
 - Bulk availability is shop-scoped, previewed and idempotent.
 - Customer-facing wording distinguishes unknown from in stock.
 - Reopening shop does not automatically reactivate every listing.
-

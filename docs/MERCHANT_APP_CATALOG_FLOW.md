@@ -1,6 +1,6 @@
 # Merchant App Catalog Flow
 
-Status: **PROPOSED — CATALOG OWNER DECISIONS OPEN**  
+Status: **PROPOSED — CATALOG OWNER DECISIONS OPEN**
 Wave: 17 / WP15
 
 ## Preferred flow
@@ -40,4 +40,3 @@ Merchant canonical ürünü her mağaza için yeniden yaratmaz. Arama sonucu bul
 - Variant: active / discontinued / review.
 - Listing: active / temporarily unavailable / out of stock / retired.
 - Stock knowledge: known in stock / known out of stock / unknown.
-

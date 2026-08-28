@@ -1,6 +1,6 @@
 # Merchant App Catalog Exception Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP26
 
 ## Merchant-visible states
@@ -27,4 +27,3 @@ Wave: 17 / WP26
 ## Operational gap
 
 Reviewer ownership, SLA, appeal flow and candidate activation authority remain `OWNER_DECISION_REQUIRED` and are commercialization dependencies.
-

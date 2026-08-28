@@ -1,6 +1,6 @@
 # Merchant App QR Wrong Shop Model
 
-Status: **PROPOSED — FAIL CLOSED**  
+Status: **PROPOSED — FAIL CLOSED**
 Wave: 17 / WP30
 
 ## Rule
@@ -19,4 +19,3 @@ A valid token presented by a user who lacks authorization for the token-bound sh
 - Wrong-shop attempt does not consume token unless canonical backend contract explicitly reserves it; recommendation is no consume.
 - Repeated suspicious attempts can trigger rate/risk controls without changing verification truth.
 - Merchant support cannot override shop binding by editing client state.
-

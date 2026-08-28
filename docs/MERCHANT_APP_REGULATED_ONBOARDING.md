@@ -1,6 +1,6 @@
 # Merchant App Regulated Onboarding
 
-Status: **PROPOSED — POLICY/LEGAL REVIEW REQUIRED**  
+Status: **PROPOSED — POLICY/LEGAL REVIEW REQUIRED**
 Wave: 17 / WP10
 
 ## Fail-closed rule
@@ -40,4 +40,3 @@ Examples are classification signals, not legal conclusions. Exact sector/product
 - `REG-02 P0`: Evidence types, retention and authorized reviewer.
 - `REG-03 P0`: Appeal/re-review policy and SLA.
 - `REG-04 P1`: Customer-visible disclosure labels.
-

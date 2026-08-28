@@ -1,6 +1,6 @@
 # Merchant App Role Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP07
 
 ## Principle
@@ -38,4 +38,3 @@ Bu sadeleştirme owner onayı bekler; candidate role listesi final değildir.
 - `ROLE-01 P0`: V1 staff yönetimi açılacak mı?
 - `ROLE-02 P1`: Manager ayrı rol mü, owner tarafından seçilen capability seti mi?
 - `ROLE-03 P1`: Personel daveti hangi doğrulama/expiry akışını kullanır?
-

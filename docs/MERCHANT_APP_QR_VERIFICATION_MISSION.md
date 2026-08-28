@@ -1,6 +1,6 @@
 # Merchant App QR Verification Mission
 
-Status: **PROPOSED — FROZEN SECURITY CONTRACT PRESERVED**  
+Status: **PROPOSED — FROZEN SECURITY CONTRACT PRESERVED**
 Wave: 17 / WP27
 
 Merchant QR flow confirms that a physical purchase represented by a short-lived opaque customer token was accepted at the authorized shop. It is server-authoritative evidence for verified transaction/review eligibility.
@@ -25,4 +25,3 @@ Merchant QR flow confirms that a physical purchase represented by a short-lived 
 - Repeat purchase or quantity does not grant another active review.
 - Delete/recreate depends on immutable verified evidence.
 - Legacy boolean verification alone is not evidence.
-

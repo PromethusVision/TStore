@@ -1,6 +1,6 @@
 # Merchant App Custom Product Flow
 
-Status: **PROPOSED — CATALOG OWNER DECISIONS OPEN**  
+Status: **PROPOSED — CATALOG OWNER DECISIONS OPEN**
 Wave: 17 / WP22
 
 ## Scope
@@ -25,4 +25,3 @@ Supports handmade, local, unbranded or legitimately barcode-free physical produc
 ## UX
 
 Use plain Turkish (“Markasız”, “El yapımı”, “Barkodu yok”) and explain why review may be needed. Preserve draft and prevent duplicate submissions.
-

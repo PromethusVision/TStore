@@ -1,6 +1,6 @@
 # Merchant App QR Expiry Model
 
-Status: **PROPOSED — CURRENT CONTRACT APPROXIMATELY TWO MINUTES**  
+Status: **PROPOSED — CURRENT CONTRACT APPROXIMATELY TWO MINUTES**
 Wave: 17 / WP31
 
 ## Authority
@@ -18,4 +18,3 @@ Expiry is calculated and enforced by server time. Customer or merchant device cl
 ## Security/usability trade-off
 
 Current short-lived contract is approximately two minutes. Changing TTL is `OWNER_DECISION_REQUIRED`; do not lengthen it in the client to solve scanning friction.
-

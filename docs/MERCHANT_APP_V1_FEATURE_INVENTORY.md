@@ -1,6 +1,6 @@
 # Merchant App V1 Feature Inventory
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP02
 
 Bu envanter 31 capability tanımlar: 16 `MUST_HAVE_V1`, 7 `SHOULD_HAVE`, 5 `DEFER`, 3 `FUTURE_ENGINE`.
@@ -59,4 +59,3 @@ Bu envanter 31 capability tanımlar: 16 `MUST_HAVE_V1`, 7 `SHOULD_HAVE`, 5 `DEFE
 ## Gate
 
 Sınıflandırma Product Owner tarafından onaylanana kadar kapsam `PROPOSED` kalır. `SHOULD_HAVE` maddeler pilot öncesi kapasiteye göre azaltılabilir; QR güvenliği ve authorization azaltılamaz.
-

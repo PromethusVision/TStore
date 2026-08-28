@@ -1,6 +1,6 @@
 # Merchant App Onboarding Architecture
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP09
 
 ## Proposed flow
@@ -43,4 +43,3 @@ AUTH
 - `ONB-02 P0`: Which sector/policy states may publish immediately?
 - `ONB-03 P1`: Staff self-join vs owner invitation only. Recommendation: signed, expiring owner invitation.
 - `ONB-04 P1`: Location validation threshold for activation.
-

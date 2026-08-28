@@ -1,6 +1,6 @@
 # Merchant App QR Confirmation Context
 
-Status: **PROPOSED — DATA MINIMIZED**  
+Status: **PROPOSED — DATA MINIMIZED**
 Wave: 17 / WP35
 
 ## Merchant needs to see
@@ -26,4 +26,3 @@ Wave: 17 / WP35
 - Server response determines success; local animation cannot.
 
 Whether customer display name is ever operationally necessary is `OWNER_DECISION_REQUIRED`; recommendation is omit in V1.
-

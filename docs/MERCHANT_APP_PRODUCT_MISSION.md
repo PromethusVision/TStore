@@ -1,6 +1,6 @@
 # Merchant App Product Mission
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP01
 
 ## Mission
@@ -42,4 +42,3 @@ Customer App keşif, karşılaştırma, mağaza/ürün görüntüleme, yerel sep
 - Hassas müşteri verisi ve başka merchant'a ait özel veri gösterilmez.
 - Güvenlik ve politika kontrolleri istemci görünürlüğüne bırakılmaz.
 - Belirsiz veya riskli işlem sessizce başarıya düşmez.
-

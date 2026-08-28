@@ -1,6 +1,6 @@
 # Merchant App Identity Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP05
 
 ## Entities
@@ -43,4 +43,3 @@ AUTH_USER
 - `ID-01 P0`: V1 organizasyon tüzel/gerçek kişi doğrulama seviyesi.
 - `ID-02 P0`: Bir kullanıcı birden çok organization yönetebilir mi?
 - `ID-03 P1`: `SHOP` ve `BRANCH` pilotta ayrı entity mi, yoksa tek fiziksel shop modeliyle mi başlanır?
-

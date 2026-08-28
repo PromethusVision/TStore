@@ -1,6 +1,6 @@
 # Merchant App Branch Operations
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP14
 
 ## Boundary
@@ -33,4 +33,3 @@ Keep branch operations limited to context switching, branch-specific listings an
 - `BR-01 P0`: Whether branch is distinct from shop at launch.
 - `BR-02 P1`: Cross-branch copy included in V1.
 - `BR-03 P1`: Which roles may view organization-wide metrics.
-

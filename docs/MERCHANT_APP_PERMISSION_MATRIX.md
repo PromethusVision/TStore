@@ -1,6 +1,6 @@
 # Merchant App Permission Matrix
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP08
 
 `✓` varsayılan öneri, `S` explicit shop scope, `—` izin yok, `F` future engine.
@@ -38,4 +38,3 @@ Wave: 17 / WP08
 - Exact manager defaults and whether analytics is visible to catalog staff.
 - Whether staff may see customer-authored review content.
 - Whether location/status changes need step-up authentication or owner approval.
-

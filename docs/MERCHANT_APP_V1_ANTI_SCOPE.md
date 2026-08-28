@@ -1,6 +1,6 @@
 # Merchant App V1 Anti-Scope
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP03
 
 ## Explicit exclusions
@@ -34,4 +34,3 @@ Yeni bir özellik V1'e alınmadan önce şu soruların tamamı yanıtlanmalıdı
 3. Mahalle esnafının eğitim yükü kabul edilebilir mi?
 4. Customer trust veya policy etkisi çözüldü mü?
 5. Aynı değer daha küçük bir akışla üretilebilir mi?
-

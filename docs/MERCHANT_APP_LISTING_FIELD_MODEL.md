@@ -1,6 +1,6 @@
 # Merchant App Listing Field Model
 
-Status: **PROPOSED — NO SCHEMA IMPLEMENTATION**  
+Status: **PROPOSED — NO SCHEMA IMPLEMENTATION**
 Wave: 17 / WP18
 
 ## Merchant-owned listing facts
@@ -30,4 +30,3 @@ Canonical name, brand/model, taxonomy, durable product ID and governed shared at
 ## Customer projection
 
 Customer receives only active/eligible canonical facts plus customer-visible listing price, availability, sell unit and approved media. Merchant SKU, private notes, provenance and staff identity stay private.
-

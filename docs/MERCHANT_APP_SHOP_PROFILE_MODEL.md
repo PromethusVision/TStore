@@ -1,6 +1,6 @@
 # Merchant App Shop Profile Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP11
 
 ## Customer-visible fields
@@ -36,4 +36,3 @@ Wave: 17 / WP11
 - Explicit country/region/address structure plus coordinate, not a single opaque text field only.
 - Contact and opening data have `updated_at`/freshness.
 - Status reason codes are safe for merchant UX; sensitive policy notes remain private.
-

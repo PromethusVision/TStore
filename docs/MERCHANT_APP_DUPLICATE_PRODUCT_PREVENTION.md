@@ -1,6 +1,6 @@
 # Merchant App Duplicate Product Prevention
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP25
 
 ## Prevention layers
@@ -31,4 +31,3 @@ Wave: 17 / WP25
 - `EXISTING_SHOP_LISTING`: edit existing listing rather than duplicate.
 
 Merge/split authority, review evidence movement and barcode auto-link remain catalog owner decisions.
-

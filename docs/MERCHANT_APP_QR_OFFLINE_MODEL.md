@@ -1,6 +1,6 @@
 # Merchant App QR Offline Model
 
-Status: **PROPOSED — FAIL CLOSED FOR CONFIRMATION**  
+Status: **PROPOSED — FAIL CLOSED FOR CONFIRMATION**
 Wave: 17 / WP34
 
 ## Recommendation
@@ -18,4 +18,3 @@ QR validation and confirmation require connectivity. Offline confirmation queues
 ## UX
 
 Show `CONNECTION_REQUIRED_FOR_VERIFICATION` with retry and safe cancel. Do not blame QR/customer. If connectivity returns after token expiry, server rejects and customer generates a new token.
-

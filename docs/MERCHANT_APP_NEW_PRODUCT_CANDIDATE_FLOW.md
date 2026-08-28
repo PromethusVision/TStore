@@ -1,6 +1,6 @@
 # Merchant App New Product Candidate Flow
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP16
 
 ## Entry criteria
@@ -30,4 +30,3 @@ Candidate flow is offered only after canonical search, synonyms, barcode (when p
 - Explain missing/correction fields without internal moderation notes.
 - If linked to an existing product, guide merchant to listing creation without losing merchant-entered listing fields.
 - No promise of review SLA until operations ownership exists.
-

@@ -1,6 +1,6 @@
 # Merchant App QR Scan Flow
 
-Status: **PROPOSED — SERVER-AUTHORITATIVE**  
+Status: **PROPOSED — SERVER-AUTHORITATIVE**
 Wave: 17 / WP28
 
 ## Flow
@@ -29,4 +29,3 @@ ACTIVE SHOP CONTEXT
 - Double tap is disabled in UX and safe in backend through idempotency/atomic consume.
 - Back/cancel before confirm produces no verified transaction.
 - Timeout after submit is not shown as failure until authoritative status is checked.
-

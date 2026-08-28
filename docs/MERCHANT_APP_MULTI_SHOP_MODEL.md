@@ -1,6 +1,6 @@
 # Merchant App Multi-Shop Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP06
 
 ## Compared models
@@ -36,4 +36,3 @@ Veri/authorization kavramında `organization -> shops`, UX'te pilot için sade �
 - `SHOP-01 P0`: Pilot başlangıcında multi-shop activation var mı?
 - `SHOP-02 P1`: Listing kopyalama V1 mi, sonra mı?
 - `SHOP-03 P1`: Aynı organization altındaki mağazalarda staff inheritance var mı? Öneri: hayır, explicit scope.
-

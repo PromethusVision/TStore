@@ -1,6 +1,6 @@
 # Merchant App Shop Lifecycle
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED; NO DB ENUM**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED; NO DB ENUM**
 Wave: 17 / WP13
 
 ## Conceptual states
@@ -29,4 +29,3 @@ Wave: 17 / WP13
 - `LIFE-01 P0`: QR confirmation policy during `TEMPORARILY_CLOSED`.
 - `LIFE-02 P1`: Customer visibility and message for permanently closed shops with historical reviews.
 - `LIFE-03 P1`: Self-service reactivation eligibility.
-

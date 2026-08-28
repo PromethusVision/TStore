@@ -1,6 +1,6 @@
 # Merchant App Barcode Catalog Flow
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP17
 
 ## Principle
@@ -32,4 +32,3 @@ CAMERA_OR_MANUAL_CODE
 - Barcode scanning cannot override policy-blocked/discontinued state.
 - GTIN auto-link allowlist and confidence threshold remain `OWNER_DECISION_REQUIRED` (`CAT-03 P0`).
 - Scan permission and raw frames are minimized; no camera media retained by default.
-

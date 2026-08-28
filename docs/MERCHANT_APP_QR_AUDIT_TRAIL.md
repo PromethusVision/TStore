@@ -1,6 +1,6 @@
 # Merchant App QR Audit Trail
 
-Status: **PROPOSED — NO SCHEMA IMPLEMENTATION**  
+Status: **PROPOSED — NO SCHEMA IMPLEMENTATION**
 Wave: 17 / WP36
 
 ## Audit events
@@ -30,4 +30,3 @@ Wave: 17 / WP36
 ## Invariants
 
 Audit records do not grant review rights; verified evidence does. Merchant cannot edit/delete success evidence or relabel a denial as success.
-

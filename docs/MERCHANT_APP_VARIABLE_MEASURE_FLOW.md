@@ -1,6 +1,6 @@
 # Merchant App Variable Measure Flow
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP23
 
 ## Examples
@@ -26,4 +26,3 @@ Products sold by kilogram, gram, litre, metre or another governed measure.
 
 - `CAT-09 P0`: Whether customer QR contains requested quantity, merchant enters actual quantity, or both.
 - `CAT-01 P0`: Whether unit choice belongs to listing or certain variants.
-

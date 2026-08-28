@@ -1,6 +1,6 @@
 # Merchant App QR Concurrency Model
 
-Status: **PROPOSED — SERVER ATOMICITY REQUIRED**  
+Status: **PROPOSED — SERVER ATOMICITY REQUIRED**
 Wave: 17 / WP33
 
 ## Scenario
@@ -24,4 +24,3 @@ Two authorized staff members scan and confirm the same token nearly simultaneous
 ## Test dimensions
 
 Same actor/two devices, different authorized staff, wrong-shop actor racing valid actor, expiry boundary, delayed response and process restart.
-

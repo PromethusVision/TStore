@@ -1,6 +1,6 @@
 # Merchant App Bulk Catalog Operations
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP21
 
 ## V1 recommendation
@@ -29,4 +29,3 @@ Include only low-risk, reversible bulk availability changes for explicitly selec
 ## Open decisions
 
 - Batch atomicity: all-or-nothing vs per-row partial result (`CAT-BULK-01 P1`). Recommendation: explicit per-row result with no hidden success, except integrity-critical operations.
-

@@ -1,6 +1,6 @@
 # Merchant App QR Security Model
 
-Status: **PROPOSED — SECURITY CONTRACT REQUIRED**  
+Status: **PROPOSED — SECURITY CONTRACT REQUIRED**
 Wave: 17 / WP29
 
 ## Threats and controls
@@ -27,4 +27,3 @@ QR contains no email, customer UUID, item details, price or secret beyond opaque
 - Token consumption and verified transaction creation are one atomic authoritative operation.
 - Authorization checks actor membership, capability, shop state and token shop binding.
 - Immutable evidence cannot be edited by merchant.
-

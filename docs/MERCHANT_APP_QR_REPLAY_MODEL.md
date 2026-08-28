@@ -1,6 +1,6 @@
 # Merchant App QR Replay Model
 
-Status: **PROPOSED — EXACTLY-ONCE OUTCOME REQUIRED**  
+Status: **PROPOSED — EXACTLY-ONCE OUTCOME REQUIRED**
 Wave: 17 / WP32
 
 ## Contract
@@ -20,4 +20,3 @@ The first eligible atomic confirmation consumes the token and creates at most on
 - Same staff retry after unknown timeout: reconcile and show “already verified” as successful prior outcome when authorized.
 - Unrelated actor replay: generic already-used/invalid message, minimized context.
 - Customer UI refreshes authoritative session/result; it does not assume success from scanner UI.
-

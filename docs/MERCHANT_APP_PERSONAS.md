@@ -1,6 +1,6 @@
 # Merchant App Personas
 
-Status: **RESEARCH — SYNTHETIC PERSONAS**  
+Status: **RESEARCH — SYNTHETIC PERSONAS**
 Wave: 17 / WP04
 
 Tüm örnekler sentetiktir; gerçek kişi, iletişim bilgisi veya işletme kaydı içermez.
@@ -26,4 +26,3 @@ Tüm örnekler sentetiktir; gerçek kişi, iletişim bilgisi veya işletme kayd�
 - Tehlikeli veya yüksek etkili işlemlerde kapsam ve sonuç özeti göster.
 - Başka shop/organization verisini cache, hata veya deep link üzerinden sızdırma.
 - Regulated/mixed/service belirsizliğini otomatik yayınla çözme.
-

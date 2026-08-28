@@ -1,6 +1,6 @@
 # Merchant App Product Media Flow
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP24
 
 ## Media classes
@@ -26,4 +26,3 @@ Wave: 17 / WP24
 - Draft upload is not customer publication.
 - Merchant cannot promote listing media into canonical media directly; promotion workflow is deferred (`CAT-13 P1`).
 - Orphan cleanup, retention and appeal policies need backend/operations design.
-

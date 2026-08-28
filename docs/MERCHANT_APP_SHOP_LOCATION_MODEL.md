@@ -1,6 +1,6 @@
 # Merchant App Shop Location Model
 
-Status: **PROPOSED — OWNER REVIEW REQUIRED**  
+Status: **PROPOSED — OWNER REVIEW REQUIRED**
 Wave: 17 / WP12
 
 ## Proposed capture flow
@@ -34,4 +34,3 @@ Wave: 17 / WP12
 - `LOC-01 P0`: Which business types may hide or fuzz exact customer-facing location?
 - `LOC-02 P1`: Activation threshold for district/address mismatch.
 - `LOC-03 P1`: Who may approve a shop move and whether step-up auth is required?
-
