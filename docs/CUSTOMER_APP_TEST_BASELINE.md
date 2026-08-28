@@ -43,3 +43,18 @@ failure.
 
 Final totals are recorded again after Work Packages 61–68 in the Wave 16 final
 closeout report.
+
+## Final WP100 regression
+
+After every Wave 16 code change and all closeout documentation:
+
+```text
+flutter test --no-pub
+1224 passed
+0 failed
+6 skipped (explicit live/remote opt-in)
+```
+
+The eight additional passing tests cover duplicate signup, replace-cart
+serialization, repeated review deletion, blank/stale search, guest-to-customer
+state isolation and sanitized 404/503 error mapping.
