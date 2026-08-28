@@ -49,4 +49,3 @@ Measure agreement separately for finding, severity, policy applicability, action
 - Which actions require independent second review.
 - Acceptable disagreement thresholds before policy clarification is mandatory.
 - Whether external quality review is ever justified for regulated domains.
-

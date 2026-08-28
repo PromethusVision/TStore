@@ -42,4 +42,3 @@ Use anonymized case packets for periodic calibration. Disagreement should first 
 - No quality reviewer may directly edit verified history or manufacture missing evidence.
 - Two-person review is reserved for defined high-risk actions, not every routine support response.
 - Exact sample rates, review independence rules and acceptable error thresholds remain owner/policy decisions.
-
