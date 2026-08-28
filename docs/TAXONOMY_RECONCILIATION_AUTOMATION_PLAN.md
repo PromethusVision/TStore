@@ -177,4 +177,3 @@ None of these stages was executed by this audit.
 - Blocked rows silently assigned: 0.
 
 `RECONCILIATION_AUTOMATION_PLAN: PASS`
-
