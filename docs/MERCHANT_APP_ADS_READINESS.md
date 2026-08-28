@@ -2,7 +2,7 @@
 
 Status: **PROPOSED MAPPING — ADS RUNTIME NOT READY**
 Wave: 17 / WP116
-Source: read-only `origin/agent2/w16-sponsored-advertising-engine-foundation@29582b4f30368febe7f1ac196b12d56c32456bdf`
+Source: read-only `origin/agent2/w16-sponsored-advertising-engine-foundation@43135b99d6187de205bd431fd780d9871ad61e02`
 
 ## Source contract preserved
 
