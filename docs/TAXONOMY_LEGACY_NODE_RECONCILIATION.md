@@ -1,9 +1,13 @@
 # EsnaftaVar Legacy Taxonomy Node Reconciliation
 
-**State:** ANALYSIS ONLY — NOT A RUNTIME MIGRATION  
-**Inventory:** `docs/TAXONOMY_LEGACY_NODE_RECONCILIATION.csv`  
-**Legacy source:** `docs/data/esnaftavar_category_taxonomy_v1_final.json`  
-**Legacy source SHA-256:** `182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08`  
+**State:** ANALYSIS ONLY — NOT A RUNTIME MIGRATION
+
+**Inventory:** `docs/TAXONOMY_LEGACY_NODE_RECONCILIATION.csv`
+
+**Legacy source:** `docs/data/esnaftavar_category_taxonomy_v1_final.json`
+
+**Legacy source SHA-256:** `182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08`
+
 **Canonical base:** `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`
 
 ## 1. Purpose and interpretation
@@ -223,4 +227,3 @@ Additional review signals:
   taxonomy files were created.
 - This inventory must be regenerated or reviewed after any proposal finalization;
   `PROVISIONAL_PROPOSAL` rows are not migration instructions.
-
