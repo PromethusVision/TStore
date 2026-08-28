@@ -24,4 +24,3 @@ Rules:
 - Case/evidence retention, legal hold and export require policy/legal decisions.
 
 `AUDIT_RUNTIME_IMPLEMENTED: NO`
-

@@ -31,4 +31,3 @@ Metric labels should say “Doğrulanmış fiziksel alışveriş” rather than 
 number.
 
 `VERIFIED_PURCHASE_EQUALS_PAYMENT: NO`
-

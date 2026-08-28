@@ -21,4 +21,3 @@ store arrival or causality. Offline purchases not using QR are invisible; QR
 adoption differences bias comparisons.
 
 `FUNNEL_OPTION_SELECTED: NO`
-

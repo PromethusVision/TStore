@@ -19,4 +19,3 @@ seasonality and branch closure are separate from churn. Exact anchors/windows ar
 Product Owner decisions.
 
 `RETENTION_MODEL_SELECTED: NO`
-

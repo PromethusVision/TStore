@@ -21,4 +21,3 @@ diagnostic traces as a business denominator. An observability alert may open an
 incident; it cannot alter purchases, rewards, reputation or ad billing.
 
 `PRODUCT_ANALYTICS_EQUALS_PRODUCTION_HEALTH: NO`
-

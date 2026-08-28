@@ -24,4 +24,3 @@ Official references reviewed 28 August 2026:
 - <https://opentelemetry.io/docs/concepts/signals/>
 
 `OBSERVABILITY_TOOL_SELECTED: NO`
-

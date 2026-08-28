@@ -25,4 +25,3 @@ Late, duplicate or invalidated source events cause deterministic recomputation o
 an explicit superseding candidate; they do not rewrite raw evidence.
 
 `AD_ATTRIBUTION_MODEL_SELECTED: NO`
-

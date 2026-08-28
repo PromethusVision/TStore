@@ -20,4 +20,3 @@ Every metric publishes freshness and source coverage. Quality failures trigger
 bounded remediation/replay and restatement, never manual invention of facts.
 
 `EVENT_QUALITY_RUNTIME: NOT_IMPLEMENTED`
-

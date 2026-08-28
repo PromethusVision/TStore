@@ -20,4 +20,3 @@ North-star, targets and go/no-go thresholds are not finalized. The dashboard mus
 show definition version, freshness, coverage and test/demo exclusions.
 
 `PLATFORM_OWNER_DASHBOARD_FINALIZED: NO`
-

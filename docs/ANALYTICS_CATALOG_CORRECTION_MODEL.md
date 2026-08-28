@@ -20,4 +20,3 @@ Corrections to authoritative purchases/reviews require their own governed source
 events; catalog lineage alone cannot change customer rights or ledger outcomes.
 
 `HISTORICAL_CATALOG_REWRITE: FORBIDDEN`
-

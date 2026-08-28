@@ -24,4 +24,3 @@ explicit decisions. Paid exposure cannot affect review rights, reward, reputatio
 or organic ranking.
 
 `AD_MEASUREMENT_RUNTIME: NOT_IMPLEMENTED`
-

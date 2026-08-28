@@ -48,4 +48,3 @@ customer identifiers in names, `sale_completed` for a QR verification, and
 `revenue_recorded` without settlement/accounting authority.
 
 `EVENT_NAMING_FINALIZED: NO`
-

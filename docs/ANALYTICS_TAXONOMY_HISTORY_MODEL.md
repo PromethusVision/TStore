@@ -18,4 +18,3 @@ synonyms, legacy redirects and taxonomy identity are separate. Proposed L2 nodes
 remain labelled proposals and cannot silently become canonical analytics groups.
 
 `TAXONOMY_HISTORY_PROJECTION_SELECTED_GLOBALLY: NO`
-

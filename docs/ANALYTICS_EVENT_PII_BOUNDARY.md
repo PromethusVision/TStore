@@ -21,4 +21,3 @@ serialization. Crash/error tooling scrubs breadcrumbs, URLs, headers and local
 state. Field audits fail closed on newly introduced keys.
 
 `SECRETS_IN_EVENTS: FORBIDDEN`
-

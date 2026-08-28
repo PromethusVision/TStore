@@ -21,4 +21,3 @@ One number should not combine growth, health, trust and monetization. Targets ne
 baseline and Product Owner approval.
 
 `VANITY_METRIC_AS_NORTH_STAR: NOT_RECOMMENDED`
-

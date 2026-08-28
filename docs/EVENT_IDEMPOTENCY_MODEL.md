@@ -28,4 +28,3 @@ a scope and retention at least as long as retry/replay risk; expiry is not assum
 safe for irreversible ledgers. Exact runtime mechanisms remain open.
 
 `EXACTLY_ONCE_TRANSPORT_ASSUMED: NO`
-

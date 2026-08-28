@@ -18,4 +18,3 @@ bounded causes. Exact green/amber/red thresholds are set after pilot baseline;
 privacy leaks and duplicate authoritative outcomes do not wait for a baseline.
 
 `QUALITY_THRESHOLDS_FINALIZED: NO`
-

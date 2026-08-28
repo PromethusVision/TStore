@@ -16,4 +16,3 @@ single composite. Product Owner must decide definition, target/window and covera
 interpretation.
 
 `NORTH_STAR_SELECTED: NO`
-

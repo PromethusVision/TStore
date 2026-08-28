@@ -22,4 +22,3 @@ verified at implementation time. No Production project was read or changed.
 Reference: <https://supabase.com/docs/guides/monitoring-and-debugging/logs>
 
 `BACKEND_MONITORING_CONFIGURED: NO`
-

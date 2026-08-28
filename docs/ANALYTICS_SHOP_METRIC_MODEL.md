@@ -22,4 +22,3 @@ Comparison with other merchants, revenue/profit and conversion rates are out unt
 owner, privacy and denominator/evidence decisions exist.
 
 `SHOP_METRIC_MODEL_FINALIZED: NO`
-

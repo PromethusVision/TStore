@@ -38,4 +38,3 @@ P0/P1 events require named runbook and owner before Production instrumentation.
 No response invents or edits authoritative facts outside the owning domain.
 
 `EVENT_FAILURE_REGISTRY_FINALIZED: NO`
-

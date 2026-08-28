@@ -17,4 +17,3 @@ authority. Economic value, expiry/redemption and accounting signals require the
 future owner-approved foundation.
 
 `REWARD_HEALTH_FINALIZED: NO`
-

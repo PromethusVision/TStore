@@ -31,4 +31,3 @@ Metrics separate query volume, zero-result rate, resolved category quality and
 result-open rate. They do not claim satisfaction or purchase causality.
 
 `RAW_QUERY_RETENTION_DEFAULT: NO`
-

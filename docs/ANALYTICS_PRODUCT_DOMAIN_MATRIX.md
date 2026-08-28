@@ -37,4 +37,3 @@ retains one authority meaning. L2 proposal gaps and facet/policy owner decisions
 remain runtime blockers.
 
 `PRODUCT_L1_METRIC_COVERAGE: 24/24`
-

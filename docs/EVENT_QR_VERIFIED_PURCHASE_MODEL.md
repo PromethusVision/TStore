@@ -31,4 +31,3 @@ that an advertisement caused the visit. Review/reward eligibility may consume it
 only under their separately approved, idempotent policies.
 
 `QR_PURCHASE_AUTHORITY: SERVER_AUTHORITATIVE`
-

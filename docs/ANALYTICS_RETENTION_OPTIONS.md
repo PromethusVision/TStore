@@ -22,4 +22,3 @@ be included in the chosen policy. Retention expiry cannot break idempotency for 
 irreversible ledger without an alternative durable key.
 
 `RETENTION_PERIODS_FINALIZED: NO`
-

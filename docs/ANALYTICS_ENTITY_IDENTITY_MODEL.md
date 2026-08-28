@@ -23,4 +23,3 @@ split, retirement and branch transfer are effective-dated edges. No guest/client
 fingerprint is created to fill a missing customer ID.
 
 `ANALYTICS_ID_FORMAT_FINALIZED: NO`
-

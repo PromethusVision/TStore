@@ -15,4 +15,3 @@ Because the source foundation is unavailable, reward unit, earn/burn definitions
 funding, expiry, breakage and liability metrics are not invented here.
 
 `REWARD_REPORTING_READY: NO`
-

@@ -18,4 +18,3 @@ retention are Product Owner/privacy decisions. Absence of a later event cannot b
 called abandonment until a selected session/end rule exists.
 
 `ANALYTICS_SESSION_SELECTED: NO`
-

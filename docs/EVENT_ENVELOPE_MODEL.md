@@ -54,4 +54,3 @@ identity, coerce malformed timestamps, or treat an unsupported version as the
 latest.
 
 `EVENT_ENVELOPE_SCHEMA_IMPLEMENTED: NO`
-

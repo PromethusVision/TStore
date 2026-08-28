@@ -25,4 +25,3 @@ Breaking corrections use a new version or explicit correction event; backfill
 creates traceable derived facts and never impersonates original occurrence time.
 
 `SILENT_SEMANTIC_CHANGE: FORBIDDEN`
-

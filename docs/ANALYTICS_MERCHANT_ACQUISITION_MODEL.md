@@ -15,4 +15,3 @@ definitions. Staff productivity must not reward unsafe approvals. Merchant conta
 and case detail are restricted; dashboards use aggregates.
 
 `MERCHANT_ACQUISITION_DEFINITION_FINALIZED: NO`
-

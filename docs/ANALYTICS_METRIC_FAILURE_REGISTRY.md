@@ -30,4 +30,3 @@ manual dashboard number editing. P0/P1 requires impact analysis across every
 consumer and window.
 
 `METRIC_FAILURE_REGISTRY_FINALIZED: NO`
-

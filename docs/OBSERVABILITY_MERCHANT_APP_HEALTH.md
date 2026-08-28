@@ -23,4 +23,3 @@ items/prices and private evidence are excluded. Verified purchase success is
 reconciled from authoritative facts, not client UI.
 
 `MERCHANT_HEALTH_RUNTIME: NOT_IMPLEMENTED`
-

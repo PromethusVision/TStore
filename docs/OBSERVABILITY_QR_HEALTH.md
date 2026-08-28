@@ -22,4 +22,3 @@ No raw token, customer contact, exact item/price, signed link or private content
 logged. Abuse detections open restricted investigation and do not prove guilt.
 
 `QR_DUPLICATE_OUTCOME_TOLERANCE: ZERO`
-

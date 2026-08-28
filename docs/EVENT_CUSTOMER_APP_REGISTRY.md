@@ -29,4 +29,3 @@ Every candidate needs an owner, question, retention, privacy basis, quality rule
 and removal path before implementation.
 
 `CUSTOMER_EVENT_REGISTRY_FINALIZED: NO`
-

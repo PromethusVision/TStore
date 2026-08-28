@@ -23,4 +23,3 @@ The 24 L1 set can be referenced where owner-final in source; the 22-domain L2
 proposal set and merchant sector proposal are not finalized by this document.
 
 `TAXONOMY_EVENT_MODEL_FINALIZED: NO`
-

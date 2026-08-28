@@ -23,4 +23,3 @@ Verified purchase, reward, badge, ad billing and reputation correctness resides 
 authoritative constraints, never a hope that the broker delivers exactly once.
 
 `DELIVERY_SEMANTICS: AT_LEAST_ONCE_ASSUMED`
-

@@ -21,4 +21,3 @@ Rates need a precisely defined denominator and same eligibility/filter window;
 otherwise publish counts side by side.
 
 `PRODUCT_METRIC_REGISTRY_FINALIZED: NO`
-

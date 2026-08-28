@@ -22,4 +22,3 @@ actions, reset cadence, visibility, competition, abuse and reward coupling remai
 owner decisions. No runtime recommendation is finalized.
 
 `GAMIFICATION_AUTHORITY_FINALIZED: NO`
-

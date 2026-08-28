@@ -18,4 +18,3 @@ Every alert names owner, service, environment, release, signal/formula, runbook,
 dedup/silence policy and recovery criteria. Alerts contain no sensitive payloads.
 
 `ALERT_THRESHOLDS_FINALIZED: NO`
-

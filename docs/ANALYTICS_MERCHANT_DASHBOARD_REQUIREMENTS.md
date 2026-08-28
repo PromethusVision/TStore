@@ -21,4 +21,3 @@ restatement, branch selector, metric definitions, accessible charts and export
 privacy controls. Final layout/chart choices are future UX work.
 
 `MERCHANT_DASHBOARD_UI_FINALIZED: NO`
-

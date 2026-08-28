@@ -26,4 +26,3 @@ Any longitudinal customer retention or attribution model requires explicit owner
 privacy/legal, consent and deletion decisions.
 
 `GUEST_ACCOUNT_RETROACTIVE_LINK_DEFAULT: NO`
-

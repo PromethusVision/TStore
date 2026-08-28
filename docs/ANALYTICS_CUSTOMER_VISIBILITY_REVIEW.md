@@ -18,4 +18,3 @@ Recommendation is no V1 customer analytics dashboard. Product Owner has not
 finalized this decision.
 
 `CUSTOMER_ANALYTICS_DASHBOARD_RECOMMENDATION: NO`
-

@@ -23,4 +23,3 @@ Merchant views show aggregates only—no customer UUID, contact, journey, precis
 location or low-count re-identifiable breakdown.
 
 `SOFT_INTENT_LABELED_AS_SALES: NO`
-

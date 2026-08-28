@@ -26,4 +26,3 @@ Raw facts remain the reconciliation source within approved retention. Aggregate
 tables cannot award rewards, establish reviews, bill ads or modify reputation.
 
 `AGGREGATION_RUNTIME: NOT_IMPLEMENTED`
-

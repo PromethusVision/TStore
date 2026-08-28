@@ -22,4 +22,3 @@ Reports/moderation/operator actions use separate operations/audit events. An ad,
 click, directions request, cart entry or reward cannot create review eligibility.
 
 `REVIEW_RIGHTS_CHANGED: NO`
-

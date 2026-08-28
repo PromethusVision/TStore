@@ -61,4 +61,3 @@ precise location or personal data retention is involved. No decision is finalize
 by this document.
 
 `EVENT_PLATFORM_RUNTIME: NOT_IMPLEMENTED`
-

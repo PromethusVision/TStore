@@ -31,4 +31,3 @@ Any metric declares the minimum accepted authority. Mixed-authority metrics
 publish separate components rather than collapsing evidence grades.
 
 `AUTHORITY_MODEL_FINALIZED: NO`
-

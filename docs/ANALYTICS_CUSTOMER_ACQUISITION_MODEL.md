@@ -18,4 +18,3 @@ acquired local-commerce customer by itself. Consent, platform policy and legal
 review precede implementation.
 
 `CUSTOMER_ACQUISITION_DEFINITION_FINALIZED: NO`
-

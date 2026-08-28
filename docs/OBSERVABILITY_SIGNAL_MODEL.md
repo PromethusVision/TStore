@@ -20,4 +20,3 @@ purchase succeeded is not the authoritative purchase fact.
 Reference: <https://opentelemetry.io/docs/concepts/signals/>
 
 `FULL_DISTRIBUTED_TRACING_REQUIRED_FOR_PILOT: NO`
-

@@ -20,4 +20,3 @@ Operators document provider region/subprocessors, retention, access and deletion
 Tool selection and consent/legal basis remain open.
 
 `CRASH_REPORTING_IMPLEMENTED: NO`
-

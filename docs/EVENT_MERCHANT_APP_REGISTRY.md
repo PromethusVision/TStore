@@ -22,4 +22,3 @@ private chat/review text or small-cohort journeys. Verified physical purchases a
 not payment settlement, order revenue or audited merchant revenue.
 
 `MERCHANT_EVENT_REGISTRY_FINALIZED: NO`
-

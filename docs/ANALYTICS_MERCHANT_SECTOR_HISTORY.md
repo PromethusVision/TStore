@@ -20,4 +20,3 @@ The source architecture contains 67 proposed assignable leaves; this document
 does not finalize them.
 
 `PRODUCT_MERCHANT_TAXONOMY_SEPARATION: REQUIRED`
-

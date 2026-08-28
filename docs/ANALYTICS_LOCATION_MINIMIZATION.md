@@ -23,4 +23,3 @@ Precision, coarse-cell size, retention and consent/legal basis remain owner/poli
 decisions. A directions request is intent only.
 
 `PRECISE_LOCATION_RETENTION: NO`
-

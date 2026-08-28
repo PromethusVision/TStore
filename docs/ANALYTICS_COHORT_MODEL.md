@@ -15,4 +15,3 @@ longitudinal cohorts wait for identity/privacy decision. Do not build arbitrary
 multi-dimensional slices that invite re-identification or false conclusions.
 
 `COHORT_MODEL_FINALIZED: NO`
-

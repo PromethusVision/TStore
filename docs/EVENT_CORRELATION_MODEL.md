@@ -21,4 +21,3 @@ value, email or session credential as correlation. Correlation retention and
 visibility follow the most restrictive linked privacy class.
 
 `CORRELATION_EQUALS_CAUSATION: NO`
-

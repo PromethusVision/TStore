@@ -25,4 +25,3 @@ listing revisions. Corrections are append-only, effective-dated and auditable; n
 historical event is rewritten in place.
 
 `CATALOG_EVENT_RUNTIME: NOT_IMPLEMENTED`
-

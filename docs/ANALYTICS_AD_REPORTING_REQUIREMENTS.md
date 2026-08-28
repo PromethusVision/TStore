@@ -19,4 +19,3 @@ metadata. Commercial KPIs, attribution window and billing model remain Product
 Owner decisions.
 
 `AD_REPORTING_FINALIZED: NO`
-

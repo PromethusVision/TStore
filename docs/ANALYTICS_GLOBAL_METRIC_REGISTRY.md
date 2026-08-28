@@ -29,4 +29,3 @@ version and change log before runtime. Ratios cannot be published without a vali
 same-scope denominator.
 
 `GLOBAL_METRIC_REGISTRY_FINALIZED: NO`
-

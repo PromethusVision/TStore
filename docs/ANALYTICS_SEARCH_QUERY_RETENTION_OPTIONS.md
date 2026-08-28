@@ -19,4 +19,3 @@ restricted reviewer workflow and deletion validation. D is not recommended.
 No option is selected here.
 
 `RAW_SEARCH_QUERY_OPTION_SELECTED: NO`
-

@@ -17,4 +17,3 @@ class. Avoid customer IDs, raw targeting values, precise location and unrestrict
 query/creative payloads.
 
 `AD_HEALTH_RUNTIME: NOT_IMPLEMENTED`
-

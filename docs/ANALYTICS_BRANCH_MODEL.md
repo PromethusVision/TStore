@@ -19,4 +19,3 @@ shown to merchants. Branch comparisons require identical metric versions,
 coverage and QR adoption caveats.
 
 `BRANCH_IDENTITY_RUNTIME: NOT_IMPLEMENTED`
-

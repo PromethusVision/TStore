@@ -18,4 +18,3 @@ with sufficient cohort. Do not set targets until baseline. No revenue, ad ROI,
 retention or customer-level funnel claim without evidence/owner/privacy decisions.
 
 `ESENLER_PILOT_KPIS_FINALIZED: NO`
-

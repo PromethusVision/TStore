@@ -25,4 +25,3 @@ full request/response bodies are excluded by default. “May be useful later” 
 a valid collection purpose.
 
 `DATA_MINIMIZATION_REQUIRED: YES`
-

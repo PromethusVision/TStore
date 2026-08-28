@@ -16,4 +16,3 @@ business measurement at the approved cutover; do not relabel historical fixture
 events as real. Production must not be seeded with unmarked demo activity.
 
 `DEMO_TRAFFIC_IN_BUSINESS_METRICS: NO`
-

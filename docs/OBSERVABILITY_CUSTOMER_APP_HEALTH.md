@@ -20,4 +20,3 @@ Payloads contain no customer contact, private messages, raw query, token, precis
 location or full URL. Release/environment attribution is mandatory.
 
 `CUSTOMER_HEALTH_RUNTIME: NOT_IMPLEMENTED`
-

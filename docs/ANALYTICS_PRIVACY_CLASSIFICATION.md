@@ -21,4 +21,3 @@ silently use product analytics consent. This document is architecture, not legal
 advice or a final consent policy.
 
 `PRIVACY_POLICY_FINALIZED: NO`
-

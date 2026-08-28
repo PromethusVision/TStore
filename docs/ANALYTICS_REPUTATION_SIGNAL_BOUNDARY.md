@@ -26,4 +26,3 @@ or detection secrets.
 No reputation score, weight, threshold or consequence is selected here.
 
 `PAID_ADS_CREATE_REPUTATION: NO`
-

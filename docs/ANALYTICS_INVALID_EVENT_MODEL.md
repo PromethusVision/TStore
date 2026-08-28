@@ -22,4 +22,3 @@ authoritative verified purchase, reward or billing fact merely because a heurist
 dislikes it; authoritative reversal follows the owning domain.
 
 `ABUSE_FILTER_EQUALS_GUILT: NO`
-

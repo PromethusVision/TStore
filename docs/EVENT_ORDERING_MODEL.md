@@ -24,4 +24,3 @@ needed. A later-arriving client view cannot precede or cause a verified purchase
 merely because its device clock says so.
 
 `GLOBAL_EVENT_ORDER: NOT_REQUIRED`
-
