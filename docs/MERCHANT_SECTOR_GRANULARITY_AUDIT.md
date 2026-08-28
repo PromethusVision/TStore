@@ -133,4 +133,3 @@ conclusion. The internally confirmed beauty subtree is not reopened.
 `MERCHANT_GRANULARITY_AUDIT: PASS`
 
 `PROPOSAL_AUTOMATICALLY_CHANGED: NO`
-
