@@ -1,0 +1,16 @@
+SYSTEM,PRIMARY_PURPOSE,PRIMARY_AUTHORITY,PILOT_CLASS,STATE_SOURCE,MUST_NOT_BECOME
+CUSTOMER_APP,Local discovery cart QR reviews,Customer plus server contracts,REQUIRED,Working runtime and conditional closeout,Merchant admin console
+MERCHANT_APP,Shop listing truth and physical QR verification,Merchant membership plus server capabilities,MINIMUM_OPERATING_PATH,Proposed foundation,Customer app with hidden role tabs
+PRODUCT_TAXONOMY,Classify physical products,Platform owner-final taxonomy,REQUIRED,Product Taxonomy V1 FINAL,Merchant sector or policy proof
+MERCHANT_TAXONOMY,Describe business type,Platform governed sector identity,POST_PILOT_OR_ONBOARDING_MINIMUM,Proposed except explicit subtree,Authorization or product taxonomy
+CATALOG,Shared physical product identity,Platform canonical governance,REQUIRED_MINIMUM,Proposed future model plus current product rows,Shop listing truth
+SHOP_LISTING,Shop-specific offer truth,Authorized merchant shop,REQUIRED,Current shop_products plus proposed evolution,Canonical product identity
+QR_PURCHASE,Verified physical purchase evidence,Server-authoritative transaction,REQUIRED,Working canonical contract,Payment or client telemetry
+REVIEWS,Customer feedback unlocked by evidence,Customer mutation plus server eligibility,REQUIRED,Working canonical contract,Merchant reputation ledger
+ADS,Paid sponsored listing delivery,Future campaign engine,DEFER,Proposed,Organic rank or trust evidence
+REWARD,Economic benefit ledger,Future trusted reward evaluator,DEFER,Proposed,Review right or analytics counter
+GAMIFICATION,Optional progression and badges,Future governed evaluator,DEFER,Proposed,Social-credit scoring
+REPUTATION,Operational merchant trust signals,Future evidence evaluator,DEFER,Proposed,Paid badge or hidden rating replacement
+OPERATIONS,Case-based support trust and safety,Scoped operator capabilities,LEAN_REQUIRED,Proposed lean foundation,Universal admin bypass
+ANALYTICS,Question-led derived measurement,Governed analytics producers,MINIMUM_ONLY,Proposed,Domain authority or reward ledger
+QA_RELEASE,Evidence and immutable artifact gates,Release governance,REQUIRED,Proposed foundation,Single green test as universal certification
