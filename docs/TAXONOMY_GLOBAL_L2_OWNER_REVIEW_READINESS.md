@@ -156,3 +156,26 @@ The estimate is derived from the explicit child count on each `ROOT-01` through 
 ## Review gate
 
 Global owner review can start because inventory and decision dependencies are reconciled. Owner-finalization must remain a separate controlled task that records explicit decisions and revalidates every affected L1. Runtime/stable-ID/JSON work must wait until those owner decisions are locked.
+
+## Phase 8 self-review checkpoint
+
+The final consistency pass re-read proposal inventory directly from the three remote source branches and reviewed every generated audit document. No metric correction was required.
+
+| Check | Result |
+|---|---|
+| Source proposal reconciliation | PASS — Batch 01 `70`, Batch 02 `77`, Batch 03 `77`; total `224` |
+| Domain reconciliation | PASS — `22/22` proposed domains plus two fixed owner-final L2 domains |
+| Exact/normalized proposed L2 duplicates | PASS — `0` |
+| Ownership matrix IDs | PASS — `88/88` unique; `66` owner-required and `22` fixed-rule rows |
+| Collision IDs and priorities | PASS — `66/66` unique; `P0 32 + P1 28 + P2 6 = 66` |
+| Policy IDs/classes | PASS — `32/32` unique; `5 + 2 + 9 + 10 + 6 = 32` |
+| Naming IDs/severity | PASS — `40/40` unique; `6 + 22 + 12 = 40` |
+| Root decision IDs/dependencies | PASS — `18/18` unique; declared child total `48` |
+| Dependency references | PASS — missing collision/policy ID `0` |
+| Source proposal modification | PASS — none |
+| Cross-branch merge | PASS — none |
+| Unauthorized owner state | PASS — none |
+| Runtime/DB/remote environment change | PASS — none |
+| Diff and security/PII scan | PASS |
+
+This checkpoint closes the audit consistency pass only. It does not close any Product Owner decision or change any proposal state.
