@@ -1,6 +1,6 @@
 # Owner Master Dependency Graph
 
-State: `22 ROOTS FINAL — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
+State: `24 ROOTS FINAL — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 ## Applied decision state
 
@@ -24,8 +24,14 @@ State: `22 ROOTS FINAL — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
   launch surfaces. Their listed lawyer/KVKK/accounting/regulatory gates remain open.
 - `OM-R31=A` resolves stop/continue/expand governance without selecting numeric
   thresholds.
+- `OM-R06=B` resolves taxonomy activation planning to a stable-ID staged,
+  rollback-aware strategy; it does not authorize migration, activation, ID
+  generation or demo retirement.
+- `OM-R07=B` resolves Product/domain-gated Variant/Listing identity and preserves
+  Listing ownership of price, availability/stock and merchant SKU. `OM-R08`
+  publication governance remains provisional.
 
-The graph topology is unchanged. The 22 final roots auto-resolve only their mapped
+The graph topology is unchanged. The 24 final roots auto-resolve only their mapped
 child/dependent records. A final parent answer does not auto-pass runtime,
 physical or professional gates.
 

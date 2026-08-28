@@ -1,6 +1,6 @@
 # Owner Master Professional Review Routing
 
-State: `22 OWNER ROOTS FINAL — PROFESSIONAL ROUTING PRESERVED`
+State: `24 OWNER ROOTS FINAL — PROFESSIONAL ROUTING PRESERVED`
 
 ## Applied owner decision with open professional review
 
@@ -12,7 +12,7 @@ work. Open dependencies on final roots are: `OM-R05` (KVKK), `OM-R10`
 
 ## Decision lanes
 
-### OWNER_CAN_DECIDE_NOW — 20 ORIGINAL / 2 OPEN
+### OWNER_CAN_DECIDE_NOW — 20 ORIGINAL / 0 OPEN
 
 `OM-R01`, `OM-R02`, `OM-R03`, `OM-R04`, `OM-R06`, `OM-R07`, `OM-R09`,
 `OM-R11`, `OM-R12`, `OM-R13`, `OM-R14`, `OM-R16`, `OM-R17`, `OM-R19`,
@@ -21,7 +21,8 @@ work. Open dependencies on final roots are: `OM-R05` (KVKK), `OM-R10`
 These are product scope/direction choices. Professional review may still validate
 later copy or implementation, but it need not choose the product direction.
 
-Eighteen roots in this lane are final. Only `OM-R06` and `OM-R07` remain open.
+All 20 roots in this lane are final. `OM-R06=B` and `OM-R07=B` carry no new
+professional waiver or implementation authority.
 
 ### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 3 OPEN
 

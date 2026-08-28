@@ -1,12 +1,14 @@
 # Owner Master Root Decisions
 
-State: `22 PRODUCT OWNER FINAL ROOTS — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
+State: `24 PRODUCT OWNER FINAL ROOTS — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 Recommendations remain working hypotheses for non-final roots. On 2026-08-29 the
 Product Owner finalized the first eight roots and then a second, explicitly
 bounded batch: `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
 `OM-R11=B`, `OM-R12=A`, `OM-R13=A`, `OM-R14=A`, `OM-R15=A`, `OM-R16=A`,
-`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. No other answer is implied.
+`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. A third bounded batch finalized
+`OM-R06=B` and `OM-R07=B`; it approves strategy/identity direction only and no
+runtime or schema authority. No other answer is implied.
 
 ## Product Owner final register
 
@@ -17,6 +19,8 @@ bounded batch: `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
 | OM-R03 | A | FINAL | staged release execution remains gated |
 | OM-R04 | A | FINAL | exact signed artifact and physical acceptance not executed |
 | OM-R05 | A | FINAL | KVKK review remains open |
+| OM-R06 | B | FINAL | migration strategy only; no activation, ID generation or cleanup authorized |
+| OM-R07 | B | FINAL | identity direction only; no catalog schema/runtime authorized |
 | OM-R09 | A | FINAL | staff/multi-branch automation not approved |
 | OM-R10 | A | FINAL | lawyer/regulatory review remains open; sensitive scope fails closed |
 | OM-R11 | B | FINAL | minimum safe slice only; full Merchant App not approved |
@@ -141,9 +145,9 @@ bounded batch: `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
 
 `ROOT_COUNT: 31`
 
-`OWNER_FINAL_CHOICES: 22`
+`OWNER_FINAL_CHOICES: 24`
 
-`OWNER_OPEN_ROOTS: 2`
+`OWNER_OPEN_ROOTS: 0`
 
 `OWNER_PROVISIONAL_ROOTS: 3`
 

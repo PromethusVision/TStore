@@ -1,13 +1,14 @@
 # Owner Master Mobile / PC Review
 
-State: `22 FINAL ROOT CARDS — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
+State: `24 FINAL ROOT CARDS — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 Use `OM-Rxx=A/B/C` only for non-final cards when their review phase is active.
 `RECOMMENDED` remains an agent
 recommendation. Product Owner finalized exactly 22 answers on 2026-08-29. The
 second batch added `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
 `OM-R11=B`, `OM-R12=A`, `OM-R13=A`, `OM-R14=A`, `OM-R15=A`, `OM-R16=A`,
-`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. No other card is selected.
+`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. The third batch added `OM-R06=B` and
+`OM-R07=B` as strategy/identity direction only. No other card is selected.
 
 ## OM-R01 — Pilot success purpose
 
@@ -146,6 +147,8 @@ ANSWER FORMAT: `OM-R05=A`
 
 ## OM-R06 — Taxonomy/runtime activation
 
+DECISION: `FINAL=B` — strategy only; no activation, migration or ID generation authorized.
+
 QUESTION — Taxonomy, facets, legacy bridge and demo data runtime'a nasıl taşınmalıdır?
 
 RECOMMENDED: B
@@ -170,6 +173,8 @@ ANSWER FORMAT: `OM-R06=B`
 ---
 
 ## OM-R07 — Catalog identity
+
+DECISION: `FINAL=B` — domain-gated Variant; no schema/runtime implementation authorized.
 
 QUESTION — Product, Variant, Listing and identifier identities nasıl ayrılmalıdır?
 
@@ -838,9 +843,9 @@ Unanswered cards remain `OPEN`; recommendations are never auto-applied.
 
 `ROOT_CARDS: 31`
 
-`OWNER_FINAL_OPTIONS: 22`
+`OWNER_FINAL_OPTIONS: 24`
 
-`OWNER_OPEN_ROOTS: 2`
+`OWNER_OPEN_ROOTS: 0`
 
 `OWNER_PROVISIONAL_ROOTS: 3`
 

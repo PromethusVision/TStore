@@ -1,6 +1,6 @@
 # Owner Master Architecture Readiness
 
-State: `22 ROOTS PRODUCT OWNER FINAL — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
+State: `24 ROOTS PRODUCT OWNER FINAL — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 ## Scorecard
 
@@ -15,17 +15,17 @@ State: `22 ROOTS PRODUCT OWNER FINAL — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 | Merchant pilot gate | READY | Commercial scope separated from app minimum |
 | Post-pilot queue | READY | Reputation, Ads, Reward held outside pilot session |
 | Apply map | READY | 204/204 rows map to one master root |
-| Owner selection | PARTIAL | 22 final; 2 open; 3 provisional; 4 deferred |
+| Owner selection | PARTIAL | 24 final; 0 open; 3 provisional; 4 deferred |
 
 ## Queue metrics
 
 - Master roots: **31**
-- Owner can decide now and remains open: **2**
+- Owner can decide now and remains open: **0**
 - Owner can decide provisionally and remains open: **3**
 - Owner root answers waiting for professional input: **0**
 - Safe to defer post-pilot: **4**
 - Roots carrying any professional dependency: **15**
-- Product Owner final roots: **22**
+- Product Owner final roots: **24**
 - Customer UI owner decisions: **8/8 final**
 - Merchant pilot implementation blocker roots: **8/8 final**
 - Commercial pilot blocker roots: **16/16 final**
@@ -37,8 +37,8 @@ the regulated expansion opinion.
 
 ## Remaining readiness gates
 
-1. Product Owner answers only `OM-R06` and `OM-R07` immediately. `OM-R08`,
-   `OM-R25` and `OM-R26` remain provisional; post-pilot roots stay deferred.
+1. No immediate owner root remains. `OM-R08`, `OM-R25` and `OM-R26` remain
+   explicitly provisional; post-pilot roots stay deferred.
 2. `OM-R18=A` fixes the desired launch surface, but lawyer/KVKK input remains
    required before customer-facing legal/privacy surfaces are release-ready.
 3. Regulated expansion, Ads, Reward and public badge enablement stay closed until
@@ -53,14 +53,14 @@ the regulated expansion opinion.
 - DB/Supabase/environment changed: `NO`
 - Source branch merged: `NO`
 - Existing canonical document changed: `NO`
-- Owner finalization: `PARTIAL — EXACTLY 22 ROOTS`
+- Owner finalization: `PARTIAL — EXACTLY 24 ROOTS`
 - Professional finalization: `NO`
 
 ## Final consistency checks
 
 | Check | Result |
 |---|---|
-| Expected task files | 16/16 present |
+| Expected task files | 17/17 present |
 | Raw inventory rows / unique keys | 204 / 204 |
 | Apply-map rows / unique keys | 204 / 204 |
 | Raw ↔ apply source-key difference | 0 |
@@ -68,11 +68,11 @@ the regulated expansion opinion.
 | Mobile cards / unique IDs | 31 / 31 |
 | Dependency rows / unique IDs | 31 / 31 |
 | Raw rows with unknown/orphan root | 0 |
-| Final root selections | 22 |
-| Selected apply-map rows | 129 |
-| Direct root-anchor rows marked final | 22 |
-| Child/dependent rows inheriting root final | 107 |
-| Unselected apply-map rows | 75 |
+| Final root selections | 24 |
+| Selected apply-map rows | 141 |
+| Direct root-anchor rows marked final | 24 |
+| Child/dependent rows inheriting root final | 117 |
+| Unselected apply-map rows | 63 |
 | UI blocker decisions | 8 |
 | Commercial pilot blocker roots | 16 |
 | Merchant implementation blocker roots | 8 |
@@ -96,9 +96,12 @@ the regulated expansion opinion.
 - `OWNER_MASTER_ARCHITECTURE_READINESS.md`
 - `OWNER_MASTER_DECISION_APPLICATION_2026-08-29.md`
 - `OWNER_MASTER_DECISION_APPLICATION_2026-08-29_PILOT_MERCHANT.md`
+- `OWNER_MASTER_DECISION_APPLICATION_2026-08-29_TAXONOMY_CATALOG.md`
 
 `ALL_RECENT_DECISIONS_ACCOUNTED: PASS`
 
 `SEMANTIC_DEDUP: PASS`
 
-`READY_FOR_REMAINING_OWNER_REVIEW_SESSION: YES`
+`READY_FOR_INTEGRATION_REVIEW: YES`
+
+`READY_FOR_PROVISIONAL_OWNER_REVIEW_WHEN_SCHEDULED: YES`

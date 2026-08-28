@@ -70,7 +70,7 @@ approval, history deletion or Production release.
 - Physical/exact-artifact acceptance: `NOT EXECUTED`
 - Professional release surface: `PRODUCT DIRECTION FINAL — LAWYER/KVKK REVIEW OPEN`
 - Other professional dependencies: `OM-R05`, `OM-R10`, `OM-R12`, `OM-R14`–`OM-R18` remain open as routed
-- Owner finalization: `PARTIAL — EXACTLY 22/31 ROOTS`
+- Owner finalization: `PARTIAL — EXACTLY 24/31 ROOTS`
 - Runtime/physical/Production implementation: `NOT AUTHORIZED / NOT EXECUTED`
 
 `COMMERCIAL_PILOT_OWNER_DECISION_GATE: CLOSED`
