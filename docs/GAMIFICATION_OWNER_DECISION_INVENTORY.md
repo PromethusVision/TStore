@@ -1,0 +1,449 @@
+# Gamification Owner Decision Inventory
+**State:** RAW INVENTORY — NO OWNER FINALIZATION
+Exactly 40 material Product Owner decisions are recorded. Technical implementation choices that follow from an approved product contract are intentionally excluded.
+## Count
+- Raw decisions: 40
+- P0: 20
+- P1: 17
+- P2: 3
+- Policy/legal review required: 21 (including privacy/accounting-sensitive decisions)
+## GD-01 — CROSS_SYSTEM
+- **SYSTEM:** CROSS_SYSTEM
+- **QUESTION:** Should any reward, customer gamification or merchant reputation surface launch in the Esenler commercial pilot?
+- **AFFECTED FEATURES:** pilot scope; release gates
+- **AFFECTED EVENTS:** verified_purchase_created; review_created
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Pilot simplicity versus visible future mechanics
+- **ECONOMIC EFFECT:** Potential liability if economic reward launches
+- **FRAUD/ABUSE EFFECT:** Early launch expands attack surface
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Merchant App; verified purchase; support; legal/accounting
+- **PRIORITY:** P0
+## GD-02 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Must the merchant-confirmed server-authoritative verified physical purchase be the only earning authority?
+- **AFFECTED FEATURES:** earning engine; ledger
+- **AFFECTED EVENTS:** verified_purchase_created
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Predictable, evidence-backed earning
+- **ECONOMIC EFFECT:** Controls unfunded issuance
+- **FRAUD/ABUSE EFFECT:** Rejects client/view/ad farming
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** QR contract; event idempotency
+- **PRIORITY:** P0
+## GD-03 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Can repeat verified purchases earn reward while review eligibility remains lifetime-one?
+- **AFFECTED FEATURES:** earning rules
+- **AFFECTED EVENTS:** verified_purchase_created
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Repeat loyalty progress without extra review right
+- **ECONOMIC EFFECT:** Increases outstanding value
+- **FRAUD/ABUSE EFFECT:** Split/repeat farming controls needed
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** GD-02; fraud model
+- **PRIORITY:** P0
+## GD-04 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Does quantity affect reward, remain capped, or remain ignored?
+- **AFFECTED FEATURES:** calculation; progress
+- **AFFECTED EVENTS:** verified_purchase_created; purchase_corrected
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Understandable progress
+- **ECONOMIC EFFECT:** Can multiply liability
+- **FRAUD/ABUSE EFFECT:** Quantity inflation/split-basket risk
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Quantity trust; corrections
+- **PRIORITY:** P0
+## GD-05 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Is any current purchase amount authoritative enough for spend weighting?
+- **AFFECTED FEATURES:** calculation; settlement
+- **AFFECTED EVENTS:** verified_purchase_created; purchase_corrected
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Spend-based progress or fixed event model
+- **ECONOMIC EFFECT:** Major funding/accounting effect
+- **FRAUD/ABUSE EFFECT:** Amount/discount/refund manipulation
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** POS/payment trust; currency/tax; reconciliation
+- **PRIORITY:** P0
+## GD-06 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** What customer-facing reward unit should exist: stamp, count/progress, points, credit or non-economic unlock?
+- **AFFECTED FEATURES:** reward bar; ledger; copy
+- **AFFECTED EVENTS:** earn; adjust; redeem; expire
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Defines customer mental model
+- **ECONOMIC EFFECT:** May create economic liability
+- **FRAUD/ABUSE EFFECT:** Opaque units invite abuse/disputes
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Funding; redemption; expiry
+- **PRIORITY:** P0
+## GD-07 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Which calculation and threshold model should govern progress?
+- **AFFECTED FEATURES:** calculation; reward bar
+- **AFFECTED EVENTS:** earn; adjust; reverse
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Determines pace and predictability
+- **ECONOMIC EFFECT:** Controls issuance volume
+- **FRAUD/ABUSE EFFECT:** Split purchase and gaming exposure
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** GD-03–06
+- **PRIORITY:** P0
+## GD-08 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Is reward merchant/shop-specific, platform-wide, category-wide or hybrid?
+- **AFFECTED FEATURES:** program identity; redemption
+- **AFFECTED EVENTS:** earn; redeem
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Fragmented loyalty versus portable value
+- **ECONOMIC EFFECT:** Determines clearing/liability
+- **FRAUD/ABUSE EFFECT:** Cross-merchant arbitrage/free-riding
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Merchant/shop identity; funding
+- **PRIORITY:** P0
+## GD-09 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Who funds reward: merchant, platform or hybrid?
+- **AFFECTED FEATURES:** funding; settlement; controls
+- **AFFECTED EVENTS:** earn; redeem; reverse
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Defines reliability of promises
+- **ECONOMIC EFFECT:** Primary economic/liability choice
+- **FRAUD/ABUSE EFFECT:** Underfunding and collusion
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** GD-06–08; accounting
+- **PRIORITY:** P0
+## GD-10 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** What may be redeemed: discount, voucher, benefit or non-economic unlock?
+- **AFFECTED FEATURES:** redemption
+- **AFFECTED EVENTS:** redeem; reverse
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Defines concrete customer value
+- **ECONOMIC EFFECT:** Creates operational obligation
+- **FRAUD/ABUSE EFFECT:** Redemption duplication/transfer
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Funding; unit; merchant app
+- **PRIORITY:** P0
+## GD-11 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Do rewards expire and under whose fixed/versioned rule?
+- **AFFECTED FEATURES:** expiry; notifications
+- **AFFECTED EVENTS:** expire
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Trust and urgency implications
+- **ECONOMIC EFFECT:** Releases or extends liability
+- **FRAUD/ABUSE EFFECT:** Hidden expiry exploitation
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** GD-06; terms; notifications
+- **PRIORITY:** P1
+## GD-12 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** How do refund/correction, negative balance and reversal disputes behave?
+- **AFFECTED FEATURES:** ledger; support
+- **AFFECTED EVENTS:** adjust; reverse
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Fair correction and appeal
+- **ECONOMIC EFFECT:** Changes outstanding liability
+- **FRAUD/ABUSE EFFECT:** Chargeback/correction gaming
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Immutable ledger; authoritative correction
+- **PRIORITY:** P1
+## GD-13 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Which bounded program settings may merchants control prospectively?
+- **AFFECTED FEATURES:** merchant app; governance
+- **AFFECTED EVENTS:** program_version_changed
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Consistency versus flexibility
+- **ECONOMIC EFFECT:** Merchant margin/control
+- **FRAUD/ABUSE EFFECT:** Retroactive unfairness/config abuse
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Funding model; policy registry
+- **PRIORITY:** P1
+## GD-14 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Which regulated or policy-sensitive product/service domains are reward-ineligible?
+- **AFFECTED FEATURES:** policy registry; earning
+- **AFFECTED EVENTS:** policy_evaluated; earn
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Avoids harmful/illegal incentives
+- **ECONOMIC EFFECT:** Restricts eligible volume
+- **FRAUD/ABUSE EFFECT:** Merchant misclassification/bypass
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Legal review; catalog policy
+- **PRIORITY:** P0
+## GD-15 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** What happens to ledger/value on customer deletion, re-registration or account merge?
+- **AFFECTED FEATURES:** account lifecycle; ledger
+- **AFFECTED EVENTS:** account_deleted; account_merged
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Privacy and continuity
+- **ECONOMIC EFFECT:** Retention/liability implications
+- **FRAUD/ABUSE EFFECT:** Multi-account value duplication
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Auth identity; privacy; retention
+- **PRIORITY:** P1
+## GD-16 — REWARD
+- **SYSTEM:** REWARD
+- **QUESTION:** Which reward notifications and frequency controls should be enabled?
+- **AFFECTED FEATURES:** notifications; customer app
+- **AFFECTED EVENTS:** earn; near_threshold; expire
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Clarity without spam
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Phishing/pressure/spam
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Expiry; surface model
+- **PRIORITY:** P2
+## GD-17 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Should any customer badges be visible in pilot, post-pilot or never public?
+- **AFFECTED FEATURES:** pilot scope; profile
+- **AFFECTED EVENTS:** badge_earned; badge_activated
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Recognition versus privacy/clutter
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Farming and sensitive inference
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Badge evidence; privacy; display
+- **PRIORITY:** P0
+## GD-18 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Which proposed customer badge families, if any, should exist?
+- **AFFECTED FEATURES:** badge registry
+- **AFFECTED EVENTS:** verified_purchase_created; review_created
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Defines recognition goals
+- **ECONOMIC EFFECT:** Low direct effect unless tied to value
+- **FRAUD/ABUSE EFFECT:** Family-specific farming
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** GD-17; evidence model
+- **PRIORITY:** P1
+## GD-19 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Which strong/weak events may grant durable badge progress?
+- **AFFECTED FEATURES:** badge rules
+- **AFFECTED EVENTS:** purchase; review; discovery soft events
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Trustworthy versus accessible progress
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Client/soft-event farming
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Event architecture; privacy
+- **PRIORITY:** P0
+## GD-20 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Should customer levels exist at all?
+- **AFFECTED FEATURES:** profile; progression
+- **AFFECTED EVENTS:** level_derived
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Social progression versus simplicity
+- **ECONOMIC EFFECT:** Implementation/support cost
+- **FRAUD/ABUSE EFFECT:** Spend/status gaming
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Badge/product strategy
+- **PRIORITY:** P0
+## GD-21 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Should challenges exist, and must they avoid required spending?
+- **AFFECTED FEATURES:** challenge engine
+- **AFFECTED EVENTS:** challenge_started; evidence events
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Discovery versus pressure
+- **ECONOMIC EFFECT:** Campaign/ops cost
+- **FRAUD/ABUSE EFFECT:** Unnecessary-spend gaming
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Policy; event evidence; dark patterns
+- **PRIORITY:** P1
+## GD-22 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Should purchase streaks be prohibited, deferred or allowed with safeguards?
+- **AFFECTED FEATURES:** streaks; notifications
+- **AFFECTED EVENTS:** periodic_purchase
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Cadence pressure and loss aversion
+- **ECONOMIC EFFECT:** May distort spending
+- **FRAUD/ABUSE EFFECT:** Split purchases and coercion
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Dark-pattern review
+- **PRIORITY:** P1
+## GD-23 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Which badges/activity may be public versus private/opt-in?
+- **AFFECTED FEATURES:** profile; review byline
+- **AFFECTED EVENTS:** display_preference_changed
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Privacy and self-expression
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Sensitive purchase inference
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Privacy model; badge explanation
+- **PRIORITY:** P1
+## GD-24 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** What revocation/appeal behavior applies after fraud, bad data or policy changes?
+- **AFFECTED FEATURES:** badge lifecycle; support
+- **AFFECTED EVENTS:** badge_revoked; badge_superseded
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Fairness and explainability
+- **ECONOMIC EFFECT:** Support cost
+- **FRAUD/ABUSE EFFECT:** Badge farming and punitive automation
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Audit; dispute; fraud
+- **PRIORITY:** P1
+## GD-25 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** Can directions, wishlist, views or discovery soft events contribute to badges/challenges?
+- **AFFECTED FEATURES:** event registry
+- **AFFECTED EVENTS:** directions_requested; wishlist_added; shop_viewed
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** More accessible progress
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Very weak, farmable evidence
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Consent/privacy; anti-gaming
+- **PRIORITY:** P1
+## GD-26 — CUSTOMER_GAMIFICATION
+- **SYSTEM:** CUSTOMER_GAMIFICATION
+- **QUESTION:** What names, placement and notification tone should customer mechanics use?
+- **AFFECTED FEATURES:** copy; surfaces
+- **AFFECTED EVENTS:** badge/notification events
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Comprehension and tone
+- **ECONOMIC EFFECT:** Low
+- **FRAUD/ABUSE EFFECT:** Dark-pattern wording
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Root product choices
+- **PRIORITY:** P2
+## GD-27 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Should merchant reputation/badges launch before enough verified history exists?
+- **AFFECTED FEATURES:** pilot scope
+- **AFFECTED EVENTS:** reputation_derived
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Early trust cue versus false certainty
+- **ECONOMIC EFFECT:** Operational/support cost
+- **FRAUD/ABUSE EFFECT:** Sparse-data gaming
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Merchant App; history volume
+- **PRIORITY:** P0
+## GD-28 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Is reputation scoped to shop, merchant organization or layered?
+- **AFFECTED FEATURES:** identity; display
+- **AFFECTED EVENTS:** shop_changed; merchant_changed
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Local accuracy versus brand summary
+- **ECONOMIC EFFECT:** Moderate implementation cost
+- **FRAUD/ABUSE EFFECT:** Branch laundering/aggregation abuse
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Canonical merchant identity
+- **PRIORITY:** P0
+## GD-29 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Which strong/medium signals may enter reputation derivation?
+- **AFFECTED FEATURES:** signal registry
+- **AFFECTED EVENTS:** purchase; review; listing; abuse events
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Explainable trust evidence
+- **ECONOMIC EFFECT:** Moderate ops cost
+- **FRAUD/ABUSE EFFECT:** Signal manipulation
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Data quality; service events
+- **PRIORITY:** P0
+## GD-30 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Should the product show factual signals only or a composite reputation score?
+- **AFFECTED FEATURES:** shop/seller surfaces
+- **AFFECTED EVENTS:** reputation_derived
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Transparency versus simplicity
+- **ECONOMIC EFFECT:** Moderate analytics cost
+- **FRAUD/ABUSE EFFECT:** Opaque manipulation/unfairness
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** GD-29; explainability
+- **PRIORITY:** P0
+## GD-31 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Which merchant badge families, names and evidence thresholds should exist?
+- **AFFECTED FEATURES:** badge registry; shop UI
+- **AFFECTED EVENTS:** merchant_badge_earned
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Recognizable evidence cues
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Badge farming/guarantee misunderstanding
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Signals; fairness; lifecycle
+- **PRIORITY:** P1
+## GD-32 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** How should new/low-history merchants be presented?
+- **AFFECTED FEATURES:** shop card/detail
+- **AFFECTED EVENTS:** reputation_derived
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Fair discovery and confidence
+- **ECONOMIC EFFECT:** Merchant acquisition effect
+- **FRAUD/ABUSE EFFECT:** Cold-start manipulation
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Sample size; surfaces
+- **PRIORITY:** P1
+## GD-33 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Which evidence decays, and over what window?
+- **AFFECTED FEATURES:** derivation; display
+- **AFFECTED EVENTS:** time_window_advanced
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Current relevance versus stable history
+- **ECONOMIC EFFECT:** Moderate compute/support
+- **FRAUD/ABUSE EFFECT:** Timing manipulation
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Signal registry; audit
+- **PRIORITY:** P1
+## GD-34 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Should signals vary by product/category, or remain shop-level?
+- **AFFECTED FEATURES:** seller comparison; derivation
+- **AFFECTED EVENTS:** catalog/taxonomy_changed
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Specific relevance versus sparse complexity
+- **ECONOMIC EFFECT:** Higher compute/product cost
+- **FRAUD/ABUSE EFFECT:** Micro-segment gaming
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Catalog/taxonomy stable IDs
+- **PRIORITY:** P1
+## GD-35 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** What future service-completion evidence is required for service sectors?
+- **AFFECTED FEATURES:** merchant app; service reputation
+- **AFFECTED EVENTS:** service_completed_future
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Prevents product QR being misread as service quality
+- **ECONOMIC EFFECT:** Future implementation cost
+- **FRAUD/ABUSE EFFECT:** Fake service completion
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Merchant taxonomy; service contract
+- **PRIORITY:** P1
+## GD-36 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** What dispute/appeal path may correct system evidence without deleting ratings?
+- **AFFECTED FEATURES:** support; audit
+- **AFFECTED EVENTS:** merchant_dispute_opened/resolved
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Fair merchant recourse
+- **ECONOMIC EFFECT:** Support workload
+- **FRAUD/ABUSE EFFECT:** Evidence suppression attempts
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Audit; rating separation
+- **PRIORITY:** P1
+## GD-37 — MERCHANT_REPUTATION
+- **SYSTEM:** MERCHANT_REPUTATION
+- **QUESTION:** Where and how should reputation/badges be displayed?
+- **AFFECTED FEATURES:** shop card/detail; seller comparison
+- **AFFECTED EVENTS:** projection_published
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Comprehension and discovery impact
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD/ABUSE EFFECT:** Guarantee/paid inference
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** GD-30–32
+- **PRIORITY:** P2
+## GD-38 — CROSS_SYSTEM
+- **SYSTEM:** CROSS_SYSTEM
+- **QUESTION:** Must independent customer rating remain visible and never be hidden by system reputation?
+- **AFFECTED FEATURES:** reviews; merchant surfaces
+- **AFFECTED EVENTS:** review_created/updated; reputation_derived
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Preserves authentic feedback
+- **ECONOMIC EFFECT:** No direct liability
+- **FRAUD/ABUSE EFFECT:** Reputation laundering
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Existing review contract
+- **PRIORITY:** P0
+## GD-39 — CROSS_SYSTEM
+- **SYSTEM:** CROSS_SYSTEM
+- **QUESTION:** Must advertising spend and ad events be excluded from reputation/badge/reward evidence?
+- **AFFECTED FEATURES:** ads; reward; reputation
+- **AFFECTED EVENTS:** ad_impression; ad_click; campaign_spend
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Prevents purchased trust
+- **ECONOMIC EFFECT:** Separates budgets/value
+- **FRAUD/ABUSE EFFECT:** Pay-to-trust manipulation
+- **POLICY/LEGAL REVIEW REQUIRED:** NO
+- **DEPENDENCIES:** Ads architecture
+- **PRIORITY:** P0
+## GD-40 — CROSS_SYSTEM
+- **SYSTEM:** CROSS_SYSTEM
+- **QUESTION:** Who owns policy versions, audits, privacy retention, anomaly response and kill switches?
+- **AFFECTED FEATURES:** governance; operations
+- **AFFECTED EVENTS:** policy_changed; privileged_action; incident
+- **AFFECTED CUSTOMER/MERCHANT EXPERIENCE:** Predictable support and accountability
+- **ECONOMIC EFFECT:** Staffing/operational cost
+- **FRAUD/ABUSE EFFECT:** Unauthorized edits and slow incident response
+- **POLICY/LEGAL REVIEW REQUIRED:** YES
+- **DEPENDENCIES:** Platform operations; legal/privacy/security
+- **PRIORITY:** P1

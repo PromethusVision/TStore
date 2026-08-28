@@ -1,0 +1,963 @@
+# Gamification Owner Option Simulation
+**State:** SIMULATION — NOT OWNER APPROVED
+Each materially different option from RGR-01–RGR-16 is simulated. Effects are comparative architecture consequences, not promises.
+## RGR-01 / Option A
+- **OPTION:** Launch none; preserve foundations only
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Avoids merchant cold-start penalty
+- **CUSTOMER APP EFFECT:** Avoids unearned promises
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Smallest attack surface
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Avoids early liability
+- **CUSTOMER TRUST:** Avoids unearned promises
+- **MERCHANT TRUST:** Avoids merchant cold-start penalty
+- **PILOT COMPLEXITY:** Keeps pilot focused
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All later roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-01 / Option B
+- **OPTION:** Launch non-economic private badges/signals in shadow mode
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Avoids merchant cold-start penalty
+- **CUSTOMER APP EFFECT:** Avoids unearned promises
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Smallest attack surface
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Avoids early liability
+- **CUSTOMER TRUST:** Avoids unearned promises
+- **MERCHANT TRUST:** Avoids merchant cold-start penalty
+- **PILOT COMPLEXITY:** Keeps pilot focused
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All later roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-01 / Option C
+- **OPTION:** Launch economic reward/public reputation
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Avoids merchant cold-start penalty
+- **CUSTOMER APP EFFECT:** Avoids unearned promises
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Smallest attack surface
+- **ECONOMIC COMPLEXITY:** HIGH; Avoids early liability
+- **CUSTOMER TRUST:** Avoids unearned promises
+- **MERCHANT TRUST:** Avoids merchant cold-start penalty
+- **PILOT COMPLEXITY:** Keeps pilot focused
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All later roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-02 / Option A
+- **OPTION:** One idempotent merchant-confirmed server-authoritative purchase event; ignore amount/quantity initially
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Simple confirmation responsibilities
+- **CUSTOMER APP EFFECT:** Clear progress
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Strongest replay defense
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Lowest liability ambiguity
+- **CUSTOMER TRUST:** Clear progress
+- **MERCHANT TRUST:** Simple confirmation responsibilities
+- **PILOT COMPLEXITY:** Allows shadow testing
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-06, RGR-07.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-02 / Option B
+- **OPTION:** Event plus capped authoritative quantity
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Simple confirmation responsibilities
+- **CUSTOMER APP EFFECT:** Clear progress
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Strongest replay defense
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Lowest liability ambiguity
+- **CUSTOMER TRUST:** Clear progress
+- **MERCHANT TRUST:** Simple confirmation responsibilities
+- **PILOT COMPLEXITY:** Allows shadow testing
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-06, RGR-07.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-02 / Option C
+- **OPTION:** Spend-weighted authoritative settlement
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Simple confirmation responsibilities
+- **CUSTOMER APP EFFECT:** Clear progress
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Strongest replay defense
+- **ECONOMIC COMPLEXITY:** HIGH; Lowest liability ambiguity
+- **CUSTOMER TRUST:** Clear progress
+- **MERCHANT TRUST:** Simple confirmation responsibilities
+- **PILOT COMPLEXITY:** Allows shadow testing
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-06, RGR-07.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-03 / Option A
+- **OPTION:** Fixed stamp/purchase count, numeric threshold TBD
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Template can be merchant-readable
+- **CUSTOMER APP EFFECT:** Easy to explain
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Needs split controls
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; A can remain non-economic
+- **CUSTOMER TRUST:** Easy to explain
+- **MERCHANT TRUST:** Template can be merchant-readable
+- **PILOT COMPLEXITY:** Shadow-mode feasible
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-02, RGR-05, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-03 / Option B
+- **OPTION:** Non-monetary achievement unlock
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Template can be merchant-readable
+- **CUSTOMER APP EFFECT:** Easy to explain
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Needs split controls
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; A can remain non-economic
+- **CUSTOMER TRUST:** Easy to explain
+- **MERCHANT TRUST:** Template can be merchant-readable
+- **PILOT COMPLEXITY:** Shadow-mode feasible
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-02, RGR-05, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-03 / Option C
+- **OPTION:** Points/credit with value
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Template can be merchant-readable
+- **CUSTOMER APP EFFECT:** Easy to explain
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Needs split controls
+- **ECONOMIC COMPLEXITY:** HIGH; A can remain non-economic
+- **CUSTOMER TRUST:** Easy to explain
+- **MERCHANT TRUST:** Template can be merchant-readable
+- **PILOT COMPLEXITY:** Shadow-mode feasible
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-02, RGR-05, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-04 / Option A
+- **OPTION:** Merchant/shop-specific program
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Requires branch scope clarity
+- **CUSTOMER APP EFFECT:** Clear owner of promise
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Limits arbitrage
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Limits clearing exposure
+- **CUSTOMER TRUST:** Clear owner of promise
+- **MERCHANT TRUST:** Requires branch scope clarity
+- **PILOT COMPLEXITY:** Post-pilot only
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-06, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-04 / Option B
+- **OPTION:** Platform-wide transfer
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Requires branch scope clarity
+- **CUSTOMER APP EFFECT:** Clear owner of promise
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Limits arbitrage
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Limits clearing exposure
+- **CUSTOMER TRUST:** Clear owner of promise
+- **MERCHANT TRUST:** Requires branch scope clarity
+- **PILOT COMPLEXITY:** Post-pilot only
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-06, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-04 / Option C
+- **OPTION:** Hybrid merchant plus platform
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Requires branch scope clarity
+- **CUSTOMER APP EFFECT:** Clear owner of promise
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Limits arbitrage
+- **ECONOMIC COMPLEXITY:** HIGH; Limits clearing exposure
+- **CUSTOMER TRUST:** Clear owner of promise
+- **MERCHANT TRUST:** Requires branch scope clarity
+- **PILOT COMPLEXITY:** Post-pilot only
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-06, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-05 / Option A
+- **OPTION:** Bounded merchant-funded templates
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Merchant gets bounded control
+- **CUSTOMER APP EFFECT:** Promise must name funder
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Underfunding/collusion controls
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Funder-specific liability
+- **CUSTOMER TRUST:** Promise must name funder
+- **MERCHANT TRUST:** Merchant gets bounded control
+- **PILOT COMPLEXITY:** No pilot issuance recommended
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-04, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-05 / Option B
+- **OPTION:** Platform-funded capped campaign
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Merchant gets bounded control
+- **CUSTOMER APP EFFECT:** Promise must name funder
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Underfunding/collusion controls
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Funder-specific liability
+- **CUSTOMER TRUST:** Promise must name funder
+- **MERCHANT TRUST:** Merchant gets bounded control
+- **PILOT COMPLEXITY:** No pilot issuance recommended
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-04, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-05 / Option C
+- **OPTION:** Hybrid split funding
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Merchant gets bounded control
+- **CUSTOMER APP EFFECT:** Promise must name funder
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Underfunding/collusion controls
+- **ECONOMIC COMPLEXITY:** HIGH; Funder-specific liability
+- **CUSTOMER TRUST:** Promise must name funder
+- **MERCHANT TRUST:** Merchant gets bounded control
+- **PILOT COMPLEXITY:** No pilot issuance recommended
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03, RGR-04, RGR-06.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-06 / Option A
+- **OPTION:** No economic redemption initially; non-economic progress only
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** C increases merchant disputes
+- **CUSTOMER APP EFFECT:** No hidden expiry
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; B/C need replay/reversal controls
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; A avoids liability
+- **CUSTOMER TRUST:** No hidden expiry
+- **MERCHANT TRUST:** C increases merchant disputes
+- **PILOT COMPLEXITY:** A supports shadow mode
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03–05, RGR-14.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-06 / Option B
+- **OPTION:** Fixed voucher/benefit with fixed disclosed expiry and linked corrections
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** C increases merchant disputes
+- **CUSTOMER APP EFFECT:** No hidden expiry
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; B/C need replay/reversal controls
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; A avoids liability
+- **CUSTOMER TRUST:** No hidden expiry
+- **MERCHANT TRUST:** C increases merchant disputes
+- **PILOT COMPLEXITY:** A supports shadow mode
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03–05, RGR-14.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-06 / Option C
+- **OPTION:** Merchant-defined redemption/expiry
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** C increases merchant disputes
+- **CUSTOMER APP EFFECT:** No hidden expiry
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; B/C need replay/reversal controls
+- **ECONOMIC COMPLEXITY:** HIGH; A avoids liability
+- **CUSTOMER TRUST:** No hidden expiry
+- **MERCHANT TRUST:** C increases merchant disputes
+- **PILOT COMPLEXITY:** A supports shadow mode
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-03–05, RGR-14.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-07 / Option A
+- **OPTION:** Platform allowlist plus bounded prospective merchant templates
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Bounded merchant choice
+- **CUSTOMER APP EFFECT:** Consistent exclusions
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Prevents misclassification/config abuse
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Controls liability by policy
+- **CUSTOMER TRUST:** Consistent exclusions
+- **MERCHANT TRUST:** Bounded merchant choice
+- **PILOT COMPLEXITY:** Ordinary goods only later
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-07 / Option B
+- **OPTION:** Platform-only fixed programs
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Bounded merchant choice
+- **CUSTOMER APP EFFECT:** Consistent exclusions
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Prevents misclassification/config abuse
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Controls liability by policy
+- **CUSTOMER TRUST:** Consistent exclusions
+- **MERCHANT TRUST:** Bounded merchant choice
+- **PILOT COMPLEXITY:** Ordinary goods only later
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-07 / Option C
+- **OPTION:** Broad merchant configuration
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Bounded merchant choice
+- **CUSTOMER APP EFFECT:** Consistent exclusions
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Prevents misclassification/config abuse
+- **ECONOMIC COMPLEXITY:** HIGH; Controls liability by policy
+- **CUSTOMER TRUST:** Consistent exclusions
+- **MERCHANT TRUST:** Bounded merchant choice
+- **PILOT COMPLEXITY:** Ordinary goods only later
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-05, RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-08 / Option A
+- **OPTION:** Immutable audit with purpose-limited retention, human-controlled adjustments and named operational owner
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair dispute handling
+- **CUSTOMER APP EFFECT:** Explainable correction
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Prevents privileged overwrite
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Supports reconciliation
+- **CUSTOMER TRUST:** Explainable correction
+- **MERCHANT TRUST:** Fair dispute handling
+- **PILOT COMPLEXITY:** Prerequisite before launch
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All ledgers/events.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-08 / Option B
+- **OPTION:** Delete all reward/reputation history immediately
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair dispute handling
+- **CUSTOMER APP EFFECT:** Explainable correction
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Prevents privileged overwrite
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Supports reconciliation
+- **CUSTOMER TRUST:** Explainable correction
+- **MERCHANT TRUST:** Fair dispute handling
+- **PILOT COMPLEXITY:** Prerequisite before launch
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All ledgers/events.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-08 / Option C
+- **OPTION:** Keep indefinite fully identifiable history
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair dispute handling
+- **CUSTOMER APP EFFECT:** Explainable correction
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Prevents privileged overwrite
+- **ECONOMIC COMPLEXITY:** HIGH; Supports reconciliation
+- **CUSTOMER TRUST:** Explainable correction
+- **MERCHANT TRUST:** Fair dispute handling
+- **PILOT COMPLEXITY:** Prerequisite before launch
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains All ledgers/events.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-09 / Option A
+- **OPTION:** Private primary surfaces, plain explanations, opt-in/frequency caps
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Badges not guarantees
+- **CUSTOMER APP EFFECT:** Clear limitations
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Reduces phishing/spam
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Low direct effect
+- **CUSTOMER TRUST:** Clear limitations
+- **MERCHANT TRUST:** Badges not guarantees
+- **PILOT COMPLEXITY:** Post-root UX work
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Product roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-09 / Option B
+- **OPTION:** Broad promotional placement and default notifications
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Badges not guarantees
+- **CUSTOMER APP EFFECT:** Clear limitations
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Reduces phishing/spam
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Low direct effect
+- **CUSTOMER TRUST:** Clear limitations
+- **MERCHANT TRUST:** Badges not guarantees
+- **PILOT COMPLEXITY:** Post-root UX work
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Product roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-09 / Option C
+- **OPTION:** No customer surfaces
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** Materially follows this option; ledger/policy remains separate.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Badges not guarantees
+- **CUSTOMER APP EFFECT:** Clear limitations
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Reduces phishing/spam
+- **ECONOMIC COMPLEXITY:** HIGH; Low direct effect
+- **CUSTOMER TRUST:** Clear limitations
+- **MERCHANT TRUST:** Badges not guarantees
+- **PILOT COMPLEXITY:** Post-root UX work
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Product roots.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-10 / Option A
+- **OPTION:** Post-pilot private explainable badges from strong events only
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No merchant direct effect
+- **CUSTOMER APP EFFECT:** Customer controls visibility
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Strong anti-gaming
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; No economic promise
+- **CUSTOMER TRUST:** Customer controls visibility
+- **MERCHANT TRUST:** No merchant direct effect
+- **PILOT COMPLEXITY:** Post-pilot candidate
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-08.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-10 / Option B
+- **OPTION:** Include soft discovery events with caps
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No merchant direct effect
+- **CUSTOMER APP EFFECT:** Customer controls visibility
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Strong anti-gaming
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; No economic promise
+- **CUSTOMER TRUST:** Customer controls visibility
+- **MERCHANT TRUST:** No merchant direct effect
+- **PILOT COMPLEXITY:** Post-pilot candidate
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-08.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-10 / Option C
+- **OPTION:** Public broad badge system
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No merchant direct effect
+- **CUSTOMER APP EFFECT:** Customer controls visibility
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Strong anti-gaming
+- **ECONOMIC COMPLEXITY:** HIGH; No economic promise
+- **CUSTOMER TRUST:** Customer controls visibility
+- **MERCHANT TRUST:** No merchant direct effect
+- **PILOT COMPLEXITY:** Post-pilot candidate
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-08.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-11 / Option A
+- **OPTION:** No levels or purchase streaks; defer challenges
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No direct effect
+- **CUSTOMER APP EFFECT:** Avoids forced spend
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Lowest abuse
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Low
+- **CUSTOMER TRUST:** Avoids forced spend
+- **MERCHANT TRUST:** No direct effect
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-10.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-11 / Option B
+- **OPTION:** Badges plus discovery-only challenges
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No direct effect
+- **CUSTOMER APP EFFECT:** Avoids forced spend
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Lowest abuse
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Low
+- **CUSTOMER TRUST:** Avoids forced spend
+- **MERCHANT TRUST:** No direct effect
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-10.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-11 / Option C
+- **OPTION:** Levels/challenges/streaks
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** Changes evidence/surface scope described by the option.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** No direct effect
+- **CUSTOMER APP EFFECT:** Avoids forced spend
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Lowest abuse
+- **ECONOMIC COMPLEXITY:** HIGH; Low
+- **CUSTOMER TRUST:** Avoids forced spend
+- **MERCHANT TRUST:** No direct effect
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-01, RGR-10.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-12 / Option A
+- **OPTION:** Shop-first factual signals with sample/freshness; no composite score
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair branch attribution
+- **CUSTOMER APP EFFECT:** Ratings remain readable
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Limits aggregation gaming
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; No direct economic promise
+- **CUSTOMER TRUST:** Ratings remain readable
+- **MERCHANT TRUST:** Fair branch attribution
+- **PILOT COMPLEXITY:** Post-pilot shadow
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Merchant identity; RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-12 / Option B
+- **OPTION:** Layered shop/org factual roll-up
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair branch attribution
+- **CUSTOMER APP EFFECT:** Ratings remain readable
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Limits aggregation gaming
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; No direct economic promise
+- **CUSTOMER TRUST:** Ratings remain readable
+- **MERCHANT TRUST:** Fair branch attribution
+- **PILOT COMPLEXITY:** Post-pilot shadow
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Merchant identity; RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-12 / Option C
+- **OPTION:** Composite merchant score
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair branch attribution
+- **CUSTOMER APP EFFECT:** Ratings remain readable
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Limits aggregation gaming
+- **ECONOMIC COMPLEXITY:** HIGH; No direct economic promise
+- **CUSTOMER TRUST:** Ratings remain readable
+- **MERCHANT TRUST:** Fair branch attribution
+- **PILOT COMPLEXITY:** Post-pilot shadow
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Merchant identity; RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-13 / Option A
+- **OPTION:** Defer badges; show insufficient history
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Protects acquisition
+- **CUSTOMER APP EFFECT:** No false guarantee
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Prevents early farming
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Low
+- **CUSTOMER TRUST:** No false guarantee
+- **MERCHANT TRUST:** Protects acquisition
+- **PILOT COMPLEXITY:** Post-pilot
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-12, RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-13 / Option B
+- **OPTION:** Limited explainable shop badges after minimum evidence
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Protects acquisition
+- **CUSTOMER APP EFFECT:** No false guarantee
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Prevents early farming
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Low
+- **CUSTOMER TRUST:** No false guarantee
+- **MERCHANT TRUST:** Protects acquisition
+- **PILOT COMPLEXITY:** Post-pilot
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-12, RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-13 / Option C
+- **OPTION:** Immediate badges/low-trust status
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Protects acquisition
+- **CUSTOMER APP EFFECT:** No false guarantee
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Prevents early farming
+- **ECONOMIC COMPLEXITY:** HIGH; Low
+- **CUSTOMER TRUST:** No false guarantee
+- **MERCHANT TRUST:** Protects acquisition
+- **PILOT COMPLEXITY:** Post-pilot
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains RGR-12, RGR-15.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-14 / Option A
+- **OPTION:** Defer until authoritative service event and sufficient samples
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair to service merchants
+- **CUSTOMER APP EFFECT:** Avoids misleading score
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Avoids fake service evidence
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Moderate future cost
+- **CUSTOMER TRUST:** Avoids misleading score
+- **MERCHANT TRUST:** Fair to service merchants
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Catalog/taxonomy/service contract.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-14 / Option B
+- **OPTION:** Category factual accuracy only
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair to service merchants
+- **CUSTOMER APP EFFECT:** Avoids misleading score
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Avoids fake service evidence
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Moderate future cost
+- **CUSTOMER TRUST:** Avoids misleading score
+- **MERCHANT TRUST:** Fair to service merchants
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Catalog/taxonomy/service contract.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-14 / Option C
+- **OPTION:** Product/service quality scores now
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair to service merchants
+- **CUSTOMER APP EFFECT:** Avoids misleading score
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Avoids fake service evidence
+- **ECONOMIC COMPLEXITY:** HIGH; Moderate future cost
+- **CUSTOMER TRUST:** Avoids misleading score
+- **MERCHANT TRUST:** Fair to service merchants
+- **PILOT COMPLEXITY:** Defer
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Catalog/taxonomy/service contract.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-15 / Option A
+- **OPTION:** Ratings remain visible; merchants dispute system evidence only via audited appeal
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair appeal without review erasure
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Prevents evidence suppression
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Support cost only
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair appeal without review erasure
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Existing review contract; RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-15 / Option B
+- **OPTION:** Reputation may suppress/downweight ratings
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair appeal without review erasure
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Prevents evidence suppression
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Support cost only
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair appeal without review erasure
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Existing review contract; RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-15 / Option C
+- **OPTION:** Merchant may remove disputed ratings
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Changes shop/merchant evidence or display scope.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair appeal without review erasure
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Prevents evidence suppression
+- **ECONOMIC COMPLEXITY:** HIGH; Support cost only
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair appeal without review erasure
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Existing review contract; RGR-12.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-16 / Option A
+- **OPTION:** No; hard separation and invariant tests
+- **AGENT RECOMMENDED:** YES; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair competition
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** CONTROLLED_IF_GATES_PASS; Prevents pay-to-trust
+- **ECONOMIC COMPLEXITY:** LOW_TO_MEDIUM; Clean budgets
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair competition
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Residual operational/policy gaps listed by the root.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Ads architecture.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-16 / Option B
+- **OPTION:** Indirect capped influence
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair competition
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** NEW_CONTROLS_REQUIRED; Prevents pay-to-trust
+- **ECONOMIC COMPLEXITY:** MEDIUM_TO_HIGH; Clean budgets
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair competition
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Additional scope, explanation, reconciliation and gaming risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Ads architecture.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.
+## RGR-16 / Option C
+- **OPTION:** Direct purchasable badge/reputation/reward
+- **AGENT RECOMMENDED:** NO; recommendation only
+- **REWARD ENGINE EFFECT:** No direct reward-rule change; invariants remain.
+- **CUSTOMER GAMIFICATION EFFECT:** No badge right is created.
+- **MERCHANT REPUTATION EFFECT:** Ratings/reputation remain independent.
+- **QR / VERIFIED PURCHASE EFFECT:** Source purchase remains server-authoritative and immutable; downstream failure never rolls it back.
+- **REVIEW EFFECT:** One active review per customer + canonical product for life; repeat/quantity creates no extra right.
+- **ADS EFFECT:** Paid events/spend remain excluded from loyalty and trust evidence.
+- **CATALOG EFFECT:** Stable IDs and correction lineage required; no rename/path coupling.
+- **MERCHANT APP EFFECT:** Fair competition
+- **CUSTOMER APP EFFECT:** High trust
+- **FRAUD EXPOSURE:** HIGHEST_OR_UNPROVEN; Prevents pay-to-trust
+- **ECONOMIC COMPLEXITY:** HIGH; Clean budgets
+- **CUSTOMER TRUST:** High trust
+- **MERCHANT TRUST:** Fair competition
+- **PILOT COMPLEXITY:** Prerequisite invariant
+- **NEW RISKS INTRODUCED:** Broadest liability, fraud, fairness and trust risk.
+- **DEPENDENT DECISIONS RESOLVED:** Selecting this root option constrains Ads architecture.
+- **DECISIONS STILL OPEN:** Implementation parameters, numeric thresholds, copy and release authorization remain open unless explicitly covered by another root.

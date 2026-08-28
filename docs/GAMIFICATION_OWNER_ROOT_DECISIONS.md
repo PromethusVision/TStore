@@ -1,0 +1,280 @@
+# Gamification Owner Root Decisions
+**State:** RECOMMENDED OPTIONS — NO OWNER OPTION SELECTED
+Sixteen roots are the smallest defensible decision set. Recommended options are agent recommendations only; no checkbox or final state is applied.
+- Root decisions: 16
+- P0: 12
+- P1: 3
+- P2: 1
+- Recommended first review order: RGR-01 through RGR-10
+## RGR-01 — Pilot timing and sequencing
+- **QUESTION:** Which systems, if any, launch in the first commercial pilot?
+- **OPTION A:** Launch none; preserve foundations only
+- **OPTION B:** Launch non-economic private badges/signals in shadow mode
+- **OPTION C:** Launch economic reward/public reputation
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Pilot proof does not require these systems; defer liability and sparse-data risk.
+- **TRADEOFF:** A delays visible differentiation; B gathers evidence; C maximizes value and risk.
+- **AFFECTED SYSTEMS:** All
+- **DEPENDENT DECISIONS:** All later roots
+- **ECONOMIC EFFECT:** Avoids early liability
+- **FRAUD EFFECT:** Smallest attack surface
+- **CUSTOMER TRUST EFFECT:** Avoids unearned promises
+- **MERCHANT EFFECT:** Avoids merchant cold-start penalty
+- **PILOT EFFECT:** Keeps pilot focused
+- **POLICY/LEGAL EFFECT:** Legal/accounting/privacy reviews deferred safely
+- **PRIORITY:** P0
+## RGR-02 — Trusted reward earning evidence
+- **QUESTION:** What evidence and granularity may create an earning candidate?
+- **OPTION A:** One idempotent merchant-confirmed server-authoritative purchase event; ignore amount/quantity initially
+- **OPTION B:** Event plus capped authoritative quantity
+- **OPTION C:** Spend-weighted authoritative settlement
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Current contract strongly proves event identity, not paid monetary amount.
+- **TRADEOFF:** A is simple; B/C may better reflect value but need stronger evidence.
+- **AFFECTED SYSTEMS:** REWARD; QR
+- **DEPENDENT DECISIONS:** RGR-03, RGR-06, RGR-07
+- **ECONOMIC EFFECT:** Lowest liability ambiguity
+- **FRAUD EFFECT:** Strongest replay defense
+- **CUSTOMER TRUST EFFECT:** Clear progress
+- **MERCHANT EFFECT:** Simple confirmation responsibilities
+- **PILOT EFFECT:** Allows shadow testing
+- **POLICY/LEGAL EFFECT:** Policy review still item-level
+- **PRIORITY:** P0
+## RGR-03 — Reward unit and threshold
+- **QUESTION:** What customer mental model should represent progress?
+- **OPTION A:** Fixed stamp/purchase count, numeric threshold TBD
+- **OPTION B:** Non-monetary achievement unlock
+- **OPTION C:** Points/credit with value
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Most explainable option compatible with current evidence; no formula is selected.
+- **TRADEOFF:** A risks split purchase; B has less economic value; C creates liability.
+- **AFFECTED SYSTEMS:** REWARD
+- **DEPENDENT DECISIONS:** RGR-02, RGR-05, RGR-06
+- **ECONOMIC EFFECT:** A can remain non-economic
+- **FRAUD EFFECT:** Needs split controls
+- **CUSTOMER TRUST EFFECT:** Easy to explain
+- **MERCHANT EFFECT:** Template can be merchant-readable
+- **PILOT EFFECT:** Shadow-mode feasible
+- **POLICY/LEGAL EFFECT:** Economic versions need review
+- **PRIORITY:** P0
+## RGR-04 — Reward scope and transfer
+- **QUESTION:** Where may value be earned and redeemed?
+- **OPTION A:** Merchant/shop-specific program
+- **OPTION B:** Platform-wide transfer
+- **OPTION C:** Hybrid merchant plus platform
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Clear liability and local loyalty before cross-merchant clearing exists.
+- **TRADEOFF:** A fragments progress; B/C improve portability with much higher complexity.
+- **AFFECTED SYSTEMS:** REWARD
+- **DEPENDENT DECISIONS:** RGR-05, RGR-06, RGR-12
+- **ECONOMIC EFFECT:** Limits clearing exposure
+- **FRAUD EFFECT:** Limits arbitrage
+- **CUSTOMER TRUST EFFECT:** Clear owner of promise
+- **MERCHANT EFFECT:** Requires branch scope clarity
+- **PILOT EFFECT:** Post-pilot only
+- **POLICY/LEGAL EFFECT:** Cross-merchant/legal review for B/C
+- **PRIORITY:** P0
+## RGR-05 — Reward funding
+- **QUESTION:** Who funds and owes customer value?
+- **OPTION A:** Bounded merchant-funded templates
+- **OPTION B:** Platform-funded capped campaign
+- **OPTION C:** Hybrid split funding
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Aligns benefit with local loyalty while limiting platform liability.
+- **TRADEOFF:** Merchant comprehension/margin versus platform reach and hybrid complexity.
+- **AFFECTED SYSTEMS:** REWARD
+- **DEPENDENT DECISIONS:** RGR-03, RGR-04, RGR-06
+- **ECONOMIC EFFECT:** Funder-specific liability
+- **FRAUD EFFECT:** Underfunding/collusion controls
+- **CUSTOMER TRUST EFFECT:** Promise must name funder
+- **MERCHANT EFFECT:** Merchant gets bounded control
+- **PILOT EFFECT:** No pilot issuance recommended
+- **POLICY/LEGAL EFFECT:** Accounting/legal review required
+- **PRIORITY:** P0
+## RGR-06 — Redemption, expiry and correction
+- **QUESTION:** How does value leave or change the ledger?
+- **OPTION A:** No economic redemption initially; non-economic progress only
+- **OPTION B:** Fixed voucher/benefit with fixed disclosed expiry and linked corrections
+- **OPTION C:** Merchant-defined redemption/expiry
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Avoid economic promise until reconciliation and support exist.
+- **TRADEOFF:** A delays value; B is bounded; C is flexible but inconsistent/unfair.
+- **AFFECTED SYSTEMS:** REWARD
+- **DEPENDENT DECISIONS:** RGR-03–05, RGR-14
+- **ECONOMIC EFFECT:** A avoids liability
+- **FRAUD EFFECT:** B/C need replay/reversal controls
+- **CUSTOMER TRUST EFFECT:** No hidden expiry
+- **MERCHANT EFFECT:** C increases merchant disputes
+- **PILOT EFFECT:** A supports shadow mode
+- **POLICY/LEGAL EFFECT:** B/C legal/accounting review
+- **PRIORITY:** P0
+## RGR-07 — Policy and merchant controls
+- **QUESTION:** Who may configure programs and which domains fail closed?
+- **OPTION A:** Platform allowlist plus bounded prospective merchant templates
+- **OPTION B:** Platform-only fixed programs
+- **OPTION C:** Broad merchant configuration
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Balances local choice with non-overridable policy and earned-right protection.
+- **TRADEOFF:** A needs template operations; B less flexible; C unsafe.
+- **AFFECTED SYSTEMS:** REWARD; POLICY
+- **DEPENDENT DECISIONS:** RGR-05, RGR-12
+- **ECONOMIC EFFECT:** Controls liability by policy
+- **FRAUD EFFECT:** Prevents misclassification/config abuse
+- **CUSTOMER TRUST EFFECT:** Consistent exclusions
+- **MERCHANT EFFECT:** Bounded merchant choice
+- **PILOT EFFECT:** Ordinary goods only later
+- **POLICY/LEGAL EFFECT:** Legal review required
+- **PRIORITY:** P0
+## RGR-08 — Identity lifecycle and governance
+- **QUESTION:** How are deletion/merge, privileged actions and incidents governed?
+- **OPTION A:** Immutable audit with purpose-limited retention, human-controlled adjustments and named operational owner
+- **OPTION B:** Delete all reward/reputation history immediately
+- **OPTION C:** Keep indefinite fully identifiable history
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Preserves obligations and correction evidence while requiring privacy minimization.
+- **TRADEOFF:** A needs policy/operations; B breaks audit; C over-retains.
+- **AFFECTED SYSTEMS:** CROSS_SYSTEM
+- **DEPENDENT DECISIONS:** All ledgers/events
+- **ECONOMIC EFFECT:** Supports reconciliation
+- **FRAUD EFFECT:** Prevents privileged overwrite
+- **CUSTOMER TRUST EFFECT:** Explainable correction
+- **MERCHANT EFFECT:** Fair dispute handling
+- **PILOT EFFECT:** Prerequisite before launch
+- **POLICY/LEGAL EFFECT:** Privacy/legal review required
+- **PRIORITY:** P1
+## RGR-09 — Communication and surfaces
+- **QUESTION:** How should mechanics be named, placed and notified?
+- **OPTION A:** Private primary surfaces, plain explanations, opt-in/frequency caps
+- **OPTION B:** Broad promotional placement and default notifications
+- **OPTION C:** No customer surfaces
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Supports comprehension without pressure; exact copy remains UX work.
+- **TRADEOFF:** A adds UX; B creates dark patterns; C removes value.
+- **AFFECTED SYSTEMS:** All
+- **DEPENDENT DECISIONS:** Product roots
+- **ECONOMIC EFFECT:** Low direct effect
+- **FRAUD EFFECT:** Reduces phishing/spam
+- **CUSTOMER TRUST EFFECT:** Clear limitations
+- **MERCHANT EFFECT:** Badges not guarantees
+- **PILOT EFFECT:** Post-root UX work
+- **POLICY/LEGAL EFFECT:** Privacy review on public display
+- **PRIORITY:** P2
+## RGR-10 — Customer badge model
+- **QUESTION:** Which badges/evidence/privacy/lifecycle should exist?
+- **OPTION A:** Post-pilot private explainable badges from strong events only
+- **OPTION B:** Include soft discovery events with caps
+- **OPTION C:** Public broad badge system
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Strong evidence and privacy minimize farming and sensitive inference.
+- **TRADEOFF:** A grows slowly; B is inclusive but weak; C maximizes exposure.
+- **AFFECTED SYSTEMS:** CUSTOMER_GAMIFICATION
+- **DEPENDENT DECISIONS:** RGR-01, RGR-08
+- **ECONOMIC EFFECT:** No economic promise
+- **FRAUD EFFECT:** Strong anti-gaming
+- **CUSTOMER TRUST EFFECT:** Customer controls visibility
+- **MERCHANT EFFECT:** No merchant direct effect
+- **PILOT EFFECT:** Post-pilot candidate
+- **POLICY/LEGAL EFFECT:** Privacy review required
+- **PRIORITY:** P0
+## RGR-11 — Levels, challenges and streaks
+- **QUESTION:** Which progression mechanics are needed?
+- **OPTION A:** No levels or purchase streaks; defer challenges
+- **OPTION B:** Badges plus discovery-only challenges
+- **OPTION C:** Levels/challenges/streaks
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Pilot value is unproven and purchase streaks create pressure.
+- **TRADEOFF:** A is least engaging; B requires design; C is complex/manipulative.
+- **AFFECTED SYSTEMS:** CUSTOMER_GAMIFICATION
+- **DEPENDENT DECISIONS:** RGR-01, RGR-10
+- **ECONOMIC EFFECT:** Low
+- **FRAUD EFFECT:** Lowest abuse
+- **CUSTOMER TRUST EFFECT:** Avoids forced spend
+- **MERCHANT EFFECT:** No direct effect
+- **PILOT EFFECT:** Defer
+- **POLICY/LEGAL EFFECT:** Policy review for challenge domains
+- **PRIORITY:** P0
+## RGR-12 — Merchant reputation architecture
+- **QUESTION:** What scope/signals/display/freshness define reputation?
+- **OPTION A:** Shop-first factual signals with sample/freshness; no composite score
+- **OPTION B:** Layered shop/org factual roll-up
+- **OPTION C:** Composite merchant score
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Evidence maps to branch operations and stays explainable.
+- **TRADEOFF:** A lacks brand summary; B more useful/complex; C opaque and unfair.
+- **AFFECTED SYSTEMS:** MERCHANT_REPUTATION
+- **DEPENDENT DECISIONS:** Merchant identity; RGR-15
+- **ECONOMIC EFFECT:** No direct economic promise
+- **FRAUD EFFECT:** Limits aggregation gaming
+- **CUSTOMER TRUST EFFECT:** Ratings remain readable
+- **MERCHANT EFFECT:** Fair branch attribution
+- **PILOT EFFECT:** Post-pilot shadow
+- **POLICY/LEGAL EFFECT:** Privacy/fairness review
+- **PRIORITY:** P0
+## RGR-13 — Merchant badges and cold start
+- **QUESTION:** How can badges avoid penalizing new merchants?
+- **OPTION A:** Defer badges; show insufficient history
+- **OPTION B:** Limited explainable shop badges after minimum evidence
+- **OPTION C:** Immediate badges/low-trust status
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Sparse pilot data cannot support fair durable badges.
+- **TRADEOFF:** A delays trust cues; B later balanced; C unfair/gameable.
+- **AFFECTED SYSTEMS:** MERCHANT_REPUTATION
+- **DEPENDENT DECISIONS:** RGR-12, RGR-15
+- **ECONOMIC EFFECT:** Low
+- **FRAUD EFFECT:** Prevents early farming
+- **CUSTOMER TRUST EFFECT:** No false guarantee
+- **MERCHANT EFFECT:** Protects acquisition
+- **PILOT EFFECT:** Post-pilot
+- **POLICY/LEGAL EFFECT:** Fairness review
+- **PRIORITY:** P1
+## RGR-14 — Specialized and service reputation
+- **QUESTION:** Should category/product/service-specific reputation exist?
+- **OPTION A:** Defer until authoritative service event and sufficient samples
+- **OPTION B:** Category factual accuracy only
+- **OPTION C:** Product/service quality scores now
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Current product purchase evidence cannot prove service outcome and fine-grained data is sparse.
+- **TRADEOFF:** A delays specificity; B bounded; C unreliable.
+- **AFFECTED SYSTEMS:** MERCHANT_REPUTATION
+- **DEPENDENT DECISIONS:** Catalog/taxonomy/service contract
+- **ECONOMIC EFFECT:** Moderate future cost
+- **FRAUD EFFECT:** Avoids fake service evidence
+- **CUSTOMER TRUST EFFECT:** Avoids misleading score
+- **MERCHANT EFFECT:** Fair to service merchants
+- **PILOT EFFECT:** Defer
+- **POLICY/LEGAL EFFECT:** Sector/legal review
+- **PRIORITY:** P1
+## RGR-15 — Rating, disputes and merchant evidence
+- **QUESTION:** How do system reputation and merchant disputes coexist with ratings?
+- **OPTION A:** Ratings remain visible; merchants dispute system evidence only via audited appeal
+- **OPTION B:** Reputation may suppress/downweight ratings
+- **OPTION C:** Merchant may remove disputed ratings
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Preserves confirmed review contract and authentic customer voice.
+- **TRADEOFF:** A needs support; B/C create laundering/censorship risk.
+- **AFFECTED SYSTEMS:** MERCHANT_REPUTATION; REVIEW
+- **DEPENDENT DECISIONS:** Existing review contract; RGR-12
+- **ECONOMIC EFFECT:** Support cost only
+- **FRAUD EFFECT:** Prevents evidence suppression
+- **CUSTOMER TRUST EFFECT:** High trust
+- **MERCHANT EFFECT:** Fair appeal without review erasure
+- **PILOT EFFECT:** Prerequisite invariant
+- **POLICY/LEGAL EFFECT:** No special legal assumption
+- **PRIORITY:** P0
+## RGR-16 — Paid influence separation
+- **QUESTION:** Can ads spend/events affect reward, badges or reputation?
+- **OPTION A:** No; hard separation and invariant tests
+- **OPTION B:** Indirect capped influence
+- **OPTION C:** Direct purchasable badge/reputation/reward
+- **RECOMMENDED OPTION:** A (agent recommendation; not selected)
+- **WHY:** Paid visibility must never manufacture trust or loyalty evidence.
+- **TRADEOFF:** A limits monetization coupling; B/C corrupt trust.
+- **AFFECTED SYSTEMS:** CROSS_SYSTEM; ADS
+- **DEPENDENT DECISIONS:** Ads architecture
+- **ECONOMIC EFFECT:** Clean budgets
+- **FRAUD EFFECT:** Prevents pay-to-trust
+- **CUSTOMER TRUST EFFECT:** High trust
+- **MERCHANT EFFECT:** Fair competition
+- **PILOT EFFECT:** Prerequisite invariant
+- **POLICY/LEGAL EFFECT:** Advertising disclosure remains separate
+- **PRIORITY:** P0
