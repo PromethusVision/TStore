@@ -61,4 +61,3 @@ Bu sorular owner kararıymış gibi çoğaltılmadı; ilgili master köklerin
 - Existing source documents modified: `NO`
 - Runtime/DB/Figma/environment touched: `NO`
 - Owner or professional decision selected: `NO`
-

@@ -78,4 +78,3 @@ evidence; the platform choice is not asked twice.
 `DEPENDENCY_ORDER_VIOLATIONS: 0`
 
 `OWNER_OPTIONS_SELECTED: 0`
-

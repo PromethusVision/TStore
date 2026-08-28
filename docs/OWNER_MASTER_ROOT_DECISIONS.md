@@ -112,4 +112,3 @@ canonical decisions until the Product Owner answers a card.
 `ROOT_COUNT: 31`
 
 `OWNER_CHOICE_SELECTED: NO`
-

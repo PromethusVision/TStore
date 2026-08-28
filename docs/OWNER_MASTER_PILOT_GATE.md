@@ -73,4 +73,3 @@ approval, history deletion or Production release.
 `COMMERCIAL_PILOT_GATE: OPEN`
 
 `MERCHANT_PILOT_IMPLEMENTATION_GATE: OPEN`
-

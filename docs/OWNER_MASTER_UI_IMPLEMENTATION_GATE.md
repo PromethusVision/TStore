@@ -50,4 +50,3 @@ evidence. This document does not mark those checks PASS.
 `UI_DECISIONS_DUPLICATED_IN_GLOBAL_QUEUE: 0`
 
 `CUSTOMER_UI_IMPLEMENTATION_GATE: OPEN`
-
