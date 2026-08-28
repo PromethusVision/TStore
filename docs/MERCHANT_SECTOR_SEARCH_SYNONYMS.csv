@@ -1,0 +1,114 @@
+CANONICAL_SECTOR,ALIAS,ALIAS_TYPE,LOCALE,STATE,NOTES
+"Market, Bakkal & Süpermarket",market,COLLOQUIAL,tr-TR,PROPOSED,Exact retail scale is not inferred
+"Market, Bakkal & Süpermarket",bakkal,COLLOQUIAL,tr-TR,PROPOSED,
+"Market, Bakkal & Süpermarket",süpermarket,COLLOQUIAL,tr-TR,PROPOSED,
+Kasap,et kasabı,COLLOQUIAL,tr-TR,PROPOSED,
+Şarküteri,şarküterici,COLLOQUIAL,tr-TR,PROPOSED,
+Manav,meyve sebze dükkânı,DESCRIPTION,tr-TR,PROPOSED,
+Manav,meyve sebzeci,COLLOQUIAL,tr-TR,PROPOSED,
+Fırın,ekmek fırını,COLLOQUIAL,tr-TR,PROPOSED,
+"Pastane & Tatlıcı",pastane,COLLOQUIAL,tr-TR,PROPOSED,
+"Pastane & Tatlıcı",pastahane,SPELLING_VARIANT,tr-TR,PROPOSED,Common non-canonical spelling
+"Pastane & Tatlıcı",tatlıcı,COLLOQUIAL,tr-TR,PROPOSED,
+Kuruyemişçi,kuruyemiş dükkânı,DESCRIPTION,tr-TR,PROPOSED,
+Aktar,baharatçı,COLLOQUIAL,tr-TR,PROPOSED,Not all spice sellers have the same policy scope
+Aktar,aktariye,FORMAL_VARIANT,tr-TR,PROPOSED,
+"İçecek & Su Bayii",su bayii,COLLOQUIAL,tr-TR,PROPOSED,
+"İçecek & Su Bayii",sucu,COLLOQUIAL,tr-TR,PROPOSED,
+Giyim Mağazası,giyimci,COLLOQUIAL,tr-TR,PROPOSED,
+Giyim Mağazası,butik,COLLOQUIAL,tr-TR,PROPOSED,Only when clothing-led
+Giyim Mağazası,konfeksiyon mağazası,INDUSTRY_TERM,tr-TR,PROPOSED,
+Ayakkabı Mağazası,ayakkabıcı,COLLOQUIAL,tr-TR,PROPOSED,
+Ayakkabı Mağazası,ayakkabı dükkanı,SPELLING_VARIANT,tr-TR,PROPOSED,
+"Çanta & Aksesuar Mağazası",çantacı,COLLOQUIAL,tr-TR,PROPOSED,
+"Çanta & Aksesuar Mağazası",valizci,COLLOQUIAL,tr-TR,PROPOSED,May also indicate luggage specialist
+İç Giyim Mağazası,iç giyimci,COLLOQUIAL,tr-TR,PROPOSED,
+"Telefoncu & GSM Mağazası",telefoncu,COLLOQUIAL,tr-TR,PROPOSED,
+"Telefoncu & GSM Mağazası",cep telefoncu,COLLOQUIAL,tr-TR,PROPOSED,
+"Telefoncu & GSM Mağazası",gsm mağazası,INDUSTRY_TERM,tr-TR,PROPOSED,GSM is not a brand
+Elektronik Mağazası,elektronikçi,COLLOQUIAL,tr-TR,PROPOSED,
+Elektronik Mağazası,tüketici elektroniği mağazası,FORMAL_VARIANT,tr-TR,PROPOSED,
+Bilgisayarcı,bilgisayar mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Bilgisayarcı,pc mağazası,ABBREVIATION,tr-TR,PROPOSED,PC is a generic technical abbreviation
+"Beyaz Eşya & Ev Aletleri Mağazası",beyaz eşyacı,COLLOQUIAL,tr-TR,PROPOSED,
+"Beyaz Eşya & Ev Aletleri Mağazası",ev aletleri mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Mobilya Mağazası,mobilyacı,COLLOQUIAL,tr-TR,PROPOSED,
+Ev Tekstili Mağazası,ev tekstilci,COLLOQUIAL,tr-TR,PROPOSED,
+"Züccaciye & Mutfak Gereçleri Mağazası",züccaciye,COLLOQUIAL,tr-TR,PROPOSED,
+"Züccaciye & Mutfak Gereçleri Mağazası",mutfak gereçleri mağazası,DESCRIPTION,tr-TR,PROPOSED,
+"Halı & Kilim Mağazası",halıcı,COLLOQUIAL,tr-TR,PROPOSED,
+Perdeci,perde mağazası,DESCRIPTION,tr-TR,PROPOSED,
+"Nalbur & Hırdavatçı",nalbur,COLLOQUIAL,tr-TR,PROPOSED,
+"Nalbur & Hırdavatçı",hırdavatçı,COLLOQUIAL,tr-TR,PROPOSED,
+Yapı Malzemeleri Satıcısı,yapı malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+Yapı Malzemeleri Satıcısı,yapı market,INDUSTRY_TERM,tr-TR,PROPOSED,Not a company/brand reference
+Elektrik Malzemeleri Satıcısı,elektrik malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+Tesisat Malzemeleri Satıcısı,tesisat malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Boya & Dekorasyon Malzemeleri Satıcısı",boya bayii,COLLOQUIAL,tr-TR,PROPOSED,Dealer is not a brand
+"Boya & Dekorasyon Malzemeleri Satıcısı",boyacı mağazası,DESCRIPTION,tr-TR,PROPOSED,Disambiguate from painting service
+Oto Yedek Parçacı,oto parçacı,COLLOQUIAL,tr-TR,PROPOSED,
+Oto Yedek Parçacı,oto yedek parça mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Oto Aksesuar Mağazası,oto aksesuarcı,COLLOQUIAL,tr-TR,PROPOSED,
+Lastikçi,lastik mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Lastikçi,lastik servisi,COLLOQUIAL,tr-TR,PROPOSED,Default mixed merchant
+Motosiklet Mağazası,motosikletçi,COLLOQUIAL,tr-TR,PROPOSED,Disambiguate from service using context
+"Motosiklet Yedek Parça & Aksesuar Mağazası",motosiklet parçacı,COLLOQUIAL,tr-TR,PROPOSED,
+Bisiklet Mağazası,bisikletçi,COLLOQUIAL,tr-TR,PROPOSED,Disambiguate retail/service in results
+"Kozmetik & Kişisel Bakım Mağazası",kozmetikçi,COLLOQUIAL,tr-TR,PROPOSED,
+"Kozmetik & Kişisel Bakım Mağazası",kişisel bakım mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Parfümeri,parfümcü,COLLOQUIAL,tr-TR,PROPOSED,
+"Berber, Kuaför & Güzellik Salonu",kuaför,GROUPING_SEARCH,tr-TR,CONFIRMED_GROUPING_PARENT_PLACEMENT_PROPOSED,Non-assignable grouping; show confirmed leaves
+"Berber, Kuaför & Güzellik Salonu",saç ve güzellik,GROUPING_SEARCH,tr-TR,CONFIRMED_GROUPING_PARENT_PLACEMENT_PROPOSED,Non-assignable grouping
+Erkek Berberi,berber,COLLOQUIAL,tr-TR,CONFIRMED_SUBTREE,
+Erkek Berberi,erkek kuaförü,COLLOQUIAL,tr-TR,CONFIRMED_SUBTREE,
+Kadın Kuaförü,bayan kuaförü,LEGACY_COLLOQUIAL,tr-TR,CONFIRMED_SUBTREE,Canonical display remains Kadın Kuaförü
+Kadın Kuaförü,kadın saç kuaförü,DESCRIPTION,tr-TR,CONFIRMED_SUBTREE,
+Güzellik Salonu,güzellik merkezi,COLLOQUIAL,tr-TR,CONFIRMED_SUBTREE,Medical centre claims are not inferred
+Güzellik Salonu,beauty salon,FOREIGN_COMMON,tr-TR,CONFIRMED_SUBTREE,Only useful common bilingual query
+"Anne & Bebek Mağazası",bebe mağazası,COLLOQUIAL,tr-TR,PROPOSED,
+"Anne & Bebek Mağazası",anne bebek mağazası,ASCII_PUNCTUATION_VARIANT,tr-TR,PROPOSED,
+Oyuncakçı,oyuncak mağazası,DESCRIPTION,tr-TR,PROPOSED,
+"Hobi & El Sanatları Mağazası",hobi mağazası,COLLOQUIAL,tr-TR,PROPOSED,
+"Hobi & El Sanatları Mağazası",el işi malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Müzik & Enstrüman Mağazası",müzik mağazası,COLLOQUIAL,tr-TR,PROPOSED,
+"Müzik & Enstrüman Mağazası",enstrümancı,COLLOQUIAL,tr-TR,PROPOSED,
+Kitapçı,kitabevi,COLLOQUIAL,tr-TR,PROPOSED,
+Kırtasiye,kırtasiyeci,COLLOQUIAL,tr-TR,PROPOSED,
+Kırtasiye,kirtasiye,ASCII_VARIANT,tr-TR,PROPOSED,Diacritic-insensitive matching should normally handle this
+Ofis Malzemeleri Mağazası,ofis malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+Spor Malzemeleri Mağazası,spor mağazası,COLLOQUIAL,tr-TR,PROPOSED,
+Spor Malzemeleri Mağazası,spor malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Outdoor & Kamp Mağazası",kamp malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Outdoor & Kamp Mağazası",outdoor mağazası,INDUSTRY_TERM,tr-TR,PROPOSED,Outdoor is established Turkish retail usage
+"Balıkçılık & Av Malzemeleri Mağazası",balıkçı malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Balıkçılık & Av Malzemeleri Mağazası",av bayii,COLLOQUIAL,tr-TR,PROPOSED,Policy review required
+Pet Shop,petshop,SPELLING_VARIANT,tr-TR,PROPOSED,
+Pet Shop,evcil hayvan mağazası,TURKISH_EQUIVALENT,tr-TR,PROPOSED,
+Akvaryumcu,akvaryum mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Pet Kuaförü,evcil hayvan kuaförü,TURKISH_EQUIVALENT,tr-TR,PROPOSED,
+Optik Mağazası,optikçi,COLLOQUIAL,tr-TR,PROPOSED,
+Optik Mağazası,gözlükçü,COLLOQUIAL,tr-TR,PROPOSED,Regulated scope remains
+Kuyumcu,kuyum mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Saatçi,saat mağazası,DESCRIPTION,tr-TR,PROPOSED,
+Medikal Ürün Mağazası,medikalci,COLLOQUIAL,tr-TR,PROPOSED,
+Medikal Ürün Mağazası,medikal mağaza,COLLOQUIAL,tr-TR,PROPOSED,
+Çiçekçi,çiçek dükkânı,DESCRIPTION,tr-TR,PROPOSED,
+"Bahçe & Yetiştirme Ürünleri Mağazası",bahçe malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Bahçe & Yetiştirme Ürünleri Mağazası",fideci,COLLOQUIAL,tr-TR,PROPOSED,May be narrower than canonical sector
+Hediyelik Eşya Mağazası,hediyelikçi,COLLOQUIAL,tr-TR,PROPOSED,
+Parti Malzemeleri Mağazası,parti malzemecisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Telefon & Elektronik Teknik Servisi",telefon tamircisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Telefon & Elektronik Teknik Servisi",elektronik servisi,COLLOQUIAL,tr-TR,PROPOSED,
+Bilgisayar Teknik Servisi,bilgisayar servisi,COLLOQUIAL,tr-TR,PROPOSED,
+Bilgisayar Teknik Servisi,bilgisayar tamircisi,COLLOQUIAL,tr-TR,PROPOSED,
+Beyaz Eşya Teknik Servisi,beyaz eşya servisi,COLLOQUIAL,tr-TR,PROPOSED,
+"Terzi & Giyim Tadilatı",terzi,COLLOQUIAL,tr-TR,PROPOSED,
+"Terzi & Giyim Tadilatı",giyim tadilat,COLLOQUIAL,tr-TR,PROPOSED,
+Ayakkabı Tamircisi,kundura tamircisi,INDUSTRY_TERM,tr-TR,PROPOSED,
+Ayakkabı Tamircisi,ayakkabı onarımı,DESCRIPTION,tr-TR,PROPOSED,
+Anahtarcı,çilingir,COLLOQUIAL,tr-TR,PROPOSED,Emergency service capability is separate
+Anahtarcı,anahtar kopyalama,SEARCH_INTENT,tr-TR,PROPOSED,
+"Kuru Temizleme & Çamaşırhane",kuru temizlemeci,COLLOQUIAL,tr-TR,PROPOSED,
+"Kuru Temizleme & Çamaşırhane",çamaşırhane,COLLOQUIAL,tr-TR,PROPOSED,
+Bisiklet Servisi,bisiklet tamircisi,COLLOQUIAL,tr-TR,PROPOSED,
+Bisiklet Servisi,bisiklet onarımı,SEARCH_INTENT,tr-TR,PROPOSED,
