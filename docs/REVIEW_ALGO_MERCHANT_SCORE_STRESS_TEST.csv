@@ -1,0 +1,501 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+MSC-0001,MERCHANT_SCORE,two perfect responses,apply Model A,friendliness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P0,YES,PASS
+MSC-0002,MERCHANT_SCORE,large stable sample,apply Model A,friendliness,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0003,MERCHANT_SCORE,polarized distribution,apply Model A,friendliness,raw count and distribution remain auditable,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0004,MERCHANT_SCORE,all midpoint,apply Model A,friendliness,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0005,MERCHANT_SCORE,many skips,apply Model A,friendliness,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0006,MERCHANT_SCORE,low unique-customer diversity,apply Model A,friendliness,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0007,MERCHANT_SCORE,mixed question versions,apply Model A,friendliness,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0008,MERCHANT_SCORE,fresh small sample,apply Model A,friendliness,raw count and distribution remain auditable,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0009,MERCHANT_SCORE,stale large sample,apply Model A,friendliness,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0010,MERCHANT_SCORE,corrected evidence set,apply Model A,friendliness,no formula or threshold is silently finalized,no second merchant free-text review exists,P2,NO,PASS
+MSC-0011,MERCHANT_SCORE,two perfect responses,apply Model B,friendliness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0012,MERCHANT_SCORE,large stable sample,apply Model B,friendliness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,YES,PASS
+MSC-0013,MERCHANT_SCORE,polarized distribution,apply Model B,friendliness,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0014,MERCHANT_SCORE,all midpoint,apply Model B,friendliness,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0015,MERCHANT_SCORE,many skips,apply Model B,friendliness,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0016,MERCHANT_SCORE,low unique-customer diversity,apply Model B,friendliness,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0017,MERCHANT_SCORE,mixed question versions,apply Model B,friendliness,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0018,MERCHANT_SCORE,fresh small sample,apply Model B,friendliness,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0019,MERCHANT_SCORE,stale large sample,apply Model B,friendliness,no formula or threshold is silently finalized,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0020,MERCHANT_SCORE,corrected evidence set,apply Model B,friendliness,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0021,MERCHANT_SCORE,two perfect responses,apply Model C,friendliness,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0022,MERCHANT_SCORE,large stable sample,apply Model C,friendliness,raw count and distribution remain auditable,missing responses are not imputed,P1,NO,PASS
+MSC-0023,MERCHANT_SCORE,polarized distribution,apply Model C,friendliness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MSC-0024,MERCHANT_SCORE,all midpoint,apply Model C,friendliness,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0025,MERCHANT_SCORE,many skips,apply Model C,friendliness,small samples do not receive unjustified certainty,missing responses are not imputed,P2,NO,PASS
+MSC-0026,MERCHANT_SCORE,low unique-customer diversity,apply Model C,friendliness,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0027,MERCHANT_SCORE,mixed question versions,apply Model C,friendliness,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0028,MERCHANT_SCORE,fresh small sample,apply Model C,friendliness,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0029,MERCHANT_SCORE,stale large sample,apply Model C,friendliness,no formula or threshold is silently finalized,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0030,MERCHANT_SCORE,corrected evidence set,apply Model C,friendliness,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MSC-0031,MERCHANT_SCORE,two perfect responses,apply Model D,friendliness,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0032,MERCHANT_SCORE,large stable sample,apply Model D,friendliness,raw count and distribution remain auditable,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0033,MERCHANT_SCORE,polarized distribution,apply Model D,friendliness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0034,MERCHANT_SCORE,all midpoint,apply Model D,friendliness,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P2,YES,PASS
+MSC-0035,MERCHANT_SCORE,many skips,apply Model D,friendliness,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0036,MERCHANT_SCORE,low unique-customer diversity,apply Model D,friendliness,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0037,MERCHANT_SCORE,mixed question versions,apply Model D,friendliness,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0038,MERCHANT_SCORE,fresh small sample,apply Model D,friendliness,no formula or threshold is silently finalized,missing responses are not imputed,P3,NO,PASS
+MSC-0039,MERCHANT_SCORE,stale large sample,apply Model D,friendliness,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0040,MERCHANT_SCORE,corrected evidence set,apply Model D,friendliness,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0041,MERCHANT_SCORE,two perfect responses,change prior scope,friendliness,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0042,MERCHANT_SCORE,large stable sample,change prior scope,friendliness,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0043,MERCHANT_SCORE,polarized distribution,change prior scope,friendliness,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0044,MERCHANT_SCORE,all midpoint,change prior scope,friendliness,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0045,MERCHANT_SCORE,many skips,change prior scope,friendliness,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P3,YES,PASS
+MSC-0046,MERCHANT_SCORE,low unique-customer diversity,change prior scope,friendliness,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0047,MERCHANT_SCORE,mixed question versions,change prior scope,friendliness,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0048,MERCHANT_SCORE,fresh small sample,change prior scope,friendliness,no formula or threshold is silently finalized,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0049,MERCHANT_SCORE,stale large sample,change prior scope,friendliness,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0050,MERCHANT_SCORE,corrected evidence set,change prior scope,friendliness,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0051,MERCHANT_SCORE,two perfect responses,raise sample gate,friendliness,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0052,MERCHANT_SCORE,large stable sample,raise sample gate,friendliness,no formula or threshold is silently finalized,no second merchant free-text review exists,P2,NO,PASS
+MSC-0053,MERCHANT_SCORE,polarized distribution,raise sample gate,friendliness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0054,MERCHANT_SCORE,all midpoint,raise sample gate,friendliness,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0055,MERCHANT_SCORE,many skips,raise sample gate,friendliness,raw count and distribution remain auditable,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0056,MERCHANT_SCORE,low unique-customer diversity,raise sample gate,friendliness,product rating never enters merchant score,product and shop aggregates remain separate,P3,YES,PASS
+MSC-0057,MERCHANT_SCORE,mixed question versions,raise sample gate,friendliness,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0058,MERCHANT_SCORE,fresh small sample,raise sample gate,friendliness,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0059,MERCHANT_SCORE,stale large sample,raise sample gate,friendliness,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MSC-0060,MERCHANT_SCORE,corrected evidence set,raise sample gate,friendliness,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0061,MERCHANT_SCORE,two perfect responses,hold suspicious cluster,friendliness,product rating never enters merchant score,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0062,MERCHANT_SCORE,large stable sample,hold suspicious cluster,friendliness,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0063,MERCHANT_SCORE,polarized distribution,hold suspicious cluster,friendliness,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0064,MERCHANT_SCORE,all midpoint,hold suspicious cluster,friendliness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P1,NO,PASS
+MSC-0065,MERCHANT_SCORE,many skips,hold suspicious cluster,friendliness,raw count and distribution remain auditable,no second merchant free-text review exists,P3,NO,PASS
+MSC-0066,MERCHANT_SCORE,low unique-customer diversity,hold suspicious cluster,friendliness,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0067,MERCHANT_SCORE,mixed question versions,hold suspicious cluster,friendliness,no formula or threshold is silently finalized,missing responses are not imputed,P2,YES,PASS
+MSC-0068,MERCHANT_SCORE,fresh small sample,hold suspicious cluster,friendliness,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0069,MERCHANT_SCORE,stale large sample,hold suspicious cluster,friendliness,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0070,MERCHANT_SCORE,corrected evidence set,hold suspicious cluster,friendliness,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0071,MERCHANT_SCORE,two perfect responses,recompute after correction,friendliness,no formula or threshold is silently finalized,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0072,MERCHANT_SCORE,large stable sample,recompute after correction,friendliness,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0073,MERCHANT_SCORE,polarized distribution,recompute after correction,friendliness,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0074,MERCHANT_SCORE,all midpoint,recompute after correction,friendliness,raw count and distribution remain auditable,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0075,MERCHANT_SCORE,many skips,recompute after correction,friendliness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0076,MERCHANT_SCORE,low unique-customer diversity,recompute after correction,friendliness,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0077,MERCHANT_SCORE,mixed question versions,recompute after correction,friendliness,small samples do not receive unjustified certainty,missing responses are not imputed,P3,NO,PASS
+MSC-0078,MERCHANT_SCORE,fresh small sample,recompute after correction,friendliness,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+MSC-0079,MERCHANT_SCORE,stale large sample,recompute after correction,friendliness,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0080,MERCHANT_SCORE,corrected evidence set,recompute after correction,friendliness,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0081,MERCHANT_SCORE,two perfect responses,compare raw mean,friendliness,no formula or threshold is silently finalized,no second merchant free-text review exists,P3,NO,PASS
+MSC-0082,MERCHANT_SCORE,large stable sample,compare raw mean,friendliness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0083,MERCHANT_SCORE,polarized distribution,compare raw mean,friendliness,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0084,MERCHANT_SCORE,all midpoint,compare raw mean,friendliness,raw count and distribution remain auditable,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0085,MERCHANT_SCORE,many skips,compare raw mean,friendliness,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0086,MERCHANT_SCORE,low unique-customer diversity,compare raw mean,friendliness,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0087,MERCHANT_SCORE,mixed question versions,compare raw mean,friendliness,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0088,MERCHANT_SCORE,fresh small sample,compare raw mean,friendliness,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MSC-0089,MERCHANT_SCORE,stale large sample,compare raw mean,friendliness,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,YES,PASS
+MSC-0090,MERCHANT_SCORE,corrected evidence set,compare raw mean,friendliness,no formula or threshold is silently finalized,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0091,MERCHANT_SCORE,two perfect responses,request public display,friendliness,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0092,MERCHANT_SCORE,large stable sample,request public display,friendliness,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0093,MERCHANT_SCORE,polarized distribution,request public display,friendliness,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0094,MERCHANT_SCORE,all midpoint,request public display,friendliness,product rating never enters merchant score,no second merchant free-text review exists,P2,NO,PASS
+MSC-0095,MERCHANT_SCORE,many skips,request public display,friendliness,no formula or threshold is silently finalized,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0096,MERCHANT_SCORE,low unique-customer diversity,request public display,friendliness,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0097,MERCHANT_SCORE,mixed question versions,request public display,friendliness,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0098,MERCHANT_SCORE,fresh small sample,request public display,friendliness,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0099,MERCHANT_SCORE,stale large sample,request public display,friendliness,product rating never enters merchant score,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0100,MERCHANT_SCORE,corrected evidence set,request public display,friendliness,no formula or threshold is silently finalized,customer identity is not publicly exposed,P2,YES,PASS
+MSC-0101,MERCHANT_SCORE,two perfect responses,apply Model A,helpfulness,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0102,MERCHANT_SCORE,large stable sample,apply Model A,helpfulness,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0103,MERCHANT_SCORE,polarized distribution,apply Model A,helpfulness,product rating never enters merchant score,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0104,MERCHANT_SCORE,all midpoint,apply Model A,helpfulness,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0105,MERCHANT_SCORE,many skips,apply Model A,helpfulness,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0106,MERCHANT_SCORE,low unique-customer diversity,apply Model A,helpfulness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P1,NO,PASS
+MSC-0107,MERCHANT_SCORE,mixed question versions,apply Model A,helpfulness,raw count and distribution remain auditable,no second merchant free-text review exists,P3,NO,PASS
+MSC-0108,MERCHANT_SCORE,fresh small sample,apply Model A,helpfulness,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0109,MERCHANT_SCORE,stale large sample,apply Model A,helpfulness,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0110,MERCHANT_SCORE,corrected evidence set,apply Model A,helpfulness,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0111,MERCHANT_SCORE,two perfect responses,apply Model B,helpfulness,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P3,YES,PASS
+MSC-0112,MERCHANT_SCORE,large stable sample,apply Model B,helpfulness,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0113,MERCHANT_SCORE,polarized distribution,apply Model B,helpfulness,product rating never enters merchant score,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0114,MERCHANT_SCORE,all midpoint,apply Model B,helpfulness,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0115,MERCHANT_SCORE,many skips,apply Model B,helpfulness,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0116,MERCHANT_SCORE,low unique-customer diversity,apply Model B,helpfulness,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0117,MERCHANT_SCORE,mixed question versions,apply Model B,helpfulness,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MSC-0118,MERCHANT_SCORE,fresh small sample,apply Model B,helpfulness,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0119,MERCHANT_SCORE,stale large sample,apply Model B,helpfulness,no formula or threshold is silently finalized,missing responses are not imputed,P3,NO,PASS
+MSC-0120,MERCHANT_SCORE,corrected evidence set,apply Model B,helpfulness,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P1,NO,PASS
+MSC-0121,MERCHANT_SCORE,two perfect responses,apply Model C,helpfulness,raw count and distribution remain auditable,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0122,MERCHANT_SCORE,large stable sample,apply Model C,helpfulness,product rating never enters merchant score,missing responses are not imputed,P3,YES,PASS
+MSC-0123,MERCHANT_SCORE,polarized distribution,apply Model C,helpfulness,no formula or threshold is silently finalized,no second merchant free-text review exists,P3,NO,PASS
+MSC-0124,MERCHANT_SCORE,all midpoint,apply Model C,helpfulness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0125,MERCHANT_SCORE,many skips,apply Model C,helpfulness,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0126,MERCHANT_SCORE,low unique-customer diversity,apply Model C,helpfulness,raw count and distribution remain auditable,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0127,MERCHANT_SCORE,mixed question versions,apply Model C,helpfulness,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0128,MERCHANT_SCORE,fresh small sample,apply Model C,helpfulness,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0129,MERCHANT_SCORE,stale large sample,apply Model C,helpfulness,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0130,MERCHANT_SCORE,corrected evidence set,apply Model C,helpfulness,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0131,MERCHANT_SCORE,two perfect responses,apply Model D,helpfulness,raw count and distribution remain auditable,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0132,MERCHANT_SCORE,large stable sample,apply Model D,helpfulness,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0133,MERCHANT_SCORE,polarized distribution,apply Model D,helpfulness,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MSC-0134,MERCHANT_SCORE,all midpoint,apply Model D,helpfulness,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0135,MERCHANT_SCORE,many skips,apply Model D,helpfulness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,NO,PASS
+MSC-0136,MERCHANT_SCORE,low unique-customer diversity,apply Model D,helpfulness,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0137,MERCHANT_SCORE,mixed question versions,apply Model D,helpfulness,no formula or threshold is silently finalized,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0138,MERCHANT_SCORE,fresh small sample,apply Model D,helpfulness,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0139,MERCHANT_SCORE,stale large sample,apply Model D,helpfulness,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0140,MERCHANT_SCORE,corrected evidence set,apply Model D,helpfulness,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0141,MERCHANT_SCORE,two perfect responses,change prior scope,helpfulness,product rating never enters merchant score,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0142,MERCHANT_SCORE,large stable sample,change prior scope,helpfulness,no formula or threshold is silently finalized,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0143,MERCHANT_SCORE,polarized distribution,change prior scope,helpfulness,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0144,MERCHANT_SCORE,all midpoint,change prior scope,helpfulness,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P3,YES,PASS
+MSC-0145,MERCHANT_SCORE,many skips,change prior scope,helpfulness,raw count and distribution remain auditable,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0146,MERCHANT_SCORE,low unique-customer diversity,change prior scope,helpfulness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MSC-0147,MERCHANT_SCORE,mixed question versions,change prior scope,helpfulness,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0148,MERCHANT_SCORE,fresh small sample,change prior scope,helpfulness,small samples do not receive unjustified certainty,missing responses are not imputed,P1,NO,PASS
+MSC-0149,MERCHANT_SCORE,stale large sample,change prior scope,helpfulness,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0150,MERCHANT_SCORE,corrected evidence set,change prior scope,helpfulness,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0151,MERCHANT_SCORE,two perfect responses,raise sample gate,helpfulness,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0152,MERCHANT_SCORE,large stable sample,raise sample gate,helpfulness,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0153,MERCHANT_SCORE,polarized distribution,raise sample gate,helpfulness,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0154,MERCHANT_SCORE,all midpoint,raise sample gate,helpfulness,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0155,MERCHANT_SCORE,many skips,raise sample gate,helpfulness,product rating never enters merchant score,customer identity is not publicly exposed,P1,YES,PASS
+MSC-0156,MERCHANT_SCORE,low unique-customer diversity,raise sample gate,helpfulness,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0157,MERCHANT_SCORE,mixed question versions,raise sample gate,helpfulness,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0158,MERCHANT_SCORE,fresh small sample,raise sample gate,helpfulness,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0159,MERCHANT_SCORE,stale large sample,raise sample gate,helpfulness,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0160,MERCHANT_SCORE,corrected evidence set,raise sample gate,helpfulness,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0161,MERCHANT_SCORE,two perfect responses,hold suspicious cluster,helpfulness,no formula or threshold is silently finalized,missing responses are not imputed,P3,NO,PASS
+MSC-0162,MERCHANT_SCORE,large stable sample,hold suspicious cluster,helpfulness,small samples do not receive unjustified certainty,no second merchant free-text review exists,P1,NO,PASS
+MSC-0163,MERCHANT_SCORE,polarized distribution,hold suspicious cluster,helpfulness,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0164,MERCHANT_SCORE,all midpoint,hold suspicious cluster,helpfulness,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0165,MERCHANT_SCORE,many skips,hold suspicious cluster,helpfulness,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0166,MERCHANT_SCORE,low unique-customer diversity,hold suspicious cluster,helpfulness,no formula or threshold is silently finalized,product and shop aggregates remain separate,P2,YES,PASS
+MSC-0167,MERCHANT_SCORE,mixed question versions,hold suspicious cluster,helpfulness,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0168,MERCHANT_SCORE,fresh small sample,hold suspicious cluster,helpfulness,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0169,MERCHANT_SCORE,stale large sample,hold suspicious cluster,helpfulness,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0170,MERCHANT_SCORE,corrected evidence set,hold suspicious cluster,helpfulness,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0171,MERCHANT_SCORE,two perfect responses,recompute after correction,helpfulness,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0172,MERCHANT_SCORE,large stable sample,recompute after correction,helpfulness,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0173,MERCHANT_SCORE,polarized distribution,recompute after correction,helpfulness,raw count and distribution remain auditable,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0174,MERCHANT_SCORE,all midpoint,recompute after correction,helpfulness,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0175,MERCHANT_SCORE,many skips,recompute after correction,helpfulness,no formula or threshold is silently finalized,no second merchant free-text review exists,P0,NO,PASS
+MSC-0176,MERCHANT_SCORE,low unique-customer diversity,recompute after correction,helpfulness,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P1,NO,PASS
+MSC-0177,MERCHANT_SCORE,mixed question versions,recompute after correction,helpfulness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,YES,PASS
+MSC-0178,MERCHANT_SCORE,fresh small sample,recompute after correction,helpfulness,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0179,MERCHANT_SCORE,stale large sample,recompute after correction,helpfulness,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0180,MERCHANT_SCORE,corrected evidence set,recompute after correction,helpfulness,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0181,MERCHANT_SCORE,two perfect responses,compare raw mean,helpfulness,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0182,MERCHANT_SCORE,large stable sample,compare raw mean,helpfulness,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0183,MERCHANT_SCORE,polarized distribution,compare raw mean,helpfulness,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0184,MERCHANT_SCORE,all midpoint,compare raw mean,helpfulness,product rating never enters merchant score,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0185,MERCHANT_SCORE,many skips,compare raw mean,helpfulness,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0186,MERCHANT_SCORE,low unique-customer diversity,compare raw mean,helpfulness,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0187,MERCHANT_SCORE,mixed question versions,compare raw mean,helpfulness,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P2,NO,PASS
+MSC-0188,MERCHANT_SCORE,fresh small sample,compare raw mean,helpfulness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MSC-0189,MERCHANT_SCORE,stale large sample,compare raw mean,helpfulness,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0190,MERCHANT_SCORE,corrected evidence set,compare raw mean,helpfulness,small samples do not receive unjustified certainty,missing responses are not imputed,P1,NO,PASS
+MSC-0191,MERCHANT_SCORE,two perfect responses,request public display,helpfulness,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0192,MERCHANT_SCORE,large stable sample,request public display,helpfulness,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0193,MERCHANT_SCORE,polarized distribution,request public display,helpfulness,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0194,MERCHANT_SCORE,all midpoint,request public display,helpfulness,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0195,MERCHANT_SCORE,many skips,request public display,helpfulness,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0196,MERCHANT_SCORE,low unique-customer diversity,request public display,helpfulness,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0197,MERCHANT_SCORE,mixed question versions,request public display,helpfulness,raw count and distribution remain auditable,derived state is idempotent and versioned,P1,NO,PASS
+MSC-0198,MERCHANT_SCORE,fresh small sample,request public display,helpfulness,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0199,MERCHANT_SCORE,stale large sample,request public display,helpfulness,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P2,YES,PASS
+MSC-0200,MERCHANT_SCORE,corrected evidence set,request public display,helpfulness,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0201,MERCHANT_SCORE,two perfect responses,apply Model A,information accuracy,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0202,MERCHANT_SCORE,large stable sample,apply Model A,information accuracy,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0203,MERCHANT_SCORE,polarized distribution,apply Model A,information accuracy,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0204,MERCHANT_SCORE,all midpoint,apply Model A,information accuracy,no formula or threshold is silently finalized,no second merchant free-text review exists,P0,NO,PASS
+MSC-0205,MERCHANT_SCORE,many skips,apply Model A,information accuracy,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0206,MERCHANT_SCORE,low unique-customer diversity,apply Model A,information accuracy,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0207,MERCHANT_SCORE,mixed question versions,apply Model A,information accuracy,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0208,MERCHANT_SCORE,fresh small sample,apply Model A,information accuracy,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0209,MERCHANT_SCORE,stale large sample,apply Model A,information accuracy,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0210,MERCHANT_SCORE,corrected evidence set,apply Model A,information accuracy,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P3,YES,PASS
+MSC-0211,MERCHANT_SCORE,two perfect responses,apply Model B,information accuracy,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0212,MERCHANT_SCORE,large stable sample,apply Model B,information accuracy,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0213,MERCHANT_SCORE,polarized distribution,apply Model B,information accuracy,no formula or threshold is silently finalized,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0214,MERCHANT_SCORE,all midpoint,apply Model B,information accuracy,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0215,MERCHANT_SCORE,many skips,apply Model B,information accuracy,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0216,MERCHANT_SCORE,low unique-customer diversity,apply Model B,information accuracy,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0217,MERCHANT_SCORE,mixed question versions,apply Model B,information accuracy,product rating never enters merchant score,no second merchant free-text review exists,P2,NO,PASS
+MSC-0218,MERCHANT_SCORE,fresh small sample,apply Model B,information accuracy,no formula or threshold is silently finalized,product and shop aggregates remain separate,P1,NO,PASS
+MSC-0219,MERCHANT_SCORE,stale large sample,apply Model B,information accuracy,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0220,MERCHANT_SCORE,corrected evidence set,apply Model B,information accuracy,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0221,MERCHANT_SCORE,two perfect responses,apply Model C,information accuracy,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,YES,PASS
+MSC-0222,MERCHANT_SCORE,large stable sample,apply Model C,information accuracy,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0223,MERCHANT_SCORE,polarized distribution,apply Model C,information accuracy,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0224,MERCHANT_SCORE,all midpoint,apply Model C,information accuracy,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0225,MERCHANT_SCORE,many skips,apply Model C,information accuracy,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0226,MERCHANT_SCORE,low unique-customer diversity,apply Model C,information accuracy,product rating never enters merchant score,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0227,MERCHANT_SCORE,mixed question versions,apply Model C,information accuracy,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0228,MERCHANT_SCORE,fresh small sample,apply Model C,information accuracy,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0229,MERCHANT_SCORE,stale large sample,apply Model C,information accuracy,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P2,NO,PASS
+MSC-0230,MERCHANT_SCORE,corrected evidence set,apply Model C,information accuracy,raw count and distribution remain auditable,no second merchant free-text review exists,P3,NO,PASS
+MSC-0231,MERCHANT_SCORE,two perfect responses,apply Model D,information accuracy,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0232,MERCHANT_SCORE,large stable sample,apply Model D,information accuracy,no formula or threshold is silently finalized,missing responses are not imputed,P1,YES,PASS
+MSC-0233,MERCHANT_SCORE,polarized distribution,apply Model D,information accuracy,small samples do not receive unjustified certainty,no second merchant free-text review exists,P0,NO,PASS
+MSC-0234,MERCHANT_SCORE,all midpoint,apply Model D,information accuracy,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0235,MERCHANT_SCORE,many skips,apply Model D,information accuracy,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0236,MERCHANT_SCORE,low unique-customer diversity,apply Model D,information accuracy,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0237,MERCHANT_SCORE,mixed question versions,apply Model D,information accuracy,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0238,MERCHANT_SCORE,fresh small sample,apply Model D,information accuracy,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0239,MERCHANT_SCORE,stale large sample,apply Model D,information accuracy,raw count and distribution remain auditable,derived state is idempotent and versioned,P1,NO,PASS
+MSC-0240,MERCHANT_SCORE,corrected evidence set,apply Model D,information accuracy,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0241,MERCHANT_SCORE,two perfect responses,change prior scope,information accuracy,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0242,MERCHANT_SCORE,large stable sample,change prior scope,information accuracy,small samples do not receive unjustified certainty,missing responses are not imputed,P3,NO,PASS
+MSC-0243,MERCHANT_SCORE,polarized distribution,change prior scope,information accuracy,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MSC-0244,MERCHANT_SCORE,all midpoint,change prior scope,information accuracy,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0245,MERCHANT_SCORE,many skips,change prior scope,information accuracy,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0246,MERCHANT_SCORE,low unique-customer diversity,change prior scope,information accuracy,no formula or threshold is silently finalized,no second merchant free-text review exists,P1,NO,PASS
+MSC-0247,MERCHANT_SCORE,mixed question versions,change prior scope,information accuracy,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0248,MERCHANT_SCORE,fresh small sample,change prior scope,information accuracy,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0249,MERCHANT_SCORE,stale large sample,change prior scope,information accuracy,raw count and distribution remain auditable,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0250,MERCHANT_SCORE,corrected evidence set,change prior scope,information accuracy,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0251,MERCHANT_SCORE,two perfect responses,raise sample gate,information accuracy,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0252,MERCHANT_SCORE,large stable sample,raise sample gate,information accuracy,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0253,MERCHANT_SCORE,polarized distribution,raise sample gate,information accuracy,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0254,MERCHANT_SCORE,all midpoint,raise sample gate,information accuracy,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,YES,PASS
+MSC-0255,MERCHANT_SCORE,many skips,raise sample gate,information accuracy,product rating never enters merchant score,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0256,MERCHANT_SCORE,low unique-customer diversity,raise sample gate,information accuracy,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0257,MERCHANT_SCORE,mixed question versions,raise sample gate,information accuracy,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0258,MERCHANT_SCORE,fresh small sample,raise sample gate,information accuracy,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0259,MERCHANT_SCORE,stale large sample,raise sample gate,information accuracy,product rating never enters merchant score,no second merchant free-text review exists,P2,NO,PASS
+MSC-0260,MERCHANT_SCORE,corrected evidence set,raise sample gate,information accuracy,no formula or threshold is silently finalized,product and shop aggregates remain separate,P1,NO,PASS
+MSC-0261,MERCHANT_SCORE,two perfect responses,hold suspicious cluster,information accuracy,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0262,MERCHANT_SCORE,large stable sample,hold suspicious cluster,information accuracy,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P0,NO,PASS
+MSC-0263,MERCHANT_SCORE,polarized distribution,hold suspicious cluster,information accuracy,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0264,MERCHANT_SCORE,all midpoint,hold suspicious cluster,information accuracy,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0265,MERCHANT_SCORE,many skips,hold suspicious cluster,information accuracy,no formula or threshold is silently finalized,customer identity is not publicly exposed,P2,YES,PASS
+MSC-0266,MERCHANT_SCORE,low unique-customer diversity,hold suspicious cluster,information accuracy,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0267,MERCHANT_SCORE,mixed question versions,hold suspicious cluster,information accuracy,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0268,MERCHANT_SCORE,fresh small sample,hold suspicious cluster,information accuracy,raw count and distribution remain auditable,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0269,MERCHANT_SCORE,stale large sample,hold suspicious cluster,information accuracy,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0270,MERCHANT_SCORE,corrected evidence set,hold suspicious cluster,information accuracy,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0271,MERCHANT_SCORE,two perfect responses,recompute after correction,information accuracy,small samples do not receive unjustified certainty,missing responses are not imputed,P2,NO,PASS
+MSC-0272,MERCHANT_SCORE,large stable sample,recompute after correction,information accuracy,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0273,MERCHANT_SCORE,polarized distribution,recompute after correction,information accuracy,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0274,MERCHANT_SCORE,all midpoint,recompute after correction,information accuracy,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0275,MERCHANT_SCORE,many skips,recompute after correction,information accuracy,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0276,MERCHANT_SCORE,low unique-customer diversity,recompute after correction,information accuracy,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P3,YES,PASS
+MSC-0277,MERCHANT_SCORE,mixed question versions,recompute after correction,information accuracy,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0278,MERCHANT_SCORE,fresh small sample,recompute after correction,information accuracy,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0279,MERCHANT_SCORE,stale large sample,recompute after correction,information accuracy,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0280,MERCHANT_SCORE,corrected evidence set,recompute after correction,information accuracy,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0281,MERCHANT_SCORE,two perfect responses,compare raw mean,information accuracy,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P1,NO,PASS
+MSC-0282,MERCHANT_SCORE,large stable sample,compare raw mean,information accuracy,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0283,MERCHANT_SCORE,polarized distribution,compare raw mean,information accuracy,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0284,MERCHANT_SCORE,all midpoint,compare raw mean,information accuracy,no formula or threshold is silently finalized,missing responses are not imputed,P3,NO,PASS
+MSC-0285,MERCHANT_SCORE,many skips,compare raw mean,information accuracy,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0286,MERCHANT_SCORE,low unique-customer diversity,compare raw mean,information accuracy,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0287,MERCHANT_SCORE,mixed question versions,compare raw mean,information accuracy,raw count and distribution remain auditable,missing responses are not imputed,P3,YES,PASS
+MSC-0288,MERCHANT_SCORE,fresh small sample,compare raw mean,information accuracy,product rating never enters merchant score,no second merchant free-text review exists,P1,NO,PASS
+MSC-0289,MERCHANT_SCORE,stale large sample,compare raw mean,information accuracy,no formula or threshold is silently finalized,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0290,MERCHANT_SCORE,corrected evidence set,compare raw mean,information accuracy,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0291,MERCHANT_SCORE,two perfect responses,request public display,information accuracy,raw count and distribution remain auditable,customer identity is not publicly exposed,P0,NO,PASS
+MSC-0292,MERCHANT_SCORE,large stable sample,request public display,information accuracy,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0293,MERCHANT_SCORE,polarized distribution,request public display,information accuracy,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0294,MERCHANT_SCORE,all midpoint,request public display,information accuracy,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0295,MERCHANT_SCORE,many skips,request public display,information accuracy,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0296,MERCHANT_SCORE,low unique-customer diversity,request public display,information accuracy,raw count and distribution remain auditable,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0297,MERCHANT_SCORE,mixed question versions,request public display,information accuracy,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0298,MERCHANT_SCORE,fresh small sample,request public display,information accuracy,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MSC-0299,MERCHANT_SCORE,stale large sample,request public display,information accuracy,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0300,MERCHANT_SCORE,corrected evidence set,request public display,information accuracy,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,NO,PASS
+MSC-0301,MERCHANT_SCORE,two perfect responses,apply Model A,overall experience,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0302,MERCHANT_SCORE,large stable sample,apply Model A,overall experience,product rating never enters merchant score,product and shop aggregates remain separate,P1,NO,PASS
+MSC-0303,MERCHANT_SCORE,polarized distribution,apply Model A,overall experience,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0304,MERCHANT_SCORE,all midpoint,apply Model A,overall experience,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0305,MERCHANT_SCORE,many skips,apply Model A,overall experience,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0306,MERCHANT_SCORE,low unique-customer diversity,apply Model A,overall experience,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0307,MERCHANT_SCORE,mixed question versions,apply Model A,overall experience,no formula or threshold is silently finalized,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0308,MERCHANT_SCORE,fresh small sample,apply Model A,overall experience,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0309,MERCHANT_SCORE,stale large sample,apply Model A,overall experience,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P1,YES,PASS
+MSC-0310,MERCHANT_SCORE,corrected evidence set,apply Model A,overall experience,raw count and distribution remain auditable,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0311,MERCHANT_SCORE,two perfect responses,apply Model B,overall experience,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0312,MERCHANT_SCORE,large stable sample,apply Model B,overall experience,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0313,MERCHANT_SCORE,polarized distribution,apply Model B,overall experience,small samples do not receive unjustified certainty,missing responses are not imputed,P2,NO,PASS
+MSC-0314,MERCHANT_SCORE,all midpoint,apply Model B,overall experience,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0315,MERCHANT_SCORE,many skips,apply Model B,overall experience,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0316,MERCHANT_SCORE,low unique-customer diversity,apply Model B,overall experience,product rating never enters merchant score,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0317,MERCHANT_SCORE,mixed question versions,apply Model B,overall experience,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0318,MERCHANT_SCORE,fresh small sample,apply Model B,overall experience,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0319,MERCHANT_SCORE,stale large sample,apply Model B,overall experience,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0320,MERCHANT_SCORE,corrected evidence set,apply Model B,overall experience,raw count and distribution remain auditable,customer identity is not publicly exposed,P0,YES,PASS
+MSC-0321,MERCHANT_SCORE,two perfect responses,apply Model C,overall experience,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0322,MERCHANT_SCORE,large stable sample,apply Model C,overall experience,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0323,MERCHANT_SCORE,polarized distribution,apply Model C,overall experience,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P1,NO,PASS
+MSC-0324,MERCHANT_SCORE,all midpoint,apply Model C,overall experience,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0325,MERCHANT_SCORE,many skips,apply Model C,overall experience,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0326,MERCHANT_SCORE,low unique-customer diversity,apply Model C,overall experience,no formula or threshold is silently finalized,missing responses are not imputed,P3,NO,PASS
+MSC-0327,MERCHANT_SCORE,mixed question versions,apply Model C,overall experience,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0328,MERCHANT_SCORE,fresh small sample,apply Model C,overall experience,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0329,MERCHANT_SCORE,stale large sample,apply Model C,overall experience,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0330,MERCHANT_SCORE,corrected evidence set,apply Model C,overall experience,product rating never enters merchant score,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0331,MERCHANT_SCORE,two perfect responses,apply Model D,overall experience,no formula or threshold is silently finalized,product and shop aggregates remain separate,P2,YES,PASS
+MSC-0332,MERCHANT_SCORE,large stable sample,apply Model D,overall experience,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0333,MERCHANT_SCORE,polarized distribution,apply Model D,overall experience,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0334,MERCHANT_SCORE,all midpoint,apply Model D,overall experience,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0335,MERCHANT_SCORE,many skips,apply Model D,overall experience,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0336,MERCHANT_SCORE,low unique-customer diversity,apply Model D,overall experience,no formula or threshold is silently finalized,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0337,MERCHANT_SCORE,mixed question versions,apply Model D,overall experience,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0338,MERCHANT_SCORE,fresh small sample,apply Model D,overall experience,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0339,MERCHANT_SCORE,stale large sample,apply Model D,overall experience,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0340,MERCHANT_SCORE,corrected evidence set,apply Model D,overall experience,product rating never enters merchant score,no second merchant free-text review exists,P2,NO,PASS
+MSC-0341,MERCHANT_SCORE,two perfect responses,change prior scope,overall experience,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0342,MERCHANT_SCORE,large stable sample,change prior scope,overall experience,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,YES,PASS
+MSC-0343,MERCHANT_SCORE,polarized distribution,change prior scope,overall experience,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0344,MERCHANT_SCORE,all midpoint,change prior scope,overall experience,product rating never enters merchant score,product and shop aggregates remain separate,P1,NO,PASS
+MSC-0345,MERCHANT_SCORE,many skips,change prior scope,overall experience,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0346,MERCHANT_SCORE,low unique-customer diversity,change prior scope,overall experience,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0347,MERCHANT_SCORE,mixed question versions,change prior scope,overall experience,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0348,MERCHANT_SCORE,fresh small sample,change prior scope,overall experience,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0349,MERCHANT_SCORE,stale large sample,change prior scope,overall experience,product rating never enters merchant score,derived state is idempotent and versioned,P0,NO,PASS
+MSC-0350,MERCHANT_SCORE,corrected evidence set,change prior scope,overall experience,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0351,MERCHANT_SCORE,two perfect responses,raise sample gate,overall experience,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0352,MERCHANT_SCORE,large stable sample,raise sample gate,overall experience,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P2,NO,PASS
+MSC-0353,MERCHANT_SCORE,polarized distribution,raise sample gate,overall experience,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MSC-0354,MERCHANT_SCORE,all midpoint,raise sample gate,overall experience,product rating never enters merchant score,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0355,MERCHANT_SCORE,many skips,raise sample gate,overall experience,no formula or threshold is silently finalized,missing responses are not imputed,P2,NO,PASS
+MSC-0356,MERCHANT_SCORE,low unique-customer diversity,raise sample gate,overall experience,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0357,MERCHANT_SCORE,mixed question versions,raise sample gate,overall experience,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0358,MERCHANT_SCORE,fresh small sample,raise sample gate,overall experience,product rating never enters merchant score,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0359,MERCHANT_SCORE,stale large sample,raise sample gate,overall experience,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0360,MERCHANT_SCORE,corrected evidence set,raise sample gate,overall experience,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0361,MERCHANT_SCORE,two perfect responses,hold suspicious cluster,overall experience,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0362,MERCHANT_SCORE,large stable sample,hold suspicious cluster,overall experience,raw count and distribution remain auditable,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0363,MERCHANT_SCORE,polarized distribution,hold suspicious cluster,overall experience,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0364,MERCHANT_SCORE,all midpoint,hold suspicious cluster,overall experience,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P2,YES,PASS
+MSC-0365,MERCHANT_SCORE,many skips,hold suspicious cluster,overall experience,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P1,NO,PASS
+MSC-0366,MERCHANT_SCORE,low unique-customer diversity,hold suspicious cluster,overall experience,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0367,MERCHANT_SCORE,mixed question versions,hold suspicious cluster,overall experience,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0368,MERCHANT_SCORE,fresh small sample,hold suspicious cluster,overall experience,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0369,MERCHANT_SCORE,stale large sample,hold suspicious cluster,overall experience,no formula or threshold is silently finalized,no second merchant free-text review exists,P3,NO,PASS
+MSC-0370,MERCHANT_SCORE,corrected evidence set,hold suspicious cluster,overall experience,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0371,MERCHANT_SCORE,two perfect responses,recompute after correction,overall experience,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0372,MERCHANT_SCORE,large stable sample,recompute after correction,overall experience,raw count and distribution remain auditable,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0373,MERCHANT_SCORE,polarized distribution,recompute after correction,overall experience,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0374,MERCHANT_SCORE,all midpoint,recompute after correction,overall experience,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0375,MERCHANT_SCORE,many skips,recompute after correction,overall experience,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P3,YES,PASS
+MSC-0376,MERCHANT_SCORE,low unique-customer diversity,recompute after correction,overall experience,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0377,MERCHANT_SCORE,mixed question versions,recompute after correction,overall experience,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0378,MERCHANT_SCORE,fresh small sample,recompute after correction,overall experience,no formula or threshold is silently finalized,derived state is idempotent and versioned,P0,NO,PASS
+MSC-0379,MERCHANT_SCORE,stale large sample,recompute after correction,overall experience,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0380,MERCHANT_SCORE,corrected evidence set,recompute after correction,overall experience,ordinal and binary methods are labeled distinctly,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0381,MERCHANT_SCORE,two perfect responses,compare raw mean,overall experience,raw count and distribution remain auditable,missing responses are not imputed,P3,NO,PASS
+MSC-0382,MERCHANT_SCORE,large stable sample,compare raw mean,overall experience,product rating never enters merchant score,no second merchant free-text review exists,P2,NO,PASS
+MSC-0383,MERCHANT_SCORE,polarized distribution,compare raw mean,overall experience,no formula or threshold is silently finalized,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0384,MERCHANT_SCORE,all midpoint,compare raw mean,overall experience,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0385,MERCHANT_SCORE,many skips,compare raw mean,overall experience,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0386,MERCHANT_SCORE,low unique-customer diversity,compare raw mean,overall experience,raw count and distribution remain auditable,product and shop aggregates remain separate,P1,YES,PASS
+MSC-0387,MERCHANT_SCORE,mixed question versions,compare raw mean,overall experience,product rating never enters merchant score,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0388,MERCHANT_SCORE,fresh small sample,compare raw mean,overall experience,no formula or threshold is silently finalized,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0389,MERCHANT_SCORE,stale large sample,compare raw mean,overall experience,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0390,MERCHANT_SCORE,corrected evidence set,compare raw mean,overall experience,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0391,MERCHANT_SCORE,two perfect responses,request public display,overall experience,raw count and distribution remain auditable,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0392,MERCHANT_SCORE,large stable sample,request public display,overall experience,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0393,MERCHANT_SCORE,polarized distribution,request public display,overall experience,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0394,MERCHANT_SCORE,all midpoint,request public display,overall experience,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P2,NO,PASS
+MSC-0395,MERCHANT_SCORE,many skips,request public display,overall experience,raw count and distribution remain auditable,no second merchant free-text review exists,P3,NO,PASS
+MSC-0396,MERCHANT_SCORE,low unique-customer diversity,request public display,overall experience,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0397,MERCHANT_SCORE,mixed question versions,request public display,overall experience,no formula or threshold is silently finalized,missing responses are not imputed,P2,YES,PASS
+MSC-0398,MERCHANT_SCORE,fresh small sample,request public display,overall experience,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0399,MERCHANT_SCORE,stale large sample,request public display,overall experience,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0400,MERCHANT_SCORE,corrected evidence set,request public display,overall experience,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0401,MERCHANT_SCORE,two perfect responses,apply Model A,cross-dimension comparison,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0402,MERCHANT_SCORE,large stable sample,apply Model A,cross-dimension comparison,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0403,MERCHANT_SCORE,polarized distribution,apply Model A,cross-dimension comparison,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0404,MERCHANT_SCORE,all midpoint,apply Model A,cross-dimension comparison,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0405,MERCHANT_SCORE,many skips,apply Model A,cross-dimension comparison,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0406,MERCHANT_SCORE,low unique-customer diversity,apply Model A,cross-dimension comparison,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0407,MERCHANT_SCORE,mixed question versions,apply Model A,cross-dimension comparison,no formula or threshold is silently finalized,missing responses are not imputed,P0,NO,PASS
+MSC-0408,MERCHANT_SCORE,fresh small sample,apply Model A,cross-dimension comparison,small samples do not receive unjustified certainty,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MSC-0409,MERCHANT_SCORE,stale large sample,apply Model A,cross-dimension comparison,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0410,MERCHANT_SCORE,corrected evidence set,apply Model A,cross-dimension comparison,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0411,MERCHANT_SCORE,two perfect responses,apply Model B,cross-dimension comparison,no formula or threshold is silently finalized,no second merchant free-text review exists,P3,NO,PASS
+MSC-0412,MERCHANT_SCORE,large stable sample,apply Model B,cross-dimension comparison,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0413,MERCHANT_SCORE,polarized distribution,apply Model B,cross-dimension comparison,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0414,MERCHANT_SCORE,all midpoint,apply Model B,cross-dimension comparison,raw count and distribution remain auditable,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0415,MERCHANT_SCORE,many skips,apply Model B,cross-dimension comparison,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0416,MERCHANT_SCORE,low unique-customer diversity,apply Model B,cross-dimension comparison,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0417,MERCHANT_SCORE,mixed question versions,apply Model B,cross-dimension comparison,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0418,MERCHANT_SCORE,fresh small sample,apply Model B,cross-dimension comparison,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0419,MERCHANT_SCORE,stale large sample,apply Model B,cross-dimension comparison,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,YES,PASS
+MSC-0420,MERCHANT_SCORE,corrected evidence set,apply Model B,cross-dimension comparison,product rating never enters merchant score,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0421,MERCHANT_SCORE,two perfect responses,apply Model C,cross-dimension comparison,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MSC-0422,MERCHANT_SCORE,large stable sample,apply Model C,cross-dimension comparison,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0423,MERCHANT_SCORE,polarized distribution,apply Model C,cross-dimension comparison,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P3,NO,PASS
+MSC-0424,MERCHANT_SCORE,all midpoint,apply Model C,cross-dimension comparison,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0425,MERCHANT_SCORE,many skips,apply Model C,cross-dimension comparison,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0426,MERCHANT_SCORE,low unique-customer diversity,apply Model C,cross-dimension comparison,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0427,MERCHANT_SCORE,mixed question versions,apply Model C,cross-dimension comparison,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0428,MERCHANT_SCORE,fresh small sample,apply Model C,cross-dimension comparison,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0429,MERCHANT_SCORE,stale large sample,apply Model C,cross-dimension comparison,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0430,MERCHANT_SCORE,corrected evidence set,apply Model C,cross-dimension comparison,no formula or threshold is silently finalized,customer identity is not publicly exposed,P2,YES,PASS
+MSC-0431,MERCHANT_SCORE,two perfect responses,apply Model D,cross-dimension comparison,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0432,MERCHANT_SCORE,large stable sample,apply Model D,cross-dimension comparison,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0433,MERCHANT_SCORE,polarized distribution,apply Model D,cross-dimension comparison,raw count and distribution remain auditable,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0434,MERCHANT_SCORE,all midpoint,apply Model D,cross-dimension comparison,product rating never enters merchant score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0435,MERCHANT_SCORE,many skips,apply Model D,cross-dimension comparison,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0436,MERCHANT_SCORE,low unique-customer diversity,apply Model D,cross-dimension comparison,small samples do not receive unjustified certainty,missing responses are not imputed,P0,NO,PASS
+MSC-0437,MERCHANT_SCORE,mixed question versions,apply Model D,cross-dimension comparison,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0438,MERCHANT_SCORE,fresh small sample,apply Model D,cross-dimension comparison,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0439,MERCHANT_SCORE,stale large sample,apply Model D,cross-dimension comparison,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0440,MERCHANT_SCORE,corrected evidence set,apply Model D,cross-dimension comparison,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0441,MERCHANT_SCORE,two perfect responses,change prior scope,cross-dimension comparison,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P3,YES,PASS
+MSC-0442,MERCHANT_SCORE,large stable sample,change prior scope,cross-dimension comparison,ordinal and binary methods are labeled distinctly,ads and rewards have zero reputation weight,P1,NO,PASS
+MSC-0443,MERCHANT_SCORE,polarized distribution,change prior scope,cross-dimension comparison,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0444,MERCHANT_SCORE,all midpoint,change prior scope,cross-dimension comparison,no formula or threshold is silently finalized,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0445,MERCHANT_SCORE,many skips,change prior scope,cross-dimension comparison,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0446,MERCHANT_SCORE,low unique-customer diversity,change prior scope,cross-dimension comparison,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0447,MERCHANT_SCORE,mixed question versions,change prior scope,cross-dimension comparison,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0448,MERCHANT_SCORE,fresh small sample,change prior scope,cross-dimension comparison,product rating never enters merchant score,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0449,MERCHANT_SCORE,stale large sample,change prior scope,cross-dimension comparison,no formula or threshold is silently finalized,missing responses are not imputed,P1,NO,PASS
+MSC-0450,MERCHANT_SCORE,corrected evidence set,change prior scope,cross-dimension comparison,small samples do not receive unjustified certainty,no second merchant free-text review exists,P3,NO,PASS
+MSC-0451,MERCHANT_SCORE,two perfect responses,raise sample gate,cross-dimension comparison,ordinal and binary methods are labeled distinctly,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0452,MERCHANT_SCORE,large stable sample,raise sample gate,cross-dimension comparison,raw count and distribution remain auditable,missing responses are not imputed,P3,YES,PASS
+MSC-0453,MERCHANT_SCORE,polarized distribution,raise sample gate,cross-dimension comparison,product rating never enters merchant score,no second merchant free-text review exists,P3,NO,PASS
+MSC-0454,MERCHANT_SCORE,all midpoint,raise sample gate,cross-dimension comparison,no formula or threshold is silently finalized,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0455,MERCHANT_SCORE,many skips,raise sample gate,cross-dimension comparison,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0456,MERCHANT_SCORE,low unique-customer diversity,raise sample gate,cross-dimension comparison,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0457,MERCHANT_SCORE,mixed question versions,raise sample gate,cross-dimension comparison,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0458,MERCHANT_SCORE,fresh small sample,raise sample gate,cross-dimension comparison,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0459,MERCHANT_SCORE,stale large sample,raise sample gate,cross-dimension comparison,no formula or threshold is silently finalized,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0460,MERCHANT_SCORE,corrected evidence set,raise sample gate,cross-dimension comparison,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MSC-0461,MERCHANT_SCORE,two perfect responses,hold suspicious cluster,cross-dimension comparison,raw count and distribution remain auditable,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0462,MERCHANT_SCORE,large stable sample,hold suspicious cluster,cross-dimension comparison,product rating never enters merchant score,missing responses are not imputed,P3,NO,PASS
+MSC-0463,MERCHANT_SCORE,polarized distribution,hold suspicious cluster,cross-dimension comparison,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+MSC-0464,MERCHANT_SCORE,all midpoint,hold suspicious cluster,cross-dimension comparison,small samples do not receive unjustified certainty,server-authoritative verified evidence is required,P3,NO,PASS
+MSC-0465,MERCHANT_SCORE,many skips,hold suspicious cluster,cross-dimension comparison,ordinal and binary methods are labeled distinctly,missing responses are not imputed,P0,NO,PASS
+MSC-0466,MERCHANT_SCORE,low unique-customer diversity,hold suspicious cluster,cross-dimension comparison,raw count and distribution remain auditable,no second merchant free-text review exists,P2,NO,PASS
+MSC-0467,MERCHANT_SCORE,mixed question versions,hold suspicious cluster,cross-dimension comparison,product rating never enters merchant score,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0468,MERCHANT_SCORE,fresh small sample,hold suspicious cluster,cross-dimension comparison,no formula or threshold is silently finalized,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0469,MERCHANT_SCORE,stale large sample,hold suspicious cluster,cross-dimension comparison,small samples do not receive unjustified certainty,customer identity is not publicly exposed,P2,NO,PASS
+MSC-0470,MERCHANT_SCORE,corrected evidence set,hold suspicious cluster,cross-dimension comparison,ordinal and binary methods are labeled distinctly,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MSC-0471,MERCHANT_SCORE,two perfect responses,recompute after correction,cross-dimension comparison,raw count and distribution remain auditable,quantity and basket value have zero vote weight,P3,NO,PASS
+MSC-0472,MERCHANT_SCORE,large stable sample,recompute after correction,cross-dimension comparison,product rating never enters merchant score,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0473,MERCHANT_SCORE,polarized distribution,recompute after correction,cross-dimension comparison,no formula or threshold is silently finalized,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0474,MERCHANT_SCORE,all midpoint,recompute after correction,cross-dimension comparison,small samples do not receive unjustified certainty,quantity and basket value have zero vote weight,P3,YES,PASS
+MSC-0475,MERCHANT_SCORE,many skips,recompute after correction,cross-dimension comparison,ordinal and binary methods are labeled distinctly,derived state is idempotent and versioned,P2,NO,PASS
+MSC-0476,MERCHANT_SCORE,low unique-customer diversity,recompute after correction,cross-dimension comparison,raw count and distribution remain auditable,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0477,MERCHANT_SCORE,mixed question versions,recompute after correction,cross-dimension comparison,no formula or threshold is silently finalized,server-authoritative verified evidence is required,P1,NO,PASS
+MSC-0478,MERCHANT_SCORE,fresh small sample,recompute after correction,cross-dimension comparison,small samples do not receive unjustified certainty,missing responses are not imputed,P2,NO,PASS
+MSC-0479,MERCHANT_SCORE,stale large sample,recompute after correction,cross-dimension comparison,ordinal and binary methods are labeled distinctly,no second merchant free-text review exists,P3,NO,PASS
+MSC-0480,MERCHANT_SCORE,corrected evidence set,recompute after correction,cross-dimension comparison,raw count and distribution remain auditable,product and shop aggregates remain separate,P3,NO,PASS
+MSC-0481,MERCHANT_SCORE,two perfect responses,compare raw mean,cross-dimension comparison,product rating never enters merchant score,ads and rewards have zero reputation weight,P2,NO,PASS
+MSC-0482,MERCHANT_SCORE,large stable sample,compare raw mean,cross-dimension comparison,no formula or threshold is silently finalized,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0483,MERCHANT_SCORE,polarized distribution,compare raw mean,cross-dimension comparison,small samples do not receive unjustified certainty,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0484,MERCHANT_SCORE,all midpoint,compare raw mean,cross-dimension comparison,ordinal and binary methods are labeled distinctly,quantity and basket value have zero vote weight,P1,NO,PASS
+MSC-0485,MERCHANT_SCORE,many skips,compare raw mean,cross-dimension comparison,raw count and distribution remain auditable,customer identity is not publicly exposed,P3,YES,PASS
+MSC-0486,MERCHANT_SCORE,low unique-customer diversity,compare raw mean,cross-dimension comparison,product rating never enters merchant score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MSC-0487,MERCHANT_SCORE,mixed question versions,compare raw mean,cross-dimension comparison,no formula or threshold is silently finalized,quantity and basket value have zero vote weight,P2,NO,PASS
+MSC-0488,MERCHANT_SCORE,fresh small sample,compare raw mean,cross-dimension comparison,small samples do not receive unjustified certainty,derived state is idempotent and versioned,P3,NO,PASS
+MSC-0489,MERCHANT_SCORE,stale large sample,compare raw mean,cross-dimension comparison,ordinal and binary methods are labeled distinctly,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MSC-0490,MERCHANT_SCORE,corrected evidence set,compare raw mean,cross-dimension comparison,raw count and distribution remain auditable,server-authoritative verified evidence is required,P2,NO,PASS
+MSC-0491,MERCHANT_SCORE,two perfect responses,request public display,cross-dimension comparison,product rating never enters merchant score,missing responses are not imputed,P1,NO,PASS
+MSC-0492,MERCHANT_SCORE,large stable sample,request public display,cross-dimension comparison,no formula or threshold is silently finalized,no second merchant free-text review exists,P3,NO,PASS
+MSC-0493,MERCHANT_SCORE,polarized distribution,request public display,cross-dimension comparison,small samples do not receive unjustified certainty,product and shop aggregates remain separate,P2,NO,PASS
+MSC-0494,MERCHANT_SCORE,all midpoint,request public display,cross-dimension comparison,raw count and distribution remain auditable,ads and rewards have zero reputation weight,P0,NO,PASS
+MSC-0495,MERCHANT_SCORE,many skips,request public display,cross-dimension comparison,product rating never enters merchant score,customer identity is not publicly exposed,P3,NO,PASS
+MSC-0496,MERCHANT_SCORE,low unique-customer diversity,request public display,cross-dimension comparison,no formula or threshold is silently finalized,product and shop aggregates remain separate,P2,YES,PASS
+MSC-0497,MERCHANT_SCORE,mixed question versions,request public display,cross-dimension comparison,small samples do not receive unjustified certainty,ads and rewards have zero reputation weight,P3,NO,PASS
+MSC-0498,MERCHANT_SCORE,fresh small sample,request public display,cross-dimension comparison,ordinal and binary methods are labeled distinctly,customer identity is not publicly exposed,P1,NO,PASS
+MSC-0499,MERCHANT_SCORE,stale large sample,request public display,cross-dimension comparison,raw count and distribution remain auditable,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MSC-0500,MERCHANT_SCORE,corrected evidence set,request public display,cross-dimension comparison,product rating never enters merchant score,quantity and basket value have zero vote weight,P3,NO,PASS

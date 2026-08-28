@@ -1,0 +1,501 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+UEV-0001,UNIFIED_EVALUATION,eligible first purchase,submit both sections,product low/shop high,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P0,YES,PASS
+UEV-0002,UNIFIED_EVALUATION,existing product review,submit both sections,product low/shop high,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0003,UNIFIED_EVALUATION,product section skipped,submit both sections,product low/shop high,valid section succeeds without false all-success,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0004,UNIFIED_EVALUATION,shop section skipped,submit both sections,product low/shop high,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0005,UNIFIED_EVALUATION,partial draft,submit both sections,product low/shop high,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0006,UNIFIED_EVALUATION,offline retry,submit both sections,product low/shop high,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0007,UNIFIED_EVALUATION,duplicate tap,submit both sections,product low/shop high,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0008,UNIFIED_EVALUATION,expired UI session,submit both sections,product low/shop high,valid section succeeds without false all-success,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0009,UNIFIED_EVALUATION,evidence corrected,submit both sections,product low/shop high,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0010,UNIFIED_EVALUATION,question version changed,submit both sections,product low/shop high,retry converges to the same terminal state,no second merchant free-text review exists,P2,NO,PASS
+UEV-0011,UNIFIED_EVALUATION,eligible first purchase,submit product only,product low/shop high,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0012,UNIFIED_EVALUATION,existing product review,submit product only,product low/shop high,no duplicate right or contribution is created,missing responses are not imputed,P3,YES,PASS
+UEV-0013,UNIFIED_EVALUATION,product section skipped,submit product only,product low/shop high,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0014,UNIFIED_EVALUATION,shop section skipped,submit product only,product low/shop high,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0015,UNIFIED_EVALUATION,partial draft,submit product only,product low/shop high,retry converges to the same terminal state,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0016,UNIFIED_EVALUATION,offline retry,submit product only,product low/shop high,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0017,UNIFIED_EVALUATION,duplicate tap,submit product only,product low/shop high,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0018,UNIFIED_EVALUATION,expired UI session,submit product only,product low/shop high,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0019,UNIFIED_EVALUATION,evidence corrected,submit product only,product low/shop high,retry converges to the same terminal state,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0020,UNIFIED_EVALUATION,question version changed,submit product only,product low/shop high,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0021,UNIFIED_EVALUATION,eligible first purchase,submit shop only,product low/shop high,no duplicate right or contribution is created,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0022,UNIFIED_EVALUATION,existing product review,submit shop only,product low/shop high,valid section succeeds without false all-success,missing responses are not imputed,P1,NO,PASS
+UEV-0023,UNIFIED_EVALUATION,product section skipped,submit shop only,product low/shop high,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+UEV-0024,UNIFIED_EVALUATION,shop section skipped,submit shop only,product low/shop high,retry converges to the same terminal state,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0025,UNIFIED_EVALUATION,partial draft,submit shop only,product low/shop high,one visible flow returns separate section outcomes,missing responses are not imputed,P2,NO,PASS
+UEV-0026,UNIFIED_EVALUATION,offline retry,submit shop only,product low/shop high,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0027,UNIFIED_EVALUATION,duplicate tap,submit shop only,product low/shop high,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0028,UNIFIED_EVALUATION,expired UI session,submit shop only,product low/shop high,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0029,UNIFIED_EVALUATION,evidence corrected,submit shop only,product low/shop high,retry converges to the same terminal state,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0030,UNIFIED_EVALUATION,question version changed,submit shop only,product low/shop high,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+UEV-0031,UNIFIED_EVALUATION,eligible first purchase,edit product text,product low/shop high,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0032,UNIFIED_EVALUATION,existing product review,edit product text,product low/shop high,valid section succeeds without false all-success,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0033,UNIFIED_EVALUATION,product section skipped,edit product text,product low/shop high,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0034,UNIFIED_EVALUATION,shop section skipped,edit product text,product low/shop high,retry converges to the same terminal state,quantity and basket value have zero vote weight,P2,YES,PASS
+UEV-0035,UNIFIED_EVALUATION,partial draft,edit product text,product low/shop high,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0036,UNIFIED_EVALUATION,offline retry,edit product text,product low/shop high,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0037,UNIFIED_EVALUATION,duplicate tap,edit product text,product low/shop high,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0038,UNIFIED_EVALUATION,expired UI session,edit product text,product low/shop high,retry converges to the same terminal state,missing responses are not imputed,P3,NO,PASS
+UEV-0039,UNIFIED_EVALUATION,evidence corrected,edit product text,product low/shop high,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0040,UNIFIED_EVALUATION,question version changed,edit product text,product low/shop high,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0041,UNIFIED_EVALUATION,eligible first purchase,skip one dimension,product low/shop high,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0042,UNIFIED_EVALUATION,existing product review,skip one dimension,product low/shop high,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0043,UNIFIED_EVALUATION,product section skipped,skip one dimension,product low/shop high,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0044,UNIFIED_EVALUATION,shop section skipped,skip one dimension,product low/shop high,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0045,UNIFIED_EVALUATION,partial draft,skip one dimension,product low/shop high,no duplicate right or contribution is created,customer identity is not publicly exposed,P3,YES,PASS
+UEV-0046,UNIFIED_EVALUATION,offline retry,skip one dimension,product low/shop high,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0047,UNIFIED_EVALUATION,duplicate tap,skip one dimension,product low/shop high,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0048,UNIFIED_EVALUATION,expired UI session,skip one dimension,product low/shop high,retry converges to the same terminal state,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0049,UNIFIED_EVALUATION,evidence corrected,skip one dimension,product low/shop high,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0050,UNIFIED_EVALUATION,question version changed,skip one dimension,product low/shop high,no duplicate right or contribution is created,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0051,UNIFIED_EVALUATION,eligible first purchase,mark not applicable,product low/shop high,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0052,UNIFIED_EVALUATION,existing product review,mark not applicable,product low/shop high,retry converges to the same terminal state,no second merchant free-text review exists,P2,NO,PASS
+UEV-0053,UNIFIED_EVALUATION,product section skipped,mark not applicable,product low/shop high,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0054,UNIFIED_EVALUATION,shop section skipped,mark not applicable,product low/shop high,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0055,UNIFIED_EVALUATION,partial draft,mark not applicable,product low/shop high,valid section succeeds without false all-success,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0056,UNIFIED_EVALUATION,offline retry,mark not applicable,product low/shop high,scope labels remain explicit,product and shop aggregates remain separate,P3,YES,PASS
+UEV-0057,UNIFIED_EVALUATION,duplicate tap,mark not applicable,product low/shop high,retry converges to the same terminal state,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0058,UNIFIED_EVALUATION,expired UI session,mark not applicable,product low/shop high,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0059,UNIFIED_EVALUATION,evidence corrected,mark not applicable,product low/shop high,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+UEV-0060,UNIFIED_EVALUATION,question version changed,mark not applicable,product low/shop high,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0061,UNIFIED_EVALUATION,eligible first purchase,retry same request,product low/shop high,scope labels remain explicit,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0062,UNIFIED_EVALUATION,existing product review,retry same request,product low/shop high,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0063,UNIFIED_EVALUATION,product section skipped,retry same request,product low/shop high,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0064,UNIFIED_EVALUATION,shop section skipped,retry same request,product low/shop high,no duplicate right or contribution is created,missing responses are not imputed,P1,NO,PASS
+UEV-0065,UNIFIED_EVALUATION,partial draft,retry same request,product low/shop high,valid section succeeds without false all-success,no second merchant free-text review exists,P3,NO,PASS
+UEV-0066,UNIFIED_EVALUATION,offline retry,retry same request,product low/shop high,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0067,UNIFIED_EVALUATION,duplicate tap,retry same request,product low/shop high,retry converges to the same terminal state,missing responses are not imputed,P2,YES,PASS
+UEV-0068,UNIFIED_EVALUATION,expired UI session,retry same request,product low/shop high,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0069,UNIFIED_EVALUATION,evidence corrected,retry same request,product low/shop high,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0070,UNIFIED_EVALUATION,question version changed,retry same request,product low/shop high,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0071,UNIFIED_EVALUATION,eligible first purchase,submit from second device,product low/shop high,retry converges to the same terminal state,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0072,UNIFIED_EVALUATION,existing product review,submit from second device,product low/shop high,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0073,UNIFIED_EVALUATION,product section skipped,submit from second device,product low/shop high,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0074,UNIFIED_EVALUATION,shop section skipped,submit from second device,product low/shop high,valid section succeeds without false all-success,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0075,UNIFIED_EVALUATION,partial draft,submit from second device,product low/shop high,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0076,UNIFIED_EVALUATION,offline retry,submit from second device,product low/shop high,retry converges to the same terminal state,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0077,UNIFIED_EVALUATION,duplicate tap,submit from second device,product low/shop high,one visible flow returns separate section outcomes,missing responses are not imputed,P3,NO,PASS
+UEV-0078,UNIFIED_EVALUATION,expired UI session,submit from second device,product low/shop high,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+UEV-0079,UNIFIED_EVALUATION,evidence corrected,submit from second device,product low/shop high,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0080,UNIFIED_EVALUATION,question version changed,submit from second device,product low/shop high,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0081,UNIFIED_EVALUATION,eligible first purchase,receive section validation error,product low/shop high,retry converges to the same terminal state,no second merchant free-text review exists,P3,NO,PASS
+UEV-0082,UNIFIED_EVALUATION,existing product review,receive section validation error,product low/shop high,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0083,UNIFIED_EVALUATION,product section skipped,receive section validation error,product low/shop high,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0084,UNIFIED_EVALUATION,shop section skipped,receive section validation error,product low/shop high,valid section succeeds without false all-success,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0085,UNIFIED_EVALUATION,partial draft,receive section validation error,product low/shop high,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0086,UNIFIED_EVALUATION,offline retry,receive section validation error,product low/shop high,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0087,UNIFIED_EVALUATION,duplicate tap,receive section validation error,product low/shop high,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0088,UNIFIED_EVALUATION,expired UI session,receive section validation error,product low/shop high,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+UEV-0089,UNIFIED_EVALUATION,evidence corrected,receive section validation error,product low/shop high,scope labels remain explicit,quantity and basket value have zero vote weight,P3,YES,PASS
+UEV-0090,UNIFIED_EVALUATION,question version changed,receive section validation error,product low/shop high,retry converges to the same terminal state,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0091,UNIFIED_EVALUATION,eligible first purchase,resume after app restart,product low/shop high,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0092,UNIFIED_EVALUATION,existing product review,resume after app restart,product low/shop high,no duplicate right or contribution is created,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0093,UNIFIED_EVALUATION,product section skipped,resume after app restart,product low/shop high,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0094,UNIFIED_EVALUATION,shop section skipped,resume after app restart,product low/shop high,scope labels remain explicit,no second merchant free-text review exists,P2,NO,PASS
+UEV-0095,UNIFIED_EVALUATION,partial draft,resume after app restart,product low/shop high,retry converges to the same terminal state,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0096,UNIFIED_EVALUATION,offline retry,resume after app restart,product low/shop high,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0097,UNIFIED_EVALUATION,duplicate tap,resume after app restart,product low/shop high,no duplicate right or contribution is created,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0098,UNIFIED_EVALUATION,expired UI session,resume after app restart,product low/shop high,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0099,UNIFIED_EVALUATION,evidence corrected,resume after app restart,product low/shop high,scope labels remain explicit,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0100,UNIFIED_EVALUATION,question version changed,resume after app restart,product low/shop high,retry converges to the same terminal state,customer identity is not publicly exposed,P2,YES,PASS
+UEV-0101,UNIFIED_EVALUATION,eligible first purchase,submit both sections,product high/shop low,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0102,UNIFIED_EVALUATION,existing product review,submit both sections,product high/shop low,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0103,UNIFIED_EVALUATION,product section skipped,submit both sections,product high/shop low,scope labels remain explicit,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0104,UNIFIED_EVALUATION,shop section skipped,submit both sections,product high/shop low,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0105,UNIFIED_EVALUATION,partial draft,submit both sections,product high/shop low,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0106,UNIFIED_EVALUATION,offline retry,submit both sections,product high/shop low,no duplicate right or contribution is created,missing responses are not imputed,P1,NO,PASS
+UEV-0107,UNIFIED_EVALUATION,duplicate tap,submit both sections,product high/shop low,valid section succeeds without false all-success,no second merchant free-text review exists,P3,NO,PASS
+UEV-0108,UNIFIED_EVALUATION,expired UI session,submit both sections,product high/shop low,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0109,UNIFIED_EVALUATION,evidence corrected,submit both sections,product high/shop low,retry converges to the same terminal state,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0110,UNIFIED_EVALUATION,question version changed,submit both sections,product high/shop low,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0111,UNIFIED_EVALUATION,eligible first purchase,submit product only,product high/shop low,no duplicate right or contribution is created,product and shop aggregates remain separate,P3,YES,PASS
+UEV-0112,UNIFIED_EVALUATION,existing product review,submit product only,product high/shop low,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0113,UNIFIED_EVALUATION,product section skipped,submit product only,product high/shop low,scope labels remain explicit,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0114,UNIFIED_EVALUATION,shop section skipped,submit product only,product high/shop low,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0115,UNIFIED_EVALUATION,partial draft,submit product only,product high/shop low,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0116,UNIFIED_EVALUATION,offline retry,submit product only,product high/shop low,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0117,UNIFIED_EVALUATION,duplicate tap,submit product only,product high/shop low,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+UEV-0118,UNIFIED_EVALUATION,expired UI session,submit product only,product high/shop low,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0119,UNIFIED_EVALUATION,evidence corrected,submit product only,product high/shop low,retry converges to the same terminal state,missing responses are not imputed,P3,NO,PASS
+UEV-0120,UNIFIED_EVALUATION,question version changed,submit product only,product high/shop low,no duplicate right or contribution is created,no second merchant free-text review exists,P1,NO,PASS
+UEV-0121,UNIFIED_EVALUATION,eligible first purchase,submit shop only,product high/shop low,valid section succeeds without false all-success,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0122,UNIFIED_EVALUATION,existing product review,submit shop only,product high/shop low,scope labels remain explicit,missing responses are not imputed,P3,YES,PASS
+UEV-0123,UNIFIED_EVALUATION,product section skipped,submit shop only,product high/shop low,retry converges to the same terminal state,no second merchant free-text review exists,P3,NO,PASS
+UEV-0124,UNIFIED_EVALUATION,shop section skipped,submit shop only,product high/shop low,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0125,UNIFIED_EVALUATION,partial draft,submit shop only,product high/shop low,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0126,UNIFIED_EVALUATION,offline retry,submit shop only,product high/shop low,valid section succeeds without false all-success,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0127,UNIFIED_EVALUATION,duplicate tap,submit shop only,product high/shop low,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0128,UNIFIED_EVALUATION,expired UI session,submit shop only,product high/shop low,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0129,UNIFIED_EVALUATION,evidence corrected,submit shop only,product high/shop low,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0130,UNIFIED_EVALUATION,question version changed,submit shop only,product high/shop low,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0131,UNIFIED_EVALUATION,eligible first purchase,edit product text,product high/shop low,valid section succeeds without false all-success,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0132,UNIFIED_EVALUATION,existing product review,edit product text,product high/shop low,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0133,UNIFIED_EVALUATION,product section skipped,edit product text,product high/shop low,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+UEV-0134,UNIFIED_EVALUATION,shop section skipped,edit product text,product high/shop low,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0135,UNIFIED_EVALUATION,partial draft,edit product text,product high/shop low,no duplicate right or contribution is created,missing responses are not imputed,P3,NO,PASS
+UEV-0136,UNIFIED_EVALUATION,offline retry,edit product text,product high/shop low,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0137,UNIFIED_EVALUATION,duplicate tap,edit product text,product high/shop low,retry converges to the same terminal state,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0138,UNIFIED_EVALUATION,expired UI session,edit product text,product high/shop low,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0139,UNIFIED_EVALUATION,evidence corrected,edit product text,product high/shop low,no duplicate right or contribution is created,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0140,UNIFIED_EVALUATION,question version changed,edit product text,product high/shop low,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0141,UNIFIED_EVALUATION,eligible first purchase,skip one dimension,product high/shop low,scope labels remain explicit,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0142,UNIFIED_EVALUATION,existing product review,skip one dimension,product high/shop low,retry converges to the same terminal state,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0143,UNIFIED_EVALUATION,product section skipped,skip one dimension,product high/shop low,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0144,UNIFIED_EVALUATION,shop section skipped,skip one dimension,product high/shop low,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P3,YES,PASS
+UEV-0145,UNIFIED_EVALUATION,partial draft,skip one dimension,product high/shop low,valid section succeeds without false all-success,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0146,UNIFIED_EVALUATION,offline retry,skip one dimension,product high/shop low,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+UEV-0147,UNIFIED_EVALUATION,duplicate tap,skip one dimension,product high/shop low,retry converges to the same terminal state,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0148,UNIFIED_EVALUATION,expired UI session,skip one dimension,product high/shop low,one visible flow returns separate section outcomes,missing responses are not imputed,P1,NO,PASS
+UEV-0149,UNIFIED_EVALUATION,evidence corrected,skip one dimension,product high/shop low,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0150,UNIFIED_EVALUATION,question version changed,skip one dimension,product high/shop low,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0151,UNIFIED_EVALUATION,eligible first purchase,mark not applicable,product high/shop low,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0152,UNIFIED_EVALUATION,existing product review,mark not applicable,product high/shop low,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0153,UNIFIED_EVALUATION,product section skipped,mark not applicable,product high/shop low,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0154,UNIFIED_EVALUATION,shop section skipped,mark not applicable,product high/shop low,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0155,UNIFIED_EVALUATION,partial draft,mark not applicable,product high/shop low,scope labels remain explicit,customer identity is not publicly exposed,P1,YES,PASS
+UEV-0156,UNIFIED_EVALUATION,offline retry,mark not applicable,product high/shop low,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0157,UNIFIED_EVALUATION,duplicate tap,mark not applicable,product high/shop low,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0158,UNIFIED_EVALUATION,expired UI session,mark not applicable,product high/shop low,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0159,UNIFIED_EVALUATION,evidence corrected,mark not applicable,product high/shop low,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0160,UNIFIED_EVALUATION,question version changed,mark not applicable,product high/shop low,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0161,UNIFIED_EVALUATION,eligible first purchase,retry same request,product high/shop low,retry converges to the same terminal state,missing responses are not imputed,P3,NO,PASS
+UEV-0162,UNIFIED_EVALUATION,existing product review,retry same request,product high/shop low,one visible flow returns separate section outcomes,no second merchant free-text review exists,P1,NO,PASS
+UEV-0163,UNIFIED_EVALUATION,product section skipped,retry same request,product high/shop low,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0164,UNIFIED_EVALUATION,shop section skipped,retry same request,product high/shop low,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0165,UNIFIED_EVALUATION,partial draft,retry same request,product high/shop low,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0166,UNIFIED_EVALUATION,offline retry,retry same request,product high/shop low,retry converges to the same terminal state,product and shop aggregates remain separate,P2,YES,PASS
+UEV-0167,UNIFIED_EVALUATION,duplicate tap,retry same request,product high/shop low,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0168,UNIFIED_EVALUATION,expired UI session,retry same request,product high/shop low,no duplicate right or contribution is created,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0169,UNIFIED_EVALUATION,evidence corrected,retry same request,product high/shop low,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0170,UNIFIED_EVALUATION,question version changed,retry same request,product high/shop low,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0171,UNIFIED_EVALUATION,eligible first purchase,submit from second device,product high/shop low,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0172,UNIFIED_EVALUATION,existing product review,submit from second device,product high/shop low,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0173,UNIFIED_EVALUATION,product section skipped,submit from second device,product high/shop low,valid section succeeds without false all-success,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0174,UNIFIED_EVALUATION,shop section skipped,submit from second device,product high/shop low,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0175,UNIFIED_EVALUATION,partial draft,submit from second device,product high/shop low,retry converges to the same terminal state,no second merchant free-text review exists,P0,NO,PASS
+UEV-0176,UNIFIED_EVALUATION,offline retry,submit from second device,product high/shop low,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P1,NO,PASS
+UEV-0177,UNIFIED_EVALUATION,duplicate tap,submit from second device,product high/shop low,no duplicate right or contribution is created,missing responses are not imputed,P3,YES,PASS
+UEV-0178,UNIFIED_EVALUATION,expired UI session,submit from second device,product high/shop low,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0179,UNIFIED_EVALUATION,evidence corrected,submit from second device,product high/shop low,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0180,UNIFIED_EVALUATION,question version changed,submit from second device,product high/shop low,retry converges to the same terminal state,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0181,UNIFIED_EVALUATION,eligible first purchase,receive section validation error,product high/shop low,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0182,UNIFIED_EVALUATION,existing product review,receive section validation error,product high/shop low,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0183,UNIFIED_EVALUATION,product section skipped,receive section validation error,product high/shop low,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0184,UNIFIED_EVALUATION,shop section skipped,receive section validation error,product high/shop low,scope labels remain explicit,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0185,UNIFIED_EVALUATION,partial draft,receive section validation error,product high/shop low,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0186,UNIFIED_EVALUATION,offline retry,receive section validation error,product high/shop low,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0187,UNIFIED_EVALUATION,duplicate tap,receive section validation error,product high/shop low,no duplicate right or contribution is created,missing responses are not imputed,P2,NO,PASS
+UEV-0188,UNIFIED_EVALUATION,expired UI session,receive section validation error,product high/shop low,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+UEV-0189,UNIFIED_EVALUATION,evidence corrected,receive section validation error,product high/shop low,retry converges to the same terminal state,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0190,UNIFIED_EVALUATION,question version changed,receive section validation error,product high/shop low,one visible flow returns separate section outcomes,missing responses are not imputed,P1,NO,PASS
+UEV-0191,UNIFIED_EVALUATION,eligible first purchase,resume after app restart,product high/shop low,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0192,UNIFIED_EVALUATION,existing product review,resume after app restart,product high/shop low,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0193,UNIFIED_EVALUATION,product section skipped,resume after app restart,product high/shop low,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0194,UNIFIED_EVALUATION,shop section skipped,resume after app restart,product high/shop low,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0195,UNIFIED_EVALUATION,partial draft,resume after app restart,product high/shop low,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0196,UNIFIED_EVALUATION,offline retry,resume after app restart,product high/shop low,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0197,UNIFIED_EVALUATION,duplicate tap,resume after app restart,product high/shop low,valid section succeeds without false all-success,derived state is idempotent and versioned,P1,NO,PASS
+UEV-0198,UNIFIED_EVALUATION,expired UI session,resume after app restart,product high/shop low,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0199,UNIFIED_EVALUATION,evidence corrected,resume after app restart,product high/shop low,retry converges to the same terminal state,quantity and basket value have zero vote weight,P2,YES,PASS
+UEV-0200,UNIFIED_EVALUATION,question version changed,resume after app restart,product high/shop low,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0201,UNIFIED_EVALUATION,eligible first purchase,submit both sections,all dimensions answered,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0202,UNIFIED_EVALUATION,existing product review,submit both sections,all dimensions answered,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0203,UNIFIED_EVALUATION,product section skipped,submit both sections,all dimensions answered,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0204,UNIFIED_EVALUATION,shop section skipped,submit both sections,all dimensions answered,retry converges to the same terminal state,no second merchant free-text review exists,P0,NO,PASS
+UEV-0205,UNIFIED_EVALUATION,partial draft,submit both sections,all dimensions answered,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0206,UNIFIED_EVALUATION,offline retry,submit both sections,all dimensions answered,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0207,UNIFIED_EVALUATION,duplicate tap,submit both sections,all dimensions answered,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0208,UNIFIED_EVALUATION,expired UI session,submit both sections,all dimensions answered,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0209,UNIFIED_EVALUATION,evidence corrected,submit both sections,all dimensions answered,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0210,UNIFIED_EVALUATION,question version changed,submit both sections,all dimensions answered,no duplicate right or contribution is created,customer identity is not publicly exposed,P3,YES,PASS
+UEV-0211,UNIFIED_EVALUATION,eligible first purchase,submit product only,all dimensions answered,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0212,UNIFIED_EVALUATION,existing product review,submit product only,all dimensions answered,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0213,UNIFIED_EVALUATION,product section skipped,submit product only,all dimensions answered,retry converges to the same terminal state,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0214,UNIFIED_EVALUATION,shop section skipped,submit product only,all dimensions answered,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0215,UNIFIED_EVALUATION,partial draft,submit product only,all dimensions answered,no duplicate right or contribution is created,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0216,UNIFIED_EVALUATION,offline retry,submit product only,all dimensions answered,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0217,UNIFIED_EVALUATION,duplicate tap,submit product only,all dimensions answered,scope labels remain explicit,no second merchant free-text review exists,P2,NO,PASS
+UEV-0218,UNIFIED_EVALUATION,expired UI session,submit product only,all dimensions answered,retry converges to the same terminal state,product and shop aggregates remain separate,P1,NO,PASS
+UEV-0219,UNIFIED_EVALUATION,evidence corrected,submit product only,all dimensions answered,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0220,UNIFIED_EVALUATION,question version changed,submit product only,all dimensions answered,no duplicate right or contribution is created,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0221,UNIFIED_EVALUATION,eligible first purchase,submit shop only,all dimensions answered,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,YES,PASS
+UEV-0222,UNIFIED_EVALUATION,existing product review,submit shop only,all dimensions answered,retry converges to the same terminal state,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0223,UNIFIED_EVALUATION,product section skipped,submit shop only,all dimensions answered,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0224,UNIFIED_EVALUATION,shop section skipped,submit shop only,all dimensions answered,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0225,UNIFIED_EVALUATION,partial draft,submit shop only,all dimensions answered,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0226,UNIFIED_EVALUATION,offline retry,submit shop only,all dimensions answered,scope labels remain explicit,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0227,UNIFIED_EVALUATION,duplicate tap,submit shop only,all dimensions answered,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0228,UNIFIED_EVALUATION,expired UI session,submit shop only,all dimensions answered,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0229,UNIFIED_EVALUATION,evidence corrected,submit shop only,all dimensions answered,no duplicate right or contribution is created,missing responses are not imputed,P2,NO,PASS
+UEV-0230,UNIFIED_EVALUATION,question version changed,submit shop only,all dimensions answered,valid section succeeds without false all-success,no second merchant free-text review exists,P3,NO,PASS
+UEV-0231,UNIFIED_EVALUATION,eligible first purchase,edit product text,all dimensions answered,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0232,UNIFIED_EVALUATION,existing product review,edit product text,all dimensions answered,retry converges to the same terminal state,missing responses are not imputed,P1,YES,PASS
+UEV-0233,UNIFIED_EVALUATION,product section skipped,edit product text,all dimensions answered,one visible flow returns separate section outcomes,no second merchant free-text review exists,P0,NO,PASS
+UEV-0234,UNIFIED_EVALUATION,shop section skipped,edit product text,all dimensions answered,no duplicate right or contribution is created,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0235,UNIFIED_EVALUATION,partial draft,edit product text,all dimensions answered,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0236,UNIFIED_EVALUATION,offline retry,edit product text,all dimensions answered,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0237,UNIFIED_EVALUATION,duplicate tap,edit product text,all dimensions answered,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0238,UNIFIED_EVALUATION,expired UI session,edit product text,all dimensions answered,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0239,UNIFIED_EVALUATION,evidence corrected,edit product text,all dimensions answered,valid section succeeds without false all-success,derived state is idempotent and versioned,P1,NO,PASS
+UEV-0240,UNIFIED_EVALUATION,question version changed,edit product text,all dimensions answered,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0241,UNIFIED_EVALUATION,eligible first purchase,skip one dimension,all dimensions answered,retry converges to the same terminal state,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0242,UNIFIED_EVALUATION,existing product review,skip one dimension,all dimensions answered,one visible flow returns separate section outcomes,missing responses are not imputed,P3,NO,PASS
+UEV-0243,UNIFIED_EVALUATION,product section skipped,skip one dimension,all dimensions answered,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+UEV-0244,UNIFIED_EVALUATION,shop section skipped,skip one dimension,all dimensions answered,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0245,UNIFIED_EVALUATION,partial draft,skip one dimension,all dimensions answered,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0246,UNIFIED_EVALUATION,offline retry,skip one dimension,all dimensions answered,retry converges to the same terminal state,no second merchant free-text review exists,P1,NO,PASS
+UEV-0247,UNIFIED_EVALUATION,duplicate tap,skip one dimension,all dimensions answered,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0248,UNIFIED_EVALUATION,expired UI session,skip one dimension,all dimensions answered,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0249,UNIFIED_EVALUATION,evidence corrected,skip one dimension,all dimensions answered,valid section succeeds without false all-success,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0250,UNIFIED_EVALUATION,question version changed,skip one dimension,all dimensions answered,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0251,UNIFIED_EVALUATION,eligible first purchase,mark not applicable,all dimensions answered,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0252,UNIFIED_EVALUATION,existing product review,mark not applicable,all dimensions answered,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0253,UNIFIED_EVALUATION,product section skipped,mark not applicable,all dimensions answered,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0254,UNIFIED_EVALUATION,shop section skipped,mark not applicable,all dimensions answered,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,YES,PASS
+UEV-0255,UNIFIED_EVALUATION,partial draft,mark not applicable,all dimensions answered,scope labels remain explicit,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0256,UNIFIED_EVALUATION,offline retry,mark not applicable,all dimensions answered,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0257,UNIFIED_EVALUATION,duplicate tap,mark not applicable,all dimensions answered,no duplicate right or contribution is created,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0258,UNIFIED_EVALUATION,expired UI session,mark not applicable,all dimensions answered,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0259,UNIFIED_EVALUATION,evidence corrected,mark not applicable,all dimensions answered,scope labels remain explicit,no second merchant free-text review exists,P2,NO,PASS
+UEV-0260,UNIFIED_EVALUATION,question version changed,mark not applicable,all dimensions answered,retry converges to the same terminal state,product and shop aggregates remain separate,P1,NO,PASS
+UEV-0261,UNIFIED_EVALUATION,eligible first purchase,retry same request,all dimensions answered,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0262,UNIFIED_EVALUATION,existing product review,retry same request,all dimensions answered,no duplicate right or contribution is created,customer identity is not publicly exposed,P0,NO,PASS
+UEV-0263,UNIFIED_EVALUATION,product section skipped,retry same request,all dimensions answered,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0264,UNIFIED_EVALUATION,shop section skipped,retry same request,all dimensions answered,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0265,UNIFIED_EVALUATION,partial draft,retry same request,all dimensions answered,retry converges to the same terminal state,customer identity is not publicly exposed,P2,YES,PASS
+UEV-0266,UNIFIED_EVALUATION,offline retry,retry same request,all dimensions answered,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0267,UNIFIED_EVALUATION,duplicate tap,retry same request,all dimensions answered,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0268,UNIFIED_EVALUATION,expired UI session,retry same request,all dimensions answered,valid section succeeds without false all-success,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0269,UNIFIED_EVALUATION,evidence corrected,retry same request,all dimensions answered,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0270,UNIFIED_EVALUATION,question version changed,retry same request,all dimensions answered,retry converges to the same terminal state,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0271,UNIFIED_EVALUATION,eligible first purchase,submit from second device,all dimensions answered,one visible flow returns separate section outcomes,missing responses are not imputed,P2,NO,PASS
+UEV-0272,UNIFIED_EVALUATION,existing product review,submit from second device,all dimensions answered,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0273,UNIFIED_EVALUATION,product section skipped,submit from second device,all dimensions answered,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0274,UNIFIED_EVALUATION,shop section skipped,submit from second device,all dimensions answered,retry converges to the same terminal state,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0275,UNIFIED_EVALUATION,partial draft,submit from second device,all dimensions answered,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0276,UNIFIED_EVALUATION,offline retry,submit from second device,all dimensions answered,no duplicate right or contribution is created,product and shop aggregates remain separate,P3,YES,PASS
+UEV-0277,UNIFIED_EVALUATION,duplicate tap,submit from second device,all dimensions answered,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0278,UNIFIED_EVALUATION,expired UI session,submit from second device,all dimensions answered,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0279,UNIFIED_EVALUATION,evidence corrected,submit from second device,all dimensions answered,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0280,UNIFIED_EVALUATION,question version changed,submit from second device,all dimensions answered,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0281,UNIFIED_EVALUATION,eligible first purchase,receive section validation error,all dimensions answered,no duplicate right or contribution is created,derived state is idempotent and versioned,P1,NO,PASS
+UEV-0282,UNIFIED_EVALUATION,existing product review,receive section validation error,all dimensions answered,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0283,UNIFIED_EVALUATION,product section skipped,receive section validation error,all dimensions answered,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0284,UNIFIED_EVALUATION,shop section skipped,receive section validation error,all dimensions answered,retry converges to the same terminal state,missing responses are not imputed,P3,NO,PASS
+UEV-0285,UNIFIED_EVALUATION,partial draft,receive section validation error,all dimensions answered,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0286,UNIFIED_EVALUATION,offline retry,receive section validation error,all dimensions answered,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0287,UNIFIED_EVALUATION,duplicate tap,receive section validation error,all dimensions answered,valid section succeeds without false all-success,missing responses are not imputed,P3,YES,PASS
+UEV-0288,UNIFIED_EVALUATION,expired UI session,receive section validation error,all dimensions answered,scope labels remain explicit,no second merchant free-text review exists,P1,NO,PASS
+UEV-0289,UNIFIED_EVALUATION,evidence corrected,receive section validation error,all dimensions answered,retry converges to the same terminal state,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0290,UNIFIED_EVALUATION,question version changed,receive section validation error,all dimensions answered,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0291,UNIFIED_EVALUATION,eligible first purchase,resume after app restart,all dimensions answered,valid section succeeds without false all-success,customer identity is not publicly exposed,P0,NO,PASS
+UEV-0292,UNIFIED_EVALUATION,existing product review,resume after app restart,all dimensions answered,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0293,UNIFIED_EVALUATION,product section skipped,resume after app restart,all dimensions answered,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0294,UNIFIED_EVALUATION,shop section skipped,resume after app restart,all dimensions answered,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0295,UNIFIED_EVALUATION,partial draft,resume after app restart,all dimensions answered,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0296,UNIFIED_EVALUATION,offline retry,resume after app restart,all dimensions answered,valid section succeeds without false all-success,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0297,UNIFIED_EVALUATION,duplicate tap,resume after app restart,all dimensions answered,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0298,UNIFIED_EVALUATION,expired UI session,resume after app restart,all dimensions answered,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+UEV-0299,UNIFIED_EVALUATION,evidence corrected,resume after app restart,all dimensions answered,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0300,UNIFIED_EVALUATION,question version changed,resume after app restart,all dimensions answered,no duplicate right or contribution is created,missing responses are not imputed,P3,NO,PASS
+UEV-0301,UNIFIED_EVALUATION,eligible first purchase,submit both sections,one dimension missing,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0302,UNIFIED_EVALUATION,existing product review,submit both sections,one dimension missing,scope labels remain explicit,product and shop aggregates remain separate,P1,NO,PASS
+UEV-0303,UNIFIED_EVALUATION,product section skipped,submit both sections,one dimension missing,retry converges to the same terminal state,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0304,UNIFIED_EVALUATION,shop section skipped,submit both sections,one dimension missing,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0305,UNIFIED_EVALUATION,partial draft,submit both sections,one dimension missing,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0306,UNIFIED_EVALUATION,offline retry,submit both sections,one dimension missing,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0307,UNIFIED_EVALUATION,duplicate tap,submit both sections,one dimension missing,retry converges to the same terminal state,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0308,UNIFIED_EVALUATION,expired UI session,submit both sections,one dimension missing,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0309,UNIFIED_EVALUATION,evidence corrected,submit both sections,one dimension missing,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P1,YES,PASS
+UEV-0310,UNIFIED_EVALUATION,question version changed,submit both sections,one dimension missing,valid section succeeds without false all-success,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0311,UNIFIED_EVALUATION,eligible first purchase,submit product only,one dimension missing,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0312,UNIFIED_EVALUATION,existing product review,submit product only,one dimension missing,retry converges to the same terminal state,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0313,UNIFIED_EVALUATION,product section skipped,submit product only,one dimension missing,one visible flow returns separate section outcomes,missing responses are not imputed,P2,NO,PASS
+UEV-0314,UNIFIED_EVALUATION,shop section skipped,submit product only,one dimension missing,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0315,UNIFIED_EVALUATION,partial draft,submit product only,one dimension missing,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0316,UNIFIED_EVALUATION,offline retry,submit product only,one dimension missing,scope labels remain explicit,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0317,UNIFIED_EVALUATION,duplicate tap,submit product only,one dimension missing,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0318,UNIFIED_EVALUATION,expired UI session,submit product only,one dimension missing,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0319,UNIFIED_EVALUATION,evidence corrected,submit product only,one dimension missing,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0320,UNIFIED_EVALUATION,question version changed,submit product only,one dimension missing,valid section succeeds without false all-success,customer identity is not publicly exposed,P0,YES,PASS
+UEV-0321,UNIFIED_EVALUATION,eligible first purchase,submit shop only,one dimension missing,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0322,UNIFIED_EVALUATION,existing product review,submit shop only,one dimension missing,retry converges to the same terminal state,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0323,UNIFIED_EVALUATION,product section skipped,submit shop only,one dimension missing,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P1,NO,PASS
+UEV-0324,UNIFIED_EVALUATION,shop section skipped,submit shop only,one dimension missing,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0325,UNIFIED_EVALUATION,partial draft,submit shop only,one dimension missing,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0326,UNIFIED_EVALUATION,offline retry,submit shop only,one dimension missing,retry converges to the same terminal state,missing responses are not imputed,P3,NO,PASS
+UEV-0327,UNIFIED_EVALUATION,duplicate tap,submit shop only,one dimension missing,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0328,UNIFIED_EVALUATION,expired UI session,submit shop only,one dimension missing,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0329,UNIFIED_EVALUATION,evidence corrected,submit shop only,one dimension missing,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0330,UNIFIED_EVALUATION,question version changed,submit shop only,one dimension missing,scope labels remain explicit,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0331,UNIFIED_EVALUATION,eligible first purchase,edit product text,one dimension missing,retry converges to the same terminal state,product and shop aggregates remain separate,P2,YES,PASS
+UEV-0332,UNIFIED_EVALUATION,existing product review,edit product text,one dimension missing,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0333,UNIFIED_EVALUATION,product section skipped,edit product text,one dimension missing,no duplicate right or contribution is created,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0334,UNIFIED_EVALUATION,shop section skipped,edit product text,one dimension missing,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0335,UNIFIED_EVALUATION,partial draft,edit product text,one dimension missing,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0336,UNIFIED_EVALUATION,offline retry,edit product text,one dimension missing,retry converges to the same terminal state,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0337,UNIFIED_EVALUATION,duplicate tap,edit product text,one dimension missing,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0338,UNIFIED_EVALUATION,expired UI session,edit product text,one dimension missing,no duplicate right or contribution is created,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0339,UNIFIED_EVALUATION,evidence corrected,edit product text,one dimension missing,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0340,UNIFIED_EVALUATION,question version changed,edit product text,one dimension missing,scope labels remain explicit,no second merchant free-text review exists,P2,NO,PASS
+UEV-0341,UNIFIED_EVALUATION,eligible first purchase,skip one dimension,one dimension missing,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0342,UNIFIED_EVALUATION,existing product review,skip one dimension,one dimension missing,no duplicate right or contribution is created,missing responses are not imputed,P3,YES,PASS
+UEV-0343,UNIFIED_EVALUATION,product section skipped,skip one dimension,one dimension missing,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0344,UNIFIED_EVALUATION,shop section skipped,skip one dimension,one dimension missing,scope labels remain explicit,product and shop aggregates remain separate,P1,NO,PASS
+UEV-0345,UNIFIED_EVALUATION,partial draft,skip one dimension,one dimension missing,retry converges to the same terminal state,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0346,UNIFIED_EVALUATION,offline retry,skip one dimension,one dimension missing,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0347,UNIFIED_EVALUATION,duplicate tap,skip one dimension,one dimension missing,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0348,UNIFIED_EVALUATION,expired UI session,skip one dimension,one dimension missing,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0349,UNIFIED_EVALUATION,evidence corrected,skip one dimension,one dimension missing,scope labels remain explicit,derived state is idempotent and versioned,P0,NO,PASS
+UEV-0350,UNIFIED_EVALUATION,question version changed,skip one dimension,one dimension missing,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0351,UNIFIED_EVALUATION,eligible first purchase,mark not applicable,one dimension missing,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0352,UNIFIED_EVALUATION,existing product review,mark not applicable,one dimension missing,no duplicate right or contribution is created,missing responses are not imputed,P2,NO,PASS
+UEV-0353,UNIFIED_EVALUATION,product section skipped,mark not applicable,one dimension missing,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+UEV-0354,UNIFIED_EVALUATION,shop section skipped,mark not applicable,one dimension missing,scope labels remain explicit,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0355,UNIFIED_EVALUATION,partial draft,mark not applicable,one dimension missing,retry converges to the same terminal state,missing responses are not imputed,P2,NO,PASS
+UEV-0356,UNIFIED_EVALUATION,offline retry,mark not applicable,one dimension missing,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0357,UNIFIED_EVALUATION,duplicate tap,mark not applicable,one dimension missing,no duplicate right or contribution is created,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0358,UNIFIED_EVALUATION,expired UI session,mark not applicable,one dimension missing,scope labels remain explicit,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0359,UNIFIED_EVALUATION,evidence corrected,mark not applicable,one dimension missing,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0360,UNIFIED_EVALUATION,question version changed,mark not applicable,one dimension missing,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0361,UNIFIED_EVALUATION,eligible first purchase,retry same request,one dimension missing,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0362,UNIFIED_EVALUATION,existing product review,retry same request,one dimension missing,valid section succeeds without false all-success,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0363,UNIFIED_EVALUATION,product section skipped,retry same request,one dimension missing,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0364,UNIFIED_EVALUATION,shop section skipped,retry same request,one dimension missing,retry converges to the same terminal state,quantity and basket value have zero vote weight,P2,YES,PASS
+UEV-0365,UNIFIED_EVALUATION,partial draft,retry same request,one dimension missing,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P1,NO,PASS
+UEV-0366,UNIFIED_EVALUATION,offline retry,retry same request,one dimension missing,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0367,UNIFIED_EVALUATION,duplicate tap,retry same request,one dimension missing,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0368,UNIFIED_EVALUATION,expired UI session,retry same request,one dimension missing,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0369,UNIFIED_EVALUATION,evidence corrected,retry same request,one dimension missing,retry converges to the same terminal state,no second merchant free-text review exists,P3,NO,PASS
+UEV-0370,UNIFIED_EVALUATION,question version changed,retry same request,one dimension missing,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0371,UNIFIED_EVALUATION,eligible first purchase,submit from second device,one dimension missing,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0372,UNIFIED_EVALUATION,existing product review,submit from second device,one dimension missing,valid section succeeds without false all-success,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0373,UNIFIED_EVALUATION,product section skipped,submit from second device,one dimension missing,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0374,UNIFIED_EVALUATION,shop section skipped,submit from second device,one dimension missing,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0375,UNIFIED_EVALUATION,partial draft,submit from second device,one dimension missing,no duplicate right or contribution is created,customer identity is not publicly exposed,P3,YES,PASS
+UEV-0376,UNIFIED_EVALUATION,offline retry,submit from second device,one dimension missing,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0377,UNIFIED_EVALUATION,duplicate tap,submit from second device,one dimension missing,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0378,UNIFIED_EVALUATION,expired UI session,submit from second device,one dimension missing,retry converges to the same terminal state,derived state is idempotent and versioned,P0,NO,PASS
+UEV-0379,UNIFIED_EVALUATION,evidence corrected,submit from second device,one dimension missing,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0380,UNIFIED_EVALUATION,question version changed,submit from second device,one dimension missing,no duplicate right or contribution is created,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0381,UNIFIED_EVALUATION,eligible first purchase,receive section validation error,one dimension missing,valid section succeeds without false all-success,missing responses are not imputed,P3,NO,PASS
+UEV-0382,UNIFIED_EVALUATION,existing product review,receive section validation error,one dimension missing,scope labels remain explicit,no second merchant free-text review exists,P2,NO,PASS
+UEV-0383,UNIFIED_EVALUATION,product section skipped,receive section validation error,one dimension missing,retry converges to the same terminal state,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0384,UNIFIED_EVALUATION,shop section skipped,receive section validation error,one dimension missing,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0385,UNIFIED_EVALUATION,partial draft,receive section validation error,one dimension missing,no duplicate right or contribution is created,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0386,UNIFIED_EVALUATION,offline retry,receive section validation error,one dimension missing,valid section succeeds without false all-success,product and shop aggregates remain separate,P1,YES,PASS
+UEV-0387,UNIFIED_EVALUATION,duplicate tap,receive section validation error,one dimension missing,scope labels remain explicit,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0388,UNIFIED_EVALUATION,expired UI session,receive section validation error,one dimension missing,retry converges to the same terminal state,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0389,UNIFIED_EVALUATION,evidence corrected,receive section validation error,one dimension missing,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0390,UNIFIED_EVALUATION,question version changed,receive section validation error,one dimension missing,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0391,UNIFIED_EVALUATION,eligible first purchase,resume after app restart,one dimension missing,valid section succeeds without false all-success,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0392,UNIFIED_EVALUATION,existing product review,resume after app restart,one dimension missing,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0393,UNIFIED_EVALUATION,product section skipped,resume after app restart,one dimension missing,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0394,UNIFIED_EVALUATION,shop section skipped,resume after app restart,one dimension missing,no duplicate right or contribution is created,missing responses are not imputed,P2,NO,PASS
+UEV-0395,UNIFIED_EVALUATION,partial draft,resume after app restart,one dimension missing,valid section succeeds without false all-success,no second merchant free-text review exists,P3,NO,PASS
+UEV-0396,UNIFIED_EVALUATION,offline retry,resume after app restart,one dimension missing,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0397,UNIFIED_EVALUATION,duplicate tap,resume after app restart,one dimension missing,retry converges to the same terminal state,missing responses are not imputed,P2,YES,PASS
+UEV-0398,UNIFIED_EVALUATION,expired UI session,resume after app restart,one dimension missing,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0399,UNIFIED_EVALUATION,evidence corrected,resume after app restart,one dimension missing,no duplicate right or contribution is created,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0400,UNIFIED_EVALUATION,question version changed,resume after app restart,one dimension missing,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0401,UNIFIED_EVALUATION,eligible first purchase,submit both sections,same evidence replayed,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0402,UNIFIED_EVALUATION,existing product review,submit both sections,same evidence replayed,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0403,UNIFIED_EVALUATION,product section skipped,submit both sections,same evidence replayed,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0404,UNIFIED_EVALUATION,shop section skipped,submit both sections,same evidence replayed,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0405,UNIFIED_EVALUATION,partial draft,submit both sections,same evidence replayed,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0406,UNIFIED_EVALUATION,offline retry,submit both sections,same evidence replayed,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0407,UNIFIED_EVALUATION,duplicate tap,submit both sections,same evidence replayed,retry converges to the same terminal state,missing responses are not imputed,P0,NO,PASS
+UEV-0408,UNIFIED_EVALUATION,expired UI session,submit both sections,same evidence replayed,one visible flow returns separate section outcomes,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+UEV-0409,UNIFIED_EVALUATION,evidence corrected,submit both sections,same evidence replayed,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0410,UNIFIED_EVALUATION,question version changed,submit both sections,same evidence replayed,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0411,UNIFIED_EVALUATION,eligible first purchase,submit product only,same evidence replayed,retry converges to the same terminal state,no second merchant free-text review exists,P3,NO,PASS
+UEV-0412,UNIFIED_EVALUATION,existing product review,submit product only,same evidence replayed,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0413,UNIFIED_EVALUATION,product section skipped,submit product only,same evidence replayed,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0414,UNIFIED_EVALUATION,shop section skipped,submit product only,same evidence replayed,valid section succeeds without false all-success,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0415,UNIFIED_EVALUATION,partial draft,submit product only,same evidence replayed,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0416,UNIFIED_EVALUATION,offline retry,submit product only,same evidence replayed,retry converges to the same terminal state,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0417,UNIFIED_EVALUATION,duplicate tap,submit product only,same evidence replayed,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0418,UNIFIED_EVALUATION,expired UI session,submit product only,same evidence replayed,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0419,UNIFIED_EVALUATION,evidence corrected,submit product only,same evidence replayed,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,YES,PASS
+UEV-0420,UNIFIED_EVALUATION,question version changed,submit product only,same evidence replayed,scope labels remain explicit,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0421,UNIFIED_EVALUATION,eligible first purchase,submit shop only,same evidence replayed,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+UEV-0422,UNIFIED_EVALUATION,existing product review,submit shop only,same evidence replayed,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0423,UNIFIED_EVALUATION,product section skipped,submit shop only,same evidence replayed,no duplicate right or contribution is created,missing responses are not imputed,P3,NO,PASS
+UEV-0424,UNIFIED_EVALUATION,shop section skipped,submit shop only,same evidence replayed,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0425,UNIFIED_EVALUATION,partial draft,submit shop only,same evidence replayed,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0426,UNIFIED_EVALUATION,offline retry,submit shop only,same evidence replayed,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0427,UNIFIED_EVALUATION,duplicate tap,submit shop only,same evidence replayed,no duplicate right or contribution is created,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0428,UNIFIED_EVALUATION,expired UI session,submit shop only,same evidence replayed,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0429,UNIFIED_EVALUATION,evidence corrected,submit shop only,same evidence replayed,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0430,UNIFIED_EVALUATION,question version changed,submit shop only,same evidence replayed,retry converges to the same terminal state,customer identity is not publicly exposed,P2,YES,PASS
+UEV-0431,UNIFIED_EVALUATION,eligible first purchase,edit product text,same evidence replayed,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0432,UNIFIED_EVALUATION,existing product review,edit product text,same evidence replayed,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0433,UNIFIED_EVALUATION,product section skipped,edit product text,same evidence replayed,valid section succeeds without false all-success,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0434,UNIFIED_EVALUATION,shop section skipped,edit product text,same evidence replayed,scope labels remain explicit,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0435,UNIFIED_EVALUATION,partial draft,edit product text,same evidence replayed,retry converges to the same terminal state,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0436,UNIFIED_EVALUATION,offline retry,edit product text,same evidence replayed,one visible flow returns separate section outcomes,missing responses are not imputed,P0,NO,PASS
+UEV-0437,UNIFIED_EVALUATION,duplicate tap,edit product text,same evidence replayed,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0438,UNIFIED_EVALUATION,expired UI session,edit product text,same evidence replayed,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0439,UNIFIED_EVALUATION,evidence corrected,edit product text,same evidence replayed,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0440,UNIFIED_EVALUATION,question version changed,edit product text,same evidence replayed,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0441,UNIFIED_EVALUATION,eligible first purchase,skip one dimension,same evidence replayed,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P3,YES,PASS
+UEV-0442,UNIFIED_EVALUATION,existing product review,skip one dimension,same evidence replayed,no duplicate right or contribution is created,ads and rewards have zero reputation weight,P1,NO,PASS
+UEV-0443,UNIFIED_EVALUATION,product section skipped,skip one dimension,same evidence replayed,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0444,UNIFIED_EVALUATION,shop section skipped,skip one dimension,same evidence replayed,retry converges to the same terminal state,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0445,UNIFIED_EVALUATION,partial draft,skip one dimension,same evidence replayed,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0446,UNIFIED_EVALUATION,offline retry,skip one dimension,same evidence replayed,no duplicate right or contribution is created,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0447,UNIFIED_EVALUATION,duplicate tap,skip one dimension,same evidence replayed,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0448,UNIFIED_EVALUATION,expired UI session,skip one dimension,same evidence replayed,scope labels remain explicit,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0449,UNIFIED_EVALUATION,evidence corrected,skip one dimension,same evidence replayed,retry converges to the same terminal state,missing responses are not imputed,P1,NO,PASS
+UEV-0450,UNIFIED_EVALUATION,question version changed,skip one dimension,same evidence replayed,one visible flow returns separate section outcomes,no second merchant free-text review exists,P3,NO,PASS
+UEV-0451,UNIFIED_EVALUATION,eligible first purchase,mark not applicable,same evidence replayed,no duplicate right or contribution is created,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0452,UNIFIED_EVALUATION,existing product review,mark not applicable,same evidence replayed,valid section succeeds without false all-success,missing responses are not imputed,P3,YES,PASS
+UEV-0453,UNIFIED_EVALUATION,product section skipped,mark not applicable,same evidence replayed,scope labels remain explicit,no second merchant free-text review exists,P3,NO,PASS
+UEV-0454,UNIFIED_EVALUATION,shop section skipped,mark not applicable,same evidence replayed,retry converges to the same terminal state,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0455,UNIFIED_EVALUATION,partial draft,mark not applicable,same evidence replayed,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0456,UNIFIED_EVALUATION,offline retry,mark not applicable,same evidence replayed,no duplicate right or contribution is created,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0457,UNIFIED_EVALUATION,duplicate tap,mark not applicable,same evidence replayed,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0458,UNIFIED_EVALUATION,expired UI session,mark not applicable,same evidence replayed,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0459,UNIFIED_EVALUATION,evidence corrected,mark not applicable,same evidence replayed,retry converges to the same terminal state,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0460,UNIFIED_EVALUATION,question version changed,mark not applicable,same evidence replayed,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+UEV-0461,UNIFIED_EVALUATION,eligible first purchase,retry same request,same evidence replayed,valid section succeeds without false all-success,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0462,UNIFIED_EVALUATION,existing product review,retry same request,same evidence replayed,scope labels remain explicit,missing responses are not imputed,P3,NO,PASS
+UEV-0463,UNIFIED_EVALUATION,product section skipped,retry same request,same evidence replayed,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+UEV-0464,UNIFIED_EVALUATION,shop section skipped,retry same request,same evidence replayed,one visible flow returns separate section outcomes,server-authoritative verified evidence is required,P3,NO,PASS
+UEV-0465,UNIFIED_EVALUATION,partial draft,retry same request,same evidence replayed,no duplicate right or contribution is created,missing responses are not imputed,P0,NO,PASS
+UEV-0466,UNIFIED_EVALUATION,offline retry,retry same request,same evidence replayed,valid section succeeds without false all-success,no second merchant free-text review exists,P2,NO,PASS
+UEV-0467,UNIFIED_EVALUATION,duplicate tap,retry same request,same evidence replayed,scope labels remain explicit,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0468,UNIFIED_EVALUATION,expired UI session,retry same request,same evidence replayed,retry converges to the same terminal state,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0469,UNIFIED_EVALUATION,evidence corrected,retry same request,same evidence replayed,one visible flow returns separate section outcomes,customer identity is not publicly exposed,P2,NO,PASS
+UEV-0470,UNIFIED_EVALUATION,question version changed,retry same request,same evidence replayed,no duplicate right or contribution is created,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+UEV-0471,UNIFIED_EVALUATION,eligible first purchase,submit from second device,same evidence replayed,valid section succeeds without false all-success,quantity and basket value have zero vote weight,P3,NO,PASS
+UEV-0472,UNIFIED_EVALUATION,existing product review,submit from second device,same evidence replayed,scope labels remain explicit,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0473,UNIFIED_EVALUATION,product section skipped,submit from second device,same evidence replayed,retry converges to the same terminal state,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0474,UNIFIED_EVALUATION,shop section skipped,submit from second device,same evidence replayed,one visible flow returns separate section outcomes,quantity and basket value have zero vote weight,P3,YES,PASS
+UEV-0475,UNIFIED_EVALUATION,partial draft,submit from second device,same evidence replayed,no duplicate right or contribution is created,derived state is idempotent and versioned,P2,NO,PASS
+UEV-0476,UNIFIED_EVALUATION,offline retry,submit from second device,same evidence replayed,valid section succeeds without false all-success,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0477,UNIFIED_EVALUATION,duplicate tap,submit from second device,same evidence replayed,retry converges to the same terminal state,server-authoritative verified evidence is required,P1,NO,PASS
+UEV-0478,UNIFIED_EVALUATION,expired UI session,submit from second device,same evidence replayed,one visible flow returns separate section outcomes,missing responses are not imputed,P2,NO,PASS
+UEV-0479,UNIFIED_EVALUATION,evidence corrected,submit from second device,same evidence replayed,no duplicate right or contribution is created,no second merchant free-text review exists,P3,NO,PASS
+UEV-0480,UNIFIED_EVALUATION,question version changed,submit from second device,same evidence replayed,valid section succeeds without false all-success,product and shop aggregates remain separate,P3,NO,PASS
+UEV-0481,UNIFIED_EVALUATION,eligible first purchase,receive section validation error,same evidence replayed,scope labels remain explicit,ads and rewards have zero reputation weight,P2,NO,PASS
+UEV-0482,UNIFIED_EVALUATION,existing product review,receive section validation error,same evidence replayed,retry converges to the same terminal state,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0483,UNIFIED_EVALUATION,product section skipped,receive section validation error,same evidence replayed,one visible flow returns separate section outcomes,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0484,UNIFIED_EVALUATION,shop section skipped,receive section validation error,same evidence replayed,no duplicate right or contribution is created,quantity and basket value have zero vote weight,P1,NO,PASS
+UEV-0485,UNIFIED_EVALUATION,partial draft,receive section validation error,same evidence replayed,valid section succeeds without false all-success,customer identity is not publicly exposed,P3,YES,PASS
+UEV-0486,UNIFIED_EVALUATION,offline retry,receive section validation error,same evidence replayed,scope labels remain explicit,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+UEV-0487,UNIFIED_EVALUATION,duplicate tap,receive section validation error,same evidence replayed,retry converges to the same terminal state,quantity and basket value have zero vote weight,P2,NO,PASS
+UEV-0488,UNIFIED_EVALUATION,expired UI session,receive section validation error,same evidence replayed,one visible flow returns separate section outcomes,derived state is idempotent and versioned,P3,NO,PASS
+UEV-0489,UNIFIED_EVALUATION,evidence corrected,receive section validation error,same evidence replayed,no duplicate right or contribution is created,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+UEV-0490,UNIFIED_EVALUATION,question version changed,receive section validation error,same evidence replayed,valid section succeeds without false all-success,server-authoritative verified evidence is required,P2,NO,PASS
+UEV-0491,UNIFIED_EVALUATION,eligible first purchase,resume after app restart,same evidence replayed,scope labels remain explicit,missing responses are not imputed,P1,NO,PASS
+UEV-0492,UNIFIED_EVALUATION,existing product review,resume after app restart,same evidence replayed,retry converges to the same terminal state,no second merchant free-text review exists,P3,NO,PASS
+UEV-0493,UNIFIED_EVALUATION,product section skipped,resume after app restart,same evidence replayed,one visible flow returns separate section outcomes,product and shop aggregates remain separate,P2,NO,PASS
+UEV-0494,UNIFIED_EVALUATION,shop section skipped,resume after app restart,same evidence replayed,valid section succeeds without false all-success,ads and rewards have zero reputation weight,P0,NO,PASS
+UEV-0495,UNIFIED_EVALUATION,partial draft,resume after app restart,same evidence replayed,scope labels remain explicit,customer identity is not publicly exposed,P3,NO,PASS
+UEV-0496,UNIFIED_EVALUATION,offline retry,resume after app restart,same evidence replayed,retry converges to the same terminal state,product and shop aggregates remain separate,P2,YES,PASS
+UEV-0497,UNIFIED_EVALUATION,duplicate tap,resume after app restart,same evidence replayed,one visible flow returns separate section outcomes,ads and rewards have zero reputation weight,P3,NO,PASS
+UEV-0498,UNIFIED_EVALUATION,expired UI session,resume after app restart,same evidence replayed,no duplicate right or contribution is created,customer identity is not publicly exposed,P1,NO,PASS
+UEV-0499,UNIFIED_EVALUATION,evidence corrected,resume after app restart,same evidence replayed,valid section succeeds without false all-success,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+UEV-0500,UNIFIED_EVALUATION,question version changed,resume after app restart,same evidence replayed,scope labels remain explicit,quantity and basket value have zero vote weight,P3,NO,PASS

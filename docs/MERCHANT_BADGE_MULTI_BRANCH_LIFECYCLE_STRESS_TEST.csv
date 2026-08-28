@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+MBL-0001,MULTI_BRANCH_LIFECYCLE,two branches differ,evaluate shop badge,primary badge,shop remains primary reputation subject,product and shop aggregates remain separate,P0,YES,PASS
+MBL-0002,MULTI_BRANCH_LIFECYCLE,new branch,evaluate shop badge,primary badge,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0003,MULTI_BRANCH_LIFECYCLE,shop renamed,evaluate shop badge,primary badge,relocation changes future local eligibility only,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0004,MULTI_BRANCH_LIFECYCLE,shop relocated,evaluate shop badge,primary badge,closure and transfer preserve historical lineage,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MBL-0005,MULTI_BRANCH_LIFECYCLE,temporary closure,evaluate shop badge,primary badge,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0006,MULTI_BRANCH_LIFECYCLE,permanent closure,evaluate shop badge,primary badge,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0007,MULTI_BRANCH_LIFECYCLE,ownership transfer,evaluate shop badge,primary badge,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0008,MULTI_BRANCH_LIFECYCLE,organization merge,evaluate shop badge,primary badge,relocation changes future local eligibility only,server-authoritative verified evidence is required,P1,NO,PASS
+MBL-0009,MULTI_BRANCH_LIFECYCLE,shop split,evaluate shop badge,primary badge,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0010,MULTI_BRANCH_LIFECYCLE,staff moved branches,evaluate shop badge,primary badge,merge/split never blindly averages or fans out,no second merchant free-text review exists,P2,NO,PASS
+MBL-0011,MULTI_BRANCH_LIFECYCLE,two branches differ,request organization roll-up,primary badge,shop remains primary reputation subject,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0012,MULTI_BRANCH_LIFECYCLE,new branch,request organization roll-up,primary badge,sibling badge copying is rejected,missing responses are not imputed,P3,YES,PASS
+MBL-0013,MULTI_BRANCH_LIFECYCLE,shop renamed,request organization roll-up,primary badge,relocation changes future local eligibility only,no second merchant free-text review exists,P2,NO,PASS
+MBL-0014,MULTI_BRANCH_LIFECYCLE,shop relocated,request organization roll-up,primary badge,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0015,MULTI_BRANCH_LIFECYCLE,temporary closure,request organization roll-up,primary badge,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P1,NO,PASS
+MBL-0016,MULTI_BRANCH_LIFECYCLE,permanent closure,request organization roll-up,primary badge,shop remains primary reputation subject,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0017,MULTI_BRANCH_LIFECYCLE,ownership transfer,request organization roll-up,primary badge,sibling badge copying is rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0018,MULTI_BRANCH_LIFECYCLE,organization merge,request organization roll-up,primary badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0019,MULTI_BRANCH_LIFECYCLE,shop split,request organization roll-up,primary badge,merge/split never blindly averages or fans out,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0020,MULTI_BRANCH_LIFECYCLE,staff moved branches,request organization roll-up,primary badge,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0021,MULTI_BRANCH_LIFECYCLE,two branches differ,copy sibling badge,primary badge,sibling badge copying is rejected,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0022,MULTI_BRANCH_LIFECYCLE,new branch,copy sibling badge,primary badge,relocation changes future local eligibility only,missing responses are not imputed,P1,NO,PASS
+MBL-0023,MULTI_BRANCH_LIFECYCLE,shop renamed,copy sibling badge,primary badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MBL-0024,MULTI_BRANCH_LIFECYCLE,shop relocated,copy sibling badge,primary badge,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0025,MULTI_BRANCH_LIFECYCLE,temporary closure,copy sibling badge,primary badge,shop remains primary reputation subject,missing responses are not imputed,P2,NO,PASS
+MBL-0026,MULTI_BRANCH_LIFECYCLE,permanent closure,copy sibling badge,primary badge,sibling badge copying is rejected,no second merchant free-text review exists,P3,NO,PASS
+MBL-0027,MULTI_BRANCH_LIFECYCLE,ownership transfer,copy sibling badge,primary badge,relocation changes future local eligibility only,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0028,MULTI_BRANCH_LIFECYCLE,organization merge,copy sibling badge,primary badge,closure and transfer preserve historical lineage,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0029,MULTI_BRANCH_LIFECYCLE,shop split,copy sibling badge,primary badge,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P1,NO,PASS
+MBL-0030,MULTI_BRANCH_LIFECYCLE,staff moved branches,copy sibling badge,primary badge,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MBL-0031,MULTI_BRANCH_LIFECYCLE,two branches differ,recompute region,primary badge,sibling badge copying is rejected,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0032,MULTI_BRANCH_LIFECYCLE,new branch,recompute region,primary badge,relocation changes future local eligibility only,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0033,MULTI_BRANCH_LIFECYCLE,shop renamed,recompute region,primary badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0034,MULTI_BRANCH_LIFECYCLE,shop relocated,recompute region,primary badge,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P2,YES,PASS
+MBL-0035,MULTI_BRANCH_LIFECYCLE,temporary closure,recompute region,primary badge,sibling badge copying is rejected,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0036,MULTI_BRANCH_LIFECYCLE,permanent closure,recompute region,primary badge,relocation changes future local eligibility only,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MBL-0037,MULTI_BRANCH_LIFECYCLE,ownership transfer,recompute region,primary badge,closure and transfer preserve historical lineage,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0038,MULTI_BRANCH_LIFECYCLE,organization merge,recompute region,primary badge,merge/split never blindly averages or fans out,missing responses are not imputed,P3,NO,PASS
+MBL-0039,MULTI_BRANCH_LIFECYCLE,shop split,recompute region,primary badge,shop remains primary reputation subject,no second merchant free-text review exists,P3,NO,PASS
+MBL-0040,MULTI_BRANCH_LIFECYCLE,staff moved branches,recompute region,primary badge,sibling badge copying is rejected,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0041,MULTI_BRANCH_LIFECYCLE,two branches differ,retire badge,primary badge,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0042,MULTI_BRANCH_LIFECYCLE,new branch,retire badge,primary badge,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0043,MULTI_BRANCH_LIFECYCLE,shop renamed,retire badge,primary badge,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MBL-0044,MULTI_BRANCH_LIFECYCLE,shop relocated,retire badge,primary badge,shop remains primary reputation subject,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0045,MULTI_BRANCH_LIFECYCLE,temporary closure,retire badge,primary badge,sibling badge copying is rejected,customer identity is not publicly exposed,P3,YES,PASS
+MBL-0046,MULTI_BRANCH_LIFECYCLE,permanent closure,retire badge,primary badge,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MBL-0047,MULTI_BRANCH_LIFECYCLE,ownership transfer,retire badge,primary badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0048,MULTI_BRANCH_LIFECYCLE,organization merge,retire badge,primary badge,merge/split never blindly averages or fans out,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0049,MULTI_BRANCH_LIFECYCLE,shop split,retire badge,primary badge,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0050,MULTI_BRANCH_LIFECYCLE,staff moved branches,retire badge,primary badge,sibling badge copying is rejected,server-authoritative verified evidence is required,P1,NO,PASS
+MBL-0051,MULTI_BRANCH_LIFECYCLE,two branches differ,preserve history,primary badge,relocation changes future local eligibility only,missing responses are not imputed,P3,NO,PASS
+MBL-0052,MULTI_BRANCH_LIFECYCLE,new branch,preserve history,primary badge,merge/split never blindly averages or fans out,no second merchant free-text review exists,P2,NO,PASS
+MBL-0053,MULTI_BRANCH_LIFECYCLE,shop renamed,preserve history,primary badge,shop remains primary reputation subject,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0054,MULTI_BRANCH_LIFECYCLE,shop relocated,preserve history,primary badge,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0055,MULTI_BRANCH_LIFECYCLE,temporary closure,preserve history,primary badge,relocation changes future local eligibility only,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0056,MULTI_BRANCH_LIFECYCLE,permanent closure,preserve history,primary badge,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,YES,PASS
+MBL-0057,MULTI_BRANCH_LIFECYCLE,ownership transfer,preserve history,primary badge,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P1,NO,PASS
+MBL-0058,MULTI_BRANCH_LIFECYCLE,organization merge,preserve history,primary badge,shop remains primary reputation subject,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0059,MULTI_BRANCH_LIFECYCLE,shop split,preserve history,primary badge,sibling badge copying is rejected,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MBL-0060,MULTI_BRANCH_LIFECYCLE,staff moved branches,preserve history,primary badge,relocation changes future local eligibility only,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0061,MULTI_BRANCH_LIFECYCLE,two branches differ,segment ownership,primary badge,closure and transfer preserve historical lineage,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0062,MULTI_BRANCH_LIFECYCLE,new branch,segment ownership,primary badge,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0063,MULTI_BRANCH_LIFECYCLE,shop renamed,segment ownership,primary badge,shop remains primary reputation subject,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0064,MULTI_BRANCH_LIFECYCLE,shop relocated,segment ownership,primary badge,sibling badge copying is rejected,missing responses are not imputed,P1,NO,PASS
+MBL-0065,MULTI_BRANCH_LIFECYCLE,temporary closure,segment ownership,primary badge,relocation changes future local eligibility only,no second merchant free-text review exists,P3,NO,PASS
+MBL-0066,MULTI_BRANCH_LIFECYCLE,permanent closure,segment ownership,primary badge,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0067,MULTI_BRANCH_LIFECYCLE,ownership transfer,segment ownership,primary badge,merge/split never blindly averages or fans out,missing responses are not imputed,P2,YES,PASS
+MBL-0068,MULTI_BRANCH_LIFECYCLE,organization merge,segment ownership,primary badge,shop remains primary reputation subject,no second merchant free-text review exists,P3,NO,PASS
+MBL-0069,MULTI_BRANCH_LIFECYCLE,shop split,segment ownership,primary badge,relocation changes future local eligibility only,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0070,MULTI_BRANCH_LIFECYCLE,staff moved branches,segment ownership,primary badge,closure and transfer preserve historical lineage,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0071,MULTI_BRANCH_LIFECYCLE,two branches differ,merge evidence,primary badge,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P1,NO,PASS
+MBL-0072,MULTI_BRANCH_LIFECYCLE,new branch,merge evidence,primary badge,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0073,MULTI_BRANCH_LIFECYCLE,shop renamed,merge evidence,primary badge,sibling badge copying is rejected,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0074,MULTI_BRANCH_LIFECYCLE,shop relocated,merge evidence,primary badge,relocation changes future local eligibility only,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0075,MULTI_BRANCH_LIFECYCLE,temporary closure,merge evidence,primary badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0076,MULTI_BRANCH_LIFECYCLE,permanent closure,merge evidence,primary badge,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0077,MULTI_BRANCH_LIFECYCLE,ownership transfer,merge evidence,primary badge,shop remains primary reputation subject,missing responses are not imputed,P3,NO,PASS
+MBL-0078,MULTI_BRANCH_LIFECYCLE,organization merge,merge evidence,primary badge,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+MBL-0079,MULTI_BRANCH_LIFECYCLE,shop split,merge evidence,primary badge,relocation changes future local eligibility only,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0080,MULTI_BRANCH_LIFECYCLE,staff moved branches,merge evidence,primary badge,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0081,MULTI_BRANCH_LIFECYCLE,two branches differ,fan out evidence,primary badge,merge/split never blindly averages or fans out,no second merchant free-text review exists,P3,NO,PASS
+MBL-0082,MULTI_BRANCH_LIFECYCLE,new branch,fan out evidence,primary badge,shop remains primary reputation subject,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0083,MULTI_BRANCH_LIFECYCLE,shop renamed,fan out evidence,primary badge,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0084,MULTI_BRANCH_LIFECYCLE,shop relocated,fan out evidence,primary badge,relocation changes future local eligibility only,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0085,MULTI_BRANCH_LIFECYCLE,temporary closure,fan out evidence,primary badge,closure and transfer preserve historical lineage,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MBL-0086,MULTI_BRANCH_LIFECYCLE,permanent closure,fan out evidence,primary badge,shop remains primary reputation subject,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0087,MULTI_BRANCH_LIFECYCLE,ownership transfer,fan out evidence,primary badge,sibling badge copying is rejected,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0088,MULTI_BRANCH_LIFECYCLE,organization merge,fan out evidence,primary badge,relocation changes future local eligibility only,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MBL-0089,MULTI_BRANCH_LIFECYCLE,shop split,fan out evidence,primary badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,YES,PASS
+MBL-0090,MULTI_BRANCH_LIFECYCLE,staff moved branches,fan out evidence,primary badge,merge/split never blindly averages or fans out,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0091,MULTI_BRANCH_LIFECYCLE,two branches differ,render organization page,primary badge,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0092,MULTI_BRANCH_LIFECYCLE,new branch,render organization page,primary badge,sibling badge copying is rejected,server-authoritative verified evidence is required,P1,NO,PASS
+MBL-0093,MULTI_BRANCH_LIFECYCLE,shop renamed,render organization page,primary badge,relocation changes future local eligibility only,missing responses are not imputed,P3,NO,PASS
+MBL-0094,MULTI_BRANCH_LIFECYCLE,shop relocated,render organization page,primary badge,closure and transfer preserve historical lineage,no second merchant free-text review exists,P2,NO,PASS
+MBL-0095,MULTI_BRANCH_LIFECYCLE,temporary closure,render organization page,primary badge,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0096,MULTI_BRANCH_LIFECYCLE,permanent closure,render organization page,primary badge,shop remains primary reputation subject,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0097,MULTI_BRANCH_LIFECYCLE,ownership transfer,render organization page,primary badge,sibling badge copying is rejected,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0098,MULTI_BRANCH_LIFECYCLE,organization merge,render organization page,primary badge,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0099,MULTI_BRANCH_LIFECYCLE,shop split,render organization page,primary badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P1,NO,PASS
+MBL-0100,MULTI_BRANCH_LIFECYCLE,staff moved branches,render organization page,primary badge,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P2,YES,PASS
+MBL-0101,MULTI_BRANCH_LIFECYCLE,two branches differ,evaluate shop badge,composite badge,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0102,MULTI_BRANCH_LIFECYCLE,new branch,evaluate shop badge,composite badge,sibling badge copying is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0103,MULTI_BRANCH_LIFECYCLE,shop renamed,evaluate shop badge,composite badge,closure and transfer preserve historical lineage,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0104,MULTI_BRANCH_LIFECYCLE,shop relocated,evaluate shop badge,composite badge,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0105,MULTI_BRANCH_LIFECYCLE,temporary closure,evaluate shop badge,composite badge,shop remains primary reputation subject,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0106,MULTI_BRANCH_LIFECYCLE,permanent closure,evaluate shop badge,composite badge,sibling badge copying is rejected,missing responses are not imputed,P1,NO,PASS
+MBL-0107,MULTI_BRANCH_LIFECYCLE,ownership transfer,evaluate shop badge,composite badge,relocation changes future local eligibility only,no second merchant free-text review exists,P3,NO,PASS
+MBL-0108,MULTI_BRANCH_LIFECYCLE,organization merge,evaluate shop badge,composite badge,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0109,MULTI_BRANCH_LIFECYCLE,shop split,evaluate shop badge,composite badge,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0110,MULTI_BRANCH_LIFECYCLE,staff moved branches,evaluate shop badge,composite badge,shop remains primary reputation subject,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0111,MULTI_BRANCH_LIFECYCLE,two branches differ,request organization roll-up,composite badge,sibling badge copying is rejected,product and shop aggregates remain separate,P3,YES,PASS
+MBL-0112,MULTI_BRANCH_LIFECYCLE,new branch,request organization roll-up,composite badge,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0113,MULTI_BRANCH_LIFECYCLE,shop renamed,request organization roll-up,composite badge,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P1,NO,PASS
+MBL-0114,MULTI_BRANCH_LIFECYCLE,shop relocated,request organization roll-up,composite badge,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0115,MULTI_BRANCH_LIFECYCLE,temporary closure,request organization roll-up,composite badge,shop remains primary reputation subject,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0116,MULTI_BRANCH_LIFECYCLE,permanent closure,request organization roll-up,composite badge,sibling badge copying is rejected,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0117,MULTI_BRANCH_LIFECYCLE,ownership transfer,request organization roll-up,composite badge,relocation changes future local eligibility only,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MBL-0118,MULTI_BRANCH_LIFECYCLE,organization merge,request organization roll-up,composite badge,closure and transfer preserve historical lineage,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0119,MULTI_BRANCH_LIFECYCLE,shop split,request organization roll-up,composite badge,merge/split never blindly averages or fans out,missing responses are not imputed,P3,NO,PASS
+MBL-0120,MULTI_BRANCH_LIFECYCLE,staff moved branches,request organization roll-up,composite badge,sibling badge copying is rejected,no second merchant free-text review exists,P1,NO,PASS
+MBL-0121,MULTI_BRANCH_LIFECYCLE,two branches differ,copy sibling badge,composite badge,relocation changes future local eligibility only,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0122,MULTI_BRANCH_LIFECYCLE,new branch,copy sibling badge,composite badge,closure and transfer preserve historical lineage,missing responses are not imputed,P3,YES,PASS
+MBL-0123,MULTI_BRANCH_LIFECYCLE,shop renamed,copy sibling badge,composite badge,merge/split never blindly averages or fans out,no second merchant free-text review exists,P3,NO,PASS
+MBL-0124,MULTI_BRANCH_LIFECYCLE,shop relocated,copy sibling badge,composite badge,shop remains primary reputation subject,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0125,MULTI_BRANCH_LIFECYCLE,temporary closure,copy sibling badge,composite badge,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0126,MULTI_BRANCH_LIFECYCLE,permanent closure,copy sibling badge,composite badge,relocation changes future local eligibility only,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0127,MULTI_BRANCH_LIFECYCLE,ownership transfer,copy sibling badge,composite badge,closure and transfer preserve historical lineage,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MBL-0128,MULTI_BRANCH_LIFECYCLE,organization merge,copy sibling badge,composite badge,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0129,MULTI_BRANCH_LIFECYCLE,shop split,copy sibling badge,composite badge,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0130,MULTI_BRANCH_LIFECYCLE,staff moved branches,copy sibling badge,composite badge,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0131,MULTI_BRANCH_LIFECYCLE,two branches differ,recompute region,composite badge,relocation changes future local eligibility only,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0132,MULTI_BRANCH_LIFECYCLE,new branch,recompute region,composite badge,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0133,MULTI_BRANCH_LIFECYCLE,shop renamed,recompute region,composite badge,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MBL-0134,MULTI_BRANCH_LIFECYCLE,shop relocated,recompute region,composite badge,shop remains primary reputation subject,server-authoritative verified evidence is required,P1,NO,PASS
+MBL-0135,MULTI_BRANCH_LIFECYCLE,temporary closure,recompute region,composite badge,sibling badge copying is rejected,missing responses are not imputed,P3,NO,PASS
+MBL-0136,MULTI_BRANCH_LIFECYCLE,permanent closure,recompute region,composite badge,relocation changes future local eligibility only,no second merchant free-text review exists,P2,NO,PASS
+MBL-0137,MULTI_BRANCH_LIFECYCLE,ownership transfer,recompute region,composite badge,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0138,MULTI_BRANCH_LIFECYCLE,organization merge,recompute region,composite badge,shop remains primary reputation subject,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0139,MULTI_BRANCH_LIFECYCLE,shop split,recompute region,composite badge,sibling badge copying is rejected,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0140,MULTI_BRANCH_LIFECYCLE,staff moved branches,recompute region,composite badge,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0141,MULTI_BRANCH_LIFECYCLE,two branches differ,retire badge,composite badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P1,NO,PASS
+MBL-0142,MULTI_BRANCH_LIFECYCLE,new branch,retire badge,composite badge,merge/split never blindly averages or fans out,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0143,MULTI_BRANCH_LIFECYCLE,shop renamed,retire badge,composite badge,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0144,MULTI_BRANCH_LIFECYCLE,shop relocated,retire badge,composite badge,sibling badge copying is rejected,quantity and basket value have zero vote weight,P3,YES,PASS
+MBL-0145,MULTI_BRANCH_LIFECYCLE,temporary closure,retire badge,composite badge,relocation changes future local eligibility only,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0146,MULTI_BRANCH_LIFECYCLE,permanent closure,retire badge,composite badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MBL-0147,MULTI_BRANCH_LIFECYCLE,ownership transfer,retire badge,composite badge,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0148,MULTI_BRANCH_LIFECYCLE,organization merge,retire badge,composite badge,shop remains primary reputation subject,missing responses are not imputed,P1,NO,PASS
+MBL-0149,MULTI_BRANCH_LIFECYCLE,shop split,retire badge,composite badge,sibling badge copying is rejected,no second merchant free-text review exists,P3,NO,PASS
+MBL-0150,MULTI_BRANCH_LIFECYCLE,staff moved branches,retire badge,composite badge,relocation changes future local eligibility only,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0151,MULTI_BRANCH_LIFECYCLE,two branches differ,preserve history,composite badge,closure and transfer preserve historical lineage,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0152,MULTI_BRANCH_LIFECYCLE,new branch,preserve history,composite badge,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0153,MULTI_BRANCH_LIFECYCLE,shop renamed,preserve history,composite badge,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0154,MULTI_BRANCH_LIFECYCLE,shop relocated,preserve history,composite badge,relocation changes future local eligibility only,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0155,MULTI_BRANCH_LIFECYCLE,temporary closure,preserve history,composite badge,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P1,YES,PASS
+MBL-0156,MULTI_BRANCH_LIFECYCLE,permanent closure,preserve history,composite badge,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0157,MULTI_BRANCH_LIFECYCLE,ownership transfer,preserve history,composite badge,shop remains primary reputation subject,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0158,MULTI_BRANCH_LIFECYCLE,organization merge,preserve history,composite badge,sibling badge copying is rejected,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0159,MULTI_BRANCH_LIFECYCLE,shop split,preserve history,composite badge,relocation changes future local eligibility only,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0160,MULTI_BRANCH_LIFECYCLE,staff moved branches,preserve history,composite badge,closure and transfer preserve historical lineage,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0161,MULTI_BRANCH_LIFECYCLE,two branches differ,segment ownership,composite badge,merge/split never blindly averages or fans out,missing responses are not imputed,P3,NO,PASS
+MBL-0162,MULTI_BRANCH_LIFECYCLE,new branch,segment ownership,composite badge,shop remains primary reputation subject,no second merchant free-text review exists,P1,NO,PASS
+MBL-0163,MULTI_BRANCH_LIFECYCLE,shop renamed,segment ownership,composite badge,sibling badge copying is rejected,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0164,MULTI_BRANCH_LIFECYCLE,shop relocated,segment ownership,composite badge,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0165,MULTI_BRANCH_LIFECYCLE,temporary closure,segment ownership,composite badge,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0166,MULTI_BRANCH_LIFECYCLE,permanent closure,segment ownership,composite badge,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P2,YES,PASS
+MBL-0167,MULTI_BRANCH_LIFECYCLE,ownership transfer,segment ownership,composite badge,shop remains primary reputation subject,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0168,MULTI_BRANCH_LIFECYCLE,organization merge,segment ownership,composite badge,sibling badge copying is rejected,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0169,MULTI_BRANCH_LIFECYCLE,shop split,segment ownership,composite badge,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MBL-0170,MULTI_BRANCH_LIFECYCLE,staff moved branches,segment ownership,composite badge,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0171,MULTI_BRANCH_LIFECYCLE,two branches differ,merge evidence,composite badge,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0172,MULTI_BRANCH_LIFECYCLE,new branch,merge evidence,composite badge,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0173,MULTI_BRANCH_LIFECYCLE,shop renamed,merge evidence,composite badge,relocation changes future local eligibility only,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0174,MULTI_BRANCH_LIFECYCLE,shop relocated,merge evidence,composite badge,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0175,MULTI_BRANCH_LIFECYCLE,temporary closure,merge evidence,composite badge,merge/split never blindly averages or fans out,no second merchant free-text review exists,P0,NO,PASS
+MBL-0176,MULTI_BRANCH_LIFECYCLE,permanent closure,merge evidence,composite badge,shop remains primary reputation subject,product and shop aggregates remain separate,P1,NO,PASS
+MBL-0177,MULTI_BRANCH_LIFECYCLE,ownership transfer,merge evidence,composite badge,sibling badge copying is rejected,missing responses are not imputed,P3,YES,PASS
+MBL-0178,MULTI_BRANCH_LIFECYCLE,organization merge,merge evidence,composite badge,relocation changes future local eligibility only,no second merchant free-text review exists,P2,NO,PASS
+MBL-0179,MULTI_BRANCH_LIFECYCLE,shop split,merge evidence,composite badge,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0180,MULTI_BRANCH_LIFECYCLE,staff moved branches,merge evidence,composite badge,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0181,MULTI_BRANCH_LIFECYCLE,two branches differ,fan out evidence,composite badge,shop remains primary reputation subject,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0182,MULTI_BRANCH_LIFECYCLE,new branch,fan out evidence,composite badge,sibling badge copying is rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0183,MULTI_BRANCH_LIFECYCLE,shop renamed,fan out evidence,composite badge,relocation changes future local eligibility only,quantity and basket value have zero vote weight,P1,NO,PASS
+MBL-0184,MULTI_BRANCH_LIFECYCLE,shop relocated,fan out evidence,composite badge,closure and transfer preserve historical lineage,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0185,MULTI_BRANCH_LIFECYCLE,temporary closure,fan out evidence,composite badge,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0186,MULTI_BRANCH_LIFECYCLE,permanent closure,fan out evidence,composite badge,shop remains primary reputation subject,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0187,MULTI_BRANCH_LIFECYCLE,ownership transfer,fan out evidence,composite badge,sibling badge copying is rejected,missing responses are not imputed,P2,NO,PASS
+MBL-0188,MULTI_BRANCH_LIFECYCLE,organization merge,fan out evidence,composite badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MBL-0189,MULTI_BRANCH_LIFECYCLE,shop split,fan out evidence,composite badge,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0190,MULTI_BRANCH_LIFECYCLE,staff moved branches,fan out evidence,composite badge,shop remains primary reputation subject,missing responses are not imputed,P1,NO,PASS
+MBL-0191,MULTI_BRANCH_LIFECYCLE,two branches differ,render organization page,composite badge,sibling badge copying is rejected,no second merchant free-text review exists,P3,NO,PASS
+MBL-0192,MULTI_BRANCH_LIFECYCLE,new branch,render organization page,composite badge,relocation changes future local eligibility only,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0193,MULTI_BRANCH_LIFECYCLE,shop renamed,render organization page,composite badge,closure and transfer preserve historical lineage,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0194,MULTI_BRANCH_LIFECYCLE,shop relocated,render organization page,composite badge,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0195,MULTI_BRANCH_LIFECYCLE,temporary closure,render organization page,composite badge,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0196,MULTI_BRANCH_LIFECYCLE,permanent closure,render organization page,composite badge,sibling badge copying is rejected,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0197,MULTI_BRANCH_LIFECYCLE,ownership transfer,render organization page,composite badge,relocation changes future local eligibility only,derived state is idempotent and versioned,P1,NO,PASS
+MBL-0198,MULTI_BRANCH_LIFECYCLE,organization merge,render organization page,composite badge,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0199,MULTI_BRANCH_LIFECYCLE,shop split,render organization page,composite badge,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P2,YES,PASS
+MBL-0200,MULTI_BRANCH_LIFECYCLE,staff moved branches,render organization page,composite badge,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0201,MULTI_BRANCH_LIFECYCLE,two branches differ,evaluate shop badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0202,MULTI_BRANCH_LIFECYCLE,new branch,evaluate shop badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0203,MULTI_BRANCH_LIFECYCLE,shop renamed,evaluate shop badge,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0204,MULTI_BRANCH_LIFECYCLE,shop relocated,evaluate shop badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,no second merchant free-text review exists,P0,NO,PASS
+MBL-0205,MULTI_BRANCH_LIFECYCLE,temporary closure,evaluate shop badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0206,MULTI_BRANCH_LIFECYCLE,permanent closure,evaluate shop badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0207,MULTI_BRANCH_LIFECYCLE,ownership transfer,evaluate shop badge,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0208,MULTI_BRANCH_LIFECYCLE,organization merge,evaluate shop badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MBL-0209,MULTI_BRANCH_LIFECYCLE,shop split,evaluate shop badge,Mahallenin Yıldızı candidate,shop remains primary reputation subject,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0210,MULTI_BRANCH_LIFECYCLE,staff moved branches,evaluate shop badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,customer identity is not publicly exposed,P3,YES,PASS
+MBL-0211,MULTI_BRANCH_LIFECYCLE,two branches differ,request organization roll-up,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MBL-0212,MULTI_BRANCH_LIFECYCLE,new branch,request organization roll-up,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0213,MULTI_BRANCH_LIFECYCLE,shop renamed,request organization roll-up,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0214,MULTI_BRANCH_LIFECYCLE,shop relocated,request organization roll-up,Mahallenin Yıldızı candidate,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0215,MULTI_BRANCH_LIFECYCLE,temporary closure,request organization roll-up,Mahallenin Yıldızı candidate,sibling badge copying is rejected,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0216,MULTI_BRANCH_LIFECYCLE,permanent closure,request organization roll-up,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,missing responses are not imputed,P3,NO,PASS
+MBL-0217,MULTI_BRANCH_LIFECYCLE,ownership transfer,request organization roll-up,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,no second merchant free-text review exists,P2,NO,PASS
+MBL-0218,MULTI_BRANCH_LIFECYCLE,organization merge,request organization roll-up,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P1,NO,PASS
+MBL-0219,MULTI_BRANCH_LIFECYCLE,shop split,request organization roll-up,Mahallenin Yıldızı candidate,shop remains primary reputation subject,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0220,MULTI_BRANCH_LIFECYCLE,staff moved branches,request organization roll-up,Mahallenin Yıldızı candidate,sibling badge copying is rejected,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0221,MULTI_BRANCH_LIFECYCLE,two branches differ,copy sibling badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,product and shop aggregates remain separate,P3,YES,PASS
+MBL-0222,MULTI_BRANCH_LIFECYCLE,new branch,copy sibling badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0223,MULTI_BRANCH_LIFECYCLE,shop renamed,copy sibling badge,Mahallenin Yıldızı candidate,shop remains primary reputation subject,customer identity is not publicly exposed,P2,NO,PASS
+MBL-0224,MULTI_BRANCH_LIFECYCLE,shop relocated,copy sibling badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0225,MULTI_BRANCH_LIFECYCLE,temporary closure,copy sibling badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,quantity and basket value have zero vote weight,P1,NO,PASS
+MBL-0226,MULTI_BRANCH_LIFECYCLE,permanent closure,copy sibling badge,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0227,MULTI_BRANCH_LIFECYCLE,ownership transfer,copy sibling badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0228,MULTI_BRANCH_LIFECYCLE,organization merge,copy sibling badge,Mahallenin Yıldızı candidate,shop remains primary reputation subject,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0229,MULTI_BRANCH_LIFECYCLE,shop split,copy sibling badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,missing responses are not imputed,P2,NO,PASS
+MBL-0230,MULTI_BRANCH_LIFECYCLE,staff moved branches,copy sibling badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,no second merchant free-text review exists,P3,NO,PASS
+MBL-0231,MULTI_BRANCH_LIFECYCLE,two branches differ,recompute region,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0232,MULTI_BRANCH_LIFECYCLE,new branch,recompute region,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,missing responses are not imputed,P1,YES,PASS
+MBL-0233,MULTI_BRANCH_LIFECYCLE,shop renamed,recompute region,Mahallenin Yıldızı candidate,shop remains primary reputation subject,no second merchant free-text review exists,P0,NO,PASS
+MBL-0234,MULTI_BRANCH_LIFECYCLE,shop relocated,recompute region,Mahallenin Yıldızı candidate,sibling badge copying is rejected,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0235,MULTI_BRANCH_LIFECYCLE,temporary closure,recompute region,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0236,MULTI_BRANCH_LIFECYCLE,permanent closure,recompute region,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0237,MULTI_BRANCH_LIFECYCLE,ownership transfer,recompute region,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0238,MULTI_BRANCH_LIFECYCLE,organization merge,recompute region,Mahallenin Yıldızı candidate,shop remains primary reputation subject,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0239,MULTI_BRANCH_LIFECYCLE,shop split,recompute region,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,derived state is idempotent and versioned,P1,NO,PASS
+MBL-0240,MULTI_BRANCH_LIFECYCLE,staff moved branches,recompute region,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0241,MULTI_BRANCH_LIFECYCLE,two branches differ,retire badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0242,MULTI_BRANCH_LIFECYCLE,new branch,retire badge,Mahallenin Yıldızı candidate,shop remains primary reputation subject,missing responses are not imputed,P3,NO,PASS
+MBL-0243,MULTI_BRANCH_LIFECYCLE,shop renamed,retire badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MBL-0244,MULTI_BRANCH_LIFECYCLE,shop relocated,retire badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0245,MULTI_BRANCH_LIFECYCLE,temporary closure,retire badge,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0246,MULTI_BRANCH_LIFECYCLE,permanent closure,retire badge,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,no second merchant free-text review exists,P1,NO,PASS
+MBL-0247,MULTI_BRANCH_LIFECYCLE,ownership transfer,retire badge,Mahallenin Yıldızı candidate,shop remains primary reputation subject,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0248,MULTI_BRANCH_LIFECYCLE,organization merge,retire badge,Mahallenin Yıldızı candidate,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0249,MULTI_BRANCH_LIFECYCLE,shop split,retire badge,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0250,MULTI_BRANCH_LIFECYCLE,staff moved branches,retire badge,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MBL-0251,MULTI_BRANCH_LIFECYCLE,two branches differ,preserve history,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0252,MULTI_BRANCH_LIFECYCLE,new branch,preserve history,Mahallenin Yıldızı candidate,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0253,MULTI_BRANCH_LIFECYCLE,shop renamed,preserve history,Mahallenin Yıldızı candidate,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MBL-0254,MULTI_BRANCH_LIFECYCLE,shop relocated,preserve history,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,quantity and basket value have zero vote weight,P3,YES,PASS
+MBL-0255,MULTI_BRANCH_LIFECYCLE,temporary closure,preserve history,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0256,MULTI_BRANCH_LIFECYCLE,permanent closure,preserve history,Mahallenin Yıldızı candidate,shop remains primary reputation subject,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MBL-0257,MULTI_BRANCH_LIFECYCLE,ownership transfer,preserve history,Mahallenin Yıldızı candidate,sibling badge copying is rejected,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0258,MULTI_BRANCH_LIFECYCLE,organization merge,preserve history,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,missing responses are not imputed,P3,NO,PASS
+MBL-0259,MULTI_BRANCH_LIFECYCLE,shop split,preserve history,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,no second merchant free-text review exists,P2,NO,PASS
+MBL-0260,MULTI_BRANCH_LIFECYCLE,staff moved branches,preserve history,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P1,NO,PASS
+MBL-0261,MULTI_BRANCH_LIFECYCLE,two branches differ,segment ownership,Mahallenin Yıldızı candidate,shop remains primary reputation subject,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0262,MULTI_BRANCH_LIFECYCLE,new branch,segment ownership,Mahallenin Yıldızı candidate,sibling badge copying is rejected,customer identity is not publicly exposed,P0,NO,PASS
+MBL-0263,MULTI_BRANCH_LIFECYCLE,shop renamed,segment ownership,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0264,MULTI_BRANCH_LIFECYCLE,shop relocated,segment ownership,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0265,MULTI_BRANCH_LIFECYCLE,temporary closure,segment ownership,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,customer identity is not publicly exposed,P2,YES,PASS
+MBL-0266,MULTI_BRANCH_LIFECYCLE,permanent closure,segment ownership,Mahallenin Yıldızı candidate,shop remains primary reputation subject,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0267,MULTI_BRANCH_LIFECYCLE,ownership transfer,segment ownership,Mahallenin Yıldızı candidate,sibling badge copying is rejected,quantity and basket value have zero vote weight,P1,NO,PASS
+MBL-0268,MULTI_BRANCH_LIFECYCLE,organization merge,segment ownership,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,derived state is idempotent and versioned,P2,NO,PASS
+MBL-0269,MULTI_BRANCH_LIFECYCLE,shop split,segment ownership,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0270,MULTI_BRANCH_LIFECYCLE,staff moved branches,segment ownership,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0271,MULTI_BRANCH_LIFECYCLE,two branches differ,merge evidence,Mahallenin Yıldızı candidate,shop remains primary reputation subject,missing responses are not imputed,P2,NO,PASS
+MBL-0272,MULTI_BRANCH_LIFECYCLE,new branch,merge evidence,Mahallenin Yıldızı candidate,sibling badge copying is rejected,no second merchant free-text review exists,P3,NO,PASS
+MBL-0273,MULTI_BRANCH_LIFECYCLE,shop renamed,merge evidence,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,product and shop aggregates remain separate,P3,NO,PASS
+MBL-0274,MULTI_BRANCH_LIFECYCLE,shop relocated,merge evidence,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,ads and rewards have zero reputation weight,P1,NO,PASS
+MBL-0275,MULTI_BRANCH_LIFECYCLE,temporary closure,merge evidence,Mahallenin Yıldızı candidate,shop remains primary reputation subject,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0276,MULTI_BRANCH_LIFECYCLE,permanent closure,merge evidence,Mahallenin Yıldızı candidate,sibling badge copying is rejected,product and shop aggregates remain separate,P3,YES,PASS
+MBL-0277,MULTI_BRANCH_LIFECYCLE,ownership transfer,merge evidence,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,ads and rewards have zero reputation weight,P2,NO,PASS
+MBL-0278,MULTI_BRANCH_LIFECYCLE,organization merge,merge evidence,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,customer identity is not publicly exposed,P3,NO,PASS
+MBL-0279,MULTI_BRANCH_LIFECYCLE,shop split,merge evidence,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MBL-0280,MULTI_BRANCH_LIFECYCLE,staff moved branches,merge evidence,Mahallenin Yıldızı candidate,shop remains primary reputation subject,quantity and basket value have zero vote weight,P2,NO,PASS
+MBL-0281,MULTI_BRANCH_LIFECYCLE,two branches differ,fan out evidence,Mahallenin Yıldızı candidate,sibling badge copying is rejected,derived state is idempotent and versioned,P1,NO,PASS
+MBL-0282,MULTI_BRANCH_LIFECYCLE,new branch,fan out evidence,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MBL-0283,MULTI_BRANCH_LIFECYCLE,shop renamed,fan out evidence,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,server-authoritative verified evidence is required,P2,NO,PASS
+MBL-0284,MULTI_BRANCH_LIFECYCLE,shop relocated,fan out evidence,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,missing responses are not imputed,P3,NO,PASS
+MBL-0285,MULTI_BRANCH_LIFECYCLE,temporary closure,fan out evidence,Mahallenin Yıldızı candidate,shop remains primary reputation subject,no second merchant free-text review exists,P3,NO,PASS
+MBL-0286,MULTI_BRANCH_LIFECYCLE,permanent closure,fan out evidence,Mahallenin Yıldızı candidate,sibling badge copying is rejected,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0287,MULTI_BRANCH_LIFECYCLE,ownership transfer,fan out evidence,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,missing responses are not imputed,P3,YES,PASS
+MBL-0288,MULTI_BRANCH_LIFECYCLE,organization merge,fan out evidence,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,no second merchant free-text review exists,P1,NO,PASS
+MBL-0289,MULTI_BRANCH_LIFECYCLE,shop split,fan out evidence,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,product and shop aggregates remain separate,P2,NO,PASS
+MBL-0290,MULTI_BRANCH_LIFECYCLE,staff moved branches,fan out evidence,Mahallenin Yıldızı candidate,sibling badge copying is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+MBL-0291,MULTI_BRANCH_LIFECYCLE,two branches differ,render organization page,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,customer identity is not publicly exposed,P0,NO,PASS
+MBL-0292,MULTI_BRANCH_LIFECYCLE,new branch,render organization page,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MBL-0293,MULTI_BRANCH_LIFECYCLE,shop renamed,render organization page,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,quantity and basket value have zero vote weight,P3,NO,PASS
+MBL-0294,MULTI_BRANCH_LIFECYCLE,shop relocated,render organization page,Mahallenin Yıldızı candidate,shop remains primary reputation subject,derived state is idempotent and versioned,P3,NO,PASS
+MBL-0295,MULTI_BRANCH_LIFECYCLE,temporary closure,render organization page,Mahallenin Yıldızı candidate,sibling badge copying is rejected,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MBL-0296,MULTI_BRANCH_LIFECYCLE,permanent closure,render organization page,Mahallenin Yıldızı candidate,relocation changes future local eligibility only,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0297,MULTI_BRANCH_LIFECYCLE,ownership transfer,render organization page,Mahallenin Yıldızı candidate,closure and transfer preserve historical lineage,missing responses are not imputed,P3,NO,PASS
+MBL-0298,MULTI_BRANCH_LIFECYCLE,organization merge,render organization page,Mahallenin Yıldızı candidate,merge/split never blindly averages or fans out,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MBL-0299,MULTI_BRANCH_LIFECYCLE,shop split,render organization page,Mahallenin Yıldızı candidate,shop remains primary reputation subject,server-authoritative verified evidence is required,P3,NO,PASS
+MBL-0300,MULTI_BRANCH_LIFECYCLE,staff moved branches,render organization page,Mahallenin Yıldızı candidate,sibling badge copying is rejected,missing responses are not imputed,P3,NO,PASS

@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+NMF-0001,NEW_MERCHANT_FAIRNESS,zero responses,render search card,pilot cohort,new shop is not assigned a bad score,product and shop aggregates remain separate,P0,YES,PASS
+NMF-0002,NEW_MERCHANT_FAIRNESS,one positive response,render search card,pilot cohort,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0003,NEW_MERCHANT_FAIRNESS,two negative responses,render search card,pilot cohort,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0004,NEW_MERCHANT_FAIRNESS,low-volume shop,render search card,pilot cohort,prior uncertainty remains visible,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+NMF-0005,NEW_MERCHANT_FAIRNESS,new branch of old organization,render search card,pilot cohort,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0006,NEW_MERCHANT_FAIRNESS,new owner,render search card,pilot cohort,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0007,NEW_MERCHANT_FAIRNESS,no badge,render search card,pilot cohort,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0008,NEW_MERCHANT_FAIRNESS,high ad spend,render search card,pilot cohort,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P1,NO,PASS
+NMF-0009,NEW_MERCHANT_FAIRNESS,reward participant,render search card,pilot cohort,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0010,NEW_MERCHANT_FAIRNESS,rapid early response cluster,render search card,pilot cohort,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P2,NO,PASS
+NMF-0011,NEW_MERCHANT_FAIRNESS,zero responses,evaluate badge,pilot cohort,new shop is not assigned a bad score,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0012,NEW_MERCHANT_FAIRNESS,one positive response,evaluate badge,pilot cohort,badge is not an organic discovery prerequisite,missing responses are not imputed,P3,YES,PASS
+NMF-0013,NEW_MERCHANT_FAIRNESS,two negative responses,evaluate badge,pilot cohort,ads/rewards cannot replace evidence,no second merchant free-text review exists,P2,NO,PASS
+NMF-0014,NEW_MERCHANT_FAIRNESS,low-volume shop,evaluate badge,pilot cohort,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0015,NEW_MERCHANT_FAIRNESS,new branch of old organization,evaluate badge,pilot cohort,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P1,NO,PASS
+NMF-0016,NEW_MERCHANT_FAIRNESS,new owner,evaluate badge,pilot cohort,new shop is not assigned a bad score,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0017,NEW_MERCHANT_FAIRNESS,no badge,evaluate badge,pilot cohort,badge is not an organic discovery prerequisite,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0018,NEW_MERCHANT_FAIRNESS,high ad spend,evaluate badge,pilot cohort,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0019,NEW_MERCHANT_FAIRNESS,reward participant,evaluate badge,pilot cohort,rapid small cluster cannot earn immediate badge,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0020,NEW_MERCHANT_FAIRNESS,rapid early response cluster,evaluate badge,pilot cohort,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0021,NEW_MERCHANT_FAIRNESS,zero responses,compare to established shop,pilot cohort,badge is not an organic discovery prerequisite,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0022,NEW_MERCHANT_FAIRNESS,one positive response,compare to established shop,pilot cohort,ads/rewards cannot replace evidence,missing responses are not imputed,P1,NO,PASS
+NMF-0023,NEW_MERCHANT_FAIRNESS,two negative responses,compare to established shop,pilot cohort,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+NMF-0024,NEW_MERCHANT_FAIRNESS,low-volume shop,compare to established shop,pilot cohort,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0025,NEW_MERCHANT_FAIRNESS,new branch of old organization,compare to established shop,pilot cohort,new shop is not assigned a bad score,missing responses are not imputed,P2,NO,PASS
+NMF-0026,NEW_MERCHANT_FAIRNESS,new owner,compare to established shop,pilot cohort,badge is not an organic discovery prerequisite,no second merchant free-text review exists,P3,NO,PASS
+NMF-0027,NEW_MERCHANT_FAIRNESS,no badge,compare to established shop,pilot cohort,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0028,NEW_MERCHANT_FAIRNESS,high ad spend,compare to established shop,pilot cohort,prior uncertainty remains visible,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0029,NEW_MERCHANT_FAIRNESS,reward participant,compare to established shop,pilot cohort,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P1,NO,PASS
+NMF-0030,NEW_MERCHANT_FAIRNESS,rapid early response cluster,compare to established shop,pilot cohort,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+NMF-0031,NEW_MERCHANT_FAIRNESS,zero responses,apply prior,pilot cohort,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0032,NEW_MERCHANT_FAIRNESS,one positive response,apply prior,pilot cohort,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0033,NEW_MERCHANT_FAIRNESS,two negative responses,apply prior,pilot cohort,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0034,NEW_MERCHANT_FAIRNESS,low-volume shop,apply prior,pilot cohort,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P2,YES,PASS
+NMF-0035,NEW_MERCHANT_FAIRNESS,new branch of old organization,apply prior,pilot cohort,badge is not an organic discovery prerequisite,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0036,NEW_MERCHANT_FAIRNESS,new owner,apply prior,pilot cohort,ads/rewards cannot replace evidence,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+NMF-0037,NEW_MERCHANT_FAIRNESS,no badge,apply prior,pilot cohort,prior uncertainty remains visible,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0038,NEW_MERCHANT_FAIRNESS,high ad spend,apply prior,pilot cohort,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P3,NO,PASS
+NMF-0039,NEW_MERCHANT_FAIRNESS,reward participant,apply prior,pilot cohort,new shop is not assigned a bad score,no second merchant free-text review exists,P3,NO,PASS
+NMF-0040,NEW_MERCHANT_FAIRNESS,rapid early response cluster,apply prior,pilot cohort,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0041,NEW_MERCHANT_FAIRNESS,zero responses,reserve organic path,pilot cohort,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0042,NEW_MERCHANT_FAIRNESS,one positive response,reserve organic path,pilot cohort,prior uncertainty remains visible,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0043,NEW_MERCHANT_FAIRNESS,two negative responses,reserve organic path,pilot cohort,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+NMF-0044,NEW_MERCHANT_FAIRNESS,low-volume shop,reserve organic path,pilot cohort,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0045,NEW_MERCHANT_FAIRNESS,new branch of old organization,reserve organic path,pilot cohort,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P3,YES,PASS
+NMF-0046,NEW_MERCHANT_FAIRNESS,new owner,reserve organic path,pilot cohort,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+NMF-0047,NEW_MERCHANT_FAIRNESS,no badge,reserve organic path,pilot cohort,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0048,NEW_MERCHANT_FAIRNESS,high ad spend,reserve organic path,pilot cohort,rapid small cluster cannot earn immediate badge,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0049,NEW_MERCHANT_FAIRNESS,reward participant,reserve organic path,pilot cohort,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0050,NEW_MERCHANT_FAIRNESS,rapid early response cluster,reserve organic path,pilot cohort,badge is not an organic discovery prerequisite,server-authoritative verified evidence is required,P1,NO,PASS
+NMF-0051,NEW_MERCHANT_FAIRNESS,zero responses,show insufficient history,pilot cohort,ads/rewards cannot replace evidence,missing responses are not imputed,P3,NO,PASS
+NMF-0052,NEW_MERCHANT_FAIRNESS,one positive response,show insufficient history,pilot cohort,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P2,NO,PASS
+NMF-0053,NEW_MERCHANT_FAIRNESS,two negative responses,show insufficient history,pilot cohort,new shop is not assigned a bad score,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0054,NEW_MERCHANT_FAIRNESS,low-volume shop,show insufficient history,pilot cohort,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0055,NEW_MERCHANT_FAIRNESS,new branch of old organization,show insufficient history,pilot cohort,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0056,NEW_MERCHANT_FAIRNESS,new owner,show insufficient history,pilot cohort,prior uncertainty remains visible,product and shop aggregates remain separate,P3,YES,PASS
+NMF-0057,NEW_MERCHANT_FAIRNESS,no badge,show insufficient history,pilot cohort,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P1,NO,PASS
+NMF-0058,NEW_MERCHANT_FAIRNESS,high ad spend,show insufficient history,pilot cohort,new shop is not assigned a bad score,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0059,NEW_MERCHANT_FAIRNESS,reward participant,show insufficient history,pilot cohort,badge is not an organic discovery prerequisite,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+NMF-0060,NEW_MERCHANT_FAIRNESS,rapid early response cluster,show insufficient history,pilot cohort,ads/rewards cannot replace evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0061,NEW_MERCHANT_FAIRNESS,zero responses,filter by badge,pilot cohort,prior uncertainty remains visible,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0062,NEW_MERCHANT_FAIRNESS,one positive response,filter by badge,pilot cohort,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0063,NEW_MERCHANT_FAIRNESS,two negative responses,filter by badge,pilot cohort,new shop is not assigned a bad score,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0064,NEW_MERCHANT_FAIRNESS,low-volume shop,filter by badge,pilot cohort,badge is not an organic discovery prerequisite,missing responses are not imputed,P1,NO,PASS
+NMF-0065,NEW_MERCHANT_FAIRNESS,new branch of old organization,filter by badge,pilot cohort,ads/rewards cannot replace evidence,no second merchant free-text review exists,P3,NO,PASS
+NMF-0066,NEW_MERCHANT_FAIRNESS,new owner,filter by badge,pilot cohort,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0067,NEW_MERCHANT_FAIRNESS,no badge,filter by badge,pilot cohort,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P2,YES,PASS
+NMF-0068,NEW_MERCHANT_FAIRNESS,high ad spend,filter by badge,pilot cohort,new shop is not assigned a bad score,no second merchant free-text review exists,P3,NO,PASS
+NMF-0069,NEW_MERCHANT_FAIRNESS,reward participant,filter by badge,pilot cohort,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0070,NEW_MERCHANT_FAIRNESS,rapid early response cluster,filter by badge,pilot cohort,prior uncertainty remains visible,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0071,NEW_MERCHANT_FAIRNESS,zero responses,audit exposure,pilot cohort,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P1,NO,PASS
+NMF-0072,NEW_MERCHANT_FAIRNESS,one positive response,audit exposure,pilot cohort,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0073,NEW_MERCHANT_FAIRNESS,two negative responses,audit exposure,pilot cohort,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0074,NEW_MERCHANT_FAIRNESS,low-volume shop,audit exposure,pilot cohort,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0075,NEW_MERCHANT_FAIRNESS,new branch of old organization,audit exposure,pilot cohort,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0076,NEW_MERCHANT_FAIRNESS,new owner,audit exposure,pilot cohort,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0077,NEW_MERCHANT_FAIRNESS,no badge,audit exposure,pilot cohort,new shop is not assigned a bad score,missing responses are not imputed,P3,NO,PASS
+NMF-0078,NEW_MERCHANT_FAIRNESS,high ad spend,audit exposure,pilot cohort,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+NMF-0079,NEW_MERCHANT_FAIRNESS,reward participant,audit exposure,pilot cohort,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0080,NEW_MERCHANT_FAIRNESS,rapid early response cluster,audit exposure,pilot cohort,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0081,NEW_MERCHANT_FAIRNESS,zero responses,hold anomaly,pilot cohort,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P3,NO,PASS
+NMF-0082,NEW_MERCHANT_FAIRNESS,one positive response,hold anomaly,pilot cohort,new shop is not assigned a bad score,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0083,NEW_MERCHANT_FAIRNESS,two negative responses,hold anomaly,pilot cohort,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0084,NEW_MERCHANT_FAIRNESS,low-volume shop,hold anomaly,pilot cohort,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0085,NEW_MERCHANT_FAIRNESS,new branch of old organization,hold anomaly,pilot cohort,prior uncertainty remains visible,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+NMF-0086,NEW_MERCHANT_FAIRNESS,new owner,hold anomaly,pilot cohort,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0087,NEW_MERCHANT_FAIRNESS,no badge,hold anomaly,pilot cohort,badge is not an organic discovery prerequisite,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0088,NEW_MERCHANT_FAIRNESS,high ad spend,hold anomaly,pilot cohort,ads/rewards cannot replace evidence,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+NMF-0089,NEW_MERCHANT_FAIRNESS,reward participant,hold anomaly,pilot cohort,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,YES,PASS
+NMF-0090,NEW_MERCHANT_FAIRNESS,rapid early response cluster,hold anomaly,pilot cohort,rapid small cluster cannot earn immediate badge,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0091,NEW_MERCHANT_FAIRNESS,zero responses,request organization transfer,pilot cohort,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0092,NEW_MERCHANT_FAIRNESS,one positive response,request organization transfer,pilot cohort,badge is not an organic discovery prerequisite,server-authoritative verified evidence is required,P1,NO,PASS
+NMF-0093,NEW_MERCHANT_FAIRNESS,two negative responses,request organization transfer,pilot cohort,ads/rewards cannot replace evidence,missing responses are not imputed,P3,NO,PASS
+NMF-0094,NEW_MERCHANT_FAIRNESS,low-volume shop,request organization transfer,pilot cohort,prior uncertainty remains visible,no second merchant free-text review exists,P2,NO,PASS
+NMF-0095,NEW_MERCHANT_FAIRNESS,new branch of old organization,request organization transfer,pilot cohort,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0096,NEW_MERCHANT_FAIRNESS,new owner,request organization transfer,pilot cohort,new shop is not assigned a bad score,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0097,NEW_MERCHANT_FAIRNESS,no badge,request organization transfer,pilot cohort,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0098,NEW_MERCHANT_FAIRNESS,high ad spend,request organization transfer,pilot cohort,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0099,NEW_MERCHANT_FAIRNESS,reward participant,request organization transfer,pilot cohort,prior uncertainty remains visible,quantity and basket value have zero vote weight,P1,NO,PASS
+NMF-0100,NEW_MERCHANT_FAIRNESS,rapid early response cluster,request organization transfer,pilot cohort,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P2,YES,PASS
+NMF-0101,NEW_MERCHANT_FAIRNESS,zero responses,render search card,ordinary organic discovery,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0102,NEW_MERCHANT_FAIRNESS,one positive response,render search card,ordinary organic discovery,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0103,NEW_MERCHANT_FAIRNESS,two negative responses,render search card,ordinary organic discovery,prior uncertainty remains visible,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0104,NEW_MERCHANT_FAIRNESS,low-volume shop,render search card,ordinary organic discovery,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0105,NEW_MERCHANT_FAIRNESS,new branch of old organization,render search card,ordinary organic discovery,new shop is not assigned a bad score,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0106,NEW_MERCHANT_FAIRNESS,new owner,render search card,ordinary organic discovery,badge is not an organic discovery prerequisite,missing responses are not imputed,P1,NO,PASS
+NMF-0107,NEW_MERCHANT_FAIRNESS,no badge,render search card,ordinary organic discovery,ads/rewards cannot replace evidence,no second merchant free-text review exists,P3,NO,PASS
+NMF-0108,NEW_MERCHANT_FAIRNESS,high ad spend,render search card,ordinary organic discovery,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0109,NEW_MERCHANT_FAIRNESS,reward participant,render search card,ordinary organic discovery,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0110,NEW_MERCHANT_FAIRNESS,rapid early response cluster,render search card,ordinary organic discovery,new shop is not assigned a bad score,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0111,NEW_MERCHANT_FAIRNESS,zero responses,evaluate badge,ordinary organic discovery,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P3,YES,PASS
+NMF-0112,NEW_MERCHANT_FAIRNESS,one positive response,evaluate badge,ordinary organic discovery,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0113,NEW_MERCHANT_FAIRNESS,two negative responses,evaluate badge,ordinary organic discovery,prior uncertainty remains visible,customer identity is not publicly exposed,P1,NO,PASS
+NMF-0114,NEW_MERCHANT_FAIRNESS,low-volume shop,evaluate badge,ordinary organic discovery,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0115,NEW_MERCHANT_FAIRNESS,new branch of old organization,evaluate badge,ordinary organic discovery,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0116,NEW_MERCHANT_FAIRNESS,new owner,evaluate badge,ordinary organic discovery,badge is not an organic discovery prerequisite,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0117,NEW_MERCHANT_FAIRNESS,no badge,evaluate badge,ordinary organic discovery,ads/rewards cannot replace evidence,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+NMF-0118,NEW_MERCHANT_FAIRNESS,high ad spend,evaluate badge,ordinary organic discovery,prior uncertainty remains visible,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0119,NEW_MERCHANT_FAIRNESS,reward participant,evaluate badge,ordinary organic discovery,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P3,NO,PASS
+NMF-0120,NEW_MERCHANT_FAIRNESS,rapid early response cluster,evaluate badge,ordinary organic discovery,badge is not an organic discovery prerequisite,no second merchant free-text review exists,P1,NO,PASS
+NMF-0121,NEW_MERCHANT_FAIRNESS,zero responses,compare to established shop,ordinary organic discovery,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0122,NEW_MERCHANT_FAIRNESS,one positive response,compare to established shop,ordinary organic discovery,prior uncertainty remains visible,missing responses are not imputed,P3,YES,PASS
+NMF-0123,NEW_MERCHANT_FAIRNESS,two negative responses,compare to established shop,ordinary organic discovery,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P3,NO,PASS
+NMF-0124,NEW_MERCHANT_FAIRNESS,low-volume shop,compare to established shop,ordinary organic discovery,new shop is not assigned a bad score,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0125,NEW_MERCHANT_FAIRNESS,new branch of old organization,compare to established shop,ordinary organic discovery,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0126,NEW_MERCHANT_FAIRNESS,new owner,compare to established shop,ordinary organic discovery,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0127,NEW_MERCHANT_FAIRNESS,no badge,compare to established shop,ordinary organic discovery,prior uncertainty remains visible,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+NMF-0128,NEW_MERCHANT_FAIRNESS,high ad spend,compare to established shop,ordinary organic discovery,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0129,NEW_MERCHANT_FAIRNESS,reward participant,compare to established shop,ordinary organic discovery,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0130,NEW_MERCHANT_FAIRNESS,rapid early response cluster,compare to established shop,ordinary organic discovery,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0131,NEW_MERCHANT_FAIRNESS,zero responses,apply prior,ordinary organic discovery,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0132,NEW_MERCHANT_FAIRNESS,one positive response,apply prior,ordinary organic discovery,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0133,NEW_MERCHANT_FAIRNESS,two negative responses,apply prior,ordinary organic discovery,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+NMF-0134,NEW_MERCHANT_FAIRNESS,low-volume shop,apply prior,ordinary organic discovery,new shop is not assigned a bad score,server-authoritative verified evidence is required,P1,NO,PASS
+NMF-0135,NEW_MERCHANT_FAIRNESS,new branch of old organization,apply prior,ordinary organic discovery,badge is not an organic discovery prerequisite,missing responses are not imputed,P3,NO,PASS
+NMF-0136,NEW_MERCHANT_FAIRNESS,new owner,apply prior,ordinary organic discovery,ads/rewards cannot replace evidence,no second merchant free-text review exists,P2,NO,PASS
+NMF-0137,NEW_MERCHANT_FAIRNESS,no badge,apply prior,ordinary organic discovery,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0138,NEW_MERCHANT_FAIRNESS,high ad spend,apply prior,ordinary organic discovery,new shop is not assigned a bad score,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0139,NEW_MERCHANT_FAIRNESS,reward participant,apply prior,ordinary organic discovery,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0140,NEW_MERCHANT_FAIRNESS,rapid early response cluster,apply prior,ordinary organic discovery,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0141,NEW_MERCHANT_FAIRNESS,zero responses,reserve organic path,ordinary organic discovery,prior uncertainty remains visible,quantity and basket value have zero vote weight,P1,NO,PASS
+NMF-0142,NEW_MERCHANT_FAIRNESS,one positive response,reserve organic path,ordinary organic discovery,rapid small cluster cannot earn immediate badge,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0143,NEW_MERCHANT_FAIRNESS,two negative responses,reserve organic path,ordinary organic discovery,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0144,NEW_MERCHANT_FAIRNESS,low-volume shop,reserve organic path,ordinary organic discovery,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P3,YES,PASS
+NMF-0145,NEW_MERCHANT_FAIRNESS,new branch of old organization,reserve organic path,ordinary organic discovery,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0146,NEW_MERCHANT_FAIRNESS,new owner,reserve organic path,ordinary organic discovery,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+NMF-0147,NEW_MERCHANT_FAIRNESS,no badge,reserve organic path,ordinary organic discovery,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0148,NEW_MERCHANT_FAIRNESS,high ad spend,reserve organic path,ordinary organic discovery,new shop is not assigned a bad score,missing responses are not imputed,P1,NO,PASS
+NMF-0149,NEW_MERCHANT_FAIRNESS,reward participant,reserve organic path,ordinary organic discovery,badge is not an organic discovery prerequisite,no second merchant free-text review exists,P3,NO,PASS
+NMF-0150,NEW_MERCHANT_FAIRNESS,rapid early response cluster,reserve organic path,ordinary organic discovery,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0151,NEW_MERCHANT_FAIRNESS,zero responses,show insufficient history,ordinary organic discovery,prior uncertainty remains visible,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0152,NEW_MERCHANT_FAIRNESS,one positive response,show insufficient history,ordinary organic discovery,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0153,NEW_MERCHANT_FAIRNESS,two negative responses,show insufficient history,ordinary organic discovery,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0154,NEW_MERCHANT_FAIRNESS,low-volume shop,show insufficient history,ordinary organic discovery,ads/rewards cannot replace evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0155,NEW_MERCHANT_FAIRNESS,new branch of old organization,show insufficient history,ordinary organic discovery,prior uncertainty remains visible,customer identity is not publicly exposed,P1,YES,PASS
+NMF-0156,NEW_MERCHANT_FAIRNESS,new owner,show insufficient history,ordinary organic discovery,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0157,NEW_MERCHANT_FAIRNESS,no badge,show insufficient history,ordinary organic discovery,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0158,NEW_MERCHANT_FAIRNESS,high ad spend,show insufficient history,ordinary organic discovery,badge is not an organic discovery prerequisite,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0159,NEW_MERCHANT_FAIRNESS,reward participant,show insufficient history,ordinary organic discovery,ads/rewards cannot replace evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0160,NEW_MERCHANT_FAIRNESS,rapid early response cluster,show insufficient history,ordinary organic discovery,prior uncertainty remains visible,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0161,NEW_MERCHANT_FAIRNESS,zero responses,filter by badge,ordinary organic discovery,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P3,NO,PASS
+NMF-0162,NEW_MERCHANT_FAIRNESS,one positive response,filter by badge,ordinary organic discovery,new shop is not assigned a bad score,no second merchant free-text review exists,P1,NO,PASS
+NMF-0163,NEW_MERCHANT_FAIRNESS,two negative responses,filter by badge,ordinary organic discovery,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0164,NEW_MERCHANT_FAIRNESS,low-volume shop,filter by badge,ordinary organic discovery,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0165,NEW_MERCHANT_FAIRNESS,new branch of old organization,filter by badge,ordinary organic discovery,prior uncertainty remains visible,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0166,NEW_MERCHANT_FAIRNESS,new owner,filter by badge,ordinary organic discovery,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P2,YES,PASS
+NMF-0167,NEW_MERCHANT_FAIRNESS,no badge,filter by badge,ordinary organic discovery,new shop is not assigned a bad score,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0168,NEW_MERCHANT_FAIRNESS,high ad spend,filter by badge,ordinary organic discovery,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0169,NEW_MERCHANT_FAIRNESS,reward participant,filter by badge,ordinary organic discovery,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+NMF-0170,NEW_MERCHANT_FAIRNESS,rapid early response cluster,filter by badge,ordinary organic discovery,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0171,NEW_MERCHANT_FAIRNESS,zero responses,audit exposure,ordinary organic discovery,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0172,NEW_MERCHANT_FAIRNESS,one positive response,audit exposure,ordinary organic discovery,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0173,NEW_MERCHANT_FAIRNESS,two negative responses,audit exposure,ordinary organic discovery,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0174,NEW_MERCHANT_FAIRNESS,low-volume shop,audit exposure,ordinary organic discovery,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0175,NEW_MERCHANT_FAIRNESS,new branch of old organization,audit exposure,ordinary organic discovery,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P0,NO,PASS
+NMF-0176,NEW_MERCHANT_FAIRNESS,new owner,audit exposure,ordinary organic discovery,new shop is not assigned a bad score,product and shop aggregates remain separate,P1,NO,PASS
+NMF-0177,NEW_MERCHANT_FAIRNESS,no badge,audit exposure,ordinary organic discovery,badge is not an organic discovery prerequisite,missing responses are not imputed,P3,YES,PASS
+NMF-0178,NEW_MERCHANT_FAIRNESS,high ad spend,audit exposure,ordinary organic discovery,ads/rewards cannot replace evidence,no second merchant free-text review exists,P2,NO,PASS
+NMF-0179,NEW_MERCHANT_FAIRNESS,reward participant,audit exposure,ordinary organic discovery,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0180,NEW_MERCHANT_FAIRNESS,rapid early response cluster,audit exposure,ordinary organic discovery,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0181,NEW_MERCHANT_FAIRNESS,zero responses,hold anomaly,ordinary organic discovery,new shop is not assigned a bad score,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0182,NEW_MERCHANT_FAIRNESS,one positive response,hold anomaly,ordinary organic discovery,badge is not an organic discovery prerequisite,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0183,NEW_MERCHANT_FAIRNESS,two negative responses,hold anomaly,ordinary organic discovery,ads/rewards cannot replace evidence,quantity and basket value have zero vote weight,P1,NO,PASS
+NMF-0184,NEW_MERCHANT_FAIRNESS,low-volume shop,hold anomaly,ordinary organic discovery,prior uncertainty remains visible,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0185,NEW_MERCHANT_FAIRNESS,new branch of old organization,hold anomaly,ordinary organic discovery,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0186,NEW_MERCHANT_FAIRNESS,new owner,hold anomaly,ordinary organic discovery,new shop is not assigned a bad score,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0187,NEW_MERCHANT_FAIRNESS,no badge,hold anomaly,ordinary organic discovery,badge is not an organic discovery prerequisite,missing responses are not imputed,P2,NO,PASS
+NMF-0188,NEW_MERCHANT_FAIRNESS,high ad spend,hold anomaly,ordinary organic discovery,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+NMF-0189,NEW_MERCHANT_FAIRNESS,reward participant,hold anomaly,ordinary organic discovery,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0190,NEW_MERCHANT_FAIRNESS,rapid early response cluster,hold anomaly,ordinary organic discovery,new shop is not assigned a bad score,missing responses are not imputed,P1,NO,PASS
+NMF-0191,NEW_MERCHANT_FAIRNESS,zero responses,request organization transfer,ordinary organic discovery,badge is not an organic discovery prerequisite,no second merchant free-text review exists,P3,NO,PASS
+NMF-0192,NEW_MERCHANT_FAIRNESS,one positive response,request organization transfer,ordinary organic discovery,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0193,NEW_MERCHANT_FAIRNESS,two negative responses,request organization transfer,ordinary organic discovery,prior uncertainty remains visible,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0194,NEW_MERCHANT_FAIRNESS,low-volume shop,request organization transfer,ordinary organic discovery,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0195,NEW_MERCHANT_FAIRNESS,new branch of old organization,request organization transfer,ordinary organic discovery,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0196,NEW_MERCHANT_FAIRNESS,new owner,request organization transfer,ordinary organic discovery,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0197,NEW_MERCHANT_FAIRNESS,no badge,request organization transfer,ordinary organic discovery,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P1,NO,PASS
+NMF-0198,NEW_MERCHANT_FAIRNESS,high ad spend,request organization transfer,ordinary organic discovery,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0199,NEW_MERCHANT_FAIRNESS,reward participant,request organization transfer,ordinary organic discovery,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P2,YES,PASS
+NMF-0200,NEW_MERCHANT_FAIRNESS,rapid early response cluster,request organization transfer,ordinary organic discovery,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0201,NEW_MERCHANT_FAIRNESS,zero responses,render search card,merchant profile,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0202,NEW_MERCHANT_FAIRNESS,one positive response,render search card,merchant profile,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0203,NEW_MERCHANT_FAIRNESS,two negative responses,render search card,merchant profile,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0204,NEW_MERCHANT_FAIRNESS,low-volume shop,render search card,merchant profile,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P0,NO,PASS
+NMF-0205,NEW_MERCHANT_FAIRNESS,new branch of old organization,render search card,merchant profile,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0206,NEW_MERCHANT_FAIRNESS,new owner,render search card,merchant profile,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0207,NEW_MERCHANT_FAIRNESS,no badge,render search card,merchant profile,prior uncertainty remains visible,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0208,NEW_MERCHANT_FAIRNESS,high ad spend,render search card,merchant profile,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+NMF-0209,NEW_MERCHANT_FAIRNESS,reward participant,render search card,merchant profile,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0210,NEW_MERCHANT_FAIRNESS,rapid early response cluster,render search card,merchant profile,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P3,YES,PASS
+NMF-0211,NEW_MERCHANT_FAIRNESS,zero responses,evaluate badge,merchant profile,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+NMF-0212,NEW_MERCHANT_FAIRNESS,one positive response,evaluate badge,merchant profile,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0213,NEW_MERCHANT_FAIRNESS,two negative responses,evaluate badge,merchant profile,rapid small cluster cannot earn immediate badge,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0214,NEW_MERCHANT_FAIRNESS,low-volume shop,evaluate badge,merchant profile,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0215,NEW_MERCHANT_FAIRNESS,new branch of old organization,evaluate badge,merchant profile,badge is not an organic discovery prerequisite,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0216,NEW_MERCHANT_FAIRNESS,new owner,evaluate badge,merchant profile,ads/rewards cannot replace evidence,missing responses are not imputed,P3,NO,PASS
+NMF-0217,NEW_MERCHANT_FAIRNESS,no badge,evaluate badge,merchant profile,prior uncertainty remains visible,no second merchant free-text review exists,P2,NO,PASS
+NMF-0218,NEW_MERCHANT_FAIRNESS,high ad spend,evaluate badge,merchant profile,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P1,NO,PASS
+NMF-0219,NEW_MERCHANT_FAIRNESS,reward participant,evaluate badge,merchant profile,new shop is not assigned a bad score,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0220,NEW_MERCHANT_FAIRNESS,rapid early response cluster,evaluate badge,merchant profile,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0221,NEW_MERCHANT_FAIRNESS,zero responses,compare to established shop,merchant profile,ads/rewards cannot replace evidence,product and shop aggregates remain separate,P3,YES,PASS
+NMF-0222,NEW_MERCHANT_FAIRNESS,one positive response,compare to established shop,merchant profile,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0223,NEW_MERCHANT_FAIRNESS,two negative responses,compare to established shop,merchant profile,new shop is not assigned a bad score,customer identity is not publicly exposed,P2,NO,PASS
+NMF-0224,NEW_MERCHANT_FAIRNESS,low-volume shop,compare to established shop,merchant profile,badge is not an organic discovery prerequisite,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0225,NEW_MERCHANT_FAIRNESS,new branch of old organization,compare to established shop,merchant profile,ads/rewards cannot replace evidence,quantity and basket value have zero vote weight,P1,NO,PASS
+NMF-0226,NEW_MERCHANT_FAIRNESS,new owner,compare to established shop,merchant profile,prior uncertainty remains visible,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0227,NEW_MERCHANT_FAIRNESS,no badge,compare to established shop,merchant profile,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0228,NEW_MERCHANT_FAIRNESS,high ad spend,compare to established shop,merchant profile,new shop is not assigned a bad score,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0229,NEW_MERCHANT_FAIRNESS,reward participant,compare to established shop,merchant profile,badge is not an organic discovery prerequisite,missing responses are not imputed,P2,NO,PASS
+NMF-0230,NEW_MERCHANT_FAIRNESS,rapid early response cluster,compare to established shop,merchant profile,ads/rewards cannot replace evidence,no second merchant free-text review exists,P3,NO,PASS
+NMF-0231,NEW_MERCHANT_FAIRNESS,zero responses,apply prior,merchant profile,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0232,NEW_MERCHANT_FAIRNESS,one positive response,apply prior,merchant profile,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P1,YES,PASS
+NMF-0233,NEW_MERCHANT_FAIRNESS,two negative responses,apply prior,merchant profile,new shop is not assigned a bad score,no second merchant free-text review exists,P0,NO,PASS
+NMF-0234,NEW_MERCHANT_FAIRNESS,low-volume shop,apply prior,merchant profile,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0235,NEW_MERCHANT_FAIRNESS,new branch of old organization,apply prior,merchant profile,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0236,NEW_MERCHANT_FAIRNESS,new owner,apply prior,merchant profile,prior uncertainty remains visible,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0237,NEW_MERCHANT_FAIRNESS,no badge,apply prior,merchant profile,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0238,NEW_MERCHANT_FAIRNESS,high ad spend,apply prior,merchant profile,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0239,NEW_MERCHANT_FAIRNESS,reward participant,apply prior,merchant profile,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P1,NO,PASS
+NMF-0240,NEW_MERCHANT_FAIRNESS,rapid early response cluster,apply prior,merchant profile,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0241,NEW_MERCHANT_FAIRNESS,zero responses,reserve organic path,merchant profile,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0242,NEW_MERCHANT_FAIRNESS,one positive response,reserve organic path,merchant profile,new shop is not assigned a bad score,missing responses are not imputed,P3,NO,PASS
+NMF-0243,NEW_MERCHANT_FAIRNESS,two negative responses,reserve organic path,merchant profile,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+NMF-0244,NEW_MERCHANT_FAIRNESS,low-volume shop,reserve organic path,merchant profile,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0245,NEW_MERCHANT_FAIRNESS,new branch of old organization,reserve organic path,merchant profile,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0246,NEW_MERCHANT_FAIRNESS,new owner,reserve organic path,merchant profile,rapid small cluster cannot earn immediate badge,no second merchant free-text review exists,P1,NO,PASS
+NMF-0247,NEW_MERCHANT_FAIRNESS,no badge,reserve organic path,merchant profile,new shop is not assigned a bad score,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0248,NEW_MERCHANT_FAIRNESS,high ad spend,reserve organic path,merchant profile,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0249,NEW_MERCHANT_FAIRNESS,reward participant,reserve organic path,merchant profile,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0250,NEW_MERCHANT_FAIRNESS,rapid early response cluster,reserve organic path,merchant profile,prior uncertainty remains visible,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+NMF-0251,NEW_MERCHANT_FAIRNESS,zero responses,show insufficient history,merchant profile,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0252,NEW_MERCHANT_FAIRNESS,one positive response,show insufficient history,merchant profile,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0253,NEW_MERCHANT_FAIRNESS,two negative responses,show insufficient history,merchant profile,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+NMF-0254,NEW_MERCHANT_FAIRNESS,low-volume shop,show insufficient history,merchant profile,ads/rewards cannot replace evidence,quantity and basket value have zero vote weight,P3,YES,PASS
+NMF-0255,NEW_MERCHANT_FAIRNESS,new branch of old organization,show insufficient history,merchant profile,prior uncertainty remains visible,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0256,NEW_MERCHANT_FAIRNESS,new owner,show insufficient history,merchant profile,new shop is not assigned a bad score,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+NMF-0257,NEW_MERCHANT_FAIRNESS,no badge,show insufficient history,merchant profile,badge is not an organic discovery prerequisite,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0258,NEW_MERCHANT_FAIRNESS,high ad spend,show insufficient history,merchant profile,ads/rewards cannot replace evidence,missing responses are not imputed,P3,NO,PASS
+NMF-0259,NEW_MERCHANT_FAIRNESS,reward participant,show insufficient history,merchant profile,prior uncertainty remains visible,no second merchant free-text review exists,P2,NO,PASS
+NMF-0260,NEW_MERCHANT_FAIRNESS,rapid early response cluster,show insufficient history,merchant profile,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P1,NO,PASS
+NMF-0261,NEW_MERCHANT_FAIRNESS,zero responses,filter by badge,merchant profile,new shop is not assigned a bad score,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0262,NEW_MERCHANT_FAIRNESS,one positive response,filter by badge,merchant profile,badge is not an organic discovery prerequisite,customer identity is not publicly exposed,P0,NO,PASS
+NMF-0263,NEW_MERCHANT_FAIRNESS,two negative responses,filter by badge,merchant profile,ads/rewards cannot replace evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0264,NEW_MERCHANT_FAIRNESS,low-volume shop,filter by badge,merchant profile,prior uncertainty remains visible,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0265,NEW_MERCHANT_FAIRNESS,new branch of old organization,filter by badge,merchant profile,rapid small cluster cannot earn immediate badge,customer identity is not publicly exposed,P2,YES,PASS
+NMF-0266,NEW_MERCHANT_FAIRNESS,new owner,filter by badge,merchant profile,new shop is not assigned a bad score,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0267,NEW_MERCHANT_FAIRNESS,no badge,filter by badge,merchant profile,badge is not an organic discovery prerequisite,quantity and basket value have zero vote weight,P1,NO,PASS
+NMF-0268,NEW_MERCHANT_FAIRNESS,high ad spend,filter by badge,merchant profile,ads/rewards cannot replace evidence,derived state is idempotent and versioned,P2,NO,PASS
+NMF-0269,NEW_MERCHANT_FAIRNESS,reward participant,filter by badge,merchant profile,prior uncertainty remains visible,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0270,NEW_MERCHANT_FAIRNESS,rapid early response cluster,filter by badge,merchant profile,rapid small cluster cannot earn immediate badge,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0271,NEW_MERCHANT_FAIRNESS,zero responses,audit exposure,merchant profile,new shop is not assigned a bad score,missing responses are not imputed,P2,NO,PASS
+NMF-0272,NEW_MERCHANT_FAIRNESS,one positive response,audit exposure,merchant profile,badge is not an organic discovery prerequisite,no second merchant free-text review exists,P3,NO,PASS
+NMF-0273,NEW_MERCHANT_FAIRNESS,two negative responses,audit exposure,merchant profile,prior uncertainty remains visible,product and shop aggregates remain separate,P3,NO,PASS
+NMF-0274,NEW_MERCHANT_FAIRNESS,low-volume shop,audit exposure,merchant profile,rapid small cluster cannot earn immediate badge,ads and rewards have zero reputation weight,P1,NO,PASS
+NMF-0275,NEW_MERCHANT_FAIRNESS,new branch of old organization,audit exposure,merchant profile,new shop is not assigned a bad score,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0276,NEW_MERCHANT_FAIRNESS,new owner,audit exposure,merchant profile,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P3,YES,PASS
+NMF-0277,NEW_MERCHANT_FAIRNESS,no badge,audit exposure,merchant profile,ads/rewards cannot replace evidence,ads and rewards have zero reputation weight,P2,NO,PASS
+NMF-0278,NEW_MERCHANT_FAIRNESS,high ad spend,audit exposure,merchant profile,prior uncertainty remains visible,customer identity is not publicly exposed,P3,NO,PASS
+NMF-0279,NEW_MERCHANT_FAIRNESS,reward participant,audit exposure,merchant profile,rapid small cluster cannot earn immediate badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+NMF-0280,NEW_MERCHANT_FAIRNESS,rapid early response cluster,audit exposure,merchant profile,new shop is not assigned a bad score,quantity and basket value have zero vote weight,P2,NO,PASS
+NMF-0281,NEW_MERCHANT_FAIRNESS,zero responses,hold anomaly,merchant profile,badge is not an organic discovery prerequisite,derived state is idempotent and versioned,P1,NO,PASS
+NMF-0282,NEW_MERCHANT_FAIRNESS,one positive response,hold anomaly,merchant profile,ads/rewards cannot replace evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+NMF-0283,NEW_MERCHANT_FAIRNESS,two negative responses,hold anomaly,merchant profile,prior uncertainty remains visible,server-authoritative verified evidence is required,P2,NO,PASS
+NMF-0284,NEW_MERCHANT_FAIRNESS,low-volume shop,hold anomaly,merchant profile,rapid small cluster cannot earn immediate badge,missing responses are not imputed,P3,NO,PASS
+NMF-0285,NEW_MERCHANT_FAIRNESS,new branch of old organization,hold anomaly,merchant profile,new shop is not assigned a bad score,no second merchant free-text review exists,P3,NO,PASS
+NMF-0286,NEW_MERCHANT_FAIRNESS,new owner,hold anomaly,merchant profile,badge is not an organic discovery prerequisite,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0287,NEW_MERCHANT_FAIRNESS,no badge,hold anomaly,merchant profile,ads/rewards cannot replace evidence,missing responses are not imputed,P3,YES,PASS
+NMF-0288,NEW_MERCHANT_FAIRNESS,high ad spend,hold anomaly,merchant profile,prior uncertainty remains visible,no second merchant free-text review exists,P1,NO,PASS
+NMF-0289,NEW_MERCHANT_FAIRNESS,reward participant,hold anomaly,merchant profile,rapid small cluster cannot earn immediate badge,product and shop aggregates remain separate,P2,NO,PASS
+NMF-0290,NEW_MERCHANT_FAIRNESS,rapid early response cluster,hold anomaly,merchant profile,badge is not an organic discovery prerequisite,ads and rewards have zero reputation weight,P3,NO,PASS
+NMF-0291,NEW_MERCHANT_FAIRNESS,zero responses,request organization transfer,merchant profile,ads/rewards cannot replace evidence,customer identity is not publicly exposed,P0,NO,PASS
+NMF-0292,NEW_MERCHANT_FAIRNESS,one positive response,request organization transfer,merchant profile,prior uncertainty remains visible,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+NMF-0293,NEW_MERCHANT_FAIRNESS,two negative responses,request organization transfer,merchant profile,rapid small cluster cannot earn immediate badge,quantity and basket value have zero vote weight,P3,NO,PASS
+NMF-0294,NEW_MERCHANT_FAIRNESS,low-volume shop,request organization transfer,merchant profile,new shop is not assigned a bad score,derived state is idempotent and versioned,P3,NO,PASS
+NMF-0295,NEW_MERCHANT_FAIRNESS,new branch of old organization,request organization transfer,merchant profile,badge is not an organic discovery prerequisite,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+NMF-0296,NEW_MERCHANT_FAIRNESS,new owner,request organization transfer,merchant profile,ads/rewards cannot replace evidence,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0297,NEW_MERCHANT_FAIRNESS,no badge,request organization transfer,merchant profile,prior uncertainty remains visible,missing responses are not imputed,P3,NO,PASS
+NMF-0298,NEW_MERCHANT_FAIRNESS,high ad spend,request organization transfer,merchant profile,rapid small cluster cannot earn immediate badge,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+NMF-0299,NEW_MERCHANT_FAIRNESS,reward participant,request organization transfer,merchant profile,new shop is not assigned a bad score,server-authoritative verified evidence is required,P3,NO,PASS
+NMF-0300,NEW_MERCHANT_FAIRNESS,rapid early response cluster,request organization transfer,merchant profile,badge is not an organic discovery prerequisite,missing responses are not imputed,P3,NO,PASS

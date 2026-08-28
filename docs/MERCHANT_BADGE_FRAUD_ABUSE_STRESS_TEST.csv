@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+FRD-0001,FRAUD_ABUSE,QR replay attempt,accept evidence,single event,server authority and shop binding are enforced,product and shop aggregates remain separate,P0,YES,PASS
+FRD-0002,FRAUD_ABUSE,wrong shop confirmation,accept evidence,single event,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0003,FRAUD_ABUSE,staff self-rating,accept evidence,single event,invalid contribution is corrected append-only,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0004,FRAUD_ABUSE,household cluster,accept evidence,single event,valid unrelated feedback remains,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+FRD-0005,FRAUD_ABUSE,multi-account farm,accept evidence,single event,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0006,FRAUD_ABUSE,purchase splitting,accept evidence,single event,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0007,FRAUD_ABUSE,threshold-timed ratings,accept evidence,single event,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0008,FRAUD_ABUSE,ad pressure,accept evidence,single event,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P1,NO,PASS
+FRD-0009,FRAUD_ABUSE,reward pressure,accept evidence,single event,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0010,FRAUD_ABUSE,false-positive signal,accept evidence,single event,manual score edit and paid offset are rejected,no second merchant free-text review exists,P2,NO,PASS
+FRD-0011,FRAUD_ABUSE,QR replay attempt,hold contribution,single event,server authority and shop binding are enforced,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0012,FRAUD_ABUSE,wrong shop confirmation,hold contribution,single event,signal triggers review rather than automatic guilt,missing responses are not imputed,P3,YES,PASS
+FRD-0013,FRAUD_ABUSE,staff self-rating,hold contribution,single event,invalid contribution is corrected append-only,no second merchant free-text review exists,P2,NO,PASS
+FRD-0014,FRAUD_ABUSE,household cluster,hold contribution,single event,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0015,FRAUD_ABUSE,multi-account farm,hold contribution,single event,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P1,NO,PASS
+FRD-0016,FRAUD_ABUSE,purchase splitting,hold contribution,single event,server authority and shop binding are enforced,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0017,FRAUD_ABUSE,threshold-timed ratings,hold contribution,single event,signal triggers review rather than automatic guilt,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0018,FRAUD_ABUSE,ad pressure,hold contribution,single event,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0019,FRAUD_ABUSE,reward pressure,hold contribution,single event,manual score edit and paid offset are rejected,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0020,FRAUD_ABUSE,false-positive signal,hold contribution,single event,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0021,FRAUD_ABUSE,QR replay attempt,open case,single event,signal triggers review rather than automatic guilt,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0022,FRAUD_ABUSE,wrong shop confirmation,open case,single event,invalid contribution is corrected append-only,missing responses are not imputed,P1,NO,PASS
+FRD-0023,FRAUD_ABUSE,staff self-rating,open case,single event,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+FRD-0024,FRAUD_ABUSE,household cluster,open case,single event,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0025,FRAUD_ABUSE,multi-account farm,open case,single event,server authority and shop binding are enforced,missing responses are not imputed,P2,NO,PASS
+FRD-0026,FRAUD_ABUSE,purchase splitting,open case,single event,signal triggers review rather than automatic guilt,no second merchant free-text review exists,P3,NO,PASS
+FRD-0027,FRAUD_ABUSE,threshold-timed ratings,open case,single event,invalid contribution is corrected append-only,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0028,FRAUD_ABUSE,ad pressure,open case,single event,valid unrelated feedback remains,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0029,FRAUD_ABUSE,reward pressure,open case,single event,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P1,NO,PASS
+FRD-0030,FRAUD_ABUSE,false-positive signal,open case,single event,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+FRD-0031,FRAUD_ABUSE,QR replay attempt,suspend badge,single event,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0032,FRAUD_ABUSE,wrong shop confirmation,suspend badge,single event,invalid contribution is corrected append-only,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0033,FRAUD_ABUSE,staff self-rating,suspend badge,single event,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0034,FRAUD_ABUSE,household cluster,suspend badge,single event,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P2,YES,PASS
+FRD-0035,FRAUD_ABUSE,multi-account farm,suspend badge,single event,signal triggers review rather than automatic guilt,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0036,FRAUD_ABUSE,purchase splitting,suspend badge,single event,invalid contribution is corrected append-only,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+FRD-0037,FRAUD_ABUSE,threshold-timed ratings,suspend badge,single event,valid unrelated feedback remains,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0038,FRAUD_ABUSE,ad pressure,suspend badge,single event,manual score edit and paid offset are rejected,missing responses are not imputed,P3,NO,PASS
+FRD-0039,FRAUD_ABUSE,reward pressure,suspend badge,single event,server authority and shop binding are enforced,no second merchant free-text review exists,P3,NO,PASS
+FRD-0040,FRAUD_ABUSE,false-positive signal,suspend badge,single event,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0041,FRAUD_ABUSE,QR replay attempt,invalidate evidence,single event,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0042,FRAUD_ABUSE,wrong shop confirmation,invalidate evidence,single event,valid unrelated feedback remains,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0043,FRAUD_ABUSE,staff self-rating,invalidate evidence,single event,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+FRD-0044,FRAUD_ABUSE,household cluster,invalidate evidence,single event,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0045,FRAUD_ABUSE,multi-account farm,invalidate evidence,single event,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P3,YES,PASS
+FRD-0046,FRAUD_ABUSE,purchase splitting,invalidate evidence,single event,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+FRD-0047,FRAUD_ABUSE,threshold-timed ratings,invalidate evidence,single event,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0048,FRAUD_ABUSE,ad pressure,invalidate evidence,single event,manual score edit and paid offset are rejected,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0049,FRAUD_ABUSE,reward pressure,invalidate evidence,single event,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0050,FRAUD_ABUSE,false-positive signal,invalidate evidence,single event,signal triggers review rather than automatic guilt,server-authoritative verified evidence is required,P1,NO,PASS
+FRD-0051,FRAUD_ABUSE,QR replay attempt,appeal finding,single event,invalid contribution is corrected append-only,missing responses are not imputed,P3,NO,PASS
+FRD-0052,FRAUD_ABUSE,wrong shop confirmation,appeal finding,single event,manual score edit and paid offset are rejected,no second merchant free-text review exists,P2,NO,PASS
+FRD-0053,FRAUD_ABUSE,staff self-rating,appeal finding,single event,server authority and shop binding are enforced,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0054,FRAUD_ABUSE,household cluster,appeal finding,single event,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0055,FRAUD_ABUSE,multi-account farm,appeal finding,single event,invalid contribution is corrected append-only,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0056,FRAUD_ABUSE,purchase splitting,appeal finding,single event,valid unrelated feedback remains,product and shop aggregates remain separate,P3,YES,PASS
+FRD-0057,FRAUD_ABUSE,threshold-timed ratings,appeal finding,single event,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P1,NO,PASS
+FRD-0058,FRAUD_ABUSE,ad pressure,appeal finding,single event,server authority and shop binding are enforced,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0059,FRAUD_ABUSE,reward pressure,appeal finding,single event,signal triggers review rather than automatic guilt,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+FRD-0060,FRAUD_ABUSE,false-positive signal,appeal finding,single event,invalid contribution is corrected append-only,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0061,FRAUD_ABUSE,QR replay attempt,reverse mistake,single event,valid unrelated feedback remains,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0062,FRAUD_ABUSE,wrong shop confirmation,reverse mistake,single event,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0063,FRAUD_ABUSE,staff self-rating,reverse mistake,single event,server authority and shop binding are enforced,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0064,FRAUD_ABUSE,household cluster,reverse mistake,single event,signal triggers review rather than automatic guilt,missing responses are not imputed,P1,NO,PASS
+FRD-0065,FRAUD_ABUSE,multi-account farm,reverse mistake,single event,invalid contribution is corrected append-only,no second merchant free-text review exists,P3,NO,PASS
+FRD-0066,FRAUD_ABUSE,purchase splitting,reverse mistake,single event,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0067,FRAUD_ABUSE,threshold-timed ratings,reverse mistake,single event,manual score edit and paid offset are rejected,missing responses are not imputed,P2,YES,PASS
+FRD-0068,FRAUD_ABUSE,ad pressure,reverse mistake,single event,server authority and shop binding are enforced,no second merchant free-text review exists,P3,NO,PASS
+FRD-0069,FRAUD_ABUSE,reward pressure,reverse mistake,single event,invalid contribution is corrected append-only,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0070,FRAUD_ABUSE,false-positive signal,reverse mistake,single event,valid unrelated feedback remains,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0071,FRAUD_ABUSE,QR replay attempt,recompute aggregate,single event,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P1,NO,PASS
+FRD-0072,FRAUD_ABUSE,wrong shop confirmation,recompute aggregate,single event,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0073,FRAUD_ABUSE,staff self-rating,recompute aggregate,single event,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0074,FRAUD_ABUSE,household cluster,recompute aggregate,single event,invalid contribution is corrected append-only,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0075,FRAUD_ABUSE,multi-account farm,recompute aggregate,single event,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0076,FRAUD_ABUSE,purchase splitting,recompute aggregate,single event,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0077,FRAUD_ABUSE,threshold-timed ratings,recompute aggregate,single event,server authority and shop binding are enforced,missing responses are not imputed,P3,NO,PASS
+FRD-0078,FRAUD_ABUSE,ad pressure,recompute aggregate,single event,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+FRD-0079,FRAUD_ABUSE,reward pressure,recompute aggregate,single event,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0080,FRAUD_ABUSE,false-positive signal,recompute aggregate,single event,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0081,FRAUD_ABUSE,QR replay attempt,protect valid negatives,single event,manual score edit and paid offset are rejected,no second merchant free-text review exists,P3,NO,PASS
+FRD-0082,FRAUD_ABUSE,wrong shop confirmation,protect valid negatives,single event,server authority and shop binding are enforced,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0083,FRAUD_ABUSE,staff self-rating,protect valid negatives,single event,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0084,FRAUD_ABUSE,household cluster,protect valid negatives,single event,invalid contribution is corrected append-only,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0085,FRAUD_ABUSE,multi-account farm,protect valid negatives,single event,valid unrelated feedback remains,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+FRD-0086,FRAUD_ABUSE,purchase splitting,protect valid negatives,single event,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0087,FRAUD_ABUSE,threshold-timed ratings,protect valid negatives,single event,signal triggers review rather than automatic guilt,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0088,FRAUD_ABUSE,ad pressure,protect valid negatives,single event,invalid contribution is corrected append-only,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+FRD-0089,FRAUD_ABUSE,reward pressure,protect valid negatives,single event,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,YES,PASS
+FRD-0090,FRAUD_ABUSE,false-positive signal,protect valid negatives,single event,manual score edit and paid offset are rejected,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0091,FRAUD_ABUSE,QR replay attempt,request manual score edit,single event,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0092,FRAUD_ABUSE,wrong shop confirmation,request manual score edit,single event,signal triggers review rather than automatic guilt,server-authoritative verified evidence is required,P1,NO,PASS
+FRD-0093,FRAUD_ABUSE,staff self-rating,request manual score edit,single event,invalid contribution is corrected append-only,missing responses are not imputed,P3,NO,PASS
+FRD-0094,FRAUD_ABUSE,household cluster,request manual score edit,single event,valid unrelated feedback remains,no second merchant free-text review exists,P2,NO,PASS
+FRD-0095,FRAUD_ABUSE,multi-account farm,request manual score edit,single event,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0096,FRAUD_ABUSE,purchase splitting,request manual score edit,single event,server authority and shop binding are enforced,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0097,FRAUD_ABUSE,threshold-timed ratings,request manual score edit,single event,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0098,FRAUD_ABUSE,ad pressure,request manual score edit,single event,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0099,FRAUD_ABUSE,reward pressure,request manual score edit,single event,valid unrelated feedback remains,quantity and basket value have zero vote weight,P1,NO,PASS
+FRD-0100,FRAUD_ABUSE,false-positive signal,request manual score edit,single event,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P2,YES,PASS
+FRD-0101,FRAUD_ABUSE,QR replay attempt,accept evidence,coordinated cluster,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0102,FRAUD_ABUSE,wrong shop confirmation,accept evidence,coordinated cluster,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0103,FRAUD_ABUSE,staff self-rating,accept evidence,coordinated cluster,valid unrelated feedback remains,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0104,FRAUD_ABUSE,household cluster,accept evidence,coordinated cluster,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0105,FRAUD_ABUSE,multi-account farm,accept evidence,coordinated cluster,server authority and shop binding are enforced,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0106,FRAUD_ABUSE,purchase splitting,accept evidence,coordinated cluster,signal triggers review rather than automatic guilt,missing responses are not imputed,P1,NO,PASS
+FRD-0107,FRAUD_ABUSE,threshold-timed ratings,accept evidence,coordinated cluster,invalid contribution is corrected append-only,no second merchant free-text review exists,P3,NO,PASS
+FRD-0108,FRAUD_ABUSE,ad pressure,accept evidence,coordinated cluster,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0109,FRAUD_ABUSE,reward pressure,accept evidence,coordinated cluster,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0110,FRAUD_ABUSE,false-positive signal,accept evidence,coordinated cluster,server authority and shop binding are enforced,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0111,FRAUD_ABUSE,QR replay attempt,hold contribution,coordinated cluster,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P3,YES,PASS
+FRD-0112,FRAUD_ABUSE,wrong shop confirmation,hold contribution,coordinated cluster,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0113,FRAUD_ABUSE,staff self-rating,hold contribution,coordinated cluster,valid unrelated feedback remains,customer identity is not publicly exposed,P1,NO,PASS
+FRD-0114,FRAUD_ABUSE,household cluster,hold contribution,coordinated cluster,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0115,FRAUD_ABUSE,multi-account farm,hold contribution,coordinated cluster,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0116,FRAUD_ABUSE,purchase splitting,hold contribution,coordinated cluster,signal triggers review rather than automatic guilt,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0117,FRAUD_ABUSE,threshold-timed ratings,hold contribution,coordinated cluster,invalid contribution is corrected append-only,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+FRD-0118,FRAUD_ABUSE,ad pressure,hold contribution,coordinated cluster,valid unrelated feedback remains,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0119,FRAUD_ABUSE,reward pressure,hold contribution,coordinated cluster,manual score edit and paid offset are rejected,missing responses are not imputed,P3,NO,PASS
+FRD-0120,FRAUD_ABUSE,false-positive signal,hold contribution,coordinated cluster,signal triggers review rather than automatic guilt,no second merchant free-text review exists,P1,NO,PASS
+FRD-0121,FRAUD_ABUSE,QR replay attempt,open case,coordinated cluster,invalid contribution is corrected append-only,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0122,FRAUD_ABUSE,wrong shop confirmation,open case,coordinated cluster,valid unrelated feedback remains,missing responses are not imputed,P3,YES,PASS
+FRD-0123,FRAUD_ABUSE,staff self-rating,open case,coordinated cluster,manual score edit and paid offset are rejected,no second merchant free-text review exists,P3,NO,PASS
+FRD-0124,FRAUD_ABUSE,household cluster,open case,coordinated cluster,server authority and shop binding are enforced,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0125,FRAUD_ABUSE,multi-account farm,open case,coordinated cluster,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0126,FRAUD_ABUSE,purchase splitting,open case,coordinated cluster,invalid contribution is corrected append-only,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0127,FRAUD_ABUSE,threshold-timed ratings,open case,coordinated cluster,valid unrelated feedback remains,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+FRD-0128,FRAUD_ABUSE,ad pressure,open case,coordinated cluster,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0129,FRAUD_ABUSE,reward pressure,open case,coordinated cluster,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0130,FRAUD_ABUSE,false-positive signal,open case,coordinated cluster,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0131,FRAUD_ABUSE,QR replay attempt,suspend badge,coordinated cluster,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0132,FRAUD_ABUSE,wrong shop confirmation,suspend badge,coordinated cluster,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0133,FRAUD_ABUSE,staff self-rating,suspend badge,coordinated cluster,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+FRD-0134,FRAUD_ABUSE,household cluster,suspend badge,coordinated cluster,server authority and shop binding are enforced,server-authoritative verified evidence is required,P1,NO,PASS
+FRD-0135,FRAUD_ABUSE,multi-account farm,suspend badge,coordinated cluster,signal triggers review rather than automatic guilt,missing responses are not imputed,P3,NO,PASS
+FRD-0136,FRAUD_ABUSE,purchase splitting,suspend badge,coordinated cluster,invalid contribution is corrected append-only,no second merchant free-text review exists,P2,NO,PASS
+FRD-0137,FRAUD_ABUSE,threshold-timed ratings,suspend badge,coordinated cluster,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0138,FRAUD_ABUSE,ad pressure,suspend badge,coordinated cluster,server authority and shop binding are enforced,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0139,FRAUD_ABUSE,reward pressure,suspend badge,coordinated cluster,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0140,FRAUD_ABUSE,false-positive signal,suspend badge,coordinated cluster,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0141,FRAUD_ABUSE,QR replay attempt,invalidate evidence,coordinated cluster,valid unrelated feedback remains,quantity and basket value have zero vote weight,P1,NO,PASS
+FRD-0142,FRAUD_ABUSE,wrong shop confirmation,invalidate evidence,coordinated cluster,manual score edit and paid offset are rejected,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0143,FRAUD_ABUSE,staff self-rating,invalidate evidence,coordinated cluster,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0144,FRAUD_ABUSE,household cluster,invalidate evidence,coordinated cluster,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P3,YES,PASS
+FRD-0145,FRAUD_ABUSE,multi-account farm,invalidate evidence,coordinated cluster,invalid contribution is corrected append-only,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0146,FRAUD_ABUSE,purchase splitting,invalidate evidence,coordinated cluster,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+FRD-0147,FRAUD_ABUSE,threshold-timed ratings,invalidate evidence,coordinated cluster,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0148,FRAUD_ABUSE,ad pressure,invalidate evidence,coordinated cluster,server authority and shop binding are enforced,missing responses are not imputed,P1,NO,PASS
+FRD-0149,FRAUD_ABUSE,reward pressure,invalidate evidence,coordinated cluster,signal triggers review rather than automatic guilt,no second merchant free-text review exists,P3,NO,PASS
+FRD-0150,FRAUD_ABUSE,false-positive signal,invalidate evidence,coordinated cluster,invalid contribution is corrected append-only,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0151,FRAUD_ABUSE,QR replay attempt,appeal finding,coordinated cluster,valid unrelated feedback remains,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0152,FRAUD_ABUSE,wrong shop confirmation,appeal finding,coordinated cluster,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0153,FRAUD_ABUSE,staff self-rating,appeal finding,coordinated cluster,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0154,FRAUD_ABUSE,household cluster,appeal finding,coordinated cluster,invalid contribution is corrected append-only,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0155,FRAUD_ABUSE,multi-account farm,appeal finding,coordinated cluster,valid unrelated feedback remains,customer identity is not publicly exposed,P1,YES,PASS
+FRD-0156,FRAUD_ABUSE,purchase splitting,appeal finding,coordinated cluster,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0157,FRAUD_ABUSE,threshold-timed ratings,appeal finding,coordinated cluster,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0158,FRAUD_ABUSE,ad pressure,appeal finding,coordinated cluster,signal triggers review rather than automatic guilt,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0159,FRAUD_ABUSE,reward pressure,appeal finding,coordinated cluster,invalid contribution is corrected append-only,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0160,FRAUD_ABUSE,false-positive signal,appeal finding,coordinated cluster,valid unrelated feedback remains,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0161,FRAUD_ABUSE,QR replay attempt,reverse mistake,coordinated cluster,manual score edit and paid offset are rejected,missing responses are not imputed,P3,NO,PASS
+FRD-0162,FRAUD_ABUSE,wrong shop confirmation,reverse mistake,coordinated cluster,server authority and shop binding are enforced,no second merchant free-text review exists,P1,NO,PASS
+FRD-0163,FRAUD_ABUSE,staff self-rating,reverse mistake,coordinated cluster,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0164,FRAUD_ABUSE,household cluster,reverse mistake,coordinated cluster,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0165,FRAUD_ABUSE,multi-account farm,reverse mistake,coordinated cluster,valid unrelated feedback remains,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0166,FRAUD_ABUSE,purchase splitting,reverse mistake,coordinated cluster,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P2,YES,PASS
+FRD-0167,FRAUD_ABUSE,threshold-timed ratings,reverse mistake,coordinated cluster,server authority and shop binding are enforced,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0168,FRAUD_ABUSE,ad pressure,reverse mistake,coordinated cluster,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0169,FRAUD_ABUSE,reward pressure,reverse mistake,coordinated cluster,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+FRD-0170,FRAUD_ABUSE,false-positive signal,reverse mistake,coordinated cluster,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0171,FRAUD_ABUSE,QR replay attempt,recompute aggregate,coordinated cluster,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0172,FRAUD_ABUSE,wrong shop confirmation,recompute aggregate,coordinated cluster,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0173,FRAUD_ABUSE,staff self-rating,recompute aggregate,coordinated cluster,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0174,FRAUD_ABUSE,household cluster,recompute aggregate,coordinated cluster,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0175,FRAUD_ABUSE,multi-account farm,recompute aggregate,coordinated cluster,manual score edit and paid offset are rejected,no second merchant free-text review exists,P0,NO,PASS
+FRD-0176,FRAUD_ABUSE,purchase splitting,recompute aggregate,coordinated cluster,server authority and shop binding are enforced,product and shop aggregates remain separate,P1,NO,PASS
+FRD-0177,FRAUD_ABUSE,threshold-timed ratings,recompute aggregate,coordinated cluster,signal triggers review rather than automatic guilt,missing responses are not imputed,P3,YES,PASS
+FRD-0178,FRAUD_ABUSE,ad pressure,recompute aggregate,coordinated cluster,invalid contribution is corrected append-only,no second merchant free-text review exists,P2,NO,PASS
+FRD-0179,FRAUD_ABUSE,reward pressure,recompute aggregate,coordinated cluster,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0180,FRAUD_ABUSE,false-positive signal,recompute aggregate,coordinated cluster,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0181,FRAUD_ABUSE,QR replay attempt,protect valid negatives,coordinated cluster,server authority and shop binding are enforced,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0182,FRAUD_ABUSE,wrong shop confirmation,protect valid negatives,coordinated cluster,signal triggers review rather than automatic guilt,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0183,FRAUD_ABUSE,staff self-rating,protect valid negatives,coordinated cluster,invalid contribution is corrected append-only,quantity and basket value have zero vote weight,P1,NO,PASS
+FRD-0184,FRAUD_ABUSE,household cluster,protect valid negatives,coordinated cluster,valid unrelated feedback remains,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0185,FRAUD_ABUSE,multi-account farm,protect valid negatives,coordinated cluster,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0186,FRAUD_ABUSE,purchase splitting,protect valid negatives,coordinated cluster,server authority and shop binding are enforced,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0187,FRAUD_ABUSE,threshold-timed ratings,protect valid negatives,coordinated cluster,signal triggers review rather than automatic guilt,missing responses are not imputed,P2,NO,PASS
+FRD-0188,FRAUD_ABUSE,ad pressure,protect valid negatives,coordinated cluster,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+FRD-0189,FRAUD_ABUSE,reward pressure,protect valid negatives,coordinated cluster,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0190,FRAUD_ABUSE,false-positive signal,protect valid negatives,coordinated cluster,server authority and shop binding are enforced,missing responses are not imputed,P1,NO,PASS
+FRD-0191,FRAUD_ABUSE,QR replay attempt,request manual score edit,coordinated cluster,signal triggers review rather than automatic guilt,no second merchant free-text review exists,P3,NO,PASS
+FRD-0192,FRAUD_ABUSE,wrong shop confirmation,request manual score edit,coordinated cluster,invalid contribution is corrected append-only,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0193,FRAUD_ABUSE,staff self-rating,request manual score edit,coordinated cluster,valid unrelated feedback remains,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0194,FRAUD_ABUSE,household cluster,request manual score edit,coordinated cluster,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0195,FRAUD_ABUSE,multi-account farm,request manual score edit,coordinated cluster,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0196,FRAUD_ABUSE,purchase splitting,request manual score edit,coordinated cluster,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0197,FRAUD_ABUSE,threshold-timed ratings,request manual score edit,coordinated cluster,invalid contribution is corrected append-only,derived state is idempotent and versioned,P1,NO,PASS
+FRD-0198,FRAUD_ABUSE,ad pressure,request manual score edit,coordinated cluster,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0199,FRAUD_ABUSE,reward pressure,request manual score edit,coordinated cluster,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P2,YES,PASS
+FRD-0200,FRAUD_ABUSE,false-positive signal,request manual score edit,coordinated cluster,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0201,FRAUD_ABUSE,QR replay attempt,accept evidence,cross-shop pattern,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0202,FRAUD_ABUSE,wrong shop confirmation,accept evidence,cross-shop pattern,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0203,FRAUD_ABUSE,staff self-rating,accept evidence,cross-shop pattern,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0204,FRAUD_ABUSE,household cluster,accept evidence,cross-shop pattern,manual score edit and paid offset are rejected,no second merchant free-text review exists,P0,NO,PASS
+FRD-0205,FRAUD_ABUSE,multi-account farm,accept evidence,cross-shop pattern,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0206,FRAUD_ABUSE,purchase splitting,accept evidence,cross-shop pattern,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0207,FRAUD_ABUSE,threshold-timed ratings,accept evidence,cross-shop pattern,valid unrelated feedback remains,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0208,FRAUD_ABUSE,ad pressure,accept evidence,cross-shop pattern,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+FRD-0209,FRAUD_ABUSE,reward pressure,accept evidence,cross-shop pattern,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0210,FRAUD_ABUSE,false-positive signal,accept evidence,cross-shop pattern,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P3,YES,PASS
+FRD-0211,FRAUD_ABUSE,QR replay attempt,hold contribution,cross-shop pattern,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+FRD-0212,FRAUD_ABUSE,wrong shop confirmation,hold contribution,cross-shop pattern,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0213,FRAUD_ABUSE,staff self-rating,hold contribution,cross-shop pattern,manual score edit and paid offset are rejected,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0214,FRAUD_ABUSE,household cluster,hold contribution,cross-shop pattern,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0215,FRAUD_ABUSE,multi-account farm,hold contribution,cross-shop pattern,signal triggers review rather than automatic guilt,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0216,FRAUD_ABUSE,purchase splitting,hold contribution,cross-shop pattern,invalid contribution is corrected append-only,missing responses are not imputed,P3,NO,PASS
+FRD-0217,FRAUD_ABUSE,threshold-timed ratings,hold contribution,cross-shop pattern,valid unrelated feedback remains,no second merchant free-text review exists,P2,NO,PASS
+FRD-0218,FRAUD_ABUSE,ad pressure,hold contribution,cross-shop pattern,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P1,NO,PASS
+FRD-0219,FRAUD_ABUSE,reward pressure,hold contribution,cross-shop pattern,server authority and shop binding are enforced,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0220,FRAUD_ABUSE,false-positive signal,hold contribution,cross-shop pattern,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0221,FRAUD_ABUSE,QR replay attempt,open case,cross-shop pattern,invalid contribution is corrected append-only,product and shop aggregates remain separate,P3,YES,PASS
+FRD-0222,FRAUD_ABUSE,wrong shop confirmation,open case,cross-shop pattern,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0223,FRAUD_ABUSE,staff self-rating,open case,cross-shop pattern,server authority and shop binding are enforced,customer identity is not publicly exposed,P2,NO,PASS
+FRD-0224,FRAUD_ABUSE,household cluster,open case,cross-shop pattern,signal triggers review rather than automatic guilt,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0225,FRAUD_ABUSE,multi-account farm,open case,cross-shop pattern,invalid contribution is corrected append-only,quantity and basket value have zero vote weight,P1,NO,PASS
+FRD-0226,FRAUD_ABUSE,purchase splitting,open case,cross-shop pattern,valid unrelated feedback remains,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0227,FRAUD_ABUSE,threshold-timed ratings,open case,cross-shop pattern,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0228,FRAUD_ABUSE,ad pressure,open case,cross-shop pattern,server authority and shop binding are enforced,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0229,FRAUD_ABUSE,reward pressure,open case,cross-shop pattern,signal triggers review rather than automatic guilt,missing responses are not imputed,P2,NO,PASS
+FRD-0230,FRAUD_ABUSE,false-positive signal,open case,cross-shop pattern,invalid contribution is corrected append-only,no second merchant free-text review exists,P3,NO,PASS
+FRD-0231,FRAUD_ABUSE,QR replay attempt,suspend badge,cross-shop pattern,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0232,FRAUD_ABUSE,wrong shop confirmation,suspend badge,cross-shop pattern,manual score edit and paid offset are rejected,missing responses are not imputed,P1,YES,PASS
+FRD-0233,FRAUD_ABUSE,staff self-rating,suspend badge,cross-shop pattern,server authority and shop binding are enforced,no second merchant free-text review exists,P0,NO,PASS
+FRD-0234,FRAUD_ABUSE,household cluster,suspend badge,cross-shop pattern,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0235,FRAUD_ABUSE,multi-account farm,suspend badge,cross-shop pattern,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0236,FRAUD_ABUSE,purchase splitting,suspend badge,cross-shop pattern,valid unrelated feedback remains,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0237,FRAUD_ABUSE,threshold-timed ratings,suspend badge,cross-shop pattern,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0238,FRAUD_ABUSE,ad pressure,suspend badge,cross-shop pattern,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0239,FRAUD_ABUSE,reward pressure,suspend badge,cross-shop pattern,invalid contribution is corrected append-only,derived state is idempotent and versioned,P1,NO,PASS
+FRD-0240,FRAUD_ABUSE,false-positive signal,suspend badge,cross-shop pattern,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0241,FRAUD_ABUSE,QR replay attempt,invalidate evidence,cross-shop pattern,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0242,FRAUD_ABUSE,wrong shop confirmation,invalidate evidence,cross-shop pattern,server authority and shop binding are enforced,missing responses are not imputed,P3,NO,PASS
+FRD-0243,FRAUD_ABUSE,staff self-rating,invalidate evidence,cross-shop pattern,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+FRD-0244,FRAUD_ABUSE,household cluster,invalidate evidence,cross-shop pattern,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0245,FRAUD_ABUSE,multi-account farm,invalidate evidence,cross-shop pattern,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0246,FRAUD_ABUSE,purchase splitting,invalidate evidence,cross-shop pattern,manual score edit and paid offset are rejected,no second merchant free-text review exists,P1,NO,PASS
+FRD-0247,FRAUD_ABUSE,threshold-timed ratings,invalidate evidence,cross-shop pattern,server authority and shop binding are enforced,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0248,FRAUD_ABUSE,ad pressure,invalidate evidence,cross-shop pattern,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0249,FRAUD_ABUSE,reward pressure,invalidate evidence,cross-shop pattern,invalid contribution is corrected append-only,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0250,FRAUD_ABUSE,false-positive signal,invalidate evidence,cross-shop pattern,valid unrelated feedback remains,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+FRD-0251,FRAUD_ABUSE,QR replay attempt,appeal finding,cross-shop pattern,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0252,FRAUD_ABUSE,wrong shop confirmation,appeal finding,cross-shop pattern,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0253,FRAUD_ABUSE,staff self-rating,appeal finding,cross-shop pattern,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+FRD-0254,FRAUD_ABUSE,household cluster,appeal finding,cross-shop pattern,invalid contribution is corrected append-only,quantity and basket value have zero vote weight,P3,YES,PASS
+FRD-0255,FRAUD_ABUSE,multi-account farm,appeal finding,cross-shop pattern,valid unrelated feedback remains,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0256,FRAUD_ABUSE,purchase splitting,appeal finding,cross-shop pattern,server authority and shop binding are enforced,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+FRD-0257,FRAUD_ABUSE,threshold-timed ratings,appeal finding,cross-shop pattern,signal triggers review rather than automatic guilt,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0258,FRAUD_ABUSE,ad pressure,appeal finding,cross-shop pattern,invalid contribution is corrected append-only,missing responses are not imputed,P3,NO,PASS
+FRD-0259,FRAUD_ABUSE,reward pressure,appeal finding,cross-shop pattern,valid unrelated feedback remains,no second merchant free-text review exists,P2,NO,PASS
+FRD-0260,FRAUD_ABUSE,false-positive signal,appeal finding,cross-shop pattern,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P1,NO,PASS
+FRD-0261,FRAUD_ABUSE,QR replay attempt,reverse mistake,cross-shop pattern,server authority and shop binding are enforced,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0262,FRAUD_ABUSE,wrong shop confirmation,reverse mistake,cross-shop pattern,signal triggers review rather than automatic guilt,customer identity is not publicly exposed,P0,NO,PASS
+FRD-0263,FRAUD_ABUSE,staff self-rating,reverse mistake,cross-shop pattern,invalid contribution is corrected append-only,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0264,FRAUD_ABUSE,household cluster,reverse mistake,cross-shop pattern,valid unrelated feedback remains,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0265,FRAUD_ABUSE,multi-account farm,reverse mistake,cross-shop pattern,manual score edit and paid offset are rejected,customer identity is not publicly exposed,P2,YES,PASS
+FRD-0266,FRAUD_ABUSE,purchase splitting,reverse mistake,cross-shop pattern,server authority and shop binding are enforced,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0267,FRAUD_ABUSE,threshold-timed ratings,reverse mistake,cross-shop pattern,signal triggers review rather than automatic guilt,quantity and basket value have zero vote weight,P1,NO,PASS
+FRD-0268,FRAUD_ABUSE,ad pressure,reverse mistake,cross-shop pattern,invalid contribution is corrected append-only,derived state is idempotent and versioned,P2,NO,PASS
+FRD-0269,FRAUD_ABUSE,reward pressure,reverse mistake,cross-shop pattern,valid unrelated feedback remains,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0270,FRAUD_ABUSE,false-positive signal,reverse mistake,cross-shop pattern,manual score edit and paid offset are rejected,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0271,FRAUD_ABUSE,QR replay attempt,recompute aggregate,cross-shop pattern,server authority and shop binding are enforced,missing responses are not imputed,P2,NO,PASS
+FRD-0272,FRAUD_ABUSE,wrong shop confirmation,recompute aggregate,cross-shop pattern,signal triggers review rather than automatic guilt,no second merchant free-text review exists,P3,NO,PASS
+FRD-0273,FRAUD_ABUSE,staff self-rating,recompute aggregate,cross-shop pattern,valid unrelated feedback remains,product and shop aggregates remain separate,P3,NO,PASS
+FRD-0274,FRAUD_ABUSE,household cluster,recompute aggregate,cross-shop pattern,manual score edit and paid offset are rejected,ads and rewards have zero reputation weight,P1,NO,PASS
+FRD-0275,FRAUD_ABUSE,multi-account farm,recompute aggregate,cross-shop pattern,server authority and shop binding are enforced,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0276,FRAUD_ABUSE,purchase splitting,recompute aggregate,cross-shop pattern,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P3,YES,PASS
+FRD-0277,FRAUD_ABUSE,threshold-timed ratings,recompute aggregate,cross-shop pattern,invalid contribution is corrected append-only,ads and rewards have zero reputation weight,P2,NO,PASS
+FRD-0278,FRAUD_ABUSE,ad pressure,recompute aggregate,cross-shop pattern,valid unrelated feedback remains,customer identity is not publicly exposed,P3,NO,PASS
+FRD-0279,FRAUD_ABUSE,reward pressure,recompute aggregate,cross-shop pattern,manual score edit and paid offset are rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+FRD-0280,FRAUD_ABUSE,false-positive signal,recompute aggregate,cross-shop pattern,server authority and shop binding are enforced,quantity and basket value have zero vote weight,P2,NO,PASS
+FRD-0281,FRAUD_ABUSE,QR replay attempt,protect valid negatives,cross-shop pattern,signal triggers review rather than automatic guilt,derived state is idempotent and versioned,P1,NO,PASS
+FRD-0282,FRAUD_ABUSE,wrong shop confirmation,protect valid negatives,cross-shop pattern,invalid contribution is corrected append-only,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+FRD-0283,FRAUD_ABUSE,staff self-rating,protect valid negatives,cross-shop pattern,valid unrelated feedback remains,server-authoritative verified evidence is required,P2,NO,PASS
+FRD-0284,FRAUD_ABUSE,household cluster,protect valid negatives,cross-shop pattern,manual score edit and paid offset are rejected,missing responses are not imputed,P3,NO,PASS
+FRD-0285,FRAUD_ABUSE,multi-account farm,protect valid negatives,cross-shop pattern,server authority and shop binding are enforced,no second merchant free-text review exists,P3,NO,PASS
+FRD-0286,FRAUD_ABUSE,purchase splitting,protect valid negatives,cross-shop pattern,signal triggers review rather than automatic guilt,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0287,FRAUD_ABUSE,threshold-timed ratings,protect valid negatives,cross-shop pattern,invalid contribution is corrected append-only,missing responses are not imputed,P3,YES,PASS
+FRD-0288,FRAUD_ABUSE,ad pressure,protect valid negatives,cross-shop pattern,valid unrelated feedback remains,no second merchant free-text review exists,P1,NO,PASS
+FRD-0289,FRAUD_ABUSE,reward pressure,protect valid negatives,cross-shop pattern,manual score edit and paid offset are rejected,product and shop aggregates remain separate,P2,NO,PASS
+FRD-0290,FRAUD_ABUSE,false-positive signal,protect valid negatives,cross-shop pattern,signal triggers review rather than automatic guilt,ads and rewards have zero reputation weight,P3,NO,PASS
+FRD-0291,FRAUD_ABUSE,QR replay attempt,request manual score edit,cross-shop pattern,invalid contribution is corrected append-only,customer identity is not publicly exposed,P0,NO,PASS
+FRD-0292,FRAUD_ABUSE,wrong shop confirmation,request manual score edit,cross-shop pattern,valid unrelated feedback remains,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+FRD-0293,FRAUD_ABUSE,staff self-rating,request manual score edit,cross-shop pattern,manual score edit and paid offset are rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+FRD-0294,FRAUD_ABUSE,household cluster,request manual score edit,cross-shop pattern,server authority and shop binding are enforced,derived state is idempotent and versioned,P3,NO,PASS
+FRD-0295,FRAUD_ABUSE,multi-account farm,request manual score edit,cross-shop pattern,signal triggers review rather than automatic guilt,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+FRD-0296,FRAUD_ABUSE,purchase splitting,request manual score edit,cross-shop pattern,invalid contribution is corrected append-only,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0297,FRAUD_ABUSE,threshold-timed ratings,request manual score edit,cross-shop pattern,valid unrelated feedback remains,missing responses are not imputed,P3,NO,PASS
+FRD-0298,FRAUD_ABUSE,ad pressure,request manual score edit,cross-shop pattern,manual score edit and paid offset are rejected,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+FRD-0299,FRAUD_ABUSE,reward pressure,request manual score edit,cross-shop pattern,server authority and shop binding are enforced,server-authoritative verified evidence is required,P3,NO,PASS
+FRD-0300,FRAUD_ABUSE,false-positive signal,request manual score edit,cross-shop pattern,signal triggers review rather than automatic guilt,missing responses are not imputed,P3,NO,PASS

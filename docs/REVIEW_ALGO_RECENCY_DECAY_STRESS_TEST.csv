@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+RCD-0001,RECENCY_DECAY,all evidence recent,apply lifetime model,primary badge,pilot applies no hidden decay,product and shop aggregates remain separate,P0,YES,PASS
+RCD-0002,RECENCY_DECAY,all evidence old,apply lifetime model,primary badge,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0003,RECENCY_DECAY,mixed recent and old,apply lifetime model,primary badge,old quality cannot hold a badge forever,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0004,RECENCY_DECAY,window boundary today,apply lifetime model,primary badge,low volume is not misconduct,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RCD-0005,RECENCY_DECAY,low-volume stale shop,apply lifetime model,primary badge,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0006,RECENCY_DECAY,ownership transfer,apply lifetime model,primary badge,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0007,RECENCY_DECAY,temporary closure,apply lifetime model,primary badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0008,RECENCY_DECAY,permanent closure,apply lifetime model,primary badge,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P1,NO,PASS
+RCD-0009,RECENCY_DECAY,algorithm version change,apply lifetime model,primary badge,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0010,RECENCY_DECAY,late correction,apply lifetime model,primary badge,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P2,NO,PASS
+RCD-0011,RECENCY_DECAY,all evidence recent,apply rolling window,primary badge,pilot applies no hidden decay,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0012,RECENCY_DECAY,all evidence old,apply rolling window,primary badge,window and version are disclosed,missing responses are not imputed,P3,YES,PASS
+RCD-0013,RECENCY_DECAY,mixed recent and old,apply rolling window,primary badge,old quality cannot hold a badge forever,no second merchant free-text review exists,P2,NO,PASS
+RCD-0014,RECENCY_DECAY,window boundary today,apply rolling window,primary badge,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0015,RECENCY_DECAY,low-volume stale shop,apply rolling window,primary badge,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P1,NO,PASS
+RCD-0016,RECENCY_DECAY,ownership transfer,apply rolling window,primary badge,pilot applies no hidden decay,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0017,RECENCY_DECAY,temporary closure,apply rolling window,primary badge,window and version are disclosed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0018,RECENCY_DECAY,permanent closure,apply rolling window,primary badge,low volume is not misconduct,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0019,RECENCY_DECAY,algorithm version change,apply rolling window,primary badge,ownership and closure use explicit lifecycle rules,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0020,RECENCY_DECAY,late correction,apply rolling window,primary badge,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0021,RECENCY_DECAY,all evidence recent,apply exponential decay,primary badge,window and version are disclosed,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0022,RECENCY_DECAY,all evidence old,apply exponential decay,primary badge,old quality cannot hold a badge forever,missing responses are not imputed,P1,NO,PASS
+RCD-0023,RECENCY_DECAY,mixed recent and old,apply exponential decay,primary badge,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RCD-0024,RECENCY_DECAY,window boundary today,apply exponential decay,primary badge,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0025,RECENCY_DECAY,low-volume stale shop,apply exponential decay,primary badge,pilot applies no hidden decay,missing responses are not imputed,P2,NO,PASS
+RCD-0026,RECENCY_DECAY,ownership transfer,apply exponential decay,primary badge,window and version are disclosed,no second merchant free-text review exists,P3,NO,PASS
+RCD-0027,RECENCY_DECAY,temporary closure,apply exponential decay,primary badge,old quality cannot hold a badge forever,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0028,RECENCY_DECAY,permanent closure,apply exponential decay,primary badge,low volume is not misconduct,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0029,RECENCY_DECAY,algorithm version change,apply exponential decay,primary badge,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P1,NO,PASS
+RCD-0030,RECENCY_DECAY,late correction,apply exponential decay,primary badge,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+RCD-0031,RECENCY_DECAY,all evidence recent,show dual view,primary badge,window and version are disclosed,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0032,RECENCY_DECAY,all evidence old,show dual view,primary badge,old quality cannot hold a badge forever,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0033,RECENCY_DECAY,mixed recent and old,show dual view,primary badge,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0034,RECENCY_DECAY,window boundary today,show dual view,primary badge,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P2,YES,PASS
+RCD-0035,RECENCY_DECAY,low-volume stale shop,show dual view,primary badge,window and version are disclosed,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0036,RECENCY_DECAY,ownership transfer,show dual view,primary badge,old quality cannot hold a badge forever,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RCD-0037,RECENCY_DECAY,temporary closure,show dual view,primary badge,low volume is not misconduct,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0038,RECENCY_DECAY,permanent closure,show dual view,primary badge,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P3,NO,PASS
+RCD-0039,RECENCY_DECAY,algorithm version change,show dual view,primary badge,pilot applies no hidden decay,no second merchant free-text review exists,P3,NO,PASS
+RCD-0040,RECENCY_DECAY,late correction,show dual view,primary badge,window and version are disclosed,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0041,RECENCY_DECAY,all evidence recent,segment at event,primary badge,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0042,RECENCY_DECAY,all evidence old,segment at event,primary badge,low volume is not misconduct,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0043,RECENCY_DECAY,mixed recent and old,segment at event,primary badge,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RCD-0044,RECENCY_DECAY,window boundary today,segment at event,primary badge,pilot applies no hidden decay,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0045,RECENCY_DECAY,low-volume stale shop,segment at event,primary badge,window and version are disclosed,customer identity is not publicly exposed,P3,YES,PASS
+RCD-0046,RECENCY_DECAY,ownership transfer,segment at event,primary badge,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RCD-0047,RECENCY_DECAY,temporary closure,segment at event,primary badge,low volume is not misconduct,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0048,RECENCY_DECAY,permanent closure,segment at event,primary badge,ownership and closure use explicit lifecycle rules,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0049,RECENCY_DECAY,algorithm version change,segment at event,primary badge,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0050,RECENCY_DECAY,late correction,segment at event,primary badge,window and version are disclosed,server-authoritative verified evidence is required,P1,NO,PASS
+RCD-0051,RECENCY_DECAY,all evidence recent,enter at risk,primary badge,old quality cannot hold a badge forever,missing responses are not imputed,P3,NO,PASS
+RCD-0052,RECENCY_DECAY,all evidence old,enter at risk,primary badge,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P2,NO,PASS
+RCD-0053,RECENCY_DECAY,mixed recent and old,enter at risk,primary badge,pilot applies no hidden decay,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0054,RECENCY_DECAY,window boundary today,enter at risk,primary badge,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0055,RECENCY_DECAY,low-volume stale shop,enter at risk,primary badge,old quality cannot hold a badge forever,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0056,RECENCY_DECAY,ownership transfer,enter at risk,primary badge,low volume is not misconduct,product and shop aggregates remain separate,P3,YES,PASS
+RCD-0057,RECENCY_DECAY,temporary closure,enter at risk,primary badge,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P1,NO,PASS
+RCD-0058,RECENCY_DECAY,permanent closure,enter at risk,primary badge,pilot applies no hidden decay,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0059,RECENCY_DECAY,algorithm version change,enter at risk,primary badge,window and version are disclosed,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+RCD-0060,RECENCY_DECAY,late correction,enter at risk,primary badge,old quality cannot hold a badge forever,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0061,RECENCY_DECAY,all evidence recent,restore freshness,primary badge,low volume is not misconduct,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0062,RECENCY_DECAY,all evidence old,restore freshness,primary badge,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0063,RECENCY_DECAY,mixed recent and old,restore freshness,primary badge,pilot applies no hidden decay,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0064,RECENCY_DECAY,window boundary today,restore freshness,primary badge,window and version are disclosed,missing responses are not imputed,P1,NO,PASS
+RCD-0065,RECENCY_DECAY,low-volume stale shop,restore freshness,primary badge,old quality cannot hold a badge forever,no second merchant free-text review exists,P3,NO,PASS
+RCD-0066,RECENCY_DECAY,ownership transfer,restore freshness,primary badge,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0067,RECENCY_DECAY,temporary closure,restore freshness,primary badge,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P2,YES,PASS
+RCD-0068,RECENCY_DECAY,permanent closure,restore freshness,primary badge,pilot applies no hidden decay,no second merchant free-text review exists,P3,NO,PASS
+RCD-0069,RECENCY_DECAY,algorithm version change,restore freshness,primary badge,old quality cannot hold a badge forever,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0070,RECENCY_DECAY,late correction,restore freshness,primary badge,low volume is not misconduct,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0071,RECENCY_DECAY,all evidence recent,recompute historical state,primary badge,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P1,NO,PASS
+RCD-0072,RECENCY_DECAY,all evidence old,recompute historical state,primary badge,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0073,RECENCY_DECAY,mixed recent and old,recompute historical state,primary badge,window and version are disclosed,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0074,RECENCY_DECAY,window boundary today,recompute historical state,primary badge,old quality cannot hold a badge forever,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0075,RECENCY_DECAY,low-volume stale shop,recompute historical state,primary badge,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0076,RECENCY_DECAY,ownership transfer,recompute historical state,primary badge,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0077,RECENCY_DECAY,temporary closure,recompute historical state,primary badge,pilot applies no hidden decay,missing responses are not imputed,P3,NO,PASS
+RCD-0078,RECENCY_DECAY,permanent closure,recompute historical state,primary badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+RCD-0079,RECENCY_DECAY,algorithm version change,recompute historical state,primary badge,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0080,RECENCY_DECAY,late correction,recompute historical state,primary badge,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0081,RECENCY_DECAY,all evidence recent,change window,primary badge,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P3,NO,PASS
+RCD-0082,RECENCY_DECAY,all evidence old,change window,primary badge,pilot applies no hidden decay,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0083,RECENCY_DECAY,mixed recent and old,change window,primary badge,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0084,RECENCY_DECAY,window boundary today,change window,primary badge,old quality cannot hold a badge forever,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0085,RECENCY_DECAY,low-volume stale shop,change window,primary badge,low volume is not misconduct,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RCD-0086,RECENCY_DECAY,ownership transfer,change window,primary badge,pilot applies no hidden decay,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0087,RECENCY_DECAY,temporary closure,change window,primary badge,window and version are disclosed,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0088,RECENCY_DECAY,permanent closure,change window,primary badge,old quality cannot hold a badge forever,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RCD-0089,RECENCY_DECAY,algorithm version change,change window,primary badge,low volume is not misconduct,quantity and basket value have zero vote weight,P3,YES,PASS
+RCD-0090,RECENCY_DECAY,late correction,change window,primary badge,ownership and closure use explicit lifecycle rules,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0091,RECENCY_DECAY,all evidence recent,explain customer view,primary badge,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0092,RECENCY_DECAY,all evidence old,explain customer view,primary badge,window and version are disclosed,server-authoritative verified evidence is required,P1,NO,PASS
+RCD-0093,RECENCY_DECAY,mixed recent and old,explain customer view,primary badge,old quality cannot hold a badge forever,missing responses are not imputed,P3,NO,PASS
+RCD-0094,RECENCY_DECAY,window boundary today,explain customer view,primary badge,low volume is not misconduct,no second merchant free-text review exists,P2,NO,PASS
+RCD-0095,RECENCY_DECAY,low-volume stale shop,explain customer view,primary badge,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0096,RECENCY_DECAY,ownership transfer,explain customer view,primary badge,pilot applies no hidden decay,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0097,RECENCY_DECAY,temporary closure,explain customer view,primary badge,window and version are disclosed,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0098,RECENCY_DECAY,permanent closure,explain customer view,primary badge,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0099,RECENCY_DECAY,algorithm version change,explain customer view,primary badge,low volume is not misconduct,quantity and basket value have zero vote weight,P1,NO,PASS
+RCD-0100,RECENCY_DECAY,late correction,explain customer view,primary badge,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P2,YES,PASS
+RCD-0101,RECENCY_DECAY,all evidence recent,apply lifetime model,dimension aggregate,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0102,RECENCY_DECAY,all evidence old,apply lifetime model,dimension aggregate,window and version are disclosed,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0103,RECENCY_DECAY,mixed recent and old,apply lifetime model,dimension aggregate,low volume is not misconduct,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0104,RECENCY_DECAY,window boundary today,apply lifetime model,dimension aggregate,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0105,RECENCY_DECAY,low-volume stale shop,apply lifetime model,dimension aggregate,pilot applies no hidden decay,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0106,RECENCY_DECAY,ownership transfer,apply lifetime model,dimension aggregate,window and version are disclosed,missing responses are not imputed,P1,NO,PASS
+RCD-0107,RECENCY_DECAY,temporary closure,apply lifetime model,dimension aggregate,old quality cannot hold a badge forever,no second merchant free-text review exists,P3,NO,PASS
+RCD-0108,RECENCY_DECAY,permanent closure,apply lifetime model,dimension aggregate,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0109,RECENCY_DECAY,algorithm version change,apply lifetime model,dimension aggregate,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0110,RECENCY_DECAY,late correction,apply lifetime model,dimension aggregate,pilot applies no hidden decay,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0111,RECENCY_DECAY,all evidence recent,apply rolling window,dimension aggregate,window and version are disclosed,product and shop aggregates remain separate,P3,YES,PASS
+RCD-0112,RECENCY_DECAY,all evidence old,apply rolling window,dimension aggregate,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0113,RECENCY_DECAY,mixed recent and old,apply rolling window,dimension aggregate,low volume is not misconduct,customer identity is not publicly exposed,P1,NO,PASS
+RCD-0114,RECENCY_DECAY,window boundary today,apply rolling window,dimension aggregate,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0115,RECENCY_DECAY,low-volume stale shop,apply rolling window,dimension aggregate,pilot applies no hidden decay,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0116,RECENCY_DECAY,ownership transfer,apply rolling window,dimension aggregate,window and version are disclosed,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0117,RECENCY_DECAY,temporary closure,apply rolling window,dimension aggregate,old quality cannot hold a badge forever,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RCD-0118,RECENCY_DECAY,permanent closure,apply rolling window,dimension aggregate,low volume is not misconduct,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0119,RECENCY_DECAY,algorithm version change,apply rolling window,dimension aggregate,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P3,NO,PASS
+RCD-0120,RECENCY_DECAY,late correction,apply rolling window,dimension aggregate,window and version are disclosed,no second merchant free-text review exists,P1,NO,PASS
+RCD-0121,RECENCY_DECAY,all evidence recent,apply exponential decay,dimension aggregate,old quality cannot hold a badge forever,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0122,RECENCY_DECAY,all evidence old,apply exponential decay,dimension aggregate,low volume is not misconduct,missing responses are not imputed,P3,YES,PASS
+RCD-0123,RECENCY_DECAY,mixed recent and old,apply exponential decay,dimension aggregate,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P3,NO,PASS
+RCD-0124,RECENCY_DECAY,window boundary today,apply exponential decay,dimension aggregate,pilot applies no hidden decay,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0125,RECENCY_DECAY,low-volume stale shop,apply exponential decay,dimension aggregate,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0126,RECENCY_DECAY,ownership transfer,apply exponential decay,dimension aggregate,old quality cannot hold a badge forever,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0127,RECENCY_DECAY,temporary closure,apply exponential decay,dimension aggregate,low volume is not misconduct,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RCD-0128,RECENCY_DECAY,permanent closure,apply exponential decay,dimension aggregate,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0129,RECENCY_DECAY,algorithm version change,apply exponential decay,dimension aggregate,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0130,RECENCY_DECAY,late correction,apply exponential decay,dimension aggregate,window and version are disclosed,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0131,RECENCY_DECAY,all evidence recent,show dual view,dimension aggregate,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0132,RECENCY_DECAY,all evidence old,show dual view,dimension aggregate,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0133,RECENCY_DECAY,mixed recent and old,show dual view,dimension aggregate,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+RCD-0134,RECENCY_DECAY,window boundary today,show dual view,dimension aggregate,pilot applies no hidden decay,server-authoritative verified evidence is required,P1,NO,PASS
+RCD-0135,RECENCY_DECAY,low-volume stale shop,show dual view,dimension aggregate,window and version are disclosed,missing responses are not imputed,P3,NO,PASS
+RCD-0136,RECENCY_DECAY,ownership transfer,show dual view,dimension aggregate,old quality cannot hold a badge forever,no second merchant free-text review exists,P2,NO,PASS
+RCD-0137,RECENCY_DECAY,temporary closure,show dual view,dimension aggregate,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0138,RECENCY_DECAY,permanent closure,show dual view,dimension aggregate,pilot applies no hidden decay,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0139,RECENCY_DECAY,algorithm version change,show dual view,dimension aggregate,window and version are disclosed,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0140,RECENCY_DECAY,late correction,show dual view,dimension aggregate,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0141,RECENCY_DECAY,all evidence recent,segment at event,dimension aggregate,low volume is not misconduct,quantity and basket value have zero vote weight,P1,NO,PASS
+RCD-0142,RECENCY_DECAY,all evidence old,segment at event,dimension aggregate,ownership and closure use explicit lifecycle rules,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0143,RECENCY_DECAY,mixed recent and old,segment at event,dimension aggregate,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0144,RECENCY_DECAY,window boundary today,segment at event,dimension aggregate,window and version are disclosed,quantity and basket value have zero vote weight,P3,YES,PASS
+RCD-0145,RECENCY_DECAY,low-volume stale shop,segment at event,dimension aggregate,old quality cannot hold a badge forever,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0146,RECENCY_DECAY,ownership transfer,segment at event,dimension aggregate,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RCD-0147,RECENCY_DECAY,temporary closure,segment at event,dimension aggregate,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0148,RECENCY_DECAY,permanent closure,segment at event,dimension aggregate,pilot applies no hidden decay,missing responses are not imputed,P1,NO,PASS
+RCD-0149,RECENCY_DECAY,algorithm version change,segment at event,dimension aggregate,window and version are disclosed,no second merchant free-text review exists,P3,NO,PASS
+RCD-0150,RECENCY_DECAY,late correction,segment at event,dimension aggregate,old quality cannot hold a badge forever,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0151,RECENCY_DECAY,all evidence recent,enter at risk,dimension aggregate,low volume is not misconduct,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0152,RECENCY_DECAY,all evidence old,enter at risk,dimension aggregate,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0153,RECENCY_DECAY,mixed recent and old,enter at risk,dimension aggregate,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0154,RECENCY_DECAY,window boundary today,enter at risk,dimension aggregate,old quality cannot hold a badge forever,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0155,RECENCY_DECAY,low-volume stale shop,enter at risk,dimension aggregate,low volume is not misconduct,customer identity is not publicly exposed,P1,YES,PASS
+RCD-0156,RECENCY_DECAY,ownership transfer,enter at risk,dimension aggregate,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0157,RECENCY_DECAY,temporary closure,enter at risk,dimension aggregate,pilot applies no hidden decay,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0158,RECENCY_DECAY,permanent closure,enter at risk,dimension aggregate,window and version are disclosed,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0159,RECENCY_DECAY,algorithm version change,enter at risk,dimension aggregate,old quality cannot hold a badge forever,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0160,RECENCY_DECAY,late correction,enter at risk,dimension aggregate,low volume is not misconduct,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0161,RECENCY_DECAY,all evidence recent,restore freshness,dimension aggregate,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P3,NO,PASS
+RCD-0162,RECENCY_DECAY,all evidence old,restore freshness,dimension aggregate,pilot applies no hidden decay,no second merchant free-text review exists,P1,NO,PASS
+RCD-0163,RECENCY_DECAY,mixed recent and old,restore freshness,dimension aggregate,window and version are disclosed,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0164,RECENCY_DECAY,window boundary today,restore freshness,dimension aggregate,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0165,RECENCY_DECAY,low-volume stale shop,restore freshness,dimension aggregate,low volume is not misconduct,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0166,RECENCY_DECAY,ownership transfer,restore freshness,dimension aggregate,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P2,YES,PASS
+RCD-0167,RECENCY_DECAY,temporary closure,restore freshness,dimension aggregate,pilot applies no hidden decay,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0168,RECENCY_DECAY,permanent closure,restore freshness,dimension aggregate,window and version are disclosed,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0169,RECENCY_DECAY,algorithm version change,restore freshness,dimension aggregate,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RCD-0170,RECENCY_DECAY,late correction,restore freshness,dimension aggregate,low volume is not misconduct,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0171,RECENCY_DECAY,all evidence recent,recompute historical state,dimension aggregate,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0172,RECENCY_DECAY,all evidence old,recompute historical state,dimension aggregate,window and version are disclosed,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0173,RECENCY_DECAY,mixed recent and old,recompute historical state,dimension aggregate,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0174,RECENCY_DECAY,window boundary today,recompute historical state,dimension aggregate,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0175,RECENCY_DECAY,low-volume stale shop,recompute historical state,dimension aggregate,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P0,NO,PASS
+RCD-0176,RECENCY_DECAY,ownership transfer,recompute historical state,dimension aggregate,pilot applies no hidden decay,product and shop aggregates remain separate,P1,NO,PASS
+RCD-0177,RECENCY_DECAY,temporary closure,recompute historical state,dimension aggregate,window and version are disclosed,missing responses are not imputed,P3,YES,PASS
+RCD-0178,RECENCY_DECAY,permanent closure,recompute historical state,dimension aggregate,old quality cannot hold a badge forever,no second merchant free-text review exists,P2,NO,PASS
+RCD-0179,RECENCY_DECAY,algorithm version change,recompute historical state,dimension aggregate,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0180,RECENCY_DECAY,late correction,recompute historical state,dimension aggregate,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0181,RECENCY_DECAY,all evidence recent,change window,dimension aggregate,pilot applies no hidden decay,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0182,RECENCY_DECAY,all evidence old,change window,dimension aggregate,window and version are disclosed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0183,RECENCY_DECAY,mixed recent and old,change window,dimension aggregate,old quality cannot hold a badge forever,quantity and basket value have zero vote weight,P1,NO,PASS
+RCD-0184,RECENCY_DECAY,window boundary today,change window,dimension aggregate,low volume is not misconduct,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0185,RECENCY_DECAY,low-volume stale shop,change window,dimension aggregate,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0186,RECENCY_DECAY,ownership transfer,change window,dimension aggregate,pilot applies no hidden decay,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0187,RECENCY_DECAY,temporary closure,change window,dimension aggregate,window and version are disclosed,missing responses are not imputed,P2,NO,PASS
+RCD-0188,RECENCY_DECAY,permanent closure,change window,dimension aggregate,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RCD-0189,RECENCY_DECAY,algorithm version change,change window,dimension aggregate,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0190,RECENCY_DECAY,late correction,change window,dimension aggregate,pilot applies no hidden decay,missing responses are not imputed,P1,NO,PASS
+RCD-0191,RECENCY_DECAY,all evidence recent,explain customer view,dimension aggregate,window and version are disclosed,no second merchant free-text review exists,P3,NO,PASS
+RCD-0192,RECENCY_DECAY,all evidence old,explain customer view,dimension aggregate,old quality cannot hold a badge forever,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0193,RECENCY_DECAY,mixed recent and old,explain customer view,dimension aggregate,low volume is not misconduct,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0194,RECENCY_DECAY,window boundary today,explain customer view,dimension aggregate,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0195,RECENCY_DECAY,low-volume stale shop,explain customer view,dimension aggregate,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0196,RECENCY_DECAY,ownership transfer,explain customer view,dimension aggregate,window and version are disclosed,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0197,RECENCY_DECAY,temporary closure,explain customer view,dimension aggregate,old quality cannot hold a badge forever,derived state is idempotent and versioned,P1,NO,PASS
+RCD-0198,RECENCY_DECAY,permanent closure,explain customer view,dimension aggregate,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0199,RECENCY_DECAY,algorithm version change,explain customer view,dimension aggregate,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P2,YES,PASS
+RCD-0200,RECENCY_DECAY,late correction,explain customer view,dimension aggregate,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0201,RECENCY_DECAY,all evidence recent,apply lifetime model,local meta badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0202,RECENCY_DECAY,all evidence old,apply lifetime model,local meta badge,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0203,RECENCY_DECAY,mixed recent and old,apply lifetime model,local meta badge,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0204,RECENCY_DECAY,window boundary today,apply lifetime model,local meta badge,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P0,NO,PASS
+RCD-0205,RECENCY_DECAY,low-volume stale shop,apply lifetime model,local meta badge,window and version are disclosed,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0206,RECENCY_DECAY,ownership transfer,apply lifetime model,local meta badge,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0207,RECENCY_DECAY,temporary closure,apply lifetime model,local meta badge,low volume is not misconduct,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0208,RECENCY_DECAY,permanent closure,apply lifetime model,local meta badge,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RCD-0209,RECENCY_DECAY,algorithm version change,apply lifetime model,local meta badge,pilot applies no hidden decay,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0210,RECENCY_DECAY,late correction,apply lifetime model,local meta badge,window and version are disclosed,customer identity is not publicly exposed,P3,YES,PASS
+RCD-0211,RECENCY_DECAY,all evidence recent,apply rolling window,local meta badge,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RCD-0212,RECENCY_DECAY,all evidence old,apply rolling window,local meta badge,low volume is not misconduct,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0213,RECENCY_DECAY,mixed recent and old,apply rolling window,local meta badge,ownership and closure use explicit lifecycle rules,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0214,RECENCY_DECAY,window boundary today,apply rolling window,local meta badge,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0215,RECENCY_DECAY,low-volume stale shop,apply rolling window,local meta badge,window and version are disclosed,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0216,RECENCY_DECAY,ownership transfer,apply rolling window,local meta badge,old quality cannot hold a badge forever,missing responses are not imputed,P3,NO,PASS
+RCD-0217,RECENCY_DECAY,temporary closure,apply rolling window,local meta badge,low volume is not misconduct,no second merchant free-text review exists,P2,NO,PASS
+RCD-0218,RECENCY_DECAY,permanent closure,apply rolling window,local meta badge,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P1,NO,PASS
+RCD-0219,RECENCY_DECAY,algorithm version change,apply rolling window,local meta badge,pilot applies no hidden decay,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0220,RECENCY_DECAY,late correction,apply rolling window,local meta badge,window and version are disclosed,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0221,RECENCY_DECAY,all evidence recent,apply exponential decay,local meta badge,old quality cannot hold a badge forever,product and shop aggregates remain separate,P3,YES,PASS
+RCD-0222,RECENCY_DECAY,all evidence old,apply exponential decay,local meta badge,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0223,RECENCY_DECAY,mixed recent and old,apply exponential decay,local meta badge,pilot applies no hidden decay,customer identity is not publicly exposed,P2,NO,PASS
+RCD-0224,RECENCY_DECAY,window boundary today,apply exponential decay,local meta badge,window and version are disclosed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0225,RECENCY_DECAY,low-volume stale shop,apply exponential decay,local meta badge,old quality cannot hold a badge forever,quantity and basket value have zero vote weight,P1,NO,PASS
+RCD-0226,RECENCY_DECAY,ownership transfer,apply exponential decay,local meta badge,low volume is not misconduct,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0227,RECENCY_DECAY,temporary closure,apply exponential decay,local meta badge,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0228,RECENCY_DECAY,permanent closure,apply exponential decay,local meta badge,pilot applies no hidden decay,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0229,RECENCY_DECAY,algorithm version change,apply exponential decay,local meta badge,window and version are disclosed,missing responses are not imputed,P2,NO,PASS
+RCD-0230,RECENCY_DECAY,late correction,apply exponential decay,local meta badge,old quality cannot hold a badge forever,no second merchant free-text review exists,P3,NO,PASS
+RCD-0231,RECENCY_DECAY,all evidence recent,show dual view,local meta badge,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0232,RECENCY_DECAY,all evidence old,show dual view,local meta badge,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P1,YES,PASS
+RCD-0233,RECENCY_DECAY,mixed recent and old,show dual view,local meta badge,pilot applies no hidden decay,no second merchant free-text review exists,P0,NO,PASS
+RCD-0234,RECENCY_DECAY,window boundary today,show dual view,local meta badge,window and version are disclosed,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0235,RECENCY_DECAY,low-volume stale shop,show dual view,local meta badge,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0236,RECENCY_DECAY,ownership transfer,show dual view,local meta badge,low volume is not misconduct,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0237,RECENCY_DECAY,temporary closure,show dual view,local meta badge,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0238,RECENCY_DECAY,permanent closure,show dual view,local meta badge,pilot applies no hidden decay,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0239,RECENCY_DECAY,algorithm version change,show dual view,local meta badge,old quality cannot hold a badge forever,derived state is idempotent and versioned,P1,NO,PASS
+RCD-0240,RECENCY_DECAY,late correction,show dual view,local meta badge,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0241,RECENCY_DECAY,all evidence recent,segment at event,local meta badge,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0242,RECENCY_DECAY,all evidence old,segment at event,local meta badge,pilot applies no hidden decay,missing responses are not imputed,P3,NO,PASS
+RCD-0243,RECENCY_DECAY,mixed recent and old,segment at event,local meta badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RCD-0244,RECENCY_DECAY,window boundary today,segment at event,local meta badge,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0245,RECENCY_DECAY,low-volume stale shop,segment at event,local meta badge,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0246,RECENCY_DECAY,ownership transfer,segment at event,local meta badge,ownership and closure use explicit lifecycle rules,no second merchant free-text review exists,P1,NO,PASS
+RCD-0247,RECENCY_DECAY,temporary closure,segment at event,local meta badge,pilot applies no hidden decay,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0248,RECENCY_DECAY,permanent closure,segment at event,local meta badge,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0249,RECENCY_DECAY,algorithm version change,segment at event,local meta badge,old quality cannot hold a badge forever,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0250,RECENCY_DECAY,late correction,segment at event,local meta badge,low volume is not misconduct,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RCD-0251,RECENCY_DECAY,all evidence recent,enter at risk,local meta badge,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0252,RECENCY_DECAY,all evidence old,enter at risk,local meta badge,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0253,RECENCY_DECAY,mixed recent and old,enter at risk,local meta badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RCD-0254,RECENCY_DECAY,window boundary today,enter at risk,local meta badge,old quality cannot hold a badge forever,quantity and basket value have zero vote weight,P3,YES,PASS
+RCD-0255,RECENCY_DECAY,low-volume stale shop,enter at risk,local meta badge,low volume is not misconduct,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0256,RECENCY_DECAY,ownership transfer,enter at risk,local meta badge,pilot applies no hidden decay,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RCD-0257,RECENCY_DECAY,temporary closure,enter at risk,local meta badge,window and version are disclosed,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0258,RECENCY_DECAY,permanent closure,enter at risk,local meta badge,old quality cannot hold a badge forever,missing responses are not imputed,P3,NO,PASS
+RCD-0259,RECENCY_DECAY,algorithm version change,enter at risk,local meta badge,low volume is not misconduct,no second merchant free-text review exists,P2,NO,PASS
+RCD-0260,RECENCY_DECAY,late correction,enter at risk,local meta badge,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P1,NO,PASS
+RCD-0261,RECENCY_DECAY,all evidence recent,restore freshness,local meta badge,pilot applies no hidden decay,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0262,RECENCY_DECAY,all evidence old,restore freshness,local meta badge,window and version are disclosed,customer identity is not publicly exposed,P0,NO,PASS
+RCD-0263,RECENCY_DECAY,mixed recent and old,restore freshness,local meta badge,old quality cannot hold a badge forever,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0264,RECENCY_DECAY,window boundary today,restore freshness,local meta badge,low volume is not misconduct,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0265,RECENCY_DECAY,low-volume stale shop,restore freshness,local meta badge,ownership and closure use explicit lifecycle rules,customer identity is not publicly exposed,P2,YES,PASS
+RCD-0266,RECENCY_DECAY,ownership transfer,restore freshness,local meta badge,pilot applies no hidden decay,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0267,RECENCY_DECAY,temporary closure,restore freshness,local meta badge,window and version are disclosed,quantity and basket value have zero vote weight,P1,NO,PASS
+RCD-0268,RECENCY_DECAY,permanent closure,restore freshness,local meta badge,old quality cannot hold a badge forever,derived state is idempotent and versioned,P2,NO,PASS
+RCD-0269,RECENCY_DECAY,algorithm version change,restore freshness,local meta badge,low volume is not misconduct,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0270,RECENCY_DECAY,late correction,restore freshness,local meta badge,ownership and closure use explicit lifecycle rules,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0271,RECENCY_DECAY,all evidence recent,recompute historical state,local meta badge,pilot applies no hidden decay,missing responses are not imputed,P2,NO,PASS
+RCD-0272,RECENCY_DECAY,all evidence old,recompute historical state,local meta badge,window and version are disclosed,no second merchant free-text review exists,P3,NO,PASS
+RCD-0273,RECENCY_DECAY,mixed recent and old,recompute historical state,local meta badge,low volume is not misconduct,product and shop aggregates remain separate,P3,NO,PASS
+RCD-0274,RECENCY_DECAY,window boundary today,recompute historical state,local meta badge,ownership and closure use explicit lifecycle rules,ads and rewards have zero reputation weight,P1,NO,PASS
+RCD-0275,RECENCY_DECAY,low-volume stale shop,recompute historical state,local meta badge,pilot applies no hidden decay,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0276,RECENCY_DECAY,ownership transfer,recompute historical state,local meta badge,window and version are disclosed,product and shop aggregates remain separate,P3,YES,PASS
+RCD-0277,RECENCY_DECAY,temporary closure,recompute historical state,local meta badge,old quality cannot hold a badge forever,ads and rewards have zero reputation weight,P2,NO,PASS
+RCD-0278,RECENCY_DECAY,permanent closure,recompute historical state,local meta badge,low volume is not misconduct,customer identity is not publicly exposed,P3,NO,PASS
+RCD-0279,RECENCY_DECAY,algorithm version change,recompute historical state,local meta badge,ownership and closure use explicit lifecycle rules,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RCD-0280,RECENCY_DECAY,late correction,recompute historical state,local meta badge,pilot applies no hidden decay,quantity and basket value have zero vote weight,P2,NO,PASS
+RCD-0281,RECENCY_DECAY,all evidence recent,change window,local meta badge,window and version are disclosed,derived state is idempotent and versioned,P1,NO,PASS
+RCD-0282,RECENCY_DECAY,all evidence old,change window,local meta badge,old quality cannot hold a badge forever,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RCD-0283,RECENCY_DECAY,mixed recent and old,change window,local meta badge,low volume is not misconduct,server-authoritative verified evidence is required,P2,NO,PASS
+RCD-0284,RECENCY_DECAY,window boundary today,change window,local meta badge,ownership and closure use explicit lifecycle rules,missing responses are not imputed,P3,NO,PASS
+RCD-0285,RECENCY_DECAY,low-volume stale shop,change window,local meta badge,pilot applies no hidden decay,no second merchant free-text review exists,P3,NO,PASS
+RCD-0286,RECENCY_DECAY,ownership transfer,change window,local meta badge,window and version are disclosed,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0287,RECENCY_DECAY,temporary closure,change window,local meta badge,old quality cannot hold a badge forever,missing responses are not imputed,P3,YES,PASS
+RCD-0288,RECENCY_DECAY,permanent closure,change window,local meta badge,low volume is not misconduct,no second merchant free-text review exists,P1,NO,PASS
+RCD-0289,RECENCY_DECAY,algorithm version change,change window,local meta badge,ownership and closure use explicit lifecycle rules,product and shop aggregates remain separate,P2,NO,PASS
+RCD-0290,RECENCY_DECAY,late correction,change window,local meta badge,window and version are disclosed,ads and rewards have zero reputation weight,P3,NO,PASS
+RCD-0291,RECENCY_DECAY,all evidence recent,explain customer view,local meta badge,old quality cannot hold a badge forever,customer identity is not publicly exposed,P0,NO,PASS
+RCD-0292,RECENCY_DECAY,all evidence old,explain customer view,local meta badge,low volume is not misconduct,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RCD-0293,RECENCY_DECAY,mixed recent and old,explain customer view,local meta badge,ownership and closure use explicit lifecycle rules,quantity and basket value have zero vote weight,P3,NO,PASS
+RCD-0294,RECENCY_DECAY,window boundary today,explain customer view,local meta badge,pilot applies no hidden decay,derived state is idempotent and versioned,P3,NO,PASS
+RCD-0295,RECENCY_DECAY,low-volume stale shop,explain customer view,local meta badge,window and version are disclosed,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RCD-0296,RECENCY_DECAY,ownership transfer,explain customer view,local meta badge,old quality cannot hold a badge forever,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0297,RECENCY_DECAY,temporary closure,explain customer view,local meta badge,low volume is not misconduct,missing responses are not imputed,P3,NO,PASS
+RCD-0298,RECENCY_DECAY,permanent closure,explain customer view,local meta badge,ownership and closure use explicit lifecycle rules,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+RCD-0299,RECENCY_DECAY,algorithm version change,explain customer view,local meta badge,pilot applies no hidden decay,server-authoritative verified evidence is required,P3,NO,PASS
+RCD-0300,RECENCY_DECAY,late correction,explain customer view,local meta badge,window and version are disclosed,missing responses are not imputed,P3,NO,PASS

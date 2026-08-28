@@ -1,0 +1,501 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+RPT-0001,REPEAT_CROSS_SHOP,same product Shop A first purchase,create product review,latest response positive,lifetime product-review count remains one,product and shop aggregates remain separate,P0,YES,PASS
+RPT-0002,REPEAT_CROSS_SHOP,same product Shop A repeat,create product review,latest response positive,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0003,REPEAT_CROSS_SHOP,same product Shop B repeat,create product review,latest response positive,free text remains at immutable origin shop,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0004,REPEAT_CROSS_SHOP,multi-product basket,create product review,latest response positive,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0005,REPEAT_CROSS_SHOP,quantity ten,create product review,latest response positive,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0006,REPEAT_CROSS_SHOP,prior review deleted,create product review,latest response positive,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0007,REPEAT_CROSS_SHOP,prior review recreated,create product review,latest response positive,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0008,REPEAT_CROSS_SHOP,old purchase predates review,create product review,latest response positive,free text remains at immutable origin shop,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0009,REPEAT_CROSS_SHOP,simultaneous shops,create product review,latest response positive,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0010,REPEAT_CROSS_SHOP,rolling window boundary,create product review,latest response positive,quantity creates no additional weight,no second merchant free-text review exists,P2,NO,PASS
+RPT-0011,REPEAT_CROSS_SHOP,same product Shop A first purchase,edit existing product review,latest response positive,lifetime product-review count remains one,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0012,REPEAT_CROSS_SHOP,same product Shop A repeat,edit existing product review,latest response positive,each shop keeps independent structured evidence,missing responses are not imputed,P3,YES,PASS
+RPT-0013,REPEAT_CROSS_SHOP,same product Shop B repeat,edit existing product review,latest response positive,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0014,REPEAT_CROSS_SHOP,multi-product basket,edit existing product review,latest response positive,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0015,REPEAT_CROSS_SHOP,quantity ten,edit existing product review,latest response positive,quantity creates no additional weight,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0016,REPEAT_CROSS_SHOP,prior review deleted,edit existing product review,latest response positive,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0017,REPEAT_CROSS_SHOP,prior review recreated,edit existing product review,latest response positive,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0018,REPEAT_CROSS_SHOP,old purchase predates review,edit existing product review,latest response positive,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0019,REPEAT_CROSS_SHOP,simultaneous shops,edit existing product review,latest response positive,quantity creates no additional weight,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0020,REPEAT_CROSS_SHOP,rolling window boundary,edit existing product review,latest response positive,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0021,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop A evaluation,latest response positive,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0022,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop A evaluation,latest response positive,free text remains at immutable origin shop,missing responses are not imputed,P1,NO,PASS
+RPT-0023,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop A evaluation,latest response positive,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RPT-0024,REPEAT_CROSS_SHOP,multi-product basket,submit Shop A evaluation,latest response positive,quantity creates no additional weight,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0025,REPEAT_CROSS_SHOP,quantity ten,submit Shop A evaluation,latest response positive,lifetime product-review count remains one,missing responses are not imputed,P2,NO,PASS
+RPT-0026,REPEAT_CROSS_SHOP,prior review deleted,submit Shop A evaluation,latest response positive,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0027,REPEAT_CROSS_SHOP,prior review recreated,submit Shop A evaluation,latest response positive,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0028,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop A evaluation,latest response positive,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0029,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop A evaluation,latest response positive,quantity creates no additional weight,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0030,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop A evaluation,latest response positive,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+RPT-0031,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop B evaluation,latest response positive,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0032,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop B evaluation,latest response positive,free text remains at immutable origin shop,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0033,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop B evaluation,latest response positive,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0034,REPEAT_CROSS_SHOP,multi-product basket,submit Shop B evaluation,latest response positive,quantity creates no additional weight,quantity and basket value have zero vote weight,P2,YES,PASS
+RPT-0035,REPEAT_CROSS_SHOP,quantity ten,submit Shop B evaluation,latest response positive,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0036,REPEAT_CROSS_SHOP,prior review deleted,submit Shop B evaluation,latest response positive,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0037,REPEAT_CROSS_SHOP,prior review recreated,submit Shop B evaluation,latest response positive,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0038,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop B evaluation,latest response positive,quantity creates no additional weight,missing responses are not imputed,P3,NO,PASS
+RPT-0039,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop B evaluation,latest response positive,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0040,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop B evaluation,latest response positive,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0041,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit both shop evaluations,latest response positive,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0042,REPEAT_CROSS_SHOP,same product Shop A repeat,submit both shop evaluations,latest response positive,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0043,REPEAT_CROSS_SHOP,same product Shop B repeat,submit both shop evaluations,latest response positive,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0044,REPEAT_CROSS_SHOP,multi-product basket,submit both shop evaluations,latest response positive,lifetime product-review count remains one,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0045,REPEAT_CROSS_SHOP,quantity ten,submit both shop evaluations,latest response positive,each shop keeps independent structured evidence,customer identity is not publicly exposed,P3,YES,PASS
+RPT-0046,REPEAT_CROSS_SHOP,prior review deleted,submit both shop evaluations,latest response positive,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0047,REPEAT_CROSS_SHOP,prior review recreated,submit both shop evaluations,latest response positive,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0048,REPEAT_CROSS_SHOP,old purchase predates review,submit both shop evaluations,latest response positive,quantity creates no additional weight,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0049,REPEAT_CROSS_SHOP,simultaneous shops,submit both shop evaluations,latest response positive,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0050,REPEAT_CROSS_SHOP,rolling window boundary,submit both shop evaluations,latest response positive,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0051,REPEAT_CROSS_SHOP,same product Shop A first purchase,replace effective contribution,latest response positive,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0052,REPEAT_CROSS_SHOP,same product Shop A repeat,replace effective contribution,latest response positive,quantity creates no additional weight,no second merchant free-text review exists,P2,NO,PASS
+RPT-0053,REPEAT_CROSS_SHOP,same product Shop B repeat,replace effective contribution,latest response positive,lifetime product-review count remains one,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0054,REPEAT_CROSS_SHOP,multi-product basket,replace effective contribution,latest response positive,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0055,REPEAT_CROSS_SHOP,quantity ten,replace effective contribution,latest response positive,free text remains at immutable origin shop,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0056,REPEAT_CROSS_SHOP,prior review deleted,replace effective contribution,latest response positive,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,YES,PASS
+RPT-0057,REPEAT_CROSS_SHOP,prior review recreated,replace effective contribution,latest response positive,quantity creates no additional weight,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0058,REPEAT_CROSS_SHOP,old purchase predates review,replace effective contribution,latest response positive,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0059,REPEAT_CROSS_SHOP,simultaneous shops,replace effective contribution,latest response positive,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+RPT-0060,REPEAT_CROSS_SHOP,rolling window boundary,replace effective contribution,latest response positive,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0061,REPEAT_CROSS_SHOP,same product Shop A first purchase,retry old purchase,latest response positive,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0062,REPEAT_CROSS_SHOP,same product Shop A repeat,retry old purchase,latest response positive,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0063,REPEAT_CROSS_SHOP,same product Shop B repeat,retry old purchase,latest response positive,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0064,REPEAT_CROSS_SHOP,multi-product basket,retry old purchase,latest response positive,each shop keeps independent structured evidence,missing responses are not imputed,P1,NO,PASS
+RPT-0065,REPEAT_CROSS_SHOP,quantity ten,retry old purchase,latest response positive,free text remains at immutable origin shop,no second merchant free-text review exists,P3,NO,PASS
+RPT-0066,REPEAT_CROSS_SHOP,prior review deleted,retry old purchase,latest response positive,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0067,REPEAT_CROSS_SHOP,prior review recreated,retry old purchase,latest response positive,quantity creates no additional weight,missing responses are not imputed,P2,YES,PASS
+RPT-0068,REPEAT_CROSS_SHOP,old purchase predates review,retry old purchase,latest response positive,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0069,REPEAT_CROSS_SHOP,simultaneous shops,retry old purchase,latest response positive,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0070,REPEAT_CROSS_SHOP,rolling window boundary,retry old purchase,latest response positive,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0071,REPEAT_CROSS_SHOP,same product Shop A first purchase,change basket quantity,latest response positive,quantity creates no additional weight,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0072,REPEAT_CROSS_SHOP,same product Shop A repeat,change basket quantity,latest response positive,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0073,REPEAT_CROSS_SHOP,same product Shop B repeat,change basket quantity,latest response positive,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0074,REPEAT_CROSS_SHOP,multi-product basket,change basket quantity,latest response positive,free text remains at immutable origin shop,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0075,REPEAT_CROSS_SHOP,quantity ten,change basket quantity,latest response positive,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0076,REPEAT_CROSS_SHOP,prior review deleted,change basket quantity,latest response positive,quantity creates no additional weight,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0077,REPEAT_CROSS_SHOP,prior review recreated,change basket quantity,latest response positive,lifetime product-review count remains one,missing responses are not imputed,P3,NO,PASS
+RPT-0078,REPEAT_CROSS_SHOP,old purchase predates review,change basket quantity,latest response positive,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+RPT-0079,REPEAT_CROSS_SHOP,simultaneous shops,change basket quantity,latest response positive,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0080,REPEAT_CROSS_SHOP,rolling window boundary,change basket quantity,latest response positive,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0081,REPEAT_CROSS_SHOP,same product Shop A first purchase,cross window edge,latest response positive,quantity creates no additional weight,no second merchant free-text review exists,P3,NO,PASS
+RPT-0082,REPEAT_CROSS_SHOP,same product Shop A repeat,cross window edge,latest response positive,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0083,REPEAT_CROSS_SHOP,same product Shop B repeat,cross window edge,latest response positive,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0084,REPEAT_CROSS_SHOP,multi-product basket,cross window edge,latest response positive,free text remains at immutable origin shop,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0085,REPEAT_CROSS_SHOP,quantity ten,cross window edge,latest response positive,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0086,REPEAT_CROSS_SHOP,prior review deleted,cross window edge,latest response positive,lifetime product-review count remains one,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0087,REPEAT_CROSS_SHOP,prior review recreated,cross window edge,latest response positive,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0088,REPEAT_CROSS_SHOP,old purchase predates review,cross window edge,latest response positive,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RPT-0089,REPEAT_CROSS_SHOP,simultaneous shops,cross window edge,latest response positive,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,YES,PASS
+RPT-0090,REPEAT_CROSS_SHOP,rolling window boundary,cross window edge,latest response positive,quantity creates no additional weight,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0091,REPEAT_CROSS_SHOP,same product Shop A first purchase,correct evidence,latest response positive,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0092,REPEAT_CROSS_SHOP,same product Shop A repeat,correct evidence,latest response positive,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0093,REPEAT_CROSS_SHOP,same product Shop B repeat,correct evidence,latest response positive,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0094,REPEAT_CROSS_SHOP,multi-product basket,correct evidence,latest response positive,effective customer cap prevents over-weighting,no second merchant free-text review exists,P2,NO,PASS
+RPT-0095,REPEAT_CROSS_SHOP,quantity ten,correct evidence,latest response positive,quantity creates no additional weight,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0096,REPEAT_CROSS_SHOP,prior review deleted,correct evidence,latest response positive,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0097,REPEAT_CROSS_SHOP,prior review recreated,correct evidence,latest response positive,each shop keeps independent structured evidence,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0098,REPEAT_CROSS_SHOP,old purchase predates review,correct evidence,latest response positive,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0099,REPEAT_CROSS_SHOP,simultaneous shops,correct evidence,latest response positive,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0100,REPEAT_CROSS_SHOP,rolling window boundary,correct evidence,latest response positive,quantity creates no additional weight,customer identity is not publicly exposed,P2,YES,PASS
+RPT-0101,REPEAT_CROSS_SHOP,same product Shop A first purchase,create product review,latest response negative,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0102,REPEAT_CROSS_SHOP,same product Shop A repeat,create product review,latest response negative,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0103,REPEAT_CROSS_SHOP,same product Shop B repeat,create product review,latest response negative,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0104,REPEAT_CROSS_SHOP,multi-product basket,create product review,latest response negative,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0105,REPEAT_CROSS_SHOP,quantity ten,create product review,latest response negative,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0106,REPEAT_CROSS_SHOP,prior review deleted,create product review,latest response negative,each shop keeps independent structured evidence,missing responses are not imputed,P1,NO,PASS
+RPT-0107,REPEAT_CROSS_SHOP,prior review recreated,create product review,latest response negative,free text remains at immutable origin shop,no second merchant free-text review exists,P3,NO,PASS
+RPT-0108,REPEAT_CROSS_SHOP,old purchase predates review,create product review,latest response negative,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0109,REPEAT_CROSS_SHOP,simultaneous shops,create product review,latest response negative,quantity creates no additional weight,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0110,REPEAT_CROSS_SHOP,rolling window boundary,create product review,latest response negative,lifetime product-review count remains one,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0111,REPEAT_CROSS_SHOP,same product Shop A first purchase,edit existing product review,latest response negative,each shop keeps independent structured evidence,product and shop aggregates remain separate,P3,YES,PASS
+RPT-0112,REPEAT_CROSS_SHOP,same product Shop A repeat,edit existing product review,latest response negative,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0113,REPEAT_CROSS_SHOP,same product Shop B repeat,edit existing product review,latest response negative,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0114,REPEAT_CROSS_SHOP,multi-product basket,edit existing product review,latest response negative,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0115,REPEAT_CROSS_SHOP,quantity ten,edit existing product review,latest response negative,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0116,REPEAT_CROSS_SHOP,prior review deleted,edit existing product review,latest response negative,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0117,REPEAT_CROSS_SHOP,prior review recreated,edit existing product review,latest response negative,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RPT-0118,REPEAT_CROSS_SHOP,old purchase predates review,edit existing product review,latest response negative,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0119,REPEAT_CROSS_SHOP,simultaneous shops,edit existing product review,latest response negative,quantity creates no additional weight,missing responses are not imputed,P3,NO,PASS
+RPT-0120,REPEAT_CROSS_SHOP,rolling window boundary,edit existing product review,latest response negative,each shop keeps independent structured evidence,no second merchant free-text review exists,P1,NO,PASS
+RPT-0121,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop A evaluation,latest response negative,free text remains at immutable origin shop,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0122,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop A evaluation,latest response negative,effective customer cap prevents over-weighting,missing responses are not imputed,P3,YES,PASS
+RPT-0123,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop A evaluation,latest response negative,quantity creates no additional weight,no second merchant free-text review exists,P3,NO,PASS
+RPT-0124,REPEAT_CROSS_SHOP,multi-product basket,submit Shop A evaluation,latest response negative,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0125,REPEAT_CROSS_SHOP,quantity ten,submit Shop A evaluation,latest response negative,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0126,REPEAT_CROSS_SHOP,prior review deleted,submit Shop A evaluation,latest response negative,free text remains at immutable origin shop,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0127,REPEAT_CROSS_SHOP,prior review recreated,submit Shop A evaluation,latest response negative,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0128,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop A evaluation,latest response negative,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0129,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop A evaluation,latest response negative,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0130,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop A evaluation,latest response negative,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0131,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop B evaluation,latest response negative,free text remains at immutable origin shop,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0132,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop B evaluation,latest response negative,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0133,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop B evaluation,latest response negative,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+RPT-0134,REPEAT_CROSS_SHOP,multi-product basket,submit Shop B evaluation,latest response negative,lifetime product-review count remains one,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0135,REPEAT_CROSS_SHOP,quantity ten,submit Shop B evaluation,latest response negative,each shop keeps independent structured evidence,missing responses are not imputed,P3,NO,PASS
+RPT-0136,REPEAT_CROSS_SHOP,prior review deleted,submit Shop B evaluation,latest response negative,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0137,REPEAT_CROSS_SHOP,prior review recreated,submit Shop B evaluation,latest response negative,quantity creates no additional weight,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0138,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop B evaluation,latest response negative,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0139,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop B evaluation,latest response negative,each shop keeps independent structured evidence,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0140,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop B evaluation,latest response negative,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0141,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit both shop evaluations,latest response negative,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0142,REPEAT_CROSS_SHOP,same product Shop A repeat,submit both shop evaluations,latest response negative,quantity creates no additional weight,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0143,REPEAT_CROSS_SHOP,same product Shop B repeat,submit both shop evaluations,latest response negative,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0144,REPEAT_CROSS_SHOP,multi-product basket,submit both shop evaluations,latest response negative,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P3,YES,PASS
+RPT-0145,REPEAT_CROSS_SHOP,quantity ten,submit both shop evaluations,latest response negative,free text remains at immutable origin shop,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0146,REPEAT_CROSS_SHOP,prior review deleted,submit both shop evaluations,latest response negative,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+RPT-0147,REPEAT_CROSS_SHOP,prior review recreated,submit both shop evaluations,latest response negative,quantity creates no additional weight,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0148,REPEAT_CROSS_SHOP,old purchase predates review,submit both shop evaluations,latest response negative,lifetime product-review count remains one,missing responses are not imputed,P1,NO,PASS
+RPT-0149,REPEAT_CROSS_SHOP,simultaneous shops,submit both shop evaluations,latest response negative,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0150,REPEAT_CROSS_SHOP,rolling window boundary,submit both shop evaluations,latest response negative,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0151,REPEAT_CROSS_SHOP,same product Shop A first purchase,replace effective contribution,latest response negative,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0152,REPEAT_CROSS_SHOP,same product Shop A repeat,replace effective contribution,latest response negative,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0153,REPEAT_CROSS_SHOP,same product Shop B repeat,replace effective contribution,latest response negative,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0154,REPEAT_CROSS_SHOP,multi-product basket,replace effective contribution,latest response negative,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0155,REPEAT_CROSS_SHOP,quantity ten,replace effective contribution,latest response negative,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P1,YES,PASS
+RPT-0156,REPEAT_CROSS_SHOP,prior review deleted,replace effective contribution,latest response negative,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0157,REPEAT_CROSS_SHOP,prior review recreated,replace effective contribution,latest response negative,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0158,REPEAT_CROSS_SHOP,old purchase predates review,replace effective contribution,latest response negative,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0159,REPEAT_CROSS_SHOP,simultaneous shops,replace effective contribution,latest response negative,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0160,REPEAT_CROSS_SHOP,rolling window boundary,replace effective contribution,latest response negative,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0161,REPEAT_CROSS_SHOP,same product Shop A first purchase,retry old purchase,latest response negative,quantity creates no additional weight,missing responses are not imputed,P3,NO,PASS
+RPT-0162,REPEAT_CROSS_SHOP,same product Shop A repeat,retry old purchase,latest response negative,lifetime product-review count remains one,no second merchant free-text review exists,P1,NO,PASS
+RPT-0163,REPEAT_CROSS_SHOP,same product Shop B repeat,retry old purchase,latest response negative,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0164,REPEAT_CROSS_SHOP,multi-product basket,retry old purchase,latest response negative,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0165,REPEAT_CROSS_SHOP,quantity ten,retry old purchase,latest response negative,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0166,REPEAT_CROSS_SHOP,prior review deleted,retry old purchase,latest response negative,quantity creates no additional weight,product and shop aggregates remain separate,P2,YES,PASS
+RPT-0167,REPEAT_CROSS_SHOP,prior review recreated,retry old purchase,latest response negative,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0168,REPEAT_CROSS_SHOP,old purchase predates review,retry old purchase,latest response negative,each shop keeps independent structured evidence,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0169,REPEAT_CROSS_SHOP,simultaneous shops,retry old purchase,latest response negative,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0170,REPEAT_CROSS_SHOP,rolling window boundary,retry old purchase,latest response negative,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0171,REPEAT_CROSS_SHOP,same product Shop A first purchase,change basket quantity,latest response negative,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0172,REPEAT_CROSS_SHOP,same product Shop A repeat,change basket quantity,latest response negative,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0173,REPEAT_CROSS_SHOP,same product Shop B repeat,change basket quantity,latest response negative,free text remains at immutable origin shop,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0174,REPEAT_CROSS_SHOP,multi-product basket,change basket quantity,latest response negative,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0175,REPEAT_CROSS_SHOP,quantity ten,change basket quantity,latest response negative,quantity creates no additional weight,no second merchant free-text review exists,P0,NO,PASS
+RPT-0176,REPEAT_CROSS_SHOP,prior review deleted,change basket quantity,latest response negative,lifetime product-review count remains one,product and shop aggregates remain separate,P1,NO,PASS
+RPT-0177,REPEAT_CROSS_SHOP,prior review recreated,change basket quantity,latest response negative,each shop keeps independent structured evidence,missing responses are not imputed,P3,YES,PASS
+RPT-0178,REPEAT_CROSS_SHOP,old purchase predates review,change basket quantity,latest response negative,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0179,REPEAT_CROSS_SHOP,simultaneous shops,change basket quantity,latest response negative,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0180,REPEAT_CROSS_SHOP,rolling window boundary,change basket quantity,latest response negative,quantity creates no additional weight,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0181,REPEAT_CROSS_SHOP,same product Shop A first purchase,cross window edge,latest response negative,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0182,REPEAT_CROSS_SHOP,same product Shop A repeat,cross window edge,latest response negative,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0183,REPEAT_CROSS_SHOP,same product Shop B repeat,cross window edge,latest response negative,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0184,REPEAT_CROSS_SHOP,multi-product basket,cross window edge,latest response negative,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0185,REPEAT_CROSS_SHOP,quantity ten,cross window edge,latest response negative,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0186,REPEAT_CROSS_SHOP,prior review deleted,cross window edge,latest response negative,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0187,REPEAT_CROSS_SHOP,prior review recreated,cross window edge,latest response negative,each shop keeps independent structured evidence,missing responses are not imputed,P2,NO,PASS
+RPT-0188,REPEAT_CROSS_SHOP,old purchase predates review,cross window edge,latest response negative,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RPT-0189,REPEAT_CROSS_SHOP,simultaneous shops,cross window edge,latest response negative,quantity creates no additional weight,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0190,REPEAT_CROSS_SHOP,rolling window boundary,cross window edge,latest response negative,lifetime product-review count remains one,missing responses are not imputed,P1,NO,PASS
+RPT-0191,REPEAT_CROSS_SHOP,same product Shop A first purchase,correct evidence,latest response negative,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0192,REPEAT_CROSS_SHOP,same product Shop A repeat,correct evidence,latest response negative,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0193,REPEAT_CROSS_SHOP,same product Shop B repeat,correct evidence,latest response negative,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0194,REPEAT_CROSS_SHOP,multi-product basket,correct evidence,latest response negative,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0195,REPEAT_CROSS_SHOP,quantity ten,correct evidence,latest response negative,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0196,REPEAT_CROSS_SHOP,prior review deleted,correct evidence,latest response negative,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0197,REPEAT_CROSS_SHOP,prior review recreated,correct evidence,latest response negative,free text remains at immutable origin shop,derived state is idempotent and versioned,P1,NO,PASS
+RPT-0198,REPEAT_CROSS_SHOP,old purchase predates review,correct evidence,latest response negative,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0199,REPEAT_CROSS_SHOP,simultaneous shops,correct evidence,latest response negative,quantity creates no additional weight,quantity and basket value have zero vote weight,P2,YES,PASS
+RPT-0200,REPEAT_CROSS_SHOP,rolling window boundary,correct evidence,latest response negative,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0201,REPEAT_CROSS_SHOP,same product Shop A first purchase,create product review,old response held,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0202,REPEAT_CROSS_SHOP,same product Shop A repeat,create product review,old response held,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0203,REPEAT_CROSS_SHOP,same product Shop B repeat,create product review,old response held,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0204,REPEAT_CROSS_SHOP,multi-product basket,create product review,old response held,quantity creates no additional weight,no second merchant free-text review exists,P0,NO,PASS
+RPT-0205,REPEAT_CROSS_SHOP,quantity ten,create product review,old response held,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0206,REPEAT_CROSS_SHOP,prior review deleted,create product review,old response held,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0207,REPEAT_CROSS_SHOP,prior review recreated,create product review,old response held,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0208,REPEAT_CROSS_SHOP,old purchase predates review,create product review,old response held,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0209,REPEAT_CROSS_SHOP,simultaneous shops,create product review,old response held,lifetime product-review count remains one,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0210,REPEAT_CROSS_SHOP,rolling window boundary,create product review,old response held,each shop keeps independent structured evidence,customer identity is not publicly exposed,P3,YES,PASS
+RPT-0211,REPEAT_CROSS_SHOP,same product Shop A first purchase,edit existing product review,old response held,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0212,REPEAT_CROSS_SHOP,same product Shop A repeat,edit existing product review,old response held,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0213,REPEAT_CROSS_SHOP,same product Shop B repeat,edit existing product review,old response held,quantity creates no additional weight,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0214,REPEAT_CROSS_SHOP,multi-product basket,edit existing product review,old response held,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0215,REPEAT_CROSS_SHOP,quantity ten,edit existing product review,old response held,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0216,REPEAT_CROSS_SHOP,prior review deleted,edit existing product review,old response held,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0217,REPEAT_CROSS_SHOP,prior review recreated,edit existing product review,old response held,effective customer cap prevents over-weighting,no second merchant free-text review exists,P2,NO,PASS
+RPT-0218,REPEAT_CROSS_SHOP,old purchase predates review,edit existing product review,old response held,quantity creates no additional weight,product and shop aggregates remain separate,P1,NO,PASS
+RPT-0219,REPEAT_CROSS_SHOP,simultaneous shops,edit existing product review,old response held,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0220,REPEAT_CROSS_SHOP,rolling window boundary,edit existing product review,old response held,each shop keeps independent structured evidence,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0221,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop A evaluation,old response held,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,YES,PASS
+RPT-0222,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop A evaluation,old response held,quantity creates no additional weight,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0223,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop A evaluation,old response held,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0224,REPEAT_CROSS_SHOP,multi-product basket,submit Shop A evaluation,old response held,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0225,REPEAT_CROSS_SHOP,quantity ten,submit Shop A evaluation,old response held,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0226,REPEAT_CROSS_SHOP,prior review deleted,submit Shop A evaluation,old response held,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0227,REPEAT_CROSS_SHOP,prior review recreated,submit Shop A evaluation,old response held,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0228,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop A evaluation,old response held,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0229,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop A evaluation,old response held,each shop keeps independent structured evidence,missing responses are not imputed,P2,NO,PASS
+RPT-0230,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop A evaluation,old response held,free text remains at immutable origin shop,no second merchant free-text review exists,P3,NO,PASS
+RPT-0231,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop B evaluation,old response held,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0232,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop B evaluation,old response held,quantity creates no additional weight,missing responses are not imputed,P1,YES,PASS
+RPT-0233,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop B evaluation,old response held,lifetime product-review count remains one,no second merchant free-text review exists,P0,NO,PASS
+RPT-0234,REPEAT_CROSS_SHOP,multi-product basket,submit Shop B evaluation,old response held,each shop keeps independent structured evidence,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0235,REPEAT_CROSS_SHOP,quantity ten,submit Shop B evaluation,old response held,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0236,REPEAT_CROSS_SHOP,prior review deleted,submit Shop B evaluation,old response held,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0237,REPEAT_CROSS_SHOP,prior review recreated,submit Shop B evaluation,old response held,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0238,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop B evaluation,old response held,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0239,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop B evaluation,old response held,free text remains at immutable origin shop,derived state is idempotent and versioned,P1,NO,PASS
+RPT-0240,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop B evaluation,old response held,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0241,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit both shop evaluations,old response held,quantity creates no additional weight,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0242,REPEAT_CROSS_SHOP,same product Shop A repeat,submit both shop evaluations,old response held,lifetime product-review count remains one,missing responses are not imputed,P3,NO,PASS
+RPT-0243,REPEAT_CROSS_SHOP,same product Shop B repeat,submit both shop evaluations,old response held,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RPT-0244,REPEAT_CROSS_SHOP,multi-product basket,submit both shop evaluations,old response held,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0245,REPEAT_CROSS_SHOP,quantity ten,submit both shop evaluations,old response held,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0246,REPEAT_CROSS_SHOP,prior review deleted,submit both shop evaluations,old response held,quantity creates no additional weight,no second merchant free-text review exists,P1,NO,PASS
+RPT-0247,REPEAT_CROSS_SHOP,prior review recreated,submit both shop evaluations,old response held,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0248,REPEAT_CROSS_SHOP,old purchase predates review,submit both shop evaluations,old response held,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0249,REPEAT_CROSS_SHOP,simultaneous shops,submit both shop evaluations,old response held,free text remains at immutable origin shop,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0250,REPEAT_CROSS_SHOP,rolling window boundary,submit both shop evaluations,old response held,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0251,REPEAT_CROSS_SHOP,same product Shop A first purchase,replace effective contribution,old response held,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0252,REPEAT_CROSS_SHOP,same product Shop A repeat,replace effective contribution,old response held,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0253,REPEAT_CROSS_SHOP,same product Shop B repeat,replace effective contribution,old response held,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0254,REPEAT_CROSS_SHOP,multi-product basket,replace effective contribution,old response held,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,YES,PASS
+RPT-0255,REPEAT_CROSS_SHOP,quantity ten,replace effective contribution,old response held,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0256,REPEAT_CROSS_SHOP,prior review deleted,replace effective contribution,old response held,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0257,REPEAT_CROSS_SHOP,prior review recreated,replace effective contribution,old response held,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0258,REPEAT_CROSS_SHOP,old purchase predates review,replace effective contribution,old response held,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0259,REPEAT_CROSS_SHOP,simultaneous shops,replace effective contribution,old response held,effective customer cap prevents over-weighting,no second merchant free-text review exists,P2,NO,PASS
+RPT-0260,REPEAT_CROSS_SHOP,rolling window boundary,replace effective contribution,old response held,quantity creates no additional weight,product and shop aggregates remain separate,P1,NO,PASS
+RPT-0261,REPEAT_CROSS_SHOP,same product Shop A first purchase,retry old purchase,old response held,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0262,REPEAT_CROSS_SHOP,same product Shop A repeat,retry old purchase,old response held,each shop keeps independent structured evidence,customer identity is not publicly exposed,P0,NO,PASS
+RPT-0263,REPEAT_CROSS_SHOP,same product Shop B repeat,retry old purchase,old response held,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0264,REPEAT_CROSS_SHOP,multi-product basket,retry old purchase,old response held,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0265,REPEAT_CROSS_SHOP,quantity ten,retry old purchase,old response held,quantity creates no additional weight,customer identity is not publicly exposed,P2,YES,PASS
+RPT-0266,REPEAT_CROSS_SHOP,prior review deleted,retry old purchase,old response held,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0267,REPEAT_CROSS_SHOP,prior review recreated,retry old purchase,old response held,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0268,REPEAT_CROSS_SHOP,old purchase predates review,retry old purchase,old response held,free text remains at immutable origin shop,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0269,REPEAT_CROSS_SHOP,simultaneous shops,retry old purchase,old response held,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0270,REPEAT_CROSS_SHOP,rolling window boundary,retry old purchase,old response held,quantity creates no additional weight,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0271,REPEAT_CROSS_SHOP,same product Shop A first purchase,change basket quantity,old response held,lifetime product-review count remains one,missing responses are not imputed,P2,NO,PASS
+RPT-0272,REPEAT_CROSS_SHOP,same product Shop A repeat,change basket quantity,old response held,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0273,REPEAT_CROSS_SHOP,same product Shop B repeat,change basket quantity,old response held,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0274,REPEAT_CROSS_SHOP,multi-product basket,change basket quantity,old response held,quantity creates no additional weight,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0275,REPEAT_CROSS_SHOP,quantity ten,change basket quantity,old response held,lifetime product-review count remains one,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0276,REPEAT_CROSS_SHOP,prior review deleted,change basket quantity,old response held,each shop keeps independent structured evidence,product and shop aggregates remain separate,P3,YES,PASS
+RPT-0277,REPEAT_CROSS_SHOP,prior review recreated,change basket quantity,old response held,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0278,REPEAT_CROSS_SHOP,old purchase predates review,change basket quantity,old response held,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0279,REPEAT_CROSS_SHOP,simultaneous shops,change basket quantity,old response held,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0280,REPEAT_CROSS_SHOP,rolling window boundary,change basket quantity,old response held,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0281,REPEAT_CROSS_SHOP,same product Shop A first purchase,cross window edge,old response held,each shop keeps independent structured evidence,derived state is idempotent and versioned,P1,NO,PASS
+RPT-0282,REPEAT_CROSS_SHOP,same product Shop A repeat,cross window edge,old response held,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0283,REPEAT_CROSS_SHOP,same product Shop B repeat,cross window edge,old response held,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0284,REPEAT_CROSS_SHOP,multi-product basket,cross window edge,old response held,quantity creates no additional weight,missing responses are not imputed,P3,NO,PASS
+RPT-0285,REPEAT_CROSS_SHOP,quantity ten,cross window edge,old response held,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0286,REPEAT_CROSS_SHOP,prior review deleted,cross window edge,old response held,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0287,REPEAT_CROSS_SHOP,prior review recreated,cross window edge,old response held,free text remains at immutable origin shop,missing responses are not imputed,P3,YES,PASS
+RPT-0288,REPEAT_CROSS_SHOP,old purchase predates review,cross window edge,old response held,effective customer cap prevents over-weighting,no second merchant free-text review exists,P1,NO,PASS
+RPT-0289,REPEAT_CROSS_SHOP,simultaneous shops,cross window edge,old response held,quantity creates no additional weight,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0290,REPEAT_CROSS_SHOP,rolling window boundary,cross window edge,old response held,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0291,REPEAT_CROSS_SHOP,same product Shop A first purchase,correct evidence,old response held,free text remains at immutable origin shop,customer identity is not publicly exposed,P0,NO,PASS
+RPT-0292,REPEAT_CROSS_SHOP,same product Shop A repeat,correct evidence,old response held,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0293,REPEAT_CROSS_SHOP,same product Shop B repeat,correct evidence,old response held,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0294,REPEAT_CROSS_SHOP,multi-product basket,correct evidence,old response held,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0295,REPEAT_CROSS_SHOP,quantity ten,correct evidence,old response held,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0296,REPEAT_CROSS_SHOP,prior review deleted,correct evidence,old response held,free text remains at immutable origin shop,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0297,REPEAT_CROSS_SHOP,prior review recreated,correct evidence,old response held,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0298,REPEAT_CROSS_SHOP,old purchase predates review,correct evidence,old response held,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+RPT-0299,REPEAT_CROSS_SHOP,simultaneous shops,correct evidence,old response held,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0300,REPEAT_CROSS_SHOP,rolling window boundary,correct evidence,old response held,each shop keeps independent structured evidence,missing responses are not imputed,P3,NO,PASS
+RPT-0301,REPEAT_CROSS_SHOP,same product Shop A first purchase,create product review,second shop differs,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0302,REPEAT_CROSS_SHOP,same product Shop A repeat,create product review,second shop differs,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P1,NO,PASS
+RPT-0303,REPEAT_CROSS_SHOP,same product Shop B repeat,create product review,second shop differs,quantity creates no additional weight,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0304,REPEAT_CROSS_SHOP,multi-product basket,create product review,second shop differs,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0305,REPEAT_CROSS_SHOP,quantity ten,create product review,second shop differs,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0306,REPEAT_CROSS_SHOP,prior review deleted,create product review,second shop differs,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0307,REPEAT_CROSS_SHOP,prior review recreated,create product review,second shop differs,quantity creates no additional weight,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0308,REPEAT_CROSS_SHOP,old purchase predates review,create product review,second shop differs,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0309,REPEAT_CROSS_SHOP,simultaneous shops,create product review,second shop differs,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P1,YES,PASS
+RPT-0310,REPEAT_CROSS_SHOP,rolling window boundary,create product review,second shop differs,free text remains at immutable origin shop,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0311,REPEAT_CROSS_SHOP,same product Shop A first purchase,edit existing product review,second shop differs,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0312,REPEAT_CROSS_SHOP,same product Shop A repeat,edit existing product review,second shop differs,quantity creates no additional weight,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0313,REPEAT_CROSS_SHOP,same product Shop B repeat,edit existing product review,second shop differs,lifetime product-review count remains one,missing responses are not imputed,P2,NO,PASS
+RPT-0314,REPEAT_CROSS_SHOP,multi-product basket,edit existing product review,second shop differs,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0315,REPEAT_CROSS_SHOP,quantity ten,edit existing product review,second shop differs,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0316,REPEAT_CROSS_SHOP,prior review deleted,edit existing product review,second shop differs,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0317,REPEAT_CROSS_SHOP,prior review recreated,edit existing product review,second shop differs,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0318,REPEAT_CROSS_SHOP,old purchase predates review,edit existing product review,second shop differs,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0319,REPEAT_CROSS_SHOP,simultaneous shops,edit existing product review,second shop differs,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0320,REPEAT_CROSS_SHOP,rolling window boundary,edit existing product review,second shop differs,free text remains at immutable origin shop,customer identity is not publicly exposed,P0,YES,PASS
+RPT-0321,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop A evaluation,second shop differs,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0322,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop A evaluation,second shop differs,quantity creates no additional weight,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0323,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop A evaluation,second shop differs,lifetime product-review count remains one,derived state is idempotent and versioned,P1,NO,PASS
+RPT-0324,REPEAT_CROSS_SHOP,multi-product basket,submit Shop A evaluation,second shop differs,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0325,REPEAT_CROSS_SHOP,quantity ten,submit Shop A evaluation,second shop differs,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0326,REPEAT_CROSS_SHOP,prior review deleted,submit Shop A evaluation,second shop differs,quantity creates no additional weight,missing responses are not imputed,P3,NO,PASS
+RPT-0327,REPEAT_CROSS_SHOP,prior review recreated,submit Shop A evaluation,second shop differs,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0328,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop A evaluation,second shop differs,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0329,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop A evaluation,second shop differs,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0330,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop A evaluation,second shop differs,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0331,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop B evaluation,second shop differs,quantity creates no additional weight,product and shop aggregates remain separate,P2,YES,PASS
+RPT-0332,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop B evaluation,second shop differs,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0333,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop B evaluation,second shop differs,each shop keeps independent structured evidence,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0334,REPEAT_CROSS_SHOP,multi-product basket,submit Shop B evaluation,second shop differs,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0335,REPEAT_CROSS_SHOP,quantity ten,submit Shop B evaluation,second shop differs,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0336,REPEAT_CROSS_SHOP,prior review deleted,submit Shop B evaluation,second shop differs,quantity creates no additional weight,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0337,REPEAT_CROSS_SHOP,prior review recreated,submit Shop B evaluation,second shop differs,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0338,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop B evaluation,second shop differs,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0339,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop B evaluation,second shop differs,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0340,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop B evaluation,second shop differs,effective customer cap prevents over-weighting,no second merchant free-text review exists,P2,NO,PASS
+RPT-0341,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit both shop evaluations,second shop differs,lifetime product-review count remains one,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0342,REPEAT_CROSS_SHOP,same product Shop A repeat,submit both shop evaluations,second shop differs,each shop keeps independent structured evidence,missing responses are not imputed,P3,YES,PASS
+RPT-0343,REPEAT_CROSS_SHOP,same product Shop B repeat,submit both shop evaluations,second shop differs,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0344,REPEAT_CROSS_SHOP,multi-product basket,submit both shop evaluations,second shop differs,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P1,NO,PASS
+RPT-0345,REPEAT_CROSS_SHOP,quantity ten,submit both shop evaluations,second shop differs,quantity creates no additional weight,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0346,REPEAT_CROSS_SHOP,prior review deleted,submit both shop evaluations,second shop differs,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0347,REPEAT_CROSS_SHOP,prior review recreated,submit both shop evaluations,second shop differs,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0348,REPEAT_CROSS_SHOP,old purchase predates review,submit both shop evaluations,second shop differs,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0349,REPEAT_CROSS_SHOP,simultaneous shops,submit both shop evaluations,second shop differs,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P0,NO,PASS
+RPT-0350,REPEAT_CROSS_SHOP,rolling window boundary,submit both shop evaluations,second shop differs,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0351,REPEAT_CROSS_SHOP,same product Shop A first purchase,replace effective contribution,second shop differs,lifetime product-review count remains one,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0352,REPEAT_CROSS_SHOP,same product Shop A repeat,replace effective contribution,second shop differs,each shop keeps independent structured evidence,missing responses are not imputed,P2,NO,PASS
+RPT-0353,REPEAT_CROSS_SHOP,same product Shop B repeat,replace effective contribution,second shop differs,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RPT-0354,REPEAT_CROSS_SHOP,multi-product basket,replace effective contribution,second shop differs,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0355,REPEAT_CROSS_SHOP,quantity ten,replace effective contribution,second shop differs,quantity creates no additional weight,missing responses are not imputed,P2,NO,PASS
+RPT-0356,REPEAT_CROSS_SHOP,prior review deleted,replace effective contribution,second shop differs,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0357,REPEAT_CROSS_SHOP,prior review recreated,replace effective contribution,second shop differs,each shop keeps independent structured evidence,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0358,REPEAT_CROSS_SHOP,old purchase predates review,replace effective contribution,second shop differs,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0359,REPEAT_CROSS_SHOP,simultaneous shops,replace effective contribution,second shop differs,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0360,REPEAT_CROSS_SHOP,rolling window boundary,replace effective contribution,second shop differs,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0361,REPEAT_CROSS_SHOP,same product Shop A first purchase,retry old purchase,second shop differs,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0362,REPEAT_CROSS_SHOP,same product Shop A repeat,retry old purchase,second shop differs,free text remains at immutable origin shop,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0363,REPEAT_CROSS_SHOP,same product Shop B repeat,retry old purchase,second shop differs,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0364,REPEAT_CROSS_SHOP,multi-product basket,retry old purchase,second shop differs,quantity creates no additional weight,quantity and basket value have zero vote weight,P2,YES,PASS
+RPT-0365,REPEAT_CROSS_SHOP,quantity ten,retry old purchase,second shop differs,lifetime product-review count remains one,derived state is idempotent and versioned,P1,NO,PASS
+RPT-0366,REPEAT_CROSS_SHOP,prior review deleted,retry old purchase,second shop differs,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0367,REPEAT_CROSS_SHOP,prior review recreated,retry old purchase,second shop differs,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0368,REPEAT_CROSS_SHOP,old purchase predates review,retry old purchase,second shop differs,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0369,REPEAT_CROSS_SHOP,simultaneous shops,retry old purchase,second shop differs,quantity creates no additional weight,no second merchant free-text review exists,P3,NO,PASS
+RPT-0370,REPEAT_CROSS_SHOP,rolling window boundary,retry old purchase,second shop differs,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0371,REPEAT_CROSS_SHOP,same product Shop A first purchase,change basket quantity,second shop differs,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0372,REPEAT_CROSS_SHOP,same product Shop A repeat,change basket quantity,second shop differs,free text remains at immutable origin shop,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0373,REPEAT_CROSS_SHOP,same product Shop B repeat,change basket quantity,second shop differs,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0374,REPEAT_CROSS_SHOP,multi-product basket,change basket quantity,second shop differs,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0375,REPEAT_CROSS_SHOP,quantity ten,change basket quantity,second shop differs,each shop keeps independent structured evidence,customer identity is not publicly exposed,P3,YES,PASS
+RPT-0376,REPEAT_CROSS_SHOP,prior review deleted,change basket quantity,second shop differs,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0377,REPEAT_CROSS_SHOP,prior review recreated,change basket quantity,second shop differs,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0378,REPEAT_CROSS_SHOP,old purchase predates review,change basket quantity,second shop differs,quantity creates no additional weight,derived state is idempotent and versioned,P0,NO,PASS
+RPT-0379,REPEAT_CROSS_SHOP,simultaneous shops,change basket quantity,second shop differs,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0380,REPEAT_CROSS_SHOP,rolling window boundary,change basket quantity,second shop differs,each shop keeps independent structured evidence,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0381,REPEAT_CROSS_SHOP,same product Shop A first purchase,cross window edge,second shop differs,free text remains at immutable origin shop,missing responses are not imputed,P3,NO,PASS
+RPT-0382,REPEAT_CROSS_SHOP,same product Shop A repeat,cross window edge,second shop differs,effective customer cap prevents over-weighting,no second merchant free-text review exists,P2,NO,PASS
+RPT-0383,REPEAT_CROSS_SHOP,same product Shop B repeat,cross window edge,second shop differs,quantity creates no additional weight,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0384,REPEAT_CROSS_SHOP,multi-product basket,cross window edge,second shop differs,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0385,REPEAT_CROSS_SHOP,quantity ten,cross window edge,second shop differs,each shop keeps independent structured evidence,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0386,REPEAT_CROSS_SHOP,prior review deleted,cross window edge,second shop differs,free text remains at immutable origin shop,product and shop aggregates remain separate,P1,YES,PASS
+RPT-0387,REPEAT_CROSS_SHOP,prior review recreated,cross window edge,second shop differs,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0388,REPEAT_CROSS_SHOP,old purchase predates review,cross window edge,second shop differs,quantity creates no additional weight,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0389,REPEAT_CROSS_SHOP,simultaneous shops,cross window edge,second shop differs,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0390,REPEAT_CROSS_SHOP,rolling window boundary,cross window edge,second shop differs,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0391,REPEAT_CROSS_SHOP,same product Shop A first purchase,correct evidence,second shop differs,free text remains at immutable origin shop,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0392,REPEAT_CROSS_SHOP,same product Shop A repeat,correct evidence,second shop differs,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0393,REPEAT_CROSS_SHOP,same product Shop B repeat,correct evidence,second shop differs,lifetime product-review count remains one,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0394,REPEAT_CROSS_SHOP,multi-product basket,correct evidence,second shop differs,each shop keeps independent structured evidence,missing responses are not imputed,P2,NO,PASS
+RPT-0395,REPEAT_CROSS_SHOP,quantity ten,correct evidence,second shop differs,free text remains at immutable origin shop,no second merchant free-text review exists,P3,NO,PASS
+RPT-0396,REPEAT_CROSS_SHOP,prior review deleted,correct evidence,second shop differs,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0397,REPEAT_CROSS_SHOP,prior review recreated,correct evidence,second shop differs,quantity creates no additional weight,missing responses are not imputed,P2,YES,PASS
+RPT-0398,REPEAT_CROSS_SHOP,old purchase predates review,correct evidence,second shop differs,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0399,REPEAT_CROSS_SHOP,simultaneous shops,correct evidence,second shop differs,each shop keeps independent structured evidence,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0400,REPEAT_CROSS_SHOP,rolling window boundary,correct evidence,second shop differs,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0401,REPEAT_CROSS_SHOP,same product Shop A first purchase,create product review,no shop questions answered,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0402,REPEAT_CROSS_SHOP,same product Shop A repeat,create product review,no shop questions answered,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0403,REPEAT_CROSS_SHOP,same product Shop B repeat,create product review,no shop questions answered,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0404,REPEAT_CROSS_SHOP,multi-product basket,create product review,no shop questions answered,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0405,REPEAT_CROSS_SHOP,quantity ten,create product review,no shop questions answered,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0406,REPEAT_CROSS_SHOP,prior review deleted,create product review,no shop questions answered,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0407,REPEAT_CROSS_SHOP,prior review recreated,create product review,no shop questions answered,quantity creates no additional weight,missing responses are not imputed,P0,NO,PASS
+RPT-0408,REPEAT_CROSS_SHOP,old purchase predates review,create product review,no shop questions answered,lifetime product-review count remains one,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+RPT-0409,REPEAT_CROSS_SHOP,simultaneous shops,create product review,no shop questions answered,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0410,REPEAT_CROSS_SHOP,rolling window boundary,create product review,no shop questions answered,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0411,REPEAT_CROSS_SHOP,same product Shop A first purchase,edit existing product review,no shop questions answered,quantity creates no additional weight,no second merchant free-text review exists,P3,NO,PASS
+RPT-0412,REPEAT_CROSS_SHOP,same product Shop A repeat,edit existing product review,no shop questions answered,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0413,REPEAT_CROSS_SHOP,same product Shop B repeat,edit existing product review,no shop questions answered,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0414,REPEAT_CROSS_SHOP,multi-product basket,edit existing product review,no shop questions answered,free text remains at immutable origin shop,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0415,REPEAT_CROSS_SHOP,quantity ten,edit existing product review,no shop questions answered,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0416,REPEAT_CROSS_SHOP,prior review deleted,edit existing product review,no shop questions answered,quantity creates no additional weight,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0417,REPEAT_CROSS_SHOP,prior review recreated,edit existing product review,no shop questions answered,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0418,REPEAT_CROSS_SHOP,old purchase predates review,edit existing product review,no shop questions answered,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0419,REPEAT_CROSS_SHOP,simultaneous shops,edit existing product review,no shop questions answered,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,YES,PASS
+RPT-0420,REPEAT_CROSS_SHOP,rolling window boundary,edit existing product review,no shop questions answered,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0421,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop A evaluation,no shop questions answered,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+RPT-0422,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop A evaluation,no shop questions answered,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0423,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop A evaluation,no shop questions answered,each shop keeps independent structured evidence,missing responses are not imputed,P3,NO,PASS
+RPT-0424,REPEAT_CROSS_SHOP,multi-product basket,submit Shop A evaluation,no shop questions answered,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0425,REPEAT_CROSS_SHOP,quantity ten,submit Shop A evaluation,no shop questions answered,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0426,REPEAT_CROSS_SHOP,prior review deleted,submit Shop A evaluation,no shop questions answered,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0427,REPEAT_CROSS_SHOP,prior review recreated,submit Shop A evaluation,no shop questions answered,each shop keeps independent structured evidence,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0428,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop A evaluation,no shop questions answered,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0429,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop A evaluation,no shop questions answered,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0430,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop A evaluation,no shop questions answered,quantity creates no additional weight,customer identity is not publicly exposed,P2,YES,PASS
+RPT-0431,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit Shop B evaluation,no shop questions answered,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0432,REPEAT_CROSS_SHOP,same product Shop A repeat,submit Shop B evaluation,no shop questions answered,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0433,REPEAT_CROSS_SHOP,same product Shop B repeat,submit Shop B evaluation,no shop questions answered,free text remains at immutable origin shop,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0434,REPEAT_CROSS_SHOP,multi-product basket,submit Shop B evaluation,no shop questions answered,effective customer cap prevents over-weighting,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0435,REPEAT_CROSS_SHOP,quantity ten,submit Shop B evaluation,no shop questions answered,quantity creates no additional weight,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0436,REPEAT_CROSS_SHOP,prior review deleted,submit Shop B evaluation,no shop questions answered,lifetime product-review count remains one,missing responses are not imputed,P0,NO,PASS
+RPT-0437,REPEAT_CROSS_SHOP,prior review recreated,submit Shop B evaluation,no shop questions answered,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0438,REPEAT_CROSS_SHOP,old purchase predates review,submit Shop B evaluation,no shop questions answered,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0439,REPEAT_CROSS_SHOP,simultaneous shops,submit Shop B evaluation,no shop questions answered,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0440,REPEAT_CROSS_SHOP,rolling window boundary,submit Shop B evaluation,no shop questions answered,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0441,REPEAT_CROSS_SHOP,same product Shop A first purchase,submit both shop evaluations,no shop questions answered,lifetime product-review count remains one,product and shop aggregates remain separate,P3,YES,PASS
+RPT-0442,REPEAT_CROSS_SHOP,same product Shop A repeat,submit both shop evaluations,no shop questions answered,each shop keeps independent structured evidence,ads and rewards have zero reputation weight,P1,NO,PASS
+RPT-0443,REPEAT_CROSS_SHOP,same product Shop B repeat,submit both shop evaluations,no shop questions answered,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0444,REPEAT_CROSS_SHOP,multi-product basket,submit both shop evaluations,no shop questions answered,quantity creates no additional weight,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0445,REPEAT_CROSS_SHOP,quantity ten,submit both shop evaluations,no shop questions answered,lifetime product-review count remains one,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0446,REPEAT_CROSS_SHOP,prior review deleted,submit both shop evaluations,no shop questions answered,each shop keeps independent structured evidence,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0447,REPEAT_CROSS_SHOP,prior review recreated,submit both shop evaluations,no shop questions answered,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0448,REPEAT_CROSS_SHOP,old purchase predates review,submit both shop evaluations,no shop questions answered,effective customer cap prevents over-weighting,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0449,REPEAT_CROSS_SHOP,simultaneous shops,submit both shop evaluations,no shop questions answered,quantity creates no additional weight,missing responses are not imputed,P1,NO,PASS
+RPT-0450,REPEAT_CROSS_SHOP,rolling window boundary,submit both shop evaluations,no shop questions answered,lifetime product-review count remains one,no second merchant free-text review exists,P3,NO,PASS
+RPT-0451,REPEAT_CROSS_SHOP,same product Shop A first purchase,replace effective contribution,no shop questions answered,each shop keeps independent structured evidence,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0452,REPEAT_CROSS_SHOP,same product Shop A repeat,replace effective contribution,no shop questions answered,free text remains at immutable origin shop,missing responses are not imputed,P3,YES,PASS
+RPT-0453,REPEAT_CROSS_SHOP,same product Shop B repeat,replace effective contribution,no shop questions answered,effective customer cap prevents over-weighting,no second merchant free-text review exists,P3,NO,PASS
+RPT-0454,REPEAT_CROSS_SHOP,multi-product basket,replace effective contribution,no shop questions answered,quantity creates no additional weight,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0455,REPEAT_CROSS_SHOP,quantity ten,replace effective contribution,no shop questions answered,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0456,REPEAT_CROSS_SHOP,prior review deleted,replace effective contribution,no shop questions answered,each shop keeps independent structured evidence,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0457,REPEAT_CROSS_SHOP,prior review recreated,replace effective contribution,no shop questions answered,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0458,REPEAT_CROSS_SHOP,old purchase predates review,replace effective contribution,no shop questions answered,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0459,REPEAT_CROSS_SHOP,simultaneous shops,replace effective contribution,no shop questions answered,quantity creates no additional weight,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0460,REPEAT_CROSS_SHOP,rolling window boundary,replace effective contribution,no shop questions answered,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+RPT-0461,REPEAT_CROSS_SHOP,same product Shop A first purchase,retry old purchase,no shop questions answered,free text remains at immutable origin shop,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0462,REPEAT_CROSS_SHOP,same product Shop A repeat,retry old purchase,no shop questions answered,effective customer cap prevents over-weighting,missing responses are not imputed,P3,NO,PASS
+RPT-0463,REPEAT_CROSS_SHOP,same product Shop B repeat,retry old purchase,no shop questions answered,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+RPT-0464,REPEAT_CROSS_SHOP,multi-product basket,retry old purchase,no shop questions answered,lifetime product-review count remains one,server-authoritative verified evidence is required,P3,NO,PASS
+RPT-0465,REPEAT_CROSS_SHOP,quantity ten,retry old purchase,no shop questions answered,each shop keeps independent structured evidence,missing responses are not imputed,P0,NO,PASS
+RPT-0466,REPEAT_CROSS_SHOP,prior review deleted,retry old purchase,no shop questions answered,free text remains at immutable origin shop,no second merchant free-text review exists,P2,NO,PASS
+RPT-0467,REPEAT_CROSS_SHOP,prior review recreated,retry old purchase,no shop questions answered,effective customer cap prevents over-weighting,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0468,REPEAT_CROSS_SHOP,old purchase predates review,retry old purchase,no shop questions answered,quantity creates no additional weight,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0469,REPEAT_CROSS_SHOP,simultaneous shops,retry old purchase,no shop questions answered,lifetime product-review count remains one,customer identity is not publicly exposed,P2,NO,PASS
+RPT-0470,REPEAT_CROSS_SHOP,rolling window boundary,retry old purchase,no shop questions answered,each shop keeps independent structured evidence,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+RPT-0471,REPEAT_CROSS_SHOP,same product Shop A first purchase,change basket quantity,no shop questions answered,free text remains at immutable origin shop,quantity and basket value have zero vote weight,P3,NO,PASS
+RPT-0472,REPEAT_CROSS_SHOP,same product Shop A repeat,change basket quantity,no shop questions answered,effective customer cap prevents over-weighting,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0473,REPEAT_CROSS_SHOP,same product Shop B repeat,change basket quantity,no shop questions answered,quantity creates no additional weight,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0474,REPEAT_CROSS_SHOP,multi-product basket,change basket quantity,no shop questions answered,lifetime product-review count remains one,quantity and basket value have zero vote weight,P3,YES,PASS
+RPT-0475,REPEAT_CROSS_SHOP,quantity ten,change basket quantity,no shop questions answered,each shop keeps independent structured evidence,derived state is idempotent and versioned,P2,NO,PASS
+RPT-0476,REPEAT_CROSS_SHOP,prior review deleted,change basket quantity,no shop questions answered,free text remains at immutable origin shop,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0477,REPEAT_CROSS_SHOP,prior review recreated,change basket quantity,no shop questions answered,quantity creates no additional weight,server-authoritative verified evidence is required,P1,NO,PASS
+RPT-0478,REPEAT_CROSS_SHOP,old purchase predates review,change basket quantity,no shop questions answered,lifetime product-review count remains one,missing responses are not imputed,P2,NO,PASS
+RPT-0479,REPEAT_CROSS_SHOP,simultaneous shops,change basket quantity,no shop questions answered,each shop keeps independent structured evidence,no second merchant free-text review exists,P3,NO,PASS
+RPT-0480,REPEAT_CROSS_SHOP,rolling window boundary,change basket quantity,no shop questions answered,free text remains at immutable origin shop,product and shop aggregates remain separate,P3,NO,PASS
+RPT-0481,REPEAT_CROSS_SHOP,same product Shop A first purchase,cross window edge,no shop questions answered,effective customer cap prevents over-weighting,ads and rewards have zero reputation weight,P2,NO,PASS
+RPT-0482,REPEAT_CROSS_SHOP,same product Shop A repeat,cross window edge,no shop questions answered,quantity creates no additional weight,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0483,REPEAT_CROSS_SHOP,same product Shop B repeat,cross window edge,no shop questions answered,lifetime product-review count remains one,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0484,REPEAT_CROSS_SHOP,multi-product basket,cross window edge,no shop questions answered,each shop keeps independent structured evidence,quantity and basket value have zero vote weight,P1,NO,PASS
+RPT-0485,REPEAT_CROSS_SHOP,quantity ten,cross window edge,no shop questions answered,free text remains at immutable origin shop,customer identity is not publicly exposed,P3,YES,PASS
+RPT-0486,REPEAT_CROSS_SHOP,prior review deleted,cross window edge,no shop questions answered,effective customer cap prevents over-weighting,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+RPT-0487,REPEAT_CROSS_SHOP,prior review recreated,cross window edge,no shop questions answered,quantity creates no additional weight,quantity and basket value have zero vote weight,P2,NO,PASS
+RPT-0488,REPEAT_CROSS_SHOP,old purchase predates review,cross window edge,no shop questions answered,lifetime product-review count remains one,derived state is idempotent and versioned,P3,NO,PASS
+RPT-0489,REPEAT_CROSS_SHOP,simultaneous shops,cross window edge,no shop questions answered,each shop keeps independent structured evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+RPT-0490,REPEAT_CROSS_SHOP,rolling window boundary,cross window edge,no shop questions answered,free text remains at immutable origin shop,server-authoritative verified evidence is required,P2,NO,PASS
+RPT-0491,REPEAT_CROSS_SHOP,same product Shop A first purchase,correct evidence,no shop questions answered,effective customer cap prevents over-weighting,missing responses are not imputed,P1,NO,PASS
+RPT-0492,REPEAT_CROSS_SHOP,same product Shop A repeat,correct evidence,no shop questions answered,quantity creates no additional weight,no second merchant free-text review exists,P3,NO,PASS
+RPT-0493,REPEAT_CROSS_SHOP,same product Shop B repeat,correct evidence,no shop questions answered,lifetime product-review count remains one,product and shop aggregates remain separate,P2,NO,PASS
+RPT-0494,REPEAT_CROSS_SHOP,multi-product basket,correct evidence,no shop questions answered,free text remains at immutable origin shop,ads and rewards have zero reputation weight,P0,NO,PASS
+RPT-0495,REPEAT_CROSS_SHOP,quantity ten,correct evidence,no shop questions answered,effective customer cap prevents over-weighting,customer identity is not publicly exposed,P3,NO,PASS
+RPT-0496,REPEAT_CROSS_SHOP,prior review deleted,correct evidence,no shop questions answered,quantity creates no additional weight,product and shop aggregates remain separate,P2,YES,PASS
+RPT-0497,REPEAT_CROSS_SHOP,prior review recreated,correct evidence,no shop questions answered,lifetime product-review count remains one,ads and rewards have zero reputation weight,P3,NO,PASS
+RPT-0498,REPEAT_CROSS_SHOP,old purchase predates review,correct evidence,no shop questions answered,each shop keeps independent structured evidence,customer identity is not publicly exposed,P1,NO,PASS
+RPT-0499,REPEAT_CROSS_SHOP,simultaneous shops,correct evidence,no shop questions answered,free text remains at immutable origin shop,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+RPT-0500,REPEAT_CROSS_SHOP,rolling window boundary,correct evidence,no shop questions answered,effective customer cap prevents over-weighting,quantity and basket value have zero vote weight,P3,NO,PASS

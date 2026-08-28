@@ -1,0 +1,501 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+BEL-0001,BADGE_ELIGIBILITY,dimension score high/sample low,evaluate primary badge,friendly badge,score alone cannot grant a badge,product and shop aggregates remain separate,P0,YES,PASS
+BEL-0002,BADGE_ELIGIBILITY,score high/confidence sufficient,evaluate primary badge,friendly badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0003,BADGE_ELIGIBILITY,score borderline,evaluate primary badge,friendly badge,no-badge state remains neutral,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0004,BADGE_ELIGIBILITY,freshness insufficient,evaluate primary badge,friendly badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0005,BADGE_ELIGIBILITY,fraud hold active,evaluate primary badge,friendly badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0006,BADGE_ELIGIBILITY,shop inactive,evaluate primary badge,friendly badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0007,BADGE_ELIGIBILITY,new merchant,evaluate primary badge,friendly badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0008,BADGE_ELIGIBILITY,badge already active,evaluate primary badge,friendly badge,no-badge state remains neutral,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0009,BADGE_ELIGIBILITY,definition version changed,evaluate primary badge,friendly badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0010,BADGE_ELIGIBILITY,evidence correction pending,evaluate primary badge,friendly badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P2,NO,PASS
+BEL-0011,BADGE_ELIGIBILITY,dimension score high/sample low,retain active badge,friendly badge,score alone cannot grant a badge,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0012,BADGE_ELIGIBILITY,score high/confidence sufficient,retain active badge,friendly badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,YES,PASS
+BEL-0013,BADGE_ELIGIBILITY,score borderline,retain active badge,friendly badge,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0014,BADGE_ELIGIBILITY,freshness insufficient,retain active badge,friendly badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0015,BADGE_ELIGIBILITY,fraud hold active,retain active badge,friendly badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0016,BADGE_ELIGIBILITY,shop inactive,retain active badge,friendly badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0017,BADGE_ELIGIBILITY,new merchant,retain active badge,friendly badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0018,BADGE_ELIGIBILITY,badge already active,retain active badge,friendly badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0019,BADGE_ELIGIBILITY,definition version changed,retain active badge,friendly badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0020,BADGE_ELIGIBILITY,evidence correction pending,retain active badge,friendly badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0021,BADGE_ELIGIBILITY,dimension score high/sample low,enter at risk,friendly badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0022,BADGE_ELIGIBILITY,score high/confidence sufficient,enter at risk,friendly badge,no-badge state remains neutral,missing responses are not imputed,P1,NO,PASS
+BEL-0023,BADGE_ELIGIBILITY,score borderline,enter at risk,friendly badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+BEL-0024,BADGE_ELIGIBILITY,freshness insufficient,enter at risk,friendly badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0025,BADGE_ELIGIBILITY,fraud hold active,enter at risk,friendly badge,score alone cannot grant a badge,missing responses are not imputed,P2,NO,PASS
+BEL-0026,BADGE_ELIGIBILITY,shop inactive,enter at risk,friendly badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0027,BADGE_ELIGIBILITY,new merchant,enter at risk,friendly badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0028,BADGE_ELIGIBILITY,badge already active,enter at risk,friendly badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0029,BADGE_ELIGIBILITY,definition version changed,enter at risk,friendly badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0030,BADGE_ELIGIBILITY,evidence correction pending,enter at risk,friendly badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+BEL-0031,BADGE_ELIGIBILITY,dimension score high/sample low,suspend badge,friendly badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0032,BADGE_ELIGIBILITY,score high/confidence sufficient,suspend badge,friendly badge,no-badge state remains neutral,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0033,BADGE_ELIGIBILITY,score borderline,suspend badge,friendly badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0034,BADGE_ELIGIBILITY,freshness insufficient,suspend badge,friendly badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P2,YES,PASS
+BEL-0035,BADGE_ELIGIBILITY,fraud hold active,suspend badge,friendly badge,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0036,BADGE_ELIGIBILITY,shop inactive,suspend badge,friendly badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0037,BADGE_ELIGIBILITY,new merchant,suspend badge,friendly badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0038,BADGE_ELIGIBILITY,badge already active,suspend badge,friendly badge,re-earning uses current eligible evidence,missing responses are not imputed,P3,NO,PASS
+BEL-0039,BADGE_ELIGIBILITY,definition version changed,suspend badge,friendly badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0040,BADGE_ELIGIBILITY,evidence correction pending,suspend badge,friendly badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0041,BADGE_ELIGIBILITY,dimension score high/sample low,revoke badge,friendly badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0042,BADGE_ELIGIBILITY,score high/confidence sufficient,revoke badge,friendly badge,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0043,BADGE_ELIGIBILITY,score borderline,revoke badge,friendly badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0044,BADGE_ELIGIBILITY,freshness insufficient,revoke badge,friendly badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0045,BADGE_ELIGIBILITY,fraud hold active,revoke badge,friendly badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P3,YES,PASS
+BEL-0046,BADGE_ELIGIBILITY,shop inactive,revoke badge,friendly badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0047,BADGE_ELIGIBILITY,new merchant,revoke badge,friendly badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0048,BADGE_ELIGIBILITY,badge already active,revoke badge,friendly badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0049,BADGE_ELIGIBILITY,definition version changed,revoke badge,friendly badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0050,BADGE_ELIGIBILITY,evidence correction pending,revoke badge,friendly badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0051,BADGE_ELIGIBILITY,dimension score high/sample low,re-earn badge,friendly badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0052,BADGE_ELIGIBILITY,score high/confidence sufficient,re-earn badge,friendly badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P2,NO,PASS
+BEL-0053,BADGE_ELIGIBILITY,score borderline,re-earn badge,friendly badge,score alone cannot grant a badge,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0054,BADGE_ELIGIBILITY,freshness insufficient,re-earn badge,friendly badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0055,BADGE_ELIGIBILITY,fraud hold active,re-earn badge,friendly badge,no-badge state remains neutral,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0056,BADGE_ELIGIBILITY,shop inactive,re-earn badge,friendly badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,YES,PASS
+BEL-0057,BADGE_ELIGIBILITY,new merchant,re-earn badge,friendly badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0058,BADGE_ELIGIBILITY,badge already active,re-earn badge,friendly badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0059,BADGE_ELIGIBILITY,definition version changed,re-earn badge,friendly badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+BEL-0060,BADGE_ELIGIBILITY,evidence correction pending,re-earn badge,friendly badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0061,BADGE_ELIGIBILITY,dimension score high/sample low,retire definition,friendly badge,manual or paid grant is rejected,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0062,BADGE_ELIGIBILITY,score high/confidence sufficient,retire definition,friendly badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0063,BADGE_ELIGIBILITY,score borderline,retire definition,friendly badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0064,BADGE_ELIGIBILITY,freshness insufficient,retire definition,friendly badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P1,NO,PASS
+BEL-0065,BADGE_ELIGIBILITY,fraud hold active,retire definition,friendly badge,no-badge state remains neutral,no second merchant free-text review exists,P3,NO,PASS
+BEL-0066,BADGE_ELIGIBILITY,shop inactive,retire definition,friendly badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0067,BADGE_ELIGIBILITY,new merchant,retire definition,friendly badge,re-earning uses current eligible evidence,missing responses are not imputed,P2,YES,PASS
+BEL-0068,BADGE_ELIGIBILITY,badge already active,retire definition,friendly badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0069,BADGE_ELIGIBILITY,definition version changed,retire definition,friendly badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0070,BADGE_ELIGIBILITY,evidence correction pending,retire definition,friendly badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0071,BADGE_ELIGIBILITY,dimension score high/sample low,publish explanation,friendly badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0072,BADGE_ELIGIBILITY,score high/confidence sufficient,publish explanation,friendly badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0073,BADGE_ELIGIBILITY,score borderline,publish explanation,friendly badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0074,BADGE_ELIGIBILITY,freshness insufficient,publish explanation,friendly badge,no-badge state remains neutral,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0075,BADGE_ELIGIBILITY,fraud hold active,publish explanation,friendly badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0076,BADGE_ELIGIBILITY,shop inactive,publish explanation,friendly badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0077,BADGE_ELIGIBILITY,new merchant,publish explanation,friendly badge,score alone cannot grant a badge,missing responses are not imputed,P3,NO,PASS
+BEL-0078,BADGE_ELIGIBILITY,badge already active,publish explanation,friendly badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+BEL-0079,BADGE_ELIGIBILITY,definition version changed,publish explanation,friendly badge,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0080,BADGE_ELIGIBILITY,evidence correction pending,publish explanation,friendly badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0081,BADGE_ELIGIBILITY,dimension score high/sample low,appeal decision,friendly badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P3,NO,PASS
+BEL-0082,BADGE_ELIGIBILITY,score high/confidence sufficient,appeal decision,friendly badge,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0083,BADGE_ELIGIBILITY,score borderline,appeal decision,friendly badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0084,BADGE_ELIGIBILITY,freshness insufficient,appeal decision,friendly badge,no-badge state remains neutral,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0085,BADGE_ELIGIBILITY,fraud hold active,appeal decision,friendly badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0086,BADGE_ELIGIBILITY,shop inactive,appeal decision,friendly badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0087,BADGE_ELIGIBILITY,new merchant,appeal decision,friendly badge,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0088,BADGE_ELIGIBILITY,badge already active,appeal decision,friendly badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+BEL-0089,BADGE_ELIGIBILITY,definition version changed,appeal decision,friendly badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,YES,PASS
+BEL-0090,BADGE_ELIGIBILITY,evidence correction pending,appeal decision,friendly badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0091,BADGE_ELIGIBILITY,dimension score high/sample low,recompute prerequisites,friendly badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0092,BADGE_ELIGIBILITY,score high/confidence sufficient,recompute prerequisites,friendly badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0093,BADGE_ELIGIBILITY,score borderline,recompute prerequisites,friendly badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0094,BADGE_ELIGIBILITY,freshness insufficient,recompute prerequisites,friendly badge,manual or paid grant is rejected,no second merchant free-text review exists,P2,NO,PASS
+BEL-0095,BADGE_ELIGIBILITY,fraud hold active,recompute prerequisites,friendly badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0096,BADGE_ELIGIBILITY,shop inactive,recompute prerequisites,friendly badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0097,BADGE_ELIGIBILITY,new merchant,recompute prerequisites,friendly badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0098,BADGE_ELIGIBILITY,badge already active,recompute prerequisites,friendly badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0099,BADGE_ELIGIBILITY,definition version changed,recompute prerequisites,friendly badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0100,BADGE_ELIGIBILITY,evidence correction pending,recompute prerequisites,friendly badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P2,YES,PASS
+BEL-0101,BADGE_ELIGIBILITY,dimension score high/sample low,evaluate primary badge,helpful badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0102,BADGE_ELIGIBILITY,score high/confidence sufficient,evaluate primary badge,helpful badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0103,BADGE_ELIGIBILITY,score borderline,evaluate primary badge,helpful badge,manual or paid grant is rejected,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0104,BADGE_ELIGIBILITY,freshness insufficient,evaluate primary badge,helpful badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0105,BADGE_ELIGIBILITY,fraud hold active,evaluate primary badge,helpful badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0106,BADGE_ELIGIBILITY,shop inactive,evaluate primary badge,helpful badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P1,NO,PASS
+BEL-0107,BADGE_ELIGIBILITY,new merchant,evaluate primary badge,helpful badge,no-badge state remains neutral,no second merchant free-text review exists,P3,NO,PASS
+BEL-0108,BADGE_ELIGIBILITY,badge already active,evaluate primary badge,helpful badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0109,BADGE_ELIGIBILITY,definition version changed,evaluate primary badge,helpful badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0110,BADGE_ELIGIBILITY,evidence correction pending,evaluate primary badge,helpful badge,score alone cannot grant a badge,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0111,BADGE_ELIGIBILITY,dimension score high/sample low,retain active badge,helpful badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P3,YES,PASS
+BEL-0112,BADGE_ELIGIBILITY,score high/confidence sufficient,retain active badge,helpful badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0113,BADGE_ELIGIBILITY,score borderline,retain active badge,helpful badge,manual or paid grant is rejected,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0114,BADGE_ELIGIBILITY,freshness insufficient,retain active badge,helpful badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0115,BADGE_ELIGIBILITY,fraud hold active,retain active badge,helpful badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0116,BADGE_ELIGIBILITY,shop inactive,retain active badge,helpful badge,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0117,BADGE_ELIGIBILITY,new merchant,retain active badge,helpful badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+BEL-0118,BADGE_ELIGIBILITY,badge already active,retain active badge,helpful badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0119,BADGE_ELIGIBILITY,definition version changed,retain active badge,helpful badge,re-earning uses current eligible evidence,missing responses are not imputed,P3,NO,PASS
+BEL-0120,BADGE_ELIGIBILITY,evidence correction pending,retain active badge,helpful badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P1,NO,PASS
+BEL-0121,BADGE_ELIGIBILITY,dimension score high/sample low,enter at risk,helpful badge,no-badge state remains neutral,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0122,BADGE_ELIGIBILITY,score high/confidence sufficient,enter at risk,helpful badge,manual or paid grant is rejected,missing responses are not imputed,P3,YES,PASS
+BEL-0123,BADGE_ELIGIBILITY,score borderline,enter at risk,helpful badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P3,NO,PASS
+BEL-0124,BADGE_ELIGIBILITY,freshness insufficient,enter at risk,helpful badge,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0125,BADGE_ELIGIBILITY,fraud hold active,enter at risk,helpful badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0126,BADGE_ELIGIBILITY,shop inactive,enter at risk,helpful badge,no-badge state remains neutral,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0127,BADGE_ELIGIBILITY,new merchant,enter at risk,helpful badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0128,BADGE_ELIGIBILITY,badge already active,enter at risk,helpful badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0129,BADGE_ELIGIBILITY,definition version changed,enter at risk,helpful badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0130,BADGE_ELIGIBILITY,evidence correction pending,enter at risk,helpful badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0131,BADGE_ELIGIBILITY,dimension score high/sample low,suspend badge,helpful badge,no-badge state remains neutral,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0132,BADGE_ELIGIBILITY,score high/confidence sufficient,suspend badge,helpful badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0133,BADGE_ELIGIBILITY,score borderline,suspend badge,helpful badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+BEL-0134,BADGE_ELIGIBILITY,freshness insufficient,suspend badge,helpful badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0135,BADGE_ELIGIBILITY,fraud hold active,suspend badge,helpful badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,NO,PASS
+BEL-0136,BADGE_ELIGIBILITY,shop inactive,suspend badge,helpful badge,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0137,BADGE_ELIGIBILITY,new merchant,suspend badge,helpful badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0138,BADGE_ELIGIBILITY,badge already active,suspend badge,helpful badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0139,BADGE_ELIGIBILITY,definition version changed,suspend badge,helpful badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0140,BADGE_ELIGIBILITY,evidence correction pending,suspend badge,helpful badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0141,BADGE_ELIGIBILITY,dimension score high/sample low,revoke badge,helpful badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0142,BADGE_ELIGIBILITY,score high/confidence sufficient,revoke badge,helpful badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0143,BADGE_ELIGIBILITY,score borderline,revoke badge,helpful badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0144,BADGE_ELIGIBILITY,freshness insufficient,revoke badge,helpful badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P3,YES,PASS
+BEL-0145,BADGE_ELIGIBILITY,fraud hold active,revoke badge,helpful badge,no-badge state remains neutral,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0146,BADGE_ELIGIBILITY,shop inactive,revoke badge,helpful badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+BEL-0147,BADGE_ELIGIBILITY,new merchant,revoke badge,helpful badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0148,BADGE_ELIGIBILITY,badge already active,revoke badge,helpful badge,score alone cannot grant a badge,missing responses are not imputed,P1,NO,PASS
+BEL-0149,BADGE_ELIGIBILITY,definition version changed,revoke badge,helpful badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0150,BADGE_ELIGIBILITY,evidence correction pending,revoke badge,helpful badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0151,BADGE_ELIGIBILITY,dimension score high/sample low,re-earn badge,helpful badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0152,BADGE_ELIGIBILITY,score high/confidence sufficient,re-earn badge,helpful badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0153,BADGE_ELIGIBILITY,score borderline,re-earn badge,helpful badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0154,BADGE_ELIGIBILITY,freshness insufficient,re-earn badge,helpful badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0155,BADGE_ELIGIBILITY,fraud hold active,re-earn badge,helpful badge,manual or paid grant is rejected,customer identity is not publicly exposed,P1,YES,PASS
+BEL-0156,BADGE_ELIGIBILITY,shop inactive,re-earn badge,helpful badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0157,BADGE_ELIGIBILITY,new merchant,re-earn badge,helpful badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0158,BADGE_ELIGIBILITY,badge already active,re-earn badge,helpful badge,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0159,BADGE_ELIGIBILITY,definition version changed,re-earn badge,helpful badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0160,BADGE_ELIGIBILITY,evidence correction pending,re-earn badge,helpful badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0161,BADGE_ELIGIBILITY,dimension score high/sample low,retire definition,helpful badge,re-earning uses current eligible evidence,missing responses are not imputed,P3,NO,PASS
+BEL-0162,BADGE_ELIGIBILITY,score high/confidence sufficient,retire definition,helpful badge,score alone cannot grant a badge,no second merchant free-text review exists,P1,NO,PASS
+BEL-0163,BADGE_ELIGIBILITY,score borderline,retire definition,helpful badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0164,BADGE_ELIGIBILITY,freshness insufficient,retire definition,helpful badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0165,BADGE_ELIGIBILITY,fraud hold active,retire definition,helpful badge,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0166,BADGE_ELIGIBILITY,shop inactive,retire definition,helpful badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P2,YES,PASS
+BEL-0167,BADGE_ELIGIBILITY,new merchant,retire definition,helpful badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0168,BADGE_ELIGIBILITY,badge already active,retire definition,helpful badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0169,BADGE_ELIGIBILITY,definition version changed,retire definition,helpful badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0170,BADGE_ELIGIBILITY,evidence correction pending,retire definition,helpful badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0171,BADGE_ELIGIBILITY,dimension score high/sample low,publish explanation,helpful badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0172,BADGE_ELIGIBILITY,score high/confidence sufficient,publish explanation,helpful badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0173,BADGE_ELIGIBILITY,score borderline,publish explanation,helpful badge,no-badge state remains neutral,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0174,BADGE_ELIGIBILITY,freshness insufficient,publish explanation,helpful badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0175,BADGE_ELIGIBILITY,fraud hold active,publish explanation,helpful badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P0,NO,PASS
+BEL-0176,BADGE_ELIGIBILITY,shop inactive,publish explanation,helpful badge,score alone cannot grant a badge,product and shop aggregates remain separate,P1,NO,PASS
+BEL-0177,BADGE_ELIGIBILITY,new merchant,publish explanation,helpful badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,YES,PASS
+BEL-0178,BADGE_ELIGIBILITY,badge already active,publish explanation,helpful badge,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0179,BADGE_ELIGIBILITY,definition version changed,publish explanation,helpful badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0180,BADGE_ELIGIBILITY,evidence correction pending,publish explanation,helpful badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0181,BADGE_ELIGIBILITY,dimension score high/sample low,appeal decision,helpful badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0182,BADGE_ELIGIBILITY,score high/confidence sufficient,appeal decision,helpful badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0183,BADGE_ELIGIBILITY,score borderline,appeal decision,helpful badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0184,BADGE_ELIGIBILITY,freshness insufficient,appeal decision,helpful badge,manual or paid grant is rejected,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0185,BADGE_ELIGIBILITY,fraud hold active,appeal decision,helpful badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0186,BADGE_ELIGIBILITY,shop inactive,appeal decision,helpful badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0187,BADGE_ELIGIBILITY,new merchant,appeal decision,helpful badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P2,NO,PASS
+BEL-0188,BADGE_ELIGIBILITY,badge already active,appeal decision,helpful badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+BEL-0189,BADGE_ELIGIBILITY,definition version changed,appeal decision,helpful badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0190,BADGE_ELIGIBILITY,evidence correction pending,appeal decision,helpful badge,score alone cannot grant a badge,missing responses are not imputed,P1,NO,PASS
+BEL-0191,BADGE_ELIGIBILITY,dimension score high/sample low,recompute prerequisites,helpful badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0192,BADGE_ELIGIBILITY,score high/confidence sufficient,recompute prerequisites,helpful badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0193,BADGE_ELIGIBILITY,score borderline,recompute prerequisites,helpful badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0194,BADGE_ELIGIBILITY,freshness insufficient,recompute prerequisites,helpful badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0195,BADGE_ELIGIBILITY,fraud hold active,recompute prerequisites,helpful badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0196,BADGE_ELIGIBILITY,shop inactive,recompute prerequisites,helpful badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0197,BADGE_ELIGIBILITY,new merchant,recompute prerequisites,helpful badge,no-badge state remains neutral,derived state is idempotent and versioned,P1,NO,PASS
+BEL-0198,BADGE_ELIGIBILITY,badge already active,recompute prerequisites,helpful badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0199,BADGE_ELIGIBILITY,definition version changed,recompute prerequisites,helpful badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P2,YES,PASS
+BEL-0200,BADGE_ELIGIBILITY,evidence correction pending,recompute prerequisites,helpful badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0201,BADGE_ELIGIBILITY,dimension score high/sample low,evaluate primary badge,knowledge badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0202,BADGE_ELIGIBILITY,score high/confidence sufficient,evaluate primary badge,knowledge badge,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0203,BADGE_ELIGIBILITY,score borderline,evaluate primary badge,knowledge badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0204,BADGE_ELIGIBILITY,freshness insufficient,evaluate primary badge,knowledge badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P0,NO,PASS
+BEL-0205,BADGE_ELIGIBILITY,fraud hold active,evaluate primary badge,knowledge badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0206,BADGE_ELIGIBILITY,shop inactive,evaluate primary badge,knowledge badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0207,BADGE_ELIGIBILITY,new merchant,evaluate primary badge,knowledge badge,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0208,BADGE_ELIGIBILITY,badge already active,evaluate primary badge,knowledge badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0209,BADGE_ELIGIBILITY,definition version changed,evaluate primary badge,knowledge badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0210,BADGE_ELIGIBILITY,evidence correction pending,evaluate primary badge,knowledge badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P3,YES,PASS
+BEL-0211,BADGE_ELIGIBILITY,dimension score high/sample low,retain active badge,knowledge badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0212,BADGE_ELIGIBILITY,score high/confidence sufficient,retain active badge,knowledge badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0213,BADGE_ELIGIBILITY,score borderline,retain active badge,knowledge badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0214,BADGE_ELIGIBILITY,freshness insufficient,retain active badge,knowledge badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0215,BADGE_ELIGIBILITY,fraud hold active,retain active badge,knowledge badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0216,BADGE_ELIGIBILITY,shop inactive,retain active badge,knowledge badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0217,BADGE_ELIGIBILITY,new merchant,retain active badge,knowledge badge,manual or paid grant is rejected,no second merchant free-text review exists,P2,NO,PASS
+BEL-0218,BADGE_ELIGIBILITY,badge already active,retain active badge,knowledge badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P1,NO,PASS
+BEL-0219,BADGE_ELIGIBILITY,definition version changed,retain active badge,knowledge badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0220,BADGE_ELIGIBILITY,evidence correction pending,retain active badge,knowledge badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0221,BADGE_ELIGIBILITY,dimension score high/sample low,enter at risk,knowledge badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,YES,PASS
+BEL-0222,BADGE_ELIGIBILITY,score high/confidence sufficient,enter at risk,knowledge badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0223,BADGE_ELIGIBILITY,score borderline,enter at risk,knowledge badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0224,BADGE_ELIGIBILITY,freshness insufficient,enter at risk,knowledge badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0225,BADGE_ELIGIBILITY,fraud hold active,enter at risk,knowledge badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0226,BADGE_ELIGIBILITY,shop inactive,enter at risk,knowledge badge,manual or paid grant is rejected,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0227,BADGE_ELIGIBILITY,new merchant,enter at risk,knowledge badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0228,BADGE_ELIGIBILITY,badge already active,enter at risk,knowledge badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0229,BADGE_ELIGIBILITY,definition version changed,enter at risk,knowledge badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P2,NO,PASS
+BEL-0230,BADGE_ELIGIBILITY,evidence correction pending,enter at risk,knowledge badge,no-badge state remains neutral,no second merchant free-text review exists,P3,NO,PASS
+BEL-0231,BADGE_ELIGIBILITY,dimension score high/sample low,suspend badge,knowledge badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0232,BADGE_ELIGIBILITY,score high/confidence sufficient,suspend badge,knowledge badge,re-earning uses current eligible evidence,missing responses are not imputed,P1,YES,PASS
+BEL-0233,BADGE_ELIGIBILITY,score borderline,suspend badge,knowledge badge,score alone cannot grant a badge,no second merchant free-text review exists,P0,NO,PASS
+BEL-0234,BADGE_ELIGIBILITY,freshness insufficient,suspend badge,knowledge badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0235,BADGE_ELIGIBILITY,fraud hold active,suspend badge,knowledge badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0236,BADGE_ELIGIBILITY,shop inactive,suspend badge,knowledge badge,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0237,BADGE_ELIGIBILITY,new merchant,suspend badge,knowledge badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0238,BADGE_ELIGIBILITY,badge already active,suspend badge,knowledge badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0239,BADGE_ELIGIBILITY,definition version changed,suspend badge,knowledge badge,no-badge state remains neutral,derived state is idempotent and versioned,P1,NO,PASS
+BEL-0240,BADGE_ELIGIBILITY,evidence correction pending,suspend badge,knowledge badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0241,BADGE_ELIGIBILITY,dimension score high/sample low,revoke badge,knowledge badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0242,BADGE_ELIGIBILITY,score high/confidence sufficient,revoke badge,knowledge badge,score alone cannot grant a badge,missing responses are not imputed,P3,NO,PASS
+BEL-0243,BADGE_ELIGIBILITY,score borderline,revoke badge,knowledge badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+BEL-0244,BADGE_ELIGIBILITY,freshness insufficient,revoke badge,knowledge badge,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0245,BADGE_ELIGIBILITY,fraud hold active,revoke badge,knowledge badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0246,BADGE_ELIGIBILITY,shop inactive,revoke badge,knowledge badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P1,NO,PASS
+BEL-0247,BADGE_ELIGIBILITY,new merchant,revoke badge,knowledge badge,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0248,BADGE_ELIGIBILITY,badge already active,revoke badge,knowledge badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0249,BADGE_ELIGIBILITY,definition version changed,revoke badge,knowledge badge,no-badge state remains neutral,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0250,BADGE_ELIGIBILITY,evidence correction pending,revoke badge,knowledge badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0251,BADGE_ELIGIBILITY,dimension score high/sample low,re-earn badge,knowledge badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0252,BADGE_ELIGIBILITY,score high/confidence sufficient,re-earn badge,knowledge badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0253,BADGE_ELIGIBILITY,score borderline,re-earn badge,knowledge badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0254,BADGE_ELIGIBILITY,freshness insufficient,re-earn badge,knowledge badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,YES,PASS
+BEL-0255,BADGE_ELIGIBILITY,fraud hold active,re-earn badge,knowledge badge,manual or paid grant is rejected,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0256,BADGE_ELIGIBILITY,shop inactive,re-earn badge,knowledge badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0257,BADGE_ELIGIBILITY,new merchant,re-earn badge,knowledge badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0258,BADGE_ELIGIBILITY,badge already active,re-earn badge,knowledge badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0259,BADGE_ELIGIBILITY,definition version changed,re-earn badge,knowledge badge,manual or paid grant is rejected,no second merchant free-text review exists,P2,NO,PASS
+BEL-0260,BADGE_ELIGIBILITY,evidence correction pending,re-earn badge,knowledge badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P1,NO,PASS
+BEL-0261,BADGE_ELIGIBILITY,dimension score high/sample low,retire definition,knowledge badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0262,BADGE_ELIGIBILITY,score high/confidence sufficient,retire definition,knowledge badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P0,NO,PASS
+BEL-0263,BADGE_ELIGIBILITY,score borderline,retire definition,knowledge badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0264,BADGE_ELIGIBILITY,freshness insufficient,retire definition,knowledge badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0265,BADGE_ELIGIBILITY,fraud hold active,retire definition,knowledge badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P2,YES,PASS
+BEL-0266,BADGE_ELIGIBILITY,shop inactive,retire definition,knowledge badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0267,BADGE_ELIGIBILITY,new merchant,retire definition,knowledge badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0268,BADGE_ELIGIBILITY,badge already active,retire definition,knowledge badge,no-badge state remains neutral,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0269,BADGE_ELIGIBILITY,definition version changed,retire definition,knowledge badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0270,BADGE_ELIGIBILITY,evidence correction pending,retire definition,knowledge badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0271,BADGE_ELIGIBILITY,dimension score high/sample low,publish explanation,knowledge badge,score alone cannot grant a badge,missing responses are not imputed,P2,NO,PASS
+BEL-0272,BADGE_ELIGIBILITY,score high/confidence sufficient,publish explanation,knowledge badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0273,BADGE_ELIGIBILITY,score borderline,publish explanation,knowledge badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0274,BADGE_ELIGIBILITY,freshness insufficient,publish explanation,knowledge badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0275,BADGE_ELIGIBILITY,fraud hold active,publish explanation,knowledge badge,score alone cannot grant a badge,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0276,BADGE_ELIGIBILITY,shop inactive,publish explanation,knowledge badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P3,YES,PASS
+BEL-0277,BADGE_ELIGIBILITY,new merchant,publish explanation,knowledge badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0278,BADGE_ELIGIBILITY,badge already active,publish explanation,knowledge badge,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0279,BADGE_ELIGIBILITY,definition version changed,publish explanation,knowledge badge,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0280,BADGE_ELIGIBILITY,evidence correction pending,publish explanation,knowledge badge,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0281,BADGE_ELIGIBILITY,dimension score high/sample low,appeal decision,knowledge badge,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P1,NO,PASS
+BEL-0282,BADGE_ELIGIBILITY,score high/confidence sufficient,appeal decision,knowledge badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0283,BADGE_ELIGIBILITY,score borderline,appeal decision,knowledge badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0284,BADGE_ELIGIBILITY,freshness insufficient,appeal decision,knowledge badge,re-earning uses current eligible evidence,missing responses are not imputed,P3,NO,PASS
+BEL-0285,BADGE_ELIGIBILITY,fraud hold active,appeal decision,knowledge badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0286,BADGE_ELIGIBILITY,shop inactive,appeal decision,knowledge badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0287,BADGE_ELIGIBILITY,new merchant,appeal decision,knowledge badge,no-badge state remains neutral,missing responses are not imputed,P3,YES,PASS
+BEL-0288,BADGE_ELIGIBILITY,badge already active,appeal decision,knowledge badge,manual or paid grant is rejected,no second merchant free-text review exists,P1,NO,PASS
+BEL-0289,BADGE_ELIGIBILITY,definition version changed,appeal decision,knowledge badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0290,BADGE_ELIGIBILITY,evidence correction pending,appeal decision,knowledge badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0291,BADGE_ELIGIBILITY,dimension score high/sample low,recompute prerequisites,knowledge badge,no-badge state remains neutral,customer identity is not publicly exposed,P0,NO,PASS
+BEL-0292,BADGE_ELIGIBILITY,score high/confidence sufficient,recompute prerequisites,knowledge badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0293,BADGE_ELIGIBILITY,score borderline,recompute prerequisites,knowledge badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0294,BADGE_ELIGIBILITY,freshness insufficient,recompute prerequisites,knowledge badge,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0295,BADGE_ELIGIBILITY,fraud hold active,recompute prerequisites,knowledge badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0296,BADGE_ELIGIBILITY,shop inactive,recompute prerequisites,knowledge badge,no-badge state remains neutral,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0297,BADGE_ELIGIBILITY,new merchant,recompute prerequisites,knowledge badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0298,BADGE_ELIGIBILITY,badge already active,recompute prerequisites,knowledge badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+BEL-0299,BADGE_ELIGIBILITY,definition version changed,recompute prerequisites,knowledge badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0300,BADGE_ELIGIBILITY,evidence correction pending,recompute prerequisites,knowledge badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,NO,PASS
+BEL-0301,BADGE_ELIGIBILITY,dimension score high/sample low,evaluate primary badge,factual verification badge,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0302,BADGE_ELIGIBILITY,score high/confidence sufficient,evaluate primary badge,factual verification badge,manual or paid grant is rejected,product and shop aggregates remain separate,P1,NO,PASS
+BEL-0303,BADGE_ELIGIBILITY,score borderline,evaluate primary badge,factual verification badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0304,BADGE_ELIGIBILITY,freshness insufficient,evaluate primary badge,factual verification badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0305,BADGE_ELIGIBILITY,fraud hold active,evaluate primary badge,factual verification badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0306,BADGE_ELIGIBILITY,shop inactive,evaluate primary badge,factual verification badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0307,BADGE_ELIGIBILITY,new merchant,evaluate primary badge,factual verification badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0308,BADGE_ELIGIBILITY,badge already active,evaluate primary badge,factual verification badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0309,BADGE_ELIGIBILITY,definition version changed,evaluate primary badge,factual verification badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P1,YES,PASS
+BEL-0310,BADGE_ELIGIBILITY,evidence correction pending,evaluate primary badge,factual verification badge,no-badge state remains neutral,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0311,BADGE_ELIGIBILITY,dimension score high/sample low,retain active badge,factual verification badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0312,BADGE_ELIGIBILITY,score high/confidence sufficient,retain active badge,factual verification badge,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0313,BADGE_ELIGIBILITY,score borderline,retain active badge,factual verification badge,score alone cannot grant a badge,missing responses are not imputed,P2,NO,PASS
+BEL-0314,BADGE_ELIGIBILITY,freshness insufficient,retain active badge,factual verification badge,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0315,BADGE_ELIGIBILITY,fraud hold active,retain active badge,factual verification badge,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0316,BADGE_ELIGIBILITY,shop inactive,retain active badge,factual verification badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0317,BADGE_ELIGIBILITY,new merchant,retain active badge,factual verification badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0318,BADGE_ELIGIBILITY,badge already active,retain active badge,factual verification badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0319,BADGE_ELIGIBILITY,definition version changed,retain active badge,factual verification badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0320,BADGE_ELIGIBILITY,evidence correction pending,retain active badge,factual verification badge,no-badge state remains neutral,customer identity is not publicly exposed,P0,YES,PASS
+BEL-0321,BADGE_ELIGIBILITY,dimension score high/sample low,enter at risk,factual verification badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0322,BADGE_ELIGIBILITY,score high/confidence sufficient,enter at risk,factual verification badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0323,BADGE_ELIGIBILITY,score borderline,enter at risk,factual verification badge,score alone cannot grant a badge,derived state is idempotent and versioned,P1,NO,PASS
+BEL-0324,BADGE_ELIGIBILITY,freshness insufficient,enter at risk,factual verification badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0325,BADGE_ELIGIBILITY,fraud hold active,enter at risk,factual verification badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0326,BADGE_ELIGIBILITY,shop inactive,enter at risk,factual verification badge,re-earning uses current eligible evidence,missing responses are not imputed,P3,NO,PASS
+BEL-0327,BADGE_ELIGIBILITY,new merchant,enter at risk,factual verification badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0328,BADGE_ELIGIBILITY,badge already active,enter at risk,factual verification badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0329,BADGE_ELIGIBILITY,definition version changed,enter at risk,factual verification badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0330,BADGE_ELIGIBILITY,evidence correction pending,enter at risk,factual verification badge,manual or paid grant is rejected,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0331,BADGE_ELIGIBILITY,dimension score high/sample low,suspend badge,factual verification badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P2,YES,PASS
+BEL-0332,BADGE_ELIGIBILITY,score high/confidence sufficient,suspend badge,factual verification badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0333,BADGE_ELIGIBILITY,score borderline,suspend badge,factual verification badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0334,BADGE_ELIGIBILITY,freshness insufficient,suspend badge,factual verification badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0335,BADGE_ELIGIBILITY,fraud hold active,suspend badge,factual verification badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0336,BADGE_ELIGIBILITY,shop inactive,suspend badge,factual verification badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0337,BADGE_ELIGIBILITY,new merchant,suspend badge,factual verification badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0338,BADGE_ELIGIBILITY,badge already active,suspend badge,factual verification badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0339,BADGE_ELIGIBILITY,definition version changed,suspend badge,factual verification badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0340,BADGE_ELIGIBILITY,evidence correction pending,suspend badge,factual verification badge,manual or paid grant is rejected,no second merchant free-text review exists,P2,NO,PASS
+BEL-0341,BADGE_ELIGIBILITY,dimension score high/sample low,revoke badge,factual verification badge,score alone cannot grant a badge,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0342,BADGE_ELIGIBILITY,score high/confidence sufficient,revoke badge,factual verification badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,YES,PASS
+BEL-0343,BADGE_ELIGIBILITY,score borderline,revoke badge,factual verification badge,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0344,BADGE_ELIGIBILITY,freshness insufficient,revoke badge,factual verification badge,manual or paid grant is rejected,product and shop aggregates remain separate,P1,NO,PASS
+BEL-0345,BADGE_ELIGIBILITY,fraud hold active,revoke badge,factual verification badge,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0346,BADGE_ELIGIBILITY,shop inactive,revoke badge,factual verification badge,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0347,BADGE_ELIGIBILITY,new merchant,revoke badge,factual verification badge,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0348,BADGE_ELIGIBILITY,badge already active,revoke badge,factual verification badge,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0349,BADGE_ELIGIBILITY,definition version changed,revoke badge,factual verification badge,manual or paid grant is rejected,derived state is idempotent and versioned,P0,NO,PASS
+BEL-0350,BADGE_ELIGIBILITY,evidence correction pending,revoke badge,factual verification badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0351,BADGE_ELIGIBILITY,dimension score high/sample low,re-earn badge,factual verification badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0352,BADGE_ELIGIBILITY,score high/confidence sufficient,re-earn badge,factual verification badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P2,NO,PASS
+BEL-0353,BADGE_ELIGIBILITY,score borderline,re-earn badge,factual verification badge,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+BEL-0354,BADGE_ELIGIBILITY,freshness insufficient,re-earn badge,factual verification badge,manual or paid grant is rejected,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0355,BADGE_ELIGIBILITY,fraud hold active,re-earn badge,factual verification badge,re-earning uses current eligible evidence,missing responses are not imputed,P2,NO,PASS
+BEL-0356,BADGE_ELIGIBILITY,shop inactive,re-earn badge,factual verification badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0357,BADGE_ELIGIBILITY,new merchant,re-earn badge,factual verification badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0358,BADGE_ELIGIBILITY,badge already active,re-earn badge,factual verification badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0359,BADGE_ELIGIBILITY,definition version changed,re-earn badge,factual verification badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0360,BADGE_ELIGIBILITY,evidence correction pending,re-earn badge,factual verification badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0361,BADGE_ELIGIBILITY,dimension score high/sample low,retire definition,factual verification badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0362,BADGE_ELIGIBILITY,score high/confidence sufficient,retire definition,factual verification badge,no-badge state remains neutral,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0363,BADGE_ELIGIBILITY,score borderline,retire definition,factual verification badge,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0364,BADGE_ELIGIBILITY,freshness insufficient,retire definition,factual verification badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P2,YES,PASS
+BEL-0365,BADGE_ELIGIBILITY,fraud hold active,retire definition,factual verification badge,score alone cannot grant a badge,derived state is idempotent and versioned,P1,NO,PASS
+BEL-0366,BADGE_ELIGIBILITY,shop inactive,retire definition,factual verification badge,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0367,BADGE_ELIGIBILITY,new merchant,retire definition,factual verification badge,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0368,BADGE_ELIGIBILITY,badge already active,retire definition,factual verification badge,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0369,BADGE_ELIGIBILITY,definition version changed,retire definition,factual verification badge,re-earning uses current eligible evidence,no second merchant free-text review exists,P3,NO,PASS
+BEL-0370,BADGE_ELIGIBILITY,evidence correction pending,retire definition,factual verification badge,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0371,BADGE_ELIGIBILITY,dimension score high/sample low,publish explanation,factual verification badge,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0372,BADGE_ELIGIBILITY,score high/confidence sufficient,publish explanation,factual verification badge,no-badge state remains neutral,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0373,BADGE_ELIGIBILITY,score borderline,publish explanation,factual verification badge,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0374,BADGE_ELIGIBILITY,freshness insufficient,publish explanation,factual verification badge,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0375,BADGE_ELIGIBILITY,fraud hold active,publish explanation,factual verification badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P3,YES,PASS
+BEL-0376,BADGE_ELIGIBILITY,shop inactive,publish explanation,factual verification badge,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0377,BADGE_ELIGIBILITY,new merchant,publish explanation,factual verification badge,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0378,BADGE_ELIGIBILITY,badge already active,publish explanation,factual verification badge,re-earning uses current eligible evidence,derived state is idempotent and versioned,P0,NO,PASS
+BEL-0379,BADGE_ELIGIBILITY,definition version changed,publish explanation,factual verification badge,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0380,BADGE_ELIGIBILITY,evidence correction pending,publish explanation,factual verification badge,lifecycle transition has a reason and evidence version,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0381,BADGE_ELIGIBILITY,dimension score high/sample low,appeal decision,factual verification badge,no-badge state remains neutral,missing responses are not imputed,P3,NO,PASS
+BEL-0382,BADGE_ELIGIBILITY,score high/confidence sufficient,appeal decision,factual verification badge,manual or paid grant is rejected,no second merchant free-text review exists,P2,NO,PASS
+BEL-0383,BADGE_ELIGIBILITY,score borderline,appeal decision,factual verification badge,re-earning uses current eligible evidence,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0384,BADGE_ELIGIBILITY,freshness insufficient,appeal decision,factual verification badge,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0385,BADGE_ELIGIBILITY,fraud hold active,appeal decision,factual verification badge,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0386,BADGE_ELIGIBILITY,shop inactive,appeal decision,factual verification badge,no-badge state remains neutral,product and shop aggregates remain separate,P1,YES,PASS
+BEL-0387,BADGE_ELIGIBILITY,new merchant,appeal decision,factual verification badge,manual or paid grant is rejected,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0388,BADGE_ELIGIBILITY,badge already active,appeal decision,factual verification badge,re-earning uses current eligible evidence,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0389,BADGE_ELIGIBILITY,definition version changed,appeal decision,factual verification badge,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0390,BADGE_ELIGIBILITY,evidence correction pending,appeal decision,factual verification badge,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0391,BADGE_ELIGIBILITY,dimension score high/sample low,recompute prerequisites,factual verification badge,no-badge state remains neutral,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0392,BADGE_ELIGIBILITY,score high/confidence sufficient,recompute prerequisites,factual verification badge,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0393,BADGE_ELIGIBILITY,score borderline,recompute prerequisites,factual verification badge,score alone cannot grant a badge,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0394,BADGE_ELIGIBILITY,freshness insufficient,recompute prerequisites,factual verification badge,lifecycle transition has a reason and evidence version,missing responses are not imputed,P2,NO,PASS
+BEL-0395,BADGE_ELIGIBILITY,fraud hold active,recompute prerequisites,factual verification badge,no-badge state remains neutral,no second merchant free-text review exists,P3,NO,PASS
+BEL-0396,BADGE_ELIGIBILITY,shop inactive,recompute prerequisites,factual verification badge,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0397,BADGE_ELIGIBILITY,new merchant,recompute prerequisites,factual verification badge,re-earning uses current eligible evidence,missing responses are not imputed,P2,YES,PASS
+BEL-0398,BADGE_ELIGIBILITY,badge already active,recompute prerequisites,factual verification badge,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0399,BADGE_ELIGIBILITY,definition version changed,recompute prerequisites,factual verification badge,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0400,BADGE_ELIGIBILITY,evidence correction pending,recompute prerequisites,factual verification badge,no-badge state remains neutral,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0401,BADGE_ELIGIBILITY,dimension score high/sample low,evaluate primary badge,no-badge state,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0402,BADGE_ELIGIBILITY,score high/confidence sufficient,evaluate primary badge,no-badge state,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0403,BADGE_ELIGIBILITY,score borderline,evaluate primary badge,no-badge state,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0404,BADGE_ELIGIBILITY,freshness insufficient,evaluate primary badge,no-badge state,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0405,BADGE_ELIGIBILITY,fraud hold active,evaluate primary badge,no-badge state,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0406,BADGE_ELIGIBILITY,shop inactive,evaluate primary badge,no-badge state,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0407,BADGE_ELIGIBILITY,new merchant,evaluate primary badge,no-badge state,re-earning uses current eligible evidence,missing responses are not imputed,P0,NO,PASS
+BEL-0408,BADGE_ELIGIBILITY,badge already active,evaluate primary badge,no-badge state,score alone cannot grant a badge,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+BEL-0409,BADGE_ELIGIBILITY,definition version changed,evaluate primary badge,no-badge state,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0410,BADGE_ELIGIBILITY,evidence correction pending,evaluate primary badge,no-badge state,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0411,BADGE_ELIGIBILITY,dimension score high/sample low,retain active badge,no-badge state,re-earning uses current eligible evidence,no second merchant free-text review exists,P3,NO,PASS
+BEL-0412,BADGE_ELIGIBILITY,score high/confidence sufficient,retain active badge,no-badge state,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0413,BADGE_ELIGIBILITY,score borderline,retain active badge,no-badge state,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0414,BADGE_ELIGIBILITY,freshness insufficient,retain active badge,no-badge state,no-badge state remains neutral,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0415,BADGE_ELIGIBILITY,fraud hold active,retain active badge,no-badge state,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0416,BADGE_ELIGIBILITY,shop inactive,retain active badge,no-badge state,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0417,BADGE_ELIGIBILITY,new merchant,retain active badge,no-badge state,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0418,BADGE_ELIGIBILITY,badge already active,retain active badge,no-badge state,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0419,BADGE_ELIGIBILITY,definition version changed,retain active badge,no-badge state,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,YES,PASS
+BEL-0420,BADGE_ELIGIBILITY,evidence correction pending,retain active badge,no-badge state,manual or paid grant is rejected,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0421,BADGE_ELIGIBILITY,dimension score high/sample low,enter at risk,no-badge state,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+BEL-0422,BADGE_ELIGIBILITY,score high/confidence sufficient,enter at risk,no-badge state,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0423,BADGE_ELIGIBILITY,score borderline,enter at risk,no-badge state,lifecycle transition has a reason and evidence version,missing responses are not imputed,P3,NO,PASS
+BEL-0424,BADGE_ELIGIBILITY,freshness insufficient,enter at risk,no-badge state,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0425,BADGE_ELIGIBILITY,fraud hold active,enter at risk,no-badge state,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0426,BADGE_ELIGIBILITY,shop inactive,enter at risk,no-badge state,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0427,BADGE_ELIGIBILITY,new merchant,enter at risk,no-badge state,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0428,BADGE_ELIGIBILITY,badge already active,enter at risk,no-badge state,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0429,BADGE_ELIGIBILITY,definition version changed,enter at risk,no-badge state,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0430,BADGE_ELIGIBILITY,evidence correction pending,enter at risk,no-badge state,re-earning uses current eligible evidence,customer identity is not publicly exposed,P2,YES,PASS
+BEL-0431,BADGE_ELIGIBILITY,dimension score high/sample low,suspend badge,no-badge state,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0432,BADGE_ELIGIBILITY,score high/confidence sufficient,suspend badge,no-badge state,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0433,BADGE_ELIGIBILITY,score borderline,suspend badge,no-badge state,no-badge state remains neutral,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0434,BADGE_ELIGIBILITY,freshness insufficient,suspend badge,no-badge state,manual or paid grant is rejected,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0435,BADGE_ELIGIBILITY,fraud hold active,suspend badge,no-badge state,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0436,BADGE_ELIGIBILITY,shop inactive,suspend badge,no-badge state,score alone cannot grant a badge,missing responses are not imputed,P0,NO,PASS
+BEL-0437,BADGE_ELIGIBILITY,new merchant,suspend badge,no-badge state,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0438,BADGE_ELIGIBILITY,badge already active,suspend badge,no-badge state,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0439,BADGE_ELIGIBILITY,definition version changed,suspend badge,no-badge state,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0440,BADGE_ELIGIBILITY,evidence correction pending,suspend badge,no-badge state,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0441,BADGE_ELIGIBILITY,dimension score high/sample low,revoke badge,no-badge state,score alone cannot grant a badge,product and shop aggregates remain separate,P3,YES,PASS
+BEL-0442,BADGE_ELIGIBILITY,score high/confidence sufficient,revoke badge,no-badge state,lifecycle transition has a reason and evidence version,ads and rewards have zero reputation weight,P1,NO,PASS
+BEL-0443,BADGE_ELIGIBILITY,score borderline,revoke badge,no-badge state,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0444,BADGE_ELIGIBILITY,freshness insufficient,revoke badge,no-badge state,re-earning uses current eligible evidence,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0445,BADGE_ELIGIBILITY,fraud hold active,revoke badge,no-badge state,score alone cannot grant a badge,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0446,BADGE_ELIGIBILITY,shop inactive,revoke badge,no-badge state,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0447,BADGE_ELIGIBILITY,new merchant,revoke badge,no-badge state,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0448,BADGE_ELIGIBILITY,badge already active,revoke badge,no-badge state,manual or paid grant is rejected,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0449,BADGE_ELIGIBILITY,definition version changed,revoke badge,no-badge state,re-earning uses current eligible evidence,missing responses are not imputed,P1,NO,PASS
+BEL-0450,BADGE_ELIGIBILITY,evidence correction pending,revoke badge,no-badge state,score alone cannot grant a badge,no second merchant free-text review exists,P3,NO,PASS
+BEL-0451,BADGE_ELIGIBILITY,dimension score high/sample low,re-earn badge,no-badge state,lifecycle transition has a reason and evidence version,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0452,BADGE_ELIGIBILITY,score high/confidence sufficient,re-earn badge,no-badge state,no-badge state remains neutral,missing responses are not imputed,P3,YES,PASS
+BEL-0453,BADGE_ELIGIBILITY,score borderline,re-earn badge,no-badge state,manual or paid grant is rejected,no second merchant free-text review exists,P3,NO,PASS
+BEL-0454,BADGE_ELIGIBILITY,freshness insufficient,re-earn badge,no-badge state,re-earning uses current eligible evidence,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0455,BADGE_ELIGIBILITY,fraud hold active,re-earn badge,no-badge state,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0456,BADGE_ELIGIBILITY,shop inactive,re-earn badge,no-badge state,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0457,BADGE_ELIGIBILITY,new merchant,re-earn badge,no-badge state,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0458,BADGE_ELIGIBILITY,badge already active,re-earn badge,no-badge state,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0459,BADGE_ELIGIBILITY,definition version changed,re-earn badge,no-badge state,re-earning uses current eligible evidence,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0460,BADGE_ELIGIBILITY,evidence correction pending,re-earn badge,no-badge state,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+BEL-0461,BADGE_ELIGIBILITY,dimension score high/sample low,retire definition,no-badge state,no-badge state remains neutral,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0462,BADGE_ELIGIBILITY,score high/confidence sufficient,retire definition,no-badge state,manual or paid grant is rejected,missing responses are not imputed,P3,NO,PASS
+BEL-0463,BADGE_ELIGIBILITY,score borderline,retire definition,no-badge state,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+BEL-0464,BADGE_ELIGIBILITY,freshness insufficient,retire definition,no-badge state,score alone cannot grant a badge,server-authoritative verified evidence is required,P3,NO,PASS
+BEL-0465,BADGE_ELIGIBILITY,fraud hold active,retire definition,no-badge state,lifecycle transition has a reason and evidence version,missing responses are not imputed,P0,NO,PASS
+BEL-0466,BADGE_ELIGIBILITY,shop inactive,retire definition,no-badge state,no-badge state remains neutral,no second merchant free-text review exists,P2,NO,PASS
+BEL-0467,BADGE_ELIGIBILITY,new merchant,retire definition,no-badge state,manual or paid grant is rejected,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0468,BADGE_ELIGIBILITY,badge already active,retire definition,no-badge state,re-earning uses current eligible evidence,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0469,BADGE_ELIGIBILITY,definition version changed,retire definition,no-badge state,score alone cannot grant a badge,customer identity is not publicly exposed,P2,NO,PASS
+BEL-0470,BADGE_ELIGIBILITY,evidence correction pending,retire definition,no-badge state,lifecycle transition has a reason and evidence version,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+BEL-0471,BADGE_ELIGIBILITY,dimension score high/sample low,publish explanation,no-badge state,no-badge state remains neutral,quantity and basket value have zero vote weight,P3,NO,PASS
+BEL-0472,BADGE_ELIGIBILITY,score high/confidence sufficient,publish explanation,no-badge state,manual or paid grant is rejected,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0473,BADGE_ELIGIBILITY,score borderline,publish explanation,no-badge state,re-earning uses current eligible evidence,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0474,BADGE_ELIGIBILITY,freshness insufficient,publish explanation,no-badge state,score alone cannot grant a badge,quantity and basket value have zero vote weight,P3,YES,PASS
+BEL-0475,BADGE_ELIGIBILITY,fraud hold active,publish explanation,no-badge state,lifecycle transition has a reason and evidence version,derived state is idempotent and versioned,P2,NO,PASS
+BEL-0476,BADGE_ELIGIBILITY,shop inactive,publish explanation,no-badge state,no-badge state remains neutral,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0477,BADGE_ELIGIBILITY,new merchant,publish explanation,no-badge state,re-earning uses current eligible evidence,server-authoritative verified evidence is required,P1,NO,PASS
+BEL-0478,BADGE_ELIGIBILITY,badge already active,publish explanation,no-badge state,score alone cannot grant a badge,missing responses are not imputed,P2,NO,PASS
+BEL-0479,BADGE_ELIGIBILITY,definition version changed,publish explanation,no-badge state,lifecycle transition has a reason and evidence version,no second merchant free-text review exists,P3,NO,PASS
+BEL-0480,BADGE_ELIGIBILITY,evidence correction pending,publish explanation,no-badge state,no-badge state remains neutral,product and shop aggregates remain separate,P3,NO,PASS
+BEL-0481,BADGE_ELIGIBILITY,dimension score high/sample low,appeal decision,no-badge state,manual or paid grant is rejected,ads and rewards have zero reputation weight,P2,NO,PASS
+BEL-0482,BADGE_ELIGIBILITY,score high/confidence sufficient,appeal decision,no-badge state,re-earning uses current eligible evidence,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0483,BADGE_ELIGIBILITY,score borderline,appeal decision,no-badge state,score alone cannot grant a badge,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0484,BADGE_ELIGIBILITY,freshness insufficient,appeal decision,no-badge state,lifecycle transition has a reason and evidence version,quantity and basket value have zero vote weight,P1,NO,PASS
+BEL-0485,BADGE_ELIGIBILITY,fraud hold active,appeal decision,no-badge state,no-badge state remains neutral,customer identity is not publicly exposed,P3,YES,PASS
+BEL-0486,BADGE_ELIGIBILITY,shop inactive,appeal decision,no-badge state,manual or paid grant is rejected,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+BEL-0487,BADGE_ELIGIBILITY,new merchant,appeal decision,no-badge state,re-earning uses current eligible evidence,quantity and basket value have zero vote weight,P2,NO,PASS
+BEL-0488,BADGE_ELIGIBILITY,badge already active,appeal decision,no-badge state,score alone cannot grant a badge,derived state is idempotent and versioned,P3,NO,PASS
+BEL-0489,BADGE_ELIGIBILITY,definition version changed,appeal decision,no-badge state,lifecycle transition has a reason and evidence version,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+BEL-0490,BADGE_ELIGIBILITY,evidence correction pending,appeal decision,no-badge state,no-badge state remains neutral,server-authoritative verified evidence is required,P2,NO,PASS
+BEL-0491,BADGE_ELIGIBILITY,dimension score high/sample low,recompute prerequisites,no-badge state,manual or paid grant is rejected,missing responses are not imputed,P1,NO,PASS
+BEL-0492,BADGE_ELIGIBILITY,score high/confidence sufficient,recompute prerequisites,no-badge state,re-earning uses current eligible evidence,no second merchant free-text review exists,P3,NO,PASS
+BEL-0493,BADGE_ELIGIBILITY,score borderline,recompute prerequisites,no-badge state,score alone cannot grant a badge,product and shop aggregates remain separate,P2,NO,PASS
+BEL-0494,BADGE_ELIGIBILITY,freshness insufficient,recompute prerequisites,no-badge state,no-badge state remains neutral,ads and rewards have zero reputation weight,P0,NO,PASS
+BEL-0495,BADGE_ELIGIBILITY,fraud hold active,recompute prerequisites,no-badge state,manual or paid grant is rejected,customer identity is not publicly exposed,P3,NO,PASS
+BEL-0496,BADGE_ELIGIBILITY,shop inactive,recompute prerequisites,no-badge state,re-earning uses current eligible evidence,product and shop aggregates remain separate,P2,YES,PASS
+BEL-0497,BADGE_ELIGIBILITY,new merchant,recompute prerequisites,no-badge state,score alone cannot grant a badge,ads and rewards have zero reputation weight,P3,NO,PASS
+BEL-0498,BADGE_ELIGIBILITY,badge already active,recompute prerequisites,no-badge state,lifecycle transition has a reason and evidence version,customer identity is not publicly exposed,P1,NO,PASS
+BEL-0499,BADGE_ELIGIBILITY,definition version changed,recompute prerequisites,no-badge state,no-badge state remains neutral,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+BEL-0500,BADGE_ELIGIBILITY,evidence correction pending,recompute prerequisites,no-badge state,manual or paid grant is rejected,quantity and basket value have zero vote weight,P3,NO,PASS

@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+MOD-0001,MODERATION_DISPUTE,offensive product text,hide text,initial review,content and structured validity are decided separately,product and shop aggregates remain separate,P0,YES,PASS
+MOD-0002,MODERATION_DISPUTE,merchant disagreement,hide text,initial review,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0003,MODERATION_DISPUTE,valid low rating,hide text,initial review,operator cannot type a replacement value,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0004,MODERATION_DISPUTE,invalid purchase evidence,hide text,initial review,appeal preserves audit history,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MOD-0005,MODERATION_DISPUTE,structured value disputed,hide text,initial review,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0006,MODERATION_DISPUTE,customer appeal,hide text,initial review,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0007,MODERATION_DISPUTE,merchant appeal,hide text,initial review,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0008,MODERATION_DISPUTE,operator error,hide text,initial review,operator cannot type a replacement value,server-authoritative verified evidence is required,P1,NO,PASS
+MOD-0009,MODERATION_DISPUTE,product merge,hide text,initial review,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0010,MODERATION_DISPUTE,product split ambiguous,hide text,initial review,ambiguous split does not guess a successor,no second merchant free-text review exists,P2,NO,PASS
+MOD-0011,MODERATION_DISPUTE,offensive product text,retain rating,initial review,content and structured validity are decided separately,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0012,MODERATION_DISPUTE,merchant disagreement,retain rating,initial review,merchant disagreement alone cannot remove a review,missing responses are not imputed,P3,YES,PASS
+MOD-0013,MODERATION_DISPUTE,valid low rating,retain rating,initial review,operator cannot type a replacement value,no second merchant free-text review exists,P2,NO,PASS
+MOD-0014,MODERATION_DISPUTE,invalid purchase evidence,retain rating,initial review,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0015,MODERATION_DISPUTE,structured value disputed,retain rating,initial review,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P1,NO,PASS
+MOD-0016,MODERATION_DISPUTE,customer appeal,retain rating,initial review,content and structured validity are decided separately,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0017,MODERATION_DISPUTE,merchant appeal,retain rating,initial review,merchant disagreement alone cannot remove a review,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0018,MODERATION_DISPUTE,operator error,retain rating,initial review,appeal preserves audit history,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0019,MODERATION_DISPUTE,product merge,retain rating,initial review,ambiguous split does not guess a successor,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0020,MODERATION_DISPUTE,product split ambiguous,retain rating,initial review,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0021,MODERATION_DISPUTE,offensive product text,hold structured value,initial review,merchant disagreement alone cannot remove a review,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0022,MODERATION_DISPUTE,merchant disagreement,hold structured value,initial review,operator cannot type a replacement value,missing responses are not imputed,P1,NO,PASS
+MOD-0023,MODERATION_DISPUTE,valid low rating,hold structured value,initial review,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MOD-0024,MODERATION_DISPUTE,invalid purchase evidence,hold structured value,initial review,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0025,MODERATION_DISPUTE,structured value disputed,hold structured value,initial review,content and structured validity are decided separately,missing responses are not imputed,P2,NO,PASS
+MOD-0026,MODERATION_DISPUTE,customer appeal,hold structured value,initial review,merchant disagreement alone cannot remove a review,no second merchant free-text review exists,P3,NO,PASS
+MOD-0027,MODERATION_DISPUTE,merchant appeal,hold structured value,initial review,operator cannot type a replacement value,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0028,MODERATION_DISPUTE,operator error,hold structured value,initial review,appeal preserves audit history,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0029,MODERATION_DISPUTE,product merge,hold structured value,initial review,ambiguous split does not guess a successor,customer identity is not publicly exposed,P1,NO,PASS
+MOD-0030,MODERATION_DISPUTE,product split ambiguous,hold structured value,initial review,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MOD-0031,MODERATION_DISPUTE,offensive product text,invalidate evidence,initial review,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0032,MODERATION_DISPUTE,merchant disagreement,invalidate evidence,initial review,operator cannot type a replacement value,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0033,MODERATION_DISPUTE,valid low rating,invalidate evidence,initial review,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0034,MODERATION_DISPUTE,invalid purchase evidence,invalidate evidence,initial review,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P2,YES,PASS
+MOD-0035,MODERATION_DISPUTE,structured value disputed,invalidate evidence,initial review,merchant disagreement alone cannot remove a review,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0036,MODERATION_DISPUTE,customer appeal,invalidate evidence,initial review,operator cannot type a replacement value,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MOD-0037,MODERATION_DISPUTE,merchant appeal,invalidate evidence,initial review,appeal preserves audit history,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0038,MODERATION_DISPUTE,operator error,invalidate evidence,initial review,ambiguous split does not guess a successor,missing responses are not imputed,P3,NO,PASS
+MOD-0039,MODERATION_DISPUTE,product merge,invalidate evidence,initial review,content and structured validity are decided separately,no second merchant free-text review exists,P3,NO,PASS
+MOD-0040,MODERATION_DISPUTE,product split ambiguous,invalidate evidence,initial review,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0041,MODERATION_DISPUTE,offensive product text,request correction,initial review,operator cannot type a replacement value,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0042,MODERATION_DISPUTE,merchant disagreement,request correction,initial review,appeal preserves audit history,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0043,MODERATION_DISPUTE,valid low rating,request correction,initial review,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MOD-0044,MODERATION_DISPUTE,invalid purchase evidence,request correction,initial review,content and structured validity are decided separately,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0045,MODERATION_DISPUTE,structured value disputed,request correction,initial review,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P3,YES,PASS
+MOD-0046,MODERATION_DISPUTE,customer appeal,request correction,initial review,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MOD-0047,MODERATION_DISPUTE,merchant appeal,request correction,initial review,appeal preserves audit history,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0048,MODERATION_DISPUTE,operator error,request correction,initial review,ambiguous split does not guess a successor,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0049,MODERATION_DISPUTE,product merge,request correction,initial review,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0050,MODERATION_DISPUTE,product split ambiguous,request correction,initial review,merchant disagreement alone cannot remove a review,server-authoritative verified evidence is required,P1,NO,PASS
+MOD-0051,MODERATION_DISPUTE,offensive product text,reverse case,initial review,operator cannot type a replacement value,missing responses are not imputed,P3,NO,PASS
+MOD-0052,MODERATION_DISPUTE,merchant disagreement,reverse case,initial review,ambiguous split does not guess a successor,no second merchant free-text review exists,P2,NO,PASS
+MOD-0053,MODERATION_DISPUTE,valid low rating,reverse case,initial review,content and structured validity are decided separately,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0054,MODERATION_DISPUTE,invalid purchase evidence,reverse case,initial review,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0055,MODERATION_DISPUTE,structured value disputed,reverse case,initial review,operator cannot type a replacement value,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0056,MODERATION_DISPUTE,customer appeal,reverse case,initial review,appeal preserves audit history,product and shop aggregates remain separate,P3,YES,PASS
+MOD-0057,MODERATION_DISPUTE,merchant appeal,reverse case,initial review,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P1,NO,PASS
+MOD-0058,MODERATION_DISPUTE,operator error,reverse case,initial review,content and structured validity are decided separately,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0059,MODERATION_DISPUTE,product merge,reverse case,initial review,merchant disagreement alone cannot remove a review,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+MOD-0060,MODERATION_DISPUTE,product split ambiguous,reverse case,initial review,operator cannot type a replacement value,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0061,MODERATION_DISPUTE,offensive product text,merge projection,initial review,appeal preserves audit history,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0062,MODERATION_DISPUTE,merchant disagreement,merge projection,initial review,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0063,MODERATION_DISPUTE,valid low rating,merge projection,initial review,content and structured validity are decided separately,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0064,MODERATION_DISPUTE,invalid purchase evidence,merge projection,initial review,merchant disagreement alone cannot remove a review,missing responses are not imputed,P1,NO,PASS
+MOD-0065,MODERATION_DISPUTE,structured value disputed,merge projection,initial review,operator cannot type a replacement value,no second merchant free-text review exists,P3,NO,PASS
+MOD-0066,MODERATION_DISPUTE,customer appeal,merge projection,initial review,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0067,MODERATION_DISPUTE,merchant appeal,merge projection,initial review,ambiguous split does not guess a successor,missing responses are not imputed,P2,YES,PASS
+MOD-0068,MODERATION_DISPUTE,operator error,merge projection,initial review,content and structured validity are decided separately,no second merchant free-text review exists,P3,NO,PASS
+MOD-0069,MODERATION_DISPUTE,product merge,merge projection,initial review,operator cannot type a replacement value,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0070,MODERATION_DISPUTE,product split ambiguous,merge projection,initial review,appeal preserves audit history,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0071,MODERATION_DISPUTE,offensive product text,preserve historical item,initial review,ambiguous split does not guess a successor,customer identity is not publicly exposed,P1,NO,PASS
+MOD-0072,MODERATION_DISPUTE,merchant disagreement,preserve historical item,initial review,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0073,MODERATION_DISPUTE,valid low rating,preserve historical item,initial review,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0074,MODERATION_DISPUTE,invalid purchase evidence,preserve historical item,initial review,operator cannot type a replacement value,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0075,MODERATION_DISPUTE,structured value disputed,preserve historical item,initial review,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0076,MODERATION_DISPUTE,customer appeal,preserve historical item,initial review,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0077,MODERATION_DISPUTE,merchant appeal,preserve historical item,initial review,content and structured validity are decided separately,missing responses are not imputed,P3,NO,PASS
+MOD-0078,MODERATION_DISPUTE,operator error,preserve historical item,initial review,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+MOD-0079,MODERATION_DISPUTE,product merge,preserve historical item,initial review,operator cannot type a replacement value,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0080,MODERATION_DISPUTE,product split ambiguous,preserve historical item,initial review,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0081,MODERATION_DISPUTE,offensive product text,notify parties,initial review,ambiguous split does not guess a successor,no second merchant free-text review exists,P3,NO,PASS
+MOD-0082,MODERATION_DISPUTE,merchant disagreement,notify parties,initial review,content and structured validity are decided separately,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0083,MODERATION_DISPUTE,valid low rating,notify parties,initial review,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0084,MODERATION_DISPUTE,invalid purchase evidence,notify parties,initial review,operator cannot type a replacement value,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0085,MODERATION_DISPUTE,structured value disputed,notify parties,initial review,appeal preserves audit history,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MOD-0086,MODERATION_DISPUTE,customer appeal,notify parties,initial review,content and structured validity are decided separately,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0087,MODERATION_DISPUTE,merchant appeal,notify parties,initial review,merchant disagreement alone cannot remove a review,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0088,MODERATION_DISPUTE,operator error,notify parties,initial review,operator cannot type a replacement value,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MOD-0089,MODERATION_DISPUTE,product merge,notify parties,initial review,appeal preserves audit history,quantity and basket value have zero vote weight,P3,YES,PASS
+MOD-0090,MODERATION_DISPUTE,product split ambiguous,notify parties,initial review,ambiguous split does not guess a successor,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0091,MODERATION_DISPUTE,offensive product text,attempt manual rating edit,initial review,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0092,MODERATION_DISPUTE,merchant disagreement,attempt manual rating edit,initial review,merchant disagreement alone cannot remove a review,server-authoritative verified evidence is required,P1,NO,PASS
+MOD-0093,MODERATION_DISPUTE,valid low rating,attempt manual rating edit,initial review,operator cannot type a replacement value,missing responses are not imputed,P3,NO,PASS
+MOD-0094,MODERATION_DISPUTE,invalid purchase evidence,attempt manual rating edit,initial review,appeal preserves audit history,no second merchant free-text review exists,P2,NO,PASS
+MOD-0095,MODERATION_DISPUTE,structured value disputed,attempt manual rating edit,initial review,ambiguous split does not guess a successor,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0096,MODERATION_DISPUTE,customer appeal,attempt manual rating edit,initial review,content and structured validity are decided separately,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0097,MODERATION_DISPUTE,merchant appeal,attempt manual rating edit,initial review,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0098,MODERATION_DISPUTE,operator error,attempt manual rating edit,initial review,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0099,MODERATION_DISPUTE,product merge,attempt manual rating edit,initial review,appeal preserves audit history,quantity and basket value have zero vote weight,P1,NO,PASS
+MOD-0100,MODERATION_DISPUTE,product split ambiguous,attempt manual rating edit,initial review,ambiguous split does not guess a successor,customer identity is not publicly exposed,P2,YES,PASS
+MOD-0101,MODERATION_DISPUTE,offensive product text,hide text,first appeal,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0102,MODERATION_DISPUTE,merchant disagreement,hide text,first appeal,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0103,MODERATION_DISPUTE,valid low rating,hide text,first appeal,appeal preserves audit history,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0104,MODERATION_DISPUTE,invalid purchase evidence,hide text,first appeal,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0105,MODERATION_DISPUTE,structured value disputed,hide text,first appeal,content and structured validity are decided separately,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0106,MODERATION_DISPUTE,customer appeal,hide text,first appeal,merchant disagreement alone cannot remove a review,missing responses are not imputed,P1,NO,PASS
+MOD-0107,MODERATION_DISPUTE,merchant appeal,hide text,first appeal,operator cannot type a replacement value,no second merchant free-text review exists,P3,NO,PASS
+MOD-0108,MODERATION_DISPUTE,operator error,hide text,first appeal,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0109,MODERATION_DISPUTE,product merge,hide text,first appeal,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0110,MODERATION_DISPUTE,product split ambiguous,hide text,first appeal,content and structured validity are decided separately,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0111,MODERATION_DISPUTE,offensive product text,retain rating,first appeal,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P3,YES,PASS
+MOD-0112,MODERATION_DISPUTE,merchant disagreement,retain rating,first appeal,operator cannot type a replacement value,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0113,MODERATION_DISPUTE,valid low rating,retain rating,first appeal,appeal preserves audit history,customer identity is not publicly exposed,P1,NO,PASS
+MOD-0114,MODERATION_DISPUTE,invalid purchase evidence,retain rating,first appeal,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0115,MODERATION_DISPUTE,structured value disputed,retain rating,first appeal,content and structured validity are decided separately,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0116,MODERATION_DISPUTE,customer appeal,retain rating,first appeal,merchant disagreement alone cannot remove a review,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0117,MODERATION_DISPUTE,merchant appeal,retain rating,first appeal,operator cannot type a replacement value,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MOD-0118,MODERATION_DISPUTE,operator error,retain rating,first appeal,appeal preserves audit history,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0119,MODERATION_DISPUTE,product merge,retain rating,first appeal,ambiguous split does not guess a successor,missing responses are not imputed,P3,NO,PASS
+MOD-0120,MODERATION_DISPUTE,product split ambiguous,retain rating,first appeal,merchant disagreement alone cannot remove a review,no second merchant free-text review exists,P1,NO,PASS
+MOD-0121,MODERATION_DISPUTE,offensive product text,hold structured value,first appeal,operator cannot type a replacement value,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0122,MODERATION_DISPUTE,merchant disagreement,hold structured value,first appeal,appeal preserves audit history,missing responses are not imputed,P3,YES,PASS
+MOD-0123,MODERATION_DISPUTE,valid low rating,hold structured value,first appeal,ambiguous split does not guess a successor,no second merchant free-text review exists,P3,NO,PASS
+MOD-0124,MODERATION_DISPUTE,invalid purchase evidence,hold structured value,first appeal,content and structured validity are decided separately,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0125,MODERATION_DISPUTE,structured value disputed,hold structured value,first appeal,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0126,MODERATION_DISPUTE,customer appeal,hold structured value,first appeal,operator cannot type a replacement value,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0127,MODERATION_DISPUTE,merchant appeal,hold structured value,first appeal,appeal preserves audit history,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MOD-0128,MODERATION_DISPUTE,operator error,hold structured value,first appeal,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0129,MODERATION_DISPUTE,product merge,hold structured value,first appeal,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0130,MODERATION_DISPUTE,product split ambiguous,hold structured value,first appeal,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0131,MODERATION_DISPUTE,offensive product text,invalidate evidence,first appeal,operator cannot type a replacement value,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0132,MODERATION_DISPUTE,merchant disagreement,invalidate evidence,first appeal,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0133,MODERATION_DISPUTE,valid low rating,invalidate evidence,first appeal,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MOD-0134,MODERATION_DISPUTE,invalid purchase evidence,invalidate evidence,first appeal,content and structured validity are decided separately,server-authoritative verified evidence is required,P1,NO,PASS
+MOD-0135,MODERATION_DISPUTE,structured value disputed,invalidate evidence,first appeal,merchant disagreement alone cannot remove a review,missing responses are not imputed,P3,NO,PASS
+MOD-0136,MODERATION_DISPUTE,customer appeal,invalidate evidence,first appeal,operator cannot type a replacement value,no second merchant free-text review exists,P2,NO,PASS
+MOD-0137,MODERATION_DISPUTE,merchant appeal,invalidate evidence,first appeal,ambiguous split does not guess a successor,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0138,MODERATION_DISPUTE,operator error,invalidate evidence,first appeal,content and structured validity are decided separately,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0139,MODERATION_DISPUTE,product merge,invalidate evidence,first appeal,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0140,MODERATION_DISPUTE,product split ambiguous,invalidate evidence,first appeal,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0141,MODERATION_DISPUTE,offensive product text,request correction,first appeal,appeal preserves audit history,quantity and basket value have zero vote weight,P1,NO,PASS
+MOD-0142,MODERATION_DISPUTE,merchant disagreement,request correction,first appeal,ambiguous split does not guess a successor,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0143,MODERATION_DISPUTE,valid low rating,request correction,first appeal,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0144,MODERATION_DISPUTE,invalid purchase evidence,request correction,first appeal,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P3,YES,PASS
+MOD-0145,MODERATION_DISPUTE,structured value disputed,request correction,first appeal,operator cannot type a replacement value,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0146,MODERATION_DISPUTE,customer appeal,request correction,first appeal,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+MOD-0147,MODERATION_DISPUTE,merchant appeal,request correction,first appeal,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0148,MODERATION_DISPUTE,operator error,request correction,first appeal,content and structured validity are decided separately,missing responses are not imputed,P1,NO,PASS
+MOD-0149,MODERATION_DISPUTE,product merge,request correction,first appeal,merchant disagreement alone cannot remove a review,no second merchant free-text review exists,P3,NO,PASS
+MOD-0150,MODERATION_DISPUTE,product split ambiguous,request correction,first appeal,operator cannot type a replacement value,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0151,MODERATION_DISPUTE,offensive product text,reverse case,first appeal,appeal preserves audit history,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0152,MODERATION_DISPUTE,merchant disagreement,reverse case,first appeal,ambiguous split does not guess a successor,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0153,MODERATION_DISPUTE,valid low rating,reverse case,first appeal,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0154,MODERATION_DISPUTE,invalid purchase evidence,reverse case,first appeal,operator cannot type a replacement value,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0155,MODERATION_DISPUTE,structured value disputed,reverse case,first appeal,appeal preserves audit history,customer identity is not publicly exposed,P1,YES,PASS
+MOD-0156,MODERATION_DISPUTE,customer appeal,reverse case,first appeal,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0157,MODERATION_DISPUTE,merchant appeal,reverse case,first appeal,content and structured validity are decided separately,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0158,MODERATION_DISPUTE,operator error,reverse case,first appeal,merchant disagreement alone cannot remove a review,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0159,MODERATION_DISPUTE,product merge,reverse case,first appeal,operator cannot type a replacement value,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0160,MODERATION_DISPUTE,product split ambiguous,reverse case,first appeal,appeal preserves audit history,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0161,MODERATION_DISPUTE,offensive product text,merge projection,first appeal,ambiguous split does not guess a successor,missing responses are not imputed,P3,NO,PASS
+MOD-0162,MODERATION_DISPUTE,merchant disagreement,merge projection,first appeal,content and structured validity are decided separately,no second merchant free-text review exists,P1,NO,PASS
+MOD-0163,MODERATION_DISPUTE,valid low rating,merge projection,first appeal,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0164,MODERATION_DISPUTE,invalid purchase evidence,merge projection,first appeal,operator cannot type a replacement value,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0165,MODERATION_DISPUTE,structured value disputed,merge projection,first appeal,appeal preserves audit history,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0166,MODERATION_DISPUTE,customer appeal,merge projection,first appeal,ambiguous split does not guess a successor,product and shop aggregates remain separate,P2,YES,PASS
+MOD-0167,MODERATION_DISPUTE,merchant appeal,merge projection,first appeal,content and structured validity are decided separately,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0168,MODERATION_DISPUTE,operator error,merge projection,first appeal,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0169,MODERATION_DISPUTE,product merge,merge projection,first appeal,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MOD-0170,MODERATION_DISPUTE,product split ambiguous,merge projection,first appeal,appeal preserves audit history,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0171,MODERATION_DISPUTE,offensive product text,preserve historical item,first appeal,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0172,MODERATION_DISPUTE,merchant disagreement,preserve historical item,first appeal,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0173,MODERATION_DISPUTE,valid low rating,preserve historical item,first appeal,operator cannot type a replacement value,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0174,MODERATION_DISPUTE,invalid purchase evidence,preserve historical item,first appeal,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0175,MODERATION_DISPUTE,structured value disputed,preserve historical item,first appeal,ambiguous split does not guess a successor,no second merchant free-text review exists,P0,NO,PASS
+MOD-0176,MODERATION_DISPUTE,customer appeal,preserve historical item,first appeal,content and structured validity are decided separately,product and shop aggregates remain separate,P1,NO,PASS
+MOD-0177,MODERATION_DISPUTE,merchant appeal,preserve historical item,first appeal,merchant disagreement alone cannot remove a review,missing responses are not imputed,P3,YES,PASS
+MOD-0178,MODERATION_DISPUTE,operator error,preserve historical item,first appeal,operator cannot type a replacement value,no second merchant free-text review exists,P2,NO,PASS
+MOD-0179,MODERATION_DISPUTE,product merge,preserve historical item,first appeal,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0180,MODERATION_DISPUTE,product split ambiguous,preserve historical item,first appeal,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0181,MODERATION_DISPUTE,offensive product text,notify parties,first appeal,content and structured validity are decided separately,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0182,MODERATION_DISPUTE,merchant disagreement,notify parties,first appeal,merchant disagreement alone cannot remove a review,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0183,MODERATION_DISPUTE,valid low rating,notify parties,first appeal,operator cannot type a replacement value,quantity and basket value have zero vote weight,P1,NO,PASS
+MOD-0184,MODERATION_DISPUTE,invalid purchase evidence,notify parties,first appeal,appeal preserves audit history,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0185,MODERATION_DISPUTE,structured value disputed,notify parties,first appeal,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0186,MODERATION_DISPUTE,customer appeal,notify parties,first appeal,content and structured validity are decided separately,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0187,MODERATION_DISPUTE,merchant appeal,notify parties,first appeal,merchant disagreement alone cannot remove a review,missing responses are not imputed,P2,NO,PASS
+MOD-0188,MODERATION_DISPUTE,operator error,notify parties,first appeal,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MOD-0189,MODERATION_DISPUTE,product merge,notify parties,first appeal,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0190,MODERATION_DISPUTE,product split ambiguous,notify parties,first appeal,content and structured validity are decided separately,missing responses are not imputed,P1,NO,PASS
+MOD-0191,MODERATION_DISPUTE,offensive product text,attempt manual rating edit,first appeal,merchant disagreement alone cannot remove a review,no second merchant free-text review exists,P3,NO,PASS
+MOD-0192,MODERATION_DISPUTE,merchant disagreement,attempt manual rating edit,first appeal,operator cannot type a replacement value,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0193,MODERATION_DISPUTE,valid low rating,attempt manual rating edit,first appeal,appeal preserves audit history,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0194,MODERATION_DISPUTE,invalid purchase evidence,attempt manual rating edit,first appeal,ambiguous split does not guess a successor,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0195,MODERATION_DISPUTE,structured value disputed,attempt manual rating edit,first appeal,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0196,MODERATION_DISPUTE,customer appeal,attempt manual rating edit,first appeal,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0197,MODERATION_DISPUTE,merchant appeal,attempt manual rating edit,first appeal,operator cannot type a replacement value,derived state is idempotent and versioned,P1,NO,PASS
+MOD-0198,MODERATION_DISPUTE,operator error,attempt manual rating edit,first appeal,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0199,MODERATION_DISPUTE,product merge,attempt manual rating edit,first appeal,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P2,YES,PASS
+MOD-0200,MODERATION_DISPUTE,product split ambiguous,attempt manual rating edit,first appeal,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0201,MODERATION_DISPUTE,offensive product text,hide text,reopened case,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0202,MODERATION_DISPUTE,merchant disagreement,hide text,reopened case,operator cannot type a replacement value,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0203,MODERATION_DISPUTE,valid low rating,hide text,reopened case,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0204,MODERATION_DISPUTE,invalid purchase evidence,hide text,reopened case,ambiguous split does not guess a successor,no second merchant free-text review exists,P0,NO,PASS
+MOD-0205,MODERATION_DISPUTE,structured value disputed,hide text,reopened case,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0206,MODERATION_DISPUTE,customer appeal,hide text,reopened case,operator cannot type a replacement value,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0207,MODERATION_DISPUTE,merchant appeal,hide text,reopened case,appeal preserves audit history,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0208,MODERATION_DISPUTE,operator error,hide text,reopened case,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MOD-0209,MODERATION_DISPUTE,product merge,hide text,reopened case,content and structured validity are decided separately,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0210,MODERATION_DISPUTE,product split ambiguous,hide text,reopened case,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P3,YES,PASS
+MOD-0211,MODERATION_DISPUTE,offensive product text,retain rating,reopened case,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+MOD-0212,MODERATION_DISPUTE,merchant disagreement,retain rating,reopened case,appeal preserves audit history,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0213,MODERATION_DISPUTE,valid low rating,retain rating,reopened case,ambiguous split does not guess a successor,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0214,MODERATION_DISPUTE,invalid purchase evidence,retain rating,reopened case,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0215,MODERATION_DISPUTE,structured value disputed,retain rating,reopened case,merchant disagreement alone cannot remove a review,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0216,MODERATION_DISPUTE,customer appeal,retain rating,reopened case,operator cannot type a replacement value,missing responses are not imputed,P3,NO,PASS
+MOD-0217,MODERATION_DISPUTE,merchant appeal,retain rating,reopened case,appeal preserves audit history,no second merchant free-text review exists,P2,NO,PASS
+MOD-0218,MODERATION_DISPUTE,operator error,retain rating,reopened case,ambiguous split does not guess a successor,product and shop aggregates remain separate,P1,NO,PASS
+MOD-0219,MODERATION_DISPUTE,product merge,retain rating,reopened case,content and structured validity are decided separately,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0220,MODERATION_DISPUTE,product split ambiguous,retain rating,reopened case,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0221,MODERATION_DISPUTE,offensive product text,hold structured value,reopened case,operator cannot type a replacement value,product and shop aggregates remain separate,P3,YES,PASS
+MOD-0222,MODERATION_DISPUTE,merchant disagreement,hold structured value,reopened case,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0223,MODERATION_DISPUTE,valid low rating,hold structured value,reopened case,content and structured validity are decided separately,customer identity is not publicly exposed,P2,NO,PASS
+MOD-0224,MODERATION_DISPUTE,invalid purchase evidence,hold structured value,reopened case,merchant disagreement alone cannot remove a review,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0225,MODERATION_DISPUTE,structured value disputed,hold structured value,reopened case,operator cannot type a replacement value,quantity and basket value have zero vote weight,P1,NO,PASS
+MOD-0226,MODERATION_DISPUTE,customer appeal,hold structured value,reopened case,appeal preserves audit history,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0227,MODERATION_DISPUTE,merchant appeal,hold structured value,reopened case,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0228,MODERATION_DISPUTE,operator error,hold structured value,reopened case,content and structured validity are decided separately,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0229,MODERATION_DISPUTE,product merge,hold structured value,reopened case,merchant disagreement alone cannot remove a review,missing responses are not imputed,P2,NO,PASS
+MOD-0230,MODERATION_DISPUTE,product split ambiguous,hold structured value,reopened case,operator cannot type a replacement value,no second merchant free-text review exists,P3,NO,PASS
+MOD-0231,MODERATION_DISPUTE,offensive product text,invalidate evidence,reopened case,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0232,MODERATION_DISPUTE,merchant disagreement,invalidate evidence,reopened case,ambiguous split does not guess a successor,missing responses are not imputed,P1,YES,PASS
+MOD-0233,MODERATION_DISPUTE,valid low rating,invalidate evidence,reopened case,content and structured validity are decided separately,no second merchant free-text review exists,P0,NO,PASS
+MOD-0234,MODERATION_DISPUTE,invalid purchase evidence,invalidate evidence,reopened case,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0235,MODERATION_DISPUTE,structured value disputed,invalidate evidence,reopened case,operator cannot type a replacement value,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0236,MODERATION_DISPUTE,customer appeal,invalidate evidence,reopened case,appeal preserves audit history,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0237,MODERATION_DISPUTE,merchant appeal,invalidate evidence,reopened case,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0238,MODERATION_DISPUTE,operator error,invalidate evidence,reopened case,content and structured validity are decided separately,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0239,MODERATION_DISPUTE,product merge,invalidate evidence,reopened case,operator cannot type a replacement value,derived state is idempotent and versioned,P1,NO,PASS
+MOD-0240,MODERATION_DISPUTE,product split ambiguous,invalidate evidence,reopened case,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0241,MODERATION_DISPUTE,offensive product text,request correction,reopened case,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0242,MODERATION_DISPUTE,merchant disagreement,request correction,reopened case,content and structured validity are decided separately,missing responses are not imputed,P3,NO,PASS
+MOD-0243,MODERATION_DISPUTE,valid low rating,request correction,reopened case,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+MOD-0244,MODERATION_DISPUTE,invalid purchase evidence,request correction,reopened case,operator cannot type a replacement value,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0245,MODERATION_DISPUTE,structured value disputed,request correction,reopened case,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0246,MODERATION_DISPUTE,customer appeal,request correction,reopened case,ambiguous split does not guess a successor,no second merchant free-text review exists,P1,NO,PASS
+MOD-0247,MODERATION_DISPUTE,merchant appeal,request correction,reopened case,content and structured validity are decided separately,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0248,MODERATION_DISPUTE,operator error,request correction,reopened case,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0249,MODERATION_DISPUTE,product merge,request correction,reopened case,operator cannot type a replacement value,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0250,MODERATION_DISPUTE,product split ambiguous,request correction,reopened case,appeal preserves audit history,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MOD-0251,MODERATION_DISPUTE,offensive product text,reverse case,reopened case,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0252,MODERATION_DISPUTE,merchant disagreement,reverse case,reopened case,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0253,MODERATION_DISPUTE,valid low rating,reverse case,reopened case,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MOD-0254,MODERATION_DISPUTE,invalid purchase evidence,reverse case,reopened case,operator cannot type a replacement value,quantity and basket value have zero vote weight,P3,YES,PASS
+MOD-0255,MODERATION_DISPUTE,structured value disputed,reverse case,reopened case,appeal preserves audit history,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0256,MODERATION_DISPUTE,customer appeal,reverse case,reopened case,content and structured validity are decided separately,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+MOD-0257,MODERATION_DISPUTE,merchant appeal,reverse case,reopened case,merchant disagreement alone cannot remove a review,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0258,MODERATION_DISPUTE,operator error,reverse case,reopened case,operator cannot type a replacement value,missing responses are not imputed,P3,NO,PASS
+MOD-0259,MODERATION_DISPUTE,product merge,reverse case,reopened case,appeal preserves audit history,no second merchant free-text review exists,P2,NO,PASS
+MOD-0260,MODERATION_DISPUTE,product split ambiguous,reverse case,reopened case,ambiguous split does not guess a successor,product and shop aggregates remain separate,P1,NO,PASS
+MOD-0261,MODERATION_DISPUTE,offensive product text,merge projection,reopened case,content and structured validity are decided separately,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0262,MODERATION_DISPUTE,merchant disagreement,merge projection,reopened case,merchant disagreement alone cannot remove a review,customer identity is not publicly exposed,P0,NO,PASS
+MOD-0263,MODERATION_DISPUTE,valid low rating,merge projection,reopened case,operator cannot type a replacement value,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0264,MODERATION_DISPUTE,invalid purchase evidence,merge projection,reopened case,appeal preserves audit history,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0265,MODERATION_DISPUTE,structured value disputed,merge projection,reopened case,ambiguous split does not guess a successor,customer identity is not publicly exposed,P2,YES,PASS
+MOD-0266,MODERATION_DISPUTE,customer appeal,merge projection,reopened case,content and structured validity are decided separately,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0267,MODERATION_DISPUTE,merchant appeal,merge projection,reopened case,merchant disagreement alone cannot remove a review,quantity and basket value have zero vote weight,P1,NO,PASS
+MOD-0268,MODERATION_DISPUTE,operator error,merge projection,reopened case,operator cannot type a replacement value,derived state is idempotent and versioned,P2,NO,PASS
+MOD-0269,MODERATION_DISPUTE,product merge,merge projection,reopened case,appeal preserves audit history,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0270,MODERATION_DISPUTE,product split ambiguous,merge projection,reopened case,ambiguous split does not guess a successor,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0271,MODERATION_DISPUTE,offensive product text,preserve historical item,reopened case,content and structured validity are decided separately,missing responses are not imputed,P2,NO,PASS
+MOD-0272,MODERATION_DISPUTE,merchant disagreement,preserve historical item,reopened case,merchant disagreement alone cannot remove a review,no second merchant free-text review exists,P3,NO,PASS
+MOD-0273,MODERATION_DISPUTE,valid low rating,preserve historical item,reopened case,appeal preserves audit history,product and shop aggregates remain separate,P3,NO,PASS
+MOD-0274,MODERATION_DISPUTE,invalid purchase evidence,preserve historical item,reopened case,ambiguous split does not guess a successor,ads and rewards have zero reputation weight,P1,NO,PASS
+MOD-0275,MODERATION_DISPUTE,structured value disputed,preserve historical item,reopened case,content and structured validity are decided separately,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0276,MODERATION_DISPUTE,customer appeal,preserve historical item,reopened case,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P3,YES,PASS
+MOD-0277,MODERATION_DISPUTE,merchant appeal,preserve historical item,reopened case,operator cannot type a replacement value,ads and rewards have zero reputation weight,P2,NO,PASS
+MOD-0278,MODERATION_DISPUTE,operator error,preserve historical item,reopened case,appeal preserves audit history,customer identity is not publicly exposed,P3,NO,PASS
+MOD-0279,MODERATION_DISPUTE,product merge,preserve historical item,reopened case,ambiguous split does not guess a successor,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+MOD-0280,MODERATION_DISPUTE,product split ambiguous,preserve historical item,reopened case,content and structured validity are decided separately,quantity and basket value have zero vote weight,P2,NO,PASS
+MOD-0281,MODERATION_DISPUTE,offensive product text,notify parties,reopened case,merchant disagreement alone cannot remove a review,derived state is idempotent and versioned,P1,NO,PASS
+MOD-0282,MODERATION_DISPUTE,merchant disagreement,notify parties,reopened case,operator cannot type a replacement value,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+MOD-0283,MODERATION_DISPUTE,valid low rating,notify parties,reopened case,appeal preserves audit history,server-authoritative verified evidence is required,P2,NO,PASS
+MOD-0284,MODERATION_DISPUTE,invalid purchase evidence,notify parties,reopened case,ambiguous split does not guess a successor,missing responses are not imputed,P3,NO,PASS
+MOD-0285,MODERATION_DISPUTE,structured value disputed,notify parties,reopened case,content and structured validity are decided separately,no second merchant free-text review exists,P3,NO,PASS
+MOD-0286,MODERATION_DISPUTE,customer appeal,notify parties,reopened case,merchant disagreement alone cannot remove a review,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0287,MODERATION_DISPUTE,merchant appeal,notify parties,reopened case,operator cannot type a replacement value,missing responses are not imputed,P3,YES,PASS
+MOD-0288,MODERATION_DISPUTE,operator error,notify parties,reopened case,appeal preserves audit history,no second merchant free-text review exists,P1,NO,PASS
+MOD-0289,MODERATION_DISPUTE,product merge,notify parties,reopened case,ambiguous split does not guess a successor,product and shop aggregates remain separate,P2,NO,PASS
+MOD-0290,MODERATION_DISPUTE,product split ambiguous,notify parties,reopened case,merchant disagreement alone cannot remove a review,ads and rewards have zero reputation weight,P3,NO,PASS
+MOD-0291,MODERATION_DISPUTE,offensive product text,attempt manual rating edit,reopened case,operator cannot type a replacement value,customer identity is not publicly exposed,P0,NO,PASS
+MOD-0292,MODERATION_DISPUTE,merchant disagreement,attempt manual rating edit,reopened case,appeal preserves audit history,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+MOD-0293,MODERATION_DISPUTE,valid low rating,attempt manual rating edit,reopened case,ambiguous split does not guess a successor,quantity and basket value have zero vote weight,P3,NO,PASS
+MOD-0294,MODERATION_DISPUTE,invalid purchase evidence,attempt manual rating edit,reopened case,content and structured validity are decided separately,derived state is idempotent and versioned,P3,NO,PASS
+MOD-0295,MODERATION_DISPUTE,structured value disputed,attempt manual rating edit,reopened case,merchant disagreement alone cannot remove a review,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+MOD-0296,MODERATION_DISPUTE,customer appeal,attempt manual rating edit,reopened case,operator cannot type a replacement value,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0297,MODERATION_DISPUTE,merchant appeal,attempt manual rating edit,reopened case,appeal preserves audit history,missing responses are not imputed,P3,NO,PASS
+MOD-0298,MODERATION_DISPUTE,operator error,attempt manual rating edit,reopened case,ambiguous split does not guess a successor,"new merchant means insufficient history, not poor quality",P2,YES,PASS
+MOD-0299,MODERATION_DISPUTE,product merge,attempt manual rating edit,reopened case,content and structured validity are decided separately,server-authoritative verified evidence is required,P3,NO,PASS
+MOD-0300,MODERATION_DISPUTE,product split ambiguous,attempt manual rating edit,reopened case,merchant disagreement alone cannot remove a review,missing responses are not imputed,P3,NO,PASS

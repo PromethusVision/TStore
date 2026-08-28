@@ -1,0 +1,301 @@
+﻿TEST_ID,DOMAIN,START_STATE,ACTION,VARIANT,EXPECTED,INVARIANT,SEVERITY,OWNER_GATE,DESIGN_RESULT
+CMB-0001,COMPOSITE_META_BADGE,all three primary active,evaluate specified-set model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P0,YES,PASS
+CMB-0002,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate specified-set model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0003,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate specified-set model,Mahallenin Yıldızı candidate,small local cohort fails closed,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0004,COMPOSITE_META_BADGE,any-N set satisfied,evaluate specified-set model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+CMB-0005,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate specified-set model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0006,COMPOSITE_META_BADGE,tiny local cohort,evaluate specified-set model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0007,COMPOSITE_META_BADGE,stable local cohort,evaluate specified-set model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0008,COMPOSITE_META_BADGE,shop relocated,evaluate specified-set model,Mahallenin Yıldızı candidate,small local cohort fails closed,server-authoritative verified evidence is required,P1,NO,PASS
+CMB-0009,COMPOSITE_META_BADGE,definition upgraded,evaluate specified-set model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0010,COMPOSITE_META_BADGE,tie at local boundary,evaluate specified-set model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",no second merchant free-text review exists,P2,NO,PASS
+CMB-0011,COMPOSITE_META_BADGE,all three primary active,evaluate any-N model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0012,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate any-N model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P3,YES,PASS
+CMB-0013,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate any-N model,Mahallenin Yıldızı candidate,small local cohort fails closed,no second merchant free-text review exists,P2,NO,PASS
+CMB-0014,COMPOSITE_META_BADGE,any-N set satisfied,evaluate any-N model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0015,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate any-N model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P1,NO,PASS
+CMB-0016,COMPOSITE_META_BADGE,tiny local cohort,evaluate any-N model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0017,COMPOSITE_META_BADGE,stable local cohort,evaluate any-N model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0018,COMPOSITE_META_BADGE,shop relocated,evaluate any-N model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0019,COMPOSITE_META_BADGE,definition upgraded,evaluate any-N model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",derived state is idempotent and versioned,P2,NO,PASS
+CMB-0020,COMPOSITE_META_BADGE,tie at local boundary,evaluate any-N model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0021,COMPOSITE_META_BADGE,all three primary active,evaluate balanced model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0022,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate balanced model,Mahallenin Yıldızı candidate,small local cohort fails closed,missing responses are not imputed,P1,NO,PASS
+CMB-0023,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate balanced model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+CMB-0024,COMPOSITE_META_BADGE,any-N set satisfied,evaluate balanced model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0025,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate balanced model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,missing responses are not imputed,P2,NO,PASS
+CMB-0026,COMPOSITE_META_BADGE,tiny local cohort,evaluate balanced model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,no second merchant free-text review exists,P3,NO,PASS
+CMB-0027,COMPOSITE_META_BADGE,stable local cohort,evaluate balanced model,Mahallenin Yıldızı candidate,small local cohort fails closed,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0028,COMPOSITE_META_BADGE,shop relocated,evaluate balanced model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0029,COMPOSITE_META_BADGE,definition upgraded,evaluate balanced model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",customer identity is not publicly exposed,P1,NO,PASS
+CMB-0030,COMPOSITE_META_BADGE,tie at local boundary,evaluate balanced model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+CMB-0031,COMPOSITE_META_BADGE,all three primary active,evaluate percentile model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0032,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate percentile model,Mahallenin Yıldızı candidate,small local cohort fails closed,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0033,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate percentile model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0034,COMPOSITE_META_BADGE,any-N set satisfied,evaluate percentile model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P2,YES,PASS
+CMB-0035,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate percentile model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0036,COMPOSITE_META_BADGE,tiny local cohort,evaluate percentile model,Mahallenin Yıldızı candidate,small local cohort fails closed,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+CMB-0037,COMPOSITE_META_BADGE,stable local cohort,evaluate percentile model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0038,COMPOSITE_META_BADGE,shop relocated,evaluate percentile model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",missing responses are not imputed,P3,NO,PASS
+CMB-0039,COMPOSITE_META_BADGE,definition upgraded,evaluate percentile model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,no second merchant free-text review exists,P3,NO,PASS
+CMB-0040,COMPOSITE_META_BADGE,tie at local boundary,evaluate percentile model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0041,COMPOSITE_META_BADGE,all three primary active,evaluate hybrid local model,Mahallenin Yıldızı candidate,small local cohort fails closed,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0042,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate hybrid local model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0043,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate hybrid local model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P1,NO,PASS
+CMB-0044,COMPOSITE_META_BADGE,any-N set satisfied,evaluate hybrid local model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0045,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate hybrid local model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P3,YES,PASS
+CMB-0046,COMPOSITE_META_BADGE,tiny local cohort,evaluate hybrid local model,Mahallenin Yıldızı candidate,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+CMB-0047,COMPOSITE_META_BADGE,stable local cohort,evaluate hybrid local model,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0048,COMPOSITE_META_BADGE,shop relocated,evaluate hybrid local model,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",derived state is idempotent and versioned,P3,NO,PASS
+CMB-0049,COMPOSITE_META_BADGE,definition upgraded,evaluate hybrid local model,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0050,COMPOSITE_META_BADGE,tie at local boundary,evaluate hybrid local model,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,server-authoritative verified evidence is required,P1,NO,PASS
+CMB-0051,COMPOSITE_META_BADGE,all three primary active,propagate confidence,Mahallenin Yıldızı candidate,small local cohort fails closed,missing responses are not imputed,P3,NO,PASS
+CMB-0052,COMPOSITE_META_BADGE,one prerequisite at risk,propagate confidence,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",no second merchant free-text review exists,P2,NO,PASS
+CMB-0053,COMPOSITE_META_BADGE,one prerequisite suspended,propagate confidence,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0054,COMPOSITE_META_BADGE,any-N set satisfied,propagate confidence,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0055,COMPOSITE_META_BADGE,balanced dimensions failed,propagate confidence,Mahallenin Yıldızı candidate,small local cohort fails closed,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0056,COMPOSITE_META_BADGE,tiny local cohort,propagate confidence,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,YES,PASS
+CMB-0057,COMPOSITE_META_BADGE,stable local cohort,propagate confidence,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P1,NO,PASS
+CMB-0058,COMPOSITE_META_BADGE,shop relocated,propagate confidence,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0059,COMPOSITE_META_BADGE,definition upgraded,propagate confidence,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,operator cannot manually edit ratings or badge scores,P0,NO,PASS
+CMB-0060,COMPOSITE_META_BADGE,tie at local boundary,propagate confidence,Mahallenin Yıldızı candidate,small local cohort fails closed,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0061,COMPOSITE_META_BADGE,all three primary active,suspend downstream,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0062,COMPOSITE_META_BADGE,one prerequisite at risk,suspend downstream,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0063,COMPOSITE_META_BADGE,one prerequisite suspended,suspend downstream,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0064,COMPOSITE_META_BADGE,any-N set satisfied,suspend downstream,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P1,NO,PASS
+CMB-0065,COMPOSITE_META_BADGE,balanced dimensions failed,suspend downstream,Mahallenin Yıldızı candidate,small local cohort fails closed,no second merchant free-text review exists,P3,NO,PASS
+CMB-0066,COMPOSITE_META_BADGE,tiny local cohort,suspend downstream,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0067,COMPOSITE_META_BADGE,stable local cohort,suspend downstream,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",missing responses are not imputed,P2,YES,PASS
+CMB-0068,COMPOSITE_META_BADGE,shop relocated,suspend downstream,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,no second merchant free-text review exists,P3,NO,PASS
+CMB-0069,COMPOSITE_META_BADGE,definition upgraded,suspend downstream,Mahallenin Yıldızı candidate,small local cohort fails closed,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0070,COMPOSITE_META_BADGE,tie at local boundary,suspend downstream,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0071,COMPOSITE_META_BADGE,all three primary active,recompute region,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",customer identity is not publicly exposed,P1,NO,PASS
+CMB-0072,COMPOSITE_META_BADGE,one prerequisite at risk,recompute region,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0073,COMPOSITE_META_BADGE,one prerequisite suspended,recompute region,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0074,COMPOSITE_META_BADGE,any-N set satisfied,recompute region,Mahallenin Yıldızı candidate,small local cohort fails closed,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0075,COMPOSITE_META_BADGE,balanced dimensions failed,recompute region,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0076,COMPOSITE_META_BADGE,tiny local cohort,recompute region,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0077,COMPOSITE_META_BADGE,stable local cohort,recompute region,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,missing responses are not imputed,P3,NO,PASS
+CMB-0078,COMPOSITE_META_BADGE,shop relocated,recompute region,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P1,YES,PASS
+CMB-0079,COMPOSITE_META_BADGE,definition upgraded,recompute region,Mahallenin Yıldızı candidate,small local cohort fails closed,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0080,COMPOSITE_META_BADGE,tie at local boundary,recompute region,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0081,COMPOSITE_META_BADGE,all three primary active,explain prerequisites,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",no second merchant free-text review exists,P3,NO,PASS
+CMB-0082,COMPOSITE_META_BADGE,one prerequisite at risk,explain prerequisites,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0083,COMPOSITE_META_BADGE,one prerequisite suspended,explain prerequisites,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0084,COMPOSITE_META_BADGE,any-N set satisfied,explain prerequisites,Mahallenin Yıldızı candidate,small local cohort fails closed,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0085,COMPOSITE_META_BADGE,balanced dimensions failed,explain prerequisites,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+CMB-0086,COMPOSITE_META_BADGE,tiny local cohort,explain prerequisites,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0087,COMPOSITE_META_BADGE,stable local cohort,explain prerequisites,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0088,COMPOSITE_META_BADGE,shop relocated,explain prerequisites,Mahallenin Yıldızı candidate,small local cohort fails closed,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+CMB-0089,COMPOSITE_META_BADGE,definition upgraded,explain prerequisites,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,YES,PASS
+CMB-0090,COMPOSITE_META_BADGE,tie at local boundary,explain prerequisites,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",derived state is idempotent and versioned,P3,NO,PASS
+CMB-0091,COMPOSITE_META_BADGE,all three primary active,retire meta badge,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0092,COMPOSITE_META_BADGE,one prerequisite at risk,retire meta badge,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,server-authoritative verified evidence is required,P1,NO,PASS
+CMB-0093,COMPOSITE_META_BADGE,one prerequisite suspended,retire meta badge,Mahallenin Yıldızı candidate,small local cohort fails closed,missing responses are not imputed,P3,NO,PASS
+CMB-0094,COMPOSITE_META_BADGE,any-N set satisfied,retire meta badge,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,no second merchant free-text review exists,P2,NO,PASS
+CMB-0095,COMPOSITE_META_BADGE,balanced dimensions failed,retire meta badge,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",product and shop aggregates remain separate,P3,NO,PASS
+CMB-0096,COMPOSITE_META_BADGE,tiny local cohort,retire meta badge,Mahallenin Yıldızı candidate,dependency DAG remains acyclic and versioned,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0097,COMPOSITE_META_BADGE,stable local cohort,retire meta badge,Mahallenin Yıldızı candidate,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0098,COMPOSITE_META_BADGE,shop relocated,retire meta badge,Mahallenin Yıldızı candidate,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0099,COMPOSITE_META_BADGE,definition upgraded,retire meta badge,Mahallenin Yıldızı candidate,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P1,NO,PASS
+CMB-0100,COMPOSITE_META_BADGE,tie at local boundary,retire meta badge,Mahallenin Yıldızı candidate,"meta badge remains proposed, not final",customer identity is not publicly exposed,P2,YES,PASS
+CMB-0101,COMPOSITE_META_BADGE,all three primary active,evaluate specified-set model,generic composite,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0102,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate specified-set model,generic composite,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0103,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate specified-set model,generic composite,relocation does not carry local standing automatically,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0104,COMPOSITE_META_BADGE,any-N set satisfied,evaluate specified-set model,generic composite,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0105,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate specified-set model,generic composite,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0106,COMPOSITE_META_BADGE,tiny local cohort,evaluate specified-set model,generic composite,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P1,NO,PASS
+CMB-0107,COMPOSITE_META_BADGE,stable local cohort,evaluate specified-set model,generic composite,small local cohort fails closed,no second merchant free-text review exists,P3,NO,PASS
+CMB-0108,COMPOSITE_META_BADGE,shop relocated,evaluate specified-set model,generic composite,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0109,COMPOSITE_META_BADGE,definition upgraded,evaluate specified-set model,generic composite,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0110,COMPOSITE_META_BADGE,tie at local boundary,evaluate specified-set model,generic composite,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0111,COMPOSITE_META_BADGE,all three primary active,evaluate any-N model,generic composite,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P3,YES,PASS
+CMB-0112,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate any-N model,generic composite,small local cohort fails closed,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0113,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate any-N model,generic composite,relocation does not carry local standing automatically,customer identity is not publicly exposed,P1,NO,PASS
+CMB-0114,COMPOSITE_META_BADGE,any-N set satisfied,evaluate any-N model,generic composite,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0115,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate any-N model,generic composite,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0116,COMPOSITE_META_BADGE,tiny local cohort,evaluate any-N model,generic composite,downstream cannot be stronger than inactive prerequisites,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0117,COMPOSITE_META_BADGE,stable local cohort,evaluate any-N model,generic composite,small local cohort fails closed,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+CMB-0118,COMPOSITE_META_BADGE,shop relocated,evaluate any-N model,generic composite,relocation does not carry local standing automatically,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0119,COMPOSITE_META_BADGE,definition upgraded,evaluate any-N model,generic composite,"meta badge remains proposed, not final",missing responses are not imputed,P3,NO,PASS
+CMB-0120,COMPOSITE_META_BADGE,tie at local boundary,evaluate any-N model,generic composite,downstream cannot be stronger than inactive prerequisites,no second merchant free-text review exists,P1,NO,PASS
+CMB-0121,COMPOSITE_META_BADGE,all three primary active,evaluate balanced model,generic composite,small local cohort fails closed,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0122,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate balanced model,generic composite,relocation does not carry local standing automatically,missing responses are not imputed,P3,YES,PASS
+CMB-0123,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate balanced model,generic composite,"meta badge remains proposed, not final",no second merchant free-text review exists,P3,NO,PASS
+CMB-0124,COMPOSITE_META_BADGE,any-N set satisfied,evaluate balanced model,generic composite,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0125,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate balanced model,generic composite,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0126,COMPOSITE_META_BADGE,tiny local cohort,evaluate balanced model,generic composite,small local cohort fails closed,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0127,COMPOSITE_META_BADGE,stable local cohort,evaluate balanced model,generic composite,relocation does not carry local standing automatically,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+CMB-0128,COMPOSITE_META_BADGE,shop relocated,evaluate balanced model,generic composite,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0129,COMPOSITE_META_BADGE,definition upgraded,evaluate balanced model,generic composite,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0130,COMPOSITE_META_BADGE,tie at local boundary,evaluate balanced model,generic composite,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0131,COMPOSITE_META_BADGE,all three primary active,evaluate percentile model,generic composite,small local cohort fails closed,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0132,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate percentile model,generic composite,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0133,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate percentile model,generic composite,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P2,YES,PASS
+CMB-0134,COMPOSITE_META_BADGE,any-N set satisfied,evaluate percentile model,generic composite,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P1,NO,PASS
+CMB-0135,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate percentile model,generic composite,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P3,NO,PASS
+CMB-0136,COMPOSITE_META_BADGE,tiny local cohort,evaluate percentile model,generic composite,small local cohort fails closed,no second merchant free-text review exists,P2,NO,PASS
+CMB-0137,COMPOSITE_META_BADGE,stable local cohort,evaluate percentile model,generic composite,"meta badge remains proposed, not final",product and shop aggregates remain separate,P3,NO,PASS
+CMB-0138,COMPOSITE_META_BADGE,shop relocated,evaluate percentile model,generic composite,dependency DAG remains acyclic and versioned,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0139,COMPOSITE_META_BADGE,definition upgraded,evaluate percentile model,generic composite,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0140,COMPOSITE_META_BADGE,tie at local boundary,evaluate percentile model,generic composite,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0141,COMPOSITE_META_BADGE,all three primary active,evaluate hybrid local model,generic composite,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P1,NO,PASS
+CMB-0142,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate hybrid local model,generic composite,"meta badge remains proposed, not final",derived state is idempotent and versioned,P2,NO,PASS
+CMB-0143,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate hybrid local model,generic composite,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0144,COMPOSITE_META_BADGE,any-N set satisfied,evaluate hybrid local model,generic composite,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P3,YES,PASS
+CMB-0145,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate hybrid local model,generic composite,small local cohort fails closed,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0146,COMPOSITE_META_BADGE,tiny local cohort,evaluate hybrid local model,generic composite,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P0,NO,PASS
+CMB-0147,COMPOSITE_META_BADGE,stable local cohort,evaluate hybrid local model,generic composite,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0148,COMPOSITE_META_BADGE,shop relocated,evaluate hybrid local model,generic composite,dependency DAG remains acyclic and versioned,missing responses are not imputed,P1,NO,PASS
+CMB-0149,COMPOSITE_META_BADGE,definition upgraded,evaluate hybrid local model,generic composite,downstream cannot be stronger than inactive prerequisites,no second merchant free-text review exists,P3,NO,PASS
+CMB-0150,COMPOSITE_META_BADGE,tie at local boundary,evaluate hybrid local model,generic composite,small local cohort fails closed,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0151,COMPOSITE_META_BADGE,all three primary active,propagate confidence,generic composite,relocation does not carry local standing automatically,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0152,COMPOSITE_META_BADGE,one prerequisite at risk,propagate confidence,generic composite,"meta badge remains proposed, not final",customer identity is not publicly exposed,P3,NO,PASS
+CMB-0153,COMPOSITE_META_BADGE,one prerequisite suspended,propagate confidence,generic composite,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0154,COMPOSITE_META_BADGE,any-N set satisfied,propagate confidence,generic composite,small local cohort fails closed,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0155,COMPOSITE_META_BADGE,balanced dimensions failed,propagate confidence,generic composite,relocation does not carry local standing automatically,customer identity is not publicly exposed,P1,YES,PASS
+CMB-0156,COMPOSITE_META_BADGE,tiny local cohort,propagate confidence,generic composite,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0157,COMPOSITE_META_BADGE,stable local cohort,propagate confidence,generic composite,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0158,COMPOSITE_META_BADGE,shop relocated,propagate confidence,generic composite,downstream cannot be stronger than inactive prerequisites,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0159,COMPOSITE_META_BADGE,definition upgraded,propagate confidence,generic composite,small local cohort fails closed,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0160,COMPOSITE_META_BADGE,tie at local boundary,propagate confidence,generic composite,relocation does not carry local standing automatically,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0161,COMPOSITE_META_BADGE,all three primary active,suspend downstream,generic composite,"meta badge remains proposed, not final",missing responses are not imputed,P3,NO,PASS
+CMB-0162,COMPOSITE_META_BADGE,one prerequisite at risk,suspend downstream,generic composite,dependency DAG remains acyclic and versioned,no second merchant free-text review exists,P1,NO,PASS
+CMB-0163,COMPOSITE_META_BADGE,one prerequisite suspended,suspend downstream,generic composite,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0164,COMPOSITE_META_BADGE,any-N set satisfied,suspend downstream,generic composite,small local cohort fails closed,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0165,COMPOSITE_META_BADGE,balanced dimensions failed,suspend downstream,generic composite,relocation does not carry local standing automatically,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0166,COMPOSITE_META_BADGE,tiny local cohort,suspend downstream,generic composite,"meta badge remains proposed, not final",product and shop aggregates remain separate,P2,YES,PASS
+CMB-0167,COMPOSITE_META_BADGE,stable local cohort,suspend downstream,generic composite,dependency DAG remains acyclic and versioned,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0168,COMPOSITE_META_BADGE,shop relocated,suspend downstream,generic composite,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0169,COMPOSITE_META_BADGE,definition upgraded,suspend downstream,generic composite,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+CMB-0170,COMPOSITE_META_BADGE,tie at local boundary,suspend downstream,generic composite,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0171,COMPOSITE_META_BADGE,all three primary active,recompute region,generic composite,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0172,COMPOSITE_META_BADGE,one prerequisite at risk,recompute region,generic composite,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0173,COMPOSITE_META_BADGE,one prerequisite suspended,recompute region,generic composite,small local cohort fails closed,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0174,COMPOSITE_META_BADGE,any-N set satisfied,recompute region,generic composite,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0175,COMPOSITE_META_BADGE,balanced dimensions failed,recompute region,generic composite,"meta badge remains proposed, not final",no second merchant free-text review exists,P0,NO,PASS
+CMB-0176,COMPOSITE_META_BADGE,tiny local cohort,recompute region,generic composite,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P1,NO,PASS
+CMB-0177,COMPOSITE_META_BADGE,stable local cohort,recompute region,generic composite,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P3,YES,PASS
+CMB-0178,COMPOSITE_META_BADGE,shop relocated,recompute region,generic composite,small local cohort fails closed,no second merchant free-text review exists,P2,NO,PASS
+CMB-0179,COMPOSITE_META_BADGE,definition upgraded,recompute region,generic composite,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0180,COMPOSITE_META_BADGE,tie at local boundary,recompute region,generic composite,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0181,COMPOSITE_META_BADGE,all three primary active,explain prerequisites,generic composite,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0182,COMPOSITE_META_BADGE,one prerequisite at risk,explain prerequisites,generic composite,downstream cannot be stronger than inactive prerequisites,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0183,COMPOSITE_META_BADGE,one prerequisite suspended,explain prerequisites,generic composite,small local cohort fails closed,quantity and basket value have zero vote weight,P1,NO,PASS
+CMB-0184,COMPOSITE_META_BADGE,any-N set satisfied,explain prerequisites,generic composite,relocation does not carry local standing automatically,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0185,COMPOSITE_META_BADGE,balanced dimensions failed,explain prerequisites,generic composite,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0186,COMPOSITE_META_BADGE,tiny local cohort,explain prerequisites,generic composite,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0187,COMPOSITE_META_BADGE,stable local cohort,explain prerequisites,generic composite,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P2,NO,PASS
+CMB-0188,COMPOSITE_META_BADGE,shop relocated,explain prerequisites,generic composite,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+CMB-0189,COMPOSITE_META_BADGE,definition upgraded,explain prerequisites,generic composite,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0190,COMPOSITE_META_BADGE,tie at local boundary,explain prerequisites,generic composite,dependency DAG remains acyclic and versioned,missing responses are not imputed,P1,NO,PASS
+CMB-0191,COMPOSITE_META_BADGE,all three primary active,retire meta badge,generic composite,downstream cannot be stronger than inactive prerequisites,no second merchant free-text review exists,P3,NO,PASS
+CMB-0192,COMPOSITE_META_BADGE,one prerequisite at risk,retire meta badge,generic composite,small local cohort fails closed,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0193,COMPOSITE_META_BADGE,one prerequisite suspended,retire meta badge,generic composite,relocation does not carry local standing automatically,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0194,COMPOSITE_META_BADGE,any-N set satisfied,retire meta badge,generic composite,"meta badge remains proposed, not final",customer identity is not publicly exposed,P3,NO,PASS
+CMB-0195,COMPOSITE_META_BADGE,balanced dimensions failed,retire meta badge,generic composite,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0196,COMPOSITE_META_BADGE,tiny local cohort,retire meta badge,generic composite,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0197,COMPOSITE_META_BADGE,stable local cohort,retire meta badge,generic composite,small local cohort fails closed,derived state is idempotent and versioned,P1,NO,PASS
+CMB-0198,COMPOSITE_META_BADGE,shop relocated,retire meta badge,generic composite,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0199,COMPOSITE_META_BADGE,definition upgraded,retire meta badge,generic composite,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P2,YES,PASS
+CMB-0200,COMPOSITE_META_BADGE,tie at local boundary,retire meta badge,generic composite,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0201,COMPOSITE_META_BADGE,all three primary active,evaluate specified-set model,local meta badge,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0202,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate specified-set model,local meta badge,small local cohort fails closed,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0203,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate specified-set model,local meta badge,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0204,COMPOSITE_META_BADGE,any-N set satisfied,evaluate specified-set model,local meta badge,"meta badge remains proposed, not final",no second merchant free-text review exists,P0,NO,PASS
+CMB-0205,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate specified-set model,local meta badge,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0206,COMPOSITE_META_BADGE,tiny local cohort,evaluate specified-set model,local meta badge,small local cohort fails closed,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0207,COMPOSITE_META_BADGE,stable local cohort,evaluate specified-set model,local meta badge,relocation does not carry local standing automatically,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0208,COMPOSITE_META_BADGE,shop relocated,evaluate specified-set model,local meta badge,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P2,NO,PASS
+CMB-0209,COMPOSITE_META_BADGE,definition upgraded,evaluate specified-set model,local meta badge,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0210,COMPOSITE_META_BADGE,tie at local boundary,evaluate specified-set model,local meta badge,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P3,YES,PASS
+CMB-0211,COMPOSITE_META_BADGE,all three primary active,evaluate any-N model,local meta badge,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P1,NO,PASS
+CMB-0212,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate any-N model,local meta badge,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0213,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate any-N model,local meta badge,"meta badge remains proposed, not final",derived state is idempotent and versioned,P3,NO,PASS
+CMB-0214,COMPOSITE_META_BADGE,any-N set satisfied,evaluate any-N model,local meta badge,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0215,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate any-N model,local meta badge,downstream cannot be stronger than inactive prerequisites,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0216,COMPOSITE_META_BADGE,tiny local cohort,evaluate any-N model,local meta badge,small local cohort fails closed,missing responses are not imputed,P3,NO,PASS
+CMB-0217,COMPOSITE_META_BADGE,stable local cohort,evaluate any-N model,local meta badge,relocation does not carry local standing automatically,no second merchant free-text review exists,P2,NO,PASS
+CMB-0218,COMPOSITE_META_BADGE,shop relocated,evaluate any-N model,local meta badge,"meta badge remains proposed, not final",product and shop aggregates remain separate,P1,NO,PASS
+CMB-0219,COMPOSITE_META_BADGE,definition upgraded,evaluate any-N model,local meta badge,dependency DAG remains acyclic and versioned,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0220,COMPOSITE_META_BADGE,tie at local boundary,evaluate any-N model,local meta badge,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0221,COMPOSITE_META_BADGE,all three primary active,evaluate balanced model,local meta badge,small local cohort fails closed,product and shop aggregates remain separate,P3,YES,PASS
+CMB-0222,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate balanced model,local meta badge,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0223,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate balanced model,local meta badge,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P2,NO,PASS
+CMB-0224,COMPOSITE_META_BADGE,any-N set satisfied,evaluate balanced model,local meta badge,downstream cannot be stronger than inactive prerequisites,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0225,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate balanced model,local meta badge,small local cohort fails closed,quantity and basket value have zero vote weight,P1,NO,PASS
+CMB-0226,COMPOSITE_META_BADGE,tiny local cohort,evaluate balanced model,local meta badge,relocation does not carry local standing automatically,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0227,COMPOSITE_META_BADGE,stable local cohort,evaluate balanced model,local meta badge,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0228,COMPOSITE_META_BADGE,shop relocated,evaluate balanced model,local meta badge,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0229,COMPOSITE_META_BADGE,definition upgraded,evaluate balanced model,local meta badge,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P2,NO,PASS
+CMB-0230,COMPOSITE_META_BADGE,tie at local boundary,evaluate balanced model,local meta badge,small local cohort fails closed,no second merchant free-text review exists,P3,NO,PASS
+CMB-0231,COMPOSITE_META_BADGE,all three primary active,evaluate percentile model,local meta badge,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0232,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate percentile model,local meta badge,"meta badge remains proposed, not final",missing responses are not imputed,P1,YES,PASS
+CMB-0233,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate percentile model,local meta badge,dependency DAG remains acyclic and versioned,no second merchant free-text review exists,P0,NO,PASS
+CMB-0234,COMPOSITE_META_BADGE,any-N set satisfied,evaluate percentile model,local meta badge,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0235,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate percentile model,local meta badge,small local cohort fails closed,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0236,COMPOSITE_META_BADGE,tiny local cohort,evaluate percentile model,local meta badge,relocation does not carry local standing automatically,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0237,COMPOSITE_META_BADGE,stable local cohort,evaluate percentile model,local meta badge,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0238,COMPOSITE_META_BADGE,shop relocated,evaluate percentile model,local meta badge,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0239,COMPOSITE_META_BADGE,definition upgraded,evaluate percentile model,local meta badge,small local cohort fails closed,derived state is idempotent and versioned,P1,NO,PASS
+CMB-0240,COMPOSITE_META_BADGE,tie at local boundary,evaluate percentile model,local meta badge,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0241,COMPOSITE_META_BADGE,all three primary active,evaluate hybrid local model,local meta badge,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0242,COMPOSITE_META_BADGE,one prerequisite at risk,evaluate hybrid local model,local meta badge,dependency DAG remains acyclic and versioned,missing responses are not imputed,P3,NO,PASS
+CMB-0243,COMPOSITE_META_BADGE,one prerequisite suspended,evaluate hybrid local model,local meta badge,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P3,YES,PASS
+CMB-0244,COMPOSITE_META_BADGE,any-N set satisfied,evaluate hybrid local model,local meta badge,small local cohort fails closed,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0245,COMPOSITE_META_BADGE,balanced dimensions failed,evaluate hybrid local model,local meta badge,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0246,COMPOSITE_META_BADGE,tiny local cohort,evaluate hybrid local model,local meta badge,"meta badge remains proposed, not final",no second merchant free-text review exists,P1,NO,PASS
+CMB-0247,COMPOSITE_META_BADGE,stable local cohort,evaluate hybrid local model,local meta badge,dependency DAG remains acyclic and versioned,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0248,COMPOSITE_META_BADGE,shop relocated,evaluate hybrid local model,local meta badge,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0249,COMPOSITE_META_BADGE,definition upgraded,evaluate hybrid local model,local meta badge,small local cohort fails closed,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0250,COMPOSITE_META_BADGE,tie at local boundary,evaluate hybrid local model,local meta badge,relocation does not carry local standing automatically,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+CMB-0251,COMPOSITE_META_BADGE,all three primary active,propagate confidence,local meta badge,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0252,COMPOSITE_META_BADGE,one prerequisite at risk,propagate confidence,local meta badge,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0253,COMPOSITE_META_BADGE,one prerequisite suspended,propagate confidence,local meta badge,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+CMB-0254,COMPOSITE_META_BADGE,any-N set satisfied,propagate confidence,local meta badge,small local cohort fails closed,quantity and basket value have zero vote weight,P3,YES,PASS
+CMB-0255,COMPOSITE_META_BADGE,balanced dimensions failed,propagate confidence,local meta badge,relocation does not carry local standing automatically,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0256,COMPOSITE_META_BADGE,tiny local cohort,propagate confidence,local meta badge,dependency DAG remains acyclic and versioned,"new merchant means insufficient history, not poor quality",P2,NO,PASS
+CMB-0257,COMPOSITE_META_BADGE,stable local cohort,propagate confidence,local meta badge,downstream cannot be stronger than inactive prerequisites,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0258,COMPOSITE_META_BADGE,shop relocated,propagate confidence,local meta badge,small local cohort fails closed,missing responses are not imputed,P3,NO,PASS
+CMB-0259,COMPOSITE_META_BADGE,definition upgraded,propagate confidence,local meta badge,relocation does not carry local standing automatically,no second merchant free-text review exists,P2,NO,PASS
+CMB-0260,COMPOSITE_META_BADGE,tie at local boundary,propagate confidence,local meta badge,"meta badge remains proposed, not final",product and shop aggregates remain separate,P1,NO,PASS
+CMB-0261,COMPOSITE_META_BADGE,all three primary active,suspend downstream,local meta badge,dependency DAG remains acyclic and versioned,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0262,COMPOSITE_META_BADGE,one prerequisite at risk,suspend downstream,local meta badge,downstream cannot be stronger than inactive prerequisites,customer identity is not publicly exposed,P0,NO,PASS
+CMB-0263,COMPOSITE_META_BADGE,one prerequisite suspended,suspend downstream,local meta badge,small local cohort fails closed,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0264,COMPOSITE_META_BADGE,any-N set satisfied,suspend downstream,local meta badge,relocation does not carry local standing automatically,quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0265,COMPOSITE_META_BADGE,balanced dimensions failed,suspend downstream,local meta badge,"meta badge remains proposed, not final",customer identity is not publicly exposed,P2,YES,PASS
+CMB-0266,COMPOSITE_META_BADGE,tiny local cohort,suspend downstream,local meta badge,dependency DAG remains acyclic and versioned,operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0267,COMPOSITE_META_BADGE,stable local cohort,suspend downstream,local meta badge,downstream cannot be stronger than inactive prerequisites,quantity and basket value have zero vote weight,P1,NO,PASS
+CMB-0268,COMPOSITE_META_BADGE,shop relocated,suspend downstream,local meta badge,small local cohort fails closed,derived state is idempotent and versioned,P2,NO,PASS
+CMB-0269,COMPOSITE_META_BADGE,definition upgraded,suspend downstream,local meta badge,relocation does not carry local standing automatically,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0270,COMPOSITE_META_BADGE,tie at local boundary,suspend downstream,local meta badge,"meta badge remains proposed, not final",server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0271,COMPOSITE_META_BADGE,all three primary active,recompute region,local meta badge,dependency DAG remains acyclic and versioned,missing responses are not imputed,P2,NO,PASS
+CMB-0272,COMPOSITE_META_BADGE,one prerequisite at risk,recompute region,local meta badge,downstream cannot be stronger than inactive prerequisites,no second merchant free-text review exists,P3,NO,PASS
+CMB-0273,COMPOSITE_META_BADGE,one prerequisite suspended,recompute region,local meta badge,relocation does not carry local standing automatically,product and shop aggregates remain separate,P3,NO,PASS
+CMB-0274,COMPOSITE_META_BADGE,any-N set satisfied,recompute region,local meta badge,"meta badge remains proposed, not final",ads and rewards have zero reputation weight,P1,NO,PASS
+CMB-0275,COMPOSITE_META_BADGE,balanced dimensions failed,recompute region,local meta badge,dependency DAG remains acyclic and versioned,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0276,COMPOSITE_META_BADGE,tiny local cohort,recompute region,local meta badge,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P3,YES,PASS
+CMB-0277,COMPOSITE_META_BADGE,stable local cohort,recompute region,local meta badge,small local cohort fails closed,ads and rewards have zero reputation weight,P2,NO,PASS
+CMB-0278,COMPOSITE_META_BADGE,shop relocated,recompute region,local meta badge,relocation does not carry local standing automatically,customer identity is not publicly exposed,P3,NO,PASS
+CMB-0279,COMPOSITE_META_BADGE,definition upgraded,recompute region,local meta badge,"meta badge remains proposed, not final",operator cannot manually edit ratings or badge scores,P3,NO,PASS
+CMB-0280,COMPOSITE_META_BADGE,tie at local boundary,recompute region,local meta badge,dependency DAG remains acyclic and versioned,quantity and basket value have zero vote weight,P2,NO,PASS
+CMB-0281,COMPOSITE_META_BADGE,all three primary active,explain prerequisites,local meta badge,downstream cannot be stronger than inactive prerequisites,derived state is idempotent and versioned,P1,NO,PASS
+CMB-0282,COMPOSITE_META_BADGE,one prerequisite at risk,explain prerequisites,local meta badge,small local cohort fails closed,"new merchant means insufficient history, not poor quality",P3,NO,PASS
+CMB-0283,COMPOSITE_META_BADGE,one prerequisite suspended,explain prerequisites,local meta badge,relocation does not carry local standing automatically,server-authoritative verified evidence is required,P2,NO,PASS
+CMB-0284,COMPOSITE_META_BADGE,any-N set satisfied,explain prerequisites,local meta badge,"meta badge remains proposed, not final",missing responses are not imputed,P3,NO,PASS
+CMB-0285,COMPOSITE_META_BADGE,balanced dimensions failed,explain prerequisites,local meta badge,dependency DAG remains acyclic and versioned,no second merchant free-text review exists,P3,NO,PASS
+CMB-0286,COMPOSITE_META_BADGE,tiny local cohort,explain prerequisites,local meta badge,downstream cannot be stronger than inactive prerequisites,product and shop aggregates remain separate,P2,NO,PASS
+CMB-0287,COMPOSITE_META_BADGE,stable local cohort,explain prerequisites,local meta badge,small local cohort fails closed,missing responses are not imputed,P3,YES,PASS
+CMB-0288,COMPOSITE_META_BADGE,shop relocated,explain prerequisites,local meta badge,relocation does not carry local standing automatically,no second merchant free-text review exists,P1,NO,PASS
+CMB-0289,COMPOSITE_META_BADGE,definition upgraded,explain prerequisites,local meta badge,"meta badge remains proposed, not final",product and shop aggregates remain separate,P2,NO,PASS
+CMB-0290,COMPOSITE_META_BADGE,tie at local boundary,explain prerequisites,local meta badge,downstream cannot be stronger than inactive prerequisites,ads and rewards have zero reputation weight,P3,NO,PASS
+CMB-0291,COMPOSITE_META_BADGE,all three primary active,retire meta badge,local meta badge,small local cohort fails closed,customer identity is not publicly exposed,P0,NO,PASS
+CMB-0292,COMPOSITE_META_BADGE,one prerequisite at risk,retire meta badge,local meta badge,relocation does not carry local standing automatically,operator cannot manually edit ratings or badge scores,P2,NO,PASS
+CMB-0293,COMPOSITE_META_BADGE,one prerequisite suspended,retire meta badge,local meta badge,"meta badge remains proposed, not final",quantity and basket value have zero vote weight,P3,NO,PASS
+CMB-0294,COMPOSITE_META_BADGE,any-N set satisfied,retire meta badge,local meta badge,dependency DAG remains acyclic and versioned,derived state is idempotent and versioned,P3,NO,PASS
+CMB-0295,COMPOSITE_META_BADGE,balanced dimensions failed,retire meta badge,local meta badge,downstream cannot be stronger than inactive prerequisites,"new merchant means insufficient history, not poor quality",P1,NO,PASS
+CMB-0296,COMPOSITE_META_BADGE,tiny local cohort,retire meta badge,local meta badge,small local cohort fails closed,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0297,COMPOSITE_META_BADGE,stable local cohort,retire meta badge,local meta badge,relocation does not carry local standing automatically,missing responses are not imputed,P3,NO,PASS
+CMB-0298,COMPOSITE_META_BADGE,shop relocated,retire meta badge,local meta badge,"meta badge remains proposed, not final","new merchant means insufficient history, not poor quality",P2,YES,PASS
+CMB-0299,COMPOSITE_META_BADGE,definition upgraded,retire meta badge,local meta badge,dependency DAG remains acyclic and versioned,server-authoritative verified evidence is required,P3,NO,PASS
+CMB-0300,COMPOSITE_META_BADGE,tie at local boundary,retire meta badge,local meta badge,downstream cannot be stronger than inactive prerequisites,missing responses are not imputed,P3,NO,PASS
