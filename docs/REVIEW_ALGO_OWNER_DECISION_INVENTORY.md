@@ -45,4 +45,3 @@
 - Professional/architecture co-review: 12
 
 `OWNER_CHOICES_SELECTED: 0`
-

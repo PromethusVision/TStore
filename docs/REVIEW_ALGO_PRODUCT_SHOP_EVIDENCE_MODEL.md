@@ -47,4 +47,3 @@ auditable owner-approved correction, never recency guessing.
 
 `SHARED_EVIDENCE: YES`
 `SHARED_AGGREGATE: NO`
-

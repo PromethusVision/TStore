@@ -31,4 +31,3 @@ a guarantee. The displayed method, evaluation window and eligible cohort definit
 
 `MAHALLENIN_YILDIZI_FINAL: NO`
 `SMALL_COHORT_RANKING: FAIL_CLOSED`
-

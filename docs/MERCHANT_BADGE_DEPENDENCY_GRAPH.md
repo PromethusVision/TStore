@@ -38,4 +38,3 @@ prerequisites, not transferable assets.
 
 `DEPENDENCY_GRAPH_TYPE: VERSIONED_DAG`
 `BADGE_AS_EVIDENCE_FOR_ITSELF: NO`
-

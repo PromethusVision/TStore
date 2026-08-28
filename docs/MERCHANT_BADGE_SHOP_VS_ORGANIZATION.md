@@ -34,4 +34,3 @@ requires owner policy before badge continuity; historical review text remains at
 
 `PRIMARY_REPUTATION_SUBJECT: SHOP_RECOMMENDED`
 `ORGANIZATION_BADGE_COPY: NO`
-

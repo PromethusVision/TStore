@@ -33,4 +33,3 @@ because of low purchase volume without penalty.
 
 `NEW_MERCHANT_DEFAULT_SCORE: NONE`
 `BADGE_REQUIRED_FOR_DISCOVERY: NO`
-

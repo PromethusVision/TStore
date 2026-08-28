@@ -35,4 +35,3 @@ raise a score or manually award a badge.
 
 `QR_COLLUSION_CAN_EARN_BADGE: NO`
 `FRAUD_SIGNAL_EQUALS_GUILT: NO`
-

@@ -35,4 +35,3 @@ metric but is not adopted as the main merchant-star algorithm.
 
 `SMALL_SAMPLE_PROTECTION: REQUIRED`
 `MINIMUM_SAMPLE_VALUE: OWNER_DECISION_REQUIRED`
-

@@ -37,4 +37,3 @@ unapproved. Overall experience is a cross-check, not a prerequisite badge by its
 
 `CANDIDATE_DIMENSIONS: 4`
 `PRODUCT_AS_DESCRIBED_MERCHANT_DIMENSION: NO`
-

@@ -52,4 +52,3 @@ Use distinct labels such as `Ürün puanı`, `Mağaza deneyimi`, `Doğrulanmış
 
 `MERCHANT_FREE_TEXT_TABLE_REQUIRED: NO`
 `FEED_IS_DERIVED_PROJECTION: YES`
-

@@ -25,4 +25,3 @@ Consider exponential decay only after enough longitudinal data demonstrates valu
 
 `PILOT_DECAY: NONE`
 `TIMESTAMP_COLLECTION: REQUIRED`
-

@@ -28,4 +28,3 @@ can challenge evidence/process but cannot demand removal merely because an accur
 
 `BADGE_WHY_VIEW: REQUIRED`
 `SECRET_REPUTATION_SCORE_AS_PUBLIC_TRUTH: NO`
-

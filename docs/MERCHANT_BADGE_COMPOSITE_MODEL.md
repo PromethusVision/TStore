@@ -38,4 +38,3 @@ fraud operations, appeal handling and customer comprehension are established.
 
 `COMPOSITE_PUBLIC_LAUNCH: DEFER`
 `OPAQUE_WEIGHTED_COMPOSITE: NOT_RECOMMENDED`
-

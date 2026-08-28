@@ -48,4 +48,3 @@ decision is created by this contract.
 
 `SECOND_MERCHANT_FREE_TEXT_REVIEW: NO`
 `PRODUCT_REVIEW_RIGHTS_CHANGED: NO`
-

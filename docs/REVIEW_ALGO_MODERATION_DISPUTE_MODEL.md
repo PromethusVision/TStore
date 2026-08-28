@@ -40,4 +40,3 @@ generic moderation deletion.
 
 `OPERATOR_RATING_EDIT: NO`
 `MERCHANT_DISAGREEMENT_REMOVAL: NO`
-

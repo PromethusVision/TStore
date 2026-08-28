@@ -33,4 +33,3 @@ server-side uniqueness plus transaction/idempotency semantics. Client disabling 
 
 `CLIENT_AUTHORITY_FOR_BADGE: NO`
 `IDEMPOTENT_RECOMPUTE: REQUIRED`
-

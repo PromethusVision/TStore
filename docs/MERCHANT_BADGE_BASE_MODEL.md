@@ -37,4 +37,3 @@ fraud/policy hold. Raw average alone cannot award it.
 
 `PRIMARY_BADGE_CANDIDATES: 3`
 `BADGE_IS_PLATFORM_GUARANTEE: NO`
-

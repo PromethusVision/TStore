@@ -35,4 +35,3 @@ Structured data may be collected only after purpose/notice/minimization and rete
 
 `PRECISE_CUSTOMER_LOCATION_FOR_BADGE: NO`
 `LEGAL_FINALIZATION_PERFORMED: NO`
-

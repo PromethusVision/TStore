@@ -26,4 +26,3 @@
 - New merchant is `insufficient history`, not a low-quality default.
 
 `SOURCE_BRANCH_MERGES: 0`
-

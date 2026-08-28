@@ -25,4 +25,3 @@
   should be mechanically discounted.
 
 `RESEARCH_FORMULA_FINALIZED: NO`
-

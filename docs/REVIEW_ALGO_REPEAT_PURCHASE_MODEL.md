@@ -41,4 +41,3 @@ that the customer is editing the product opinion while separately rating Shop Bâ
 
 `REPEAT_PRODUCT_REVIEW_RIGHTS: 0`
 `CROSS_SHOP_EVALUATION_ALLOWED: PROPOSED`
-
