@@ -1,6 +1,6 @@
 # Wave 31 Global Owner Decision Reconciliation Work Plan
 
-State: `EXECUTION PLAN — 56 SUBSTANTIVE PACKAGES — DOCS ONLY`
+State: `COMPLETED — 56/56 SUBSTANTIVE PACKAGES — DOCS ONLY`
 
 ## Phase 0 — Repository and source control
 
@@ -77,6 +77,13 @@ State: `EXECUTION PLAN — 56 SUBSTANTIVE PACKAGES — DOCS ONLY`
 56. Run scope, diff, secret/PII, no-selection and final self-review; commit/push.
 
 `WORK_PACKAGES: 56`
+
+`WORK_PACKAGES_COMPLETED: 56`
+
+`RAW_DECISIONS_RECONCILED: 204`
+
+`MASTER_ROOTS: 31`
+
 `OWNER_FINALIZATION: NO`
 `PROFESSIONAL_FINALIZATION: NO`
 `RUNTIME_IMPLEMENTATION: NO`

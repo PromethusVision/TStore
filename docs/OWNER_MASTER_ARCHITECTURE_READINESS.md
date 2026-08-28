@@ -55,9 +55,43 @@ the regulated expansion opinion.
 - Owner finalization: `NO`
 - Professional finalization: `NO`
 
+## Final consistency checks
+
+| Check | Result |
+|---|---|
+| Expected task files | 14/14 present |
+| Raw inventory rows / unique keys | 204 / 204 |
+| Apply-map rows / unique keys | 204 / 204 |
+| Raw ↔ apply source-key difference | 0 |
+| Master root registry rows / unique IDs | 31 / 31 |
+| Mobile cards / unique IDs | 31 / 31 |
+| Dependency rows / unique IDs | 31 / 31 |
+| Raw rows with unknown/orphan root | 0 |
+| Selected option markers | 0 |
+| UI blocker decisions | 8 |
+| Commercial pilot blocker roots | 16 |
+| Merchant implementation blocker roots | 8 |
+| Source branches merged | 0 |
+
+## Output manifest
+
+- `OWNER_MASTER_WORK_PLAN.md`
+- `OWNER_MASTER_DECISION_SOURCE_MAP.md`
+- `OWNER_MASTER_RAW_DECISION_INVENTORY.csv`
+- `OWNER_MASTER_SEMANTIC_DEDUP.md`
+- `OWNER_MASTER_ROOT_DECISIONS.md`
+- `OWNER_MASTER_DEPENDENCY_GRAPH.md`
+- `OWNER_MASTER_PROFESSIONAL_REVIEW_ROUTING.md`
+- `OWNER_MASTER_UI_IMPLEMENTATION_GATE.md`
+- `OWNER_MASTER_PILOT_GATE.md`
+- `OWNER_MASTER_POST_PILOT_DECISIONS.md`
+- `OWNER_MASTER_REVIEW_SEQUENCE.md`
+- `OWNER_MASTER_MOBILE_REVIEW.md`
+- `OWNER_MASTER_DECISION_APPLY_MAP.csv`
+- `OWNER_MASTER_ARCHITECTURE_READINESS.md`
+
 `ALL_RECENT_DECISIONS_ACCOUNTED: PASS`
 
 `SEMANTIC_DEDUP: PASS`
 
 `READY_FOR_SINGLE_OWNER_REVIEW_SESSION: YES`
-
