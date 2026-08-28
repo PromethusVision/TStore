@@ -178,8 +178,8 @@ and age-sensitive products.
 |---|---:|
 | KEEP | 20 |
 | RENAME | 17 |
-| MOVE | 56 |
-| RENAME_AND_MOVE | 13 |
+| MOVE | 60 |
+| RENAME_AND_MOVE | 9 |
 | MERGE | 0 |
 | SPLIT | 83 |
 | RETIRE | 1 |
