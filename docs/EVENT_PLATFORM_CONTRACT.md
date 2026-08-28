@@ -1,6 +1,6 @@
 # EsnaftaVar Event Platform Contract
 
-**State:** `PROPOSED — DESIGN ONLY`  
+**State:** `PROPOSED — DESIGN ONLY`
 **Scope:** Customer, merchant, catalog, QR, review, search, ads, reward,
 reputation, operations and platform health. No runtime, schema or SDK is selected.
 
