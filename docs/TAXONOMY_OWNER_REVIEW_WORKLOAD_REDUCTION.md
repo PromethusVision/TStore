@@ -152,6 +152,33 @@ The primary estimated human-question reduction is **76.4%**, from 140 potential 
 - Primary estimated question reduction: **76.4%**.
 - Owner finalization performed: **NO**.
 
+## Final pack consistency checkpoint
+
+The final self-review compared ID sets across all 14 required decision-support documents rather than relying on prose totals.
+
+| Check | Result |
+|---|---|
+| Required documents | PASS — 14/14 |
+| Source inventory IDs | PASS — 248 total / 248 unique |
+| Inventory versus deduplication IDs | PASS — exact 248/248 set equality |
+| Root IDs across minimum set, options, recommendations, auto-map, cards and contrarian review | PASS — 18/18 each |
+| Option simulations | PASS — 18 A + 18 B + 18 C = 54 distinct source-backed paths |
+| Recommendation confidence | PASS — HIGH 10 + MEDIUM 7 + LOW 1 = 18 |
+| Policy-sensitive roots | PASS — 9/9; 17 official links indexed |
+| Collision IDs in auto-map | PASS — 66 total / 66 unique |
+| Failure IDs in auto-map | PASS — 42 total / 42 unique |
+| Primary ambiguity IDs in auto-map | PASS — 88 total / 88 unique; 3 exact manual cases retained |
+| Auto-resolution impact-score arithmetic | PASS — 140 + 66 + 42 + 88 = 336 |
+| Decision order | PASS — 18 unique roots / 0 dependency violations |
+| Owner cards | PASS — 18 cards / 18 recommended A / 0 checked boxes |
+| Domain classification | PASS — 8 likely + 3 minor + 5 substantive + 6 policy = 22 |
+| Naming allocation | PASS — 40 total / 40 unique |
+| Contrarian fields | PASS — seven required challenge fields on 18/18 roots |
+| Fast review rounds | PASS — 5/5; 18 root rows; 0 preselected choices |
+| Branch scope before final checkpoint | PASS — only the 14 required new decision-support documents |
+
+No source decision disappeared, no nonexistent collision/failure/edge ID was introduced, and no auto-resolution total counts an ambiguity under more than one primary root.
+
 `OWNER_REVIEW_WORKLOAD_REDUCTION: PASS`
 
 `RAW_QUESTION_ROWS: 140`
