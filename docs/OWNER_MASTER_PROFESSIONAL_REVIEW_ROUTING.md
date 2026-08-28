@@ -24,14 +24,17 @@ later copy or implementation, but it need not choose the product direction.
 All 20 roots in this lane are final. `OM-R06=B` and `OM-R07=B` carry no new
 professional waiver or implementation authority.
 
-### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 3 OPEN
+### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 3 PROVISIONAL
 
 - `OM-R05`: FINAL=A; KVKK still validates purposes, notice and retention.
-- `OM-R08`: choose governed intake; regulatory review gates sensitive domains.
+- `OM-R08`: PROVISIONAL; governed intake is the recommendation, not a selected
+  option. Regulatory review gates sensitive domains.
 - `OM-R10`: FINAL=A; ordinary-only scope is selected and specialists gate expansion.
 - `OM-R15`: FINAL=A; minimum metrics are selected and KVKK validates the exact data map.
-- `OM-R25`: choose collection hypothesis; KVKK review precedes data collection.
-- `OM-R26`: choose evidence identity hypothesis; KVKK review precedes publication.
+- `OM-R25`: PROVISIONAL; the collection hypothesis is not selected. KVKK review
+  precedes data collection.
+- `OM-R26`: PROVISIONAL; the evidence-identity hypothesis is not selected. KVKK
+  review precedes publication.
 
 ### OWNER_SHOULD_WAIT_FOR_LAWYER / KVKK — 0 OWNER ANSWERS / 1 OPEN PROFESSIONAL GATE
 

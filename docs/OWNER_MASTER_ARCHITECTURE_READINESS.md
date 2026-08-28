@@ -21,7 +21,7 @@ State: `24 ROOTS PRODUCT OWNER FINAL — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 - Master roots: **31**
 - Owner can decide now and remains open: **0**
-- Owner can decide provisionally and remains open: **3**
+- Provisional and intentionally non-final: **3**
 - Owner root answers waiting for professional input: **0**
 - Safe to defer post-pilot: **4**
 - Roots carrying any professional dependency: **15**

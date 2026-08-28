@@ -119,7 +119,9 @@ flowchart TD
 - Every source decision maps to exactly one root.
 - Directed cycles: `0`
 - Duplicate roots: `0`
-- Final roots: `8/31`
-- Open roots: `23/31`
+- Final roots: `24/31`
+- Open roots: `0/31`
+- Provisional roots: `3/31` — `OM-R08`, `OM-R25`, `OM-R26`
+- Deferred roots: `4/31` — `OM-R27`, `OM-R28`, `OM-R29`, `OM-R30`
 
 `MASTER_DEPENDENCY_GRAPH: PASS`

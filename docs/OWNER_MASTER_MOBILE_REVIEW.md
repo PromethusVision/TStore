@@ -4,7 +4,7 @@ State: `24 FINAL ROOT CARDS — 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 Use `OM-Rxx=A/B/C` only for non-final cards when their review phase is active.
 `RECOMMENDED` remains an agent
-recommendation. Product Owner finalized exactly 22 answers on 2026-08-29. The
+recommendation. Product Owner finalized exactly 24 answers on 2026-08-29. The
 second batch added `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
 `OM-R11=B`, `OM-R12=A`, `OM-R13=A`, `OM-R14=A`, `OM-R15=A`, `OM-R16=A`,
 `OM-R17=A`, `OM-R18=A` and `OM-R31=A`. The third batch added `OM-R06=B` and
@@ -839,7 +839,8 @@ The owner may answer only the current session, for example:
 
 `OM-R01=A, OM-R02=A, OM-R03=A`
 
-Unanswered cards remain `OPEN`; recommendations are never auto-applied.
+Non-final cards retain their explicit `PROVISIONAL` or `DEFERRED` state;
+recommendations are never auto-applied.
 
 `ROOT_CARDS: 31`
 

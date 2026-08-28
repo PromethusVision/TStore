@@ -14,6 +14,34 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 31 Canonical Owner Decision State
+
+- **MASTER OWNER ROOTS: 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED.** Final
+  seçenekler: `OM-R01=A`–`OM-R05=A`, `OM-R06=B`, `OM-R07=B`, `OM-R09=A`,
+  `OM-R10=A`, `OM-R11=B`, `OM-R12=A`–`OM-R24=A`, `OM-R31=A`.
+- `OM-R08`, `OM-R25`, `OM-R26` için seçenek seçilmedi; `PROVISIONAL` olarak
+  owner-review fazı açılana kadar bekler. `OM-R27`, `OM-R28`, `OM-R29`, `OM-R30`
+  seçenek seçilmeden `DEFERRED` kalır.
+- Customer UI owner-direction kararları tamamlandı; bounded C1 correction,
+  runtime implementation ve exact-artifact evidence hâlâ ayrı teslim işleridir.
+- Taxonomy için stable-ID + staged migration + rollback + dependency-aware demo
+  retirement stratejisi finaldir; runtime taxonomy, ID üretimi, migration ve demo
+  cleanup **NOT IMPLEMENTED / NOT AUTHORIZED**.
+- Catalog kimliği Product + yalnız gerekli domainlerde Variant + ayrı Shop Listing
+  yönündedir. Price, availability/stock ve merchant SKU listing-owned; barcode/GTIN
+  yalnız identity evidence'dır. Schema/runtime **NOT IMPLEMENTED**.
+- Minimum-safe pilot Merchant App yönü onaylıdır; full Merchant App kapsamı onaylı
+  değildir ve merchant runtime henüz uygulanmamıştır.
+- Ads, Rewards ve public reputation/badges pilot sonrası deferred root'lardır;
+  advertising/reward/gamification/reputation runtime işi açılmamıştır.
+- KVKK (`OM-R05`, `OM-R15`, `OM-R17`, `OM-R18`; gelecekte `OM-R25`–`OM-R29`),
+  lawyer (`OM-R10`, `OM-R12`, `OM-R14`, `OM-R18`; gelecekte `OM-R27`–`OM-R30`),
+  regulatory (`OM-R10`; gelecekte `OM-R08`) ve accountant/tax (`OM-R16`;
+  gelecekte `OM-R30`) review gate'leri açıktır. Owner finalization profesyonel
+  review yerine geçmez.
+- `204/204` source decision kaydı korunur. Bu entegrasyon docs-only'dir; Flutter,
+  Figma, DB/Supabase, Production/Development veya release/signing değişikliği yoktur.
+
 ## A. CONFIRMED PRODUCT WORK
 
 ### A1. Mevcut Müşteri Uygulamasının Ticari Hazırlığı

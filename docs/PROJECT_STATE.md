@@ -2,8 +2,33 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-28
-- Son doğrulanan teslim: Wave 16 Customer App Commercialization Closeout
+- Son güncelleme: 2026-08-29
+- Son doğrulanan teslim: **WAVE 31 MASTER OWNER DECISIONS FINAL INTEGRATION
+  PASS — 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED — DOCS ONLY**.
+- Integration branch/base: `integration/wave-31-master-owner-decisions` /
+  `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`.
+- Input/merge:
+  `origin/agent2/w31-global-owner-decision-reconciliation@4dbba80ebde100efebfbed906f4d72a98cff24b1`
+  / `3738a8bb625fd480a9eb1684300cccc88b7713df` (`--no-ff`, conflict yok).
+- Product Owner final root seti exact `24`: `OM-R01=A`–`OM-R05=A`,
+  `OM-R06=B`, `OM-R07=B`, `OM-R09=A`, `OM-R10=A`, `OM-R11=B`,
+  `OM-R12=A`–`OM-R24=A` ve `OM-R31=A`. `OM-R08`, `OM-R25`, `OM-R26`
+  seçeneksiz `PROVISIONAL`; `OM-R27`–`OM-R30` seçeneksiz `DEFERRED` kaldı.
+- `204/204` source kaydı tek master root'a map edildi; `141` seçili/inherited,
+  `63` seçeneksiz kayıt korunur. Öneriler owner seçimi sayılmaz.
+- Customer UI owner-direction gate'i kapalıdır; runtime/evidence gate'i açıktır.
+  Taxonomy stable-ID/staged/rollback stratejisi ve Product/domain-gated Variant/
+  Listing kimliği yalnız yön kararıdır. Taxonomy/catalog runtime, schema/migration,
+  demo retirement ve uzak ortam mutasyonu yetkilendirilmedi.
+- Pilot minimum-safe Merchant App yönü finaldir; full Merchant App onayı değildir.
+  Ads, Rewards ve public reputation/badges `DEFERRED`; implementation yoktur.
+- Lawyer/KVKK/regulatory/accountant review rotaları açık kaldı; owner kararı hiçbir
+  profesyonel gate'i PASS yapmaz. Physical/exact-artifact ve commercial launch
+  evidence gate'leri de açıktır.
+- Bu integration yalnız canonical docs/decision-support kapsamındadır. Flutter,
+  Dart, Figma, Supabase, Production, Development, DB/migration, runtime taxonomy,
+  catalog/Merchant App/Ads/Rewards ve release artifact değişikliği yoktur.
+- Bir önceki doğrulanan teslim: Wave 16 Customer App Commercialization Closeout
   integration; üç safe runtime remediation ve kapsamlı customer-core audit.
 - Integration branch/base: `integration/wave-16-customer-closeout` /
   `origin/main@f092cf8fe7431f812a017d4cbc9b538775bb41e6`.
@@ -33,7 +58,7 @@
 - Açık major gates: owner micro-policy kararları, taxonomy runtime milestone,
   final UI-kit rollout, fiziksel iki-cihaz QR, final release artifact/device/store
   kabulü ve Production manual go/no-go. Commercialization complete değildir.
-- Bir önceki doğrulanan teslim: Wave 15 Phase C1+C2 first full L3/L4 pilots canonical
+- Wave 16 öncesi doğrulanan teslim: Wave 15 Phase C1+C2 first full L3/L4 pilots canonical
   lock ve reusable design method entegrasyonu.
 - Önceki integration branch/base: `integration/wave-15-c1-c2-l34-pilots` /
   `origin/main@847442e9d5e8b35cf6d83a1c1ea31b625811f38f`.

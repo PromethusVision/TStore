@@ -17,6 +17,35 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 31 Master Owner Decisions Entegrasyon Gözlemi
+
+`MASTER_OWNER_ROOTS: 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`
+
+`SOURCE_RECORD_RECONCILIATION: 204/204 PASS`
+
+`CUSTOMER_UI_OWNER_DIRECTION_GATE: RESOLVED`
+
+`PROFESSIONAL_REVIEW: OPEN WHERE ROUTED`
+
+`RUNTIME_IMPLEMENTATION: NO`
+
+- Agent 2'nin `4dbba80` final docs-only karar teslimi current
+  `origin/main@fca935f` tabanına `3738a8b` ile tek `--no-ff` ve çatışmasız merge
+  olarak entegre edildi. Kaynak scope yalnız `17` decision-support belgesidir.
+- `OM-R08`, `OM-R25`, `OM-R26` seçenek seçilmeden `PROVISIONAL`; `OM-R27`–
+  `OM-R30` seçenek seçilmeden `DEFERRED` kaldı. Public reputation/badges, Ads ve
+  Rewards bu wave'de implementation lane'i değildir.
+- `OM-R06=B` taxonomy runtime stratejisini, `OM-R07=B` catalog identity yönünü
+  sabitler; ikisi de ID üretimi, runtime/schema/migration, demo cleanup veya remote
+  ortam yetkisi vermez. Gelecek taxonomy/catalog runtime işi tek migration/schema
+  owner'ı ve shared-model sıralı sahipliğiyle ayrıca planlanmalıdır.
+- `OM-R11=B` minimum-safe pilot Merchant App yönüdür; full Merchant App kapsamı
+  değildir. Merchant runtime ve customer UI implementation ayrı yetkili wave'lerde
+  yürütülmeli; global navigation, design system, shared models ve DI hotspot'ları
+  eşzamanlı sahiplenilmemelidir.
+- Lawyer, KVKK, regulatory ve accountant/tax rotaları ürün kararıyla kapanmadı.
+  Physical/exact-artifact, runtime/evidence ve Production launch gate'leri açıktır.
+
 ## Wave 16 Customer App Closeout Entegrasyon Gözlemi
 
 `CUSTOMER_APP_CORE_FUNCTIONAL_AUDIT: PASS`

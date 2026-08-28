@@ -41,7 +41,7 @@ runtime or schema authority. No other answer is implied.
 
 ## Master root registry
 
-| ID | P | Root question | Recommended option | Timing |
+| ID | P | Root question | Recommended option | Original review lane |
 |---|---:|---|---|---|
 | OM-R01 | P0 | İlk Esenler pilotunun tek başarı amacı nedir? | A — useful local discovery plus trustworthy merchant/QR operating evidence | NOW |
 | OM-R02 | P0 | Hangi Esenler hücreleri ve hangi minimum density ile açılır? | A — bounded cells, evidence-based usable density | NOW |
@@ -74,6 +74,10 @@ runtime or schema authority. No other answer is implied.
 | OM-R29 | P1 | Ads ne zaman ve hangi privacy/economic contract ile açılır? | A — organic-only pilot; Ads stays shadow/deferred | POST-PILOT |
 | OM-R30 | P1 | Reward ne zaman ve hangi funding/value-transfer contract ile açılır? | A — no economic reward in pilot | POST-PILOT |
 | OM-R31 | P0 | Ne zaman pause edilir ve hangi kanıtla expand edilir? | A — predefined stops; expand one dimension after evidence | NOW |
+
+`Original review lane` is provenance from the pre-selection queue, not the
+current decision state. The Product Owner final register above is authoritative;
+recommendations for provisional/deferred roots are not selections.
 
 ## Root option summaries
 
