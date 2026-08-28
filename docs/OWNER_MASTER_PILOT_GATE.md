@@ -1,6 +1,6 @@
 # Owner Master Pilot Gate
 
-State: `COMMERCIAL SCOPE AND MERCHANT IMPLEMENTATION SEPARATED`
+State: `2/16 COMMERCIAL ROOTS FINAL — 1/8 MERCHANT IMPLEMENTATION ROOT FINAL`
 
 ## Two different decision families
 
@@ -64,11 +64,13 @@ approval, history deletion or Production release.
 
 ## Pilot gate state
 
-- Commercial pilot roots answered: `0/16`
-- Merchant implementation roots answered: `0/8`
+- Commercial pilot roots answered: `2/16` (`OM-R04=A`, `OM-R05=A`)
+- Merchant implementation roots answered: `1/8` (`OM-R04=A`)
+- Customer UI owner decisions answered: `8/8`
 - Physical/exact-artifact acceptance: `NOT EXECUTED`
 - Professional release surface: `WAITING — OM-R18`
-- Owner finalization: `NO`
+- OM-R05 professional dependency: `KVKK REVIEW OPEN`
+- Owner finalization: `PARTIAL — EXACTLY 8 ROOTS`
 
 `COMMERCIAL_PILOT_GATE: OPEN`
 

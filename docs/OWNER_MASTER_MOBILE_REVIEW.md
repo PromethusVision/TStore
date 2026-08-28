@@ -1,9 +1,11 @@
 # Owner Master Mobile / PC Review
 
-State: `31 ROOT CARDS — RECOMMENDATIONS ONLY — NO ANSWER SELECTED`
+State: `8 FINAL ROOT CARDS — 23 OPEN ROOT CARDS`
 
-Use `OM-Rxx=A/B/C`. `RECOMMENDED` is an agent recommendation, not a selected
-Product Owner answer.
+Use `OM-Rxx=A/B/C` only for open cards. `RECOMMENDED` remains an agent
+recommendation. Product Owner finalized exactly eight answers on 2026-08-29:
+`OM-R04=A`, `OM-R05=A`, `OM-R19=A`, `OM-R20=A`, `OM-R21=A`, `OM-R22=A`,
+`OM-R23=A`, `OM-R24=A`.
 
 ## OM-R01 — Pilot success purpose
 
@@ -82,6 +84,8 @@ ANSWER FORMAT: `OM-R03=A`
 
 ## OM-R04 — Platform and exact artifact
 
+DECISION: `FINAL=A`
+
 QUESTION — Hangi platform ve exact-artifact evidence ticari pilotu açar?
 
 RECOMMENDED: A
@@ -106,6 +110,8 @@ ANSWER FORMAT: `OM-R04=A`
 ---
 
 ## OM-R05 — Guest, auth and location
+
+DECISION: `FINAL=A` — KVKK review remains open.
 
 QUESTION — Guest discovery, protected actions, location and device-local history boundary nedir?
 
@@ -457,6 +463,8 @@ ANSWER FORMAT: `OM-R18=A`
 
 ## OM-R19 — UI palette
 
+DECISION: `FINAL=A`
+
 QUESTION — Customer UI semantic palette rollerinde primary ve accent hangisidir?
 
 RECOMMENDED: A
@@ -481,6 +489,8 @@ ANSWER FORMAT: `OM-R19=A`
 ---
 
 ## OM-R20 — UI mode scope
+
+DECISION: `FINAL=A`
 
 QUESTION — Pilot consistent light mode ile, dark mode olmadan çıkabilir mi?
 
@@ -507,6 +517,8 @@ ANSWER FORMAT: `OM-R20=A`
 
 ## OM-R21 — Critical screen direction
 
+DECISION: `FINAL=A`
+
 QUESTION — Home, listing, product and seller screens hangi visual direction ile ilerler?
 
 RECOMMENDED: A
@@ -531,6 +543,8 @@ ANSWER FORMAT: `OM-R21=A`
 ---
 
 ## OM-R22 — Shop Details CTA
+
+DECISION: `FINAL=A`
 
 QUESTION — Shop Details ekranında en güçlü CTA hangisidir?
 
@@ -557,6 +571,8 @@ ANSWER FORMAT: `OM-R22=A`
 
 ## OM-R23 — Cart V2 meaning
 
+DECISION: `FINAL=A`
+
 QUESTION — Cart V2 müşteriye hangi product meaning ile sunulur?
 
 RECOMMENDED: A
@@ -581,6 +597,8 @@ ANSWER FORMAT: `OM-R23=A`
 ---
 
 ## OM-R24 — Card density
+
+DECISION: `FINAL=A`
 
 QUESTION — 390 px Customer ekranında product/category cards ne kadar yoğun olmalıdır?
 
@@ -790,4 +808,6 @@ Unanswered cards remain `OPEN`; recommendations are never auto-applied.
 
 `ROOT_CARDS: 31`
 
-`OWNER_OPTIONS_SELECTED: 0`
+`OWNER_FINAL_OPTIONS: 8`
+
+`OWNER_OPEN_ROOTS: 23`

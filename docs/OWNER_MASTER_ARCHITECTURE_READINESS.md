@@ -1,6 +1,6 @@
 # Owner Master Architecture Readiness
 
-State: `READY FOR SINGLE OWNER REVIEW PREPARATION — NOT FINAL`
+State: `8 ROOTS PRODUCT OWNER FINAL — 23 ROOTS OPEN`
 
 ## Scorecard
 
@@ -15,19 +15,20 @@ State: `READY FOR SINGLE OWNER REVIEW PREPARATION — NOT FINAL`
 | Merchant pilot gate | READY | Commercial scope separated from app minimum |
 | Post-pilot queue | READY | Reputation, Ads, Reward held outside pilot session |
 | Apply map | READY | 204/204 rows map to one master root |
-| Owner selection | NOT PERFORMED | All options remain open |
+| Owner selection | PARTIAL | 8 final roots; 23 open roots |
 
 ## Queue metrics
 
 - Final master roots: **31**
-- Owner can decide now: **20**
-- Owner can decide provisionally: **6**
+- Owner can decide now and remains open: **13**
+- Owner can decide provisionally and remains open: **5**
 - Owner should wait for professional input: **1**
 - Safe to defer post-pilot: **4**
 - Roots carrying any professional dependency: **15**
-- Customer UI blocker decisions: **8**
-- Merchant pilot implementation blocker roots: **8**
-- Commercial pilot blocker roots: **16**
+- Product Owner final roots: **8**
+- Customer UI owner decisions: **8/8 final**
+- Merchant pilot implementation blocker roots: **1/8 final**
+- Commercial pilot blocker roots: **2/16 final**
 
 The timing buckets are exclusive. A root may still carry a professional review
 dependency without requiring that review before a scope-level provisional owner
@@ -36,8 +37,8 @@ the regulated expansion opinion.
 
 ## Remaining readiness gates
 
-1. Product Owner answers the ordered mobile cards; no batch-wide hidden default
-   is applied.
+1. Product Owner answers only remaining ordered mobile cards; the eight final
+   answers are not asked again and no hidden default is applied.
 2. `OM-R18` waits for lawyer/KVKK input before customer-facing legal/privacy
    surfaces are treated as release-ready.
 3. Regulated expansion, Ads, Reward and public badge enablement stay closed until
@@ -52,14 +53,14 @@ the regulated expansion opinion.
 - DB/Supabase/environment changed: `NO`
 - Source branch merged: `NO`
 - Existing canonical document changed: `NO`
-- Owner finalization: `NO`
+- Owner finalization: `PARTIAL — EXACTLY 8 ROOTS`
 - Professional finalization: `NO`
 
 ## Final consistency checks
 
 | Check | Result |
 |---|---|
-| Expected task files | 14/14 present |
+| Expected task files | 15/15 present |
 | Raw inventory rows / unique keys | 204 / 204 |
 | Apply-map rows / unique keys | 204 / 204 |
 | Raw ↔ apply source-key difference | 0 |
@@ -67,7 +68,11 @@ the regulated expansion opinion.
 | Mobile cards / unique IDs | 31 / 31 |
 | Dependency rows / unique IDs | 31 / 31 |
 | Raw rows with unknown/orphan root | 0 |
-| Selected option markers | 0 |
+| Final root selections | 8 |
+| Selected apply-map rows | 30 |
+| Direct root-anchor rows marked `FINAL=A` | 8 |
+| Child/dependent rows inheriting root final | 22 |
+| Unselected apply-map rows | 174 |
 | UI blocker decisions | 8 |
 | Commercial pilot blocker roots | 16 |
 | Merchant implementation blocker roots | 8 |
@@ -89,9 +94,10 @@ the regulated expansion opinion.
 - `OWNER_MASTER_MOBILE_REVIEW.md`
 - `OWNER_MASTER_DECISION_APPLY_MAP.csv`
 - `OWNER_MASTER_ARCHITECTURE_READINESS.md`
+- `OWNER_MASTER_DECISION_APPLICATION_2026-08-29.md`
 
 `ALL_RECENT_DECISIONS_ACCOUNTED: PASS`
 
 `SEMANTIC_DEDUP: PASS`
 
-`READY_FOR_SINGLE_OWNER_REVIEW_SESSION: YES`
+`READY_FOR_REMAINING_OWNER_REVIEW_SESSION: YES`

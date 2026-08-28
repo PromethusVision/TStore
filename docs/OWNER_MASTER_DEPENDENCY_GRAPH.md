@@ -1,6 +1,20 @@
 # Owner Master Dependency Graph
 
-State: `DIRECTED DECISION GRAPH — NO ANSWER SELECTED`
+State: `8 ROOTS FINAL=A — 23 ROOTS OPEN`
+
+## Applied decision state
+
+- `OM-R04=A` unlocks Android-only release preparation and UI-R15 evidence work;
+  exact artifact/physical acceptance remains open.
+- `OM-R05=A` resolves guest discovery and contextual AuthGuard; KVKK remains open.
+- `OM-R19=A` and `OM-R20=A` resolve palette and pilot mode prerequisites.
+- `OM-R21=A` unlocks bounded critical-screen C1 work and its six dependent UI
+  implementation details.
+- `OM-R22=A`, `OM-R23=A`, `OM-R24=A` close the Shop CTA, Cart meaning and card
+  density owner decisions.
+
+The graph topology is unchanged. A final parent answer does not auto-pass runtime,
+physical or professional gates.
 
 ## High-leverage graph
 
@@ -86,6 +100,7 @@ flowchart TD
 - Every source decision maps to exactly one root.
 - Directed cycles: `0`
 - Duplicate roots: `0`
-- Unselected options: `31/31`
+- Final roots: `8/31`
+- Open roots: `23/31`
 
 `MASTER_DEPENDENCY_GRAPH: PASS`

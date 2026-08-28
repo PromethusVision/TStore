@@ -1,9 +1,12 @@
 # Owner Master Review Sequence
 
-State: `OPTIMIZED ORDER — NO ANSWER SELECTED`
+State: `8 ROOTS FINAL — NEXT OPEN REVIEW STARTS AT OM-R01`
 
 The sequence minimizes backtracking. A later card may be skipped when its parent
 answer makes it irrelevant; the apply map records that auto-resolution.
+
+Already final and therefore not asked again: `OM-R04`, `OM-R05`, `OM-R19`,
+`OM-R20`, `OM-R21`, `OM-R22`, `OM-R23`, `OM-R24`.
 
 ## Session 1 — Pilot frame and authority
 
@@ -77,4 +80,6 @@ evidence; the platform choice is not asked twice.
 
 `DEPENDENCY_ORDER_VIOLATIONS: 0`
 
-`OWNER_OPTIONS_SELECTED: 0`
+`OWNER_FINAL_OPTIONS: 8`
+
+`OWNER_OPEN_ROOTS: 23`

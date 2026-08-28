@@ -1,9 +1,23 @@
 # Owner Master Root Decisions
 
-State: `31 MINIMUM ROOTS — RECOMMENDATIONS ONLY — NO ANSWER SELECTED`
+State: `8 PRODUCT OWNER FINAL ROOTS — 23 ROOTS OPEN`
 
-Recommendations are working hypotheses for a fast owner review. They are not
-canonical decisions until the Product Owner answers a card.
+Recommendations remain working hypotheses for open roots. On 2026-08-29 the
+Product Owner finalized `OM-R04=A`, `OM-R05=A`, `OM-R19=A`, `OM-R20=A`,
+`OM-R21=A`, `OM-R22=A`, `OM-R23=A` and `OM-R24=A`. No other answer is implied.
+
+## Product Owner final register
+
+| Root | Final | Decision state | Remaining gate |
+|---|---|---|---|
+| OM-R04 | A | FINAL | exact signed artifact and physical acceptance not executed |
+| OM-R05 | A | FINAL | KVKK review remains open |
+| OM-R19 | A | FINAL | runtime token reconciliation not authorized here |
+| OM-R20 | A | FINAL | light-only runtime cleanup not authorized here |
+| OM-R21 | A | FINAL | bounded C1 implementation/evidence pending |
+| OM-R22 | A | FINAL | Shop Details implementation pending |
+| OM-R23 | A | FINAL | Cart V2 implementation pending |
+| OM-R24 | A | FINAL | card implementation pending |
 
 ## Master root registry
 
@@ -111,4 +125,6 @@ canonical decisions until the Product Owner answers a card.
 
 `ROOT_COUNT: 31`
 
-`OWNER_CHOICE_SELECTED: NO`
+`OWNER_FINAL_CHOICES: 8`
+
+`OWNER_OPEN_ROOTS: 23`

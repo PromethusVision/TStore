@@ -1,10 +1,16 @@
 # Owner Master Professional Review Routing
 
-State: `ROUTING ONLY — NO PROFESSIONAL OR OWNER FINALIZATION`
+State: `8 OWNER ROOTS FINAL — PROFESSIONAL ROUTING PRESERVED`
+
+## Applied owner decision with open professional review
+
+`OM-R05=A` is Product Owner FINAL. Its KVKK purpose, notice, retention and
+location-handling review remains open. Product approval does not waive or replace
+that review.
 
 ## Decision lanes
 
-### OWNER_CAN_DECIDE_NOW — 20
+### OWNER_CAN_DECIDE_NOW — 20 ORIGINAL / 13 OPEN
 
 `OM-R01`, `OM-R02`, `OM-R03`, `OM-R04`, `OM-R06`, `OM-R07`, `OM-R09`,
 `OM-R11`, `OM-R12`, `OM-R13`, `OM-R14`, `OM-R16`, `OM-R17`, `OM-R19`,
@@ -13,9 +19,12 @@ State: `ROUTING ONLY — NO PROFESSIONAL OR OWNER FINALIZATION`
 These are product scope/direction choices. Professional review may still validate
 later copy or implementation, but it need not choose the product direction.
 
-### OWNER_CAN_DECIDE_PROVISIONALLY — 6
+Seven roots in this lane are now final: `OM-R04`, `OM-R19`, `OM-R20`, `OM-R21`,
+`OM-R22`, `OM-R23`, `OM-R24`. Thirteen remain open.
 
-- `OM-R05`: choose minimized customer access direction; KVKK validates purposes.
+### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 5 OPEN
+
+- `OM-R05`: FINAL=A; KVKK still validates purposes, notice and retention.
 - `OM-R08`: choose governed intake; regulatory review gates sensitive domains.
 - `OM-R10`: choose ordinary-only fail-closed scope; specialists gate expansion.
 - `OM-R15`: choose question-led minimum metrics; KVKK validates exact data map.
@@ -95,5 +104,7 @@ selection. Sensitive capability remains disabled or ordinary-only while the owne
 queue continues on independent decisions.
 
 `PROFESSIONAL_QUESTIONS_PRESENTED_AS_OWNER_CHOICES: 0`
+
+`PROFESSIONAL_REQUIREMENTS_WAIVED_BY_OWNER_SELECTION: 0`
 
 `PROFESSIONAL_REVIEW_ROUTING: PASS`

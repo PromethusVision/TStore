@@ -1,22 +1,24 @@
 # Owner Master Customer UI Implementation Gate
 
-State: `8 BLOCKING DECISIONS — NO ANSWER SELECTED`
+State: `8/8 OWNER DECISIONS FINAL — RUNTIME AND EVIDENCE GATES OPEN`
 
 Wave 29'un sekiz implementation blocker'ı korunmuştur. AuthGuard ve final
 acceptance evidence zaten global köklerin içindedir; ikinci kez sorulmaz.
 
+Product Owner finalized every gate direction as option A on 2026-08-29.
+
 ## Gate registry
 
-| Order | Wave 29 decision | Master root | Question | Non-final recommendation | Blocks |
+| Order | Wave 29 decision | Master root | Final | Canonical direction | Still blocks |
 |---:|---|---|---|---|---|
-| 1 | UI-R01 | OM-R19 | Semantic palette rolleri? | Teal/green primary, terracotta accent | all UI tokens/components |
-| 2 | UI-R02 | OM-R20 | Pilot dark mode kapsamı? | Consistent light-only pilot | theme acceptance matrix |
-| 3 | UI-R03 | OM-R21 | Critical screen direction? | Current direction + bounded C1 corrections | Home/listing/product/seller |
-| 4 | UI-R06 | OM-R05 | Guest protected-action AuthGuard? | Contextual explanation, then existing login | protected journeys/navigation |
-| 5 | UI-R04 | OM-R22 | Shop Details primary CTA? | Physical visit/directions primary | Shop Details hierarchy |
-| 6 | UI-R05 | OM-R23 | Cart V2 product meaning? | Physical-shopping preparation, not checkout | Cart/QR education |
-| 7 | UI-R07 | OM-R24 | 390 px card density? | Balanced two-line local-context cards | cards/grids/lists |
-| 8 | UI-R15 | OM-R04 | Final acceptance evidence? | Immutable frames + exact artifact + physical checks | UI rollout acceptance |
+| 1 | UI-R01 | OM-R19 | A | Teal/green primary, terracotta accent | runtime tokens/components |
+| 2 | UI-R02 | OM-R20 | A | Consistent light-only pilot | theme cleanup/acceptance |
+| 3 | UI-R03 | OM-R21 | A | Current direction + bounded C1 corrections | screen implementation/evidence |
+| 4 | UI-R06 | OM-R05 | A | Contextual explanation, then existing login | AuthGuard implementation; KVKK open |
+| 5 | UI-R04 | OM-R22 | A | Physical visit/directions primary | Shop Details implementation |
+| 6 | UI-R05 | OM-R23 | A | Physical-shopping preparation, not checkout | Cart/QR implementation |
+| 7 | UI-R07 | OM-R24 | A | Balanced two-line local-context cards | cards/grids/lists implementation |
+| 8 | UI-R15 | OM-R04 | A | Immutable frames + exact artifact + physical checks | evidence not executed |
 
 ## Why two decisions map to existing global roots
 
@@ -41,12 +43,15 @@ Both remain explicit gate rows and retain their Wave 29 source IDs.
 
 ## Gate close rule
 
-The UI gate closes only when all eight owner answers are recorded and the
-selected direction has immutable reference frames plus exact-artifact physical
-evidence. This document does not mark those checks PASS.
+The owner-decision portion is closed. The UI implementation/evidence gate closes
+only after the selected direction is implemented, immutable reference frames are
+recorded and exact-artifact physical evidence passes. This document does not mark
+those checks PASS.
 
 `UI_BLOCKER_DECISIONS: 8`
 
 `UI_DECISIONS_DUPLICATED_IN_GLOBAL_QUEUE: 0`
 
-`CUSTOMER_UI_IMPLEMENTATION_GATE: OPEN`
+`CUSTOMER_UI_OWNER_DECISIONS: CLOSED`
+
+`CUSTOMER_UI_RUNTIME_EVIDENCE_GATE: OPEN`
