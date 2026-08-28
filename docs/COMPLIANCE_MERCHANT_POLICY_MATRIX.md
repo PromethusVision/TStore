@@ -79,4 +79,3 @@ pilot uses structured evidence and later sample review.
 - recheck frequency and staffing — `PRODUCT_OWNER` after specialist input.
 
 `MERCHANT_VERIFICATION_FINALIZED: NO`
-

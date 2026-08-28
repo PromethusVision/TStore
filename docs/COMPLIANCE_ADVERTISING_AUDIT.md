@@ -1,6 +1,6 @@
 # Türkiye Sponsored Advertising and Commercial Practice Audit
 
-**State:** PROPOSED FAIL-CLOSED FOUNDATION — NOT LEGAL ADVICE  
+**State:** PROPOSED FAIL-CLOSED FOUNDATION — NOT LEGAL ADVICE
 **Research cut-off:** 2026-08-28
 
 Catalog eligibility, merchant eligibility and advertising eligibility are three
@@ -112,4 +112,3 @@ an operator cannot grant a one-off exception outside an approved ruleset.
   legal review.
 
 `ADVERTISING_LEGAL_FINALIZATION: NO`
-

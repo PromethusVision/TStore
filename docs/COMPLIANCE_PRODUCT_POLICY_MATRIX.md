@@ -1,6 +1,6 @@
 # Canonical Product Policy Matrix — 24 L1
 
-**State:** PROPOSED FOR PROFESSIONAL/OWNER REVIEW — NOT A SALES ALLOWLIST  
+**State:** PROPOSED FOR PROFESSIONAL/OWNER REVIEW — NOT A SALES ALLOWLIST
 **Canonical taxonomy:** exact 24 owner-final L1 names are preserved.
 
 Policy is evaluated at exact product/variant/listing/claim/channel, not inherited
@@ -59,4 +59,3 @@ permission; catalog eligibility is not ad or reward eligibility.
 - Owner/legal finalization performed: **0**.
 
 `PRODUCT_POLICY_MATRIX_FINAL: NO`
-

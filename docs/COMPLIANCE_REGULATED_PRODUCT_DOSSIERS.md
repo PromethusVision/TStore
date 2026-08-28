@@ -140,4 +140,3 @@ apply the strictest relevant product, merchant, ad, reward, age, delivery and cl
 gate. Missing component identity fails closed for sensitive signals.
 
 `REGULATED_DOSSIERS_FINALIZED: NO`
-

@@ -30,4 +30,3 @@ e-mail or phone marketing permission. Account closure/consent withdrawal must
 propagate to scheduled campaigns and provider queues.
 
 `COMMERCIAL_MESSAGE_POLICY_FINALIZED: NO`
-

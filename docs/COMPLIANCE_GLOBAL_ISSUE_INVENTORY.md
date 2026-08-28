@@ -1,7 +1,7 @@
 # Global Compliance Issue Inventory
 
-**State:** CONSOLIDATED RAW ISSUE REGISTER — NO FINAL DECISIONS  
-**Raw issues:** 85  
+**State:** CONSOLIDATED RAW ISSUE REGISTER — NO FINAL DECISIONS
+**Raw issues:** 85
 **Source snapshots:** see `COMPLIANCE_SOURCE_BRANCH_REGISTRY.md`
 
 Each row is a distinct operational question discovered in the foundation branches.
@@ -151,4 +151,3 @@ The default is deliberately conservative; it is not a legal conclusion.
 | Operations/appeals | 7 |
 | Claims/provenance/price | 5 |
 | **Total** | **85** |
-

@@ -1,6 +1,6 @@
 # Review, UGC and Merchant-Response Compliance Audit
 
-**State:** PROPOSED — LAWYER/PRODUCT/PRIVACY REVIEW REQUIRED  
+**State:** PROPOSED — LAWYER/PRODUCT/PRIVACY REVIEW REQUIRED
 **Research cut-off:** 2026-08-28
 
 ## Evidence baseline
@@ -93,4 +93,3 @@ fraud thresholds and internal security notes are protected.
 6. Illegal-content notice/counter-notice and emergency escalation — `LAWYER`.
 
 `MERCHANT_CAN_REMOVE_NEGATIVE_REVIEW: NO`
-

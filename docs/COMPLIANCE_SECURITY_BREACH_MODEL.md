@@ -46,4 +46,3 @@ details that amplify harm or speculative facts. Preserve accurate timelines and
 state clearly what is known, unknown, contained and available to affected people.
 
 `BREACH_NOTIFICATION_PLAYBOOK_IMPLEMENTED: NO`
-

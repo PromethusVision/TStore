@@ -1,6 +1,6 @@
 # Türkiye Compliance Official Source Registry
 
-**Research cut-off:** 2026-08-28  
+**Research cut-off:** 2026-08-28
 **Status:** research registry; not legal, tax or accounting advice
 
 The registry records what each primary source supports and, equally importantly,
@@ -82,4 +82,3 @@ cut-off; launch-time revalidation remains mandatory.
 The sources justify fail-closed architecture and professional review queues. They
 do **not** establish EsnaftaVar's final statutory role, final legal bases, final
 retention periods, regulated-product allowlist, tax treatment or contract text.
-

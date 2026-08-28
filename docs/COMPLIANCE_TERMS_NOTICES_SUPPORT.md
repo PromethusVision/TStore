@@ -54,4 +54,3 @@ optional consent is reacquired only where required. Old versions remain availabl
 interpret historical decisions without retaining unnecessary PII.
 
 `CUSTOMER_LEGAL_TEXT_FINALIZED: NO`
-

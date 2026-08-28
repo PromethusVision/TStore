@@ -1,6 +1,6 @@
 # Compliance Source Branch Registry
 
-**State:** READ-ONLY RECONCILIATION INPUT — 2026-08-28  
+**State:** READ-ONLY RECONCILIATION INPUT — 2026-08-28
 **Merge status:** None of the sources below was merged.
 
 This registry freezes the exact evidence snapshots used by Wave 24. Branch documents
@@ -31,4 +31,3 @@ are architecture and proposal inputs, not enacted policy or legal determinations
 - A later source-branch update requires a new evidence review; this registry does
   not track branches dynamically.
 - No source-branch content was copied into runtime, DB, migrations or configuration.
-

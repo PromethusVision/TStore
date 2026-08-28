@@ -1,6 +1,6 @@
 # Reward, Gamification and Reputation Compliance Audit
 
-**State:** OPTIONS/QUESTIONS — NO ECONOMIC OR TAX MODEL APPROVED  
+**State:** OPTIONS/QUESTIONS — NO ECONOMIC OR TAX MODEL APPROVED
 **Advice status:** not legal, accounting or tax advice
 
 ## V1 recommendation
@@ -81,4 +81,3 @@ operational error caused loss. Silence, buried terms or surprise expiry is not a
 acceptable pilot model. Exact period remains an owner/professional decision.
 
 `REWARD_V1_ECONOMIC_VALUE: NOT_RECOMMENDED`
-

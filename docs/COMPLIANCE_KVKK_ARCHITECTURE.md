@@ -88,4 +88,3 @@ policy are required and in what form.
 | Store declarations | app/SDK reality reconciled | release + privacy |
 
 `KVKK_LEGAL_GROUNDS_FINALIZED: NO`
-

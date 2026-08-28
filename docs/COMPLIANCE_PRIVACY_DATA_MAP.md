@@ -1,6 +1,6 @@
 # EsnaftaVar Privacy Data Map
 
-**State:** PROPOSED DATA INVENTORY — KVKK/LEGAL REVIEW REQUIRED  
+**State:** PROPOSED DATA INVENTORY — KVKK/LEGAL REVIEW REQUIRED
 **Scope:** Customer App, future Merchant App, backend, Operations, ads/rewards and
 analytics foundations. No collection is authorized merely because it appears here.
 
@@ -64,4 +64,3 @@ platforms. A processor label in a contract does not replace facts about who deci
 purpose and means.
 
 `DATA_MAP_COMPLETE_FOR_FOUNDATION: YES`
-

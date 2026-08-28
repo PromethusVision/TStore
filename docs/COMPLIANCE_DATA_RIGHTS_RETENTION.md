@@ -46,4 +46,3 @@ Every class needs: `PURPOSE`, `GROUND`, `START_EVENT`, `END_EVENT`, `PERIOD`,
 - VERBİS/inventory/policy obligations.
 
 `RETENTION_PERIODS_SELECTED: NO`
-

@@ -47,4 +47,3 @@ exactly once below; combined questions preserve all source meanings.
 - Raw issue disappearance: **0**.
 - Generic “legal review” without a named professional route: **0**.
 - Owner selections or legal conclusions made: **0**.
-

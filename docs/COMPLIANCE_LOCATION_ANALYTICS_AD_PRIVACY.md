@@ -44,4 +44,3 @@ optional ad processing must not remove organic results. Children-directed or
 profiled-child targeting is fail-closed.
 
 `PRECISE_MOVEMENT_HISTORY: PROHIBITED_RECOMMENDATION`
-

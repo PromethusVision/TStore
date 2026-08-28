@@ -1,6 +1,6 @@
 # EsnaftaVar Platform Role Analysis
 
-**State:** ROLE HYPOTHESES — LAWYER REVIEW REQUIRED  
+**State:** ROLE HYPOTHESES — LAWYER REVIEW REQUIRED
 **Business-model snapshot:** EsnaftaVar currently provides local discovery,
 merchant/shop listings, prices/availability asserted by merchants, QR purchase
 verification and eligible customer reviews. It does not presently take payment,
@@ -44,4 +44,3 @@ services, or marketplace fulfilment.
 - Do not use “we are only a directory” as a universal liability waiver.
 
 `PLATFORM_LEGAL_STATUS_FINALIZED: NO`
-
