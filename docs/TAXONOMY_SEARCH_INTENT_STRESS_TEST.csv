@@ -1,0 +1,449 @@
+﻿SEARCH_ID,QUERY,EXPECTED_L1,EXPECTED_L2,AMBIGUOUS_YN,ALTERNATIVE_OWNER,SYNONYM_NEEDED,NOTES
+SEARCH-0001,mevsimlik taze elma,Gıda & İçecek,Taze Meyve & Sebze,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0002,taze domates,Gıda & İçecek,Taze Meyve & Sebze,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0003,paketli dana kıyma,Gıda & İçecek,"Et, Tavuk, Balık & Şarküteri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0004,taze tavuk göğsü,Gıda & İçecek,"Et, Tavuk, Balık & Şarküteri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0005,sade yoğurt,Gıda & İçecek,Süt Ürünleri & Yumurta,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0006,beyaz peynir,Gıda & İçecek,Süt Ürünleri & Yumurta,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0007,günlük somun ekmek,Gıda & İçecek,"Ekmek, Unlu Mamuller & Pastacılık",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0008,peynirli poğaça,Gıda & İçecek,"Ekmek, Unlu Mamuller & Pastacılık",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0009,kuru kırmızı mercimek,Gıda & İçecek,"Bakliyat, Tahıl & Makarna",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0010,pilavlık pirinç,Gıda & İçecek,"Bakliyat, Tahıl & Makarna",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0011,buğday unu,Gıda & İçecek,"Un, Şeker & Pişirme Malzemeleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0012,toz şeker,Gıda & İçecek,"Un, Şeker & Pişirme Malzemeleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0013,natürel zeytinyağı,Gıda & İçecek,Yağ & Sirke,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0014,ayçiçek yağı,Gıda & İçecek,Yağ & Sirke,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0015,çiçek balı,Gıda & İçecek,Kahvaltılık,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0016,çilek reçeli,Gıda & İçecek,Kahvaltılık,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0017,sütlü çikolata,Gıda & İçecek,"Atıştırmalık, Şekerleme & Kuruyemiş",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0018,kavrulmuş fındık,Gıda & İçecek,"Atıştırmalık, Şekerleme & Kuruyemiş",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0019,şişe içme suyu,Gıda & İçecek,Alkolsüz İçecekler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0020,dökme siyah çay,Gıda & İçecek,Alkolsüz İçecekler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0021,domates salçası,Gıda & İçecek,"Sos, Baharat & Çeşni",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0022,karabiber,Gıda & İçecek,"Sos, Baharat & Çeşni",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0023,konserve ton balığı,Gıda & İçecek,Konserve & Kavanoz Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0024,kavanoz turşu,Gıda & İçecek,Konserve & Kavanoz Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0025,hazır mercimek çorbası,Gıda & İçecek,Hazır & Pratik Gıda,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0026,paketli noodle,Gıda & İçecek,Hazır & Pratik Gıda,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0027,donuk bezelye,Gıda & İçecek,Donuk Gıda,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0028,donuk pizza,Gıda & İçecek,Donuk Gıda,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0029,pamuklu tişört,Giyim & Moda,Üst Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0030,düğmeli gömlek,Giyim & Moda,Üst Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0031,kot pantolon,Giyim & Moda,Alt Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0032,kumaş etek,Giyim & Moda,Alt Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0033,günlük elbise,Giyim & Moda,Elbise & Tulum,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0034,iş tulumu olmayan moda tulumu,Giyim & Moda,Elbise & Tulum,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0035,iki parçalı takım elbise,Giyim & Moda,Takım & Kombinler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0036,eşofman takımı,Giyim & Moda,Takım & Kombinler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0037,yağmurluk,Giyim & Moda,Dış Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0038,kışlık kaban,Giyim & Moda,Dış Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0039,pamuklu külot,Giyim & Moda,İç Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0040,desteksiz sütyen,Giyim & Moda,İç Giyim,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0041,pijama takımı,Giyim & Moda,Ev & Uyku Giyimi,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0042,sabahlık,Giyim & Moda,Ev & Uyku Giyimi,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0043,koşu taytı,Giyim & Moda,Spor & Performans Giyimi,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0044,nefes alan antrenman tişörtü,Giyim & Moda,Spor & Performans Giyimi,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0045,tek parça mayo,Giyim & Moda,Mayo & Plaj Giyimi,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0046,erkek deniz şortu,Giyim & Moda,Mayo & Plaj Giyimi,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0047,aşçı ceketi,Giyim & Moda,İş Giyimi & Üniforma,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0048,sağlık çalışanı forması,Giyim & Moda,İş Giyimi & Üniforma,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0049,iki kişilik kanepe,Ev & Yaşam,Mobilya,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0050,ahşap yemek masası,Ev & Yaşam,Mobilya,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0051,yaylı yatak,Ev & Yaşam,Yatak & Uyku Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0052,visco yastık,Ev & Yaşam,Yatak & Uyku Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0053,nevresim takımı,Ev & Yaşam,Ev Tekstili,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0054,pamuklu banyo havlusu,Ev & Yaşam,Ev Tekstili,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0055,tül perde,Ev & Yaşam,Perde & Pencere Tekstili,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0056,karartma perdesi,Ev & Yaşam,Perde & Pencere Tekstili,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0057,salon halısı,Ev & Yaşam,"Halı, Kilim & Paspas",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0058,dokuma kilim,Ev & Yaşam,"Halı, Kilim & Paspas",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0059,duvar aynası,Ev & Yaşam,Dekorasyon & Duvar Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0060,dekoratif vazo,Ev & Yaşam,Dekorasyon & Duvar Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0061,sarkıt avize,Ev & Yaşam,Aydınlatma,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0062,masa lambası,Ev & Yaşam,Aydınlatma,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0063,plastik saklama kutusu,Ev & Yaşam,Düzenleme & Saklama,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0064,elbise organizeri,Ev & Yaşam,Düzenleme & Saklama,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0065,duş perdesi,Ev & Yaşam,Banyo Aksesuarları,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0066,sabunluk,Ev & Yaşam,Banyo Aksesuarları,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0067,manuel paspas seti,Ev & Yaşam,Ev Temizliği & Çamaşır Bakımı,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0068,çamaşır kurutmalığı,Ev & Yaşam,Ev Temizliği & Çamaşır Bakımı,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0069,paslanmaz çelik tencere,Züccaciye & Mutfak,"Tencere, Tava & Pişirme Kapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0070,döküm tava,Züccaciye & Mutfak,"Tencere, Tava & Pişirme Kapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0071,metal kek kalıbı,Züccaciye & Mutfak,Fırınlama & Pişirme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0072,fırın tepsisi,Züccaciye & Mutfak,Fırınlama & Pişirme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0073,manuel rende,Züccaciye & Mutfak,Mutfak Hazırlık Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0074,hamur çırpma teli,Züccaciye & Mutfak,Mutfak Hazırlık Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0075,şef bıçağı,Züccaciye & Mutfak,Bıçak & Kesme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0076,ekmek bıçağı,Züccaciye & Mutfak,Bıçak & Kesme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0077,porselen yemek takımı,Züccaciye & Mutfak,Sofra & Yemek Takımları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0078,servis tabağı,Züccaciye & Mutfak,Sofra & Yemek Takımları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0079,çatal-kaşık-bıçak seti,Züccaciye & Mutfak,"Çatal, Kaşık & Servis Gereçleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0080,servis kepçesi,Züccaciye & Mutfak,"Çatal, Kaşık & Servis Gereçleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0081,cam su bardağı,Züccaciye & Mutfak,"Bardak, Kupa & İçecek Servisi",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0082,seramik kupa,Züccaciye & Mutfak,"Bardak, Kupa & İçecek Servisi",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0083,cam çay demliği,Züccaciye & Mutfak,Çay & Kahve Demleme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0084,french press,Züccaciye & Mutfak,Çay & Kahve Demleme Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0085,vakumlu saklama kabı,Züccaciye & Mutfak,Saklama & Mutfak Düzenleme,YES,Ev & Yaşam,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0086,baharatlık seti,Züccaciye & Mutfak,Saklama & Mutfak Düzenleme,YES,Ev & Yaşam,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0087,çelik termos,Züccaciye & Mutfak,"Termos, Matara & Yiyecek Taşıma",NO,—,YES — termos ↔ ısı yalıtımlı şişe,Expected placement matches the representative physical product owner.
+SEARCH-0088,yeniden kullanılabilir matara,Züccaciye & Mutfak,"Termos, Matara & Yiyecek Taşıma",NO,—,YES — matara ↔ suluk,Expected placement matches the representative physical product owner.
+SEARCH-0089,mutfak önlüğü,Züccaciye & Mutfak,Mutfak Tekstili,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0090,kurulama bezi,Züccaciye & Mutfak,Mutfak Tekstili,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0091,lokma anahtar takımı,"Yapı, Hırdavat & Tesisat",El Aletleri & Atölye Ekipmanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0092,metal mengene,"Yapı, Hırdavat & Tesisat",El Aletleri & Atölye Ekipmanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0093,akülü matkap,"Yapı, Hırdavat & Tesisat",Elektrikli & Akülü El Aletleri,NO,—,YES — matkap ↔ delme makinesi,Expected placement matches the representative physical product owner.
+SEARCH-0094,elektrikli taşlama makinesi,"Yapı, Hırdavat & Tesisat",Elektrikli & Akülü El Aletleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0095,matkap ucu seti,"Yapı, Hırdavat & Tesisat","Alet Uçları, Aksesuarları & Sarfları",YES,"Elektronik > Güç, Şarj & Bağlantı",YES — matkap ↔ delme makinesi,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0096,kesme diski,"Yapı, Hırdavat & Tesisat","Alet Uçları, Aksesuarları & Sarfları",YES,"Elektronik > Güç, Şarj & Bağlantı",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0097,çelik vida,"Yapı, Hırdavat & Tesisat",Bağlantı Elemanları & Nalburiye,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0098,duvar dübeli,"Yapı, Hırdavat & Tesisat",Bağlantı Elemanları & Nalburiye,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0099,dijital multimetre,"Yapı, Hırdavat & Tesisat","Ölçüm, Test & İşaretleme",YES,"Elektronik > Güç, Şarj & Bağlantı",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0100,şerit metre,"Yapı, Hırdavat & Tesisat","Ölçüm, Test & İşaretleme",YES,"Elektronik > Güç, Şarj & Bağlantı",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0101,iç cephe boyası,"Yapı, Hırdavat & Tesisat","Boya, Kaplama & Yüzey Hazırlama",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0102,astar,"Yapı, Hırdavat & Tesisat","Boya, Kaplama & Yüzey Hazırlama",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0103,montaj yapıştırıcısı,"Yapı, Hırdavat & Tesisat","Yapıştırıcı, Dolgu & Yapı Kimyasalları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0104,silikon dolgu,"Yapı, Hırdavat & Tesisat","Yapıştırıcı, Dolgu & Yapı Kimyasalları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0105,alçı levha,"Yapı, Hırdavat & Tesisat",Yapı Malzemeleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0106,çimento harcı,"Yapı, Hırdavat & Tesisat",Yapı Malzemeleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0107,lavabo bataryası,"Yapı, Hırdavat & Tesisat",Su Tesisatı & Armatürler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0108,pvc su borusu,"Yapı, Hırdavat & Tesisat",Su Tesisatı & Armatürler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0109,duvar tipi elektrik prizi,"Yapı, Hırdavat & Tesisat",Elektrik Tesisatı Malzemeleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0110,sigorta kutusu elemanı,"Yapı, Hırdavat & Tesisat",Elektrik Tesisatı Malzemeleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0111,radyatör vanası,"Yapı, Hırdavat & Tesisat","Isıtma, Gaz & Havalandırma Tesisatı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0112,havalandırma kanalı,"Yapı, Hırdavat & Tesisat","Isıtma, Gaz & Havalandırma Tesisatı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0113,mekanik kapı kilidi,"Yapı, Hırdavat & Tesisat","Kilit, Kapı & Pencere Donanımları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0114,pencere kolu,"Yapı, Hırdavat & Tesisat","Kilit, Kapı & Pencere Donanımları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0115,elektrikli lehim havyası,"Yapı, Hırdavat & Tesisat","Kaynak, Lehim & Metal İşleme",YES,Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0116,lehim teli,"Yapı, Hırdavat & Tesisat","Kaynak, Lehim & Metal İşleme",YES,Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0117,koruyucu iş gözlüğü,"Yapı, Hırdavat & Tesisat",İş Güvenliği & Koruyucu Donanım,YES,Giyim & Moda,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0118,kesilmeye dayanıklı iş eldiveni,"Yapı, Hırdavat & Tesisat",İş Güvenliği & Koruyucu Donanım,YES,Giyim & Moda,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0119,likit fondöten,Kozmetik & Kişisel Bakım,Makyaj,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0120,maskara,Kozmetik & Kişisel Bakım,Makyaj,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0121,nemlendirici yüz kremi,Kozmetik & Kişisel Bakım,Cilt Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0122,yüz temizleme jeli,Kozmetik & Kişisel Bakım,Cilt Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0123,güneş koruyucu krem,Kozmetik & Kişisel Bakım,Güneş Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0124,güneş sonrası losyon,Kozmetik & Kişisel Bakım,Güneş Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0125,günlük şampuan,Kozmetik & Kişisel Bakım,Saç Bakımı & Şekillendirme,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0126,saç kremi,Kozmetik & Kişisel Bakım,Saç Bakımı & Şekillendirme,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0127,parfüm,Kozmetik & Kişisel Bakım,Parfüm & Deodorant,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0128,roll-on deodorant,Kozmetik & Kişisel Bakım,Parfüm & Deodorant,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0129,duş jeli,Kozmetik & Kişisel Bakım,Banyo & Vücut Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0130,vücut losyonu,Kozmetik & Kişisel Bakım,Banyo & Vücut Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0131,el kremi,Kozmetik & Kişisel Bakım,"El, Ayak & Tırnak Bakımı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0132,tırnak bakım yağı,Kozmetik & Kişisel Bakım,"El, Ayak & Tırnak Bakımı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0133,florürlü diş macunu,Kozmetik & Kişisel Bakım,Ağız & Diş Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0134,alkolsüz ağız gargarası,Kozmetik & Kişisel Bakım,Ağız & Diş Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0135,hijyenik ped,Kozmetik & Kişisel Bakım,Kişisel Hijyen,YES,Sağlık & Medikal,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0136,ıslak mendil,Kozmetik & Kişisel Bakım,Kişisel Hijyen,YES,Sağlık & Medikal,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0137,tıraş köpüğü,Kozmetik & Kişisel Bakım,"Tıraş, Ağda & Epilasyon",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0138,ağda bandı,Kozmetik & Kişisel Bakım,"Tıraş, Ağda & Epilasyon",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0139,makyaj fırçası,Kozmetik & Kişisel Bakım,Kozmetik & Bakım Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0140,kozmetik süngeri,Kozmetik & Kişisel Bakım,Kozmetik & Bakım Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0141,günlük loafer,Ayakkabı,Günlük Ayakkabılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0142,rahat babet,Ayakkabı,Günlük Ayakkabılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0143,koşu ayakkabısı,Ayakkabı,Spor Ayakkabıları,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0144,antrenman ayakkabısı,Ayakkabı,Spor Ayakkabıları,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0145,klasik oxford ayakkabı,Ayakkabı,Klasik Ayakkabılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0146,resmi topuklu ayakkabı,Ayakkabı,Klasik Ayakkabılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0147,kışlık bot,Ayakkabı,Bot & Çizmeler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0148,yağmur çizmesi,Ayakkabı,Bot & Çizmeler,NO,—,YES — çizme ↔ uzun bot,Expected placement matches the representative physical product owner.
+SEARCH-0149,günlük sandalet,Ayakkabı,Sandalet & Terlikler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0150,ev terliği,Ayakkabı,Sandalet & Terlikler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0151,ilk adım ayakkabısı,Ayakkabı,Çocuk & Bebek Ayakkabıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0152,çocuk okul ayakkabısı,Ayakkabı,Çocuk & Bebek Ayakkabıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0153,koruyucu burunlu iş ayakkabısı,Ayakkabı,İş & Güvenlik Ayakkabıları,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0154,kaymaz profesyonel sabo,Ayakkabı,İş & Güvenlik Ayakkabıları,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0155,yedek ayakkabı bağcığı,Ayakkabı,Ayakkabı Bakım & Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0156,konfor tabanlığı,Ayakkabı,Ayakkabı Bakım & Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0157,çapraz omuz çantası,Çanta & Aksesuar,"El, Omuz & Bel Çantaları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0158,el çantası,Çanta & Aksesuar,"El, Omuz & Bel Çantaları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0159,şehir tipi sırt çantası,Çanta & Aksesuar,Sırt Çantaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0160,okul sırt çantası,Çanta & Aksesuar,Sırt Çantaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0161,evrak çantası,Çanta & Aksesuar,"Evrak, Laptop & Ekipman Çantaları",YES,Bilgisayar & Tablet,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0162,laptop taşıma çantası,Çanta & Aksesuar,"Evrak, Laptop & Ekipman Çantaları",YES,Bilgisayar & Tablet,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0163,kabin boy valiz,Çanta & Aksesuar,Valiz & Seyahat Çantaları,YES,Spor & Outdoor,YES — valiz ↔ bavul,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0164,büyük boy valiz,Çanta & Aksesuar,Valiz & Seyahat Çantaları,YES,Spor & Outdoor,YES — valiz ↔ bavul,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0165,deri cüzdan,Çanta & Aksesuar,"Cüzdan, Kartlık & Anahtarlık",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0166,kartlık,Çanta & Aksesuar,"Cüzdan, Kartlık & Anahtarlık",NO,—,YES — kartlık ↔ kart cüzdanı,Expected placement matches the representative physical product owner.
+SEARCH-0167,deri kemer,Çanta & Aksesuar,"Kemer, Pantolon Askısı & Kravat",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0168,pantolon askısı,Çanta & Aksesuar,"Kemer, Pantolon Askısı & Kravat",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0169,güneş şapkası,Çanta & Aksesuar,"Şapka, Bere & Saç Aksesuarları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0170,örgü bere,Çanta & Aksesuar,"Şapka, Bere & Saç Aksesuarları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0171,yün atkı,Çanta & Aksesuar,"Atkı, Şal & Eldiven",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0172,ince şal,Çanta & Aksesuar,"Atkı, Şal & Eldiven",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0173,otomatik yağmur şemsiyesi,Çanta & Aksesuar,Şemsiyeler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0174,kompakt cep şemsiyesi,Çanta & Aksesuar,Şemsiyeler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0175,bagaj etiketi,Çanta & Aksesuar,Seyahat Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0176,valiz kemeri,Çanta & Aksesuar,Seyahat Aksesuarları,NO,—,YES — valiz ↔ bavul,Expected placement matches the representative physical product owner.
+SEARCH-0177,kombi tipi buzdolabı,Beyaz Eşya & Ev Aletleri,Soğutma & Gıda Saklama Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0178,derin dondurucu,Beyaz Eşya & Ev Aletleri,Soğutma & Gıda Saklama Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0179,çamaşır makinesi,Beyaz Eşya & Ev Aletleri,Çamaşır & Bulaşık Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0180,bulaşık makinesi,Beyaz Eşya & Ev Aletleri,Çamaşır & Bulaşık Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0181,ankastre fırın,Beyaz Eşya & Ev Aletleri,Büyük Pişirme Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0182,set üstü ocak,Beyaz Eşya & Ev Aletleri,Büyük Pişirme Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0183,elektrikli kahve makinesi,Beyaz Eşya & Ev Aletleri,Küçük Mutfak Aletleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0184,tezgâh üstü blender,Beyaz Eşya & Ev Aletleri,Küçük Mutfak Aletleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0185,robot süpürge,Beyaz Eşya & Ev Aletleri,Temizlik Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0186,dikey elektrikli süpürge,Beyaz Eşya & Ev Aletleri,Temizlik Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0187,split klima,Beyaz Eşya & Ev Aletleri,İklimlendirme & Hava Kalitesi,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0188,hava temizleyici,Beyaz Eşya & Ev Aletleri,İklimlendirme & Hava Kalitesi,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0189,elektrikli şofben,Beyaz Eşya & Ev Aletleri,Su Isıtma & Sıcak Su Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0190,termosifon,Beyaz Eşya & Ev Aletleri,Su Isıtma & Sıcak Su Cihazları,NO,—,YES — termos ↔ ısı yalıtımlı şişe,Expected placement matches the representative physical product owner.
+SEARCH-0191,buharlı ütü,Beyaz Eşya & Ev Aletleri,Ütü & Tekstil Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0192,kumaş steamer cihazı,Beyaz Eşya & Ev Aletleri,Ütü & Tekstil Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0193,saç kurutma makinesi,Beyaz Eşya & Ev Aletleri,Elektrikli Kişisel Bakım Cihazları,YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0194,elektrikli tıraş makinesi,Beyaz Eşya & Ev Aletleri,Elektrikli Kişisel Bakım Cihazları,YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0195,süpürge filtresi,Beyaz Eşya & Ev Aletleri,"Ev Aleti Aksesuar, Filtre & Sarf Malzemeleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0196,elektrikli süpürge torbası,Beyaz Eşya & Ev Aletleri,"Ev Aleti Aksesuar, Filtre & Sarf Malzemeleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0197,bebek biberonu,Anne & Bebek,Bebek Beslenme,YES,Gıda & İçecek; Sağlık & Medikal,YES — biberon ↔ bebek besleme şişesi,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0198,mama sandalyesi,Anne & Bebek,Bebek Beslenme,YES,Gıda & İçecek; Sağlık & Medikal,YES — mama ↔ beslenme ürünü / pet yemi bağlam ayrımı,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0199,elektrikli göğüs pompası,Anne & Bebek,Emzirme & Anne Sütü Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0200,anne sütü saklama poşeti,Anne & Bebek,Emzirme & Anne Sütü Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0201,yenidoğan bezi,Anne & Bebek,Bebek Bezi & Alt Bakım,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0202,alt değiştirme pedi,Anne & Bebek,Bebek Bezi & Alt Bakım,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0203,bebek küveti,Anne & Bebek,"Bebek Banyo, Bakım & Hijyen",YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0204,bebek bakım seti,Anne & Bebek,"Bebek Banyo, Bakım & Hijyen",YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0205,katlanabilir bebek arabası,Anne & Bebek,Bebek Arabaları & Taşıma,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0206,bebek kangurusu,Anne & Bebek,Bebek Arabaları & Taşıma,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0207,bebek oto koltuğu,Anne & Bebek,Oto Koltukları & Seyahat Güvenliği,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0208,çocuk yükseltici koltuğu,Anne & Bebek,Oto Koltukları & Seyahat Güvenliği,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0209,bebek beşiği,Anne & Bebek,Bebek Odası & Uyku,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0210,park yatak,Anne & Bebek,Bebek Odası & Uyku,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0211,merdiven güvenlik kapısı,Anne & Bebek,Bebek Güvenlik & Ev İçi Koruma,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0212,priz koruyucu,Anne & Bebek,Bebek Güvenlik & Ev İçi Koruma,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0213,hamile destek yastığı,Anne & Bebek,Hamilelik & Lohusalık Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0214,lohusa pedi,Anne & Bebek,Hamilelik & Lohusalık Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0215,bebek çıngırağı,Oyuncak & Hobi,Bebek & Okul Öncesi Oyuncaklar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0216,duyusal aktivite oyuncağı,Oyuncak & Hobi,Bebek & Okul Öncesi Oyuncaklar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0217,çocuk deney seti,Oyuncak & Hobi,"Eğitici, Bilim & Keşif Oyuncakları",YES,Elektronik; Kırtasiye & Ofis,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0218,stem yapı kiti,Oyuncak & Hobi,"Eğitici, Bilim & Keşif Oyuncakları",YES,Elektronik; Kırtasiye & Ofis,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0219,oyuncak bebek,Oyuncak & Hobi,"Figür, Bebek & Rol Oyunları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0220,aksiyon figürü,Oyuncak & Hobi,"Figür, Bebek & Rol Oyunları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0221,yapı blokları,Oyuncak & Hobi,Yapı & İnşa Oyuncakları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0222,manyetik inşa seti,Oyuncak & Hobi,Yapı & İnşa Oyuncakları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0223,oyuncak araba,Oyuncak & Hobi,Oyuncak Araçlar & Uzaktan Kumandalı Oyuncaklar,YES,Elektronik > Fotoğraf & Kamera,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0224,uzaktan kumandalı araç,Oyuncak & Hobi,Oyuncak Araçlar & Uzaktan Kumandalı Oyuncaklar,YES,Elektronik > Fotoğraf & Kamera,YES — kumanda ↔ uzaktan kumanda,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0225,aile kutu oyunu,Oyuncak & Hobi,Kutu Oyunları & Oyun Takımları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0226,satranç takımı,Oyuncak & Hobi,Kutu Oyunları & Oyun Takımları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0227,500 parçalı yapboz,Oyuncak & Hobi,Puzzle & Zeka Oyunları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0228,mekanik zeka küpü,Oyuncak & Hobi,Puzzle & Zeka Oyunları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0229,ölçekli araç maket kiti,Oyuncak & Hobi,"Model, Maket & Minyatür",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0230,diorama başlangıç seti,Oyuncak & Hobi,"Model, Maket & Minyatür",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0231,sergileme amaçlı koleksiyon figürü,Oyuncak & Hobi,Koleksiyon Ürünleri,YES,"Model, Maket & Minyatür; Otomotiv & Motosiklet",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0232,koleksiyon kartı,Oyuncak & Hobi,Koleksiyon Ürünleri,YES,"Model, Maket & Minyatür; Otomotiv & Motosiklet",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0233,takı yapım hobi kiti,Oyuncak & Hobi,"Sanat, El İşi & Hobi Kitleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0234,yönlendirilmiş seramik seti,Oyuncak & Hobi,"Sanat, El İşi & Hobi Kitleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0235,uçurtma,Oyuncak & Hobi,Açık Hava & Aktivite Oyuncakları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0236,bahçe oyun seti,Oyuncak & Hobi,Açık Hava & Aktivite Oyuncakları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0237,klasik gitar,Müzik & Enstrüman,Gitar & Bas,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0238,elektro gitar,Müzik & Enstrüman,Gitar & Bas,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0239,dijital piyano,Müzik & Enstrüman,"Piyano, Org & Klavyeli Çalgılar",YES,Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0240,elektronik org,Müzik & Enstrüman,"Piyano, Org & Klavyeli Çalgılar",YES,Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0241,keman,Müzik & Enstrüman,Telli & Yaylı Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0242,çello,Müzik & Enstrüman,Telli & Yaylı Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0243,yan flüt,Müzik & Enstrüman,Nefesli Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0244,klarnet,Müzik & Enstrüman,Nefesli Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0245,akustik bateri,Müzik & Enstrüman,Vurmalı Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0246,cajon,Müzik & Enstrüman,Vurmalı Çalgılar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0247,bağlama,Müzik & Enstrüman,Geleneksel Türk Müziği Enstrümanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0248,ud,Müzik & Enstrüman,Geleneksel Türk Müziği Enstrümanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0249,synthesizer,Müzik & Enstrüman,Elektronik Müzik & DJ Ekipmanları,YES,Bilgisayar & Tablet; Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0250,dj kontrolcü,Müzik & Enstrüman,Elektronik Müzik & DJ Ekipmanları,YES,Bilgisayar & Tablet; Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0251,usb ses kayıt arayüzü,Müzik & Enstrüman,"Stüdyo, Kayıt & Canlı Ses Ekipmanları",YES,Bilgisayar & Tablet; Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0252,stüdyo kondenser mikrofonu,Müzik & Enstrüman,"Stüdyo, Kayıt & Canlı Ses Ekipmanları",YES,Bilgisayar & Tablet; Elektronik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0253,gitar amfisi,Müzik & Enstrüman,Enstrüman Amfi & Efektleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0254,bas amfisi,Müzik & Enstrüman,Enstrüman Amfi & Efektleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0255,gitar teli,Müzik & Enstrüman,"Enstrüman Aksesuar, Bakım & Sarf Malzemeleri",YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0256,baget,Müzik & Enstrüman,"Enstrüman Aksesuar, Bakım & Sarf Malzemeleri",YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0257,ayarlanabilir dambıl,Spor & Outdoor,Fitness & Kondisyon,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0258,direnç bandı,Spor & Outdoor,Fitness & Kondisyon,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0259,futbol topu,Spor & Outdoor,Takım Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0260,basketbol potası,Spor & Outdoor,Takım Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0261,tenis raketi,Spor & Outdoor,Raket Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0262,badminton seti,Spor & Outdoor,Raket Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0263,jimnastik minderi,Spor & Outdoor,Bireysel Sporlar & Jimnastik,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0264,yoga bloğu,Spor & Outdoor,Bireysel Sporlar & Jimnastik,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0265,boks eldiveni,Spor & Outdoor,Dövüş Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0266,kum torbası,Spor & Outdoor,Dövüş Sporları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0267,kamp çadırı,Spor & Outdoor,"Outdoor, Kamp & Trekking",YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0268,uyku tulumu,Spor & Outdoor,"Outdoor, Kamp & Trekking",YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0269,şehir bisikleti,Spor & Outdoor,Bisiklet,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0270,bisiklet kaskı,Spor & Outdoor,Bisiklet,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0271,yüzme paleti,Spor & Outdoor,Su Sporları,YES,Gözlük & Optik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0272,dalış maskesi,Spor & Outdoor,Su Sporları,YES,Gözlük & Optik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0273,kayak,Spor & Outdoor,Kış Sporları,YES,Gözlük & Optik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0274,snowboard,Spor & Outdoor,Kış Sporları,YES,Gözlük & Optik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0275,olta kamışı,Spor & Outdoor,Balıkçılık & Avcılık,NO,—,YES — olta ↔ balıkçı kamışı,Expected placement matches the representative physical product owner.
+SEARCH-0276,balıkçılık makarası,Spor & Outdoor,Balıkçılık & Avcılık,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0277,hatıra plaketi,Hediyelik & Parti,Hatıra & Hediyelik Objeler,YES,Ev & Yaşam; Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0278,anı kutusu,Hediyelik & Parti,Hatıra & Hediyelik Objeler,YES,Ev & Yaşam; Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0279,hediye kutusu,Hediyelik & Parti,Hediye Paketleme & Sunum,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0280,paket kâğıdı,Hediyelik & Parti,Hediye Paketleme & Sunum,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0281,fiziksel tebrik kartı,Hediyelik & Parti,"Tebrik Kartları, Davetiyeler & Kutlama Yazıları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0282,basılı davetiye,Hediyelik & Parti,"Tebrik Kartları, Davetiyeler & Kutlama Yazıları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0283,folyo parti balonu,Hediyelik & Parti,Balon & Balon Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0284,balon pompası,Hediyelik & Parti,Balon & Balon Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0285,parti bannerı,Hediyelik & Parti,Parti Süsleri & Mekân Dekorasyonu,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0286,piroteknik olmayan konfeti,Hediyelik & Parti,Parti Süsleri & Mekân Dekorasyonu,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0287,tek kullanımlık parti tabağı,Hediyelik & Parti,Parti Sofrası & Servis Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0288,parti temalı karton bardak,Hediyelik & Parti,Parti Sofrası & Servis Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0289,parti kostümü,Hediyelik & Parti,"Kostüm, Maske & Parti Aksesuarları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0290,parti maskesi,Hediyelik & Parti,"Kostüm, Maske & Parti Aksesuarları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0291,pasta mumu,Hediyelik & Parti,Pasta Süsleme & Kutlama Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0292,cake topper,Hediyelik & Parti,Pasta Süsleme & Kutlama Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0293,photo booth aksesuar seti,Hediyelik & Parti,Parti Eğlence & Fotoğraf Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0294,pinyata,Hediyelik & Parti,Parti Eğlence & Fotoğraf Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0295,otomobil fren balatası,Otomotiv & Motosiklet,Otomobil Yedek Parçaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0296,araç hava filtresi,Otomotiv & Motosiklet,Otomobil Yedek Parçaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0297,motosiklet debriyaj balatası,Otomotiv & Motosiklet,Motosiklet Yedek Parçaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0298,motosiklet fren diski,Otomotiv & Motosiklet,Motosiklet Yedek Parçaları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0299,araç paspası,Otomotiv & Motosiklet,Araç İçi Aksesuarları,YES,Telefon & Aksesuarları; Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0300,koltuk kılıfı,Otomotiv & Motosiklet,Araç İçi Aksesuarları,YES,Telefon & Aksesuarları; Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0301,tavan barı,Otomotiv & Motosiklet,Araç Dış Aksesuarları,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0302,araç örtüsü,Otomotiv & Motosiklet,Araç Dış Aksesuarları,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0303,yaz lastiği,Otomotiv & Motosiklet,"Lastik, Jant & Tekerlek Ürünleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0304,otomobil jantı,Otomotiv & Motosiklet,"Lastik, Jant & Tekerlek Ürünleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0305,marş aküsü,Otomotiv & Motosiklet,Akü & Araç Elektriği,YES,"Elektronik > Güç, Şarj & Bağlantı; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0306,alternatör,Otomotiv & Motosiklet,Akü & Araç Elektriği,YES,"Elektronik > Güç, Şarj & Bağlantı; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0307,araç içi dashcam,Otomotiv & Motosiklet,Araç Elektroniği,YES,Elektronik > Fotoğraf & Kamera,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0308,android araç multimedya ünitesi,Otomotiv & Motosiklet,Araç Elektroniği,YES,Elektronik > Fotoğraf & Kamera,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0309,araç şampuanı,Otomotiv & Motosiklet,Araç Bakım & Temizlik,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0310,oto cilası,Otomotiv & Motosiklet,Araç Bakım & Temizlik,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0311,motor yağı,Otomotiv & Motosiklet,"Motor Yağı, Sıvı & Katkılar",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0312,antifriz,Otomotiv & Motosiklet,"Motor Yağı, Sıvı & Katkılar",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0313,motosiklet kaskı,Otomotiv & Motosiklet,Motosiklet Kask & Koruma Ekipmanları,YES,Giyim & Moda,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0314,koruyucu motosiklet montu,Otomotiv & Motosiklet,Motosiklet Kask & Koruma Ekipmanları,YES,Giyim & Moda,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0315,araç ilk yardım seti,Otomotiv & Motosiklet,Araç Güvenlik & Acil Durum Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0316,reflektif ikaz üçgeni,Otomotiv & Motosiklet,Araç Güvenlik & Acil Durum Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0317,türkçe roman,Kitap,Edebiyat & Kurgu,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0318,öykü kitabı,Kitap,Edebiyat & Kurgu,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0319,resimli çocuk kitabı,Kitap,Çocuk & Gençlik Kitapları,YES,Kırtasiye & Ofis; Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0320,gençlik romanı,Kitap,Çocuk & Gençlik Kitapları,YES,Kırtasiye & Ofis; Oyuncak & Hobi,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0321,lise matematik ders kitabı,Kitap,Eğitim & Ders Kitapları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0322,ilkokul çalışma kitabı,Kitap,Eğitim & Ders Kitapları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0323,üniversite sınavı soru bankası,Kitap,Sınav Hazırlık Kitapları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0324,kamu sınavı hazırlık kitabı,Kitap,Sınav Hazırlık Kitapları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0325,mühendislik referans kitabı,Kitap,Akademik & Mesleki Kitaplar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0326,tıp atlası,Kitap,Akademik & Mesleki Kitaplar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0327,tarih inceleme kitabı,Kitap,"Araştırma, İnceleme & Düşünce",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0328,felsefe kitabı,Kitap,"Araştırma, İnceleme & Düşünce",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0329,kişisel gelişim kitabı,Kitap,Kişisel Gelişim & Yaşam,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0330,ebeveynlik rehberi,Kitap,Kişisel Gelişim & Yaşam,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0331,fotoğraf sanatı kitabı,Kitap,"Sanat, Kültür & Hobi Kitapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0332,müzik tarihi kitabı,Kitap,"Sanat, Kültür & Hobi Kitapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0333,çizgi roman albümü,Kitap,Çizgi Roman & Manga,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0334,manga cildi,Kitap,Çizgi Roman & Manga,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0335,i̇ngilizce öğrenim kitabı,Kitap,Dil Öğrenimi & Sözlükler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0336,iki dilli sözlük,Kitap,Dil Öğrenimi & Sözlükler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0337,canlı orkide,Çiçek & Bahçe,Canlı Saksı Bitkileri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0338,salon sukulenti,Çiçek & Bahçe,Canlı Saksı Bitkileri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0339,kesme gül buketi,Çiçek & Bahçe,Kesme Çiçek & Fiziksel Aranjmanlar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0340,fiziksel çiçek aranjmanı,Çiçek & Bahçe,Kesme Çiçek & Fiziksel Aranjmanlar,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0341,domates tohumu,Çiçek & Bahçe,"Tohum, Fide & Bitki Soğanları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0342,lavanta fidesi,Çiçek & Bahçe,"Tohum, Fide & Bitki Soğanları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0343,yapay orkide,Çiçek & Bahçe,Yapay Çiçek & Yapay Bitkiler,YES,Ev & Yaşam,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0344,yapay sarmaşık,Çiçek & Bahçe,Yapay Çiçek & Yapay Bitkiler,YES,Ev & Yaşam,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0345,seramik saksı,Çiçek & Bahçe,"Saksı, Saksılık & Bitki Kapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0346,askılı saksılık,Çiçek & Bahçe,"Saksı, Saksılık & Bitki Kapları",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0347,saksı toprağı,Çiçek & Bahçe,"Toprak, Gübre & Bitki Besleme",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0348,organik bitki gübresi,Çiçek & Bahçe,"Toprak, Gübre & Bitki Besleme",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0349,damla sulama seti,Çiçek & Bahçe,Sulama Ürünleri,YES,"Elektronik > Akıllı Ev & Güvenlik; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0350,bahçe sulama hortumu,Çiçek & Bahçe,Sulama Ürünleri,YES,"Elektronik > Akıllı Ev & Güvenlik; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0351,budama makası,Çiçek & Bahçe,Bahçe El Aletleri,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0352,bahçe küreği,Çiçek & Bahçe,Bahçe El Aletleri,YES,"Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0353,bitki destek çubuğu,Çiçek & Bahçe,Bitki Bakım & Yetiştirme Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0354,zararlı tuzağı,Çiçek & Bahçe,Bitki Bakım & Yetiştirme Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0355,mini sera,Çiçek & Bahçe,Sera & Yetiştirme Ekipmanları,YES,Elektronik > Elektronik Bileşenler; Akıllı Ev & Güvenlik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0356,fide çimlendirme tepsisi,Çiçek & Bahçe,Sera & Yetiştirme Ekipmanları,YES,Elektronik > Elektronik Bileşenler; Akıllı Ev & Güvenlik,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0357,bahçe heykelciği,Çiçek & Bahçe,Bahçe Dekorasyonu & Peyzaj Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0358,dekoratif kuş evi,Çiçek & Bahçe,Bahçe Dekorasyonu & Peyzaj Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0359,steril yara bandı,Sağlık & Medikal,İlk Yardım & Yara Bakımı,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0360,gazlı bez,Sağlık & Medikal,İlk Yardım & Yara Bakımı,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0361,dijital tansiyon ölçer,Sağlık & Medikal,Evde Sağlık Ölçüm Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0362,kan şekeri ölçüm cihazı,Sağlık & Medikal,Evde Sağlık Ölçüm Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0363,medikal dizlik,Sağlık & Medikal,Ortopedik Destekler & Kompresyon,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0364,bel destek korsesi,Sağlık & Medikal,Ortopedik Destekler & Kompresyon,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0365,yürüteç,Sağlık & Medikal,Hareket & Mobilite Yardımcıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0366,manuel tekerlekli sandalye,Sağlık & Medikal,Hareket & Mobilite Yardımcıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0367,el egzersiz rehabilitasyon topu,Sağlık & Medikal,Rehabilitasyon & Fizik Tedavi Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0368,denge tahtası,Sağlık & Medikal,Rehabilitasyon & Fizik Tedavi Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0369,nebulizatör,Sağlık & Medikal,Solunum & Evde Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0370,oksijen konsantratörü,Sağlık & Medikal,Solunum & Evde Bakım Cihazları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0371,hasta alt bezi,Sağlık & Medikal,Medikal Sarf & Hasta Bakım Ürünleri,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0372,tek kullanımlık medikal örtü,Sağlık & Medikal,Medikal Sarf & Hasta Bakım Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0373,medikal yüz maskesi,Sağlık & Medikal,Kişisel Koruyucu Medikal Ürünler,YES,"Giyim & Moda; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0374,tek kullanımlık muayene eldiveni,Sağlık & Medikal,Kişisel Koruyucu Medikal Ürünler,YES,"Giyim & Moda; Yapı, Hırdavat & Tesisat",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0375,kavanoz açma yardımcısı,Sağlık & Medikal,Günlük Yaşam & Erişilebilirlik Yardımcıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0376,uzanma aparatı,Sağlık & Medikal,Günlük Yaşam & Erişilebilirlik Yardımcıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0377,numaralı cama uygun optik çerçeve,Gözlük & Optik,Optik Gözlük Çerçeveleri,YES,Bilgisayar & Tablet,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0378,çocuk optik çerçevesi,Gözlük & Optik,Optik Gözlük Çerçeveleri,YES,Bilgisayar & Tablet,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0379,uv korumalı güneş gözlüğü,Gözlük & Optik,Güneş Gözlükleri,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0380,polarize güneş gözlüğü,Gözlük & Optik,Güneş Gözlükleri,YES,Spor & Outdoor,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0381,hazır yakın okuma gözlüğü,Gözlük & Optik,Hazır Okuma Gözlükleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0382,katlanabilir okuma gözlüğü,Gözlük & Optik,Hazır Okuma Gözlükleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0383,tek odaklı gözlük camı,Gözlük & Optik,Gözlük Camları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0384,progresif gözlük camı,Gözlük & Optik,Gözlük Camları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0385,günlük kontakt lens,Gözlük & Optik,Kontakt Lensler,YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0386,aylık kontakt lens,Gözlük & Optik,Kontakt Lensler,YES,Kozmetik & Kişisel Bakım,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0387,kontakt lens solüsyonu,Gözlük & Optik,Kontakt Lens Bakım Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0388,lens saklama kabı,Gözlük & Optik,Kontakt Lens Bakım Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0389,gözlük kılıfı,Gözlük & Optik,Gözlük & Optik Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0390,gözlük temizleme bezi,Gözlük & Optik,Gözlük & Optik Aksesuarları,NO,—,YES — bez ↔ bebek bezi / tekstil bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0391,kedi kuru maması,Evcil Hayvan Ürünleri,Kedi Ürünleri,NO,—,YES — mama ↔ beslenme ürünü / pet yemi bağlam ayrımı,Expected placement matches the representative physical product owner.
+SEARCH-0392,kedi kumu,Evcil Hayvan Ürünleri,Kedi Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0393,köpek kuru maması,Evcil Hayvan Ürünleri,Köpek Ürünleri,YES,Sağlık & Medikal,YES — mama ↔ beslenme ürünü / pet yemi bağlam ayrımı,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0394,köpek tasması,Evcil Hayvan Ürünleri,Köpek Ürünleri,YES,Sağlık & Medikal,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0395,akvaryum filtresi,Evcil Hayvan Ürünleri,Akvaryum & Balık Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0396,balık yemi,Evcil Hayvan Ürünleri,Akvaryum & Balık Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0397,kuş yemi,Evcil Hayvan Ürünleri,Kuş Ürünleri,YES,Ev & Yaşam; Sağlık & Medikal,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0398,kuş kafesi,Evcil Hayvan Ürünleri,Kuş Ürünleri,YES,Ev & Yaşam; Sağlık & Medikal,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0399,hamster yemi,Evcil Hayvan Ürünleri,Küçük Hayvan Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0400,kemirgen kafesi,Evcil Hayvan Ürünleri,Küçük Hayvan Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0401,sürüngen teraryumu,Evcil Hayvan Ürünleri,Sürüngen & Egzotik Pet Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0402,teraryum ısıtma matı,Evcil Hayvan Ürünleri,Sürüngen & Egzotik Pet Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0403,pet şampuanı,Evcil Hayvan Ürünleri,Ortak Pet Bakım & Aksesuarları,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0404,genel pet tırnak makası,Evcil Hayvan Ürünleri,Ortak Pet Bakım & Aksesuarları,YES,Çanta & Aksesuar,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0405,tükenmez kalem,Kırtasiye & Ofis,Kalem & Yazım Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0406,kurşun kalem,Kırtasiye & Ofis,Kalem & Yazım Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0407,çizgili defter,Kırtasiye & Ofis,"Defter, Ajanda & Planlayıcılar",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0408,tarihli ajanda,Kırtasiye & Ofis,"Defter, Ajanda & Planlayıcılar",NO,—,YES — ajanda ↔ planlayıcı,Expected placement matches the representative physical product owner.
+SEARCH-0409,fotokopi kâğıdı,Kırtasiye & Ofis,"Kağıt, Etiket & Baskı Sarfı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0410,yapışkan etiket,Kırtasiye & Ofis,"Kağıt, Etiket & Baskı Sarfı",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0411,halka klasör,Kırtasiye & Ofis,Dosyalama & Arşivleme,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0412,şeffaf dosya,Kırtasiye & Ofis,Dosyalama & Arşivleme,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0413,zımba,Kırtasiye & Ofis,Masaüstü Ofis Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0414,delgeç,Kırtasiye & Ofis,Masaüstü Ofis Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0415,kırtasiye yapıştırıcısı,Kırtasiye & Ofis,"Yapıştırıcı, Bant & Kesim Gereçleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0416,şeffaf bant,Kırtasiye & Ofis,"Yapıştırıcı, Bant & Kesim Gereçleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0417,okul kalem kutusu,Kırtasiye & Ofis,Okul Kırtasiyesi & Eğitim Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0418,geometri seti,Kırtasiye & Ofis,Okul Kırtasiyesi & Eğitim Gereçleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0419,sulu boya,Kırtasiye & Ofis,Sanat & Çizim Malzemeleri,YES,"Defter, Ajanda & Planlayıcılar",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0420,eskiz kalemi,Kırtasiye & Ofis,Sanat & Çizim Malzemeleri,YES,"Defter, Ajanda & Planlayıcılar",NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0421,yazı tahtası,Kırtasiye & Ofis,"Sunum, Pano & Yazı Tahtası Ürünleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0422,mantar pano,Kırtasiye & Ofis,"Sunum, Pano & Yazı Tahtası Ürünleri",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0423,evrak imha makinesi,Kırtasiye & Ofis,Ofis Makineleri & Ciltleme Ekipmanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0424,laminasyon cihazı,Kırtasiye & Ofis,Ofis Makineleri & Ciltleme Ekipmanları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0425,kargo zarfı,Kırtasiye & Ofis,Paketleme & Postalama Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0426,paketleme ipi,Kırtasiye & Ofis,Paketleme & Postalama Ürünleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0427,analog kol saati,Saat & Takı,Klasik Kol Saatleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0428,mekanik kol saati,Saat & Takı,Klasik Kol Saatleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0429,mekanik cep saati,Saat & Takı,Cep Saatleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0430,zincirli cep saati,Saat & Takı,Cep Saatleri,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0431,deri saat kayışı,Saat & Takı,Saat Kayışları & Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0432,metal saat bileziği,Saat & Takı,Saat Kayışları & Aksesuarları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0433,zincir kolye,Saat & Takı,Kolyeler & Takı Uçları,YES,Küpeler; Hediyelik & Parti,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0434,takı ucu,Saat & Takı,Kolyeler & Takı Uçları,YES,Küpeler; Hediyelik & Parti,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0435,halka küpe,Saat & Takı,Küpeler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0436,vidalı küpe,Saat & Takı,Küpeler,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0437,alyans olmayan günlük yüzük,Saat & Takı,Yüzükler,YES,Çiçek & Bahçe; Hediyelik & Parti,YES — alyan ↔ imbus anahtar,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0438,taşlı yüzük,Saat & Takı,Yüzükler,YES,Çiçek & Bahçe; Hediyelik & Parti,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0439,zincir bileklik,Saat & Takı,"Bileklik, Bilezik & Halhallar",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0440,sert bilezik,Saat & Takı,"Bileklik, Bilezik & Halhallar",NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0441,broş,Saat & Takı,Broş & Giyim Takıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0442,yaka iğnesi,Saat & Takı,Broş & Giyim Takıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0443,piercing takısı,Saat & Takı,Vücut Takıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0444,burun halkası,Saat & Takı,Vücut Takıları,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0445,takı kutusu,Saat & Takı,Takı Aksesuarları & Saklama,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0446,kolye uzatma zinciri,Saat & Takı,Takı Aksesuarları & Saklama,NO,—,NO,Expected placement matches the representative physical product owner.
+SEARCH-0447,takı teli,Saat & Takı,Takı Yapım Malzemeleri,YES,Oyuncak & Hobi; Kırtasiye & Ofis,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
+SEARCH-0448,takı boncuğu,Saat & Takı,Takı Yapım Malzemeleri,YES,Oyuncak & Hobi; Kırtasiye & Ofis,NO,Cross-domain edge evidence requires a root ownership rule; query still targets the recommended product family.
