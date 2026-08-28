@@ -173,4 +173,3 @@ be policy-gated. Taxonomy successor selection does not authorize listing or sale
 - Owner-final/provisional state separated: yes.
 - Production product counts/reassignments: unknown; Production was not queried.
 - Runtime implementation: none.
-
