@@ -1,10 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
 class TLoggerHelper {
   static final Logger _logger = Logger(
     printer: PrettyPrinter(),
-    // Customize the log levels based on your needs
-    level: Level.debug,
+    level: kReleaseMode ? Level.off : Level.debug,
   );
 
   static void debug(String message) {
@@ -20,6 +20,6 @@ class TLoggerHelper {
   }
 
   static void error(String message, [dynamic error]) {
-    _logger.e(message, error: error,  stackTrace: StackTrace.current);
+    _logger.e(message, error: error, stackTrace: StackTrace.current);
   }
 }

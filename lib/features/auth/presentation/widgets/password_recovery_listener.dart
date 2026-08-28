@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:t_store/core/supabase/supabase_service.dart';
@@ -81,8 +82,10 @@ class _PasswordRecoveryListenerState extends State<PasswordRecoveryListener> {
             : PasswordRecoveryIdentity(userId: user.id, email: email);
         _openRecoveryScreen(identity);
       },
-      onError: (Object error, StackTrace stackTrace) {
-        debugPrint('Şifre yenileme bağlantısı dinlenemedi: $error');
+      onError: (Object _, StackTrace stackTrace) {
+        if (kDebugMode) {
+          debugPrint('Şifre yenileme bağlantısı dinlenemedi.');
+        }
       },
     );
   }

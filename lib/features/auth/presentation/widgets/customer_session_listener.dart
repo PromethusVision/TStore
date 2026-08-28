@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
@@ -63,8 +64,10 @@ class _CustomerSessionListenerState extends State<CustomerSessionListener> {
   void _listenForSessionChanges() {
     _subscription = widget.authStateChanges.listen(
       _onAuthStateChanged,
-      onError: (Object error, StackTrace stackTrace) {
-        debugPrint('Müşteri oturumu dinlenemedi: $error');
+      onError: (Object _, StackTrace stackTrace) {
+        if (kDebugMode) {
+          debugPrint('Müşteri oturumu dinlenemedi.');
+        }
       },
     );
   }
