@@ -26,15 +26,15 @@ Classification:
 
 | Migration | Main responsibility | Classification |
 |---|---|---|
-| `0001_initial_schema.sql` | Core customer, catalog, legacy order, review, banner and profile model | ACTIVE with named legacy areas |
-| `0002_chat_and_notifications.sql` | Direct customer chat and in-app notifications | ACTIVE |
-| `0003_customer_profile_and_address_rls.sql` | Customer profile/address hardening and saved locations | ACTIVE |
-| `0004_marketplace_cart_qr_ratings.sql` | Shop listings, Cart V2, QR sessions, verified transactions and shop ratings | ACTIVE |
-| `0005_customer_legal_and_account_delete.sql` | Canonical legal consent and customer self-deletion | ACTIVE |
-| `0006_customer_saved_location_contract.sql` | Saved-location RPC contract | ACTIVE |
-| `0007_realtime_and_media_contract.sql` | Managed Realtime publication and storage contract checks | ACTIVE |
-| `0008_profile_role_guard.sql` | Database-enforced client role-escalation guard | ACTIVE |
-| `0009_verified_review_and_storage_contract.sql` | Durable product evidence for purchases/reviews and canonical media buckets | ACTIVE |
+| `20260812000100_0001_core_auth_catalog.sql` | Core Auth/profile, legal consent, customer private data, catalog, legacy order/review, banner, chat and notification tables | ACTIVE with named legacy areas |
+| `20260812000200_0002_shops.sql` | Shops and merchant-owned `shop_products` catalog/listing layer | ACTIVE |
+| `20260812000300_0003_carts_v2.sql` | Single-shop Cart V2 and cart items, independent from legacy orders | ACTIVE |
+| `20260812000400_0004_qr_verified_purchases.sql` | Race-safe QR sessions and durable verified-purchase proof | ACTIVE |
+| `20260812000500_0005_verified_shop_ratings.sql` | One shop rating per verified transaction | ACTIVE |
+| `20260812000600_0006_chat_notifications_account.sql` | Chat summaries, trusted notifications, final notification privileges and customer account deletion | ACTIVE |
+| `20260812000700_0007_storage_realtime.sql` | Managed Realtime publication contract; intentionally no bucket or Storage object policy yet | ACTIVE |
+| `20260814000800_0008_fix_profile_role_guard.sql` | Database-enforced client role-escalation guard repair | ACTIVE |
+| `20260815000900_0009_verified_product_reviews_storage.sql` | Durable product purchase/review evidence and active trusted-media Storage contract | ACTIVE |
 
 The chain contains 23 canonical `public` tables. No application view is part of
 the canonical chain. A future migration must append to the chain; rewriting
