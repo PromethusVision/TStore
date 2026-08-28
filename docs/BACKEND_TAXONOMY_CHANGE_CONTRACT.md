@@ -17,4 +17,3 @@ stable IDs/rule versions, not mutable paths.
 No automatic product reassignment based only on a node name. Split/merge semantics,
 grandfathering and policy transitions are `OWNER_DECISION_REQUIRED`. Every rollout
 needs versioned reads and backward compatibility before old paths retire.
-

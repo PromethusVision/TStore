@@ -19,4 +19,3 @@ deleting a local session is insufficient.
 Emergency revocation should be fast and reversible only through a new audited
 grant. Exact token-revocation mechanism and grace period are implementation
 decisions; recommendation is no grace for write capabilities.
-

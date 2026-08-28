@@ -23,4 +23,3 @@ presentation and survivor policy are `OWNER_DECISION_REQUIRED`; historical revie
 IDs and evidence remain auditable.
 
 Database constraint/RPC authorization, not UI suppression, enforces the rule.
-

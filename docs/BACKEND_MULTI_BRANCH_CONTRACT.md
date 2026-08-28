@@ -36,4 +36,3 @@ still be shop-scoped. Creating phantom branches is unnecessary.
   `OWNER_DECISION_REQUIRED`;
 - shop rating roll-up to organization: recommend display branch truth first,
   aggregate only with transparent semantics.
-

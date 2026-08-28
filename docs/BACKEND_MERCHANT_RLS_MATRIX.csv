@@ -19,4 +19,3 @@ Ads,campaign,manage,DENY,CAMPAIGN_MANAGE,DENY,DENY,DENY,Listing eligibility inde
 Reward,reward_ledger,mutate,DENY,DENY,DENY,DENY,DENY,Merchant config cannot edit earned value
 Reputation,reputation,mutate,DENY,DENY,DENY,DENY,DENY,Dispute via case not direct edit
 Media,listing_media,write,DENY,LISTING_MANAGE,DENY,DENY,DENY,Prefix and ownership validated
-

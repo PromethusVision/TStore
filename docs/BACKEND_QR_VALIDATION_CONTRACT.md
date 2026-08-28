@@ -22,4 +22,3 @@ clock or cached status never makes validation pass.
 
 Validation alone does not consume a token. Any preview must be customer-data
 minimal and remain subject to authorization at confirmation time.
-

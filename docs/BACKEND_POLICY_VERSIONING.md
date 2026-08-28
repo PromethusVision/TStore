@@ -21,4 +21,3 @@ ads, reward, reputation, operations and retention.
 Policy version is not the same as schema migration, app release or event version,
 though references may link them. Who approves each policy family and which changes
 re-evaluate active entities are `OWNER_DECISION_REQUIRED`.
-

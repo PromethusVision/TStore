@@ -17,4 +17,3 @@ trusted unless the reward policy explicitly accepts their authoritative snapshot
 
 Funding, unit, scope, redemption and expiry remain
 `OWNER_DECISION_REQUIRED`; therefore no V1 RPC names are finalized.
-

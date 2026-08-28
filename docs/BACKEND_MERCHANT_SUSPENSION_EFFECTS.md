@@ -23,4 +23,3 @@ customer interaction that would create risk.
 Suspension scope (organization vs shop), customer messaging and existing chat
 behavior are `OWNER_DECISION_REQUIRED`. Reinstatement is a new audited decision
 and revalidates listing/media/policy freshness; it does not erase the suspension.
-

@@ -23,4 +23,3 @@ idempotency instead of “last write wins.”
 
 Current tables without revision remain valid; adding revision is a separately
 tested migration, not implied here.
-

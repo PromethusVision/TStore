@@ -1,6 +1,6 @@
 # Backend Evolution Bridge
 
-**State:** RECOMMENDED EVOLUTION PLAN — NOT OWNER-FINAL  
+**State:** RECOMMENDED EVOLUTION PLAN — NOT OWNER-FINAL
 **Wave:** 21 / Workstream D
 
 ## Principle
@@ -73,4 +73,3 @@ their own migration plan; neither is implied by this document.
 
 All remain `OWNER_DECISION_REQUIRED`. No migration or runtime transition is
 authorized here.
-

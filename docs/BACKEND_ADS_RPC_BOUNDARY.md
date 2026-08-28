@@ -19,4 +19,3 @@ Material edits create campaign/target revisions and may require re-review. Billi
 or budget ledger transactions need a separate approved economic contract. V1
 campaign command set, billing event and attribution reporting are
 `OWNER_DECISION_REQUIRED`.
-

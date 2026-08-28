@@ -20,4 +20,3 @@ contract and must not broaden review mutation grants.
 
 Delete/restore retention and merge-collision responses remain
 `OWNER_DECISION_REQUIRED`.
-

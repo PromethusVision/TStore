@@ -29,4 +29,3 @@ reservation, stock guarantee, review eligibility or purchase evidence.
 Exact reissue/cancel policy remains `OWNER_DECISION_REQUIRED`; recommendation is
 to terminally cancel the prior active session when a materially changed cart is
 explicitly reissued.
-

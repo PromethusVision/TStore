@@ -38,4 +38,3 @@ left indefinitely.
 Whether owner transfer changes merchant organization or only membership is
 `OWNER_DECISION_REQUIRED`. Recommendation: preserve shop ID and record an audited
 ownership transition when the physical shop remains continuous.
-

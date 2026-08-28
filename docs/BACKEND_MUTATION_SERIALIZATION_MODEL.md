@@ -20,4 +20,3 @@ Use conditional state updates, row/advisory locks or unique constraints accordin
 to implementation evidence. Define lock order for multi-entity operations, bound
 waits and return retryable conflict separately from policy denial. Never use a
 client mutex as the only protection.
-

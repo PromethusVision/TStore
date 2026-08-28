@@ -19,4 +19,3 @@ Clients never receive service/admin credentials or bucket-wide delete/list. Path
 prefix alone is insufficient: server resolves the linked database entity and
 capability. Avatar/review buckets and all client upload flows remain deferred and
 `OWNER_DECISION_REQUIRED`.
-

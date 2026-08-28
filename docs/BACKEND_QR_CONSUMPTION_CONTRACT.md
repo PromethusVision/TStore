@@ -26,4 +26,3 @@ valid purchase.
 
 Consumption proves the platform physical confirmation flow, not payment settlement
 or invoice issuance.
-

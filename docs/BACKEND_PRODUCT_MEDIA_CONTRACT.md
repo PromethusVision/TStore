@@ -20,4 +20,3 @@ local offer and is future merchant-owned under exact listing/shop capability.
 
 Current URL/array fields remain compatibility surfaces. A normalized media entity,
 merchant uploads and review images are `OWNER_DECISION_REQUIRED`.
-

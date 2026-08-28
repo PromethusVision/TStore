@@ -21,4 +21,3 @@ merely because a client marked it approved.
 
 Auto-approval thresholds and merchant-private visibility are
 `OWNER_DECISION_REQUIRED`.
-

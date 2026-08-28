@@ -21,4 +21,3 @@
 
 Automatic canonical creation or merge from one scan is prohibited. The exact
 evidence threshold is `OWNER_DECISION_REQUIRED`.
-

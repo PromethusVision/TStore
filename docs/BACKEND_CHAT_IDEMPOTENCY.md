@@ -18,4 +18,3 @@ hash and committed message ID.
 Read receipts also use monotonic state/revision and tolerate duplicate delivery.
 Idempotency keys and message content have separate privacy/retention. Spam/rate
 controls complement but do not replace ownership or duplicate protection.
-

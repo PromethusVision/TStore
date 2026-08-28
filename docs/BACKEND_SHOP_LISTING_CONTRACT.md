@@ -25,4 +25,3 @@ remain listing identity.
 Existing unique `(shop_id, product_id)` may be insufficient once variants exist.
 Changing it requires an explicit compatibility/data migration and is not approved
 here.
-

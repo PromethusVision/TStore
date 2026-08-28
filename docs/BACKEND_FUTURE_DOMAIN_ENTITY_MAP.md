@@ -1,7 +1,7 @@
 # Backend Future Domain Entity Map
 
-**State:** PROPOSED — OWNER REVIEW REQUIRED WHERE MARKED  
-**Wave:** 21 / Workstream C  
+**State:** PROPOSED — OWNER REVIEW REQUIRED WHERE MARKED
+**Wave:** 21 / Workstream C
 **Implementation:** NONE
 
 ## Conceptual map
@@ -77,4 +77,3 @@ EVENT ─references─> committed domain fact; never replaces it
 
 No entity in this map authorizes a schema change. Names are conceptual and may be
 mapped to existing tables during migration planning.
-

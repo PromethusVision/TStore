@@ -26,4 +26,3 @@ or suspension observed before commit denies the affected request.
 
 Locking mechanism is implementation-specific; correctness criteria above are not.
 Contention should be bounded and observable without logging the token.
-

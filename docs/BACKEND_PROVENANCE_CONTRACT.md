@@ -28,4 +28,3 @@ freshness. Merchant authority proves permission to assert, not objective truth.
 
 Evidence taxonomy and auto-resolution thresholds are
 `OWNER_DECISION_REQUIRED`.
-

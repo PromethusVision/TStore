@@ -24,4 +24,3 @@ Candidate submission is separate from active listing creation. Bulk import shoul
 be an asynchronous/batched future contract with per-row results, not one giant
 transaction. Exact command grouping and direct-vs-RPC field split are
 `OWNER_DECISION_REQUIRED`.
-

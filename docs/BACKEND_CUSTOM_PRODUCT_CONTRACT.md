@@ -18,4 +18,3 @@ inventing a brand or barcode. “Custom” does not mean ungoverned.
 Cross-merchant deduplication must not merge genuinely unique handmade items.
 Recommendation: allow merchant-private candidates, promote only after governed
 review. Promotion thresholds remain `OWNER_DECISION_REQUIRED`.
-

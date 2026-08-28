@@ -23,4 +23,3 @@ changes append audit/provenance rather than rewriting purchase evidence.
 
 Exact freshness windows and tax/comparison-price requirements are
 `OWNER_DECISION_REQUIRED` with policy/legal review.
-

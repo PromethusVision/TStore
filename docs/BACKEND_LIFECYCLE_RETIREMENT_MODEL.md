@@ -23,4 +23,3 @@ Retirement blocks new use while preserving authorized historical projections.
 Cascade impact is previewed; no status name alone determines every downstream
 effect. Retention periods and customer deletion treatment are
 `OWNER_DECISION_REQUIRED` with policy/legal review.
-

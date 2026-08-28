@@ -18,4 +18,3 @@ more ambiguous than merge and therefore fails closed.
 
 Default-successor assignment is prohibited. Treatment of predecessor reviews and
 customer-visible neutral history is `OWNER_DECISION_REQUIRED`.
-

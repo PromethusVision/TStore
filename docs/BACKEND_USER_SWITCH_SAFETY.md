@@ -24,4 +24,3 @@ personalization or private joins.
 Automated tests should cover A→logout→B, A late response after B login, refresh
 token failure, deleted account and background/resume. No fallback to the previous
 user's cached identity is allowed.
-

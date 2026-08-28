@@ -41,4 +41,3 @@ erase earlier history.
 - invitation expiry and approval assurance: `OWNER_DECISION_REQUIRED`;
 - whether one-person pilot ownership bypasses membership: recommend **no bypass**,
   use a seeded owner membership during migration.
-

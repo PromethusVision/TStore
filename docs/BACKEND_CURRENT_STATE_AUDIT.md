@@ -1,7 +1,7 @@
 # Backend Current State Audit
 
-**State:** REPOSITORY-EVIDENCED BASELINE — DESIGN ONLY  
-**Wave:** 21 / Workstream A  
+**State:** REPOSITORY-EVIDENCED BASELINE — DESIGN ONLY
+**Wave:** 21 / Workstream A
 **Base:** `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`
 
 ## Scope and evidence
@@ -144,4 +144,3 @@ Customer App.
 4. Advertising, analytics, reward and reputation cannot manufacture purchase or
    review evidence.
 5. Remote state was not contacted or modified by this audit.
-

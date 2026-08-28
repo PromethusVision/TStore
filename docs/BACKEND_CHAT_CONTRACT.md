@@ -26,4 +26,3 @@ an ordinary message edit.
 
 Thread entity, attachments, retention and merchant assignment UX are
 `OWNER_DECISION_REQUIRED`. Do not create them merely for architectural symmetry.
-

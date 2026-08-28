@@ -19,4 +19,3 @@ Notification,notification,read_mutate,DENY,ALLOW_RECIPIENT,DENY,DENY,CASE_SCOPED
 Media,public_media,read,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_CANONICAL,ALLOW_SCOPED,Canonical buckets and safe paths
 Media,media_object,write,DENY,DENY,DENY,CAPABILITY_SCOPED,DEDICATED_ACTION,No broad authenticated CRUD
 Account,customer_account,delete,DENY,RPC_CURRENT_CUSTOMER,DENY,DENY,DEDICATED_ACTION,Fresh auth and exact cascade contract
-

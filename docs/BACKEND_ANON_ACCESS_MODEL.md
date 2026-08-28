@@ -20,4 +20,3 @@ purchases, chat, notifications, membership, private merchant operations or audit
 Search and discovery should remain useful without signup. Exact public review
 author display and coarse-location policy are `OWNER_DECISION_REQUIRED`; minimize
 identification while preserving review usefulness.
-

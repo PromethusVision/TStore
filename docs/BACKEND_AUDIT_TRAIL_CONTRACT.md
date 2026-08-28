@@ -24,4 +24,3 @@ event. Access/export is itself audited.
 
 Audit evidence is not analytics engagement data and does not grant domain
 authority. Retention/access tiers remain `OWNER_DECISION_REQUIRED`.
-

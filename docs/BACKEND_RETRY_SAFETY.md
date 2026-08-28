@@ -19,4 +19,3 @@ or reputation signal. Client retry controls complement database constraints.
 Notifications, Realtime and analytics delivery may be at least once; consumers
 deduplicate before side effects. Do not roll back a valid purchase merely because
 a non-authoritative notification failed.
-

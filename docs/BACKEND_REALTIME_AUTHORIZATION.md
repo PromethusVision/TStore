@@ -19,4 +19,3 @@ scope, resource lifecycle and policy.
 
 Service/admin broadcast into customer clients is prohibited. Realtime never
 authorizes a write and cannot serve as purchase/reward evidence.
-

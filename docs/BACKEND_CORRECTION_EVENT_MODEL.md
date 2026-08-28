@@ -27,4 +27,3 @@ Consumers deduplicate correction ID, process causal predecessor, and quarantine
 missing/unsupported versions. Cascading corrections are idempotent and observable.
 Exact customer-visible correction messages and irreversible classes remain
 `OWNER_DECISION_REQUIRED`.
-

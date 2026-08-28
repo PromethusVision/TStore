@@ -15,4 +15,3 @@ append-only audit envelope and invokes the domain's own mutation contract.
 Operators cannot directly edit review ratings, reward balances, reputation scores,
 purchase snapshots or erase audit. Break-glass is time-bound, alerted and audited.
 Exact pilot roles/two-person gates remain `OWNER_DECISION_REQUIRED`.
-

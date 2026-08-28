@@ -23,4 +23,3 @@ but analytics delivery is not part of purchase correctness.
 Whether cancellation is a distinct RPC and whether a stale cart can be reconfirmed
 are `OWNER_DECISION_REQUIRED`; recommendation is explicit reissue for material
 changes.
-

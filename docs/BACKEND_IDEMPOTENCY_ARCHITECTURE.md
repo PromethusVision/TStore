@@ -26,4 +26,3 @@ Authorization is rechecked on retry before new work. A revoked caller may receiv
 a safe acknowledgement of an already committed outcome without gaining its
 private payload. Irreversible ledger uniqueness survives arbitrary transport
 retry; expiry of a convenience key cannot permit duplication.
-

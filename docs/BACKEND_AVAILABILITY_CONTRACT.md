@@ -19,4 +19,3 @@ conceptual states are `KNOWN_IN_STOCK`, `KNOWN_OUT_OF_STOCK`, `UNKNOWN` and
 The pilot need not promise exact quantity. Ads may require stricter fresh-known
 availability than organic discovery. Domain freshness and whether unknown may be
 advertised are `OWNER_DECISION_REQUIRED`.
-

@@ -26,4 +26,3 @@ deferred.
 - media failure never changes product/purchase/review identity.
 
 Any merchant upload path requires separate capability policies and migration.
-

@@ -22,4 +22,3 @@ ad billing or reputation event.
 Every future mutation specification must state its duplicate identity, retention,
 concurrent-race winner and loser response. “Frontend disables the button” is never
 a complete answer.
-

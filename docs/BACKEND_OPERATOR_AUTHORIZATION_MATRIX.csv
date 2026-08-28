@@ -16,4 +16,3 @@ Export PII or evidence,DENY,PROPOSE,PROPOSE,PROPOSE,PROPOSE,TWO_PERSON_CANDIDATE
 Grant operator capability,DENY,DENY,DENY,DENY,DENY,TWO_PERSON_CANDIDATE,Fresh auth and expiry
 Use break glass,DENY,DENY,DENY,DENY,DENY,ALLOW,Time-bound alerted retrospective review
 Erase audit,DENY,DENY,DENY,DENY,DENY,DENY,Superseding event only
-

@@ -25,4 +25,3 @@ rule/terms version, idempotency identity and predecessor/correction reference.
 
 Unit, funding, program scope, purchase amount/quantity trust, redemption, expiry
 and retention are `OWNER_DECISION_REQUIRED`; implementation must wait.
-

@@ -39,4 +39,3 @@ resource revision. UI hiding is merely presentation.
 **Recommendation:** start with owner/manager/staff display roles mapped to the
 small capability registry above. Exact role names remain
 `OWNER_DECISION_REQUIRED`.
-

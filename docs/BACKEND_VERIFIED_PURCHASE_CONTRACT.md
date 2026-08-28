@@ -23,4 +23,3 @@ original snapshot.
 
 Consumers independently decide review, reward, reputation, analytics and ad
 attribution outcomes. One purchase event cannot be manufactured by any consumer.
-

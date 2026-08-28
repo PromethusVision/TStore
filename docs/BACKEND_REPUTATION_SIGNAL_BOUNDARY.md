@@ -26,4 +26,3 @@ Actual eligible customer rating/count remains independently visible; reputation
 cannot hide, edit or outweigh bad ratings. Cold-start shows insufficient history,
 not an untrusted score. Weights, public badges, shop-vs-organization roll-up and
 decay remain `OWNER_DECISION_REQUIRED`.
-

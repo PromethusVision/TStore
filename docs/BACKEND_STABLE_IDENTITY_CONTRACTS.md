@@ -1,6 +1,6 @@
 # Backend Stable Identity Contracts
 
-**State:** PROPOSED CROSS-DOMAIN CONTRACT — NO IDS GENERATED  
+**State:** PROPOSED CROSS-DOMAIN CONTRACT — NO IDS GENERATED
 **Wave:** 21 / Workstream E
 
 ## Universal rules

@@ -1,6 +1,6 @@
 # Backend Current Entity Map
 
-**State:** REPOSITORY-EVIDENCED — DESIGN ONLY  
+**State:** REPOSITORY-EVIDENCED — DESIGN ONLY
 **Wave:** 21 / Workstream B
 
 ## Relationship map
@@ -80,4 +80,3 @@ a separately authorized migration establishes listing-only ownership.
 4. Product merge/split must preserve purchase/review references.
 5. Ads, rewards, reputation, operations cases and events need independent IDs and
    must reference—not replace—current authoritative entities.
-

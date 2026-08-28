@@ -19,4 +19,3 @@ reconciliation where a remote side effect is unavoidable.
 
 An event is atomically coupled only when losing it would make a committed domain
 fact unrecoverable or unsafe. Exact outbox scope is `OWNER_DECISION_REQUIRED`.
-

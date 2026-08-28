@@ -16,4 +16,3 @@ not canonical product identity, GTIN or a cross-merchant lookup key.
 
 Recommendation: organization namespace with explicit branch override only if real
 merchant workflows require it. Namespace choice is `OWNER_DECISION_REQUIRED`.
-

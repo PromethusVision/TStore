@@ -18,4 +18,3 @@ the applicable taxonomy/rule version. Display name/path is mutable presentation.
 Current category FK remains active. Multi-assignment, primary assignment and
 version rollout are `OWNER_DECISION_REQUIRED`; recommendation is one primary
 canonical placement plus explicit cross-discovery aliases, not duplicate products.
-

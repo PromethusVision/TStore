@@ -24,4 +24,3 @@ Security-definer is exceptional, narrowly scoped and separately reviewed. RPC
 does not automatically mean secure; authorization and result filtering remain
 inside the server contract. Migration rollout must preserve old callers until
 compatibility is demonstrated.
-

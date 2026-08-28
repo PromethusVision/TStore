@@ -39,4 +39,3 @@ Denial behavior should not expose row existence.
 
 No future matrix row grants implementation authority. Exact policies require a
 separate migration task and Development verification.
-

@@ -21,4 +21,3 @@ Reviews, rewards, reputation, ads and analytics must consume explicit lineage an
 correction events. A backfill may enrich missing references only with defensible
 evidence and must preserve original values/audit. Exact snapshot retention is
 `OWNER_DECISION_REQUIRED` by domain.
-

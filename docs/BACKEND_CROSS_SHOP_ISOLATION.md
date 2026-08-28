@@ -25,4 +25,3 @@ capability and return minimized aggregates, not unrestricted branch rows.
 
 Shared-counter/cross-branch operations remain `OWNER_DECISION_REQUIRED` and must
 be explicit exceptions, never policy wildcards.
-

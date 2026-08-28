@@ -28,4 +28,3 @@ or billing by default.
 
 Campaign economics, stock posture, attribution and billing event remain
 `OWNER_DECISION_REQUIRED`.
-

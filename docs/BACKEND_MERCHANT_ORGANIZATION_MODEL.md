@@ -1,6 +1,6 @@
 # Backend Merchant Organization Model
 
-**State:** PROPOSED — OWNER_DECISION_REQUIRED  
+**State:** PROPOSED — OWNER_DECISION_REQUIRED
 **Implementation:** NONE
 
 ## Separation
@@ -44,4 +44,3 @@ membership solely because a profile role says `merchant`.
 
 **Recommendation:** introduce the organization only with Merchant App onboarding;
 keep Customer App shop IDs and reads stable.
-

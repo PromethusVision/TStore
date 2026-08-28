@@ -20,4 +20,3 @@ contain secrets or grant access.
 At-least-once/out-of-order behavior is assumed. Clients deduplicate by row/event
 ID and revision, perform gap refresh and discard late data from prior sessions.
 Exact merchant V1 channels are `OWNER_DECISION_REQUIRED`.
-

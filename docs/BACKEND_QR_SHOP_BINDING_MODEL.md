@@ -20,4 +20,3 @@ authorized shop scope.
 Cross-branch confirmation is recommended **not supported** in V1. Any future
 shared-counter exception is `OWNER_DECISION_REQUIRED` and would need explicit
 issuance scope, capability and customer disclosure—not a broad membership OR.
-

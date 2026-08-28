@@ -23,4 +23,3 @@ rows stay variant-null with an explicit resolution state.
 Whether color always creates a variant and the first V1 domain set are
 `OWNER_DECISION_REQUIRED`. Recommendation: introduce variants only in domains
 where selection changes product identity or purchase correctness.
-

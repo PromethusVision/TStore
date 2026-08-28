@@ -20,4 +20,3 @@ No `LIKE`/folder-wide cleanup, client delete policy or database cascade directly
 deletes Storage objects. Current canonical migrations install no cron/collector.
 Longer retention, legal hold and future avatar/review cleanup remain
 `OWNER_DECISION_REQUIRED`.
-

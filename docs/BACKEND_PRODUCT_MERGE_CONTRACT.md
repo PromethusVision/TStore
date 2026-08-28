@@ -22,4 +22,3 @@ Duplicate listings and customer/product reviews are not silently collapsed.
 
 Review collision policy and whether to select a survivor or new successor are
 `OWNER_DECISION_REQUIRED`. Original facts and operator audit are never deleted.
-

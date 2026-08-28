@@ -20,4 +20,3 @@ Current `notifications` plus customer Realtime remain the active in-app contract
 Push, email and in-app are separate delivery attempts over one notification intent.
 Push tokens/preferences/quiet hours and transactional vs optional categories are
 `OWNER_DECISION_REQUIRED`. Failure to push must not roll back a committed purchase.
-

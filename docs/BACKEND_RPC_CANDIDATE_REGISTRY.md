@@ -28,4 +28,3 @@
 The V1 merchant RPC set, product candidate auto-routing, reward/customer caller
 surface and event-outbox timing are `OWNER_DECISION_REQUIRED`. This registry is a
 planning inventory, not execute permission.
-

@@ -25,4 +25,3 @@ They are not interchangeable.
 Keys are scoped to authenticated merchant membership, shop and operation. Retention
 must cover token/retry/audit risk; irreversible purchase uniqueness ultimately
 rests on the source-session constraint, not key expiry.
-

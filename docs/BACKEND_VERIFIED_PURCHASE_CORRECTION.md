@@ -22,4 +22,3 @@ review rights to an arbitrary product child.
 
 Exact correction classes, review display impact and reward recovery are
 `OWNER_DECISION_REQUIRED` with policy/legal review where applicable.
-

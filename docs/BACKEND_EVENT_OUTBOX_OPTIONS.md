@@ -46,4 +46,3 @@ Adopt a **selective**, not universal, outbox after event registry/privacy/retent
 approval. Customer App correctness must not depend on an analytics pipeline.
 Pilot event list, transport/worker and retention are
 `OWNER_DECISION_REQUIRED`. No schema or migration is authorized.
-

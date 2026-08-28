@@ -19,4 +19,3 @@ sell unit, price basis, minimum and increment.
 
 Supported units, scale/rounding and whether QR confirmation may correct the final
 quantity are `OWNER_DECISION_REQUIRED`.
-

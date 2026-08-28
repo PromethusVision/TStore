@@ -22,4 +22,3 @@ Product merge/split may require a new projection while preserving predecessor
 history and collision policy. Exact rounding, moderation inclusion and merge
 display are `OWNER_DECISION_REQUIRED`. Advertising spend and reward activity have
 zero aggregate effect.
-

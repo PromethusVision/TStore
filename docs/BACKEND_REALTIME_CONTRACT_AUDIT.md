@@ -27,4 +27,3 @@ Every channel needs owner subject, filter identity, event revision, duplicate/
 ordering rules, unsubscribe/user-switch behavior and authoritative refresh path.
 Adding tables to a publication requires a separate migration and Development
 security test.
-

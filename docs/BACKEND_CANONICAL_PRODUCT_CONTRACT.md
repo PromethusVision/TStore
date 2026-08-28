@@ -23,4 +23,3 @@ truth.
 
 **Recommendation:** extend `products` additively with provenance/revision/lineage
 when needed. Exact governance workflow remains `OWNER_DECISION_REQUIRED`.
-

@@ -21,4 +21,3 @@ rewards, rating, merchant assertion or client metadata are insufficient.
 Current `get_product_review_eligibility` and mutation RPCs remain active. A future
 projection may cache eligibility only if rebuildable from authoritative purchase
 evidence and protected against duplicate events.
-
