@@ -1,6 +1,6 @@
 # EsnaftaVar Merchant Product Attribute Onboarding
 
-**State:** `PROVISIONAL ATTRIBUTE-ENTRY DESIGN`  
+**State:** `PROVISIONAL ATTRIBUTE-ENTRY DESIGN`
 **Scope:** Attribute-entry implications only; not a merchant-app, UI or runtime design
 
 ## Goal

@@ -1,9 +1,9 @@
 # EsnaftaVar Facet & Search Readiness
 
-**Wave:** 15 / Global Facet, Attribute & Search Architecture  
-**Assessment date:** 28 August 2026  
-**Overall classification:** `NEEDS_MINOR_REFINEMENT`  
-**Owner finalization:** None  
+**Wave:** 15 / Global Facet, Attribute & Search Architecture
+**Assessment date:** 28 August 2026
+**Overall classification:** `NEEDS_MINOR_REFINEMENT`
+**Owner finalization:** None
 **Runtime implementation:** None
 
 ## Source boundary
@@ -34,6 +34,8 @@ No source branch was merged or modified.
 | Proposed L2 represented in vocabulary | **224/224** |
 | Controlled search vocabulary | **1,220** expressions |
 | Vocabulary coverage | **5 per each 244 L2** |
+| Vocabulary ambiguous rows / unique terms | **26 / 15** |
+| Exact multi-target vocabulary groups | **8** (all rows flagged) |
 | Search collision audit | **40** terms |
 | Attribute dictionary | **88** rows / unique IDs and keys |
 | Synthetic stress scenarios | **240** / 10 per L1 |
@@ -140,11 +142,16 @@ reviewed in grouped order rather than as dozens of independent micro-decisions.
 - Duplicate facet concept IDs: 0.
 - Duplicate attribute technical-key proposals: 0.
 - Duplicate term/scenario IDs: 0.
+- Exact multi-target vocabulary rows left unflagged: 0.
 - Category/facet/search/policy/compatibility/listing separation: PASS.
 - Proposed categories owner-finalized: NO.
 - Production schema/runtime/DB/migration: NO.
 - Flutter/Figma/Supabase/Production/Development changes: NO.
 - Source proposal/canonical/coordination documents modified: NO.
+
+Final consistency checkpoint: all 16 allowlisted artifacts passed structural count,
+unique-ID/key, exact L1/L2 coverage, target-reference, `git diff --check` and
+secret/project-URL/production-UUID-like scans. Source-branch merge commits: `0`.
 
 ## Documents
 

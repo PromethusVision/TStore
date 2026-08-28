@@ -1,8 +1,8 @@
 # EsnaftaVar Global Compatibility & Fitment Model
 
-**State:** `PROVISIONAL GLOBAL ARCHITECTURE`  
+**State:** `PROVISIONAL GLOBAL ARCHITECTURE`
 **Canonical inputs:** owner-final Phone & Accessories and Computer Components
-compatibility principles  
+compatibility principles
 **Runtime/configurator:** Not implemented
 
 ## Contract

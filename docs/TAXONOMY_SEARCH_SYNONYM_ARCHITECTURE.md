@@ -1,6 +1,6 @@
 # EsnaftaVar Search Synonym Architecture
 
-**State:** `PROVISIONAL SEARCH DESIGN — NO INDEX/RUNTIME IMPLEMENTATION`  
+**State:** `PROVISIONAL SEARCH DESIGN — NO INDEX/RUNTIME IMPLEMENTATION`
 **Coverage target:** owner-final 20 L2 plus proposed 224 L2
 
 ## Separation of concerns

@@ -1,8 +1,8 @@
 # EsnaftaVar Global Facet Registry
 
-**Wave:** 15 / Global Facet, Attribute & Search Architecture  
-**Date:** 28 August 2026  
-**State:** `PROVISIONAL ARCHITECTURE — READY FOR OWNER REVIEW`  
+**Wave:** 15 / Global Facet, Attribute & Search Architecture
+**Date:** 28 August 2026
+**State:** `PROVISIONAL ARCHITECTURE — READY FOR OWNER REVIEW`
 **Runtime:** None; concept IDs are documentation-only and are not UUIDs, columns or API keys.
 
 ## Contract

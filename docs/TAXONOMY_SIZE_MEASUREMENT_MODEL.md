@@ -1,6 +1,6 @@
 # EsnaftaVar Size & Measurement Model
 
-**State:** `PROVISIONAL ARCHITECTURE — NO RUNTIME MODEL`  
+**State:** `PROVISIONAL ARCHITECTURE — NO RUNTIME MODEL`
 **Purpose:** Prevent one generic `size` field from mixing labels, physical measures,
 capacity and compatibility.
 

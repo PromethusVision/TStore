@@ -1,7 +1,7 @@
 # EsnaftaVar Facet Scope Architecture
 
-**State:** `PROVISIONAL ARCHITECTURE — OWNER REVIEW REQUIRED`  
-**Registry:** `TAXONOMY_GLOBAL_FACET_REGISTRY.md` (`88` concept IDs)  
+**State:** `PROVISIONAL ARCHITECTURE — OWNER REVIEW REQUIRED`
+**Registry:** `TAXONOMY_GLOBAL_FACET_REGISTRY.md` (`88` concept IDs)
 **Runtime/schema:** Not designed or changed
 
 ## Purpose

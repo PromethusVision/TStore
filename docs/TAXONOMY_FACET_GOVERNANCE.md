@@ -1,8 +1,8 @@
 # EsnaftaVar Facet Governance
 
-**State:** `PROVISIONAL GOVERNANCE PROPOSAL — OWNER REVIEW REQUIRED`  
+**State:** `PROVISIONAL GOVERNANCE PROPOSAL — OWNER REVIEW REQUIRED`
 **Applies to:** concept facets, values, aliases, profiles, compatibility inputs,
-policy metadata and search-index impact  
+policy metadata and search-index impact
 **Runtime authority created:** None
 
 ## Roles

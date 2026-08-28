@@ -1,6 +1,6 @@
 # EsnaftaVar Product / Variant / Listing Attribute Boundary
 
-**State:** `PROVISIONAL CONCEPTUAL MODEL — OWNER DECISIONS OPEN`  
+**State:** `PROVISIONAL CONCEPTUAL MODEL — OWNER DECISIONS OPEN`
 **Data model/runtime:** Explicitly not finalized or implemented
 
 ## Three layers

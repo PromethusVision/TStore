@@ -1,7 +1,7 @@
 # EsnaftaVar Search Term Collision Audit
 
-**State:** `PROVISIONAL SEARCH AUDIT — NO RUNTIME RULES`  
-**Vocabulary:** `1,220` controlled expressions / `244` L2 targets  
+**State:** `PROVISIONAL SEARCH AUDIT — NO RUNTIME RULES`
+**Vocabulary:** `1,220` controlled expressions / `244` L2 targets
 **Collision rows:** `40`
 
 ## Reading rule
@@ -70,6 +70,16 @@ intent. Policy gates still apply after semantic resolution.
 - Bare ambiguous terms may produce labeled result groups or clarification.
 - Search expansion cannot authorize medical, hazardous, age-restricted or excluded goods.
 - A collision fix does not rename/finalize any proposed category.
+
+## Vocabulary exact multi-target checkpoint
+
+The generated 1,220-row vocabulary contains eight exact case-insensitive terms that
+legitimately target more than one L2: `bileklik`, `disk`, `fırın`, `keyboard`,
+`monitör`, `notebook`, `organizer` and `önlük`. All `19` rows in these eight groups
+are marked `AMBIGUOUS=YES` with the other target(s). This checkpoint is a mechanical
+subset/cross-check of the 40 semantic collision rows, not eight extra canonical
+collision decisions. Together with seven single-target terms that carry known wider
+semantic risk, the vocabulary has `26` ambiguous rows across `15` unique terms.
 
 `SEARCH_COLLISION_COUNT: 40`
 

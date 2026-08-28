@@ -1,7 +1,7 @@
 # EsnaftaVar 24-L1 Facet Profiles
 
-**State:** `PROVISIONAL FACET PROFILES — OWNER REVIEW REQUIRED`  
-**Coverage:** `24/24` canonical L1  
+**State:** `PROVISIONAL FACET PROFILES — OWNER REVIEW REQUIRED`
+**Coverage:** `24/24` canonical L1
 **Taxonomy source state:** Elektronik and Bilgisayar & Tablet L2 are owner-final;
 the other `22` L2 structures remain `PROPOSED FOR OWNER REVIEW`.
 

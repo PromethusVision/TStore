@@ -1,6 +1,6 @@
 # EsnaftaVar Facet Value Normalization
 
-**State:** `PROVISIONAL DESIGN — NO RUNTIME IMPLEMENTATION`  
+**State:** `PROVISIONAL DESIGN — NO RUNTIME IMPLEMENTATION`
 **Scope:** Values for the 88 concept facets; no DB, API, index or merchant UI schema
 
 ## Principle
