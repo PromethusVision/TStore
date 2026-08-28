@@ -33,4 +33,3 @@ interpretation are deliberately excluded.
 | OD-24 | P1 | Which mobile platforms are in pilot and therefore need exact store declarations? | privacy/release |
 
 Raw decisions: **24**. Every decision is mapped once in the dedup document.
-

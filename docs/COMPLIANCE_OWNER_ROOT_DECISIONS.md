@@ -19,4 +19,3 @@
 
 The “recommendation” column is an agent hypothesis. It is not canonical and cannot satisfy a
 professional-review dependency.
-

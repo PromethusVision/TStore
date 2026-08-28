@@ -1,6 +1,6 @@
 # Compliance Professional Review Queue
 
-**State:** ROUTED — NOT PROFESSIONALLY DECIDED  
+**State:** ROUTED — NOT PROFESSIONALLY DECIDED
 **Input:** 32 consolidated questions in `COMPLIANCE_LEGAL_QUESTION_DEDUP.md`.
 
 Each question has one accountable primary route so none disappears. Secondary reviewers remain
@@ -28,4 +28,3 @@ consulted where the issue crosses disciplines.
 Every answer must record source/version/date, factual product assumptions, what was decided, what
 was not decided, affected capabilities, implementation evidence and review trigger. “Legal review”
 without a named owner or deliverable does not close an item.
-

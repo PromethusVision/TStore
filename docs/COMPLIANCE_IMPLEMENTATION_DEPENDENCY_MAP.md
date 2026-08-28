@@ -23,4 +23,3 @@
 - **Chat/media:** purpose/access → report/evidence → retention/deletion → operator safeguards.
 
 No step authorizes Production mutation. Implementation belongs to later, separately authorized waves.
-

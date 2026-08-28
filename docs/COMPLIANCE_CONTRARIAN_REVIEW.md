@@ -27,4 +27,3 @@ reachable complaint route remain real pilot dependencies.
 The leanest defensible pilot is intentionally narrow. It does not require every future compliance
 system, but every enabled capability must have a factual purpose, visible rule, accountable reviewer
 and enforceable control.
-

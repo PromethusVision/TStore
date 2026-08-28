@@ -23,4 +23,3 @@
 - Root decisions: **12**.
 - P0/P1/P2 roots: **7 / 4 / 1**.
 - Disappeared, duplicated or silently selected decision: **0**.
-

@@ -1,6 +1,6 @@
 # Esenler Pilot Compliance Minimum
 
-**State:** PROPOSED FOR PROFESSIONAL AND PRODUCT-OWNER REVIEW  
+**State:** PROPOSED FOR PROFESSIONAL AND PRODUCT-OWNER REVIEW
 **Scope:** First commercial Esenler pilot; this is not legal advice.
 
 ## Launch-blocking minimum
@@ -45,4 +45,3 @@
 An enterprise GRC suite, broad behavioral advertising, transferable rewards, automated legal
 classification, all-category regulated onboarding and a large moderation team are not prerequisites
 when the related capability is disabled and the remaining minimum controls are real.
-

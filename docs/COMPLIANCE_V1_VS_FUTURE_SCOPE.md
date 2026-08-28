@@ -24,4 +24,3 @@
 
 Disabled capabilities have no launch claim. Re-enabling one reopens its professional and technical
 dependencies.
-

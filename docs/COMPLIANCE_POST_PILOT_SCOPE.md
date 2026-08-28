@@ -18,4 +18,3 @@
 
 Post-pilot expansion does not relax pilot controls. Each trigger opens only its own dependency lane;
 unrelated modules should not be blocked.
-

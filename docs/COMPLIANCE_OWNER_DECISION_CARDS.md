@@ -20,4 +20,3 @@ Use `COMPLIANCE_OWNER_ROOT_DECISIONS.md` for complete trade-offs.
 | RD-12 | What operating/mobile scope launches? | Audited lean Android option if owner selects | `[ ] A  [ ] B  [ ] C` |
 
 Professional constraints are inputs to owner choice, not options the owner can waive.
-
