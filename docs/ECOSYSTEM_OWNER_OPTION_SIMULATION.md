@@ -25,4 +25,3 @@
 
 Across all recommended options, QR/review authority, paid/organic separation,
 Customer backend compatibility and owner-final taxonomy scope remain unchanged.
-

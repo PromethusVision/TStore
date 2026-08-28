@@ -25,4 +25,3 @@
 
 Every `ECO-D001`–`ECO-D048` appears exactly once through the abbreviated D IDs.
 Partial clusters reduce review order but do not merge materially different choices.
-

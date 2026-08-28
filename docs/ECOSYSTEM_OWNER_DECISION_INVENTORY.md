@@ -55,4 +55,3 @@
 
 Counts: raw=48; P0=28; P1=18; P2=2. Implementation details such as lock,
 index, exact RPC name, CI vendor or queue transport are excluded.
-

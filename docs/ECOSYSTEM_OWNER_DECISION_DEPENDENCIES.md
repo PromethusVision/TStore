@@ -29,4 +29,3 @@
 activate. `ROOT-11` then secures physical evidence. `ROOT-01` establishes what can
 ship. These five roots unblock most pilot implementation without deciding Ads,
 Reward or gamification.
-
