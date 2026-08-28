@@ -17,7 +17,7 @@
 
 ## Trust promises
 
-- coverage is selected and local, not “all Esenler”; 
+- coverage is selected and local, not “all Esenler”;
 - availability may be `UNKNOWN`; no false in-stock language;
 - distance/directions are intent aids, not proof of visit or sale;
 - sponsored content is absent in the recommended first pilot; if introduced later,
