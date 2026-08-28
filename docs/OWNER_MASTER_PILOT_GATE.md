@@ -1,6 +1,6 @@
 # Owner Master Pilot Gate
 
-State: `2/16 COMMERCIAL ROOTS FINAL — 1/8 MERCHANT IMPLEMENTATION ROOT FINAL`
+State: `16/16 COMMERCIAL ROOTS FINAL — 8/8 MERCHANT IMPLEMENTATION ROOTS FINAL`
 
 ## Two different decision families
 
@@ -32,9 +32,9 @@ authority. `OM-R18` is a launch/professional gate, not a Merchant App module.
 
 | Model | Shape | Safety | Operator burden | Learning value | Owner state |
 |---|---|---|---|---|---|
-| A | Full Merchant App before pilot | Broad, but larger attack/test surface | lower later, high build cost now | delayed by feature breadth | OPEN |
-| B | Minimum safe Merchant App slice | authority/listing/QR boundaries explicit | bounded | high; tests real merchant behavior | RECOMMENDED, NOT SELECTED |
-| C | Tiny verifier + operator-assisted bootstrap | safe only if QR/authority/history never manual | high and fragile | narrower; operator behavior may distort | OPEN |
+| A | Full Merchant App before pilot | Broad, but larger attack/test surface | lower later, high build cost now | delayed by feature breadth | NOT SELECTED |
+| B | Minimum safe Merchant App slice | authority/listing/QR boundaries explicit | bounded | high; tests real merchant behavior | PRODUCT OWNER FINAL |
+| C | Tiny verifier + operator-assisted bootstrap | safe only if QR/authority/history never manual | high and fragile | narrower; operator behavior may distort | NOT SELECTED |
 
 ## Capabilities that cannot be deferred if used
 
@@ -64,14 +64,17 @@ approval, history deletion or Production release.
 
 ## Pilot gate state
 
-- Commercial pilot roots answered: `2/16` (`OM-R04=A`, `OM-R05=A`)
-- Merchant implementation roots answered: `1/8` (`OM-R04=A`)
+- Commercial pilot roots answered: `16/16`
+- Merchant implementation roots answered: `8/8`
 - Customer UI owner decisions answered: `8/8`
 - Physical/exact-artifact acceptance: `NOT EXECUTED`
-- Professional release surface: `WAITING — OM-R18`
-- OM-R05 professional dependency: `KVKK REVIEW OPEN`
-- Owner finalization: `PARTIAL — EXACTLY 8 ROOTS`
+- Professional release surface: `PRODUCT DIRECTION FINAL — LAWYER/KVKK REVIEW OPEN`
+- Other professional dependencies: `OM-R05`, `OM-R10`, `OM-R12`, `OM-R14`–`OM-R18` remain open as routed
+- Owner finalization: `PARTIAL — EXACTLY 22/31 ROOTS`
+- Runtime/physical/Production implementation: `NOT AUTHORIZED / NOT EXECUTED`
 
-`COMMERCIAL_PILOT_GATE: OPEN`
+`COMMERCIAL_PILOT_OWNER_DECISION_GATE: CLOSED`
 
-`MERCHANT_PILOT_IMPLEMENTATION_GATE: OPEN`
+`MERCHANT_PILOT_OWNER_DECISION_GATE: CLOSED`
+
+`COMMERCIAL_LAUNCH_GATE: OPEN — PROFESSIONAL, RUNTIME, PHYSICAL AND PRODUCTION EVIDENCE`

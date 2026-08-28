@@ -1,6 +1,6 @@
 # Owner Master Semantic Deduplication
 
-State: `31 MASTER ROOTS — 8 PRODUCT OWNER FINAL — 23 OPEN`
+State: `31 MASTER ROOTS — 22 PRODUCT OWNER FINAL — 9 NON-FINAL`
 
 ## Reconciliation result
 
@@ -92,6 +92,10 @@ distinct master roots are needed because two pairs are semantically merged.
 
 `ORPHAN_SOURCE_DECISIONS: 0`
 
-`OWNER_FINAL_OPTIONS: 8`
+`OWNER_FINAL_OPTIONS: 22`
 
-`OWNER_OPEN_ROOTS: 23`
+`OWNER_OPEN_ROOTS: 2`
+
+`OWNER_PROVISIONAL_ROOTS: 3`
+
+`OWNER_DEFERRED_ROOTS: 4`

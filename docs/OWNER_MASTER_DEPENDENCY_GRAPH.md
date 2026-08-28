@@ -1,6 +1,6 @@
 # Owner Master Dependency Graph
 
-State: `8 ROOTS FINAL=A — 23 ROOTS OPEN`
+State: `22 ROOTS FINAL — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
 ## Applied decision state
 
@@ -12,8 +12,21 @@ State: `8 ROOTS FINAL=A — 23 ROOTS OPEN`
   implementation details.
 - `OM-R22=A`, `OM-R23=A`, `OM-R24=A` close the Shop CTA, Cart meaning and card
   density owner decisions.
+- `OM-R01=A`, `OM-R02=A` and `OM-R03=A` resolve the pilot objective, bounded
+  density-ready cells and controlled staged cohort; exact cells/thresholds stay open.
+- `OM-R09=A`, `OM-R10=A` and `OM-R11=B` resolve the merchant cohort to ordinary
+  single-owner shops using a minimum safe Merchant App; regulated capability
+  remains fail-closed and the full app is not approved.
+- `OM-R12=A` and `OM-R13=A` unlock listing-truth and gated exact-shop QR contract
+  planning without approving an enum/schema or passing physical acceptance.
+- `OM-R14=A` through `OM-R18=A` resolve lean operations, minimum evidence,
+  bounded no-charge offer, community-led acquisition and professionally reviewed
+  launch surfaces. Their listed lawyer/KVKK/accounting/regulatory gates remain open.
+- `OM-R31=A` resolves stop/continue/expand governance without selecting numeric
+  thresholds.
 
-The graph topology is unchanged. A final parent answer does not auto-pass runtime,
+The graph topology is unchanged. The 22 final roots auto-resolve only their mapped
+child/dependent records. A final parent answer does not auto-pass runtime,
 physical or professional gates.
 
 ## High-leverage graph

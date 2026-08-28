@@ -1,13 +1,17 @@
 # Owner Master Mobile / PC Review
 
-State: `8 FINAL ROOT CARDS — 23 OPEN ROOT CARDS`
+State: `22 FINAL ROOT CARDS — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
-Use `OM-Rxx=A/B/C` only for open cards. `RECOMMENDED` remains an agent
-recommendation. Product Owner finalized exactly eight answers on 2026-08-29:
-`OM-R04=A`, `OM-R05=A`, `OM-R19=A`, `OM-R20=A`, `OM-R21=A`, `OM-R22=A`,
-`OM-R23=A`, `OM-R24=A`.
+Use `OM-Rxx=A/B/C` only for non-final cards when their review phase is active.
+`RECOMMENDED` remains an agent
+recommendation. Product Owner finalized exactly 22 answers on 2026-08-29. The
+second batch added `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
+`OM-R11=B`, `OM-R12=A`, `OM-R13=A`, `OM-R14=A`, `OM-R15=A`, `OM-R16=A`,
+`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. No other card is selected.
 
 ## OM-R01 — Pilot success purpose
+
+DECISION: `FINAL=A`
 
 QUESTION — İlk Esenler pilotunun tek başarı amacı nedir?
 
@@ -34,6 +38,8 @@ ANSWER FORMAT: `OM-R01=A`
 
 ## OM-R02 — Geography and density
 
+DECISION: `FINAL=A` — bounded density-ready cells; not all Esenler at once.
+
 QUESTION — Hangi exact Esenler cells ve hangi minimum usable density ile pilot açılır?
 
 RECOMMENDED: A
@@ -58,6 +64,8 @@ ANSWER FORMAT: `OM-R02=A`
 ---
 
 ## OM-R03 — Rollout and cohort
+
+DECISION: `FINAL=A` — controlled cohort, then measured staged expansion.
 
 QUESTION — İlk cohort ve distribution sequence nasıl olmalıdır?
 
@@ -213,6 +221,8 @@ ANSWER FORMAT: `OM-R08=B`
 
 ## OM-R09 — Merchant authority and cohort
 
+DECISION: `FINAL=A`
+
 QUESTION — Pilot merchant organization, authority and cohort shape nedir?
 
 RECOMMENDED: A
@@ -237,6 +247,8 @@ ANSWER FORMAT: `OM-R09=A`
 ---
 
 ## OM-R10 — Policy allowlist and verification
+
+DECISION: `FINAL=A` — lawyer/regulatory review remains open.
 
 QUESTION — Hangi merchant sectors, verification evidence and policy classes pilotta açıktır?
 
@@ -263,6 +275,8 @@ ANSWER FORMAT: `OM-R10=A`
 
 ## OM-R11 — Minimum Merchant App
 
+DECISION: `FINAL=B` — minimum safe slice only; full Merchant App not approved.
+
 QUESTION — İlk pilot için hangi merchant-side operating surface gerekir?
 
 RECOMMENDED: B
@@ -287,6 +301,8 @@ ANSWER FORMAT: `OM-R11=B`
 ---
 
 ## OM-R12 — Listing truth and freshness
+
+DECISION: `FINAL=A` — exact enum/schema is not selected.
 
 QUESTION — Price, availability and freshness truth kim tarafından ve hangi states ile korunur?
 
@@ -313,6 +329,8 @@ ANSWER FORMAT: `OM-R12=A`
 
 ## OM-R13 — QR rollout and evidence
 
+DECISION: `FINAL=A` — gated subset; physical/two-device evidence remains open.
+
 QUESTION — QR hangi cohort'ta, hangi exact-shop authority ve history görünürlüğüyle açılır?
 
 RECOMMENDED: A
@@ -337,6 +355,8 @@ ANSWER FORMAT: `OM-R13=A`
 ---
 
 ## OM-R14 — Operations and support
+
+DECISION: `FINAL=A` — lawyer review of user-facing process remains open.
 
 QUESTION — Pilot support, staffing, operator authority and pause controls nasıl çalışır?
 
@@ -363,6 +383,8 @@ ANSWER FORMAT: `OM-R14=A`
 
 ## OM-R15 — KPI, monitoring and privacy
 
+DECISION: `FINAL=A` — KVKK review and exact thresholds remain open.
+
 QUESTION — Hangi minimum KPI, baseline and monitoring evidence piloti yönetir?
 
 RECOMMENDED: A
@@ -387,6 +409,8 @@ ANSWER FORMAT: `OM-R15=A`
 ---
 
 ## OM-R16 — Merchant pilot offer
+
+DECISION: `FINAL=A` — no future price is approved; accounting/tax review remains open.
 
 QUESTION — Merchant'a hangi bounded commercial pilot offer sunulur?
 
@@ -413,6 +437,8 @@ ANSWER FORMAT: `OM-R16=A`
 
 ## OM-R17 — Acquisition and feedback
 
+DECISION: `FINAL=A` — KVKK review remains open.
+
 QUESTION — İlk customer/merchant acquisition mix ve feedback yöntemi nedir?
 
 RECOMMENDED: A
@@ -437,6 +463,8 @@ ANSWER FORMAT: `OM-R17=A`
 ---
 
 ## OM-R18 — Terms, privacy and account lifecycle
+
+DECISION: `FINAL=A` — lawyer/KVKK review remains a commercial-launch gate.
 
 QUESTION — Hangi professionally reviewed terms, privacy, deletion and factual platform disclosures launch before pilot?
 
@@ -775,6 +803,8 @@ ANSWER FORMAT: `OM-R30=A`
 
 ## OM-R31 — Pause and expansion
 
+DECISION: `FINAL=A` — exact numeric thresholds are not selected.
+
 QUESTION — Piloti hangi evidence durdurur ve hangi evidence bir sonraki dimension'a genişletir?
 
 RECOMMENDED: A
@@ -808,6 +838,10 @@ Unanswered cards remain `OPEN`; recommendations are never auto-applied.
 
 `ROOT_CARDS: 31`
 
-`OWNER_FINAL_OPTIONS: 8`
+`OWNER_FINAL_OPTIONS: 22`
 
-`OWNER_OPEN_ROOTS: 23`
+`OWNER_OPEN_ROOTS: 2`
+
+`OWNER_PROVISIONAL_ROOTS: 3`
+
+`OWNER_DEFERRED_ROOTS: 4`

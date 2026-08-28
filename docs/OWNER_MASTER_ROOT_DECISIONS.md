@@ -1,23 +1,39 @@
 # Owner Master Root Decisions
 
-State: `8 PRODUCT OWNER FINAL ROOTS — 23 ROOTS OPEN`
+State: `22 PRODUCT OWNER FINAL ROOTS — 2 OPEN / 3 PROVISIONAL / 4 DEFERRED`
 
-Recommendations remain working hypotheses for open roots. On 2026-08-29 the
-Product Owner finalized `OM-R04=A`, `OM-R05=A`, `OM-R19=A`, `OM-R20=A`,
-`OM-R21=A`, `OM-R22=A`, `OM-R23=A` and `OM-R24=A`. No other answer is implied.
+Recommendations remain working hypotheses for non-final roots. On 2026-08-29 the
+Product Owner finalized the first eight roots and then a second, explicitly
+bounded batch: `OM-R01=A`, `OM-R02=A`, `OM-R03=A`, `OM-R09=A`, `OM-R10=A`,
+`OM-R11=B`, `OM-R12=A`, `OM-R13=A`, `OM-R14=A`, `OM-R15=A`, `OM-R16=A`,
+`OM-R17=A`, `OM-R18=A` and `OM-R31=A`. No other answer is implied.
 
 ## Product Owner final register
 
 | Root | Final | Decision state | Remaining gate |
 |---|---|---|---|
+| OM-R01 | A | FINAL | exact KPI formulas and targets remain open |
+| OM-R02 | A | FINAL | exact launch cells and density evidence remain open |
+| OM-R03 | A | FINAL | staged release execution remains gated |
 | OM-R04 | A | FINAL | exact signed artifact and physical acceptance not executed |
 | OM-R05 | A | FINAL | KVKK review remains open |
+| OM-R09 | A | FINAL | staff/multi-branch automation not approved |
+| OM-R10 | A | FINAL | lawyer/regulatory review remains open; sensitive scope fails closed |
+| OM-R11 | B | FINAL | minimum safe slice only; full Merchant App not approved |
+| OM-R12 | A | FINAL | exact enum/schema not approved; claim review remains open |
+| OM-R13 | A | FINAL | physical/two-device evidence not executed |
+| OM-R14 | A | FINAL | user-facing process review remains open |
+| OM-R15 | A | FINAL | KVKK data-map review and numeric thresholds remain open |
+| OM-R16 | A | FINAL | no future price approved; accounting/tax review remains open |
+| OM-R17 | A | FINAL | KVKK review for feedback/acquisition data remains open |
+| OM-R18 | A | FINAL | lawyer/KVKK approval required before commercial launch |
 | OM-R19 | A | FINAL | runtime token reconciliation not authorized here |
 | OM-R20 | A | FINAL | light-only runtime cleanup not authorized here |
 | OM-R21 | A | FINAL | bounded C1 implementation/evidence pending |
 | OM-R22 | A | FINAL | Shop Details implementation pending |
 | OM-R23 | A | FINAL | Cart V2 implementation pending |
 | OM-R24 | A | FINAL | card implementation pending |
+| OM-R31 | A | FINAL | exact numeric stop/expand thresholds not approved |
 
 ## Master root registry
 
@@ -125,6 +141,10 @@ Product Owner finalized `OM-R04=A`, `OM-R05=A`, `OM-R19=A`, `OM-R20=A`,
 
 `ROOT_COUNT: 31`
 
-`OWNER_FINAL_CHOICES: 8`
+`OWNER_FINAL_CHOICES: 22`
 
-`OWNER_OPEN_ROOTS: 23`
+`OWNER_OPEN_ROOTS: 2`
+
+`OWNER_PROVISIONAL_ROOTS: 3`
+
+`OWNER_DEFERRED_ROOTS: 4`

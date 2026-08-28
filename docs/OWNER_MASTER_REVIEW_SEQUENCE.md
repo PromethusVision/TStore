@@ -1,14 +1,26 @@
 # Owner Master Review Sequence
 
-State: `8 ROOTS FINAL — NEXT OPEN REVIEW STARTS AT OM-R01`
+State: `22 ROOTS FINAL — NEXT IMMEDIATE REVIEW: OM-R06, OM-R07`
 
-The sequence minimizes backtracking. A later card may be skipped when its parent
-answer makes it irrelevant; the apply map records that auto-resolution.
+The sequence minimizes backtracking. The original ordered sessions below remain
+as provenance, but finalized roots are not asked again. The active immediate
+owner queue now contains only `OM-R06` and `OM-R07`.
 
-Already final and therefore not asked again: `OM-R04`, `OM-R05`, `OM-R19`,
-`OM-R20`, `OM-R21`, `OM-R22`, `OM-R23`, `OM-R24`.
+Already final and therefore not asked again: `OM-R01`–`OM-R05`, `OM-R09`–
+`OM-R24`, and `OM-R31`. `OM-R11` is final as option B; the other roots in this
+set are final as option A.
 
-## Session 1 — Pilot frame and authority
+## Active remaining sequence
+
+1. `OM-R06` — taxonomy/facet/legacy/demo runtime activation.
+2. `OM-R07` — Product/Variant/Listing and identifier identity.
+3. `OM-R08` — provisional governed catalog publication decision after `OM-R07`.
+4. `OM-R25` — provisional structured-evaluation collection hypothesis.
+5. `OM-R26` — provisional contribution/feed identity after `OM-R25`.
+
+`OM-R27`–`OM-R30` remain explicitly deferred post-pilot.
+
+## Historical Session 1 — Pilot frame and authority
 
 | Order | Root | Why now |
 |---:|---|---|
@@ -29,7 +41,7 @@ Already final and therefore not asked again: `OM-R04`, `OM-R05`, `OM-R19`,
 | 15 | OM-R17 | defines acquisition and feedback |
 | 16 | OM-R31 | defines pause/expand logic after inputs exist |
 
-## Session 2 — Customer access and UI implementation
+## Historical Session 2 — Customer access and UI implementation
 
 | Order | Root | Why now |
 |---:|---|---|
@@ -44,14 +56,14 @@ Already final and therefore not asked again: `OM-R04`, `OM-R05`, `OM-R19`,
 `OM-R04`'s acceptance sub-answer is revisited here only to confirm UI-R15
 evidence; the platform choice is not asked twice.
 
-## Session 3 — Compliance and controlled activation
+## Historical Session 3 — Compliance and controlled activation
 
 | Order | Root | Why now |
 |---:|---|---|
 | 24 | OM-R18 | professional-reviewed launch surfaces; do not force an answer early |
 | 25 | OM-R06 | taxonomy/facet/legacy/demo activation can be scheduled after core pilot |
 
-## Session 4 — Unified evaluation hypothesis
+## Historical Session 4 — Unified evaluation hypothesis
 
 | Order | Root | Why now |
 |---:|---|---|
@@ -69,9 +81,9 @@ evidence; the platform choice is not asked twice.
 
 ## Fast-review controls
 
-- Recommended first review: Session 1 and Session 2 only.
-- `OM-R18` may be marked “wait for professional input” without blocking answers
-  to independent cards.
+- Recommended next review: `OM-R06`, then `OM-R07` only.
+- `OM-R18=A` is not asked again; lawyer/KVKK completion remains a separate
+  commercial-launch gate.
 - No child question appears unless its parent option makes it actionable.
 - Responses use `OM-Rxx=A/B/C`; no prose is required unless the owner rejects all
   options.
@@ -80,6 +92,10 @@ evidence; the platform choice is not asked twice.
 
 `DEPENDENCY_ORDER_VIOLATIONS: 0`
 
-`OWNER_FINAL_OPTIONS: 8`
+`OWNER_FINAL_OPTIONS: 22`
 
-`OWNER_OPEN_ROOTS: 23`
+`OWNER_OPEN_ROOTS: 2`
+
+`OWNER_PROVISIONAL_ROOTS: 3`
+
+`OWNER_DEFERRED_ROOTS: 4`

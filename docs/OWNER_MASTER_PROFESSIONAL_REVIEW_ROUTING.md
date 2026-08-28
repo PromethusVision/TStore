@@ -1,16 +1,18 @@
 # Owner Master Professional Review Routing
 
-State: `8 OWNER ROOTS FINAL — PROFESSIONAL ROUTING PRESERVED`
+State: `22 OWNER ROOTS FINAL — PROFESSIONAL ROUTING PRESERVED`
 
 ## Applied owner decision with open professional review
 
-`OM-R05=A` is Product Owner FINAL. Its KVKK purpose, notice, retention and
-location-handling review remains open. Product approval does not waive or replace
-that review.
+Product Owner approval fixes product direction but does not replace professional
+work. Open dependencies on final roots are: `OM-R05` (KVKK), `OM-R10`
+(lawyer/regulatory), `OM-R12` and `OM-R14` (lawyer), `OM-R15` and `OM-R17`
+(KVKK), `OM-R16` (accountant/tax and terms review where applicable), and
+`OM-R18` (lawyer/KVKK).
 
 ## Decision lanes
 
-### OWNER_CAN_DECIDE_NOW — 20 ORIGINAL / 13 OPEN
+### OWNER_CAN_DECIDE_NOW — 20 ORIGINAL / 2 OPEN
 
 `OM-R01`, `OM-R02`, `OM-R03`, `OM-R04`, `OM-R06`, `OM-R07`, `OM-R09`,
 `OM-R11`, `OM-R12`, `OM-R13`, `OM-R14`, `OM-R16`, `OM-R17`, `OM-R19`,
@@ -19,23 +21,22 @@ that review.
 These are product scope/direction choices. Professional review may still validate
 later copy or implementation, but it need not choose the product direction.
 
-Seven roots in this lane are now final: `OM-R04`, `OM-R19`, `OM-R20`, `OM-R21`,
-`OM-R22`, `OM-R23`, `OM-R24`. Thirteen remain open.
+Eighteen roots in this lane are final. Only `OM-R06` and `OM-R07` remain open.
 
-### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 5 OPEN
+### OWNER_CAN_DECIDE_PROVISIONALLY — 6 ORIGINAL / 3 OPEN
 
 - `OM-R05`: FINAL=A; KVKK still validates purposes, notice and retention.
 - `OM-R08`: choose governed intake; regulatory review gates sensitive domains.
-- `OM-R10`: choose ordinary-only fail-closed scope; specialists gate expansion.
-- `OM-R15`: choose question-led minimum metrics; KVKK validates exact data map.
+- `OM-R10`: FINAL=A; ordinary-only scope is selected and specialists gate expansion.
+- `OM-R15`: FINAL=A; minimum metrics are selected and KVKK validates the exact data map.
 - `OM-R25`: choose collection hypothesis; KVKK review precedes data collection.
 - `OM-R26`: choose evidence identity hypothesis; KVKK review precedes publication.
 
-### OWNER_SHOULD_WAIT_FOR_LAWYER / KVKK — 1
+### OWNER_SHOULD_WAIT_FOR_LAWYER / KVKK — 0 OWNER ANSWERS / 1 OPEN PROFESSIONAL GATE
 
-- `OM-R18`: owner should not approve final terms, privacy/deletion handling or
-  platform-role wording without lawyer and KVKK input. The owner can state desired
-  customer experience, but not finalize professional content.
+- `OM-R18=A`: the desired minimum launch surface is Product Owner FINAL. Lawyer
+  and KVKK must still approve the terms, privacy/deletion handling and factual
+  platform-role wording before commercial launch.
 
 ### DEFERRED_POST_PILOT — 4
 
@@ -76,7 +77,8 @@ Roots: `OM-R16`, `OM-R30`.
 Needs: any paid merchant offer, discount/reward funding, value transfer,
 liability, expiry and accounting/tax treatment before a financial promise.
 
-Does not resolve: whether the pilot should test a no-charge participation offer.
+Does not reopen: the owner-selected bounded no-charge pilot direction. It reviews
+accounting/tax treatment and any later financial promise.
 
 ### DOMAIN REGULATORY SPECIALIST
 
@@ -85,7 +87,8 @@ Roots: `OM-R08`, `OM-R10`.
 Needs: expansion beyond ordinary merchant/product allowlist, regulated evidence,
 domain-specific listing/advertising restrictions.
 
-Does not resolve: ordinary-only fail-closed pilot scope.
+Does not reopen: the owner-selected ordinary-only fail-closed pilot scope. It
+gates any regulated or unknown-sector expansion.
 
 ### TECHNICAL ARCHITECT
 
