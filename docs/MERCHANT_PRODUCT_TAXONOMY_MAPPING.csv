@@ -1,0 +1,69 @@
+MERCHANT_SECTOR,MERCHANT_STATE,LIKELY_PRIMARY_PRODUCT_L1,OTHER_COMMON_PRODUCT_L1,COMMON_PRODUCT_L2,SERVICE_COMPONENT,CROSS_DOMAIN_MIX_EXPECTED,RESTRICTION_NOTES,CONFIDENCE
+"Market, Bakkal & Süpermarket",PROPOSED,"Gıda & İçecek","Kozmetik & Kişisel Bakım; Ev & Yaşam; Kırtasiye & Ofis; Evcil Hayvan Ürünleri","Alkolsüz İçecekler; Atıştırmalık, Şekerleme & Kuruyemiş; Ev Temizliği & Çamaşır Bakımı",Teslimat/paketleme olabilir,TRUE,"Alkol/tütün ve restricted products inferred değildir; food registration ayrı",HIGH
+Kasap,PROPOSED,"Gıda & İçecek",,"Et, Tavuk, Balık & Şarküteri",Hazırlama/paketleme,FALSE,"Food approval/registration ve cold-chain ayrı gate",HIGH
+Şarküteri,PROPOSED,"Gıda & İçecek",,"Et, Tavuk, Balık & Şarküteri; Süt Ürünleri & Yumurta; Kahvaltılık",Dilimleme/paketleme,FALSE,"Food registration/cold-chain",HIGH
+Manav,PROPOSED,"Gıda & İçecek","Çiçek & Bahçe","Taze Meyve & Sebze",Ayıklama/paketleme,TRUE,"Hasat edilmiş gıda ile canlı bitki ayrılır",HIGH
+Fırın,PROPOSED,"Gıda & İçecek",,"Ekmek, Unlu Mamuller & Pastacılık",Üretim/hazırlama,FALSE,"Food registration and premises evidence",HIGH
+"Pastane & Tatlıcı",PROPOSED,"Gıda & İçecek","Hediyelik & Parti","Ekmek, Unlu Mamuller & Pastacılık",Siparişe hazırlama/üretim,TRUE,"Catering/organizasyon service otomatik dahil değildir",HIGH
+Kuruyemişçi,PROPOSED,"Gıda & İçecek",,"Atıştırmalık, Şekerleme & Kuruyemiş",Kavurma/paketleme,FALSE,"Food registration and label controls",HIGH
+Aktar,PROPOSED,"Gıda & İçecek","Kozmetik & Kişisel Bakım; Sağlık & Medikal","Sos, Baharat & Çeşni; Alkolsüz İçecekler",Karışım/paketleme,TRUE,"Supplement/medical/biosidal claims fail closed",MEDIUM
+"İçecek & Su Bayii",PROPOSED,"Gıda & İçecek",,"Alkolsüz İçecekler",Damacana teslimatı,FALSE,"Alkol inferred değildir",HIGH
+Giyim Mağazası,PROPOSED,"Giyim & Moda","Ayakkabı; Çanta & Aksesuar; Saat & Takı","Üst Giyim; Alt Giyim; Dış Giyim; Ev & Uyku Giyimi",Tadilat olabilir,TRUE,"PPE claims ayrı",HIGH
+Ayakkabı Mağazası,PROPOSED,Ayakkabı,"Spor & Outdoor","Günlük Ayakkabılar; Spor Ayakkabıları; Ayakkabı Bakım & Aksesuarları",Bakım olabilir,TRUE,"Certified safety/medical claims ayrı",HIGH
+"Çanta & Aksesuar Mağazası",PROPOSED,"Çanta & Aksesuar","Saat & Takı; Giyim & Moda","El, Omuz & Bel Çantaları; Sırt Çantaları; Valiz & Seyahat Çantaları",Basit bakım,TRUE,"Domain-specific technical bags product rule izler",HIGH
+İç Giyim Mağazası,PROPOSED,"Giyim & Moda",,"İç Giyim; Ev & Uyku Giyimi",,FALSE,"Age/gender/style facets",HIGH
+"Telefoncu & GSM Mağazası",PROPOSED,Elektronik,"Bilgisayar & Tablet; Saat & Takı","Telefon & Aksesuarları; Güç, Şarj & Bağlantı; Giyilebilir Teknoloji",Kurulum/veri aktarımı/onarım olabilir,TRUE,"IMEI/second-hand/repair policy separate",HIGH
+Elektronik Mağazası,PROPOSED,Elektronik,"Bilgisayar & Tablet; Beyaz Eşya & Ev Aletleri","TV & Görüntü Sistemleri; Ses & Kulaklık; Akıllı Ev & Güvenlik",Kurulum olabilir,TRUE,"Electrical conformity; installation service separate",HIGH
+Bilgisayarcı,PROPOSED,"Bilgisayar & Tablet",Elektronik,"Dizüstü Bilgisayar; Masaüstü Bilgisayar; Bilgisayar Bileşenleri; Veri Depolama",Toplama/kurulum/onarım olabilir,TRUE,"Compatibility facet; service labor product değildir",HIGH
+"Beyaz Eşya & Ev Aletleri Mağazası",PROPOSED,"Beyaz Eşya & Ev Aletleri","Elektronik; Züccaciye & Mutfak","Soğutma & Gıda Saklama Cihazları; Küçük Mutfak Aletleri; Temizlik Cihazları",Teslimat/kurulum coordination,TRUE,"Gas/electrical/installer rules ayrı",HIGH
+Mobilya Mağazası,PROPOSED,"Ev & Yaşam","Çiçek & Bahçe; Yapı, Hırdavat & Tesisat","Mobilya; Yatak & Uyku Ürünleri",Ölçü/kurulum olabilir,TRUE,"Custom build/install separate service",HIGH
+Ev Tekstili Mağazası,PROPOSED,"Ev & Yaşam","Züccaciye & Mutfak","Ev Tekstili; Perde & Pencere Tekstili; Halı, Kilim & Paspas",Ölçü/dikim olabilir,TRUE,"Product form controls L1",HIGH
+"Züccaciye & Mutfak Gereçleri Mağazası",PROPOSED,"Züccaciye & Mutfak","Beyaz Eşya & Ev Aletleri; Ev & Yaşam","Tencere, Tava & Pişirme Kapları; Sofra & Yemek Takımları; Saklama & Mutfak Düzenleme",,TRUE,"Powered appliance remains own Product L1",HIGH
+"Halı & Kilim Mağazası",PROPOSED,"Ev & Yaşam",,"Halı, Kilim & Paspas",Ölçü/serim olabilir,FALSE,,HIGH
+Perdeci,PROPOSED,"Ev & Yaşam","Yapı, Hırdavat & Tesisat","Perde & Pencere Tekstili",Ölçü/dikim/montaj,TRUE,"Custom service distinct from physical product",HIGH
+"Nalbur & Hırdavatçı",PROPOSED,"Yapı, Hırdavat & Tesisat","Çiçek & Bahçe; Ev & Yaşam; Elektronik","El Aletleri & Atölye Ekipmanları; Bağlantı Elemanları & Nalburiye; Kilit, Kapı & Pencere Donanımları",Anahtar kesim olabilir,TRUE,"Chemicals/electrical/PPE policy separate",HIGH
+Yapı Malzemeleri Satıcısı,PROPOSED,"Yapı, Hırdavat & Tesisat","Ev & Yaşam","Yapı Malzemeleri; Yapıştırıcı, Dolgu & Yapı Kimyasalları",Sevkiyat,TRUE,"Installer-only/high-risk goods fail closed",HIGH
+Elektrik Malzemeleri Satıcısı,PROPOSED,"Yapı, Hırdavat & Tesisat",Elektronik,"Elektrik Tesisatı Malzemeleri; Ölçüm, Test & İşaretleme",Kurulum ayrı olabilir,TRUE,"Building installation vs consumer electronics boundary",HIGH
+Tesisat Malzemeleri Satıcısı,PROPOSED,"Yapı, Hırdavat & Tesisat","Ev & Yaşam; Beyaz Eşya & Ev Aletleri","Su Tesisatı & Armatürler; Isıtma, Gaz & Havalandırma Tesisatı",Kurulum ayrı olabilir,TRUE,"Gas/water/installer policy",HIGH
+"Boya & Dekorasyon Malzemeleri Satıcısı",PROPOSED,"Yapı, Hırdavat & Tesisat","Ev & Yaşam","Boya, Kaplama & Yüzey Hazırlama",Renk karıştırma,TRUE,"Chemical labeling/storage",HIGH
+Oto Yedek Parçacı,PROPOSED,"Otomotiv & Motosiklet",Elektronik,"Otomobil Yedek Parçaları; Akü & Araç Elektriği",Parça tespiti,TRUE,"Fitment/safety/second-hand policy",HIGH
+Oto Aksesuar Mağazası,PROPOSED,"Otomotiv & Motosiklet",Elektronik,"Araç İçi Aksesuarları; Araç Dış Aksesuarları; Araç Elektroniği",Montaj olabilir,TRUE,"Vehicle-specific vs generic product rule",HIGH
+Lastikçi,PROPOSED,"Otomotiv & Motosiklet",,"Lastik, Jant & Tekerlek Ürünleri",Sökme-takma/balans/onarım,FALSE,"Default MIXED; safety controls",HIGH
+Motosiklet Mağazası,PROPOSED,"Otomotiv & Motosiklet","Giyim & Moda","Motosiklet Yedek Parçaları; Motosiklet Kask & Koruma Ekipmanları",Teslim/kurulum,TRUE,"Vehicle registration/safety",HIGH
+"Motosiklet Yedek Parça & Aksesuar Mağazası",PROPOSED,"Otomotiv & Motosiklet",Elektronik,"Motosiklet Yedek Parçaları; Araç Elektroniği",Montaj olabilir,TRUE,"Fitment/safety",HIGH
+Bisiklet Mağazası,PROPOSED,"Spor & Outdoor","Elektronik; Çanta & Aksesuar",Bisiklet,Ayar/onarım olabilir,TRUE,"Generic vs fitment-specific accessory rule",HIGH
+"Kozmetik & Kişisel Bakım Mağazası",PROPOSED,"Kozmetik & Kişisel Bakım","Beyaz Eşya & Ev Aletleri; Anne & Bebek","Makyaj; Cilt Bakımı; Saç Bakımı & Şekillendirme; Kişisel Hijyen",Ürün danışmanlığı,TRUE,"Medical/biosidal claims fail closed",HIGH
+Parfümeri,PROPOSED,"Kozmetik & Kişisel Bakım",,"Parfüm & Deodorant; Cilt Bakımı",,FALSE,"Authenticity and claims",HIGH
+"Berber, Kuaför & Güzellik Salonu",CONFIRMED_GROUPING_PARENT_PLACEMENT_PROPOSED,"Kozmetik & Kişisel Bakım","Beyaz Eşya & Ev Aletleri","Saç Bakımı & Şekillendirme; Kozmetik & Bakım Aksesuarları",Service grouping,TRUE,"Non-assignable recommended; booking/service price TBD",HIGH
+Erkek Berberi,CONFIRMED_SUBTREE,"Kozmetik & Kişisel Bakım",,"Saç Bakımı & Şekillendirme; Tıraş, Ağda & Epilasyon",Hair/beard grooming,TRUE,"Service primary; hygiene; booking TBD",HIGH
+Kadın Kuaförü,CONFIRMED_SUBTREE,"Kozmetik & Kişisel Bakım",,"Saç Bakımı & Şekillendirme",Hair care/styling,TRUE,"Service primary; hygiene; booking TBD",HIGH
+Güzellik Salonu,CONFIRMED_SUBTREE,"Kozmetik & Kişisel Bakım",,"Cilt Bakımı; El, Ayak & Tırnak Bakımı; Tıraş, Ağda & Epilasyon",Beauty services,TRUE,"Treatment/medical boundary fail closed; booking TBD",HIGH
+"Anne & Bebek Mağazası",PROPOSED,"Anne & Bebek","Giyim & Moda; Ayakkabı; Oyuncak & Hobi; Gıda & İçecek","Bebek Beslenme; Bebek Bezi & Alt Bakım; Bebek Arabaları & Taşıma",Ürün danışmanlığı,TRUE,"Infant food/safety products regulated",HIGH
+Oyuncakçı,PROPOSED,"Oyuncak & Hobi","Kitap; Kırtasiye & Ofis; Elektronik","Bebek & Okul Öncesi Oyuncaklar; Kutu Oyunları & Oyun Takımları; Puzzle & Zeka Oyunları",,TRUE,"Age/product safety; real electronics stay Electronics",HIGH
+"Hobi & El Sanatları Mağazası",PROPOSED,"Oyuncak & Hobi","Kırtasiye & Ofis; Elektronik; Saat & Takı","Model, Maket & Minyatür; Sanat, El İşi & Hobi Kitleri",Workshop ayrı olabilir,TRUE,"Chemical/tool/age policy",MEDIUM
+"Müzik & Enstrüman Mağazası",PROPOSED,"Müzik & Enstrüman","Elektronik; Bilgisayar & Tablet; Çanta & Aksesuar","Gitar & Bas; Stüdyo, Kayıt & Canlı Ses Ekipmanları; Enstrüman Aksesuar, Bakım & Sarf Malzemeleri",Repair/course olabilir,TRUE,"Protected material and service boundary",HIGH
+Kitapçı,PROPOSED,Kitap,"Kırtasiye & Ofis; Oyuncak & Hobi","Edebiyat & Kurgu; Çocuk & Gençlik Kitapları; Eğitim & Ders Kitapları",Sipariş/rezervasyon olabilir,TRUE,"Physical lawful copy; digital content excluded",HIGH
+Kırtasiye,PROPOSED,"Kırtasiye & Ofis","Kitap; Oyuncak & Hobi; Hediyelik & Parti","Kalem & Yazım Gereçleri; Defter, Ajanda & Planlayıcılar; Sanat & Çizim Malzemeleri",Fotokopi/print olabilir,TRUE,"Toner/printer and service boundaries",HIGH
+Ofis Malzemeleri Mağazası,PROPOSED,"Kırtasiye & Ofis","Bilgisayar & Tablet","Dosyalama & Arşivleme; Ofis Makineleri & Ciltleme Ekipmanları; Kağıt, Etiket & Baskı Sarfı",Kurulum/teslimat,TRUE,"Printer device/toner canonical product rule",HIGH
+Spor Malzemeleri Mağazası,PROPOSED,"Spor & Outdoor","Giyim & Moda; Ayakkabı; Çanta & Aksesuar","Fitness & Kondisyon; Takım Sporları; Raket Sporları",Kurulum olabilir,TRUE,"PPE/restricted goods; apparel/shoes keep own L1",HIGH
+"Outdoor & Kamp Mağazası",PROPOSED,"Spor & Outdoor","Giyim & Moda; Ayakkabı; Çanta & Aksesuar; Yapı, Hırdavat & Tesisat","Outdoor, Kamp & Trekking",Rental/repair ayrı olabilir,TRUE,"Fuel/knife/safety policy",HIGH
+"Balıkçılık & Av Malzemeleri Mağazası",PROPOSED,"Spor & Outdoor","Giyim & Moda; Yapı, Hırdavat & Tesisat","Balıkçılık & Avcılık",,TRUE,"Weapon-like/restricted goods LEGAL_REVIEW_REQUIRED",MEDIUM
+Pet Shop,PROPOSED,"Evcil Hayvan Ürünleri","Ev & Yaşam","Kedi Ürünleri; Köpek Ürünleri; Ortak Pet Bakım & Aksesuarları",Ürün danışmanlığı,TRUE,"Live animals/veterinary products not inferred",HIGH
+Akvaryumcu,PROPOSED,"Evcil Hayvan Ürünleri",Elektronik,"Akvaryum & Balık Ürünleri",Akvaryum kurulum/bakım olabilir,TRUE,"Live-animal and electrical policy",HIGH
+Pet Kuaförü,PROPOSED,"Evcil Hayvan Ürünleri",,"Ortak Pet Bakım & Aksesuarları",Pet grooming,TRUE,"Veterinary service is separate/out of scope",HIGH
+Optik Mağazası,PROPOSED,"Gözlük & Optik","Sağlık & Medikal; Spor & Outdoor","Optik Gözlük Çerçeveleri; Gözlük Camları; Kontakt Lensler",Measurement/fitting,TRUE,"Default MIXED and REGULATED; authorization evidence",HIGH
+Kuyumcu,PROPOSED,"Saat & Takı","Hediyelik & Parti","Kolyeler & Takı Uçları; Yüzükler; Bileklik, Bilezik & Halhallar",Repair/personalization olabilir,TRUE,"Authorization/high-value/authenticity controls",HIGH
+Saatçi,PROPOSED,"Saat & Takı",Elektronik,"Klasik Kol Saatleri; Saat Kayışları & Aksesuarları",Watch repair,TRUE,"Smartwatch remains Electronics; high-value controls",HIGH
+Medikal Ürün Mağazası,PROPOSED,"Sağlık & Medikal","Gözlük & Optik","Evde Sağlık Ölçüm Cihazları; Ortopedik Destekler & Kompresyon; Medikal Sarf & Hasta Bakım Ürünleri",Fitting/guidance,TRUE,"Medical-device/sales-centre verification; medicine excluded",HIGH
+Çiçekçi,PROPOSED,"Çiçek & Bahçe","Hediyelik & Parti; Ev & Yaşam","Canlı Saksı Bitkileri; Kesme Çiçek & Fiziksel Aranjmanlar",Arrangement/delivery,TRUE,"Gift intent doesn't change product owner",HIGH
+"Bahçe & Yetiştirme Ürünleri Mağazası",PROPOSED,"Çiçek & Bahçe","Yapı, Hırdavat & Tesisat; Elektronik","Tohum, Fide & Bitki Soğanları; Toprak, Gübre & Bitki Besleme; Sulama Ürünleri",Guidance,TRUE,"Plant-protection products require exact dealer authorization",HIGH
+Hediyelik Eşya Mağazası,PROPOSED,"Hediyelik & Parti","Çiçek & Bahçe; Saat & Takı; Ev & Yaşam; Gıda & İçecek","Hatıra & Hediyelik Objeler; Hediye Paketleme & Sunum",Personalization olabilir,TRUE,"Underlying products keep canonical Product L1",MEDIUM
+Parti Malzemeleri Mağazası,PROPOSED,"Hediyelik & Parti","Oyuncak & Hobi; Kırtasiye & Ofis; Züccaciye & Mutfak","Balon & Balon Aksesuarları; Parti Süsleri & Mekân Dekorasyonu",Balloon filling olabilir,TRUE,"Pyrotechnics/pressurized gas excluded or reviewed",HIGH
+"Telefon & Elektronik Teknik Servisi",PROPOSED,Elektronik,"Bilgisayar & Tablet","Telefon & Aksesuarları; TV & Görüntü Sistemleri",Diagnosis/repair,TRUE,"Labor is not product; data privacy/authorized-service claims",HIGH
+Bilgisayar Teknik Servisi,PROPOSED,"Bilgisayar & Tablet",Elektronik,"Bilgisayar Bileşenleri; Veri Depolama",Diagnosis/repair/setup,TRUE,"Labor is not product; data privacy",HIGH
+Beyaz Eşya Teknik Servisi,PROPOSED,"Beyaz Eşya & Ev Aletleri","Yapı, Hırdavat & Tesisat","Ev Aleti Aksesuar, Filtre & Sarf Malzemeleri",Repair/maintenance,TRUE,"Electrical/gas/authorized-service claims",HIGH
+"Terzi & Giyim Tadilatı",PROPOSED,"Giyim & Moda",,"İş Giyimi & Üniforma; Üst Giyim; Alt Giyim",Tailoring/alteration,TRUE,"Labor separate from physical garment",HIGH
+Ayakkabı Tamircisi,PROPOSED,Ayakkabı,"Çanta & Aksesuar","Ayakkabı Bakım & Aksesuarları",Footwear/leather repair,TRUE,"Labor separate from care product",HIGH
+Anahtarcı,PROPOSED,"Yapı, Hırdavat & Tesisat",,"Kilit, Kapı & Pencere Donanımları",Key cutting/locksmith,TRUE,"Security and mobile-service scope review",HIGH
+"Kuru Temizleme & Çamaşırhane",PROPOSED,"Ev & Yaşam","Giyim & Moda","Ev Temizliği & Çamaşır Bakımı",Textile cleaning/pressing,TRUE,"Chemical/hygiene/workplace controls",HIGH
+Bisiklet Servisi,PROPOSED,"Spor & Outdoor",,Bisiklet,Repair/adjustment,TRUE,"Labor is not product; safety evidence",HIGH
