@@ -20,7 +20,8 @@ This inventory follows runtime wiring and call sites, not feature-folder names a
 | Nearby/location | ACTIVE | bottom tab 1, Home location | Nearby Cubit/view + location service | device GPS/saved locations/public shops | unit/widget + prior physical GPS evidence | PASS; guest-vs-login personalization rule needs owner confirmation. |
 | Wishlist | ACTIVE | guarded tab/action | `WishlistCubit` | authenticated wishlist rows | cubit/widget/RLS historical evidence | PASS; local state is cleared on account switch/logout. |
 | Cart V2 | ACTIVE | guarded tab/product seller action | `CartV2Cubit` | Cart V2 RPC/table contract | broad unit/widget/QR tests | PASS for single-store preparation list; physical QR completion remains open. |
-| Addresses/saved locations | ACTIVE | Profile/Home location | address/saved-location Cubits | authenticated tables + geolocator | unit/widget/RLS historical evidence | PASS. |
+| Saved locations | ACTIVE | Profile/Home location | saved-location Cubit | authenticated saved-location table + geolocator | unit/widget/RLS historical evidence | PASS. |
+| Postal addresses | INACTIVE LEGACY/DEAD CANDIDATE | no active route | registered legacy `AddressesCubit` | address repository | unit-only legacy coverage | Not shipped; hardcoded prototype view must not be treated as customer data. |
 | Verified purchases/history | ACTIVE | Profile purchases | purchase/rating Cubits | verified transaction RPC/views | unit/widget/live historical evidence | PASS for existing verified records. |
 | Reviews/ratings | ACTIVE | Product/shop/purchase views | review/rating Cubits | canonical review RPCs/read models | architecture/unit/widget/live evidence | PASS contractually; requires verified purchase evidence. |
 | QR customer surface | ACTIVE | Cart “Mağazada Göster” | QR session Cubit/timer | canonical QR RPCs | unit/widget + backend evidence | CONDITIONAL: logical tests pass; physical two-device acceptance is open. |
