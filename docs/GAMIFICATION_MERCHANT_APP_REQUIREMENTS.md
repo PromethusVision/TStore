@@ -17,4 +17,3 @@
 - Client-side QR confirmation override or server evidence fabrication.
 - Positive-review-conditioned reward, customer purchase-history browsing or public identity exposure.
 - Service reputation derived from a product QR without a future service-completion contract.
-

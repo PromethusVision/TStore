@@ -13,4 +13,3 @@
 ## Security and trust
 
 The app never computes authoritative reward, badge or reputation state locally. Offline/cached state is visibly stale and reconciles idempotently. It does not award from views, wishlist, directions, ad interactions or an unconfirmed QR. Policy-sensitive purchase details never appear in public badges.
-

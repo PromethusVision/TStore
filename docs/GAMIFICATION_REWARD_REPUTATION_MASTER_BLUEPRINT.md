@@ -80,4 +80,3 @@ Owner decisions → professional reviews → stable event/identity contracts →
 - **RECOMMENDED:** no first-pilot launch; post-pilot shadow-mode progression.
 - **TBD:** formula, thresholds, monetary trust, funding, redemption, expiry, badge families and signal windows.
 - **OWNER_DECISION_REQUIRED:** RGR-01–RGR-16.
-

@@ -21,4 +21,3 @@ Keep customer rating average/count visible and independent. Do not launch a comp
 - Any paid, sponsored or reward-program signal.
 
 **Recommendation:** `POST_PILOT` shadow monitoring, then limited factual signals; not a guarantee of quality.
-

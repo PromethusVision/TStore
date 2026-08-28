@@ -32,4 +32,3 @@ Earlier option documents treated fixed stamps and private badges as safest *arch
 ## What remains valuable now
 
 Preserve stable event/identity contracts, review/ads separations, policy fail-closed rules and an implementation-ready decision pack. Collect ordinary product metrics—not reward promises—in the pilot. Reassess only after merchant adoption, verified event volume, review quality and support capacity are measured.
-

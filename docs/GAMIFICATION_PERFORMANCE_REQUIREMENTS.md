@@ -14,4 +14,3 @@
 ## Measurements required later
 
 Event-ingest latency, derivation lag, projection-read latency, queue depth, retry/dead-letter rate, duplicate suppression, replay throughput and hot-shop/customer skew. Numeric SLOs remain TBD after workload measurement.
-

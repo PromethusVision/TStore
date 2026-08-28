@@ -15,4 +15,3 @@
 Start shop-first. QR confirmation, listings, availability, location and customer experience naturally attach to a shop. Maintain merchant/org identity as a future aggregation dimension. A later org roll-up must show included branches, sample size, timeframe and exceptions; it cannot overwrite branch ratings.
 
 Branch opening, closure, transfer or rename preserves stable shop evidence. Reputation badge portability is separately governed and never inferred from display name.
-

@@ -15,4 +15,3 @@ Ship no public gamification in the first commercial pilot. If later evidence sho
 | Public customer reputation | EXCLUDE | No social-credit or punitive customer score. |
 
 Before badges: approve families/evidence, lifecycle/revocation, display privacy, stable identity, event idempotency and appeal. Wishlist, views and directions are weak analytics and cannot independently grant durable status.
-

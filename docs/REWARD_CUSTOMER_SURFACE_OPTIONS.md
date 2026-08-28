@@ -11,4 +11,3 @@
 | Post-purchase confirmation | Explain candidate/pending/earned state | Never block verified-purchase success. |
 
 Every economic surface names program owner, earning basis, value, expiry, redemption and pending/correction state. No ad view/click reward, hidden urgency or regulated-product prompt.
-

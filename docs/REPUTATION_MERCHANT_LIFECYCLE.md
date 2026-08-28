@@ -14,4 +14,3 @@
 | Org merge/split | Preserve lineage and branch evidence | No blind score averaging/fan-out. |
 
 Advertising and reward-program status never influences lifecycle reputation. Merchant cannot delete legitimate customer ratings through a lifecycle operation.
-

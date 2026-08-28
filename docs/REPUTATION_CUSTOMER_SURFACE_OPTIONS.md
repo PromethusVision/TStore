@@ -10,4 +10,3 @@
 | Search/nearby | Optional factual filter | Ads clearly labeled; no paid reputation. |
 
 Negative ratings remain visible under existing moderation rules. A badge is not a guarantee. New shops show insufficient history rather than a penalty. Service sectors wait for a trustworthy service event.
-

@@ -17,4 +17,3 @@
 - Ads spend, reward funding and reputation evidence remain separate.
 
 **Recommendation:** bounded templates only if a post-pilot program is approved; no fully arbitrary configuration.
-

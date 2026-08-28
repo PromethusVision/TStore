@@ -12,4 +12,3 @@
 | Fraud suspension | Freeze unsettled actions | Hide/mark pending where appropriate | Appeal and human review. |
 
 Deletion cannot erase merchant purchase evidence or accounting obligations in an uncontrolled way, yet retention must be purpose-limited. Exact retention/anonymization requires legal/privacy decision. Review evidence and reward ledger remain separate.
-

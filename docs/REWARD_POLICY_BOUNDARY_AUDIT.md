@@ -37,7 +37,7 @@ Policy-sensitive products and services receive no economic reward, progress, vou
 - [TİTCK — Health-claim controls](https://saglikbeyani.titck.gov.tr/)
 - [Ministry of Agriculture and Forestry — supplement approval process](https://istanbul.tarimorman.gov.tr/Sayfalar/Detay.aspx?SayfaId=233)
 - [Ministry of Agriculture and Forestry — food and supplement health-claim warning](https://guvenilirgida.tarimorman.gov.tr/Haber/Detay/17281)
-- [KVKK — data-protection impact assessment and automated-decision risks](https://kvkk.gov.tr/SharedFolderServer/CMSFiles/95d1f4bc-de91-4703-82c1-8757387a3850.pdf)
+- [KVKK — profiling and automated-decision seminar summary](https://www.kvkk.gov.tr/Icerik/5509/Carsamba-Seminerleri-Profilleme-Uygulamalari-Kapsaminda-Kisisel-Verilerin-Korunmasi)
 
 ## Product-policy fields required before implementation
 

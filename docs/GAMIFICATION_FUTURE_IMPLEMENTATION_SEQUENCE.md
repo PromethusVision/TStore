@@ -16,4 +16,3 @@
 | 10 | Explicit Production release decision | Separate owner approval, migration/runbook/rollback and monitoring. |
 
 The better architecture inserts shadow mode before public UI or value issuance. Verified-purchase confirmation must never wait on or roll back for a reward/reputation processor.
-

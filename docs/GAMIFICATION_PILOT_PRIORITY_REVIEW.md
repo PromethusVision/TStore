@@ -25,4 +25,3 @@ Non-public analytics that assess whether later factual merchant signals and badg
 ## DEFER
 
 Economic reward, public badges/reputation, levels, challenges and purchase streaks.
-

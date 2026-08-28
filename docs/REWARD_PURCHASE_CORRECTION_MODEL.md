@@ -19,4 +19,3 @@
 | Merchant suspension | Freeze unsettled issuance; do not erase lawful history | Record status and appeal outcome. |
 
 Correction authority, reason codes and economic policy remain implementation prerequisites; no SQL/schema is defined here.
-

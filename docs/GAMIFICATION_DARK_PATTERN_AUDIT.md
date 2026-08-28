@@ -34,4 +34,3 @@ Reward and gamification must help customers understand earned value and local-co
 ## Pre-release tests
 
 Every surface must pass plain-language comprehension, accessibility, expiry/funding disclosure, frequency control, privacy inference, correction and independent-rating checks. A failed P0 pattern blocks that surface rather than being accepted as a conversion tradeoff.
-

@@ -19,4 +19,3 @@ Freeze event/identity/API contracts before parallel coding. Assign one writer fo
 ## Cross-agent invariants
 
 Review rights, verified-purchase atomicity, ads separation, policy fail-closed behavior and server authority are test fixtures shared read-only across workstreams.
-

@@ -19,4 +19,3 @@ The existing read-only architecture sources confirm durable item identity and op
 Until currency, tax/discount, total authority, settlement, refund and correction provenance are contractually defined, reward must not be spend-weighted. Use no implied monetary value in progress copy.
 
 **Recommendation:** fixed event/stamp shadow evaluation, not amount weighting.
-

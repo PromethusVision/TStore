@@ -19,4 +19,3 @@ Verified transaction item quantity is useful historical evidence, but review qua
 3. Weight every unit — not recommended with current trust evidence.
 
 Quantity anomaly may trigger review but cannot automatically prove fraud or create public reputation harm.
-

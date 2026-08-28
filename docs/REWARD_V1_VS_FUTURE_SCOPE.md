@@ -28,4 +28,3 @@ The first commercial Esenler pilot does not need an economic Reward Engine to va
 - Production activation until an explicit owner release gate.
 
 **Recommendation:** `POST_PILOT`; shadow mode only after root decisions. Not owner-approved.
-

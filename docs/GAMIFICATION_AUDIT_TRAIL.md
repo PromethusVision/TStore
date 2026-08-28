@@ -13,4 +13,3 @@ Every economic or public-trust change must answer: what changed, why, from which
 - Replay/backfill/reconciliation runs and privileged access.
 
 Logs are append-only, access-controlled, tamper-evident and privacy-minimized. Public explanations expose meaning/evidence summary, not internal fraud thresholds or personal purchase detail. Exact retention needs legal/privacy/accounting review.
-

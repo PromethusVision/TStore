@@ -11,4 +11,3 @@
 | No threshold | Immediate fixed benefit | Funding and fraud exposure. |
 
 A threshold is versioned at enrollment/earning, never silently raised. Reversal can reduce derived progress through an auditable event, not a hidden balance edit. Near-threshold messaging needs opt-out/frequency caps. Numeric thresholds are intentionally not proposed here.
-

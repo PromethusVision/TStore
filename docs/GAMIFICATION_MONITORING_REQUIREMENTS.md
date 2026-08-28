@@ -16,4 +16,3 @@
 ## Response
 
 Independent kill switches pause new economic issuance, public badge derivation or reputation projection without disabling verified purchases/reviews. Alerts route by severity; investigation retains immutable evidence and never performs broad automatic punishment. Dashboards avoid customer-level sensitive data.
-

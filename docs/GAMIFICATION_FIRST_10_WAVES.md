@@ -16,4 +16,3 @@
 | 10 | Production decision | Explicitly authorize selected capability only | Wave 9 evidence | Destructive/economic release approval | Reviewed migration/deploy | Signed release | Signed merchant release | Full regression/live acceptance | Rollback, monitoring, owner signoff | XL |
 
 No wave implies `origin/main`, Development or Production write authority. Those require their own assigned integration/release tasks.
-

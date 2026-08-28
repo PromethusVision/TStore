@@ -18,4 +18,3 @@ Reward ledger, review eligibility, advertising attribution and reputation deriva
 ## Unknowns
 
 Exact tables, keys, enums, RLS, RPC signatures, retention and operational hosting are future implementation decisions after owner approval. This document authorizes none.
-

@@ -11,4 +11,3 @@
 Verified purchases prove activity, not product quality or merchant expertise. Customer ratings remain visible and cannot be replaced by an opaque category score. Catalog merge/split and taxonomy changes make mutable name/path aggregation unsafe.
 
 **Recommendation:** defer product-specific reputation. If post-pilot evidence justifies it, start with explainable category-scoped factual accuracy, stable IDs, minimum sample and `insufficient history` fallback.
-

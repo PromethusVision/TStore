@@ -11,4 +11,3 @@
 | Leaderboard | Public | Exclude; creates social rank/spend disclosure. |
 
 Customer chooses public display where offered. Revoked/retired badges are not silently relabeled; support history remains private. No badge implies wealth, moral worth or review reliability beyond its stated evidence.
-

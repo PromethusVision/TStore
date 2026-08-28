@@ -24,4 +24,3 @@ This is an architecture review, not accounting, tax or legal advice. Any point, 
 - Separate marketing analytics from accounting records.
 
 **Recommendation:** no economic promise in the first pilot; obtain professional accounting/tax/legal review before issuance.
-

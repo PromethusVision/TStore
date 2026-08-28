@@ -13,4 +13,3 @@
 | Sector change | Re-evaluate sector-dependent badge | Evidence meaning may change. |
 
 Badge lineage uses `EARNED/ACTIVE/REVOKED/RETIRED/SUPERSEDED`, never copy-and-delete. Public explanation names scope and current evidence window.
-

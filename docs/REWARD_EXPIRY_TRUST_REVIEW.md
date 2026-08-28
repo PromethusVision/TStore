@@ -12,4 +12,3 @@ Expiry reduces long-lived obligations but is a major customer-trust risk. It can
 | Campaign-defined expiry | Context-specific | High disclosure/notification burden | Future only. |
 
 Any expiry requires pre-earn disclosure, immutable deadline snapshot, timezone definition, grace/support rule, opt-in notification controls and a linked `EXPIRE` ledger event. Hidden expiry, surprise reset and manipulative countdown are prohibited.
-

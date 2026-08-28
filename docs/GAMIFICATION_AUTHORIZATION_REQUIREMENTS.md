@@ -12,4 +12,3 @@
 | Anonymous | Public explainable merchant facts | None | Access customer reward/badge data. |
 
 Future authorization must enforce server-side ownership, role guard, shop assignment, immutable audit and privileged-action separation. Service-role/server secrets never belong in Flutter clients.
-

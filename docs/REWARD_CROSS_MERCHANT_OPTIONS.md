@@ -15,4 +15,3 @@
 If Reward proceeds after the pilot, start merchant-specific with centrally governed immutable terms and explicit shop/merchant scope. Do not imply transferability. Platform-wide or hybrid value requires funding, settlement, accounting/legal and dispute decisions first.
 
 Cross-merchant scope never changes review rights, merchant reputation or sponsored ranking.
-

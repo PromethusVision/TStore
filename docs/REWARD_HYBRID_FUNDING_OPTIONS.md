@@ -13,4 +13,3 @@ Hybrid funding combines merchant and platform contributions but must not blur wh
 Rules must name the program/funder, record separate liabilities, apply proportional reversal, prevent double redemption and explain which portion works at which merchant. One opaque balance without funder lineage is unsafe.
 
 **Recommendation:** defer hybrid funding until merchant-specific and platform-funded models each reconcile independently.
-

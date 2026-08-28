@@ -18,4 +18,3 @@
 | Denial/event flood | Processing lag/cost | Rate limits, queues, monitoring and backpressure | P1 |
 
 Automated fraud signals hold actions; they do not declare guilt or publicly punish without human review and appeal.
-

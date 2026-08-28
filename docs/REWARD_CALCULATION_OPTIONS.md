@@ -13,4 +13,3 @@
 Quantity does not multiply a review right and must not automatically multiply reward. Repeat purchases may be eligible only after owner rules; idempotency remains per authoritative event. No client total, listing price or displayed discount is authoritative purchase amount.
 
 **Recommendation:** test fixed-stamp/purchase-count in non-economic shadow mode; no economic formula is selected.
-
