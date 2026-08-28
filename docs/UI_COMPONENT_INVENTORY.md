@@ -119,4 +119,3 @@ migration. This is the primary defense against cosmetic regressions.
   rows; terminology and visual semantics must be normalized without changing data.
 - Cart V2 contains 16 private classes; extraction must keep keys, callbacks and
   Cubit state branching stable.
-

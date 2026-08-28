@@ -40,4 +40,3 @@
 
 None of the five items is marked owner-approved by this task. Two are documented
 but need current visual verification; three remain unverified.
-

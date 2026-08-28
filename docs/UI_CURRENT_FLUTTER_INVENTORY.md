@@ -1,6 +1,6 @@
 # Current Flutter UI Inventory
 
-> Wave 27 · static inventory at `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`  
+> Wave 27 · static inventory at `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`
 > No runtime file was changed.
 
 ## Executive inventory
@@ -152,4 +152,3 @@ changing their triggers or business rules.
 The count intentionally excludes Cubits, repositories, models, SQL, generated
 files and tests. Those remain functional dependencies and regression targets, not
 visual implementation ownership.
-

@@ -1,7 +1,7 @@
 # UI Source Architecture Reconciliation
 
-> Wave 27 · Agent 3 · Read-only source reconciliation  
-> Base: `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`  
+> Wave 27 · Agent 3 · Read-only source reconciliation
+> Base: `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`
 > State: preparation evidence; no visual decision is finalized here.
 
 ## Purpose
@@ -95,4 +95,3 @@ temporary light-only release, or a separately gated dark rollout.
   document but not independently re-rendered in Wave 27.
 - **Not verified:** live Figma board state, visual owner approval, physical-device
   rendering and exact pilot arithmetic after the original Phase C artifact.
-
