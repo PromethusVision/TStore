@@ -19,6 +19,21 @@ enum TaxonomyCategoryLifecycle { staged, active, retired }
 
 enum TaxonomyCategoryAssignability { assignable, notAssignable }
 
+enum TaxonomyPolicyClass {
+  normal,
+  ageRestricted,
+  regulated,
+  legalReviewRequired,
+  excluded,
+}
+
+enum TaxonomyProfessionalReviewStatus {
+  notRequired,
+  pending,
+  approved,
+  rejected,
+}
+
 class TaxonomyCategoryNode extends Equatable {
   TaxonomyCategoryNode({
     required String id,
@@ -28,11 +43,16 @@ class TaxonomyCategoryNode extends Equatable {
     required this.lifecycle,
     required this.assignability,
     String? parentId,
+    String? slug,
     this.sortOrder = 0,
     String? taxonomyVersion,
+    this.policyClass = TaxonomyPolicyClass.normal,
+    this.professionalReviewStatus =
+        TaxonomyProfessionalReviewStatus.notRequired,
   }) : id = _requiredText(id, 'id'),
        displayName = _requiredText(displayName, 'displayName'),
        parentId = _optionalText(parentId),
+       slug = _optionalText(slug),
        taxonomyVersion = _optionalText(taxonomyVersion) {
     _validateLocalContract();
   }
@@ -40,10 +60,13 @@ class TaxonomyCategoryNode extends Equatable {
   final String id;
   final String displayName;
   final String? parentId;
+  final String? slug;
   final TaxonomyCategoryLevel level;
   final TaxonomyCategoryKind kind;
   final TaxonomyCategoryLifecycle lifecycle;
   final TaxonomyCategoryAssignability assignability;
+  final TaxonomyPolicyClass policyClass;
+  final TaxonomyProfessionalReviewStatus professionalReviewStatus;
   final int sortOrder;
   final String? taxonomyVersion;
 
@@ -52,10 +75,18 @@ class TaxonomyCategoryNode extends Equatable {
   bool get isContainer => kind == TaxonomyCategoryKind.container;
   bool get isActive => lifecycle == TaxonomyCategoryLifecycle.active;
 
+  bool get isDiscoverable =>
+      isActive && policyClass != TaxonomyPolicyClass.excluded;
+
+  bool get isPolicyClearedForAssignment =>
+      policyClass == TaxonomyPolicyClass.normal &&
+      professionalReviewStatus == TaxonomyProfessionalReviewStatus.notRequired;
+
   bool get canAssignProducts =>
       isActive &&
       isLeaf &&
-      assignability == TaxonomyCategoryAssignability.assignable;
+      assignability == TaxonomyCategoryAssignability.assignable &&
+      isPolicyClearedForAssignment;
 
   void _validateLocalContract() {
     if (isRoot && parentId != null) {
@@ -114,10 +145,13 @@ class TaxonomyCategoryNode extends Equatable {
     id,
     displayName,
     parentId,
+    slug,
     level,
     kind,
     lifecycle,
     assignability,
+    policyClass,
+    professionalReviewStatus,
     sortOrder,
     taxonomyVersion,
   ];

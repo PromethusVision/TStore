@@ -19,6 +19,7 @@ import 'package:t_store/features/shop/presentation/cubit/customer_search_state.d
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
+import 'package:t_store/features/shop/presentation/helpers/taxonomy_category_destination.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
@@ -722,7 +723,9 @@ class _CustomerSearchResultsViewState
                           category.name,
                         ),
                       ),
-                      onPressed: category.id.trim().isEmpty
+                      onPressed:
+                          category.id.trim().isEmpty ||
+                              !state.canOpenCategory(category.id)
                           ? null
                           : () => _openCategory(context, category),
                     ),
@@ -785,17 +788,34 @@ class _CustomerSearchResultsViewState
 
     _openingCategoryIds.add(categoryId);
     try {
-      final destination =
-          categoryDestinationBuilder?.call(category) ??
-          SubCategoryView(
+      Widget? destination;
+      final destinationOverride = categoryDestinationBuilder;
+      if (destinationOverride != null) {
+        destination = destinationOverride(category);
+      } else {
+        final searchCubit = context.read<CustomerSearchCubit>();
+        final canonicalResult = searchCubit.canonicalResultFor(categoryId);
+        if (canonicalResult != null) {
+          destination = buildCanonicalTaxonomyDestination(
+            category: canonicalResult.matchedCategory,
+            breadcrumb: canonicalResult.breadcrumb,
+            repository: searchCubit.activeCanonicalRepository,
+            capability: searchCubit.taxonomyCapability,
+          );
+          if (destination == null) return;
+        } else {
+          destination = SubCategoryView(
             title: CustomerCategoryPresentationHelper.localizedTitle(
               category.name,
             ),
             categoryId: categoryId,
           );
-      await Navigator.of(
-        context,
-      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+        }
+      }
+      final resolvedDestination = destination;
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: (_) => resolvedDestination),
+      );
     } finally {
       _openingCategoryIds.remove(categoryId);
     }

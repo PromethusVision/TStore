@@ -669,7 +669,9 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
                 category.name,
               ),
               subtitle: 'Kategori',
-              onTap: () => widget.onCategorySelected(category),
+              onTap: loaded.canOpenCategory(category.id)
+                  ? () => widget.onCategorySelected(category)
+                  : null,
             ),
         ],
         if (products.isNotEmpty) ...[
@@ -818,7 +820,7 @@ class _SuggestionTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -861,8 +863,10 @@ class _SuggestionTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right_rounded,
+            Icon(
+              onTap == null
+                  ? Icons.lock_outline_rounded
+                  : Icons.chevron_right_rounded,
               size: 18,
               color: CustomerHomeV1Tokens.muted,
             ),

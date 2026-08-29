@@ -1,5 +1,8 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_product_query_scope.dart';
+import 'package:t_store/features/shop/domain/usecases/get_products_by_taxonomy_scope_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_product_by_id_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/search_products_usecase.dart';
@@ -9,11 +12,13 @@ class ProductsCubit extends Cubit<ProductsState> {
   final GetProductsUsecase getProductsUsecase;
   final GetProductByIdUsecase getProductByIdUsecase;
   final SearchProductsUsecase searchProductsUsecase;
+  final GetProductsByTaxonomyScopeUsecase? getProductsByTaxonomyScopeUsecase;
 
   ProductsCubit({
     required this.getProductsUsecase,
     required this.getProductByIdUsecase,
     required this.searchProductsUsecase,
+    this.getProductsByTaxonomyScopeUsecase,
   }) : super(ProductsInitial());
 
   List<ProductEntity> _allProducts = [];
@@ -23,6 +28,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<void> getProducts({
     String? categoryId,
+    TaxonomyProductQueryScope? taxonomyQueryScope,
     String? brandId,
     bool? isFeatured,
     String? sortBy,
@@ -40,16 +46,13 @@ class ProductsCubit extends Cubit<ProductsState> {
       emit(ProductsLoading());
     }
 
-    final result = await getProductsUsecase(
-      GetProductsParams(
-        page: _currentPage,
-        limit: _limit,
-        categoryId: categoryId,
-        brandId: brandId,
-        isFeatured: isFeatured,
-        sortBy: sortBy,
-        ascending: ascending,
-      ),
+    final result = await _loadProductsPage(
+      categoryId: categoryId,
+      taxonomyQueryScope: taxonomyQueryScope,
+      brandId: brandId,
+      isFeatured: isFeatured,
+      sortBy: sortBy,
+      ascending: ascending,
     );
 
     if (!_canHandle(requestId)) return;
@@ -69,6 +72,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<void> loadMoreProducts({
     String? categoryId,
+    TaxonomyProductQueryScope? taxonomyQueryScope,
     String? brandId,
     bool? isFeatured,
     String? sortBy,
@@ -84,16 +88,13 @@ class ProductsCubit extends Cubit<ProductsState> {
     final requestId = _startRequest();
     emit(currentState.copyWith(isLoadingMore: true, clearLoadMoreError: true));
 
-    final result = await getProductsUsecase(
-      GetProductsParams(
-        page: _currentPage,
-        limit: _limit,
-        categoryId: categoryId,
-        brandId: brandId,
-        isFeatured: isFeatured,
-        sortBy: sortBy,
-        ascending: ascending,
-      ),
+    final result = await _loadProductsPage(
+      categoryId: categoryId,
+      taxonomyQueryScope: taxonomyQueryScope,
+      brandId: brandId,
+      isFeatured: isFeatured,
+      sortBy: sortBy,
+      ascending: ascending,
     );
 
     if (!_canHandle(requestId)) return;
@@ -162,6 +163,69 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   bool _canHandle(int requestId) {
     return !isClosed && requestId == _activeRequestId;
+  }
+
+  Future<Either<String, List<ProductEntity>>> _loadProductsPage({
+    required String? categoryId,
+    required TaxonomyProductQueryScope? taxonomyQueryScope,
+    required String? brandId,
+    required bool? isFeatured,
+    required String? sortBy,
+    required bool ascending,
+  }) {
+    final scope = taxonomyQueryScope;
+    if (scope != null) {
+      if (categoryId != null && categoryId.trim() != scope.categoryId) {
+        return Future.value(
+          const Left('Kategori kimliği ve taxonomy sorgu kapsamı uyuşmuyor.'),
+        );
+      }
+      if (!scope.hasCanonicalHierarchyEvidence) {
+        return getProductsUsecase(
+          GetProductsParams(
+            page: _currentPage,
+            limit: _limit,
+            categoryId: scope.categoryId,
+            brandId: brandId,
+            isFeatured: isFeatured,
+            sortBy: sortBy,
+            ascending: ascending,
+          ),
+        );
+      }
+
+      final canonicalUsecase = getProductsByTaxonomyScopeUsecase;
+      if (canonicalUsecase == null) {
+        return Future.value(
+          const Left(
+            'Canonical ürün kapsamı backend adapterı bu build için etkin değil.',
+          ),
+        );
+      }
+      return canonicalUsecase(
+        GetProductsByTaxonomyScopeParams(
+          scope: scope,
+          page: _currentPage,
+          limit: _limit,
+          brandId: brandId,
+          isFeatured: isFeatured,
+          sortBy: sortBy,
+          ascending: ascending,
+        ),
+      );
+    }
+
+    return getProductsUsecase(
+      GetProductsParams(
+        page: _currentPage,
+        limit: _limit,
+        categoryId: categoryId,
+        brandId: brandId,
+        isFeatured: isFeatured,
+        sortBy: sortBy,
+        ascending: ascending,
+      ),
+    );
   }
 
   void _mergeProducts(List<ProductEntity> products) {

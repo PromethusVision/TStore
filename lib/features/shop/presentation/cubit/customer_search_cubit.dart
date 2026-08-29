@@ -4,6 +4,9 @@ import 'package:t_store/core/usecases/usecase.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/repositories/canonical_taxonomy_repository.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_category_search_context.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 import 'package:t_store/features/shop/domain/usecases/get_categories_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shops_usecase.dart';
@@ -17,6 +20,8 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
     required this.getProductsUsecase,
     required this.getCategoriesUsecase,
     required this.getShopsUsecase,
+    this.taxonomyCapability = TaxonomyRuntimeCapability.currentDefault,
+    this.canonicalTaxonomyRepository,
   }) : super(CustomerSearchInitial());
 
   static const int _maximumProductCount = 30;
@@ -27,6 +32,18 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
   final GetProductsUsecase getProductsUsecase;
   final GetCategoriesUsecase getCategoriesUsecase;
   final GetShopsUsecase getShopsUsecase;
+  final TaxonomyRuntimeCapability taxonomyCapability;
+  final CanonicalTaxonomyRepository? canonicalTaxonomyRepository;
+
+  CanonicalTaxonomyRepository? get activeCanonicalRepository =>
+      taxonomyCapability.isCanonicalV1 ? canonicalTaxonomyRepository : null;
+
+  TaxonomyCategorySearchContext? canonicalResultFor(String categoryId) {
+    final currentState = state;
+    return currentState is CustomerSearchLoaded
+        ? currentState.canonicalResultFor(categoryId)
+        : null;
+  }
 
   List<CategoryEntity>? _categoriesCache;
   List<ShopEntity>? _shopsCache;
@@ -44,9 +61,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
     emit(CustomerSearchLoading(normalizedQuery));
 
     final productsFuture = searchProductsUsecase(normalizedQuery);
-    final categoriesFuture = _categoriesCache == null
-        ? getCategoriesUsecase(const NoParams())
-        : Future.value(Right<String, List<CategoryEntity>>(_categoriesCache!));
+    final categoriesFuture = _loadCategoryMatches(normalizedQuery);
     final shopsFuture = _shopsCache == null
         ? getShopsUsecase(const NoParams())
         : Future.value(Right<String, List<ShopEntity>>(_shopsCache!));
@@ -62,6 +77,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
     var shopsFailed = false;
     var products = <ProductEntity>[];
     var categories = <CategoryEntity>[];
+    var canonicalCategoryResults = <TaxonomyCategorySearchContext>[];
     var shops = <ShopEntity>[];
 
     productsResult.fold(
@@ -73,22 +89,9 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         limit: _maximumProductCount,
       ),
     );
-    categoriesResult.fold((_) => categoriesFailed = true, (items) {
-      _categoriesCache = items;
-      categories = _ranked(
-        items.where(
-          (item) =>
-              item.isActive &&
-              CustomerCategoryPresentationHelper.matchesSearch(
-                item,
-                normalizedQuery,
-              ),
-        ),
-        query: normalizedQuery,
-        nameOf: (item) =>
-            CustomerCategoryPresentationHelper.localizedTitle(item.name),
-        limit: _maximumCategoryCount,
-      );
+    categoriesResult.fold((_) => categoriesFailed = true, (matches) {
+      categories = matches.categories;
+      canonicalCategoryResults = matches.canonicalResults;
     });
     shopsResult.fold((_) => shopsFailed = true, (items) {
       _shopsCache = items;
@@ -102,7 +105,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
       );
     });
 
-    if (categories.isNotEmpty) {
+    if (categories.isNotEmpty && taxonomyCapability.isLegacy) {
       final categoryProductsResult = await getProductsUsecase(
         GetProductsParams(
           categoryId: categories.first.id,
@@ -141,11 +144,83 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         products: products,
         categories: categories,
         shops: shops,
+        runtimeMode: taxonomyCapability.mode,
+        canonicalCategoryResults: canonicalCategoryResults,
         warningMessage: failedSectionCount > 0
             ? 'Bazı sonuçlar yüklenemedi. Diğer sonuçlar gösteriliyor.'
             : null,
       ),
     );
+  }
+
+  Future<Either<String, _CategorySearchMatches>> _loadCategoryMatches(
+    String query,
+  ) async {
+    if (taxonomyCapability.isLegacy) {
+      final result = _categoriesCache == null
+          ? await getCategoriesUsecase(const NoParams())
+          : Right<String, List<CategoryEntity>>(_categoriesCache!);
+      return result.map((items) {
+        _categoriesCache = items;
+        return _CategorySearchMatches(
+          categories: _ranked(
+            items.where(
+              (item) =>
+                  item.isActive &&
+                  CustomerCategoryPresentationHelper.matchesSearch(item, query),
+            ),
+            query: query,
+            nameOf: (item) =>
+                CustomerCategoryPresentationHelper.localizedTitle(item.name),
+            limit: _maximumCategoryCount,
+          ),
+        );
+      });
+    }
+
+    final repository = canonicalTaxonomyRepository;
+    if (repository == null) {
+      return const Left(
+        'Canonical taxonomy arama sözleşmesi bu build için etkin değil.',
+      );
+    }
+
+    final result = await repository.searchTaxonomy(
+      TaxonomySearchRequest(query: query, limit: _maximumCategoryCount),
+    );
+    return result.bind((items) {
+      try {
+        final canonicalResults = items
+            .take(_maximumCategoryCount)
+            .toList(growable: false);
+        for (final item in canonicalResults) {
+          taxonomyCapability.requireCanonicalVersion(item.taxonomyVersion);
+          if (!item.matchedCategory.isDiscoverable) {
+            throw const FormatException(
+              'Canonical search returned a non-discoverable category.',
+            );
+          }
+        }
+        return Right(
+          _CategorySearchMatches(
+            categories: canonicalResults
+                .map(
+                  (item) => CategoryEntity(
+                    id: item.matchedCategory.id,
+                    name: item.matchedCategory.displayName,
+                    parentId: item.matchedCategory.parentId,
+                    sortOrder: item.matchedCategory.sortOrder,
+                    isActive: item.matchedCategory.isDiscoverable,
+                  ),
+                )
+                .toList(growable: false),
+            canonicalResults: canonicalResults,
+          ),
+        );
+      } on Object {
+        return const Left('Canonical taxonomy arama sonucu doğrulanamadı.');
+      }
+    });
   }
 
   List<ProductEntity> _mergeProducts(
@@ -206,4 +281,14 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
     if (value.startsWith(query)) return 1;
     return 2;
   }
+}
+
+class _CategorySearchMatches {
+  const _CategorySearchMatches({
+    required this.categories,
+    this.canonicalResults = const [],
+  });
+
+  final List<CategoryEntity> categories;
+  final List<TaxonomyCategorySearchContext> canonicalResults;
 }
