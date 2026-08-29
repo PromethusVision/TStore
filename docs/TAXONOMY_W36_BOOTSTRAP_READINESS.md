@@ -9,6 +9,11 @@ checksum-frozen Development bootstrap candidate. All six CSVs use the same
 planning-key-to-UUIDv4 ledger. No Development, Production or Supabase endpoint
 was contacted.
 
+The Wave 36A-R reconciliation preserved all payload bytes and UUIDs and replaced
+only the non-reproducible aggregate metadata. The canonical six-record digest is
+`095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`;
+`968787...` is retained only as superseded provenance in the manifest.
+
 | Contract | Result |
 |---|---:|
 | Canonical nodes | 1,563 |
@@ -68,6 +73,8 @@ is inferred as approved.
 3. Exact category, alias, alias-target and successor payloads exist.
 4. The package is checksum-addressed and ready to be the sole input to a later
    disposable local rehearsal.
+5. The aggregate contract is platform-independent and compatible with the Wave
+   36B checksum validator; no payload or UUID regeneration was performed.
 
 ## Remaining gates before any Development write
 
