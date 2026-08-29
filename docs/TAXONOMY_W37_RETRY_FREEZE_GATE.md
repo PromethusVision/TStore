@@ -84,14 +84,18 @@ does **not** authorize a remote retry. Before a future controlled Development
 write, all of the following remain mandatory:
 
 1. a fresh explicit Product Owner Development-write authorization for the new
-   artifact identity;
+   artifact identity; no earlier executable-write authority is inherited;
 2. a newly authorized read-only Development JIT snapshot and corrected offline
-   precheck;
+   precheck; remote JIT has not been run for this corrected artifact;
 3. exact Development project identity, empty-target/drift checks, and single
    writer/write-freeze confirmation;
 4. operator, rollback trigger, postcheck, monitoring, and accepted empty-project
    recreation risk confirmation;
 5. Integration review before any future `0010` becomes active.
+
+The previously accepted empty-Development recreation risk remains a separate
+owner decision. It is neither superseded by this fix nor sufficient by itself
+to authorize the new executable artifact.
 
 Production remains outside this lane. No authority here carries to Production.
 
