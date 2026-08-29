@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-29
 
-**State:** `PASS — READY FOR A SEPARATELY AUTHORIZED DEVELOPMENT BOOTSTRAP TASK`
+**State:** `PASS — LIVE/CLEAN-ROOM/CLIENT PARITY VERIFIED; DEVELOPMENT WRITE NOT READY`
 
 **Runtime state:** `PREPARED BUT NOT WIRED / TAXONOMY NOT ACTIVE`
 
@@ -15,12 +15,14 @@ runtime UUIDs, activate taxonomy nodes, or grant any Production authority.
 
 | Source | Final HEAD | Integration merge | Result |
 |---|---|---|---|
-| Development read-only preflight | `7e622d3ddb378aeadbaa8c9d602d73c7f745aea9` | `a41f86a` | PASS |
+| Development read-only preflight | `1b142fdccc10846db07dc9866954a7b03be693e4` | `a41f86a` initial + `259d7a1` final delta | PASS |
 | Local clean-room rehearsal | `aef1639eb7fc3ce9bebd7cc57695c2f2cbf35566` | `4c0ccc5` | PASS |
 | Customer variable-depth preparation | `544b7882ebd2525632a9431ea2a911165dad8687` | `a7dc332` | PASS |
 
 Integration base was `origin/main@737cadd0a662b338a63ab51412c87b1520282d26`.
-All three sources merged normally with `--no-ff` and without conflict.
+All three sources merged normally with `--no-ff` and without conflict. Agent 1's
+final docs-only parity delta was integrated later from the same source branch;
+it did not repeat the Wave 35B/Wave 35C integrations.
 
 ## 2. Cross-source reconciliation
 
@@ -39,7 +41,9 @@ All three sources merged normally with `--no-ff` and without conflict.
 | Failure injection | `10/10 PASS`; arbitrary first-child split mapping `0`; policy leakage `0`. |
 | Client preparation | L1–L4, container/leaf, root/children/descendants/breadcrumb, exact-leaf/descendant scopes and fallback PASS. |
 | Current runtime behavior | Unchanged. No repository, PostgREST, DI, navigation or backend-column cutover wiring was added. |
-| Native recovery | Free plan has no scheduled backup, PITR, restore-to-new-project, or native restorable point. |
+| Native recovery | `NOT_VERIFIED`: Free plan has no scheduled backup, PITR, restore-to-new-project, or native restorable point; no manual restore was proven. |
+| Clean-room/live parity | PASS; four benign deltas, no rehearsal update required. |
+| Client-contract/live parity | PASS as requirements; versioned policy-safe backend endpoints remain unimplemented. |
 | Production | Not accessed by Source A and not touched by this integration. |
 
 No concrete taxonomy-facing drift invalidates the clean-room model. The live
@@ -118,21 +122,23 @@ pre-apply check finds any application data or material drift.
 
 ## 7. Development write readiness
 
-The evidence is sufficient for the Product Owner to authorize a separate,
-Development-only, single-writer bootstrap implementation task. It is not ready
-for an immediate remote apply. That task must complete these prerequisites before
-its first remote mutation:
+The evidence is sufficient to continue exact local implementation and artefact
+preparation. It is not yet sufficient to authorize a Development write window or
+an immediate remote apply. These seven gates must close before write authorization:
 
-1. receive explicit Product Owner authorization scoped to exact Development ref
-   `tnipyxnvhgelwdpykyez` and accept the empty-environment recreation strategy;
-2. create and review a production-style, versioned UUIDv4 allocation manifest for
-   the Development bootstrap without deriving IDs from names/slugs/paths;
-3. generate one active migration from the hardened draft and reviewed payloads,
-   keeping a single SQL/migration owner;
-4. rerun exact identity, ledger/hash, zero-row, drift and single-writer pre-apply
+1. freeze the 18 anchor assignability/activation states;
+2. create and review one active additive migration plus the versioned 1,563-entry
+   UUIDv4 allocation manifest, with a single SQL/migration owner;
+3. replay the exact active artefact through forward, idempotency, failure and
+   rollback paths;
+4. approve either a usable backup/restore path or the bounded empty-environment
+   recreation strategy;
+5. freeze the exact versioned, RLS-safe backend read contracts and the client
+   capability/cutover/rollback sequence;
+6. rerun exact target identity, ledger/hash, zero-row, drift and single-writer
    gates immediately before apply;
-5. freeze the exact backend schema/RLS/RPC and client capability/cutover/rollback
-   sequence.
+7. receive separate Product Owner authorization scoped to exact Development ref
+   `tnipyxnvhgelwdpykyez`.
 
 Because live Development has zero products, manual product reclassification and
 split-product mapping do not block the initial additive schema plus staged,
@@ -141,11 +147,11 @@ policy/professional review gates can also remain fail-closed during staged
 existence. They do block public activation or assignability until explicitly
 resolved. Client wiring and taxonomy activation remain separate later gates.
 
-`READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: YES`
+`READY_FOR_LOCAL_IMPLEMENTATION_PREPARATION: YES`
 
-Scope of `YES`: a separately authorized Development-only implementation/bootstrap
-task with the five mandatory pre-write prerequisites above. It does not mean
-`READY_FOR_REMOTE_APPLY_NOW`, which remains **NO**.
+`READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: NO`
+
+`READY_FOR_REMOTE_APPLY_NOW: NO`
 
 ## 8. Safety ledger
 
@@ -166,9 +172,17 @@ task with the five mandatory pre-write prerequisites above. It does not mean
 
 `CUSTOMER_VARIABLE_DEPTH_PREP: PASS`
 
+`CLEAN_ROOM_LIVE_PARITY: PASS`
+
+`CLIENT_CONTRACT_LIVE_PARITY: PASS`
+
 `EMPTY_DEVELOPMENT_BOOTSTRAP_RISK_ACCEPTABLE_FOR_NEXT_AUTHORIZATION: YES`
 
-`READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: YES`
+`READY_FOR_LOCAL_IMPLEMENTATION_PREPARATION: YES`
+
+`READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: NO`
+
+`READY_FOR_REMOTE_APPLY_NOW: NO`
 
 `REMOTE_WRITE_PERFORMED: NO`
 

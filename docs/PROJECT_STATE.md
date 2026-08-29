@@ -3,13 +3,13 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 35 TAXONOMY DEVELOPMENT CUTOVER READINESS
-  INTEGRATION PASS — LIVE READ-ONLY PREFLIGHT / LOCAL REHEARSAL / CUSTOMER PREP**.
-- Integration branch/base: `integration/wave-35-taxonomy-cutover-readiness` /
-  `origin/main@737cadd0a662b338a63ab51412c87b1520282d26`.
-- Source/merge: Development preflight `7e622d3` / `a41f86a`, clean-room rehearsal
-  `aef1639` / `4c0ccc5`, Customer variable-depth prep `544b788` / `a7dc332`;
-  üçü de normal `--no-ff` ve conflict olmadan entegre edildi.
+- Son doğrulanan teslim: **WAVE 35 FOLLOW-UP LIVE PREFLIGHT FINAL DELTA
+  INTEGRATION PASS — AGENT 1 FINAL HEAD / CLEAN-ROOM + CLIENT PARITY — DOCS ONLY**.
+- Integration branch/base: `integration/wave-35-live-preflight-final-delta` /
+  `origin/main@b98f6bfae304c2521a92e0b8f7581f1e91611d0d`.
+- Source/merge: Development preflight önceki integrated HEAD `7e622d3`, final HEAD
+  `1b142fd`; aradaki tek docs-only commit `259d7a1` ile normal `--no-ff` ve conflict
+  olmadan entegre edildi. Wave 35B/Wave 35C tekrar entegre edilmedi.
 - Exact Development `EsnaftaVar Development` / `tnipyxnvhgelwdpykyez` önceki
   yetkili resume sonrası Healthy'dir. Migration `9/9`, public table `23`, RLS
   `23/23`, policy `52`, public function `29`; 23 application tablosunun tamamı,
@@ -30,15 +30,17 @@
   current-runtime fallback korunur. Targeted `24/24`, full suite `1243 PASS / 0
   FAIL / 6 explicit live skips`, analyzer `0 issues`.
 - Development Free plan scheduled backup, PITR, restore-to-new-project ve native
-  restorable point sunmaz. Bu eksik irrelevant değildir. Application-data/schema
-  açısından empty-Development reconstruction riski ayrı sınırlı authorization için
-  kabul edilebilir; Production benzetmesi değildir.
-- Ayrı Development-only write/bootstrap task'ını yetkilendirmeye hazırlık `YES`,
-  fakat remote apply-now `NO`: explicit owner authorization/recreation acceptance,
-  versioned UUIDv4 ledger, active migration, JIT zero-row/drift preflight ve exact
-  backend/client cutover sırası ilk write öncesi zorunludur. Manual product mapping
-  empty Development'ta staged importu bloklamaz; policy/18 anchor gate'i activation'ı
-  bloklar. Taxonomy runtime **NOT ACTIVE / CLIENT PREPARED BUT NOT WIRED**.
+  restorable point sunmaz; manual restore da kanıtlanmamıştır. Exact durum
+  `NOT_VERIFIED`dır. Empty-Development reconstruction riski sınırlı scope için
+  kabul edilebilir, fakat bu tek başına write authorization vermez ve Production
+  benzetmesi değildir.
+- Clean-room/live parity `PASS`; client-contract/live parity `PASS`. Yerel exact
+  implementation/artefact preparation `YES`, Development write authorization ve
+  remote apply-now `NO`: 18 assignability state, active migration + reviewed 1,563
+  UUIDv4 manifest, exact artefact replay, rollback/recreation acceptance, versioned
+  RLS-safe backend contract, JIT zero-row/drift/single-writer gate ve ayrı owner
+  authorization ilk write öncesi zorunludur. Taxonomy runtime **NOT ACTIVE / CLIENT
+  PREPARED BUT NOT WIRED**.
 - Bir önceki doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
   PASS — MANIFEST / MIGRATION ENGINEERING / CUSTOMER IMPACT — DOCS ONLY**.
 - Önceki integration branch/base: `integration/wave-34-taxonomy-runtime-readiness` /

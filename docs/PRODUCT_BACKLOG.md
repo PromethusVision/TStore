@@ -39,12 +39,20 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   taxonomy application-data/schema bootstrap'ı canonical manifest, repository migrations,
   future active migration, versioned UUIDv4 ledger ve seed/import manifests'ten
   yeniden kurulabilir. Free planda native backup/PITR/restore point yoktur; bu
-  eksik irrelevant veya Production ile eşdeğer sayılmaz.
-- **READY — separate owner authorization:** Development-only single-writer bootstrap
-  implementation task'ı yetkilendirilebilir. İlk remote write öncesi exact ref ve
-  recreation acceptance, reviewed production-style UUIDv4 manifest, active migration,
-  JIT zero-row/drift validation ve exact backend/client cutover/rollback sırası
-  zorunludur. `READY_FOR_REMOTE_APPLY_NOW: NO`.
+  eksik irrelevant veya Production ile eşdeğer sayılmaz; manual restore da
+  kanıtlanmamıştır (`NOT_VERIFIED`). Risk sınıflandırması tek başına write yetkisi
+  oluşturmaz.
+- **COMPLETED — live parity reconciliation:** Clean-room/live parity `PASS` ve
+  client-contract/live parity `PASS`; rehearsal update gerektiren taxonomy drift'i
+  yoktur. Backend contract gereksinimleri açıktır ancak henüz uygulanmamıştır.
+- **READY — local implementation/artefact preparation:** Tek SQL/migration owner;
+  active additive migration, reviewed 1,563-entry UUIDv4 manifest, exact artefact
+  replay ve versioned RLS-safe backend read contract'ı yerel olarak hazırlanabilir.
+- **NOT READY / NOT AUTHORIZED — Development write:** 18 anchor state'i, exact
+  active artefact rehearsal, rollback/recreation acceptance, backend/client contract,
+  JIT zero-row/drift/single-writer gate ve ayrı Product Owner authorization kapanmadan
+  remote write başlamaz. `READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: NO` ve
+  `READY_FOR_REMOTE_APPLY_NOW: NO`.
 - **NOT BLOCKING STAGED EXISTENCE:** Development product rows `0` olduğu için manual
   reclassification ve split mapping initial additive schema/staged inactive importu
   bloklamaz. Policy/professional review ve 18 anchor-only assignability kararı public
