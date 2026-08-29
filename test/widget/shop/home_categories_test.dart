@@ -37,8 +37,9 @@ void main() {
     WidgetTester tester, {
     required CategoriesState state,
     HomeCategoryDestinationBuilder? destinationBuilder,
+    Size physicalSize = const Size(1400, 400),
   }) async {
-    tester.view.physicalSize = const Size(1400, 400);
+    tester.view.physicalSize = physicalSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -188,5 +189,59 @@ void main() {
     expect(destinationBuildCount, 1);
     expect(openedCategory?.id, 'market');
     expect(find.text('Kategori hedefi'), findsOneWidget);
+  });
+
+  testWidgets('gerçek uzun canonical adlar dar ekranda eylemi bozmaz', (
+    tester,
+  ) async {
+    const categories = [
+      CategoryEntity(
+        id: 'white-goods',
+        name: 'Beyaz Eşya & Ev Aletleri',
+        sortOrder: 1,
+      ),
+      CategoryEntity(
+        id: 'hardware',
+        name: 'Yapı, Hırdavat & Tesisat',
+        sortOrder: 2,
+      ),
+      CategoryEntity(
+        id: 'collectible-packs',
+        name: 'Sürpriz & Rastgele İçerikli Koleksiyon Paketleri',
+        sortOrder: 3,
+      ),
+    ];
+    CategoryEntity? openedCategory;
+
+    await pumpCategories(
+      tester,
+      state: const CategoriesLoaded(categories),
+      physicalSize: const Size(390, 400),
+      destinationBuilder: (category, _) {
+        openedCategory = category;
+        return const Scaffold(body: Text('Canonical kategori hedefi'));
+      },
+    );
+
+    expect(tester.takeException(), isNull);
+    for (final category in categories) {
+      final item = find.byKey(Key('home-category-${category.id}'));
+      expect(item, findsOneWidget);
+      expect(
+        tester
+            .widget<InkWell>(
+              find.descendant(of: item, matching: find.byType(InkWell)),
+            )
+            .onTap,
+        isNotNull,
+      );
+    }
+
+    await tester.tap(find.byKey(const Key('home-category-white-goods')));
+    await tester.pumpAndSettle();
+
+    expect(openedCategory?.id, 'white-goods');
+    expect(find.text('Canonical kategori hedefi'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
