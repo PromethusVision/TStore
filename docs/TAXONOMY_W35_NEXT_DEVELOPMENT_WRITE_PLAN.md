@@ -1,96 +1,113 @@
-# Wave 35A — Next Development Write Plan
+# Wave 35A-R — Exact Next Development Write Plan
 
-**State:** `FUTURE PLAN ONLY — NO REMOTE WRITE AUTHORIZED OR EXECUTED`
+**State:** `FUTURE GATED PLAN — NO WRITE AUTHORIZED OR EXECUTED`
 
-This sequence is the next safe Development path now that the live read-only
-profile is complete. Each remote mutation requires separate explicit authority.
+## Live planning inputs
 
-## 1. Prerequisites
+- exact Development ref: `tnipyxnvhgelwdpykyez`;
+- PostgreSQL 17.6; canonical migration names `0001`–`0009`;
+- 23 public tables, all RLS-enabled;
+- category/product/shop/listing/application rows: 0;
+- existing category UUIDs to preserve: 0;
+- canonical category UUIDs estimated new: 1,563;
+- current split/manual/policy product queue: 0;
+- native backup/PITR/restore point: unavailable;
+- Wave 35B clean-room/live parity: PASS;
+- Wave 35C client contract/live parity: PASS, runtime disconnected.
 
-1. Preserve this fresh evidence: Development is Healthy, canonical `0001`–`0009`
-   exists, and all 23 application tables are empty.
-2. Freeze the 18 anchor-only assignability decisions. There are no live
-   split/manual/policy products to queue, but future imports remain fail-closed.
-3. Choose and approve either a supported backup/restore path or an explicit
-   empty-environment recreation strategy; the Free plan has no native restore.
-4. Freeze the exact repository/manifest hashes and implement only in a local
-   clean-room branch.
-5. Pass apply-twice, idempotency, RLS, client compatibility and rollback tests.
-6. Immediately before any later write, reverify the exact Development ref,
-   migration drift, zero-row baseline and a single-writer window.
+Every remote mutation below requires a separately approved task. This document
+does not authorize any gate.
 
-Stop on identity mismatch, drift, loss of the empty baseline, missing approved
-rollback strategy, unsafe activation or unrelated writes.
+## GATE 1 — Stable UUID allocation
 
-## 2. Stable UUID allocation
+Prerequisites: freeze the 18 anchor-only assignability/activation states and the
+exact manifest hash. Allocate one opaque UUIDv4 per 1,563 canonical category
+planning keys through a trusted backend-controlled process. Planning key, name,
+slug and path are never IDs. Re-run the live zero-category gate immediately
+before finalizing the allocation payload; stop if any category appeared.
 
-1. Preserve a current UUID only after semantic identity is reviewed.
-2. Allocate trusted-backend UUIDv4 values once for genuinely new nodes.
-3. Store an idempotent planning-key-to-UUID allocation ledger outside clients.
-4. Convert parent, alias and lineage edges through that ledger.
-5. Preserve rename/move UUIDs; represent merge/split/retire history explicitly.
+## GATE 2 — Active migration creation
 
-Allocation is a controlled backend operation. Flutter/client generation and
-name/path-derived IDs are prohibited.
+Convert the reviewed docs-only draft into a new active migration without
+rewriting `0001`–`0009`. Add only reviewed schema, constraints, indexes, alias/
+lineage model and RLS/grants. Replace all placeholders and retain PostgreSQL 17
+compatibility. The Wave 35B draft guard must not simply be removed and applied.
 
-## 3. Migration creation
+## GATE 3 — Additive schema apply
 
-Create one reviewed migration in the active canonical chain, initially for local
-rehearsal only. Prefer additive fields/tables and backward-compatible reads:
+After local replay and separate Development authorization, apply schema only in
+a single-writer window. Do not activate/import canonical rows in this gate.
+Verify old client reads, 23 existing table contracts, platform
+`rls_auto_enable()` ownership, locks, grants and rollback decision points.
 
-- explicit source key, level, lifecycle, assignability, policy/review state and
-  taxonomy version;
-- alias/synonym and predecessor/successor lineage;
-- depth, cycle, parent-level and uniqueness validation;
-- security-invoker root/children/descendant/path lookups;
-- fail-closed product/listing visibility.
+## GATE 4 — Staged canonical import
 
-Do not delete/replace `categories.id`, existing product IDs or listing/evidence
-identities.
+Import exactly 1,563 canonical rows parent-first as staged/inactive. Re-run the
+import to prove idempotency. Validate 24/244/1,096/199 levels, 1,245 leaves,
+unique UUID/source keys, parent graph, no cycle/orphan/L5 and complete policy/
+professional metadata. Public visibility must remain zero for staged nodes.
 
-## 4. Staged import
+## GATE 5 — Legacy/alias import
 
-1. Import all canonical nodes as `staged` and inactive in parent-first order.
-2. Re-run the import to prove idempotency.
-3. Reconcile exact 1,563 and 24/244/1,096/199 counts, 1,245 leaves, unique IDs,
-   no orphan/cycle/L5 and policy metadata completeness.
-4. Load alias and lineage registries without enabling ambiguous redirects.
+Import all 651 legacy locators, 1,000 successor edges and explicit alias states:
+`RESOLVED`, `AMBIGUOUS`, `TOMBSTONE`, `UNRESOLVED`. A split alias has no direct
+first-child redirect. Import the 24 manual/policy dispositions fail-closed even
+though none currently exists live.
 
-## 5. Product reassignment
+## GATE 6 — Product reassignment/quarantine
 
-1. Snapshot each `(product_id, old_category_id)` pair.
-2. Require one reviewed assignable target for every active product.
-3. Quarantine zero/multiple-target and pending-policy products.
-4. Update only approved `products.category_id` values in measured batches or one
-   reviewed transaction chosen from live size evidence.
-5. Preserve product/listing/review/wishlist/cart/QR/verified-purchase identities
-   and immutable snapshots.
+JIT re-count products. Current expected workload is zero. If still zero, record
+an empty mapping/quarantine result and perform no product update. If any product
+exists, stop the zero-baseline path and require a new read-only classification
+artifact before writes. Preserve all product/listing/review/wishlist/cart/QR/
+verified evidence identities.
 
-## 6. Postchecks
+## GATE 7 — Client cutover
 
-Verify exact before/after counts, all FKs, zero orphan/cycle, alias/lineage totals,
-policy/RLS/grants, public fail-closed behavior, demo dependencies and unchanged
-historical evidence.
+Freeze a versioned backend capability and separate canonical DTO. Provide RLS-
+safe roots, children, breadcrumb, alias state and bounded descendant-product
+contracts. Integrate Wave 35C seams behind explicit capability/version checks;
+old-schema/new-app and staged-schema/old-app suites must pass. No timeout/error-
+based mode guessing.
 
-## 7. Client compatibility
+## GATE 8 — Policy-cleared activation
 
-Before activation, ship and validate root-only Home reads, variable-depth child
-navigation, exact-leaf/descendant product scopes, breadcrumb/alias/search,
-inactive/retired/quarantine states and old/new serializer compatibility.
+Activate only reviewed containers and assignable leaves parent-first. Never
+activate regulated/legal/professional rows from taxonomy placement alone. Product
+and listing public projection must require active, assignable, policy-cleared
+classification. The 18 anchor-only states must already be frozen.
 
-## 8. Activation
+## GATE 9 — Postcheck
 
-Activation is a later, separately authorized change window. Activate only
-policy-cleared containers/leaves parent-first; retire legacy categories only
-after every dependency is mapped; run customer read, search, seller comparison,
-cart, QR and review regressions.
+Verify exact counts, zero graph defects, alias/lineage totals, RLS/grants,
+capability/version response and customer root/child/descendant/search behavior.
+Run Cart V2, seller comparison, wishlist, reviews, QR/verified-purchase, media,
+empty/error/rollback and old/new client regressions. Confirm no unexpected data,
+Auth, Storage, Realtime or Production mutation.
 
-## 9. Rollback
+## GATE 10 — Rollback decision window
 
-Keep the pre-change assignment snapshot and restored baseline available. Rollback
-must deactivate staged canonical nodes, restore product category assignments and
-compatible reads without deleting audit/lineage history. Rehearse this exact
-sequence locally before any Development apply.
+Before Gate 3, approve one strategy:
+
+1. supported backup plus disposable restore proof; or
+2. explicit owner acceptance of empty-Development recreation from canonical
+   `0001`–`0009` plus the exact new artifact.
+
+During the observation window, rollback deactivates canonical nodes, invalidates
+capability/version caches and restores the legacy client path without deleting
+lineage/history. Wave 35B forward/rollback/idempotency/failure-injection must be
+rerun against the exact active artifact. Do not improvise destructive cleanup.
+
+## Global stop conditions
+
+- wrong project ref or any Production route;
+- migration/ledger drift;
+- loss of the zero-row baseline without a new mapping review;
+- missing approved rollback strategy;
+- UUID allocation mismatch or planning-key-as-ID usage;
+- arbitrary split successor;
+- fail-open policy/RLS behavior;
+- incomplete client compatibility or unrelated writes.
 
 `DEVELOPMENT_WRITE_EXECUTED: NO`
 

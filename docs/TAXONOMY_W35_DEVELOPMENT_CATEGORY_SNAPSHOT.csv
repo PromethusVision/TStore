@@ -1,2 +1,2 @@
 "RECORD_TYPE","CURRENT_UUID","CURRENT_NAME","CURRENT_PATH","PARENT_UUID","PARENT_NAME","DEPTH","IS_ROOT","IS_ACTIVE","DEMO_MARKER","PRODUCT_USAGE_COUNT","LIVE_EVIDENCE_STATUS","NOTES"
-"STATUS","","","","","","0","","","","0","LIVE_EMPTY_VERIFIED","Fresh read-only Development query returned categories=0, distinct UUIDs=0, duplicate UUIDs=0, roots=0, orphans=0, active=0, inactive=0, maximum depth=0 and used categories=0; therefore no CATEGORY records exist."
+"STATUS","","","","","","0","","","","0","LIVE_EMPTY_VERIFIED","Fresh read-only Development query returned categories=0, distinct UUIDs=0, duplicate UUIDs=0, duplicate names=0, roots=0, orphans=0, active=0, inactive=0, maximum depth=0 and used categories=0; therefore no CATEGORY records exist."

@@ -50,6 +50,18 @@ The live schema contains the expected product/listing relationships in
 are present in QR and verified transaction item snapshots. No row currently
 exercises any dependency.
 
+### Live shop/listing impact
+
+Fresh counts are shops=0 and `shop_products`=0. A listing references
+`shop_id` and `product_id`, has a unique `(shop_id, product_id)` constraint, and
+owns listing price/availability/active state. It does not reference a category
+directly. Consequently:
+
+- listings impacted through split/ambiguous products: 0;
+- inactive/demo listing patterns: 0;
+- direct listing-category migration work: none;
+- future listing continuity depends on preserving product and listing UUIDs.
+
 ## Static-to-live comparison
 
 The inspected table, column, key, index, policy, trigger, Realtime and Storage
