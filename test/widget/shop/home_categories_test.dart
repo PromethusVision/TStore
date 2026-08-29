@@ -6,9 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
+
+import '../../helpers/canonical_taxonomy_test_support.dart';
 
 class MockCategoriesCubit extends MockCubit<CategoriesState>
     implements CategoriesCubit {}
@@ -37,6 +40,7 @@ void main() {
     WidgetTester tester, {
     required CategoriesState state,
     HomeCategoryDestinationBuilder? destinationBuilder,
+    HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder,
     Size physicalSize = const Size(1400, 400),
   }) async {
     tester.view.physicalSize = physicalSize;
@@ -55,7 +59,10 @@ void main() {
         home: Scaffold(
           body: BlocProvider<CategoriesCubit>.value(
             value: categoriesCubit,
-            child: HomeCategories(destinationBuilder: destinationBuilder),
+            child: HomeCategories(
+              destinationBuilder: destinationBuilder,
+              canonicalDestinationBuilder: canonicalDestinationBuilder,
+            ),
           ),
         ),
       ),
@@ -242,6 +249,47 @@ void main() {
 
     expect(openedCategory?.id, 'white-goods');
     expect(find.text('Canonical kategori hedefi'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('canonical mode yalnız 24 root projectionını açar', (
+    tester,
+  ) async {
+    final roots = canonicalRoots();
+    final categories = roots
+        .map(
+          (node) => CategoryEntity(
+            id: node.id,
+            name: node.displayName,
+            sortOrder: node.sortOrder,
+          ),
+        )
+        .toList(growable: false);
+    String? openedCanonicalId;
+
+    await pumpCategories(
+      tester,
+      state: CategoriesLoaded(
+        categories,
+        runtimeMode: TaxonomyRuntimeMode.canonicalV1Runtime,
+        canonicalNodes: roots,
+      ),
+      physicalSize: const Size(390, 400),
+      canonicalDestinationBuilder: (node) {
+        openedCanonicalId = node.id;
+        return const Scaffold(body: Text('Canonical root hedefi'));
+      },
+    );
+
+    expect(find.byKey(const Key('home-category-root-1')), findsOneWidget);
+    expect(find.byKey(const Key('home-category-root-25')), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.byKey(const Key('home-category-root-1')));
+    await tester.pumpAndSettle();
+
+    expect(openedCanonicalId, 'root-1');
+    expect(find.text('Canonical root hedefi'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

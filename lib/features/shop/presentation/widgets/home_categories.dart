@@ -4,17 +4,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_category_hierarchy.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_state.dart';
+import 'package:t_store/features/shop/presentation/helpers/taxonomy_category_destination.dart';
 import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
 
 typedef HomeCategoryDestinationBuilder =
     Widget Function(CategoryEntity category, String localizedTitle);
+typedef HomeCanonicalCategoryDestinationBuilder =
+    Widget Function(TaxonomyCategoryNode category);
 
 class HomeCategories extends StatefulWidget {
-  const HomeCategories({super.key, this.destinationBuilder});
+  const HomeCategories({
+    super.key,
+    this.destinationBuilder,
+    this.canonicalDestinationBuilder,
+  });
 
   final HomeCategoryDestinationBuilder? destinationBuilder;
+  final HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder;
 
   @override
   State<HomeCategories> createState() => _HomeCategoriesState();
@@ -136,6 +145,7 @@ class _HomeCategoriesState extends State<HomeCategories> {
               itemBuilder: (context, index) {
                 final category = state.categories[index];
                 final categoryId = category.id.trim();
+                final canonicalNode = state.canonicalNodeFor(categoryId);
                 return _HomeCategoryItem(
                   key: Key('home-category-${category.id}'),
                   category: category,
@@ -145,7 +155,11 @@ class _HomeCategoriesState extends State<HomeCategories> {
                       _pastelSurfaces[index % _pastelSurfaces.length],
                   onTap: categoryId.isEmpty
                       ? null
-                      : () => _openCategory(context, category),
+                      : () => _openCategory(
+                          context,
+                          category,
+                          canonicalNode: canonicalNode,
+                        ),
                 );
               },
             );
@@ -159,8 +173,9 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   Future<void> _openCategory(
     BuildContext context,
-    CategoryEntity category,
-  ) async {
+    CategoryEntity category, {
+    TaxonomyCategoryNode? canonicalNode,
+  }) async {
     final categoryId = category.id.trim();
     if (categoryId.isEmpty || _openingCategoryIds.contains(categoryId)) return;
 
@@ -168,12 +183,28 @@ class _HomeCategoriesState extends State<HomeCategories> {
     final normalizedCategory = category.copyWith(id: categoryId);
     _openingCategoryIds.add(categoryId);
     try {
-      final destination =
-          widget.destinationBuilder?.call(normalizedCategory, title) ??
-          SubCategoryView(categoryId: categoryId, title: title);
-      await Navigator.of(
-        context,
-      ).push<void>(MaterialPageRoute<void>(builder: (_) => destination));
+      Widget? destination;
+      final legacyOverride = widget.destinationBuilder;
+      if (legacyOverride != null) {
+        destination = legacyOverride(normalizedCategory, title);
+      } else if (canonicalNode != null) {
+        destination = widget.canonicalDestinationBuilder?.call(canonicalNode);
+        if (destination == null) {
+          final cubit = context.read<CategoriesCubit>();
+          destination = buildCanonicalTaxonomyDestination(
+            category: canonicalNode,
+            repository: cubit.activeCanonicalRepository,
+            capability: cubit.taxonomyCapability,
+          );
+        }
+      } else {
+        destination = SubCategoryView(categoryId: categoryId, title: title);
+      }
+      final resolvedDestination = destination;
+      if (resolvedDestination == null) return;
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: (_) => resolvedDestination),
+      );
     } finally {
       _openingCategoryIds.remove(categoryId);
     }

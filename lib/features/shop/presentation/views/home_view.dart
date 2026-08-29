@@ -13,6 +13,7 @@ import 'package:t_store/features/shop/presentation/cubit/customer_search_cubit.d
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_category_presentation_helper.dart';
+import 'package:t_store/features/shop/presentation/helpers/taxonomy_category_destination.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
@@ -194,6 +195,8 @@ class CustomerHomeV1Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAuthenticated =
         isAuthenticatedOverride ?? _hasAuthenticatedSession();
+    final activeSearchCubit =
+        searchCubit ?? context.read<CustomerSearchCubit>();
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 430),
@@ -216,7 +219,7 @@ class CustomerHomeV1Content extends StatelessWidget {
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space8),
               HomeSearchBar(
-                searchCubit: searchCubit ?? context.read<CustomerSearchCubit>(),
+                searchCubit: activeSearchCubit,
                 recentSearchesStorage: recentSearchesStorage,
                 onQuerySubmitted: onSearchSubmitted,
                 onProductSelected: (product) =>
@@ -232,17 +235,32 @@ class CustomerHomeV1Content extends StatelessWidget {
                       CustomerCategoryPresentationHelper.localizedTitle(
                         category.name,
                       );
+                  Widget? destination;
+                  final destinationOverride = categoryDestinationBuilder;
+                  if (destinationOverride != null) {
+                    destination = destinationOverride(category, localizedTitle);
+                  } else {
+                    final canonicalResult = activeSearchCubit
+                        .canonicalResultFor(category.id);
+                    if (canonicalResult != null) {
+                      destination = buildCanonicalTaxonomyDestination(
+                        category: canonicalResult.matchedCategory,
+                        breadcrumb: canonicalResult.breadcrumb,
+                        repository: activeSearchCubit.activeCanonicalRepository,
+                        capability: activeSearchCubit.taxonomyCapability,
+                      );
+                      if (destination == null) return;
+                    } else {
+                      destination = SubCategoryView(
+                        title: localizedTitle,
+                        categoryId: category.id,
+                      );
+                    }
+                  }
+                  final resolvedDestination = destination;
                   Navigator.of(context).push<void>(
                     MaterialPageRoute<void>(
-                      builder: (_) =>
-                          categoryDestinationBuilder?.call(
-                            category,
-                            localizedTitle,
-                          ) ??
-                          SubCategoryView(
-                            title: localizedTitle,
-                            categoryId: category.id,
-                          ),
+                      builder: (_) => resolvedDestination,
                     ),
                   );
                 },

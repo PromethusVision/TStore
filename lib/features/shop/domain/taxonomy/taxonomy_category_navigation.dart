@@ -14,7 +14,7 @@ enum TaxonomyCategoryNavigationEvidence {
   currentRuntimeFallback,
 }
 
-enum TaxonomyCategoryBlockReason { notActive, notAssignable }
+enum TaxonomyCategoryBlockReason { notActive, notAssignable, policyBlocked }
 
 class TaxonomyCategoryNavigationDecision extends Equatable {
   const TaxonomyCategoryNavigationDecision._({
@@ -34,6 +34,13 @@ class TaxonomyCategoryNavigationDecision extends Equatable {
         blockReason: TaxonomyCategoryBlockReason.notActive,
       );
     }
+    if (!node.isDiscoverable) {
+      return const TaxonomyCategoryNavigationDecision._(
+        action: TaxonomyCategoryNavigationAction.unavailable,
+        evidence: TaxonomyCategoryNavigationEvidence.canonicalHierarchy,
+        blockReason: TaxonomyCategoryBlockReason.policyBlocked,
+      );
+    }
     if (node.isContainer) {
       return const TaxonomyCategoryNavigationDecision._(
         action: TaxonomyCategoryNavigationAction.navigateDeeper,
@@ -41,10 +48,13 @@ class TaxonomyCategoryNavigationDecision extends Equatable {
       );
     }
     if (!node.canAssignProducts) {
-      return const TaxonomyCategoryNavigationDecision._(
+      final blockReason = node.isPolicyClearedForAssignment
+          ? TaxonomyCategoryBlockReason.notAssignable
+          : TaxonomyCategoryBlockReason.policyBlocked;
+      return TaxonomyCategoryNavigationDecision._(
         action: TaxonomyCategoryNavigationAction.unavailable,
         evidence: TaxonomyCategoryNavigationEvidence.canonicalHierarchy,
-        blockReason: TaxonomyCategoryBlockReason.notAssignable,
+        blockReason: blockReason,
       );
     }
     return TaxonomyCategoryNavigationDecision._(

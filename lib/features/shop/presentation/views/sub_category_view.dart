@@ -8,6 +8,7 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
+import 'package:t_store/features/shop/domain/taxonomy/taxonomy_product_query_scope.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_ids_usecase.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
@@ -26,6 +27,7 @@ class SubCategoryView extends StatelessWidget {
     super.key,
     required this.title,
     this.categoryId,
+    this.taxonomyQueryScope,
     this.currentUserIdProvider,
     this.shopProductsLoader,
     this.productDestinationBuilder,
@@ -33,6 +35,7 @@ class SubCategoryView extends StatelessWidget {
 
   final String title;
   final String? categoryId;
+  final TaxonomyProductQueryScope? taxonomyQueryScope;
   final String? Function()? currentUserIdProvider;
   final CategoryShopProductsLoader? shopProductsLoader;
   final CategoryProductDestinationBuilder? productDestinationBuilder;
@@ -43,7 +46,14 @@ class SubCategoryView extends StatelessWidget {
       create: (_) {
         final cubit = sl<ProductsCubit>();
         final selectedCategoryId = categoryId;
-        if (selectedCategoryId != null) {
+        final selectedTaxonomyScope = taxonomyQueryScope;
+        if (selectedTaxonomyScope != null) {
+          cubit.getProducts(
+            categoryId: selectedCategoryId,
+            taxonomyQueryScope: selectedTaxonomyScope,
+            refresh: true,
+          );
+        } else if (selectedCategoryId != null) {
           cubit.getProducts(categoryId: selectedCategoryId, refresh: true);
         }
         return cubit;
@@ -84,6 +94,7 @@ class SubCategoryView extends StatelessWidget {
               child: _CategoryBody(
                 title: title,
                 categoryId: categoryId,
+                taxonomyQueryScope: taxonomyQueryScope,
                 currentUserIdProvider: currentUserIdProvider,
                 shopProductsLoader: shopProductsLoader,
                 productDestinationBuilder: productDestinationBuilder,
@@ -100,6 +111,7 @@ class _CategoryBody extends StatelessWidget {
   const _CategoryBody({
     required this.title,
     required this.categoryId,
+    required this.taxonomyQueryScope,
     required this.currentUserIdProvider,
     required this.shopProductsLoader,
     required this.productDestinationBuilder,
@@ -107,6 +119,7 @@ class _CategoryBody extends StatelessWidget {
 
   final String title;
   final String? categoryId;
+  final TaxonomyProductQueryScope? taxonomyQueryScope;
   final String? Function()? currentUserIdProvider;
   final CategoryShopProductsLoader? shopProductsLoader;
   final CategoryProductDestinationBuilder? productDestinationBuilder;
@@ -115,7 +128,7 @@ class _CategoryBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
-        if (categoryId == null) {
+        if (categoryId == null && taxonomyQueryScope == null) {
           return const _CategoryStatusView(
             key: Key('category-products-empty'),
             icon: Icons.inventory_2_outlined,
@@ -135,10 +148,19 @@ class _CategoryBody extends StatelessWidget {
             title: 'Kategori ürünleri yüklenemedi',
             message: 'Bağlantını kontrol edip tekrar deneyebilirsin.',
             actionLabel: 'Tekrar Dene',
-            onAction: () => context.read<ProductsCubit>().getProducts(
-              categoryId: categoryId,
-              refresh: true,
-            ),
+            onAction: () {
+              final cubit = context.read<ProductsCubit>();
+              final scope = taxonomyQueryScope;
+              if (scope != null) {
+                cubit.getProducts(
+                  categoryId: categoryId,
+                  taxonomyQueryScope: scope,
+                  refresh: true,
+                );
+              } else {
+                cubit.getProducts(categoryId: categoryId, refresh: true);
+              }
+            },
           );
         }
 
