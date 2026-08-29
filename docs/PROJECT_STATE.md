@@ -3,10 +3,44 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 33 CANONICAL PRODUCT TAXONOMY V1 FINAL
+- Son doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
+  PASS — MANIFEST / MIGRATION ENGINEERING / CUSTOMER IMPACT — DOCS ONLY**.
+- Integration branch/base: `integration/wave-34-taxonomy-runtime-readiness` /
+  `origin/main@6415f09c8b84d3ef1c72d642c1908c433b534994`.
+- Source/merge: manifest `875e2c6` / `7a2d694`, migration engineering `d720b8e` /
+  `2f54788`, Customer App impact `2a52474` / `adc69fd`; üçü de normal `--no-ff`
+  ve conflict olmadan entegre edildi.
+- Full planning manifest `1563` node'dur: `24/244/1096/199` L1/L2/L3/L4,
+  `1245` leaf, planning key/parent/path integrity PASS, legacy `651/651`, successor
+  edge `1000/1000`. Production UUID tahsisi `0`; runtime activation yoktur.
+- Stable-ID engineering recommendation reconcile edildi: same semantic identity
+  mevcut `categories.id` UUID'sini korur; genuinely new node trusted/backend
+  controlled UUIDv4 registry'den opaque ID alır; planning key production ID değildir.
+  Bu recommendation owner-final mechanism seçimi veya ID tahsisi değildir.
+- Agent 2'nin “full 24-L1 manifest missing” blocker'ı resolved. Electronics/Computer
+  graph coverage tamdır; ancak manifestte terminal/assignable candidate görünen
+  detaylandırılmamış `18` L2 anchor'ın runtime assignability/activation kanıtı açık
+  kaldı ve remote activation authority sayılmaz.
+- Legacy runtime review `24` açık: `5 MANUAL_RECLASSIFICATION + 19 POLICY_REVIEW`.
+  Product-level split static workload `210` locator / `591` successor edge; gerçek
+  etkilenen product sayısı read-only Development inventory'ye kadar `UNKNOWN`.
+- Additive/staged/rollback-capable schema planı ve guard ile kendini durduran
+  `docs/sql/TAXONOMY_W34_MIGRATION_DRAFT.sql` docs altında entegre edildi; active
+  migration zinciri değişmedi ve SQL çalıştırılmadı.
+- Customer App impact PASS: Home flat read, variable-depth browse, exact/descendant
+  product scope ve server-side taxonomy search activation öncesi değişmelidir.
+  Cart V2, QR, wishlist, reviews ve seller comparison identity olarak taxonomy'den
+  bağımsızdır; regression gate'i olarak korunur. Source C targeted mevcut Flutter
+  paketi `56/56 PASS` bildirdi; bu variable-depth implementation kanıtı değildir.
+  UI Kit Development runtime/client support doğrulanana kadar bekler.
+- Read-only Development preflight ve ayrı local clean-room engineering/rehearsal
+  task'ını başlatma hazırlığı `YES`; remote Development migration `NO`, Production
+  `NO`. Development/Production read/write, runtime, Flutter/Figma ve demo değişikliği
+  yapılmadı.
+- Bir önceki doğrulanan teslim: **WAVE 33 CANONICAL PRODUCT TAXONOMY V1 FINAL
   INTEGRATION PASS — DESIGN COMPLETE / PRODUCT OWNER FINAL / STRUCTURAL OWNER
   DECISIONS 0 — DOCS ONLY**.
-- Integration branch/base: `integration/wave-33-canonical-taxonomy-v1` /
+- Önceki integration branch/base: `integration/wave-33-canonical-taxonomy-v1` /
   `origin/main@d54239c6de8b4637bd093ea1e849d19093bdce7a`.
 - Altı kaynak teslim, istenen sırada normal `--no-ff` ile ve conflict olmadan
   entegre edildi: Wave 32 batch01 `7096959`, batch02 `28c40a3`, batch03 `3dd6df6`;

@@ -14,6 +14,36 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 34 Taxonomy Runtime Readiness State
+
+- **COMPLETED — planning/docs:** Full graph manifest `1563` node
+  (`24/244/1096/199`) ve `1245` leaf; planning key uniqueness, parent graph,
+  duplicate/orphan/L5 kapıları PASS. Legacy locator `651/651`, successor edge
+  `1000/1000`.
+- **COMPLETED — engineering recommendation:** aynı semantic identity mevcut
+  `categories.id` UUID'sini korur; genuinely new node trusted backend UUIDv4
+  registry'den opaque ID alır; rename/move ID'yi korur, split new successor ID'leri
+  üretir, retire tombstone olur. Planning key production ID değildir. Bu recommendation
+  owner-final mechanism kararı veya allocation değildir.
+- **OPEN — production ID package:** Production UUID allocation `0`; signed/versioned
+  allocation ledger, exact retry/idempotency ve parent linkage henüz üretilmedi.
+- **OPEN — anchor activation qualification:** Full Electronics/Computer node coverage
+  mevcut; ancak detaylandırılmamış `18` L2'nin terminal/assignable/activation state'i
+  runtime owner/integration review ile freeze edilmeden remote activation yapılamaz.
+- **OPEN — legacy/product mapping:** `24` unresolved runtime record (`5` manual,
+  `19` policy), ayrıca `210` split locator / `591` successor edge için actual product
+  exactly-one successor veya quarantine kararı gerekir. Live product count UNKNOWN.
+- **COMPLETED — migration/client impact plan:** Additive/staged/rollback-capable
+  schema, alias/lineage, fail-closed publication ve Customer App root/children/
+  variable-depth/exact-descendant/search gereksinimleri belgelendi. Docs SQL draft
+  guarded/inactive ve hiç çalıştırılmadı.
+- **READY — ayrı task/authorization:** read-only Development preflight; ardından
+  disposable local clean-room executable-candidate/rehearsal engineering.
+- **NOT READY / NOT AUTHORIZED:** remote Development migration/apply, taxonomy
+  activation, Production migration, demo remap/retirement ve final UI Kit rollout.
+  UI Kit, gerçek canonical içerikle Development runtime/client support kanıtından
+  sonra ilerler.
+
 ## Wave 33 Canonical Product Taxonomy V1 State
 
 - **PRODUCT TAXONOMY DESIGN COMPLETE / PRODUCT OWNER FINAL.** Canonical architecture

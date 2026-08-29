@@ -244,9 +244,10 @@ This is a future gate, not authorization from this document:
 ## 9. Current readiness
 
 The plan is executable after prerequisites are supplied, but the repository is
-**not ready for an authorized Development migration apply** today because the
-full stable-ID manifest, complete 24-L1 runtime materialization, 24 unresolved
-legacy decisions, live Development profile, and restore proof remain open.
+**not ready for an authorized Development migration apply** today. Wave 34A closes
+full 24-L1 planning-graph materialization; production UUID allocation, exact
+runtime qualification of 18 anchor-only L2 nodes, 24 unresolved legacy reviews,
+the live Development profile, and restore proof remain open.
 
 It is ready for a separately authorized **read-only Development preflight and
 local clean-room rehearsal**.

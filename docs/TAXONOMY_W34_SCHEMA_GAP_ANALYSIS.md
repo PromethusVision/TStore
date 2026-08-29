@@ -130,9 +130,11 @@ database columns.
 These are blockers for an authorized remote migration apply:
 
 1. No allocated production canonical UUID manifest exists.
-2. No single versioned import artifact materializes the full 24-L1 tree.
-3. Eighteen L2 anchors outside the two currently detailed anchor subtrees lack
-   an approved runtime leaf/assignability package.
+2. Wave 34A supplies one complete 1,563-node planning manifest, but it is not a
+   production-ID allocation/import package and authorizes no activation.
+3. Eighteen L2 anchors outside the two detailed anchor subtrees are structurally
+   present, but their terminal/assignable/activation flags still require an exact
+   runtime qualification freeze against the earlier owner-final L2 sources.
 4. Twenty-four legacy reconciliation rows remain unresolved.
 5. Split mappings require product-level deterministic classification or manual
    review; a first-successor fallback is prohibited.

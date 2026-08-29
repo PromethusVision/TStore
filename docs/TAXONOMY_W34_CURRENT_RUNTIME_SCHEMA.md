@@ -139,12 +139,13 @@ The owner-final 22-domain resolved tree contains 1,487 materialized rows:
 paths, states, and policy/review metadata, but no production UUID allocation or
 runtime slugs.
 
-The complete commercial architecture has 24 L1. `Elektronik` and
-`Bilgisayar & Tablet` are separate owner-final anchors, but their currently
-available detailed documents materialize only selected subtrees. The remaining
-eight Electronics L2 and ten Computer & Tablet L2 anchors do not yet have a
-single owner-final runtime leaf/assignability manifest. They must not be
-silently treated as assignable leaves.
+The complete commercial architecture has 24 L1. Wave 34A now materializes
+`Elektronik` and `Bilgisayar & Tablet` with all `9 + 11` L2 anchors and the two
+owner-final detailed subtrees, so structural graph coverage is complete. However,
+the earlier L2 source documents did not owner-finalize exact leaf/assignability for
+the remaining `8 + 10` anchor-only L2 nodes. Their Wave 34A terminal/assignable
+flags remain planning candidates and must not be treated as remote activation
+authority until the combined reconciliation gate is closed.
 
 The legacy reconciliation inventory covers 651 historical nodes, including 24
 unresolved rows and 210 split actions. It supplies mapping evidence, not final

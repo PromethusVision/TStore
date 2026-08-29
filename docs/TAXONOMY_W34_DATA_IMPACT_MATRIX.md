@@ -44,8 +44,10 @@ Status: **STATIC IMPACT ANALYSIS — NO DATA MUTATION**
 All 285 demo listings inherit category changes through their 20 products. This
 is not 285 direct listing updates. The correct unit of reassignment is the 20
 product rows; the correct verification scope still includes all 285 listing
-joins. Two previously simulated product mappings require lower-node evidence,
-and Electronics/Computer anchor materialization remains incomplete.
+joins. Two previously simulated shoe-product mappings require manual lower-node
+evidence, and five Electronics/Computer products still sit at owner-final L2
+anchors pending lower-node/assignability qualification. Wave 34A completes graph
+materialization; it does not turn those anchor mappings into activation authority.
 
 ## Unknown live impact
 

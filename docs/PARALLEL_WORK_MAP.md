@@ -17,6 +17,40 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 34 Taxonomy Runtime Readiness Entegrasyon Gözlemi
+
+`FULL_CANONICAL_MANIFEST: PASS — PLANNING ONLY`
+
+`MIGRATION_ENGINEERING_PLAN: PASS`
+
+`CUSTOMER_APP_IMPACT_PLAN: PASS`
+
+`REMOTE_DEVELOPMENT_MIGRATION: NOT READY / NOT AUTHORIZED`
+
+`RUNTIME_IMPLEMENTATION: NO`
+
+- Üç source docs-only ve dosya düzeyinde ayrık olduğu için sıralı normal `--no-ff`
+  merge edildi. Full planning manifest `1563` node / `1245` leaf, legacy `651/651`
+  ve successor `1000/1000` bütünlüğünü sağlar; production UUID içermez.
+- Bir sonraki taxonomy runtime wave'inde **tek backend/schema/migration owner**
+  bulunmalıdır. Bu owner stable-ID ledger, additive schema, RLS/RPC, import,
+  product mapping, demo dependency ve rollback artefaktlarını birlikte yönetir.
+- Customer App compatibility ayrı bir client owner'a verilebilir; fakat backend'in
+  versioned root/children/path/lifecycle/assignability ve exact/descendant contract'ı
+  freeze edilmeden shared category/product models üzerinde çalışmaya başlanmaz.
+- `service_locator.dart`, global navigation, category/product shared modelleri ve
+  migration chain eşzamanlı birden fazla agent tarafından değiştirilmez. UI Kit
+  lane'i correctness/runtime client support kanıtlanana kadar bekler.
+- Electronics/Computer graph coverage tamamdır; detaylandırılmamış `18` L2'nin
+  runtime leaf/assignability/activation freeze'i açık olduğundan manifest değerleri
+  remote activation authority değildir.
+- `210` split / `591` successor edge product-level classification işi ile `24`
+  (`5 manual + 19 policy`) legacy queue ayrıdır. Actual product workload yalnız
+  authorized read-only Development inventory sonrası kesinleşir.
+- Güvenli sonraki iki lane sıralıdır: (1) read-only Development preflight,
+  (2) disposable local clean-room candidate/rehearsal. Local rehearsal remote apply
+  yetkisi vermez; Development apply ve Production her zaman ayrı change window'dur.
+
 ## Wave 33 Canonical Product Taxonomy V1 Entegrasyon Gözlemi
 
 `PRODUCT_TAXONOMY_DESIGN_COMPLETE: YES`
