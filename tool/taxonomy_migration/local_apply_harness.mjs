@@ -63,6 +63,11 @@ async function packageFailureMatrix(pkg, packageDirectory, temporaryRoot) {
       return false;
     });
   });
+  await mutation('ambiguous_split_without_target', (candidate) => {
+    const relationship = candidate.tables['relationships.csv']
+      .find((row) => row.ACTION === 'SPLIT');
+    relationship.SUCCESSOR_CATEGORY_ID = '';
+  });
   const checksumDirectory = join(temporaryRoot, 'checksum-mismatch');
   await cp(packageDirectory, checksumDirectory, { recursive: true });
   const categoriesPath = join(checksumDirectory, 'categories.csv');

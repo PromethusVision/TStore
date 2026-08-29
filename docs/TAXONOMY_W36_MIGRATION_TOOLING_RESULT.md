@@ -1,13 +1,14 @@
 # Wave 36B — Taxonomy Migration Compiler & Tooling Result
 
-Status: **TOOLING PASS — EXACT WAVE36A PACKAGE REJECTED FAIL-CLOSED**
+Status: **TOOLING PASS — EXACT WAVE36A PACKAGE REPLAY PASS**
 Base: `origin/main@b3cc14ebed42ab66d689fe6688c2e75e23c43e68`
 Branch: `agent2/w36-taxonomy-migration-compiler`
 
 ## 1. Safety
 
 - Supabase, Development, Production, Auth, Storage, and Realtime access: none.
-- Git fetch is the only remote operation performed before branch creation.
+- Git fetch is the only input-network operation; task-branch push publishes
+  reports/tooling only and does not access an application environment.
 - Remote database mode, URL handling, project linking, and credentials are not
   implemented in the tool.
 - Active migration directory is unchanged.
@@ -28,7 +29,7 @@ Branch: `agent2/w36-taxonomy-migration-compiler`
 - structural/policy/alias/lineage/RLS/RPC postchecks;
 - exact empty-bootstrap rollback;
 - deterministic synthetic fixture generator;
-- 15-case fail-closed failure matrix.
+- 16-case fail-closed failure matrix.
 
 Generated artifacts stay in caller-selected staging/temp directories:
 
@@ -42,42 +43,38 @@ compiler runs.
 
 ## 3. Rehearsal input
 
-The branch `origin/agent1/w36-exact-taxonomy-bootstrap-package` was absent after
-the task's initial `git fetch origin --prune`, so the first complete rehearsal
-used an ephemeral package marked `SYNTHETIC_TEST_ONLY`.
+Authoritative read-only source:
 
-The generator consumed the owner-reconciled Wave 34 structural/legacy sources,
-assigned deterministic test-only UUIDs, and deleted the package after the run.
-It did not create a production allocation manifest.
+`origin/agent1/w36-exact-taxonomy-bootstrap-package@d9c45a1c2acd94fe0bfa52b16772718142c0664a`
 
-The exact branch later appeared at
-`326f0976c8a7392eda4549d743872fa7c11630f5`. Read-only Git-blob verification
-passed for all six CSV files. The package was nevertheless rejected before
-normalization/compilation because its aggregate manifest digest is internally
-inconsistent:
+The six source files were extracted through `git cat-file blob`, avoiding
+checkout and line-ending transformations. Every raw-byte SHA, byte count, and
+CSV row count matched the source manifest. The canonical 639-byte aggregate
+preimage reproduced:
 
-- declared aggregate:
-  `9687878401513881335a5a1479cdf53e2b4b3108debb3d28297444f3e2808091`;
-- recomputed using the manifest's documented sorted
-  `filename|row_count|lowercase_sha256\n` algorithm:
-  `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`.
+`095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`
 
-The tool did not override this integrity failure or infer a replacement owner
-artifact. Source branch merge count remains zero.
+The historical `9687878401513881335a5a1479cdf53e2b4b3108debb3d28297444f3e2808091`
+value is superseded and was not accepted as an alternative digest.
 
-Input/package evidence:
+Exact compiler evidence:
 
-- package SHA:
-  `65bb70d00f74b1a2d5aa8bcb45201fecfe994cb2f3c2e205f79f88b7a8aa9332`;
+- upstream frozen package SHA:
+  `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`;
+- normalized compiler-package SHA:
+  `9934ed6f44636aed83399e25e6c8e627d0fca8295c5fe622052c1ac15b9a56ff`;
 - artifact-set SHA:
-  `42f1450203ed88d6d6291660a6a8b6d6c94bdf4291778dedf07c3987c22658ca`;
+  `fe3b34cb0a9138be0d4ba81f96baac0271816273d310fd16b6a803baa0c47000`;
 - migration-history SHA:
   `515393550dc68dac111287e4504b2bcf21f1d441d4901e20677000561066875d`;
 - schema-contract SHA:
   `2d4f885ba82b516b119323420399d9433c8eaec0c7384623becf74165f40b4cd`.
 
-These hashes identify the synthetic rehearsal only; Integration must not treat
-them as a Wave36A exact-package approval.
+The source category UUID sequence and normalized compiler-input UUID sequence
+both hash to
+`88f4da68b6b86b458bdc4593e54796fce87fcb14f8fdab2fd50f1fdbe421dd45`.
+Payload modification and category UUID regeneration were both zero. Source
+branch merge count remains zero.
 
 ## 4. PostgreSQL-WASM cycles
 
@@ -93,9 +90,9 @@ Engine: local PGlite 0.5.5 / PostgreSQL 18.3 WASM.
 | Remote access | 0 |
 
 Every fresh cycle reconstructed the empty application baseline and migration
-ledger, applied the exact compiled artifact, ran postchecks, then rolled back to
-zero application rows while preserving the migration ledger and platform
-sentinel.
+ledger, applied the exact compiled artifact from the frozen package, ran
+postchecks, then rolled back to zero application rows while preserving the
+migration ledger and platform sentinel.
 
 ## 5. Postcheck totals
 
@@ -124,7 +121,7 @@ policy, review state, and version were compared back to the loaded package.
 
 ## 6. Failure matrix
 
-All 15 cases failed closed:
+All 16 cases failed closed:
 
 1. bad UUID;
 2. duplicate UUID;
@@ -133,14 +130,15 @@ All 15 cases failed closed:
 5. L5;
 6. invalid policy;
 7. duplicate alias UUID;
-8. ambiguous alias/split missing edges;
-9. checksum mismatch;
-10. unexpected non-empty target;
-11. migration-history mismatch;
-12. schema-contract mismatch;
-13. planning key used as runtime UUID;
-14. assignable container;
-15. injected mid-transaction failure.
+8. ambiguous alias missing target edges;
+9. split relationship without a target;
+10. checksum mismatch;
+11. unexpected non-empty target;
+12. migration-history mismatch;
+13. schema-contract mismatch;
+14. planning key used as runtime UUID;
+15. assignable container;
+16. injected mid-transaction failure.
 
 The injected database failure left zero category rows and preserved unrelated
 platform metadata, proving transaction rollback rather than partial import.
@@ -163,18 +161,18 @@ a fresh authorized JIT precheck. It is not a Production rollback design.
 
 ## 8. Remaining gates
 
-Before final pre-apply review:
+Artifact-integrity and local-replay blockers are closed. Remaining gates are
+operational and require separate authority:
 
-1. Wave36A must reissue a reviewed manifest whose aggregate digest matches its
-   six Git blobs and documented algorithm; that exact package must then pass the
-   same compiler, 3/3/3 cycles, 2 idempotent applies, and failure matrix.
-2. A freshly captured read-only Development snapshot must pass the offline JIT
-   precheck; this task did not capture one.
-3. Integration must review the exact package and generated SQL outside the
-   active migration chain.
+1. A freshly authorized read-only Development snapshot must be captured and
+   pass the offline JIT precheck; this task did not access Development.
+2. Integration must review this source HEAD, exact package digest, normalized
+   package manifest, and generated SQL outside the active migration chain.
+3. The Development single-writer/write-freeze window, restore point, execution
+   operator, and rollback trigger must be confirmed.
 4. Development recreation/apply needs separate explicit authority.
-5. Managed PostgreSQL 17/Supabase grants, query plans, and client compatibility
-   remain pre-activation gates.
+5. Managed Supabase/PostgreSQL grants, query plans, and client compatibility
+   remain post-apply/pre-activation validation gates.
 
 ## 9. Flags
 
@@ -192,7 +190,7 @@ Before final pre-apply review:
 
 `EMPTY_DEVELOPMENT_RECREATION_PLAN: PASS`
 
-`EXACT_ARTIFACT_REHEARSAL: FAIL`
+`EXACT_ARTIFACT_REHEARSAL: PASS`
 
 `FAILURE_MATRIX: PASS`
 
@@ -200,7 +198,7 @@ Before final pre-apply review:
 
 `REMOTE_ACCESS_PERFORMED: NO`
 
-`READY_FOR_FINAL_PREAPPLY_REVIEW: NO`
+`READY_FOR_FINAL_PREAPPLY_REVIEW: YES`
 
-Reason for `NO`: the compiler/tooling is ready, but the external exact Wave36A
-package failed its aggregate immutability check and therefore was not replayed.
+This readiness authorizes review only. It does not authorize a Development or
+Production connection, snapshot capture, apply, activation, or rollback.

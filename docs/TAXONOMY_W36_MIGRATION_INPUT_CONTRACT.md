@@ -1,6 +1,6 @@
 # Wave 36 — Taxonomy Migration Input Contract
 
-Status: **COMPILER CONTRACT — EXACT WAVE36A PACKAGE REPLAY PENDING**
+Status: **COMPILER CONTRACT — EXACT WAVE36A PACKAGE REPLAY PASS**
 Tooling: `tool/taxonomy_migration/`
 Remote access: **not implemented**
 
@@ -166,22 +166,25 @@ bootstrap model.
 
 ## 7. Exact package status
 
-The first fetch did not expose the Wave36A branch, so the complete tooling
-rehearsal initially used a deterministic package marked `SYNTHETIC_TEST_ONLY`.
-Later the read-only ref became visible at:
+The authoritative read-only package is:
 
-`origin/agent1/w36-exact-taxonomy-bootstrap-package@326f0976c8a7392eda4549d743872fa7c11630f5`
+`origin/agent1/w36-exact-taxonomy-bootstrap-package@d9c45a1c2acd94fe0bfa52b16772718142c0664a`
 
-The adapter verified all six individual Git-blob SHA-256 values, then rejected
-the package's aggregate immutability digest. The manifest declares
-`9687878401513881335a5a1479cdf53e2b4b3108debb3d28297444f3e2808091`,
-while its documented serialization algorithm over those same six declared
-records yields
-`095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`.
+Its six exact committed Git blobs independently reproduce the documented
+639-byte aggregate preimage and current package SHA-256:
 
-No hash was overridden, no source branch was merged, and no normalized exact
-package was emitted. Wave36A must publish a self-consistent reviewed manifest
-before exact artifact replay.
+`095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`
+
+The historical `9687878401513881335a5a1479cdf53e2b4b3108debb3d28297444f3e2808091`
+value remains superseded metadata and is not accepted by the adapter. The
+adapter preserved the complete category UUID sequence, emitted the normalized
+compiler input, and the exact package passed deterministic compilation, three
+fresh local PGlite forward/rollback cycles, two idempotent second applies, all
+postchecks, and the fail-closed matrix.
+
+No payload byte or category UUID was regenerated, no source branch was merged,
+and no remote environment was accessed. Exact replay evidence is recorded in
+`TAXONOMY_W36_EXACT_ARTIFACT_REPLAY.md`.
 
 ## 8. Offline JIT snapshot shape
 
