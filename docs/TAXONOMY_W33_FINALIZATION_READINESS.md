@@ -1,6 +1,6 @@
 # Wave 33 — Global Taxonomy Finalization Readiness
 
-**State:** READY FOR BULK PRODUCT OWNER REVIEW — NOT FINALIZED
+**State:** R01–R09 RESOLVED — ALL 22 TREES READY FOR ONE BULK PRODUCT OWNER FINAL APPROVAL
 
 ## 1. Scope and source integrity
 
@@ -11,21 +11,23 @@
 | Batch 03 | `3dd6df685c7e6a5ed672188e010992063ea9d720` | 8 | 77 | 366 | 16 | 379 | 459 |
 | **Candidate total** | — | **22** | **224** | **1,079** | **185** | **1,200** | **1,488** |
 
-All three sources were read through Git objects; none was merged. Their candidate documents/CSVs were not edited. The unified CSV preserves one row per source node, source batch and source path, contains no generated stable UUID and remains candidate-only.
+All three sources were read through Git objects; none was merged. Their candidate documents/CSVs were not edited. The original unified CSV preserves the immutable 1,488-row audit input. `TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv` applies only the owner-final Wave 33 digest directions, preserves source lineage and contains no generated stable UUID.
 
 ## 2. Expected vs actual
 
-| Metric | Expected | Actual | Result |
-|---|---:|---:|---|
-| Candidate L1 | 22 | 22 | PASS |
-| L2 | 224 | 224 | PASS |
-| L3 | 1,079 | 1,079 | PASS |
-| L4 | 185 | 185 | PASS |
-| Assignable leaves | 1,200 | 1,200 | PASS |
-| Machine-readable rows | approximately 1,488 | 1,488 | PASS |
-| Maximum depth | L4 | L4 | PASS |
-| L5 nodes | 0 | 0 | PASS |
-| Duplicate full paths | 0 | 0 | PASS |
+| Metric | Source baseline | Resolved actual | Delta | Result |
+|---|---:|---:|---:|---|
+| Candidate L1 | 22 | 22 | 0 | PASS |
+| L2 | 224 | 224 | 0 | PASS |
+| L3 | 1,079 | 1,078 | -1 | PASS — R08 removal |
+| L4 | 185 | 185 | 0 | PASS |
+| Assignable leaves | 1,200 | 1,199 | -1 | PASS — R08 removal |
+| Machine-readable rows | 1,488 | 1,487 | -1 | PASS — R08 removal |
+| Maximum depth | L4 | L4 | 0 | PASS |
+| L5 nodes | 0 | 0 | 0 | PASS |
+| Duplicate full paths | 0 | 0 | 0 | PASS |
+
+R08 removes/defer exactly one L3 leaf. R08 also renames one path and R09 renames four paths; renames do not alter counts.
 
 One terminal display name, `Fren Parçaları`, appears under bicycle and motorcycle paths. The complete paths and product identities differ, so this is a scoped label reuse rather than a duplicate canonical path.
 
@@ -46,16 +48,17 @@ Current-main owner roots `OM-R06=B`, `OM-R07=B` and `OM-R10=A` remain authoritat
 |---|---|---|
 | Cross-domain boundaries | 48 collision records | PASS |
 | Existing-rule/safe-resolution records | 35 | PASS |
-| Owner-decision collision rows | 13, deduplicated to 7 boundary roots | READY FOR OWNER |
-| Naming/scope roots | 2 additional roots | READY FOR OWNER |
-| Total unresolved owner root questions | 9 | NO STRUCTURAL BLOCKER |
+| Owner-final collision rows | 13 across 7 boundary roots | PASS — R01–R07=A |
+| Owner-final naming/scope roots | 2 additional roots | PASS — R08–R09=A |
+| Wave 33 digest root decisions resolved | 9/9 | PASS |
+| Remaining structural owner questions | 0 | PASS |
 | Unresolved structural P0 | 0 | PASS |
 | Active product-service leakage | 0 | PASS |
 | Facet-only terminal category | 0 | PASS |
 | Unauthorized policy relaxation | 0 found | PASS |
 | Candidate row marked owner-final | 0 | PASS |
 
-The nine roots concern exact ownership, exception or wording choices. They do not require wholesale redesign. The Product Owner can approve unaffected paths in one batch and answer only R01–R09 from the digest.
+The nine Wave 33 digest roots are owner-final and must not be confused with master `OM-Rxx` roots. They resolve exact ownership, exception and wording choices without wholesale redesign. No structural exception remains before the 22-tree bulk final approval.
 
 ## 5. Policy and professional-review gates
 
@@ -65,60 +68,54 @@ Leaf policy distribution:
 |---|---:|
 | `NORMAL` | 587 |
 | `REGULATED` | 442 |
-| `LEGAL_REVIEW_REQUIRED` | 171 |
-| **Policy-sensitive total** | **613** |
+| `LEGAL_REVIEW_REQUIRED` | 170 |
+| **Policy-sensitive total** | **612** |
 
-Professional review is required for **841** leaves. Of these, 228 are currently `NORMAL`; this records a professional/catalog/compliance gate but also reveals that cross-batch policy severity vocabulary must be calibrated before runtime. No `REGULATED` or `LEGAL_REVIEW_REQUIRED` leaf lacks its professional-review flag.
+Professional review is required for **840** resolved leaves. Of these, 228 are currently `NORMAL`; this records a professional/catalog/compliance gate but also reveals that cross-batch policy severity vocabulary must be calibrated before runtime. No `REGULATED` or `LEGAL_REVIEW_REQUIRED` leaf lacks its professional-review flag.
 
 Professional-review-only work is not a structural taxonomy blocker and is not satisfied by owner approval. Runtime publication/allowlisting remains blocked until the relevant legal/domain specialist clears the product family and required SKU/listing evidence.
 
 ## 6. Bulk-finalization lanes
 
-### Ready as-is
+### All 22 ready for one bulk final approval
 
-Nine L1s have no remaining Wave 33 root decision:
+The nine owner-final directions resolve every exact exception. All 22 L1 trees now have zero remaining structural P0/owner question:
 
+- Gıda & İçecek
+- Giyim & Moda
+- Ayakkabı
+- Çanta & Aksesuar
+- Beyaz Eşya & Ev Aletleri
+- Ev & Yaşam
 - Züccaciye & Mutfak
-- Kozmetik & Kişisel Bakım
+- Yapı, Hırdavat & Tesisat
 - Otomotiv & Motosiklet
+- Kozmetik & Kişisel Bakım
+- Anne & Bebek
+- Oyuncak & Hobi
+- Müzik & Enstrüman
+- Spor & Outdoor
 - Kitap
 - Kırtasiye & Ofis
 - Evcil Hayvan Ürünleri
 - Gözlük & Optik
 - Saat & Takı
 - Sağlık & Medikal
-
-### Ready except exact R01–R09 paths
-
-The remaining 13 L1s have zero structural P0. Their unaffected paths can be approved in bulk:
-
-- Gıda & İçecek
-- Giyim & Moda
-- Ev & Yaşam
-- Yapı, Hırdavat & Tesisat
-- Ayakkabı
-- Çanta & Aksesuar
-- Beyaz Eşya & Ev Aletleri
-- Anne & Bebek
-- Oyuncak & Hobi
-- Müzik & Enstrüman
-- Spor & Outdoor
-- Hediyelik & Parti
 - Çiçek & Bahçe
+- Hediyelik & Parti
 
-Exact exceptions are defined in `TAXONOMY_W33_OWNER_FINALIZATION_DIGEST.md`. No L1 is in a `BLOCKED_BY_STRUCTURAL_ISSUE` lane.
+No L1 is in a `BLOCKED_BY_STRUCTURAL_ISSUE` lane. Professional/policy review remains an independent, open post-taxonomy gate.
 
 ## 7. Final readiness conclusion
 
-The 22 candidate trees are semantically reconciled enough for a single bulk Product Owner review session. Readiness means:
+The 22 resolved candidate trees are semantically reconciled for a single bulk Product Owner final-approval session. Readiness means:
 
-- approve nine unaffected L1s as-is;
-- approve unaffected paths in the other 13 L1s;
-- answer nine compact root questions;
+- review the resolved 1,487-row tree as one candidate set;
+- no longer answer R01–R09, because all nine selections are final;
 - keep all professional/policy gates open after taxonomy approval;
 - perform stable-ID/runtime work only in a later separately authorized stage.
 
-This audit does not change any source tree, create stable IDs, write runtime taxonomy, waive policy review or record an owner selection.
+This audit does not change any source tree, create stable IDs, write runtime taxonomy or waive policy review. It records only the explicitly supplied Wave 33 R01–R09 owner selections.
 
 `GLOBAL_FINAL_TAXONOMY_SEMANTIC_AUDIT: PASS`
 `CANDIDATE_L1_RECONCILED: 22/22`
@@ -129,5 +126,8 @@ This audit does not change any source tree, create stable IDs, write runtime tax
 `FACET_CATEGORY_AUDIT: PASS`
 `FINAL_OWNER_DIGEST: PASS`
 `READY_FOR_BULK_OWNER_FINALIZATION: YES`
-`OWNER_FINALIZATION_PERFORMED: NO`
+`W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
+`W33_REMAINING_STRUCTURAL_OWNER_DECISIONS: 0`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`

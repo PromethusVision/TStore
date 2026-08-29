@@ -1,6 +1,6 @@
 # Wave 33 — Final Naming and Granularity Review
 
-**State:** RECOMMENDATION — NO SOURCE RENAME APPLIED
+**State:** R01/R02/R08/R09 OWNER-FINAL NAMING DIRECTION APPLIED TO RESOLVED TREE
 
 ## 1. Review principles
 
@@ -14,16 +14,16 @@
 
 | ID | Current/source wording | Finding | Recommendation | Type | Owner decision |
 |---|---|---|---|---|:---:|
-| NAM-001 | `İş & Güvenlik Ayakkabıları` → candidate `İş & Profesyonel Ayakkabılar` | Old name collides with certified PPE ownership | Approve candidate rename; safety footwear remains Hırdavat PPE | Exact non-structural L2 rename | YES |
-| NAM-002 | `Balıkçılık & Avcılık` → candidate `Balıkçılık` | Old umbrella implies unapproved hunting capability | Approve candidate rename; hunting remains fail closed | Exact non-structural L2 rename | YES |
-| NAM-003 | `Uyku Destek Ürünleri` | “Support” can mean accessory, supplement, medical device or service; product identity is not clear | Defer/remove until exact physical-product set is named, or replace with explicit non-medical product family | Scope clarification | YES |
-| NAM-004 | `Bağımsız Banyo Yardımcıları` | “Helper” is too broad and overlaps accessibility/medical aids | If intent is ordinary products, use an exact family such as `Banyo Taburesi & Basamakları`; medical-intent aids stay Sağlık | Exact scope/name clarification | YES |
-| NAM-005 | `Medikal İddiasız Masaj & Rahatlama Cihazları` | Negative claim/policy language is embedded in category name | Rename to `Masaj & Rahatlama Cihazları`; keep medical-claim exclusion in policy metadata | Exact non-structural rename | YES |
-| NAM-006 | `Kimyasal Olmayan Bitki Koruma Örtüleri` | Negative policy qualifier is unnecessary for an intrinsically physical cover | Rename to `Bitki Koruma Örtüleri`; pesticide/chemical products remain absent by policy | Exact non-structural rename | YES |
-| NAM-007 | `Piroteknik Olmayan Konfeti` | Negative prohibition is visible category copy | Rename to `Konfeti`; pyrotechnics remain hard-blocked by policy | Exact non-structural rename | YES |
-| NAM-008 | `Piroteknik Olmayan Parti Üflemelileri` | Negative prohibition is visible category copy | Rename to `Parti Üflemelileri`; pyrotechnics remain hard-blocked by policy | Exact non-structural rename | YES |
+| NAM-001 | `İş & Güvenlik Ayakkabıları` → candidate `İş & Profesyonel Ayakkabılar` | Old name collides with certified PPE ownership | Candidate rename retained; safety footwear remains Hırdavat PPE | Exact non-structural L2 rename | FINAL — R01=A |
+| NAM-002 | `Balıkçılık & Avcılık` → candidate `Balıkçılık` | Old umbrella implies unapproved hunting capability | Candidate rename retained; hunting remains fail closed | Exact non-structural L2 rename | FINAL — R02=A |
+| NAM-003 | `Uyku Destek Ürünleri` | “Support” can mean accessory, supplement, medical device or service; product identity is not clear | Removed/deferred until an exact non-medical physical-product family is separately justified | Scope clarification | FINAL — R08=A |
+| NAM-004 | `Bağımsız Banyo Yardımcıları` | “Helper” is too broad and overlaps accessibility/medical aids | Renamed to `Banyo Taburesi & Basamakları`; medical-intent aids stay Sağlık | Exact scope/name clarification | FINAL — R08=A |
+| NAM-005 | `Medikal İddiasız Masaj & Rahatlama Cihazları` | Negative claim/policy language is embedded in category name | Renamed to `Masaj & Rahatlama Cihazları`; medical-claim exclusion remains in policy metadata | Exact non-structural rename | FINAL — R09=A |
+| NAM-006 | `Kimyasal Olmayan Bitki Koruma Örtüleri` | Negative policy qualifier is unnecessary for an intrinsically physical cover | Renamed to `Bitki Koruma Örtüleri`; pesticide/chemical products remain absent by policy | Exact non-structural rename | FINAL — R09=A |
+| NAM-007 | `Piroteknik Olmayan Konfeti` | Negative prohibition is visible category copy | Renamed to `Konfeti`; pyrotechnics remain hard-blocked by policy | Exact non-structural rename | FINAL — R09=A |
+| NAM-008 | `Piroteknik Olmayan Parti Üflemelileri` | Negative prohibition is visible category copy | Renamed to `Parti Üflemelileri`; pyrotechnics remain hard-blocked by policy | Exact non-structural rename | FINAL — R09=A |
 
-`NAM-005`–`NAM-008` share one root principle and can be decided together: **category names describe the physical product; policy exclusions live in fail-closed metadata**. The recommendation does not relax any exclusion.
+The Product Owner selected R09=A for `NAM-005`–`NAM-008`: **category names describe the physical product; policy exclusions live in fail-closed metadata**. The resolved names do not relax any exclusion.
 
 ## 3. Reviewed and retained terminology
 
@@ -70,14 +70,14 @@ Fourteen of its sixteen L4 nodes belong to Otomotiv & Motosiklet, where vehicle-
 | Ayakkabı | BALANCED |
 | Çanta & Aksesuar | BALANCED |
 | Beyaz Eşya & Ev Aletleri | BALANCED |
-| Ev & Yaşam | BALANCED, with two broad leaf names requiring clarification |
+| Ev & Yaşam | BALANCED; R08 removed one vague leaf and narrowed the other |
 | Züccaciye & Mutfak | BALANCED |
 | Yapı, Hırdavat & Tesisat | BALANCED |
 | Otomotiv & Motosiklet | BALANCED |
 | Kozmetik & Kişisel Bakım | BALANCED |
 | Anne & Bebek | BALANCED |
-| Oyuncak & Hobi | BALANCED; preschool exception needs owner approval |
-| Müzik & Enstrüman | BALANCED; registry decision remains open |
+| Oyuncak & Hobi | BALANCED; preschool exception owner-final under R06=A |
+| Müzik & Enstrüman | BALANCED; registry direction owner-final under R05=A |
 | Spor & Outdoor | BALANCED |
 | Kitap | BALANCED |
 | Kırtasiye & Ofis | BALANCED |
@@ -88,16 +88,18 @@ Fourteen of its sixteen L4 nodes belong to Otomotiv & Motosiklet, where vehicle-
 | Çiçek & Bahçe | BALANCED |
 | Hediyelik & Parti | BALANCED |
 
-No domain is classified `TOO_NARROW`. The two broad Home leaves are naming/scope decisions, not a reason to redesign the whole domain. No `UNNECESSARY_DEPTH` branch was identified.
+No domain is classified `TOO_NARROW`. R08 resolved the two broad Home leaves without redesigning the domain. No `UNNECESSARY_DEPTH` branch was identified.
 
 ## 5. Turkish naturalness result
 
-- Materially confusing source/candidate names: 8 records.
-- Semantically independent decisions: four (PPE rename, fishing rename, one grouped Home-scope decision, one grouped policy-qualifier cleanup).
+- Materially confusing source/candidate names: 8 records, all resolved.
+- Semantically independent naming decisions finalized: four (R01, R02, R08 and R09).
 - Cosmetic-only rename recommendations: 0.
 - Existing owner-final Elektronik/Bilgisayar names altered: 0.
 - Candidate source files altered: 0.
+- Resolved Wave 33 tree: one path removed/deferred and five paths renamed.
 
-`FINAL_NAMING_REVIEW: PASS_WITH_EXACT_DELTAS`
+`FINAL_NAMING_REVIEW: PASS_RESOLVED`
 `GRANULARITY_AUDIT: PASS`
-`OWNER_FINALIZATION_PERFORMED: NO`
+`W33_NAMING_DIRECTIONS_FINALIZED: 4/4`
+`PROFESSIONAL_REVIEW_GATES: OPEN`

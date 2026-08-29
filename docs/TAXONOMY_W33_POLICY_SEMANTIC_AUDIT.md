@@ -1,6 +1,6 @@
 # Wave 33 — Policy Semantic Audit
 
-**State:** AUDIT / RECOMMENDATION — NOT LEGAL APPROVAL
+**State:** POST-R01–R09 RESOLVED AUDIT — NOT LEGAL/REGULATORY APPROVAL
 
 ## 1. Core rule
 
@@ -10,18 +10,18 @@ Taxonomy answers **what the physical product is**. It does not decide whether a 
 
 | Metric | Result |
 |---|---:|
-| Candidate leaves | 1,200 |
+| Resolved candidate leaves | 1,199 |
 | `NORMAL` | 587 |
 | `REGULATED` | 442 |
-| `LEGAL_REVIEW_REQUIRED` | 171 |
-| Policy-sensitive leaves | 613 |
-| Professional-review leaves | 841 |
+| `LEGAL_REVIEW_REQUIRED` | 170 |
+| Policy-sensitive leaves | 612 |
+| Professional-review leaves | 840 |
 | Sensitive leaf with professional review `NO` | 0 |
 | Legal-review leaf with professional review `NO` | 0 |
 | Candidate rows mistakenly owner-final | 0 |
 | Active prohibited/weapon/service leaf found | 0 |
 
-All 1,488 source rows remain `CANDIDATE_FOR_PRODUCT_OWNER_FINALIZATION`; all still carry `OWNER_DECISION_REQUIRED=YES`.
+The immutable source baseline remains 1,488 rows/1,200 leaves. R08=A removes one `LEGAL_REVIEW_REQUIRED` professional-review leaf from the resolved tree, producing 1,487 rows/1,199 leaves. The resolved rows remain `CANDIDATE_FOR_PRODUCT_OWNER_FINALIZATION` and continue to require the later 22-tree bulk owner approval. R01–R09 do not waive any professional gate.
 
 ## 3. Domain policy profile
 
@@ -32,7 +32,7 @@ All 1,488 source rows remain `CANDIDATE_FOR_PRODUCT_OWNER_FINALIZATION`; all sti
 | Ayakkabı | 41 | 4 | 15 | PASS — safety-footwear owner decision open |
 | Çanta & Aksesuar | 45 | 0 | 8 | PASS — high-risk/integrated carriers externally gated |
 | Beyaz Eşya & Ev Aletleri | 66 | 11 | 66 | REVIEW — severity vocabulary calibration needed; no gate bypass |
-| Ev & Yaşam | 64 | 7 | 14 | REVIEW — two vague support/helper leaves need exact scope |
+| Ev & Yaşam | 63 | 6 | 13 | PASS — R08 removed/deferred the vague sleep leaf and narrowed the bathroom leaf |
 | Züccaciye & Mutfak | 54 | 49 | 50 | PASS — food-contact/heat/sharp/pressure gates retained |
 | Yapı, Hırdavat & Tesisat | 79 | 57 | 58 | PASS — gas/electrical/chemical/PPE fail closed |
 | Otomotiv & Motosiklet | 71 | 58 | 58 | PASS — fitment/chemical/battery/safety gates retained |
@@ -57,12 +57,12 @@ All 1,488 source rows remain `CANDIDATE_FOR_PRODUCT_OWNER_FINALIZATION`; all sti
 | POL-001 | Cross-batch meaning of `NORMAL` vs `REGULATED` is not fully calibrated | 228 leaves are `NORMAL` while still requiring professional review | P1 POLICY | Define policy-class semantics before runtime; preserve professional gate meanwhile | NO |
 | POL-002 | Appliance severity is internally conservative but label-inconsistent with other electrical domains | 55/66 appliance leaves are `NORMAL+PRO=YES`, while lighting/tool electrical leaves often use `REGULATED` | P1 POLICY | Electrical/compliance specialist reviews class mapping; do not bulk relabel blindly | NO |
 | POL-003 | Music candidate applies professional review much more broadly than policy class | 72/72 professional-review leaves; only 2 sensitive policy leaves | P2 POLICY | Calibrate whether review is catalog quality, electrical compliance or policy eligibility | NO |
-| POL-004 | Home support/helper language can admit medical-intent products | `Uyku Destek Ürünleri`, `Bağımsız Banyo Yardımcıları` are legal-review leaves but semantically broad | P1 OWNER/POLICY | Owner narrows/defer names; medical intended use stays Sağlık | NO P0; exact leaf decision required |
+| POL-004 | Home support/helper language could admit medical-intent products | R08=A removes/defer the sleep-support leaf and renames the bathroom leaf to `Banyo Taburesi & Basamakları` | RESOLVED OWNER / OPEN POLICY | Keep medical/accessibility scope outside this ordinary physical family unless separately reviewed | NO — RESOLVED |
 | POL-005 | Parent policy is an aggregate, not SKU permission | Source trees elevate parent to strictest descendant in some batches | P2 DATA | Runtime policy must evaluate leaf/SKU evidence, not parent display alone | NO |
 | POL-006 | Exclusion is represented by absence, not normal leaf | No firearm/ammunition/airsoft/paintball/hunting-weapon/firework/explosive/pesticide/live-animal/drug/supplement leaf | P0 SAFETY | Keep ingestion/search fail closed; taxonomy approval cannot add synonyms that bypass absence | NO — current state safe |
-| POL-007 | Owner and professional approvals are distinct | All rows require owner approval; 841 leaves separately require professional review | P0 GOVERNANCE | Record both gates independently | NO |
+| POL-007 | Owner and professional approvals are distinct | Resolved rows still require bulk tree approval; 840 resolved leaves separately require professional review | P0 GOVERNANCE | Record both gates independently | NO |
 
-The audit found no evidence that a known prohibited concept was silently granted a `NORMAL` commerce leaf. `POL-001`–`POL-004` are metadata/naming calibration issues, not permission to relax policy.
+The audit found no evidence that a known prohibited concept was silently granted a `NORMAL` commerce leaf. `POL-004` is owner-resolved; `POL-001`–`POL-003` remain professional metadata-calibration work and do not permit policy relaxation.
 
 ## 5. Sensitive-domain checks
 
@@ -124,9 +124,10 @@ Required review lanes remain:
 
 ## 8. Outcome
 
-The candidate structures may proceed to owner review because no structural P0 or unauthorized policy relaxation was found. Policy metadata must not be activated at runtime until `POL-001`–`POL-004` and professional gates are resolved.
+All 22 resolved candidate structures may proceed to one bulk owner-finalization session because no structural P0 or unauthorized policy relaxation was found. Policy metadata must not be activated at runtime until `POL-001`–`POL-003` and applicable professional gates are resolved.
 
 `POLICY_SEMANTIC_AUDIT: PASS`
 `UNAUTHORIZED_POLICY_RELAXATION: NONE_FOUND`
 `PROFESSIONAL_REVIEW_TREATED_AS_OWNER_APPROVAL: NO`
+`PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`

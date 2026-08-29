@@ -1,29 +1,29 @@
 # Wave 33 — Global Cross-Batch Boundary Audit
 
-**State:** RECOMMENDATION — NOT PRODUCT OWNER FINAL
+**State:** R01–R07 OWNER-FINAL BOUNDARY DIRECTION APPLIED — PROFESSIONAL GATES OPEN
 
 ## 1. Method
 
-The 1,200 terminal candidate leaves were compared across all 22 candidate L1s and against the owner-final Elektronik/Bilgisayar anchors. Ownership follows physical product identity, primary function, intended use, integration and evidence. Merchant type, marketing copy, gift intent and mere compatibility do not create a second primary leaf.
+The 1,200-leaf source baseline was compared across all 22 candidate L1s and against the owner-final Elektronik/Bilgisayar anchors. R08=A subsequently produces a 1,199-leaf resolved tree. Ownership follows physical product identity, primary function, intended use, integration and evidence. Merchant type, marketing copy, gift intent and mere compatibility do not create a second primary leaf.
 
 ## 2. Collision registry
 
 | ID | Product family | Owner A | Owner B | Current rule | Recommended canonical owner | Owner decision required | Professional review | Result |
 |---|---|---|---|---|---|:---:|:---:|---|
-| BND-001 | General food vs baby-specific formula/food | Gıda & İçecek | Anne & Bebek | General food is Gıda; baby-specific formula/food candidate is Anne & Bebek with food evidence | Anne & Bebek for baby-specific discovery; shared food/regulatory gate | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-001 | General food vs baby-specific formula/food | Gıda & İçecek | Anne & Bebek | General food is Gıda; baby-specific formula/food candidate is Anne & Bebek with food evidence | Anne & Bebek for baby-specific discovery; shared food/regulatory gate | NO — R03=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-002 | Medical nutrition and supplements | Gıda & İçecek | Sağlık & Medikal | No normal candidate leaf in either tree | No assignment until separate legal proposal | NO | YES | PASS — FAIL_CLOSED |
 | BND-003 | Child/baby clothing | Giyim & Moda | Anne & Bebek | Age does not override garment identity | Giyim & Moda; age-stage facet | NO | Conditional | PASS |
 | BND-004 | Baby footwear | Ayakkabı | Anne & Bebek | Footwear identity wins | Ayakkabı; age-stage facet | NO | YES | PASS |
-| BND-005 | Standalone baby-care bag | Çanta & Aksesuar | Anne & Bebek | Standalone bag candidate is in Çanta; inseparable host module follows host | Çanta when independently sold; Anne & Bebek when inseparable module | YES | YES | OWNER_DECISION_REQUIRED |
-| BND-006 | Ordinary occupational footwear | Ayakkabı | Hırdavat PPE | Renamed candidate excludes “güvenlik”; leaves are non-certified professional shoes | Ayakkabı → İş & Profesyonel Ayakkabılar | YES | YES | OWNER_DECISION_REQUIRED |
-| BND-007 | Certified safety footwear | Ayakkabı | Hırdavat PPE | Protection-first certification routes to PPE | Yapı, Hırdavat & Tesisat → İş Güvenliği Ayakkabıları | YES | YES | OWNER_DECISION_REQUIRED |
-| BND-008 | Weather/outdoor boots vs protective boots | Ayakkabı | Hırdavat/Spor/Otomotiv | Ordinary rain/snow/trekking stays footwear; certified occupational, sport or motorcycle protection follows purpose | Evidence-based owner: Ayakkabı / Hırdavat / Spor / Otomotiv | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-005 | Standalone baby-care bag | Çanta & Aksesuar | Anne & Bebek | Standalone bag candidate is in Çanta; inseparable host module follows host | Çanta when independently sold; Anne & Bebek when inseparable module | NO — R04=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
+| BND-006 | Ordinary occupational footwear | Ayakkabı | Hırdavat PPE | Renamed candidate excludes “güvenlik”; leaves are non-certified professional shoes | Ayakkabı → İş & Profesyonel Ayakkabılar | NO — R01=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
+| BND-007 | Certified safety footwear | Ayakkabı | Hırdavat PPE | Protection-first certification routes to PPE | Yapı, Hırdavat & Tesisat → İş Güvenliği Ayakkabıları | NO — R01=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
+| BND-008 | Weather/outdoor boots vs protective boots | Ayakkabı | Hırdavat/Spor/Otomotiv | Ordinary rain/snow/trekking stays footwear; certified occupational, sport or motorcycle protection follows purpose | Evidence-based owner: Ayakkabı / Hırdavat / Spor / Otomotiv | NO — R01=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-009 | Technical sport apparel | Giyim & Moda | Spor & Outdoor | Garment identity stays Giyim; sport equipment stays Spor | Giyim & Moda → Spor & Performans Giyimi | NO | Conditional | PASS |
 | BND-010 | Sport-specific hard protection | Spor & Outdoor | Hırdavat PPE | Activity-specific protection stays sport; occupational certification stays PPE | Spor & Outdoor for sport-only protectors | NO | YES | PASS |
-| BND-011 | Protective apparel | Giyim & Moda | Hırdavat/Spor/Otomotiv/Health | Ordinary uniform is Giyim; certified purpose overrides ordinary garment form | Certification/intended-use owner | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-011 | Protective apparel | Giyim & Moda | Hırdavat/Spor/Otomotiv/Health | Ordinary uniform is Giyim; certified purpose overrides ordinary garment form | Certification/intended-use owner | NO — R01=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-012 | Protective eyewear | Gözlük & Optik | Hırdavat/Spor/Health | Optical correction/sun use differs from occupational, sport and medical PPE | Optik / Hırdavat / Spor / Sağlık by intended use | NO | YES | PASS |
-| BND-013 | Standalone instrument bags | Çanta & Aksesuar | Müzik & Enstrüman | Standalone bag is candidate in Çanta; compatibility is facet | Çanta & Aksesuar | YES | Conditional | OWNER_DECISION_REQUIRED |
-| BND-014 | Integrated technical sport carriers | Çanta & Aksesuar | Spor & Outdoor | General bag is Çanta; hydration/bicycle/safety-integrated carrier is Spor | Spor & Outdoor only when integration is intrinsic | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-013 | Standalone instrument bags | Çanta & Aksesuar | Müzik & Enstrüman | Standalone bag is candidate in Çanta; compatibility is facet | Çanta & Aksesuar | NO — R04=A FINAL | Conditional | PASS — OWNER_FINAL_DIRECTION |
+| BND-014 | Integrated technical sport carriers | Çanta & Aksesuar | Spor & Outdoor | General bag is Çanta; hydration/bicycle/safety-integrated carrier is Spor | Spor & Outdoor only when integration is intrinsic | NO — R04=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-015 | Laptop/camera/device bags | Çanta & Aksesuar | Computer/Elektronik anchors | Standalone protective carrying product is Çanta; compatibility is facet | Çanta & Aksesuar | NO | Conditional | PASS |
 | BND-016 | Tool/fishing/food transport containers | Çanta & Aksesuar | Hırdavat/Spor/Züccaciye | Functionally specialized hard/thermal/system carrier follows the host domain | Host domain when product identity is more than a generic bag | NO | Conditional | PASS |
 | BND-017 | Furniture/home storage vs food storage | Ev & Yaşam | Züccaciye & Mutfak | General household organization differs from food-contact storage | Ev for general storage; Züccaciye for food-contact/kitchen intent | NO | YES | PASS |
@@ -37,8 +37,8 @@ The 1,200 terminal candidate leaves were compared across all 22 candidate L1s an
 | BND-025 | Electric personal-care device | Kozmetik & Kişisel Bakım | Beyaz Eşya & Ev Aletleri | Powered device is appliance; formulation/manual accessory is personal care | Beyaz Eşya & Ev Aletleri for powered device | NO | YES | PASS |
 | BND-026 | Toy drone vs camera drone | Oyuncak & Hobi | Elektronik anchor | Play-first product differs from imaging-first camera equipment | Toy → Oyuncak; camera-first → Fotoğraf & Kamera | NO | YES | PASS |
 | BND-027 | Toy instrument vs real instrument | Oyuncak & Hobi | Müzik & Enstrüman | Tune/performance capability separates instrument from role-play toy | Müzik if performance-capable; otherwise Oyuncak | NO | Conditional | PASS |
-| BND-028 | Traditional instrument families | Müzik & Enstrüman | Cross-family duplicates inside Music | Candidate uses exact registry rather than repeating instrument nodes | One registry-backed canonical leaf per instrument | YES | Conditional | OWNER_DECISION_REQUIRED |
-| BND-029 | Preschool age branch | Oyuncak & Hobi | Facet system | Age is generally facet, but source proposes schema-bearing preschool exception | Retain only as explicit owner-approved exception | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-028 | Traditional instrument families | Müzik & Enstrüman | Cross-family duplicates inside Music | Candidate uses exact registry rather than repeating instrument nodes | One registry-backed canonical leaf per instrument | NO — R05=A FINAL | Conditional | PASS — OWNER_FINAL_DIRECTION |
+| BND-029 | Preschool age branch | Oyuncak & Hobi | Facet system | Age is generally facet, but source proposes schema-bearing preschool exception | Retain only as explicit owner-approved exception | NO — R06=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-030 | Console/game hardware vs toys/PC | Elektronik anchor | Oyuncak/Bilgisayar | Console-first hardware is Elektronik; PC-first peripheral is Computer; board/toy stays Toys | Preserve owner-final anchor | NO | Conditional | PASS |
 | BND-031 | Vehicle-fitment electronics | Otomotiv & Motosiklet | Elektronik/Hırdavat | Fitment/installation is decisive; generic endpoint remains Elektronik | Otomotiv for vehicle-fitment device | NO | YES | PASS |
 | BND-032 | General workshop tool vs vehicle tool/part | Hırdavat | Otomotiv & Motosiklet | Vehicle-specific fitment tool/part follows Automotive; general workshop tool stays Hırdavat | Existing split | NO | Conditional | PASS |
@@ -47,9 +47,9 @@ The 1,200 terminal candidate leaves were compared across all 22 candidate L1s an
 | BND-035 | Corrective optics/contact lens vs medical | Gözlük & Optik | Sağlık & Medikal | Physical optical families are visible but prescription/merchant eligibility is external | Gözlük & Optik with legal gate; medical service stays outside | NO | YES | PASS |
 | BND-036 | Classic watch/smartwatch/smart ring | Saat & Takı | Elektronik anchor | Connectivity/function separates wearable electronics | Classic → Saat & Takı; smart → Giyilebilir Teknoloji | NO | YES | PASS |
 | BND-037 | Jewelry/fashion accessory overlap | Saat & Takı | Çanta & Aksesuar | Jewelry identity remains separate; clothing accessories stay Çanta | Existing L1 owner | NO | Conditional | PASS |
-| BND-038 | Gift intent for ordinary products | Hediyelik & Parti | All product domains | Gift/recipient/personalization cannot move ordinary product | Base product domain; gift intent facet | YES | Conditional | OWNER_DECISION_REQUIRED |
-| BND-039 | Intrinsic commemorative/souvenir object | Hediyelik & Parti | Decor/flower/jewelry domains | Intrinsic keepsake may enter Hediyelik; ordinary decor/flower/jewelry keeps base owner | Hediyelik only when commemorative identity is intrinsic | YES | Conditional | OWNER_DECISION_REQUIRED |
-| BND-040 | Fishing vs hunting | Spor & Outdoor | Restricted-goods policy | Candidate rename removes hunting; no hunting/weapon leaf exists | Spor & Outdoor → Balıkçılık only | YES | YES | OWNER_DECISION_REQUIRED |
+| BND-038 | Gift intent for ordinary products | Hediyelik & Parti | All product domains | Gift/recipient/personalization cannot move ordinary product | Base product domain; gift intent facet | NO — R07=A FINAL | Conditional | PASS — OWNER_FINAL_DIRECTION |
+| BND-039 | Intrinsic commemorative/souvenir object | Hediyelik & Parti | Decor/flower/jewelry domains | Intrinsic keepsake may enter Hediyelik; ordinary decor/flower/jewelry keeps base owner | Hediyelik only when commemorative identity is intrinsic | NO — R07=A FINAL | Conditional | PASS — OWNER_FINAL_DIRECTION |
+| BND-040 | Fishing vs hunting | Spor & Outdoor | Restricted-goods policy | Candidate rename removes hunting; no hunting/weapon leaf exists | Spor & Outdoor → Balıkçılık only | NO — R02=A FINAL | YES | PASS — OWNER_FINAL_DIRECTION |
 | BND-041 | Projectile play/weapon-like recreation | Oyuncak/Spor | Restricted-goods policy | Firearms, airsoft, paintball and weapon-like capability have no normal leaf | No ordinary assignment; fail closed | NO | YES | PASS — FAIL_CLOSED |
 | BND-042 | Party pyrotechnics/pressurized gas | Hediyelik & Parti | Restricted-goods policy | Only explicitly non-pyrotechnic leaves exist | No ordinary assignment; fail closed | NO | YES | PASS — FAIL_CLOSED |
 | BND-043 | Generic power vs tool/phone-specific power | Elektronik anchor | Hırdavat/Phone anchor | Generic multi-device power is Elektronik; exact tool/phone ecosystem follows host | Preserve anchor rules | NO | YES | PASS |
@@ -83,20 +83,20 @@ Global full-path duplicates: **0**.
 | Medical PPE | Sağlık & Medikal | Medical intended use and policy gate |
 | Ordinary uniform/workwear | Giyim & Moda | Garment identity without certified protection-first use |
 
-Proposed rename `İş & Güvenlik Ayakkabıları → İş & Profesyonel Ayakkabılar` is semantically safer and recommended. It removes a visible promise that certified safety footwear belongs in Ayakkabı. The rename alone is insufficient: certification/intended-use metadata must still enforce the boundary. **Owner decision remains required; no finalization is performed here.**
+The Product Owner selected R01=A. `İş & Profesyonel Ayakkabılar` remains the ordinary occupational-footwear candidate name, while certified protection-first footwear stays in Hırdavat PPE. The name alone is insufficient: certification/intended-use metadata must still enforce the open professional boundary.
 
 ## 5. Hunting and hazardous recreation
 
 The candidate contains seven `Balıkçılık` rows: one parent and six terminal product families. It contains zero `Avcılık`, firearm, ammunition, airsoft, paintball, hunting-weapon, firework or explosive product nodes. Two party leaves explicitly say `Piroteknik Olmayan`, which reinforces exclusion rather than enabling pyrotechnics.
 
-Proposed rename `Balıkçılık & Avcılık → Balıkçılık` is recommended because it:
+The Product Owner selected R02=A, confirming `Balıkçılık & Avcılık → Balıkçılık`, because it:
 
 - preserves ordinary fishing discoverability;
 - removes a misleading normal-commerce umbrella for hunting capability;
 - aligns with OM-R10=A fail-closed handling of unknown/regulatory-sensitive goods;
 - does not prevent a separately researched, lawyer-approved future proposal.
 
-No hunting accessory should be smuggled into fishing, camping or generic bag leaves. **Owner decision remains required; no hunting scope is finalized.**
+No hunting accessory may be smuggled into fishing, camping or generic bag leaves. No hunting scope is finalized; any future scope requires a separate owner and legal/domain review.
 
 ## 6. Service leakage audit
 
@@ -118,21 +118,23 @@ Physical replacement parts, consumer repair parts and service utensils are produ
 No exact terminal leaf consists solely of brand, model, generic compatibility, material, size, color or capacity. The following controlled exceptions/clarifications are retained:
 
 - pet species is a legitimate domain/product-schema discriminator; breed/age/size remains facet;
-- preschool age is a proposed schema-bearing exception and still needs owner approval;
+- preschool age is an owner-final narrow schema-bearing exception under R06=A;
 - baby-specific intended use can establish the Anne & Bebek domain, but general age alone cannot;
 - gift intent, organic/vegan/gluten-free, sport style and compatibility remain facets;
 - vehicle make/model/year/engine fitment, phone model and instrument compatibility remain typed relationships/facets.
 
-`FACET_CATEGORY_AUDIT: PASS — 1 OWNER EXCEPTION OPEN`
+`FACET_CATEGORY_AUDIT: PASS — R06 EXCEPTION FINAL, PROFESSIONAL GATE OPEN`
 
 ## 8. Structural outcome
 
 - Reviewed collision records: 48
 - Resolved by existing canonical rule or safe recommendation: 35
-- Owner-decision records represented: 13 collision rows, semantically deduplicated to seven boundary roots in the owner digest
+- Owner-final direction applied: 13 collision rows across seven Wave 33 digest roots
+- Remaining structural owner decisions: 0
 - Unresolved structural P0: 0
 - Professional/policy review remains separate and cannot be waived by taxonomy approval
 
 `GLOBAL_BOUNDARY_AUDIT: PASS`
-`OWNER_FINALIZATION_PERFORMED: NO`
+`W33_BOUNDARY_DIRECTIONS_FINALIZED: 7/7`
+`PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`

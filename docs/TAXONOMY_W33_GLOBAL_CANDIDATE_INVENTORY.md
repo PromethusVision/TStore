@@ -65,6 +65,21 @@ Batch detail:
 | 02 | 8 | 77 | 373 | 122 | 451 | 572 |
 | 03 | 8 | 77 | 366 | 16 | 379 | 459 |
 
+### Post-owner resolved tree
+
+R01–R09 apply to a separate resolved artifact and do not mutate the source baseline above. R08=A removes/defer one Ev & Yaşam L3 leaf; five exact renames preserve counts.
+
+| Metric | Source baseline | Resolved | Delta |
+|---|---:|---:|---:|
+| Candidate L1 | 22 | 22 | 0 |
+| L2 | 224 | 224 | 0 |
+| L3 | 1,079 | 1,078 | -1 |
+| L4 | 185 | 185 | 0 |
+| Assignable leaf | 1,200 | 1,199 | -1 |
+| Machine rows | 1,488 | 1,487 | -1 |
+
+Resolved artifact: `TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv`.
+
 ## 4. Candidate policy inventory
 
 Across 1,200 candidate leaves:
@@ -77,6 +92,16 @@ Across 1,200 candidate leaves:
 
 Policy labels are candidate routing metadata, not sale permission. Cross-batch severity consistency is assessed separately in the policy semantic audit.
 
+Resolved-tree policy counts after R08=A:
+
+- `NORMAL`: 587
+- `REGULATED`: 442
+- `LEGAL_REVIEW_REQUIRED`: 170
+- policy-sensitive: 612
+- `PROFESSIONAL_REVIEW_REQUIRED=YES`: 840
+
+Every applicable professional/legal/regulatory gate remains open.
+
 ## 5. Anchor compatibility
 
 - The exact Elektronik nine-L2 list and Bilgisayar & Tablet eleven-L2 list are not redesigned.
@@ -86,5 +111,6 @@ Policy labels are candidate routing metadata, not sale permission. Cross-batch s
 
 `CANDIDATE_L1_RECONCILED: 22/22`
 `CANDIDATE_L2_RECONCILED: 224/224`
-`OWNER_FINALIZATION_PERFORMED: NO`
+`W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
 `RUNTIME_IMPLEMENTATION: NO`

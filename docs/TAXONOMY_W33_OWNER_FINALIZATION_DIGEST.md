@@ -1,41 +1,29 @@
 # Wave 33 — Product Owner Finalization Digest
 
-**State:** READY FOR OWNER REVIEW — NO OWNER SELECTION RECORDED
+**State:** R01–R09 OWNER-FINAL DIRECTION RECORDED — 22-TREE BULK FINALIZATION PENDING
 
-This digest reduces the 22 candidate trees to nine root questions. It does not repeat 1,200 leaves. Every unaffected path remains exactly as supplied by the three Wave 32 source batches. Product Owner taxonomy approval and professional/policy approval remain separate gates.
+This digest records the Product Owner's final selections `R01=A` through `R09=A`. These identifiers belong only to this Wave 33 digest and are not `OM-R01`–`OM-R09`. The choices resolve the nine root questions without waiving professional/policy review. The 22 resolved trees remain candidates for one later bulk Product Owner final approval.
 
-## A. Bulk approve as-is
+## A. Bulk approval readiness
 
-The following nine L1 candidates have no remaining Wave 33 boundary or material naming decision. Their structure can be approved as supplied, while their professional-review flags remain open:
-
-1. Züccaciye & Mutfak
-2. Kozmetik & Kişisel Bakım
-3. Otomotiv & Motosiklet
-4. Kitap
-5. Kırtasiye & Ofis
-6. Evcil Hayvan Ürünleri
-7. Gözlük & Optik
-8. Saat & Takı
-9. Sağlık & Medikal
-
-For the other 13 L1s, the unaffected paths can also be bulk approved. Only the exact nodes named under R01–R09 remain exceptional.
+All 22 resolved L1 candidates now have zero remaining structural owner decision. The nine previously unaffected domains remain unchanged; the exact exceptions in the other 13 domains are resolved by R01=A through R09=A. Professional-review flags remain open across the resolved set.
 
 ## B. Bulk approve with exact non-structural rename
 
-These changes do not alter depth, leaf count or product ownership. They need an owner answer but do not require tree redesign.
+The Product Owner selected these exact non-structural names. R01 and R02 were already present in the Wave 32 candidate rows; R09 and R08's bathroom rename are applied only in the resolved Wave 33 tree.
 
-| Root | Exact change | Domain | Recommendation |
+| Root | Exact change | Domain | Owner selection |
 |---|---|---|---|
-| R01 | `İş & Güvenlik Ayakkabıları` → `İş & Profesyonel Ayakkabılar` | Ayakkabı | Approve |
-| R02 | `Balıkçılık & Avcılık` → `Balıkçılık` | Spor & Outdoor | Approve |
-| R09 | `Medikal İddiasız Masaj & Rahatlama Cihazları` → `Masaj & Rahatlama Cihazları` | Beyaz Eşya & Ev Aletleri | Approve with policy gate unchanged |
-| R09 | `Kimyasal Olmayan Bitki Koruma Örtüleri` → `Bitki Koruma Örtüleri` | Çiçek & Bahçe | Approve with chemical/pesticide exclusion unchanged |
-| R09 | `Piroteknik Olmayan Konfeti` → `Konfeti` | Hediyelik & Parti | Approve with pyrotechnics exclusion unchanged |
-| R09 | `Piroteknik Olmayan Parti Üflemelileri` → `Parti Üflemelileri` | Hediyelik & Parti | Approve with pyrotechnics exclusion unchanged |
+| R01 | `İş & Güvenlik Ayakkabıları` → `İş & Profesyonel Ayakkabılar` | Ayakkabı | A — FINAL |
+| R02 | `Balıkçılık & Avcılık` → `Balıkçılık` | Spor & Outdoor | A — FINAL |
+| R09 | `Medikal İddiasız Masaj & Rahatlama Cihazları` → `Masaj & Rahatlama Cihazları` | Beyaz Eşya & Ev Aletleri | A — FINAL; policy gate unchanged |
+| R09 | `Kimyasal Olmayan Bitki Koruma Örtüleri` → `Bitki Koruma Örtüleri` | Çiçek & Bahçe | A — FINAL; chemical/pesticide exclusion unchanged |
+| R09 | `Piroteknik Olmayan Konfeti` → `Konfeti` | Hediyelik & Parti | A — FINAL; pyrotechnics exclusion unchanged |
+| R09 | `Piroteknik Olmayan Parti Üflemelileri` → `Parti Üflemelileri` | Hediyelik & Parti | A — FINAL; pyrotechnics exclusion unchanged |
 
-The first two names are already present in the Wave 32 candidate rows; the decision is whether to accept those candidate deltas. R09 is a Wave 33 naming recommendation only and has not been applied to the source or unified candidate CSV.
+The first two names were already present in the Wave 32 candidate rows and are now owner-affirmed. R09 is applied to the separate resolved Wave 33 tree; neither the source branch CSVs nor the immutable original unified audit input is changed.
 
-## C. Requires one last owner decision
+## C. Owner-final decision record
 
 ### R01 — Ordinary professional footwear vs certified PPE
 
@@ -46,6 +34,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 **Option B:** Keep the old mixed `İş & Güvenlik Ayakkabıları` umbrella and require a later structural separation.
 
 **Recommended:** Option A.
+
+**Owner selection:** Option A — FINAL.
 
 **Why:** It prevents an ordinary shoe category from implying PPE certification, preserves customer discovery and gives certified safety footwear one canonical owner.
 
@@ -61,6 +51,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 
 **Recommended:** Option A.
 
+**Owner selection:** Option A — FINAL.
+
 **Why:** The current seven-node branch contains fishing products only; the broader name would suggest unsupported and policy-sensitive scope.
 
 **Affected nodes:** Spor & Outdoor → `Balıkçılık` and its six leaves; no hunting, firearm, ammunition, airsoft or paintball node is created.
@@ -74,6 +66,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 **Option B:** Move every edible product to Gıda and keep Anne & Bebek as a discovery alias/facet only.
 
 **Recommended:** Option A.
+
+**Owner selection:** Option A — FINAL.
 
 **Why:** It matches the parent’s shopping task without duplicating identity, while the shared food-policy gate prevents taxonomy placement from granting sale permission.
 
@@ -89,6 +83,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 
 **Recommended:** Option A.
 
+**Owner selection:** Option A — FINAL.
+
 **Why:** Physical identity stays stable and compatibility remains a facet, yet genuinely integrated systems remain discoverable with the equipment they serve.
 
 **Affected nodes:** Çanta → `Bebek Bakım Çantaları`, `Enstrüman Çantaları`; Anne & Bebek stroller modules; Spor → `Teknik Hidrasyon & Taşıma Sistemleri`, `Bisiklete Monte Çanta & Taşıyıcılar`.
@@ -102,6 +98,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 **Option B:** Repeat instruments under multiple families for navigation convenience.
 
 **Recommended:** Option A.
+
+**Owner selection:** Option A — FINAL.
 
 **Why:** It provides one canonical product path and prevents duplicate identity while allowing multiple discovery routes later.
 
@@ -117,6 +115,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 
 **Recommended:** Option A.
 
+**Owner selection:** Option A — FINAL.
+
 **Why:** The exception is narrow, safety-relevant and customer-recognizable; it does not justify turning general age bands into categories.
 
 **Affected nodes:** Oyuncak & Hobi → `Bebek & Okul Öncesi Oyuncaklar` and five L3 leaves.
@@ -130,6 +130,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 **Option B:** Allow gift intent to duplicate ordinary products under Hediyelik.
 
 **Recommended:** Option A.
+
+**Owner selection:** Option A — FINAL.
 
 **Why:** It preserves one canonical leaf per product and prevents Hediyelik from becoming a second copy of every L1.
 
@@ -145,6 +147,8 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 
 **Recommended:** Option A.
 
+**Owner selection:** Option A — FINAL.
+
 **Why:** Taxonomy names should state the physical product. The current labels can absorb supplements, medical devices, accessibility aids or services despite the policy gate.
 
 **Affected nodes:** Ev & Yaşam → `Yatak & Uyku Ürünleri → Uyku Destek Ürünleri`; `Banyo Aksesuarları → Bağımsız Banyo Yardımcıları`.
@@ -159,33 +163,38 @@ The first two names are already present in the Wave 32 candidate rows; the decis
 
 **Recommended:** Option A.
 
+**Owner selection:** Option A — FINAL.
+
 **Why:** A category should say what the product is; a shorter label does not authorize a prohibited claim or product when the separate policy gate remains mandatory.
 
 **Affected nodes:** one appliance leaf, one garden leaf and two party leaves listed in section B. The two Anne & Bebek `Medikal İddiasız ...` leaves are intentionally outside this bulk rename pending their professional scope review.
 
 ## D. Blocked by structural issue
 
-**None.** The audit found zero unresolved structural P0 blocker. R01–R09 are exact boundary, naming or scope decisions and do not require redesigning an entire L1 tree.
+**None.** The audit found zero unresolved structural P0 blocker. R01–R09 are owner-final directions and require no further structural answer.
 
 ## E. Taxonomy ready but professional policy review remains
 
 Every candidate L1 contains at least one professional-review leaf. Across all candidates:
 
-- professional-review leaves: **841**;
-- policy-sensitive leaves: **613** (`REGULATED` 442 + `LEGAL_REVIEW_REQUIRED` 171);
+- professional-review leaves: **840**;
+- policy-sensitive leaves: **612** (`REGULATED` 442 + `LEGAL_REVIEW_REQUIRED` 170);
 - policy-sensitive leaf missing professional review: **0**.
 
 Owner finalization can approve product identity and placement, but must not activate these leaves for runtime commerce. Required lanes include legal/regulatory, food safety, electrical/gas/product safety, PPE/sport/vehicle safety, child/toy safety, medical/optical/cosmetic claims, agriculture/pet and high-value goods.
 
 ## Minimal owner workload
 
-- Root answers required: **9**.
-- Domains fully approvable as-is: **9**.
-- Remaining 13 domains: approve all unaffected paths in bulk, then answer only the applicable R01–R09 exceptions.
+- Root answers resolved: **9/9**.
+- Remaining Wave 33 structural owner answers: **0**.
+- Resolved L1 trees ready for one bulk final approval: **22/22**.
+- Remaining path-level structural exceptions: **0**.
 - Structural redesign required: **0 domains**.
 - Professional review waived by an owner answer: **0 leaves**.
 
 `FINAL_OWNER_DIGEST: PASS`
 `READY_FOR_BULK_OWNER_FINALIZATION: YES`
-`OWNER_FINALIZATION_PERFORMED: NO`
+`W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`
