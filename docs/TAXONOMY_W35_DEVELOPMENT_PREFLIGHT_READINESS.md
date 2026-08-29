@@ -1,68 +1,64 @@
-# Wave 35A — Development Preflight Readiness
+# Wave 35A-R — Development Preflight Readiness
 
-**State:** `BLOCKED — TARGET VERIFIED, LIVE DATABASE PROFILE UNAVAILABLE`
+**State:** `READ-ONLY PREFLIGHT PASS — LOCAL REHEARSAL READY`
 
 ## Required answers
 
-| Question | Answer |
+| Question | Fresh answer |
 |---|---|
-| Is live Development understood? | **PARTIAL.** Exact project identity and paused state are understood; database/schema/data are not. |
-| Existing UUIDs likely preservable | **UNKNOWN.** No current category row was read. |
-| Current products affected by split | **UNKNOWN.** Static workload is 210 split predecessors / 591 successor edges only. |
-| Current products requiring manual reclassification | **UNKNOWN.** Five legacy locator classes are manual, but live relevance is unknown. |
-| Unresolved legacy nodes relevant live | **UNKNOWN.** Static set is 24: 5 manual + 19 policy. |
-| Backup/restore sufficiently understood | **NO.** Download entry point observed; inventory, PITR and restorability not verified. |
-| Can local rehearsal accurately model current Development? | **NO.** Generic clean-room work can begin, but a live-profile-accurate fixture cannot be claimed yet. |
-| Ready for Development write authorization? | **NO.** |
+| Is live Development understood? | **YES.** Exact identity, schema, ledger, dependencies, empty data and backup limitation are profiled. |
+| Existing UUIDs likely preservable | **0.** Categories are empty. |
+| Current products affected by split | **0.** Products are empty; 210/210 split locators have zero live products. |
+| Current products requiring manual reclassification | **0.** |
+| Unresolved legacy nodes relevant live | **0/24.** Future 5 manual + 19 policy dispositions remain fail-closed. |
+| Backup/restore sufficiently understood | **YES as a limitation; NO as a capability.** Free plan has no native backup/PITR/restore point. |
+| Can local rehearsal accurately model Development? | **YES.** Canonical `0001`–`0009` plus a zero-row application baseline is reproducible. |
+| Ready for Development write authorization now? | **NO.** Local rehearsal, backup/recreation decision, 18 assignability states and implementation artifacts remain. |
 
-## Canonical inputs that are ready
+## Live baseline summary
 
-- Product Owner final stable-ID semantics;
-- full 1,563-node / 24-L1 planning manifest;
-- 651-row legacy registry;
-- 210 split locators / 591 split successor edges;
-- 24 fail-closed manual/policy legacy dispositions;
-- additive migration, client compatibility and rollback design direction.
+- Postgres 17.6;
+- migration ledger 9/9 by canonical name;
+- 23 public tables, all RLS-enabled;
+- 52 policies, 29 public functions, 23 distinct public table triggers;
+- categories/products/shops/listings and every other public table: 0 rows;
+- Storage: three canonical buckets, zero objects;
+- Realtime: `chat_messages` and `notifications` only;
+- no schema/data/config mutation after resume.
 
-## Exact blockers before write authorization
+## Exact blockers before a Development write window
 
-1. Development project must be resumed under separate authority.
-2. Fresh read-only migration/schema/data/dependency profile must complete.
-3. Live categories and exact UUID preservation map must be populated.
-4. Live products must be classified across split/manual/policy queues.
-5. Current demo and user-generated dependencies must be measured.
-6. Current backup inventory and a restorable artifact strategy must be proven.
-7. Disposable restore plus migration/rollback rehearsal must pass.
-8. The 18 anchor-only L2 assignability/activation states must be frozen.
-9. Variable-depth Customer App compatibility must be implemented and validated
-   before activation.
-10. A separate, exact Development write authorization and single-writer window
-    must be granted.
+1. Freeze the 18 anchor-only L2 assignability/activation states.
+2. Create the additive migration and trusted UUIDv4 allocation ledger locally.
+3. Replay canonical `0001`–`0009` plus the candidate twice from clean-room zero.
+4. Pass import-count, idempotency, RLS, compatibility and rollback tests.
+5. Resolve the absence of native backups through a supported backup/restore path
+   or an explicit owner-approved empty-environment recreation exception.
+6. Recheck the exact Development identity and zero-row/drift baseline just in
+   time.
+7. Grant a separate exact Development write authorization and single-writer
+   window.
 
-## Safety conclusion
-
-The correct fail-closed outcome is a partial preflight, not a fabricated empty
-database or a stale historical profile. No remote write, resume, backup, restore,
-seed, migration, RPC, Auth, Storage or Realtime mutation occurred.
+`DEVELOPMENT_RESUME: PASS`
 
 `DEVELOPMENT_TARGET_VERIFIED: PASS`
 
-`DEVELOPMENT_READ_ONLY_PREFLIGHT: FAIL`
+`DEVELOPMENT_READ_ONLY_PREFLIGHT: PASS`
 
-`LIVE_CATEGORY_PROFILE: FAIL`
+`LIVE_CATEGORY_PROFILE: PASS`
 
-`LIVE_UUID_PRESERVATION_MAP: FAIL`
+`LIVE_UUID_PRESERVATION_MAP: PASS`
 
-`LIVE_SPLIT_IMPACT: FAIL`
+`LIVE_SPLIT_IMPACT: PASS`
 
-`LIVE_SCHEMA_VERIFICATION: FAIL`
+`LIVE_SCHEMA_VERIFICATION: PASS`
 
-`BACKUP_RESTORE_PREFLIGHT: NOT_VERIFIED`
+`BACKUP_RESTORE_PREFLIGHT: FAIL`
 
-`REMOTE_WRITES_PERFORMED: NO`
+`REMOTE_DATA_WRITES_PERFORMED: NO`
 
 `PRODUCTION_ACCESSED: NO`
 
-`READY_FOR_LOCAL_REHEARSAL_WITH_LIVE_PROFILE: NO`
+`READY_FOR_LOCAL_REHEARSAL_WITH_LIVE_PROFILE: YES`
 
 `READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: NO`

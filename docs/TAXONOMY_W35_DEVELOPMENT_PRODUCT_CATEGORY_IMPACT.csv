@@ -1,2 +1,2 @@
 "RECORD_TYPE","PRODUCT_UUID","PRODUCT_NAME","CURRENT_CATEGORY_UUID","CURRENT_CATEGORY_NAME","CATEGORY_REFERENCE_STATUS","SPLIT_IMPACT","PRESERVATION_CLASS","MANUAL_RECLASSIFICATION_REQUIRED","POLICY_REVIEW_REQUIRED","LISTING_COUNT","LIVE_EVIDENCE_STATUS","NOTES"
-"STATUS","","","","","","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","","BLOCKED_PROJECT_PAUSED","No PRODUCT record is asserted; live products, category references and listing counts were not readable."
+"STATUS","","","","","EMPTY","ZERO","NOT_APPLICABLE","NO","NO","0","LIVE_EMPTY_VERIFIED","Fresh read-only Development query returned products=0, product-category relationships=0, null categories=0, invalid category references=0, products with listings=0 and shop_products=0; therefore no PRODUCT records exist."

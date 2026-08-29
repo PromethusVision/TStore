@@ -1,83 +1,101 @@
-# Wave 35A — Development Environment Read-Only Preflight
+# Wave 35A-R — Development Environment Read-Only Preflight
 
 **Date:** 2026-08-29
 
-**Requested target:** `EsnaftaVar Development`
+**Target:** `EsnaftaVar Development`
 
-**Expected ref:** `tnipyxnvhgelwdpykyez`
+**Project ref:** `tnipyxnvhgelwdpykyez`
 
-**State:** `PARTIAL — TARGET VERIFIED; LIVE DATABASE PROFILE BLOCKED`
+**State:** `PASS — RESUMED UNDER OWNER AUTHORIZATION; READ-ONLY PROFILE COMPLETE`
 
-## Identity gate
+## Identity and resume gate
 
-Before any database query, an authenticated Supabase Dashboard page was opened
-directly for the expected ref. Two independent visible signals agreed:
+Before the authorized resume and again before every database inspection, the
+authenticated Dashboard showed both the exact Development name and the exact
+project ref. The controlling URL was always under
+`/dashboard/project/tnipyxnvhgelwdpykyez`; the separate Production ref was never
+opened or queried.
 
-- page title: `EsnaftaVar Development | Musaki bilisim | Supabase`;
-- project URL/ref: `/dashboard/project/tnipyxnvhgelwdpykyez`.
+The Product Owner authorized resuming only this Development project so the
+previously approved read-only preflight could run. The project was resumed once,
+finished restoring, and reached `Healthy`. No data/configuration write followed.
 
-The forbidden Production ref was not opened, queried or used for comparison.
-The Dashboard's `main / Production` label describes the selected Supabase branch
-type inside **EsnaftaVar Development**; it is not the separate EsnaftaVar
-Production project. The project name and ref remain the controlling identity
-signals.
+The Dashboard's `main / Production` label is the Supabase branch type inside the
+verified **EsnaftaVar Development** project. It is not the separate EsnaftaVar
+Production project; exact name/ref remained the identity authority.
 
-## Live availability result
+## Live environment result
 
-The verified Development project was paused at inspection time. The Dashboard
-reported:
+| Item | Fresh read-only result |
+|---|---|
+| Project name/ref | `EsnaftaVar Development` / `tnipyxnvhgelwdpykyez` |
+| Project URL | `https://tnipyxnvhgelwdpykyez.supabase.co` |
+| Health | `Healthy` after authorized resume |
+| Region / compute | Central EU (Frankfurt), `eu-central-1`, nano |
+| Postgres version | `17.6` |
+| Migration ledger | 9 entries; canonical names `0001`–`0009` |
+| Last migration | `0009_verified_product_reviews_storage` |
+| Public tables | 23 |
+| Public tables with RLS | 23 |
+| Public policies | 52 |
+| Public functions | 29, including platform `rls_auto_enable()` |
+| Public table triggers | 23 distinct triggers; 33 event rows |
+| Realtime tables | `chat_messages`, `notifications` |
+| Storage | 3 canonical buckets; 0 objects |
+| Business/application rows | 0 across all 23 public tables |
 
-- `Project "EsnaftaVar Development" is paused`;
-- SQL Editor, Table Editor, database metadata sections and migrations view were
-  disabled;
-- data, backups and Storage objects remain safe;
-- the project can be resumed from the Dashboard until 27 September 2027;
-- an export/download-backups path is presented.
+The ledger names match the tracked canonical migration chain. Live ledger
+version stamps for `0001`–`0008` differ from the current local filename prefixes;
+`0009` matches. The inspected schema objects match the canonical outcomes, and
+the extra public `rls_auto_enable()` is a known Supabase platform object rather
+than an application RPC.
 
-Resuming the project changes remote project state. Wave 35A authorizes remote
-reads only, so the project was **not** resumed. No SQL statement or business RPC
-was executed.
+### Exact live migration ledger
 
-## Evidence available now
+| Live version | Name |
+|---|---|
+| `20260812010907` | `0001_core_auth_catalog` |
+| `20260812011047` | `0002_shops` |
+| `20260812011128` | `0003_carts_v2` |
+| `20260812013109` | `0004_qr_verified_purchases` |
+| `20260812013220` | `0005_verified_shop_ratings` |
+| `20260812013308` | `0006_chat_notifications_account` |
+| `20260812013403` | `0007_storage_realtime` |
+| `20260814000820` | `0008_fix_profile_role_guard` |
+| `20260815000900` | `0009_verified_product_reviews_storage` |
 
-| Item | Result | Evidence boundary |
-|---|---|---|
-| Exact Development name/ref | **PASS** | Authenticated targeted Dashboard |
-| Environment mismatch risk | **Controlled** | Exact name and ref both matched before remote inspection |
-| Project operational state | **PAUSED** | Authenticated Dashboard |
-| Current Postgres/server version | **UNKNOWN** | SQL/catalog access disabled |
-| Current migration ledger | **NOT VERIFIED** | Migrations view disabled |
-| Current schema and drift | **NOT VERIFIED** | Database metadata disabled |
-| Current table/category/product counts | **NOT VERIFIED** | No SQL access |
-| Historical repository evidence | `0001–0009`, 23 public tables, 23/23 RLS | Not fresh live evidence |
+### Exact public-table row baseline
 
-Current-main documentation records that canonical `0001–0009` was previously
-applied to Development and that earlier postflights observed 23 public tables
-with RLS. Those records are useful history, but they do not replace the fresh
-live profile requested by this wave.
+Each of these 23 tables returned **0** rows:
 
-## Remote safety ledger
+`profiles`, `legal_consents`, `categories`, `brands`, `products`, `addresses`,
+`customer_saved_locations`, `wishlist`, `orders`, `order_items`, `reviews`,
+`banners`, `chat_messages`, `notifications`, `shops`, `shop_products`, `carts`,
+`cart_items_v2`, `qr_sessions`, `qr_session_items`, `verified_transactions`,
+`verified_transaction_items`, and `shop_ratings`.
 
-- Development management reads: **YES** — targeted identity, pause and backup
-  availability pages only.
-- Development database reads: **NO** — unavailable while paused.
-- Development writes: **NO**.
-- Project resume: **NO**.
-- Backup download/restore: **NO**.
+## Read-only execution ledger
+
+Only single `SELECT` statements and Dashboard metadata pages were used. No
+business RPC was called. Reads covered migration history, server version, table
+counts, category/product relationships, constraints, indexes, RLS/policies,
+function signatures, triggers, Realtime membership, Storage bucket metadata and
+backup capability.
+
+- Development project resume: **YES — owner-authorized prerequisite**.
+- Development database reads: **YES — SELECT/metadata only**.
+- Development data writes: **NO**.
+- DDL/migration/RPC/Auth/Storage/Realtime mutation: **NO**.
+- Backup/restore execution: **NO**.
 - Production access: **NO**.
 - Secret/key/token/password exposure: **NO**.
 
-## Required continuation gate
-
-A separately authorized operator must resume the Development project. After it
-is running, rerun this same branch/task as read-only and collect the exact
-ledger, schema, category, product and dependency profile before any Development
-write authorization is considered.
+`DEVELOPMENT_RESUME: PASS`
 
 `DEVELOPMENT_TARGET_VERIFIED: PASS`
 
-`LIVE_DATABASE_ACCESS: BLOCKED_PROJECT_PAUSED`
+`LIVE_DATABASE_ACCESS: PASS`
 
-`REMOTE_WRITES_PERFORMED: NO`
+`REMOTE_DATA_WRITES_PERFORMED: NO`
 
 `PRODUCTION_ACCESSED: NO`

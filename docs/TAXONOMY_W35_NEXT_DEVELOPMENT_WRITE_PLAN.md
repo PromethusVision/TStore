@@ -2,24 +2,25 @@
 
 **State:** `FUTURE PLAN ONLY — NO REMOTE WRITE AUTHORIZED OR EXECUTED`
 
-This sequence is the next safe Development path after the read-only profile is
-completed. Each remote mutation requires a separate explicit authorization.
+This sequence is the next safe Development path now that the live read-only
+profile is complete. Each remote mutation requires separate explicit authority.
 
 ## 1. Prerequisites
 
-1. Separately authorize and resume only `EsnaftaVar Development /
-   tnipyxnvhgelwdpykyez`.
-2. Rerun Wave 35A read-only and populate all three live CSVs with exact category,
-   product, listing and dependency records.
-3. Verify fresh migration ledger, schema drift, server capabilities, RLS/policy,
-   functions, indexes, Realtime and Storage references.
-4. Freeze a single-writer change window and the exact repository/manifest hashes.
-5. Obtain a fresh secure backup and prove restore in a disposable environment.
-6. Freeze the 18 anchor-only assignability decisions and prepare fail-closed
-   queues for all live split/manual/policy products.
+1. Preserve this fresh evidence: Development is Healthy, canonical `0001`–`0009`
+   exists, and all 23 application tables are empty.
+2. Freeze the 18 anchor-only assignability decisions. There are no live
+   split/manual/policy products to queue, but future imports remain fail-closed.
+3. Choose and approve either a supported backup/restore path or an explicit
+   empty-environment recreation strategy; the Free plan has no native restore.
+4. Freeze the exact repository/manifest hashes and implement only in a local
+   clean-room branch.
+5. Pass apply-twice, idempotency, RLS, client compatibility and rollback tests.
+6. Immediately before any later write, reverify the exact Development ref,
+   migration drift, zero-row baseline and a single-writer window.
 
-Stop on identity mismatch, drift, missing restore proof, ambiguous active product
-mapping, unsafe policy activation or unrelated writes.
+Stop on identity mismatch, drift, loss of the empty baseline, missing approved
+rollback strategy, unsafe activation or unrelated writes.
 
 ## 2. Stable UUID allocation
 

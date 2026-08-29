@@ -1,11 +1,8 @@
-# Wave 35A — Taxonomy Database Dependency Profile
+# Wave 35A-R — Taxonomy Database Dependency Profile
 
-**State:** `STATIC PROFILE COMPLETE — LIVE METADATA NOT VERIFIED`
+**State:** `PASS — LIVE RLS/FUNCTION/INDEX PROFILE COMPLETE`
 
-## Static dependency graph
-
-`categories.id` is the opaque category identity. Direct and transitive runtime
-dependencies are:
+## Live dependency graph
 
 ```text
 categories.id
@@ -15,54 +12,67 @@ categories.id
             <- cart_items_v2.shop_product_id
        <- wishlist.product_id
        <- reviews.product_id
-       <- qr_session_items.product_id (0009)
-       <- verified_transaction_items.product_id (0009)
+       <- qr_session_items.product_id
+       <- verified_transaction_items.product_id
 ```
 
-Orders and verified purchase rows preserve historical product/listing evidence;
-taxonomy migration must not recreate those identities or rewrite immutable
-snapshots.
+All live tables in this graph contain zero rows, so the future taxonomy import
+has no current user/catalog data to reclassify. The constraints still matter for
+the migration design and local rehearsal.
 
-## Static metadata inventory
+## Category/product metadata
 
-| Area | Repository source-of-truth | Live status |
-|---|---|---|
-| Category RLS | Enabled in `0001` | NOT VERIFIED |
-| Category policy | `categories_read_active` permits anon/auth reads only for active rows | NOT VERIFIED |
-| Product RLS | Enabled in `0001` | NOT VERIFIED |
-| Product policy | `products_read_active` checks product active state, not category policy/activation | NOT VERIFIED |
-| Category index | `categories_parent_sort_idx(parent_id, sort_order)` | NOT VERIFIED |
-| Product category index | `products_category_idx(category_id)` | NOT VERIFIED |
-| Category self-FK | `parent_id -> categories.id ON DELETE SET NULL` | NOT VERIFIED |
-| Product category FK | `category_id -> categories.id ON DELETE SET NULL` | NOT VERIFIED |
-| Category triggers | shared `set_updated_at` trigger | NOT VERIFIED |
-| Category/tree RPC | none in tracked `0001`–`0009` | NOT VERIFIED |
-| Realtime | tracked publication membership is only `chat_messages` and `notifications` | NOT VERIFIED |
+| Area | Live result |
+|---|---|
+| Category RLS | Enabled |
+| Product RLS | Enabled |
+| Category public-read policy | `categories_read_active`, anon/auth, `is_active = true` |
+| Product public-read policy | `products_read_active`, anon/auth, `is_active = true` |
+| Category indexes | PK; `categories_parent_sort_idx` |
+| Product indexes | PK; category; brand; partial active; partial featured |
+| Category self-FK | `parent_id -> categories.id ON DELETE SET NULL` |
+| Product category FK | `category_id -> categories.id ON DELETE SET NULL` |
+| Category/product triggers | one `BEFORE UPDATE` timestamp trigger each |
+| Category/tree RPC | None |
+| Realtime | only `chat_messages`, `notifications` |
 
-## Query and client coupling
+The product read policy does not check category lifecycle or policy status. A
+future staged import must therefore keep canonical nodes inactive and avoid
+assigning visible products until compatible fail-closed reads/policies are
+deliberately designed and tested.
 
-Static client evidence shows active categories are currently loaded as a flat
-list; product filtering uses one exact `category_id`; category label/description
-matching is partly client-side; and no alias, breadcrumb, descendant or taxonomy
-version read contract exists. A full 1,563-node activation would therefore be
-unsafe before compatible root/child/descendant reads exist.
+## Function and trigger profile
 
-## Missing live questions
+- public functions: **29**;
+- security-definer functions: **24**;
+- function definitions mentioning product identity: **14**;
+- function definitions mentioning category text: **1**;
+- distinct public table triggers: **23**;
+- category/product trigger event rows: **2**.
 
-Because system catalogs were unavailable, Wave 35A could not verify:
+Product-coupled functions include QR issue/verification/confirmation, verified
+snapshot guards, product review eligibility/read/mutation, product rating refresh
+and active media validation. They were inspected by signature/definition text
+only and were not invoked. The sole category-text match is the media storage
+contract; there is no current category traversal/search RPC.
 
-- unexpected indexes or foreign keys;
-- policy/grant drift;
-- function body/signature drift;
-- extensions and server capabilities;
-- Realtime membership drift;
-- category image object references;
-- out-of-band tables/views/functions using `category_id`.
+The 29-function total includes known platform `rls_auto_enable()` alongside 28
+application functions from the canonical chain. The platform function is not a
+taxonomy migration candidate.
 
-These remain mandatory before migration authoring or Development write
-authorization.
+## Storage profile
 
-`RLS_FUNCTION_INDEX_PROFILE: PARTIAL_STATIC_ONLY`
+| Bucket | Public | Limit | MIME allowlist |
+|---|---|---:|---|
+| `banner-images` | yes | 5 MiB | JPEG, PNG, WebP |
+| `category-images` | yes | 2 MiB | JPEG, PNG, WebP |
+| `product-images` | yes | 8 MiB | JPEG, PNG, WebP |
+
+All three buckets contain zero objects. No Storage operation was performed.
+
+`RLS_FUNCTION_INDEX_PROFILE: PASS`
+
+`CATEGORY_PRODUCT_DEPENDENCY_PROFILE: PASS`
 
 `BUSINESS_RPC_INVOKED: NO`
 

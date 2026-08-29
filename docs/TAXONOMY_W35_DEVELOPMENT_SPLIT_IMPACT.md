@@ -1,57 +1,36 @@
-# Wave 35A — Development Split Impact
+# Wave 35A-R — Development Split Impact
 
-**State:** `LIVE IMPACT NOT MEASURED — DEVELOPMENT PROJECT PAUSED`
+**State:** `PASS — ZERO LIVE SPLIT IMPACT`
 
-## Static workload
+## Canonical workload
 
-The final Wave 34 legacy registry accounts for all 651 legacy locators. Its split
-workload is:
+Wave 34 retains 210 `SPLIT` legacy locators and 591 successor edges. A split
+predecessor may never fall through to the first/nearest child; a future product
+must receive evidence-backed classification or remain fail-closed.
 
-- 210 `SPLIT` predecessor locators;
-- 591 successor edges for those locators;
-- no permission to map a predecessor to the first or nearest-named successor;
-- every live product must receive one evidence-backed successor or remain
-  quarantined.
-
-These are planning counts, not proof that 210 legacy categories or any affected
-products currently exist in Development.
-
-## Live Development result
+## Fresh Development result
 
 | Measure | Result |
-|---|---|
-| Split predecessor categories present | **UNKNOWN** |
-| Products under split predecessors | **UNKNOWN** |
-| Deterministic one-successor classifications | **UNKNOWN** |
-| Ambiguous/manual classifications | **UNKNOWN** |
-| Policy-review classifications | **UNKNOWN** |
-| Zero-live-product split locators | **UNKNOWN** |
+|---|---:|
+| Live category rows | 0 |
+| Split predecessor categories present | 0 |
+| Live product rows | 0 |
+| Products under split predecessors | 0 |
+| Deterministic successor classifications needed now | 0 |
+| Ambiguous/manual classifications needed now | 0 |
+| Policy-review classifications needed now | 0 |
+| Zero-live-product split locators | 210 |
 
-The exact Development target was verified, but SQL and database metadata were
-unavailable because the project was paused. The project was not resumed because
-that would change remote state outside this read-only authorization.
+Because both `categories` and `products` are empty, every current split locator
+has zero live impact. This removes the current-data reclassification blocker; it
+does not remove the split contract for future imports, seeds or products.
 
-## Required read-only continuation
-
-When the project is running, a single read-only inventory must:
-
-1. resolve the current category hierarchy and match every current UUID/path to
-   the legacy registry;
-2. count products grouped by every matched `SPLIT` predecessor;
-3. join each product to immutable identity, listing count and non-sensitive
-   classification evidence;
-4. distinguish exact one-successor rules from ambiguous or policy-sensitive
-   products;
-5. record zero-product predecessors explicitly;
-6. prove that no product is assigned by array order, path similarity alone or a
-   first-child fallback.
-
-No split product mapping, UUID allocation or quarantine write occurred.
+No split mapping, UUID allocation, quarantine write or product update occurred.
 
 `STATIC_SPLIT_LOCATORS: 210`
 
 `STATIC_SPLIT_SUCCESSOR_EDGES: 591`
 
-`LIVE_SPLIT_PRODUCTS: UNKNOWN`
+`LIVE_SPLIT_PRODUCTS: 0`
 
-`LIVE_SPLIT_IMPACT: FAIL`
+`LIVE_SPLIT_IMPACT: PASS`

@@ -1,37 +1,43 @@
-# Wave 35A — Development Backup / Restore Preflight
+# Wave 35A-R — Development Backup / Restore Preflight
 
-**State:** `NOT VERIFIED`
+**State:** `FAIL — CAPABILITY UNDERSTOOD; NO RESTORABLE NATIVE POINT AVAILABLE`
 
-## What was observed read-only
+The authenticated Dashboard was inspected only under exact Development ref
+`tnipyxnvhgelwdpykyez`. No backup, download, restore, plan or billing action was
+executed.
 
-On the exact `EsnaftaVar Development / tnipyxnvhgelwdpykyez` Dashboard:
+## Fresh capability result
 
-- organization plan label was `Free`;
-- the project was paused;
-- the paused-state notice said database data, backups and Storage objects remain
-  safe;
-- it offered a `Download backups` action and stated data remains available for
-  download even after the displayed resume deadline;
-- the project can currently be resumed until 27 September 2027.
+| Capability | Read-only result |
+|---|---|
+| Plan | Free |
+| Last backup | `No backups` |
+| Scheduled backups | Unavailable; Free Plan does not include project backups |
+| Point-in-time recovery | Unavailable; Pro Plan add-on |
+| Restore to new project | Unavailable; requires Pro and physical backups |
+| Existing native restorable point | None |
+| Native restore drill | Cannot run from current plan/state |
+| Manual logical dump | Future operator/CLI path is conceptually available, but no dump or restore was executed or proven in this task |
 
-No backup was downloaded and no project state was changed.
+The project is empty at this snapshot, but empty data does not turn schema
+rollback into a verified backup. Before a Development migration apply, one of
+the following requires a separate owner decision and authorization:
 
-## Capability classification
+1. provision a supported backup/restore capability and prove a disposable
+   restore; or
+2. explicitly accept an empty-Development recreation strategy after a complete
+   local migration replay/rollback rehearsal and fresh zero-row gate.
 
-| Capability | Result | Reason |
-|---|---|---|
-| Backup/export entry point present | **OBSERVED** | Dashboard offers download while paused |
-| Current backup inventory | **NOT VERIFIED** | Backup detail view disabled while paused |
-| Manual logical backup restorable | **NOT VERIFIED** | No export/download or restore test executed |
-| Point-in-time restore | **UNKNOWN** | Not shown/verified; Free-plan assumptions are not used |
-| Disposable restore rehearsal | **NOT PERFORMED** | Explicitly outside Wave 35A |
-| Pre-migration rollback point | **NOT READY** | No fresh artifact/hash/restore evidence |
+The current state is sufficiently understood for local clean-room modelling but
+is not sufficient for a remote write window.
 
-The existence of a download button is not proof that an artifact is current,
-complete or restorable. A future write window must not proceed until a fresh,
-secure backup strategy and a disposable restore rehearsal are documented.
+`BACKUP_RESTORE_PREFLIGHT: FAIL`
 
-`BACKUP_RESTORE_PREFLIGHT: NOT_VERIFIED`
+`NATIVE_BACKUP_AVAILABLE: NO`
+
+`PITR_AVAILABLE: NO`
+
+`RESTORE_TO_NEW_PROJECT_AVAILABLE: NO`
 
 `BACKUP_EXECUTED: NO`
 
