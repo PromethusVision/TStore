@@ -73,6 +73,16 @@ async function packageFailureMatrix(pkg, packageDirectory, temporaryRoot) {
   const categoriesPath = join(checksumDirectory, 'categories.csv');
   await writeFile(categoriesPath, `${await readFile(categoriesPath, 'utf8')}\n`, 'utf8');
   failures.push(await expectedFailure('checksum_mismatch', () => loadPackage(checksumDirectory)));
+  const frozenShaDirectory = join(temporaryRoot, 'frozen-package-sha-mismatch');
+  await cp(packageDirectory, frozenShaDirectory, { recursive: true });
+  const frozenManifestPath = join(frozenShaDirectory, 'package_manifest.json');
+  const frozenManifest = JSON.parse(await readFile(frozenManifestPath, 'utf8'));
+  frozenManifest.source_package.upstream_overall_sha256 = '0'.repeat(64);
+  await writeFile(frozenManifestPath, `${JSON.stringify(frozenManifest, null, 2)}\n`, 'utf8');
+  failures.push(await expectedFailure(
+    'frozen_package_sha_mismatch',
+    () => loadPackage(frozenShaDirectory),
+  ));
   failures.push(await expectedFailure('unexpected_non_empty_target', () => {
     const snapshot = buildPrecheckSnapshot(pkg);
     snapshot.counts.categories = 1;
@@ -96,6 +106,157 @@ async function packageFailureMatrix(pkg, packageDirectory, temporaryRoot) {
     candidate.tables['activation.csv'].find((row) => row.CATEGORY_ID === container.CATEGORY_ID).IS_ASSIGNABLE = 'YES';
   });
   return failures;
+}
+
+async function artifactFailureMatrix(artifactDirectory, temporaryRoot) {
+  const tamperedDirectory = join(temporaryRoot, 'active-artifact-sha-mismatch');
+  await cp(artifactDirectory, tamperedDirectory, { recursive: true });
+  const forwardPath = join(tamperedDirectory, 'forward.sql');
+  await writeFile(forwardPath, `${await readFile(forwardPath, 'utf8')}\n`, 'utf8');
+  return [await expectedFailure(
+    'active_artifact_sha_mismatch',
+    () => loadArtifacts(tamperedDirectory),
+  )];
+}
+
+async function ledgerFixture(
+  name, pgliteRoot, pkg, forwardSql, rollbackSql, mutate, expectedError = null,
+) {
+  const database = await openPGlite(pgliteRoot);
+  try {
+    await createEmptyApplicationBaseline(database, pkg);
+    if (mutate) await mutate(database, pkg.manifest.runtime_contract.migration_ledger);
+    if (expectedError === null) {
+      await applyArtifact(database, pkg, forwardSql);
+      await rollbackArtifact(database, pkg, rollbackSql);
+      return { name, result: 'PASS', accepted: true };
+    }
+    let rejectedWith = '';
+    try {
+      await applyArtifact(database, pkg, forwardSql);
+    } catch (error) {
+      rejectedWith = String(error.message);
+    }
+    try { await database.exec('ROLLBACK'); } catch { /* transaction already closed */ }
+    check(rejectedWith.includes(expectedError), `LEDGER_FIXTURE_WRONG_ERROR:${name}:${rejectedWith}`);
+    check(
+      Number(await scalar(database, 'SELECT count(*) FROM public.categories')) === 0,
+      `LEDGER_FIXTURE_PARTIAL_CATEGORIES:${name}`,
+    );
+    return {
+      name,
+      result: 'PASS',
+      accepted: false,
+      rejected_with: rejectedWith.slice(0, 160),
+    };
+  } finally {
+    await database.close();
+  }
+}
+
+async function ledgerFixtureMatrix(pgliteRoot, pkg, forwardSql, rollbackSql) {
+  const first = pkg.manifest.runtime_contract.migration_ledger[0];
+  const second = pkg.manifest.runtime_contract.migration_ledger[1];
+  const fixtures = [];
+  fixtures.push(await ledgerFixture('ledger_exact_9_pairs', pgliteRoot, pkg, forwardSql, rollbackSql, null));
+  fixtures.push(await ledgerFixture(
+    'ledger_same_version_wrong_name', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'UPDATE supabase_migrations.schema_migrations SET name=$1 WHERE version=$2',
+      ['0001_wrong_name', first.version],
+    ),
+    'W37_MIGRATION_LEDGER_NAME_MISMATCH',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_same_name_wrong_version', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'UPDATE supabase_migrations.schema_migrations SET version=$1 WHERE name=$2',
+      ['20990101010101', first.name],
+    ),
+    'W37_MIGRATION_LEDGER_VERSION_MISMATCH',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_missing_historical_migration', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'DELETE FROM supabase_migrations.schema_migrations WHERE version=$1',
+      [first.version],
+    ),
+    'W37_MIGRATION_LEDGER_MISSING',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_unexpected_historical_migration', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
+      ['20991231235959', '9999_unexpected_migration', []],
+    ),
+    'W37_MIGRATION_LEDGER_UNEXPECTED',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_duplicate_version', pgliteRoot, pkg, forwardSql, rollbackSql,
+    async (database) => {
+      await database.exec('ALTER TABLE supabase_migrations.schema_migrations DROP CONSTRAINT schema_migrations_pkey');
+      await database.query(
+        'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
+        [first.version, '9998_duplicate_version', []],
+      );
+    },
+    'W37_MIGRATION_LEDGER_DUPLICATE_VERSION',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_duplicate_name', pgliteRoot, pkg, forwardSql, rollbackSql,
+    async (database) => {
+      await database.exec('ALTER TABLE supabase_migrations.schema_migrations DROP CONSTRAINT schema_migrations_name_key');
+      await database.query(
+        'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
+        ['20991231235958', first.name, []],
+      );
+    },
+    'W37_MIGRATION_LEDGER_DUPLICATE_NAME',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_duplicate_pair', pgliteRoot, pkg, forwardSql, rollbackSql,
+    async (database) => {
+      await database.exec(`
+        ALTER TABLE supabase_migrations.schema_migrations DROP CONSTRAINT schema_migrations_pkey;
+        ALTER TABLE supabase_migrations.schema_migrations DROP CONSTRAINT schema_migrations_name_key;
+      `);
+      await database.query(
+        'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
+        [first.version, first.name, []],
+      );
+    },
+    'W37_MIGRATION_LEDGER_DUPLICATE_PAIR',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_full_filename_in_name', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'UPDATE supabase_migrations.schema_migrations SET name=$1 WHERE version=$2',
+      [first.repository_file, first.version],
+    ),
+    'W37_MIGRATION_LEDGER_MALFORMED_ROW',
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_reordered_pairs', pgliteRoot, pkg, forwardSql, rollbackSql,
+    async (database, rows) => {
+      await database.exec('DELETE FROM supabase_migrations.schema_migrations');
+      for (const row of [...rows].reverse()) {
+        await database.query(
+          'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
+          [row.version, row.name, []],
+        );
+      }
+    },
+  ));
+  fixtures.push(await ledgerFixture(
+    'ledger_malformed_row', pgliteRoot, pkg, forwardSql, rollbackSql,
+    (database) => database.query(
+      'UPDATE supabase_migrations.schema_migrations SET version=$1 WHERE version=$2',
+      ['malformed', second.version],
+    ),
+    'W37_MIGRATION_LEDGER_MALFORMED_ROW',
+  ));
+  check(fixtures.every((item) => item.result === 'PASS'), 'LEDGER_FIXTURE_MATRIX_INCOMPLETE');
+  return fixtures;
 }
 
 async function midTransactionFailure(pgliteRoot, pkg, forwardSql) {
@@ -151,6 +312,9 @@ async function main() {
   check(pgliteRoot, '--pglite-root is required');
   const repoRoot = resolve(argument('--repo-root', process.cwd()));
   const outputPath = argument('--output');
+  const exactForwardPath = argument('--exact-forward');
+  const exactForwardSha256 = argument('--exact-forward-sha256');
+  check(Boolean(exactForwardPath) === Boolean(exactForwardSha256), 'EXACT_FORWARD_SHA_REQUIRED');
   const temporaryRoot = await mkdtemp(join(tmpdir(), 'esnaftavar-w36-'));
   try {
     const inputDirectory = argument('--input')
@@ -172,13 +336,23 @@ async function main() {
       artifacts.manifest.artifact_set_sha256 === compiledA.artifactManifest.artifact_set_sha256,
       'ARTIFACT_MANIFEST_DRIFT',
     );
+    if (exactForwardPath) {
+      const exactForward = await readFile(resolve(exactForwardPath), 'utf8');
+      check(sha256(exactForward) === exactForwardSha256, 'ACTIVE_ARTIFACT_SHA_MISMATCH:exact-forward.sql');
+      artifacts.forward = exactForward;
+    }
     const packageFailures = await packageFailureMatrix(pkg, inputDirectory, temporaryRoot);
+    const artifactFailures = await artifactFailureMatrix(artifactDirectoryA, temporaryRoot);
+    const ledgerFixtures = await ledgerFixtureMatrix(
+      resolve(pgliteRoot), pkg, artifacts.forward, artifacts.rollback,
+    );
     const cycles = [];
     for (let index = 1; index <= 3; index += 1) {
       cycles.push(await runCycle(resolve(pgliteRoot), pkg, artifacts, index, index <= 2));
     }
     const midFailure = await midTransactionFailure(resolve(pgliteRoot), pkg, artifacts.forward);
-    const failureMatrix = [...packageFailures, midFailure];
+    const ledgerFailures = ledgerFixtures.filter((item) => item.accepted === false);
+    const failureMatrix = [...packageFailures, ...artifactFailures, ...ledgerFailures, midFailure];
     check(failureMatrix.every((item) => item.result === 'PASS'), 'FAILURE_MATRIX_INCOMPLETE');
     const exact = pkg.manifest.package_kind === 'EXACT_CANONICAL_BOOTSTRAP';
     const result = {
@@ -194,6 +368,8 @@ async function main() {
         deterministic: true,
         artifact_set_sha256: compiledA.artifactManifest.artifact_set_sha256,
         forward_bytes: compiledA.artifactManifest.artifacts['forward.sql'].bytes,
+        exact_active_forward_sha256: exactForwardPath ? sha256(artifacts.forward) : null,
+        exact_active_forward_replayed: Boolean(exactForwardPath),
       },
       jit_precheck: precheck,
       fresh_rebuild_cycles: cycles.length,
@@ -201,6 +377,8 @@ async function main() {
       rollback_cycles: cycles.length,
       idempotent_second_apply_attempts: cycles.filter((cycle) => cycle.idempotent_second_apply === 'PASS').length,
       cycles,
+      ledger_fixture_matrix: ledgerFixtures,
+      ledger_fixture_matrix_passed: ledgerFixtures.length,
       failure_matrix: failureMatrix,
       failure_matrix_passed: failureMatrix.length,
       remote_access_performed: false,
