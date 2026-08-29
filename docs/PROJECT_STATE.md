@@ -3,11 +3,47 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
+- Son doğrulanan teslim: **WAVE 35 TAXONOMY DEVELOPMENT CUTOVER READINESS
+  INTEGRATION PASS — LIVE READ-ONLY PREFLIGHT / LOCAL REHEARSAL / CUSTOMER PREP**.
+- Integration branch/base: `integration/wave-35-taxonomy-cutover-readiness` /
+  `origin/main@737cadd0a662b338a63ab51412c87b1520282d26`.
+- Source/merge: Development preflight `7e622d3` / `a41f86a`, clean-room rehearsal
+  `aef1639` / `4c0ccc5`, Customer variable-depth prep `544b788` / `a7dc332`;
+  üçü de normal `--no-ff` ve conflict olmadan entegre edildi.
+- Exact Development `EsnaftaVar Development` / `tnipyxnvhgelwdpykyez` önceki
+  yetkili resume sonrası Healthy'dir. Migration `9/9`, public table `23`, RLS
+  `23/23`, policy `52`, public function `29`; 23 application tablosunun tamamı,
+  üç canonical Storage bucket'ındaki object sayısı ve category/product/shop/listing
+  sayıları `0`dır. Integration yeni remote read/write yapmadı; Production untouched.
+- Mevcut category UUID preservation adayı `0`, canlı split-product etkisi `0` ve
+  24 unresolved legacy kaydın canlı etkisi `0`dır. Stable-ID owner contract FINAL:
+  surviving semantic UUID korunur; new node trusted/backend UUIDv4 alır; rename/move
+  ID'yi korur; split arbitrary child seçmez; retire tombstone olur. UUID allocation
+  bu integrationda yapılmadı.
+- Local PGlite/PostgreSQL-WASM + SQLite rehearsal PASS: forward `2/2`, rollback
+  `2/2`, idempotency PASS, failure injection `10/10`, canonical `1563`, legacy
+  `651/651`, successor `1000/1000`, split `210/591`, policy leakage `0`.
+  Hardened draft yalnız `docs/sql` altındadır; active migration zinciri değişmedi.
+- Customer variable-depth saf domain seam'i L1–L4, container/leaf, root/children/
+  descendants/breadcrumb ve EXACT_LEAF/DESCENDANTS sözleşmelerini hazırlar. Runtime
+  repository/PostgREST/DI/navigation wiring'i ve backend davranışı değişmedi;
+  current-runtime fallback korunur. Targeted `24/24`, full suite `1243 PASS / 0
+  FAIL / 6 explicit live skips`, analyzer `0 issues`.
+- Development Free plan scheduled backup, PITR, restore-to-new-project ve native
+  restorable point sunmaz. Bu eksik irrelevant değildir. Application-data/schema
+  açısından empty-Development reconstruction riski ayrı sınırlı authorization için
+  kabul edilebilir; Production benzetmesi değildir.
+- Ayrı Development-only write/bootstrap task'ını yetkilendirmeye hazırlık `YES`,
+  fakat remote apply-now `NO`: explicit owner authorization/recreation acceptance,
+  versioned UUIDv4 ledger, active migration, JIT zero-row/drift preflight ve exact
+  backend/client cutover sırası ilk write öncesi zorunludur. Manual product mapping
+  empty Development'ta staged importu bloklamaz; policy/18 anchor gate'i activation'ı
+  bloklar. Taxonomy runtime **NOT ACTIVE / CLIENT PREPARED BUT NOT WIRED**.
+- Bir önceki doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
   PASS — MANIFEST / MIGRATION ENGINEERING / CUSTOMER IMPACT — DOCS ONLY**.
-- Integration branch/base: `integration/wave-34-taxonomy-runtime-readiness` /
+- Önceki integration branch/base: `integration/wave-34-taxonomy-runtime-readiness` /
   `origin/main@6415f09c8b84d3ef1c72d642c1908c433b534994`.
-- Source/merge: manifest `875e2c6` / `7a2d694`, migration engineering `d720b8e` /
+- Önceki source/merge: manifest `875e2c6` / `7a2d694`, migration engineering `d720b8e` /
   `2f54788`, Customer App impact `2a52474` / `adc69fd`; üçü de normal `--no-ff`
   ve conflict olmadan entegre edildi.
 - Full planning manifest `1563` node'dur: `24/244/1096/199` L1/L2/L3/L4,

@@ -17,6 +17,42 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 35 Taxonomy Development Cutover Readiness Entegrasyon Gözlemi
+
+`LIVE_DEVELOPMENT_PREFLIGHT: PASS`
+
+`LOCAL_MIGRATION_REHEARSAL: PASS`
+
+`CUSTOMER_VARIABLE_DEPTH_PREP: PASS`
+
+`READY_FOR_DEVELOPMENT_WRITE_AUTHORIZATION: YES — SEPARATE BOUNDED TASK`
+
+`READY_FOR_REMOTE_APPLY_NOW: NO`
+
+`TAXONOMY_RUNTIME_ACTIVE: NO`
+
+- Üç source normal `--no-ff` ile conflictsiz entegre edildi. Development Healthy ve
+  bütün 23 application tablosu boş; current UUID/product/split/manual workload `0`.
+  PGlite + SQLite rehearsal forward/rollback/idempotency/failure gatesini kapattı;
+  Customer saf domain prep'i current backend/runtime davranışını değiştirmedi.
+- Sıradaki yetkili bootstrap işi **tek backend/schema/SQL/migration owner** altında
+  yürütülmelidir. Aynı owner reviewed UUIDv4 allocation ledger, active migration,
+  staged import, RLS/RPC contract, pre/postflight ve rollback artefaktlarını yönetir.
+- Customer cutover lane'i yalnız backend response/capability contract'ı freeze
+  edildikten sonra başlar. `service_locator.dart`, global navigation, shared
+  category/product model ve repository wiring'i backend migration lane'iyle aynı
+  anda farklı agentlarca değiştirilmez; planlı handoff veya sıralı ownership gerekir.
+- Manual product reclassification, split queue ve 24 legacy disposition mevcut
+  Development'ta zero-row oldukları için additive schema/staged inactive importu
+  bloklamaz. 18 anchor assignability ile policy/professional review activation ve
+  public visibility için fail-closed kalır.
+- Free Development planında native backup/PITR yoktur. Ayrı owner authorization,
+  empty-environment recreation acceptance, versioned UUIDv4 manifest, active
+  migration, JIT zero-row/drift gate ve exact backend/client cutover sırası olmadan
+  remote write başlamaz. Production lane'i açılmamıştır.
+- UI Kit/Figma/demo, taxonomy activation ve Production bu wave'in dışında kalır.
+  Client seam'i hazırdır fakat runtime'a wired değildir.
+
 ## Wave 34 Taxonomy Runtime Readiness Entegrasyon Gözlemi
 
 `FULL_CANONICAL_MANIFEST: PASS — PLANNING ONLY`

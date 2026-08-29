@@ -8,7 +8,9 @@
 -- task must split schema/import/activation into reviewed active migrations.
 -- Wave 35 local rehearsal hardened hierarchy validation and replaced the
 -- unsafe single-target alias shape with locator + zero/one/many target edges.
--- The hardened PostgreSQL draft has still NOT been executed locally or remotely.
+-- This guarded file has NOT been executed as-is locally or remotely. Wave 35
+-- exercised a transient guard-removed copy only inside disposable in-memory
+-- PGlite; that local rehearsal did not create an active migration or remote state.
 
 BEGIN;
 

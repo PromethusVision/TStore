@@ -14,6 +14,45 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 35 Taxonomy Development Cutover Readiness State
+
+- **COMPLETED — live read-only preflight:** Exact Development
+  `tnipyxnvhgelwdpykyez` Healthy; migration `9/9`, public table/RLS `23/23`, policy
+  `52`, public function `29`. Bütün 23 application tablosu ve Storage objects
+  boştur; category/product/shop/listing `0/0/0/0`. Existing UUID, live split-product
+  ve unresolved-legacy live impact `0`. Production untouched; integration yeni
+  remote read/write yapmadı.
+- **COMPLETED — stable-ID owner contract:** same semantic identity existing UUID'yi
+  korur; new node trusted/backend UUIDv4; rename/move preserve; split explicit new
+  successor; merge lineage; retire tombstone; planning key/name/slug/path runtime
+  identity değildir. Runtime UUID allocation hâlâ `0`dır.
+- **COMPLETED — local rehearsal:** PGlite/PostgreSQL-WASM ve SQLite PASS; forward
+  `2/2`, rollback `2/2`, idempotency PASS, failure injection `10/10`, canonical
+  `1563`, legacy `651/651`, edge `1000/1000`, split `210/591`, arbitrary first-child
+  `0`, policy leakage `0`. Draft docs altında guard'lıdır; active migration yoktur.
+- **COMPLETED — Customer preparation:** L1–L4 hierarchy, container/leaf, root/child/
+  descendant/breadcrumb, exact-leaf/descendant scopes ve explicit legacy fallback
+  saf domain/test seam'i olarak hazırdır. Current backend/repository/DI/navigation
+  davranışı unchanged; targeted `24/24`, full `1243 PASS / 0 FAIL / 6 explicit
+  live skips`, analyzer `0 issues`.
+- **RISK ASSESSED ACCEPTABLE FOR NEXT AUTHORIZATION — scoped:** Empty Development
+  taxonomy application-data/schema bootstrap'ı canonical manifest, repository migrations,
+  future active migration, versioned UUIDv4 ledger ve seed/import manifests'ten
+  yeniden kurulabilir. Free planda native backup/PITR/restore point yoktur; bu
+  eksik irrelevant veya Production ile eşdeğer sayılmaz.
+- **READY — separate owner authorization:** Development-only single-writer bootstrap
+  implementation task'ı yetkilendirilebilir. İlk remote write öncesi exact ref ve
+  recreation acceptance, reviewed production-style UUIDv4 manifest, active migration,
+  JIT zero-row/drift validation ve exact backend/client cutover/rollback sırası
+  zorunludur. `READY_FOR_REMOTE_APPLY_NOW: NO`.
+- **NOT BLOCKING STAGED EXISTENCE:** Development product rows `0` olduğu için manual
+  reclassification ve split mapping initial additive schema/staged inactive importu
+  bloklamaz. Policy/professional review ve 18 anchor-only assignability kararı public
+  activation/assignability'yi bloklar ve fail-closed kalır.
+- **OPEN / NOT AUTHORIZED:** remote Development apply, backend RLS/RPC implementation,
+  Customer repository/DI/navigation wiring, taxonomy activation, demo remap, UI Kit,
+  Production planning/apply. Runtime taxonomy aktif değildir.
+
 ## Wave 34 Taxonomy Runtime Readiness State
 
 - **COMPLETED — planning/docs:** Full graph manifest `1563` node
