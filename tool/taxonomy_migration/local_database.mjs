@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { check, stableJson } from './lib.mjs';
+import { check, sha256, stableJson } from './lib.mjs';
 
 export async function openPGlite(pgliteRoot) {
   check(pgliteRoot, '--pglite-root is required');
@@ -70,11 +70,10 @@ export async function createEmptyApplicationBaseline(database, pkg) {
     GRANT USAGE ON SCHEMA public TO anon,authenticated;
     GRANT SELECT ON public.categories TO anon,authenticated;
   `);
-  for (const [index, file] of pkg.manifest.runtime_contract.migration_files.entries()) {
-    const version = file.name.slice(0, 14);
+  for (const row of pkg.manifest.runtime_contract.migration_ledger) {
     await database.query(
       'INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES ($1,$2,$3)',
-      [version || String(index + 1), file.name, []],
+      [row.version, row.name, []],
     );
   }
 }
@@ -245,7 +244,7 @@ export async function rollbackArtifact(database, pkg, rollbackSql) {
   for (const key of ['categories', 'products', 'shops', 'shop_products', 'allocations', 'aliases', 'alias_targets', 'relationships', 'import_runs']) {
     check(result[key] === 0, `ROLLBACK_NOT_EMPTY:${key}`);
   }
-  check(result.migration_ledger === pkg.manifest.runtime_contract.migration_files.length, 'ROLLBACK_MIGRATION_LEDGER');
+  check(result.migration_ledger === pkg.manifest.runtime_contract.migration_ledger.length, 'ROLLBACK_MIGRATION_LEDGER');
   check(result.platform_sentinel === 1, 'ROLLBACK_PLATFORM_METADATA');
   return result;
 }
@@ -257,5 +256,16 @@ export async function loadArtifacts(directory) {
     readFile(join(directory, 'postcheck.sql'), 'utf8'),
     readFile(join(directory, 'artifact_manifest.json'), 'utf8'),
   ]);
-  return { forward, rollback, postcheck, manifest: JSON.parse(manifestText) };
+  const manifest = JSON.parse(manifestText);
+  const contents = { 'forward.sql': forward, 'rollback.sql': rollback, 'postcheck.sql': postcheck };
+  for (const [name, content] of Object.entries(contents)) {
+    const expected = manifest.artifacts?.[name];
+    check(expected, `ARTIFACT_MANIFEST_ENTRY_MISSING:${name}`);
+    check(Buffer.byteLength(content) === expected.bytes, `ARTIFACT_BYTE_COUNT_MISMATCH:${name}`);
+    check(sha256(content) === expected.sha256, `ACTIVE_ARTIFACT_SHA_MISMATCH:${name}`);
+  }
+  const core = { ...manifest };
+  delete core.artifact_set_sha256;
+  check(sha256(stableJson(core)) === manifest.artifact_set_sha256, 'ARTIFACT_SET_SHA_MISMATCH');
+  return { forward, rollback, postcheck, manifest };
 }

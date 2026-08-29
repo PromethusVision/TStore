@@ -262,11 +262,13 @@ function sorted(rows, keys) {
 
 function guardSql(pkg) {
   const { manifest } = pkg;
-  const migrationValues = manifest.runtime_contract.migration_files
-    .map((file) => sql(file.name)).join(',');
+  const migrationValues = [...manifest.runtime_contract.migration_ledger]
+    .sort((left, right) => left.version.localeCompare(right.version, 'en')
+      || left.name.localeCompare(right.name, 'en'))
+    .map((row) => `(${sql(row.version)},${sql(row.name)})`).join(',\n      ');
   return `
 DO $guard$
-DECLARE run_matches INTEGER; imported_categories INTEGER; application_rows BIGINT; ledger_mismatch INTEGER;
+DECLARE run_matches INTEGER; imported_categories INTEGER; application_rows BIGINT;
 BEGIN
   IF current_setting('esnaftavar.taxonomy_target_mode',true) IS DISTINCT FROM 'local' THEN
     RAISE EXCEPTION 'W36_LOCAL_ONLY_GUARD';
@@ -282,14 +284,53 @@ BEGIN
     INTO application_rows;
   IF application_rows<>0 THEN RAISE EXCEPTION 'W36_UNEXPECTED_NON_EMPTY_APPLICATION_TARGET'; END IF;
   IF imported_categories<>0 AND run_matches<>1 THEN RAISE EXCEPTION 'W36_UNOWNED_EXISTING_TAXONOMY_ROWS'; END IF;
-  SELECT count(*) INTO ledger_mismatch FROM (
+  IF EXISTS (
+    SELECT version,name FROM supabase_migrations.schema_migrations
+    GROUP BY version,name HAVING count(*)>1
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_DUPLICATE_PAIR'; END IF;
+  IF EXISTS (
+    SELECT version FROM supabase_migrations.schema_migrations
+    GROUP BY version HAVING count(*)>1
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_DUPLICATE_VERSION'; END IF;
+  IF EXISTS (
     SELECT name FROM supabase_migrations.schema_migrations
-    EXCEPT SELECT value FROM unnest(ARRAY[${migrationValues}]::TEXT[]) AS value
-    UNION ALL
-    SELECT value FROM unnest(ARRAY[${migrationValues}]::TEXT[]) AS value
-    EXCEPT SELECT name FROM supabase_migrations.schema_migrations
-  ) delta;
-  IF ledger_mismatch<>0 THEN RAISE EXCEPTION 'W36_MIGRATION_HISTORY_MISMATCH'; END IF;
+    GROUP BY name HAVING count(*)>1
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_DUPLICATE_NAME'; END IF;
+  IF EXISTS (
+    SELECT 1 FROM supabase_migrations.schema_migrations
+    WHERE version IS NULL OR version!~'^[0-9]{14}$'
+      OR name IS NULL OR name!~'^[0-9]{4}_[a-z0-9]+(_[a-z0-9]+)*$'
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_MALFORMED_ROW'; END IF;
+  IF EXISTS (
+    WITH expected(version,name) AS (VALUES
+      ${migrationValues}
+    )
+    SELECT 1 FROM expected e JOIN supabase_migrations.schema_migrations l USING(version)
+    WHERE e.name<>l.name
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_NAME_MISMATCH'; END IF;
+  IF EXISTS (
+    WITH expected(version,name) AS (VALUES
+      ${migrationValues}
+    )
+    SELECT 1 FROM expected e JOIN supabase_migrations.schema_migrations l USING(name)
+    WHERE e.version<>l.version
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_VERSION_MISMATCH'; END IF;
+  IF EXISTS (
+    WITH expected(version,name) AS (VALUES
+      ${migrationValues}
+    )
+    SELECT 1 FROM expected e LEFT JOIN supabase_migrations.schema_migrations l
+      ON l.version=e.version AND l.name=e.name
+    WHERE l.version IS NULL
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_MISSING'; END IF;
+  IF EXISTS (
+    WITH expected(version,name) AS (VALUES
+      ${migrationValues}
+    )
+    SELECT 1 FROM supabase_migrations.schema_migrations l LEFT JOIN expected e
+      ON l.version=e.version AND l.name=e.name
+    WHERE e.version IS NULL
+  ) THEN RAISE EXCEPTION 'W37_MIGRATION_LEDGER_UNEXPECTED'; END IF;
 END
 $guard$;
 `;
@@ -486,7 +527,7 @@ export async function compileToDirectory(inputDirectory, outputDirectory) {
     artifactFiles[name] = { bytes: Buffer.byteLength(content), sha256: sha256(content) };
   }
   const artifactCore = {
-    compiler_contract: 'w36-deterministic-compiler-v1',
+    compiler_contract: 'w37-ledger-pair-compiler-v2',
     source_package_sha256: pkg.manifest.package_sha256,
     source_package_kind: pkg.manifest.package_kind,
     taxonomy_version: pkg.manifest.taxonomy_version,

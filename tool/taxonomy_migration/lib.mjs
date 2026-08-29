@@ -13,6 +13,54 @@ export const INPUT_FILES = [
   'activation.csv',
 ];
 
+export const SUPABASE_LEDGER_CONTRACT = Object.freeze([
+  {
+    repository_file: '20260812000100_0001_core_auth_catalog.sql',
+    version: '20260812010907',
+    name: '0001_core_auth_catalog',
+  },
+  {
+    repository_file: '20260812000200_0002_shops.sql',
+    version: '20260812011047',
+    name: '0002_shops',
+  },
+  {
+    repository_file: '20260812000300_0003_carts_v2.sql',
+    version: '20260812011128',
+    name: '0003_carts_v2',
+  },
+  {
+    repository_file: '20260812000400_0004_qr_verified_purchases.sql',
+    version: '20260812013109',
+    name: '0004_qr_verified_purchases',
+  },
+  {
+    repository_file: '20260812000500_0005_verified_shop_ratings.sql',
+    version: '20260812013220',
+    name: '0005_verified_shop_ratings',
+  },
+  {
+    repository_file: '20260812000600_0006_chat_notifications_account.sql',
+    version: '20260812013308',
+    name: '0006_chat_notifications_account',
+  },
+  {
+    repository_file: '20260812000700_0007_storage_realtime.sql',
+    version: '20260812013403',
+    name: '0007_storage_realtime',
+  },
+  {
+    repository_file: '20260814000800_0008_fix_profile_role_guard.sql',
+    version: '20260814000820',
+    name: '0008_fix_profile_role_guard',
+  },
+  {
+    repository_file: '20260815000900_0009_verified_product_reviews_storage.sql',
+    version: '20260815000900',
+    name: '0009_verified_product_reviews_storage',
+  },
+]);
+
 export const HEADERS = {
   'categories.csv': [
     'CATEGORY_ID', 'PLANNING_KEY', 'PARENT_CATEGORY_ID', 'NAME', 'SLUG',
@@ -75,6 +123,76 @@ export function stableJson(value) {
     return `{${fields.join(',')}}`;
   }
   return JSON.stringify(value);
+}
+
+export function parseRepositoryMigrationFilename(value) {
+  const filename = String(value ?? '');
+  check(filename === basename(filename), `MIGRATION_FILENAME_PATH_FORBIDDEN:${filename}`);
+  check(!filename.includes('/') && !filename.includes('\\'), `MIGRATION_FILENAME_PATH_FORBIDDEN:${filename}`);
+  const match = /^(\d{14})_((\d{4})_[a-z0-9]+(?:_[a-z0-9]+)*)\.sql$/.exec(filename);
+  check(match, `MALFORMED_MIGRATION_FILENAME:${filename}`);
+  return {
+    repository_file: filename,
+    repository_version: match[1],
+    name: match[2],
+    ordinal: match[3],
+  };
+}
+
+export function expectedMigrationLedgerRows(migrationFiles) {
+  const filenames = migrationFiles.map((item) => (typeof item === 'string' ? item : item.name));
+  const contractByFile = new Map(SUPABASE_LEDGER_CONTRACT.map((row) => [row.repository_file, row]));
+  check(filenames.length === SUPABASE_LEDGER_CONTRACT.length, 'MIGRATION_LEDGER_REPOSITORY_COUNT');
+  const seen = new Set();
+  const rows = filenames.map((filename) => {
+    const parsed = parseRepositoryMigrationFilename(filename);
+    check(!seen.has(parsed.repository_file), `DUPLICATE_REPOSITORY_MIGRATION:${parsed.repository_file}`);
+    seen.add(parsed.repository_file);
+    const contract = contractByFile.get(parsed.repository_file);
+    check(contract, `UNMAPPED_REPOSITORY_MIGRATION:${parsed.repository_file}`);
+    check(contract.name === parsed.name, `REPOSITORY_MIGRATION_NAME_DRIFT:${parsed.repository_file}`);
+    return { ...contract, repository_version: parsed.repository_version };
+  });
+  check(rows.length === contractByFile.size, 'MISSING_REPOSITORY_MIGRATION');
+  return rows;
+}
+
+export function canonicalLedgerRows(rows) {
+  return rows.map((row) => ({ version: String(row.version ?? ''), name: String(row.name ?? '') }))
+    .sort((left, right) => left.version.localeCompare(right.version, 'en')
+      || left.name.localeCompare(right.name, 'en'));
+}
+
+export function validateMigrationLedgerRows(rows, expectedRows = SUPABASE_LEDGER_CONTRACT) {
+  check(Array.isArray(rows), 'MIGRATION_LEDGER_ROWS_REQUIRED');
+  const versions = new Set();
+  const names = new Set();
+  const pairs = new Set();
+  for (const row of rows) {
+    const version = String(row.version ?? '');
+    const name = String(row.name ?? '');
+    check(/^\d{14}$/.test(version), `MALFORMED_LEDGER_VERSION:${version}`);
+    check(/^\d{4}_[a-z0-9]+(?:_[a-z0-9]+)*$/.test(name), `MALFORMED_LEDGER_NAME:${name}`);
+    check(!pairs.has(`${version}|${name}`), `DUPLICATE_LEDGER_PAIR:${version}|${name}`);
+    check(!versions.has(version), `DUPLICATE_LEDGER_VERSION:${version}`);
+    check(!names.has(name), `DUPLICATE_LEDGER_NAME:${name}`);
+    versions.add(version);
+    names.add(name);
+    pairs.add(`${version}|${name}`);
+  }
+  const expected = canonicalLedgerRows(expectedRows);
+  const actual = canonicalLedgerRows(rows);
+  check(stableJson(actual) === stableJson(expected), 'MIGRATION_LEDGER_PAIR_MISMATCH');
+  return actual;
+}
+
+export function canonicalMigrationContent(content, filename) {
+  const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
+  const text = bytes.toString('utf8');
+  check(Buffer.from(text, 'utf8').equals(bytes), `MIGRATION_NOT_UTF8:${filename}`);
+  const canonical = text.replaceAll('\r\n', '\n');
+  check(!canonical.includes('\r'), `MIGRATION_LONE_CR:${filename}`);
+  return canonical;
 }
 
 export function parseCsv(text) {
@@ -188,9 +306,11 @@ export async function currentRuntimeContract(repoRoot) {
   const migrationFiles = [];
   for (const name of names) {
     const content = await readFile(join(migrationDirectory, name));
-    migrationFiles.push({ name, sha256: sha256(content) });
+    migrationFiles.push({ name, sha256: sha256(canonicalMigrationContent(content, name)) });
   }
+  const migrationLedger = expectedMigrationLedgerRows(migrationFiles);
   const migrationHistorySha256 = sha256(stableJson(migrationFiles));
+  const migrationLedgerSha256 = sha256(stableJson(canonicalLedgerRows(migrationLedger)));
   const schemaContract = {
     public_tables: ['categories', 'products', 'shops', 'shop_products'],
     empty_required: true,
@@ -199,7 +319,10 @@ export async function currentRuntimeContract(repoRoot) {
   };
   return {
     migration_files: migrationFiles,
+    migration_hash_contract: 'UTF8_LF_CANONICAL_V1',
     migration_history_sha256: migrationHistorySha256,
+    migration_ledger: migrationLedger,
+    migration_ledger_sha256: migrationLedgerSha256,
     schema_contract_sha256: sha256(stableJson(schemaContract)),
     schema_contract: schemaContract,
   };
@@ -386,6 +509,24 @@ export function validatePackage(pkg) {
   const activation = tables['activation.csv'];
   check(manifest.target?.project_ref === EXPECTED_PROJECT_REF, 'PACKAGE_TARGET_PROJECT_REF');
   check(manifest.target?.requires_empty_application_tables === true, 'PACKAGE_EMPTY_TARGET_REQUIRED');
+  const runtime = manifest.runtime_contract;
+  check(runtime?.migration_hash_contract === 'UTF8_LF_CANONICAL_V1', 'MIGRATION_HASH_CONTRACT');
+  check(Array.isArray(runtime.migration_files), 'MIGRATION_FILES_REQUIRED');
+  for (const file of runtime.migration_files) {
+    parseRepositoryMigrationFilename(file.name);
+    check(/^[0-9a-f]{64}$/.test(file.sha256), `MIGRATION_FILE_SHA256:${file.name}`);
+  }
+  check(
+    sha256(stableJson(runtime.migration_files)) === runtime.migration_history_sha256,
+    'MIGRATION_HISTORY_SHA256_MISMATCH',
+  );
+  const expectedLedger = expectedMigrationLedgerRows(runtime.migration_files);
+  check(stableJson(runtime.migration_ledger) === stableJson(expectedLedger), 'MIGRATION_LEDGER_CONTRACT_DRIFT');
+  validateMigrationLedgerRows(runtime.migration_ledger, expectedLedger);
+  check(
+    sha256(stableJson(canonicalLedgerRows(runtime.migration_ledger))) === runtime.migration_ledger_sha256,
+    'MIGRATION_LEDGER_SHA256_MISMATCH',
+  );
   check(categories.length === manifest.expected.categories, 'CATEGORY_EXPECTED_COUNT');
   check(allocations.length === manifest.expected.allocations, 'ALLOCATION_EXPECTED_COUNT');
   check(aliases.length === manifest.expected.aliases, 'ALIAS_EXPECTED_COUNT');
@@ -540,6 +681,8 @@ export function buildPrecheckSnapshot(pkg, overrides = {}) {
     counts: { categories: 0, products: 0, shops: 0, shop_products: 0 },
     migration_files: runtime.migration_files,
     migration_history_sha256: runtime.migration_history_sha256,
+    migration_ledger: runtime.migration_ledger,
+    migration_ledger_sha256: runtime.migration_ledger_sha256,
     schema_contract_sha256: runtime.schema_contract_sha256,
     single_writer: { observed: true, writer_count: 1, write_freeze_declared: true },
     drift: { detected: false, unexpected_objects: [] },
@@ -554,6 +697,8 @@ export function validatePrecheckSnapshot(snapshot, pkg) {
     check(Number(snapshot.counts?.[table]) === 0, `PRECHECK_NON_EMPTY_TARGET:${table}`);
   }
   check(snapshot.migration_history_sha256 === expected.migration_history_sha256, 'PRECHECK_MIGRATION_HISTORY_MISMATCH');
+  validateMigrationLedgerRows(snapshot.migration_ledger, expected.migration_ledger);
+  check(snapshot.migration_ledger_sha256 === expected.migration_ledger_sha256, 'PRECHECK_MIGRATION_LEDGER_SHA_MISMATCH');
   check(snapshot.schema_contract_sha256 === expected.schema_contract_sha256, 'PRECHECK_SCHEMA_HASH_MISMATCH');
   check(stableJson(snapshot.migration_files) === stableJson(expected.migration_files), 'PRECHECK_MIGRATION_FILES_MISMATCH');
   check(snapshot.single_writer?.observed === true, 'PRECHECK_SINGLE_WRITER_UNOBSERVED');

@@ -41,6 +41,31 @@ Run the isolated PGlite rehearsal. `--local` is mandatory:
 node tool/taxonomy_migration/local_apply_harness.mjs --local --input <package-dir> --pglite-root <local-pglite-package>
 ```
 
+Verify the Wave 37 Supabase `(version, name)` ledger mapping and filename
+parser without a database:
+
+```text
+node tool/taxonomy_migration/ledger_contract_test.mjs
+```
+
+An Integration-reviewed, identifier-bound candidate can be prepared in a
+caller-selected staging directory. This command is local-only and does not add
+an active migration or apply it:
+
+```text
+node tool/taxonomy_migration/prepare_development_candidate.mjs \
+  --artifact-dir <compiled-dir> \
+  --package-manifest <package_manifest.json> \
+  --output <candidate.sql> \
+  --metadata-output <candidate.json> \
+  --project-ref tnipyxnvhgelwdpykyez \
+  --migration-name 20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap
+```
+
+Use `--exact-forward <candidate.sql> --exact-forward-sha256 <sha>` with the
+local harness to prove that exact wrapper-bound candidate, not a substituted
+compiler fixture, was replayed.
+
 If `--input` is omitted, the harness generates an ephemeral synthetic package.
 That package proves tooling behavior only and is never a Development or
 Production stable-ID package.
@@ -51,6 +76,11 @@ Production stable-ID package.
 - The compiler never allocates UUIDs. Exact UUIDs must be present in input.
 - The Wave36A adapter rejects any source or aggregate checksum mismatch before
   it writes a normalized package.
+- Repository migration SQL is hashed as valid UTF-8 with canonical LF endings,
+  preventing checkout line endings from changing package identity. Frozen
+  taxonomy CSV bytes are never normalized.
+- The compiler validates the explicit verified Supabase ledger `(version,
+  name)` pair set; same count or name-only matching is insufficient.
 - The synthetic generator is separate and marks every allocation test-only.
 - Forward SQL requires a package-SHA session token, runs in one transaction,
   imports staged/inactive rows, and contains no delete.
