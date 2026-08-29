@@ -17,6 +17,34 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 37B Ledger Guard Fix / Retry Freeze Entegrasyon Gözlemi
+
+`MIGRATION_HISTORY_GUARD_FIXED: PASS`
+
+`LEDGER_FIX_INTEGRATED: YES`
+
+`EXACT_RETRY_ARTIFACT_FROZEN: YES`
+
+`REMOTE_RETRY_AUTHORIZED: NO`
+
+`READY_FOR_FRESH_DEVELOPMENT_WRITE_AUTHORIZATION: YES`
+
+- İlk Wave 37 turu, ledger `name` semantiğini full repository filename sanan
+  compiler guard nedeniyle remote erişimden önce NO-GO oldu. Agent 2'nin explicit
+  exact `(version,name)` düzeltmesi conflictsiz entegre edildi.
+- Tek backend/schema/SQL/migration owner kuralı sürer. Aktif zincir `0001→0009`
+  ve `9/9`; `0010` eklenmedi. Yeni `40fade...` candidate yalnız local staging'de
+  frozen'dır ve remote apply yetkisi değildir.
+- Frozen category payload/UUID değişmedi. Yeni normalized/artifact/candidate
+  kimlikleri `f73d6c...` / `840ab0...` / `40fade...`; LF/CRLF portability ve exact
+  local replay/failure/ledger/parser/Flutter contract kapıları PASS.
+- Bir sonraki adım paralel production işi değildir. Fresh owner Development-write
+  authorization, ayrı authorized read-only JIT snapshot, single-writer/write-freeze
+  ve operator/rollback/postcheck gate'leri sıralı kapanmalıdır.
+- Customer runtime/DI, `service_locator.dart`, shared taxonomy/category/product
+  modelleri, Flutter/Figma ve Production lane'i bu integration'da değişmedi ve
+  remote retry/activation ile eşzamanlı farklı owner'a verilmez.
+
 ## Wave 36 Exact Taxonomy Final Pre-Apply Entegrasyon Gözlemi
 
 `FROZEN_BOOTSTRAP_PACKAGE: PASS`

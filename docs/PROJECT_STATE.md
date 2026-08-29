@@ -3,7 +3,30 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 36 EXACT TAXONOMY FINAL PRE-APPLY INTEGRATION PASS —
+- Son doğrulanan teslim: **WAVE 37B LEDGER GUARD FIX INTEGRATION PASS — EXACT
+  RETRY ARTIFACT LOCALLY FROZEN / REMOTE RETRY NOT AUTHORIZED**.
+- Integration branch/base/source: `integration/wave-37-ledger-guard-fix` /
+  `origin/main@41ea6bd0042dcd83a2bae056d3aa98f4b44d4308` /
+  Agent 2 `8c17ffca8c9febb37987afcbde9d5d669220d335`; normal `--no-ff` merge
+  conflictsiz tamamlandı.
+- İlk Wave 37 denemesi, full repository migration filename ile Supabase ledger
+  `name` alanını yanlış karşılaştıran guard nedeniyle remote erişimden önce
+  **NO-GO** oldu. Development/Production read/write veya migration apply yapılmadı.
+- Corrected explicit `(version,name)` ledger contract; duplicate/malformed/missing/
+  unexpected, version mismatch ve name mismatch durumlarında fail-closed'dur.
+  Reordered exact pair-set deterministik PASS verir; same-count/name-only yetmez.
+- Frozen upstream SHA `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`
+  ve altı payload/`1563` UUID değişmedi. Yeni normalized/artifact/candidate SHA'ları
+  sırasıyla `f73d6c...` / `840ab0...` / `40fade...`; LF/CRLF ayrı checkout
+  fixture'ları aynı kimlikleri üretti.
+- Exact local PGlite fresh/forward/rollback `3/3`, idempotency `2/2`, postcheck
+  `3/3`, ledger `11/11`, failure `27/27`, parser `13/13`, canonical Flutter
+  migration contract `18/18` ve migration manifest `9/9` PASS.
+- Active migration zinciri exact `0001→0009`; `0010` oluşturulmadı. Yeni retry
+  artefaktı yalnız local staging/rehearsal için frozen'dır. Fresh Product Owner
+  Development-write authorization + yeni authorized read-only JIT precheck ve
+  operasyon gate'leri olmadan remote retry **NOT AUTHORIZED**. Production kapalıdır.
+- Bir önceki doğrulanan teslim: **WAVE 36 EXACT TAXONOMY FINAL PRE-APPLY INTEGRATION PASS —
   FROZEN PACKAGE / EXACT MIGRATION REHEARSAL / CUSTOMER CUTOVER WIRING**.
 - Integration branch/base: `integration/wave-36-taxonomy-final-preapply` /
   `origin/main@b3cc14ebed42ab66d689fe6688c2e75e23c43e68`.

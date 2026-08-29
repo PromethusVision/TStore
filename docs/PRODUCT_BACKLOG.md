@@ -14,6 +14,30 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 37B Ledger Guard Fix / Retry Freeze State
+
+- **COMPLETED — initial fail-safe stop:** İlk Wave 37 run, full repository
+  filename/ledger `name` mismatch'i nedeniyle remote erişimden önce NO-GO oldu;
+  hiçbir Development/Production read/write veya apply yapılmadı.
+- **COMPLETED — corrected ledger guard:** Explicit nine-row `(version,name)`
+  contract duplicate, malformed, missing, unexpected, version/name mismatch'i
+  fail-closed reddeder; reordered exact pair-set PASS, same count/name-only FAIL.
+- **COMPLETED — immutable package and portable hashes:** Frozen upstream package
+  `095849...`, altı payload ve `1563/1563` UUID unchanged. New normalized/artifact/
+  staged-candidate freeze `f73d6c...` / `840ab0...` / `40fade...`; LF ve CRLF
+  checkout fixture'larında birebir aynıdır.
+- **COMPLETED — exact local verification:** fresh/forward/rollback `3/3`,
+  idempotency `2/2`, postcheck `3/3`, ledger fixture `11/11`, failure `27/27`,
+  parser `13/13`, Flutter migration contract `18/18`, manifest `9/9` PASS.
+- **UNCHANGED — active chain/runtime:** `supabase/migrations` hâlâ exact `0001→0009`;
+  `0010` eklenmedi, taxonomy aktive edilmedi, Flutter/Figma/runtime değişmedi.
+- **READY — fresh Development-write decision:** Corrected local artifact owner'ın
+  yeni Development-write değerlendirmesine hazırdır. Önceki authority taşınmaz.
+- **OPEN / NOT AUTHORIZED:** fresh explicit owner authorization, yeni authorized
+  read-only JIT precheck, exact target/empty/drift/single-writer gate'leri, operator/
+  rollback/postcheck monitoring ve ancak sonra controlled Development retry.
+  Production lane'i kapalıdır; `REMOTE_RETRY_AUTHORIZED: NO`.
+
 ## Wave 36 Exact Taxonomy Final Pre-Apply State
 
 - **COMPLETED — frozen Development bootstrap candidate:** Source
