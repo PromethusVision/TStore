@@ -1,7 +1,9 @@
 # Wave 33 — Owner-Final Taxonomy Direction Decision Record
 
-**Recorded:** 2026-08-29  
-**Scope:** Wave 33 `TAXONOMY_W33_OWNER_FINALIZATION_DIGEST.md` decisions only  
+**Recorded:** 2026-08-29
+
+**Scope:** Wave 33 `TAXONOMY_W33_OWNER_FINALIZATION_DIGEST.md` decisions only
+
 **State:** R01–R09 OWNER-FINAL DIRECTION RECORDED; 22-TREE BULK FINALIZATION PENDING
 
 ## Identity guard
