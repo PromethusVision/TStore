@@ -29,7 +29,7 @@ The immutable source baseline remains 1,488 rows/1,200 leaves. R08=A removes one
 |---|---:|---:|---:|---|
 | Gıda & İçecek | 71 | 19 | 19 | PASS — cold-chain/high-risk food separated; nutrition boundaries open |
 | Giyim & Moda | 43 | 0 | 5 | PASS — certified protection routed out; claim reviews retained |
-| Ayakkabı | 41 | 4 | 15 | PASS — safety-footwear owner decision open |
+| Ayakkabı | 41 | 4 | 15 | PASS — R01=A structural boundary final; PPE/intended-use professional gate open |
 | Çanta & Aksesuar | 45 | 0 | 8 | PASS — high-risk/integrated carriers externally gated |
 | Beyaz Eşya & Ev Aletleri | 66 | 11 | 66 | REVIEW — severity vocabulary calibration needed; no gate bypass |
 | Ev & Yaşam | 63 | 6 | 13 | PASS — R08 removed/deferred the vague sleep leaf and narrowed the bathroom leaf |
@@ -60,7 +60,7 @@ The immutable source baseline remains 1,488 rows/1,200 leaves. R08=A removes one
 | POL-004 | Home support/helper language could admit medical-intent products | R08=A removes/defer the sleep-support leaf and renames the bathroom leaf to `Banyo Taburesi & Basamakları` | RESOLVED OWNER / OPEN POLICY | Keep medical/accessibility scope outside this ordinary physical family unless separately reviewed | NO — RESOLVED |
 | POL-005 | Parent policy is an aggregate, not SKU permission | Source trees elevate parent to strictest descendant in some batches | P2 DATA | Runtime policy must evaluate leaf/SKU evidence, not parent display alone | NO |
 | POL-006 | Exclusion is represented by absence, not normal leaf | No firearm/ammunition/airsoft/paintball/hunting-weapon/firework/explosive/pesticide/live-animal/drug/supplement leaf | P0 SAFETY | Keep ingestion/search fail closed; taxonomy approval cannot add synonyms that bypass absence | NO — current state safe |
-| POL-007 | Owner and professional approvals are distinct | Resolved rows still require bulk tree approval; 840 resolved leaves separately require professional review | P0 GOVERNANCE | Record both gates independently | NO |
+| POL-007 | Owner and professional approvals are distinct | Bulk owner approval is complete; 840 resolved leaves separately require professional review | P0 GOVERNANCE | Record both gates independently | NO |
 
 The audit found no evidence that a known prohibited concept was silently granted a `NORMAL` commerce leaf. `POL-004` is owner-resolved; `POL-001`–`POL-003` remain professional metadata-calibration work and do not permit policy relaxation.
 
@@ -68,7 +68,7 @@ The audit found no evidence that a known prohibited concept was silently granted
 
 ### Food / baby / health
 
-- General food remains Gıda; baby-specific formula/food is visible only as a candidate and requires owner + professional resolution.
+- General food remains Gıda; baby-specific formula/age-specific food is owner-final under Anne & Bebek, while food-safety and regulatory professional review remains open.
 - Medical nutrition, supplements, drugs, vaccines, hormones and controlled products have no normal leaf.
 - Food/allergen/cold-chain claims remain SKU/listing evidence, not category permission.
 
@@ -98,7 +98,7 @@ The audit found no evidence that a known prohibited concept was silently granted
 
 ## 6. Excluded-concept evidence
 
-Active candidate path counts:
+Active resolved path counts:
 
 - `Avcılık`: 0
 - firearm/tüfek/tabanca/ammunition/mühimmat: 0
@@ -109,7 +109,9 @@ Active candidate path counts:
 - drug/vaccine/hormone/supplement product leaf: 0
 - labor, booking, subscription or digital-service leaf: 0
 
-The two paths containing the word `Piroteknik` explicitly say `Piroteknik Olmayan`; they do not enable pyrotechnics.
+The two pre-resolution paths containing `Piroteknik Olmayan` were renamed by R09=A
+to clean customer-facing names. The resolved tree contains no pyrotechnic product
+leaf; policy metadata and the explicit pyrotechnic exclusion remain authoritative.
 
 ## 7. Professional-review routing
 

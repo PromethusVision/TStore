@@ -17,6 +17,42 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 33 Canonical Product Taxonomy V1 Entegrasyon Gözlemi
+
+`PRODUCT_TAXONOMY_DESIGN_COMPLETE: YES`
+
+`PRODUCT_TAXONOMY_OWNER_FINAL: YES`
+
+`STRUCTURAL_OWNER_DECISIONS: 0`
+
+`PROFESSIONAL_REVIEW_GATES: OPEN`
+
+`RUNTIME_IMPLEMENTATION: NO`
+
+- Wave 32'nin üç ayrık full-tree design batch'i ile Wave 33 semantic audit,
+  structural validator ve legacy bridge simulation teslimleri istenen sırada altı
+  normal `--no-ff` merge ile conflict olmadan entegre edildi. Kaynak ve integration
+  değişiklikleri yalnız `docs/` kapsamındadır.
+- Canonical architecture toplam `24` L1'dir. Mevcut Elektronik/Bilgisayar & Tablet
+  anchor'ları değişmeden korunmuş, kalan `22` detaylı L1 için owner-final resolved
+  tasarım `224` L2 / `1078` L3 / `185` L4 / `1199` leaf / `1487` row olarak
+  kilitlenmiştir. Stable ID veya runtime node üretilmemiştir.
+- Bir sonraki stable-ID/runtime işi **tek taxonomy/schema/migration owner'ına**
+  verilmelidir. Aynı wave'de ikinci SQL/migration yazarı çalıştırılmaz; migration
+  zinciri, taxonomy ID registry, shared category/product modelleri, demo mapping ve
+  rollback planı tek sahipte tutulur.
+- `service_locator.dart`, global navigation ve shared modeller runtime taxonomy ile
+  aynı anda başka agent tarafından değiştirilmemelidir. Customer taxonomy UI ve
+  merchant catalog işleri, ID/read-path sözleşmesi main'e entegre edilmeden başlamaz.
+- Legacy `UNRESOLVED 24` mapping boşluğu canonical ağacı yeniden açmaz; stable-ID
+  planından önce sıralı ve exact successor review ile kapatılır. Blind fuzzy mapping,
+  runtime alias/redirect veya node retirement bu docs-only wave'in yetkisi değildir.
+- `840` professional-review leaf ayrı hukuk/regulatory/domain sahiplerine bölünebilir;
+  fakat bu incelemeler canonical taxonomy dosyasını paralel biçimde yeniden yazmaz.
+  Policy kararları tek coordination owner üzerinden reconcile edilir.
+- Development önce yalnız read-only inventory ile ele alınır. Development apply ve
+  Production migration ayrı açık yetki, tek SQL sahibi ve integration postflight ister.
+
 ## Wave 31 Master Owner Decisions Entegrasyon Gözlemi
 
 `MASTER_OWNER_ROOTS: 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED`

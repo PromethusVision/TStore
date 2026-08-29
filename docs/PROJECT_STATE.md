@@ -3,11 +3,39 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 31 MASTER OWNER DECISIONS FINAL INTEGRATION
+- Son doğrulanan teslim: **WAVE 33 CANONICAL PRODUCT TAXONOMY V1 FINAL
+  INTEGRATION PASS — DESIGN COMPLETE / PRODUCT OWNER FINAL / STRUCTURAL OWNER
+  DECISIONS 0 — DOCS ONLY**.
+- Integration branch/base: `integration/wave-33-canonical-taxonomy-v1` /
+  `origin/main@d54239c6de8b4637bd093ea1e849d19093bdce7a`.
+- Altı kaynak teslim, istenen sırada normal `--no-ff` ile ve conflict olmadan
+  entegre edildi: Wave 32 batch01 `7096959`, batch02 `28c40a3`, batch03 `3dd6df6`;
+  Wave 33 semantic audit `06fff48`, structural validator `6a1fd7e` ve legacy bridge
+  simulation `d39a2c3`.
+- Canonical mimari toplam `24` L1'dir. Önceden owner-final Elektronik `9` L2,
+  Bilgisayar & Tablet `11` L2 ve iki `9/7/14` L3/L4/leaf anchor'ı değişmeden
+  korunmuştur. Wave 33 resolved artefaktı kalan `22` detaylı L1'i `224` L2,
+  `1078` L3, `185` L4, `1199` leaf ve `1487` materialized row ile finalleştirir;
+  maximum depth `4`, duplicate `0`, orphan `0` ve structural owner decision `0`.
+- Wave 33 `R01`–`R09` kararlarının tamamı `FINAL=A` durumundadır. Historical
+  filename taşıyan `docs/TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv`, adındaki
+  `CANDIDATE` ifadesine rağmen current owner-final canonical design source-of-truth'tur.
+- Professional review routing korunur: `840` review leaf, `612` policy-sensitive,
+  `442` `REGULATED`, `170` `LEGAL_REVIEW_REQUIRED`. Bu gate'ler **OPEN** durumdadır;
+  product owner finalization profesyonel review yerine geçmez.
+- Legacy bridge `651` node üzerinde planning simulation'dır. Action sayımları
+  `KEEP 62 / RENAME 223 / MOVE 73 / RENAME_AND_MOVE 44 / MERGE 7 / SPLIT 210 /
+  RETIRE 1 / OUT_OF_PRODUCT_TAXONOMY 7 / UNRESOLVED 24` olarak korunur; runtime,
+  alias/redirect, node retirement veya migration onayı değildir.
+- Runtime taxonomy **NOT IMPLEMENTED**, stable ID **NOT YET ALLOCATED**,
+  Development migration **NOT STARTED**, Production migration **NOT AUTHORIZED**.
+  Wave 33 yalnız docs/canonical integration'dır; Flutter/Dart/Figma, JSON runtime,
+  DB/Supabase, demo data, Production ve Development değişikliği yoktur.
+- Bir önceki doğrulanan teslim: **WAVE 31 MASTER OWNER DECISIONS FINAL INTEGRATION
   PASS — 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED — DOCS ONLY**.
-- Integration branch/base: `integration/wave-31-master-owner-decisions` /
+- Önceki integration branch/base: `integration/wave-31-master-owner-decisions` /
   `origin/main@fca935fdbe3053d2d9aa4bbb7a10b1f928007b63`.
-- Input/merge:
+- Önceki input/merge:
   `origin/agent2/w31-global-owner-decision-reconciliation@4dbba80ebde100efebfbed906f4d72a98cff24b1`
   / `3738a8bb625fd480a9eb1684300cccc88b7713df` (`--no-ff`, conflict yok).
 - Product Owner final root seti exact `24`: `OM-R01=A`–`OM-R05=A`,

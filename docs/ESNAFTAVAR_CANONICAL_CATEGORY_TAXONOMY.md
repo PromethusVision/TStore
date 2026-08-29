@@ -1,33 +1,100 @@
-# EsnaftaVar Canonical Category Taxonomy — Architecture + Owner-Final Pilots
+# EsnaftaVar Canonical Product Taxonomy V1 — Architecture + Owner-Final Full Design
 
-**Wave:** 15 / Phase A2
+**Wave:** 15 foundation / 32 full-tree design / 33 owner-final canonical integration
 
 **Belge tarihi:** 27 Ağustos 2026
 
-**Son canonical güncelleme:** 28 Ağustos 2026 / Wave 15 Phase C1+C2
+**Son canonical güncelleme:** 29 Ağustos 2026 / Wave 33
 
-**Owner approval:** 27 Ağustos 2026 / Wave 15 Phase A2 — **CONFIRMED — PRODUCT OWNER FINAL**
+**Owner approval:** Wave 15 L1/anchor kararları ile Wave 33 `R01`–`R09` ve 22
+detaylı L1 ağacı — **CONFIRMED — PRODUCT OWNER FINAL**
 
 **Pilot owner approvals:** 28 Ağustos 2026 / Wave 15 Phase C1A + C2 —
 **CONFIRMED — PRODUCT OWNER FINAL**
 
-**Kapsam:** Product taxonomy mimarisi, L1 ana kategori seti, merchant-sector ayrımı,
-owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları ve ilk iki full L3/L4 pilotu
+**Kapsam:** Product taxonomy mimarisi, 24 L1 ana kategori seti, merchant-sector
+ayrımı, owner-final Elektronik/Bilgisayar & Tablet omurgaları ve kalan 22 L1 için
+tam owner-final L2/L3/L4 tasarımı
 
-**Runtime durumu:** Dokümantasyon; migration, seed, Flutter, Figma veya remote değişikliği yoktur.
+**Runtime durumu:** Yalnız dokümantasyon. Runtime taxonomy uygulanmadı, stable ID
+üretilmedi, Development migration başlamadı ve Production migration yetkilendirilmedi.
 
-**Integration durumu:** Wave 15 Phase A, B1+B2 ve C1+C2 final integration tamamlandı;
-taxonomy architecture, 24 Product L1, Elektronik `9` L2, Bilgisayar & Tablet `11`
-L2 ve Telefon/Bilgisayar Bileşenleri ilk full L3/L4 pilotları canonical'dır. Current
-full-tree JSON ile rename/split/stable-ID reconciliation ve runtime implementation
-ayrı controlled task'lardır.
+**Integration durumu:** **WAVE 33 CANONICAL PRODUCT TAXONOMY V1 FINAL.** Toplam
+mimari `24` L1'dir. Wave 33 resolved artefaktı, önceden owner-final ve değişmeden
+korunan Elektronik/Bilgisayar & Tablet anchor'ları dışında kalan `22` detaylı L1'i;
+`224` L2, `1078` L3, `185` L4, `1199` leaf ve `1487` materialized row ile kilitler.
+Structural owner decision `0`'dır. Runtime/stable-ID/migration ayrı kontrollü iştir.
 
 > Current main notu: Phase A başladığında repo önceki `v1.0.0` full taxonomy
 > artefaktını içeriyordu. Phase A1'de refine edilen 24 Product Taxonomy L1 adı ve
 > sırası, Product Owner tarafından Phase A2'de açıkça **CONFIRMED / FINAL / CANONICAL
 > V1** olarak onaylandı. Bu decision lock mevcut L2/L3/L4 ağacını yeniden üretmez ve
 > `docs/data/esnaftavar_category_taxonomy_v1_final.json` dosyasını değiştirmez.
-> Full tree/JSON/runtime reconciliation ayrı controlled integration görevidir.
+> Wave 33 full-tree design reconciliation tamamlanmıştır. Historical filename taşıyan
+> `docs/TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv` artık owner-final canonical
+> design source-of-truth'tur; adındaki `CANDIDATE` güncel state'i değiştirmez. Eski
+> `docs/data/esnaftavar_category_taxonomy_v1_final.json` runtime/legacy baseline olarak
+> değişmeden korunur; Wave 33 onu runtime artefaktına dönüştürmez.
+
+## 0. Wave 33 canonical V1 completion
+
+`PRODUCT_TAXONOMY_DESIGN: COMPLETE — PRODUCT OWNER FINAL`
+
+### Final architecture and resolved design
+
+- Canonical architecture toplam `24` L1'dir.
+- Wave 33 resolved full-design artefaktı, mevcut iki anchor dışında kalan `22`
+  detaylı L1 ağacını kapsar.
+- Önceden owner-final **Elektronik** `9` L2 ve **Bilgisayar & Tablet** `11` L2,
+  ayrıca Telefon & Aksesuarları ile Bilgisayar Bileşenleri `9 L3 / 7 L4 / 14 leaf`
+  pilotları aynen korunur ve Wave 33 sayımlarında ikinci kez sayılmaz.
+
+| Wave 33 resolved ölçüsü | Final değer |
+|---|---:|
+| Detaylı L1 | 22 |
+| L2 | 224 |
+| L3 | 1078 |
+| L4 | 185 |
+| Assignable leaf | 1199 |
+| Materialized row | 1487 |
+| Maximum depth | 4 |
+| Duplicate path | 0 |
+| Orphan | 0 |
+| Structural owner decision | 0 |
+
+### Owner-final semantic resolution
+
+`R01`–`R09` kararlarının tamamı **FINAL = A** durumundadır. Bu kararlar; iş/
+profesyonel ayakkabı ile iş güvenliği ayakkabısı sınırını, Balıkçılık dalını,
+Anne & Bebek ve Oyuncak & Hobi sınırlarını, owner-final ad değişikliklerini ve
+Avcılık dalının Product Taxonomy'den çıkarılmasını kapsar. Eski/forbidden path'ler
+resolved artefakta taşınmaz; professional ve policy gate'leri bu kararlarla kapanmaz.
+
+### Professional review gates
+
+Final leaf routing sayımları:
+
+- professional-review leaf: `840`
+- policy-sensitive leaf: `612`
+- `REGULATED`: `442`
+- `LEGAL_REVIEW_REQUIRED`: `170`
+
+Bu etiketler taxonomy design'ı yapısal olarak açık bırakmaz; ilgili hukuk, mevzuat,
+operasyon ve domain-professional review kapılarını **OPEN** tutar. Owner-final state,
+bu incelemelerin tamamlandığı anlamına gelmez.
+
+### Legacy bridge boundary
+
+Legacy source `651` node'dur (`23/91/505/32`) ve canonical documented SHA-256 değeri
+`182B8719E74EA889F5FC3B257D119C258C8750F8D24883D08AA6AFB88CCD2B08` olarak
+korunur. Final-candidate simulation aksiyonları `KEEP 62`, `RENAME 223`, `MOVE 73`,
+`RENAME_AND_MOVE 44`, `MERGE 7`, `SPLIT 210`, `RETIRE 1`,
+`OUT_OF_PRODUCT_TAXONOMY 7`, `UNRESOLVED 24` şeklindedir.
+
+Bu bridge yalnız planning simulation/evidence'dır. Stable ID tahsisi, alias/redirect,
+runtime node retire işlemi, schema/migration veya herhangi bir remote apply yetkisi
+vermez. `UNRESOLVED 24`, canonical ağacın structural owner karar sayısını artırmaz;
+gelecek runtime mapping planında kapatılacak legacy eşleme boşluklarıdır.
 
 ## Karar etiketleri
 
@@ -543,22 +610,24 @@ Canonical karar belgesi:
 
 ### Reusable design method
 
-Gelecekteki proposal ve unattended/overnight taxonomy batch'leri
+Wave 32 full-tree design batch'leri ve gelecekteki controlled taxonomy bakım işleri
 `docs/TAXONOMY_L34_DESIGN_METHOD.md` yöntemini kullanır. Bu yöntem artificial depth
 ve L5'i yasaklar; category/facet, product/service, generic/specific accessory,
 primary leaf, compatibility, bundle, synonym, research ve owner-state kapılarını
 operasyonel olarak tanımlar. Agent açık owner kararı olmadan `PROPOSED` durumu
 `FINAL` yapamaz.
 
-## 16. Open owner decisions
+## 16. Remaining implementation and professional gates
 
-24 L1 ad/sıra kararı **RESOLVED — CONFIRMED — PRODUCT OWNER FINAL** durumundadır.
-Aşağıdaki runtime, policy ve governance kararları açık kalır:
+24 L1 ad/sıra kararı ile Wave 33 `R01`–`R09` kararları ve 22 detaylı L1 ağacı
+**RESOLVED — CONFIRMED — PRODUCT OWNER FINAL** durumundadır. Yapısal owner kararı
+kalmamıştır (`0`). Aşağıdaki runtime, policy, professional-review ve governance
+kapıları product taxonomy design'ını yeniden açmadan ayrı çalışmalarda kapanır:
 
-1. **Rename/split identity mapping — PROPOSED / integration gate:** Current immutable
-   V1 source identity'leri korunurken dokuz rename ve combined oyuncak/hobi/müzik
-   split'i hangi successor mapping'lerle yayınlanacak?
-2. **Stable ID bridge — PROPOSED / integration gate:** Current immutable V1 source
+1. **Legacy successor mapping — implementation planning gate:** Simulation'daki
+   `UNRESOLVED 24` legacy kayıt, canonical yapıyı değiştirmeden stable-ID/runtime
+   eşleme planında exact successor'a bağlanmalı.
+2. **Stable ID bridge — PROPOSED / implementation gate:** Current immutable V1 source
    slug ile future immutable opaque `id` ve mutable display slug nasıl bağlanacak?
 3. **Policy governance — TBD:** `REGULATED` ve `LEGAL_REVIEW_REQUIRED` node'larda belge,
    moderator, audit/recall ve approval sahibi kim olacak?
@@ -574,35 +643,31 @@ Aşağıdaki runtime, policy ve governance kararları açık kalır:
    modeli bu taxonomy kararından bağımsız owner review ister.
 9. **Category request governance — TBD:** Merchant talebi, taxonomy review SLA,
    deprecation/replacement onayı ve sürüm yayın sahibi belirlenmeli.
-10. **Generic multi-device stylus — TBD:** Telefon, tablet veya future shared
-    accessory ownership'i ayrı boundary review gerektirir.
-11. **External USB PC-primary capture/audio — TBD:** Bilgisayar Aksesuarları yönü
-    finaldir; exact future L3/L4 leaf adları ayrıca tasarlanır.
-12. **Enterprise/rack systems — TBD:** Full rack server, blade ve rackmount server
-    chassis current consumer taxonomy'ye sessizce atanamaz.
+10. **Professional leaf review execution — OPEN:** `840` routed leaf için ilgili
+    hukuk/regulatory/domain review tamamlanıp kanıtlanmalı; owner-final taxonomy bu
+    profesyonel onayların yerine geçmez.
 
-Phase A2 owner approval product decision'ı kilitler; current V1.0.0 full tree, JSON,
-runtime, Production veya Development state'ini bu dokümantasyon görevi değiştirmez.
+Wave 33 owner approval product design'ı kilitler; runtime JSON, stable ID, Flutter,
+Production veya Development state'ini bu dokümantasyon görevi değiştirmez.
 
 ## 17. Next-phase plan
 
-Phase A, owner-final Elektronik/Bilgisayar & Tablet L2 omurgaları ve ilk iki full
-L3/L4 pilotu tamamlanmıştır. Sonraki domain L3/L4 batch'leri canonical reusable
-method ile kontrollü ilerler. Current main full V1.0.0 tree taşır; onu decision-lock
-görevinde paralel ağaçla çoğaltmak veya yeniden yazmak yasaktır.
+24 L1 architecture, owner-final Elektronik/Bilgisayar & Tablet anchor'ları ve kalan
+22 detaylı L1 için tam L2/L3/L4 product design tamamlanmıştır. Sonraki aşama yeni bir
+paralel taxonomy tasarımı değil, ayrı yetkili stable-ID/runtime planlamasıdır.
 
-1. Integration/taxonomy owner final 24 L1 decision lock'ını review edip main'e
-   entegre etti.
-2. Rename ve split successor mapping'i current V1.0.0 tree ile reconcile edilir;
-   stable identity'ler korunur.
-3. **Elektronik** `9` L2 ve **Bilgisayar & Tablet** `11` L2 owner-final olarak
-   entegre edildi; Telefon & Aksesuarları ile Bilgisayar Bileşenleri `9/7/14`
-   L3/L4/leaf pilotları reusable yöntemle tamamlandı.
-4. Runtime öncesi current source slug → stable opaque ID bridge kesinleştirilir.
-5. Ayrı tek-sahipli implementation design; taxonomy schema/migration, deterministic
-   ID mapping, read path ve seed planını hazırlar. Bu adım remote apply değildir.
-6. Merchant/Sector Taxonomy ayrı lane'de, Product Taxonomy node'larını tekrar kullanmadan
-   tasarlanır; salon hizmet capability'leri owner kararı gelmeden modellenmez.
+1. Owner-final resolved CSV değişmez design source-of-truth olarak freeze edilir.
+2. `UNRESOLVED 24` legacy mapping boşluğu canonical yapıyı değiştirmeden kapatılır.
+3. `840` professional-review leaf için ilgili hukuk/regulatory/domain gate'leri ayrı
+   review sahipleriyle yürütülür; taxonomy design final state'i korunur.
+4. Stable opaque ID'ler yalnız ayrıca yetkilendirilmiş tek-sahipli runtime planında
+   tahsis edilir; eski JSON veya slug kimliği sessizce yeniden yazılmaz.
+5. Development mevcut durumu önce read-only inventory ile doğrulanır; schema,
+   migration, deterministic mapping, rollback ve demo bağımlılık planı hazırlanır.
+6. Development apply ve Production migration birbirinden ayrı açık yetki ister.
+   Wave 33 hiçbir remote apply veya runtime implementation yetkisi vermez.
+7. Merchant/Sector Taxonomy ayrı lane'de, Product Taxonomy node'larını tekrar
+   kullanmadan ilerler; service capability'leri bu ağaca eklenmez.
 
 `TAXONOMY_ARCHITECTURE: PASS`
 
@@ -670,8 +735,46 @@ görevinde paralel ağaçla çoğaltmak veya yeniden yazmak yasaktır.
 
 `L34_DESIGN_METHOD_CANONICAL: PASS`
 
+`WAVE_33_CANONICAL_TAXONOMY_V1_INTEGRATION: PASS`
+
+`CANONICAL_TAXONOMY_V1_INTEGRATION: PASS`
+
+`PRODUCT_TAXONOMY_DESIGN_COMPLETE: YES`
+
+`PRODUCT_TAXONOMY_OWNER_FINAL: YES`
+
+`WAVE_33_DETAILED_L1_COUNT: 22`
+
+`WAVE_33_L2_COUNT: 224`
+
+`WAVE_33_L3_COUNT: 1078`
+
+`WAVE_33_L4_COUNT: 185`
+
+`WAVE_33_LEAF_COUNT: 1199`
+
+`WAVE_33_MATERIALIZED_ROW_COUNT: 1487`
+
+`STRUCTURAL_OWNER_DECISIONS: 0`
+
+`PROFESSIONAL_REVIEW_GATES: OPEN`
+
+`PROFESSIONAL_REVIEW_GATES_PRESERVED: PASS`
+
+`STABLE_IDS_ALLOCATED: NO`
+
 `STABLE_ID_RUNTIME_RECONCILIATION: NOT_STARTED`
 
-`RUNTIME_TAXONOMY: NOT_STARTED`
+`RUNTIME_TAXONOMY: NOT_IMPLEMENTED`
 
-`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: YES`
+`RUNTIME_IMPLEMENTATION: NO`
+
+`DEVELOPMENT_MIGRATION: NOT_STARTED`
+
+`PRODUCTION_MIGRATION: NOT_AUTHORIZED`
+
+`PRODUCTION_TOUCHED: NO`
+
+`READY_FOR_OVERNIGHT_TAXONOMY_BATCH: COMPLETED`
+
+`READY_FOR_STABLE_ID_RUNTIME_PLANNING: YES`

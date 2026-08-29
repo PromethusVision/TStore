@@ -14,6 +14,32 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 33 Canonical Product Taxonomy V1 State
+
+- **PRODUCT TAXONOMY DESIGN COMPLETE / PRODUCT OWNER FINAL.** Canonical architecture
+  toplam `24` L1'dir. Önceden final Elektronik/Bilgisayar & Tablet anchor'ları
+  değişmeden korunur; kalan `22` detaylı L1 resolved artefaktı `224` L2, `1078` L3,
+  `185` L4, `1199` leaf ve `1487` materialized row içerir. Duplicate/orphan `0`,
+  maximum depth `4`, structural owner decision `0`.
+- `R01`–`R09` kararlarının tamamı `FINAL=A` olarak owner-final çözüldü. Canonical design
+  source-of-truth `docs/TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv` dosyasıdır;
+  historical `CANDIDATE` filename'i owner-final state'i düşürmez.
+- Professional review kapanmadı: `840` review leaf, `612` policy-sensitive,
+  `442` `REGULATED` ve `170` `LEGAL_REVIEW_REQUIRED`. İlgili hukuk, mevzuat,
+  operasyon ve domain-professional kanıtları ayrı backlog gate'leridir.
+- Legacy bridge yalnız planning simulation'dır. `651` legacy node için `UNRESOLVED
+  24` eşleme boşluğu, canonical yapı değiştirilmeden stable-ID/runtime planında
+  exact successor'a bağlanmalıdır. Blind fuzzy mapping veya otomatik retire yoktur.
+- **READY — ayrı yetkili planlama:** stable opaque ID allocation sözleşmesi, legacy
+  successor mapping closure, dependency/rollback tasarımı ve read-only Development
+  inventory. Bu hazır olma durumu implementation/apply yetkisi değildir.
+- **NOT STARTED / NOT AUTHORIZED:** runtime taxonomy, stable ID allocation,
+  Development migration/apply, Production migration, runtime alias/redirect, demo
+  retirement, Flutter taxonomy UI ve merchant catalog migration.
+- Gelecek runtime işi tek taxonomy/schema/migration sahibiyle yürütülmeli; shared
+  category/product modelleri, migration zinciri, demo mapping ve DI/navigation
+  hotspot'ları başka agentlarla eşzamanlı sahiplenilmemelidir.
+
 ## Wave 31 Canonical Owner Decision State
 
 - **MASTER OWNER ROOTS: 24 FINAL / 0 OPEN / 3 PROVISIONAL / 4 DEFERRED.** Final
