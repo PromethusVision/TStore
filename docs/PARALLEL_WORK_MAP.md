@@ -17,6 +17,43 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 36 Exact Taxonomy Final Pre-Apply Entegrasyon Gözlemi
+
+`FROZEN_BOOTSTRAP_PACKAGE: PASS`
+
+`EXACT_MIGRATION_REHEARSAL: PASS`
+
+`CUSTOMER_CANONICAL_WIRING: PASS`
+
+`LEGACY_RUNTIME_DEFAULT: PASS`
+
+`READY_FOR_JIT_DEVELOPMENT_PRECHECK: YES`
+
+`READY_FOR_DEVELOPMENT_WRITE_DECISION: YES`
+
+`DEVELOPMENT_WRITE_AUTHORIZED: NO`
+
+`READY_FOR_REMOTE_APPLY_NOW: NO`
+
+`CANONICAL_RUNTIME_ACTIVE: NO`
+
+- Source A/B/C A → B → C sırasıyla conflictsiz entegre edildi. Exact package
+  `d9c45a1` / `095849...` altında frozen; altı payload ve `1563` UUID değişmedi.
+- Migration compiler/JIT/rehearsal tooling lane'i **tek backend/schema/SQL/migration
+  owner** sorumluluğundadır. Remote mode yoktur; active migration zinciri değişmedi.
+- Bir sonraki yetkili adım yalnız JIT read-only Development precheck'tir. Exact ref,
+  `0/0/0/0`, ledger/schema drift, single-writer freeze, package/artifact lineage ve
+  operator rollback readiness kapanmadan write lane'i başlamaz.
+- Customer canonical adapter/DI activation ayrı ve sıralı handoff gerektirir.
+  `service_locator.dart`, global navigation, shared taxonomy/category/product models
+  ile repository wiring'i backend apply lane'iyle farklı agentlarca eşzamanlı
+  değiştirilmez. Current default `LEGACY_RUNTIME` kalır.
+- Professional/policy gate'ler staged inactive existence'ı engellemez; assignability,
+  public/pilot activation için fail-closed kalır. Final UI Kit/Figma rollout ancak
+  Development taxonomy + client acceptance sonrasında başlar.
+- Production lane'i kapalıdır; empty-Development recreation riskini owner henüz
+  kabul etmemiştir ve bu risk hiçbir koşulda Production'a genellenmez.
+
 ## Wave 35 Taxonomy Development Cutover Readiness Entegrasyon Gözlemi
 
 `LIVE_DEVELOPMENT_PREFLIGHT: PASS`

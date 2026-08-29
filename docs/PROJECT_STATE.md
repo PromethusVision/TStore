@@ -3,45 +3,37 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 35 FOLLOW-UP LIVE PREFLIGHT FINAL DELTA
+- Son doğrulanan teslim: **WAVE 36 EXACT TAXONOMY FINAL PRE-APPLY INTEGRATION PASS —
+  FROZEN PACKAGE / EXACT MIGRATION REHEARSAL / CUSTOMER CUTOVER WIRING**.
+- Integration branch/base: `integration/wave-36-taxonomy-final-preapply` /
+  `origin/main@b3cc14ebed42ab66d689fe6688c2e75e23c43e68`.
+- Source/merge: bootstrap `d9c45a1` / `8557ab0`, compiler `0c76416` / `08febcb`,
+  Customer wiring `9817318` / `e147f2e`; A → B → C sırasıyla normal `--no-ff` ve
+  conflict olmadan entegre edildi.
+- Frozen Source A package SHA `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`;
+  payload hash `6/6`, UUIDv4 `1563/1563`, graph `24/244/1096/199`, leaf `1245`,
+  alias/edge `651/1000`, split `210/591`, public/pilot/policy leakage `0/0/0`.
+  Payload ve UUID regenerate/rewrite yapılmadı; eski `968787...` superseded'dır.
+- Exact local PGlite rehearsal compiler determinism, fresh/forward/rollback
+  `3/3`, idempotency `2/2`, failure `16/16` ve postcheck `3/3` PASS. `--local`
+  zorunlu, JIT dry/offline ve remote mode yok; active migration zinciri değişmedi.
+- Customer canonical DTO/repository/capability, exact 24-root Home, recursive L2–L4,
+  server-search ve exact/descendant product scope wiring'i PASS. Default hâlâ
+  `LEGACY_RUNTIME`; concrete remote adapter/DI activation ve canonical runtime yok.
+- Targeted taxonomy/Home `48/48`, full suite `1267 PASS / 0 FAIL / 6 documented
+  skip`, analyzer `0 issues`. Integration Development/Production'a erişmedi,
+  remote write/migration apply/UUID allocation/Figma/UI Kit/activation yapmadı.
+- JIT Development precheck'e ve owner Development-write kararına hazırlık `YES`;
+  write authorization ve remote apply-now `NO`.
+  Exact target + `0/0/0/0`, drift/history, single-writer, package/artifact lineage,
+  explicit empty-recreation risk acceptance ve operator rollback readiness hâlâ
+  zorunlu gate'lerdir. Final UI Kit Development taxonomy/client acceptance sonrasıdır.
+- Bir önceki doğrulanan teslim: **WAVE 35 FOLLOW-UP LIVE PREFLIGHT FINAL DELTA
   INTEGRATION PASS — AGENT 1 FINAL HEAD / CLEAN-ROOM + CLIENT PARITY — DOCS ONLY**.
-- Integration branch/base: `integration/wave-35-live-preflight-final-delta` /
-  `origin/main@b98f6bfae304c2521a92e0b8f7581f1e91611d0d`.
-- Source/merge: Development preflight önceki integrated HEAD `7e622d3`, final HEAD
-  `1b142fd`; aradaki tek docs-only commit `259d7a1` ile normal `--no-ff` ve conflict
-  olmadan entegre edildi. Wave 35B/Wave 35C tekrar entegre edilmedi.
-- Exact Development `EsnaftaVar Development` / `tnipyxnvhgelwdpykyez` önceki
-  yetkili resume sonrası Healthy'dir. Migration `9/9`, public table `23`, RLS
-  `23/23`, policy `52`, public function `29`; 23 application tablosunun tamamı,
-  üç canonical Storage bucket'ındaki object sayısı ve category/product/shop/listing
-  sayıları `0`dır. Integration yeni remote read/write yapmadı; Production untouched.
-- Mevcut category UUID preservation adayı `0`, canlı split-product etkisi `0` ve
-  24 unresolved legacy kaydın canlı etkisi `0`dır. Stable-ID owner contract FINAL:
-  surviving semantic UUID korunur; new node trusted/backend UUIDv4 alır; rename/move
-  ID'yi korur; split arbitrary child seçmez; retire tombstone olur. UUID allocation
-  bu integrationda yapılmadı.
-- Local PGlite/PostgreSQL-WASM + SQLite rehearsal PASS: forward `2/2`, rollback
-  `2/2`, idempotency PASS, failure injection `10/10`, canonical `1563`, legacy
-  `651/651`, successor `1000/1000`, split `210/591`, policy leakage `0`.
-  Hardened draft yalnız `docs/sql` altındadır; active migration zinciri değişmedi.
-- Customer variable-depth saf domain seam'i L1–L4, container/leaf, root/children/
-  descendants/breadcrumb ve EXACT_LEAF/DESCENDANTS sözleşmelerini hazırlar. Runtime
-  repository/PostgREST/DI/navigation wiring'i ve backend davranışı değişmedi;
-  current-runtime fallback korunur. Targeted `24/24`, full suite `1243 PASS / 0
-  FAIL / 6 explicit live skips`, analyzer `0 issues`.
-- Development Free plan scheduled backup, PITR, restore-to-new-project ve native
-  restorable point sunmaz; manual restore da kanıtlanmamıştır. Exact durum
-  `NOT_VERIFIED`dır. Empty-Development reconstruction riski sınırlı scope için
-  kabul edilebilir, fakat bu tek başına write authorization vermez ve Production
-  benzetmesi değildir.
-- Clean-room/live parity `PASS`; client-contract/live parity `PASS`. Yerel exact
-  implementation/artefact preparation `YES`, Development write authorization ve
-  remote apply-now `NO`: 18 assignability state, active migration + reviewed 1,563
-  UUIDv4 manifest, exact artefact replay, rollback/recreation acceptance, versioned
-  RLS-safe backend contract, JIT zero-row/drift/single-writer gate ve ayrı owner
-  authorization ilk write öncesi zorunludur. Taxonomy runtime **NOT ACTIVE / CLIENT
-  PREPARED BUT NOT WIRED**.
-- Bir önceki doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
+- Önceki integration branch/base: `integration/wave-35-live-preflight-final-delta` /
+  `origin/main@b98f6bfae304c2521a92e0b8f7581f1e91611d0d`; Agent 1 final HEAD `1b142fd`
+  docs-only delta olarak `259d7a1` ile entegre edildi.
+- İki önceki doğrulanan teslim: **WAVE 34 TAXONOMY RUNTIME READINESS FINAL INTEGRATION
   PASS — MANIFEST / MIGRATION ENGINEERING / CUSTOMER IMPACT — DOCS ONLY**.
 - Önceki integration branch/base: `integration/wave-34-taxonomy-runtime-readiness` /
   `origin/main@6415f09c8b84d3ef1c72d642c1908c433b534994`.

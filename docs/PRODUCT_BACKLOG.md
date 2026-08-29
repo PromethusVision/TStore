@@ -14,6 +14,35 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 36 Exact Taxonomy Final Pre-Apply State
+
+- **COMPLETED — frozen Development bootstrap candidate:** Source
+  `d9c45a1c2acd94fe0bfa52b16772718142c0664a`, aggregate SHA
+  `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`,
+  individual payload `6/6`, canonical node/UUID `1563/1563`, depth
+  `24/244/1096/199`, leaf `1245`. Payload/UUID change `0`; `968787...` yalnız
+  superseded metadata'dır.
+- **COMPLETED — exact offline migration rehearsal:** deterministic compiler,
+  exact package verification, fresh/forward/rollback `3/3`, idempotency `2/2`,
+  failure `16/16`, postcheck `3/3` PASS. JIT tool dry/offline, local harness
+  explicit `--local`, remote mode absent ve active migration chain unchanged.
+- **COMPLETED — Customer canonical wiring preparation:** strict DTO/repository,
+  capability proof, 24-root Home, recursive L2–L4, server-search ve
+  `EXACT_LEAF/DESCENDANTS` scopes hazırdır. Legacy behavior current defaulttır;
+  canonical proof failure legacy'ye sessiz fallback yapmaz.
+- **OPEN — JIT Development precheck:** exact target, live `0/0/0/0`, migration/
+  schema drift, single-writer freeze, exact package SHA ve compiler/artifact lineage
+  ayrı authorized read-only turda doğrulanmalıdır.
+- **OPEN — Product Owner decisions/operations:** bounded empty-Development
+  recreation risk acceptance, explicit Development-write authorization ve hazır
+  postcheck/rollback operator. Paket owner kararına hazırdır
+  (`READY_FOR_DEVELOPMENT_WRITE_DECISION: YES`), fakat karar verilmemiştir;
+  `DEVELOPMENT_WRITE_AUTHORIZED: NO` ve `READY_FOR_REMOTE_APPLY_NOW: NO`.
+- **NOT AUTHORIZED:** Development/Production access veya write, migration apply,
+  canonical runtime/DI activation, public/pilot taxonomy activation ve policy gate
+  waiver. Current mode `LEGACY_RUNTIME`; final UI Kit Development taxonomy/client
+  acceptance sonrasına ertelidir.
+
 ## Wave 35 Taxonomy Development Cutover Readiness State
 
 - **COMPLETED — live read-only preflight:** Exact Development
