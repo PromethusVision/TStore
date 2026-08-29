@@ -6,6 +6,9 @@
 -- This draft deliberately aborts its own transaction. It contains no canonical
 -- node UUID payload and no product reassignment payload. A future authorized
 -- task must split schema/import/activation into reviewed active migrations.
+-- Wave 35 local rehearsal hardened hierarchy validation and replaced the
+-- unsafe single-target alias shape with locator + zero/one/many target edges.
+-- The hardened PostgreSQL draft has still NOT been executed locally or remotely.
 
 BEGIN;
 
@@ -83,47 +86,141 @@ CREATE INDEX IF NOT EXISTS categories_public_tree_idx
   ON public.categories(parent_id, sort_order)
   WHERE is_active = true AND lifecycle_state = 'active';
 
+CREATE TABLE IF NOT EXISTS public.taxonomy_id_allocations (
+  planning_key TEXT PRIMARY KEY,
+  category_id UUID NOT NULL UNIQUE
+    REFERENCES public.categories(id) ON DELETE RESTRICT
+    DEFERRABLE INITIALLY DEFERRED,
+  taxonomy_version TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT taxonomy_id_allocations_key_not_blank_check
+    CHECK (length(btrim(planning_key)) > 0)
+);
+
+CREATE OR REPLACE FUNCTION public.validate_taxonomy_category_hierarchy()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $taxonomy_hierarchy$
+DECLARE
+  parent_level SMALLINT;
+  cycle_found BOOLEAN;
+BEGIN
+  -- Legacy compatibility rows may remain NULL during the additive phase.
+  IF NEW.level IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.level = 1 THEN
+    IF NEW.parent_id IS NOT NULL THEN
+      RAISE EXCEPTION 'L1 taxonomy category cannot have a parent';
+    END IF;
+    RETURN NEW;
+  END IF;
+
+  IF NEW.parent_id IS NULL THEN
+    RAISE EXCEPTION 'L2-L4 taxonomy category requires a parent';
+  END IF;
+
+  IF NEW.parent_id = NEW.id THEN
+    RAISE EXCEPTION 'taxonomy category cannot parent itself';
+  END IF;
+
+  SELECT level INTO parent_level
+  FROM public.categories
+  WHERE id = NEW.parent_id;
+
+  IF NOT FOUND OR parent_level IS NULL OR parent_level <> NEW.level - 1 THEN
+    RAISE EXCEPTION 'taxonomy parent level mismatch';
+  END IF;
+
+  WITH RECURSIVE ancestors(id, parent_id) AS (
+    SELECT id, parent_id
+    FROM public.categories
+    WHERE id = NEW.parent_id
+    UNION ALL
+    SELECT category.id, category.parent_id
+    FROM public.categories AS category
+    JOIN ancestors ON category.id = ancestors.parent_id
+  )
+  SELECT EXISTS (SELECT 1 FROM ancestors WHERE id = NEW.id)
+  INTO cycle_found;
+
+  IF cycle_found THEN
+    RAISE EXCEPTION 'taxonomy category cycle detected';
+  END IF;
+
+  RETURN NEW;
+END
+$taxonomy_hierarchy$;
+
+DROP TRIGGER IF EXISTS validate_taxonomy_category_hierarchy
+  ON public.categories;
+CREATE TRIGGER validate_taxonomy_category_hierarchy
+  BEFORE INSERT OR UPDATE OF parent_id, level
+  ON public.categories
+  FOR EACH ROW
+  EXECUTE FUNCTION public.validate_taxonomy_category_hierarchy();
+
 CREATE TABLE IF NOT EXISTS public.taxonomy_aliases (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  target_category_id UUID NOT NULL
-    REFERENCES public.categories(id) ON DELETE RESTRICT,
-  alias_type TEXT NOT NULL,
+  alias_kind TEXT NOT NULL,
+  alias_locator TEXT NOT NULL,
   alias_text TEXT,
   alias_slug TEXT,
+  alias_path TEXT,
+  source_alias_type TEXT,
+  resolution_state TEXT NOT NULL,
+  direct_target_category_id UUID
+    REFERENCES public.categories(id) ON DELETE RESTRICT,
   locale TEXT NOT NULL DEFAULT 'tr-TR',
   taxonomy_version TEXT NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  CONSTRAINT taxonomy_aliases_type_check
-    CHECK (alias_type IN ('LEGACY_REDIRECT', 'SEARCH_SYNONYM')),
+  CONSTRAINT taxonomy_aliases_kind_check
+    CHECK (alias_kind IN ('LEGACY_REDIRECT', 'SEARCH_SYNONYM')),
+  CONSTRAINT taxonomy_aliases_locator_not_blank_check
+    CHECK (length(btrim(alias_locator)) > 0),
+  CONSTRAINT taxonomy_aliases_resolution_check
+    CHECK (resolution_state IN (
+      'RESOLVED',
+      'AMBIGUOUS',
+      'TOMBSTONE',
+      'UNRESOLVED'
+    )),
   CONSTRAINT taxonomy_aliases_value_check
     CHECK (
       length(btrim(coalesce(alias_text, ''))) > 0
       OR length(btrim(coalesce(alias_slug, ''))) > 0
-    )
+    ),
+  CONSTRAINT taxonomy_aliases_target_check
+    CHECK (
+      (resolution_state = 'RESOLVED' AND direct_target_category_id IS NOT NULL)
+      OR (resolution_state <> 'RESOLVED' AND direct_target_category_id IS NULL)
+    ),
+  CONSTRAINT taxonomy_aliases_locator_key
+    UNIQUE (alias_kind, alias_locator, taxonomy_version)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS taxonomy_aliases_text_unique_idx
-  ON public.taxonomy_aliases(
-    alias_type,
-    locale,
-    lower(alias_text),
-    taxonomy_version
-  )
-  WHERE alias_text IS NOT NULL;
+CREATE INDEX IF NOT EXISTS taxonomy_aliases_direct_target_idx
+  ON public.taxonomy_aliases(direct_target_category_id)
+  WHERE direct_target_category_id IS NOT NULL;
 
-CREATE UNIQUE INDEX IF NOT EXISTS taxonomy_aliases_slug_unique_idx
-  ON public.taxonomy_aliases(
-    alias_type,
-    locale,
-    lower(alias_slug),
-    taxonomy_version
-  )
-  WHERE alias_slug IS NOT NULL;
+CREATE INDEX IF NOT EXISTS taxonomy_aliases_slug_lookup_idx
+  ON public.taxonomy_aliases(alias_kind, locale, lower(alias_slug))
+  WHERE alias_slug IS NOT NULL AND is_active = true;
 
-CREATE INDEX IF NOT EXISTS taxonomy_aliases_target_idx
-  ON public.taxonomy_aliases(target_category_id);
+CREATE TABLE IF NOT EXISTS public.taxonomy_alias_targets (
+  alias_id UUID NOT NULL
+    REFERENCES public.taxonomy_aliases(id) ON DELETE CASCADE,
+  target_category_id UUID NOT NULL
+    REFERENCES public.categories(id) ON DELETE RESTRICT,
+  PRIMARY KEY (alias_id, target_category_id)
+);
+
+CREATE INDEX IF NOT EXISTS taxonomy_alias_targets_target_idx
+  ON public.taxonomy_alias_targets(target_category_id);
 
 CREATE TABLE IF NOT EXISTS public.taxonomy_node_relationships (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -148,7 +245,7 @@ CREATE TABLE IF NOT EXISTS public.taxonomy_node_relationships (
       'SPLIT',
       'RETIRE',
       'ALIAS_ONLY',
-      'OUT_OF_PRODUCT_TAXONOMY',
+      'OUT',
       'UNRESOLVED'
     )),
   CONSTRAINT taxonomy_relationship_target_state_check
@@ -163,7 +260,7 @@ CREATE TABLE IF NOT EXISTS public.taxonomy_node_relationships (
       successor_category_id IS NOT NULL
       OR action IN (
         'RETIRE',
-        'OUT_OF_PRODUCT_TAXONOMY',
+        'OUT',
         'UNRESOLVED'
       )
     )
@@ -172,26 +269,41 @@ CREATE TABLE IF NOT EXISTS public.taxonomy_node_relationships (
 CREATE INDEX IF NOT EXISTS taxonomy_relationships_predecessor_idx
   ON public.taxonomy_node_relationships(predecessor_source_locator);
 
+CREATE UNIQUE INDEX IF NOT EXISTS taxonomy_relationship_edge_unique_idx
+  ON public.taxonomy_node_relationships(
+    predecessor_source_locator,
+    (coalesce(successor_category_id::TEXT, '')),
+    action,
+    taxonomy_version
+  );
+
 CREATE INDEX IF NOT EXISTS taxonomy_relationships_successor_idx
   ON public.taxonomy_node_relationships(successor_category_id)
   WHERE successor_category_id IS NOT NULL;
 
+ALTER TABLE public.taxonomy_id_allocations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.taxonomy_aliases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.taxonomy_alias_targets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.taxonomy_node_relationships ENABLE ROW LEVEL SECURITY;
 
+REVOKE ALL ON public.taxonomy_id_allocations
+  FROM anon, authenticated;
 REVOKE ALL ON public.taxonomy_aliases
+  FROM anon, authenticated;
+REVOKE ALL ON public.taxonomy_alias_targets
   FROM anon, authenticated;
 REVOKE ALL ON public.taxonomy_node_relationships
   FROM anon, authenticated;
 
 -- Future active migration work, intentionally absent from this draft:
 --
--- 1. Create a cycle/level/depth validator and validate existing rows.
+-- 1. Validate all existing rows with the cycle/level/depth validator.
 -- 2. Backfill current legacy rows as a named legacy taxonomy version.
 -- 3. Import __REVIEWED_CANONICAL_NODE_MANIFEST__ with preallocated UUIDs as:
 --      lifecycle_state = 'staged', is_active = false.
--- 4. Import __REVIEWED_ALIAS_MANIFEST__ and
---      __REVIEWED_PREDECESSOR_SUCCESSOR_MANIFEST__.
+-- 4. Import __REVIEWED_ALIAS_MANIFEST__ as one locator row plus zero/one/many
+--      alias target edges. A split alias remains AMBIGUOUS with no direct target.
+--      Import __REVIEWED_PREDECESSOR_SUCCESSOR_MANIFEST__ separately.
 -- 5. Create __PRODUCT_CATEGORY_MAPPING_SNAPSHOT__ and require one reviewed,
 --      assignable successor per active product.
 -- 6. Update products.category_id only from that snapshot. Never use the first
