@@ -33,6 +33,7 @@ The following are not considered material blockers:
 - `French Press`, `Moka Pot`, `Pour-Over`, `Airfryer`, `Outdoor`, `Trekking`, `Fitness`, `Puzzle`, `DJ`, `MIDI`, `SUP`, `clutch`, `hoodie`, `eyeliner`, `bronzer`: established retail terms with Turkish context/synonym support.
 - `Stüdyo Monitörleri`: parent path makes audio-monitor identity clear and avoids confusion with Computer monitors.
 - `Tüketici Tipi ... Tamir Parçaları`: awkward but materially useful to exclude service and professional/internal parts; no churn proposed.
+- `Medikal İddiasız Burun Aspiratörleri` and `Medikal İddiasız Hamile Destekleri`: deliberately retained pending the Anne & Bebek professional review. Removing the qualifier without first defining the exact ordinary physical-product set could widen the Health boundary; this audit therefore does not create a cosmetic rename.
 - Singular/plural variation follows natural Turkish retail usage rather than mechanical uniformity.
 
 Brand, model, material, size, color, capacity, compatibility and marketing adjective were not found as standalone terminal categories.
