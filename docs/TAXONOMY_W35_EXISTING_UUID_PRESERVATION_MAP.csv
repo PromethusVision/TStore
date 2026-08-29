@@ -1,0 +1,2 @@
+"RECORD_TYPE","CURRENT_UUID","CURRENT_NAME","CURRENT_PATH_IF_DERIVABLE","CANONICAL_MATCH","MATCH_TYPE","LIVE_EVIDENCE_STATUS","NOTES"
+"STATUS","","","","","","BLOCKED_PROJECT_PAUSED","No existing Development UUID was classified and no UUID was allocated. A future live read must emit one CATEGORY record per current row."
