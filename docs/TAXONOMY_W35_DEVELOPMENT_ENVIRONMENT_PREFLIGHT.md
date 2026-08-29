@@ -20,6 +20,12 @@ The Product Owner authorized resuming only this Development project so the
 previously approved read-only preflight could run. The project was resumed once,
 finished restoring, and reached `Healthy`. No data/configuration write followed.
 
+- Resume required/requested: **YES**.
+- Resume result: **PASS**.
+- Queryable after resume: **YES**.
+- Final observed status: **Healthy**.
+- Exact resume timestamp: **not recorded by the Dashboard evidence capture**.
+
 The Dashboard's `main / Production` label is the Supabase branch type inside the
 verified **EsnaftaVar Development** project. It is not the separate EsnaftaVar
 Production project; exact name/ref remained the identity authority.

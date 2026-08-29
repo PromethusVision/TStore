@@ -1,6 +1,6 @@
 # Wave 35A-R — Development Backup / Restore Preflight
 
-**State:** `FAIL — CAPABILITY UNDERSTOOD; NO RESTORABLE NATIVE POINT AVAILABLE`
+**State:** `NOT VERIFIED — NATIVE CAPABILITY UNAVAILABLE; RESTORABILITY UNPROVEN`
 
 The authenticated Dashboard was inspected only under exact Development ref
 `tnipyxnvhgelwdpykyez`. No backup, download, restore, plan or billing action was
@@ -31,7 +31,7 @@ the following requires a separate owner decision and authorization:
 The current state is sufficiently understood for local clean-room modelling but
 is not sufficient for a remote write window.
 
-`BACKUP_RESTORE_PREFLIGHT: FAIL`
+`BACKUP_RESTORE_PREFLIGHT: NOT_VERIFIED`
 
 `NATIVE_BACKUP_AVAILABLE: NO`
 
