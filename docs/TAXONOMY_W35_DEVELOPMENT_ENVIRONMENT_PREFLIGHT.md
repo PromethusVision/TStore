@@ -81,4 +81,3 @@ write authorization is considered.
 `REMOTE_WRITES_PERFORMED: NO`
 
 `PRODUCTION_ACCESSED: NO`
-
