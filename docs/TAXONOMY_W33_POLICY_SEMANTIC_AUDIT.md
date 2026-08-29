@@ -1,6 +1,6 @@
 # Wave 33 — Policy Semantic Audit
 
-**State:** POST-R01–R09 RESOLVED AUDIT — NOT LEGAL/REGULATORY APPROVAL
+**State:** CANONICAL V1 STRUCTURAL FINAL — LEGAL/REGULATORY/PROFESSIONAL GATES OPEN
 
 ## 1. Core rule
 
@@ -21,7 +21,7 @@ Taxonomy answers **what the physical product is**. It does not decide whether a 
 | Candidate rows mistakenly owner-final | 0 |
 | Active prohibited/weapon/service leaf found | 0 |
 
-The immutable source baseline remains 1,488 rows/1,200 leaves. R08=A removes one `LEGAL_REVIEW_REQUIRED` professional-review leaf from the resolved tree, producing 1,487 rows/1,199 leaves. The resolved rows remain `CANDIDATE_FOR_PRODUCT_OWNER_FINALIZATION` and continue to require the later 22-tree bulk owner approval. R01–R09 do not waive any professional gate.
+The immutable source baseline remains 1,488 rows/1,200 leaves. R08=A removes one `LEGAL_REVIEW_REQUIRED` professional-review leaf from the resolved tree, producing 1,487 rows/1,199 leaves. All resolved rows are now `CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1`, with structural owner decisions closed. R01–R09 and bulk structural approval do not waive any professional gate.
 
 ## 3. Domain policy profile
 
@@ -124,10 +124,11 @@ Required review lanes remain:
 
 ## 8. Outcome
 
-All 22 resolved candidate structures may proceed to one bulk owner-finalization session because no structural P0 or unauthorized policy relaxation was found. Policy metadata must not be activated at runtime until `POL-001`–`POL-003` and applicable professional gates are resolved.
+All 22 resolved structures are bulk owner-final because no structural P0 or unauthorized policy relaxation was found. Policy metadata must not be activated at runtime until `POL-001`–`POL-003` and applicable professional gates are resolved.
 
 `POLICY_SEMANTIC_AUDIT: PASS`
 `UNAUTHORIZED_POLICY_RELAXATION: NONE_FOUND`
 `PROFESSIONAL_REVIEW_TREATED_AS_OWNER_APPROVAL: NO`
 `PROFESSIONAL_REVIEW_GATES: OPEN`
+`PRODUCT_TAXONOMY_CANONICAL_V1: FINAL`
 `RUNTIME_IMPLEMENTATION: NO`

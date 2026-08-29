@@ -1,8 +1,8 @@
 # Wave 33 — Product Owner Finalization Digest
 
-**State:** R01–R09 OWNER-FINAL DIRECTION RECORDED — 22-TREE BULK FINALIZATION PENDING
+**State:** CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1
 
-This digest records the Product Owner's final selections `R01=A` through `R09=A`. These identifiers belong only to this Wave 33 digest and are not `OM-R01`–`OM-R09`. The choices resolve the nine root questions without waiving professional/policy review. The 22 resolved trees remain candidates for one later bulk Product Owner final approval.
+This digest records the Product Owner's final selections `R01=A` through `R09=A` and the subsequent bulk final approval of all 22 resolved trees. These identifiers belong only to this Wave 33 digest and are not `OM-R01`–`OM-R09`. Professional/policy review remains open and separate from structural approval.
 
 ## A. Bulk approval readiness
 
@@ -195,6 +195,7 @@ Owner finalization can approve product identity and placement, but must not acti
 `FINAL_OWNER_DIGEST: PASS`
 `READY_FOR_BULK_OWNER_FINALIZATION: YES`
 `W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
-`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: YES`
+`PRODUCT_TAXONOMY_CANONICAL_V1: FINAL`
 `PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`

@@ -78,7 +78,7 @@ R01–R09 apply to a separate resolved artifact and do not mutate the source bas
 | Assignable leaf | 1,200 | 1,199 | -1 |
 | Machine rows | 1,488 | 1,487 | -1 |
 
-Resolved artifact: `TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv`.
+Resolved artifact: `TAXONOMY_W33_RESOLVED_UNIFIED_CANDIDATE_TREE.csv`, now `CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1` for 1,487/1,487 rows.
 
 ## 4. Candidate policy inventory
 
@@ -112,5 +112,6 @@ Every applicable professional/legal/regulatory gate remains open.
 `CANDIDATE_L1_RECONCILED: 22/22`
 `CANDIDATE_L2_RECONCILED: 224/224`
 `W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
-`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: YES`
+`PRODUCT_TAXONOMY_CANONICAL_V1: FINAL`
 `RUNTIME_IMPLEMENTATION: NO`

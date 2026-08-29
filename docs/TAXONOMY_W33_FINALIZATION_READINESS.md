@@ -1,6 +1,6 @@
 # Wave 33 — Global Taxonomy Finalization Readiness
 
-**State:** R01–R09 RESOLVED — ALL 22 TREES READY FOR ONE BULK PRODUCT OWNER FINAL APPROVAL
+**State:** CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1
 
 ## 1. Scope and source integrity
 
@@ -56,9 +56,9 @@ Current-main owner roots `OM-R06=B`, `OM-R07=B` and `OM-R10=A` remain authoritat
 | Active product-service leakage | 0 | PASS |
 | Facet-only terminal category | 0 | PASS |
 | Unauthorized policy relaxation | 0 found | PASS |
-| Candidate row marked owner-final | 0 | PASS |
+| Resolved rows marked canonical owner-final | 1,487/1,487 | PASS |
 
-The nine Wave 33 digest roots are owner-final and must not be confused with master `OM-Rxx` roots. They resolve exact ownership, exception and wording choices without wholesale redesign. No structural exception remains before the 22-tree bulk final approval.
+The nine Wave 33 digest roots are owner-final and must not be confused with master `OM-Rxx` roots. They resolve exact ownership, exception and wording choices without wholesale redesign. The subsequent 22-tree bulk approval is now recorded; no structural exception remains.
 
 ## 5. Policy and professional-review gates
 
@@ -77,9 +77,9 @@ Professional-review-only work is not a structural taxonomy blocker and is not sa
 
 ## 6. Bulk-finalization lanes
 
-### All 22 ready for one bulk final approval
+### All 22 bulk-approved
 
-The nine owner-final directions resolve every exact exception. All 22 L1 trees now have zero remaining structural P0/owner question:
+The nine owner-final directions resolve every exact exception. All 22 L1 trees are now `CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1` with zero remaining structural P0/owner question:
 
 - Gıda & İçecek
 - Giyim & Moda
@@ -108,10 +108,10 @@ No L1 is in a `BLOCKED_BY_STRUCTURAL_ISSUE` lane. Professional/policy review rem
 
 ## 7. Final readiness conclusion
 
-The 22 resolved candidate trees are semantically reconciled for a single bulk Product Owner final-approval session. Readiness means:
+The 22 resolved trees are semantically reconciled and bulk Product Owner final-approved. Next-step readiness means:
 
-- review the resolved 1,487-row tree as one candidate set;
-- no longer answer R01–R09, because all nine selections are final;
+- integrate the resolved 1,487-row canonical artifact through the authorized integration flow;
+- preserve R01–R09 and the existing anchor decisions without reopening them;
 - keep all professional/policy gates open after taxonomy approval;
 - perform stable-ID/runtime work only in a later separately authorized stage.
 
@@ -128,6 +128,9 @@ This audit does not change any source tree, create stable IDs, write runtime tax
 `READY_FOR_BULK_OWNER_FINALIZATION: YES`
 `W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
 `W33_REMAINING_STRUCTURAL_OWNER_DECISIONS: 0`
-`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: YES`
+`PRODUCT_TAXONOMY_CANONICAL_V1: FINAL`
+`READY_FOR_CANONICAL_INTEGRATION: YES`
+`READY_FOR_RUNTIME_MIGRATION_PLANNING: YES`
 `PROFESSIONAL_REVIEW_GATES: OPEN`
 `RUNTIME_IMPLEMENTATION: NO`

@@ -4,7 +4,7 @@
 
 **Scope:** Wave 33 `TAXONOMY_W33_OWNER_FINALIZATION_DIGEST.md` decisions only
 
-**State:** R01–R09 OWNER-FINAL DIRECTION RECORDED; 22-TREE BULK FINALIZATION PENDING
+**State:** R01–R09 AND 22-TREE BULK APPROVAL CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1
 
 ## Identity guard
 
@@ -100,11 +100,12 @@ Relative to `TAXONOMY_W33_UNIFIED_OWNER_FINAL_CANDIDATE.csv`:
 
 - Remaining Wave 33 structural owner decisions: **0**.
 - Remaining professional/legal/regulatory review gates: **OPEN**.
-- Bulk final approval of all 22 resolved Wave 32 candidate trees: **NOT YET PERFORMED**.
+- Bulk final approval of all 22 resolved Wave 32 candidate trees: **CONFIRMED — PRODUCT OWNER FINAL — CANONICAL V1**.
 - Runtime implementation, stable IDs, DB, Development, Production, Flutter and Figma: **NOT TOUCHED**.
 
 `W33_DIRECTION_DECISIONS_FINALIZED: 9/9`
 `W33_REMAINING_STRUCTURAL_OWNER_DECISIONS: 0`
 `PROFESSIONAL_REVIEW_GATES: OPEN`
-`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: NO`
+`WAVE32_TREE_BULK_OWNER_FINALIZATION_PERFORMED: YES`
+`PRODUCT_TAXONOMY_CANONICAL_V1: FINAL`
 `RUNTIME_IMPLEMENTATION: NO`
