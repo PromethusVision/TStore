@@ -14,6 +14,28 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 38A Canonical Client Adapter State
+
+- **COMPLETED — concrete client seam:** Deployed yedi canonical RPC için gerçek
+  Supabase adapter, strict typed DTO mapping, parameter/response/version validation
+  ve deterministic sanitized error mapping entegre edildi.
+- **COMPLETED — fail-closed capability/DI:** Environment-specific DI ve authoritative
+  capability verifier hazırdır. Hem Development hem Production legacy default'tur;
+  explicit canonical istek eksik proof veya binding'de hata verir ve legacy'ye
+  sessiz fallback yapmaz.
+- **BLOCKED — current backend compatibility:** RPC endpoint `7/7` mevcut olsa da
+  published client contract version, strict response fields ve safe staged preview/
+  capability response contract'ı eksiktir. Current state
+  `BLOCKING_CONTRACT_MISMATCH`; classification `C — BACKEND CONTRACT CHANGE REQUIRED`.
+- **UNCHANGED — runtime/safety:** `CANONICAL_V1_RUNTIME=OFF`; taxonomy/public/pilot
+  activation yoktur. Integration Development/Production'a erişmedi, DB/migration
+  veya remote write yapmadı.
+- **READY — local next engineering task:** Tek migration owner ile additive strict
+  backend contract migration hazırlanabilir ve local/clean-room doğrulanabilir.
+- **OPEN / SEPARATE AUTHORITY:** Development migration apply, post-migration read-only
+  capability acceptance, safe staged preview, canonical activation, Production ve
+  final UI Kit. Migration readiness aktivasyon veya remote apply yetkisi değildir.
+
 ## Wave 37C Development Staged Bootstrap State
 
 - **COMPLETED — exact active artifact freeze:** Active `0010` file, authorized

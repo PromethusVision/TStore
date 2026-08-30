@@ -3,9 +3,35 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-30
-- Son doğrulanan teslim: **WAVE 37C DEVELOPMENT STAGED BOOTSTRAP PASS — EXACT
+- Son doğrulanan teslim: **WAVE 38A DEVELOPMENT CANONICAL CLIENT ADAPTER
+  INTEGRATION PASS — CONCRETE ADAPTER / FAIL-CLOSED CAPABILITY PROOF /
+  LEGACY RUNTIME DEFAULT**.
+- Integration branch/base/source/merge:
+  `integration/wave-38a-canonical-client-adapter` /
+  `origin/main@6ed2c0619eaf59826edc321048ac58c825406894` /
+  `56b5d3482d834994c9b21f990e3c4a3cb1008923` / `db19069ebc24a6d4baf45eb4d5a05956409a0acb`.
+- Yedi deployed canonical taxonomy RPC'si için gerçek Supabase adapter'ı, strict
+  typed DTO mapping, version/error validation, backend capability verifier ve
+  environment-specific DI seam'i entegre edildi. Service-role secret veya remote
+  target uygulama koduna eklenmedi.
+- Current deployed Development inventory'de RPC endpoint `7/7` mevcuttur; fakat
+  published client contract version yoktur, strict response alanları eksiktir ve
+  safe staged preview/capability response contract'ı yoktur. Sonuç
+  `BLOCKING_CONTRACT_MISMATCH`, acceptance classification `C — BACKEND CONTRACT
+  CHANGE REQUIRED` ve current backend canonical compatibility `NO`dur.
+- Capability proof implementation PASS'tir çünkü yetersiz backend contract'ını
+  doğru biçimde reddeder. Hem Development hem Production `LEGACY_RUNTIME` default
+  kalır; explicit canonical seçim proof/binding eksikliğinde fail-closed hata verir,
+  legacy'ye sessiz fallback yapmaz. `CANONICAL_V1_RUNTIME=OFF`.
+- Wave 38A targeted contract `26/26`, Home/category/search/navigation/product-listing
+  regression `139/139`, full Flutter `1285 PASS / 0 FAIL / 6 existing opt-in live
+  skip` ve analyzer `0 issues` PASS. Integration Development/Production'a erişmedi;
+  DB write, migration, taxonomy/canonical activation yapılmadı.
+- Sonraki sıralı iş additive strict backend contract migration'dır. Bu readiness
+  remote apply veya canonical runtime activation yetkisi değildir.
+- Bir önceki doğrulanan teslim: **WAVE 37C DEVELOPMENT STAGED BOOTSTRAP PASS — EXACT
   `0010` APPLIED / PUBLIC AND CUSTOMER RUNTIME INACTIVE**.
-- Integration branch/start/pre-apply main:
+- Önceki integration branch/start/pre-apply main:
   `integration/wave-37c-development-staged-bootstrap-retry` /
   `origin/main@a0ce3015c753dff22304d4a8f3f3a7b9a0a4e1e6` /
   `ffdecbffab7db3fa75dd944b111e1951d2123215`.

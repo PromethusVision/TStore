@@ -17,6 +17,34 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 38A Canonical Client Adapter Entegrasyon Gözlemi
+
+`CONCRETE_ADAPTER_INTEGRATED: PASS`
+
+`CAPABILITY_PROOF_INTEGRATED: PASS`
+
+`CURRENT_BACKEND_CANONICAL_COMPATIBLE: NO`
+
+`ACCEPTANCE_CLASSIFICATION: C — BACKEND CONTRACT CHANGE REQUIRED`
+
+`LEGACY_RUNTIME_DEFAULT: PASS`
+
+`CANONICAL_RUNTIME_ACTIVE: NO`
+
+- Concrete RPC adapter, typed DTO mapping, capability verifier ve environment-specific
+  DI, `service_locator.dart` ile iki entrypoint shared hotspot sahipliği integration
+  lane'inde birlikte incelenerek entegre edildi. Development ve Production explicit
+  legacy default'tur; canonical istek yetersiz proof'ta sessiz fallback yapmaz.
+- Deployed endpoint `7/7` varlığı backend uyumluluğu değildir. Published client
+  contract version, strict response alanları ve safe staged preview/capability
+  response eksikleri current sonucu `BLOCKING_CONTRACT_MISMATCH` yapar.
+- Bir sonraki iş tek backend/schema/SQL/migration owner'ına verilmelidir: additive
+  strict backend contract migration. Bu sırada `service_locator.dart`, entrypoint'ler,
+  shared taxonomy modelleri ve adapter başka agent tarafından eşzamanlı değiştirilmez.
+- Backend contract delivery sonrası capability/read acceptance ayrı sıralı gate'tir;
+  canonical runtime activation, public/pilot activation ve Production lane'i ayrıca
+  yetkilendirilmeden açılmaz.
+
 ## Wave 37C Development Staged Bootstrap Entegrasyon Gözlemi
 
 `DEVELOPMENT_STAGED_BOOTSTRAP: PASS`
