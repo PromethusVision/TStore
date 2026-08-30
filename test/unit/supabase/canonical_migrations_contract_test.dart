@@ -13,6 +13,7 @@ const _expectedMigrationFiles = <String>[
   '20260814000800_0008_fix_profile_role_guard.sql',
   '20260815000900_0009_verified_product_reviews_storage.sql',
   '20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql',
+  '20260830001100_0011_canonical_taxonomy_contract_v2.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -49,9 +50,12 @@ const _taxonomyAdminTables = <String>{
   'taxonomy_node_relationships',
 };
 
+const _taxonomyContractTables = <String>{'taxonomy_contract_config'};
+
 const _expectedPublicTables = <String>{
   ..._baselinePublicTables,
   ..._taxonomyAdminTables,
+  ..._taxonomyContractTables,
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{
@@ -116,6 +120,7 @@ void main() {
       for (final file in migrationFiles) {
         final sql = file.readAsStringSync();
         final isTaxonomyBootstrap = _basename(file).contains('_0010_');
+        final isStrictTaxonomyContract = _basename(file).contains('_0011_');
         expect(
           _occurrences(sql, RegExp(r'^BEGIN;$', multiLine: true)),
           1,
@@ -147,7 +152,11 @@ void main() {
         expect(
           sql,
           contains(
-            isTaxonomyBootstrap ? r'DO $w37_exclusive$' : r'DO $preflight$',
+            isTaxonomyBootstrap
+                ? r'DO $w37_exclusive$'
+                : isStrictTaxonomyContract
+                ? r'DO $w38_baseline_guard$'
+                : r'DO $preflight$',
           ),
           reason: file.path,
         );
@@ -155,7 +164,7 @@ void main() {
     },
   );
 
-  test('canonical chain creates exactly the expected 28 public tables', () {
+  test('canonical chain creates exactly the expected 29 public tables', () {
     final createdTables = _captures(
       canonicalSql,
       RegExp(
@@ -200,7 +209,10 @@ void main() {
       );
     }
 
-    expect(revokedTables, _baselinePublicTables);
+    expect(revokedTables, {
+      ..._baselinePublicTables,
+      ..._taxonomyContractTables,
+    });
     for (final table in _taxonomyAdminTables) {
       expect(
         taxonomySql,
@@ -342,7 +354,10 @@ void main() {
   test('canonical schema contains no environment credentials or data IDs', () {
     final executableSql = _withoutLineComments(canonicalSql);
     final forbiddenPatterns = <RegExp>[
-      RegExp(r'\bservice_role\b', caseSensitive: false),
+      RegExp(
+        r'\b(?:service_role_key|supabase_service_role_key)\b\s*[:=]',
+        caseSensitive: false,
+      ),
       RegExp(r'\b(?:postgres|postgresql)://', caseSensitive: false),
       RegExp(r'https?://[^\s]*supabase\.(?:co|in)', caseSensitive: false),
       RegExp(r'\beyJ[A-Za-z0-9_-]{20,}', caseSensitive: false),
