@@ -1,0 +1,38 @@
+{
+  "contract_version": "taxonomy-client-v1",
+  "client_contract_version": "taxonomy-client-v1",
+  "taxonomy_version": "canonical-v1.0.0",
+  "taxonomy_data_version": "canonical-v1.0.0",
+  "rpc_contract_version": "taxonomy-rpc-v2",
+  "rpc_generation": 2,
+  "supported_features": [
+    "roots",
+    "children",
+    "descendants",
+    "breadcrumb",
+    "alias_resolution",
+    "search",
+    "product_scopes"
+  ],
+  "verified_evidence": [
+    "authoritative_contract_version",
+    "exact_rpc_signatures",
+    "required_response_shapes",
+    "lifecycle_publication_semantics",
+    "hierarchy_semantics",
+    "alias_outcome_semantics",
+    "taxonomy_version_semantics"
+  ],
+  "preview_support": true,
+  "preview_enabled": false,
+  "lifecycle_metadata": true,
+  "policy_metadata": true,
+  "alias_state_metadata": true,
+  "path_metadata": true,
+  "public_active_root_count": 0,
+  "pilot_active_root_count": 0,
+  "preview_root_count": 0,
+  "product_scope_contract": "exact-leaf-visible-assignable-policy-eligible",
+  "product_scope_requires_assignable": true,
+  "product_scope_policy_fail_closed": true
+}
