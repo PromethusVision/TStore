@@ -136,6 +136,15 @@ void main() {
         'search',
         'product_scopes',
       ],
+      'verified_evidence': [
+        'authoritative_contract_version',
+        'exact_rpc_signatures',
+        'required_response_shapes',
+        'lifecycle_publication_semantics',
+        'hierarchy_semantics',
+        'alias_outcome_semantics',
+        'taxonomy_version_semantics',
+      ],
     });
     final capability = TaxonomyRuntimeCapability.canonicalV1(
       proof: dto.toProof(),
@@ -150,12 +159,15 @@ void main() {
       contractVersion: 'taxonomy-client-v1',
       taxonomyVersion: 'v1.0.0',
       supportedFeatures: const [TaxonomyBackendFeature.roots],
+      verifiedEvidence: const [],
     );
     final wrongVersion = TaxonomyBackendContractProof(
       contractVersion: 'taxonomy-client-v2',
       taxonomyVersion: 'v1.0.0',
       supportedFeatures:
           TaxonomyBackendContractProof.requiredCanonicalV1Features,
+      verifiedEvidence:
+          TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
     );
 
     expect(

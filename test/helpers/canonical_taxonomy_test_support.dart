@@ -44,6 +44,8 @@ TaxonomyRuntimeCapability canonicalCapability({
       taxonomyVersion: taxonomyVersion,
       supportedFeatures:
           TaxonomyBackendContractProof.requiredCanonicalV1Features,
+      verifiedEvidence:
+          TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
     ),
   );
 }
