@@ -17,6 +17,39 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 38G Real Development Acceptance Gözlemi
+
+`REAL_DEVELOPMENT_CANONICAL_ACCEPTANCE: PASS`
+
+`REAL_24_ROOT_ACCEPTANCE: PASS`
+
+`VARIABLE_DEPTH_BREADCRUMB_SEARCH_ALIAS: PASS`
+
+`PRODUCT_SCOPE_FAIL_CLOSED: PASS`
+
+`PREVIEW_RESTORED_OFF: PASS`
+
+`CANONICAL_TAXONOMY_DEVELOPMENT_DONE: YES`
+
+`READY_FOR_FINAL_UI_KIT_ROLLOUT: YES`
+
+- Preview acceptance tek integration/operatör lane'inde sıralı yürütüldü. Trusted
+  setter, exact target JIT, real Flutter acceptance ve mandatory OFF restoration
+  başka agentla paylaşılmadı.
+- Real Development strict V2 client exact 24 root ve `1563` node tree'de L2/L3/L4
+  navigation, server breadcrumb/search, dört alias state'i ve non-assignable exact
+  leaf fail-closed davranışını kabul etti. Silent legacy fallback olmadı.
+- İlk test-process initialization problemi remote state araştırılmadan önce preview
+  OFF'a döndürülerek kapatıldı; yalnız acceptance harness düzeltildi ve ikinci bounded
+  tur PASS oldu. Final preview/opt-in/canonical runtime OFF, iki ortamın default'u
+  `LEGACY_RUNTIME`dır.
+- Canonical taxonomy Development lane'i kapanmıştır. Final UI Kit rollout artık
+  taxonomy architecture'a karşı başlayabilir; ancak component/tokens/navigation/
+  category-search shared UI hotspot'ları açık owner sınırlarıyla bölünmelidir.
+- SQL/migration lane'i, public/pilot activation, policy/professional review,
+  Production taxonomy rollout, physical QR ve release gates UI Kit lane'ine
+  karıştırılmaz. Production için yeni JIT + owner authority gerekir.
+
 ## Wave 38F Strict V2 Client Integration Gözlemi
 
 `STRICT_V2_CLIENT_BINDING: PASS`
@@ -42,11 +75,9 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - `service_locator.dart`, Development entrypoint, adapter, shared taxonomy/category/
   product modelleri ve navigation bu turda tek lane tarafından sahiplenildi.
   Production entrypoint statik olarak incelendi ve değişmedi.
-- Sıradaki gerçek preview acceptance paralel değildir: tek owner/operatör lane'i
-  preview ON → client opt-in acceptance → real 24-root ve L2–L4/breadcrumb/search/
-  alias/product-scope kontrolleri → preview OFF → opt-in OFF sırasını yürütmelidir.
-- Public/pilot/runtime activation, Final UI Kit/Figma ve Production ayrı authority
-  ve lane olarak kapalı kalır.
+- Gerçek preview acceptance W38G'de tek owner/operatör lane'iyle PASS tamamlandı.
+  Public/pilot/runtime activation ve Production ayrı authority/lane olarak kapalı
+  kalır; Final UI Kit/Figma rollout taxonomy architecture'a karşı başlayabilir.
 
 ## Wave 38D Development Strict Backend Contract Apply Gözlemi
 

@@ -14,6 +14,31 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 38G Development Canonical Taxonomy Closeout
+
+- **COMPLETED — exact Development JIT and control safety:** Exact ref/URL, Healthy
+  reachability, ledger `11/11`, V1 `7/7`, strict V2 `8/8`, trusted setter grants ve
+  before-state `1563 / 24/244/1096/199 / 1245 / assignable-public-pilot 0/0/0`
+  doğrulandı.
+- **COMPLETED — real canonical client acceptance:** Actual Development opt-in ile
+  concrete V2 adapter/repository/Cubit/navigation/product-scope zinciri exact 24
+  UUID/name, L2/L3/L4 variable depth, recursive traversal/back model, authoritative
+  breadcrumb/search, RESOLVED/AMBIGUOUS/TOMBSTONE/UNRESOLVED alias ve exact-leaf
+  fail-closed davranışını PASS kabul etti. Silent legacy fallback yoktur.
+- **COMPLETED — mandatory safe restoration:** İki bounded preview turundan sonra da
+  preview OFF yapıldı. Final capability `SUPPORTED_PREVIEW_OFF`; Development ve
+  Production default `LEGACY_RUNTIME`, canonical opt-in default false ve runtime OFF.
+  Taxonomy/UUID/lifecycle/assignability/public/pilot, migration/RLS/RPC ve zero
+  business/Auth/Storage state'i değişmedi. Production access `0`.
+- **COMPLETED — regression:** Live `1/1`, post-preview targeted `480/480`, full
+  Flutter `1294 PASS / 0 FAIL / 6` existing live skip, analyzer `0 issues`; new skip
+  yoktur.
+- **READY — next major Customer App stream:** Final UI Kit rollout canonical
+  taxonomy architecture'a karşı başlayabilir.
+- **OPEN / SEPARATE AUTHORITY:** Public/pilot activation, assignability ve
+  policy/professional-review changes, Production taxonomy rollout, demo remap,
+  physical two-device QR, signed release acceptance ve commercial GO/NO-GO.
+
 ## Wave 38F Strict V2 Client / Preview Acceptance State
 
 - **COMPLETED — strict V2 client binding:** Yedi `*_v2` read endpoint'i,
@@ -27,13 +52,12 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **COMPLETED — local validation:** Taxonomy/client `75/75`, taxonomy-independent
   Cart V2/QR/reviews/wishlist/seller/Auth `245/245`, full Flutter
   `1293 PASS / 0 FAIL / 6` mevcut opt-in/live skip ve analyzer `0 issues`.
-- **OPEN / SEPARATE AUTHORITY — real Development preview acceptance:** Preview
-  halen OFF, canonical opt-in OFF, real 24-root acceptance `NOT RUN`. Yeni owner
-  yetkisiyle Development-only preview ON, capability/24-root/L2–L4/breadcrumb/
-  search/alias/product-scope acceptance, ardından preview OFF ve opt-in OFF final
-  safe-state doğrulaması gerekir.
-- **OPEN / AFTER ACCEPTANCE:** Final UI Kit/Figma. Public/pilot/runtime activation
-  ve Production ayrıca yetkilendirilmeden açılmaz.
+- **CLOSED BY W38G — real Development preview acceptance:** Exact 24 root,
+  L2–L4/breadcrumb/search/alias/product-scope acceptance PASS; preview ve opt-in
+  finalde OFF.
+- **READY AFTER ACCEPTANCE:** Final UI Kit/Figma rollout canonical architecture'a
+  karşı başlayabilir. Public/pilot/runtime activation ve Production ayrıca
+  yetkilendirilmeden açılmaz.
 
 ## Wave 38D Development Strict Backend Contract State
 
@@ -50,9 +74,10 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **CLOSED BY W38F — bounded V2 client update:** Yedi strict read'in V2 family'ye
   atomik binding'i ve capability/runtime proof'un `taxonomy_capabilities_v2` + strict
   DTO'ya bağlanması tek shared-owner lane'inde PASS tamamlandı.
-- **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical Customer activation,
-  public/pilot activation, Development live client acceptance, final UI Kit/Figma ve
-  Production lane'i. `LEGACY_RUNTIME` default, canonical mode OFF.
+- **CLOSED BY W38G:** Preview acceptance ve Development live client acceptance.
+- **OPEN / SEPARATE AUTHORITY:** Canonical Customer/public/pilot activation,
+  Production lane'i ve release gates. Final UI Kit/Figma implementation artık
+  başlayabilir; `LEGACY_RUNTIME` default ve canonical mode OFF kalır.
 
 ## Wave 38C-R Corrected Strict Backend Contract State (historical pre-apply)
 
