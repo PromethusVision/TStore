@@ -13,8 +13,8 @@ const manifestEntries = new Map(
     .map((match) => [match[1], match[2]]),
 );
 
-if (migrationFiles.length !== 9) {
-  throw new Error(`Expected 9 canonical migrations, received ${migrationFiles.length}`);
+if (migrationFiles.length !== 10) {
+  throw new Error(`Expected 10 canonical migrations, received ${migrationFiles.length}`);
 }
 if (manifestEntries.size !== migrationFiles.length) {
   throw new Error(
@@ -45,4 +45,4 @@ if (unexpectedEntries.length > 0) {
   throw new Error(`Unexpected manifest entries: ${unexpectedEntries.join(', ')}`);
 }
 
-console.log('Migration artifact manifest: PASS (9/9 canonical LF SHA-256)');
+console.log('Migration artifact manifest: PASS (10/10 canonical LF SHA-256)');

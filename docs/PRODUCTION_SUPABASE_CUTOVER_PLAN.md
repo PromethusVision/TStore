@@ -94,8 +94,10 @@ release artifact kimliği değildir. Platformdan bağımsız kontrol:
 node tool/verify_migration_artifact_manifest.mjs
 ```
 
-Araç checkout satır sonlarını LF'ye normalize eder, tam dokuz dosyayı ve manifest
-üyeliğini doğrular. İstenirse aynı değer doğrudan tracked blob üzerinden
+Araç checkout satır sonlarını LF'ye normalize eder, mevcut tam on dosyayı ve
+manifest üyeliğini doğrular. `0010` bu zincirde yalnız Development staged
+bootstrap artefaktıdır; Production apply yetkisi veya Production ledger durumu
+değildir. İstenirse aynı değer doğrudan tracked blob üzerinden
 `git cat-file blob <release-commit>:supabase/migrations/<file>` çıktısının SHA-256'ı
 alınarak bağımsız doğrulanabilir. Supabase migration ledger timestamp tutar, dosya
 checksum'u kanıtlamaz; schema/function/policy karşılaştırması ayrıca zorunludur.
@@ -111,6 +113,7 @@ checksum'u kanıtlamaz; schema/function/policy karşılaştırması ayrıca zoru
 | `20260812000700_0007_storage_realtime.sql` | `b035c05dcfc16836595b195888f208e51fbbd58d32c5f0fc25493aeed2cc702d` |
 | `20260814000800_0008_fix_profile_role_guard.sql` | `e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170` |
 | `20260815000900_0009_verified_product_reviews_storage.sql` | `47df35090bbcfacd305b6a79fecdac88929d67edc4aaa6932f10ae21f45795fa` |
+| `20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql` | `40fade490cde5f31b5c649ada301852b2abb40c0979a4f2e45bcd735b4f876b8` |
 
 ### Wave 9 hash investigation sonucu
 
