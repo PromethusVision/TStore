@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_theme.dart';
 import 'package:t_store/core/utils/theme/widget_themes/appbar_theme.dart';
 import 'package:t_store/core/utils/theme/widget_themes/bottom_sheet_theme.dart';
 import 'package:t_store/core/utils/theme/widget_themes/checkbox_theme.dart';
@@ -13,22 +14,7 @@ import '../constants/colors.dart';
 class TAppTheme {
   TAppTheme._();
 
-  static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    fontFamily: 'Poppins',
-    disabledColor: TColors.grey,
-    brightness: Brightness.light,
-    primaryColor: TColors.primary,
-    textTheme: TTextTheme.lightTextTheme,
-    chipTheme: TChipTheme.lightChipTheme,
-    scaffoldBackgroundColor: TColors.white,
-    appBarTheme: TAppBarTheme.lightAppBarTheme,
-    checkboxTheme: TCheckboxTheme.lightCheckboxTheme,
-    bottomSheetTheme: TBottomSheetTheme.lightBottomSheetTheme,
-    elevatedButtonTheme: TElevatedButtonTheme.lightElevatedButtonTheme,
-    outlinedButtonTheme: TOutlinedButtonTheme.lightOutlinedButtonTheme,
-    inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
-  );
+  static ThemeData lightTheme = EsnaftaVarTheme.light;
 
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,

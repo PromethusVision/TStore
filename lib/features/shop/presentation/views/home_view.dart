@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/reward_progress_card.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -25,6 +27,7 @@ import 'package:t_store/features/shop/presentation/widgets/home_nearby_shops_sec
 import 'package:t_store/features/shop/presentation/widgets/home_products_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 typedef HomeCurrentUserIdProvider = String? Function();
 typedef HomeSavedLocationsDestinationBuilder =
@@ -92,19 +95,15 @@ class _HomeViewState extends State<HomeView> {
         ),
       ],
       child: Builder(
-        builder: (contentContext) => Scaffold(
-          backgroundColor: CustomerHomeV1Tokens.cream,
-          body: SafeArea(
-            bottom: false,
-            child: CustomerHomeV1Content(
-              searchCubit: contentContext.read<CustomerSearchCubit>(),
-              recentSearchesStorage: sl<RecentProductSearchesStorage>(),
-              onSearchSubmitted: (query) =>
-                  _openAllProductsSearch(contentContext, query),
-              onLocationTap: () => _openSavedLocations(contentContext),
-              onNearbyViewAll: () =>
-                  contentContext.read<NavigationMenuCubit>().changeIndex(1),
-            ),
+        builder: (contentContext) => EsnaftaVarScaffold(
+          body: CustomerHomeV1Content(
+            searchCubit: contentContext.read<CustomerSearchCubit>(),
+            recentSearchesStorage: sl<RecentProductSearchesStorage>(),
+            onSearchSubmitted: (query) =>
+                _openAllProductsSearch(contentContext, query),
+            onLocationTap: () => _openSavedLocations(contentContext),
+            onNearbyViewAll: () =>
+                contentContext.read<NavigationMenuCubit>().changeIndex(1),
           ),
         ),
       ),
@@ -179,6 +178,10 @@ class CustomerHomeV1Content extends StatelessWidget {
     this.categoryDestinationBuilder,
     this.productDestinationBuilder,
     this.shopDestinationBuilder,
+    this.rewardFeatureEnabled = false,
+    this.rewardProgress,
+    this.onRewardTap,
+    this.productFavoriteCurrentUserIdProvider,
   });
 
   final HomeSearchQuerySubmitted onSearchSubmitted;
@@ -190,6 +193,11 @@ class CustomerHomeV1Content extends StatelessWidget {
   final HomeCategoryDestinationBuilder? categoryDestinationBuilder;
   final HomeProductDestinationBuilder? productDestinationBuilder;
   final HomeShopDestinationBuilder? shopDestinationBuilder;
+  final bool rewardFeatureEnabled;
+  final RewardProgressData? rewardProgress;
+  final VoidCallback? onRewardTap;
+  final ProductFavoriteCurrentUserIdProvider?
+  productFavoriteCurrentUserIdProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -273,12 +281,20 @@ class CustomerHomeV1Content extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space12),
+              RewardProgressSlot(
+                enabled: rewardFeatureEnabled,
+                data: rewardProgress,
+                onTap: onRewardTap,
+              ),
+              if (rewardFeatureEnabled && rewardProgress != null)
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
               HomeCategories(destinationBuilder: categoryDestinationBuilder),
               const SizedBox(height: CustomerHomeV1Tokens.space12),
               const PromoBannerCarouselSlider(),
               const SizedBox(height: CustomerHomeV1Tokens.space12),
               HomeProductsSection(
                 destinationBuilder: productDestinationBuilder,
+                currentUserIdProvider: productFavoriteCurrentUserIdProvider,
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space16),
               HomeNearbyShopsSection(

@@ -14,6 +14,7 @@ import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_products_section.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 class MockHomeProductsCubit extends MockCubit<ProductsState>
     implements ProductsCubit {}
@@ -365,5 +366,42 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mağaza fiyatını gör'), findsOneWidget);
+  });
+
+  testWidgets('uzun ürün adı ve favori hedefi 320 pikselde güvenli kalır', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    const longProductName =
+        'ÇĞİÖŞÜ Dayanıklı Çok Amaçlı Mutfak Hazırlama ve Saklama Seti';
+    const product = ProductEntity(
+      id: 'long-product',
+      name: longProductName,
+      price: 149.90,
+      categoryId: 'ev-yasam',
+      stock: 4,
+      images: [],
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        const ProductsLoaded(products: [product]),
+        shopProductsLoader: (_) async => const Right([]),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final productLabel = tester.widget<Text>(find.text(longProductName));
+    final favoriteButton = tester.widget<ProductFavoriteButton>(
+      find.byType(ProductFavoriteButton),
+    );
+    expect(productLabel.maxLines, 2);
+    expect(favoriteButton.width, greaterThanOrEqualTo(44));
+    expect(favoriteButton.height, greaterThanOrEqualTo(44));
+    expect(tester.takeException(), isNull);
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
@@ -22,14 +23,17 @@ class CustomerBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       key: const Key('customer-bottom-navigation'),
-      color: Colors.white,
+      color: EsnaftaVarColors.surface,
       elevation: 14,
-      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.18),
+      shadowColor: EsnaftaVarColors.textPrimary.withValues(alpha: 0.14),
       child: SafeArea(
         top: false,
         minimum: const EdgeInsets.only(bottom: 2),
-        child: SizedBox(
-          height: 70,
+        child: Container(
+          height: 72,
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: EsnaftaVarColors.divider)),
+          ),
           child: Row(
             children: [
               _NavigationItem(
@@ -103,7 +107,7 @@ class _NavigationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = selected
         ? CustomerHomeV1Tokens.petrol
-        : const Color(0xFF697384);
+        : EsnaftaVarColors.textMuted;
     return Expanded(
       child: Semantics(
         selected: selected,
@@ -119,7 +123,23 @@ class _NavigationItem extends StatelessWidget {
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Icon(selected ? selectedIcon : icon, color: color, size: 22),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: 38,
+                    height: 32,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? EsnaftaVarColors.primarySoft
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
+                    ),
+                    child: Icon(
+                      selected ? selectedIcon : icon,
+                      color: color,
+                      size: 22,
+                    ),
+                  ),
                   if (badgeCount > 0)
                     Positioned(
                       key: badgeKey,
@@ -141,7 +161,7 @@ class _NavigationItem extends StatelessWidget {
                         child: Text(
                           badgeCount > 99 ? '99+' : badgeCount.toString(),
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: EsnaftaVarColors.textOnPrimary,
                             fontSize: 8,
                             fontWeight: FontWeight.w700,
                           ),
@@ -157,7 +177,7 @@ class _NavigationItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: color,
-                  fontSize: 8.5,
+                  fontSize: 10.5,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
@@ -205,12 +225,15 @@ class _CartNavigationItem extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: CustomerHomeV1Tokens.petrol,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 3),
+                            border: Border.all(
+                              color: EsnaftaVarColors.textOnPrimary,
+                              width: 3,
+                            ),
                             boxShadow: CustomerHomeV1Tokens.softShadow,
                           ),
                           child: const Icon(
                             Iconsax.shopping_bag,
-                            color: Colors.white,
+                            color: EsnaftaVarColors.textOnPrimary,
                             size: 22,
                           ),
                         ),
@@ -253,8 +276,8 @@ class _CartNavigationItem extends StatelessWidget {
                       style: TextStyle(
                         color: selected
                             ? CustomerHomeV1Tokens.petrol
-                            : const Color(0xFF697384),
-                        fontSize: 8.5,
+                            : CustomerHomeV1Tokens.muted,
+                        fontSize: 10.5,
                         fontWeight: selected
                             ? FontWeight.w700
                             : FontWeight.w600,

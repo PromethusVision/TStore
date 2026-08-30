@@ -32,14 +32,7 @@ class HomeCategories extends StatefulWidget {
 class _HomeCategoriesState extends State<HomeCategories> {
   final Set<String> _openingCategoryIds = {};
 
-  static const _pastelSurfaces = [
-    CustomerHomeV1Tokens.mint,
-    Color(0xFFE4F0E0),
-    Color(0xFFFFEDD3),
-    Color(0xFFFFE1DC),
-    Color(0xFFF9DFDF),
-    Color(0xFFDDEDEA),
-  ];
+  static const _pastelSurfaces = CustomerHomeV1Tokens.categorySurfaces;
 
   static String _normalizedName(String name) => name.trim().toLowerCase();
 
@@ -92,82 +85,101 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Column(
       key: const Key('home-categories'),
-      height: 75,
-      child: BlocBuilder<CategoriesCubit, CategoriesState>(
-        builder: (context, state) {
-          if (state is CategoriesLoading || state is CategoriesInitial) {
-            return const _CategoryStatus(
-              key: Key('home-categories-loading'),
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  color: CustomerHomeV1Tokens.petrol,
-                  strokeWidth: 2,
-                ),
-              ),
-            );
-          }
-
-          if (state is CategoriesError) {
-            return _CategoryStatus(
-              child: TextButton.icon(
-                key: const Key('home-categories-retry'),
-                onPressed: context.read<CategoriesCubit>().getCategories,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Kategorileri Tekrar Yükle'),
-              ),
-            );
-          }
-
-          if (state is CategoriesLoaded) {
-            if (state.categories.isEmpty) {
-              return const _CategoryStatus(
-                child: Text(
-                  'Şu anda gösterilecek kategori bulunamadı.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 11,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Kategoriler',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: CustomerHomeV1Tokens.navy),
+        ),
+        const SizedBox(height: CustomerHomeV1Tokens.space4),
+        Text(
+          'Mahallende aradığını kolayca bul',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: CustomerHomeV1Tokens.muted),
+        ),
+        const SizedBox(height: CustomerHomeV1Tokens.space8),
+        SizedBox(
+          height: 112,
+          child: BlocBuilder<CategoriesCubit, CategoriesState>(
+            builder: (context, state) {
+              if (state is CategoriesLoading || state is CategoriesInitial) {
+                return const _CategoryStatus(
+                  key: Key('home-categories-loading'),
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: CustomerHomeV1Tokens.petrol,
+                      strokeWidth: 2,
+                    ),
                   ),
-                ),
-              );
-            }
-
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: state.categories.length,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(width: CustomerHomeV1Tokens.space8),
-              itemBuilder: (context, index) {
-                final category = state.categories[index];
-                final categoryId = category.id.trim();
-                final canonicalNode = state.canonicalNodeFor(categoryId);
-                return _HomeCategoryItem(
-                  key: Key('home-category-${category.id}'),
-                  category: category,
-                  title: _localizedTitle(category.name),
-                  fallbackIcon: _fallbackIcon(category.name, index),
-                  backgroundColor:
-                      _pastelSurfaces[index % _pastelSurfaces.length],
-                  onTap: categoryId.isEmpty
-                      ? null
-                      : () => _openCategory(
-                          context,
-                          category,
-                          canonicalNode: canonicalNode,
-                        ),
                 );
-              },
-            );
-          }
+              }
 
-          return const SizedBox.shrink();
-        },
-      ),
+              if (state is CategoriesError) {
+                return _CategoryStatus(
+                  child: TextButton.icon(
+                    key: const Key('home-categories-retry'),
+                    onPressed: context.read<CategoriesCubit>().getCategories,
+                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    label: const Text('Kategorileri Tekrar Yükle'),
+                  ),
+                );
+              }
+
+              if (state is CategoriesLoaded) {
+                if (state.categories.isEmpty) {
+                  return const _CategoryStatus(
+                    child: Text(
+                      'Şu anda gösterilecek kategori bulunamadı.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: state.categories.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: CustomerHomeV1Tokens.space8),
+                  itemBuilder: (context, index) {
+                    final category = state.categories[index];
+                    final categoryId = category.id.trim();
+                    final canonicalNode = state.canonicalNodeFor(categoryId);
+                    return _HomeCategoryItem(
+                      key: Key('home-category-${category.id}'),
+                      category: category,
+                      title: _localizedTitle(category.name),
+                      fallbackIcon: _fallbackIcon(category.name, index),
+                      backgroundColor:
+                          _pastelSurfaces[index % _pastelSurfaces.length],
+                      onTap: categoryId.isEmpty
+                          ? null
+                          : () => _openCategory(
+                              context,
+                              category,
+                              canonicalNode: canonicalNode,
+                            ),
+                    );
+                  },
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -231,44 +243,52 @@ class _HomeCategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = category.imageUrl?.trim() ?? '';
     return SizedBox(
-      width: 52,
+      width: 104,
       child: InkWell(
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         onTap: onTap,
-        child: Column(
-          children: [
-            Container(
-              width: 46,
-              height: 46,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.circle,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          child: Column(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius16,
+                  ),
+                ),
+                child: imageUrl.isEmpty
+                    ? _CategoryFallback(icon: fallbackIcon)
+                    : CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (_, _) =>
+                            _CategoryFallback(icon: fallbackIcon),
+                        errorWidget: (_, _, _) =>
+                            _CategoryFallback(icon: fallbackIcon),
+                      ),
               ),
-              child: imageUrl.isEmpty
-                  ? _CategoryFallback(icon: fallbackIcon)
-                  : CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (_, _) =>
-                          _CategoryFallback(icon: fallbackIcon),
-                      errorWidget: (_, _, _) =>
-                          _CategoryFallback(icon: fallbackIcon),
-                    ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space4),
-            Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.navy,
-                fontSize: 8.5,
-                fontWeight: FontWeight.w600,
+              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: CustomerHomeV1Tokens.navy,
+                    fontSize: 11,
+                    height: 1.2,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

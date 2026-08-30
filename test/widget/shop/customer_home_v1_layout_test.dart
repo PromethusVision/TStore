@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/core/ui/components/reward_progress_card.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
+import 'package:t_store/core/utils/theme/theme.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/personalization/presentation/cubit/customer_saved_locations_cubit.dart';
@@ -113,7 +115,13 @@ void main() {
     );
   });
 
-  Future<void> pumpLayout(WidgetTester tester, double width) async {
+  Future<void> pumpLayout(
+    WidgetTester tester,
+    double width, {
+    bool rewardFeatureEnabled = false,
+    RewardProgressData? rewardProgress,
+    double textScale = 1,
+  }) async {
     tester.view.physicalSize = Size(width, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -132,13 +140,22 @@ void main() {
           BlocProvider<NearbyShopsCubit>.value(value: nearbyCubit),
         ],
         child: MaterialApp(
-          home: Scaffold(
-            body: CustomerHomeV1Content(
-              searchCubit: customerSearchCubit,
-              isAuthenticatedOverride: false,
-              onSearchSubmitted: (_) {},
-              onLocationTap: () {},
-              onNearbyViewAll: () {},
+          theme: TAppTheme.lightTheme,
+          home: MediaQuery(
+            data: MediaQueryData(
+              size: Size(width, 844),
+              textScaler: TextScaler.linear(textScale),
+            ),
+            child: Scaffold(
+              body: CustomerHomeV1Content(
+                searchCubit: customerSearchCubit,
+                isAuthenticatedOverride: false,
+                rewardFeatureEnabled: rewardFeatureEnabled,
+                rewardProgress: rewardProgress,
+                onSearchSubmitted: (_) {},
+                onLocationTap: () {},
+                onNearbyViewAll: () {},
+              ),
             ),
           ),
         ),
@@ -158,4 +175,68 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('runtime Home ödül gate kapalıyken sahte veri göstermez', (
+    tester,
+  ) async {
+    await pumpLayout(
+      tester,
+      390,
+      rewardProgress: const RewardProgressData(
+        progress: 0.5,
+        title: 'Test ödül fixture verisi',
+      ),
+    );
+
+    expect(find.byKey(const Key('reward-progress-slot-off')), findsOneWidget);
+    expect(find.byKey(const Key('reward-progress-card')), findsNothing);
+  });
+
+  testWidgets('ödül fixture kartı arama ile kategoriler arasında yer alır', (
+    tester,
+  ) async {
+    await pumpLayout(
+      tester,
+      390,
+      rewardFeatureEnabled: true,
+      rewardProgress: const RewardProgressData(
+        progress: 0.5,
+        title: 'Mahalle ödül yolculuğu',
+        currentMilestone: 'Başlangıç',
+        nextMilestone: 'Sıradaki adım',
+      ),
+    );
+
+    final searchTop = tester.getTopLeft(
+      find.byKey(const Key('home-search-bar')),
+    );
+    final rewardTop = tester.getTopLeft(
+      find.byKey(const Key('reward-progress-card')),
+    );
+    final categoriesTop = tester.getTopLeft(
+      find.byKey(const Key('home-categories')),
+    );
+    expect(rewardTop.dy, greaterThan(searchTop.dy));
+    expect(categoriesTop.dy, greaterThan(rewardTop.dy));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('390 pikselde yüzde 130 metin ölçeği taşma üretmez', (
+    tester,
+  ) async {
+    await pumpLayout(
+      tester,
+      390,
+      textScale: 1.3,
+      rewardFeatureEnabled: true,
+      rewardProgress: const RewardProgressData(
+        progress: 0.95,
+        title: 'ÇĞİÖŞÜ ile oldukça uzun mahalle ödül yolculuğu başlığı',
+        contextualMessage: 'Sıradaki gelişme için yolculuğun devam ediyor.',
+      ),
+    );
+
+    expect(find.byKey(const Key('customer-home-scroll')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

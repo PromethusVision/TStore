@@ -98,7 +98,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         children: [
           Material(
             key: const Key('home-search-bar'),
-            color: Colors.white,
+            color: CustomerHomeV1Tokens.surface,
             borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
             child: Container(
               height: 50,
@@ -415,9 +415,9 @@ class _RecentSearchesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       key: const Key('home-recent-searches'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.16),
+      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       clipBehavior: Clip.antiAlias,
       child: isLoading && queries.isEmpty
@@ -583,9 +583,9 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
   }) {
     return Material(
       key: const Key('home-search-suggestions'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.16),
+      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(

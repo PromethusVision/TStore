@@ -35,11 +35,13 @@ class HomeLocationBar extends StatelessWidget {
             ? location!.addressText.trim()
             : state is CustomerSavedLocationsError
             ? 'Konum yüklenemedi, tekrar denemek için dokun'
-            : 'Yakınındaki mağazaları görmek için dokun';
+            : isAuthenticated
+            ? 'Yakınındaki mağazaları görmek için dokun'
+            : 'Yakınındakiler için giriş yap ve konumunu seç';
 
         return Material(
           key: const Key('home-location-bar'),
-          color: Colors.white,
+          color: CustomerHomeV1Tokens.surface,
           borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
           child: InkWell(
             onTap: onTap,
@@ -60,8 +62,8 @@ class HomeLocationBar extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 38,
-                    height: 38,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: CustomerHomeV1Tokens.petrol,
                       borderRadius: BorderRadius.circular(
@@ -70,7 +72,7 @@ class HomeLocationBar extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.location_on_rounded,
-                      color: Colors.white,
+                      color: CustomerHomeV1Tokens.onPrimary,
                       size: 22,
                     ),
                   ),
@@ -86,7 +88,7 @@ class HomeLocationBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: CustomerHomeV1Tokens.navy,
-                            fontSize: 12.5,
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -97,7 +99,7 @@ class HomeLocationBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: CustomerHomeV1Tokens.muted,
-                            fontSize: 9.5,
+                            fontSize: 11,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
