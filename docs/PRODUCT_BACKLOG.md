@@ -14,7 +14,26 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
-## Wave 37B Ledger Guard Fix / Retry Freeze State
+## Wave 37C Development Staged Bootstrap State
+
+- **COMPLETED — exact active artifact freeze:** Active `0010` file, authorized
+  candidate ile byte-equivalent `40fade490c...`; pre-apply main commit `ffdecbf`.
+- **COMPLETED — two JIT gates:** Exact Development Healthy; 23/23 application
+  table pre-apply empty, ledger 9/9, Storage object/session/writer/lock `0`; iki
+  snapshot arasında migration-relevant drift yoktur.
+- **COMPLETED — controlled Development apply:** Resmî CLI exact-one-pending dry-run
+  sonrasında yalnız `0010`u uyguladı. History repair ve ad-hoc SQL correction yoktur.
+- **COMPLETED — staged backend postcheck:** `1563`, `24/244/1096/199`, `1245`
+  leaf, alias/edge `651/1000`, split `210/591`; orphan/cycle/L5/public/pilot/policy
+  leakage `0`. RLS `28/28`, RPC `7/7`, ledger `10/10`, Development Healthy.
+- **UNCHANGED — runtime:** Legacy Customer runtime default; canonical Customer mode,
+  public/pilot taxonomy ve policy/professional-review activation kapalıdır.
+- **READY — next sequential task:** Development backend client adapter/capability/DI
+  cutover and live read acceptance, explicit fail-closed legacy default korunarak.
+- **OPEN / SEPARATE AUTHORITY:** Customer canonical activation, demo mapping,
+  final UI Kit, Production migration/apply ve professional/policy activation.
+
+## Wave 37B Ledger Guard Fix / Retry Freeze State (historical pre-apply)
 
 - **COMPLETED — initial fail-safe stop:** İlk Wave 37 run, full repository
   filename/ledger `name` mismatch'i nedeniyle remote erişimden önce NO-GO oldu;
@@ -38,7 +57,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   rollback/postcheck monitoring ve ancak sonra controlled Development retry.
   Production lane'i kapalıdır; `REMOTE_RETRY_AUTHORIZED: NO`.
 
-## Wave 36 Exact Taxonomy Final Pre-Apply State
+## Wave 36 Exact Taxonomy Final Pre-Apply State (historical)
 
 - **COMPLETED — frozen Development bootstrap candidate:** Source
   `d9c45a1c2acd94fe0bfa52b16772718142c0664a`, aggregate SHA
@@ -67,7 +86,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   waiver. Current mode `LEGACY_RUNTIME`; final UI Kit Development taxonomy/client
   acceptance sonrasına ertelidir.
 
-## Wave 35 Taxonomy Development Cutover Readiness State
+## Wave 35 Taxonomy Development Cutover Readiness State (historical)
 
 - **COMPLETED — live read-only preflight:** Exact Development
   `tnipyxnvhgelwdpykyez` Healthy; migration `9/9`, public table/RLS `23/23`, policy

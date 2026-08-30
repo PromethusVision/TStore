@@ -2,31 +2,33 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-29
-- Son doğrulanan teslim: **WAVE 37B LEDGER GUARD FIX INTEGRATION PASS — EXACT
-  RETRY ARTIFACT LOCALLY FROZEN / REMOTE RETRY NOT AUTHORIZED**.
-- Integration branch/base/source: `integration/wave-37-ledger-guard-fix` /
-  `origin/main@41ea6bd0042dcd83a2bae056d3aa98f4b44d4308` /
-  Agent 2 `8c17ffca8c9febb37987afcbde9d5d669220d335`; normal `--no-ff` merge
-  conflictsiz tamamlandı.
-- İlk Wave 37 denemesi, full repository migration filename ile Supabase ledger
-  `name` alanını yanlış karşılaştıran guard nedeniyle remote erişimden önce
-  **NO-GO** oldu. Development/Production read/write veya migration apply yapılmadı.
-- Corrected explicit `(version,name)` ledger contract; duplicate/malformed/missing/
-  unexpected, version mismatch ve name mismatch durumlarında fail-closed'dur.
-  Reordered exact pair-set deterministik PASS verir; same-count/name-only yetmez.
-- Frozen upstream SHA `095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406`
-  ve altı payload/`1563` UUID değişmedi. Yeni normalized/artifact/candidate SHA'ları
-  sırasıyla `f73d6c...` / `840ab0...` / `40fade...`; LF/CRLF ayrı checkout
-  fixture'ları aynı kimlikleri üretti.
-- Exact local PGlite fresh/forward/rollback `3/3`, idempotency `2/2`, postcheck
-  `3/3`, ledger `11/11`, failure `27/27`, parser `13/13`, canonical Flutter
-  migration contract `18/18` ve migration manifest `9/9` PASS.
-- Active migration zinciri exact `0001→0009`; `0010` oluşturulmadı. Yeni retry
-  artefaktı yalnız local staging/rehearsal için frozen'dır. Fresh Product Owner
-  Development-write authorization + yeni authorized read-only JIT precheck ve
-  operasyon gate'leri olmadan remote retry **NOT AUTHORIZED**. Production kapalıdır.
-- Bir önceki doğrulanan teslim: **WAVE 36 EXACT TAXONOMY FINAL PRE-APPLY INTEGRATION PASS —
+- Son güncelleme: 2026-08-30
+- Son doğrulanan teslim: **WAVE 37C DEVELOPMENT STAGED BOOTSTRAP PASS — EXACT
+  `0010` APPLIED / PUBLIC AND CUSTOMER RUNTIME INACTIVE**.
+- Integration branch/start/pre-apply main:
+  `integration/wave-37c-development-staged-bootstrap-retry` /
+  `origin/main@a0ce3015c753dff22304d4a8f3f3a7b9a0a4e1e6` /
+  `ffdecbffab7db3fa75dd944b111e1951d2123215`.
+- Fresh owner authority kapsamında iki read-only Development JIT snapshot'ı exact
+  `tnipyxnvhgelwdpykyez` / Healthy, 23/23 boş application table, `0/0/0/0`
+  category/product/shop/listing, Storage object `0`, ledger 9/9 ve drift/session/
+  advisory-lock `0` gösterdi. Production erişimi `0` kaldı.
+- Exact active `0010` SQL `40fade490c...` SHA ile main'e önce donduruldu. Resmî
+  linked CLI dry-run yalnız bu migration'ı pending gösterdi; remote history repair
+  yapılmadan tek transaction apply PASS tamamlandı.
+- Postcheck canonical node `1563`, level `24/244/1096/199`, leaf `1245`, alias/edge
+  `651/1000`, split `210/591`, UUID/allocation `1563/1563`; orphan/cycle/L5,
+  public/pilot/policy leakage ve arbitrary product split assignment `0`.
+- RLS `28/28`, existing policy `52`, admin-table anon/authenticated SELECT grant `0`,
+  versioned RPC `7/7`, public-active RPC projection `0`, canonical trigger `25/25`
+  ve ledger exact `10/10`. Product/shop/listing, Auth ve Storage object sıfır kaldı;
+  Development final status Healthy ve rollback `NOT_RUN`.
+- Canonical taxonomy yalnız `staged/inactive` mevcuttur. `LEGACY_RUNTIME` default,
+  `CANONICAL_CUSTOMER_MODE=OFF`, public/pilot activation `NO`. Development backend
+  client cutover ayrı sıralı task olarak hazırdır; Production kapalıdır.
+- Bir önceki doğrulanan teslim: **WAVE 37B LEDGER GUARD FIX INTEGRATION PASS — EXACT
+  RETRY ARTIFACT LOCALLY FROZEN**.
+- İki önceki doğrulanan teslim: **WAVE 36 EXACT TAXONOMY FINAL PRE-APPLY INTEGRATION PASS —
   FROZEN PACKAGE / EXACT MIGRATION REHEARSAL / CUSTOMER CUTOVER WIRING**.
 - Integration branch/base: `integration/wave-36-taxonomy-final-preapply` /
   `origin/main@b3cc14ebed42ab66d689fe6688c2e75e23c43e68`.
@@ -898,7 +900,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | COMPLETE | Development ve Production projelerinde canonical `0001`–`0009` zinciri kayıtlıdır. Production D1 metadata postflight 23 public tablo, 23/23 RLS, final 52 policy, canonical grant/RPC/trigger seti ve exact üç active Storage bucket'ı doğruladı; Auth/business data sıfırdır. Development'ta `0008` role guard ile Wave 4 Auth/Profile/RLS, Realtime ve QR; `0009` review lifecycle normal Auth istemcileriyle canlı doğrulandı. |
+| Supabase / RLS | COMPLETE | Production canonical `0001`–`0009` durumunda kalır. Development ledger exact `0001`–`0010`; Wave 37C `0010` yalnız staged/inactive taxonomy schema ve 1563 canonical node ekledi. Development RLS `28/28`, policy `52`, taxonomy RPC `7/7`, public/pilot leakage `0`; Auth/business ve taxonomy dışı application data sıfırdır. Production D1 postflight 23 public tablo, 23/23 RLS, 52 policy ve canonical grant/RPC/trigger/Storage contract'ını doğrulamıştır. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit, testler ve shipping/payment alanları repoda duruyor; aktif müşteri navigation'ına ve GetIt DI grafiğine bağlı değil, hedef ürün akışı değil. |
 
@@ -1035,7 +1037,11 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 
 ## Canlı Backend ile Kalan Doğrulamalar
 
-- Development canonical bootstrap `0001`–`0009` tamamlandı; `20260815000900 0009_verified_product_reviews_storage` remote migration kaydı ve doğru Development project ref'i doğrulandı. Önceki postflight 23 tablo, 23/23 RLS, 55 policy, canonical grant matrisi ve Realtime üyeliğini doğrulamıştı.
+- Development ledger Wave 37C sonrasında exact `0001`–`0010`dur. `0010` staged/inactive
+  canonical taxonomy schema, 1563 node ve versioned read contract'ı ekledi; RLS
+  `28/28`, current policy `52`, RPC `7/7`, public/pilot leakage `0` ve Development
+  Healthy doğrulandı. Legacy Customer runtime default, canonical Customer mode OFF;
+  Production kendi `0001`–`0009` durumunda kaldı ve Wave 37C'de erişilmedi.
 - Production Phase A inventory, D0 linked dry-run, D1 canonical migration apply/metadata postflight, Phase E client wiring ve Phase F final callback integration + Auth/SMTP/template precheck tamamlandı. Exact ref'te ledger 9/9, 23/23 table/RLS ve final policy/RPC/trigger/Storage/Realtime contract doğrulandı. Phase F3B gerçek SMTP teslimatı, server-side confirmation ve final callback email URL contract'ı PASS; F3D cleanup sonrası Auth/business/Storage zero baseline restore PASS. Wave 11 Android upload signing ve ilk signed APK/AAB PASS. B6 physical Android confirmation notice ve authoritative full recovery lifecycle PASS; B6 canonical self-delete sonrasında zero-test residual yeniden sağlandı. B7 legacy Production callback removal PASS ve allowlist artık yalnız final callback'i içerir. Wave 13 Phase B korunmuş signed APK fiziksel customer startup/demo/location smoke'u PASS. Merchant-owned scanner/kamera ve iki-cihaz QR, Play Console/Play App Signing ve iOS signing ayrı gate'lerdir.
 - Production-like e-posta doğrulama/SMTP kabulü, Development'taki Confirm Email kapalı live testlerinden ayrı tutulur.
 - Development Auth remote config bu entegrasyonda değiştirilmedi: Confirm Email OFF, Custom SMTP OFF, gerçek SMTP credential yok ve Site URL/redirect allowlist production-like değil. Production F3B kanıtı Development'a genellenmez.

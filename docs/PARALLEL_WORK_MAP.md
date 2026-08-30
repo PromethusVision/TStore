@@ -17,7 +17,29 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
-## Wave 37B Ledger Guard Fix / Retry Freeze Entegrasyon Gözlemi
+## Wave 37C Development Staged Bootstrap Entegrasyon Gözlemi
+
+`DEVELOPMENT_STAGED_BOOTSTRAP: PASS`
+
+`EXACT_AUTHORIZED_ARTIFACT_APPLIED: YES`
+
+`PUBLIC_TAXONOMY_ACTIVE: NO`
+
+`CANONICAL_CUSTOMER_MODE_ACTIVE: NO`
+
+`READY_FOR_DEVELOPMENT_BACKEND_CLIENT_CUTOVER: YES`
+
+- Tek backend/schema/SQL/migration owner lane'i iki JIT ve exact-one-pending CLI
+  dry-run sonrasında `0010`u yalnız Development'a uyguladı. Production erişimi yoktur.
+- Remote ledger artık exact `10/10`; taxonomy `1563` node ile staged/inactive,
+  RLS `28/28`, RPC `7/7`, public/pilot/policy leakage `0` durumundadır.
+- Migration lane'i tamamlandı. Sıradaki Customer backend adapter/capability/DI
+  cutover lane'i sıralı handoff ile yürür; migration, `service_locator.dart`, shared
+  taxonomy/category/product modelleri farklı agentlarda eşzamanlı değiştirilmez.
+- Public/pilot activation, professional/policy review activation, demo mapping,
+  UI Kit/Figma ve Production lane'leri açılmamıştır.
+
+## Wave 37B Ledger Guard Fix / Retry Freeze Entegrasyon Gözlemi (historical pre-apply)
 
 `MIGRATION_HISTORY_GUARD_FIXED: PASS`
 
@@ -45,7 +67,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   modelleri, Flutter/Figma ve Production lane'i bu integration'da değişmedi ve
   remote retry/activation ile eşzamanlı farklı owner'a verilmez.
 
-## Wave 36 Exact Taxonomy Final Pre-Apply Entegrasyon Gözlemi
+## Wave 36 Exact Taxonomy Final Pre-Apply Entegrasyon Gözlemi (historical)
 
 `FROZEN_BOOTSTRAP_PACKAGE: PASS`
 
@@ -82,7 +104,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Production lane'i kapalıdır; empty-Development recreation riskini owner henüz
   kabul etmemiştir ve bu risk hiçbir koşulda Production'a genellenmez.
 
-## Wave 35 Taxonomy Development Cutover Readiness Entegrasyon Gözlemi
+## Wave 35 Taxonomy Development Cutover Readiness Entegrasyon Gözlemi (historical)
 
 `LIVE_DEVELOPMENT_PREFLIGHT: PASS`
 

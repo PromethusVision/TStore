@@ -1,0 +1,133 @@
+{
+  "contract": "w37c-development-staged-bootstrap-result-v1",
+  "target": {
+    "name": "EsnaftaVar Development",
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "url": "https://tnipyxnvhgelwdpykyez.supabase.co",
+    "health_after": "Healthy"
+  },
+  "git": {
+    "starting_origin_main": "a0ce3015c753dff22304d4a8f3f3a7b9a0a4e1e6",
+    "pre_apply_main_commit": "ffdecbffab7db3fa75dd944b111e1951d2123215",
+    "active_migration_file": "supabase/migrations/20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+    "ledger_version": "20260829001000",
+    "ledger_name": "0010_canonical_taxonomy_v1_staged_bootstrap"
+  },
+  "artifact_lineage": {
+    "frozen_package_sha256": "095849525ad912cf07ef066bf95d4066e29e2fa478e048acdfab3c5ce1614406",
+    "normalized_package_sha256": "f73d6c0f432dd788a4f47a807280017fb068d3cdc21455e8d277a0767511f0a2",
+    "artifact_set_sha256": "840ab06907f40ae938f22302b7aeebc0da46c04149d9d6f219f7559197f02341",
+    "authorized_candidate_sha256": "40fade490cde5f31b5c649ada301852b2abb40c0979a4f2e45bcd735b4f876b8",
+    "active_migration_sha256": "40fade490cde5f31b5c649ada301852b2abb40c0979a4f2e45bcd735b4f876b8",
+    "active_migration_bytes": 1184842,
+    "payload_changed": false,
+    "uuid_regenerated": false
+  },
+  "jit": {
+    "first_captured_at": "2026-08-30T12:54:40.24412+00:00",
+    "second_captured_at": "2026-08-30T13:09:52.234622+00:00",
+    "first_result": "PASS",
+    "second_result": "PASS",
+    "delta": "NONE",
+    "application_tables": "23/23 present and empty",
+    "category_product_shop_listing": "0/0/0/0",
+    "storage_objects": 0,
+    "ledger_before": "9/9 exact (version,name) pairs",
+    "rls_before": "23/23",
+    "policy_count_before": 52,
+    "active_other_sessions": 0,
+    "advisory_locks": 0
+  },
+  "apply": {
+    "decision": "GO",
+    "cli_version": "2.116.0",
+    "initial_repo_workdir_dry_run": "FAIL_CLOSED_REMOTE_VERSION_FILENAME_MISMATCH",
+    "migration_history_repair_performed": false,
+    "deployment_view": "ephemeral exact remote (version,name) filename projection",
+    "final_dry_run_pending": [
+      "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql"
+    ],
+    "write_performed": true,
+    "transaction_result": "SUCCESS",
+    "applied_at": "2026-08-30T13:15:28.112278+00:00",
+    "post_apply_dry_run": "REMOTE_DATABASE_UP_TO_DATE"
+  },
+  "postcheck": {
+    "captured_at": "2026-08-30T13:19:31.875259+00:00",
+    "nodes": 1563,
+    "levels": {
+      "1": 24,
+      "2": 244,
+      "3": 1096,
+      "4": 199
+    },
+    "terminal_leaves": 1245,
+    "unique_category_uuids": 1563,
+    "allocations": 1563,
+    "allocation_category_mismatch": 0,
+    "aliases": 651,
+    "alias_target_edges": 1000,
+    "relationships": 1032,
+    "successor_edges": 1000,
+    "split_locators": 210,
+    "split_edges": 591,
+    "arbitrary_product_split_assignments": 0,
+    "orphan_count": 0,
+    "cycle_or_depth_count": 0,
+    "l5_count": 0,
+    "duplicate_source_keys": 0,
+    "duplicate_slugs": 0,
+    "staged_inactive": 1563,
+    "public_active": 0,
+    "pilot_active": 0,
+    "policy_leakage": 0,
+    "policy_sensitive_active": 0,
+    "professional_review_active": 0,
+    "rls_enabled_tables": 28,
+    "rls_disabled_tables": [],
+    "policy_count": 52,
+    "taxonomy_admin_policy_count": 0,
+    "taxonomy_admin_anon_select_grants": 0,
+    "taxonomy_admin_authenticated_select_grants": 0,
+    "taxonomy_rpc_contract": "7/7",
+    "public_active_rpc_projection_rows": 0,
+    "canonical_trigger_count": 25,
+    "migration_ledger": "10/10 exact (version,name) pairs",
+    "last_migration": "0010_canonical_taxonomy_v1_staged_bootstrap",
+    "products": 0,
+    "shops": 0,
+    "shop_products": 0,
+    "other_non_taxonomy_application_rows": 0,
+    "auth_users": 0,
+    "auth_identities": 0,
+    "auth_sessions": 0,
+    "storage_buckets": 3,
+    "storage_objects": 0,
+    "active_other_writers": 0,
+    "advisory_locks": 0
+  },
+  "rollback": {
+    "required": false,
+    "performed": false,
+    "result": "NOT_RUN"
+  },
+  "final_runtime_state": {
+    "canonical_exists": true,
+    "staged": true,
+    "public_active": false,
+    "pilot_active": false,
+    "canonical_customer_mode": "OFF",
+    "legacy_customer_runtime_default": true,
+    "ready_for_development_backend_client_cutover": true
+  },
+  "safety": {
+    "development_accessed": true,
+    "development_write_performed": true,
+    "production_accessed": false,
+    "production_touched": false,
+    "auth_write_performed": false,
+    "storage_write_performed": false,
+    "public_activation_performed": false,
+    "pilot_activation_performed": false
+  }
+}
