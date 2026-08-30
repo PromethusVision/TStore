@@ -27,7 +27,7 @@ class TaxonomyCategoryNavigationDecision extends Equatable {
   factory TaxonomyCategoryNavigationDecision.forCanonicalNode(
     TaxonomyCategoryNode node,
   ) {
-    if (!node.isActive) {
+    if (!node.isActive && !node.isPreviewContext) {
       return const TaxonomyCategoryNavigationDecision._(
         action: TaxonomyCategoryNavigationAction.unavailable,
         evidence: TaxonomyCategoryNavigationEvidence.canonicalHierarchy,

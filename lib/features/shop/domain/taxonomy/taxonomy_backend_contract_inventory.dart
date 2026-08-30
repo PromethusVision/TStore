@@ -101,13 +101,47 @@ class TaxonomyBackendCapabilityVerifier {
   const TaxonomyBackendCapabilityVerifier();
 
   static const requiredEndpointArguments = <String, List<String>>{
-    'taxonomy_roots_v1': ['p_taxonomy_version'],
-    'taxonomy_children_v1': ['p_parent_id', 'p_taxonomy_version'],
-    'taxonomy_descendants_v1': ['p_category_id', 'p_taxonomy_version'],
-    'taxonomy_exact_leaf_v1': ['p_category_id', 'p_taxonomy_version'],
-    'taxonomy_breadcrumb_v1': ['p_category_id', 'p_taxonomy_version'],
-    'taxonomy_resolve_alias_v1': ['p_alias_slug', 'p_taxonomy_version'],
-    'taxonomy_search_context_v1': ['p_term', 'p_taxonomy_version'],
+    'taxonomy_roots_v2': [
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_children_v2': [
+      'p_parent_id',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_descendants_v2': [
+      'p_category_id',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_exact_leaf_v2': [
+      'p_category_id',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_breadcrumb_v2': [
+      'p_category_id',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_resolve_alias_v2': [
+      'p_alias_locator',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
+    'taxonomy_search_context_v2': [
+      'p_term',
+      'p_client_contract_version',
+      'p_taxonomy_version',
+      'p_preview',
+    ],
   };
 
   static const strictNodeFields = <String>{
@@ -122,25 +156,34 @@ class TaxonomyBackendCapabilityVerifier {
     'professional_review_status',
     'taxonomy_version',
     'has_children',
+    'sort_order',
+    'is_public_active',
+    'is_pilot_active',
+    'preview_context',
   };
 
   static const requiredResponseFields = <String, Set<String>>{
-    'taxonomy_roots_v1': strictNodeFields,
-    'taxonomy_children_v1': strictNodeFields,
-    'taxonomy_descendants_v1': strictNodeFields,
-    'taxonomy_breadcrumb_v1': strictNodeFields,
-    'taxonomy_exact_leaf_v1': {'id', 'name', 'slug', 'taxonomy_version'},
-    'taxonomy_resolve_alias_v1': {
+    'taxonomy_roots_v2': strictNodeFields,
+    'taxonomy_children_v2': strictNodeFields,
+    'taxonomy_descendants_v2': strictNodeFields,
+    'taxonomy_breadcrumb_v2': strictNodeFields,
+    'taxonomy_exact_leaf_v2': strictNodeFields,
+    'taxonomy_resolve_alias_v2': {
       'alias_locator',
       'resolution_state',
       'direct_target_category_id',
       'taxonomy_version',
+      'alias_kind',
+      'matched_via_alias',
+      'target_count',
     },
-    'taxonomy_search_context_v1': {
+    'taxonomy_search_context_v2': {
       'matched_node',
       'path',
       'alias_context',
       'taxonomy_version',
+      'match_kind',
+      'matched_via_alias',
     },
   };
 
@@ -185,23 +228,6 @@ class TaxonomyBackendCapabilityVerifier {
       }
     }
 
-    if (inventory
-            .endpoints['taxonomy_children_v1']
-            ?.argumentNames
-            .firstOrNull ==
-        'p_parent_id') {
-      adapterDifferences.add(
-        'Repository categoryId maps explicitly to p_parent_id.',
-      );
-    }
-    if (inventory.endpoints.containsKey('taxonomy_exact_leaf_v1') &&
-        inventory.endpoints.containsKey('taxonomy_descendants_v1')) {
-      adapterDifferences.add(
-        'Product scope qualification is split across exact-leaf and '
-        'descendant-ID RPCs.',
-      );
-    }
-
     if (blockers.isNotEmpty) {
       return TaxonomyCapabilityAssessment(
         compatibility: TaxonomyContractCompatibility.blockingContractMismatch,
@@ -210,21 +236,12 @@ class TaxonomyBackendCapabilityVerifier {
       );
     }
 
-    final proof = TaxonomyBackendContractProof(
-      contractVersion: inventory.declaredClientContractVersion!,
-      taxonomyVersion: inventory.taxonomyVersion,
-      supportedFeatures:
-          TaxonomyBackendContractProof.requiredCanonicalV1Features,
-      verifiedEvidence:
-          TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
-    );
     return TaxonomyCapabilityAssessment(
       compatibility: adapterDifferences.isEmpty
           ? TaxonomyContractCompatibility.match
           : TaxonomyContractCompatibility.backwardCompatibleAdapterDifference,
       blockers: const [],
       adapterDifferences: adapterDifferences,
-      proof: proof,
     );
   }
 
@@ -243,8 +260,4 @@ String _requiredText(String value, String fieldName) {
     throw ArgumentError.value(value, fieldName, 'Value cannot be empty.');
   }
   return normalized;
-}
-
-extension on List<String> {
-  String? get firstOrNull => isEmpty ? null : first;
 }

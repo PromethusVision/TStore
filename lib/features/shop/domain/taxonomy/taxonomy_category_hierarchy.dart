@@ -49,6 +49,7 @@ class TaxonomyCategoryNode extends Equatable {
     this.policyClass = TaxonomyPolicyClass.normal,
     this.professionalReviewStatus =
         TaxonomyProfessionalReviewStatus.notRequired,
+    this.isPreviewContext = false,
   }) : id = _requiredText(id, 'id'),
        displayName = _requiredText(displayName, 'displayName'),
        parentId = _optionalText(parentId),
@@ -69,6 +70,7 @@ class TaxonomyCategoryNode extends Equatable {
   final TaxonomyProfessionalReviewStatus professionalReviewStatus;
   final int sortOrder;
   final String? taxonomyVersion;
+  final bool isPreviewContext;
 
   bool get isRoot => level == TaxonomyCategoryLevel.l1;
   bool get isLeaf => kind == TaxonomyCategoryKind.leaf;
@@ -76,14 +78,15 @@ class TaxonomyCategoryNode extends Equatable {
   bool get isActive => lifecycle == TaxonomyCategoryLifecycle.active;
 
   bool get isDiscoverable =>
-      isActive && policyClass != TaxonomyPolicyClass.excluded;
+      (isActive || isPreviewContext) &&
+      policyClass != TaxonomyPolicyClass.excluded;
 
   bool get isPolicyClearedForAssignment =>
       policyClass == TaxonomyPolicyClass.normal &&
       professionalReviewStatus == TaxonomyProfessionalReviewStatus.notRequired;
 
   bool get canAssignProducts =>
-      isActive &&
+      (isActive || isPreviewContext) &&
       isLeaf &&
       assignability == TaxonomyCategoryAssignability.assignable &&
       isPolicyClearedForAssignment;
@@ -118,7 +121,7 @@ class TaxonomyCategoryNode extends Equatable {
       );
     }
     if (assignability == TaxonomyCategoryAssignability.assignable &&
-        (!isLeaf || !isActive)) {
+        (!isLeaf || (!isActive && !isPreviewContext))) {
       throw ArgumentError.value(
         assignability,
         'assignability',
@@ -154,6 +157,7 @@ class TaxonomyCategoryNode extends Equatable {
     professionalReviewStatus,
     sortOrder,
     taxonomyVersion,
+    isPreviewContext,
   ];
 }
 

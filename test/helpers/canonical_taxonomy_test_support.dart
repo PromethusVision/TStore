@@ -5,7 +5,7 @@ import 'package:t_store/features/shop/domain/taxonomy/taxonomy_category_hierarch
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_category_search_context.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 
-const canonicalTaxonomyVersion = 'v1.0.0';
+const canonicalTaxonomyVersion = 'canonical-v1.0.0';
 
 const canonicalRootNames = [
   'Gıda & İçecek',
@@ -42,10 +42,26 @@ TaxonomyRuntimeCapability canonicalCapability({
       contractVersion:
           TaxonomyBackendContractProof.supportedClientContractVersion,
       taxonomyVersion: taxonomyVersion,
+      rpcContractVersion:
+          TaxonomyBackendContractProof.supportedRpcContractVersion,
+      rpcGeneration: TaxonomyBackendContractProof.supportedRpcGeneration,
       supportedFeatures:
           TaxonomyBackendContractProof.requiredCanonicalV1Features,
       verifiedEvidence:
           TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
+      previewSupported: true,
+      previewEnabled: true,
+      lifecycleMetadata: true,
+      policyMetadata: true,
+      aliasStateMetadata: true,
+      pathMetadata: true,
+      publicActiveRootCount: 0,
+      pilotActiveRootCount: 0,
+      previewRootCount: canonicalRootNames.length,
+      productScopeContract:
+          TaxonomyBackendContractProof.supportedProductScopeContract,
+      productScopeRequiresAssignable: true,
+      productScopePolicyFailClosed: true,
     ),
   );
 }

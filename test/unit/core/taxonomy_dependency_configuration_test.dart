@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
-import 'package:t_store/features/shop/data/services/deployed_canonical_taxonomy_rpc_contract.dart';
-import 'package:t_store/features/shop/domain/taxonomy/taxonomy_backend_contract_inventory.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 
 void main() {
@@ -34,12 +32,12 @@ void main() {
   );
 
   test(
-    'explicit canonical request rejects current deployed contract, no fallback',
+    'explicit canonical request rejects compatible preview-off proof, no fallback',
     () {
       expect(
         () => planner.resolve(
           TaxonomyDependencyConfiguration.developmentCanonicalAcceptance(
-            contractInventory: deployedCanonicalTaxonomyV1Inventory,
+            contractProof: _proof(previewEnabled: false, previewRootCount: 0),
           ),
         ),
         throwsA(isA<TaxonomyDependencyConfigurationException>()),
@@ -53,7 +51,7 @@ void main() {
         TaxonomyDependencyConfiguration(
           environment: AppEnvironment.production,
           runtimeRequest: TaxonomyRuntimeRequest.canonicalV1Acceptance,
-          contractInventory: _compatibleInventory(),
+          contractProof: _proof(previewEnabled: true, previewRootCount: 24),
         ),
       ),
       throwsA(isA<TaxonomyDependencyConfigurationException>()),
@@ -65,7 +63,7 @@ void main() {
     () {
       final plan = planner.resolve(
         TaxonomyDependencyConfiguration.developmentCanonicalAcceptance(
-          contractInventory: _compatibleInventory(),
+          contractProof: _proof(previewEnabled: true, previewRootCount: 24),
         ),
       );
 
@@ -76,28 +74,31 @@ void main() {
   );
 }
 
-TaxonomyBackendContractInventory _compatibleInventory() {
-  return TaxonomyBackendContractInventory(
-    taxonomyVersion: 'canonical-v1.0.0',
-    declaredClientContractVersion:
+TaxonomyBackendContractProof _proof({
+  required bool previewEnabled,
+  required int previewRootCount,
+}) {
+  return TaxonomyBackendContractProof(
+    contractVersion:
         TaxonomyBackendContractProof.supportedClientContractVersion,
-    hasAuthoritativeCapabilityResponse: true,
-    endpoints: {
-      for (final entry
-          in TaxonomyBackendCapabilityVerifier
-              .requiredEndpointArguments
-              .entries)
-        entry.key: TaxonomyRpcEndpointInventory(
-          functionName: entry.key,
-          argumentNames: entry.value,
-          returnFields: TaxonomyBackendCapabilityVerifier
-              .requiredResponseFields[entry.key]!,
-          securityMode: TaxonomyRpcSecurityMode.invoker,
-          isStable: true,
-          searchPathPinnedToPublic: true,
-          anonExecute: true,
-          authenticatedExecute: true,
-        ),
-    },
+    taxonomyVersion: TaxonomyBackendContractProof.supportedTaxonomyVersion,
+    rpcContractVersion:
+        TaxonomyBackendContractProof.supportedRpcContractVersion,
+    rpcGeneration: TaxonomyBackendContractProof.supportedRpcGeneration,
+    supportedFeatures: TaxonomyBackendContractProof.requiredCanonicalV1Features,
+    verifiedEvidence: TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
+    previewSupported: true,
+    previewEnabled: previewEnabled,
+    lifecycleMetadata: true,
+    policyMetadata: true,
+    aliasStateMetadata: true,
+    pathMetadata: true,
+    publicActiveRootCount: 0,
+    pilotActiveRootCount: 0,
+    previewRootCount: previewRootCount,
+    productScopeContract:
+        TaxonomyBackendContractProof.supportedProductScopeContract,
+    productScopeRequiresAssignable: true,
+    productScopePolicyFailClosed: true,
   );
 }
