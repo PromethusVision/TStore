@@ -123,6 +123,10 @@ function expectedSyncFailure(name, expectedTag, operation) {
   throw new Error(`W38_FAILURE_DID_NOT_FAIL:${name}`);
 }
 
+function passedRegression(name, evidence) {
+  return { name, result: 'PASS', evidence };
+}
+
 function validateNode(node) {
   for (const field of REQUIRED_NODE_FIELDS) {
     check(Object.hasOwn(node, field), `W38_NODE_FIELD_MISSING:${field}`);
@@ -167,6 +171,19 @@ function validateCapability(capability) {
   check(capability.rpc_generation === 2, 'W38_CAPABILITY_GENERATION');
   check(capability.preview_support === true, 'W38_CAPABILITY_PREVIEW_SUPPORT');
   check(capability.preview_enabled === false, 'W38_CAPABILITY_PREVIEW_DEFAULT');
+  check(
+    capability.product_scope_contract ===
+      'exact-leaf-visible-assignable-policy-eligible',
+    'W38_CAPABILITY_PRODUCT_SCOPE_CONTRACT',
+  );
+  check(
+    capability.product_scope_requires_assignable === true,
+    'W38_CAPABILITY_PRODUCT_SCOPE_ASSIGNABILITY',
+  );
+  check(
+    capability.product_scope_policy_fail_closed === true,
+    'W38_CAPABILITY_PRODUCT_SCOPE_POLICY',
+  );
   check(capability.supported_features.length === 7, 'W38_CAPABILITY_FEATURE_COUNT');
   check(capability.verified_evidence.length === 7, 'W38_CAPABILITY_EVIDENCE_COUNT');
 }
@@ -224,6 +241,18 @@ function validateCandidateStatic(candidate, rollback) {
       check(!/EXECUTE\s+format\s*\(/i.test(match[0]), `W38_DYNAMIC_SQL:${match[1]}`);
     }
   }
+  const exactLeafBlock = blocks.find((match) => match[1] === 'taxonomy_exact_leaf_v2')?.[0];
+  check(exactLeafBlock, 'W38_EXACT_LEAF_FUNCTION_MISSING');
+  check(/c\.is_assignable\s*=\s*true/i.test(exactLeafBlock), 'W38_EXACT_LEAF_ASSIGNABILITY_GUARD');
+  check(/c\.policy_class\s*<>\s*'EXCLUDED'/i.test(exactLeafBlock), 'W38_EXACT_LEAF_POLICY_GUARD');
+  check(
+    /c\.professional_review_status\s+NOT\s+IN\s*\(\s*'pending'\s*,\s*'rejected'\s*\)/i.test(exactLeafBlock),
+    'W38_EXACT_LEAF_REVIEW_GUARD',
+  );
+  check(
+    candidate.includes("'exact-leaf-visible-assignable-policy-eligible'::TEXT"),
+    'W38_CAPABILITY_PRODUCT_SCOPE_PROOF',
+  );
   for (const endpoint of V2_PUBLIC_RPCS) {
     check(candidate.includes(`public.${endpoint}(`), `W38_ENDPOINT_MISSING:${endpoint}`);
   }
@@ -459,6 +488,23 @@ async function strictPostcheck(database, baseline, v1Before) {
 
 async function previewExercise(database) {
   const failures = [];
+  const authoritativeBeforeFixtures = await categorySnapshot(database);
+  const realLeaf = (await database.query(`
+    SELECT c.id::TEXT, c.name, c.level, c.is_assignable,
+      c.policy_class, c.professional_review_status
+    FROM public.categories AS c
+    WHERE c.taxonomy_version=$1
+      AND NOT EXISTS (
+        SELECT 1 FROM public.categories AS child
+        WHERE child.parent_id=c.id
+          AND child.taxonomy_version=c.taxonomy_version
+      )
+    ORDER BY c.level DESC,c.sort_order,c.id
+    LIMIT 1
+  `, [TAXONOMY_VERSION])).rows[0];
+  check(realLeaf, 'W38_REAL_NON_ASSIGNABLE_LEAF_MISSING');
+  check(realLeaf.is_assignable === false, 'W38_BASELINE_LEAF_UNEXPECTEDLY_ASSIGNABLE');
+
   const capabilityOff = await callRows(
     database, 'anon', 'taxonomy_capabilities_v2',
     [CLIENT_VERSION, TAXONOMY_VERSION], ['TEXT', 'TEXT'],
@@ -466,6 +512,14 @@ async function previewExercise(database) {
   check(capabilityOff.rows.length === 1, 'W38_CAPABILITY_ROW');
   check(capabilityOff.rows[0].preview_enabled === false, 'W38_CAPABILITY_PREVIEW_OFF');
   check(capabilityOff.rows[0].rpc_contract_version === RPC_VERSION, 'W38_CAPABILITY_RPC');
+  check(
+    capabilityOff.rows[0].product_scope_requires_assignable === true,
+    'W38_CAPABILITY_PRODUCT_SCOPE_ASSIGNABILITY_OFF',
+  );
+  check(
+    capabilityOff.rows[0].product_scope_policy_fail_closed === true,
+    'W38_CAPABILITY_PRODUCT_SCOPE_POLICY_OFF',
+  );
 
   const publicRoots = await callRows(
     database, 'anon', 'taxonomy_roots_v2',
@@ -473,11 +527,30 @@ async function previewExercise(database) {
   );
   check(publicRoots.rows.length === 0, 'W38_PUBLIC_ROOTS_NOT_ZERO');
 
+  const stagedLeafWithoutPreview = await callRows(
+    database, 'anon', 'taxonomy_exact_leaf_v2',
+    [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, false],
+    ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+  );
+  check(stagedLeafWithoutPreview.rows.length === 0, 'W38_STAGED_LEAF_WITHOUT_PREVIEW');
+  failures.push(passedRegression(
+    'preview_disabled_staged_leaf_exact_scope',
+    'zero qualifying product-scope rows',
+  ));
+
   failures.push(await expectedFailure(
     'preview_requested_while_disabled', 'W38_PREVIEW_DISABLED',
     () => callRows(
       database, 'anon', 'taxonomy_roots_v2',
       [CLIENT_VERSION, TAXONOMY_VERSION, true], ['TEXT', 'TEXT', 'BOOLEAN'],
+    ),
+  ));
+  failures.push(await expectedFailure(
+    'exact_leaf_preview_requested_while_disabled', 'W38_PREVIEW_DISABLED',
+    () => callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
     ),
   ));
   failures.push(await expectedFailure(
@@ -523,6 +596,16 @@ async function previewExercise(database) {
     ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
   );
   check(nonexistent.rows.length === 0, 'W38_NONEXISTENT_UUID_RESULT');
+  const nonexistentExactLeaf = await callRows(
+    database, 'anon', 'taxonomy_exact_leaf_v2',
+    ['00000000-0000-4000-8000-000000000000', CLIENT_VERSION, TAXONOMY_VERSION, false],
+    ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+  );
+  check(nonexistentExactLeaf.rows.length === 0, 'W38_NONEXISTENT_EXACT_LEAF_RESULT');
+  failures.push(passedRegression(
+    'nonexistent_uuid_exact_leaf',
+    'safe empty result',
+  ));
 
   const enabled = await callRows(
     database, 'service_role', 'taxonomy_set_preview_v2',
@@ -536,6 +619,11 @@ async function previewExercise(database) {
   );
   check(capabilityOn.rows[0].preview_enabled === true, 'W38_CAPABILITY_PREVIEW_ON');
   check(capabilityOn.rows[0].preview_root_count === 24, 'W38_CAPABILITY_ROOT_COUNT');
+  check(
+    capabilityOn.rows[0].product_scope_contract ===
+      'exact-leaf-visible-assignable-policy-eligible',
+    'W38_CAPABILITY_PRODUCT_SCOPE_ON',
+  );
 
   const roots = await callRows(
     database, 'anon', 'taxonomy_roots_v2',
@@ -558,6 +646,153 @@ async function previewExercise(database) {
   );
   check(descendants.rows.length > children.rows.length, 'W38_PREVIEW_DESCENDANTS_EMPTY');
 
+  const realNonAssignableExact = await callRows(
+    database, 'anon', 'taxonomy_exact_leaf_v2',
+    [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+    ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+  );
+  check(realNonAssignableExact.rows.length === 0, 'W38_NON_ASSIGNABLE_LEAF_QUALIFIED');
+  const realLeafStructuralPath = await callRows(
+    database, 'anon', 'taxonomy_breadcrumb_v2',
+    [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+    ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+  );
+  check(realLeafStructuralPath.rows.length === realLeaf.level, 'W38_REAL_LEAF_STRUCTURAL_PATH');
+  check(
+    realLeafStructuralPath.rows.at(-1).id === realLeaf.id &&
+      realLeafStructuralPath.rows.at(-1).has_children === false,
+    'W38_REAL_LEAF_STRUCTURAL_PREVIEW',
+  );
+  failures.push(passedRegression(
+    'real_non_assignable_leaf_exact_scope',
+    'zero exact-leaf rows while structural breadcrumb remains visible',
+  ));
+
+  await database.exec('BEGIN');
+  try {
+    await database.query(
+      'UPDATE public.categories SET is_assignable=true WHERE id=$1',
+      [root.id],
+    );
+    const assignableContainer = await callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [root.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(assignableContainer.rows.length === 0, 'W38_ASSIGNABLE_CONTAINER_QUALIFIED');
+    failures.push(passedRegression(
+      'assignable_container_exact_scope',
+      'zero rows because structural containers are not product scopes',
+    ));
+  } finally {
+    await database.exec('ROLLBACK');
+  }
+
+  await database.exec('BEGIN');
+  try {
+    await database.query(`
+      UPDATE public.categories
+      SET is_assignable=true,
+          policy_class='EXCLUDED',
+          professional_review_status='approved'
+      WHERE id=$1
+    `, [realLeaf.id]);
+    const policyInvalid = await callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(policyInvalid.rows.length === 0, 'W38_POLICY_INVALID_LEAF_QUALIFIED');
+    failures.push(passedRegression(
+      'policy_invalid_assignable_leaf_exact_scope',
+      'zero rows for EXCLUDED policy',
+    ));
+  } finally {
+    await database.exec('ROLLBACK');
+  }
+
+  await database.exec('BEGIN');
+  try {
+    await database.query(`
+      UPDATE public.categories
+      SET is_assignable=true,
+          policy_class='REGULATED',
+          professional_review_status='pending'
+      WHERE id=$1
+    `, [realLeaf.id]);
+    const reviewInvalid = await callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(reviewInvalid.rows.length === 0, 'W38_REVIEW_INVALID_LEAF_QUALIFIED');
+    failures.push(passedRegression(
+      'professional_review_pending_assignable_leaf_exact_scope',
+      'zero rows while professional review is pending',
+    ));
+  } finally {
+    await database.exec('ROLLBACK');
+  }
+
+  await database.exec('BEGIN');
+  try {
+    await database.query(`
+      UPDATE public.categories
+      SET is_assignable=true,
+          lifecycle_state='retired',
+          is_active=false,
+          policy_class='NORMAL',
+          professional_review_status='not_required'
+      WHERE id=$1
+    `, [realLeaf.id]);
+    const lifecycleInvalid = await callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(lifecycleInvalid.rows.length === 0, 'W38_RETIRED_LEAF_QUALIFIED');
+    failures.push(passedRegression(
+      'retired_assignable_leaf_exact_scope',
+      'zero rows because retired nodes are not preview-visible',
+    ));
+  } finally {
+    await database.exec('ROLLBACK');
+  }
+
+  await database.exec('BEGIN');
+  try {
+    await database.query(`
+      UPDATE public.categories
+      SET is_assignable=true,
+          policy_class='NORMAL',
+          professional_review_status='not_required'
+      WHERE id=$1
+    `, [realLeaf.id]);
+    const positiveExactLeaf = await callRows(
+      database, 'anon', 'taxonomy_exact_leaf_v2',
+      [realLeaf.id, CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(positiveExactLeaf.rows.length === 1, 'W38_ASSIGNABLE_LEAF_NOT_QUALIFIED');
+    check(
+      positiveExactLeaf.rows[0].id === realLeaf.id &&
+        positiveExactLeaf.rows[0].is_assignable === true &&
+        positiveExactLeaf.rows[0].has_children === false,
+      'W38_ASSIGNABLE_LEAF_RESPONSE_INVALID',
+    );
+    failures.push(passedRegression(
+      'assignable_leaf_positive_local_fixture',
+      'exactly one qualifying product-scope row',
+    ));
+  } finally {
+    await database.exec('ROLLBACK');
+  }
+  const fixtureRollbackSnapshot = await categorySnapshot(database);
+  check(
+    fixtureRollbackSnapshot.digest === authoritativeBeforeFixtures.digest,
+    'W38_PRODUCT_SCOPE_FIXTURE_LEAK',
+  );
+
   const leafByLevel = {};
   for (const level of [2, 3, 4]) {
     const result = await database.query(`
@@ -572,12 +807,19 @@ async function previewExercise(database) {
     `, [TAXONOMY_VERSION, level]);
     check(result.rows.length === 1, `W38_REAL_LEAF_LEVEL_MISSING:${level}`);
     leafByLevel[level] = result.rows[0].id;
-    const exact = await callRows(
+    const exactNonAssignable = await callRows(
       database, 'anon', 'taxonomy_exact_leaf_v2',
       [leafByLevel[level], CLIENT_VERSION, TAXONOMY_VERSION, true],
       ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
     );
-    check(exact.rows.length === 1 && exact.rows[0].has_children === false, `W38_EXACT_LEAF_LEVEL:${level}`);
+    check(exactNonAssignable.rows.length === 0, `W38_NON_ASSIGNABLE_EXACT_LEAF_LEVEL:${level}`);
+    const breadcrumb = await callRows(
+      database, 'anon', 'taxonomy_breadcrumb_v2',
+      [leafByLevel[level], CLIENT_VERSION, TAXONOMY_VERSION, true],
+      ['UUID', 'TEXT', 'TEXT', 'BOOLEAN'],
+    );
+    check(breadcrumb.rows.length === level, `W38_STRUCTURAL_LEAF_LEVEL:${level}`);
+    check(breadcrumb.rows.at(-1).has_children === false, `W38_STRUCTURAL_LEAF_SHAPE:${level}`);
   }
 
   const l4Breadcrumb = await callRows(
@@ -715,6 +957,15 @@ async function previewExercise(database) {
     alias_states: aliasRows.map((row) => row.resolution_state).sort(),
     policy_metadata: true,
     professional_review_metadata: true,
+    product_scope: {
+      authoritative_leaf_name: realLeaf.name,
+      authoritative_leaf_level: realLeaf.level,
+      authoritative_is_assignable: realLeaf.is_assignable,
+      non_assignable_exact_leaf_rows: realNonAssignableExact.rows.length,
+      positive_fixture_exact_leaf_rows: 1,
+      fixture_rollback: fixtureRollbackSnapshot.digest === authoritativeBeforeFixtures.digest,
+      structural_preview_preserved: true,
+    },
   };
 }
 

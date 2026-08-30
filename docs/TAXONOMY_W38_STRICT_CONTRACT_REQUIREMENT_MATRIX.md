@@ -30,7 +30,7 @@ The v2 node also returns `is_public_active`, `is_pilot_active`, and `preview_con
 | Roots | server-authoritative ordered L1 list | MATCH |
 | Children | direct children by UUID | MATCH |
 | Descendants | one recursive server call; no client fan-out | MATCH |
-| Exact leaf | target exists, is visible, assignable, and has no children | MATCH |
+| Exact leaf/product scope | target is visible, `is_assignable=true`, policy/review eligible, and has no children | MATCH |
 | Breadcrumb | ordered root-to-target strict nodes | MATCH |
 | Alias | `RESOLVED`, `AMBIGUOUS`, `TOMBSTONE`, `UNRESOLVED`; target count included | MATCH |
 | Ambiguity | no first-match fallback; graph invariant enforced | MATCH |
@@ -50,6 +50,9 @@ The v2 node also returns `is_public_active`, `is_pilot_active`, and `preview_con
 | RPC generation | `taxonomy-rpc-v2`, generation 2 | MATCH, additional proof |
 | Preview state | supported/enabled booleans and root counts | MATCH, additional proof |
 | Lifecycle/policy/path/alias metadata | explicit booleans | MATCH, additional proof |
+| Product-scope semantics | explicit assignability and policy fail-closed booleans | MATCH, additional proof |
+
+The corrected candidate treats structural navigation and product scope separately. On the unchanged 0010 baseline, all 1,245 leaves remain available to authorized structural preview but all return zero from exact-leaf qualification because all are non-assignable. Permanent local regression coverage proves non-assignable leaves, assignable containers, excluded/pending/retired candidates, disabled preview, and nonexistent UUIDs fail closed; an isolated transaction proves one eligible assignable leaf succeeds and then rolls back.
 
 ## Bounded client work
 

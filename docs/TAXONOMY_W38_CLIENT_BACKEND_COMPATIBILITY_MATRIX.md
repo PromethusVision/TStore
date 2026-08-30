@@ -14,7 +14,7 @@ The comparison target is the Wave 38A code already integrated at base `231e5f272
 | Capability evidence | seven exact enum values | all seven | MATCH |
 | Strict node fields | 11 required + optional sort order | all present | MATCH |
 | Hierarchy shape | root/child/descendant/breadcrumb authority | server-authoritative | MATCH |
-| Leaf qualification | explicit exact leaf | strict endpoint | MATCH |
+| Product-scope leaf qualification | strict visible + assignable + policy-eligible exact leaf | corrected server predicate and capability proof | MATCH |
 | Alias states | four explicit states | four explicit states | MATCH |
 | Search context | nested node, path, optional alias context | exact shape | MATCH |
 | Lifecycle/policy truth | required and fail-closed | exact stored metadata | MATCH |
@@ -26,6 +26,8 @@ The comparison target is the Wave 38A code already integrated at base `231e5f272
 - MATCH: **10**
 - ADAPTER_UPDATE_REQUIRED: **2**
 - BACKEND_BLOCKER: **0**
+
+W38C correctly reduced the pre-correction assessment to MATCH 9 / ADAPTER 2 / BLOCKER 1 because non-assignable structural leaves qualified as product scopes. The corrected SQL and permanent local regression now restore the evidence-based count above: MATCH 10 / ADAPTER 2 / BLOCKER 0.
 
 The adapter update count is architectural work items, not a count of touched methods. A later client task should change all seven calls atomically under one strict adapter binding and add the capability/preview gate atomically. Legacy runtime remains the default until that work and a separate Development acceptance are authorized.
 

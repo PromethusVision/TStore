@@ -37,17 +37,18 @@ In every cycle, preview started OFF and preview root access failed with `W38_PRE
 
 - roots: 24;
 - recursive children and descendants: PASS;
-- L2/L3/L4 exact-leaf coverage: PASS;
+- L2/L3/L4 structural leaf navigation: PASS;
+- authoritative exact-leaf product scopes: 0, matching zero assignable baseline nodes;
 - four-level breadcrumb: PASS;
 - canonical and alias search: PASS;
 - alias states RESOLVED/AMBIGUOUS/TOMBSTONE/UNRESOLVED: PASS;
 - policy and professional-review metadata: PASS.
 
-The trusted role then disabled preview. Preview access failed again. Public active roots and pilot active roots remained 0, and no category lifecycle row changed.
+The real authoritative L4 leaf `Lateks Balonlar` remained visible through structural breadcrumb preview while exact-leaf qualification returned zero because `is_assignable=false`. In an isolated transaction it was made assignable with normal policy metadata; exact-leaf returned exactly one row, then rollback restored the authoritative category digest. The trusted role then disabled preview. Preview access failed again. Public active roots and pilot active roots remained 0, and no category lifecycle row changed.
 
 ## Failure matrix
 
-20/20 unique cases passed fail-closed:
+29/29 unique regression/failure cases passed:
 
 1. missing lifecycle field;
 2. missing policy field;
@@ -58,16 +59,25 @@ The trusted role then disabled preview. Preview access failed again. Public acti
 7. unsafe SECURITY DEFINER search path;
 8. migration ledger mismatch;
 9. unexpected public activation;
-10. preview requested while disabled;
-11. anon config select;
-12. authenticated config mutation;
-13. ordinary client preview enablement;
-14. client-contract mismatch;
-15. taxonomy-data mismatch;
-16. malformed UUID;
-17. ambiguous alias without target edges;
-18. preview request after disable;
-19. existing v1 RPC breakage;
-20. rollback interruption.
+10. staged exact leaf with preview disabled returns zero;
+11. preview requested while disabled;
+12. exact-leaf preview requested while disabled;
+13. anon config select;
+14. authenticated config mutation;
+15. ordinary client preview enablement;
+16. client-contract mismatch;
+17. taxonomy-data mismatch;
+18. malformed UUID;
+19. nonexistent UUID exact-leaf request returns zero;
+20. real non-assignable leaf exact-leaf request returns zero while structural preview remains visible;
+21. locally assignable container returns zero;
+22. locally assignable `EXCLUDED` leaf returns zero;
+23. locally assignable professional-review-pending leaf returns zero;
+24. locally assignable retired leaf returns zero;
+25. locally assignable eligible leaf returns exactly one;
+26. ambiguous alias without target edges;
+27. preview request after disable;
+28. existing v1 RPC breakage;
+29. rollback interruption.
 
-Valid nonexistent UUID behavior was also exercised by endpoint postchecks: no guessed category is returned.
+All local category mutations used for cases 21–25 were transaction-bound and rolled back. The frozen taxonomy digest matched before and after every preview cycle.

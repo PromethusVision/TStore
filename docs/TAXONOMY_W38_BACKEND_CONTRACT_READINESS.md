@@ -13,6 +13,7 @@ Assessment: READY FOR DEVELOPMENT CONTRACT WRITE REVIEW — NOT AUTHORIZED FOR W
 | Preview local exercise | PASS | OFF/ON/OFF in 3 cycles; 24 staged roots while ON |
 | v1 compatibility | PASS | 7/7 after apply and rollback |
 | Frozen taxonomy | PASS | 1563 rows and deterministic data digest unchanged |
+| Exact-leaf product scope | PASS | non-assignable real leaf returns 0; isolated assignable fixture returns 1 then rolls back |
 | Client response compatibility | PASS | 10 contract areas match |
 | Bounded client work | OPEN | 2 adapter/wiring work items |
 | Backend blockers | 0 | no response/capability blocker remains |
@@ -42,3 +43,7 @@ Production apply, Production preview, taxonomy activation, UUID generation, taxo
 - an operator-controlled preview enable/disable procedure for the later acceptance phase.
 
 These are operational authorization gates, not artifact-integrity or backend-contract blockers.
+
+## W38B-R correction evidence
+
+The superseded candidate tested only structural leaf status. The corrected candidate additionally requires `is_assignable=true`, excludes `EXCLUDED`, and rejects pending/rejected professional review. The real frozen L4 leaf `Lateks Balonlar` remains structurally visible through breadcrumb/search preview but returns zero exact-leaf product-scope rows. A transaction-local eligible fixture returns one row and restores the authoritative digest on rollback. Expanded regression matrix: 29/29 PASS.

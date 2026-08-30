@@ -40,8 +40,12 @@ Every hierarchy response carries:
 - The server remains hierarchy-authoritative.
 - Descendants are returned by one recursive endpoint; the client need not recursively fan out.
 - Breadcrumbs are ordered L1 through target and consist of the same strict node shape.
-- Exact-leaf qualification requires a visible node, `is_assignable=true`, and no child in the same taxonomy version.
+- Exact-leaf qualification is a product-scope operation, not a generic structural-leaf lookup. It requires a visible node, `is_assignable=true`, no child in the same taxonomy version, a policy class other than `EXCLUDED`, and a professional-review state other than `pending` or `rejected`.
 - Container/leaf truth comes from `has_children`, not name or level inference.
+
+The frozen 0010 baseline intentionally has 1,245 structural leaves and zero assignable nodes. Consequently, preview navigation can expose all structural leaves while `taxonomy_exact_leaf_v2` correctly returns zero authoritative product scopes. A local transaction proved the positive path by temporarily making one normal staged leaf assignable; the endpoint returned exactly that leaf and rollback restored the baseline digest.
+
+`STRUCTURAL PREVIEW != PRODUCT ASSIGNABILITY`: roots, children, descendants, breadcrumb, and search may describe a staged non-assignable leaf, but that does not qualify it for product assignment.
 
 ## Alias contract
 
@@ -67,7 +71,7 @@ Canonical exact-name/slug matches are preferred. Resolved alias matches are incl
 
 ## Capability contract
 
-Capability success proves exact versions, the seven required feature values, and the seven required evidence values expected by Wave 38A. It additionally reports RPC generation, lifecycle/policy/alias/path metadata, preview support/state, public/pilot/preview root counts, and the product-scope qualifier.
+Capability success proves exact versions, the seven required feature values, and the seven required evidence values expected by Wave 38A. It additionally reports RPC generation, lifecycle/policy/alias/path metadata, preview support/state, public/pilot/preview root counts, and product-scope proof: `product_scope_contract=exact-leaf-visible-assignable-policy-eligible`, `product_scope_requires_assignable=true`, and `product_scope_policy_fail_closed=true`.
 
 Merely finding an RPC is insufficient. Any missing config, version mismatch, or malformed contract state raises an explicit fail-closed error.
 

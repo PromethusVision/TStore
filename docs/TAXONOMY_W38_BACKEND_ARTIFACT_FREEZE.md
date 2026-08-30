@@ -19,14 +19,23 @@ Text inputs are decoded as UTF-8, CRLF is normalized to LF in memory, a trailing
 
 | Artifact | Canonical bytes | SHA-256 |
 |---|---:|---|
-| `20260830001100_0011_canonical_taxonomy_contract_v2.sql` | 30233 | `c4961f36f28dcc047d44716ae2de76c5c1828b592078e49293307064959e9353` |
+| `20260830001100_0011_canonical_taxonomy_contract_v2.sql` | 30493 | `63552485c8b86cbc6bab3fe24dcd3b0783063464020c4ece00241c42f10f2bb5` |
 | `20260830001100_0011_canonical_taxonomy_contract_v2.rollback.sql` | 1250 | `fdc79ff3586fe61c8336c68026fd564ebeaec6cb6e890bc93f28778499d9000d` |
-| `capability_response.json` | 992 | `bbe75c335ecfa425e336c5f842609f3a6085ee5ad079570fd7a1baa94e9f4c5a` |
+| `capability_response.json` | 1096 | `35f581c8e25c025ecee516a56d648006ffc1635c9ea5eae04a7053e4fa5472f5` |
 | `strict_response_fixtures.json` | 5105 | `210fea1e4b6463f82527c854a199c6c1abf67a3c653b824864bba43376ba21a2` |
 
 Stable-key JSON digest of `artifact_manifest.json` excluding its own digest field:
 
-`bdc9361021f60742197b2a8a6bc3f1ffb512203ad1d1980fcff337026ab68590`
+`781dd6351bc0daa7709725fbd4deb509fad63de8bda8e3d24e77be2a1049bda7`
+
+## Superseded provenance
+
+The following Wave 38B freeze is retained as historical provenance and MUST NOT be used:
+
+- Candidate SHA `c4961f36f28dcc047d44716ae2de76c5c1828b592078e49293307064959e9353`
+- Artifact-set SHA `bdc9361021f60742197b2a8a6bc3f1ffb512203ad1d1980fcff337026ab68590`
+- State: **SUPERSEDED — CONTRACT BUG**
+- Reason: `taxonomy_exact_leaf_v2` checked structural leaf status but did not enforce `is_assignable=true`, permitting staged non-assignable leaves to appear as product scopes in preview.
 
 ## Freeze guarantees
 

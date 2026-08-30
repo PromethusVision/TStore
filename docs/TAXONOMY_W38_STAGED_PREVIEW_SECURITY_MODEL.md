@@ -17,6 +17,8 @@ Visibility is:
 
 Preview changes visibility in the strict response path only. It does not update category or alias lifecycle rows.
 
+Preview visibility alone never grants product scope. `taxonomy_exact_leaf_v2` separately enforces structural leaf status, `is_assignable=true`, policy eligibility, and professional-review eligibility. Thus the unchanged staged baseline can be navigated while its 1,245 non-assignable leaves remain unqualified for product assignment.
+
 ## Control path
 
 `taxonomy_set_preview_v2(enabled, taxonomy_version)` is the only candidate control function. Execute is granted to `service_role` and denied to `PUBLIC`, `anon`, and `authenticated`. No service-role material is returned or embedded in SQL, fixtures, documentation, or Flutter.

@@ -7,16 +7,16 @@
   "rpc_contract_version": "taxonomy-rpc-v2",
   "artifacts": {
     "20260830001100_0011_canonical_taxonomy_contract_v2.sql": {
-      "bytes": 30233,
-      "sha256": "c4961f36f28dcc047d44716ae2de76c5c1828b592078e49293307064959e9353"
+      "bytes": 30493,
+      "sha256": "63552485c8b86cbc6bab3fe24dcd3b0783063464020c4ece00241c42f10f2bb5"
     },
     "20260830001100_0011_canonical_taxonomy_contract_v2.rollback.sql": {
       "bytes": 1250,
       "sha256": "fdc79ff3586fe61c8336c68026fd564ebeaec6cb6e890bc93f28778499d9000d"
     },
     "capability_response.json": {
-      "bytes": 992,
-      "sha256": "bbe75c335ecfa425e336c5f842609f3a6085ee5ad079570fd7a1baa94e9f4c5a"
+      "bytes": 1096,
+      "sha256": "35f581c8e25c025ecee516a56d648006ffc1635c9ea5eae04a7053e4fa5472f5"
     },
     "strict_response_fixtures.json": {
       "bytes": 5105,
@@ -29,5 +29,5 @@
     "remote_mode": false,
     "taxonomy_content_mutation": false
   },
-  "artifact_set_sha256": "bdc9361021f60742197b2a8a6bc3f1ffb512203ad1d1980fcff337026ab68590"
+  "artifact_set_sha256": "781dd6351bc0daa7709725fbd4deb509fad63de8bda8e3d24e77be2a1049bda7"
 }

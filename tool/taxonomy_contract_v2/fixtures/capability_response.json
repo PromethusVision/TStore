@@ -32,5 +32,7 @@
   "public_active_root_count": 0,
   "pilot_active_root_count": 0,
   "preview_root_count": 0,
-  "product_scope_contract": "taxonomy-id-qualification-only"
+  "product_scope_contract": "exact-leaf-visible-assignable-policy-eligible",
+  "product_scope_requires_assignable": true,
+  "product_scope_policy_fail_closed": true
 }

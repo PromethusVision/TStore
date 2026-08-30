@@ -330,7 +330,9 @@ RETURNS TABLE(
   public_active_root_count INTEGER,
   pilot_active_root_count INTEGER,
   preview_root_count INTEGER,
-  product_scope_contract TEXT
+  product_scope_contract TEXT,
+  product_scope_requires_assignable BOOLEAN,
+  product_scope_policy_fail_closed BOOLEAN
 )
 LANGUAGE plpgsql
 STABLE
@@ -385,7 +387,9 @@ BEGIN
         AND c.level = 1 AND c.parent_id IS NULL
         AND c.lifecycle_state = 'staged'
     ) ELSE 0 END,
-    'taxonomy-id-qualification-only'::TEXT;
+    'exact-leaf-visible-assignable-policy-eligible'::TEXT,
+    true,
+    true;
 END
 $fn$;
 
@@ -574,6 +578,9 @@ BEGIN
   WHERE c.id = p_category_id
     AND c.taxonomy_version = p_taxonomy_version
     AND public._taxonomy_visible_v2(c.id, p_taxonomy_version, p_preview)
+    AND c.is_assignable = true
+    AND c.policy_class <> 'EXCLUDED'
+    AND c.professional_review_status NOT IN ('pending', 'rejected')
     AND NOT EXISTS (
       SELECT 1 FROM public.categories AS child
       WHERE child.parent_id = c.id
