@@ -1,0 +1,33 @@
+{
+  "contract": "w38-strict-backend-artifact-set-v1",
+  "base": "231e5f27270f808c59cef445b4cca8931ac16cc2",
+  "candidate_identifier": "20260830001100_0011_canonical_taxonomy_contract_v2",
+  "client_contract_version": "taxonomy-client-v1",
+  "taxonomy_data_version": "canonical-v1.0.0",
+  "rpc_contract_version": "taxonomy-rpc-v2",
+  "artifacts": {
+    "20260830001100_0011_canonical_taxonomy_contract_v2.sql": {
+      "bytes": 30233,
+      "sha256": "c4961f36f28dcc047d44716ae2de76c5c1828b592078e49293307064959e9353"
+    },
+    "20260830001100_0011_canonical_taxonomy_contract_v2.rollback.sql": {
+      "bytes": 1250,
+      "sha256": "fdc79ff3586fe61c8336c68026fd564ebeaec6cb6e890bc93f28778499d9000d"
+    },
+    "capability_response.json": {
+      "bytes": 992,
+      "sha256": "bbe75c335ecfa425e336c5f842609f3a6085ee5ad079570fd7a1baa94e9f4c5a"
+    },
+    "strict_response_fixtures.json": {
+      "bytes": 5105,
+      "sha256": "210fea1e4b6463f82527c854a199c6c1abf67a3c653b824864bba43376ba21a2"
+    }
+  },
+  "safety": {
+    "active_migration_directory": false,
+    "preview_default_enabled": false,
+    "remote_mode": false,
+    "taxonomy_content_mutation": false
+  },
+  "artifact_set_sha256": "bdc9361021f60742197b2a8a6bc3f1ffb512203ad1d1980fcff337026ab68590"
+}

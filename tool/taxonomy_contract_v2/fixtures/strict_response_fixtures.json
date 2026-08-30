@@ -1,0 +1,160 @@
+{
+  "contract": "w38-strict-response-fixtures-v1",
+  "taxonomy_version": "canonical-v1.0.0",
+  "nodes": [
+    {
+      "fixture": "root_container",
+      "id": "11111111-1111-4111-8111-111111111111",
+      "parent_id": null,
+      "name": "Elektronik",
+      "slug": "elektronik",
+      "level": 1,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "NORMAL",
+      "professional_review_status": "not_required",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": true,
+      "sort_order": 1
+    },
+    {
+      "fixture": "l2_leaf",
+      "id": "22222222-2222-4222-8222-222222222222",
+      "parent_id": "11111111-1111-4111-8111-111111111111",
+      "name": "E-Kitap Okuyucu",
+      "slug": "e-kitap-okuyucu",
+      "level": 2,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "NORMAL",
+      "professional_review_status": "not_required",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 4
+    },
+    {
+      "fixture": "l3_leaf",
+      "id": "33333333-3333-4333-8333-333333333333",
+      "parent_id": "22222222-2222-4222-8222-222222222222",
+      "name": "İşlemci",
+      "slug": "islemci",
+      "level": 3,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "NORMAL",
+      "professional_review_status": "not_required",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 1
+    },
+    {
+      "fixture": "l4_leaf",
+      "id": "44444444-4444-4444-8444-444444444444",
+      "parent_id": "33333333-3333-4333-8333-333333333333",
+      "name": "Sıvı Soğutma",
+      "slug": "sivi-sogutma",
+      "level": 4,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "NORMAL",
+      "professional_review_status": "not_required",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 3
+    },
+    {
+      "fixture": "retired_node",
+      "id": "55555555-5555-4555-8555-555555555555",
+      "parent_id": "11111111-1111-4111-8111-111111111111",
+      "name": "Tarihsel Kategori",
+      "slug": "tarihsel-kategori",
+      "level": 2,
+      "lifecycle_state": "retired",
+      "is_assignable": false,
+      "policy_class": "NORMAL",
+      "professional_review_status": "not_required",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 99
+    },
+    {
+      "fixture": "policy_sensitive_node",
+      "id": "66666666-6666-4666-8666-666666666666",
+      "parent_id": "11111111-1111-4111-8111-111111111111",
+      "name": "Politika İncelemesi Gereken Ürün",
+      "slug": "politika-incelemesi-gereken-urun",
+      "level": 2,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "REGULATED",
+      "professional_review_status": "pending",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 20
+    },
+    {
+      "fixture": "long_name",
+      "id": "77777777-7777-4777-8777-777777777777",
+      "parent_id": "11111111-1111-4111-8111-111111111111",
+      "name": "Uzun Ürün Ailesi Adı İçeren Fakat Sözleşme Alanlarını Değiştirmeyen Kategori",
+      "slug": "uzun-urun-ailesi-adi-iceren-fakat-sozlesme-alanlarini-degistirmeyen-kategori",
+      "level": 2,
+      "lifecycle_state": "staged",
+      "is_assignable": false,
+      "policy_class": "LEGAL_REVIEW_REQUIRED",
+      "professional_review_status": "pending",
+      "taxonomy_version": "canonical-v1.0.0",
+      "has_children": false,
+      "sort_order": 21
+    }
+  ],
+  "aliases": [
+    {
+      "fixture": "resolved",
+      "alias_locator": "cep-telefonu",
+      "resolution_state": "RESOLVED",
+      "direct_target_category_id": "22222222-2222-4222-8222-222222222222",
+      "taxonomy_version": "canonical-v1.0.0"
+    },
+    {
+      "fixture": "ambiguous",
+      "alias_locator": "temel-gida",
+      "resolution_state": "AMBIGUOUS",
+      "direct_target_category_id": null,
+      "taxonomy_version": "canonical-v1.0.0"
+    },
+    {
+      "fixture": "tombstone",
+      "alias_locator": "pet-saglik-destek-urunu",
+      "resolution_state": "TOMBSTONE",
+      "direct_target_category_id": null,
+      "taxonomy_version": "canonical-v1.0.0"
+    },
+    {
+      "fixture": "unresolved",
+      "alias_locator": "medikal-konfor-ayakkabisi",
+      "resolution_state": "UNRESOLVED",
+      "direct_target_category_id": null,
+      "taxonomy_version": "canonical-v1.0.0"
+    }
+  ],
+  "search_results": [
+    {
+      "fixture": "canonical_long_path",
+      "matched_node_fixture": "l4_leaf",
+      "path_fixtures": ["root_container", "l2_leaf", "l3_leaf", "l4_leaf"],
+      "taxonomy_version": "canonical-v1.0.0",
+      "alias_context": null
+    },
+    {
+      "fixture": "alias_context",
+      "matched_node_fixture": "l2_leaf",
+      "path_fixtures": ["root_container", "l2_leaf"],
+      "taxonomy_version": "canonical-v1.0.0",
+      "alias_context": {
+        "matched_text": "Cep Telefonu",
+        "locator": "cep-telefonu"
+      }
+    }
+  ]
+}
