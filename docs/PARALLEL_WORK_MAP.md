@@ -17,6 +17,37 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 38F Strict V2 Client Integration Gözlemi
+
+`STRICT_V2_CLIENT_BINDING: PASS`
+
+`BACKEND_CLIENT_COMPATIBILITY: PASS`
+
+`ADAPTER_UPDATES_REMAINING: 0`
+
+`BACKEND_BLOCKERS_REMAINING: 0`
+
+`PREVIEW_REMOTE_ENABLED: NO`
+
+`CANONICAL_RUNTIME_ACTIVE: NO`
+
+- Agent3 strict V2 client teslimi tek shared-owner integration lane'inde
+  çatışmasız entegre edildi. Adapter yedi strict read + capability V2 contract'ını,
+  typed DTO/error mapping'i, server-authoritative exact-leaf/product scope'u ve
+  explicit alias/search context'ini bağlar.
+- Development ve Production default `LEGACY_RUNTIME` kalır. Development opt-in
+  default OFF; Production eşdeğer opt-in sunmaz. Explicit canonical seçim yetersiz
+  proof/preview-off/zero-root durumunda fail-closed'dur ve sessiz legacy fallback
+  yapmaz.
+- `service_locator.dart`, Development entrypoint, adapter, shared taxonomy/category/
+  product modelleri ve navigation bu turda tek lane tarafından sahiplenildi.
+  Production entrypoint statik olarak incelendi ve değişmedi.
+- Sıradaki gerçek preview acceptance paralel değildir: tek owner/operatör lane'i
+  preview ON → client opt-in acceptance → real 24-root ve L2–L4/breadcrumb/search/
+  alias/product-scope kontrolleri → preview OFF → opt-in OFF sırasını yürütmelidir.
+- Public/pilot/runtime activation, Final UI Kit/Figma ve Production ayrı authority
+  ve lane olarak kapalı kalır.
+
 ## Wave 38D Development Strict Backend Contract Apply Gözlemi
 
 `DEVELOPMENT_0011_APPLY: PASS`
@@ -69,13 +100,13 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 - Canonical runtime, public/pilot activation, final UI Kit/Figma ve Production lane'i
   ayrı authority olmadan açılmaz.
 
-## Wave 38A Canonical Client Adapter Entegrasyon Gözlemi
+## Wave 38A Canonical Client Adapter Entegrasyon Gözlemi (historical pre-0011)
 
 `CONCRETE_ADAPTER_INTEGRATED: PASS`
 
 `CAPABILITY_PROOF_INTEGRATED: PASS`
 
-`CURRENT_BACKEND_CANONICAL_COMPATIBLE: NO`
+`BACKEND_CANONICAL_COMPATIBLE_AT_W38A_GATE: NO`
 
 `ACCEPTANCE_CLASSIFICATION: C — BACKEND CONTRACT CHANGE REQUIRED`
 

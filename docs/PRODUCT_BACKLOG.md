@@ -14,6 +14,27 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 38F Strict V2 Client / Preview Acceptance State
+
+- **COMPLETED — strict V2 client binding:** Yedi `*_v2` read endpoint'i,
+  `taxonomy_capabilities_v2`, strict DTO/error/version doğrulaması ve concrete
+  product-scope repository entegre edildi. Backend/client compatibility `PASS`;
+  adapter update ve backend blocker `0/0`.
+- **COMPLETED — runtime safety:** Development ve Production default
+  `LEGACY_RUNTIME`; Development canonical opt-in default `false`, Production'da
+  eşdeğer opt-in yoktur. Canonical V1 fallback ve explicit-canonical→legacy sessiz
+  fallback yoktur. Service-role veya preview setter istemcide bulunmaz.
+- **COMPLETED — local validation:** Taxonomy/client `75/75`, taxonomy-independent
+  Cart V2/QR/reviews/wishlist/seller/Auth `245/245`, full Flutter
+  `1293 PASS / 0 FAIL / 6` mevcut opt-in/live skip ve analyzer `0 issues`.
+- **OPEN / SEPARATE AUTHORITY — real Development preview acceptance:** Preview
+  halen OFF, canonical opt-in OFF, real 24-root acceptance `NOT RUN`. Yeni owner
+  yetkisiyle Development-only preview ON, capability/24-root/L2–L4/breadcrumb/
+  search/alias/product-scope acceptance, ardından preview OFF ve opt-in OFF final
+  safe-state doğrulaması gerekir.
+- **OPEN / AFTER ACCEPTANCE:** Final UI Kit/Figma. Public/pilot/runtime activation
+  ve Production ayrıca yetkilendirilmeden açılmaz.
+
 ## Wave 38D Development Strict Backend Contract State
 
 - **COMPLETED — controlled Development apply:** Exact corrected `63552485...`
@@ -26,9 +47,9 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   assignable/public/pilot/policy leakage `0/0/0/0`. Preview OFF; ordinary clients
   config okuyamaz/değiştiremez veya setter çalıştıramaz. Business/Auth/Storage rows
   sıfır ve Production access `NO`.
-- **READY / SEQUENTIAL — bounded v2 client update:** Yedi strict read'in v2 family'ye
+- **CLOSED BY W38F — bounded V2 client update:** Yedi strict read'in V2 family'ye
   atomik binding'i ve capability/runtime proof'un `taxonomy_capabilities_v2` + strict
-  DTO'ya bağlanması. Shared DI/entrypoint/adapter/modeller tek owner altında yürür.
+  DTO'ya bağlanması tek shared-owner lane'inde PASS tamamlandı.
 - **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical Customer activation,
   public/pilot activation, Development live client acceptance, final UI Kit/Figma ve
   Production lane'i. `LEGACY_RUNTIME` default, canonical mode OFF.
@@ -57,7 +78,7 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical activation,
   public/pilot activation, final UI Kit/Figma ve Production lane'i.
 
-## Wave 38A Canonical Client Adapter State
+## Wave 38A Canonical Client Adapter State (historical pre-0011)
 
 - **COMPLETED — concrete client seam:** Deployed yedi canonical RPC için gerçek
   Supabase adapter, strict typed DTO mapping, parameter/response/version validation
@@ -66,10 +87,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   capability verifier hazırdır. Hem Development hem Production legacy default'tur;
   explicit canonical istek eksik proof veya binding'de hata verir ve legacy'ye
   sessiz fallback yapmaz.
-- **BLOCKED — current backend compatibility:** RPC endpoint `7/7` mevcut olsa da
+- **HISTORICAL BLOCKER AT W38A GATE:** RPC endpoint `7/7` mevcut olsa da
   published client contract version, strict response fields ve safe staged preview/
-  capability response contract'ı eksiktir. Current state
+  capability response contract'ı eksikti. O gate'in sonucu
   `BLOCKING_CONTRACT_MISMATCH`; classification `C — BACKEND CONTRACT CHANGE REQUIRED`.
+  Bu blocker W38D backend deploy ve W38F strict V2 client integration ile kapanmıştır.
 - **UNCHANGED — runtime/safety:** `CANONICAL_V1_RUNTIME=OFF`; taxonomy/public/pilot
   activation yoktur. Integration Development/Production'a erişmedi, DB/migration
   veya remote write yapmadı.

@@ -3,9 +3,30 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-30
-- Son doğrulanan teslim: **WAVE 38D DEVELOPMENT STRICT BACKEND CONTRACT APPLY
-  PASS — EXACT CORRECTED 0011 DEPLOYED / PREVIEW OFF / RUNTIME OFF**.
-- Integration branch/start/pre-apply main:
+- Son doğrulanan teslim: **WAVE 38F STRICT V2 CLIENT INTEGRATION PASS — BACKEND /
+  CLIENT COMPATIBLE, PREVIEW OFF, LEGACY RUNTIME DEFAULT**.
+- Integration branch/start/source/merge:
+  `integration/wave-38f-v2-client-binding` /
+  `origin/main@9985a9ed235a5a79f9592a0398a36e6c7e8187aa` /
+  `ddcec0511f987ccc07c13bb11be758939d289c10` /
+  `09155c595bec35dc610ff7e01a9e948d2226e8d8`.
+- Strict V2 Flutter adapter yedi `*_v2` read RPC'sini ve
+  `taxonomy_capabilities_v2` proof'unu exact DTO/error/version doğrulamasıyla
+  bağlar. Backend/client compatibility `PASS`, adapter update ve backend blocker
+  `0/0`dır; canonical V1 veya explicit-canonical→legacy sessiz fallback yoktur.
+- Development ve Production `LEGACY_RUNTIME` default kalır. Yalnız Development'ta
+  bulunan `ESNAFTAVAR_DEVELOPMENT_CANONICAL_TAXONOMY` opt-in'i default `false`;
+  Production bu seçeneği tüketmez. Preview ve canonical runtime OFF'tur.
+- Hedefli taxonomy/client `75/75`, taxonomy-independent regresyon `245/245`, full
+  Flutter `1293 PASS / 0 FAIL / 6` mevcut opt-in/live skip ve analyzer `0 issues`
+  PASS. Integration remote Development/Production erişimi, preview enablement,
+  migration veya runtime activation yapmadı.
+- Real 24-root Development preview kabulü `PENDING`dir. Ayrı owner authority ile
+  preview ON → capability/24-root/L2–L4/breadcrumb/search/alias/product-scope kabulü
+  → preview OFF ve client opt-in OFF sırası tamamlanmadan Final UI Kit başlamaz.
+- Bir önceki doğrulanan teslim: **WAVE 38D DEVELOPMENT STRICT BACKEND CONTRACT
+  APPLY PASS — EXACT CORRECTED 0011 DEPLOYED / PREVIEW OFF / RUNTIME OFF**.
+- Önceki integration branch/start/pre-apply main:
   `integration/wave-38d-development-contract-v2-apply` /
   `origin/main@4d2a45debee790f9f645960a0d78c897d8a78a76` /
   `77cf9e62c407006b91963de79fa88c770e4de2dd`.
@@ -22,9 +43,9 @@
   sonucu `0` ve preview isteği `W38_PREVIEW_DISABLED` ile fail-closed'dur.
 - Product/shop/listing, diğer business data, Auth user ve Storage object sıfırdır.
   Development Healthy; rollback gerekmedi. Production access/touch `NO`.
-- `LEGACY_RUNTIME` default ve `CANONICAL_CUSTOMER_MODE=OFF` korunur. Sıradaki iş
-  iki bounded v2 client update'idir; preview/public/pilot/runtime veya Production
-  aktivasyonu ayrı yetki gerektirir.
+- W38D sonunda `LEGACY_RUNTIME` default ve `CANONICAL_CUSTOMER_MODE=OFF` korunmuş,
+  iki bounded V2 client update'i W38F ile tamamlanmıştır. Preview acceptance,
+  public/pilot/runtime veya Production aktivasyonu hâlâ ayrı yetki gerektirir.
 - Bir önceki doğrulanan teslim: **WAVE 38C-R CORRECTED STRICT BACKEND CONTRACT
   INTEGRATION PASS — INDEPENDENT EXACT-LEAF GATE / LOCAL 0011 REFREEZE**.
 - Integration branch/base/source/merge:
