@@ -98,6 +98,7 @@ class CanonicalTaxonomyCapabilityDto extends Equatable {
     required this.contractVersion,
     required this.taxonomyVersion,
     required this.supportedFeatures,
+    required this.verifiedEvidence,
   });
 
   factory CanonicalTaxonomyCapabilityDto.fromRpcPayload(
@@ -107,22 +108,29 @@ class CanonicalTaxonomyCapabilityDto extends Equatable {
     if (rawFeatures is! List) {
       throw const FormatException('supported_features must be a list.');
     }
+    final rawEvidence = payload['verified_evidence'];
+    if (rawEvidence is! List) {
+      throw const FormatException('verified_evidence must be a list.');
+    }
     return CanonicalTaxonomyCapabilityDto._(
       contractVersion: _requiredString(payload, 'contract_version'),
       taxonomyVersion: _requiredString(payload, 'taxonomy_version'),
       supportedFeatures: rawFeatures.map(_readBackendFeature).toSet(),
+      verifiedEvidence: rawEvidence.map(_readBackendEvidence).toSet(),
     );
   }
 
   final String contractVersion;
   final String taxonomyVersion;
   final Set<TaxonomyBackendFeature> supportedFeatures;
+  final Set<TaxonomyBackendEvidence> verifiedEvidence;
 
   TaxonomyBackendContractProof toProof() {
     return TaxonomyBackendContractProof(
       contractVersion: contractVersion,
       taxonomyVersion: taxonomyVersion,
       supportedFeatures: supportedFeatures,
+      verifiedEvidence: verifiedEvidence,
     );
   }
 
@@ -131,6 +139,7 @@ class CanonicalTaxonomyCapabilityDto extends Equatable {
     contractVersion,
     taxonomyVersion,
     supportedFeatures,
+    verifiedEvidence,
   ];
 }
 
@@ -335,6 +344,23 @@ TaxonomyBackendFeature _readBackendFeature(Object? value) {
     'search' => TaxonomyBackendFeature.search,
     'product_scopes' => TaxonomyBackendFeature.productScopes,
     _ => throw const FormatException('Unsupported taxonomy backend feature.'),
+  };
+}
+
+TaxonomyBackendEvidence _readBackendEvidence(Object? value) {
+  return switch (value) {
+    'authoritative_contract_version' =>
+      TaxonomyBackendEvidence.authoritativeContractVersion,
+    'exact_rpc_signatures' => TaxonomyBackendEvidence.exactRpcSignatures,
+    'required_response_shapes' =>
+      TaxonomyBackendEvidence.requiredResponseShapes,
+    'lifecycle_publication_semantics' =>
+      TaxonomyBackendEvidence.lifecyclePublicationSemantics,
+    'hierarchy_semantics' => TaxonomyBackendEvidence.hierarchySemantics,
+    'alias_outcome_semantics' => TaxonomyBackendEvidence.aliasOutcomeSemantics,
+    'taxonomy_version_semantics' =>
+      TaxonomyBackendEvidence.taxonomyVersionSemantics,
+    _ => throw const FormatException('Unsupported taxonomy backend evidence.'),
   };
 }
 

@@ -14,15 +14,29 @@ enum TaxonomyBackendFeature {
   productScopes,
 }
 
+enum TaxonomyBackendEvidence {
+  authoritativeContractVersion,
+  exactRpcSignatures,
+  requiredResponseShapes,
+  lifecyclePublicationSemantics,
+  hierarchySemantics,
+  aliasOutcomeSemantics,
+  taxonomyVersionSemantics,
+}
+
 class TaxonomyBackendContractProof extends Equatable {
   TaxonomyBackendContractProof({
     required String contractVersion,
     required String taxonomyVersion,
     required Iterable<TaxonomyBackendFeature> supportedFeatures,
+    required Iterable<TaxonomyBackendEvidence> verifiedEvidence,
   }) : contractVersion = _requiredText(contractVersion, 'contractVersion'),
        taxonomyVersion = _requiredText(taxonomyVersion, 'taxonomyVersion'),
        supportedFeatures = UnmodifiableSetView(
          Set<TaxonomyBackendFeature>.of(supportedFeatures),
+       ),
+       verifiedEvidence = UnmodifiableSetView(
+         Set<TaxonomyBackendEvidence>.of(verifiedEvidence),
        );
 
   static const supportedClientContractVersion = 'taxonomy-client-v1';
@@ -35,14 +49,25 @@ class TaxonomyBackendContractProof extends Equatable {
     TaxonomyBackendFeature.search,
     TaxonomyBackendFeature.productScopes,
   };
+  static const requiredCanonicalV1Evidence = <TaxonomyBackendEvidence>{
+    TaxonomyBackendEvidence.authoritativeContractVersion,
+    TaxonomyBackendEvidence.exactRpcSignatures,
+    TaxonomyBackendEvidence.requiredResponseShapes,
+    TaxonomyBackendEvidence.lifecyclePublicationSemantics,
+    TaxonomyBackendEvidence.hierarchySemantics,
+    TaxonomyBackendEvidence.aliasOutcomeSemantics,
+    TaxonomyBackendEvidence.taxonomyVersionSemantics,
+  };
 
   final String contractVersion;
   final String taxonomyVersion;
   final Set<TaxonomyBackendFeature> supportedFeatures;
+  final Set<TaxonomyBackendEvidence> verifiedEvidence;
 
   bool get supportsCanonicalV1 =>
       contractVersion == supportedClientContractVersion &&
-      supportedFeatures.containsAll(requiredCanonicalV1Features);
+      supportedFeatures.containsAll(requiredCanonicalV1Features) &&
+      verifiedEvidence.containsAll(requiredCanonicalV1Evidence);
 
   static String _requiredText(String value, String fieldName) {
     final normalized = value.trim();
@@ -57,6 +82,7 @@ class TaxonomyBackendContractProof extends Equatable {
     contractVersion,
     taxonomyVersion,
     supportedFeatures,
+    verifiedEvidence,
   ];
 }
 

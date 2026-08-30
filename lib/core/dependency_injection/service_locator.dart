@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
+import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 
 // Auth
@@ -16,12 +18,18 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 
 // Products
 import 'package:t_store/features/shop/data/repositories/product_repository_impl.dart';
+import 'package:t_store/features/shop/data/repositories/canonical_taxonomy_repository_impl.dart';
+import 'package:t_store/features/shop/data/services/canonical_taxonomy_contract_adapter.dart';
+import 'package:t_store/features/shop/data/services/supabase_canonical_taxonomy_rpc_adapter.dart';
 import 'package:t_store/features/shop/data/services/shared_preferences_recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/data/services/shared_preferences_recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/repositories/product_repository.dart';
+import 'package:t_store/features/shop/domain/repositories/canonical_taxonomy_repository.dart';
+import 'package:t_store/features/shop/domain/repositories/taxonomy_scoped_product_repository.dart';
 import 'package:t_store/features/shop/domain/services/recent_product_searches_storage.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_usecase.dart';
+import 'package:t_store/features/shop/domain/usecases/get_products_by_taxonomy_scope_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_product_by_id_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/get_products_by_ids_usecase.dart';
 import 'package:t_store/features/shop/domain/usecases/search_products_usecase.dart';
@@ -145,9 +153,46 @@ import 'package:t_store/features/notifications/presentation/cubit/notifications_
 
 final sl = GetIt.instance;
 
-Future<void> setupServiceLocator() async {
+Future<void> setupServiceLocator({
+  TaxonomyDependencyConfiguration taxonomyConfiguration =
+      const TaxonomyDependencyConfiguration(
+        environment: AppEnvironment.production,
+      ),
+  CanonicalTaxonomyContractAdapter? verifiedCanonicalTaxonomyAdapter,
+  TaxonomyScopedProductRepository? verifiedTaxonomyScopedProductRepository,
+}) async {
+  final taxonomyPlan = const TaxonomyDependencyPlanner().resolve(
+    taxonomyConfiguration,
+  );
+  if (taxonomyPlan.requiresCanonicalBindings &&
+      (verifiedCanonicalTaxonomyAdapter == null ||
+          verifiedTaxonomyScopedProductRepository == null)) {
+    throw const TaxonomyDependencyConfigurationException(
+      'Canonical runtime requires explicitly verified taxonomy and product '
+      'scope bindings.',
+    );
+  }
+
   // ==================== Core ====================
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
+  sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
+  sl.registerSingleton(taxonomyPlan.capability);
+  if (taxonomyPlan.registerDevelopmentRpcAdapter) {
+    sl.registerLazySingleton<CanonicalTaxonomyRpcAdapter>(
+      () => SupabaseCanonicalTaxonomyRpcAdapter.fromSupabaseService(sl()),
+    );
+  }
+  if (taxonomyPlan.requiresCanonicalBindings) {
+    sl.registerLazySingleton<CanonicalTaxonomyRepository>(
+      () => CanonicalTaxonomyRepositoryImpl(
+        adapter: verifiedCanonicalTaxonomyAdapter!,
+      ),
+    );
+    sl.registerSingleton<TaxonomyScopedProductRepository>(
+      verifiedTaxonomyScopedProductRepository!,
+    );
+    sl.registerLazySingleton(() => GetProductsByTaxonomyScopeUsecase(sl()));
+  }
 
   // ==================== Auth ====================
   // Repository
@@ -203,6 +248,8 @@ Future<void> setupServiceLocator() async {
       getProductsUsecase: sl(),
       getProductByIdUsecase: sl(),
       searchProductsUsecase: sl(),
+      getProductsByTaxonomyScopeUsecase:
+          sl.isRegistered<GetProductsByTaxonomyScopeUsecase>() ? sl() : null,
     ),
   );
   sl.registerFactory(
@@ -271,13 +318,23 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetCategoriesUsecase(sl()));
 
   // Cubit
-  sl.registerFactory(() => CategoriesCubit(getCategoriesUsecase: sl()));
+  sl.registerFactory(
+    () => CategoriesCubit(
+      getCategoriesUsecase: sl(),
+      taxonomyCapability: taxonomyPlan.capability,
+      canonicalTaxonomyRepository:
+          sl.isRegistered<CanonicalTaxonomyRepository>() ? sl() : null,
+    ),
+  );
   sl.registerFactory(
     () => CustomerSearchCubit(
       searchProductsUsecase: sl(),
       getProductsUsecase: sl(),
       getCategoriesUsecase: sl(),
       getShopsUsecase: sl(),
+      taxonomyCapability: taxonomyPlan.capability,
+      canonicalTaxonomyRepository:
+          sl.isRegistered<CanonicalTaxonomyRepository>() ? sl() : null,
     ),
   );
 
