@@ -14,6 +14,31 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 38C-R Corrected Strict Backend Contract State
+
+- **COMPLETED — first-attempt fail-safe rejection:** Eski `c4961f36...` candidate,
+  non-assignable structural leaf'i product-scope exact leaf kabul ettiği için merge
+  veya remote access olmadan reddedildi ve superseded olarak donduruldu.
+- **COMPLETED — corrected local freeze:** Corrected candidate `63552485...`, artifact
+  set `781dd635...`, rollback `fdc79ff3...`; LF/CRLF portable reproduction PASS.
+- **COMPLETED — independent semantic gates:** Real non-assignable leaf exact result
+  `0`, structural discovery PASS; eligible local positive fixture exact result `1`
+  ve rollback/state preservation PASS. Strict v2 `8/8`, v1 `7/7`, failure matrix
+  `29/29`, preview OFF/ON/OFF ve capability truthfulness PASS.
+- **READY — corrected backend artifact:** Client compatibility `MATCH 10`,
+  `ADAPTER_UPDATE_REQUIRED 2`, `BACKEND_BLOCKER 0`. Bu readiness yalnız fresh
+  Development-write kararına sunulabilir; kendiliğinden remote yetki değildir.
+- **OPEN / NOT AUTHORIZED — controlled Development apply:** Corrected SHA'yı açıkça
+  adlandıran fresh Product Owner authorization, yeni read-only JIT target/ledger/
+  drift/single-writer kontrolü, exact apply ve postcheck/rollback operator gate'i.
+- **OPEN / SEQUENTIAL — client cutover:** Başarılı remote postcheck sonrasında yedi
+  strict read'in v2'ye atomik binding'i ve capability/runtime seçiminin
+  `taxonomy_capabilities_v2` + strict DTO path'e bağlanması.
+- **UNCHANGED / CLOSED:** Remote `0011=NO`, preview remote `NO`, canonical runtime
+  `OFF`, Development/Production access `NO`; active chain `0001→0010`.
+- **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical activation,
+  public/pilot activation, final UI Kit/Figma ve Production lane'i.
+
 ## Wave 38A Canonical Client Adapter State
 
 - **COMPLETED — concrete client seam:** Deployed yedi canonical RPC için gerçek

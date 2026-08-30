@@ -17,6 +17,34 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 38C-R Corrected Strict Backend Contract Entegrasyon Gözlemi
+
+`W38C_FIRST_ATTEMPT: FAIL / NO MERGE / NO REMOTE`
+
+`W38B_R_CORRECTION: PASS`
+
+`W38C_R_INTEGRATION: PASS`
+
+`BACKEND_BLOCKERS_REMAINING: 0`
+
+`DEVELOPMENT_WRITE_AUTHORIZED: NO`
+
+- İlk candidate non-assignable structural leaf'i product exact leaf kabul ettiği
+  için reddedildi; eski `c4961f36...` SHA superseded'dır. Corrected candidate
+  `63552485...` bağımsız negatif/pozitif exact-leaf gate, strict v2 `8/8`, v1
+  `7/7`, 29-case matrix ve portable hash reproduction'dan geçti.
+- Current active remote migration zinciri `0001→0010`dur. `0011` yalnız local
+  staging artifact'ıdır; Development/Production access, apply, preview enablement
+  veya runtime activation yapılmadı.
+- Sonraki adım paralel değildir: **tek backend/schema/SQL/migration owner**, fresh
+  owner authorization ve JIT gate ile exact corrected SHA üzerinde çalışmalıdır.
+- `service_locator.dart`, Development/Production entrypoint'leri, adapter ve shared
+  taxonomy/category/product modelleri bu apply lane'i sırasında başka agent
+  tarafından eşzamanlı değiştirilmez. İki bounded adapter update'i remote postcheck
+  sonrasında ayrı ve sıralı lane'de yapılır.
+- Canonical runtime, public/pilot activation, final UI Kit/Figma ve Production lane'i
+  ayrı authority olmadan açılmaz.
+
 ## Wave 38A Canonical Client Adapter Entegrasyon Gözlemi
 
 `CONCRETE_ADAPTER_INTEGRATED: PASS`

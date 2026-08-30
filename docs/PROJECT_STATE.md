@@ -3,33 +3,47 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-30
-- Son doğrulanan teslim: **WAVE 38A DEVELOPMENT CANONICAL CLIENT ADAPTER
+- Son doğrulanan teslim: **WAVE 38C-R CORRECTED STRICT BACKEND CONTRACT
+  INTEGRATION PASS — INDEPENDENT EXACT-LEAF GATE / LOCAL 0011 REFREEZE**.
+- Integration branch/base/source/merge:
+  `integration/wave-38c-strict-backend-contract-retry` /
+  `origin/main@231e5f27270f808c59cef445b4cca8931ac16cc2` /
+  `e0c10075b6f29d53a819cf1b241810f14ed1a0ea` /
+  `f4ba3a6aa2d43cdb836285044864c94daf693a28`.
+- İlk Wave 38C integration attempt, eski candidate'ın non-assignable structural
+  leaf'i product-scope exact leaf kabul etmesi nedeniyle **FAIL / no merge / no
+  remote** ile doğru biçimde durdu. Eski `c4961f36...` SHA
+  **SUPERSEDED — CONTRACT BUG** durumundadır.
+- W38B-R düzeltmesi bağımsız PGlite baseline/probe ile PASS: DB truth'tan seçilen
+  real `is_assignable=false` leaf structural breadcrumb/search içinde görünürken
+  `taxonomy_exact_leaf_v2` sonucu `0`; local transaction'daki eligible assignable
+  fixture tam `1` sonuç verdi ve rollback sonrası `1563/1245/1563` node/leaf/UUID
+  state'i ile canonical digest değişmedi.
+- Corrected candidate `63552485...`, artifact set `781dd635...`, rollback
+  `fdc79ff3...`; portable LF/CRLF reproduction PASS. Strict v2 `8/8`, v1 `7/7`,
+  local baseline/forward/rollback `3/3`, idempotency `2/2`, postcheck `3/3` ve
+  failure matrix `29/29` PASS. Client sonucu `MATCH 10 / ADAPTER 2 / BLOCKER 0`.
+- Preview default OFF ve yalnız trusted server/service-role authority ile açılır;
+  ordinary client config erişimi kapalıdır. Trusted preview Development-wide
+  kontrollü metadata preview'dür, private per-user değildir. Integration hiçbir
+  remote ortama erişmedi; active migration zinciri `0001→0010`, remote `0011=NO`,
+  remote preview `NO`, canonical runtime `OFF` kaldı.
+- Sonraki sıralı adım corrected candidate SHA'yı açıkça adlandıran **fresh Product
+  Owner Development-write authorization** ve yeni JIT gate'tir. Henüz yetki yoktur;
+  bu local freeze remote apply, preview veya runtime activation yetkisi değildir.
+- Bir önceki doğrulanan teslim: **WAVE 38A DEVELOPMENT CANONICAL CLIENT ADAPTER
   INTEGRATION PASS — CONCRETE ADAPTER / FAIL-CLOSED CAPABILITY PROOF /
   LEGACY RUNTIME DEFAULT**.
-- Integration branch/base/source/merge:
+- Wave 38A integration branch/base/source/merge:
   `integration/wave-38a-canonical-client-adapter` /
   `origin/main@6ed2c0619eaf59826edc321048ac58c825406894` /
   `56b5d3482d834994c9b21f990e3c4a3cb1008923` / `db19069ebc24a6d4baf45eb4d5a05956409a0acb`.
-- Yedi deployed canonical taxonomy RPC'si için gerçek Supabase adapter'ı, strict
-  typed DTO mapping, version/error validation, backend capability verifier ve
-  environment-specific DI seam'i entegre edildi. Service-role secret veya remote
-  target uygulama koduna eklenmedi.
-- Current deployed Development inventory'de RPC endpoint `7/7` mevcuttur; fakat
-  published client contract version yoktur, strict response alanları eksiktir ve
-  safe staged preview/capability response contract'ı yoktur. Sonuç
-  `BLOCKING_CONTRACT_MISMATCH`, acceptance classification `C — BACKEND CONTRACT
-  CHANGE REQUIRED` ve current backend canonical compatibility `NO`dur.
-- Capability proof implementation PASS'tir çünkü yetersiz backend contract'ını
-  doğru biçimde reddeder. Hem Development hem Production `LEGACY_RUNTIME` default
-  kalır; explicit canonical seçim proof/binding eksikliğinde fail-closed hata verir,
-  legacy'ye sessiz fallback yapmaz. `CANONICAL_V1_RUNTIME=OFF`.
-- Wave 38A targeted contract `26/26`, Home/category/search/navigation/product-listing
-  regression `139/139`, full Flutter `1285 PASS / 0 FAIL / 6 existing opt-in live
-  skip` ve analyzer `0 issues` PASS. Integration Development/Production'a erişmedi;
-  DB write, migration, taxonomy/canonical activation yapılmadı.
-- Sonraki sıralı iş additive strict backend contract migration'dır. Bu readiness
-  remote apply veya canonical runtime activation yetkisi değildir.
-- Bir önceki doğrulanan teslim: **WAVE 37C DEVELOPMENT STAGED BOOTSTRAP PASS — EXACT
+- Wave 38A concrete adapter/capability proof PASS'tir; Development ve Production
+  `LEGACY_RUNTIME` default, explicit canonical selection fail-closed ve
+  `CANONICAL_V1_RUNTIME=OFF` kalır. Corrected local candidate backend blocker `0`
+  olsa da Development'a uygulanmadığı için deployed backend henüz Wave 38A strict
+  client ile compatible değildir.
+- İki önceki doğrulanan teslim: **WAVE 37C DEVELOPMENT STAGED BOOTSTRAP PASS — EXACT
   `0010` APPLIED / PUBLIC AND CUSTOMER RUNTIME INACTIVE**.
 - Önceki integration branch/start/pre-apply main:
   `integration/wave-37c-development-staged-bootstrap-retry` /
