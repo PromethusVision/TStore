@@ -18,6 +18,9 @@ class CanonicalTaxonomyCategoryDto extends Equatable {
     required this.taxonomyVersion,
     required this.hasChildren,
     required this.sortOrder,
+    required this.isPublicActive,
+    required this.isPilotActive,
+    required this.previewContext,
   });
 
   factory CanonicalTaxonomyCategoryDto.fromRpcPayload(
@@ -39,6 +42,9 @@ class CanonicalTaxonomyCategoryDto extends Equatable {
       taxonomyVersion: _requiredString(payload, 'taxonomy_version'),
       hasChildren: hasChildren,
       sortOrder: _optionalInt(payload, 'sort_order') ?? 0,
+      isPublicActive: _requiredBool(payload, 'is_public_active'),
+      isPilotActive: _requiredBool(payload, 'is_pilot_active'),
+      previewContext: _requiredBool(payload, 'preview_context'),
     );
   }
 
@@ -54,6 +60,9 @@ class CanonicalTaxonomyCategoryDto extends Equatable {
   final String taxonomyVersion;
   final bool hasChildren;
   final int sortOrder;
+  final bool isPublicActive;
+  final bool isPilotActive;
+  final bool previewContext;
 
   TaxonomyCategoryNode toDomain() {
     return TaxonomyCategoryNode(
@@ -73,6 +82,7 @@ class CanonicalTaxonomyCategoryDto extends Equatable {
       professionalReviewStatus: professionalReviewStatus,
       taxonomyVersion: taxonomyVersion,
       sortOrder: sortOrder,
+      isPreviewContext: previewContext,
     );
   }
 
@@ -90,15 +100,34 @@ class CanonicalTaxonomyCategoryDto extends Equatable {
     taxonomyVersion,
     hasChildren,
     sortOrder,
+    isPublicActive,
+    isPilotActive,
+    previewContext,
   ];
 }
 
 class CanonicalTaxonomyCapabilityDto extends Equatable {
   const CanonicalTaxonomyCapabilityDto._({
     required this.contractVersion,
+    required this.clientContractVersion,
     required this.taxonomyVersion,
+    required this.taxonomyDataVersion,
+    required this.rpcContractVersion,
+    required this.rpcGeneration,
     required this.supportedFeatures,
     required this.verifiedEvidence,
+    required this.previewSupport,
+    required this.previewEnabled,
+    required this.lifecycleMetadata,
+    required this.policyMetadata,
+    required this.aliasStateMetadata,
+    required this.pathMetadata,
+    required this.publicActiveRootCount,
+    required this.pilotActiveRootCount,
+    required this.previewRootCount,
+    required this.productScopeContract,
+    required this.productScopeRequiresAssignable,
+    required this.productScopePolicyFailClosed,
   });
 
   factory CanonicalTaxonomyCapabilityDto.fromRpcPayload(
@@ -112,34 +141,124 @@ class CanonicalTaxonomyCapabilityDto extends Equatable {
     if (rawEvidence is! List) {
       throw const FormatException('verified_evidence must be a list.');
     }
+    final contractVersion = _requiredString(payload, 'contract_version');
+    final clientContractVersion = _requiredString(
+      payload,
+      'client_contract_version',
+    );
+    final taxonomyVersion = _requiredString(payload, 'taxonomy_version');
+    final taxonomyDataVersion = _requiredString(
+      payload,
+      'taxonomy_data_version',
+    );
+    if (contractVersion != clientContractVersion) {
+      throw const FormatException('Client contract versions differ.');
+    }
+    if (taxonomyVersion != taxonomyDataVersion) {
+      throw const FormatException('Taxonomy data versions differ.');
+    }
     return CanonicalTaxonomyCapabilityDto._(
-      contractVersion: _requiredString(payload, 'contract_version'),
-      taxonomyVersion: _requiredString(payload, 'taxonomy_version'),
+      contractVersion: contractVersion,
+      clientContractVersion: clientContractVersion,
+      taxonomyVersion: taxonomyVersion,
+      taxonomyDataVersion: taxonomyDataVersion,
+      rpcContractVersion: _requiredString(payload, 'rpc_contract_version'),
+      rpcGeneration: _requiredInt(payload, 'rpc_generation'),
       supportedFeatures: rawFeatures.map(_readBackendFeature).toSet(),
       verifiedEvidence: rawEvidence.map(_readBackendEvidence).toSet(),
+      previewSupport: _requiredBool(payload, 'preview_support'),
+      previewEnabled: _requiredBool(payload, 'preview_enabled'),
+      lifecycleMetadata: _requiredBool(payload, 'lifecycle_metadata'),
+      policyMetadata: _requiredBool(payload, 'policy_metadata'),
+      aliasStateMetadata: _requiredBool(payload, 'alias_state_metadata'),
+      pathMetadata: _requiredBool(payload, 'path_metadata'),
+      publicActiveRootCount: _requiredNonNegativeInt(
+        payload,
+        'public_active_root_count',
+      ),
+      pilotActiveRootCount: _requiredNonNegativeInt(
+        payload,
+        'pilot_active_root_count',
+      ),
+      previewRootCount: _requiredNonNegativeInt(payload, 'preview_root_count'),
+      productScopeContract: _requiredString(payload, 'product_scope_contract'),
+      productScopeRequiresAssignable: _requiredBool(
+        payload,
+        'product_scope_requires_assignable',
+      ),
+      productScopePolicyFailClosed: _requiredBool(
+        payload,
+        'product_scope_policy_fail_closed',
+      ),
     );
   }
 
   final String contractVersion;
+  final String clientContractVersion;
   final String taxonomyVersion;
+  final String taxonomyDataVersion;
+  final String rpcContractVersion;
+  final int rpcGeneration;
   final Set<TaxonomyBackendFeature> supportedFeatures;
   final Set<TaxonomyBackendEvidence> verifiedEvidence;
+  final bool previewSupport;
+  final bool previewEnabled;
+  final bool lifecycleMetadata;
+  final bool policyMetadata;
+  final bool aliasStateMetadata;
+  final bool pathMetadata;
+  final int publicActiveRootCount;
+  final int pilotActiveRootCount;
+  final int previewRootCount;
+  final String productScopeContract;
+  final bool productScopeRequiresAssignable;
+  final bool productScopePolicyFailClosed;
 
   TaxonomyBackendContractProof toProof() {
     return TaxonomyBackendContractProof(
       contractVersion: contractVersion,
       taxonomyVersion: taxonomyVersion,
+      rpcContractVersion: rpcContractVersion,
+      rpcGeneration: rpcGeneration,
       supportedFeatures: supportedFeatures,
       verifiedEvidence: verifiedEvidence,
+      previewSupported: previewSupport,
+      previewEnabled: previewEnabled,
+      lifecycleMetadata: lifecycleMetadata,
+      policyMetadata: policyMetadata,
+      aliasStateMetadata: aliasStateMetadata,
+      pathMetadata: pathMetadata,
+      publicActiveRootCount: publicActiveRootCount,
+      pilotActiveRootCount: pilotActiveRootCount,
+      previewRootCount: previewRootCount,
+      productScopeContract: productScopeContract,
+      productScopeRequiresAssignable: productScopeRequiresAssignable,
+      productScopePolicyFailClosed: productScopePolicyFailClosed,
     );
   }
 
   @override
   List<Object?> get props => [
     contractVersion,
+    clientContractVersion,
     taxonomyVersion,
+    taxonomyDataVersion,
+    rpcContractVersion,
+    rpcGeneration,
     supportedFeatures,
     verifiedEvidence,
+    previewSupport,
+    previewEnabled,
+    lifecycleMetadata,
+    policyMetadata,
+    aliasStateMetadata,
+    pathMetadata,
+    publicActiveRootCount,
+    pilotActiveRootCount,
+    previewRootCount,
+    productScopeContract,
+    productScopeRequiresAssignable,
+    productScopePolicyFailClosed,
   ];
 }
 
@@ -149,16 +268,38 @@ class CanonicalTaxonomyAliasResolutionDto extends Equatable {
     required this.state,
     required this.targetCategoryId,
     required this.taxonomyVersion,
+    required this.aliasKind,
+    required this.matchedViaAlias,
+    required this.targetCount,
   });
 
   factory CanonicalTaxonomyAliasResolutionDto.fromRpcPayload(
     Map<String, dynamic> payload,
   ) {
+    final state = _readAliasState(payload['resolution_state']);
+    final targetCategoryId = _optionalString(
+      payload,
+      'direct_target_category_id',
+    );
+    final targetCount = _requiredNonNegativeInt(payload, 'target_count');
+    final matchedViaAlias = _requiredBool(payload, 'matched_via_alias');
+    final resolved = state == TaxonomyAliasResolutionState.resolved;
+    final ambiguous = state == TaxonomyAliasResolutionState.ambiguous;
+    if (resolved != (targetCategoryId != null && targetCount == 1) ||
+        (!resolved && targetCategoryId != null) ||
+        (ambiguous && targetCount < 2) ||
+        (!resolved && !ambiguous && targetCount != 0) ||
+        !matchedViaAlias) {
+      throw const FormatException('Alias state and target evidence differ.');
+    }
     return CanonicalTaxonomyAliasResolutionDto._(
       locator: _requiredString(payload, 'alias_locator'),
-      state: _readAliasState(payload['resolution_state']),
-      targetCategoryId: _optionalString(payload, 'direct_target_category_id'),
+      state: state,
+      targetCategoryId: targetCategoryId,
       taxonomyVersion: _requiredString(payload, 'taxonomy_version'),
+      aliasKind: _requiredString(payload, 'alias_kind'),
+      matchedViaAlias: matchedViaAlias,
+      targetCount: targetCount,
     );
   }
 
@@ -166,6 +307,9 @@ class CanonicalTaxonomyAliasResolutionDto extends Equatable {
   final TaxonomyAliasResolutionState state;
   final String? targetCategoryId;
   final String taxonomyVersion;
+  final String aliasKind;
+  final bool matchedViaAlias;
+  final int targetCount;
 
   TaxonomyAliasResolution toDomain() {
     return TaxonomyAliasResolution(
@@ -182,6 +326,9 @@ class CanonicalTaxonomyAliasResolutionDto extends Equatable {
     state,
     targetCategoryId,
     taxonomyVersion,
+    aliasKind,
+    matchedViaAlias,
+    targetCount,
   ];
 }
 
@@ -191,6 +338,8 @@ class CanonicalTaxonomySearchResultDto extends Equatable {
     required this.path,
     required this.taxonomyVersion,
     required this.aliasContext,
+    required this.matchKind,
+    required this.matchedViaAlias,
   });
 
   factory CanonicalTaxonomySearchResultDto.fromRpcPayload(
@@ -225,11 +374,17 @@ class CanonicalTaxonomySearchResultDto extends Equatable {
       );
     }
 
+    final matchedViaAlias = _requiredBool(payload, 'matched_via_alias');
+    if (matchedViaAlias != (aliasContext != null)) {
+      throw const FormatException('Search alias evidence is inconsistent.');
+    }
     return CanonicalTaxonomySearchResultDto._(
       matchedNode: CanonicalTaxonomyCategoryDto.fromRpcPayload(rawMatchedNode),
       path: path,
       taxonomyVersion: _requiredString(payload, 'taxonomy_version'),
       aliasContext: aliasContext,
+      matchKind: _requiredString(payload, 'match_kind'),
+      matchedViaAlias: matchedViaAlias,
     );
   }
 
@@ -237,6 +392,8 @@ class CanonicalTaxonomySearchResultDto extends Equatable {
   final List<CanonicalTaxonomyCategoryDto> path;
   final String taxonomyVersion;
   final TaxonomySearchAliasContext? aliasContext;
+  final String matchKind;
+  final bool matchedViaAlias;
 
   TaxonomyCategorySearchContext toDomain() {
     if (matchedNode.taxonomyVersion != taxonomyVersion ||
@@ -257,7 +414,14 @@ class CanonicalTaxonomySearchResultDto extends Equatable {
   }
 
   @override
-  List<Object?> get props => [matchedNode, path, taxonomyVersion, aliasContext];
+  List<Object?> get props => [
+    matchedNode,
+    path,
+    taxonomyVersion,
+    aliasContext,
+    matchKind,
+    matchedViaAlias,
+  ];
 }
 
 bool _readNodeShape(Map<String, dynamic> payload) {
@@ -391,5 +555,17 @@ int? _optionalInt(Map<String, dynamic> payload, String key) {
   final value = payload[key];
   if (value == null) return null;
   if (value is! int) throw FormatException('$key must be an integer.');
+  return value;
+}
+
+int _requiredInt(Map<String, dynamic> payload, String key) {
+  final value = payload[key];
+  if (value is! int) throw FormatException('$key must be an integer.');
+  return value;
+}
+
+int _requiredNonNegativeInt(Map<String, dynamic> payload, String key) {
+  final value = _requiredInt(payload, key);
+  if (value < 0) throw FormatException('$key cannot be negative.');
   return value;
 }

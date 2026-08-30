@@ -78,14 +78,19 @@ void main() {
         'alias_locator': 'legacy/leaf',
         'resolution_state': 'RESOLVED',
         'direct_target_category_id': 'leaf',
-        'taxonomy_version': 'v1.0.0',
+        'taxonomy_version': 'canonical-v1.0.0',
+        'alias_kind': 'LEGACY',
+        'matched_via_alias': true,
+        'target_count': 1,
       };
       adapter.search = [
         {
           'matched_node': leaf,
           'path': [root, leaf],
-          'taxonomy_version': 'v1.0.0',
+          'taxonomy_version': 'canonical-v1.0.0',
           'alias_context': null,
+          'match_kind': 'CANONICAL',
+          'matched_via_alias': false,
         },
       ];
 
@@ -189,8 +194,11 @@ Map<String, dynamic> _payload({
     'is_assignable': assignable,
     'policy_class': 'NORMAL',
     'professional_review_status': 'not_required',
-    'taxonomy_version': 'v1.0.0',
+    'taxonomy_version': 'canonical-v1.0.0',
     'has_children': hasChildren,
     'sort_order': 0,
+    'is_public_active': true,
+    'is_pilot_active': false,
+    'preview_context': false,
   };
 }

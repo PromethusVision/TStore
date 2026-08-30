@@ -7,37 +7,37 @@ void main() {
   const verifier = TaxonomyBackendCapabilityVerifier();
 
   test(
-    'deployed Development inventory fails closed on response contract gaps',
+    'deployed Development V2 inventory matches shape but is not runtime proof',
     () {
-      final result = verifier.assess(deployedCanonicalTaxonomyV1Inventory);
+      final result = verifier.assess(deployedCanonicalTaxonomyV2Inventory);
 
       expect(
         result.compatibility,
-        TaxonomyContractCompatibility.blockingContractMismatch,
+        TaxonomyContractCompatibility.match,
       );
       expect(result.supportsCanonicalV1, isFalse);
       expect(result.proof, isNull);
-      expect(result.blockers, isNotEmpty);
-      expect(
-        result.blockers.join(' '),
-        contains('authoritative taxonomy-client-v1 capability'),
-      );
-      expect(result.blockers.join(' '), contains('lifecycle_state'));
+      expect(result.blockers, isEmpty);
     },
   );
 
   test(
-    'deployed inventory records exact seven endpoint signatures and grants',
+    'deployed inventory records exact seven strict V2 signatures and grants',
     () {
-      expect(deployedCanonicalTaxonomyV1Inventory.endpoints, hasLength(7));
+      expect(deployedCanonicalTaxonomyV2Inventory.endpoints, hasLength(7));
       expect(
-        deployedCanonicalTaxonomyV1Inventory
-            .endpoints['taxonomy_children_v1']!
+        deployedCanonicalTaxonomyV2Inventory
+            .endpoints['taxonomy_children_v2']!
             .argumentNames,
-        ['p_parent_id', 'p_taxonomy_version'],
+        [
+          'p_parent_id',
+          'p_client_contract_version',
+          'p_taxonomy_version',
+          'p_preview',
+        ],
       );
       expect(
-        deployedCanonicalTaxonomyV1Inventory.endpoints.values.every(
+        deployedCanonicalTaxonomyV2Inventory.endpoints.values.every(
           (endpoint) =>
               endpoint.isStable &&
               endpoint.searchPathPinnedToPublic &&
@@ -49,16 +49,12 @@ void main() {
     },
   );
 
-  test('complete authoritative contract can produce canonical proof', () {
+  test('static inventory cannot produce a runtime capability proof', () {
     final result = verifier.assess(_compatibleInventory());
 
-    expect(result.supportsCanonicalV1, isTrue);
-    expect(result.proof, isNotNull);
-    expect(result.proof!.supportsCanonicalV1, isTrue);
-    expect(
-      result.proof!.verifiedEvidence,
-      TaxonomyBackendContractProof.requiredCanonicalV1Evidence,
-    );
+    expect(result.blockers, isEmpty);
+    expect(result.proof, isNull);
+    expect(result.supportsCanonicalV1, isFalse);
   });
 
   test('one signature mismatch invalidates the whole proof', () {
@@ -66,11 +62,11 @@ void main() {
     final endpoints = Map<String, TaxonomyRpcEndpointInventory>.of(
       compatible.endpoints,
     );
-    endpoints['taxonomy_roots_v1'] = _endpoint(
-      'taxonomy_roots_v1',
+    endpoints['taxonomy_roots_v2'] = _endpoint(
+      'taxonomy_roots_v2',
       const ['wrong_argument'],
       TaxonomyBackendCapabilityVerifier
-          .requiredResponseFields['taxonomy_roots_v1']!,
+          .requiredResponseFields['taxonomy_roots_v2']!,
     );
 
     final result = verifier.assess(

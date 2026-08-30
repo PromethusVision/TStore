@@ -19,6 +19,7 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 // Products
 import 'package:t_store/features/shop/data/repositories/product_repository_impl.dart';
 import 'package:t_store/features/shop/data/repositories/canonical_taxonomy_repository_impl.dart';
+import 'package:t_store/features/shop/data/repositories/canonical_taxonomy_scoped_product_repository_impl.dart';
 import 'package:t_store/features/shop/data/services/canonical_taxonomy_contract_adapter.dart';
 import 'package:t_store/features/shop/data/services/supabase_canonical_taxonomy_rpc_adapter.dart';
 import 'package:t_store/features/shop/data/services/shared_preferences_recent_product_searches_storage.dart';
@@ -164,32 +165,36 @@ Future<void> setupServiceLocator({
   final taxonomyPlan = const TaxonomyDependencyPlanner().resolve(
     taxonomyConfiguration,
   );
-  if (taxonomyPlan.requiresCanonicalBindings &&
-      (verifiedCanonicalTaxonomyAdapter == null ||
-          verifiedTaxonomyScopedProductRepository == null)) {
-    throw const TaxonomyDependencyConfigurationException(
-      'Canonical runtime requires explicitly verified taxonomy and product '
-      'scope bindings.',
-    );
-  }
-
   // ==================== Core ====================
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
   sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
   sl.registerSingleton(taxonomyPlan.capability);
   if (taxonomyPlan.registerDevelopmentRpcAdapter) {
+    sl.registerLazySingleton<SupabaseCanonicalTaxonomyRpcAdapter>(
+      () => SupabaseCanonicalTaxonomyRpcAdapter.fromSupabaseService(
+        sl(),
+        previewRequested: taxonomyPlan.requiresCanonicalBindings,
+      ),
+    );
     sl.registerLazySingleton<CanonicalTaxonomyRpcAdapter>(
-      () => SupabaseCanonicalTaxonomyRpcAdapter.fromSupabaseService(sl()),
+      () => sl<SupabaseCanonicalTaxonomyRpcAdapter>(),
     );
   }
   if (taxonomyPlan.requiresCanonicalBindings) {
     sl.registerLazySingleton<CanonicalTaxonomyRepository>(
       () => CanonicalTaxonomyRepositoryImpl(
-        adapter: verifiedCanonicalTaxonomyAdapter!,
+        adapter:
+            verifiedCanonicalTaxonomyAdapter ??
+            sl<SupabaseCanonicalTaxonomyRpcAdapter>(),
       ),
     );
-    sl.registerSingleton<TaxonomyScopedProductRepository>(
-      verifiedTaxonomyScopedProductRepository!,
+    sl.registerLazySingleton<TaxonomyScopedProductRepository>(
+      () =>
+          verifiedTaxonomyScopedProductRepository ??
+          CanonicalTaxonomyScopedProductRepositoryImpl(
+            supabaseService: sl(),
+            taxonomyAdapter: sl<SupabaseCanonicalTaxonomyRpcAdapter>(),
+          ),
     );
     sl.registerLazySingleton(() => GetProductsByTaxonomyScopeUsecase(sl()));
   }

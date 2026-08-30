@@ -11,6 +11,7 @@ class TaxonomyDependencyConfiguration extends Equatable {
     required this.environment,
     this.runtimeRequest = TaxonomyRuntimeRequest.legacy,
     this.contractInventory,
+    this.contractProof,
   });
 
   factory TaxonomyDependencyConfiguration.legacy(AppEnvironment environment) {
@@ -18,21 +19,27 @@ class TaxonomyDependencyConfiguration extends Equatable {
   }
 
   factory TaxonomyDependencyConfiguration.developmentCanonicalAcceptance({
-    required TaxonomyBackendContractInventory contractInventory,
+    required TaxonomyBackendContractProof contractProof,
   }) {
     return TaxonomyDependencyConfiguration(
       environment: AppEnvironment.development,
       runtimeRequest: TaxonomyRuntimeRequest.canonicalV1Acceptance,
-      contractInventory: contractInventory,
+      contractProof: contractProof,
     );
   }
 
   final AppEnvironment environment;
   final TaxonomyRuntimeRequest runtimeRequest;
   final TaxonomyBackendContractInventory? contractInventory;
+  final TaxonomyBackendContractProof? contractProof;
 
   @override
-  List<Object?> get props => [environment, runtimeRequest, contractInventory];
+  List<Object?> get props => [
+    environment,
+    runtimeRequest,
+    contractInventory,
+    contractProof,
+  ];
 }
 
 class TaxonomyDependencyPlan extends Equatable {
@@ -77,7 +84,7 @@ class TaxonomyDependencyPlanner {
 
   TaxonomyDependencyPlan resolve(TaxonomyDependencyConfiguration config) {
     final inventory =
-        config.contractInventory ?? deployedCanonicalTaxonomyV1Inventory;
+        config.contractInventory ?? deployedCanonicalTaxonomyV2Inventory;
     final assessment = capabilityVerifier.assess(inventory);
 
     if (config.runtimeRequest == TaxonomyRuntimeRequest.legacy) {
@@ -95,20 +102,31 @@ class TaxonomyDependencyPlanner {
         'Canonical acceptance may be requested only by Development.',
       );
     }
-    if (!assessment.supportsCanonicalV1 || assessment.proof == null) {
+    final proof = config.contractProof;
+    if (proof == null || !proof.supportsCanonicalV1) {
       throw const TaxonomyDependencyConfigurationException(
         'Canonical acceptance was requested without a compatible '
         'authoritative backend capability proof.',
       );
     }
 
-    return TaxonomyDependencyPlan(
-      environment: config.environment,
-      capability: TaxonomyRuntimeCapability.canonicalV1(
-        proof: assessment.proof!,
-      ),
-      contractAssessment: assessment,
-      registerDevelopmentRpcAdapter: true,
-    );
+    try {
+      return TaxonomyDependencyPlan(
+        environment: config.environment,
+        capability: TaxonomyRuntimeCapability.canonicalV1(proof: proof),
+        contractAssessment: TaxonomyCapabilityAssessment(
+          compatibility: TaxonomyContractCompatibility.match,
+          blockers: const [],
+          adapterDifferences: const [],
+          proof: proof,
+        ),
+        registerDevelopmentRpcAdapter: true,
+      );
+    } on ArgumentError {
+      throw const TaxonomyDependencyConfigurationException(
+        'Canonical acceptance contract is compatible, but no customer-visible '
+        'root projection is currently available.',
+      );
+    }
   }
 }
