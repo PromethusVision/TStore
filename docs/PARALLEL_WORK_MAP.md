@@ -17,7 +17,31 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
-## Wave 38C-R Corrected Strict Backend Contract Entegrasyon Gözlemi
+## Wave 38D Development Strict Backend Contract Apply Gözlemi
+
+`DEVELOPMENT_0011_APPLY: PASS`
+
+`STRICT_V2_DEPLOYED: PASS`
+
+`PREVIEW_REMOTE_ENABLED: NO`
+
+`CANONICAL_RUNTIME_ACTIVE: NO`
+
+- Tek backend/schema/SQL/migration owner lane'i iki JIT, exact candidate/main
+  identity ve exact-one-pending linked CLI dry-run sonrasında yalnız corrected
+  `0011`i Development'a uyguladı. Production erişimi yoktur.
+- Remote ledger exact `11/11`; v1 `7/7`, strict v2 `8/8`, preview config OFF,
+  taxonomy `1563` staged/inactive ve assignable/public/pilot `0/0/0` durumundadır.
+- Migration lane'i tamamlandı. Sıradaki iki bounded client değişikliği sıralı ve tek
+  shared-owner lane'inde yapılmalıdır: yedi strict read'in v2'ye atomik binding'i,
+  ardından capability/runtime proof'un strict v2 DTO'ya bağlanması ve read acceptance.
+- `service_locator.dart`, Development/Production entrypoint'leri, canonical adapter,
+  shared taxonomy/category/product modelleri ve navigation aynı anda farklı agentlar
+  tarafından değiştirilmez.
+- Legacy runtime default kalır. Preview acceptance, public/pilot activation,
+  canonical runtime, final UI Kit/Figma ve Production ayrı authority/lane'dir.
+
+## Wave 38C-R Corrected Strict Backend Contract Entegrasyon Gözlemi (historical pre-apply)
 
 `W38C_FIRST_ATTEMPT: FAIL / NO MERGE / NO REMOTE`
 
@@ -27,13 +51,13 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `BACKEND_BLOCKERS_REMAINING: 0`
 
-`DEVELOPMENT_WRITE_AUTHORIZED: NO`
+`DEVELOPMENT_WRITE_AUTHORIZED_AT_THAT_GATE: NO`
 
 - İlk candidate non-assignable structural leaf'i product exact leaf kabul ettiği
   için reddedildi; eski `c4961f36...` SHA superseded'dır. Corrected candidate
   `63552485...` bağımsız negatif/pozitif exact-leaf gate, strict v2 `8/8`, v1
   `7/7`, 29-case matrix ve portable hash reproduction'dan geçti.
-- Current active remote migration zinciri `0001→0010`dur. `0011` yalnız local
+- W38D öncesindeki active remote migration zinciri `0001→0010`du. `0011` yalnız local
   staging artifact'ıdır; Development/Production access, apply, preview enablement
   veya runtime activation yapılmadı.
 - Sonraki adım paralel değildir: **tek backend/schema/SQL/migration owner**, fresh

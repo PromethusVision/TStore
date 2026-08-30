@@ -1,0 +1,138 @@
+{
+  "contract": "w38d-development-contract-v2-apply-result-v1",
+  "date": "2026-08-30",
+  "target": {
+    "canonical_name": "EsnaftaVar Development",
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co",
+    "operational_health": "HEALTHY",
+    "production_accessed": false,
+    "production_touched": false
+  },
+  "git": {
+    "starting_main": "4d2a45debee790f9f645960a0d78c897d8a78a76",
+    "branch": "integration/wave-38d-development-contract-v2-apply",
+    "pre_apply_main_commit": "77cf9e62c407006b91963de79fa88c770e4de2dd"
+  },
+  "artifact": {
+    "filename": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+    "candidate_sha256": "63552485c8b86cbc6bab3fe24dcd3b0783063464020c4ece00241c42f10f2bb5",
+    "artifact_set_sha256": "781dd6351bc0daa7709725fbd4deb509fad63de8bda8e3d24e77be2a1049bda7",
+    "rollback_sha256": "fdc79ff3586fe61c8336c68026fd564ebeaec6cb6e890bc93f28778499d9000d",
+    "superseded_candidate_sha256": "c4961f36f28dcc047d44716ae2de76c5c1828b592078e49293307064959e9353",
+    "local_active_origin_main_identity": true,
+    "payload_or_0010_changed": false
+  },
+  "local": {
+    "baseline_forward_rollback": "3/3 3/3 3/3 PASS",
+    "idempotency": "2/2 PASS",
+    "postcheck": "3/3 PASS",
+    "failure_matrix": "29/29 PASS",
+    "v1": "7/7 PASS",
+    "v2": "8/8 PASS",
+    "exact_leaf_negative": "PASS",
+    "positive_transaction_fixture": "PASS",
+    "canonical_migration_contract": "18/18 PASS",
+    "combined_targeted_tests": "42/42 PASS",
+    "analyzer": "0 issues"
+  },
+  "jit": {
+    "first_snapshot_utc": "2026-08-30T17:29:07.796574Z",
+    "second_snapshot_utc": "2026-08-30T17:33:04.209929Z",
+    "both_target_identity_exact": true,
+    "both_ledger_10_of_10": true,
+    "both_taxonomy_preserved": true,
+    "both_schema_drift": false,
+    "both_competing_writer_count": 0,
+    "go_decision": "GO"
+  },
+  "apply": {
+    "cli_version": "2.116.0",
+    "dry_run_pending": [
+      "20260830001100_0011_canonical_taxonomy_contract_v2.sql"
+    ],
+    "seed_pending": [],
+    "role_pending": [],
+    "transaction_result": "PASS",
+    "history_repair": false,
+    "ad_hoc_sql_correction": false,
+    "post_apply_dry_run_up_to_date": true
+  },
+  "postcheck": {
+    "snapshot_utc": "2026-08-30T17:44:40.777763Z",
+    "ledger_count": 11,
+    "last_migration": [
+      "20260830001100",
+      "0011_canonical_taxonomy_contract_v2"
+    ],
+    "taxonomy": {
+      "nodes": 1563,
+      "levels": {"1": 24, "2": 244, "3": 1096, "4": 199},
+      "leaves": 1245,
+      "unique_uuids": 1563,
+      "staged_inactive": 1563,
+      "assignable": 0,
+      "public_active": 0,
+      "pilot_active": 0,
+      "policy_leakage": 0
+    },
+    "application_rows": {
+      "products": 0,
+      "shops": 0,
+      "shop_products": 0,
+      "profiles": 0,
+      "legal_consents": 0,
+      "carts": 0,
+      "qr_sessions": 0,
+      "verified_transactions": 0,
+      "reviews": 0,
+      "auth_users": 0,
+      "storage_objects": 0
+    },
+    "schema": {
+      "public_tables": 29,
+      "public_rls_tables": 29,
+      "public_policies": 52,
+      "canonical_triggers": 25
+    }
+  },
+  "contract_state": {
+    "v1": "7/7 PASS",
+    "v2": "8/8 PASS",
+    "client_contract_version": "taxonomy-client-v1",
+    "taxonomy_data_version": "canonical-v1.0.0",
+    "rpc_contract_version": "taxonomy-rpc-v2",
+    "rpc_generation": 2,
+    "preview_supported": true,
+    "preview_enabled": false,
+    "product_scope_requires_assignable": true,
+    "product_scope_policy_fail_closed": true,
+    "public_active_root_count": 0,
+    "real_nonassignable_leaf_id": "00084e98-e0ba-494a-8c19-8fa57272abd3",
+    "real_nonassignable_leaf_result_rows": 0
+  },
+  "security": {
+    "anon_config_select": false,
+    "anon_config_update": false,
+    "authenticated_config_select": false,
+    "authenticated_config_update": false,
+    "anon_preview_setter_execute": false,
+    "authenticated_preview_setter_execute": false,
+    "service_role_preview_setter_execute": true,
+    "v2_hardened_search_path": "8/8",
+    "unexpected_postgres_errors": 0,
+    "secret_or_pii_scan": "PASS"
+  },
+  "runtime": {
+    "legacy_runtime_default": true,
+    "canonical_customer_mode_active": false,
+    "preview_remote_enabled": false,
+    "public_taxonomy_active": false
+  },
+  "rollback": {
+    "required": false,
+    "performed": false,
+    "result": "NOT_RUN"
+  },
+  "ready_for_bounded_v2_client_update": true
+}

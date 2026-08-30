@@ -3,7 +3,29 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-08-30
-- Son doğrulanan teslim: **WAVE 38C-R CORRECTED STRICT BACKEND CONTRACT
+- Son doğrulanan teslim: **WAVE 38D DEVELOPMENT STRICT BACKEND CONTRACT APPLY
+  PASS — EXACT CORRECTED 0011 DEPLOYED / PREVIEW OFF / RUNTIME OFF**.
+- Integration branch/start/pre-apply main:
+  `integration/wave-38d-development-contract-v2-apply` /
+  `origin/main@4d2a45debee790f9f645960a0d78c897d8a78a76` /
+  `77cf9e62c407006b91963de79fa88c770e4de2dd`.
+- Product Owner'ın exact corrected candidate `63552485...` yetkisi altında iki
+  Development JIT target/health/ledger/taxonomy/schema/single-writer gate'i PASS.
+  Resmî CLI dry-run yalnız `0011`i pending gösterdi; history repair olmadan tek
+  transaction apply ve final up-to-date dry-run PASS tamamlandı.
+- Development ledger exact `11/11`; strict v2 `8/8`, capability v2 ve config
+  deployed. v1 `7/7` geriye uyumlu; RLS `29/29`, policy `52`, canonical trigger
+  `25/25`. Taxonomy `1563`, `24/244/1096/199`, leaf `1245`, UUID `1563` korunur;
+  assignable/public/pilot/policy leakage `0/0/0/0`.
+- Preview support vardır fakat `preview_enabled=false`; ordinary client config
+  erişimi ve setter yetkisi yoktur. Real non-assignable leaf remote exact-leaf
+  sonucu `0` ve preview isteği `W38_PREVIEW_DISABLED` ile fail-closed'dur.
+- Product/shop/listing, diğer business data, Auth user ve Storage object sıfırdır.
+  Development Healthy; rollback gerekmedi. Production access/touch `NO`.
+- `LEGACY_RUNTIME` default ve `CANONICAL_CUSTOMER_MODE=OFF` korunur. Sıradaki iş
+  iki bounded v2 client update'idir; preview/public/pilot/runtime veya Production
+  aktivasyonu ayrı yetki gerektirir.
+- Bir önceki doğrulanan teslim: **WAVE 38C-R CORRECTED STRICT BACKEND CONTRACT
   INTEGRATION PASS — INDEPENDENT EXACT-LEAF GATE / LOCAL 0011 REFREEZE**.
 - Integration branch/base/source/merge:
   `integration/wave-38c-strict-backend-contract-retry` /
@@ -23,14 +45,14 @@
   `fdc79ff3...`; portable LF/CRLF reproduction PASS. Strict v2 `8/8`, v1 `7/7`,
   local baseline/forward/rollback `3/3`, idempotency `2/2`, postcheck `3/3` ve
   failure matrix `29/29` PASS. Client sonucu `MATCH 10 / ADAPTER 2 / BLOCKER 0`.
-- Preview default OFF ve yalnız trusted server/service-role authority ile açılır;
+- W38C-R local freeze sonunda preview default OFF ve yalnız trusted server/service-role authority ile açılır;
   ordinary client config erişimi kapalıdır. Trusted preview Development-wide
   kontrollü metadata preview'dür, private per-user değildir. Integration hiçbir
-  remote ortama erişmedi; active migration zinciri `0001→0010`, remote `0011=NO`,
+  remote ortama erişmedi; o anda active migration zinciri `0001→0010`, remote `0011=NO`,
   remote preview `NO`, canonical runtime `OFF` kaldı.
-- Sonraki sıralı adım corrected candidate SHA'yı açıkça adlandıran **fresh Product
-  Owner Development-write authorization** ve yeni JIT gate'tir. Henüz yetki yoktur;
-  bu local freeze remote apply, preview veya runtime activation yetkisi değildir.
+- Bu local freeze kendi başına remote apply, preview veya runtime activation yetkisi
+  değildi; gerekli fresh Product Owner yetkisi ve JIT kapıları sonraki W38D'de ayrı
+  olarak sağlandı.
 - Bir önceki doğrulanan teslim: **WAVE 38A DEVELOPMENT CANONICAL CLIENT ADAPTER
   INTEGRATION PASS — CONCRETE ADAPTER / FAIL-CLOSED CAPABILITY PROOF /
   LEGACY RUNTIME DEFAULT**.
@@ -940,7 +962,7 @@ Bu dosya mevcut kod durumunun source-of-truth özetidir. Gelecek ürün fikirler
 | Ödül Çubuğu / gamification | NOT FOUND | Uygulama kodunda reward/task/badge domain'i bulunmuyor. |
 | Analytics / event ölçümü | NOT FOUND | Event tracking veya analytics entegrasyonu bulunmuyor. |
 | Permissions / privacy | PARTIAL | Legal belgeler/consent, hesap silme, konum izin durumu ve notification permission SQL'i var; merkezi preference/consent modeli yok. |
-| Supabase / RLS | COMPLETE | Production canonical `0001`–`0009` durumunda kalır. Development ledger exact `0001`–`0010`; Wave 37C `0010` yalnız staged/inactive taxonomy schema ve 1563 canonical node ekledi. Development RLS `28/28`, policy `52`, taxonomy RPC `7/7`, public/pilot leakage `0`; Auth/business ve taxonomy dışı application data sıfırdır. Production D1 postflight 23 public tablo, 23/23 RLS, 52 policy ve canonical grant/RPC/trigger/Storage contract'ını doğrulamıştır. |
+| Supabase / RLS | COMPLETE | Production canonical `0001`–`0009` durumunda kalır. Development ledger exact `0001`–`0011`; Wave 37C `0010` yalnız staged/inactive taxonomy schema ve 1563 canonical node, Wave 38D `0011` yalnız strict v2 backend contract/config ekledi. Development RLS `29/29`, policy `52`, taxonomy v1 `7/7` ve strict v2 `8/8`; preview/public/pilot kapalı, Auth/business ve taxonomy dışı application data sıfırdır. Production D1 postflight 23 public tablo, 23/23 RLS, 52 policy ve canonical grant/RPC/trigger/Storage contract'ını doğrulamıştır. |
 | Automotive / Services | NOT FOUND | Yalnız generic `vehicle` ve `motorcycle` kategori metni/asset'i var; özel domain veya servis akışı yok. |
 | Legacy order / checkout | SKELETON | Order repository/Cubit, testler ve shipping/payment alanları repoda duruyor; aktif müşteri navigation'ına ve GetIt DI grafiğine bağlı değil, hedef ürün akışı değil. |
 

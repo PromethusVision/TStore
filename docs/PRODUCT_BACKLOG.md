@@ -14,7 +14,26 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
-## Wave 38C-R Corrected Strict Backend Contract State
+## Wave 38D Development Strict Backend Contract State
+
+- **COMPLETED — controlled Development apply:** Exact corrected `63552485...`
+  candidate iki JIT ve exact-one-pending CLI dry-run sonrasında yalnız Development'a
+  uygulandı. Ledger `11/11`; history repair, ad-hoc SQL veya ikinci migration yoktur.
+- **COMPLETED — live strict contract:** v1 `7/7`, strict v2 `8/8`, versions
+  `taxonomy-client-v1 / canonical-v1.0.0 / taxonomy-rpc-v2`, generation `2`.
+  Capability product-scope assignability/policy fail-closed kanıtı PASS.
+- **COMPLETED — preservation/security:** Taxonomy `1563` staged/inactive;
+  assignable/public/pilot/policy leakage `0/0/0/0`. Preview OFF; ordinary clients
+  config okuyamaz/değiştiremez veya setter çalıştıramaz. Business/Auth/Storage rows
+  sıfır ve Production access `NO`.
+- **READY / SEQUENTIAL — bounded v2 client update:** Yedi strict read'in v2 family'ye
+  atomik binding'i ve capability/runtime proof'un `taxonomy_capabilities_v2` + strict
+  DTO'ya bağlanması. Shared DI/entrypoint/adapter/modeller tek owner altında yürür.
+- **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical Customer activation,
+  public/pilot activation, Development live client acceptance, final UI Kit/Figma ve
+  Production lane'i. `LEGACY_RUNTIME` default, canonical mode OFF.
+
+## Wave 38C-R Corrected Strict Backend Contract State (historical pre-apply)
 
 - **COMPLETED — first-attempt fail-safe rejection:** Eski `c4961f36...` candidate,
   non-assignable structural leaf'i product-scope exact leaf kabul ettiği için merge
@@ -28,14 +47,13 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **READY — corrected backend artifact:** Client compatibility `MATCH 10`,
   `ADAPTER_UPDATE_REQUIRED 2`, `BACKEND_BLOCKER 0`. Bu readiness yalnız fresh
   Development-write kararına sunulabilir; kendiliğinden remote yetki değildir.
-- **OPEN / NOT AUTHORIZED — controlled Development apply:** Corrected SHA'yı açıkça
-  adlandıran fresh Product Owner authorization, yeni read-only JIT target/ledger/
-  drift/single-writer kontrolü, exact apply ve postcheck/rollback operator gate'i.
+- **CLOSED BY W38D — controlled Development apply:** Fresh Product Owner authority,
+  iki read-only JIT, exact apply ve postcheck/rollback operator gate'i W38D'de PASS.
 - **OPEN / SEQUENTIAL — client cutover:** Başarılı remote postcheck sonrasında yedi
   strict read'in v2'ye atomik binding'i ve capability/runtime seçiminin
   `taxonomy_capabilities_v2` + strict DTO path'e bağlanması.
-- **UNCHANGED / CLOSED:** Remote `0011=NO`, preview remote `NO`, canonical runtime
-  `OFF`, Development/Production access `NO`; active chain `0001→0010`.
+- **HISTORICAL GATE STATE:** O turda remote `0011=NO`, preview remote `NO`, canonical
+  runtime `OFF`; active chain `0001→0010`du.
 - **OPEN / SEPARATE AUTHORITY:** Preview acceptance, canonical activation,
   public/pilot activation, final UI Kit/Figma ve Production lane'i.
 
