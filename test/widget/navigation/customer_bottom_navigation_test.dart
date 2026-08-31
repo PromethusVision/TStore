@@ -21,6 +21,7 @@ void main() {
     required ValueChanged<int> onSelected,
     int selectedIndex = 0,
     int unreadMessageCount = 0,
+    bool visualPrototype = false,
   }) {
     whenListen(
       cartCubit,
@@ -36,6 +37,7 @@ void main() {
             selectedIndex: selectedIndex,
             onSelected: onSelected,
             unreadMessageCount: unreadMessageCount,
+            visualPrototype: visualPrototype,
           ),
         ),
       ),
@@ -117,5 +119,30 @@ void main() {
     );
 
     expect(find.text('99+'), findsOneWidget);
+  });
+
+  testWidgets('görsel prototip kabuğu aynı beş hedefi korur', (tester) async {
+    var selectedIndex = -1;
+    await tester.pumpWidget(
+      buildSubject(
+        cartState: const CartV2Loaded([]),
+        visualPrototype: true,
+        onSelected: (index) => selectedIndex = index,
+      ),
+    );
+
+    const destinations = [
+      Key('customer-nav-home'),
+      Key('customer-nav-nearby'),
+      Key('customer-nav-cart'),
+      Key('customer-nav-wishlist'),
+      Key('customer-nav-profile'),
+    ];
+    for (var index = 0; index < destinations.length; index++) {
+      await tester.tap(find.byKey(destinations[index]));
+      await tester.pump();
+      expect(selectedIndex, index);
+    }
+    expect(tester.takeException(), isNull);
   });
 }

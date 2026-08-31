@@ -36,29 +36,40 @@ class RewardProgressSlot extends StatelessWidget {
     this.enabled = false,
     this.data,
     this.onTap,
+    this.compact = false,
   });
 
   final bool enabled;
   final RewardProgressData? data;
   final VoidCallback? onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     if (!enabled || data == null) {
       return const SizedBox.shrink(key: Key('reward-progress-slot-off'));
     }
-    return RewardProgressCard(data: data!, onTap: onTap);
+    return RewardProgressCard(data: data!, onTap: onTap, compact: compact);
   }
 }
 
 class RewardProgressCard extends StatelessWidget {
-  const RewardProgressCard({super.key, required this.data, this.onTap});
+  const RewardProgressCard({
+    super.key,
+    required this.data,
+    this.onTap,
+    this.compact = false,
+  });
 
   final RewardProgressData data;
   final VoidCallback? onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    if (compact) {
+      return _CompactRewardProgressCard(data: data, onTap: onTap);
+    }
     final theme = Theme.of(context);
     final progress = data.safeProgress;
     final content = Container(
@@ -198,4 +209,131 @@ class RewardProgressCard extends StatelessWidget {
   bool get _hasMilestoneLabels =>
       data.currentMilestone?.trim().isNotEmpty == true ||
       data.nextMilestone?.trim().isNotEmpty == true;
+}
+
+class _CompactRewardProgressCard extends StatelessWidget {
+  const _CompactRewardProgressCard({required this.data, this.onTap});
+
+  final RewardProgressData data;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = data.safeProgress;
+    final percentage = (progress * 100).round();
+    final content = Container(
+      key: const Key('reward-progress-card'),
+      constraints: const BoxConstraints(minHeight: 92),
+      padding: const EdgeInsets.fromLTRB(
+        EsnaftaVarSpacing.sm,
+        EsnaftaVarSpacing.sm,
+        EsnaftaVarSpacing.md,
+        EsnaftaVarSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: EsnaftaVarColors.accentSoft,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: EsnaftaVarTouchTargets.minimum,
+            height: EsnaftaVarTouchTargets.minimum,
+            decoration: BoxDecoration(
+              color: EsnaftaVarColors.surface,
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: EsnaftaVarColors.accent,
+              size: EsnaftaVarIconSizes.large,
+            ),
+          ),
+          const SizedBox(width: EsnaftaVarSpacing.sm),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        data.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: EsnaftaVarColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: EsnaftaVarSpacing.xs),
+                    Text(
+                      '$percentage%',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: EsnaftaVarColors.accent,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                if (data.contextualMessage?.trim().isNotEmpty == true) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    data.contextualMessage!.trim(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: EsnaftaVarColors.textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: EsnaftaVarSpacing.xs),
+                Semantics(
+                  label: 'Ödül ilerlemesi yüzde $percentage',
+                  value: '$percentage%',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
+                    child: LinearProgressIndicator(
+                      key: const Key('reward-progress-indicator'),
+                      minHeight: 6,
+                      value: progress,
+                      color: EsnaftaVarColors.accent,
+                      backgroundColor: EsnaftaVarColors.surface,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (onTap != null) ...[
+            const SizedBox(width: EsnaftaVarSpacing.xs),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: EsnaftaVarColors.accent,
+              size: EsnaftaVarIconSizes.medium,
+            ),
+          ],
+        ],
+      ),
+    );
+
+    return Semantics(
+      container: true,
+      button: onTap != null,
+      label: 'Ödül ilerleme kartı',
+      child: onTap == null
+          ? content
+          : Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+                child: content,
+              ),
+            ),
+    );
+  }
 }

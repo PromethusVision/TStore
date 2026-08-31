@@ -18,10 +18,12 @@ class HomeNearbyShopsSection extends StatelessWidget {
     super.key,
     required this.onViewAll,
     this.shopDestinationBuilder,
+    this.visualPrototype = false,
   });
 
   final VoidCallback onViewAll;
   final HomeShopDestinationBuilder? shopDestinationBuilder;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -66,31 +68,55 @@ class HomeNearbyShopsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             EsnaftaVarSectionHeader(
-              title: 'Yakındaki Mağazalar',
+              title: visualPrototype
+                  ? 'Yakınındaki esnaf'
+                  : 'Yakındaki Mağazalar',
               subtitle: locationDescription,
               actionLabel: 'Tümünü Gör',
               actionKey: const Key('home-nearby-view-all'),
               onAction: onViewAll,
             ),
             const SizedBox(height: CustomerHomeV1Tokens.space8),
-            SizedBox(
-              height: 190,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: visibleShops.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(width: CustomerHomeV1Tokens.space8),
-                itemBuilder: (context, index) {
-                  final shop = visibleShops[index];
-                  return _HomeShopCard(
-                    shop: shop,
-                    distanceMeters: loaded.distanceForShop(shop.id),
-                    destinationBuilder: shopDestinationBuilder,
-                  );
-                },
+            if (visualPrototype)
+              Column(
+                children: [
+                  for (
+                    var index = 0;
+                    index < visibleShops.take(3).length;
+                    index++
+                  ) ...[
+                    if (index > 0)
+                      const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    _HomeShopCard(
+                      shop: visibleShops[index],
+                      distanceMeters: loaded.distanceForShop(
+                        visibleShops[index].id,
+                      ),
+                      destinationBuilder: shopDestinationBuilder,
+                      visualPrototype: true,
+                    ),
+                  ],
+                ],
+              )
+            else
+              SizedBox(
+                height: 190,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: visibleShops.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: CustomerHomeV1Tokens.space8),
+                  itemBuilder: (context, index) {
+                    final shop = visibleShops[index];
+                    return _HomeShopCard(
+                      shop: shop,
+                      distanceMeters: loaded.distanceForShop(shop.id),
+                      destinationBuilder: shopDestinationBuilder,
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         );
       },
@@ -103,11 +129,13 @@ class _HomeShopCard extends StatefulWidget {
     required this.shop,
     required this.distanceMeters,
     this.destinationBuilder,
+    this.visualPrototype = false,
   });
 
   final ShopEntity shop;
   final double? distanceMeters;
   final HomeShopDestinationBuilder? destinationBuilder;
+  final bool visualPrototype;
 
   @override
   State<_HomeShopCard> createState() => _HomeShopCardState();
@@ -119,6 +147,9 @@ class _HomeShopCardState extends State<_HomeShopCard> {
   @override
   Widget build(BuildContext context) {
     final shop = widget.shop;
+    if (widget.visualPrototype) {
+      return _buildVisualPrototype(context, shop);
+    }
     return Material(
       key: Key('home-shop-${shop.id}'),
       color: CustomerHomeV1Tokens.surface,
@@ -175,6 +206,99 @@ class _HomeShopCardState extends State<_HomeShopCard> {
                       ],
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualPrototype(BuildContext context, ShopEntity shop) {
+    return Material(
+      key: Key('home-shop-${shop.id}'),
+      color: Colors.transparent,
+      child: InkWell(
+        key: Key('home-shop-link-${shop.id}'),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        onTap: !shop.isActive || shop.id.trim().isEmpty
+            ? null
+            : () => unawaited(_openShopProfile(context)),
+        child: SizedBox(
+          height: 72,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 72,
+                height: 72,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius20,
+                  ),
+                  child: _ShopImageFallback(shopId: shop.id),
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      shop.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 2,
+                      children: [
+                        if (widget.distanceMeters != null)
+                          _ShopDetail(
+                            icon: Icons.location_on_rounded,
+                            text: _compactDistance(widget.distanceMeters!),
+                          ),
+                        if (shop.ratingCount > 0)
+                          _ShopDetail(
+                            icon: Icons.star_rounded,
+                            text: shop.rating.toStringAsFixed(1),
+                          ),
+                      ],
+                    ),
+                    if (shop.address?.trim().isNotEmpty == true) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        shop.address!.trim(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 10.5,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space8),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: CustomerHomeV1Tokens.petrol,
+                  size: 18,
                 ),
               ),
             ],

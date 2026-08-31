@@ -37,6 +37,7 @@ class HomeSearchBar extends StatefulWidget {
     this.shopProductsLoader,
     this.debounceDuration = const Duration(milliseconds: 350),
     this.minimumQueryLength = 2,
+    this.visualPrototype = false,
   });
 
   final CustomerSearchCubit searchCubit;
@@ -48,6 +49,7 @@ class HomeSearchBar extends StatefulWidget {
   final HomeSearchShopProductsLoader? shopProductsLoader;
   final Duration debounceDuration;
   final int minimumQueryLength;
+  final bool visualPrototype;
 
   @override
   State<HomeSearchBar> createState() => _HomeSearchBarState();
@@ -99,15 +101,25 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
           Material(
             key: const Key('home-search-bar'),
             color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+            borderRadius: BorderRadius.circular(
+              widget.visualPrototype
+                  ? CustomerHomeV1Tokens.radius20
+                  : CustomerHomeV1Tokens.radius16,
+            ),
             child: Container(
-              height: 50,
+              height: widget.visualPrototype ? 52 : 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
-                  CustomerHomeV1Tokens.radius16,
+                  widget.visualPrototype
+                      ? CustomerHomeV1Tokens.radius20
+                      : CustomerHomeV1Tokens.radius16,
                 ),
-                border: Border.all(color: CustomerHomeV1Tokens.border),
-                boxShadow: CustomerHomeV1Tokens.softShadow,
+                border: widget.visualPrototype
+                    ? Border.all(color: CustomerHomeV1Tokens.mint, width: 1.5)
+                    : Border.all(color: CustomerHomeV1Tokens.border),
+                boxShadow: widget.visualPrototype
+                    ? const []
+                    : CustomerHomeV1Tokens.softShadow,
               ),
               child: CustomerLightInputTheme(
                 child: TextField(
@@ -121,9 +133,9 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                   onTapOutside: (_) => _focusNode.unfocus(),
                   decoration: InputDecoration(
                     hintText: 'Ürün, kategori veya mağaza ara',
-                    hintStyle: const TextStyle(
+                    hintStyle: TextStyle(
                       color: CustomerHomeV1Tokens.muted,
-                      fontSize: 12,
+                      fontSize: widget.visualPrototype ? 12.5 : 12,
                       fontWeight: FontWeight.w400,
                     ),
                     prefixIcon: const Icon(
@@ -131,7 +143,9 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                       color: CustomerHomeV1Tokens.petrol,
                       size: 22,
                     ),
-                    suffixIcon: _query.isEmpty
+                    suffixIcon: _query.isEmpty && widget.visualPrototype
+                        ? const SizedBox(width: 16)
+                        : _query.isEmpty
                         ? IconButton(
                             key: const Key('home-search-submit'),
                             tooltip: 'Arama sayfasını aç',

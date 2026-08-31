@@ -20,10 +20,12 @@ class HomeCategories extends StatefulWidget {
     super.key,
     this.destinationBuilder,
     this.canonicalDestinationBuilder,
+    this.visualPrototype = false,
   });
 
   final HomeCategoryDestinationBuilder? destinationBuilder;
   final HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder;
+  final bool visualPrototype;
 
   @override
   State<HomeCategories> createState() => _HomeCategoriesState();
@@ -91,20 +93,23 @@ class _HomeCategoriesState extends State<HomeCategories> {
       children: [
         Text(
           'Kategoriler',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(color: CustomerHomeV1Tokens.navy),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: CustomerHomeV1Tokens.navy,
+            fontWeight: widget.visualPrototype ? FontWeight.w700 : null,
+          ),
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space4),
-        Text(
-          'Mahallende aradığını kolayca bul',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: CustomerHomeV1Tokens.muted),
-        ),
+        if (!widget.visualPrototype) ...[
+          const SizedBox(height: CustomerHomeV1Tokens.space4),
+          Text(
+            'Mahallende aradığını kolayca bul',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: CustomerHomeV1Tokens.muted),
+          ),
+        ],
         const SizedBox(height: CustomerHomeV1Tokens.space8),
         SizedBox(
-          height: 112,
+          height: widget.visualPrototype ? 108 : 112,
           child: BlocBuilder<CategoriesCubit, CategoriesState>(
             builder: (context, state) {
               if (state is CategoriesLoading || state is CategoriesInitial) {
@@ -163,6 +168,7 @@ class _HomeCategoriesState extends State<HomeCategories> {
                       fallbackIcon: _fallbackIcon(category.name, index),
                       backgroundColor:
                           _pastelSurfaces[index % _pastelSurfaces.length],
+                      visualPrototype: widget.visualPrototype,
                       onTap: categoryId.isEmpty
                           ? null
                           : () => _openCategory(
@@ -231,6 +237,7 @@ class _HomeCategoryItem extends StatelessWidget {
     required this.fallbackIcon,
     required this.backgroundColor,
     required this.onTap,
+    required this.visualPrototype,
   });
 
   final CategoryEntity category;
@@ -238,38 +245,64 @@ class _HomeCategoryItem extends StatelessWidget {
   final IconData fallbackIcon;
   final Color backgroundColor;
   final VoidCallback? onTap;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     final imageUrl = category.imageUrl?.trim() ?? '';
+    final imageUri = Uri.tryParse(imageUrl);
+    final isNetworkImage =
+        imageUri != null &&
+        (imageUri.scheme == 'http' || imageUri.scheme == 'https');
     return SizedBox(
-      width: 104,
+      width: visualPrototype ? 78 : 104,
       child: InkWell(
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: visualPrototype ? 1 : 4,
+            vertical: 2,
+          ),
           child: Column(
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: visualPrototype ? 72 : 52,
+                height: visualPrototype ? 72 : 52,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   color: backgroundColor,
                   borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius16,
+                    visualPrototype
+                        ? CustomerHomeV1Tokens.radius20
+                        : CustomerHomeV1Tokens.radius16,
                   ),
                 ),
                 child: imageUrl.isEmpty
-                    ? _CategoryFallback(icon: fallbackIcon)
+                    ? _CategoryFallback(
+                        icon: fallbackIcon,
+                        visualPrototype: visualPrototype,
+                      )
+                    : !isNetworkImage
+                    ? Image.asset(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: visualPrototype,
+                        ),
+                      )
                     : CachedNetworkImage(
                         imageUrl: imageUrl,
                         fit: BoxFit.cover,
-                        placeholder: (_, _) =>
-                            _CategoryFallback(icon: fallbackIcon),
-                        errorWidget: (_, _, _) =>
-                            _CategoryFallback(icon: fallbackIcon),
+                        placeholder: (_, _) => _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: visualPrototype,
+                        ),
+                        errorWidget: (_, _, _) => _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: visualPrototype,
+                        ),
                       ),
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space4),
@@ -279,10 +312,10 @@ class _HomeCategoryItem extends StatelessWidget {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: CustomerHomeV1Tokens.navy,
                     fontSize: 11,
-                    height: 1.2,
+                    height: visualPrototype ? 1.15 : 1.2,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -296,13 +329,18 @@ class _HomeCategoryItem extends StatelessWidget {
 }
 
 class _CategoryFallback extends StatelessWidget {
-  const _CategoryFallback({required this.icon});
+  const _CategoryFallback({required this.icon, required this.visualPrototype});
 
   final IconData icon;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
-    return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
+    return Icon(
+      icon,
+      color: CustomerHomeV1Tokens.navy,
+      size: visualPrototype ? 25 : 23,
+    );
   }
 }
 

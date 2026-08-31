@@ -10,10 +10,12 @@ class HomeLocationBar extends StatelessWidget {
     super.key,
     required this.isAuthenticated,
     required this.onTap,
+    this.visualPrototype = false,
   });
 
   final bool isAuthenticated;
   final VoidCallback onTap;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,83 @@ class HomeLocationBar extends StatelessWidget {
             : isAuthenticated
             ? 'Yakınındaki mağazaları görmek için dokun'
             : 'Yakınındakiler için giriş yap ve konumunu seç';
+
+        if (visualPrototype) {
+          return Material(
+            key: const Key('home-location-bar'),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 44),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: CustomerHomeV1Tokens.mint,
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radius12,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.location_on_rounded,
+                        color: CustomerHomeV1Tokens.petrol,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: title,
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.navy,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '  •  $detail',
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.muted,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 11.5, height: 1.3),
+                      ),
+                    ),
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                    if (isLoading)
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          color: CustomerHomeV1Tokens.petrol,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    else
+                      const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: CustomerHomeV1Tokens.petrol,
+                        size: 20,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
         return Material(
           key: const Key('home-location-bar'),

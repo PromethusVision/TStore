@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,7 @@ import 'package:t_store/features/shop/domain/entities/banner_entity.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_state.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
@@ -102,9 +104,38 @@ void main() {
       );
     });
   }
+
+  testWidgets('W39A R1 Kpasa referenced Home prototype 390px', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      _buildScenario(_HomeVisualScenario.rewardFixture, visualPrototype: true),
+    );
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 250)),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('home-search-input')), findsOneWidget);
+    expect(find.byKey(const Key('reward-progress-card')), findsOneWidget);
+    expect(find.byKey(const Key('home-products-loaded')), findsOneWidget);
+    expect(find.byKey(const Key('customer-bottom-navigation')), findsOneWidget);
+    await expectLater(
+      find.byKey(const Key('w39a-home-visual-evidence')),
+      matchesGoldenFile('goldens/w39a_r1_home_kpasa_prototype_390.png'),
+    );
+  });
 }
 
-Widget _buildScenario(_HomeVisualScenario scenario) {
+Widget _buildScenario(
+  _HomeVisualScenario scenario, {
+  bool visualPrototype = false,
+}) {
   final authCubit = _MockAuthCubit();
   final bannersCubit = _MockBannersCubit();
   final categoriesCubit = _MockCategoriesCubit();
@@ -141,7 +172,13 @@ Widget _buildScenario(_HomeVisualScenario scenario) {
   whenListen(
     categoriesCubit,
     const Stream<CategoriesState>.empty(),
-    initialState: CategoriesLoaded(isLongText ? _longCategories : _categories),
+    initialState: CategoriesLoaded(
+      visualPrototype
+          ? _prototypeCategories
+          : isLongText
+          ? _longCategories
+          : _categories,
+    ),
   );
   when(() => categoriesCubit.getCategories()).thenAnswer((_) async {});
 
@@ -149,7 +186,11 @@ Widget _buildScenario(_HomeVisualScenario scenario) {
     productsCubit,
     const Stream<ProductsState>.empty(),
     initialState: ProductsLoaded(
-      products: isLongText ? _longProducts : _products,
+      products: visualPrototype
+          ? _prototypeProducts
+          : isLongText
+          ? _longProducts
+          : _products,
     ),
   );
   whenListen(
@@ -211,6 +252,7 @@ Widget _buildScenario(_HomeVisualScenario scenario) {
           bottomNavigationBar: CustomerBottomNavigation(
             selectedIndex: 0,
             onSelected: (_) {},
+            visualPrototype: visualPrototype,
           ),
           body: SafeArea(
             bottom: false,
@@ -218,7 +260,15 @@ Widget _buildScenario(_HomeVisualScenario scenario) {
               searchCubit: searchCubit,
               isAuthenticatedOverride: isAuthenticated,
               rewardFeatureEnabled: rewardEnabled,
-              rewardProgress: rewardEnabled ? _rewardFixture : null,
+              rewardProgress: rewardEnabled
+                  ? visualPrototype
+                        ? _prototypeRewardFixture
+                        : _rewardFixture
+                  : null,
+              productShopProductsLoader: visualPrototype
+                  ? _prototypeShopProductsLoader
+                  : null,
+              visualPrototype: visualPrototype,
               productFavoriteCurrentUserIdProvider: () =>
                   isAuthenticated ? 'visual-customer' : null,
               onSearchSubmitted: (_) {},
@@ -242,6 +292,14 @@ const _rewardFixture = RewardProgressData(
   contextualMessage: 'İlerleme yalnız görsel inceleme fixture verisidir.',
 );
 
+const _prototypeRewardFixture = RewardProgressData(
+  progress: 0.62,
+  title: 'Mahalle avantajların',
+  currentMilestone: 'Yerel keşif',
+  nextMilestone: 'Yeni mahalle adımı',
+  contextualMessage: 'Yerel alışveriş yolculuğun tek yerde',
+);
+
 const _location = CustomerSavedLocationEntity(
   id: 'location-1',
   userId: 'visual-customer',
@@ -259,6 +317,39 @@ const _categories = [
   CategoryEntity(id: 'kasap', name: 'Kasap'),
   CategoryEntity(id: 'kozmetik', name: 'Kozmetik'),
   CategoryEntity(id: 'ev-yasam', name: 'Ev & Yaşam'),
+];
+
+const _prototypeCategories = [
+  CategoryEntity(
+    id: 'market',
+    name: 'Market',
+    imageUrl: 'assets/icons/categories/groceries.png',
+  ),
+  CategoryEntity(
+    id: 'ev-yasam',
+    name: 'Ev & Yaşam',
+    imageUrl: 'assets/icons/categories/home-decoration.png',
+  ),
+  CategoryEntity(
+    id: 'kozmetik',
+    name: 'Kozmetik',
+    imageUrl: 'assets/icons/categories/beauty.png',
+  ),
+  CategoryEntity(
+    id: 'giyim',
+    name: 'Giyim',
+    imageUrl: 'assets/icons/categories/tops.png',
+  ),
+  CategoryEntity(
+    id: 'elektronik',
+    name: 'Elektronik',
+    imageUrl: 'assets/icons/categories/smartphones.png',
+  ),
+  CategoryEntity(
+    id: 'ayakkabi',
+    name: 'Ayakkabı',
+    imageUrl: 'assets/icons/categories/mens-shoes.png',
+  ),
 ];
 
 const _longCategories = [
@@ -289,6 +380,64 @@ const _products = [
     brandName: 'Esenler Fırını',
   ),
 ];
+
+const _prototypeProducts = [
+  ProductEntity(
+    id: 'prototype-product-1',
+    name: 'Günlük Pamuklu Tişört',
+    price: 429.90,
+    categoryId: 'giyim',
+    stock: 18,
+    images: [TImages.productImage5],
+    brandName: 'Mahalle Giyim',
+  ),
+  ProductEntity(
+    id: 'prototype-product-2',
+    name: 'Rahat Ev Terliği',
+    price: 249.90,
+    categoryId: 'ev-yasam',
+    stock: 9,
+    images: [TImages.productImage6],
+    brandName: 'Esenler Ayakkabı',
+  ),
+  ProductEntity(
+    id: 'prototype-product-3',
+    name: 'Samsung Galaxy S9',
+    price: 6499.90,
+    categoryId: 'elektronik',
+    stock: 3,
+    images: [TImages.productImage11],
+    brandName: 'Komşu Teknoloji',
+  ),
+];
+
+Future<Either<String, List<ShopProductEntity>>> _prototypeShopProductsLoader(
+  List<String> _,
+) async {
+  return const Right([
+    ShopProductEntity(
+      id: 'prototype-listing-1',
+      shopId: 'shop-1',
+      productId: 'prototype-product-1',
+      price: 399.90,
+      shop: ShopEntity(id: 'shop-1', name: 'Mahalle Giyim'),
+    ),
+    ShopProductEntity(
+      id: 'prototype-listing-2',
+      shopId: 'shop-2',
+      productId: 'prototype-product-2',
+      price: 219.90,
+      shop: ShopEntity(id: 'shop-2', name: 'Esenler Ayakkabı'),
+    ),
+    ShopProductEntity(
+      id: 'prototype-listing-3',
+      shopId: 'shop-3',
+      productId: 'prototype-product-3',
+      price: 6299.90,
+      shop: ShopEntity(id: 'shop-3', name: 'Komşu Teknoloji'),
+    ),
+  ]);
+}
 
 const _longProducts = [
   ProductEntity(

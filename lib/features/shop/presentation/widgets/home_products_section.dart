@@ -30,11 +30,13 @@ class HomeProductsSection extends StatelessWidget {
     this.destinationBuilder,
     this.currentUserIdProvider,
     this.shopProductsLoader,
+    this.visualPrototype = false,
   });
 
   final HomeProductDestinationBuilder? destinationBuilder;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final HomeShopProductsLoader? shopProductsLoader;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +47,12 @@ class HomeProductsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             EsnaftaVarSectionHeader(
-              title: 'Size Özel Seçtiklerimiz',
-              subtitle: 'Yakındaki esnaflarda bulunan ürünler',
+              title: visualPrototype
+                  ? 'Mahallende bugün'
+                  : 'Size Özel Seçtiklerimiz',
+              subtitle: visualPrototype
+                  ? 'Fiyatları yerel esnaflarda karşılaştır'
+                  : 'Yakındaki esnaflarda bulunan ürünler',
               actionLabel: 'Tümünü Gör',
               actionKey: const Key('home-products-view-all'),
               onAction: () => Navigator.of(context).push<void>(
@@ -87,6 +93,7 @@ class HomeProductsSection extends StatelessWidget {
                 destinationBuilder: destinationBuilder,
                 currentUserIdProvider: currentUserIdProvider,
                 shopProductsLoader: shopProductsLoader,
+                visualPrototype: visualPrototype,
               )
             else
               const SizedBox.shrink(),
@@ -102,12 +109,14 @@ class _HomeProductCards extends StatefulWidget {
   final HomeProductDestinationBuilder? destinationBuilder;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final HomeShopProductsLoader? shopProductsLoader;
+  final bool visualPrototype;
 
   const _HomeProductCards({
     required this.products,
     required this.destinationBuilder,
     required this.currentUserIdProvider,
     required this.shopProductsLoader,
+    required this.visualPrototype,
   });
 
   @override
@@ -148,7 +157,7 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
 
         return SizedBox(
           key: const Key('home-products-loaded'),
-          height: 234,
+          height: widget.visualPrototype ? 246 : 234,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -162,6 +171,7 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
                 minimumShopPrice: minimumPrices[product.id],
                 isPriceLoading: isPriceLoading,
                 currentUserIdProvider: widget.currentUserIdProvider,
+                visualPrototype: widget.visualPrototype,
                 onTap: product.id.trim().isEmpty
                     ? null
                     : () => unawaited(_openProductDetails(context, product)),
@@ -239,6 +249,7 @@ class HomeProductCard extends StatelessWidget {
     this.minimumShopPrice,
     this.isPriceLoading = false,
     this.currentUserIdProvider,
+    this.visualPrototype = false,
   });
 
   final ProductEntity product;
@@ -246,10 +257,14 @@ class HomeProductCard extends StatelessWidget {
   final double? minimumShopPrice;
   final bool isPriceLoading;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     final secondaryText = _secondaryText;
+    if (visualPrototype) {
+      return _buildVisualPrototype(context, secondaryText);
+    }
     return Material(
       key: Key('home-product-${product.id}'),
       color: CustomerHomeV1Tokens.surface,
@@ -344,6 +359,93 @@ class HomeProductCard extends StatelessWidget {
     );
   }
 
+  Widget _buildVisualPrototype(BuildContext context, String? secondaryText) {
+    return SizedBox(
+      width: 152,
+      child: Material(
+        key: Key('home-product-${product.id}'),
+        color: Colors.transparent,
+        child: InkWell(
+          key: Key('home-product-link-${product.id}'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 150,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius20,
+                      ),
+                      child: _ProductImage(
+                        product: product,
+                        visualPrototype: true,
+                      ),
+                    ),
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: ProductFavoriteButton(
+                        productId: product.id,
+                        keyPrefix: 'home-product-favorite-${product.id}',
+                        currentUserIdProvider: currentUserIdProvider,
+                        height: EsnaftaVarTouchTargets.minimum,
+                        width: EsnaftaVarTouchTargets.minimum,
+                        iconSize: EsnaftaVarIconSizes.medium,
+                        backgroundColor: CustomerHomeV1Tokens.surface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Text(
+                product.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.navy,
+                  fontSize: 13.5,
+                  height: 1.22,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (secondaryText != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  secondaryText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: CustomerHomeV1Tokens.muted,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+              const Spacer(),
+              Text(
+                _priceLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: CustomerHomeV1Tokens.petrol,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   String get _priceLabel {
     if (isPriceLoading) return 'Fiyat yükleniyor';
     final price = minimumShopPrice;
@@ -373,9 +475,10 @@ class HomeProductCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({required this.product});
+  const _ProductImage({required this.product, this.visualPrototype = false});
 
   final ProductEntity product;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -386,10 +489,18 @@ class _ProductImage extends StatelessWidget {
     final isNetwork =
         uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
     if (!isNetwork) {
-      return Image.asset(
+      final assetImage = Image.asset(
         imageUrl,
-        fit: BoxFit.cover,
+        fit: visualPrototype ? BoxFit.contain : BoxFit.cover,
         errorBuilder: (_, _, _) => const _ProductImageFallback(),
+      );
+      if (!visualPrototype) return assetImage;
+      return ColoredBox(
+        color: CustomerHomeV1Tokens.mint,
+        child: Padding(
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space8),
+          child: assetImage,
+        ),
       );
     }
 
