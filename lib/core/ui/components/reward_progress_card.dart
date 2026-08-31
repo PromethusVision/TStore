@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 
-/// Presentation-only contract for a future reward source.
+/// Presentation-only contract for the owner-approved five-task reward cycle.
 ///
-/// It deliberately carries no point formula, money value, expiry, threshold
-/// economics or backend behavior.
+/// Progress truth and reward value are supplied by a future Reward Engine. This
+/// contract does not persist tasks, issue rewards or define reward economics.
 class RewardProgressData {
   const RewardProgressData({
-    required this.progress,
-    required this.title,
-    this.currentMilestone,
-    this.nextMilestone,
-    this.contextualMessage,
+    required this.completedTasks,
+    required this.rewardAmountText,
+    this.title = 'Görev yap, kazan',
+    this.message,
   });
 
-  final double progress;
-  final String title;
-  final String? currentMilestone;
-  final String? nextMilestone;
-  final String? contextualMessage;
+  static const int taskCycleTotal = 5;
 
-  double get safeProgress {
-    if (!progress.isFinite) return 0;
-    return progress.clamp(0, 1).toDouble();
+  final int completedTasks;
+  final String rewardAmountText;
+  final String title;
+  final String? message;
+
+  int get totalTasks => taskCycleTotal;
+
+  int get safeCompletedTasks => completedTasks.clamp(0, totalTasks);
+
+  int get remainingTasks => totalTasks - safeCompletedTasks;
+
+  double get safeProgress => safeCompletedTasks / totalTasks;
+
+  bool get isComplete => safeCompletedTasks == totalTasks;
+
+  String get displayRewardAmount {
+    final amount = rewardAmountText.trim();
+    return amount.isEmpty ? 'Ödül' : amount;
   }
 }
 
@@ -67,124 +77,29 @@ class RewardProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (compact) {
-      return _CompactRewardProgressCard(data: data, onTap: onTap);
-    }
-    final theme = Theme.of(context);
-    final progress = data.safeProgress;
     final content = Container(
       key: const Key('reward-progress-card'),
-      constraints: const BoxConstraints(minHeight: 132),
-      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      constraints: BoxConstraints(minHeight: compact ? 104 : 132),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: EsnaftaVarColors.surface,
-        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
-        border: Border.all(color: EsnaftaVarColors.borderDefault),
-        boxShadow: EsnaftaVarElevation.xs,
+        color: compact ? EsnaftaVarColors.accentSoft : EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(
+          compact ? EsnaftaVarRadii.xLarge : EsnaftaVarRadii.large,
+        ),
+        border: compact
+            ? null
+            : Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: compact ? null : EsnaftaVarElevation.xs,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: EsnaftaVarTouchTargets.minimum,
-                height: EsnaftaVarTouchTargets.minimum,
-                decoration: BoxDecoration(
-                  color: EsnaftaVarColors.accentSoft,
-                  borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
-                ),
-                child: const Icon(
-                  Icons.workspace_premium_rounded,
-                  color: EsnaftaVarColors.accent,
-                  size: EsnaftaVarIconSizes.large,
-                ),
-              ),
-              const SizedBox(width: EsnaftaVarSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.title,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: EsnaftaVarColors.textPrimary,
-                      ),
-                    ),
-                    if (data.contextualMessage?.trim().isNotEmpty == true) ...[
-                      const SizedBox(height: EsnaftaVarSpacing.xxs),
-                      Text(
-                        data.contextualMessage!.trim(),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: EsnaftaVarColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              if (onTap != null)
-                const SizedBox(
-                  width: EsnaftaVarTouchTargets.minimum,
-                  height: EsnaftaVarTouchTargets.minimum,
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    color: EsnaftaVarColors.primary,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: EsnaftaVarSpacing.sm),
-          Semantics(
-            label: 'Ödül ilerlemesi yüzde ${(progress * 100).round()}',
-            value: '${(progress * 100).round()}%',
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
-              child: LinearProgressIndicator(
-                key: const Key('reward-progress-indicator'),
-                minHeight: 9,
-                value: progress,
-                color: EsnaftaVarColors.rewardProgress,
-                backgroundColor: EsnaftaVarColors.rewardTrack,
-              ),
-            ),
-          ),
-          if (_hasMilestoneLabels) ...[
-            const SizedBox(height: EsnaftaVarSpacing.xs),
-            Row(
-              children: [
-                if (data.currentMilestone?.trim().isNotEmpty == true)
-                  Expanded(
-                    child: Text(
-                      data.currentMilestone!.trim(),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: EsnaftaVarColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                if (data.nextMilestone?.trim().isNotEmpty == true)
-                  Expanded(
-                    child: Text(
-                      data.nextMilestone!.trim(),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: EsnaftaVarColors.accent,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
+          _RewardHeader(data: data),
+          const SizedBox(height: EsnaftaVarSpacing.xs),
+          _RewardStatus(data: data),
+          const SizedBox(height: EsnaftaVarSpacing.xs),
+          _RewardSegments(data: data),
         ],
       ),
     );
@@ -192,148 +107,213 @@ class RewardProgressCard extends StatelessWidget {
     return Semantics(
       container: true,
       button: onTap != null,
-      label: 'Ödül ilerleme kartı',
+      label:
+          '${data.title}. ${data.safeCompletedTasks}/${data.totalTasks} görev tamamlandı. '
+          '${data.isComplete ? 'Ödülü kazandın.' : 'Ödüle ${data.remainingTasks} görev kaldı.'} '
+          'Ödül ${data.displayRewardAmount}.',
       child: onTap == null
           ? content
           : Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: onTap,
-                borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+                borderRadius: BorderRadius.circular(
+                  compact ? EsnaftaVarRadii.xLarge : EsnaftaVarRadii.large,
+                ),
                 child: content,
               ),
             ),
     );
   }
-
-  bool get _hasMilestoneLabels =>
-      data.currentMilestone?.trim().isNotEmpty == true ||
-      data.nextMilestone?.trim().isNotEmpty == true;
 }
 
-class _CompactRewardProgressCard extends StatelessWidget {
-  const _CompactRewardProgressCard({required this.data, this.onTap});
+class _RewardHeader extends StatelessWidget {
+  const _RewardHeader({required this.data});
 
   final RewardProgressData data;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final progress = data.safeProgress;
-    final percentage = (progress * 100).round();
-    final content = Container(
-      key: const Key('reward-progress-card'),
-      constraints: const BoxConstraints(minHeight: 92),
-      padding: const EdgeInsets.fromLTRB(
-        EsnaftaVarSpacing.sm,
-        EsnaftaVarSpacing.sm,
-        EsnaftaVarSpacing.md,
-        EsnaftaVarSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: EsnaftaVarColors.accentSoft,
-        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: EsnaftaVarTouchTargets.minimum,
-            height: EsnaftaVarTouchTargets.minimum,
-            decoration: BoxDecoration(
-              color: EsnaftaVarColors.surface,
-              borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
-            ),
-            child: const Icon(
-              Icons.workspace_premium_rounded,
-              color: EsnaftaVarColors.accent,
-              size: EsnaftaVarIconSizes.large,
-            ),
+    return Row(
+      children: [
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: EsnaftaVarColors.surface,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
           ),
-          const SizedBox(width: EsnaftaVarSpacing.sm),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        data.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: EsnaftaVarColors.textPrimary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: EsnaftaVarSpacing.xs),
-                    Text(
-                      '$percentage%',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: EsnaftaVarColors.accent,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
+          child: Icon(
+            data.isComplete
+                ? Icons.check_rounded
+                : Icons.workspace_premium_rounded,
+            color: data.isComplete
+                ? EsnaftaVarColors.success
+                : EsnaftaVarColors.accent,
+            size: EsnaftaVarIconSizes.large,
+          ),
+        ),
+        const SizedBox(width: EsnaftaVarSpacing.xs),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: EsnaftaVarColors.textPrimary,
+                  fontWeight: FontWeight.w700,
                 ),
-                if (data.contextualMessage?.trim().isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    data.contextualMessage!.trim(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: EsnaftaVarColors.textSecondary,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: EsnaftaVarSpacing.xs),
-                Semantics(
-                  label: 'Ödül ilerlemesi yüzde $percentage',
-                  value: '$percentage%',
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
-                    child: LinearProgressIndicator(
-                      key: const Key('reward-progress-indicator'),
-                      minHeight: 6,
-                      value: progress,
-                      color: EsnaftaVarColors.accent,
-                      backgroundColor: EsnaftaVarColors.surface,
-                    ),
+              ),
+              if (data.message?.trim().isNotEmpty == true) ...[
+                const SizedBox(height: 1),
+                Text(
+                  data.message!.trim(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: EsnaftaVarColors.textSecondary,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
+            ],
+          ),
+        ),
+        const SizedBox(width: EsnaftaVarSpacing.xs),
+        Container(
+          key: const Key('reward-amount'),
+          constraints: const BoxConstraints(minWidth: 62, minHeight: 38),
+          padding: const EdgeInsets.symmetric(
+            horizontal: EsnaftaVarSpacing.xs,
+            vertical: EsnaftaVarSpacing.xxs,
+          ),
+          decoration: BoxDecoration(
+            color: data.isComplete
+                ? EsnaftaVarColors.successSoft
+                : EsnaftaVarColors.surface,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
+            border: Border.all(
+              color: data.isComplete
+                  ? EsnaftaVarColors.success
+                  : EsnaftaVarColors.accent.withValues(alpha: 0.22),
             ),
           ),
-          if (onTap != null) ...[
-            const SizedBox(width: EsnaftaVarSpacing.xs),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: EsnaftaVarColors.accent,
-              size: EsnaftaVarIconSizes.medium,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'ÖDÜL',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: data.isComplete
+                      ? EsnaftaVarColors.success
+                      : EsnaftaVarColors.accent,
+                  fontSize: 8,
+                  height: 1,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                data.displayRewardAmount,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: EsnaftaVarColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RewardStatus extends StatelessWidget {
+  const _RewardStatus({required this.data});
+
+  final RewardProgressData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final statusText = data.isComplete
+        ? 'Ödülü kazandın'
+        : 'Ödüle ${data.remainingTasks} görev kaldı';
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            statusText,
+            key: const Key('reward-remaining-count'),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: data.isComplete
+                  ? EsnaftaVarColors.success
+                  : EsnaftaVarColors.accent,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        const SizedBox(width: EsnaftaVarSpacing.xs),
+        Text(
+          '${data.safeCompletedTasks}/${data.totalTasks} görev tamamlandı',
+          key: const Key('reward-completed-count'),
+          maxLines: 1,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: EsnaftaVarColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RewardSegments extends StatelessWidget {
+  const _RewardSegments({required this.data});
+
+  final RewardProgressData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label:
+          '${data.safeCompletedTasks} tamamlanan, ${data.remainingTasks} kalan görev',
+      value: '${data.safeCompletedTasks}/${data.totalTasks}',
+      child: Row(
+        key: const Key('reward-progress-indicator'),
+        children: [
+          for (var index = 0; index < data.totalTasks; index++) ...[
+            if (index > 0) const SizedBox(width: EsnaftaVarSpacing.xxs),
+            Expanded(
+              child: AnimatedContainer(
+                key: Key('reward-task-segment-$index'),
+                duration: const Duration(milliseconds: 180),
+                height: 8,
+                decoration: BoxDecoration(
+                  color: index < data.safeCompletedTasks
+                      ? data.isComplete
+                            ? EsnaftaVarColors.success
+                            : EsnaftaVarColors.accent
+                      : EsnaftaVarColors.surface,
+                  borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
+                  border: index < data.safeCompletedTasks
+                      ? null
+                      : Border.all(
+                          color: EsnaftaVarColors.accent.withValues(alpha: 0.2),
+                        ),
+                ),
+              ),
             ),
           ],
         ],
       ),
-    );
-
-    return Semantics(
-      container: true,
-      button: onTap != null,
-      label: 'Ödül ilerleme kartı',
-      child: onTap == null
-          ? content
-          : Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
-                child: content,
-              ),
-            ),
     );
   }
 }

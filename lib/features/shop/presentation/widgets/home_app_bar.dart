@@ -99,23 +99,9 @@ class _HomeAppBarState extends State<HomeAppBar> {
         if (widget.visualPrototype) {
           return ConstrainedBox(
             key: const Key('customer-home-header'),
-            constraints: const BoxConstraints(minHeight: 58),
+            constraints: const BoxConstraints(minHeight: 56),
             child: Row(
               children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: EsnaftaVarColors.primarySoft,
-                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
-                  ),
-                  child: const Icon(
-                    Icons.storefront_rounded,
-                    color: EsnaftaVarColors.primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: Semantics(
                     label: 'Esnafta Var müşteri ana sayfası, $displayName',
@@ -123,36 +109,46 @@ class _HomeAppBarState extends State<HomeAppBar> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          greeting,
-                          key: const Key('home-greeting'),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                color: EsnaftaVarColors.textPrimary,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.35,
-                              ),
+                        const CustomerBrandWordmark(
+                          key: Key('home-wordmark'),
+                          fontSize: 26,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          hasKnownIdentity
-                              ? 'Mahallende bugün neler var?'
-                              : 'Yakınındaki ürünleri ve esnafı bul',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: EsnaftaVarColors.textSecondary,
-                                fontSize: 11.5,
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
+                        Row(
+                          children: [
+                            Text(
+                              greeting,
+                              key: const Key('home-greeting'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.labelMedium
+                                  ?.copyWith(
+                                    color: EsnaftaVarColors.textPrimary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(width: EsnaftaVarSpacing.xs),
+                            Expanded(
+                              child: Text(
+                                hasKnownIdentity
+                                    ? 'Mahallende bugün neler var?'
+                                    : 'Yakınındaki ürünleri ve esnafı bul',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: EsnaftaVarColors.textSecondary,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                               ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ),
+                const SizedBox(width: EsnaftaVarSpacing.sm),
                 _buildNotificationAction(
                   context,
                   isAuthenticated: isAuthenticated,

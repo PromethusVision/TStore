@@ -105,7 +105,9 @@ void main() {
     });
   }
 
-  testWidgets('W39A R1 Kpasa referenced Home prototype 390px', (tester) async {
+  testWidgets('W39A R2 brand and five task Home prototype 390px', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -121,13 +123,18 @@ void main() {
     await tester.pump();
 
     expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
     expect(find.byKey(const Key('home-search-input')), findsOneWidget);
     expect(find.byKey(const Key('reward-progress-card')), findsOneWidget);
+    expect(find.text('Görev yap, kazan'), findsOneWidget);
+    expect(find.text('3/5 görev tamamlandı'), findsOneWidget);
+    expect(find.text('Ödüle 2 görev kaldı'), findsOneWidget);
+    expect(find.text('100 TL'), findsOneWidget);
     expect(find.byKey(const Key('home-products-loaded')), findsOneWidget);
     expect(find.byKey(const Key('customer-bottom-navigation')), findsOneWidget);
     await expectLater(
       find.byKey(const Key('w39a-home-visual-evidence')),
-      matchesGoldenFile('goldens/w39a_r1_home_kpasa_prototype_390.png'),
+      matchesGoldenFile('goldens/w39a_r2_home_brand_reward_390.png'),
     );
   });
 }
@@ -285,19 +292,14 @@ Widget _buildScenario(
 enum _HomeVisualScenario { guest, authenticated, rewardFixture, longText }
 
 const _rewardFixture = RewardProgressData(
-  progress: 0.62,
-  title: 'Mahalle ödül yolculuğun',
-  currentMilestone: 'Başlangıç adımı',
-  nextMilestone: 'Sıradaki adım',
-  contextualMessage: 'İlerleme yalnız görsel inceleme fixture verisidir.',
+  completedTasks: 3,
+  rewardAmountText: '100 TL',
+  message: 'Yalnız görsel inceleme fixture verisidir.',
 );
 
 const _prototypeRewardFixture = RewardProgressData(
-  progress: 0.62,
-  title: 'Mahalle avantajların',
-  currentMilestone: 'Yerel keşif',
-  nextMilestone: 'Yeni mahalle adımı',
-  contextualMessage: 'Yerel alışveriş yolculuğun tek yerde',
+  completedTasks: 3,
+  rewardAmountText: '100 TL',
 );
 
 const _location = CustomerSavedLocationEntity(

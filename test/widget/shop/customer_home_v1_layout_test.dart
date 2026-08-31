@@ -183,7 +183,8 @@ void main() {
       tester,
       390,
       rewardProgress: const RewardProgressData(
-        progress: 0.5,
+        completedTasks: 2,
+        rewardAmountText: '100 TL',
         title: 'Test ödül fixture verisi',
       ),
     );
@@ -200,10 +201,8 @@ void main() {
       390,
       rewardFeatureEnabled: true,
       rewardProgress: const RewardProgressData(
-        progress: 0.5,
-        title: 'Mahalle ödül yolculuğu',
-        currentMilestone: 'Başlangıç',
-        nextMilestone: 'Sıradaki adım',
+        completedTasks: 3,
+        rewardAmountText: '100 TL',
       ),
     );
 
@@ -230,9 +229,10 @@ void main() {
       textScale: 1.3,
       rewardFeatureEnabled: true,
       rewardProgress: const RewardProgressData(
-        progress: 0.95,
-        title: 'ÇĞİÖŞÜ ile oldukça uzun mahalle ödül yolculuğu başlığı',
-        contextualMessage: 'Sıradaki gelişme için yolculuğun devam ediyor.',
+        completedTasks: 4,
+        rewardAmountText: '100 TL',
+        title: 'ÇĞİÖŞÜ ile oldukça uzun görev yap kazan başlığı',
+        message: 'Sıradaki görev için yolculuğun devam ediyor.',
       ),
     );
 

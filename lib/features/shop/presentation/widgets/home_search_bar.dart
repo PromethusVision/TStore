@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -100,25 +101,36 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         children: [
           Material(
             key: const Key('home-search-bar'),
-            color: CustomerHomeV1Tokens.surface,
+            color: widget.visualPrototype
+                ? EsnaftaVarColors.surfaceElevated
+                : CustomerHomeV1Tokens.surface,
             borderRadius: BorderRadius.circular(
               widget.visualPrototype
                   ? CustomerHomeV1Tokens.radius20
                   : CustomerHomeV1Tokens.radius16,
             ),
-            child: Container(
-              height: widget.visualPrototype ? 52 : 50,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              height: widget.visualPrototype ? 54 : 50,
               decoration: BoxDecoration(
+                color: widget.visualPrototype
+                    ? EsnaftaVarColors.surfaceElevated
+                    : null,
                 borderRadius: BorderRadius.circular(
                   widget.visualPrototype
                       ? CustomerHomeV1Tokens.radius20
                       : CustomerHomeV1Tokens.radius16,
                 ),
                 border: widget.visualPrototype
-                    ? Border.all(color: CustomerHomeV1Tokens.mint, width: 1.5)
+                    ? Border.all(
+                        color: _focusNode.hasFocus
+                            ? EsnaftaVarColors.primary
+                            : EsnaftaVarColors.divider,
+                        width: _focusNode.hasFocus ? 1.5 : 1,
+                      )
                     : Border.all(color: CustomerHomeV1Tokens.border),
                 boxShadow: widget.visualPrototype
-                    ? const []
+                    ? EsnaftaVarElevation.xs
                     : CustomerHomeV1Tokens.softShadow,
               ),
               child: CustomerLightInputTheme(
@@ -138,11 +150,31 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                       fontSize: widget.visualPrototype ? 12.5 : 12,
                       fontWeight: FontWeight.w400,
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: CustomerHomeV1Tokens.petrol,
-                      size: 22,
-                    ),
+                    prefixIcon: widget.visualPrototype
+                        ? Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: EsnaftaVarColors.primarySoft,
+                                borderRadius: BorderRadius.circular(
+                                  EsnaftaVarRadii.medium,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.search_rounded,
+                                color: EsnaftaVarColors.primary,
+                                size: 19,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.search_rounded,
+                            color: CustomerHomeV1Tokens.petrol,
+                            size: 22,
+                          ),
+                    prefixIconConstraints: widget.visualPrototype
+                        ? const BoxConstraints(minWidth: 52, minHeight: 52)
+                        : null,
                     suffixIcon: _query.isEmpty && widget.visualPrototype
                         ? const SizedBox(width: 16)
                         : _query.isEmpty

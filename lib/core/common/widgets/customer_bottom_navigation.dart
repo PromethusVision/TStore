@@ -137,9 +137,12 @@ class _NavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected && visualPrototype
+    final iconColor = selected && visualPrototype
         ? EsnaftaVarColors.textOnPrimary
         : selected
+        ? CustomerHomeV1Tokens.petrol
+        : EsnaftaVarColors.textMuted;
+    final labelColor = selected
         ? CustomerHomeV1Tokens.petrol
         : EsnaftaVarColors.textMuted;
     return Expanded(
@@ -172,7 +175,7 @@ class _NavigationItem extends StatelessWidget {
                     ),
                     child: Icon(
                       selected ? selectedIcon : icon,
-                      color: color,
+                      color: iconColor,
                       size: 22,
                     ),
                   ),
@@ -212,8 +215,8 @@ class _NavigationItem extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: color,
-                  fontSize: visualPrototype ? 9.5 : 10.5,
+                  color: labelColor,
+                  fontSize: visualPrototype ? 10 : 10.5,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),

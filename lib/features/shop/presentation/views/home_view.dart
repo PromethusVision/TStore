@@ -301,7 +301,7 @@ class CustomerHomeV1Content extends StatelessWidget {
               if (rewardFeatureEnabled && rewardProgress != null)
                 SizedBox(
                   height: visualPrototype
-                      ? CustomerHomeV1Tokens.space20
+                      ? CustomerHomeV1Tokens.space16
                       : CustomerHomeV1Tokens.space12,
                 ),
               HomeCategories(
@@ -310,7 +310,7 @@ class CustomerHomeV1Content extends StatelessWidget {
               ),
               SizedBox(
                 height: visualPrototype
-                    ? CustomerHomeV1Tokens.space20
+                    ? CustomerHomeV1Tokens.space16
                     : CustomerHomeV1Tokens.space12,
               ),
               if (!visualPrototype) ...[

@@ -278,7 +278,12 @@ class _HomeCategoryItem extends StatelessWidget {
                         : CustomerHomeV1Tokens.radius16,
                   ),
                 ),
-                child: imageUrl.isEmpty
+                child: visualPrototype
+                    ? _CategoryFallback(
+                        icon: fallbackIcon,
+                        visualPrototype: true,
+                      )
+                    : imageUrl.isEmpty
                     ? _CategoryFallback(
                         icon: fallbackIcon,
                         visualPrototype: visualPrototype,
@@ -336,11 +341,20 @@ class _CategoryFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      icon,
-      color: CustomerHomeV1Tokens.navy,
-      size: visualPrototype ? 25 : 23,
-    );
+    if (visualPrototype) {
+      return Center(
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: CustomerHomeV1Tokens.surface.withValues(alpha: 0.72),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 25),
+        ),
+      );
+    }
+    return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
   }
 }
 

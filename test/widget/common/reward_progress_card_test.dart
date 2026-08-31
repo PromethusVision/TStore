@@ -8,6 +8,7 @@ void main() {
     required bool enabled,
     RewardProgressData? data,
     VoidCallback? onTap,
+    bool compact = true,
   }) {
     return MaterialApp(
       theme: EsnaftaVarTheme.light,
@@ -19,6 +20,7 @@ void main() {
               enabled: enabled,
               data: data,
               onTap: onTap,
+              compact: compact,
             ),
           ),
         ),
@@ -26,81 +28,94 @@ void main() {
     );
   }
 
+  const fixture = RewardProgressData(
+    completedTasks: 3,
+    rewardAmountText: '100 TL',
+  );
+
   testWidgets('runtime varsayılanı feature gate kapalıyken içerik göstermez', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(enabled: false, data: fixture));
+
+    expect(find.byKey(const Key('reward-progress-slot-off')), findsOneWidget);
+    expect(find.byKey(const Key('reward-progress-card')), findsNothing);
+    expect(find.text('100 TL'), findsNothing);
+  });
+
+  testWidgets('0/5 durumunda beş kalan görevi ve ödül değerini gösterir', (
     tester,
   ) async {
     await tester.pumpWidget(
       buildSubject(
-        enabled: false,
+        enabled: true,
         data: const RewardProgressData(
-          progress: 0.5,
-          title: 'Yalnız test fixture verisi',
+          completedTasks: 0,
+          rewardAmountText: '100 TL',
         ),
       ),
     );
 
-    expect(find.byKey(const Key('reward-progress-slot-off')), findsOneWidget);
-    expect(find.byKey(const Key('reward-progress-card')), findsNothing);
-    expect(find.text('Yalnız test fixture verisi'), findsNothing);
+    expect(find.text('Görev yap, kazan'), findsOneWidget);
+    expect(find.text('0/5 görev tamamlandı'), findsOneWidget);
+    expect(find.text('Ödüle 5 görev kaldı'), findsOneWidget);
+    expect(find.text('100 TL'), findsOneWidget);
+    _expectFiveSegments();
+    expect(tester.takeException(), isNull);
   });
 
-  for (final entry in <double, double>{
-    0: 0,
-    0.1: 0.1,
-    0.5: 0.5,
-    0.95: 0.95,
-    1: 1,
-  }.entries) {
-    testWidgets('${entry.key} ilerlemeyi güvenli biçimde gösterir', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        buildSubject(
-          enabled: true,
-          data: RewardProgressData(
-            progress: entry.key,
-            title: 'Mahalle ödül yolculuğu',
-            currentMilestone: 'Mevcut adım',
-            nextMilestone: 'Sıradaki adım',
-          ),
-        ),
-      );
-
-      final indicator = tester.widget<LinearProgressIndicator>(
-        find.byKey(const Key('reward-progress-indicator')),
-      );
-      expect(indicator.value, entry.value);
-      expect(tester.takeException(), isNull);
-    });
-  }
-
-  testWidgets('geçersiz ve aralık dışı ilerlemeyi NaN üretmeden sınırlar', (
+  testWidgets('3/5 durumunda iki kalan görevi hesaplatmadan açıklar', (
     tester,
   ) async {
-    for (final expectation in <double, double>{
-      double.nan: 0,
-      double.infinity: 0,
-      -0.4: 0,
-      1.7: 1,
-    }.entries) {
-      await tester.pumpWidget(
-        buildSubject(
-          enabled: true,
-          data: RewardProgressData(
-            progress: expectation.key,
-            title: 'Güvenli ilerleme',
-          ),
-        ),
-      );
-      final indicator = tester.widget<LinearProgressIndicator>(
-        find.byKey(const Key('reward-progress-indicator')),
-      );
-      expect(indicator.value, expectation.value);
-      expect(tester.takeException(), isNull);
-    }
+    await tester.pumpWidget(buildSubject(enabled: true, data: fixture));
+
+    expect(find.text('3/5 görev tamamlandı'), findsOneWidget);
+    expect(find.text('Ödüle 2 görev kaldı'), findsOneWidget);
+    expect(find.byKey(const Key('reward-amount')), findsOneWidget);
+    _expectFiveSegments();
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('uzun başlık ve eksik opsiyonel sonraki adım taşma üretmez', (
+  testWidgets('5/5 durumunda tamamlanmış görsel davranışı gösterir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        enabled: true,
+        data: const RewardProgressData(
+          completedTasks: 5,
+          rewardAmountText: '100 TL',
+        ),
+      ),
+    );
+
+    expect(find.text('5/5 görev tamamlandı'), findsOneWidget);
+    expect(find.text('Ödülü kazandın'), findsOneWidget);
+    expect(find.text('Ödüle 0 görev kaldı'), findsNothing);
+    _expectFiveSegments();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('güvensiz görev değerlerini 0 ile 5 arasında sınırlar', (
+    tester,
+  ) async {
+    const below = RewardProgressData(
+      completedTasks: -3,
+      rewardAmountText: '100 TL',
+    );
+    const above = RewardProgressData(
+      completedTasks: 8,
+      rewardAmountText: '100 TL',
+    );
+
+    expect(below.safeCompletedTasks, 0);
+    expect(below.remainingTasks, 5);
+    expect(above.safeCompletedTasks, 5);
+    expect(above.remainingTasks, 0);
+    expect(above.isComplete, isTrue);
+  });
+
+  testWidgets('uzun sunum metni mobil genişlikte taşma üretmez', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 640);
@@ -108,23 +123,19 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    const longTitle =
-        'ÇĞİÖŞÜ ile mahallendeki alışveriş yolculuğunu anlatan oldukça uzun ödül başlığı';
     await tester.pumpWidget(
       buildSubject(
         enabled: true,
         data: const RewardProgressData(
-          progress: 0.5,
-          title: longTitle,
-          currentMilestone: 'Başlangıç adımı',
-          contextualMessage:
-              'Bu içerik yalnız görsel test fixture verisidir; gerçek bakiye değildir.',
+          completedTasks: 4,
+          rewardAmountText: '100 TL örnek ödül',
+          title: 'ÇĞİÖŞÜ görev yap, kazan yolculuğu',
+          message: 'Tutar yalnız sunum fixture verisidir.',
         ),
       ),
     );
 
-    expect(find.text(longTitle), findsOneWidget);
-    expect(find.text('Başlangıç adımı'), findsOneWidget);
+    expect(find.byKey(const Key('reward-progress-card')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -133,15 +144,18 @@ void main() {
   ) async {
     var tapCount = 0;
     await tester.pumpWidget(
-      buildSubject(
-        enabled: true,
-        data: const RewardProgressData(progress: 0.25, title: 'Ödül yolculuğu'),
-        onTap: () => tapCount++,
-      ),
+      buildSubject(enabled: true, data: fixture, onTap: () => tapCount++),
     );
 
     await tester.tap(find.byKey(const Key('reward-progress-card')));
     await tester.pump();
     expect(tapCount, 1);
   });
+}
+
+void _expectFiveSegments() {
+  for (var index = 0; index < RewardProgressData.taskCycleTotal; index++) {
+    expect(find.byKey(Key('reward-task-segment-$index')), findsOneWidget);
+  }
+  expect(find.byKey(const Key('reward-task-segment-5')), findsNothing);
 }
