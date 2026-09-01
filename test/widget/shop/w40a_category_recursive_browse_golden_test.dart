@@ -60,7 +60,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Elektronik'), findsWidgets);
-    expect(find.text('Neler arıyorsun?'), findsOneWidget);
+    expect(find.text('Alt kategoriler'), findsOneWidget);
     expect(find.textContaining('9 alt kategori'), findsOneWidget);
     expect(
       find.byKey(const Key('taxonomy-child-electronics-l2-1')),
@@ -72,9 +72,7 @@ void main() {
     );
     await expectLater(
       find.byKey(const Key('w40a-category-visual-evidence')),
-      matchesGoldenFile(
-        'goldens/w40a_category_recursive_browse_electronics_390.png',
-      ),
+      matchesGoldenFile('goldens/w40a_r2_electronics_l2_390.png'),
     );
   });
 }

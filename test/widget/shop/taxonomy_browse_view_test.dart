@@ -9,6 +9,43 @@ import '../../helpers/canonical_taxonomy_test_support.dart';
 
 void main() {
   testWidgets(
+    'compact breadcrumb preserves a 122-character deep path at 320 px',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 844);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      final fixture = _BrowseFixture();
+      final breadcrumb = _breadcrumb([
+        fixture.root,
+        fixture.l2,
+        fixture.l3,
+        fixture.l4,
+      ]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: TaxonomyBreadcrumbBar(breadcrumb: breadcrumb)),
+        ),
+      );
+
+      expect(breadcrumb.fullLabel.length, 122);
+      expect(find.byKey(const Key('taxonomy-breadcrumb')), findsOneWidget);
+      expect(find.text('…'), findsOneWidget);
+      expect(find.text(fixture.l3.displayName), findsOneWidget);
+      expect(find.text(fixture.l4.displayName), findsOneWidget);
+      expect(
+        tester.getSize(find.byKey(const Key('taxonomy-breadcrumb'))).height,
+        lessThanOrEqualTo(44),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'L2-L4 recursive navigation, back stack, long name and 122-char path work',
     (tester) async {
       tester.view.physicalSize = const Size(390, 844);

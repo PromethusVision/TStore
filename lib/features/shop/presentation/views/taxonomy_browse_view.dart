@@ -43,6 +43,7 @@ class TaxonomyBrowseView extends StatelessWidget {
           TaxonomyBrowseCubit(repository: repository, capability: capability)
             ..load(category),
       child: _TaxonomyBrowseContent(
+        initialCategoryTitle: category.displayName,
         repository: repository,
         capability: capability,
         leafDestinationBuilder: leafDestinationBuilder,
@@ -53,11 +54,13 @@ class TaxonomyBrowseView extends StatelessWidget {
 
 class _TaxonomyBrowseContent extends StatelessWidget {
   const _TaxonomyBrowseContent({
+    required this.initialCategoryTitle,
     required this.repository,
     required this.capability,
     required this.leafDestinationBuilder,
   });
 
+  final String initialCategoryTitle;
   final CanonicalTaxonomyRepository repository;
   final TaxonomyRuntimeCapability capability;
   final TaxonomyLeafDestinationBuilder? leafDestinationBuilder;
@@ -79,7 +82,7 @@ class _TaxonomyBrowseContent extends StatelessWidget {
         final title = switch (state) {
           TaxonomyBrowseLoading(:final category) => category.displayName,
           TaxonomyBrowseLoaded(:final category) => category.displayName,
-          _ => 'Kategoriler',
+          _ => initialCategoryTitle,
         };
         return EsnaftaVarScaffold(
           key: const Key('taxonomy-browse-view'),
@@ -124,7 +127,7 @@ class _TaxonomyBrowseContent extends StatelessWidget {
     final usesScaledText = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     return Column(
       children: [
-        _TaxonomyBreadcrumbBar(breadcrumb: loaded.breadcrumb),
+        TaxonomyBreadcrumbBar(breadcrumb: loaded.breadcrumb),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             EsnaftaVarSpacing.md,
@@ -133,7 +136,7 @@ class _TaxonomyBrowseContent extends StatelessWidget {
             EsnaftaVarSpacing.sm,
           ),
           child: EsnaftaVarSectionHeader(
-            title: 'Neler arıyorsun?',
+            title: 'Alt kategoriler',
             subtitle:
                 '${loaded.children.length} alt kategori • Yakınındaki esnaflarda keşfet',
           ),
@@ -159,7 +162,7 @@ class _TaxonomyBrowseContent extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: EsnaftaVarSpacing.sm,
                     mainAxisSpacing: EsnaftaVarSpacing.sm,
-                    mainAxisExtent: usesScaledText ? 150 : 124,
+                    mainAxisExtent: usesScaledText ? 142 : 118,
                   ),
                   itemCount: loaded.children.length,
                   itemBuilder: (context, index) {
@@ -297,8 +300,8 @@ class _TaxonomyBrowseHeader extends StatelessWidget {
   }
 }
 
-class _TaxonomyBreadcrumbBar extends StatelessWidget {
-  const _TaxonomyBreadcrumbBar({required this.breadcrumb});
+class TaxonomyBreadcrumbBar extends StatelessWidget {
+  const TaxonomyBreadcrumbBar({super.key, required this.breadcrumb});
 
   final TaxonomyBreadcrumb breadcrumb;
 
@@ -311,10 +314,10 @@ class _TaxonomyBreadcrumbBar extends StatelessWidget {
       label: 'Kategori yolu: ${breadcrumb.fullLabel}',
       child: Container(
         key: const Key('taxonomy-breadcrumb'),
-        height: EsnaftaVarTouchTargets.minimum,
+        height: 36,
         margin: const EdgeInsets.fromLTRB(
           EsnaftaVarSpacing.md,
-          EsnaftaVarSpacing.sm,
+          EsnaftaVarSpacing.xs,
           EsnaftaVarSpacing.md,
           0,
         ),
@@ -324,56 +327,65 @@ class _TaxonomyBreadcrumbBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
           border: Border.all(color: EsnaftaVarColors.borderDefault),
         ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.home_outlined,
-              color: EsnaftaVarColors.primary,
-              size: EsnaftaVarIconSizes.small,
-            ),
-            const SizedBox(width: EsnaftaVarSpacing.xxs),
-            Text(
-              'Ana Sayfa',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: EsnaftaVarColors.textSecondary,
-              ),
-            ),
-            const _BreadcrumbChevron(),
-            if (items.length > 2) ...[
-              Text(
-                '…',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: EsnaftaVarColors.textMuted,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact =
+                constraints.maxWidth < 300 ||
+                MediaQuery.textScalerOf(context).scale(1) > 1.15;
+            return Row(
+              children: [
+                const Icon(
+                  Icons.home_outlined,
+                  color: EsnaftaVarColors.primary,
+                  size: EsnaftaVarIconSizes.small,
                 ),
-              ),
-              const _BreadcrumbChevron(),
-            ],
-            if (parent != null) ...[
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 88),
-                child: Text(
-                  parent.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: EsnaftaVarColors.textSecondary,
+                if (!compact) ...[
+                  const SizedBox(width: EsnaftaVarSpacing.xxs),
+                  Text(
+                    'Ana Sayfa',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: EsnaftaVarColors.textSecondary,
+                    ),
+                  ),
+                ],
+                const _BreadcrumbChevron(),
+                if (items.length > 2) ...[
+                  Text(
+                    '…',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: EsnaftaVarColors.textMuted,
+                    ),
+                  ),
+                  const _BreadcrumbChevron(),
+                ],
+                if (parent != null) ...[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: compact ? 56 : 88),
+                    child: Text(
+                      parent.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: EsnaftaVarColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  const _BreadcrumbChevron(),
+                ],
+                Expanded(
+                  child: Text(
+                    current.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: EsnaftaVarColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-              const _BreadcrumbChevron(),
-            ],
-            Expanded(
-              child: Text(
-                current.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: EsnaftaVarColors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );
@@ -437,7 +449,10 @@ class _TaxonomyChildCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
           child: Container(
-            padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: EsnaftaVarSpacing.sm,
+              vertical: 10,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
               border: Border.all(color: EsnaftaVarColors.borderDefault),
@@ -449,8 +464,8 @@ class _TaxonomyChildCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: EsnaftaVarTouchTargets.minimum,
-                      height: EsnaftaVarTouchTargets.minimum,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         color: surfaceColor,
                         borderRadius: BorderRadius.circular(
@@ -469,8 +484,8 @@ class _TaxonomyChildCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      width: 30,
-                      height: 30,
+                      width: 28,
+                      height: 28,
                       decoration: const BoxDecoration(
                         color: EsnaftaVarColors.surfaceAlt,
                         shape: BoxShape.circle,
