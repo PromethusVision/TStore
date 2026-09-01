@@ -46,11 +46,14 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('taxonomy-browse-view')), findsOneWidget);
+      expect(find.byKey(const Key('taxonomy-breadcrumb')), findsOneWidget);
+      expect(find.byKey(const Key('taxonomy-children-grid')), findsOneWidget);
       expect(find.byKey(const Key('taxonomy-child-long-leaf')), findsOneWidget);
       expect(_longNodeName.length, 48);
       expect(
         tester
-            .widget<ListTile>(
+            .widget<InkWell>(
               find.byKey(const Key('taxonomy-child-regulated-leaf')),
             )
             .onTap,
