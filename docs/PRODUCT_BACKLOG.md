@@ -15,6 +15,27 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 39B-R Canonical Category Visual Mapping Delta
+
+- **COMPLETED — exact 24-root semantic mapping:** Canonical ad tabanlı mapping
+  `24/24`; missing, mismatch, ambiguous ve unrelated fallback `0`. Çözüm liste
+  sırası veya root UUID'ye bağlı değildir; unknown değer nötr fallback kullanır.
+- **COMPLETED — specific correction:** `Giyim & Moda` kıyafet/askı görselidir;
+  food/restaurant görseli değildir. Committed 24-category contact sheet ve Home
+  golden evidence bu sözleşmeyi korur.
+- **UNCHANGED — Home/taxonomy/runtime:** Home order/carousel/composition,
+  navigation, Reward, canonical taxonomy ID/name/order, backend ve remote state
+  değişmedi.
+- **OWNER-ACCEPTED TEMPORARY V1:** Mevcut rounded Material ikon seti bu aşama için
+  kabul edildi. Profesyonel `CANONICAL 24 CATEGORY VISUAL PACK` ayrı polish işi
+  olarak `DEFERRED` ve Category / Recursive Browse başlangıcını bloke etmez.
+- **COMPLETED — regression:** Category mapping/golden `25/25`, Home/adjacent
+  `107/107`, full Flutter `1332 PASS / 0 FAIL / 6` existing conditional/live skip
+  ve analyzer `0 issues`.
+- **NEXT:** Category / Recursive Browse için tek `390 px` Product Owner visual
+  prototype gate'i; taxonomy content/runtime aktivasyonu bu UI işinin kapsamında
+  değildir.
+
 ## Wave 39B Final Home + UI Foundation State
 
 - **COMPLETED — authoritative design foundation:** Primary `#146C6E`, accent

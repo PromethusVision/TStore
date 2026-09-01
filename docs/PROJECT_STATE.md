@@ -3,8 +3,29 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-09-01
-- Son doğrulanan teslim: **WAVE 39B FINAL HOME + UI FOUNDATION INTEGRATION PASS —
-  APPROVED HOME V1 / AUTHORITATIVE LIGHT FOUNDATION / SINGLE UI AGENT**.
+- Son doğrulanan teslim: **WAVE 39B-R 24 CATEGORY VISUAL MAPPING FINAL DELTA
+  INTEGRATION PASS — 24/24 SEMANTIC MAPPING / HOME COMPOSITION PRESERVED**.
+- Integration branch/base/previous source/latest source/merge:
+  `integration/wave-39b-category-visual-mapping-delta` /
+  `origin/main@02cd53fa8032b4e1e8674ddf15ce8eca011e13ad` /
+  `7c86a4ea3564b35d2c1daa5f56fe7d8929532cdc` /
+  `2337d318dd56799631377ad9b7bbf41030734854` / `8c1985c`.
+- Canonical 24 root category için isim tabanlı, sıra/root-id bağımsız semantic
+  visual mapping tamamlandı: mapped `24/24`; missing, mismatch, ambiguous ve
+  unrelated fallback `0`. `Giyim & Moda` kıyafet/askı görseline bağlıdır; food
+  visual değildir. Bilinmeyen kategori yalnız nötr category fallback alır.
+- Home kategori sırası, carousel, spacing, token/type, ürünler ve navigation
+  kompozisyonu değişmedi. Canonical taxonomy ID/name/order veya backend/runtime
+  sözleşmesine dokunulmadı.
+- Mevcut rounded Material görseller Product Owner tarafından geçici V1 için kabul
+  edildi. Profesyonel `CANONICAL 24 CATEGORY VISUAL PACK` ayrı polish işi olarak
+  `DEFERRED`; Category / Recursive Browse sırasını bloke etmez.
+- Category mapping/golden `25/25`, Home/adjacent targeted `107/107`, full Flutter
+  `1332 PASS / 0 FAIL / 6` existing conditional/live skip ve analyzer `0 issues`
+  PASS'tir. Secret/PII scan yalnız açıkça sentetik `visual@example.com` test
+  fixture'ını ayırdı; gerçek secret/PII yoktur.
+- Bir önceki doğrulanan teslim: **WAVE 39B FINAL HOME + UI FOUNDATION INTEGRATION
+  PASS — APPROVED HOME V1 / AUTHORITATIVE LIGHT FOUNDATION / SINGLE UI AGENT**.
 - Integration branch/base/source/merge:
   `integration/wave-39b-final-home-ui-foundation` /
   `origin/main@494cf22359428dbc55d1936ec55f9b4e9d284c74` /

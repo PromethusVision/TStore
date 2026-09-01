@@ -45,6 +45,14 @@ components remain single-owner hotspots during each screen wave.
 
 ## Sequence
 
+Wave 39B-R semantic visual delta closes the Home root-category mapping gate:
+canonical-name resolution is `24/24`, order/root-id independent, and missing,
+mismatch, ambiguous or unrelated fallbacks are `0`. The current rounded Material
+icons are an owner-accepted temporary V1. A professional `CANONICAL 24 CATEGORY
+VISUAL PACK` is deferred polish and does not block the next Category / Recursive
+Browse prototype. Home composition and canonical taxonomy content/runtime remain
+unchanged.
+
 | Order | Surface | Required foundation reuse | Primary acceptance focus |
 | --- | --- | --- | --- |
 | 1 | Home — W39A | Completed token/theme/primitives | Discovery hierarchy, location/search, dynamic categories, campaign, products, merchants, Reward slot off by default. |
@@ -85,5 +93,11 @@ For every rollout wave:
 `NEXT_REQUIRED_VISUAL_GATE: ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
 
 `W39B_MAIN_INTEGRATED: YES`
+
+`CANONICAL_CATEGORY_SEMANTIC_MAPPING: INTEGRATED_24_OF_24`
+
+`CATEGORY_ART_STATUS: TEMPORARY_V1_OWNER_ACCEPTED`
+
+`CANONICAL_24_CATEGORY_VISUAL_PACK: DEFERRED_POLISH`
 
 `MAIN_INTEGRATION_REQUIRED: NO`
