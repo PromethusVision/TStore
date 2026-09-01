@@ -144,6 +144,11 @@ void main() {
       scenario: _HomeVisualScenario.reward3,
       width: 430,
     ),
+    _HomeGoldenCase(
+      name: 'w39a_r31_home_category_mapping_390',
+      scenario: _HomeVisualScenario.reward3,
+      width: 390,
+    ),
   ];
 
   for (final evidence in evidenceCases) {

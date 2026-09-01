@@ -8,6 +8,7 @@ import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_category_hierarchy.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_state.dart';
+import 'package:t_store/features/shop/presentation/helpers/home_category_visual_catalog.dart';
 import 'package:t_store/features/shop/presentation/helpers/taxonomy_category_destination.dart';
 import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
 
@@ -53,27 +54,6 @@ class _HomeCategoriesState extends State<HomeCategories> {
       'cosmetics' || 'kozmetik' => 'Kozmetik',
       'home & living' || 'home and living' || 'ev & yaşam' => 'Ev & Yaşam',
       _ => name.trim(),
-    };
-  }
-
-  static IconData _fallbackIcon(String name, int fallbackIndex) {
-    return switch (_normalizedName(name)) {
-      'grocery' || 'groceries' || 'market' => Icons.shopping_basket_rounded,
-      'greengrocer' || 'produce' || 'manav' => Icons.eco_rounded,
-      'bakery' || 'fırın' || 'firin' => Icons.bakery_dining_rounded,
-      'butcher' || 'kasap' => Icons.lunch_dining_rounded,
-      'cosmetics' || 'kozmetik' => Icons.spa_rounded,
-      'home & living' ||
-      'home and living' ||
-      'ev & yaşam' => Icons.chair_rounded,
-      _ => const [
-        Icons.shopping_basket_rounded,
-        Icons.eco_rounded,
-        Icons.bakery_dining_rounded,
-        Icons.lunch_dining_rounded,
-        Icons.spa_rounded,
-        Icons.chair_rounded,
-      ][fallbackIndex % 6],
     };
   }
 
@@ -167,11 +147,15 @@ class _HomeCategoriesState extends State<HomeCategories> {
                     final category = state.categories[index];
                     final categoryId = category.id.trim();
                     final canonicalNode = state.canonicalNodeFor(categoryId);
+                    final categoryVisual = HomeCategoryVisualCatalog.resolve(
+                      categoryId: categoryId,
+                      categoryName: category.name,
+                    );
                     return _HomeCategoryItem(
                       key: Key('home-category-${category.id}'),
                       category: category,
                       title: _localizedTitle(category.name),
-                      fallbackIcon: _fallbackIcon(category.name, index),
+                      fallbackIcon: categoryVisual.icon,
                       backgroundColor:
                           _pastelSurfaces[index % _pastelSurfaces.length],
                       visualPrototype: widget.visualPrototype,
@@ -275,57 +259,12 @@ class _HomeCategoryItem extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Container(
-                  width: visualPrototype ? 72 : 52,
-                  height: visualPrototype ? 72 : 52,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(
-                      visualPrototype
-                          ? CustomerHomeV1Tokens.radius20
-                          : CustomerHomeV1Tokens.radius16,
-                    ),
-                    border: visualPrototype
-                        ? Border.all(
-                            color: EsnaftaVarColors.primary.withValues(
-                              alpha: 0.10,
-                            ),
-                          )
-                        : null,
-                    boxShadow: visualPrototype ? EsnaftaVarElevation.xs : null,
-                  ),
-                  child: visualPrototype
-                      ? _CategoryFallback(
-                          icon: fallbackIcon,
-                          visualPrototype: true,
-                        )
-                      : imageUrl.isEmpty
-                      ? _CategoryFallback(
-                          icon: fallbackIcon,
-                          visualPrototype: visualPrototype,
-                        )
-                      : !isNetworkImage
-                      ? Image.asset(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => _CategoryFallback(
-                            icon: fallbackIcon,
-                            visualPrototype: visualPrototype,
-                          ),
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          fit: BoxFit.cover,
-                          placeholder: (_, _) => _CategoryFallback(
-                            icon: fallbackIcon,
-                            visualPrototype: visualPrototype,
-                          ),
-                          errorWidget: (_, _, _) => _CategoryFallback(
-                            icon: fallbackIcon,
-                            visualPrototype: visualPrototype,
-                          ),
-                        ),
+                HomeCategoryVisual(
+                  icon: fallbackIcon,
+                  backgroundColor: backgroundColor,
+                  imageUrl: imageUrl,
+                  isNetworkImage: isNetworkImage,
+                  visualPrototype: visualPrototype,
                 ),
                 const SizedBox(height: CustomerHomeV1Tokens.space4),
                 Expanded(
@@ -351,6 +290,64 @@ class _HomeCategoryItem extends StatelessWidget {
   }
 }
 
+class HomeCategoryVisual extends StatelessWidget {
+  const HomeCategoryVisual({
+    super.key,
+    required this.icon,
+    required this.backgroundColor,
+    this.imageUrl = '',
+    this.isNetworkImage = false,
+    this.visualPrototype = true,
+  });
+
+  final IconData icon;
+  final Color backgroundColor;
+  final String imageUrl;
+  final bool isNetworkImage;
+  final bool visualPrototype;
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = _CategoryFallback(
+      icon: icon,
+      visualPrototype: visualPrototype,
+    );
+    return Container(
+      width: visualPrototype ? 72 : 52,
+      height: visualPrototype ? 72 : 52,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(
+          visualPrototype
+              ? CustomerHomeV1Tokens.radius20
+              : CustomerHomeV1Tokens.radius16,
+        ),
+        border: visualPrototype
+            ? Border.all(
+                color: EsnaftaVarColors.primary.withValues(alpha: 0.10),
+              )
+            : null,
+        boxShadow: visualPrototype ? EsnaftaVarElevation.xs : null,
+      ),
+      child: visualPrototype || imageUrl.isEmpty
+          ? fallback
+          : !isNetworkImage
+          ? Image.asset(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => fallback,
+            )
+          : CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (_, _) => fallback,
+              errorWidget: (_, _, _) => fallback,
+            ),
+    );
+  }
+}
+
 class _CategoryFallback extends StatelessWidget {
   const _CategoryFallback({required this.icon, required this.visualPrototype});
 
@@ -359,21 +356,21 @@ class _CategoryFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (visualPrototype) {
-      return Center(
-        child: Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            color: EsnaftaVarColors.surface.withValues(alpha: 0.92),
-            shape: BoxShape.circle,
-            border: Border.all(color: EsnaftaVarColors.divider),
-          ),
-          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 24),
-        ),
-      );
+    if (!visualPrototype) {
+      return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
     }
-    return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
+    return Center(
+      child: Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          color: EsnaftaVarColors.surface.withValues(alpha: 0.92),
+          shape: BoxShape.circle,
+          border: Border.all(color: EsnaftaVarColors.divider),
+        ),
+        child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 24),
+      ),
+    );
   }
 }
 
