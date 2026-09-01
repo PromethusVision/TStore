@@ -155,29 +155,46 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
             ) ??
             const <String, double>{};
 
-        return SizedBox(
-          key: const Key('home-products-loaded'),
-          height: widget.visualPrototype ? 246 : 234,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: widget.products.length,
-            separatorBuilder: (_, _) =>
-                const SizedBox(width: CustomerHomeV1Tokens.space8),
-            itemBuilder: (context, index) {
-              final product = widget.products[index];
-              return HomeProductCard(
-                product: product,
-                minimumShopPrice: minimumPrices[product.id],
-                isPriceLoading: isPriceLoading,
-                currentUserIdProvider: widget.currentUserIdProvider,
-                visualPrototype: widget.visualPrototype,
-                onTap: product.id.trim().isEmpty
-                    ? null
-                    : () => unawaited(_openProductDetails(context, product)),
-              );
-            },
-          ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final prototypeCardWidth = ((constraints.maxWidth - 22) / 2).clamp(
+              140.0,
+              190.0,
+            );
+            final usesScaledText =
+                MediaQuery.textScalerOf(context).scale(1) > 1.15;
+            return SizedBox(
+              key: const Key('home-products-loaded'),
+              height: widget.visualPrototype
+                  ? usesScaledText
+                        ? 254
+                        : 246
+                  : 234,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: widget.products.length,
+                separatorBuilder: (_, _) =>
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                itemBuilder: (context, index) {
+                  final product = widget.products[index];
+                  final card = HomeProductCard(
+                    product: product,
+                    minimumShopPrice: minimumPrices[product.id],
+                    isPriceLoading: isPriceLoading,
+                    currentUserIdProvider: widget.currentUserIdProvider,
+                    visualPrototype: widget.visualPrototype,
+                    onTap: product.id.trim().isEmpty
+                        ? null
+                        : () =>
+                              unawaited(_openProductDetails(context, product)),
+                  );
+                  if (!widget.visualPrototype) return card;
+                  return SizedBox(width: prototypeCardWidth, child: card);
+                },
+              ),
+            );
+          },
         );
       },
     );
@@ -404,39 +421,51 @@ class HomeProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                product.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 13.5,
-                  height: 1.22,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (secondaryText != null) ...[
-                const SizedBox(height: 2),
-                Text(
-                  secondaryText,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w400,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: CustomerHomeV1Tokens.space8,
                   ),
-                ),
-              ],
-              const Spacer(),
-              Text(
-                _priceLabel,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.petrol,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.navy,
+                          fontSize: 13.5,
+                          height: 1.22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (secondaryText != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          secondaryText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.muted,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                      Text(
+                        _priceLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.petrol,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

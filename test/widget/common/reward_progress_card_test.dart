@@ -9,9 +9,16 @@ void main() {
     RewardProgressData? data,
     VoidCallback? onTap,
     bool compact = true,
+    double textScale = 1,
   }) {
     return MaterialApp(
       theme: EsnaftaVarTheme.light,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: TextScaler.linear(textScale)),
+        child: child!,
+      ),
       home: Scaffold(
         body: Center(
           child: SizedBox(
@@ -76,6 +83,31 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  for (final completedTasks in [1, 2, 4]) {
+    testWidgets(
+      '$completedTasks/5 ara durumunda kalan görev sayısını açık gösterir',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(
+            enabled: true,
+            data: RewardProgressData(
+              completedTasks: completedTasks,
+              rewardAmountText: '100 TL',
+            ),
+          ),
+        );
+
+        expect(find.text('$completedTasks/5 görev tamamlandı'), findsOneWidget);
+        expect(
+          find.text('Ödüle ${5 - completedTasks} görev kaldı'),
+          findsOneWidget,
+        );
+        _expectFiveSegments();
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets('5/5 durumunda tamamlanmış görsel davranışı gösterir', (
     tester,
   ) async {
@@ -126,16 +158,55 @@ void main() {
     await tester.pumpWidget(
       buildSubject(
         enabled: true,
+        textScale: 1.3,
         data: const RewardProgressData(
           completedTasks: 4,
-          rewardAmountText: '100 TL örnek ödül',
+          rewardAmountText: '999.999.999,90 TL örnek ödül',
           title: 'ÇĞİÖŞÜ görev yap, kazan yolculuğu',
-          message: 'Tutar yalnız sunum fixture verisidir.',
+          subtitle: 'Mahallendeki ödül yolculuğu',
+          message:
+              'Tutar yalnız sunum fixture verisidir; ödeme davranışı değildir.',
         ),
       ),
     );
 
     expect(find.byKey(const Key('reward-progress-card')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('opsiyonel subtitle yokken message bağımsız gösterilir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        enabled: true,
+        data: const RewardProgressData(
+          completedTasks: 2,
+          rewardAmountText: '100 TL',
+          message: 'Görev yolculuğun devam ediyor.',
+        ),
+      ),
+    );
+
+    expect(find.text('Görev yolculuğun devam ediyor.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('opsiyonel message yokken subtitle bağımsız gösterilir', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        enabled: true,
+        data: const RewardProgressData(
+          completedTasks: 2,
+          rewardAmountText: '100 TL',
+          subtitle: 'Beş görevlik ödül döngüsü',
+        ),
+      ),
+    );
+
+    expect(find.text('Beş görevlik ödül döngüsü'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

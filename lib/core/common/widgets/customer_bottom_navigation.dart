@@ -137,6 +137,15 @@ class _NavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final usesCompactLabel =
+        visualPrototype &&
+        (MediaQuery.sizeOf(context).width < 360 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.15);
+    final visibleLabel = switch ((usesCompactLabel, label)) {
+      (true, TTexts.homeView) => 'Ana',
+      (true, TTexts.nearbyView) => 'Yakında',
+      _ => label,
+    };
     final iconColor = selected && visualPrototype
         ? EsnaftaVarColors.textOnPrimary
         : selected
@@ -210,14 +219,17 @@ class _NavigationItem extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: labelColor,
-                  fontSize: visualPrototype ? 10 : 10.5,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Text(
+                  visibleLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: labelColor,
+                    fontSize: visualPrototype ? 10 : 10.5,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
               ),
             ],

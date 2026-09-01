@@ -2,65 +2,60 @@
 
 ## Status
 
-The Reward Bar is a presentation contract only. Its visual structure is ready for later product and backend work, but Wave 39A implements no reward economy, calculation, eligibility rule, persistence, service call, navigation destination or production content.
+The Reward card is a presentation-only contract for the Product Owner-approved five-task cycle. It renders only when `enabled == true` and non-null `RewardProgressData` are both supplied. `CustomerHomeV1Content` keeps the runtime defaults `enabled: false` and `data: null`.
 
-Runtime defaults to hidden:
-
-```dart
-RewardProgressSlot(
-  enabled: false,
-  data: null,
-)
-```
-
-The component renders only when both `enabled == true` and non-null `RewardProgressData` are supplied. `CustomerHomeV1Content` preserves those same defaults, so the production Home does not show a Reward Bar in W39A.
+No reward economy, eligibility rule, persistence, service call, payout or production activation is included.
 
 ## Presentation data
 
-`RewardProgressData` exposes only:
-
 | Field | Type | Presentation meaning |
 | --- | --- | --- |
-| `progress` | `double` | Normalized visual progress. Safely clamped to `0...1`; non-finite values become `0`. |
-| `title` | `String` | Human-readable structural title. |
-| `currentMilestone` | `String?` | Optional current-state label. |
-| `nextMilestone` | `String?` | Optional next-state label. |
-| `contextualMessage` | `String?` | Optional supporting explanation. |
+| `completedTasks` | `int` | Completed tasks, safely clamped to 0...5. |
+| `rewardAmountText` | `String` | Backend/presentation-supplied reward destination or value; blank values fall back to “Ödül”. |
+| `title` | `String` | Structural heading; defaults to “Görev yap, kazan”. |
+| `subtitle` | `String?` | Optional compact supporting label. |
+| `message` | `String?` | Optional longer presentation note. |
 
-`onTap` is optional. When absent, the card is not announced or styled as an action. W39A does not assign a destination.
+The total is intentionally fixed at five for this approved visual cycle. Derived presentation values expose safe completed count, remaining count, normalized progress and completion state. The fixed non-zero denominator prevents NaN/division errors.
 
-## Explicit non-contracts
+## Visual states
 
-The following are intentionally absent and must not be inferred from the component:
-
-- points, currency or Turkish-lira conversion;
-- earning formula, threshold, tier or campaign economics;
-- coupon, discount, expiry or redemption behavior;
-- merchant funding or settlement;
-- customer eligibility, fraud controls or gamification engine;
-- API, database table, remote-config key or analytics event;
-- production copy or fabricated customer reward values.
+- 0/5 shows the clear starting state and five remaining tasks.
+- 1/5 through 4/5 show completed and remaining task counts explicitly.
+- 5/5 uses the concise success copy “Ödülü kazandın” and completed segment treatment.
+- The reward destination/value badge is present in every enabled state.
+- Long reward values truncate visually within a bounded badge but remain complete in semantics.
+- Subtitle and message are independently optional.
 
 ## Accessibility and resilience
 
-- The progress indicator exposes a Turkish percentage semantic label/value.
-- Long title and supporting text are bounded without layout overflow.
-- Current and next labels are optional independently.
-- Progress fixtures cover `0`, near-zero, midpoint, near-complete and complete states.
-- Negative, greater-than-one, `NaN` and infinite values fail safely.
-- The leading visual occupies a 44 px target-sized area and any interactive card surface follows the supplied callback only.
+- The card announces title, completed count, remaining/completed state, reward value, subtitle and message when present.
+- Five task segments expose completed and remaining counts plus a `completed/total` semantic value.
+- Long content is bounded without disabling system text scaling.
+- The status row can wrap under narrow or scaled layouts.
+- `onTap` is optional; without it the card is not announced as a button.
+
+## Explicit non-contracts
+
+- which actions count as tasks;
+- final reward amount or currency conversion;
+- earning formula, eligibility or campaign thresholds;
+- coupon, wallet, funding, expiry or redemption;
+- payout, settlement or accounting;
+- abuse prevention or gamification engine;
+- API, database, remote-config or analytics behavior.
 
 ## Fixture isolation
 
-The only enabled example is the local golden-test scenario in `test/widget/shop/w39a_home_visual_review_golden_test.dart`. It is test fixture data, is not reachable by the runtime Home and carries no product/economic claim.
+The illustrative `100 TL` amount is used only by tests and golden fixtures. Runtime Home supplies no fake reward data and keeps the feature OFF.
 
 ## Prerequisites before activation
 
-1. Product owner approves terminology, customer value and economics.
-2. Backend contract defines an authoritative normalized progress source and eligibility behavior.
-3. Privacy, abuse, expiry and error/empty/loading contracts are approved.
-4. Navigation and analytics destinations are specified.
-5. Runtime feature gating and production tests are added in a separate authorized wave.
+1. Product owner approves task definitions, terminology and economics.
+2. Backend defines authoritative completion/value/eligibility data.
+3. Privacy, abuse, expiry and error contracts are approved.
+4. Navigation, redemption and analytics destinations are specified.
+5. Runtime feature gating and production tests are authorized in a later wave.
 
 `REWARD_STRUCTURE_READY: YES`
 

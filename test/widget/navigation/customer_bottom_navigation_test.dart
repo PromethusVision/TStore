@@ -167,8 +167,8 @@ void main() {
       ),
     );
 
-    expect(find.text('Ana Sayfa'), findsOneWidget);
-    expect(find.text('Yakındakiler'), findsOneWidget);
+    expect(find.text('Ana'), findsOneWidget);
+    expect(find.text('Yakında'), findsOneWidget);
     expect(find.text('Sepet'), findsOneWidget);
     expect(find.text('Favoriler'), findsOneWidget);
     expect(find.text('Profil'), findsOneWidget);

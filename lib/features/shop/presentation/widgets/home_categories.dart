@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
@@ -87,6 +88,7 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   @override
   Widget build(BuildContext context) {
+    final usesScaledText = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     return Column(
       key: const Key('home-categories'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +111,11 @@ class _HomeCategoriesState extends State<HomeCategories> {
         ],
         const SizedBox(height: CustomerHomeV1Tokens.space8),
         SizedBox(
-          height: widget.visualPrototype ? 108 : 112,
+          height: widget.visualPrototype
+              ? usesScaledText
+                    ? 132
+                    : 108
+              : 112,
           child: BlocBuilder<CategoriesCubit, CategoriesState>(
             builder: (context, state) {
               if (state is CategoriesLoading || state is CategoriesInitial) {
@@ -256,76 +262,88 @@ class _HomeCategoryItem extends StatelessWidget {
         (imageUri.scheme == 'http' || imageUri.scheme == 'https');
     return SizedBox(
       width: visualPrototype ? 78 : 104,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: visualPrototype ? 1 : 4,
-            vertical: 2,
-          ),
-          child: Column(
-            children: [
-              Container(
-                width: visualPrototype ? 72 : 52,
-                height: visualPrototype ? 72 : 52,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(
-                    visualPrototype
-                        ? CustomerHomeV1Tokens.radius20
-                        : CustomerHomeV1Tokens.radius16,
+      child: Semantics(
+        button: onTap != null,
+        label: '$title kategorisi',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: visualPrototype ? 1 : 4,
+              vertical: 2,
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: visualPrototype ? 72 : 52,
+                  height: visualPrototype ? 72 : 52,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(
+                      visualPrototype
+                          ? CustomerHomeV1Tokens.radius20
+                          : CustomerHomeV1Tokens.radius16,
+                    ),
+                    border: visualPrototype
+                        ? Border.all(
+                            color: EsnaftaVarColors.primary.withValues(
+                              alpha: 0.10,
+                            ),
+                          )
+                        : null,
+                    boxShadow: visualPrototype ? EsnaftaVarElevation.xs : null,
+                  ),
+                  child: visualPrototype
+                      ? _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: true,
+                        )
+                      : imageUrl.isEmpty
+                      ? _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: visualPrototype,
+                        )
+                      : !isNetworkImage
+                      ? Image.asset(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                          errorWidget: (_, _, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                        ),
+                ),
+                const SizedBox(height: CustomerHomeV1Tokens.space4),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 11,
+                      height: visualPrototype ? 1.15 : 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                child: visualPrototype
-                    ? _CategoryFallback(
-                        icon: fallbackIcon,
-                        visualPrototype: true,
-                      )
-                    : imageUrl.isEmpty
-                    ? _CategoryFallback(
-                        icon: fallbackIcon,
-                        visualPrototype: visualPrototype,
-                      )
-                    : !isNetworkImage
-                    ? Image.asset(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => _CategoryFallback(
-                          icon: fallbackIcon,
-                          visualPrototype: visualPrototype,
-                        ),
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (_, _) => _CategoryFallback(
-                          icon: fallbackIcon,
-                          visualPrototype: visualPrototype,
-                        ),
-                        errorWidget: (_, _, _) => _CategoryFallback(
-                          icon: fallbackIcon,
-                          visualPrototype: visualPrototype,
-                        ),
-                      ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
-              Expanded(
-                child: Text(
-                  title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 11,
-                    height: visualPrototype ? 1.15 : 1.2,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -344,13 +362,14 @@ class _CategoryFallback extends StatelessWidget {
     if (visualPrototype) {
       return Center(
         child: Container(
-          width: 44,
-          height: 44,
+          width: 46,
+          height: 46,
           decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface.withValues(alpha: 0.72),
+            color: EsnaftaVarColors.surface.withValues(alpha: 0.92),
             shape: BoxShape.circle,
+            border: Border.all(color: EsnaftaVarColors.divider),
           ),
-          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 25),
+          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 24),
         ),
       );
     }

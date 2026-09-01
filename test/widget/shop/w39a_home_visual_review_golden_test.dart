@@ -87,62 +87,111 @@ void main() {
     await Future.wait([poppins.load(), iconsax.load(), materialIcons.load()]);
   });
 
-  for (final scenario in _HomeVisualScenario.values) {
-    testWidgets('W39A ${scenario.name} 390px visual evidence', (tester) async {
-      tester.view.physicalSize = const Size(390, 844);
+  const evidenceCases = [
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_authenticated_390',
+      scenario: _HomeVisualScenario.authenticated,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_guest_390',
+      scenario: _HomeVisualScenario.guest,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_reward_0_of_5_390',
+      scenario: _HomeVisualScenario.reward0,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_reward_3_of_5_390',
+      scenario: _HomeVisualScenario.reward3,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_reward_5_of_5_390',
+      scenario: _HomeVisualScenario.reward5,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_long_text_390',
+      scenario: _HomeVisualScenario.longText,
+      width: 390,
+      textScale: 1.3,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_loading_390',
+      scenario: _HomeVisualScenario.loading,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_empty_390',
+      scenario: _HomeVisualScenario.empty,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_error_390',
+      scenario: _HomeVisualScenario.error,
+      width: 390,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_authenticated_320',
+      scenario: _HomeVisualScenario.reward3,
+      width: 320,
+    ),
+    _HomeGoldenCase(
+      name: 'w39a_r3_home_authenticated_430',
+      scenario: _HomeVisualScenario.reward3,
+      width: 430,
+    ),
+  ];
+
+  for (final evidence in evidenceCases) {
+    testWidgets('${evidence.name} final visual evidence', (tester) async {
+      tester.view.physicalSize = Size(evidence.width, 844);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(_buildScenario(scenario));
+      await tester.pumpWidget(
+        _buildScenario(evidence.scenario, textScale: evidence.textScale),
+      );
       await tester.pump(const Duration(milliseconds: 180));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 250)),
+      );
+      await tester.pump();
 
       expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
+      expect(find.byKey(const Key('home-search-input')), findsOneWidget);
+      expect(
+        find.byKey(const Key('customer-bottom-navigation')),
+        findsOneWidget,
+      );
       await expectLater(
         find.byKey(const Key('w39a-home-visual-evidence')),
-        matchesGoldenFile('goldens/w39a_home_${scenario.name}_390.png'),
+        matchesGoldenFile('goldens/${evidence.name}.png'),
       );
     });
   }
-
-  testWidgets('W39A R2 brand and five task Home prototype 390px', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-
-    await tester.pumpWidget(
-      _buildScenario(_HomeVisualScenario.rewardFixture, visualPrototype: true),
-    );
-    await tester.pumpAndSettle(const Duration(milliseconds: 50));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 250)),
-    );
-    await tester.pump();
-
-    expect(tester.takeException(), isNull);
-    expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
-    expect(find.byKey(const Key('home-search-input')), findsOneWidget);
-    expect(find.byKey(const Key('reward-progress-card')), findsOneWidget);
-    expect(find.text('Görev yap, kazan'), findsOneWidget);
-    expect(find.text('3/5 görev tamamlandı'), findsOneWidget);
-    expect(find.text('Ödüle 2 görev kaldı'), findsOneWidget);
-    expect(find.text('100 TL'), findsOneWidget);
-    expect(find.byKey(const Key('home-products-loaded')), findsOneWidget);
-    expect(find.byKey(const Key('customer-bottom-navigation')), findsOneWidget);
-    await expectLater(
-      find.byKey(const Key('w39a-home-visual-evidence')),
-      matchesGoldenFile('goldens/w39a_r2_home_brand_reward_390.png'),
-    );
-  });
 }
 
-Widget _buildScenario(
-  _HomeVisualScenario scenario, {
-  bool visualPrototype = false,
-}) {
+class _HomeGoldenCase {
+  const _HomeGoldenCase({
+    required this.name,
+    required this.scenario,
+    required this.width,
+    this.textScale = 1,
+  });
+
+  final String name;
+  final _HomeVisualScenario scenario;
+  final double width;
+  final double textScale;
+}
+
+Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
   final authCubit = _MockAuthCubit();
   final bannersCubit = _MockBannersCubit();
   final categoriesCubit = _MockCategoriesCubit();
@@ -154,16 +203,19 @@ Widget _buildScenario(
   final cartCubit = _MockCartCubit();
 
   final isAuthenticated = scenario != _HomeVisualScenario.guest;
-  const user = UserEntity(
+  final isLongText = scenario == _HomeVisualScenario.longText;
+  final user = UserEntity(
     id: 'visual-customer',
     email: 'visual@example.com',
-    fullName: 'Ayşe Yılmaz',
+    fullName: isLongText
+        ? 'ÇĞİÖŞÜuzunisim Mahalle Dayanışma Kullanıcısı'
+        : 'Ayşe Yılmaz',
   );
   whenListen(
     authCubit,
     const Stream<AuthState>.empty(),
     initialState: isAuthenticated
-        ? const AuthAuthenticated(user)
+        ? AuthAuthenticated(user)
         : AuthUnauthenticated(),
   );
   whenListen(
@@ -175,30 +227,33 @@ Widget _buildScenario(
   );
   when(() => bannersCubit.getBanners()).thenAnswer((_) async {});
 
-  final isLongText = scenario == _HomeVisualScenario.longText;
   whenListen(
     categoriesCubit,
     const Stream<CategoriesState>.empty(),
-    initialState: CategoriesLoaded(
-      visualPrototype
-          ? _prototypeCategories
-          : isLongText
-          ? _longCategories
-          : _categories,
-    ),
+    initialState: switch (scenario) {
+      _HomeVisualScenario.loading => CategoriesLoading(),
+      _HomeVisualScenario.empty => const CategoriesLoaded([]),
+      _HomeVisualScenario.error => const CategoriesError(
+        'Kategoriler yüklenemedi',
+      ),
+      _ => CategoriesLoaded(
+        isLongText ? _longCategories : _prototypeCategories,
+      ),
+    },
   );
   when(() => categoriesCubit.getCategories()).thenAnswer((_) async {});
 
   whenListen(
     productsCubit,
     const Stream<ProductsState>.empty(),
-    initialState: ProductsLoaded(
-      products: visualPrototype
-          ? _prototypeProducts
-          : isLongText
-          ? _longProducts
-          : _products,
-    ),
+    initialState: switch (scenario) {
+      _HomeVisualScenario.loading => ProductsLoading(),
+      _HomeVisualScenario.empty => const ProductsLoaded(products: []),
+      _HomeVisualScenario.error => const ProductsError('Ürünler yüklenemedi'),
+      _ => ProductsLoaded(
+        products: isLongText ? _longProducts : _prototypeProducts,
+      ),
+    },
   );
   whenListen(
     searchCubit,
@@ -212,19 +267,28 @@ Widget _buildScenario(
     locationsCubit,
     const Stream<CustomerSavedLocationsState>.empty(),
     initialState: isAuthenticated
-        ? const CustomerSavedLocationsLoaded(locations: [_location])
+        ? CustomerSavedLocationsLoaded(
+            locations: [isLongText ? _longLocation : _location],
+          )
         : const CustomerSavedLocationsLoaded(locations: []),
   );
   whenListen(
     nearbyCubit,
     const Stream<NearbyShopsState>.empty(),
-    initialState: NearbyShopsLoaded(
-      isLongText ? _longShops : _shops,
-      locationStatus: NearbyLocationStatus.ready,
-      locationSource: NearbyLocationSource.savedLocation,
-      locationLabel: 'Ev',
-      distanceMetersByShopId: const {'shop-1': 240, 'shop-2': 620},
-    ),
+    initialState: switch (scenario) {
+      _HomeVisualScenario.loading => const NearbyShopsLoading(),
+      _HomeVisualScenario.empty => const NearbyShopsEmpty(),
+      _HomeVisualScenario.error => const NearbyShopsError(
+        'Mağazalar yüklenemedi',
+      ),
+      _ => NearbyShopsLoaded(
+        isLongText ? _longShops : _shops,
+        locationStatus: NearbyLocationStatus.ready,
+        locationSource: NearbyLocationSource.savedLocation,
+        locationLabel: 'Ev',
+        distanceMetersByShopId: const {'shop-1': 240, 'shop-2': 620},
+      ),
+    },
   );
   whenListen(
     wishlistCubit,
@@ -238,7 +302,14 @@ Widget _buildScenario(
     initialState: const CartV2Loaded([]),
   );
 
-  final rewardEnabled = scenario == _HomeVisualScenario.rewardFixture;
+  final rewardProgress = switch (scenario) {
+    _HomeVisualScenario.reward0 => _reward0Fixture,
+    _HomeVisualScenario.reward3 => _reward3Fixture,
+    _HomeVisualScenario.reward5 => _reward5Fixture,
+    _HomeVisualScenario.longText => _longRewardFixture,
+    _ => null,
+  };
+  final rewardEnabled = rewardProgress != null;
   return MultiBlocProvider(
     providers: [
       BlocProvider<AuthCubit>.value(value: authCubit),
@@ -253,13 +324,19 @@ Widget _buildScenario(
     child: MaterialApp(
       theme: TAppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: TextScaler.linear(textScale)),
+        child: child!,
+      ),
       home: RepaintBoundary(
         key: const Key('w39a-home-visual-evidence'),
         child: Scaffold(
           bottomNavigationBar: CustomerBottomNavigation(
             selectedIndex: 0,
             onSelected: (_) {},
-            visualPrototype: visualPrototype,
+            visualPrototype: true,
           ),
           body: SafeArea(
             bottom: false,
@@ -267,15 +344,11 @@ Widget _buildScenario(
               searchCubit: searchCubit,
               isAuthenticatedOverride: isAuthenticated,
               rewardFeatureEnabled: rewardEnabled,
-              rewardProgress: rewardEnabled
-                  ? visualPrototype
-                        ? _prototypeRewardFixture
-                        : _rewardFixture
-                  : null,
-              productShopProductsLoader: visualPrototype
-                  ? _prototypeShopProductsLoader
-                  : null,
-              visualPrototype: visualPrototype,
+              rewardProgress: rewardProgress,
+              productShopProductsLoader: isLongText
+                  ? _longShopProductsLoader
+                  : _prototypeShopProductsLoader,
+              visualPrototype: true,
               productFavoriteCurrentUserIdProvider: () =>
                   isAuthenticated ? 'visual-customer' : null,
               onSearchSubmitted: (_) {},
@@ -289,17 +362,39 @@ Widget _buildScenario(
   );
 }
 
-enum _HomeVisualScenario { guest, authenticated, rewardFixture, longText }
+enum _HomeVisualScenario {
+  guest,
+  authenticated,
+  reward0,
+  reward3,
+  reward5,
+  longText,
+  loading,
+  empty,
+  error,
+}
 
-const _rewardFixture = RewardProgressData(
-  completedTasks: 3,
+const _reward0Fixture = RewardProgressData(
+  completedTasks: 0,
   rewardAmountText: '100 TL',
-  message: 'Yalnız görsel inceleme fixture verisidir.',
 );
 
-const _prototypeRewardFixture = RewardProgressData(
+const _reward3Fixture = RewardProgressData(
   completedTasks: 3,
   rewardAmountText: '100 TL',
+);
+
+const _reward5Fixture = RewardProgressData(
+  completedTasks: 5,
+  rewardAmountText: '100 TL',
+);
+
+const _longRewardFixture = RewardProgressData(
+  completedTasks: 4,
+  rewardAmountText: '999.999.999,90 TL',
+  title: 'ÇĞİÖŞÜ görev yap, kazan yolculuğu',
+  subtitle: 'Mahallendeki ödül yolculuğu',
+  message: 'Ödüle yalnızca bir görev kaldı; ayrıntılar daha sonra açıklanacak.',
 );
 
 const _location = CustomerSavedLocationEntity(
@@ -307,6 +402,17 @@ const _location = CustomerSavedLocationEntity(
   userId: 'visual-customer',
   name: 'Ev',
   addressText: 'Turgut Reis Mahallesi, Esenler',
+  latitude: 41.04,
+  longitude: 28.87,
+  isDefault: true,
+);
+
+const _longLocation = CustomerSavedLocationEntity(
+  id: 'location-long',
+  userId: 'visual-customer',
+  name: 'ÇĞİÖŞÜ Çok Uzun Ev Konumu',
+  addressText:
+      'Çifte Havuzlar Mahallesi, Eski Londra Asfaltı Caddesi, Esenler, İstanbul',
   latitude: 41.04,
   longitude: 28.87,
   isDefault: true,
@@ -437,6 +543,23 @@ Future<Either<String, List<ShopProductEntity>>> _prototypeShopProductsLoader(
       productId: 'prototype-product-3',
       price: 6299.90,
       shop: ShopEntity(id: 'shop-3', name: 'Komşu Teknoloji'),
+    ),
+  ]);
+}
+
+Future<Either<String, List<ShopProductEntity>>> _longShopProductsLoader(
+  List<String> _,
+) async {
+  return const Right([
+    ShopProductEntity(
+      id: 'long-listing',
+      shopId: 'long-shop',
+      productId: 'long-product',
+      price: 99999999.90,
+      shop: ShopEntity(
+        id: 'long-shop',
+        name: 'ÇĞİÖŞÜ Esenler Mahalle Dayanışma Mağazası',
+      ),
     ),
   ]);
 }

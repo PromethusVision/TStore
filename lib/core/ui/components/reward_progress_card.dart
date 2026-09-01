@@ -10,6 +10,7 @@ class RewardProgressData {
     required this.completedTasks,
     required this.rewardAmountText,
     this.title = 'Görev yap, kazan',
+    this.subtitle,
     this.message,
   });
 
@@ -18,6 +19,7 @@ class RewardProgressData {
   final int completedTasks;
   final String rewardAmountText;
   final String title;
+  final String? subtitle;
   final String? message;
 
   int get totalTasks => taskCycleTotal;
@@ -98,6 +100,18 @@ class RewardProgressCard extends StatelessWidget {
           _RewardHeader(data: data),
           const SizedBox(height: EsnaftaVarSpacing.xs),
           _RewardStatus(data: data),
+          if (data.message?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: EsnaftaVarSpacing.xxs),
+            Text(
+              data.message!.trim(),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: EsnaftaVarColors.textSecondary,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
           const SizedBox(height: EsnaftaVarSpacing.xs),
           _RewardSegments(data: data),
         ],
@@ -110,7 +124,9 @@ class RewardProgressCard extends StatelessWidget {
       label:
           '${data.title}. ${data.safeCompletedTasks}/${data.totalTasks} görev tamamlandı. '
           '${data.isComplete ? 'Ödülü kazandın.' : 'Ödüle ${data.remainingTasks} görev kaldı.'} '
-          'Ödül ${data.displayRewardAmount}.',
+          'Ödül ${data.displayRewardAmount}.'
+          '${data.subtitle?.trim().isNotEmpty == true ? ' ${data.subtitle!.trim()}.' : ''}'
+          '${data.message?.trim().isNotEmpty == true ? ' ${data.message!.trim()}.' : ''}',
       child: onTap == null
           ? content
           : Material(
@@ -167,10 +183,10 @@ class _RewardHeader extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              if (data.message?.trim().isNotEmpty == true) ...[
+              if (data.subtitle?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 1),
                 Text(
-                  data.message!.trim(),
+                  data.subtitle!.trim(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -185,7 +201,11 @@ class _RewardHeader extends StatelessWidget {
         const SizedBox(width: EsnaftaVarSpacing.xs),
         Container(
           key: const Key('reward-amount'),
-          constraints: const BoxConstraints(minWidth: 62, minHeight: 38),
+          constraints: const BoxConstraints(
+            minWidth: 62,
+            maxWidth: 112,
+            minHeight: 38,
+          ),
           padding: const EdgeInsets.symmetric(
             horizontal: EsnaftaVarSpacing.xs,
             vertical: EsnaftaVarSpacing.xxs,
@@ -244,23 +264,24 @@ class _RewardStatus extends StatelessWidget {
     final statusText = data.isComplete
         ? 'Ödülü kazandın'
         : 'Ödüle ${data.remainingTasks} görev kaldı';
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: EsnaftaVarSpacing.xs,
+      runSpacing: EsnaftaVarSpacing.xxs,
       children: [
-        Expanded(
-          child: Text(
-            statusText,
-            key: const Key('reward-remaining-count'),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: data.isComplete
-                  ? EsnaftaVarColors.success
-                  : EsnaftaVarColors.accent,
-              fontWeight: FontWeight.w700,
-            ),
+        Text(
+          statusText,
+          key: const Key('reward-remaining-count'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: data.isComplete
+                ? EsnaftaVarColors.success
+                : EsnaftaVarColors.accent,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(width: EsnaftaVarSpacing.xs),
         Text(
           '${data.safeCompletedTasks}/${data.totalTasks} görev tamamlandı',
           key: const Key('reward-completed-count'),
