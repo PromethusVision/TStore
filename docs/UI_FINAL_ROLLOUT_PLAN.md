@@ -49,9 +49,15 @@ Wave 39B-R semantic visual delta closes the Home root-category mapping gate:
 canonical-name resolution is `24/24`, order/root-id independent, and missing,
 mismatch, ambiguous or unrelated fallbacks are `0`. The current rounded Material
 icons are an owner-accepted temporary V1. A professional `CANONICAL 24 CATEGORY
-VISUAL PACK` is deferred polish and does not block the next Category / Recursive
-Browse prototype. Home composition and canonical taxonomy content/runtime remain
-unchanged.
+VISUAL PACK` is deferred polish; it did not block the Category / Recursive Browse
+delivery now closed by W40B. Home composition and canonical taxonomy content/runtime
+remain unchanged.
+
+Wave 40B closes the second rollout surface. The Product Owner-approved Category /
+Recursive Browse V1 is integrated with compact header/breadcrumb, `Alt kategoriler`,
+two-column cards, variable-depth L2/L3/L4 navigation, unavailable fail-safe and the
+existing leaf-to-Product-Listing taxonomy-scope handoff. Product Listing itself was
+not redesigned. The next visual gate is Product Listing Final UI at `390 px`.
 
 | Order | Surface | Required foundation reuse | Primary acceptance focus |
 | --- | --- | --- | --- |
@@ -88,7 +94,9 @@ For every rollout wave:
 
 `UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
 
-`NEXT_ROLLOUT_SURFACE: CATEGORY_RECURSIVE_BROWSE`
+`CATEGORY_RECURSIVE_BROWSE_V1_MAIN: YES`
+
+`NEXT_ROLLOUT_SURFACE: PRODUCT_LISTING_FINAL_UI`
 
 `NEXT_REQUIRED_VISUAL_GATE: ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
 

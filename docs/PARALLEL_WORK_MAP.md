@@ -17,7 +17,35 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
-## Wave 39B Final UI Rollout Gözlemi
+## Wave 40B Category / Recursive Browse Final UI Gözlemi
+
+`HOME_FINAL_UI_V1_MAIN: PASS`
+
+`CATEGORY_RECURSIVE_BROWSE_FINAL_UI_V1_MAIN: PASS`
+
+`L2_L3_L4_RECURSIVE_UI: PASS`
+
+`LEAF_PRODUCT_LISTING_HANDOFF: PASS`
+
+`UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
+
+`NEXT_UI_STREAM: PRODUCT_LISTING_FINAL_UI`
+
+- Category/Recursive Browse lane'i Product Owner-approved composition, bounded C1
+  polish, responsive/state/accessibility closeout ve full regression sonrasında
+  main'e entegre edildi. Home foundation veya shared component sistemi çoğaltılmadı.
+- Variable-depth L2/L3/L4 navigation, breadcrumb/back-stack, container/leaf ayrımı,
+  unavailable fail-safe ve existing Product Listing taxonomy-scope handoff'u PASS.
+  Product Listing görseli bu lane'de değiştirilmedi.
+- Sıradaki tek UI lane'i Product Listing Final UI'dır: önce bir `390 px` prototype,
+  sonra Product Owner visual approval, aynı agentla responsive/state/full regression
+  ve Integration. Category ile Product Listing shared navigation/scope alanlarına
+  eşzamanlı ikinci UI agentı dokunmaz.
+- Backend, taxonomy content/runtime, Reward Engine, Production ve Figma ayrı
+  authority sınırlarında kalır. Final professional category artwork ayrı deferred
+  polish işidir ve Product Listing prototype'unu bloke etmez.
+
+## Wave 39B Final UI Rollout Gözlemi (historical)
 
 `CANONICAL_TAXONOMY_DEVELOPMENT: DONE`
 
@@ -41,7 +69,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
 
-`NEXT_UI_STREAM: CATEGORY_RECURSIVE_BROWSE`
+`NEXT_UI_STREAM_AT_W39B: CATEGORY_RECURSIVE_BROWSE`
 
 - Final UI rollout `ONE UI AGENT + INTEGRATION AGENT` modelidir. Üç paralel UI
   agentı/branch'i hazırlanmaz veya etkinleştirilmez.

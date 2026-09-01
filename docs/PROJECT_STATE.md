@@ -2,8 +2,32 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-09-01
-- Son doğrulanan teslim: **WAVE 39B-R 24 CATEGORY VISUAL MAPPING FINAL DELTA
+- Son güncelleme: 2026-09-02
+- Son doğrulanan teslim: **WAVE 40B CATEGORY / RECURSIVE BROWSE FINAL UI
+  INTEGRATION PASS — PRODUCT OWNER APPROVED V1 / VARIABLE-DEPTH NAVIGATION**.
+- Integration branch/base/source/merge:
+  `integration/wave-40b-category-recursive-final-ui` /
+  `origin/main@e5738b9825eeb0e43c759cbccd3d0a373adbe5a7` /
+  `1af35e83c974b54f793ba30860cc5c80e87e1a86` / `59ca139`.
+- Product Owner-approved compact back/header, current category title, compact
+  breadcrumb, `Alt kategoriler`, two-column pastel semantic card grid, balanced
+  density ve normal-width odd-child davranışı redesign yapılmadan entegre edildi.
+  W39 Poppins, `#146C6E`, `#B54732`, token, Scaffold, SectionHeader, StateCard ve
+  SurfaceIconButton foundation'ı korunur; competing UI sistemi yoktur.
+- Recursive UI canonical variable-depth sözleşmeyi korur: L2/L3/L4 container
+  drill-down, derin breadcrumb/back-stack, variable-depth leaf → mevcut Product
+  Listing exact taxonomy scope handoff'u ve unavailable fail-safe PASS. Taxonomy
+  content/runtime veya Product Listing görseli değiştirilmedi.
+- Loaded/loading/empty/error/unavailable, `320/390/430 px`, `%130` text scale,
+  122 karakter path, 48 karakter Türkçe ad, anlamlı semantics ve tam kart dokunma
+  hedefleri PASS. Category targeted `13/13`, geniş adjacent regression `508/508`,
+  full Flutter `1344 PASS / 0 FAIL / 6` existing conditional/live skip ve analyzer
+  `0 issues` PASS'tir.
+- Category / Recursive Browse Final UI V1 artık authoritative main baseline'dır;
+  Production release approval değildir. Next UI stream `Product Listing Final UI`
+  için tek `390 px` Product Owner visual prototype'tır. Home/Reward/backend/taxonomy/
+  canonical runtime/Production/Figma değişikliği veya erişimi yapılmadı.
+- Bir önceki doğrulanan teslim: **WAVE 39B-R 24 CATEGORY VISUAL MAPPING FINAL DELTA
   INTEGRATION PASS — 24/24 SEMANTIC MAPPING / HOME COMPOSITION PRESERVED**.
 - Integration branch/base/previous source/latest source/merge:
   `integration/wave-39b-category-visual-mapping-delta` /
@@ -54,10 +78,9 @@
   responsive/state/full regression closeout → integration → next screen sırasını
   izler. Figma minimal/selective reference'tır; Flutter foundation primary
   implementation reference'tır.
-- Next UI stream `Category / Recursive Browse Final UI`dır. Bu integration next
-  screen implementation'ını başlatmadı; önce tek `390 px` owner-review prototype'u
-  gerekir. Backend/taxonomy/Production/Figma/Reward Engine değişikliği veya erişimi
-  yapılmadı.
+- W39B anındaki next stream `Category / Recursive Browse Final UI` idi ve W40B ile
+  tamamlandı. W39B'nin kendisi bu ekranı başlatmamış; backend/taxonomy/Production/
+  Figma/Reward Engine değişikliği veya erişimi yapmamıştı.
 - Bir önceki doğrulanan teslim: **WAVE 38G REAL DEVELOPMENT CANONICAL TAXONOMY
   ACCEPTANCE PASS — DEVELOPMENT DONE / PREVIEW RESTORED OFF**.
 - Integration branch/start:

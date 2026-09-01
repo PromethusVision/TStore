@@ -15,6 +15,26 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 40B Category / Recursive Browse Final UI State
+
+- **COMPLETED — Product Owner-approved composition:** Compact header/back,
+  current-title, compact breadcrumb, `Alt kategoriler`, two-column semantic card
+  grid, balanced density ve normal-width odd-child davranışı main'e entegre edildi.
+- **COMPLETED — recursive contract:** L2/L3/L4, container drill-down, deep
+  breadcrumb/back-stack, variable-depth leaf → existing Product Listing exact
+  taxonomy-scope handoff'u ve unavailable fail-safe PASS. Fixed-depth varsayımı yok.
+- **COMPLETED — responsive/state/accessibility:** Loaded/loading/empty/error/
+  unavailable; `320/390/430 px`, `%130`, 122-character path, 48-character Turkish
+  name, meaningful semantics ve full-card touch behavior PASS.
+- **COMPLETED — regression:** Category `13/13`, geniş adjacent `508/508`, full
+  Flutter `1344 PASS / 0 FAIL / 6` existing conditional/live skip; analyzer
+  `0 issues`.
+- **UNCHANGED:** Home, Reward, Product Listing visual design, backend, taxonomy,
+  canonical runtime, Production config ve Figma. Existing V1 category artwork
+  accepted; professional visual pack deferred polish kalır.
+- **NEXT:** Product Listing Final UI için tek `390 px` Product Owner visual
+  prototype; responsive/state implementation approval sonrasıdır.
+
 ## Wave 39B-R Canonical Category Visual Mapping Delta
 
 - **COMPLETED — exact 24-root semantic mapping:** Canonical ad tabanlı mapping
@@ -32,9 +52,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **COMPLETED — regression:** Category mapping/golden `25/25`, Home/adjacent
   `107/107`, full Flutter `1332 PASS / 0 FAIL / 6` existing conditional/live skip
   ve analyzer `0 issues`.
-- **NEXT:** Category / Recursive Browse için tek `390 px` Product Owner visual
-  prototype gate'i; taxonomy content/runtime aktivasyonu bu UI işinin kapsamında
-  değildir.
+- **CLOSED BY W40B:** Category / Recursive Browse Product Owner-approved prototype,
+  closeout ve main integration tamamlandı. Taxonomy content/runtime değişmedi.
 
 ## Wave 39B Final Home + UI Foundation State
 
@@ -64,8 +83,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   `390 px` prototype ve Product Owner visual approval ile başlar; agent self-review
   tek başına FINAL sayılmaz. Figma minimal/selective reference, Flutter foundation
   primary implementation reference'tır.
-- **NEXT / NOT STARTED HERE:** Category / Recursive Browse Final UI için tek
-  `390 px` visual prototype. Full implementation owner approval sonrasıdır.
+- **CLOSED BY W40B:** Category / Recursive Browse Product Owner approval,
+  responsive/state closeout ve main integration tamamlandı.
 - **OPEN / SEPARATE AUTHORITY:** Reward backend/economics, dark mode, public/pilot
   taxonomy activation, Production taxonomy rollout, physical QR, signed release ve
   commercial GO/NO-GO.
