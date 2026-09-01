@@ -2,8 +2,42 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-08-30
-- Son doğrulanan teslim: **WAVE 38G REAL DEVELOPMENT CANONICAL TAXONOMY
+- Son güncelleme: 2026-09-01
+- Son doğrulanan teslim: **WAVE 39B FINAL HOME + UI FOUNDATION INTEGRATION PASS —
+  APPROVED HOME V1 / AUTHORITATIVE LIGHT FOUNDATION / SINGLE UI AGENT**.
+- Integration branch/base/source/merge:
+  `integration/wave-39b-final-home-ui-foundation` /
+  `origin/main@494cf22359428dbc55d1936ec55f9b4e9d284c74` /
+  `7c86a4ea3564b35d2c1daa5f56fe7d8929532cdc` /
+  `588ff17`.
+- Product Owner-approved W39A-R2 K'pasa-referenced Home composition, W39A-R3'ün
+  bounded C1 polish/responsive/state closeout'u ile yapısal redesign olmadan
+  entegre edildi. EsnaftaVar wordmark, kompakt greeting/location, search,
+  categories, image-led local product cards, merchant identity ve beş eşit bottom
+  navigation hedefi korunur; raised-center cart yoktur.
+- Final UI Design Foundation `DONE`: primary `#146C6E`, accent `#B54732`, Poppins,
+  light-only theme; semantic color/type/spacing/radius/elevation/border/icon/touch
+  target contract'ları merkezîdir. Shared Scaffold/SectionHeader/StateCard/
+  SurfaceIconButton ve RewardProgressSlot/Card authoritative component layer'dır.
+- Reward five-task cycle UI `OWNER-FINAL / READY`: `0/5→5/5`, completed/remaining
+  sayısı ve presentation-supplied reward value/destination görünürdür. Runtime
+  default `OFF`; mission, final amount, payout/redemption/wallet/coupon/expiry/
+  fraud/funding ve backend/economics `DEFERRED` kalır.
+- R3 committed evidence authenticated/guest, Reward `0/5`, `3/5`, `5/5`, long
+  text, loading/empty/error, `320/390/430 px` ve `%130` text-scale durumlarını
+  kapsar. Home/adjacent targeted `139`, Cart V2/QR/Reviews/Wishlist/Seller/Auth
+  targeted `432`, full Flutter `1328 PASS / 0 FAIL / 6` existing conditional/live
+  skip ve analyzer `0 issues` PASS'tir.
+- Final UI rollout process'i `ONE UI AGENT + INTEGRATION AGENT` olarak kesinleşti.
+  Her major screen: bir `390 px` prototype → Product Owner visual approval →
+  responsive/state/full regression closeout → integration → next screen sırasını
+  izler. Figma minimal/selective reference'tır; Flutter foundation primary
+  implementation reference'tır.
+- Next UI stream `Category / Recursive Browse Final UI`dır. Bu integration next
+  screen implementation'ını başlatmadı; önce tek `390 px` owner-review prototype'u
+  gerekir. Backend/taxonomy/Production/Figma/Reward Engine değişikliği veya erişimi
+  yapılmadı.
+- Bir önceki doğrulanan teslim: **WAVE 38G REAL DEVELOPMENT CANONICAL TAXONOMY
   ACCEPTANCE PASS — DEVELOPMENT DONE / PREVIEW RESTORED OFF**.
 - Integration branch/start:
   `integration/wave-38g-real-development-taxonomy-acceptance` /

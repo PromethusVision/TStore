@@ -17,6 +17,50 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
+## Wave 39B Final UI Rollout Gözlemi
+
+`CANONICAL_TAXONOMY_DEVELOPMENT: DONE`
+
+`FINAL_UI_DESIGN_FOUNDATION: DONE`
+
+`HOME_FINAL_UI_V1_CANDIDATE: INTEGRATED`
+
+`REWARD_BAR_UI: READY`
+
+`REWARD_FIVE_TASK_CYCLE_UI: OWNER_FINAL`
+
+`REWARD_ECONOMICS_BACKEND: DEFERRED`
+
+`FINAL_UI_FOUNDATION_MAIN: PASS`
+
+`HOME_FINAL_UI_V1_MAIN: PASS`
+
+`FIVE_TASK_REWARD_UI_MAIN: PASS`
+
+`REWARD_ENGINE_IMPLEMENTED: NO`
+
+`UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
+
+`NEXT_UI_STREAM: CATEGORY_RECURSIVE_BROWSE`
+
+- Final UI rollout `ONE UI AGENT + INTEGRATION AGENT` modelidir. Üç paralel UI
+  agentı/branch'i hazırlanmaz veya etkinleştirilmez.
+- Her major screen tek UI Agent tarafından bir `390 px` prototype olarak hazırlanır;
+  Product Owner visual approval sonrasında aynı agent responsive/state/accessibility
+  ve regression closeout'u tamamlar, Integration Agent main'e alır.
+- `EsnaftaVarColors`, theme, spacing/radii/elevation/icon/touch-target tokenları ile
+  Scaffold, SectionHeader, StateCard, SurfaceIconButton ve RewardProgressSlot/Card
+  shared hotspot'tur. Aktif screen lane'i gerekli değişikliğin tek sahibidir;
+  başka UI lane'i aynı anda bunları değiştirmez.
+- Screen-local duplicate component/token/theme kurulmaz. Gerçek shared değişiklik
+  açıkça kaydedilir ve Home regresyonuyla doğrulanır.
+- Flutter Final UI foundation primary implementation reference'tır. Figma minimal
+  ve selective visual reference olarak kullanılır; repeated exploratory reads veya
+  paralel Figma/Flutter source-of-truth üretilmez.
+- Sıradaki Category/Recursive Browse lane'i implementation ile başlamaz: önce bir
+  `390 px` prototype ve Product Owner visual approval gerekir. Backend, taxonomy,
+  Reward Engine ve release lanes ayrı authority/owner sınırlarında kalır.
+
 ## Wave 38G Real Development Acceptance Gözlemi
 
 `REAL_DEVELOPMENT_CANONICAL_ACCEPTANCE: PASS`

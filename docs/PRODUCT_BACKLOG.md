@@ -11,8 +11,43 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - Mevcut ürün önceliği müşteri uygulamasıdır.
 - Merchant tarafındaki mevcut altyapı korunur; merchant ürün/stok yönetimini genişletmek şu aşamada ana geliştirme önceliği değildir.
 - Online ödeme, kargo, klasik checkout ve klasik sipariş akışı hedef EsnaftaVar ürün modeli değildir.
-- UI Kit ve kapsamlı görsel yeniden tasarım, temel iş motorları olgunlaştıktan sonra ele alınacaktır.
+- Final UI rollout, tamamlanan Home foundation üzerinde tek UI Agent ve her major
+  screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
+
+## Wave 39B Final Home + UI Foundation State
+
+- **COMPLETED — authoritative design foundation:** Primary `#146C6E`, accent
+  `#B54732`, Poppins ve light-only semantic colors/type/spacing/radii/elevation/
+  border/icon/touch-target contract'ları main'e entegre edildi. İkinci competing
+  design system yoktur. Runtime Flutter için bu Wave 39 foundation, farklı değer
+  taşıyan eski Wave 14 Figma proposal'ını supersede eder; historical Figma kanıtı
+  reference-only kalır ve bu integration Figma'yı değiştirmedi.
+- **COMPLETED — Product Owner-approved Home V1 candidate:** K'pasa-referenced R2
+  composition, bounded R3 C1 polish ile brand/location/search/category/local
+  product/merchant ve beş eşit navigation hedefini koruyarak entegre edildi. Online
+  marketplace, shipping, payment, checkout/order semantics eklenmedi.
+- **COMPLETED — shared ownership:** Scaffold, SectionHeader, StateCard,
+  SurfaceIconButton, RewardProgressSlot ve RewardProgressCard authoritative Final UI
+  primitives olarak kaydedildi. Future screens reuse/explicit regression-tested
+  extension yapar; screen-local duplicate üretmez.
+- **OWNER-FINAL UI / DEFERRED ENGINE:** Beş görevlik Reward cycle, completed/
+  remaining count ve reward value/destination presentation'ı hazırdır. Runtime
+  default OFF; mission definitions, final TL amount, payout, redemption, wallet,
+  coupon, expiry, fraud/funding economics ve backend deferred'dır.
+- **COMPLETED — responsive/state/regression:** `320/390/430 px`, `%130`, auth/guest,
+  Reward `0/5–5/5`, long text, loading/empty/error evidence PASS. Targeted
+  `139 + 432`; full Flutter `1328 PASS / 0 FAIL / 6` existing conditional/live skip;
+  analyzer `0 issues`.
+- **FINAL PROCESS:** `ONE UI AGENT + INTEGRATION AGENT`. Her major screen bir
+  `390 px` prototype ve Product Owner visual approval ile başlar; agent self-review
+  tek başına FINAL sayılmaz. Figma minimal/selective reference, Flutter foundation
+  primary implementation reference'tır.
+- **NEXT / NOT STARTED HERE:** Category / Recursive Browse Final UI için tek
+  `390 px` visual prototype. Full implementation owner approval sonrasıdır.
+- **OPEN / SEPARATE AUTHORITY:** Reward backend/economics, dark mode, public/pilot
+  taxonomy activation, Production taxonomy rollout, physical QR, signed release ve
+  commercial GO/NO-GO.
 
 ## Wave 38G Development Canonical Taxonomy Closeout
 
