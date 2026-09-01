@@ -21,6 +21,8 @@ void main() {
     required ValueChanged<int> onSelected,
     int selectedIndex = 0,
     int unreadMessageCount = 0,
+    bool visualPrototype = false,
+    double textScale = 1,
   }) {
     whenListen(
       cartCubit,
@@ -31,11 +33,15 @@ void main() {
     return BlocProvider<CartV2Cubit>.value(
       value: cartCubit,
       child: MaterialApp(
-        home: Scaffold(
-          bottomNavigationBar: CustomerBottomNavigation(
-            selectedIndex: selectedIndex,
-            onSelected: onSelected,
-            unreadMessageCount: unreadMessageCount,
+        home: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+          child: Scaffold(
+            bottomNavigationBar: CustomerBottomNavigation(
+              selectedIndex: selectedIndex,
+              onSelected: onSelected,
+              unreadMessageCount: unreadMessageCount,
+              visualPrototype: visualPrototype,
+            ),
           ),
         ),
       ),
@@ -117,5 +123,55 @@ void main() {
     );
 
     expect(find.text('99+'), findsOneWidget);
+  });
+
+  testWidgets('görsel prototip kabuğu aynı beş hedefi korur', (tester) async {
+    var selectedIndex = -1;
+    await tester.pumpWidget(
+      buildSubject(
+        cartState: const CartV2Loaded([]),
+        visualPrototype: true,
+        onSelected: (index) => selectedIndex = index,
+      ),
+    );
+
+    const destinations = [
+      Key('customer-nav-home'),
+      Key('customer-nav-nearby'),
+      Key('customer-nav-cart'),
+      Key('customer-nav-wishlist'),
+      Key('customer-nav-profile'),
+    ];
+    for (var index = 0; index < destinations.length; index++) {
+      await tester.tap(find.byKey(destinations[index]));
+      await tester.pump();
+      expect(selectedIndex, index);
+    }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('görsel prototip yüzde 130 metin ölçeğinde taşma üretmez', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      buildSubject(
+        cartState: const CartV2Loaded([]),
+        visualPrototype: true,
+        textScale: 1.3,
+        onSelected: (_) {},
+      ),
+    );
+
+    expect(find.text('Ana'), findsOneWidget);
+    expect(find.text('Yakında'), findsOneWidget);
+    expect(find.text('Sepet'), findsOneWidget);
+    expect(find.text('Favoriler'), findsOneWidget);
+    expect(find.text('Profil'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

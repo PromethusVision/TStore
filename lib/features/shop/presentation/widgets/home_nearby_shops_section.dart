@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/nearby_shops_cubit.dart';
@@ -16,10 +18,12 @@ class HomeNearbyShopsSection extends StatelessWidget {
     super.key,
     required this.onViewAll,
     this.shopDestinationBuilder,
+    this.visualPrototype = false,
   });
 
   final VoidCallback onViewAll;
   final HomeShopDestinationBuilder? shopDestinationBuilder;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class HomeNearbyShopsSection extends StatelessWidget {
         }
 
         if (state is NearbyShopsError) {
-          return _NearbyStatus(
+          return EsnaftaVarStateCard(
             key: const Key('home-nearby-error'),
             icon: Icons.cloud_off_rounded,
             title: 'Mağazalar yüklenemedi',
@@ -41,7 +45,7 @@ class HomeNearbyShopsSection extends StatelessWidget {
         }
 
         if (state is NearbyShopsEmpty) {
-          return const _NearbyStatus(
+          return const EsnaftaVarStateCard(
             key: Key('home-nearby-empty'),
             icon: Icons.storefront_outlined,
             title: 'Yakında aktif mağaza bulunamadı',
@@ -63,101 +67,59 @@ class HomeNearbyShopsSection extends StatelessWidget {
           key: const Key('home-nearby-loaded'),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _SectionHeader(
-              title: 'Yakındaki Mağazalar',
+            EsnaftaVarSectionHeader(
+              title: visualPrototype
+                  ? 'Yakınındaki esnaf'
+                  : 'Yakındaki Mağazalar',
               subtitle: locationDescription,
-              onViewAll: onViewAll,
+              actionLabel: 'Tümünü Gör',
+              actionKey: const Key('home-nearby-view-all'),
+              onAction: onViewAll,
             ),
             const SizedBox(height: CustomerHomeV1Tokens.space8),
-            SizedBox(
-              height: 148,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: visibleShops.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(width: CustomerHomeV1Tokens.space8),
-                itemBuilder: (context, index) {
-                  final shop = visibleShops[index];
-                  return _HomeShopCard(
-                    shop: shop,
-                    distanceMeters: loaded.distanceForShop(shop.id),
-                    destinationBuilder: shopDestinationBuilder,
-                  );
-                },
+            if (visualPrototype)
+              Column(
+                children: [
+                  for (
+                    var index = 0;
+                    index < visibleShops.take(3).length;
+                    index++
+                  ) ...[
+                    if (index > 0)
+                      const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    _HomeShopCard(
+                      shop: visibleShops[index],
+                      distanceMeters: loaded.distanceForShop(
+                        visibleShops[index].id,
+                      ),
+                      destinationBuilder: shopDestinationBuilder,
+                      visualPrototype: true,
+                    ),
+                  ],
+                ],
+              )
+            else
+              SizedBox(
+                height: 190,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: visibleShops.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: CustomerHomeV1Tokens.space8),
+                  itemBuilder: (context, index) {
+                    final shop = visibleShops[index];
+                    return _HomeShopCard(
+                      shop: shop,
+                      distanceMeters: loaded.distanceForShop(shop.id),
+                      destinationBuilder: shopDestinationBuilder,
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         );
       },
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.onViewAll,
-    this.subtitle,
-  });
-
-  final String title;
-  final String? subtitle;
-  final VoidCallback onViewAll;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.25,
-                ),
-              ),
-              if (subtitle != null)
-                Text(
-                  subtitle!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 9,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        TextButton(
-          key: const Key('home-nearby-view-all'),
-          onPressed: onViewAll,
-          style: TextButton.styleFrom(
-            foregroundColor: CustomerHomeV1Tokens.petrol,
-            textStyle: const TextStyle(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Tümünü Gör'),
-              SizedBox(width: 2),
-              Icon(Icons.arrow_forward_rounded, size: 14),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
@@ -167,11 +129,13 @@ class _HomeShopCard extends StatefulWidget {
     required this.shop,
     required this.distanceMeters,
     this.destinationBuilder,
+    this.visualPrototype = false,
   });
 
   final ShopEntity shop;
   final double? distanceMeters;
   final HomeShopDestinationBuilder? destinationBuilder;
+  final bool visualPrototype;
 
   @override
   State<_HomeShopCard> createState() => _HomeShopCardState();
@@ -183,9 +147,12 @@ class _HomeShopCardState extends State<_HomeShopCard> {
   @override
   Widget build(BuildContext context) {
     final shop = widget.shop;
+    if (widget.visualPrototype) {
+      return _buildVisualPrototype(context, shop);
+    }
     return Material(
       key: Key('home-shop-${shop.id}'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
         key: Key('home-shop-link-${shop.id}'),
@@ -194,7 +161,7 @@ class _HomeShopCardState extends State<_HomeShopCard> {
             ? null
             : () => unawaited(_openShopProfile(context)),
         child: Container(
-          width: 122,
+          width: 158,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
@@ -206,18 +173,19 @@ class _HomeShopCardState extends State<_HomeShopCard> {
             children: [
               Expanded(child: _ShopImageFallback(shopId: shop.id)),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 6, 7, 7),
+                padding: const EdgeInsets.fromLTRB(12, 9, 12, 11),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       shop.name,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: CustomerHomeV1Tokens.navy,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 12.5,
+                        height: 1.25,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -238,6 +206,99 @@ class _HomeShopCardState extends State<_HomeShopCard> {
                       ],
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualPrototype(BuildContext context, ShopEntity shop) {
+    return Material(
+      key: Key('home-shop-${shop.id}'),
+      color: Colors.transparent,
+      child: InkWell(
+        key: Key('home-shop-link-${shop.id}'),
+        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        onTap: !shop.isActive || shop.id.trim().isEmpty
+            ? null
+            : () => unawaited(_openShopProfile(context)),
+        child: SizedBox(
+          height: 72,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 72,
+                height: 72,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    CustomerHomeV1Tokens.radius20,
+                  ),
+                  child: _ShopImageFallback(shopId: shop.id),
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      shop.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 2,
+                      children: [
+                        if (widget.distanceMeters != null)
+                          _ShopDetail(
+                            icon: Icons.location_on_rounded,
+                            text: _compactDistance(widget.distanceMeters!),
+                          ),
+                        if (shop.ratingCount > 0)
+                          _ShopDetail(
+                            icon: Icons.star_rounded,
+                            text: shop.rating.toStringAsFixed(1),
+                          ),
+                      ],
+                    ),
+                    if (shop.address?.trim().isNotEmpty == true) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        shop.address!.trim(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 10.5,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: CustomerHomeV1Tokens.space8),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: CustomerHomeV1Tokens.mint,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: CustomerHomeV1Tokens.petrol,
+                  size: 18,
                 ),
               ),
             ],
@@ -275,12 +336,7 @@ class _ShopImageFallback extends StatelessWidget {
 
   final String shopId;
 
-  static const _backgrounds = [
-    CustomerHomeV1Tokens.petrol,
-    Color(0xFF2A7E72),
-    Color(0xFF274E67),
-    Color(0xFF8B6045),
-  ];
+  static const _backgrounds = CustomerHomeV1Tokens.merchantFallbacks;
 
   @override
   Widget build(BuildContext context) {
@@ -303,13 +359,13 @@ class _ShopImageFallback extends StatelessWidget {
             child: Icon(
               Icons.storefront_rounded,
               size: 76,
-              color: Colors.white.withValues(alpha: 0.13),
+              color: CustomerHomeV1Tokens.onPrimary.withValues(alpha: 0.13),
             ),
           ),
           const Center(
             child: Icon(
               Icons.storefront_rounded,
-              color: Colors.white,
+              color: CustomerHomeV1Tokens.onPrimary,
               size: 38,
             ),
           ),
@@ -348,13 +404,13 @@ class _ShopDetail extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: CustomerHomeV1Tokens.coral, size: 9),
-        const SizedBox(width: 1),
+        Icon(icon, color: CustomerHomeV1Tokens.coral, size: 14),
+        const SizedBox(width: 3),
         Text(
           text,
           style: const TextStyle(
             color: CustomerHomeV1Tokens.muted,
-            fontSize: 7,
+            fontSize: 10.5,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -382,14 +438,14 @@ class _NearbyLoading extends StatelessWidget {
         ),
         const SizedBox(height: CustomerHomeV1Tokens.space8),
         SizedBox(
-          height: 148,
+          height: 190,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             separatorBuilder: (_, _) =>
                 const SizedBox(width: CustomerHomeV1Tokens.space8),
             itemBuilder: (_, _) => Container(
-              width: 122,
+              width: 158,
               decoration: BoxDecoration(
                 color: CustomerHomeV1Tokens.mint,
                 borderRadius: BorderRadius.circular(
@@ -400,61 +456,6 @@ class _NearbyLoading extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _NearbyStatus extends StatelessWidget {
-  const _NearbyStatus({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.message,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final IconData icon;
-  final String title;
-  final String message;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 28),
-          const SizedBox(height: CustomerHomeV1Tokens.space8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: CustomerHomeV1Tokens.navy,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: CustomerHomeV1Tokens.space4),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: CustomerHomeV1Tokens.muted,
-              fontSize: 10,
-            ),
-          ),
-          if (actionLabel != null && onAction != null)
-            TextButton(onPressed: onAction, child: Text(actionLabel!)),
-        ],
-      ),
     );
   }
 }

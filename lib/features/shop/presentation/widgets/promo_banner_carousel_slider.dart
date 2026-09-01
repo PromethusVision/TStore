@@ -107,9 +107,10 @@ class _ApprovedHeroCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = _homeHeroHeight(context);
     return SizedBox(
       key: const Key('customer-home-hero'),
-      height: 175,
+      height: height,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
         child: Stack(
@@ -120,7 +121,7 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                 itemBuilder: (_, index, _) =>
                     _HeroImage(imagePath: images[index]),
                 options: CarouselOptions(
-                  height: 175,
+                  height: height,
                   viewportFraction: 1,
                   enableInfiniteScroll: images.length > 1,
                   autoPlay: images.length > 1,
@@ -139,7 +140,7 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                     const Text(
                       'Mahallendeki\nesnafa destek ol,\nkazanan sen ol!',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: CustomerHomeV1Tokens.onPrimary,
                         fontSize: 18,
                         height: 1.05,
                         fontWeight: FontWeight.w700,
@@ -150,7 +151,7 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                     const Text(
                       'Aradığın ürün\nsana en yakın esnafta.',
                       style: TextStyle(
-                        color: Color(0xFFF1F7F7),
+                        color: CustomerHomeV1Tokens.campaignSupportingText,
                         fontSize: 10.5,
                         height: 1.25,
                         fontWeight: FontWeight.w400,
@@ -158,13 +159,14 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                     ),
                     const Spacer(),
                     SizedBox(
-                      height: 30,
+                      height: 44,
                       child: FilledButton(
                         key: const Key('customer-home-discover'),
                         onPressed: onDiscover,
                         style: FilledButton.styleFrom(
                           backgroundColor: CustomerHomeV1Tokens.yellow,
                           foregroundColor: CustomerHomeV1Tokens.navy,
+                          minimumSize: const Size(88, 44),
                           padding: const EdgeInsets.symmetric(horizontal: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
@@ -172,7 +174,7 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                             ),
                           ),
                           textStyle: const TextStyle(
-                            fontSize: 10.5,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -199,7 +201,9 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: index == selectedIndex
                               ? CustomerHomeV1Tokens.yellow
-                              : Colors.white.withValues(alpha: 0.7),
+                              : CustomerHomeV1Tokens.onPrimary.withValues(
+                                  alpha: 0.7,
+                                ),
                           borderRadius: BorderRadius.circular(
                             CustomerHomeV1Tokens.radiusPill,
                           ),
@@ -262,8 +266,8 @@ class _HeroGradient extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            const Color(0xFF0D5C5E),
-            const Color(0xFF0D5C5E).withValues(alpha: 0.92),
+            CustomerHomeV1Tokens.campaignOverlay,
+            CustomerHomeV1Tokens.campaignOverlay.withValues(alpha: 0.92),
             CustomerHomeV1Tokens.petrol.withValues(alpha: 0.14),
           ],
           stops: const [0, 0.48, 1],
@@ -301,12 +305,13 @@ class _BannerShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = _homeHeroHeight(context);
     return Shimmer.fromColors(
       baseColor: CustomerHomeV1Tokens.mint,
-      highlightColor: Colors.white,
+      highlightColor: CustomerHomeV1Tokens.surface,
       child: Container(
         key: const Key('customer-home-hero-loading'),
-        height: 175,
+        height: height,
         decoration: BoxDecoration(
           color: CustomerHomeV1Tokens.mint,
           borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
@@ -314,4 +319,10 @@ class _BannerShimmer extends StatelessWidget {
       ),
     );
   }
+}
+
+double _homeHeroHeight(BuildContext context) {
+  final scale = MediaQuery.textScalerOf(context).scale(1);
+  final additionalHeight = ((scale - 1) * 140).clamp(0, 70).toDouble();
+  return 190 + additionalHeight;
 }

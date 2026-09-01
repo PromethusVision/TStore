@@ -6,6 +6,8 @@ import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
@@ -16,10 +18,16 @@ import 'package:t_store/features/notifications/presentation/cubit/notifications_
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 
 class HomeAppBar extends StatefulWidget {
-  const HomeAppBar({super.key, this.sessionFullName, this.notificationsCubit});
+  const HomeAppBar({
+    super.key,
+    this.sessionFullName,
+    this.notificationsCubit,
+    this.visualPrototype = false,
+  });
 
   final String? sessionFullName;
   final NotificationsCubit? notificationsCubit;
+  final bool visualPrototype;
 
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
@@ -82,31 +90,98 @@ class _HomeAppBarState extends State<HomeAppBar> {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final isAuthenticated = state is AuthAuthenticated;
-        return SizedBox(
+        final displayName = _customerDisplayName(state);
+        final hasKnownIdentity =
+            isAuthenticated || displayName != TTexts.homeAppbarSubTitle;
+        final greeting = hasKnownIdentity
+            ? 'Merhaba, ${_firstName(displayName)}'
+            : 'Mahallendeki esnafı keşfet';
+        if (widget.visualPrototype) {
+          return ConstrainedBox(
+            key: const Key('customer-home-header'),
+            constraints: const BoxConstraints(minHeight: 56),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    label: 'Esnafta Var müşteri ana sayfası, $displayName',
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomerBrandWordmark(
+                          key: Key('home-wordmark'),
+                          fontSize: 26,
+                        ),
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
+                        Row(
+                          children: [
+                            Text(
+                              greeting,
+                              key: const Key('home-greeting'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.labelMedium
+                                  ?.copyWith(
+                                    color: EsnaftaVarColors.textPrimary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(width: EsnaftaVarSpacing.xs),
+                            Expanded(
+                              child: Text(
+                                hasKnownIdentity
+                                    ? 'Mahallende bugün neler var?'
+                                    : 'Yakınındaki ürünleri ve esnafı bul',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: EsnaftaVarColors.textSecondary,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: EsnaftaVarSpacing.sm),
+                _buildNotificationAction(
+                  context,
+                  isAuthenticated: isAuthenticated,
+                ),
+              ],
+            ),
+          );
+        }
+        return ConstrainedBox(
           key: const Key('customer-home-header'),
-          height: 48,
+          constraints: const BoxConstraints(minHeight: 56),
           child: Row(
             children: [
               Expanded(
                 child: Semantics(
-                  label:
-                      'Esnafta Var müşteri ana sayfası, ${_customerDisplayName(state)}',
-                  child: const Column(
+                  label: 'Esnafta Var müşteri ana sayfası, $displayName',
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomerBrandWordmark(
+                      const CustomerBrandWordmark(
                         key: Key('home-wordmark'),
                         fontSize: 24,
                       ),
-                      SizedBox(height: CustomerHomeV1Tokens.space4),
+                      const SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(
-                        'Kargo Bekleme, Esnafta Var!',
+                        greeting,
+                        key: const Key('home-greeting'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: CustomerHomeV1Tokens.muted,
-                          fontSize: 10.5,
+                        style: const TextStyle(
+                          color: EsnaftaVarColors.textSecondary,
+                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -123,6 +198,14 @@ class _HomeAppBarState extends State<HomeAppBar> {
         );
       },
     );
+  }
+
+  String _firstName(String displayName) {
+    final normalized = displayName.trim();
+    if (normalized.isEmpty || normalized == TTexts.homeAppbarSubTitle) {
+      return 'komşum';
+    }
+    return normalized.split(RegExp(r'\s+')).first;
   }
 
   Widget _buildNotificationAction(
@@ -194,59 +277,13 @@ class _NotificationIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final button = Material(
-      color: Colors.white,
-      shape: const CircleBorder(),
-      child: InkWell(
-        key: const Key('home-notifications-button'),
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: const Icon(
-            Iconsax.notification,
-            color: CustomerHomeV1Tokens.petrol,
-            size: 21,
-          ),
-        ),
-      ),
-    );
-
-    if (unreadCount <= 0) return button;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        button,
-        Positioned(
-          key: const Key('home-notifications-badge'),
-          right: -2,
-          top: -3,
-          child: Container(
-            constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: CustomerHomeV1Tokens.coral,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              unreadCount > 99 ? '99+' : unreadCount.toString(),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 8,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
-      ],
+    return EsnaftaVarSurfaceIconButton(
+      buttonKey: const Key('home-notifications-button'),
+      icon: Iconsax.notification,
+      tooltip: 'Bildirimler',
+      onPressed: onPressed,
+      badgeCount: unreadCount,
+      badgeKey: const Key('home-notifications-badge'),
     );
   }
 }

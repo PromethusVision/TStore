@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/reward_progress_card.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -25,6 +27,7 @@ import 'package:t_store/features/shop/presentation/widgets/home_nearby_shops_sec
 import 'package:t_store/features/shop/presentation/widgets/home_products_section.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_search_bar.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
+import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
 
 typedef HomeCurrentUserIdProvider = String? Function();
 typedef HomeSavedLocationsDestinationBuilder =
@@ -92,19 +95,15 @@ class _HomeViewState extends State<HomeView> {
         ),
       ],
       child: Builder(
-        builder: (contentContext) => Scaffold(
-          backgroundColor: CustomerHomeV1Tokens.cream,
-          body: SafeArea(
-            bottom: false,
-            child: CustomerHomeV1Content(
-              searchCubit: contentContext.read<CustomerSearchCubit>(),
-              recentSearchesStorage: sl<RecentProductSearchesStorage>(),
-              onSearchSubmitted: (query) =>
-                  _openAllProductsSearch(contentContext, query),
-              onLocationTap: () => _openSavedLocations(contentContext),
-              onNearbyViewAll: () =>
-                  contentContext.read<NavigationMenuCubit>().changeIndex(1),
-            ),
+        builder: (contentContext) => EsnaftaVarScaffold(
+          body: CustomerHomeV1Content(
+            searchCubit: contentContext.read<CustomerSearchCubit>(),
+            recentSearchesStorage: sl<RecentProductSearchesStorage>(),
+            onSearchSubmitted: (query) =>
+                _openAllProductsSearch(contentContext, query),
+            onLocationTap: () => _openSavedLocations(contentContext),
+            onNearbyViewAll: () =>
+                contentContext.read<NavigationMenuCubit>().changeIndex(1),
           ),
         ),
       ),
@@ -179,6 +178,12 @@ class CustomerHomeV1Content extends StatelessWidget {
     this.categoryDestinationBuilder,
     this.productDestinationBuilder,
     this.shopDestinationBuilder,
+    this.rewardFeatureEnabled = false,
+    this.rewardProgress,
+    this.onRewardTap,
+    this.productFavoriteCurrentUserIdProvider,
+    this.productShopProductsLoader,
+    this.visualPrototype = false,
   });
 
   final HomeSearchQuerySubmitted onSearchSubmitted;
@@ -190,6 +195,13 @@ class CustomerHomeV1Content extends StatelessWidget {
   final HomeCategoryDestinationBuilder? categoryDestinationBuilder;
   final HomeProductDestinationBuilder? productDestinationBuilder;
   final HomeShopDestinationBuilder? shopDestinationBuilder;
+  final bool rewardFeatureEnabled;
+  final RewardProgressData? rewardProgress;
+  final VoidCallback? onRewardTap;
+  final ProductFavoriteCurrentUserIdProvider?
+  productFavoriteCurrentUserIdProvider;
+  final HomeShopProductsLoader? productShopProductsLoader;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +209,57 @@ class CustomerHomeV1Content extends StatelessWidget {
         isAuthenticatedOverride ?? _hasAuthenticatedSession();
     final activeSearchCubit =
         searchCubit ?? context.read<CustomerSearchCubit>();
+    final searchBar = HomeSearchBar(
+      searchCubit: activeSearchCubit,
+      recentSearchesStorage: recentSearchesStorage,
+      visualPrototype: visualPrototype,
+      onQuerySubmitted: onSearchSubmitted,
+      onProductSelected: (product) => Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              productDestinationBuilder?.call(product) ??
+              ProductDetailsView(product: product),
+        ),
+      ),
+      onCategorySelected: (category) {
+        final localizedTitle =
+            CustomerCategoryPresentationHelper.localizedTitle(category.name);
+        Widget? destination;
+        final destinationOverride = categoryDestinationBuilder;
+        if (destinationOverride != null) {
+          destination = destinationOverride(category, localizedTitle);
+        } else {
+          final canonicalResult = activeSearchCubit.canonicalResultFor(
+            category.id,
+          );
+          if (canonicalResult != null) {
+            destination = buildCanonicalTaxonomyDestination(
+              category: canonicalResult.matchedCategory,
+              breadcrumb: canonicalResult.breadcrumb,
+              repository: activeSearchCubit.activeCanonicalRepository,
+              capability: activeSearchCubit.taxonomyCapability,
+            );
+            if (destination == null) return;
+          } else {
+            destination = SubCategoryView(
+              title: localizedTitle,
+              categoryId: category.id,
+            );
+          }
+        }
+        final resolvedDestination = destination;
+        Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(builder: (_) => resolvedDestination),
+        );
+      },
+      onShopSelected: (shop) => Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              shopDestinationBuilder?.call(shop) ?? ShopProfileView(shop: shop),
+        ),
+      ),
+    );
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 430),
@@ -211,79 +274,64 @@ class CustomerHomeV1Content extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HomeAppBar(),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              HomeAppBar(visualPrototype: visualPrototype),
+              SizedBox(
+                height: visualPrototype
+                    ? CustomerHomeV1Tokens.space4
+                    : CustomerHomeV1Tokens.space8,
+              ),
               HomeLocationBar(
                 isAuthenticated: isAuthenticated,
                 onTap: onLocationTap,
+                visualPrototype: visualPrototype,
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              HomeSearchBar(
-                searchCubit: activeSearchCubit,
-                recentSearchesStorage: recentSearchesStorage,
-                onQuerySubmitted: onSearchSubmitted,
-                onProductSelected: (product) =>
-                    Navigator.of(context).push<void>(
-                      MaterialPageRoute<void>(
-                        builder: (_) =>
-                            productDestinationBuilder?.call(product) ??
-                            ProductDetailsView(product: product),
-                      ),
-                    ),
-                onCategorySelected: (category) {
-                  final localizedTitle =
-                      CustomerCategoryPresentationHelper.localizedTitle(
-                        category.name,
-                      );
-                  Widget? destination;
-                  final destinationOverride = categoryDestinationBuilder;
-                  if (destinationOverride != null) {
-                    destination = destinationOverride(category, localizedTitle);
-                  } else {
-                    final canonicalResult = activeSearchCubit
-                        .canonicalResultFor(category.id);
-                    if (canonicalResult != null) {
-                      destination = buildCanonicalTaxonomyDestination(
-                        category: canonicalResult.matchedCategory,
-                        breadcrumb: canonicalResult.breadcrumb,
-                        repository: activeSearchCubit.activeCanonicalRepository,
-                        capability: activeSearchCubit.taxonomyCapability,
-                      );
-                      if (destination == null) return;
-                    } else {
-                      destination = SubCategoryView(
-                        title: localizedTitle,
-                        categoryId: category.id,
-                      );
-                    }
-                  }
-                  final resolvedDestination = destination;
-                  Navigator.of(context).push<void>(
-                    MaterialPageRoute<void>(
-                      builder: (_) => resolvedDestination,
-                    ),
-                  );
-                },
-                onShopSelected: (shop) => Navigator.of(context).push<void>(
-                  MaterialPageRoute<void>(
-                    builder: (_) =>
-                        shopDestinationBuilder?.call(shop) ??
-                        ShopProfileView(shop: shop),
-                  ),
+              SizedBox(
+                height: visualPrototype
+                    ? CustomerHomeV1Tokens.space12
+                    : CustomerHomeV1Tokens.space8,
+              ),
+              searchBar,
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              RewardProgressSlot(
+                enabled: rewardFeatureEnabled,
+                data: rewardProgress,
+                onTap: onRewardTap,
+                compact: visualPrototype,
+              ),
+              if (rewardFeatureEnabled && rewardProgress != null)
+                SizedBox(
+                  height: visualPrototype
+                      ? CustomerHomeV1Tokens.space16
+                      : CustomerHomeV1Tokens.space12,
                 ),
+              HomeCategories(
+                destinationBuilder: categoryDestinationBuilder,
+                visualPrototype: visualPrototype,
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space12),
-              HomeCategories(destinationBuilder: categoryDestinationBuilder),
-              const SizedBox(height: CustomerHomeV1Tokens.space12),
-              const PromoBannerCarouselSlider(),
-              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              SizedBox(
+                height: visualPrototype
+                    ? CustomerHomeV1Tokens.space16
+                    : CustomerHomeV1Tokens.space12,
+              ),
+              if (!visualPrototype) ...[
+                const PromoBannerCarouselSlider(),
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+              ],
               HomeProductsSection(
                 destinationBuilder: productDestinationBuilder,
+                currentUserIdProvider: productFavoriteCurrentUserIdProvider,
+                shopProductsLoader: productShopProductsLoader,
+                visualPrototype: visualPrototype,
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
+              SizedBox(
+                height: visualPrototype
+                    ? CustomerHomeV1Tokens.space20
+                    : CustomerHomeV1Tokens.space16,
+              ),
               HomeNearbyShopsSection(
                 onViewAll: onNearbyViewAll,
                 shopDestinationBuilder: shopDestinationBuilder,
+                visualPrototype: visualPrototype,
               ),
             ],
           ),

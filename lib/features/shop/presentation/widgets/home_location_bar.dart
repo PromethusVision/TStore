@@ -10,10 +10,12 @@ class HomeLocationBar extends StatelessWidget {
     super.key,
     required this.isAuthenticated,
     required this.onTap,
+    this.visualPrototype = false,
   });
 
   final bool isAuthenticated;
   final VoidCallback onTap;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +37,90 @@ class HomeLocationBar extends StatelessWidget {
             ? location!.addressText.trim()
             : state is CustomerSavedLocationsError
             ? 'Konum yüklenemedi, tekrar denemek için dokun'
-            : 'Yakınındaki mağazaları görmek için dokun';
+            : isAuthenticated
+            ? 'Yakınındaki mağazaları görmek için dokun'
+            : 'Yakınındakiler için giriş yap ve konumunu seç';
+
+        if (visualPrototype) {
+          return Material(
+            key: const Key('home-location-bar'),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(
+                CustomerHomeV1Tokens.radius12,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 44),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: CustomerHomeV1Tokens.mint,
+                        borderRadius: BorderRadius.circular(
+                          CustomerHomeV1Tokens.radius12,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.location_on_rounded,
+                        color: CustomerHomeV1Tokens.petrol,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: title,
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.navy,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '  •  $detail',
+                              style: const TextStyle(
+                                color: CustomerHomeV1Tokens.muted,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 11.5, height: 1.3),
+                      ),
+                    ),
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                    if (isLoading)
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          color: CustomerHomeV1Tokens.petrol,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    else
+                      const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: CustomerHomeV1Tokens.petrol,
+                        size: 20,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
         return Material(
           key: const Key('home-location-bar'),
-          color: Colors.white,
+          color: CustomerHomeV1Tokens.surface,
           borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
           child: InkWell(
             onTap: onTap,
@@ -60,8 +141,8 @@ class HomeLocationBar extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 38,
-                    height: 38,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: CustomerHomeV1Tokens.petrol,
                       borderRadius: BorderRadius.circular(
@@ -70,7 +151,7 @@ class HomeLocationBar extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.location_on_rounded,
-                      color: Colors.white,
+                      color: CustomerHomeV1Tokens.onPrimary,
                       size: 22,
                     ),
                   ),
@@ -86,7 +167,7 @@ class HomeLocationBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: CustomerHomeV1Tokens.navy,
-                            fontSize: 12.5,
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -97,7 +178,7 @@ class HomeLocationBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: CustomerHomeV1Tokens.muted,
-                            fontSize: 9.5,
+                            fontSize: 11,
                             fontWeight: FontWeight.w400,
                           ),
                         ),

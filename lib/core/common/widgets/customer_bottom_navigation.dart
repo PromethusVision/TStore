@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
@@ -12,66 +13,99 @@ class CustomerBottomNavigation extends StatelessWidget {
     required this.selectedIndex,
     required this.onSelected,
     this.unreadMessageCount = 0,
+    this.visualPrototype = false,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onSelected;
   final int unreadMessageCount;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
+    final navigationRow = Row(
+      children: [
+        _NavigationItem(
+          itemKey: const Key('customer-nav-home'),
+          label: TTexts.homeView,
+          icon: Iconsax.home,
+          selectedIcon: Iconsax.home_15,
+          selected: selectedIndex == 0,
+          onTap: () => onSelected(0),
+          visualPrototype: visualPrototype,
+        ),
+        _NavigationItem(
+          itemKey: const Key('customer-nav-nearby'),
+          label: TTexts.nearbyView,
+          icon: Iconsax.location,
+          selectedIcon: Iconsax.location5,
+          selected: selectedIndex == 1,
+          onTap: () => onSelected(1),
+          visualPrototype: visualPrototype,
+        ),
+        _CartNavigationItem(
+          selected: selectedIndex == 2,
+          onTap: () => onSelected(2),
+          visualPrototype: visualPrototype,
+        ),
+        _NavigationItem(
+          itemKey: const Key('customer-nav-wishlist'),
+          label: TTexts.wishlistView,
+          icon: Iconsax.heart,
+          selectedIcon: Iconsax.heart5,
+          selected: selectedIndex == 3,
+          onTap: () => onSelected(3),
+          visualPrototype: visualPrototype,
+        ),
+        _NavigationItem(
+          itemKey: const Key('customer-nav-profile'),
+          label: TTexts.profileView,
+          icon: Iconsax.user,
+          selectedIcon: Iconsax.user5,
+          selected: selectedIndex == 4,
+          onTap: () => onSelected(4),
+          badgeCount: unreadMessageCount,
+          badgeKey: const Key('customer-nav-profile-badge'),
+          visualPrototype: visualPrototype,
+        ),
+      ],
+    );
+
+    if (visualPrototype) {
+      return Material(
+        key: const Key('customer-bottom-navigation'),
+        color: Colors.transparent,
+        child: SafeArea(
+          top: false,
+          minimum: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          child: Container(
+            height: 64,
+            decoration: BoxDecoration(
+              color: EsnaftaVarColors.surface,
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+              border: Border.all(color: EsnaftaVarColors.divider),
+              boxShadow: CustomerHomeV1Tokens.softShadow,
+            ),
+            child: navigationRow,
+          ),
+        ),
+      );
+    }
+
     return Material(
       key: const Key('customer-bottom-navigation'),
-      color: Colors.white,
+      color: EsnaftaVarColors.surface,
       elevation: 14,
-      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.18),
+      shadowColor: EsnaftaVarColors.textPrimary.withValues(alpha: 0.14),
       child: SafeArea(
         top: false,
         minimum: const EdgeInsets.only(bottom: 2),
-        child: SizedBox(
-          height: 70,
-          child: Row(
-            children: [
-              _NavigationItem(
-                itemKey: const Key('customer-nav-home'),
-                label: TTexts.homeView,
-                icon: Iconsax.home,
-                selectedIcon: Iconsax.home_15,
-                selected: selectedIndex == 0,
-                onTap: () => onSelected(0),
-              ),
-              _NavigationItem(
-                itemKey: const Key('customer-nav-nearby'),
-                label: TTexts.nearbyView,
-                icon: Iconsax.location,
-                selectedIcon: Iconsax.location5,
-                selected: selectedIndex == 1,
-                onTap: () => onSelected(1),
-              ),
-              _CartNavigationItem(
-                selected: selectedIndex == 2,
-                onTap: () => onSelected(2),
-              ),
-              _NavigationItem(
-                itemKey: const Key('customer-nav-wishlist'),
-                label: TTexts.wishlistView,
-                icon: Iconsax.heart,
-                selectedIcon: Iconsax.heart5,
-                selected: selectedIndex == 3,
-                onTap: () => onSelected(3),
-              ),
-              _NavigationItem(
-                itemKey: const Key('customer-nav-profile'),
-                label: TTexts.profileView,
-                icon: Iconsax.user,
-                selectedIcon: Iconsax.user5,
-                selected: selectedIndex == 4,
-                onTap: () => onSelected(4),
-                badgeCount: unreadMessageCount,
-                badgeKey: const Key('customer-nav-profile-badge'),
-              ),
-            ],
+        child: Container(
+          height: 72,
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: EsnaftaVarColors.divider)),
           ),
+          child: navigationRow,
         ),
       ),
     );
@@ -88,6 +122,7 @@ class _NavigationItem extends StatelessWidget {
     required this.onTap,
     this.badgeCount = 0,
     this.badgeKey,
+    this.visualPrototype = false,
   });
 
   final Key itemKey;
@@ -98,12 +133,27 @@ class _NavigationItem extends StatelessWidget {
   final VoidCallback onTap;
   final int badgeCount;
   final Key? badgeKey;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
-    final color = selected
+    final usesCompactLabel =
+        visualPrototype &&
+        (MediaQuery.sizeOf(context).width < 360 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.15);
+    final visibleLabel = switch ((usesCompactLabel, label)) {
+      (true, TTexts.homeView) => 'Ana',
+      (true, TTexts.nearbyView) => 'Yakında',
+      _ => label,
+    };
+    final iconColor = selected && visualPrototype
+        ? EsnaftaVarColors.textOnPrimary
+        : selected
         ? CustomerHomeV1Tokens.petrol
-        : const Color(0xFF697384);
+        : EsnaftaVarColors.textMuted;
+    final labelColor = selected
+        ? CustomerHomeV1Tokens.petrol
+        : EsnaftaVarColors.textMuted;
     return Expanded(
       child: Semantics(
         selected: selected,
@@ -119,7 +169,25 @@ class _NavigationItem extends StatelessWidget {
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Icon(selected ? selectedIcon : icon, color: color, size: 22),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: visualPrototype ? 34 : 38,
+                    height: visualPrototype ? 34 : 32,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? visualPrototype
+                                ? CustomerHomeV1Tokens.petrol
+                                : EsnaftaVarColors.primarySoft
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
+                    ),
+                    child: Icon(
+                      selected ? selectedIcon : icon,
+                      color: iconColor,
+                      size: 22,
+                    ),
+                  ),
                   if (badgeCount > 0)
                     Positioned(
                       key: badgeKey,
@@ -141,7 +209,7 @@ class _NavigationItem extends StatelessWidget {
                         child: Text(
                           badgeCount > 99 ? '99+' : badgeCount.toString(),
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: EsnaftaVarColors.textOnPrimary,
                             fontSize: 8,
                             fontWeight: FontWeight.w700,
                           ),
@@ -151,14 +219,17 @@ class _NavigationItem extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 8.5,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Text(
+                  visibleLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: labelColor,
+                    fontSize: visualPrototype ? 10 : 10.5,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -170,18 +241,36 @@ class _NavigationItem extends StatelessWidget {
 }
 
 class _CartNavigationItem extends StatelessWidget {
-  const _CartNavigationItem({required this.selected, required this.onTap});
+  const _CartNavigationItem({
+    required this.selected,
+    required this.onTap,
+    this.visualPrototype = false,
+  });
 
   final bool selected;
   final VoidCallback onTap;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: BlocBuilder<CartV2Cubit, CartV2State>(
-        builder: (context, state) {
-          final count = state is CartV2Loaded ? state.itemCount : 0;
-          return Semantics(
+    return BlocBuilder<CartV2Cubit, CartV2State>(
+      builder: (context, state) {
+        final count = state is CartV2Loaded ? state.itemCount : 0;
+        if (visualPrototype) {
+          return _NavigationItem(
+            itemKey: const Key('customer-nav-cart'),
+            label: TTexts.cartView,
+            icon: Iconsax.shopping_bag,
+            selectedIcon: Iconsax.shopping_bag,
+            selected: selected,
+            onTap: onTap,
+            badgeCount: count,
+            badgeKey: const Key('customer-nav-cart-badge'),
+            visualPrototype: true,
+          );
+        }
+        return Expanded(
+          child: Semantics(
             selected: selected,
             button: true,
             label: count > 0
@@ -205,12 +294,15 @@ class _CartNavigationItem extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: CustomerHomeV1Tokens.petrol,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 3),
+                            border: Border.all(
+                              color: EsnaftaVarColors.textOnPrimary,
+                              width: 3,
+                            ),
                             boxShadow: CustomerHomeV1Tokens.softShadow,
                           ),
                           child: const Icon(
                             Iconsax.shopping_bag,
-                            color: Colors.white,
+                            color: EsnaftaVarColors.textOnPrimary,
                             size: 22,
                           ),
                         ),
@@ -253,8 +345,8 @@ class _CartNavigationItem extends StatelessWidget {
                       style: TextStyle(
                         color: selected
                             ? CustomerHomeV1Tokens.petrol
-                            : const Color(0xFF697384),
-                        fontSize: 8.5,
+                            : CustomerHomeV1Tokens.muted,
+                        fontSize: 10.5,
                         fontWeight: selected
                             ? FontWeight.w700
                             : FontWeight.w600,
@@ -264,9 +356,9 @@ class _CartNavigationItem extends StatelessWidget {
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -37,6 +38,7 @@ class HomeSearchBar extends StatefulWidget {
     this.shopProductsLoader,
     this.debounceDuration = const Duration(milliseconds: 350),
     this.minimumQueryLength = 2,
+    this.visualPrototype = false,
   });
 
   final CustomerSearchCubit searchCubit;
@@ -48,6 +50,7 @@ class HomeSearchBar extends StatefulWidget {
   final HomeSearchShopProductsLoader? shopProductsLoader;
   final Duration debounceDuration;
   final int minimumQueryLength;
+  final bool visualPrototype;
 
   @override
   State<HomeSearchBar> createState() => _HomeSearchBarState();
@@ -98,16 +101,37 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         children: [
           Material(
             key: const Key('home-search-bar'),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-            child: Container(
-              height: 50,
+            color: widget.visualPrototype
+                ? EsnaftaVarColors.surfaceElevated
+                : CustomerHomeV1Tokens.surface,
+            borderRadius: BorderRadius.circular(
+              widget.visualPrototype
+                  ? CustomerHomeV1Tokens.radius20
+                  : CustomerHomeV1Tokens.radius16,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              height: widget.visualPrototype ? 54 : 50,
               decoration: BoxDecoration(
+                color: widget.visualPrototype
+                    ? EsnaftaVarColors.surfaceElevated
+                    : null,
                 borderRadius: BorderRadius.circular(
-                  CustomerHomeV1Tokens.radius16,
+                  widget.visualPrototype
+                      ? CustomerHomeV1Tokens.radius20
+                      : CustomerHomeV1Tokens.radius16,
                 ),
-                border: Border.all(color: CustomerHomeV1Tokens.border),
-                boxShadow: CustomerHomeV1Tokens.softShadow,
+                border: widget.visualPrototype
+                    ? Border.all(
+                        color: _focusNode.hasFocus
+                            ? EsnaftaVarColors.primary
+                            : EsnaftaVarColors.divider,
+                        width: _focusNode.hasFocus ? 1.5 : 1,
+                      )
+                    : Border.all(color: CustomerHomeV1Tokens.border),
+                boxShadow: widget.visualPrototype
+                    ? EsnaftaVarElevation.xs
+                    : CustomerHomeV1Tokens.softShadow,
               ),
               child: CustomerLightInputTheme(
                 child: TextField(
@@ -121,17 +145,39 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                   onTapOutside: (_) => _focusNode.unfocus(),
                   decoration: InputDecoration(
                     hintText: 'Ürün, kategori veya mağaza ara',
-                    hintStyle: const TextStyle(
+                    hintStyle: TextStyle(
                       color: CustomerHomeV1Tokens.muted,
-                      fontSize: 12,
+                      fontSize: widget.visualPrototype ? 12.5 : 12,
                       fontWeight: FontWeight.w400,
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: CustomerHomeV1Tokens.petrol,
-                      size: 22,
-                    ),
-                    suffixIcon: _query.isEmpty
+                    prefixIcon: widget.visualPrototype
+                        ? Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: EsnaftaVarColors.primarySoft,
+                                borderRadius: BorderRadius.circular(
+                                  EsnaftaVarRadii.medium,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.search_rounded,
+                                color: EsnaftaVarColors.primary,
+                                size: 19,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.search_rounded,
+                            color: CustomerHomeV1Tokens.petrol,
+                            size: 22,
+                          ),
+                    prefixIconConstraints: widget.visualPrototype
+                        ? const BoxConstraints(minWidth: 52, minHeight: 52)
+                        : null,
+                    suffixIcon: _query.isEmpty && widget.visualPrototype
+                        ? const SizedBox(width: 16)
+                        : _query.isEmpty
                         ? IconButton(
                             key: const Key('home-search-submit'),
                             tooltip: 'Arama sayfasını aç',
@@ -415,9 +461,9 @@ class _RecentSearchesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       key: const Key('home-recent-searches'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.16),
+      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       clipBehavior: Clip.antiAlias,
       child: isLoading && queries.isEmpty
@@ -583,9 +629,9 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
   }) {
     return Material(
       key: const Key('home-search-suggestions'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.16),
+      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(

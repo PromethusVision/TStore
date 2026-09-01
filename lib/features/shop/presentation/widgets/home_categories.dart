@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
@@ -20,10 +21,12 @@ class HomeCategories extends StatefulWidget {
     super.key,
     this.destinationBuilder,
     this.canonicalDestinationBuilder,
+    this.visualPrototype = false,
   });
 
   final HomeCategoryDestinationBuilder? destinationBuilder;
   final HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder;
+  final bool visualPrototype;
 
   @override
   State<HomeCategories> createState() => _HomeCategoriesState();
@@ -32,14 +35,7 @@ class HomeCategories extends StatefulWidget {
 class _HomeCategoriesState extends State<HomeCategories> {
   final Set<String> _openingCategoryIds = {};
 
-  static const _pastelSurfaces = [
-    CustomerHomeV1Tokens.mint,
-    Color(0xFFE4F0E0),
-    Color(0xFFFFEDD3),
-    Color(0xFFFFE1DC),
-    Color(0xFFF9DFDF),
-    Color(0xFFDDEDEA),
-  ];
+  static const _pastelSurfaces = CustomerHomeV1Tokens.categorySurfaces;
 
   static String _normalizedName(String name) => name.trim().toLowerCase();
 
@@ -92,82 +88,110 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    final usesScaledText = MediaQuery.textScalerOf(context).scale(1) > 1.15;
+    return Column(
       key: const Key('home-categories'),
-      height: 75,
-      child: BlocBuilder<CategoriesCubit, CategoriesState>(
-        builder: (context, state) {
-          if (state is CategoriesLoading || state is CategoriesInitial) {
-            return const _CategoryStatus(
-              key: Key('home-categories-loading'),
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  color: CustomerHomeV1Tokens.petrol,
-                  strokeWidth: 2,
-                ),
-              ),
-            );
-          }
-
-          if (state is CategoriesError) {
-            return _CategoryStatus(
-              child: TextButton.icon(
-                key: const Key('home-categories-retry'),
-                onPressed: context.read<CategoriesCubit>().getCategories,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Kategorileri Tekrar Yükle'),
-              ),
-            );
-          }
-
-          if (state is CategoriesLoaded) {
-            if (state.categories.isEmpty) {
-              return const _CategoryStatus(
-                child: Text(
-                  'Şu anda gösterilecek kategori bulunamadı.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 11,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Kategoriler',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: CustomerHomeV1Tokens.navy,
+            fontWeight: widget.visualPrototype ? FontWeight.w700 : null,
+          ),
+        ),
+        if (!widget.visualPrototype) ...[
+          const SizedBox(height: CustomerHomeV1Tokens.space4),
+          Text(
+            'Mahallende aradığını kolayca bul',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: CustomerHomeV1Tokens.muted),
+          ),
+        ],
+        const SizedBox(height: CustomerHomeV1Tokens.space8),
+        SizedBox(
+          height: widget.visualPrototype
+              ? usesScaledText
+                    ? 132
+                    : 108
+              : 112,
+          child: BlocBuilder<CategoriesCubit, CategoriesState>(
+            builder: (context, state) {
+              if (state is CategoriesLoading || state is CategoriesInitial) {
+                return const _CategoryStatus(
+                  key: Key('home-categories-loading'),
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: CustomerHomeV1Tokens.petrol,
+                      strokeWidth: 2,
+                    ),
                   ),
-                ),
-              );
-            }
-
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: state.categories.length,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(width: CustomerHomeV1Tokens.space8),
-              itemBuilder: (context, index) {
-                final category = state.categories[index];
-                final categoryId = category.id.trim();
-                final canonicalNode = state.canonicalNodeFor(categoryId);
-                return _HomeCategoryItem(
-                  key: Key('home-category-${category.id}'),
-                  category: category,
-                  title: _localizedTitle(category.name),
-                  fallbackIcon: _fallbackIcon(category.name, index),
-                  backgroundColor:
-                      _pastelSurfaces[index % _pastelSurfaces.length],
-                  onTap: categoryId.isEmpty
-                      ? null
-                      : () => _openCategory(
-                          context,
-                          category,
-                          canonicalNode: canonicalNode,
-                        ),
                 );
-              },
-            );
-          }
+              }
 
-          return const SizedBox.shrink();
-        },
-      ),
+              if (state is CategoriesError) {
+                return _CategoryStatus(
+                  child: TextButton.icon(
+                    key: const Key('home-categories-retry'),
+                    onPressed: context.read<CategoriesCubit>().getCategories,
+                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    label: const Text('Kategorileri Tekrar Yükle'),
+                  ),
+                );
+              }
+
+              if (state is CategoriesLoaded) {
+                if (state.categories.isEmpty) {
+                  return const _CategoryStatus(
+                    child: Text(
+                      'Şu anda gösterilecek kategori bulunamadı.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: CustomerHomeV1Tokens.muted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: state.categories.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: CustomerHomeV1Tokens.space8),
+                  itemBuilder: (context, index) {
+                    final category = state.categories[index];
+                    final categoryId = category.id.trim();
+                    final canonicalNode = state.canonicalNodeFor(categoryId);
+                    return _HomeCategoryItem(
+                      key: Key('home-category-${category.id}'),
+                      category: category,
+                      title: _localizedTitle(category.name),
+                      fallbackIcon: _fallbackIcon(category.name, index),
+                      backgroundColor:
+                          _pastelSurfaces[index % _pastelSurfaces.length],
+                      visualPrototype: widget.visualPrototype,
+                      onTap: categoryId.isEmpty
+                          ? null
+                          : () => _openCategory(
+                              context,
+                              category,
+                              canonicalNode: canonicalNode,
+                            ),
+                    );
+                  },
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -219,6 +243,7 @@ class _HomeCategoryItem extends StatelessWidget {
     required this.fallbackIcon,
     required this.backgroundColor,
     required this.onTap,
+    required this.visualPrototype,
   });
 
   final CategoryEntity category;
@@ -226,49 +251,100 @@ class _HomeCategoryItem extends StatelessWidget {
   final IconData fallbackIcon;
   final Color backgroundColor;
   final VoidCallback? onTap;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     final imageUrl = category.imageUrl?.trim() ?? '';
+    final imageUri = Uri.tryParse(imageUrl);
+    final isNetworkImage =
+        imageUri != null &&
+        (imageUri.scheme == 'http' || imageUri.scheme == 'https');
     return SizedBox(
-      width: 52,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
-        onTap: onTap,
-        child: Column(
-          children: [
-            Container(
-              width: 46,
-              height: 46,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.circle,
-              ),
-              child: imageUrl.isEmpty
-                  ? _CategoryFallback(icon: fallbackIcon)
-                  : CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (_, _) =>
-                          _CategoryFallback(icon: fallbackIcon),
-                      errorWidget: (_, _, _) =>
-                          _CategoryFallback(icon: fallbackIcon),
+      width: visualPrototype ? 78 : 104,
+      child: Semantics(
+        button: onTap != null,
+        label: '$title kategorisi',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: visualPrototype ? 1 : 4,
+              vertical: 2,
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: visualPrototype ? 72 : 52,
+                  height: visualPrototype ? 72 : 52,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(
+                      visualPrototype
+                          ? CustomerHomeV1Tokens.radius20
+                          : CustomerHomeV1Tokens.radius16,
                     ),
+                    border: visualPrototype
+                        ? Border.all(
+                            color: EsnaftaVarColors.primary.withValues(
+                              alpha: 0.10,
+                            ),
+                          )
+                        : null,
+                    boxShadow: visualPrototype ? EsnaftaVarElevation.xs : null,
+                  ),
+                  child: visualPrototype
+                      ? _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: true,
+                        )
+                      : imageUrl.isEmpty
+                      ? _CategoryFallback(
+                          icon: fallbackIcon,
+                          visualPrototype: visualPrototype,
+                        )
+                      : !isNetworkImage
+                      ? Image.asset(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                          errorWidget: (_, _, _) => _CategoryFallback(
+                            icon: fallbackIcon,
+                            visualPrototype: visualPrototype,
+                          ),
+                        ),
+                ),
+                const SizedBox(height: CustomerHomeV1Tokens.space4),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.navy,
+                      fontSize: 11,
+                      height: visualPrototype ? 1.15 : 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: CustomerHomeV1Tokens.space4),
-            Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.navy,
-                fontSize: 8.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -276,12 +352,27 @@ class _HomeCategoryItem extends StatelessWidget {
 }
 
 class _CategoryFallback extends StatelessWidget {
-  const _CategoryFallback({required this.icon});
+  const _CategoryFallback({required this.icon, required this.visualPrototype});
 
   final IconData icon;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
+    if (visualPrototype) {
+      return Center(
+        child: Container(
+          width: 46,
+          height: 46,
+          decoration: BoxDecoration(
+            color: EsnaftaVarColors.surface.withValues(alpha: 0.92),
+            shape: BoxShape.circle,
+            border: Border.all(color: EsnaftaVarColors.divider),
+          ),
+          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 24),
+        ),
+      );
+    }
     return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
   }
 }

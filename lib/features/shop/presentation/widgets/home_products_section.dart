@@ -5,6 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
@@ -27,11 +30,13 @@ class HomeProductsSection extends StatelessWidget {
     this.destinationBuilder,
     this.currentUserIdProvider,
     this.shopProductsLoader,
+    this.visualPrototype = false,
   });
 
   final HomeProductDestinationBuilder? destinationBuilder;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final HomeShopProductsLoader? shopProductsLoader;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +46,16 @@ class HomeProductsSection extends StatelessWidget {
           key: const Key('home-products-section'),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ProductsHeader(
-              onViewAll: () => Navigator.of(context).push<void>(
+            EsnaftaVarSectionHeader(
+              title: visualPrototype
+                  ? 'Mahallende bugün'
+                  : 'Size Özel Seçtiklerimiz',
+              subtitle: visualPrototype
+                  ? 'Fiyatları yerel esnaflarda karşılaştır'
+                  : 'Yakındaki esnaflarda bulunan ürünler',
+              actionLabel: 'Tümünü Gör',
+              actionKey: const Key('home-products-view-all'),
+              onAction: () => Navigator.of(context).push<void>(
                 MaterialPageRoute<void>(
                   builder: (_) => AllProductsView(
                     currentUserIdProvider: currentUserIdProvider,
@@ -54,7 +67,7 @@ class HomeProductsSection extends StatelessWidget {
             if (state is ProductsLoading || state is ProductsInitial)
               const _ProductsLoading()
             else if (state is ProductsError)
-              _ProductsStatus(
+              EsnaftaVarStateCard(
                 key: const Key('home-products-error'),
                 icon: Icons.cloud_off_rounded,
                 title: 'Ürünler yüklenemedi',
@@ -68,7 +81,7 @@ class HomeProductsSection extends StatelessWidget {
                 ),
               )
             else if (state is ProductsLoaded && state.products.isEmpty)
-              const _ProductsStatus(
+              const EsnaftaVarStateCard(
                 key: Key('home-products-empty'),
                 icon: Icons.inventory_2_outlined,
                 title: 'Şu anda gösterilecek ürün bulunamadı',
@@ -80,6 +93,7 @@ class HomeProductsSection extends StatelessWidget {
                 destinationBuilder: destinationBuilder,
                 currentUserIdProvider: currentUserIdProvider,
                 shopProductsLoader: shopProductsLoader,
+                visualPrototype: visualPrototype,
               )
             else
               const SizedBox.shrink(),
@@ -95,12 +109,14 @@ class _HomeProductCards extends StatefulWidget {
   final HomeProductDestinationBuilder? destinationBuilder;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final HomeShopProductsLoader? shopProductsLoader;
+  final bool visualPrototype;
 
   const _HomeProductCards({
     required this.products,
     required this.destinationBuilder,
     required this.currentUserIdProvider,
     required this.shopProductsLoader,
+    required this.visualPrototype,
   });
 
   @override
@@ -139,28 +155,46 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
             ) ??
             const <String, double>{};
 
-        return SizedBox(
-          key: const Key('home-products-loaded'),
-          height: 190,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: widget.products.length,
-            separatorBuilder: (_, _) =>
-                const SizedBox(width: CustomerHomeV1Tokens.space8),
-            itemBuilder: (context, index) {
-              final product = widget.products[index];
-              return HomeProductCard(
-                product: product,
-                minimumShopPrice: minimumPrices[product.id],
-                isPriceLoading: isPriceLoading,
-                currentUserIdProvider: widget.currentUserIdProvider,
-                onTap: product.id.trim().isEmpty
-                    ? null
-                    : () => unawaited(_openProductDetails(context, product)),
-              );
-            },
-          ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final prototypeCardWidth = ((constraints.maxWidth - 22) / 2).clamp(
+              140.0,
+              190.0,
+            );
+            final usesScaledText =
+                MediaQuery.textScalerOf(context).scale(1) > 1.15;
+            return SizedBox(
+              key: const Key('home-products-loaded'),
+              height: widget.visualPrototype
+                  ? usesScaledText
+                        ? 254
+                        : 246
+                  : 234,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: widget.products.length,
+                separatorBuilder: (_, _) =>
+                    const SizedBox(width: CustomerHomeV1Tokens.space8),
+                itemBuilder: (context, index) {
+                  final product = widget.products[index];
+                  final card = HomeProductCard(
+                    product: product,
+                    minimumShopPrice: minimumPrices[product.id],
+                    isPriceLoading: isPriceLoading,
+                    currentUserIdProvider: widget.currentUserIdProvider,
+                    visualPrototype: widget.visualPrototype,
+                    onTap: product.id.trim().isEmpty
+                        ? null
+                        : () =>
+                              unawaited(_openProductDetails(context, product)),
+                  );
+                  if (!widget.visualPrototype) return card;
+                  return SizedBox(width: prototypeCardWidth, child: card);
+                },
+              ),
+            );
+          },
         );
       },
     );
@@ -232,6 +266,7 @@ class HomeProductCard extends StatelessWidget {
     this.minimumShopPrice,
     this.isPriceLoading = false,
     this.currentUserIdProvider,
+    this.visualPrototype = false,
   });
 
   final ProductEntity product;
@@ -239,20 +274,24 @@ class HomeProductCard extends StatelessWidget {
   final double? minimumShopPrice;
   final bool isPriceLoading;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     final secondaryText = _secondaryText;
+    if (visualPrototype) {
+      return _buildVisualPrototype(context, secondaryText);
+    }
     return Material(
       key: Key('home-product-${product.id}'),
-      color: Colors.white,
+      color: CustomerHomeV1Tokens.surface,
       borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       child: InkWell(
         key: Key('home-product-link-${product.id}'),
         onTap: onTap,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
         child: Container(
-          width: 116,
+          width: 158,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
@@ -263,7 +302,7 @@ class HomeProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 106,
+                height: 132,
                 width: double.infinity,
                 child: Stack(
                   fit: StackFit.expand,
@@ -276,10 +315,10 @@ class HomeProductCard extends StatelessWidget {
                         productId: product.id,
                         keyPrefix: 'home-product-favorite-${product.id}',
                         currentUserIdProvider: currentUserIdProvider,
-                        height: 28,
-                        width: 28,
-                        iconSize: 15,
-                        backgroundColor: Colors.white,
+                        height: EsnaftaVarTouchTargets.minimum,
+                        width: EsnaftaVarTouchTargets.minimum,
+                        iconSize: EsnaftaVarIconSizes.medium,
+                        backgroundColor: CustomerHomeV1Tokens.surface,
                       ),
                     ),
                   ],
@@ -287,18 +326,19 @@ class HomeProductCard extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 7, 7, 7),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         product.name,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: CustomerHomeV1Tokens.navy,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 12.5,
+                          height: 1.25,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (secondaryText != null) ...[
@@ -309,7 +349,7 @@ class HomeProductCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: CustomerHomeV1Tokens.muted,
-                            fontSize: 8,
+                            fontSize: 10.5,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -321,7 +361,106 @@ class HomeProductCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: CustomerHomeV1Tokens.navy,
-                          fontSize: 11,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualPrototype(BuildContext context, String? secondaryText) {
+    return SizedBox(
+      width: 152,
+      child: Material(
+        key: Key('home-product-${product.id}'),
+        color: Colors.transparent,
+        child: InkWell(
+          key: Key('home-product-link-${product.id}'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 150,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        CustomerHomeV1Tokens.radius20,
+                      ),
+                      child: _ProductImage(
+                        product: product,
+                        visualPrototype: true,
+                      ),
+                    ),
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: ProductFavoriteButton(
+                        productId: product.id,
+                        keyPrefix: 'home-product-favorite-${product.id}',
+                        currentUserIdProvider: currentUserIdProvider,
+                        height: EsnaftaVarTouchTargets.minimum,
+                        width: EsnaftaVarTouchTargets.minimum,
+                        iconSize: EsnaftaVarIconSizes.medium,
+                        backgroundColor: CustomerHomeV1Tokens.surface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space8),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: CustomerHomeV1Tokens.space8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.navy,
+                          fontSize: 13.5,
+                          height: 1.22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (secondaryText != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          secondaryText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: CustomerHomeV1Tokens.muted,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                      Text(
+                        _priceLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CustomerHomeV1Tokens.petrol,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -365,9 +504,10 @@ class HomeProductCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({required this.product});
+  const _ProductImage({required this.product, this.visualPrototype = false});
 
   final ProductEntity product;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -378,10 +518,18 @@ class _ProductImage extends StatelessWidget {
     final isNetwork =
         uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
     if (!isNetwork) {
-      return Image.asset(
+      final assetImage = Image.asset(
         imageUrl,
-        fit: BoxFit.cover,
+        fit: visualPrototype ? BoxFit.contain : BoxFit.cover,
         errorBuilder: (_, _, _) => const _ProductImageFallback(),
+      );
+      if (!visualPrototype) return assetImage;
+      return ColoredBox(
+        color: CustomerHomeV1Tokens.mint,
+        child: Padding(
+          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space8),
+          child: assetImage,
+        ),
       );
     }
 
@@ -420,52 +568,6 @@ class _ProductImageFallback extends StatelessWidget {
   }
 }
 
-class _ProductsHeader extends StatelessWidget {
-  const _ProductsHeader({required this.onViewAll});
-
-  final VoidCallback onViewAll;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(
-          child: Text(
-            'Size Özel Seçtiklerimiz',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: CustomerHomeV1Tokens.navy,
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.25,
-            ),
-          ),
-        ),
-        TextButton(
-          key: const Key('home-products-view-all'),
-          onPressed: onViewAll,
-          style: TextButton.styleFrom(
-            foregroundColor: CustomerHomeV1Tokens.petrol,
-            textStyle: const TextStyle(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Tümünü Gör'),
-              SizedBox(width: 2),
-              Icon(Icons.arrow_forward_rounded, size: 14),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _ProductsLoading extends StatelessWidget {
   const _ProductsLoading();
 
@@ -473,74 +575,19 @@ class _ProductsLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       key: const Key('home-products-loading'),
-      height: 190,
+      height: 234,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: 4,
         separatorBuilder: (_, _) =>
             const SizedBox(width: CustomerHomeV1Tokens.space8),
         itemBuilder: (_, _) => Container(
-          width: 116,
+          width: 158,
           decoration: BoxDecoration(
             color: CustomerHomeV1Tokens.mint,
             borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ProductsStatus extends StatelessWidget {
-  const _ProductsStatus({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.message,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final IconData icon;
-  final String title;
-  final String message;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 28),
-          const SizedBox(height: CustomerHomeV1Tokens.space8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: CustomerHomeV1Tokens.navy,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: CustomerHomeV1Tokens.space4),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: CustomerHomeV1Tokens.muted,
-              fontSize: 10,
-            ),
-          ),
-          if (actionLabel != null && onAction != null)
-            TextButton(onPressed: onAction, child: Text(actionLabel!)),
-        ],
       ),
     );
   }

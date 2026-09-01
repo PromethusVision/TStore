@@ -171,4 +171,31 @@ void main() {
     expect(find.byKey(const Key('shop-profile-destination')), findsNothing);
     expect(find.text('Nihat Manav'), findsOneWidget);
   });
+
+  testWidgets('uzun Türkçe mağaza adı mobil kartta iki satırda güvenli kalır', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    const longShopName =
+        'ÇĞİÖŞÜ Esenler Mahalle Dayanışma ve Yerel Ürünler Mağazası';
+    const state = NearbyShopsLoaded([
+      ShopEntity(
+        id: 'long-shop',
+        name: longShopName,
+        address: 'Esenler, İstanbul',
+        rating: 4.7,
+        ratingCount: 82,
+      ),
+    ]);
+
+    await tester.pumpWidget(buildSubject(state));
+
+    final shopLabel = tester.widget<Text>(find.text(longShopName));
+    expect(shopLabel.maxLines, 2);
+    expect(tester.takeException(), isNull);
+  });
 }

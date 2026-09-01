@@ -292,4 +292,31 @@ void main() {
     expect(find.text('Canonical root hedefi'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('48 karakterli Türkçe kategori adı anlamlı üç satır alanı alır', (
+    tester,
+  ) async {
+    const longCategoryName =
+        'Çocuk Giyim, Ayakkabı ve Günlük Kullanım Ürünleri';
+    const category = CategoryEntity(
+      id: 'long-category',
+      name: longCategoryName,
+    );
+
+    await pumpCategories(
+      tester,
+      state: const CategoriesLoaded([category]),
+      physicalSize: const Size(320, 400),
+    );
+
+    final label = tester.widget<Text>(find.text(longCategoryName));
+    expect(label.maxLines, 3);
+    expect(
+      tester
+          .getSize(find.byKey(const Key('home-category-long-category')))
+          .width,
+      greaterThanOrEqualTo(100),
+    );
+    expect(tester.takeException(), isNull);
+  });
 }

@@ -85,7 +85,9 @@ void main() {
     );
   }
 
-  testWidgets('onaylı wordmark ve sloganı gösterir', (tester) async {
+  testWidgets('wordmark ve gerçek kullanıcı karşılama bilgisini gösterir', (
+    tester,
+  ) async {
     const user = UserEntity(
       id: 'customer-1',
       email: 'ayse@example.com',
@@ -100,7 +102,7 @@ void main() {
     );
 
     expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
-    expect(find.text('Kargo Bekleme, Esnafta Var!'), findsOneWidget);
+    expect(find.text('Merhaba, Ayşe'), findsOneWidget);
     expect(find.text('Ayşe Yılmaz'), findsNothing);
     expect(find.text('Eski Oturum Adı'), findsNothing);
   });
@@ -115,7 +117,7 @@ void main() {
     );
 
     expect(find.bySemanticsLabel(RegExp('Mehmet Demir')), findsOneWidget);
-    expect(find.text('Mehmet Demir'), findsNothing);
+    expect(find.text('Merhaba, Mehmet'), findsOneWidget);
     semantics.dispose();
   });
 
@@ -132,6 +134,7 @@ void main() {
       find.bySemanticsLabel(RegExp(TTexts.homeAppbarSubTitle)),
       findsOneWidget,
     );
+    expect(find.text('Mahallendeki esnafı keşfet'), findsOneWidget);
     semantics.dispose();
   });
 
