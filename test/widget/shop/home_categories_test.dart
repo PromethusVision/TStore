@@ -77,7 +77,7 @@ void main() {
   }
 
   testWidgets(
-    'canlı İngilizce kategori adlarını Türkçe ve tutarlı simgelerle gösterir',
+    'canlı İngilizce kategori adlarını Türkçe ve semantik simgelerle gösterir',
     (tester) async {
       await pumpCategories(
         tester,
@@ -89,11 +89,11 @@ void main() {
         expect(find.text(category.name), findsNothing);
       }
 
-      expect(find.byIcon(Icons.shopping_basket_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.eco_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.bakery_dining_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.lunch_dining_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.spa_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.devices_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.checkroom_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.roller_skating_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.chair_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.business_center_rounded), findsOneWidget);
     },
   );
 
