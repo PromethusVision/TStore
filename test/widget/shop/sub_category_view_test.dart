@@ -74,13 +74,22 @@ void main() {
     CategoryProductDestinationBuilder? productDestinationBuilder,
     String? Function()? currentUserIdProvider,
     bool visualPrototype = false,
+    String? categoryPathLabel,
+    double textScale = 1,
   }) {
     return BlocProvider<WishlistCubit>.value(
       value: wishlistCubit,
       child: MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child!,
+        ),
         home: SubCategoryView(
           title: 'Market',
           categoryId: 'category-1',
+          categoryPathLabel: categoryPathLabel,
           currentUserIdProvider: currentUserIdProvider ?? () => null,
           shopProductsLoader: shopProductsLoader,
           visualPrototype: visualPrototype,
@@ -274,6 +283,14 @@ void main() {
         refresh: true,
       ),
     ).thenAnswer((_) async {});
+    when(
+      () => productsCubit.getProducts(
+        categoryId: 'category-1',
+        sortBy: 'created_at',
+        ascending: false,
+        refresh: true,
+      ),
+    ).thenAnswer((_) async {});
 
     await tester.pumpWidget(
       buildSubject(
@@ -296,6 +313,176 @@ void main() {
         refresh: true,
       ),
     ).called(1);
+    expect(find.text('Puan'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('category-sort-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('En yeniler'));
+    await tester.pumpAndSettle();
+    verify(
+      () => productsCubit.getProducts(
+        categoryId: 'category-1',
+        sortBy: 'created_at',
+        ascending: false,
+        refresh: true,
+      ),
+    ).called(1);
+    expect(find.text('En yeni'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('category-sort-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Varsayılan sıra'));
+    await tester.pumpAndSettle();
+    verify(
+      () => productsCubit.getProducts(categoryId: 'category-1', refresh: true),
+    ).called(2);
+    expect(find.text('Sırala'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('category-sort-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('Puana göre'), findsOneWidget);
+    await tester.tapAt(const Offset(8, 8));
+    await tester.pumpAndSettle();
+    expect(find.text('Puana göre'), findsNothing);
+  });
+
+  testWidgets(
+    'visual prototype derin yolu kontrollü kısaltır ve tam anlamı korur',
+    (tester) async {
+      const fullPath =
+          'Elektronik › Telefon & Aksesuarları › Cep Telefonları › Akıllı Telefonlar';
+      tester.view.physicalSize = const Size(320, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      stubProductsState(
+        const ProductsLoaded(
+          products: [product],
+          hasReachedMax: true,
+          currentPage: 1,
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          visualPrototype: true,
+          textScale: 1.3,
+          categoryPathLabel: fullPath,
+          shopProductsLoader: (_) async => const Right([]),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Elektronik › … › Akıllı Telefonlar'), findsOneWidget);
+      expect(find.bySemanticsLabel('Kategori yolu: $fullPath'), findsOneWidget);
+      final tooltip = tester.widget<Tooltip>(
+        find.byWidgetPredicate(
+          (widget) => widget is Tooltip && widget.message == fullPath,
+        ),
+      );
+      expect(tooltip.message, fullPath);
+    },
+  );
+
+  testWidgets('visual prototype 320 390 430 ve yüzde 130 ölçekte güvenlidir', (
+    tester,
+  ) async {
+    final products = createProducts(8);
+    products[0] = products[0].copyWith(
+      name: 'Çok Uzun Türkçe Ürün Adı Ç Ğ İ Ö Ş Ü 256 GB Çift SIM',
+      brandName: 'Çok Uzun Marka Adı',
+    );
+    stubProductsState(
+      ProductsLoaded(products: products, hasReachedMax: true, currentPage: 1),
+    );
+
+    for (final configuration in const [
+      (width: 320.0, textScale: 1.0),
+      (width: 390.0, textScale: 1.0),
+      (width: 430.0, textScale: 1.0),
+      (width: 390.0, textScale: 1.3),
+    ]) {
+      tester.view.physicalSize = Size(configuration.width, 844);
+      tester.view.devicePixelRatio = 1;
+      await tester.pumpWidget(
+        buildSubject(
+          visualPrototype: true,
+          textScale: configuration.textScale,
+          categoryPathLabel:
+              'Elektronik › Telefon & Aksesuarları › Cep Telefonları › Akıllı Telefonlar',
+          shopProductsLoader: (_) async => const Right([]),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final firstCard = find.byKey(const Key('category-product-product-0'));
+      final secondCard = find.byKey(const Key('category-product-product-1'));
+      expect(firstCard, findsOneWidget);
+      expect(
+        tester.getSize(firstCard).height,
+        tester.getSize(secondCard).height,
+      );
+      expect(
+        tester.getSize(find.byKey(const Key('category-sort-button'))).height,
+        greaterThanOrEqualTo(44),
+      );
+      expect(
+        tester.getSize(find.byKey(const Key('category-back-button'))).height,
+        greaterThanOrEqualTo(44),
+      );
+      expect(
+        tester
+            .getSize(
+              find.byKey(
+                const Key('category-product-favorite-product-0-action'),
+              ),
+            )
+            .height,
+        greaterThanOrEqualTo(44),
+      );
+    }
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+  });
+
+  testWidgets('visual prototype tek satıcıyı mağaza olarak açıkça etiketler', (
+    tester,
+  ) async {
+    stubProductsState(
+      const ProductsLoaded(
+        products: [product],
+        hasReachedMax: true,
+        currentPage: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(
+        visualPrototype: true,
+        shopProductsLoader: (_) async => const Right([
+          ShopProductEntity(
+            id: 'single-listing',
+            shopId: 'single-shop',
+            productId: 'product-0',
+            price: 98765.43,
+            shop: ShopEntity(
+              id: 'single-shop',
+              name: 'Yıldız Mahallesi Teknoloji ve İletişim',
+            ),
+          ),
+        ]),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Mağaza: Yıldız Mahallesi Teknoloji ve İletişim'),
+      findsOneWidget,
+    );
+    expect(find.text('98.765,43 TL’den'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('visual prototype favori aksiyonu kart navigasyonundan ayrıdır', (
@@ -466,7 +653,10 @@ void main() {
     stubProductsState(ProductsLoading());
 
     await tester.pumpWidget(
-      buildSubject(shopProductsLoader: (_) async => const Right([])),
+      buildSubject(
+        visualPrototype: true,
+        shopProductsLoader: (_) async => const Right([]),
+      ),
     );
     await tester.pump();
 
@@ -480,7 +670,10 @@ void main() {
     );
 
     await tester.pumpWidget(
-      buildSubject(shopProductsLoader: (_) async => const Right([])),
+      buildSubject(
+        visualPrototype: true,
+        shopProductsLoader: (_) async => const Right([]),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -492,7 +685,10 @@ void main() {
     stubProductsState(const ProductsError('Bağlantı hatası'));
 
     await tester.pumpWidget(
-      buildSubject(shopProductsLoader: (_) async => const Right([])),
+      buildSubject(
+        visualPrototype: true,
+        shopProductsLoader: (_) async => const Right([]),
+      ),
     );
     await tester.pumpAndSettle();
 

@@ -107,7 +107,7 @@ void main() {
                 categoryId: _leafCategoryId,
                 taxonomyQueryScope: _leafScope,
                 categoryPathLabel:
-                    'Elektronik › Telefon & Aksesuarları › Cep Telefonları',
+                    'Elektronik › Telefon & Aksesuarları › Cep Telefonları › Akıllı Telefonlar',
                 currentUserIdProvider: () => null,
                 shopProductsLoader: (_) async => const Right(_shopProducts),
                 visualPrototype: evidence.visualPrototype,
@@ -116,6 +116,18 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
+
+      final imageContext = tester.element(
+        find.byKey(const Key('w41a-product-listing-visual-evidence')),
+      );
+      await tester.runAsync(() async {
+        for (final product in _products) {
+          for (final imagePath in product.images) {
+            await precacheImage(AssetImage(imagePath), imageContext);
+          }
+        }
+      });
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
@@ -131,13 +143,15 @@ void main() {
         expect(find.byKey(const Key('category-sort-button')), findsOneWidget);
         expect(find.text('3 esnafta var'), findsOneWidget);
         expect(
-          find.text('Yıldız Mahallesi Teknoloji ve İletişim'),
+          find.textContaining('Mağaza: Yıldız Mahallesi Teknoloji'),
           findsOneWidget,
         );
       }
       await expectLater(
         find.byKey(const Key('w41a-product-listing-visual-evidence')),
-        matchesGoldenFile('goldens/${evidence.name}.png'),
+        matchesGoldenFile(
+          'goldens/${evidence.visualPrototype ? 'w41a_r2_loaded_390' : evidence.name}.png',
+        ),
       );
     });
   }
@@ -170,7 +184,7 @@ const _products = <ProductEntity>[
   ),
   ProductEntity(
     id: 'phone-3',
-    name: 'Samsung Galaxy S9 256 GB Çift SIM Çok Uzun Ürün Adı',
+    name: 'Samsung Galaxy S9 256 GB Çift SIM Türkiye Garantili Gece Siyahı',
     price: 123456.78,
     categoryId: _leafCategoryId,
     stock: 2,
@@ -233,10 +247,7 @@ const _shopProducts = <ShopProductEntity>[
     shopId: 'shop-4',
     productId: 'phone-2',
     price: 32499.90,
-    shop: ShopEntity(
-      id: 'shop-4',
-      name: 'Yıldız Mahallesi Teknoloji ve İletişim',
-    ),
+    shop: ShopEntity(id: 'shop-4', name: 'Yıldız Mahallesi Teknoloji'),
   ),
   ShopProductEntity(
     id: 'listing-3-a',
