@@ -56,8 +56,15 @@ remain unchanged.
 Wave 40B closes the second rollout surface. The Product Owner-approved Category /
 Recursive Browse V1 is integrated with compact header/breadcrumb, `Alt kategoriler`,
 two-column cards, variable-depth L2/L3/L4 navigation, unavailable fail-safe and the
-existing leaf-to-Product-Listing taxonomy-scope handoff. Product Listing itself was
-not redesigned. The next visual gate is Product Listing Final UI at `390 px`.
+existing leaf-to-Product-Listing taxonomy-scope handoff.
+
+Wave 41B closes the third rollout surface. The Product Owner-approved Product
+Listing V1 preserves compact path/summary/sort, balanced two-column cards,
+normalized images, product/brand/local-merchant/price hierarchy, seller-count or
+single-store context, wishlist independence and existing Product Details handoff.
+Only default/newest/rating sorting is exposed; no new filters, pagination or
+shipping/payment/checkout semantics exist. The next visual gate is Product Details
+Final UI at `390 px`.
 
 | Order | Surface | Required foundation reuse | Primary acceptance focus |
 | --- | --- | --- | --- |
@@ -96,7 +103,9 @@ For every rollout wave:
 
 `CATEGORY_RECURSIVE_BROWSE_V1_MAIN: YES`
 
-`NEXT_ROLLOUT_SURFACE: PRODUCT_LISTING_FINAL_UI`
+`PRODUCT_LISTING_V1_MAIN: YES`
+
+`NEXT_ROLLOUT_SURFACE: PRODUCT_DETAILS_FINAL_UI`
 
 `NEXT_REQUIRED_VISUAL_GATE: ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
 

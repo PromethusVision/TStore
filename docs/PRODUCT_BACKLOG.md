@@ -15,6 +15,27 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 41B Product Listing Final UI State
+
+- **COMPLETED — Product Owner-approved composition:** Compact `YEREL ÜRÜNLER`
+  header, first/ellipsis/active path, local-comparison summary, supported sort ve
+  balanced two-column grid main'e entegre edildi; structural redesign yapılmadı.
+- **COMPLETED — local product-card contract:** Normalized `contain` image area,
+  product → brand → merchant/listing → price hierarchy, multi-seller count +
+  `TL'den`, single-store `Mağaza:` context'i, long content ve stable card davranışı
+  PASS. Product-wide fiyat veya new seller/ownership rule uydurulmadı.
+- **COMPLETED — function/state/accessibility:** Default/newest/rating sort,
+  independent wishlist action, existing Product Details handoff, scroll, loaded/
+  loading/empty/error; `320/390/430 px`, `%130` ve `44 px` touch baseline PASS.
+- **COMPLETED — regression:** Product Listing `27/27`, geniş adjacent `875/875`,
+  full Flutter `1362 PASS / 0 FAIL / 6` existing conditional/live skip; analyzer
+  `0 issues`.
+- **UNCHANGED:** Home, Reward, Category, Product Details visual design, Seller
+  Comparison, backend, taxonomy, canonical runtime, Production config ve Figma.
+  Shipping/delivery/payment/checkout/buy-now/order veya pagination UI eklenmedi.
+- **NEXT:** Product Details Final UI için tek `390 px` Product Owner visual
+  prototype; responsive/state implementation yalnız approval sonrasıdır.
+
 ## Wave 40B Category / Recursive Browse Final UI State
 
 - **COMPLETED — Product Owner-approved composition:** Compact header/back,
@@ -29,11 +50,11 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **COMPLETED — regression:** Category `13/13`, geniş adjacent `508/508`, full
   Flutter `1344 PASS / 0 FAIL / 6` existing conditional/live skip; analyzer
   `0 issues`.
-- **UNCHANGED:** Home, Reward, Product Listing visual design, backend, taxonomy,
+- **UNCHANGED AT W40B:** Home, Reward, Product Listing visual design, backend, taxonomy,
   canonical runtime, Production config ve Figma. Existing V1 category artwork
   accepted; professional visual pack deferred polish kalır.
-- **NEXT:** Product Listing Final UI için tek `390 px` Product Owner visual
-  prototype; responsive/state implementation approval sonrasıdır.
+- **CLOSED BY W41B:** Product Listing Product Owner-approved prototype, closeout ve
+  main integration tamamlandı; Product Details görseli değiştirilmedi.
 
 ## Wave 39B-R Canonical Category Visual Mapping Delta
 

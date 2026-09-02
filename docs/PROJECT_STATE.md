@@ -3,7 +3,34 @@
 ## Snapshot Bilgisi
 
 - Son güncelleme: 2026-09-02
-- Son doğrulanan teslim: **WAVE 40B CATEGORY / RECURSIVE BROWSE FINAL UI
+- Son doğrulanan teslim: **WAVE 41B PRODUCT LISTING FINAL UI INTEGRATION PASS —
+  PRODUCT OWNER APPROVED V1 / LOCAL COMMERCE IDENTITY PRESERVED**.
+- Integration branch/base/source/merge:
+  `integration/wave-41b-product-listing-final-ui` /
+  `origin/main@7ae07e5ef25bf9558556705243b3da5c5845daa2` /
+  `0f9e8c0711deb3551f1ef25b107286ce9ad04811` / `d87dd8d`.
+- Product Owner-approved `YEREL ÜRÜNLER` header, compact first/ellipsis/active path,
+  local-comparison summary, supported sort affordance ve balanced two-column grid
+  redesign yapılmadan entegre edildi. W39/W40 Poppins, `#146C6E`, `#B54732`, token,
+  shared scaffold/state surface ve icon/button foundation'ı korunur; competing UI
+  sistemi yoktur.
+- Product card sözleşmesi image → product → brand → local merchant/listing → price
+  hiyerarşisini korur. Görseller `contain` ile normalize, çoklu satıcıda seller
+  count + `TL'den`, tek satıcıda `Mağaza:` context'i ve bağımsız `44 px` wishlist
+  hedefi korunur. Canonical/product-wide fiyat, seller rule veya ownership semantiği
+  uydurulmadı.
+- Default/newest/rating sort, wishlist/card-tap ayrımı, existing Product Details
+  route handoff'u, scroll ve loaded/loading/empty/error durumları PASS.
+  `320/390/430 px`, `%130` text scale, long product/merchant ve image stress R2
+  evidence'ı PASS; pagination UI eklenmedi.
+- Product Listing targeted `27/27`, geniş adjacent regression `875/875`, full
+  Flutter `1362 PASS / 0 FAIL / 6` existing conditional/live skip ve analyzer
+  `0 issues` PASS'tir. Product Listing Final UI V1 authoritative main baseline'dır;
+  Production release veya canonical runtime activation değildir.
+- Home, Reward, Category, Product Details, Seller Comparison, backend, taxonomy,
+  Production ve Figma değiştirilmedi/erişilmedi. Next UI stream `Product Details
+  Final UI` için tek `390 px` Product Owner visual prototype'tır.
+- Bir önceki doğrulanan teslim: **WAVE 40B CATEGORY / RECURSIVE BROWSE FINAL UI
   INTEGRATION PASS — PRODUCT OWNER APPROVED V1 / VARIABLE-DEPTH NAVIGATION**.
 - Integration branch/base/source/merge:
   `integration/wave-40b-category-recursive-final-ui` /
@@ -12,22 +39,13 @@
 - Product Owner-approved compact back/header, current category title, compact
   breadcrumb, `Alt kategoriler`, two-column pastel semantic card grid, balanced
   density ve normal-width odd-child davranışı redesign yapılmadan entegre edildi.
-  W39 Poppins, `#146C6E`, `#B54732`, token, Scaffold, SectionHeader, StateCard ve
-  SurfaceIconButton foundation'ı korunur; competing UI sistemi yoktur.
-- Recursive UI canonical variable-depth sözleşmeyi korur: L2/L3/L4 container
-  drill-down, derin breadcrumb/back-stack, variable-depth leaf → mevcut Product
-  Listing exact taxonomy scope handoff'u ve unavailable fail-safe PASS. Taxonomy
-  content/runtime veya Product Listing görseli değiştirilmedi.
-- Loaded/loading/empty/error/unavailable, `320/390/430 px`, `%130` text scale,
-  122 karakter path, 48 karakter Türkçe ad, anlamlı semantics ve tam kart dokunma
-  hedefleri PASS. Category targeted `13/13`, geniş adjacent regression `508/508`,
-  full Flutter `1344 PASS / 0 FAIL / 6` existing conditional/live skip ve analyzer
-  `0 issues` PASS'tir.
-- Category / Recursive Browse Final UI V1 artık authoritative main baseline'dır;
-  Production release approval değildir. Next UI stream `Product Listing Final UI`
-  için tek `390 px` Product Owner visual prototype'tır. Home/Reward/backend/taxonomy/
-  canonical runtime/Production/Figma değişikliği veya erişimi yapılmadı.
-- Bir önceki doğrulanan teslim: **WAVE 39B-R 24 CATEGORY VISUAL MAPPING FINAL DELTA
+  Recursive L2/L3/L4 navigation, breadcrumb/back-stack, variable-depth leaf →
+  Product Listing exact taxonomy scope handoff'u ve unavailable fail-safe PASS.
+- Loaded/loading/empty/error/unavailable, `320/390/430 px`, `%130` text scale ve
+  accessibility PASS. Category targeted `13/13`, adjacent `508/508`, full Flutter
+  `1344 PASS / 0 FAIL / 6` skip ve analyzer `0 issues` PASS'tir. W40B anındaki next
+  Product Listing stream'i W41B ile tamamlandı.
+- İki önceki doğrulanan teslim: **WAVE 39B-R 24 CATEGORY VISUAL MAPPING FINAL DELTA
   INTEGRATION PASS — 24/24 SEMANTIC MAPPING / HOME COMPOSITION PRESERVED**.
 - Integration branch/base/previous source/latest source/merge:
   `integration/wave-39b-category-visual-mapping-delta` /
