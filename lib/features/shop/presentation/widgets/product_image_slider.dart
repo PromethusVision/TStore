@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -11,14 +12,19 @@ class ProductImageSlider extends StatelessWidget {
     super.key,
     required this.product,
     this.currentUserIdProvider,
+    this.visualPrototype = false,
   });
 
   final ProductEntity product;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     final productImages = _productImages;
+    if (visualPrototype) {
+      return _buildVisualPrototype(productImages);
+    }
 
     return Container(
       key: const Key('product-details-media'),
@@ -73,6 +79,57 @@ class ProductImageSlider extends StatelessWidget {
               backgroundColor: CustomerHomeV1Tokens.surface,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVisualPrototype(List<String> productImages) {
+    return Container(
+      key: const Key('product-details-media'),
+      height: 224,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xxLarge),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: EsnaftaVarElevation.xs,
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: SelectedProductImage(
+              image: productImages.first,
+              height: 224,
+              imageExtent: 184,
+              padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+            ),
+          ),
+          if (productImages.length > 1)
+            Positioned(
+              right: EsnaftaVarSpacing.sm,
+              bottom: EsnaftaVarSpacing.sm,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EsnaftaVarSpacing.sm,
+                  vertical: EsnaftaVarSpacing.xxs,
+                ),
+                decoration: BoxDecoration(
+                  color: EsnaftaVarColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
+                  border: Border.all(color: EsnaftaVarColors.borderDefault),
+                ),
+                child: Text(
+                  '${productImages.length} görsel',
+                  style: const TextStyle(
+                    color: EsnaftaVarColors.textSecondary,
+                    fontFamily: 'Poppins',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

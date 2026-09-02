@@ -511,6 +511,7 @@ void main() {
         const ProductSellerPriceSummary.available(
           minimumPrice: 1299.99,
           maximumPrice: 1399.99,
+          sellerCount: 2,
         ),
       );
     },
