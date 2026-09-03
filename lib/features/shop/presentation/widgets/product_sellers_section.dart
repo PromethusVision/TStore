@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
@@ -19,6 +20,7 @@ import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_produ
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
+import 'package:t_store/features/shop/presentation/widgets/seller_comparison_offer_card.dart';
 
 typedef ProductSellerCurrentUserIdProvider = String? Function();
 typedef ProductSellerPriceSummaryChanged =
@@ -41,6 +43,7 @@ class ProductSellersSection extends StatefulWidget {
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
   final ProductSellerShopDestinationBuilder? shopDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
+  final bool visualPrototype;
 
   const ProductSellersSection({
     super.key,
@@ -53,6 +56,7 @@ class ProductSellersSection extends StatefulWidget {
     this.chatDestinationBuilder,
     this.shopDestinationBuilder,
     this.pendingProductChatStorage,
+    this.visualPrototype = false,
   });
 
   @override
@@ -151,6 +155,14 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                 coordinates,
                 effectiveSort,
               );
+              final lowestPrice = customerVisibleShopProducts
+                  .map((seller) => seller.price)
+                  .where((price) => price.isFinite && price >= 0)
+                  .fold<double?>(
+                    null,
+                    (lowest, price) =>
+                        lowest == null || price < lowest ? price : lowest,
+                  );
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,8 +174,18 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                     runSpacing: TSizes.sm,
                     children: [
                       Text(
-                        'Bu ürünü satan esnaflar',
-                        style: Theme.of(context).textTheme.titleMedium,
+                        widget.visualPrototype
+                            ? 'Esnaf teklifleri'
+                            : 'Bu ürünü satan esnaflar',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: widget.visualPrototype
+                                  ? EsnaftaVarColors.textPrimary
+                                  : null,
+                              fontWeight: widget.visualPrototype
+                                  ? FontWeight.w700
+                                  : null,
+                            ),
                       ),
                       _SellerSortMenu(
                         selectedOption: effectiveSort,
@@ -176,9 +198,13 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                   ),
                   const SizedBox(height: TSizes.xs),
                   Text(
-                    'Mağazaları karşılaştırıp sepetine eklemek istediğin satıcıyı seçebilirsin.',
+                    widget.visualPrototype
+                        ? 'Fiyatı, puanı ve sana olan uzaklığı karşılaştır.'
+                        : 'Mağazaları karşılaştırıp sepetine eklemek istediğin satıcıyı seçebilirsin.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: widget.visualPrototype
+                          ? EsnaftaVarColors.textSecondary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   if (preferredLocation != null) ...[
@@ -188,13 +214,20 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                       onChangeLocation: _openSavedLocations,
                     ),
                   ],
-                  const SizedBox(height: TSizes.spaceBtwItems),
+                  SizedBox(
+                    height: widget.visualPrototype
+                        ? EsnaftaVarSpacing.sm
+                        : TSizes.spaceBtwItems,
+                  ),
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: rankedSellers.length,
-                    separatorBuilder: (_, _) =>
-                        const SizedBox(height: TSizes.spaceBtwItems),
+                    separatorBuilder: (_, _) => SizedBox(
+                      height: widget.visualPrototype
+                          ? EsnaftaVarSpacing.sm
+                          : TSizes.spaceBtwItems,
+                    ),
                     itemBuilder: (context, index) {
                       final rankedSeller = rankedSellers[index];
                       final shop = rankedSeller.shopProduct.shop;
@@ -207,6 +240,12 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                         chatDestinationBuilder: widget.chatDestinationBuilder,
                         pendingProductChatStorage:
                             widget.pendingProductChatStorage,
+                        visualPrototype: widget.visualPrototype,
+                        isLowestPrice:
+                            lowestPrice != null &&
+                            (rankedSeller.shopProduct.price - lowestPrice)
+                                    .abs() <
+                                0.005,
                         onShopProfileTap: shop?.isActive == true
                             ? () => unawaited(_openShopProfile(context, shop!))
                             : null,
@@ -580,6 +619,8 @@ class _SellerTile extends StatelessWidget {
   final ProductSellerChatDestinationBuilder? chatDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
   final VoidCallback? onShopProfileTap;
+  final bool visualPrototype;
+  final bool isLowestPrice;
 
   const _SellerTile({
     required this.shopProduct,
@@ -590,6 +631,8 @@ class _SellerTile extends StatelessWidget {
     required this.chatDestinationBuilder,
     required this.pendingProductChatStorage,
     required this.onShopProfileTap,
+    required this.visualPrototype,
+    required this.isLowestPrice,
   });
 
   @override
@@ -610,6 +653,28 @@ class _SellerTile extends StatelessWidget {
         ownerUserId.isNotEmpty &&
         currentUserId != ownerUserId;
     final colorScheme = Theme.of(context).colorScheme;
+
+    if (visualPrototype) {
+      final locationText = _locationText(
+        hasCoordinates: hasCoordinates,
+        hasAddress: hasAddress,
+      );
+      return SellerComparisonOfferCard(
+        key: ValueKey('product-seller-${shopProduct.id}'),
+        listingId: shopProduct.id,
+        shopName: shop?.name ?? 'Bilinmeyen esnaf',
+        address: hasAddress ? shop.address!.trim() : null,
+        price: shopProduct.price,
+        rating: rating,
+        locationText: locationText.isEmpty ? null : locationText,
+        isAvailable: shopProduct.isAvailable,
+        isLowestPrice: isLowestPrice,
+        canAddToCart: canAddToCart,
+        onViewShop: onShopProfileTap,
+        onMessage: canMessage ? () => _openChat(context, ownerUserId) : null,
+        onAddToCart: () => _startAddToCart(context),
+      );
+    }
 
     return Card(
       key: ValueKey('product-seller-${shopProduct.id}'),
@@ -720,6 +785,20 @@ class _SellerTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _locationText({
+    required bool hasCoordinates,
+    required bool hasAddress,
+  }) {
+    final distance = distanceMeters;
+    if (distance != null) {
+      return CustomerProximityHelper.formatDistance(distance);
+    }
+    if (locationReady) return 'Mesafe bilgisi yok';
+    if (hasCoordinates) return 'Konum bilgisi mevcut';
+    if (hasAddress) return 'Adres bilgisi mevcut';
+    return '';
   }
 
   String? get _currentUserId {
