@@ -281,6 +281,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     return ProductSellerPriceSummary.available(
       minimumPrice: prices.first,
       maximumPrice: prices.last,
+      sellerCount: prices.length,
     );
   }
 

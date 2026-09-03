@@ -9,28 +9,34 @@ class ProductSellerPriceSummary {
   final ProductSellerPriceSummaryStatus status;
   final double? minimumPrice;
   final double? maximumPrice;
+  final int? sellerCount;
 
   const ProductSellerPriceSummary.loading()
     : status = ProductSellerPriceSummaryStatus.loading,
       minimumPrice = null,
-      maximumPrice = null;
+      maximumPrice = null,
+      sellerCount = null;
 
   const ProductSellerPriceSummary.available({
     required this.minimumPrice,
     required this.maximumPrice,
+    this.sellerCount,
   }) : status = ProductSellerPriceSummaryStatus.available,
        assert(minimumPrice != null),
-       assert(maximumPrice != null);
+       assert(maximumPrice != null),
+       assert(sellerCount == null || sellerCount > 0);
 
   const ProductSellerPriceSummary.empty()
     : status = ProductSellerPriceSummaryStatus.empty,
       minimumPrice = null,
-      maximumPrice = null;
+      maximumPrice = null,
+      sellerCount = 0;
 
   const ProductSellerPriceSummary.error()
     : status = ProductSellerPriceSummaryStatus.error,
       minimumPrice = null,
-      maximumPrice = null;
+      maximumPrice = null,
+      sellerCount = null;
 
   bool get hasPriceRange {
     final minimum = minimumPrice;
@@ -44,11 +50,13 @@ class ProductSellerPriceSummary {
     return other is ProductSellerPriceSummary &&
         other.status == status &&
         other.minimumPrice == minimumPrice &&
-        other.maximumPrice == maximumPrice;
+        other.maximumPrice == maximumPrice &&
+        other.sellerCount == sellerCount;
   }
 
   @override
-  int get hashCode => Object.hash(status, minimumPrice, maximumPrice);
+  int get hashCode =>
+      Object.hash(status, minimumPrice, maximumPrice, sellerCount);
 }
 
 class ProductSellerPriceSummaryView extends StatelessWidget {
