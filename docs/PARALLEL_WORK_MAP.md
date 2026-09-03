@@ -17,7 +17,42 @@
 
 Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna aittir. Chat, müşteri hesabı ve seçilmiş bir discovery veya cart işi izole edilebilir. Dördüncü ve beşinci production agent merkezi DI/navigation, `settings_view`, ortak Shop modelleri veya migration zincirine çarpma riskini belirgin biçimde artırır. Seçilen işler ortak dosyalara dokunuyorsa güvenli sayı 2'ye veya 1'e düşürülür.
 
-## Wave 42B Product Details Final UI Gözlemi
+## Wave 43B Seller Comparison Final UI Gözlemi
+
+`HOME_FINAL_UI_V1_MAIN: PASS`
+
+`CATEGORY_RECURSIVE_BROWSE_FINAL_UI_V1_MAIN: PASS`
+
+`PRODUCT_LISTING_FINAL_UI_V1_MAIN: PASS`
+
+`PRODUCT_DETAILS_FINAL_UI_V1_MAIN: PASS`
+
+`SELLER_COMPARISON_FINAL_UI_V1_MAIN: PASS`
+
+`PRODUCT_SELLERS_SHARED_CHANGE_SAFE: PASS`
+
+`UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
+
+`NEXT_UI_STREAM: UI_INVENTORY_ACCELERATION_PLAN`
+
+- Seller Comparison lane'i Product Owner-approved composition, final CTA copy,
+  bounded C1/responsive/state/accessibility closeout, committed visual evidence ve
+  full regression sonrasında main'e entegre edildi. Competing token/theme/component
+  sistemi kurulmadı.
+- `ProductSellersSection` bu lane'in shared hotspot'udur. Final görünüm explicit
+  opt-in/default `false`; mevcut Product Details caller'ları ve legacy sunum
+  değişmez. Bu shared alana eşzamanlı ikinci UI agentı dokunmaz.
+- 0/1/many, deterministic single lowest-price badge, fail-closed unknown/
+  unavailable, real price/rating/distance/availability, Shop Details handoff ve
+  Cart V2 listing identity/single-shop fiziksel hazırlık davranışı PASS.
+- Sıradaki çalışma doğrudan yeni ekran kodlaması değil, UI inventory/acceleration
+  planıdır. Plan sonrası Shop Details veya Product Owner'ın yeniden önceliklendirdiği
+  yüzey aynı `ONE UI AGENT + INTEGRATION AGENT` modeliyle seçilir.
+- Backend, taxonomy, canonical runtime, Production, Development ve Figma ayrı
+  authority sınırlarındadır; sponsored/paid-ranking veya online-commerce mantığı
+  eklenmemiştir.
+
+## Wave 42B Product Details Final UI Gözlemi (historical)
 
 `HOME_FINAL_UI_V1_MAIN: PASS`
 
@@ -33,7 +68,7 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
 
 `UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
 
-`NEXT_UI_STREAM: SELLER_COMPARISON_FINAL_UI`
+`NEXT_UI_STREAM_AT_W42B: SELLER_COMPARISON_FINAL_UI`
 
 - Product Details lane'i Product Owner-approved composition, bounded C1 polish,
   seller/state/responsive/accessibility closeout ve full regression sonrasında
@@ -44,10 +79,9 @@ Bu tahmin `ddbabc0fcd3d8f9ffd5406611e12a85cca297d57` commit'indeki repo durumuna
   Details explicit 224 px contain-fit branch kullanır. Başka caller etkilenmedi.
 - Seller 0/1/many, listing-owned price, existing seller-section handoff, Cart V2,
   Reviews ve wishlist sınırları PASS. Seller Comparison ekranı redesign edilmedi.
-- Sıradaki tek UI lane'i Seller Comparison Final UI'dır: bir `390 px` prototype,
-  Product Owner visual approval, aynı agentla responsive/state/full regression ve
-  Integration. Product Details/seller route-context veya shared Final UI alanlarına
-  eşzamanlı ikinci UI agentı dokunmaz.
+- W42B anındaki sıradaki Seller Comparison lane'i W43B ile tamamlandı. Product
+  Details/seller route-context veya shared Final UI alanlarına eşzamanlı ikinci UI
+  agentı dokunmadı.
 - Home, Reward, Category, Product Listing, Cart V2, Reviews screen, backend,
   taxonomy, canonical runtime, Production ve Figma ayrı authority sınırlarındadır.
 

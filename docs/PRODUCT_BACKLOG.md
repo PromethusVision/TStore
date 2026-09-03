@@ -15,6 +15,30 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 43B Seller Comparison Final UI State
+
+- **COMPLETED — Product Owner-approved composition:** Local product context,
+  seller offers, truthful price/rating/distance/availability facts and approved
+  hierarchy main'e entegre edildi; structural redesign yok.
+- **COMPLETED — final CTA contract:** Primary `Mağazayı gör`, secondary
+  `Sepete ekle`; relevant Final UI yolunda eski `Listeye ekle = 0`, Unicode
+  lookalike `0`. Shop Details handoff ve exact listing identity korunur.
+- **COMPLETED — seller/price integrity:** 0/1/many, deterministic ordering,
+  equal-lowest durumda tek badge ve unknown/unavailable fail-closed PASS. Fake
+  distance/rating/availability ya da sponsored/paid-ranking mantığı yok.
+- **COMPLETED — shared/cross-feature safety:** `ProductSellersSection` Final UI
+  explicit opt-in/default `false`; Product Details caller'ları unchanged. Cart V2
+  single-shop physical preparation korunur; checkout/payment/order/shipping yok.
+- **COMPLETED — visual/regression:** 12 R2 golden `320/390/430 px`, `%130`, long
+  content ve state sınırlarında incelendi. Targeted `57/57`, adjacent `798/798`,
+  full Flutter `1430 PASS / 0 FAIL / 6` existing conditional/live skip; analyzer
+  `0 issues`.
+- **UNCHANGED:** Backend, taxonomy, canonical runtime, Production, Development ve
+  Figma. Seller Comparison V1 main baseline olması Production release/activation
+  anlamına gelmez.
+- **NEXT:** Önce UI inventory/acceleration planı; ardından Shop Details veya
+  Product Owner'ın yeniden önceliklendirdiği yüzey için single-agent visual gate.
+
 ## Wave 42B Product Details Final UI State
 
 - **COMPLETED — Product Owner-approved composition:** Compact header/back/wishlist,
@@ -37,8 +61,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **UNCHANGED:** Home, Reward, Category, Product Listing, Seller Comparison visual
   design, Cart V2 UI/rules, full Reviews screen/rules, backend, taxonomy, canonical
   runtime, Production ve Figma. Shipping/payment/checkout/order semantiği yok.
-- **NEXT:** Seller Comparison Final UI için tek `390 px` Product Owner visual
-  prototype; responsive/state implementation yalnız approval sonrasıdır.
+- **CLOSED BY W43B:** Seller Comparison Product Owner-approved prototype,
+  responsive/state closeout ve main integration tamamlandı.
 
 ## Wave 41B Product Listing Final UI State
 

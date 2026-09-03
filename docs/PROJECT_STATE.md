@@ -2,8 +2,35 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-09-03
-- Son doğrulanan teslim: **WAVE 42B PRODUCT DETAILS FINAL UI INTEGRATION PASS —
+- Son güncelleme: 2026-09-04
+- Son doğrulanan teslim: **WAVE 43B SELLER COMPARISON FINAL UI INTEGRATION PASS —
+  PRODUCT OWNER APPROVED V1 / LOCAL PRICE COMPARISON INTEGRITY PRESERVED**.
+- Integration branch/base/source/merge:
+  `integration/wave-43b-seller-comparison-final-ui` /
+  `origin/main@b8953b40d78babd0ec3bfbca9d5c2e527cfb4a5f` /
+  `cd2caeaa66b8746adb333746a2338478465cb88c` / `abae159`.
+- Approved composition redesign yapılmadan main'e entegre edildi. Primary CTA
+  `Mağazayı gör`, secondary CTA `Sepete ekle`dir; Final UI yolunda eski
+  `Listeye ekle` veya Unicode lookalike kalmadı. Shop Details hedefi ve Cart V2
+  single-shop fiziksel hazırlık davranışı korunur.
+- Seller `0/1/many`, loading/empty/error/unavailable, gerçek listing fiyatı,
+  rating/distance/availability ve deterministic lowest-price sözleşmeleri PASS.
+  Eşit en düşük fiyatta yalnız ilk deterministic satıcı rozet alır; bilinmeyen veya
+  kullanılamayan kayıtlar fail-closed davranır. Sponsored/paid-ranking mantığı,
+  checkout/payment/order/shipping/delivery semantiği eklenmedi.
+- Shared `ProductSellersSection.visualPrototype` explicit opt-in ve default
+  `false` kalır. Existing Product Details çağrıları/sunumları değişmedi; Final
+  Seller Comparison görünümü yalnız dedicated view tarafından seçilir.
+- Seller Comparison targeted `57/57`, geniş adjacent regression `798/798`, full
+  Flutter `1430 PASS / 0 FAIL / 6` existing conditional/live skip ve analyzer
+  `0 issues` PASS. On iki R2 golden `320/390/430 px`, `%130`, long-content ve tüm
+  satıcı/state sınırları için incelendi; yeniden üretilmedi.
+- Seller Comparison Final UI V1 authoritative main baseline'dır; Production
+  release veya global runtime activation değildir. Backend, taxonomy, Production,
+  Development ve Figma değiştirilmedi/erişilmedi. Sıradaki adım yeni ekran seçmeden
+  önce UI inventory/acceleration planıdır; ardından Shop Details veya yeniden
+  önceliklendirilen yüzey aynı single-agent rollout modeliyle ilerler.
+- Bir önceki doğrulanan teslim: **WAVE 42B PRODUCT DETAILS FINAL UI INTEGRATION PASS —
   PRODUCT OWNER APPROVED V1 / TRUTHFUL LOCAL SELLER STATES**.
 - Integration branch/base/source/merge:
   `integration/wave-42b-product-details-final-ui` /

@@ -70,8 +70,18 @@ Details V1 preserves compact identity/header, explicit 224 px contain-fit hero,
 truthful 0/1/many local-seller and listing-price states, Product Information,
 Reviews, wishlist, existing seller-section context and Cart V2 preparation. The
 shared image slider remains optional/default-off and retains the 340 px legacy
-branch for existing callers. The next visual gate is Seller Comparison Final UI at
-`390 px`.
+branch for existing callers. At the W42B checkpoint the next visual gate was Seller
+Comparison Final UI at `390 px`; Wave 43B closes that gate below.
+
+Wave 43B closes the fifth rollout surface. The Product Owner-approved Seller
+Comparison V1 preserves truthful 0/1/many offers, real listing price/rating/
+distance/availability, deterministic single lowest-price emphasis, Shop Details
+handoff and Cart V2 single-shop physical preparation. The final CTA copy is
+`Mağazayı gör` / `Sepete ekle`; the old `Listeye ekle` label is absent from this
+Final UI path. `ProductSellersSection` remains explicit opt-in/default-off for the
+new presentation, so existing Product Details callers are unchanged. Before a
+sixth surface is selected, the next gate is UI inventory/acceleration planning;
+Shop Details remains the sequence candidate unless Product Owner priorities change.
 
 | Order | Surface | Required foundation reuse | Primary acceptance focus |
 | --- | --- | --- | --- |
@@ -114,9 +124,13 @@ For every rollout wave:
 
 `PRODUCT_DETAILS_V1_MAIN: YES`
 
-`NEXT_ROLLOUT_SURFACE: SELLER_COMPARISON_FINAL_UI`
+`SELLER_COMPARISON_V1_MAIN: YES`
 
-`NEXT_REQUIRED_VISUAL_GATE: ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
+`NEXT_ROLLOUT_STEP: UI_INVENTORY_ACCELERATION_PLAN`
+
+`NEXT_ROLLOUT_SURFACE: SHOP_DETAILS_OR_PRODUCT_OWNER_REPRIORITIZED`
+
+`NEXT_REQUIRED_VISUAL_GATE: INVENTORY_PLAN_THEN_ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
 
 `W39B_MAIN_INTEGRATED: YES`
 
