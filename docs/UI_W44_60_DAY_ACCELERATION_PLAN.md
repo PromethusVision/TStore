@@ -1,6 +1,6 @@
 # Wave 44A — 60-Day Customer UI Acceleration Plan
 
-Durum: **ANALYSIS / PLANNING ONLY**  
+Durum: **ANALYSIS / PLANNING ONLY**
 Base: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
 
 ## 1. Yönetici özeti
@@ -267,4 +267,3 @@ Flutter language ile kapanır.
 Bu plan Customer UI bitişini Merchant pilot minimum, release gates ve Production
 rollout'tan ayrı tutar. Ads, Reward economics, Gamification ve advanced Reputation
 60 günlük Customer UI prerequisites değildir.
-

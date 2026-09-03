@@ -1,6 +1,6 @@
 # Wave 44A — Customer UI Surface Inventory
 
-Durum: **ANALYSIS ONLY — 2026-09-04**  
+Durum: **ANALYSIS ONLY — 2026-09-04**
 Kaynak: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
 
 ## 1. Sayım sözleşmesi
@@ -208,4 +208,3 @@ prototype ve dokuz hedefli referansla sınırlar.
 - Duplicate path/surface sayımı: **0**; state ve mode sayım kuralları yukarıda
   açıklandı.
 - Flutter/Figma/backend/taxonomy/remote environment değişikliği: **yok**.
-

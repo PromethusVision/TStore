@@ -1,6 +1,6 @@
 # Wave 44A — Next 10 Customer UI Work Packages
 
-Durum: **PROPOSED PLAN — NO IMPLEMENTATION**  
+Durum: **PROPOSED PLAN — NO IMPLEMENTATION**
 Base: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
 
 ## Paketleme kuralları
@@ -198,4 +198,3 @@ dahil değildir; acceleration planındaki expected tek-agent toplamı bu nedenle
 Bu kesit yüksek shared-component leverage üretir, Product Owner'ı aynı anda sekiz
 prototype ile boğmaz ve Cart/Purchases/Reviews kritik contract hattını ikinci
 faz için temiz bırakır.
-
