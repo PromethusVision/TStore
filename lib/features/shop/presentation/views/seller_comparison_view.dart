@@ -257,7 +257,9 @@ class _SellerSummaryLine extends StatelessWidget {
     final text = switch (summary.status) {
       ProductSellerPriceSummaryStatus.loading => 'Yerel fiyatlar yükleniyor',
       ProductSellerPriceSummaryStatus.available =>
-        '${summary.sellerCount ?? 0} esnaf • ${_formatPrice(summary.minimumPrice!)}’den',
+        summary.sellerCount == 1
+            ? '1 esnaf • ${_formatPrice(summary.minimumPrice!)}'
+            : '${summary.sellerCount ?? 0} esnaf • ${_formatPrice(summary.minimumPrice!)}’den',
       ProductSellerPriceSummaryStatus.empty => 'Henüz yerel satıcı yok',
       ProductSellerPriceSummaryStatus.error => 'Yerel fiyatlar alınamadı',
     };

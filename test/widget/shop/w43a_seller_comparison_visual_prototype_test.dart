@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show SemanticsAction;
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
@@ -89,12 +91,18 @@ void main() {
     await sl.reset();
   });
 
-  Widget subject() {
+  Widget subject({TextScaler? textScaler}) {
     return BlocProvider<CartV2Cubit>.value(
       value: cartV2Cubit,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: EsnaftaVarTheme.light,
+        builder: textScaler == null
+            ? null
+            : (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                child: child!,
+              ),
         home: SellerComparisonView(
           product: _product,
           currentUserIdProvider: () => 'customer-1',
@@ -234,6 +242,220 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('zero sellers keep product context without fake commerce', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => const Right(<ShopProductEntity>[]));
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('seller-comparison-product-context')),
+      findsOne,
+    );
+    expect(find.text('Henüz yerel satıcı yok'), findsOne);
+    expect(find.text('Bu ürün için aktif teklif yok'), findsOne);
+    expect(find.text('En uygun fiyat'), findsNothing);
+    expect(find.text('Mağazayı gör'), findsNothing);
+    expect(find.text('Listeye ekle'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('one seller uses singular copy and no comparison badge', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => const Right(_singleSeller));
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('1 esnaf • 28.999,00 TL'), findsOne);
+    expect(find.text('Yerel esnaf'), findsOne);
+    expect(
+      find.text('Bu mağazanın fiyatını, puanını ve konumunu incele.'),
+      findsOne,
+    );
+    expect(find.text('En uygun fiyat'), findsNothing);
+    expect(find.byKey(const Key('product-seller-sort-button')), findsNothing);
+    expect(find.text('Mağazayı gör'), findsOne);
+    expect(find.text('Listeye ekle'), findsOne);
+  });
+
+  testWidgets('equal lowest prices mark exactly one deterministic offer', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => const Right(_equalLowestSellers));
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('En uygun fiyat'), findsOneWidget);
+    final firstCard = find.byKey(const Key('product-seller-equal-1'));
+    expect(
+      find.descendant(of: firstCard, matching: find.text('En uygun fiyat')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('unavailable and unknown listings fail closed', (tester) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => const Right(_unavailableAndUnknownSellers));
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('product-sellers-empty')), findsOneWidget);
+    expect(find.text('Rafta var'), findsNothing);
+    expect(find.text('En uygun fiyat'), findsNothing);
+    expect(find.text('Listeye ekle'), findsNothing);
+  });
+
+  testWidgets('missing rating and distance do not create fake metadata', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => const Right(_addressOnlySeller));
+    when(() => locationService.cachedCoordinates).thenReturn(null);
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Moda, Kadıköy, İstanbul'), findsOne);
+    expect(find.byIcon(Icons.star_rounded), findsNothing);
+    expect(find.textContaining('km'), findsNothing);
+    expect(find.textContaining('metreden'), findsNothing);
+    expect(find.text('Konum bilgisi mevcut'), findsNothing);
+    expect(find.text('Adres bilgisi mevcut'), findsNothing);
+  });
+
+  testWidgets('supported sort changes only the current deterministic order', (
+    tester,
+  ) async {
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('product-seller-sort-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('product-seller-sort-most-expensive')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('En pahalı'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byKey(const Key('product-seller-listing-3'))).dy,
+      lessThan(
+        tester.getTopLeft(find.byKey(const Key('product-seller-listing-1'))).dy,
+      ),
+    );
+  });
+
+  testWidgets('loading transitions to the Final UI error and retry state', (
+    tester,
+  ) async {
+    final request = Completer<Either<String, List<ShopProductEntity>>>();
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) => request.future);
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pump();
+
+    expect(find.byKey(const Key('product-sellers-loading')), findsOneWidget);
+    expect(find.text('Esnaf teklifleri yükleniyor'), findsOneWidget);
+
+    request.complete(const Left('Bağlantı hatası'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('product-sellers-error')), findsOneWidget);
+    expect(find.byKey(const Key('product-sellers-retry')), findsOneWidget);
+    expect(find.text('Esnaf teklifleri yüklenemedi'), findsOneWidget);
+  });
+
+  testWidgets('320, 390 and 430 widths preserve the approved hierarchy', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    for (final width in const [320.0, 390.0, 430.0]) {
+      tester.view.physicalSize = Size(width, 844);
+      await tester.pumpWidget(subject());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Esnafları karşılaştır'), findsOneWidget);
+      expect(find.text('En uygun fiyat'), findsOneWidget);
+      expect(find.text('Mağazayı gör'), findsNWidgets(3));
+      expect(find.text('Listeye ekle'), findsNWidgets(3));
+      expect(tester.takeException(), isNull, reason: '$width px overflow');
+    }
+  });
+
+  testWidgets('130 percent text and Turkish content remain accessible', (
+    tester,
+  ) async {
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject(textScaler: const TextScaler.linear(1.3)));
+    await tester.pumpAndSettle();
+
+    final semantics = tester.ensureSemantics();
+    expect(find.byTooltip('Geri'), findsOneWidget);
+    expect(find.byTooltip('Satıcıları sırala: En yakın'), findsOneWidget);
+    final shopAction = find.bySemanticsLabel('Çınar Teknoloji mağazasını gör');
+    final cartAction = find.bySemanticsLabel(
+      'Çınar Teknoloji için fiziksel alışveriş listesine ekle',
+    );
+    expect(shopAction, findsOneWidget);
+    expect(cartAction, findsOneWidget);
+    expect(
+      tester
+          .getSemantics(shopAction)
+          .getSemanticsData()
+          .hasAction(SemanticsAction.tap),
+      isTrue,
+    );
+    expect(
+      tester
+          .getSemantics(cartAction)
+          .getSemanticsData()
+          .hasAction(SemanticsAction.tap),
+      isTrue,
+    );
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
+  });
+
+  testWidgets('a realistic larger seller set keeps scrolling stable', (
+    tester,
+  ) async {
+    when(
+      () => shopRepository.getShopProductsByProduct(_product.id),
+    ).thenAnswer((_) async => Right(_fifteenSellers));
+    await _set390Surface(tester);
+    await tester.pumpWidget(subject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('15 esnaf • 28.999,00 TL’den'), findsOneWidget);
+    expect(find.text('En uygun fiyat'), findsOneWidget);
+    await tester.drag(
+      find.byKey(const Key('seller-comparison-scroll')),
+      const Offset(0, -1600),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('product-seller-listing-15')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('captures the single 390 px product-owner visual gate', (
     tester,
   ) async {
@@ -333,6 +555,123 @@ const _sellers = <ShopProductEntity>[
     ),
   ),
 ];
+
+const _singleSeller = <ShopProductEntity>[
+  ShopProductEntity(
+    id: 'listing-1',
+    shopId: 'shop-1',
+    productId: 'phone-1',
+    price: 28999,
+    shop: ShopEntity(
+      id: 'shop-1',
+      name: 'Çınar Teknoloji',
+      address: 'Kadıköy, İstanbul',
+      latitude: 40.9912,
+      longitude: 29.0284,
+      rating: 4.8,
+      ratingCount: 184,
+    ),
+  ),
+];
+
+const _equalLowestSellers = <ShopProductEntity>[
+  ShopProductEntity(
+    id: 'equal-1',
+    shopId: 'shop-equal-1',
+    productId: 'phone-1',
+    price: 28999.90,
+    shop: ShopEntity(
+      id: 'shop-equal-1',
+      name: 'Moda Teknoloji',
+      address: 'Kadıköy, İstanbul',
+      latitude: 40.9912,
+      longitude: 29.0284,
+      rating: 4.8,
+    ),
+  ),
+  ShopProductEntity(
+    id: 'equal-2',
+    shopId: 'shop-equal-2',
+    productId: 'phone-1',
+    price: 28999.90,
+    shop: ShopEntity(
+      id: 'shop-equal-2',
+      name: 'Semt İletişim',
+      address: 'Kadıköy, İstanbul',
+      latitude: 40.994,
+      longitude: 29.029,
+      rating: 4.7,
+    ),
+  ),
+  ShopProductEntity(
+    id: 'equal-3',
+    shopId: 'shop-equal-3',
+    productId: 'phone-1',
+    price: 30249.50,
+    shop: ShopEntity(
+      id: 'shop-equal-3',
+      name: 'Çarşı Elektronik',
+      address: 'Üsküdar, İstanbul',
+      latitude: 41.0258,
+      longitude: 29.0159,
+      rating: 4.5,
+    ),
+  ),
+];
+
+const _unavailableAndUnknownSellers = <ShopProductEntity>[
+  ShopProductEntity(
+    id: 'unavailable',
+    shopId: 'shop-unavailable',
+    productId: 'phone-1',
+    price: 27999,
+    isAvailable: false,
+    shop: ShopEntity(
+      id: 'shop-unavailable',
+      name: 'Rafta Olmayan Mağaza',
+      address: 'Kadıköy, İstanbul',
+    ),
+  ),
+  ShopProductEntity(
+    id: 'unknown-shop',
+    shopId: 'shop-unknown',
+    productId: 'phone-1',
+    price: 26999,
+  ),
+];
+
+const _addressOnlySeller = <ShopProductEntity>[
+  ShopProductEntity(
+    id: 'address-only',
+    shopId: 'shop-address-only',
+    productId: 'phone-1',
+    price: 30125.75,
+    shop: ShopEntity(
+      id: 'shop-address-only',
+      name: 'ÇĞİÖŞÜ Mahalle Teknoloji',
+      address: 'Moda, Kadıköy, İstanbul',
+      rating: 0,
+    ),
+  ),
+];
+
+final _fifteenSellers = List<ShopProductEntity>.generate(15, (index) {
+  final number = index + 1;
+  return ShopProductEntity(
+    id: 'listing-$number',
+    shopId: 'shop-$number',
+    productId: 'phone-1',
+    price: 28999 + (index * 125.50),
+    shop: ShopEntity(
+      id: 'shop-$number',
+      name: 'Mahalle Teknoloji $number',
+      address: 'İstanbul, Semt $number',
+      latitude: 40.9912 + (index * 0.002),
+      longitude: 29.0284 + (index * 0.001),
+      rating: 4 + ((index % 9) / 10),
+    ),
+  );
+});
 
 const _stressSellers = <ShopProductEntity>[
   ShopProductEntity(

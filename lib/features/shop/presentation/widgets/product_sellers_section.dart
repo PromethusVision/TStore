@@ -107,6 +107,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            if (widget.visualPrototype) {
+              return const _SellersLoadingState();
+            }
             return const Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems),
@@ -123,6 +126,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
             return _SellersErrorState(
               onRetry: _retrySellers,
               isRetrying: _isRetryInProgress,
+              visualPrototype: widget.visualPrototype,
             );
           }
 
@@ -130,6 +134,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
             (_) => _SellersErrorState(
               onRetry: _retrySellers,
               isRetrying: _isRetryInProgress,
+              visualPrototype: widget.visualPrototype,
             ),
             (shopProducts) {
               final customerVisibleShopProducts = _customerVisibleSellers(
@@ -139,6 +144,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               if (customerVisibleShopProducts.isEmpty) {
                 return _SellersEmptyState(
                   onBrowseOtherProducts: widget.onBrowseOtherProducts,
+                  visualPrototype: widget.visualPrototype,
                 );
               }
 
@@ -155,14 +161,30 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                 coordinates,
                 effectiveSort,
               );
-              final lowestPrice = customerVisibleShopProducts
-                  .map((seller) => seller.price)
-                  .where((price) => price.isFinite && price >= 0)
-                  .fold<double?>(
-                    null,
-                    (lowest, price) =>
-                        lowest == null || price < lowest ? price : lowest,
-                  );
+              final lowestPrice = widget.visualPrototype
+                  ? customerVisibleShopProducts
+                        .map((seller) => seller.price)
+                        .where((price) => price.isFinite && price >= 0)
+                        .fold<double?>(
+                          null,
+                          (lowest, price) =>
+                              lowest == null || price < lowest ? price : lowest,
+                        )
+                  : null;
+              final bestPriceListingId =
+                  widget.visualPrototype &&
+                      rankedSellers.length > 1 &&
+                      lowestPrice != null
+                  ? rankedSellers
+                        .firstWhere(
+                          (seller) =>
+                              (seller.shopProduct.price - lowestPrice).abs() <
+                              0.005,
+                        )
+                        .shopProduct
+                        .id
+                  : null;
+              final hasMultipleSellers = rankedSellers.length > 1;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +197,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                     children: [
                       Text(
                         widget.visualPrototype
-                            ? 'Esnaf teklifleri'
+                            ? hasMultipleSellers
+                                  ? 'Esnaf teklifleri'
+                                  : 'Yerel esnaf'
                             : 'Bu ürünü satan esnaflar',
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
@@ -187,19 +211,22 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                                   : null,
                             ),
                       ),
-                      _SellerSortMenu(
-                        selectedOption: effectiveSort,
-                        locationReady: locationReady,
-                        onSelected: (option) {
-                          setState(() => _selectedSortOption = option);
-                        },
-                      ),
+                      if (!widget.visualPrototype || hasMultipleSellers)
+                        _SellerSortMenu(
+                          selectedOption: effectiveSort,
+                          locationReady: locationReady,
+                          onSelected: (option) {
+                            setState(() => _selectedSortOption = option);
+                          },
+                        ),
                     ],
                   ),
                   const SizedBox(height: TSizes.xs),
                   Text(
                     widget.visualPrototype
-                        ? 'Fiyatı, puanı ve sana olan uzaklığı karşılaştır.'
+                        ? hasMultipleSellers
+                              ? 'Fiyatı, puanı ve sana olan uzaklığı karşılaştır.'
+                              : 'Bu mağazanın fiyatını, puanını ve konumunu incele.'
                         : 'Mağazaları karşılaştırıp sepetine eklemek istediğin satıcıyı seçebilirsin.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: widget.visualPrototype
@@ -242,10 +269,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                             widget.pendingProductChatStorage,
                         visualPrototype: widget.visualPrototype,
                         isLowestPrice:
-                            lowestPrice != null &&
-                            (rankedSeller.shopProduct.price - lowestPrice)
-                                    .abs() <
-                                0.005,
+                            rankedSeller.shopProduct.id == bestPriceListingId,
                         onShopProfileTap: shop?.isActive == true
                             ? () => unawaited(_openShopProfile(context, shop!))
                             : null,
@@ -517,13 +541,51 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   }
 }
 
-class _SellersEmptyState extends StatelessWidget {
-  final VoidCallback? onBrowseOtherProducts;
-
-  const _SellersEmptyState({required this.onBrowseOtherProducts});
+class _SellersLoadingState extends StatelessWidget {
+  const _SellersLoadingState();
 
   @override
   Widget build(BuildContext context) {
+    return const _FinalSellersStateCard(
+      key: Key('product-sellers-loading'),
+      semanticLabel: 'Esnaf teklifleri yükleniyor',
+      icon: Icons.storefront_outlined,
+      iconColor: EsnaftaVarColors.primary,
+      iconBackground: EsnaftaVarColors.primarySoft,
+      title: 'Esnaf teklifleri yükleniyor',
+      description: 'Yakındaki mağazaların güncel teklifleri hazırlanıyor.',
+    );
+  }
+}
+
+class _SellersEmptyState extends StatelessWidget {
+  final VoidCallback? onBrowseOtherProducts;
+  final bool visualPrototype;
+
+  const _SellersEmptyState({
+    required this.onBrowseOtherProducts,
+    required this.visualPrototype,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (visualPrototype) {
+      return _FinalSellersStateCard(
+        key: const Key('product-sellers-empty'),
+        semanticLabel: 'Bu ürün için aktif yerel teklif yok',
+        icon: Icons.storefront_outlined,
+        iconColor: EsnaftaVarColors.primary,
+        iconBackground: EsnaftaVarColors.primarySoft,
+        title: 'Bu ürün için aktif teklif yok',
+        description:
+            'Yerel esnaflarda doğrulanmış bir satış teklifi bulunduğunda burada görünecek.',
+        actionLabel: onBrowseOtherProducts == null ? null : 'Ürünlere dön',
+        actionIcon: Icons.arrow_back_rounded,
+        actionKey: const Key('product-sellers-browse-products'),
+        onAction: onBrowseOtherProducts,
+      );
+    }
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -573,11 +635,32 @@ class _SellersEmptyState extends StatelessWidget {
 class _SellersErrorState extends StatelessWidget {
   final VoidCallback onRetry;
   final bool isRetrying;
+  final bool visualPrototype;
 
-  const _SellersErrorState({required this.onRetry, required this.isRetrying});
+  const _SellersErrorState({
+    required this.onRetry,
+    required this.isRetrying,
+    required this.visualPrototype,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (visualPrototype) {
+      return _FinalSellersStateCard(
+        key: const Key('product-sellers-error'),
+        semanticLabel: 'Esnaf teklifleri yüklenemedi',
+        icon: Icons.cloud_off_outlined,
+        iconColor: EsnaftaVarColors.error,
+        iconBackground: EsnaftaVarColors.errorSoft,
+        title: 'Esnaf teklifleri yüklenemedi',
+        description: 'Bağlantını kontrol edip yeniden deneyebilirsin.',
+        actionLabel: isRetrying ? 'Yenileniyor…' : 'Tekrar dene',
+        actionIcon: Icons.refresh_rounded,
+        actionKey: const Key('product-sellers-retry'),
+        onAction: isRetrying ? null : onRetry,
+      );
+    }
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -605,6 +688,95 @@ class _SellersErrorState extends StatelessWidget {
             label: const Text('Tekrar Dene'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FinalSellersStateCard extends StatelessWidget {
+  const _FinalSellersStateCard({
+    super.key,
+    required this.semanticLabel,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBackground,
+    required this.title,
+    required this.description,
+    this.actionLabel,
+    this.actionIcon,
+    this.actionKey,
+    this.onAction,
+  });
+
+  final String semanticLabel;
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBackground;
+  final String title;
+  final String description;
+  final String? actionLabel;
+  final IconData? actionIcon;
+  final Key? actionKey;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: semanticLabel,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(EsnaftaVarSpacing.lg),
+        decoration: BoxDecoration(
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
+          boxShadow: EsnaftaVarElevation.xs,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: iconBackground,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: iconColor),
+            ),
+            const SizedBox(height: EsnaftaVarSpacing.sm),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: EsnaftaVarColors.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: EsnaftaVarSpacing.xs),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: EsnaftaVarColors.textSecondary,
+              ),
+            ),
+            if (actionLabel != null) ...[
+              const SizedBox(height: EsnaftaVarSpacing.md),
+              SizedBox(
+                height: EsnaftaVarTouchTargets.preferred,
+                child: OutlinedButton.icon(
+                  key: actionKey,
+                  onPressed: onAction,
+                  icon: Icon(actionIcon),
+                  label: Text(actionLabel!),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -795,9 +967,15 @@ class _SellerTile extends StatelessWidget {
     if (distance != null) {
       return CustomerProximityHelper.formatDistance(distance);
     }
-    if (locationReady) return 'Mesafe bilgisi yok';
+    if (locationReady) {
+      return visualPrototype ? '' : 'Mesafe bilgisi yok';
+    }
     if (hasCoordinates) return 'Konum bilgisi mevcut';
-    if (hasAddress) return 'Adres bilgisi mevcut';
+    // The address is already rendered as the truthful locality context. Do not
+    // add a redundant pseudo-distance in the explicit Final UI presentation.
+    if (hasAddress) {
+      return visualPrototype ? '' : 'Adres bilgisi mevcut';
+    }
     return '';
   }
 

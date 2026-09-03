@@ -160,35 +160,68 @@ class SellerComparisonOfferCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: EsnaftaVarSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: EsnaftaVarTouchTargets.preferred,
-                  child: FilledButton.icon(
-                    key: ValueKey('product-seller-shop-profile-$listingId'),
-                    onPressed: onViewShop,
-                    icon: const Icon(
-                      Icons.store_mall_directory_outlined,
-                      size: EsnaftaVarIconSizes.small,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final compactActions =
+                  constraints.maxWidth < 300 ||
+                  MediaQuery.textScalerOf(context).scale(1) > 1.15;
+              return Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: EsnaftaVarTouchTargets.preferred,
+                      child: Semantics(
+                        button: true,
+                        enabled: onViewShop != null,
+                        label: '$shopName mağazasını gör',
+                        onTap: onViewShop,
+                        child: ExcludeSemantics(
+                          child: compactActions
+                              ? FilledButton(
+                                  key: ValueKey(
+                                    'product-seller-shop-profile-$listingId',
+                                  ),
+                                  style: FilledButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: EsnaftaVarSpacing.xs,
+                                    ),
+                                  ),
+                                  onPressed: onViewShop,
+                                  child: const Text('Mağazayı gör'),
+                                )
+                              : FilledButton.icon(
+                                  key: ValueKey(
+                                    'product-seller-shop-profile-$listingId',
+                                  ),
+                                  onPressed: onViewShop,
+                                  icon: const Icon(
+                                    Icons.store_mall_directory_outlined,
+                                    size: EsnaftaVarIconSizes.small,
+                                  ),
+                                  label: const Text('Mağazayı gör'),
+                                ),
+                        ),
+                      ),
                     ),
-                    label: const Text('Mağazayı gör'),
                   ),
-                ),
-              ),
-              if (canAddToCart) ...[
-                const SizedBox(width: EsnaftaVarSpacing.xs),
-                Expanded(
-                  child: SizedBox(
-                    height: EsnaftaVarTouchTargets.preferred,
-                    child: _AsyncAddButton(
-                      listingId: listingId,
-                      onPressed: onAddToCart,
+                  if (canAddToCart) ...[
+                    const SizedBox(width: EsnaftaVarSpacing.xs),
+                    Expanded(
+                      child: SizedBox(
+                        height: EsnaftaVarTouchTargets.preferred,
+                        child: _AsyncAddButton(
+                          listingId: listingId,
+                          onPressed: onAddToCart,
+                          showIcon: !compactActions,
+                          semanticLabel:
+                              '$shopName için fiziksel alışveriş listesine ekle',
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ],
+                  ],
+                ],
+              );
+            },
           ),
           if (!canAddToCart) ...[
             const SizedBox(height: EsnaftaVarSpacing.xs),
@@ -318,10 +351,17 @@ class _AsyncMessageButtonState extends State<_AsyncMessageButton> {
 }
 
 class _AsyncAddButton extends StatefulWidget {
-  const _AsyncAddButton({required this.listingId, required this.onPressed});
+  const _AsyncAddButton({
+    required this.listingId,
+    required this.onPressed,
+    required this.showIcon,
+    required this.semanticLabel,
+  });
 
   final String listingId;
   final Future<void>? Function() onPressed;
+  final bool showIcon;
+  final String semanticLabel;
 
   @override
   State<_AsyncAddButton> createState() => _AsyncAddButtonState();
@@ -332,21 +372,46 @@ class _AsyncAddButtonState extends State<_AsyncAddButton> {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      key: ValueKey('product-seller-add-${widget.listingId}'),
-      onPressed: _isAdding ? null : _handlePressed,
-      icon: _isAdding
-          ? const SizedBox(
-              key: Key('product-seller-add-progress'),
-              width: EsnaftaVarIconSizes.small,
-              height: EsnaftaVarIconSizes.small,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(
-              Icons.playlist_add_rounded,
-              size: EsnaftaVarIconSizes.small,
-            ),
-      label: Text(_isAdding ? 'Ekleniyor…' : 'Listeye ekle'),
+    final Widget button;
+    if (!widget.showIcon && !_isAdding) {
+      button = OutlinedButton(
+        key: ValueKey('product-seller-add-${widget.listingId}'),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: EsnaftaVarSpacing.xs),
+        ),
+        onPressed: _handlePressed,
+        child: const Text('Listeye ekle'),
+      );
+    } else {
+      button = OutlinedButton.icon(
+        key: ValueKey('product-seller-add-${widget.listingId}'),
+        onPressed: _isAdding ? null : _handlePressed,
+        icon: _isAdding
+            ? const SizedBox(
+                key: Key('product-seller-add-progress'),
+                width: EsnaftaVarIconSizes.small,
+                height: EsnaftaVarIconSizes.small,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(
+                Icons.playlist_add_rounded,
+                size: EsnaftaVarIconSizes.small,
+              ),
+        label: Text(_isAdding ? 'Ekleniyor…' : 'Listeye ekle'),
+      );
+    }
+
+    return Semantics(
+      button: true,
+      enabled: !_isAdding,
+      label: widget.semanticLabel,
+      onTap: _isAdding ? null : _handlePressed,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: 'Fiziksel alışveriş listesine ekle',
+          child: button,
+        ),
+      ),
     );
   }
 
