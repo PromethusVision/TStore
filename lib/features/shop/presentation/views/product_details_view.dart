@@ -198,6 +198,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   }
 
   Widget _buildVisualPrototype(BuildContext context) {
+    final isProductAvailable = widget.product.isActive;
+
     return Scaffold(
       backgroundColor: EsnaftaVarColors.background,
       body: SafeArea(
@@ -231,10 +233,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         const SizedBox(height: EsnaftaVarSpacing.md),
                         _ProductIdentity(product: widget.product),
                         const SizedBox(height: EsnaftaVarSpacing.md),
-                        _LocalAvailabilityCard(
-                          summary: _sellerPriceSummary,
-                          onCompareTap: _showSellerComparison,
-                        ),
+                        if (isProductAvailable)
+                          _LocalAvailabilityCard(
+                            summary: _sellerPriceSummary,
+                            onCompareTap: _showSellerComparison,
+                          )
+                        else
+                          const _ProductUnavailableNotice(),
                         const SizedBox(height: EsnaftaVarSpacing.md),
                         _FinalProductInformation(product: widget.product),
                         const SizedBox(height: EsnaftaVarSpacing.md),
@@ -243,21 +248,23 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           onTap: _openProductReviews,
                         ),
                         const SizedBox(height: EsnaftaVarSpacing.md),
-                        KeyedSubtree(
-                          key: _sellersSectionKey,
-                          child: _FinalSellerComparison(
-                            child: ProductSellersSection(
-                              productId: widget.product.id,
-                              productName: widget.product.name,
-                              currentUserIdProvider:
-                                  widget.currentUserIdProvider,
-                              onPriceSummaryChanged: _updateSellerPriceSummary,
-                              onBrowseOtherProducts: () {
-                                Navigator.of(context).maybePop();
-                              },
+                        if (isProductAvailable)
+                          KeyedSubtree(
+                            key: _sellersSectionKey,
+                            child: _FinalSellerComparison(
+                              child: ProductSellersSection(
+                                productId: widget.product.id,
+                                productName: widget.product.name,
+                                currentUserIdProvider:
+                                    widget.currentUserIdProvider,
+                                onPriceSummaryChanged:
+                                    _updateSellerPriceSummary,
+                                onBrowseOtherProducts: () {
+                                  Navigator.of(context).maybePop();
+                                },
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -426,8 +433,6 @@ class _LocalAvailabilityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = _content;
-    final canCompare =
-        summary.status == ProductSellerPriceSummaryStatus.available;
 
     return Container(
       key: const Key('product-details-local-availability'),
@@ -490,19 +495,21 @@ class _LocalAvailabilityCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: EsnaftaVarSpacing.sm),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              key: const Key('product-details-compare-sellers'),
-              onPressed: canCompare ? onCompareTap : null,
-              icon: const Icon(Icons.compare_arrows_rounded),
-              label: const Text('Esnafları karşılaştır'),
+          if (content.actionLabel != null) ...[
+            const SizedBox(height: EsnaftaVarSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: const Key('product-details-compare-sellers'),
+                onPressed: onCompareTap,
+                icon: Icon(content.actionIcon),
+                label: Text(content.actionLabel!),
+              ),
             ),
-          ),
+          ],
           const SizedBox(height: EsnaftaVarSpacing.xs),
           Text(
-            'Fiyat ve stok seçtiğin esnafa göre değişir.',
+            content.supportingText,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: EsnaftaVarColors.textSecondary,
             ),
@@ -517,33 +524,119 @@ class _LocalAvailabilityCard extends StatelessWidget {
       case ProductSellerPriceSummaryStatus.loading:
         return const _LocalAvailabilityContent(
           sellerLabel: 'Esnaf seçenekleri hazırlanıyor',
+          supportingText: 'Güncel yerel fiyat ve stok bilgileri yükleniyor.',
         );
       case ProductSellerPriceSummaryStatus.available:
         final count = summary.sellerCount;
-        final sellerLabel = count == null
+        final hasSingleSeller = count == 1;
+        final sellerLabel = hasSingleSeller
+            ? '1 esnafta var'
+            : count == null
             ? 'Yerel esnaflarda mevcut'
             : '$count esnafta var';
+        final formattedPrice = _formatTurkishPrice(summary.minimumPrice!);
         return _LocalAvailabilityContent(
           sellerLabel: sellerLabel,
-          priceLabel: '${_formatTurkishPrice(summary.minimumPrice!)} TL’den',
+          priceLabel: hasSingleSeller
+              ? '$formattedPrice TL'
+              : '$formattedPrice TL’den',
+          actionLabel: hasSingleSeller ? 'Esnafı gör' : 'Esnafları karşılaştır',
+          actionIcon: hasSingleSeller
+              ? Icons.storefront_outlined
+              : Icons.compare_arrows_rounded,
+          supportingText: hasSingleSeller
+              ? 'Fiyat ve stok bu esnafın güncel mağaza kaydına aittir.'
+              : 'Fiyat ve stok seçtiğin esnafa göre değişir.',
         );
       case ProductSellerPriceSummaryStatus.empty:
         return const _LocalAvailabilityContent(
           sellerLabel: 'Şu anda aktif esnaf yok',
+          supportingText:
+              'Yeni bir esnaf fiyat verdiğinde seçenekler burada görünecek.',
         );
       case ProductSellerPriceSummaryStatus.error:
         return const _LocalAvailabilityContent(
           sellerLabel: 'Esnaf bilgileri alınamadı',
+          supportingText:
+              'Bağlantını kontrol edip esnaf listesinden tekrar deneyebilirsin.',
         );
     }
   }
 }
 
 class _LocalAvailabilityContent {
-  const _LocalAvailabilityContent({required this.sellerLabel, this.priceLabel});
+  const _LocalAvailabilityContent({
+    required this.sellerLabel,
+    required this.supportingText,
+    this.priceLabel,
+    this.actionLabel,
+    this.actionIcon = Icons.compare_arrows_rounded,
+  });
 
   final String sellerLabel;
+  final String supportingText;
   final String? priceLabel;
+  final String? actionLabel;
+  final IconData actionIcon;
+}
+
+class _ProductUnavailableNotice extends StatelessWidget {
+  const _ProductUnavailableNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      label: 'Bu ürün şu anda görüntülenemiyor',
+      child: Container(
+        key: const Key('product-details-unavailable'),
+        width: double.infinity,
+        padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+        decoration: BoxDecoration(
+          color: EsnaftaVarColors.warningSoft,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+          border: Border.all(
+            color: EsnaftaVarColors.warning.withValues(alpha: 0.28),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              width: EsnaftaVarTouchTargets.minimum,
+              height: EsnaftaVarTouchTargets.minimum,
+              child: Icon(
+                Icons.inventory_2_outlined,
+                color: EsnaftaVarColors.warning,
+              ),
+            ),
+            const SizedBox(width: EsnaftaVarSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bu ürün şu anda görüntülenemiyor',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: EsnaftaVarColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: EsnaftaVarSpacing.xxs),
+                  Text(
+                    'Ürün yeniden aktif olduğunda yerel esnaf seçenekleri burada görünecek.',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: EsnaftaVarColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _FinalProductInformation extends StatelessWidget {
@@ -609,64 +702,96 @@ class _FinalProductReviews extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasReviews = product.rating > 0 && product.reviewsCount > 0;
 
-    return Material(
-      color: EsnaftaVarColors.surfaceElevated,
-      borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
-      child: InkWell(
-        key: const Key('product-reviews-action'),
-        onTap: onTap,
+    final ratingLabel = hasReviews
+        ? '${product.rating.toStringAsFixed(1)} · ${product.reviewsCount} değerlendirme'
+        : 'Henüz değerlendirme yok';
+
+    return Semantics(
+      button: true,
+      label: hasReviews
+          ? '$ratingLabel. Değerlendirmeleri gör'
+          : 'Henüz değerlendirme yok. Değerlendirme alanını aç',
+      child: Material(
+        color: EsnaftaVarColors.surfaceElevated,
         borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
-        child: Container(
-          key: const Key('product-details-reviews-preview'),
-          padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
-            border: Border.all(color: EsnaftaVarColors.borderDefault),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: EsnaftaVarTouchTargets.minimum,
-                height: EsnaftaVarTouchTargets.minimum,
-                decoration: const BoxDecoration(
-                  color: EsnaftaVarColors.warningSoft,
-                  shape: BoxShape.circle,
+        child: InkWell(
+          key: const Key('product-reviews-action'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+          child: Container(
+            key: const Key('product-details-reviews-preview'),
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+              border: Border.all(color: EsnaftaVarColors.borderDefault),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _FinalSectionTitle(
+                  icon: Icons.reviews_outlined,
+                  title: 'Değerlendirmeler',
                 ),
-                child: const Icon(
-                  Icons.star_rounded,
-                  color: EsnaftaVarColors.warning,
-                ),
-              ),
-              const SizedBox(width: EsnaftaVarSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: EsnaftaVarSpacing.sm),
+                Row(
                   children: [
-                    Text(
-                      hasReviews
-                          ? '${product.rating.toStringAsFixed(1)} · ${product.reviewsCount} değerlendirme'
-                          : 'Henüz değerlendirme yok',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: EsnaftaVarColors.textPrimary,
-                        fontWeight: FontWeight.w700,
+                    Container(
+                      width: EsnaftaVarTouchTargets.minimum,
+                      height: EsnaftaVarTouchTargets.minimum,
+                      decoration: const BoxDecoration(
+                        color: EsnaftaVarColors.warningSoft,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.star_rounded,
+                        color: EsnaftaVarColors.warning,
                       ),
                     ),
-                    const SizedBox(height: EsnaftaVarSpacing.xxs),
-                    Text(
-                      'Değerlendirmeleri gör',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: EsnaftaVarColors.primary,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(width: EsnaftaVarSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            ratingLabel,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  color: EsnaftaVarColors.textPrimary,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(height: EsnaftaVarSpacing.xxs),
+                          Text(
+                            hasReviews
+                                ? 'Müşteri değerlendirmelerini oku'
+                                : 'İlk değerlendirmeler burada görünecek',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: EsnaftaVarColors.textSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: EsnaftaVarSpacing.xxs),
+                          Text(
+                            hasReviews
+                                ? 'Değerlendirmeleri gör'
+                                : 'Değerlendirme alanını aç',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: EsnaftaVarColors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
                       ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: EsnaftaVarColors.primary,
                     ),
                   ],
                 ),
-              ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: EsnaftaVarColors.primary,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
