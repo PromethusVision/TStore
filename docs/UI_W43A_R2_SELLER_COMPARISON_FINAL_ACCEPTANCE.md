@@ -11,7 +11,7 @@ The Product Owner-approved W43A Seller Comparison composition has completed its 
 - Availability: only customer-purchasable listings show `Rafta var`; unavailable and incomplete/unknown records fail closed.
 - Rating/distance: rendered only from real values; missing values leave no fake star, score or pseudo-distance.
 - Price/best-price: ordinary, decimal, large and equal values remain readable; exactly one deterministic multi-seller minimum receives the badge.
-- CTA hierarchy: `Mağazayı gör` primary and `Listeye ekle` secondary remain 48 px and preserve existing destinations.
+- CTA hierarchy: `Mağazayı gör` primary and Product Owner-approved `Sepete ekle` secondary remain 48 px and preserve existing destinations.
 
 ## Seller-state acceptance
 
@@ -29,7 +29,7 @@ The Product Owner-approved W43A Seller Comparison composition has completed its 
 ## Responsive and accessibility acceptance
 
 - 320 px: PASS
-- 390 px primary: PASS; approved lineage golden unchanged
+- 390 px primary: PASS; approved composition unchanged and lineage golden updated only for the Product Owner-approved `Sepete ekle` copy
 - 430 px: PASS
 - 100% text scale: PASS
 - 130% text scale: PASS
@@ -74,7 +74,7 @@ The Product Owner-approved W43A Seller Comparison composition has completed its 
 | Equal-lowest price | `test/widget/shop/goldens/w43a_r2_equal_lowest_390.png` |
 | Unavailable/unknown | `test/widget/shop/goldens/w43a_r2_unavailable_unknown_390.png` |
 
-The unchanged Product Owner-approved W43A lineage remains at `test/widget/shop/goldens/w43a_seller_comparison_visual_prototype_390.png`.
+The Product Owner-approved W43A lineage remains at `test/widget/shop/goldens/w43a_seller_comparison_visual_prototype_390.png`; it was regenerated only for the approved `Listeye ekle` → `Sepete ekle` terminology change.
 
 ## Verification record
 
@@ -84,8 +84,9 @@ The unchanged Product Owner-approved W43A lineage remains at `test/widget/shop/g
 - Full Flutter suite: 1430 passed, 6 existing conditional/live skips, 0 failed.
 - Analyzer: no issues.
 - Visual inspection: twelve R2 golden images passed.
-- A temporary 0.71% original-golden mismatch was detected and corrected by restoring the approved 390 px button padding; the final original golden passes.
-- A later 5.81% change in the long-merchant stress golden was the expected removal of unverified distance copy from a coordinate-less fixture. Only that R2 stress golden was updated and re-inspected; the approved original golden remained untouched.
+- A temporary 0.71% original-golden mismatch was detected during R2 and corrected by restoring the approved 390 px button padding.
+- A later 5.81% change in the long-merchant stress golden was the expected removal of unverified distance copy from a coordinate-less fixture.
+- Following R2 closeout, the Product Owner-approved `Sepete ekle` terminology was applied to the visible Seller Comparison CTA. CTA-bearing goldens were regenerated and re-inspected; layout, destinations, accessibility semantics and the physical-preparation contract remain unchanged.
 - Initial sandboxed Flutter-test invocations were stopped before test execution because Flutter could not write its user-profile tool-state file. Scoped Flutter-test reruns completed successfully and are the results recorded here.
 - No new skip, weakened assertion, backend operation, Figma write or Production access.
 

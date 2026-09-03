@@ -380,7 +380,7 @@ class _AsyncAddButtonState extends State<_AsyncAddButton> {
           padding: const EdgeInsets.symmetric(horizontal: EsnaftaVarSpacing.xs),
         ),
         onPressed: _handlePressed,
-        child: const Text('Listeye ekle'),
+        child: const Text('Sepete ekle'),
       );
     } else {
       button = OutlinedButton.icon(
@@ -397,7 +397,7 @@ class _AsyncAddButtonState extends State<_AsyncAddButton> {
                 Icons.playlist_add_rounded,
                 size: EsnaftaVarIconSizes.small,
               ),
-        label: Text(_isAdding ? 'Ekleniyor…' : 'Listeye ekle'),
+        label: Text(_isAdding ? 'Ekleniyor…' : 'Sepete ekle'),
       );
     }
 

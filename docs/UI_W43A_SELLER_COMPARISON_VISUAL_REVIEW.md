@@ -11,7 +11,7 @@ The retained composition is:
 - `Esnaf teklifleri` hierarchy for real comparison cases;
 - existing supported sorting;
 - dense seller cards with merchant identity, locality, availability, rating, real distance, price and one deterministic best-price badge;
-- primary `Mağazayı gör` and secondary `Listeye ekle` actions.
+- primary `Mağazayı gör` and secondary `Sepete ekle` actions.
 
 The screen remains a local physical seller-comparison surface. No shipping, delivery, online payment, buy-now, checkout, order, sponsored seller or paid-ranking semantics were added.
 
@@ -52,11 +52,11 @@ The shared seller section already implements four real, deterministic presentati
 ## Cart V2 and Shop Details behavior
 
 - `Mağazayı gör` pushes the existing Shop Details destination with the same `ShopEntity`; back-stack behavior is unchanged.
-- `Listeye ekle` sends the exact selected `shopProductId` and quantity to the existing Cart V2 cubit.
+- `Sepete ekle` sends the exact selected `shopProductId` and quantity to the existing Cart V2 cubit.
 - Cart V2 remains a single-shop physical-shopping preparation flow. No payment, delivery, shipping, checkout or order behavior was introduced.
-- The visible copy is preserved. The surrounding local-comparison header, merchant-specific action hierarchy, explicit accessibility label and tooltip clarify physical-shopping preparation; no Product Owner copy change is recommended in this pass.
+- The Product Owner copy decision aligns the visible secondary CTA with the existing `Sepet` navigation label. This is terminology-only; the explicit accessibility label, tooltip, destination and Cart V2 physical-preparation contract remain unchanged.
 
-`COPY_POLISH_RECOMMENDED: NO`
+`CART_V2_COPY_DECISION_APPLIED: YES`
 
 ## Final UI states
 
@@ -73,7 +73,7 @@ The shared seller section already implements four real, deterministic presentati
 | Case | Result |
 | --- | --- |
 | 320 px / 100% | Header, product summary, seller metadata, price and two compact text actions remain overflow-safe. |
-| 390 px / 100% | Product Owner-approved W43A composition and original lineage golden remain unchanged. |
+| 390 px / 100% | Product Owner-approved W43A composition remains unchanged; the lineage golden was regenerated only for the approved `Sepete ekle` copy. |
 | 430 px / 100% | Content expands without changing the approved hierarchy or comparison density. |
 | 390 px / 130% | Names, locality, metadata, prices, sort and actions remain readable; cards grow vertically as needed. |
 
@@ -109,7 +109,7 @@ The existing ProductSellersSection test suite and all widget callers are include
 | Equal-lowest price | `test/widget/shop/goldens/w43a_r2_equal_lowest_390.png` |
 | Unavailable/unknown | `test/widget/shop/goldens/w43a_r2_unavailable_unknown_390.png` |
 
-The Product Owner-approved lineage image remains at `test/widget/shop/goldens/w43a_seller_comparison_visual_prototype_390.png` and passes unchanged.
+The Product Owner-approved lineage image remains at `test/widget/shop/goldens/w43a_seller_comparison_visual_prototype_390.png`. It was regenerated only to reflect the approved `Listeye ekle` → `Sepete ekle` terminology change; structure, styling and destinations remain unchanged.
 
 ## Verification
 
@@ -120,8 +120,9 @@ The Product Owner-approved lineage image remains at `test/widget/shop/goldens/w4
 - `flutter analyze --no-pub`: no issues.
 - Twelve R2 golden images were generated and visually inspected.
 - No new skip and no weakened assertion.
-- A transient 0.71% lineage-golden difference caused by wide-screen button padding was found during development; that padding change was removed and the approved lineage golden now passes unchanged.
-- The long-merchant stress golden changed by 5.81% when unverified distance copy was removed from the opt-in Final UI fixture. Only that R2 stress golden was regenerated and visually re-inspected; the approved W43A lineage image remained unchanged.
+- A transient 0.71% lineage-golden difference caused by wide-screen button padding was found during R2 development; that padding change was removed before acceptance.
+- The long-merchant stress golden changed by 5.81% during R2 when unverified distance copy was removed from the opt-in Final UI fixture. Only that stress evidence changed at that stage.
+- After R2 closeout, the Product Owner approved the visible `Sepete ekle` terminology. The CTA-bearing lineage and R2 goldens were regenerated and visually re-inspected; no layout, action destination or Cart V2 semantic change accompanied the copy update.
 - Initial sandboxed Flutter-test invocations could not write Flutter's user-profile tool-state file and were stopped before producing a test result. The same commands were rerun with the scoped Flutter-test permission; all recorded matrices above completed successfully.
 
 ## Boundaries

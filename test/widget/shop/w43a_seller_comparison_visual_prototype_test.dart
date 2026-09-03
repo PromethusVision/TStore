@@ -260,7 +260,7 @@ void main() {
     expect(find.text('Bu ürün için aktif teklif yok'), findsOne);
     expect(find.text('En uygun fiyat'), findsNothing);
     expect(find.text('Mağazayı gör'), findsNothing);
-    expect(find.text('Listeye ekle'), findsNothing);
+    expect(find.text('Sepete ekle'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -283,7 +283,7 @@ void main() {
     expect(find.text('En uygun fiyat'), findsNothing);
     expect(find.byKey(const Key('product-seller-sort-button')), findsNothing);
     expect(find.text('Mağazayı gör'), findsOne);
-    expect(find.text('Listeye ekle'), findsOne);
+    expect(find.text('Sepete ekle'), findsOne);
   });
 
   testWidgets('equal lowest prices mark exactly one deterministic offer', (
@@ -315,7 +315,7 @@ void main() {
     expect(find.byKey(const Key('product-sellers-empty')), findsOneWidget);
     expect(find.text('Rafta var'), findsNothing);
     expect(find.text('En uygun fiyat'), findsNothing);
-    expect(find.text('Listeye ekle'), findsNothing);
+    expect(find.text('Sepete ekle'), findsNothing);
   });
 
   testWidgets('missing rating and distance do not create fake metadata', (
@@ -396,7 +396,7 @@ void main() {
       expect(find.text('Esnafları karşılaştır'), findsOneWidget);
       expect(find.text('En uygun fiyat'), findsOneWidget);
       expect(find.text('Mağazayı gör'), findsNWidgets(3));
-      expect(find.text('Listeye ekle'), findsNWidgets(3));
+      expect(find.text('Sepete ekle'), findsNWidgets(3));
       expect(tester.takeException(), isNull, reason: '$width px overflow');
     }
   });
