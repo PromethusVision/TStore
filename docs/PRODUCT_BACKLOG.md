@@ -15,6 +15,31 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
   screen öncesi Product Owner visual approval ile sıralı ilerler.
 - Automotive/Services ilk paralel geliştirme dalgasının kapsamında değildir.
 
+## Wave 42B Product Details Final UI State
+
+- **COMPLETED — Product Owner-approved composition:** Compact header/back/wishlist,
+  224 px contain-fit hero, category/product/brand hierarchy, local seller/price,
+  Product Information ve Reviews main'e entegre edildi; structural redesign yok.
+- **COMPLETED — truthful seller/price states:** Zero seller fiyat/CTA göstermez;
+  one seller direct listing price + `Esnafı gör`; multiple seller actual count,
+  minimum `TL’den` + `Esnafları karşılaştır` gösterir. Merchant/listing ownership
+  ve mevcut minimum-price hesabı değişmedi.
+- **COMPLETED — shared slider safety:** `ProductImageSlider.visualPrototype`
+  optional/default `false`; legacy 340 px gallery callers korunur, yalnız explicit
+  Final Product Details 224 px sunumu kullanır. Silent default/caller change yok.
+- **COMPLETED — functional/domain boundaries:** Existing Seller Comparison context,
+  Cart V2 single-shop physical preparation, Reviews handoff, wishlist/AuthGuard ve
+  gallery behavior PASS. Fake review/verified badge/specification eklenmedi.
+- **COMPLETED — responsive/regression:** Seller loading/error/empty/unavailable,
+  `320/390/430 px`, `%130`, image-shape/long-title/large-price stress PASS. Targeted
+  `265/265`, all-widget adjacent `701/701`, full Flutter `1402 PASS / 0 FAIL / 6`
+  existing conditional/live skip; analyzer `0 issues`.
+- **UNCHANGED:** Home, Reward, Category, Product Listing, Seller Comparison visual
+  design, Cart V2 UI/rules, full Reviews screen/rules, backend, taxonomy, canonical
+  runtime, Production ve Figma. Shipping/payment/checkout/order semantiği yok.
+- **NEXT:** Seller Comparison Final UI için tek `390 px` Product Owner visual
+  prototype; responsive/state implementation yalnız approval sonrasıdır.
+
 ## Wave 41B Product Listing Final UI State
 
 - **COMPLETED — Product Owner-approved composition:** Compact `YEREL ÜRÜNLER`
@@ -33,8 +58,8 @@ Bu dosya henüz tamamlanmamış ürün ve release işlerinin source-of-truth lis
 - **UNCHANGED:** Home, Reward, Category, Product Details visual design, Seller
   Comparison, backend, taxonomy, canonical runtime, Production config ve Figma.
   Shipping/delivery/payment/checkout/buy-now/order veya pagination UI eklenmedi.
-- **NEXT:** Product Details Final UI için tek `390 px` Product Owner visual
-  prototype; responsive/state implementation yalnız approval sonrasıdır.
+- **CLOSED BY W42B:** Product Details Product Owner-approved prototype, closeout ve
+  main integration tamamlandı; Seller Comparison ekranı redesign edilmedi.
 
 ## Wave 40B Category / Recursive Browse Final UI State
 

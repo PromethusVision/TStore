@@ -63,8 +63,15 @@ Listing V1 preserves compact path/summary/sort, balanced two-column cards,
 normalized images, product/brand/local-merchant/price hierarchy, seller-count or
 single-store context, wishlist independence and existing Product Details handoff.
 Only default/newest/rating sorting is exposed; no new filters, pagination or
-shipping/payment/checkout semantics exist. The next visual gate is Product Details
-Final UI at `390 px`.
+shipping/payment/checkout semantics exist.
+
+Wave 42B closes the fourth rollout surface. The Product Owner-approved Product
+Details V1 preserves compact identity/header, explicit 224 px contain-fit hero,
+truthful 0/1/many local-seller and listing-price states, Product Information,
+Reviews, wishlist, existing seller-section context and Cart V2 preparation. The
+shared image slider remains optional/default-off and retains the 340 px legacy
+branch for existing callers. The next visual gate is Seller Comparison Final UI at
+`390 px`.
 
 | Order | Surface | Required foundation reuse | Primary acceptance focus |
 | --- | --- | --- | --- |
@@ -105,7 +112,9 @@ For every rollout wave:
 
 `PRODUCT_LISTING_V1_MAIN: YES`
 
-`NEXT_ROLLOUT_SURFACE: PRODUCT_DETAILS_FINAL_UI`
+`PRODUCT_DETAILS_V1_MAIN: YES`
+
+`NEXT_ROLLOUT_SURFACE: SELLER_COMPARISON_FINAL_UI`
 
 `NEXT_REQUIRED_VISUAL_GATE: ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
 

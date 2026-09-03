@@ -2,8 +2,37 @@
 
 ## Snapshot Bilgisi
 
-- Son güncelleme: 2026-09-02
-- Son doğrulanan teslim: **WAVE 41B PRODUCT LISTING FINAL UI INTEGRATION PASS —
+- Son güncelleme: 2026-09-03
+- Son doğrulanan teslim: **WAVE 42B PRODUCT DETAILS FINAL UI INTEGRATION PASS —
+  PRODUCT OWNER APPROVED V1 / TRUTHFUL LOCAL SELLER STATES**.
+- Integration branch/base/source/merge:
+  `integration/wave-42b-product-details-final-ui` /
+  `origin/main@7a5cc8e3e7824a0c7c99a2c8e90b5d37bb912abd` /
+  `3f1ab686d6643b6949d391486770ec8253b5e08d` / `2e26fd7`.
+- Product Owner-approved compact `YEREL ÜRÜN / Ürün detayları` header, independent
+  back/wishlist, 224 px contain-fit hero, category/product/brand hierarchy, local
+  seller/price block, Product Information ve Reviews composition'ı redesign
+  yapılmadan entegre edildi. W39/W40/W41 Final UI foundation korunur.
+- Seller `0/1/many` sözleşmesi gerçektir: zero durumda fiyat/CTA yok; one durumda
+  doğrudan listing fiyatı + `Esnafı gör`; multiple durumda gerçek count, minimum
+  `TL’den` + `Esnafları karşılaştır`. Product-wide fiyat, specification, review veya
+  verified-purchase badge uydurulmadı.
+- Existing Seller Comparison section/context, Cart V2 single-shop physical
+  preparation, Product Reviews handoff ve wishlist/AuthGuard davranışları PASS.
+  Shipping/delivery/payment/checkout/buy-now/order-tracking semantiği eklenmedi.
+- Shared `ProductImageSlider` optional `visualPrototype=false` ile backward
+  compatible'dır: existing callers 340 px legacy gallery'de, yalnız explicit Final
+  Product Details branch'i 224 px hero'dadır; silent default/caller değişikliği yok.
+- Product Details/Cart/Reviews/Wishlist targeted `265/265`, all-widget adjacent
+  `701/701`, full Flutter `1402 PASS / 0 FAIL / 6` existing conditional/live skip ve
+  analyzer `0 issues` PASS. On dokuz R2 golden `320/390/430 px`, `%130`, seller/state,
+  reviews/info ve image-shape stress için incelendi; yeniden üretilmedi.
+- Product Details Final UI V1 authoritative main baseline'dır; Production release
+  veya opt-in/canonical runtime activation değildir. Home, Reward, Category,
+  Product Listing, Seller Comparison, Cart V2, Reviews screen, backend, taxonomy,
+  Production ve Figma değiştirilmedi/erişilmedi. Next UI stream `Seller Comparison
+  Final UI` için tek `390 px` Product Owner visual prototype'tır.
+- Bir önceki doğrulanan teslim: **WAVE 41B PRODUCT LISTING FINAL UI INTEGRATION PASS —
   PRODUCT OWNER APPROVED V1 / LOCAL COMMERCE IDENTITY PRESERVED**.
 - Integration branch/base/source/merge:
   `integration/wave-41b-product-listing-final-ui` /
