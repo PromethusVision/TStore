@@ -5,28 +5,25 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
-}
+// Only a path is supplied through the environment. Passwords and the keystore
+// stay outside the checkout, including ignored files inside the checkout.
+apply from: rootProject.file("release-signing.gradle")
+def releaseInputs = resolveExternalReleaseSigning(System.getenv("ESNAFTAVAR_SIGNING_PROPERTIES"))
+def keystoreProperties = releaseInputs.properties
+def releaseStoreFile = releaseInputs.storeFile
+def releaseSigningReady = releaseInputs.ready
 
-def requiredReleaseSigningProperties = [
-    "storeFile",
-    "storePassword",
-    "keyAlias",
-    "keyPassword",
-]
-def missingReleaseSigningProperties = requiredReleaseSigningProperties.findAll { propertyName ->
-    def value = keystoreProperties.getProperty(propertyName)?.trim()
-    value == null || value.isEmpty() || value.startsWith("REPLACE_WITH_")
+tasks.register("verifyReleaseSigning") {
+    group = "verification"
+    description = "Proves the existing external upload key without building an artifact."
+    doLast {
+        def proof = proveExternalReleaseSigning(releaseInputs)
+        println("Release signing proof: PASS")
+        println("Certificate SHA-256: ${proof.sha256}")
+        println("Certificate valid until: ${proof.validUntil}")
+        println("Identity: existing EsnaftaVar RSA upload key; private-key challenge verified")
+    }
 }
-def releaseStoreFile = missingReleaseSigningProperties.contains("storeFile")
-    ? null
-    : rootProject.file(keystoreProperties.getProperty("storeFile"))
-def releaseSigningReady = keystorePropertiesFile.exists() &&
-    missingReleaseSigningProperties.isEmpty() &&
-    releaseStoreFile.isFile()
 
 gradle.taskGraph.whenReady { taskGraph ->
     // Android flavor and Dart entrypoint are independent Flutter CLI options.
@@ -64,16 +61,16 @@ gradle.taskGraph.whenReady { taskGraph ->
         throw new GradleException("Customer release packaging requires an explicit Android flavor.")
     }
     if (releasePackagingRequested && !releaseSigningReady) {
-        def reason = !keystorePropertiesFile.exists()
-            ? "android/key.properties is missing"
-            : !missingReleaseSigningProperties.isEmpty()
-                ? "required signing properties are missing or placeholders"
-                : "the configured keystore file does not exist"
         throw new GradleException(
-            "Production release signing is not configured: ${reason}. " +
-            "Use android/key.properties.example and the secure release setup guide; " +
-            "never commit signing credentials."
+            "Production release signing is not configured: ${releaseInputs.reason}. " +
+            "Use ESNAFTAVAR_SIGNING_PROPERTIES and the external signing guide; " +
+            "never put signing credentials in the checkout."
         )
+    }
+    if (releasePackagingRequested) {
+        // Validate passwords, the private key and the pinned owner certificate
+        // before any release package can run, including a misleading debug key.
+        proveExternalReleaseSigning(releaseInputs)
     }
 }
 

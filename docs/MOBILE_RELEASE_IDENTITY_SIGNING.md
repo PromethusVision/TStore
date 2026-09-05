@@ -1,5 +1,13 @@
 # Mobile Release Identity and Signing
 
+**W51A güncel yerel işlem kuralı (2026-09-05):** Android signing parolaları ve
+keystore bütün checkout'ların dışında tutulur. Eski `android/key.properties`
+kopyalama talimatlarının yerine `ESNAFTAVAR_SIGNING_PROPERTIES` dış dosya yolu ve
+paketleme öncesi owner certificate/private-key proof uygulanır. Güncel gözlem ve
+komutlar: [W51 signing envanteri](RELEASE_W51_SIGNING_CONFIG_INVENTORY.md) ve
+[W51 signing kanıtı](RELEASE_W51_SIGNING_PROOF.md). Aşağıdaki tarihsel signed
+artifact PASS kayıtları W51A'nın eksik parola girdisini kapatmaz.
+
 Bu belge Android ve iOS mağaza release kimliği/imza hazırlığının kaynak
 sözleşmesini kaydeder. Gerçek keystore, parola, Apple private key, certificate veya
 provisioning profile içermez.

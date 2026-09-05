@@ -1,0 +1,99 @@
+import java.security.KeyStore
+import java.security.MessageDigest
+import java.security.PrivateKey
+import java.security.SecureRandom
+import java.security.Signature
+import java.security.cert.X509Certificate
+
+// Public certificate identity from the existing Wave 11/13 upload key. A key
+// rotation requires an explicit release-owner change; there is no override.
+def expectedUploadCertificateSha256 =
+    "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B"
+
+ext.resolveExternalReleaseSigning = { String suppliedPath ->
+    def empty = [properties: new Properties(), storeFile: null, ready: false]
+    def reject = { String reason -> empty + [reason: reason] }
+    def configuredPath = suppliedPath?.trim()
+    if (!configuredPath) {
+        return reject("external signing properties path is missing")
+    }
+    try {
+        def checkout = rootProject.projectDir.parentFile.canonicalFile.toPath()
+        def isRepositoryOwned = { File file ->
+            def resolved = file.exists() ? file.toPath().toRealPath().toFile() : file.canonicalFile
+            if (resolved.toPath().startsWith(checkout)) { return true }
+            for (def parent = resolved.parentFile; parent != null; parent = parent.parentFile) {
+                if (new File(parent, ".git").exists()) { return true }
+            }
+            return false
+        }
+        def propertiesFile = new File(configuredPath)
+        if (!propertiesFile.isAbsolute() || isRepositoryOwned(propertiesFile)) {
+            return reject("signing properties must be an absolute path outside the checkout")
+        }
+        if (!propertiesFile.isFile()) {
+            return reject("external signing properties file is unavailable")
+        }
+        def values = new Properties()
+        propertiesFile.withInputStream { values.load(it) }
+        def fields = ["storeFile", "storePassword", "keyAlias", "keyPassword"]
+        if (fields.any { !values.getProperty(it)?.trim() ||
+            values.getProperty(it).trim().startsWith("REPLACE_WITH_") }) {
+            return reject("required signing properties are missing or placeholders")
+        }
+        def store = new File(values.getProperty("storeFile"))
+        if (!store.isAbsolute() || isRepositoryOwned(store)) {
+            return reject("keystore must be an absolute path outside the checkout")
+        }
+        if (!store.isFile()) {
+            return reject("external keystore file is unavailable")
+        }
+        return [properties: values, storeFile: store.canonicalFile, ready: true, reason: null]
+    } catch (Exception ignored) {
+        // Do not attach the underlying exception: paths or property values can
+        // appear in parser, filesystem and cryptographic exception messages.
+        return reject("external signing inputs could not be read safely")
+    }
+}
+
+ext.proveExternalReleaseSigning = { inputs ->
+    if (!inputs.ready) {
+        throw new GradleException("Release signing proof unavailable: ${inputs.reason}.")
+    }
+    char[] storePassword = inputs.properties.getProperty("storePassword").toCharArray()
+    char[] keyPassword = inputs.properties.getProperty("keyPassword").toCharArray()
+    try {
+        def store = KeyStore.getInstance(inputs.storeFile, storePassword)
+        def alias = inputs.properties.getProperty("keyAlias")
+        def key = store.getKey(alias, keyPassword)
+        def certificate = store.getCertificate(alias)
+        if (!(key instanceof PrivateKey) || !(certificate instanceof X509Certificate)) {
+            throw new IllegalStateException()
+        }
+        certificate.checkValidity()
+        def sha256 = MessageDigest.getInstance("SHA-256")
+            .digest(certificate.encoded).encodeHex().toString().toUpperCase(Locale.ROOT)
+        if (sha256 != expectedUploadCertificateSha256 || key.algorithm != "RSA") {
+            throw new IllegalStateException()
+        }
+        byte[] challenge = new byte[32]
+        new SecureRandom().nextBytes(challenge)
+        def signature = Signature.getInstance("SHA256withRSA")
+        signature.initSign(key)
+        signature.update(challenge)
+        byte[] signed = signature.sign()
+        signature.initVerify(certificate.publicKey)
+        signature.update(challenge)
+        if (!signature.verify(signed)) {
+            throw new IllegalStateException()
+        }
+        return [sha256: sha256, validUntil: certificate.notAfter.toInstant().toString()]
+    } catch (Exception ignored) {
+        throw new GradleException(
+            "Release signing proof failed: credentials, private key, validity or owner certificate mismatch."
+        )
+    } finally {
+        Arrays.fill(storePassword, (char) 0)
+        Arrays.fill(keyPassword, (char) 0)
+    }
+}
