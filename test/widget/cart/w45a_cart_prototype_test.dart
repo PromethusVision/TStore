@@ -153,6 +153,8 @@ void main() {
     );
     expect(find.text(_shop.name), findsOneWidget);
     expect(find.text('1.019,70 TL'), findsOneWidget);
+    expect(find.text('QR kod oluştur'), findsOneWidget);
+    expect(find.text('Mağazada göster'), findsNothing);
     for (final word in ['Ödeme', 'Sipariş', 'Kargo', 'Teslimat']) {
       expect(find.textContaining(word), findsNothing);
     }
@@ -197,11 +199,15 @@ void main() {
     pending.complete();
     await tester.pumpAndSettle();
   });
-  testWidgets('show in store refreshes and opens existing QR for exact cart', (
+  testWidgets('QR kod oluştur refreshes and opens existing QR for exact cart', (
     tester,
   ) async {
     await pump(tester);
     final button = find.byKey(const Key('customer-cart-verify-button'));
+    expect(
+      find.descendant(of: button, matching: find.text('QR kod oluştur')),
+      findsOneWidget,
+    );
     await tester.ensureVisible(button);
     await tester.tap(button);
     await tester.pumpAndSettle();

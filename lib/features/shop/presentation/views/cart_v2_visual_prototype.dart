@@ -188,7 +188,7 @@ Widget _buildCartLoadedPrototype(
         label: Text(
           view._isPreparingPurchaseVerification
               ? 'Hazırlanıyor…'
-              : 'Mağazada göster',
+              : 'QR kod oluştur',
         ),
       ),
       Center(
