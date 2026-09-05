@@ -1,5 +1,40 @@
 part of 'purchases_view.dart';
 
+class _PurchasesPrototypeControls extends StatelessWidget {
+  const _PurchasesPrototypeControls();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      const _PurchasesTabBar(viewsOnly: true),
+      Align(
+        alignment: Alignment.centerRight,
+        child: TextButton.icon(
+          key: const Key('purchase-create-return-action'),
+          icon: const Icon(Icons.add_rounded, size: 18),
+          label: const Text('İade Talebi Oluştur'),
+          onPressed: () {
+            final tabs = DefaultTabController.of(context);
+            showModalBottomSheet<void>(
+              context: context,
+              useSafeArea: true,
+              builder: (sheetContext) => SizedBox(
+                height: 360,
+                child: _CreateReturnRequestTab(
+                  onSeePurchases: () {
+                    tabs.animateTo(0);
+                    Navigator.of(sheetContext).pop();
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ],
+  );
+}
+
 class _PurchasesPrototypeHeader extends StatelessWidget {
   const _PurchasesPrototypeHeader();
 

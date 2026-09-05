@@ -170,6 +170,30 @@ void main() {
       );
     },
   );
+  testWidgets('C1 short conversation begins below header without dead space', (
+    tester,
+  ) async {
+    await pump(tester, messages: _messages.take(2).toList());
+    final headerBottom = tester
+        .getBottomLeft(find.byKey(const Key('customer-chat-header')))
+        .dy;
+    final dateTop = tester.getTopLeft(find.text('04.09.2026')).dy;
+    expect(dateTop - headerBottom, inInclusiveRange(0, 48));
+    expect(
+      tester
+              .getTopLeft(
+                find.byKey(const Key('chat-message-fixture-message-4')),
+              )
+              .dy -
+          dateTop,
+      lessThan(48),
+    );
+    final list = tester.widget<ListView>(
+      find.byKey(const Key('customer-chat-message-list')),
+    );
+    expect(list.reverse, isTrue);
+    expect(list.controller!.offset, 0);
+  });
   testWidgets('empty composer and existing grapheme limit remain enforced', (
     tester,
   ) async {

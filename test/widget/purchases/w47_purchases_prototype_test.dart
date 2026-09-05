@@ -230,9 +230,23 @@ void main() {
     );
     await tester.tap(find.text('Geçmişi aç'));
     await tester.pumpAndSettle();
+    expect(tester.widget<TabBar>(find.byType(TabBar)).tabs.length, 2);
+    expect(
+      find.descendant(
+        of: find.byType(TabBar),
+        matching: find.text('İade Talebi Oluştur'),
+      ),
+      findsNothing,
+    );
+    await tester.tap(find.text('İade Taleplerim'));
+    await tester.pumpAndSettle();
+    expect(find.text('Henüz iade talebin yok'), findsOneWidget);
     await tester.tap(find.text('İade Talebi Oluştur'));
     await tester.pumpAndSettle();
     expect(find.text('İade talebi oluşturma hazırlanıyor'), findsOneWidget);
+    await tester.tap(find.text('Alışverişlerimi Gör'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mahalle Giyim'), findsOneWidget);
     await tester.tap(find.byKey(const Key('customer-purchases-back-button')));
     await tester.pumpAndSettle();
     expect(find.text('Geçmişi aç'), findsOneWidget);
