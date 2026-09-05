@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/constants/sizes.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
@@ -181,66 +185,59 @@ class _AllProductsContentState extends State<_AllProductsContent> {
   Widget build(BuildContext context) {
     final title = widget.isSearchMode ? 'Ara' : 'Tüm Ürünler';
 
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
-      appBar: AppBar(
-        backgroundColor: CustomerHomeV1Tokens.cream,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          key: const Key('all-products-back-button'),
-          tooltip: 'Geri',
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: CustomerHomeV1Tokens.navy,
-          ),
-        ),
-        titleSpacing: 0,
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: CustomerHomeV1Tokens.navy,
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
+    return EsnaftaVarScaffold(
+      safeAreaBottom: true,
+      body: Builder(
+        builder: (context) => Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 430),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EsnaftaVarSpacing.md,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: EsnaftaVarSpacing.xs,
+                    ),
+                    child: Row(
+                      children: [
+                        EsnaftaVarSurfaceIconButton(
+                          buttonKey: const Key('all-products-back-button'),
+                          icon: Icons.arrow_back_rounded,
+                          tooltip: 'Geri',
+                          onPressed: () => Navigator.of(context).maybePop(),
+                        ),
+                        const SizedBox(width: EsnaftaVarSpacing.sm),
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: EsnaftaVarSectionHeader(title: title),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   CustomerLightInputTheme(
                     child: TextFormField(
                       key: const Key('all-products-search-field'),
                       controller: _searchController,
                       focusNode: _searchFocusNode,
-                      enabled: true,
-                      readOnly: false,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.search,
                       autofocus: widget.autoFocusSearch,
-                      onTap: () {
-                        if (!_searchFocusNode.hasFocus) {
-                          _searchFocusNode.requestFocus();
-                        }
-                      },
+                      style: Theme.of(context).textTheme.bodyMedium,
                       decoration: InputDecoration(
                         hintText: widget.isSearchMode
                             ? 'Ürün, kategori veya mağaza ara'
                             : 'Tüm ürünlerde ara',
-                        hintStyle: const TextStyle(
-                          color: CustomerHomeV1Tokens.muted,
-                          fontSize: 13,
-                        ),
+                        hintStyle: Theme.of(context).textTheme.bodySmall
+                            ?.copyWith(color: EsnaftaVarColors.textMuted),
                         prefixIcon: const Icon(
                           Icons.search_rounded,
-                          color: CustomerHomeV1Tokens.petrol,
+                          color: EsnaftaVarColors.primary,
                         ),
                         suffixIcon: _searchController.text.trim().isEmpty
                             ? null
@@ -250,24 +247,24 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                                 icon: const Icon(Icons.close_rounded),
                               ),
                         filled: true,
-                        fillColor: CustomerHomeV1Tokens.surface,
+                        fillColor: EsnaftaVarColors.surface,
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
+                          vertical: EsnaftaVarSpacing.md,
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius16,
+                            EsnaftaVarRadii.large,
                           ),
                           borderSide: const BorderSide(
-                            color: CustomerHomeV1Tokens.border,
+                            color: EsnaftaVarColors.borderDefault,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius16,
+                            EsnaftaVarRadii.large,
                           ),
                           borderSide: const BorderSide(
-                            color: CustomerHomeV1Tokens.petrol,
+                            color: EsnaftaVarColors.primary,
                             width: 1.4,
                           ),
                         ),
@@ -276,16 +273,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
                       onFieldSubmitted: _submitSearch,
                     ),
                   ),
-                  if (_shouldShowRecentSearches) ...[
-                    const SizedBox(height: CustomerHomeV1Tokens.space16),
-                    _RecentSearchesSection(
-                      queries: _recentSearches,
-                      onSelected: _selectRecentSearch,
-                      onRemoved: _removeRecentSearch,
-                      onClear: _clearRecentSearches,
-                    ),
-                  ],
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  const SizedBox(height: EsnaftaVarSpacing.md),
                   Expanded(
                     child:
                         widget.isSearchMode &&
@@ -306,6 +294,18 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       ),
     );
   }
+
+  Widget? get _recentSearchesHeader => _shouldShowRecentSearches
+      ? Padding(
+          padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.xl),
+          child: _RecentSearchesSection(
+            queries: _recentSearches,
+            onSelected: _selectRecentSearch,
+            onRemoved: _removeRecentSearch,
+            onClear: _clearRecentSearches,
+          ),
+        )
+      : null;
 
   Widget _buildCustomerSearchState(
     BuildContext context,
@@ -348,6 +348,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
         state is ProductsInitial ||
         state is ProductsSearching) {
       return _AllProductsLoadingView(
+        header: _recentSearchesHeader,
         title: _searchController.text.trim().isEmpty
             ? 'Tüm Ürünler'
             : 'Arama sonuçları',
@@ -357,6 +358,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
     if (state is ProductsError) {
       return _AllProductsStatusView(
         key: const Key('all-products-error'),
+        header: _recentSearchesHeader,
         icon: Icons.cloud_off_rounded,
         title: 'Ürünler yüklenemedi',
         message: 'Bağlantını kontrol edip tekrar deneyebilirsin.',
@@ -375,6 +377,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       }
 
       return _ProductsScrollView(
+        header: _recentSearchesHeader,
         controller: _scrollController,
         products: state.products,
         summaryTitle: 'Arama Sonuçları',
@@ -386,8 +389,9 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
     if (state is ProductsLoaded) {
       if (state.products.isEmpty) {
-        return const _AllProductsStatusView(
-          key: Key('all-products-empty'),
+        return _AllProductsStatusView(
+          key: const Key('all-products-empty'),
+          header: _recentSearchesHeader,
           icon: Icons.inventory_2_outlined,
           title: 'Henüz ürün bulunmuyor',
           message: 'Yeni ürünler eklendiğinde burada görünecek.',
@@ -395,6 +399,7 @@ class _AllProductsContentState extends State<_AllProductsContent> {
       }
 
       return _ProductsScrollView(
+        header: _recentSearchesHeader,
         controller: _scrollController,
         products: state.products,
         summaryTitle: 'Tüm Ürünler',
@@ -611,27 +616,18 @@ class _AllProductsContentState extends State<_AllProductsContent> {
 
 class _SearchError extends StatelessWidget {
   const _SearchError({required this.message, required this.onRetry});
-
   final String message;
   final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: TSizes.spaceBtwItems),
-          ElevatedButton(
-            key: const Key('retry-customer-search'),
-            onPressed: onRetry,
-            child: const Text('Tekrar Dene'),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => _AllProductsStatusView(
+    key: const Key('retry-customer-search'),
+    icon: Icons.cloud_off_rounded,
+    title: 'Arama tamamlanamadı',
+    message: message,
+    actionLabel: 'Tekrar Dene',
+    onRetry: onRetry,
+  );
 }
 
 class _CustomerSearchResultsView extends StatefulWidget {
@@ -685,8 +681,8 @@ class _CustomerSearchResultsViewState
           SliverToBoxAdapter(
             child: Container(
               key: const Key('customer-search-warning'),
-              margin: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
-              padding: const EdgeInsets.all(TSizes.md),
+              margin: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
+              padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(12),
@@ -694,7 +690,7 @@ class _CustomerSearchResultsViewState
               child: Row(
                 children: [
                   const Icon(Icons.info_outline),
-                  const SizedBox(width: TSizes.sm),
+                  const SizedBox(width: EsnaftaVarSpacing.xs),
                   Expanded(child: Text(state.warningMessage!)),
                 ],
               ),
@@ -709,10 +705,10 @@ class _CustomerSearchResultsViewState
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: TSizes.spaceBtwSections),
+              padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.xl),
               child: Wrap(
-                spacing: TSizes.sm,
-                runSpacing: TSizes.sm,
+                spacing: EsnaftaVarSpacing.xs,
+                runSpacing: EsnaftaVarSpacing.xs,
                 children: [
                   for (final category in state.categories)
                     ActionChip(
@@ -744,7 +740,7 @@ class _CustomerSearchResultsViewState
           SliverList.separated(
             itemCount: state.shops.length,
             separatorBuilder: (_, _) =>
-                const SizedBox(height: TSizes.spaceBtwItems / 2),
+                const SizedBox(height: EsnaftaVarSpacing.md / 2),
             itemBuilder: (context, index) {
               final shop = state.shops[index];
               return _CustomerSearchShopCard(
@@ -757,7 +753,7 @@ class _CustomerSearchResultsViewState
             },
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: TSizes.spaceBtwSections),
+            child: SizedBox(height: EsnaftaVarSpacing.xl),
           ),
         ],
         if (state.products.isNotEmpty) ...[
@@ -774,7 +770,7 @@ class _CustomerSearchResultsViewState
             shopProductsLoader: shopProductsLoader,
           ),
         ],
-        const SliverToBoxAdapter(child: SizedBox(height: TSizes.defaultSpace)),
+        const SliverToBoxAdapter(child: SizedBox(height: EsnaftaVarSpacing.xl)),
       ],
     );
   }
@@ -899,11 +895,11 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
 
         return SliverGrid(
           key: const Key('customer-search-product-grid'),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: CustomerHomeV1Tokens.space12,
-            crossAxisSpacing: CustomerHomeV1Tokens.space12,
-            mainAxisExtent: 250,
+            mainAxisSpacing: EsnaftaVarSpacing.sm,
+            crossAxisSpacing: EsnaftaVarSpacing.sm,
+            mainAxisExtent: _CatalogGridLayout(context).cardExtent,
           ),
           delegate: SliverChildBuilderDelegate((context, index) {
             final product = widget.products[index];
@@ -1012,70 +1008,28 @@ String _formatTurkishPrice(double price) {
 
 class _AllProductsSummary extends StatelessWidget {
   const _AllProductsSummary({required this.title, required this.subtitle});
-
   final String title;
   final String subtitle;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('all-products-summary'),
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius16,
-              ),
-            ),
-            child: const Icon(
-              Icons.grid_view_rounded,
-              color: CustomerHomeV1Tokens.petrol,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.25,
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  Widget build(BuildContext context) => EsnaftaVarSectionHeader(
+    key: const Key('all-products-summary'),
+    title: title,
+    subtitle: subtitle,
+  );
+}
+
+/// Matches the integrated Product Listing image proportions while allocating
+/// real scaled-text space. Both catalog and search consume this layout.
+class _CatalogGridLayout {
+  _CatalogGridLayout(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width.clamp(0.0, 430.0);
+    imageHeight = (((width - 44) / 2) * .81).clamp(116.0, 144.0);
+    final scale = MediaQuery.textScalerOf(context).scale(14) / 14;
+    cardExtent = imageHeight + 148 * scale.clamp(1.0, double.infinity);
   }
+  late final double imageHeight;
+  late final double cardExtent;
 }
 
 class _AllProductsProductCard extends StatelessWidget {
@@ -1085,7 +1039,6 @@ class _AllProductsProductCard extends StatelessWidget {
     required this.currentUserIdProvider,
     required this.onTap,
   });
-
   final ProductEntity product;
   final String priceLabel;
   final String? Function()? currentUserIdProvider;
@@ -1093,88 +1046,104 @@ class _AllProductsProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final layout = _CatalogGridLayout(context);
+    final theme = Theme.of(context);
     final secondaryText = _secondaryText;
     return Material(
       key: Key('all-products-product-${product.id}'),
-      color: CustomerHomeV1Tokens.surface,
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      color: EsnaftaVarColors.surfaceElevated,
+      borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
       child: InkWell(
         key: Key('all-products-product-link-${product.id}'),
         onTap: onTap,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
         child: Container(
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+            border: Border.all(color: EsnaftaVarColors.borderDefault),
+            boxShadow: EsnaftaVarElevation.xs,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 158,
+                height: layout.imageHeight,
                 width: double.infinity,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _AllProductsProductImage(product: product),
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: ProductFavoriteButton(
-                        productId: product.id,
-                        keyPrefix: 'all-products-favorite-${product.id}',
-                        currentUserIdProvider: currentUserIdProvider,
-                        height: 32,
-                        width: 32,
-                        iconSize: 17,
-                        backgroundColor: Colors.white,
+                child: ColoredBox(
+                  color: EsnaftaVarColors.surfaceAlt,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ExcludeSemantics(
+                        child: Padding(
+                          padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
+                          child: _AllProductsProductImage(product: product),
+                        ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        right: 6,
+                        top: 6,
+                        child: ProductFavoriteButton(
+                          productId: product.id,
+                          keyPrefix: 'all-products-favorite-${product.id}',
+                          currentUserIdProvider: currentUserIdProvider,
+                          height: EsnaftaVarTouchTargets.minimum,
+                          width: EsnaftaVarTouchTargets.minimum,
+                          iconSize: EsnaftaVarIconSizes.medium,
+                          backgroundColor: EsnaftaVarColors.surface,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
+                  padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        product.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 12.5,
-                          height: 1.15,
-                          fontWeight: FontWeight.w700,
+                      Tooltip(
+                        message: product.name,
+                        child: Text(
+                          product.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontSize: 13,
+                            height: 1.2,
+                          ),
                         ),
                       ),
                       if (secondaryText != null) ...[
-                        const SizedBox(height: CustomerHomeV1Tokens.space4),
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
                         Text(
                           secondaryText,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: CustomerHomeV1Tokens.muted,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w500,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: EsnaftaVarColors.textMuted,
                           ),
                         ),
                       ],
                       const Spacer(),
                       Text(
+                        'Mağaza fiyatı',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: EsnaftaVarColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: EsnaftaVarSpacing.xxs),
+                      Text(
                         priceLabel,
                         key: Key('all-products-price-${product.id}'),
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: EsnaftaVarColors.price,
+                          fontSize: 14,
+                          height: 1.2,
                         ),
                       ),
                     ],
@@ -1212,14 +1181,14 @@ class _AllProductsProductImage extends StatelessWidget {
     if (!isNetwork) {
       return Image.asset(
         imageUrl,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         errorBuilder: (_, _, _) => const _AllProductsProductImageFallback(),
       );
     }
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       placeholder: (_, _) => const _AllProductsProductImageFallback(),
       errorWidget: (_, _, _) => const _AllProductsProductImageFallback(),
     );
@@ -1236,113 +1205,38 @@ class _AllProductsProductImage extends StatelessWidget {
 
 class _AllProductsProductImageFallback extends StatelessWidget {
   const _AllProductsProductImageFallback();
-
   @override
-  Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: CustomerHomeV1Tokens.mint,
-      child: Center(
-        child: Icon(
-          Icons.inventory_2_rounded,
-          color: CustomerHomeV1Tokens.petrol,
-          size: 38,
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const ProductImageFallback();
 }
 
 class _AllProductsLoadingView extends StatelessWidget {
-  const _AllProductsLoadingView({required this.title});
-
+  const _AllProductsLoadingView({required this.title, this.header});
   final String title;
+  final Widget? header;
 
   @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      key: const Key('all-products-loading'),
-      slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              bottom: CustomerHomeV1Tokens.space16,
-            ),
-            child: _AllProductsSummary(
-              title: title,
-              subtitle: 'Ürünler hazırlanıyor',
-            ),
+  Widget build(BuildContext context) => CustomScrollView(
+    key: const Key('all-products-loading'),
+    slivers: [
+      if (header != null) SliverToBoxAdapter(child: header),
+      SliverToBoxAdapter(
+        child: Semantics(
+          liveRegion: true,
+          child: EsnaftaVarStateCard(
+            icon: Icons.hourglass_top_rounded,
+            title: title,
+            message: 'Sonuçlar hazırlanıyor',
           ),
         ),
-        SliverGrid(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: CustomerHomeV1Tokens.space12,
-            crossAxisSpacing: CustomerHomeV1Tokens.space12,
-            mainAxisExtent: 250,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (_, _) => const _AllProductsProductSkeleton(),
-            childCount: 6,
-          ),
+      ),
+      const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.md),
+          child: LinearProgressIndicator(semanticsLabel: 'Yükleniyor'),
         ),
-      ],
-    );
-  }
-}
-
-class _AllProductsProductSkeleton extends StatelessWidget {
-  const _AllProductsProductSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 158,
-            width: double.infinity,
-            child: ColoredBox(color: CustomerHomeV1Tokens.mint),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 11,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: CustomerHomeV1Tokens.border,
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radiusPill,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space8),
-                Container(
-                  height: 9,
-                  width: 72,
-                  decoration: BoxDecoration(
-                    color: CustomerHomeV1Tokens.border,
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radiusPill,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    ],
+  );
 }
 
 class _AllProductsStatusView extends StatelessWidget {
@@ -1353,79 +1247,34 @@ class _AllProductsStatusView extends StatelessWidget {
     required this.message,
     this.actionLabel,
     this.onRetry,
+    this.header,
   });
-
   final IconData icon;
   final String title;
   final String message;
   final String? actionLabel;
   final VoidCallback? onRetry;
+  final Widget? header;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-        decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: const BoxDecoration(
-                color: CustomerHomeV1Tokens.mint,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 28),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space16),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.navy,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: CustomerHomeV1Tokens.space8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.muted,
-                fontSize: 12,
-                height: 1.35,
-              ),
-            ),
-            if (actionLabel != null && onRetry != null) ...[
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              FilledButton(
-                onPressed: onRetry,
-                style: FilledButton.styleFrom(
-                  backgroundColor: CustomerHomeV1Tokens.petrol,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radiusPill,
-                    ),
-                  ),
-                ),
-                child: Text(actionLabel!),
-              ),
-            ],
-          ],
+  Widget build(BuildContext context) => CustomScrollView(
+    slivers: [
+      if (header != null) SliverToBoxAdapter(child: header),
+      SliverToBoxAdapter(
+        child: Semantics(
+          liveRegion: true,
+          child: EsnaftaVarStateCard(
+            icon: icon,
+            title: title,
+            message: message,
+            actionLabel: actionLabel,
+            onAction: onRetry,
+          ),
         ),
       ),
-    );
-  }
+      const SliverToBoxAdapter(child: SizedBox(height: EsnaftaVarSpacing.xl)),
+    ],
+  );
 }
 
 class _SearchSectionTitle extends StatelessWidget {
@@ -1436,8 +1285,8 @@ class _SearchSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
-      child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+      padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
+      child: EsnaftaVarSectionHeader(title: title),
     );
   }
 }
@@ -1463,7 +1312,7 @@ class _CustomerSearchShopCard extends StatelessWidget {
         key: Key('customer-search-shop-link-${shop.id}'),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(TSizes.md),
+          padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
           child: Row(
             children: [
               Container(
@@ -1478,7 +1327,7 @@ class _CustomerSearchShopCard extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
               ),
-              const SizedBox(width: TSizes.spaceBtwItems),
+              const SizedBox(width: EsnaftaVarSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1547,7 +1396,7 @@ class _EmptySearchResult extends StatelessWidget {
 
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: TSizes.defaultSpace),
+        padding: const EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.xl),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
           child: Column(
@@ -1558,7 +1407,7 @@ class _EmptySearchResult extends StatelessWidget {
                 size: 56,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: TSizes.spaceBtwItems),
+              const SizedBox(height: EsnaftaVarSpacing.md),
               Text(
                 normalizedQuery.isEmpty
                     ? isUnifiedSearch
@@ -1571,7 +1420,7 @@ class _EmptySearchResult extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: TSizes.spaceBtwItems / 2),
+              const SizedBox(height: EsnaftaVarSpacing.md / 2),
               Text(
                 isUnifiedSearch
                     ? 'Ürün, kategori veya mağaza adıyla yeniden arayabilirsiniz.'
@@ -1579,7 +1428,7 @@ class _EmptySearchResult extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: TSizes.spaceBtwSections),
+              const SizedBox(height: EsnaftaVarSpacing.xl),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -1589,7 +1438,7 @@ class _EmptySearchResult extends StatelessWidget {
                   label: const Text('Aramayı Düzenle'),
                 ),
               ),
-              const SizedBox(height: TSizes.spaceBtwItems / 2),
+              const SizedBox(height: EsnaftaVarSpacing.md / 2),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -1674,6 +1523,7 @@ class _ProductsScrollView extends StatefulWidget {
   final CustomerProductDestinationBuilder? productDestinationBuilder;
   final SearchResultsShopProductsLoader? shopProductsLoader;
   final Widget? footer;
+  final Widget? header;
 
   const _ProductsScrollView({
     required this.controller,
@@ -1683,6 +1533,7 @@ class _ProductsScrollView extends StatefulWidget {
     this.productDestinationBuilder,
     this.shopProductsLoader,
     this.footer,
+    this.header,
   });
 
   @override
@@ -1728,12 +1579,12 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       controller: widget.controller,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       slivers: [
+        if (widget.header != null) SliverToBoxAdapter(child: widget.header),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.only(
-              bottom: CustomerHomeV1Tokens.space16,
-            ),
+            padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
             child: _AllProductsSummary(
               title: widget.summaryTitle,
               subtitle: '${widget.products.length} ürün gösteriliyor',
@@ -1742,11 +1593,11 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
         ),
         SliverGrid(
           key: const Key('all-products-grid'),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: CustomerHomeV1Tokens.space12,
-            crossAxisSpacing: CustomerHomeV1Tokens.space12,
-            mainAxisExtent: 250,
+            mainAxisSpacing: EsnaftaVarSpacing.sm,
+            crossAxisSpacing: EsnaftaVarSpacing.sm,
+            mainAxisExtent: _CatalogGridLayout(context).cardExtent,
           ),
           delegate: SliverChildBuilderDelegate((context, index) {
             final product = widget.products[index];
@@ -1765,7 +1616,7 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
           }, childCount: widget.products.length),
         ),
         SliverToBoxAdapter(
-          child: widget.footer ?? const SizedBox(height: TSizes.defaultSpace),
+          child: widget.footer ?? const SizedBox(height: EsnaftaVarSpacing.xl),
         ),
       ],
     );
@@ -1861,39 +1712,33 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
 class _ProductsLoadMoreFooter extends StatelessWidget {
   final ProductsLoaded state;
   final VoidCallback onRetry;
-
   const _ProductsLoadMoreFooter({required this.state, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
     if (state.isLoadingMore) {
       return const Padding(
-        padding: EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems),
-        child: Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
+        key: Key('all-products-loading-more'),
+        padding: EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.md),
+        child: LinearProgressIndicator(
+          semanticsLabel: 'Diğer ürünler yükleniyor',
         ),
       );
     }
-
     if (state.loadMoreError != null) {
       return Padding(
-        padding: const EdgeInsets.only(top: TSizes.spaceBtwItems),
-        child: Column(
-          children: [
-            const Text(
-              'Diğer ürünler yüklenemedi.',
-              textAlign: TextAlign.center,
-            ),
-            TextButton(onPressed: onRetry, child: const Text('Tekrar Dene')),
-          ],
+        padding: const EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.md),
+        child: EsnaftaVarStateCard(
+          key: const Key('all-products-load-more-error'),
+          icon: Icons.cloud_off_rounded,
+          title: 'Diğer ürünler yüklenemedi.',
+          message:
+              'Gösterilen ürünleri inceleyebilir veya yeniden deneyebilirsin.',
+          actionLabel: 'Tekrar Dene',
+          onAction: onRetry,
         ),
       );
     }
-
-    return const SizedBox(height: TSizes.defaultSpace);
+    return const SizedBox(height: EsnaftaVarSpacing.xl);
   }
 }
