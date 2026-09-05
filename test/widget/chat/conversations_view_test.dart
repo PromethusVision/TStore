@@ -61,6 +61,7 @@ void main() {
   testWidgets('konuşmaları mesaj, tarih ve okunmamış sayısıyla gösterir', (
     tester,
   ) async {
+    final semantics = tester.ensureSemantics();
     final datedThread = ChatThreadEntity(
       otherUserId: 'owner-dated',
       displayName: 'Mahalle Marketi',
@@ -91,11 +92,17 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Mesajlarım'), findsOneWidget);
-    expect(find.text('2 okunmamış mesaj'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(
+        RegExp('Mahalle Marketi konuşması, 2 okunmamış mesaj'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Mahalle Marketi'), findsOneWidget);
     expect(find.text('Ürününüz mağazada hazırlandı.'), findsOneWidget);
     expect(find.text('20.07.2026'), findsOneWidget);
-    expect(find.text('2'), findsNWidgets(2));
+    expect(find.text('2'), findsOneWidget);
+    semantics.dispose();
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -367,7 +374,7 @@ void main() {
       find.byKey(const Key('conversation-card-owner-responsive')),
       findsOneWidget,
     );
-    expect(find.text('99+'), findsNWidgets(2));
+    expect(find.text('99+'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox.shrink());

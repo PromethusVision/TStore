@@ -76,7 +76,7 @@ void main() {
       expect(find.byKey(const Key('customer-ratings-content')), findsOneWidget);
       expect(find.byKey(const Key('customer-ratings-header')), findsOneWidget);
       expect(find.byKey(const Key('customer-ratings-list')), findsOneWidget);
-      expect(find.text('Değerlendirmelerim'), findsOneWidget);
+      expect(find.text('Esnaf değerlendirmelerim'), findsOneWidget);
       expect(find.text('Yeni Değerlendirme'), findsOneWidget);
       expect(find.text('Eski Değerlendirme'), findsOneWidget);
       expect(find.text('Puanlanmamış Mağaza'), findsNothing);
@@ -84,7 +84,8 @@ void main() {
       expect(find.byKey(const Key('customer-rating-older')), findsOneWidget);
       expect(find.text('5/5'), findsOneWidget);
       expect(find.text('3/5'), findsOneWidget);
-      expect(find.text('2 ürün • 150,50 TL'), findsNWidgets(2));
+      expect(find.text('2 ürün'), findsNWidgets(2));
+      expect(find.text('150,50 TL'), findsNWidgets(2));
       expect(
         tester.getTopLeft(find.text('Yeni Değerlendirme')).dy,
         lessThan(tester.getTopLeft(find.text('Eski Değerlendirme')).dy),

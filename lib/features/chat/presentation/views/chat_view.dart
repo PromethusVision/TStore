@@ -5,11 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/chat/domain/chat_message_rules.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
+
+part 'chat_final_ui.dart';
 
 typedef ChatCurrentUserIdProvider = String? Function();
 
@@ -118,7 +122,7 @@ class _ChatViewBodyState extends State<_ChatViewBody>
         : SupabaseService.instance.currentUser?.id;
 
     return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+      backgroundColor: EsnaftaVarColors.background,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -128,14 +132,14 @@ class _ChatViewBodyState extends State<_ChatViewBody>
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
                     0,
                   ),
-                  child: _ChatHeader(receiverName: widget.receiverName),
+                  child: _ChatFinalHeader(receiverName: widget.receiverName),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space8),
+                const SizedBox(height: EsnaftaVarSpacing.xs),
                 Expanded(
                   child: BlocConsumer<ChatCubit, ChatState>(
                     listener: (context, state) {
@@ -320,108 +324,6 @@ class _ChatViewBodyState extends State<_ChatViewBody>
   }
 }
 
-class _ChatHeader extends StatelessWidget {
-  const _ChatHeader({required this.receiverName});
-
-  final String receiverName;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-chat-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Material(
-            color: CustomerHomeV1Tokens.mint,
-            shape: const CircleBorder(),
-            child: IconButton(
-              key: const Key('customer-chat-back-button'),
-              tooltip: 'Geri',
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                color: CustomerHomeV1Tokens.petrol,
-                size: 21,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Container(
-            width: 38,
-            height: 38,
-            decoration: const BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              _initialFor(receiverName),
-              style: const TextStyle(
-                color: CustomerHomeV1Tokens.petrol,
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  receiverName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.2,
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
-                const Text(
-                  'Mağaza ile görüşme',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.cream,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-            ),
-            child: const Icon(
-              Icons.chat_bubble_outline_rounded,
-              color: CustomerHomeV1Tokens.petrol,
-              size: 18,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _ChatLoadingState extends StatelessWidget {
   const _ChatLoadingState();
 
@@ -430,16 +332,16 @@ class _ChatLoadingState extends StatelessWidget {
     return Center(
       child: Container(
         key: const Key('customer-chat-loading-state'),
-        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        margin: const EdgeInsets.all(EsnaftaVarSpacing.md),
         padding: const EdgeInsets.symmetric(
-          horizontal: CustomerHomeV1Tokens.space24,
-          vertical: CustomerHomeV1Tokens.space20,
+          horizontal: EsnaftaVarSpacing.xl,
+          vertical: EsnaftaVarSpacing.lg,
         ),
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
+          boxShadow: EsnaftaVarElevation.xs,
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -449,15 +351,15 @@ class _ChatLoadingState extends StatelessWidget {
               height: 22,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: CustomerHomeV1Tokens.petrol,
+                color: EsnaftaVarColors.primary,
               ),
             ),
-            SizedBox(width: CustomerHomeV1Tokens.space12),
+            SizedBox(width: EsnaftaVarSpacing.sm),
             Flexible(
               child: Text(
                 'Mesajlar yükleniyor',
                 style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
+                  color: EsnaftaVarColors.textPrimary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -477,79 +379,30 @@ class _ChatLoadErrorState extends StatelessWidget {
   final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        child: Container(
-          key: const Key('customer-chat-load-error-state'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          EsnaftaVarStateCard(
+            key: const Key('customer-chat-load-error-state'),
+            icon: Icons.cloud_off_rounded,
+            title: 'Mesajlar yüklenemedi',
+            message: message,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFE4DE),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.cloud_off_rounded,
-                  color: CustomerHomeV1Tokens.coral,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              const Text(
-                'Mesajlar yüklenemedi',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              FilledButton.icon(
-                key: const Key('customer-chat-load-retry-action'),
-                onPressed: onRetry,
-                style: FilledButton.styleFrom(
-                  backgroundColor: CustomerHomeV1Tokens.petrol,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius16,
-                    ),
-                  ),
-                ),
-                icon: const Icon(Icons.refresh_rounded, size: 19),
-                label: const Text('Tekrar dene'),
-              ),
-            ],
+          const SizedBox(height: EsnaftaVarSpacing.sm),
+          FilledButton.icon(
+            key: const Key('customer-chat-load-retry-action'),
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Tekrar dene'),
           ),
-        ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _MessageList extends StatelessWidget {
@@ -573,43 +426,47 @@ class _MessageList extends StatelessWidget {
 
     return Stack(
       children: [
-        ListView.builder(
-          key: const Key('customer-chat-message-list'),
-          controller: scrollController,
-          reverse: true,
-          padding: const EdgeInsets.fromLTRB(
-            CustomerHomeV1Tokens.space16,
-            CustomerHomeV1Tokens.space8,
-            CustomerHomeV1Tokens.space16,
-            CustomerHomeV1Tokens.space16,
-          ),
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            final isMine =
-                currentUserId != null && message.senderId == currentUserId;
-            final showDateHeader = _shouldShowDateHeader(index);
+        Align(
+          alignment: Alignment.topCenter,
+          child: ListView.builder(
+            shrinkWrap: true,
+            key: const Key('customer-chat-message-list'),
+            controller: scrollController,
+            reverse: true,
+            padding: const EdgeInsets.fromLTRB(
+              EsnaftaVarSpacing.md,
+              EsnaftaVarSpacing.xs,
+              EsnaftaVarSpacing.md,
+              EsnaftaVarSpacing.md,
+            ),
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              final isMine =
+                  currentUserId != null && message.senderId == currentUserId;
+              final showDateHeader = _shouldShowDateHeader(index);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (showDateHeader && message.createdAt != null)
-                  _DateHeader(date: message.createdAt!),
-                _MessageBubble(message: message, isMine: isMine),
-              ],
-            );
-          },
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showDateHeader && message.createdAt != null)
+                    _ChatFinalDate(date: message.createdAt!),
+                  _MessageBubble(message: message, isMine: isMine),
+                ],
+              );
+            },
+          ),
         ),
         if (isLoadingMore)
           const Positioned(
-            top: CustomerHomeV1Tokens.space8,
+            top: EsnaftaVarSpacing.xs,
             left: 0,
             right: 0,
             child: IgnorePointer(
               child: Center(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: CustomerHomeV1Tokens.surface,
+                    color: EsnaftaVarColors.surface,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -621,13 +478,13 @@ class _MessageList extends StatelessWidget {
                   ),
                   child: Padding(
                     key: Key('chat-load-more-progress'),
-                    padding: EdgeInsets.all(CustomerHomeV1Tokens.space8),
+                    padding: EdgeInsets.all(EsnaftaVarSpacing.xs),
                     child: SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: CustomerHomeV1Tokens.petrol,
+                        color: EsnaftaVarColors.primary,
                       ),
                     ),
                   ),
@@ -656,91 +513,17 @@ class _EmptyConversationState extends StatelessWidget {
   const _EmptyConversationState();
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        child: Container(
-          key: const Key('customer-chat-empty-state'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-          ),
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 29,
-                backgroundColor: CustomerHomeV1Tokens.mint,
-                child: Icon(
-                  Icons.chat_bubble_outline_rounded,
-                  color: CustomerHomeV1Tokens.petrol,
-                  size: 28,
-                ),
-              ),
-              SizedBox(height: CustomerHomeV1Tokens.space16),
-              Text(
-                'Henüz mesaj yok.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                'Mağazaya ilk mesajını aşağıdaki alandan gönderebilirsin.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      child: const EsnaftaVarStateCard(
+        key: Key('customer-chat-empty-state'),
+        icon: Icons.chat_bubble_outline_rounded,
+        title: 'Henüz mesaj yok.',
+        message: 'Mağazaya ilk mesajını aşağıdaki alandan gönderebilirsin.',
       ),
-    );
-  }
-}
-
-class _DateHeader extends StatelessWidget {
-  const _DateHeader({required this.date});
-
-  final DateTime date;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: CustomerHomeV1Tokens.space12,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: CustomerHomeV1Tokens.space12,
-          vertical: CustomerHomeV1Tokens.space4,
-        ),
-        decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
-        ),
-        child: Text(
-          _formatFullDate(date),
-          style: const TextStyle(
-            color: CustomerHomeV1Tokens.petrol,
-            fontSize: 9.5,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }
 
 class _MessageBubble extends StatelessWidget {
@@ -750,106 +533,7 @@ class _MessageBubble extends StatelessWidget {
   final bool isMine;
 
   @override
-  Widget build(BuildContext context) {
-    final maxWidth =
-        MediaQuery.sizeOf(context).width.clamp(0, 430).toDouble() * 0.76;
-    final backgroundColor = isMine
-        ? CustomerHomeV1Tokens.petrol
-        : CustomerHomeV1Tokens.surface;
-    final textColor = isMine ? Colors.white : CustomerHomeV1Tokens.navy;
-
-    return Align(
-      alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        key: Key('chat-message-${message.id}'),
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        margin: const EdgeInsets.only(bottom: CustomerHomeV1Tokens.space8),
-        padding: const EdgeInsets.symmetric(
-          horizontal: CustomerHomeV1Tokens.space12,
-          vertical: CustomerHomeV1Tokens.space8,
-        ),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(CustomerHomeV1Tokens.radius16),
-            topRight: const Radius.circular(CustomerHomeV1Tokens.radius16),
-            bottomLeft: Radius.circular(
-              isMine
-                  ? CustomerHomeV1Tokens.radius16
-                  : CustomerHomeV1Tokens.space4,
-            ),
-            bottomRight: Radius.circular(
-              isMine
-                  ? CustomerHomeV1Tokens.space4
-                  : CustomerHomeV1Tokens.radius16,
-            ),
-          ),
-          border: isMine
-              ? null
-              : Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                message.content,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 12.5,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            if (message.createdAt != null || isMine) ...[
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (message.createdAt != null)
-                    Text(
-                      _formatTime(message.createdAt!),
-                      style: TextStyle(
-                        color: textColor.withValues(alpha: 0.7),
-                        fontSize: 9,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  if (message.createdAt != null && isMine)
-                    const SizedBox(width: CustomerHomeV1Tokens.space4),
-                  if (isMine) ...[
-                    ExcludeSemantics(
-                      child: Icon(
-                        message.isRead
-                            ? Icons.done_all_rounded
-                            : Icons.done_rounded,
-                        color: textColor.withValues(alpha: 0.78),
-                        size: 12,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      message.isRead ? 'Okundu' : 'Gönderildi',
-                      key: Key('chat-message-status-${message.id}'),
-                      style: TextStyle(
-                        color: textColor.withValues(alpha: 0.78),
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => _buildChatFinalBubble(this, context);
 }
 
 class _MessageInput extends StatelessWidget {
@@ -870,17 +554,17 @@ class _MessageInput extends StatelessWidget {
     return Container(
       key: const Key('customer-chat-input-area'),
       padding: const EdgeInsets.fromLTRB(
-        CustomerHomeV1Tokens.space12,
-        CustomerHomeV1Tokens.space8,
-        CustomerHomeV1Tokens.space12,
-        CustomerHomeV1Tokens.space12,
+        EsnaftaVarSpacing.sm,
+        EsnaftaVarSpacing.xs,
+        EsnaftaVarSpacing.sm,
+        EsnaftaVarSpacing.sm,
       ),
       decoration: const BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        border: Border(top: BorderSide(color: CustomerHomeV1Tokens.border)),
+        color: EsnaftaVarColors.surface,
+        border: Border(top: BorderSide(color: EsnaftaVarColors.borderDefault)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: ValueListenableBuilder<TextEditingValue>(
@@ -893,47 +577,39 @@ class _MessageInput extends StatelessWidget {
                 minLines: 1,
                 maxLines: 4,
                 textInputAction: TextInputAction.newline,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 13,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
+                  isDense: true,
                   hintText: 'Mesaj yaz',
                   counterText:
                       '${ChatMessageRules.characterCount(value.text)} / '
                       '${ChatMessageRules.maxTextLength}',
                   hintStyle: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
+                    color: EsnaftaVarColors.textSecondary,
                     fontSize: 12.5,
                   ),
                   filled: true,
-                  fillColor: CustomerHomeV1Tokens.cream,
+                  fillColor: EsnaftaVarColors.surfaceAlt,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: CustomerHomeV1Tokens.space16,
-                    vertical: CustomerHomeV1Tokens.space12,
+                    horizontal: EsnaftaVarSpacing.md,
+                    vertical: EsnaftaVarSpacing.sm,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
-                    ),
+                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
                     borderSide: const BorderSide(
-                      color: CustomerHomeV1Tokens.border,
+                      color: EsnaftaVarColors.borderDefault,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
-                    ),
+                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
                     borderSide: const BorderSide(
-                      color: CustomerHomeV1Tokens.border,
+                      color: EsnaftaVarColors.borderDefault,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
-                    ),
+                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
                     borderSide: const BorderSide(
-                      color: CustomerHomeV1Tokens.petrol,
+                      color: EsnaftaVarColors.primary,
                       width: 1.4,
                     ),
                   ),
@@ -941,7 +617,7 @@ class _MessageInput extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          const SizedBox(width: EsnaftaVarSpacing.xs),
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, _) {
@@ -951,16 +627,21 @@ class _MessageInput extends StatelessWidget {
                   ChatMessageRules.validationError(value.text) == null;
 
               return SizedBox.square(
-                dimension: 46,
+                dimension: EsnaftaVarTouchTargets.preferred,
                 child: IconButton.filled(
                   key: const Key('chat-message-send-action'),
                   tooltip: 'Gönder',
                   onPressed: canSend ? onSend : null,
                   style: IconButton.styleFrom(
-                    backgroundColor: CustomerHomeV1Tokens.petrol,
-                    disabledBackgroundColor: CustomerHomeV1Tokens.mint,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        EsnaftaVarRadii.medium,
+                      ),
+                    ),
+                    backgroundColor: EsnaftaVarColors.primary,
+                    disabledBackgroundColor: EsnaftaVarColors.primarySoft,
                     foregroundColor: Colors.white,
-                    disabledForegroundColor: CustomerHomeV1Tokens.muted,
+                    disabledForegroundColor: EsnaftaVarColors.textSecondary,
                   ),
                   icon: isSending
                       ? const SizedBox(
@@ -968,10 +649,16 @@ class _MessageInput extends StatelessWidget {
                           height: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: CustomerHomeV1Tokens.petrol,
+                            color: EsnaftaVarColors.primary,
                           ),
                         )
-                      : const Icon(Icons.send_rounded, size: 20),
+                      : Icon(
+                          Icons.send_rounded,
+                          size: 20,
+                          color: canSend
+                              ? EsnaftaVarColors.textOnPrimary
+                              : EsnaftaVarColors.textMuted,
+                        ),
                 ),
               );
             },
@@ -1001,12 +688,6 @@ class _ChatMessageLengthFormatter extends TextInputFormatter {
       selection: TextSelection.collapsed(offset: limitedText.length),
     );
   }
-}
-
-String _initialFor(String value) {
-  final trimmed = value.trim();
-  if (trimmed.isEmpty) return 'M';
-  return trimmed.substring(0, 1).toUpperCase();
 }
 
 String _formatFullDate(DateTime value) {
