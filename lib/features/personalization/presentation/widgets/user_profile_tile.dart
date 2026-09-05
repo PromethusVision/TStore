@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/personalization/presentation/view_models/user_profile_tile_model.dart';
 
 class UserProfileTile extends StatelessWidget {
@@ -12,27 +12,26 @@ class UserProfileTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       key: const Key('customer-profile-identity-card'),
-      color: CustomerHomeV1Tokens.surface,
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+      color: EsnaftaVarColors.surface,
+      borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
       child: InkWell(
         onTap: userProfileTileModel.onTap,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+          padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+            border: Border.all(color: EsnaftaVarColors.borderDefault),
           ),
           child: Row(
             children: [
               Container(
                 width: 54,
                 height: 54,
-                padding: const EdgeInsets.all(CustomerHomeV1Tokens.space4),
+                padding: const EdgeInsets.all(EsnaftaVarSpacing.xxs),
                 decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
+                  color: EsnaftaVarColors.primarySoft,
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
@@ -42,52 +41,52 @@ class UserProfileTile extends StatelessWidget {
                       width: 46,
                       height: 46,
                       applyImageRadius: true,
-                      borderRadius: CustomerHomeV1Tokens.radiusPill,
-                      backgroundColor: CustomerHomeV1Tokens.mint,
+                      borderRadius: EsnaftaVarRadii.pill,
+                      backgroundColor: EsnaftaVarColors.primarySoft,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              const SizedBox(width: EsnaftaVarSpacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       userProfileTileModel.title,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: CustomerHomeV1Tokens.navy,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                        color: EsnaftaVarColors.textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space4),
+                    const SizedBox(height: EsnaftaVarSpacing.xxs),
                     Text(
                       userProfileTileModel.subtitle,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 10.5,
+                        color: EsnaftaVarColors.textSecondary,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space8),
+              const SizedBox(width: EsnaftaVarSpacing.xs),
               Container(
                 width: 38,
                 height: 38,
                 decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
+                  color: EsnaftaVarColors.primarySoft,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   userProfileTileModel.trailing,
-                  color: CustomerHomeV1Tokens.petrol,
+                  color: EsnaftaVarColors.primary,
                   size: 19,
                 ),
               ),

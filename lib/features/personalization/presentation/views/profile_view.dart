@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/features/personalization/presentation/widgets/account_page_header.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
@@ -45,12 +45,12 @@ class _ProfileViewState extends State<ProfileView> {
         context: context,
         isScrollControlled: true,
         useSafeArea: true,
-        backgroundColor: CustomerHomeV1Tokens.cream,
-        barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
+        backgroundColor: EsnaftaVarColors.background,
+        barrierColor: EsnaftaVarColors.textPrimary.withValues(alpha: 0.32),
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(CustomerHomeV1Tokens.radius24),
+            top: Radius.circular(EsnaftaVarRadii.xxLarge),
           ),
         ),
         builder: (_) => BlocProvider(
@@ -133,53 +133,49 @@ class _ProfileViewState extends State<ProfileView> {
     final email = _displayValue(_user.email);
     final phone = _displayValue(_user.phone);
 
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
+      safeAreaTop: false,
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             key: const Key('customer-account-content'),
             constraints: const BoxConstraints(maxWidth: 430),
             child: SingleChildScrollView(
               key: const Key('customer-account-scroll'),
               padding: const EdgeInsets.fromLTRB(
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space8,
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space24,
+                EsnaftaVarSpacing.md,
+                EsnaftaVarSpacing.xs,
+                EsnaftaVarSpacing.md,
+                EsnaftaVarSpacing.xl,
               ),
               child: Column(
                 children: [
                   const _AccountHeader(),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const SizedBox(height: EsnaftaVarSpacing.sm),
                   _CustomerIdentityCard(fullName: fullName),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
+                  const SizedBox(height: EsnaftaVarSpacing.md),
                   _ContactInformationCard(email: email, phone: phone),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const SizedBox(height: EsnaftaVarSpacing.sm),
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
                     child: FilledButton.icon(
                       key: const Key('edit-profile-button'),
                       onPressed: _isOpeningEditor ? null : _openEditProfile,
                       style: FilledButton.styleFrom(
-                        backgroundColor: CustomerHomeV1Tokens.petrol,
+                        backgroundColor: EsnaftaVarColors.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius16,
+                            EsnaftaVarRadii.large,
                           ),
                         ),
-                        textStyle: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                        ),
                       ),
-                      icon: const Icon(Iconsax.edit, size: 19),
+                      icon: const Icon(Icons.edit_outlined, size: 19),
                       label: const Text('Bilgileri Düzenle'),
                     ),
                   ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space24),
+                  const SizedBox(height: EsnaftaVarSpacing.xl),
                   _DangerZoneCard(
                     onDeleteAccount: _isOpeningAccountDeletion
                         ? null
@@ -202,147 +198,51 @@ class _ProfileViewState extends State<ProfileView> {
 
 class _AccountHeader extends StatelessWidget {
   const _AccountHeader();
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-account-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Material(
-            color: CustomerHomeV1Tokens.mint,
-            shape: const CircleBorder(),
-            child: IconButton(
-              key: const Key('customer-account-back-button'),
-              tooltip: 'Geri',
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                color: CustomerHomeV1Tokens.petrol,
-                size: 21,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hesap Bilgilerim',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  'Kişisel bilgilerini görüntüle ve düzenle',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const AccountPageHeader(
+    key: Key('customer-account-header'),
+    backKey: Key('customer-account-back-button'),
+    title: 'Hesap Bilgilerim',
+    subtitle: 'Kişisel bilgilerini görüntüle ve düzenle',
+  );
 }
 
 class _CustomerIdentityCard extends StatelessWidget {
   const _CustomerIdentityCard({required this.fullName});
-
   final String fullName;
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-account-identity-card'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
+  Widget build(BuildContext context) => Card(
+    key: const Key('customer-account-identity-card'),
+    child: Padding(
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
       child: Row(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space4),
-            decoration: const BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              shape: BoxShape.circle,
-            ),
-            child: ClipOval(
-              child: Image.asset(TImages.user, fit: BoxFit.cover),
+          const CircleAvatar(
+            radius: 24,
+            backgroundColor: EsnaftaVarColors.primarySoft,
+            child: Icon(
+              Icons.person_outline_rounded,
+              color: EsnaftaVarColors.primary,
             ),
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          const SizedBox(width: EsnaftaVarSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(fullName, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: EsnaftaVarSpacing.xxs),
                 Text(
-                  fullName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 17,
-                    height: 1.15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
-                const Text(
                   'Esnafta Var müşteri hesabı',
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
           ),
-          Container(
-            width: 36,
-            height: 36,
-            decoration: const BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Iconsax.verify5,
-              color: CustomerHomeV1Tokens.petrol,
-              size: 19,
-            ),
-          ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _ContactInformationCard extends StatelessWidget {
@@ -356,12 +256,11 @@ class _ContactInformationCard extends StatelessWidget {
     return Container(
       key: const Key('customer-account-contact-card'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,28 +268,32 @@ class _ContactInformationCard extends StatelessWidget {
           const Text(
             'İletişim Bilgileri',
             style: TextStyle(
-              color: CustomerHomeV1Tokens.navy,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
+              color: EsnaftaVarColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space4),
+          const SizedBox(height: EsnaftaVarSpacing.xxs),
           const Text(
             'Size ulaşmak için kullanılan hesap bilgileri',
             style: TextStyle(
-              color: CustomerHomeV1Tokens.muted,
-              fontSize: 10,
+              color: EsnaftaVarColors.textSecondary,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space16),
-          _AccountInfoRow(icon: Iconsax.direct, label: 'E-posta', value: email),
+          const SizedBox(height: EsnaftaVarSpacing.md),
+          _AccountInfoRow(
+            icon: Icons.mail_outline_rounded,
+            label: 'E-posta',
+            value: email,
+          ),
           const Padding(
             padding: EdgeInsets.only(left: 52),
-            child: Divider(height: 17, color: CustomerHomeV1Tokens.border),
+            child: Divider(height: 17, color: EsnaftaVarColors.borderDefault),
           ),
           _AccountInfoRow(
-            icon: Iconsax.call,
+            icon: Icons.phone_outlined,
             label: 'Telefon Numarası',
             value: phone,
           ),
@@ -420,12 +323,12 @@ class _AccountInfoRow extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.mint,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+            color: EsnaftaVarColors.primarySoft,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
           ),
-          child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 20),
+          child: Icon(icon, color: EsnaftaVarColors.primary, size: 20),
         ),
-        const SizedBox(width: CustomerHomeV1Tokens.space12),
+        const SizedBox(width: EsnaftaVarSpacing.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,19 +336,17 @@ class _AccountInfoRow extends StatelessWidget {
               Text(
                 label,
                 style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 9.5,
+                  color: EsnaftaVarColors.textSecondary,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              const SizedBox(height: EsnaftaVarSpacing.xxs),
               Text(
                 value,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 12.5,
+                  color: EsnaftaVarColors.textPrimary,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -467,11 +368,11 @@ class _DangerZoneCard extends StatelessWidget {
     return Container(
       key: const Key('customer-account-danger-zone'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF4F1),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: const Color(0xFFF0C8BE)),
+        color: EsnaftaVarColors.errorSoft,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -479,42 +380,38 @@ class _DangerZoneCard extends StatelessWidget {
           const Row(
             children: [
               Icon(
-                Iconsax.shield_cross,
-                color: CustomerHomeV1Tokens.coral,
+                Icons.delete_outline_rounded,
+                color: EsnaftaVarColors.accent,
                 size: 21,
               ),
-              SizedBox(width: CustomerHomeV1Tokens.space8),
+              SizedBox(width: EsnaftaVarSpacing.xs),
               Text(
                 'Hesap işlemleri',
                 style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
+                  color: EsnaftaVarColors.textPrimary,
                   fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space8),
+          const SizedBox(height: EsnaftaVarSpacing.xs),
           const Text(
             'Hesabını silmek tüm kişisel bilgilerini kalıcı olarak kaldırır.',
             style: TextStyle(
-              color: CustomerHomeV1Tokens.muted,
-              fontSize: 10.5,
+              color: EsnaftaVarColors.textSecondary,
+              fontSize: 12,
               height: 1.35,
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          const SizedBox(height: EsnaftaVarSpacing.sm),
           TextButton.icon(
             key: const Key('delete-account-button'),
             onPressed: onDeleteAccount,
             style: TextButton.styleFrom(
-              foregroundColor: CustomerHomeV1Tokens.coral,
+              foregroundColor: EsnaftaVarColors.accent,
               padding: EdgeInsets.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              textStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+              minimumSize: const Size(48, 48),
             ),
             icon: const Icon(Icons.delete_outline_rounded, size: 18),
             label: const Text('Hesabı Sil'),

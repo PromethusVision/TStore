@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/features/personalization/presentation/widgets/account_page_header.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/presentation/views/legal/legal_document_views.dart';
 
 typedef CustomerLocationPermissionLoader =
@@ -84,8 +87,8 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
+      safeAreaTop: false,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -95,121 +98,121 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
               children: [
                 const Padding(
                   padding: EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
                     0,
                   ),
                   child: _PrivacyHeader(),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                const SizedBox(height: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: SingleChildScrollView(
                     key: const Key('customer-privacy-scroll'),
                     padding: const EdgeInsets.fromLTRB(
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space4,
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space24,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xxs,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xl,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const _PrivacyHero(),
-                        const SizedBox(height: CustomerHomeV1Tokens.space20),
+                        const SizedBox(height: EsnaftaVarSpacing.lg),
                         const _SectionTitle(
                           title: 'İzinler',
                           subtitle: 'Cihazındaki mevcut izin durumu',
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space12),
+                        const SizedBox(height: EsnaftaVarSpacing.sm),
                         _LocationPermissionCard(
                           status: _locationStatus,
                           isLoading: _isLoading,
                           hasError: _hasError,
                           onRefresh: _refreshPermissionStatus,
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space20),
+                        const SizedBox(height: EsnaftaVarSpacing.lg),
                         const _SectionTitle(
                           title: 'Konumunu nasıl kullanıyoruz?',
                           subtitle: 'Kontrol her zaman sende',
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space12),
+                        const SizedBox(height: EsnaftaVarSpacing.sm),
                         const _InformationCard(
                           children: [
                             _InformationItem(
                               icon: Icons.touch_app_outlined,
-                              accent: CustomerHomeV1Tokens.petrol,
-                              iconBackground: CustomerHomeV1Tokens.mint,
+                              accent: EsnaftaVarColors.primary,
+                              iconBackground: EsnaftaVarColors.primarySoft,
                               title: 'Yalnızca sen istediğinde',
                               description:
                                   'Mevcut GPS konumun, yalnızca “Konumumu Kullan” dediğinde alınır. Bu sayfayı açmak konumunu almaz.',
                             ),
                             _InformationItem(
                               icon: Icons.storefront_outlined,
-                              accent: CustomerHomeV1Tokens.coral,
-                              iconBackground: Color(0xFFFFE4DE),
+                              accent: EsnaftaVarColors.accent,
+                              iconBackground: EsnaftaVarColors.accentSoft,
                               title: 'Yakındaki mağazaları sıralamak için',
                               description:
                                   'Anlık konumun mağazaları yakından uzağa sıralamak için kullanılır; mağazalarla paylaşılmaz ve arka planda takip edilmez.',
                             ),
                             _InformationItem(
                               icon: Icons.bookmark_outline_rounded,
-                              accent: Color(0xFFA66A00),
-                              iconBackground: Color(0xFFFFF0C7),
+                              accent: EsnaftaVarColors.warning,
+                              iconBackground: EsnaftaVarColors.warningSoft,
                               title: 'Kaydetmeyi sen seçersin',
                               description:
                                   'Kayıtlı Konumlarım bölümünde bir konumu özellikle kaydedersen koordinatları hesabında saklanır. Kaydettiğin konumları daha sonra silebilirsin.',
                             ),
                           ],
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space20),
+                        const SizedBox(height: EsnaftaVarSpacing.lg),
                         const _SectionTitle(
                           title: 'Uygulamadaki bilgilerin',
                           subtitle: 'Hangi amaçlarla kullanılıyor?',
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space12),
+                        const SizedBox(height: EsnaftaVarSpacing.sm),
                         const _InformationCard(
                           children: [
                             _InformationItem(
                               icon: Icons.person_outline_rounded,
-                              accent: CustomerHomeV1Tokens.petrol,
-                              iconBackground: CustomerHomeV1Tokens.mint,
+                              accent: EsnaftaVarColors.primary,
+                              iconBackground: EsnaftaVarColors.primarySoft,
                               title: 'Hesap bilgileri',
                               description:
                                   'Ad, e-posta ve telefon bilgilerin hesabını ve müşteri iletişimini yönetmek için kullanılır.',
                             ),
                             _InformationItem(
                               icon: Icons.chat_bubble_outline_rounded,
-                              accent: Color(0xFF3F6E9C),
-                              iconBackground: Color(0xFFE6F0F9),
+                              accent: EsnaftaVarColors.primary,
+                              iconBackground: EsnaftaVarColors.primarySoft,
                               title: 'Mesajlar',
                               description:
                                   'Mağazalarla yaptığın konuşmalar, mesaj geçmişine yeniden ulaşabilmen için hesabınla ilişkilendirilir.',
                             ),
                             _InformationItem(
                               icon: Icons.receipt_long_outlined,
-                              accent: CustomerHomeV1Tokens.coral,
-                              iconBackground: Color(0xFFFFE4DE),
+                              accent: EsnaftaVarColors.accent,
+                              iconBackground: EsnaftaVarColors.accentSoft,
                               title: 'Alışveriş ve QR doğrulamaları',
                               description:
                                   'Doğrulanan mağaza alışverişlerin, alışveriş geçmişini ve iade taleplerini göstermek için kullanılır.',
                             ),
                             _InformationItem(
                               icon: Icons.star_outline_rounded,
-                              accent: Color(0xFFA66A00),
-                              iconBackground: Color(0xFFFFF0C7),
+                              accent: EsnaftaVarColors.warning,
+                              iconBackground: EsnaftaVarColors.warningSoft,
                               title: 'Değerlendirmeler',
                               description:
                                   'Mağazalara verdiğin puanlar değerlendirme geçmişinde gösterilir.',
                             ),
                           ],
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space20),
+                        const SizedBox(height: EsnaftaVarSpacing.lg),
                         const _SectionTitle(
                           title: 'Yasal Metinler',
                           subtitle: 'Güncel bilgilendirme ve kullanım şartları',
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space12),
+                        const SizedBox(height: EsnaftaVarSpacing.sm),
                         _LegalDocumentTile(
                           key: const Key('privacy-kvkk-action'),
                           icon: Icons.verified_user_outlined,
@@ -220,7 +223,7 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
                             (_) => const KvkkInformationView(),
                           ),
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space8),
+                        const SizedBox(height: EsnaftaVarSpacing.xs),
                         _LegalDocumentTile(
                           key: const Key('privacy-terms-action'),
                           icon: Icons.description_outlined,
@@ -230,7 +233,7 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
                           onTap: () =>
                               _openLegalDocument((_) => const TermsOfUseView()),
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space20),
+                        const SizedBox(height: EsnaftaVarSpacing.lg),
                         const _PermissionManagementNote(),
                       ],
                     ),
@@ -247,191 +250,52 @@ class _PrivacyAndPermissionsViewState extends State<PrivacyAndPermissionsView> {
 
 class _PrivacyHeader extends StatelessWidget {
   const _PrivacyHeader();
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-privacy-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Material(
-            color: CustomerHomeV1Tokens.mint,
-            shape: const CircleBorder(),
-            child: IconButton(
-              key: const Key('customer-privacy-back-button'),
-              tooltip: 'Geri',
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                color: CustomerHomeV1Tokens.petrol,
-                size: 21,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Gizlilik ve İzinler',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  'Bilgilerin ve cihaz izinlerin senin kontrolünde',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-            ),
-            child: const Icon(
-              Icons.privacy_tip_outlined,
-              color: CustomerHomeV1Tokens.petrol,
-              size: 21,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const AccountPageHeader(
+    key: Key('customer-privacy-header'),
+    backKey: Key('customer-privacy-back-button'),
+    title: 'Gizlilik ve İzinler',
+    subtitle: 'Bilgilerin ve cihaz izinlerin senin kontrolünde',
+  );
 }
 
 class _PrivacyHero extends StatelessWidget {
   const _PrivacyHero();
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-privacy-hero'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [CustomerHomeV1Tokens.petrol, Color(0xFF0E817C)],
+  Widget build(BuildContext context) => Container(
+    key: const Key('customer-privacy-hero'),
+    width: double.infinity,
+    padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+    decoration: BoxDecoration(
+      color: EsnaftaVarColors.primarySoft,
+      borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Gizliliğin ve kontrolün sende',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: EsnaftaVarColors.primary),
         ),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Stack(
-        children: [
-          const Positioned(
-            right: -20,
-            bottom: -30,
-            child: Icon(
-              Icons.shield_outlined,
-              color: Color(0x26FFFFFF),
-              size: 118,
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CircleAvatar(
-                radius: 23,
-                backgroundColor: Color(0x2AFFFFFF),
-                child: Icon(
-                  Icons.verified_user_outlined,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              const Text(
-                'Gizliliğin ve kontrolün sende',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 21,
-                  height: 1.15,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.4,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 300),
-                child: const Text(
-                  'Hangi bilgilerin ne için kullanıldığını ve cihaz izinlerinin durumunu buradan görebilirsin.',
-                  style: TextStyle(
-                    color: Color(0xFFE7F3F1),
-                    fontSize: 12,
-                    height: 1.45,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+        const SizedBox(height: EsnaftaVarSpacing.xs),
+        Text(
+          'Hangi bilgilerin ne için kullanıldığını ve cihaz izinlerinin durumunu buradan görebilirsin.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
+    ),
+  );
 }
 
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle({required this.title, required this.subtitle});
-
   final String title;
   final String subtitle;
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: CustomerHomeV1Tokens.navy,
-            fontSize: 17,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.2,
-          ),
-        ),
-        const SizedBox(height: CustomerHomeV1Tokens.space4),
-        Text(
-          subtitle,
-          style: const TextStyle(
-            color: CustomerHomeV1Tokens.muted,
-            fontSize: 10.5,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      EsnaftaVarSectionHeader(title: title, subtitle: subtitle);
 }
 
 class _LocationPermissionCard extends StatelessWidget {
@@ -450,9 +314,9 @@ class _LocationPermissionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presentation = _permissionPresentation(status);
-    final accent = hasError ? CustomerHomeV1Tokens.coral : presentation.accent;
+    final accent = hasError ? EsnaftaVarColors.accent : presentation.accent;
     final background = hasError
-        ? const Color(0xFFFFE4DE)
+        ? EsnaftaVarColors.accentSoft
         : presentation.background;
 
     return Semantics(
@@ -460,12 +324,11 @@ class _LocationPermissionCard extends StatelessWidget {
       child: Container(
         key: const Key('location-permission-card'),
         width: double.infinity,
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,7 +350,7 @@ class _LocationPermissionCard extends StatelessWidget {
                     size: 22,
                   ),
                 ),
-                const SizedBox(width: CustomerHomeV1Tokens.space12),
+                const SizedBox(width: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,12 +358,12 @@ class _LocationPermissionCard extends StatelessWidget {
                       const Text(
                         'Konum İzni',
                         style: TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
+                          color: EsnaftaVarColors.textPrimary,
                           fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space4),
+                      const SizedBox(height: EsnaftaVarSpacing.xxs),
                       Text(
                         hasError
                             ? 'İzin durumu alınamadı'
@@ -510,8 +373,8 @@ class _LocationPermissionCard extends StatelessWidget {
                         key: const Key('location-permission-status'),
                         style: TextStyle(
                           color: accent,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -519,14 +382,18 @@ class _LocationPermissionCard extends StatelessWidget {
                 ),
                 IconButton(
                   key: const Key('location-permission-refresh'),
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
                   tooltip: 'İzin durumunu yenile',
                   onPressed: isLoading ? null : onRefresh,
-                  color: CustomerHomeV1Tokens.petrol,
+                  color: EsnaftaVarColors.primary,
                   icon: const Icon(Icons.refresh_rounded, size: 20),
                 ),
               ],
             ),
-            const SizedBox(height: CustomerHomeV1Tokens.space12),
+            const SizedBox(height: EsnaftaVarSpacing.sm),
             Text(
               hasError
                   ? 'İzin durumunu şu anda okuyamadık. Bu kontrol konumunu almaz ve yeni bir izin istemez.'
@@ -534,22 +401,22 @@ class _LocationPermissionCard extends StatelessWidget {
                   ? 'Yalnızca mevcut izin ayarı okunuyor; konumun alınmıyor.'
                   : presentation.description,
               style: const TextStyle(
-                color: CustomerHomeV1Tokens.muted,
-                fontSize: 11.5,
+                color: EsnaftaVarColors.textSecondary,
+                fontSize: 12,
                 height: 1.45,
                 fontWeight: FontWeight.w500,
               ),
             ),
             if (isLoading) ...[
-              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              const SizedBox(height: EsnaftaVarSpacing.sm),
               const ClipRRect(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(CustomerHomeV1Tokens.radiusPill),
+                  Radius.circular(EsnaftaVarRadii.pill),
                 ),
                 child: LinearProgressIndicator(
                   key: Key('location-permission-progress'),
-                  color: CustomerHomeV1Tokens.petrol,
-                  backgroundColor: CustomerHomeV1Tokens.mint,
+                  color: EsnaftaVarColors.primary,
+                  backgroundColor: EsnaftaVarColors.primarySoft,
                   minHeight: 4,
                 ),
               ),
@@ -569,16 +436,16 @@ class _LocationPermissionCard extends StatelessWidget {
         label: 'İzin verildi',
         description:
             'Konum izni açık. GPS konumun yine de yalnızca sen “Konumumu Kullan” dediğinde alınır.',
-        accent: CustomerHomeV1Tokens.green,
-        background: Color(0xFFE4F3EA),
+        accent: EsnaftaVarColors.success,
+        background: EsnaftaVarColors.successSoft,
       ),
       CustomerLocationPermissionStatus.blocked => const _PermissionPresentation(
         icon: Icons.location_off_outlined,
         label: 'Ayarlar üzerinden kapalı',
         description:
             'Konum izni tarayıcı veya cihaz ayarlarından kapatılmış. Mağazaları konum olmadan görüntülemeye devam edebilirsin.',
-        accent: CustomerHomeV1Tokens.coral,
-        background: Color(0xFFFFE4DE),
+        accent: EsnaftaVarColors.accent,
+        background: EsnaftaVarColors.accentSoft,
       ),
       CustomerLocationPermissionStatus.restricted =>
         const _PermissionPresentation(
@@ -586,8 +453,8 @@ class _LocationPermissionCard extends StatelessWidget {
           label: 'Cihaz tarafından kısıtlı',
           description:
               'Cihaz ayarları konum kullanımını kısıtlıyor. Mağazaları konum olmadan görüntülemeye devam edebilirsin.',
-          accent: Color(0xFFA66A00),
-          background: Color(0xFFFFF0C7),
+          accent: EsnaftaVarColors.warning,
+          background: EsnaftaVarColors.warningSoft,
         ),
       CustomerLocationPermissionStatus.notAllowed ||
       null => const _PermissionPresentation(
@@ -595,8 +462,8 @@ class _LocationPermissionCard extends StatelessWidget {
         label: 'Kapalı veya henüz verilmedi',
         description:
             'Konum izni olmadan da mağazaları görebilirsin. Yakınlık sıralaması için Yakındakiler ekranından izin verebilirsin.',
-        accent: CustomerHomeV1Tokens.muted,
-        background: CustomerHomeV1Tokens.cream,
+        accent: EsnaftaVarColors.textSecondary,
+        background: EsnaftaVarColors.background,
       ),
     };
   }
@@ -627,9 +494,9 @@ class _InformationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -640,7 +507,7 @@ class _InformationCard extends StatelessWidget {
               const Divider(
                 height: 1,
                 indent: 64,
-                color: CustomerHomeV1Tokens.border,
+                color: EsnaftaVarColors.borderDefault,
               ),
           ],
         ],
@@ -667,7 +534,7 @@ class _InformationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -681,7 +548,7 @@ class _InformationItem extends StatelessWidget {
             alignment: Alignment.center,
             child: Icon(icon, color: accent, size: 19),
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          const SizedBox(width: EsnaftaVarSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -689,17 +556,17 @@ class _InformationItem extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    color: EsnaftaVarColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
+                const SizedBox(height: EsnaftaVarSpacing.xxs),
                 Text(
                   description,
                   style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
+                    color: EsnaftaVarColors.textSecondary,
+                    fontSize: 14,
                     height: 1.45,
                     fontWeight: FontWeight.w500,
                   ),
@@ -733,13 +600,13 @@ class _LegalDocumentTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         child: Ink(
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+          padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
           decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
+            color: EsnaftaVarColors.surface,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+            border: Border.all(color: EsnaftaVarColors.borderDefault),
           ),
           child: Row(
             children: [
@@ -747,12 +614,12 @@ class _LegalDocumentTile extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
+                  color: EsnaftaVarColors.primarySoft,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 20),
+                child: Icon(icon, color: EsnaftaVarColors.primary, size: 20),
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              const SizedBox(width: EsnaftaVarSpacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -760,17 +627,17 @@ class _LegalDocumentTile extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        color: CustomerHomeV1Tokens.navy,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w700,
+                        color: EsnaftaVarColors.textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space4),
+                    const SizedBox(height: EsnaftaVarSpacing.xxs),
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 10.5,
+                        color: EsnaftaVarColors.textSecondary,
+                        fontSize: 12,
                         height: 1.35,
                         fontWeight: FontWeight.w500,
                       ),
@@ -780,7 +647,7 @@ class _LegalDocumentTile extends StatelessWidget {
               ),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: CustomerHomeV1Tokens.muted,
+                color: EsnaftaVarColors.textSecondary,
                 size: 21,
               ),
             ],
@@ -799,27 +666,27 @@ class _PermissionManagementNote extends StatelessWidget {
     return Container(
       key: const Key('customer-permission-management-note'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.settings_outlined,
-            color: CustomerHomeV1Tokens.petrol,
+            color: EsnaftaVarColors.primary,
             size: 21,
           ),
-          SizedBox(width: CustomerHomeV1Tokens.space12),
+          SizedBox(width: EsnaftaVarSpacing.sm),
           Expanded(
             child: Text(
               'Chrome’da adres çubuğundaki site ayarlarından; Android veya iOS’ta cihazının uygulama ayarlarından konum iznini yönetebilirsin.',
               style: TextStyle(
-                color: CustomerHomeV1Tokens.muted,
-                fontSize: 10.5,
+                color: EsnaftaVarColors.textSecondary,
+                fontSize: 12,
                 height: 1.45,
                 fontWeight: FontWeight.w500,
               ),
