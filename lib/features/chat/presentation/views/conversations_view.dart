@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/chat/domain/entities/chat_thread_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_conversations_state.dart';
@@ -90,7 +92,7 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+      backgroundColor: EsnaftaVarColors.background,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -100,14 +102,14 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
               children: [
                 const Padding(
                   padding: EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
                     0,
                   ),
                   child: _ConversationsHeader(),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                const SizedBox(height: EsnaftaVarSpacing.sm),
                 Expanded(
                   child:
                       BlocBuilder<
@@ -153,7 +155,7 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
                             }
 
                             return RefreshIndicator(
-                              color: CustomerHomeV1Tokens.petrol,
+                              color: EsnaftaVarColors.primary,
                               onRefresh: () => context
                                   .read<ChatConversationsCubit>()
                                   .refreshConversations(),
@@ -161,14 +163,14 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
                                 key: const Key('customer-conversations-list'),
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 padding: const EdgeInsets.fromLTRB(
-                                  CustomerHomeV1Tokens.space16,
-                                  CustomerHomeV1Tokens.space4,
-                                  CustomerHomeV1Tokens.space16,
-                                  CustomerHomeV1Tokens.space24,
+                                  EsnaftaVarSpacing.md,
+                                  EsnaftaVarSpacing.xxs,
+                                  EsnaftaVarSpacing.md,
+                                  EsnaftaVarSpacing.xl,
                                 ),
                                 itemCount: state.threads.length,
                                 separatorBuilder: (_, _) => const SizedBox(
-                                  height: CustomerHomeV1Tokens.space12,
+                                  height: EsnaftaVarSpacing.sm,
                                 ),
                                 itemBuilder: (context, index) {
                                   final thread = state.threads[index];
@@ -261,133 +263,34 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
 
 class _ConversationsHeader extends StatelessWidget {
   const _ConversationsHeader();
-
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ChatConversationsCubit, ChatConversationsState>(
-      builder: (context, state) {
-        final unreadCount = state is ChatConversationsLoaded
-            ? state.threads.fold<int>(
-                0,
-                (total, thread) => total + thread.unreadCount,
-              )
-            : 0;
-
-        return Container(
-          key: const Key('customer-conversations-header'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Row(
-            children: [
-              Material(
-                color: CustomerHomeV1Tokens.mint,
-                shape: const CircleBorder(),
-                child: IconButton(
-                  key: const Key('customer-conversations-back-button'),
-                  tooltip: 'Geri',
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: CustomerHomeV1Tokens.petrol,
-                    size: 21,
-                  ),
-                ),
+  Widget build(BuildContext context) => Row(
+    key: const Key('customer-conversations-header'),
+    children: [
+      EsnaftaVarSurfaceIconButton(
+        buttonKey: const Key('customer-conversations-back-button'),
+        icon: Icons.arrow_back_rounded,
+        tooltip: 'Geri',
+        onPressed: () => Navigator.of(context).maybePop(),
+      ),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Mesajlarım', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 4),
+            Text(
+              'Mağazalarla görüşmelerin.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: EsnaftaVarColors.textSecondary,
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Mesajlarım',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: CustomerHomeV1Tokens.navy,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space4),
-                    Text(
-                      unreadCount > 0
-                          ? '$unreadCount okunmamış mesaj'
-                          : 'Esnafla görüşmelerini takip et',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: unreadCount > 0
-                      ? const Color(0xFFFFE4DE)
-                      : CustomerHomeV1Tokens.mint,
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius12,
-                  ),
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Center(
-                      child: Icon(
-                        Icons.chat_bubble_outline_rounded,
-                        color: unreadCount > 0
-                            ? CustomerHomeV1Tokens.coral
-                            : CustomerHomeV1Tokens.petrol,
-                        size: 21,
-                      ),
-                    ),
-                    if (unreadCount > 0)
-                      Positioned(
-                        right: -3,
-                        top: -3,
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            minWidth: 18,
-                            minHeight: 18,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: const BoxDecoration(
-                            color: CustomerHomeV1Tokens.coral,
-                            shape: BoxShape.circle,
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            unreadCount > 99 ? '99+' : '$unreadCount',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class _ConversationsLoadingState extends StatelessWidget {
@@ -398,16 +301,16 @@ class _ConversationsLoadingState extends StatelessWidget {
     return Center(
       child: Container(
         key: const Key('customer-conversations-loading-state'),
-        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+        margin: const EdgeInsets.all(EsnaftaVarSpacing.md),
         padding: const EdgeInsets.symmetric(
-          horizontal: CustomerHomeV1Tokens.space24,
-          vertical: CustomerHomeV1Tokens.space20,
+          horizontal: EsnaftaVarSpacing.xl,
+          vertical: EsnaftaVarSpacing.lg,
         ),
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
+          boxShadow: EsnaftaVarElevation.xs,
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -417,15 +320,15 @@ class _ConversationsLoadingState extends StatelessWidget {
               height: 22,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: CustomerHomeV1Tokens.petrol,
+                color: EsnaftaVarColors.primary,
               ),
             ),
-            SizedBox(width: CustomerHomeV1Tokens.space12),
+            SizedBox(width: EsnaftaVarSpacing.sm),
             Flexible(
               child: Text(
                 'Mesajların yükleniyor',
                 style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
+                  color: EsnaftaVarColors.textPrimary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -451,164 +354,133 @@ class _ConversationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasUnreadMessages = thread.unreadCount > 0;
-
+    final unread = thread.unreadCount > 0;
+    final text = Theme.of(context).textTheme;
     return Semantics(
       button: true,
       label:
-          '${thread.displayName} konuşması${hasUnreadMessages ? ', ${thread.unreadCount} okunmamış mesaj' : ''}',
+          '${thread.displayName} konuşması${unread ? ', ${thread.unreadCount} okunmamış mesaj' : ''}',
       child: Material(
-        color: Colors.transparent,
+        color: EsnaftaVarColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          side: const BorderSide(color: EsnaftaVarColors.borderDefault),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           key: Key('conversation-card-${thread.otherUserId}'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          child: Ink(
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.surface,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius20,
-              ),
-              border: Border.all(
-                color: hasUnreadMessages
-                    ? CustomerHomeV1Tokens.petrol.withValues(alpha: 0.3)
-                    : CustomerHomeV1Tokens.border,
-              ),
-              boxShadow: CustomerHomeV1Tokens.softShadow,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: hasUnreadMessages
-                        ? CustomerHomeV1Tokens.mint
-                        : CustomerHomeV1Tokens.cream,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: CustomerHomeV1Tokens.border),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    _initialFor(thread.displayName),
-                    style: const TextStyle(
-                      color: CustomerHomeV1Tokens.petrol,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: CustomerHomeV1Tokens.space12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        thread.displayName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 14,
-                          fontWeight: hasUnreadMessages
-                              ? FontWeight.w800
-                              : FontWeight.w700,
+                Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: EsnaftaVarColors.primarySoft,
+                        borderRadius: BorderRadius.circular(
+                          EsnaftaVarRadii.medium,
                         ),
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space4),
-                      Text(
-                        thread.lastMessageIsMine
-                            ? 'Siz: ${thread.lastMessage}'
-                            : thread.lastMessage,
+                      child: const Icon(
+                        Icons.storefront_outlined,
+                        color: EsnaftaVarColors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        thread.displayName,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: hasUnreadMessages
-                              ? CustomerHomeV1Tokens.navy
-                              : CustomerHomeV1Tokens.muted,
-                          fontSize: 11.5,
-                          height: 1.35,
-                          fontWeight: hasUnreadMessages
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                        ),
+                        style: text.titleSmall,
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: CustomerHomeV1Tokens.space8),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      _formatDate(thread.lastMessageAt, now),
-                      style: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (thread.lastMessageIsMine) ...[
-                      const SizedBox(height: CustomerHomeV1Tokens.space4),
-                      Row(
-                        key: Key(
-                          'conversation-delivery-status-${thread.otherUserId}',
-                        ),
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            thread.lastMessageIsRead
-                                ? Icons.done_all_rounded
-                                : Icons.done_rounded,
-                            size: 12,
-                            color: thread.lastMessageIsRead
-                                ? CustomerHomeV1Tokens.petrol
-                                : CustomerHomeV1Tokens.muted,
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            thread.lastMessageIsRead ? 'Okundu' : 'Gönderildi',
-                            style: TextStyle(
-                              color: thread.lastMessageIsRead
-                                  ? CustomerHomeV1Tokens.petrol
-                                  : CustomerHomeV1Tokens.muted,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    if (hasUnreadMessages) ...[
-                      const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    if (unread) ...[
+                      const SizedBox(width: 8),
                       Container(
-                        constraints: const BoxConstraints(
-                          minWidth: 22,
-                          minHeight: 22,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: const BoxDecoration(
-                          color: CustomerHomeV1Tokens.coral,
-                          shape: BoxShape.circle,
+                        decoration: BoxDecoration(
+                          color: EsnaftaVarColors.primary,
+                          borderRadius: BorderRadius.circular(
+                            EsnaftaVarRadii.pill,
+                          ),
                         ),
-                        alignment: Alignment.center,
                         child: Text(
                           thread.unreadCount > 99
                               ? '99+'
                               : thread.unreadCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w800,
+                          style: text.labelSmall?.copyWith(
+                            color: EsnaftaVarColors.textOnPrimary,
                           ),
                         ),
                       ),
                     ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  thread.lastMessageIsMine
+                      ? 'Siz: ${thread.lastMessage}'
+                      : thread.lastMessage,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodyMedium?.copyWith(
+                    color: unread
+                        ? EsnaftaVarColors.textPrimary
+                        : EsnaftaVarColors.textSecondary,
+                    fontWeight: unread ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _formatDate(thread.lastMessageAt, now),
+                        style: text.labelSmall?.copyWith(
+                          color: EsnaftaVarColors.textMuted,
+                        ),
+                      ),
+                    ),
+                    if (thread.lastMessageIsMine)
+                      Flexible(
+                        child: Row(
+                          key: Key(
+                            'conversation-delivery-status-${thread.otherUserId}',
+                          ),
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ExcludeSemantics(
+                              child: Icon(
+                                thread.lastMessageIsRead
+                                    ? Icons.done_all_rounded
+                                    : Icons.done_rounded,
+                                size: 16,
+                                color: EsnaftaVarColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                thread.lastMessageIsRead
+                                    ? 'Okundu'
+                                    : 'Gönderildi',
+                                style: text.labelSmall?.copyWith(
+                                  color: EsnaftaVarColors.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ],
@@ -617,12 +489,6 @@ class _ConversationCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _initialFor(String value) {
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return 'M';
-    return trimmed.substring(0, 1).toUpperCase();
   }
 
   String _formatDate(DateTime? value, DateTime now) {
@@ -676,108 +542,25 @@ class _ConversationStatus extends StatelessWidget {
   final Future<void> Function() onRefresh;
 
   @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: CustomerHomeV1Tokens.petrol,
-      onRefresh: onRefresh,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              CustomerHomeV1Tokens.space16,
-              CustomerHomeV1Tokens.space4,
-              CustomerHomeV1Tokens.space16,
-              CustomerHomeV1Tokens.space24,
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    (constraints.maxHeight - CustomerHomeV1Tokens.space32)
-                        .clamp(0, double.infinity)
-                        .toDouble(),
-              ),
-              child: Center(
-                child: Container(
-                  key: const Key('customer-conversations-status'),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-                  decoration: BoxDecoration(
-                    color: CustomerHomeV1Tokens.surface,
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
-                    ),
-                    border: Border.all(color: CustomerHomeV1Tokens.border),
-                    boxShadow: CustomerHomeV1Tokens.softShadow,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 58,
-                        height: 58,
-                        decoration: const BoxDecoration(
-                          color: CustomerHomeV1Tokens.mint,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          icon,
-                          size: 29,
-                          color: CustomerHomeV1Tokens.petrol,
-                        ),
-                      ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space16),
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space8),
-                      Text(
-                        description,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: CustomerHomeV1Tokens.muted,
-                          fontSize: 12.5,
-                          height: 1.45,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: onAction,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: CustomerHomeV1Tokens.petrol,
-                            side: const BorderSide(
-                              color: CustomerHomeV1Tokens.petrol,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: CustomerHomeV1Tokens.space12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                CustomerHomeV1Tokens.radius12,
-                              ),
-                            ),
-                          ),
-                          icon: Icon(actionIcon, size: 19),
-                          label: Text(actionLabel),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => RefreshIndicator(
+    onRefresh: onRefresh,
+    child: ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      children: [
+        EsnaftaVarStateCard(
+          key: const Key('customer-conversations-status'),
+          icon: icon,
+          title: title,
+          message: description,
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: onAction,
+          icon: Icon(actionIcon),
+          label: Text(actionLabel),
+        ),
+      ],
+    ),
+  );
 }
