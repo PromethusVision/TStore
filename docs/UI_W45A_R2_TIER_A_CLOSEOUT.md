@@ -129,4 +129,139 @@ iki Cart sunumunda ortak kullanılır; ikisi de regresyon kapsamındadır.
 
 ## Birleşik gate ve calibration
 
-Bekliyor; bu checkpoint final batch PASS veya main entegrasyonu sayılmaz.
+**Üç paket tamam: 3/3, %100. Final UI V1 candidate ve batch integration gate PASS.**
+Main merge yapılmadı. Bu rapor Integration/Coordinator'ın calibration log'a
+işleyeceği kanıttır; paylaşılan calibration/rollout/ownership belgeleri değişmedi.
+
+| Kontrol | Sonuç |
+| --- | --- |
+| Shop Details hedefli | 40 PASS |
+| Cart + QR + Seller/Product Details komşu kontrolü | 249 PASS |
+| Nearby + location + Home/saved locations | 164 PASS |
+| Birleşik komşu regresyon | 1.061 PASS, 0 FAIL, 0 SKIP; 49,006 s test event zamanı |
+| Tam Flutter suite | **1.558 PASS, 0 FAIL, 6 mevcut SKIP**; 72,118 s test event zamanı |
+| Analyzer | **No issues found**, 7,3 s son çalışma |
+| Diff whitespace | PASS |
+| Yeni skip / zayıflatılmış assertion | 0 / 0 |
+| Figma / backend / taxonomy / production erişimi | 0 çağrı / NO / NO / NO |
+
+Komutlar:
+
+```text
+flutter test --no-pub test/widget/shop test/widget/cart test/widget/wishlist test/widget/auth test/unit/shop test/unit/cart test/unit/reviews test/unit/wishlist test/unit/auth test/integration/auth_flow_test.dart --reporter json
+flutter analyze --no-pub
+flutter test --no-pub --reporter json
+git diff --check a261004
+```
+
+- Full suite **bir kez** çalıştırıldı. Test edilen runtime revision
+  `b2652d6b9be4d1678157a0144ef3111f8405de55`; üstündeki değişiklik yalnız üç
+  yeni testin `if` parantez lint düzeltmesiydi. Son checkpoint bu test edilmiş
+  runtime/test ağacını ve bu raporu içerir. Sonrasında runtime değişmedi.
+- Analyzer başlangıçta üç test-only curly-brace info verdi; bir patch'in atomik
+  reddi nedeniyle ara kontrolde biri kaldı. Son kontrol temiz. Toplam analyzer
+  çağrısı **3**; test kuralı bastırılmadı ve assertion değiştirilmedi.
+- Birleşik komşu komutunun ilk denemesinde olmayan `test/widget/reviews`
+  dizini hata verdi; Reviews widget'larının bulunduğu `test/widget/shop` ile
+  komut düzeltildi. Yukarıdaki başarılı komut bütün istenen yüzeyleri kapsar.
+  Runtime/golden regression bu final çalışmada yoktur.
+- Başlangıç ve finalde **160 test dosyası**. Dört mevcut test dosyasına toplam
+  **110 yeni test case** eklendi. Geçen test sayısı eski rapordan alınmadı;
+  son JSON reporter'ın non-hidden testDone sonuçlarından hesaplandı.
+- Altı skip: development Auth/RLS, verified/unverified Reviews, iki development
+  Realtime, iki production live testi. Bu beş dosyanın Git blob'ları başlangıç
+  `a261004` ile **birebir aynı**. Live opt-in açılmadı; yeni skip eklenmedi.
+- Yerel ayrıntılı çıktılar `.buildlog/w45a-r2-shop-final.log`,
+  `w45a-r2-cart-final.log`, `w45a-r2-nearby-final.log`,
+  `w45a-r2-adjacent-final.jsonl`, `w45a-r2-analyze-clean.log` ve
+  `w45a-r2-full-suite.jsonl` içindedir. Loglar repo'nun mevcut ignore kuralıyla
+  Git dışındadır; taşınabilir sonuç/komut/kanıt bu belgede bulunur.
+
+### Dosya ve görsel kapsamı
+
+Başlangıca göre **65 dosya**: 5 runtime Dart, 4 test Dart, 1 rapor,
+**54 yeni + 1 C1 güncellenen PNG**. Tüm PNG'ler yerel Flutter render'larıdır;
+sentetik fixture'lar test içinde kalır. Home, Category, Product Listing,
+Product Details ve Seller Comparison mevcut golden'ları değiştirilmeden geçti.
+Shop Details/Nearby onaylı 390 golden'ları da değişmedi. Cart onaylı düzeninde
+yalnız belgelenen touch-target/quantity polish farkı kabul edildi.
+
+Runtime:
+
+- `lib/features/shop/presentation/views/shop_profile_visual_prototype.dart`
+- `lib/features/shop/presentation/views/cart_v2_view.dart`
+- `lib/features/shop/presentation/views/cart_v2_visual_prototype.dart`
+- `lib/features/shop/presentation/views/nearby_visual_prototype.dart`
+- `lib/features/shop/presentation/widgets/seller_comparison_offer_card.dart`
+
+Testler:
+
+- `test/widget/shop/w45a_shop_profile_prototype_test.dart`
+- `test/widget/cart/w45a_cart_prototype_test.dart`
+- `test/widget/shop/w45a_nearby_prototype_test.dart`
+- `test/widget/shop/w43a_seller_comparison_visual_prototype_test.dart`
+
+Tam dosya manifest'i: `git diff --name-only a261004 HEAD`.
+Görseller `test/widget/shop/goldens/` içinde `w45a_r2_shop_*` (13),
+`w45a_r2_cart_*` (19), `w45a_r2_nearby_*` (22) ve C1 güncellenen
+`w45a_cart_v2_390.png` dosyalarıdır. Bu belge kalan tek dosyadır.
+
+### Güvenlik, checkpoints ve kabul sınırı
+
+- Eklenen metinlerde private key, access token, JWT, credential assignment,
+  e-posta, telefon ve 11 haneli kimlik örüntü taraması **0 bulgu**.
+  Shop/ürün/mağaza/konum adları ile ID/adres/sayılar test fixture'ı;
+  offline widget bootstrap key'i mevcut testin sentetik public değeridir.
+- Shared değişiklik tek offer-card metin sarma düzeltmesiyle sınırlıdır;
+  exact dosya/reason/caller/regression kaydı yukarıdadır. Core primitives,
+  theme/token, routing, provider/Cubit/repository/service, QR security ve
+  dependency dosyaları değişmedi. Çakışma **NONE**.
+- `4ae9d6d`: Shop Details; `e366149`: Cart V2 ve ilgili mesafe sarma fix'i;
+  `b2652d6`: Nearby. Üç checkpoint normal push ile aynı görev dalına gönderildi.
+  Son regression/evidence checkpoint'i bu raporun ve test lint düzeltmelerinin
+  commit'idir; kesin SHA son TASK_RESULT'ta verilir.
+- Onaylı görsel yön korundu; bu oturumda yeni owner kararı veya substantive
+  owner correction **0**. Başlangıçtaki owner-final Cart CTA zaten `a261004`
+  içinde vardı ve korunup regresyonla kilitlendi.
+- Directions, telefon ve GPS/OS ayarları gerçek cihazda açılmadı; testler gerçek
+  mevcut handoff URI/callback/route/consent sözleşmesini doğrular. Production
+  veya gerçek kullanıcı konum/verisi kullanılmadı. Mevcut opt-in presentation
+  flags default-off kaldı; runtime rollout ve main entegrasyonu ayrı integration
+  adımıdır. Bu, aday UI doğrulaması için blocker değildir.
+
+### ASTRA_CALIBRATION_ENTRY
+
+- Model / bağlam: fresh GPT-6 Astra, Design Owner Batch Closeout.
+- FS-19, FS-20, FS-18: scoped/attempted/completed **3/3/3**, %100.
+- Blockers / required owner decisions: **NONE**.
+- Kritik regression: **0**; structural redesign / major scope drift: **0**.
+- Figma: closeout sınıfı **NOT_REQUIRED**, fiilî erişim **0 çağrı**.
+- Calibration: **GREEN** — bütün kapsam kapanmış, final gate temiz,
+  bilinen ortak dosya değişikliği belgeli ve tüm ilgili çağrıları test edilmiş.
+- Öneri: **SAME_SIZE**, üç owner-approved Tier A closeout paketi.
+  Kapsam artışı önerilmiyor; tek ölçüm ve önceden tamamlanmış Product Owner
+  görsel onayı, sonraki review süresini veya sürdürülebilir throughput'u kanıtlamaz.
+- Gözlenen süre aşağıdaki son doğrulama kaydında; araç/test beklemeleri dahil,
+  son docs commit/push hariçtir. Agent-hour veya karşılaştırmalı benchmark değildir.
+
+Gözlem: **2026-09-05 03:41:34 → 04:14:07 Europe/Istanbul**, **32 dk 33 sn**.
+Sınır: ilk repo/protokol incelemesinden tam suite, görsel inceleme ve son
+diff/secret taramasına kadar. Son rapor checkpoint/push süresi dahil değildir.
+
+```text
+SHOP_DETAILS_FINAL_UI_V1_CANDIDATE: YES
+CART_V2_FINAL_UI_V1_CANDIDATE: YES
+CART_QR_CTA_EXACT: QR kod oluştur / PASS
+QR_FLOW_BEHAVIOR_CHANGED: NO
+NEARBY_LOCATION_FINAL_UI_V1_CANDIDATE: YES
+RESPONSIVE_320_390_430: PASS
+TEXT_SCALE_130: PASS
+SHARED_COMPONENT_REGRESSION: PASS
+FULL_TEST_SUITE: PASS
+ANALYZER: PASS
+FIGMA_ACCESSED: NO
+BACKEND_CHANGED: NO
+TAXONOMY_CHANGED: NO
+PRODUCTION_ACCESSED: NO
+READY_FOR_TIER_A_BATCH_INTEGRATION: YES
+```

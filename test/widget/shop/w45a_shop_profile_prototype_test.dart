@@ -292,8 +292,9 @@ void main() {
       final pending = Completer<Either<String, List<ShopProductEntity>>>();
       when(() => repository.getShopProductsByShop(any())).thenAnswer((_) {
         if (scenario == 'loading') return pending.future;
-        if (scenario == 'exception')
+        if (scenario == 'exception') {
           return Future.error(StateError('fixture failure'));
+        }
         return Future.value(
           scenario == 'empty' ? const Right([]) : const Left('fixture error'),
         );

@@ -286,8 +286,9 @@ void main() {
         expect(tester.widget<OutlinedButton>(qrButton).onPressed, isNotNull);
         expect(find.text('Mağazada göster'), findsNothing);
         expect(tester.takeException(), isNull);
-        if (width == 320 && scale == 1.3)
+        if (width == 320 && scale == 1.3) {
           await evidence(tester, 'qr_320_scale_130');
+        }
       });
 
       testWidgets(

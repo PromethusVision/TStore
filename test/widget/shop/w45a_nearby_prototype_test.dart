@@ -311,8 +311,9 @@ void main() {
         expect(find.textContaining('Yaklaşık'), findsNothing);
         expect(tester.takeException(), isNull);
         verifyNever(() => nearby.useCurrentLocation());
-        if (width == 390)
+        if (width == 390) {
           await evidence(tester, 'location_${status.name}_390_scale_130');
+        }
         if (status == NearbyLocationStatus.ready) {
           expect(find.text('Mevcut konumun'), findsOneWidget);
           expect(find.text('Mesafe bilgisi henüz yok'), findsOneWidget);
