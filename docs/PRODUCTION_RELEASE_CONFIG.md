@@ -1,5 +1,11 @@
 # Production Release Configuration
 
+**W51A güncel yerel sözleşme (2026-09-05):** Android pilotun onaylı ref/URL ve
+mobile-only callback alanları [W51 Production sözleşmesinde](RELEASE_W51_PRODUCTION_CONFIG_CONTRACT.md)
+tanımlıdır. Güncel client key henüz dış JSON olarak sağlanmadı; güvenli örnek
+dosya release için hazır değildir. Bu görev Production'a erişmedi. Aşağıdaki
+Wave 11 remote PASS kayıtları güncel remote proof veya erişim yetkisi sayılmaz.
+
 **Kaynak taban:** Wave 11 Phase B7 /
 `origin/main@21f7224dc9e8b70400b7ae4503daaa20f40ed8c3`; input
 `origin/agent1/w11-remove-legacy-production-callback@11c3ab6fb891a73ceeac7e460a650b3a8c489545`;
