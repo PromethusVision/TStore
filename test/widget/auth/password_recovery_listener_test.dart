@@ -230,7 +230,10 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.byKey(const Key('invalid-password-recovery-icon')),
+      find.descendant(
+        of: find.byKey(const Key('invalid-password-recovery-title')),
+        matching: find.byIcon(Icons.link_off_rounded),
+      ),
       findsOneWidget,
     );
     expect(find.text('Bağlantı kullanılamıyor'), findsOneWidget);

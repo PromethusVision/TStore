@@ -65,6 +65,9 @@ class _ForgetPasswordFormSectionState extends State<ForgetPasswordFormSection> {
               TextFormField(
                 key: const Key('forgot-password-email'),
                 controller: _emailController,
+                readOnly: isLoading,
+                autocorrect: false,
+                enableSuggestions: false,
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.email],
                 textInputAction: TextInputAction.done,

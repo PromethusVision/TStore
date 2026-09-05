@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/presentation/view_models/on_boarding_model.dart';
 
 class OnBoardingPage extends StatelessWidget {
@@ -16,11 +16,13 @@ class OnBoardingPage extends StatelessWidget {
         return SingleChildScrollView(
           key: ValueKey('onboarding-page-${onBoardingModel.title}'),
           padding: const EdgeInsets.symmetric(
-            horizontal: CustomerHomeV1Tokens.space24,
-            vertical: CustomerHomeV1Tokens.space16,
+            horizontal: EsnaftaVarSpacing.xl,
+            vertical: EsnaftaVarSpacing.md,
           ),
           child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+            constraints: BoxConstraints(
+              minHeight: (constraints.maxHeight - 32).clamp(0, double.infinity),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -31,12 +33,12 @@ class OnBoardingPage extends StatelessWidget {
                   width: illustrationSize,
                   height: illustrationSize,
                   decoration: BoxDecoration(
-                    color: CustomerHomeV1Tokens.surface,
+                    color: EsnaftaVarColors.surfaceElevated,
                     borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius24,
+                      EsnaftaVarRadii.xxLarge,
                     ),
-                    border: Border.all(color: CustomerHomeV1Tokens.border),
-                    boxShadow: CustomerHomeV1Tokens.softShadow,
+                    border: Border.all(color: EsnaftaVarColors.borderDefault),
+                    boxShadow: EsnaftaVarElevation.sm,
                   ),
                   child: Center(
                     child: Container(
@@ -54,20 +56,23 @@ class OnBoardingPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space24),
-                Text(
-                  onBoardingModel.title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontWeight: FontWeight.w700,
+                const SizedBox(height: EsnaftaVarSpacing.xl),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    onBoardingModel.title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: EsnaftaVarColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                const SizedBox(height: EsnaftaVarSpacing.sm),
                 Text(
                   onBoardingModel.subTitle,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: CustomerHomeV1Tokens.muted,
+                    color: EsnaftaVarColors.textSecondary,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,

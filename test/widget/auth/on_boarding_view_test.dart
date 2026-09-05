@@ -165,4 +165,37 @@ void main() {
     expect(onBoardingCubit.currentIndex, 1);
     expect(tester.takeException(), isNull);
   });
+
+  for (final width in [320.0, 390.0, 430.0]) {
+    testWidgets('W45C onboarding accessible steps at $width / 130%', (
+      tester,
+    ) async {
+      tester.view.physicalSize = Size(width, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        buildSubject(textScaler: const TextScaler.linear(1.3)),
+      );
+      await tester.pump();
+      for (var index = 0; index < 3; index++) {
+        final target = find.byKey(ValueKey('onboarding-step-$index'));
+        final size = tester.getSize(target);
+        expect(size.width, greaterThanOrEqualTo(44));
+        expect(size.height, greaterThanOrEqualTo(44));
+        expect(
+          find.byTooltip('${index + 1}. tanıtım adımı, toplam 3'),
+          findsOneWidget,
+        );
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+        expect(onBoardingCubit.currentIndex, index);
+        expect(tester.takeException(), isNull);
+      }
+      expect(find.text('Başla'), findsOneWidget);
+      expect(completionWriteCount, 0);
+      semantics.dispose();
+    });
+  }
 }

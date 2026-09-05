@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/data/services/customer_onboarding_preferences.dart';
 import 'package:t_store/features/auth/presentation/views/on_boarding/on_boarding_view.dart';
 
@@ -80,24 +81,27 @@ class _CustomerLaunchLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return const EsnaftaVarScaffold(
+      safeAreaTop: false,
       key: Key('customer-launch-loading'),
-      backgroundColor: CustomerHomeV1Tokens.cream,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomerBrandWordmark(fontSize: 30),
-            SizedBox(height: CustomerHomeV1Tokens.space20),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: CustomerHomeV1Tokens.petrol,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomerBrandWordmark(fontSize: 30),
+              SizedBox(height: EsnaftaVarSpacing.lg),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  semanticsLabel: 'EsnaftaVar açılıyor',
+                  strokeWidth: 2.5,
+                  color: EsnaftaVarColors.primary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

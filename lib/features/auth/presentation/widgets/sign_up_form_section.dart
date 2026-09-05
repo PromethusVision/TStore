@@ -83,7 +83,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthEmailConfirmationRequired) {
           final verificationView = VerifyEmailView(
@@ -110,7 +110,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
           );
         }
       },
-      child: Form(
+      builder: (context, state) => Form(
         key: _formKey,
         child: Column(
           children: [
@@ -143,6 +143,11 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               key: const Key('signup-email'),
               keyboardType: TextInputType.emailAddress,
               controller: _emailController,
+              readOnly: state is AuthLoading,
+              autofillHints: const [AutofillHints.email],
+              textInputAction: TextInputAction.next,
+              autocorrect: false,
+              enableSuggestions: false,
               validator: (value) {
                 return TValidator.validateEmail(value);
               },
@@ -156,10 +161,13 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               key: const Key('signup-phone'),
               keyboardType: TextInputType.phone,
               controller: _phoneController,
+              readOnly: state is AuthLoading,
+              autofillHints: const [AutofillHints.telephoneNumber],
+              textInputAction: TextInputAction.next,
               validator: (value) => TValidator.validatePhoneNumber(value),
               decoration: const InputDecoration(
                 prefixIcon: Icon(Iconsax.call),
-                labelText: TTexts.phoneNo,
+                labelText: 'Telefon',
               ),
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields),
@@ -167,6 +175,9 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               key: const Key('signup-password'),
               keyboardType: TextInputType.visiblePassword,
               controller: _passwordController,
+              readOnly: state is AuthLoading,
+              autofillHints: const [AutofillHints.newPassword],
+              textInputAction: TextInputAction.next,
               validator: (value) => TValidator.validatePassword(value),
               obscureText: _obscurePassword,
               autocorrect: false,
@@ -174,6 +185,9 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Iconsax.password_check),
                 suffixIcon: IconButton(
+                  tooltip: _obscurePassword
+                      ? 'Şifreyi göster'
+                      : 'Şifreyi gizle',
                   icon: Icon(
                     _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
                   ),
@@ -191,6 +205,9 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               key: const Key('signup-confirm-password'),
               keyboardType: TextInputType.visiblePassword,
               controller: _confirmPasswordController,
+              readOnly: state is AuthLoading,
+              autofillHints: const [AutofillHints.newPassword],
+              textInputAction: TextInputAction.done,
               validator: (value) => TValidator.validateConfirmPassword(
                 value,
                 _passwordController,
@@ -249,6 +266,10 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
     return TextFormField(
       key: const Key('signup-first-name'),
       controller: _firstNameController,
+      readOnly: context.read<AuthCubit>().state is AuthLoading,
+      autofillHints: const [AutofillHints.givenName],
+      textCapitalization: TextCapitalization.words,
+      textInputAction: TextInputAction.next,
       validator: (value) =>
           value?.isEmpty ?? true ? 'Ad alanı zorunludur.' : null,
       decoration: const InputDecoration(
@@ -262,6 +283,10 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
     return TextFormField(
       key: const Key('signup-last-name'),
       controller: _lastNameController,
+      readOnly: context.read<AuthCubit>().state is AuthLoading,
+      autofillHints: const [AutofillHints.familyName],
+      textCapitalization: TextCapitalization.words,
+      textInputAction: TextInputAction.next,
       validator: (value) =>
           value?.isEmpty ?? true ? 'Soyad alanı zorunludur.' : null,
       decoration: const InputDecoration(

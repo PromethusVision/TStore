@@ -62,6 +62,8 @@ class _LoginFormSectionState extends State<LoginFormSection> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          scrollable: true,
+          icon: const Icon(Icons.storefront_outlined),
           title: const Text('Esnaf hesabı değil'),
           content: const Text(
             'Bu hesap esnaf hesabı değil. Müşteri olarak devam edebilir '
@@ -182,6 +184,9 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                 TextFormField(
                   key: const Key('login-email'),
                   controller: _emailController,
+                  readOnly: state is AuthLoading,
+                  autocorrect: false,
+                  enableSuggestions: false,
                   keyboardType: TextInputType.emailAddress,
                   autofillHints: const [AutofillHints.email],
                   textInputAction: TextInputAction.next,
@@ -195,6 +200,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                 TextFormField(
                   key: const Key('login-password'),
                   controller: _passwordController,
+                  readOnly: state is AuthLoading,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscurePassword,
                   autocorrect: false,
@@ -207,6 +213,9 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
+                      tooltip: _obscurePassword
+                          ? 'Şifreyi göster'
+                          : 'Şifreyi gizle',
                       icon: Icon(
                         _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
                       ),
@@ -233,8 +242,8 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                       child: Row(
                         children: [
                           Checkbox(
+                            semanticLabel: TTexts.rememberMe,
                             value: _rememberMe,
-                            visualDensity: VisualDensity.compact,
                             onChanged: (value) {
                               setState(() {
                                 _rememberMe = value ?? true;
@@ -242,13 +251,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                             },
                           ),
                           const SizedBox(width: TSizes.xs),
-                          const Expanded(
-                            child: Text(
-                              TTexts.rememberMe,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          const Expanded(child: Text(TTexts.rememberMe)),
                         ],
                       ),
                     ),
@@ -267,8 +270,6 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                         },
                         child: const Text(
                           TTexts.forgetPassword,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,
                         ),
                       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 
 class TermsAndPrivacyAgreement extends StatelessWidget {
   const TermsAndPrivacyAgreement({
@@ -41,7 +41,7 @@ class TermsAndPrivacyAgreement extends StatelessWidget {
               ? 'Devam etmek için aydınlatma metnini okuduğunuzu belirtin.'
               : null,
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space12),
+        const SizedBox(height: EsnaftaVarSpacing.sm),
         _LegalAgreementTile(
           key: const Key('terms-of-use-agreement'),
           value: termsAccepted,
@@ -85,29 +85,30 @@ class _LegalAgreementTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.cream,
+        color: EsnaftaVarColors.background,
         border: Border.all(
           color: errorText == null
-              ? CustomerHomeV1Tokens.border
+              ? EsnaftaVarColors.borderDefault
               : colorScheme.error,
         ),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          CustomerHomeV1Tokens.space4,
-          CustomerHomeV1Tokens.space4,
-          CustomerHomeV1Tokens.space16,
-          CustomerHomeV1Tokens.space8,
+          EsnaftaVarSpacing.xxs,
+          EsnaftaVarSpacing.xxs,
+          EsnaftaVarSpacing.md,
+          EsnaftaVarSpacing.xs,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Checkbox(
+              semanticLabel: label,
               value: value,
               onChanged: (nextValue) => onChanged(nextValue ?? false),
             ),
-            const SizedBox(width: CustomerHomeV1Tokens.space4),
+            const SizedBox(width: EsnaftaVarSpacing.xxs),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +118,7 @@ class _LegalAgreementTile extends StatelessWidget {
                     child: Text(
                       label,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: CustomerHomeV1Tokens.navy,
+                        color: EsnaftaVarColors.textPrimary,
                         height: 1.35,
                       ),
                     ),
@@ -126,12 +127,14 @@ class _LegalAgreementTile extends StatelessWidget {
                     key: linkKey,
                     onPressed: onOpenDocument,
                     style: TextButton.styleFrom(
-                      foregroundColor: CustomerHomeV1Tokens.petrol,
+                      foregroundColor: EsnaftaVarColors.primary,
                       padding: const EdgeInsets.symmetric(
-                        vertical: CustomerHomeV1Tokens.space4,
+                        vertical: EsnaftaVarSpacing.xxs,
                       ),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: const Size(
+                        EsnaftaVarTouchTargets.minimum,
+                        EsnaftaVarTouchTargets.minimum,
+                      ),
                     ),
                     child: Text(
                       linkLabel,
@@ -139,12 +142,15 @@ class _LegalAgreementTile extends StatelessWidget {
                     ),
                   ),
                   if (errorText != null) ...[
-                    const SizedBox(height: CustomerHomeV1Tokens.space4),
-                    Text(
-                      errorText!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.error,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: EsnaftaVarSpacing.xxs),
+                    Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        errorText!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.error,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

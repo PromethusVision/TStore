@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/enums/status.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -98,8 +100,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         final isSending = state is AuthLoading;
         final canResend = !isSending && _remainingSeconds <= 0;
 
-        return Scaffold(
-          backgroundColor: CustomerHomeV1Tokens.cream,
+        return EsnaftaVarScaffold(
+          safeAreaTop: false,
           body: SafeArea(
             child: Center(
               child: ConstrainedBox(
@@ -109,54 +111,48 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   key: const Key('customer-reset-email-scroll'),
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space32,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xxl,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _ResetEmailHeader(onClose: _goToLogin),
-                      const SizedBox(height: CustomerHomeV1Tokens.space24),
+                      const SizedBox(height: EsnaftaVarSpacing.xl),
                       CustomerAuthFormCard(
                         key: const Key('customer-reset-email-card'),
-                        padding: const EdgeInsets.all(
-                          CustomerHomeV1Tokens.space20,
-                        ),
+                        padding: const EdgeInsets.all(EsnaftaVarSpacing.lg),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const _ResetEmailIllustration(),
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space20,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.lg),
                             Text(
                               'E-postanızı kontrol edin',
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(
-                                    color: CustomerHomeV1Tokens.navy,
+                                    color: EsnaftaVarColors.textPrimary,
                                     fontWeight: FontWeight.w700,
                                   ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space12,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.sm),
                             Container(
                               key: const Key('reset-email-address-card'),
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: CustomerHomeV1Tokens.space16,
-                                vertical: CustomerHomeV1Tokens.space12,
+                                horizontal: EsnaftaVarSpacing.md,
+                                vertical: EsnaftaVarSpacing.sm,
                               ),
                               decoration: BoxDecoration(
-                                color: CustomerHomeV1Tokens.mint,
+                                color: EsnaftaVarColors.primarySoft,
                                 borderRadius: BorderRadius.circular(
-                                  CustomerHomeV1Tokens.radius16,
+                                  EsnaftaVarRadii.large,
                                 ),
                                 border: Border.all(
-                                  color: CustomerHomeV1Tokens.petrol.withValues(
+                                  color: EsnaftaVarColors.primary.withValues(
                                     alpha: 0.12,
                                   ),
                                 ),
@@ -166,39 +162,33 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 key: const Key('reset-email-address'),
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(
-                                      color: CustomerHomeV1Tokens.petrol,
+                                      color: EsnaftaVarColors.primary,
                                       fontWeight: FontWeight.w700,
                                     ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space16,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.md),
                             Text(
                               'Bu adres sistemde kayıtlıysa şifre yenileme bağlantısı '
                               'gönderildi. Bağlantıyı açarak yeni şifrenizi '
                               'belirleyebilirsiniz.',
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    color: CustomerHomeV1Tokens.muted,
+                                    color: EsnaftaVarColors.textSecondary,
                                     height: 1.5,
                                   ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space16,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.md),
                             const _ResetSpamFolderHint(),
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space24,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.xl),
                             ElevatedButton(
                               key: const Key('reset-email-back-to-login'),
                               onPressed: _goToLogin,
                               child: const Text('Giriş ekranına dön'),
                             ),
-                            const SizedBox(height: CustomerHomeV1Tokens.space8),
+                            const SizedBox(height: EsnaftaVarSpacing.xs),
                             TextButton(
                               key: const Key('reset-email-resend'),
                               onPressed: canResend ? _resend : null,
@@ -239,14 +229,14 @@ class _ResetEmailHeader extends StatelessWidget {
     return Container(
       key: const Key('customer-reset-email-header'),
       padding: const EdgeInsets.symmetric(
-        horizontal: CustomerHomeV1Tokens.space12,
-        vertical: CustomerHomeV1Tokens.space8,
+        horizontal: EsnaftaVarSpacing.sm,
+        vertical: EsnaftaVarSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: EsnaftaVarElevation.sm,
       ),
       child: Row(
         children: [
@@ -260,7 +250,7 @@ class _ResetEmailHeader extends StatelessWidget {
             key: const Key('reset-email-close'),
             tooltip: 'Giriş ekranına dön',
             onPressed: onClose,
-            color: CustomerHomeV1Tokens.petrol,
+            color: EsnaftaVarColors.primary,
             icon: const Icon(Icons.close_rounded),
           ),
         ],
@@ -280,12 +270,12 @@ class _ResetEmailIllustration extends StatelessWidget {
         width: 76,
         height: 76,
         decoration: const BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
+          color: EsnaftaVarColors.primarySoft,
           shape: BoxShape.circle,
         ),
         child: const Icon(
           Icons.mark_email_read_outlined,
-          color: CustomerHomeV1Tokens.petrol,
+          color: EsnaftaVarColors.primary,
           size: 38,
         ),
       ),
@@ -295,36 +285,14 @@ class _ResetEmailIllustration extends StatelessWidget {
 
 class _ResetSpamFolderHint extends StatelessWidget {
   const _ResetSpamFolderHint();
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: const Key('reset-email-spam-hint'),
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.yellow.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.info_outline_rounded,
-            color: CustomerHomeV1Tokens.petrol,
-            size: 20,
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space8),
-          Expanded(
-            child: Text(
-              'E-postayı göremiyorsanız spam veya gereksiz klasörünü kontrol edin.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: CustomerHomeV1Tokens.navy,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return const EsnaftaVarStateCard(
+      key: Key('reset-email-spam-hint'),
+      icon: Icons.info_outline_rounded,
+      title: 'E-posta ulaşmadı mı?',
+      message:
+          'E-postayı göremiyorsanız spam veya gereksiz klasörünü kontrol edin.',
     );
   }
 }
