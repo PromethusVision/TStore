@@ -5,12 +5,19 @@ Base: `cd1d566c36a669fc9b6cabeaee9a114979ae7fb7`; branch:
 Observed start: 2026-09-05 11:58:26 UTC (14:58:26 Europe/Istanbul).
 Fetched main exactly matches the requested base. Clean task branch created.
 
-The current explicit W48 contract supersedes the older 24 h recommendation:
-all 18 unreserved units / 50 historical nominal hours are included.
-60 active units: 18 IN_THIS_PACKAGE, 5 RESERVED_FOR_AGENT3,
-3 RESERVED_FOR_DESIGN_OWNER, 34 ALREADY_DONE. Nine inactive exclusions remain.
-26 remaining examined = 18 scoped + 8 reserved. Scope: 4 screens, 12 modals,
-2 shared families; Tier A/B/C = 0/4/14. No runtime route is added.
+The current explicit W48 contract supersedes the older 24 h recommendation.
+All 18 historically unreserved candidates / 50 nominal hours were examined.
+Actual call-chain verification corrects four stale active labels (MD-01–04):
+14 active scoped units / 43 historical nominal hours remain, all included.
+No reduction is based on time, effort, or package size.
+
+The 60 historical active rows reconcile to 56 actually active units:
+14 IN_THIS_PACKAGE, 5 RESERVED_FOR_AGENT3, 3 RESERVED_FOR_DESIGN_OWNER,
+34 ALREADY_DONE, plus 4 newly INACTIVE/LEGACY rows. Existing 9 excluded rows
+remain, so inactive exclusions total 13 (plus unbound already-done FD-05).
+26 historical remaining rows examined = 14 scoped + 8 reserved + 4 inactive.
+Active scope: 4 screens, 8 modals, 2 shared families; Tier A/B/C = 0/4/10.
+Actual active inventory: 34 screens + 19 modals + 3 families = 56.
 
 Secondary Library is a family label for existing Settings destinations and
 saved-product/activity surfaces, not an additional screen. Coupons, Recently
@@ -55,10 +62,10 @@ are already done. Purchases/reviews/chat secondary paths remain reserved.
 | FS-32 | Product reviews/eligibility | RESERVED_FOR_DESIGN_OWNER | A | Product Details |
 | FS-33 | Conversation list | RESERVED_FOR_AGENT3 | B | Settings, Notifications |
 | FS-34 | Chat detail/composer | RESERVED_FOR_DESIGN_OWNER | A | Conversation list, Shop, pending-chat listener |
-| MD-01 | Permanently denied/settings dialog | IN_THIS_PACKAGE | C | Location helper |
-| MD-02 | Location acquisition loading | IN_THIS_PACKAGE | C | Location helper `DialogRoute` |
-| MD-03 | Location service disabled | IN_THIS_PACKAGE | C | Location helper |
-| MD-04 | Runtime permission request explanation | IN_THIS_PACKAGE | C | Location helper |
+| MD-01 | Permanently denied/settings dialog | INACTIVE/LEGACY | C | No active caller; legacy LocationHelper only |
+| MD-02 | Location acquisition loading | INACTIVE/LEGACY | C | No active caller; legacy LocationHelper only |
+| MD-03 | Location service disabled | INACTIVE/LEGACY | C | No active caller; legacy LocationHelper only |
+| MD-04 | Runtime permission request explanation | INACTIVE/LEGACY | C | No active caller; legacy LocationHelper only |
 | MD-05 | Shop rating editor | RESERVED_FOR_AGENT3 | B | Purchases |
 | MD-06 | Edit profile form | ALREADY_DONE | B | Profile |
 | MD-07 | Account deletion confirmation | ALREADY_DONE | C | Profile |
@@ -101,7 +108,7 @@ are already done. Purchases/reviews/chat secondary paths remain reserved.
 
 Routes, NavigationMenu, Settings, Home, product sellers, Nearby and Cart entries
 are reconciled with the W46 inventory and current feature files. No unknown
-active Customer surface remains. No new dialog is counted for existing states.
+active Customer surface remains after the correction below. No new dialog is counted for existing states.
 Auth/session checks, local history storage and notification destination builders
 are implementation contracts, not redesign targets.
 
@@ -112,12 +119,11 @@ SHARED_COMPONENT_CHANGE_REQUIRED: YES
 
 - EXACT_FILES: `lib/core/common/widgets/progress_indicator.dart`,
   `lib/core/utils/helpers/helper_functions.dart`,
-  `lib/core/utils/helpers/location_helper.dart`,
   `lib/core/ui/foundation/esnaftavar_theme.dart`.
 - REASON: ST-02 still uses legacy colors; ST-03 typed helper overrides Final UI
   with legacy colors and zero margins. Repeated Material progress/snackbar/dialog
-  consumers require shared theme defaults. Location helper modals MD-01–04 are
-  explicitly assigned in the expanded W48 contract.
+  consumers require shared theme defaults. Location helper modals MD-01–04
+  are inactive; their implementation is unchanged.
 - CONSUMERS_AND_TESTS: all helper/progress/theme callers are audited in the
   result; Customer Home/Auth/Account/Cart/Nearby/Notifications/history and
   reserved chat presentation consume defaults. Shared regression plus full suite.
@@ -126,3 +132,27 @@ SHARED_COMPONENT_CHANGE_REQUIRED: YES
 - COLLISIONS: NONE in fetched W47 diff. No W47 view or global route/provider edit.
 
 Completion evidence and final status are recorded in UI_W48_TASK_RESULT.md.
+
+## Four historical reachability errors corrected
+
+`rg` over all `lib/**/*.dart` finds no caller or import of `LocationHelper` or
+`getAddressFromCurrentLocation`. `showLocationServiceDialog` and
+`showPermissionDialog` are called only from that unused helper. Existing isolated
+localization tests and a release-logging source check do not activate a route.
+The real binding is `CustomerLocationService -> GeolocatorCustomerLocationService`
+in `lib/core/dependency_injection/service_locator.dart`; Nearby uses its cubit,
+the active MD-19 consent and existing location result states. It never calls the
+four legacy dialogs. No legacy route was activated.
+
+The W46 inventory labelled MD-01–04 active based on historical helper ownership.
+W48 initially followed those labels and tested temporary presentation edits;
+the final call-chain audit found the error. All those uncommitted edits and their
+new evidence were removed before final verification. They are not counted DONE.
+Their historical hours are 2 + 1 + 2 + 2 = 7, explaining 50 -> 43 nominal hours.
+
+Within MD-23, `_QrSessionCompletedView` and its rating state implementation are
+`RESERVED_FOR_AGENT3` dependencies. Their source remains byte-for-byte unchanged;
+W48 finishes preparation, loading/failure, active QR, delayed connection,
+expiration/cancellation, invalid snapshot and refreshed-summary presentation.
+This nested reservation adds no new inventory unit and does not claim Reviews
+or Purchases completion. Existing completion/rating/navigation tests still run.

@@ -93,6 +93,22 @@ abstract final class EsnaftaVarTheme {
 
     return ThemeData(
       useMaterial3: true,
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: EsnaftaVarColors.primary,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: EsnaftaVarColors.textPrimary,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: EsnaftaVarColors.textOnPrimary,
+        ),
+        actionTextColor: EsnaftaVarColors.textOnPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
+        ),
+        insetPadding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      ),
       brightness: Brightness.light,
       fontFamily: 'Poppins',
       colorScheme: colorScheme,

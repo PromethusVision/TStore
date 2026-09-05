@@ -272,86 +272,27 @@ class _NearbyContentState extends State<_NearbyContent>
     try {
       final shouldUseLocation = await showDialog<bool>(
         context: context,
-        builder: (dialogContext) => Dialog(
-          backgroundColor: CustomerHomeV1Tokens.surface,
-          insetPadding: const EdgeInsets.all(CustomerHomeV1Tokens.space20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius24),
+        builder: (dialogContext) => AlertDialog(
+          scrollable: true,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          icon: const Icon(Icons.location_on_rounded),
+          title: const Text('Konumunu kullan'),
+          content: const Text(
+            'Sana en yakın mağazaları gösterebilmemiz için konum izni ver.',
           ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 380),
-            child: Padding(
-              padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: const BoxDecoration(
-                      color: CustomerHomeV1Tokens.mint,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.location_on_rounded,
-                      color: CustomerHomeV1Tokens.petrol,
-                      size: 27,
-                    ),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  const Text(
-                    'Konumunu kullan',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: CustomerHomeV1Tokens.navy,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
-                  const Text(
-                    'Sana en yakın mağazaları gösterebilmemiz için konum izni ver.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: CustomerHomeV1Tokens.muted,
-                      fontSize: 12,
-                      height: 1.45,
-                    ),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space20),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: CustomerHomeV1Tokens.space8,
-                    runSpacing: CustomerHomeV1Tokens.space8,
-                    children: [
-                      TextButton(
-                        key: const Key('nearby-location-cancel'),
-                        onPressed: () => Navigator.of(dialogContext).pop(false),
-                        style: TextButton.styleFrom(
-                          foregroundColor: CustomerHomeV1Tokens.muted,
-                        ),
-                        child: const Text('Şimdi Değil'),
-                      ),
-                      FilledButton(
-                        key: const Key('nearby-location-confirm'),
-                        onPressed: () => Navigator.of(dialogContext).pop(true),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: CustomerHomeV1Tokens.petrol,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              CustomerHomeV1Tokens.radius12,
-                            ),
-                          ),
-                        ),
-                        child: const Text('İzin Ver'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+          actions: [
+            TextButton(
+              key: const Key('nearby-location-cancel'),
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Şimdi Değil'),
             ),
-          ),
+            FilledButton(
+              key: const Key('nearby-location-confirm'),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('İzin Ver'),
+            ),
+          ],
         ),
       );
 

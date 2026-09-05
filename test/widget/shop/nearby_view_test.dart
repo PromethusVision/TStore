@@ -1,3 +1,4 @@
+import '../w48/w48_fixture.dart';
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
@@ -151,6 +152,37 @@ void main() {
       ),
     );
     await tester.pump();
+  }
+
+  setUpAll(w48Fonts);
+  for (final width in [320.0, 390.0, 430.0]) {
+    testWidgets('W48 Nearby location consent $width 130%', (tester) async {
+      w48Viewport(tester, width);
+      stubNearbyState(const NearbyShopsLoaded([completeShop]));
+      final fixture = W48Fixture();
+      await tester.pumpWidget(
+        fixture.host(
+          BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const NearbyView(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('nearby-location-action')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      await w48Accessibility(tester, within: find.byType(AlertDialog));
+      if (width == 390) {
+        await expectLater(
+          find.byKey(const Key('w48-proof')),
+          matchesGoldenFile('../w48/goldens/w48_nearby_consent_390_130.png'),
+        );
+      }
+      await tester.tap(find.byKey(const Key('nearby-location-cancel')));
+      await tester.pumpAndSettle();
+      verifyNever(() => nearbyShopsCubit.useCurrentLocation());
+    });
   }
 
   group('customer navigation', () {
