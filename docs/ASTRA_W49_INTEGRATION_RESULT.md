@@ -171,6 +171,10 @@ or golden regeneration of old/source evidence was used. An audit utility's
 initial Windows text-decoding mismatch was corrected to UTF-8 before comparing
 methods; this was not a runtime encoding change.
 
+The publication diff check also reported an extra blank line at the new inventory
+file's end. It was removed in a follow-up docs-only commit; the complete diff
+from starting main then passed. The validated runtime/test tree is unchanged.
+
 Ignored local logs: `.buildlog/w49-targeted.jsonl`,
 `w49-adjacent.jsonl`, `w49-integration.jsonl`, `w49-full.jsonl`,
 `w49-analyzer.log`, `w49-method-audit.json`,

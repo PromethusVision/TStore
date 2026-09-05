@@ -180,4 +180,3 @@ Ready for the separately scoped Customer V1 release-gate assessment: **YES**.
 Commercial release, Merchant minimum, physical-device QR E2E, legal/privacy and
 support approval, signing/store publication and Production authority remain
 separate, unverified gates. This integration does not grant access to those systems.
-
