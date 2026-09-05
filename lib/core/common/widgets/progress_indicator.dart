@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/colors.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 
 class TLoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;
+  final String label;
 
-  const TLoadingIndicator({super.key, this.size = 40.0, this.color});
+  const TLoadingIndicator({
+    super.key,
+    this.size = 40.0,
+    this.color,
+    this.label = 'Yükleniyor',
+  });
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color indicatorColor =
-        color ?? (isDark ? TColors.accent : TColors.primary);
+    final Color indicatorColor = color ?? EsnaftaVarColors.primary;
 
     return SizedBox(
       width: size,
       height: size,
       child: CircularProgressIndicator(
-        strokeWidth: 4.0,
+        semanticsLabel: label,
+        strokeWidth: 3.0,
         valueColor: AlwaysStoppedAnimation<Color>(indicatorColor),
-        backgroundColor: isDark ? TColors.darkGrey : TColors.lightGrey,
+        backgroundColor: EsnaftaVarColors.primarySoft,
       ),
     );
   }

@@ -198,7 +198,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     verifyNever(() => cart.removeItem(any()));
-    await tester.tap(find.widgetWithText(TextButton, 'Kaldır'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Kaldır'));
     await tester.pumpAndSettle();
     verify(() => cart.removeItem(_shirt.id)).called(1);
   });
@@ -399,7 +399,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(lastRemove);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, 'Kaldır'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Kaldır'));
     await tester.pumpAndSettle();
     verify(() => cart.removeItem('fixture-item-23')).called(1);
     await tester.scrollUntilVisible(
@@ -429,8 +429,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(clear);
     await tester.pumpAndSettle();
-    final confirm = tester.widget<TextButton>(
-      find.widgetWithText(TextButton, 'Sepeti boşalt').last,
+    final confirm = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Sepeti boşalt'),
     );
     confirm.onPressed!();
     confirm.onPressed!();

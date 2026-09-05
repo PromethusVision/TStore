@@ -308,8 +308,8 @@ void main() {
     expect(find.text('Henüz görüntülediğin ürün yok'), findsOneWidget);
     expect(find.text('Ürünleri Keşfet'), findsOneWidget);
 
-    final exploreButton = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Ürünleri Keşfet'),
+    final exploreButton = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Ürünleri Keşfet'),
     );
     exploreButton.onPressed?.call();
     exploreButton.onPressed?.call();
@@ -354,10 +354,8 @@ void main() {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
-    final clearButton = tester.widget<IconButton>(
-      find.byWidgetPredicate(
-        (widget) => widget is IconButton && widget.tooltip == 'Geçmişi temizle',
-      ),
+    final clearButton = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Geçmişi temizle'),
     );
     clearButton.onPressed?.call();
     clearButton.onPressed?.call();

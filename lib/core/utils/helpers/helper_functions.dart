@@ -1,3 +1,4 @@
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -303,13 +304,13 @@ class THelperFunctions {
     Color getColor() {
       switch (type) {
         case SnackBarType.success:
-          return success;
+          return EsnaftaVarColors.success;
         case SnackBarType.error:
-          return error;
+          return EsnaftaVarColors.error;
         case SnackBarType.warning:
-          return warning;
+          return EsnaftaVarColors.warning;
         case SnackBarType.info:
-          return info;
+          return EsnaftaVarColors.primary;
       }
     }
 
@@ -327,17 +328,17 @@ class THelperFunctions {
     }
 
     final snackBar = SnackBar(
+      elevation: 0,
       content: Row(
         children: [
-          Icon(getIcon(), color: darkText),
+          Icon(getIcon(), color: EsnaftaVarColors.textOnPrimary),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontFamily: 'Poppins',
+                color: EsnaftaVarColors.textOnPrimary,
               ),
             ),
           ),
@@ -345,9 +346,11 @@ class THelperFunctions {
       ),
       backgroundColor: getColor(),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
+      ),
       duration: duration,
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+      margin: const EdgeInsets.all(EsnaftaVarSpacing.md),
     );
 
     ScaffoldMessenger.of(context)

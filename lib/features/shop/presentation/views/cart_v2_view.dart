@@ -220,6 +220,10 @@ class _CartV2ViewState extends State<CartV2View> {
                   }
 
                   return AlertDialog(
+                    scrollable: true,
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.transparent,
+                    icon: const Icon(Icons.remove_shopping_cart_outlined),
                     title: const Text('Ürünü sepetten kaldır'),
                     content: const Text(
                       'Bu ürünü mağaza sepetinden kaldırmak istiyor musunuz?',
@@ -231,7 +235,10 @@ class _CartV2ViewState extends State<CartV2View> {
                             : () => closeDialog(false),
                         child: const Text('Vazgeç'),
                       ),
-                      TextButton(
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: EsnaftaVarColors.accent,
+                        ),
                         onPressed: isClosingDialog
                             ? null
                             : () => closeDialog(true),
@@ -276,6 +283,9 @@ class _CartV2ViewState extends State<CartV2View> {
                   }
 
                   return AlertDialog(
+                    scrollable: true,
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.transparent,
                     title: const Text('Mağaza sepetini boşalt'),
                     content: const Text(
                       'Bu mağaza sepetindeki tüm ürünler kaldırılacak. '
@@ -288,7 +298,10 @@ class _CartV2ViewState extends State<CartV2View> {
                             : () => closeDialog(false),
                         child: const Text('Vazgeç'),
                       ),
-                      TextButton(
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: EsnaftaVarColors.accent,
+                        ),
                         onPressed: isClosingDialog
                             ? null
                             : () => closeDialog(true),
@@ -429,6 +442,9 @@ class _CartV2ViewState extends State<CartV2View> {
             }
 
             return AlertDialog(
+              scrollable: true,
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
               icon: const Icon(Icons.price_change_outlined),
               title: const Text('Sepet tutarı güncellendi'),
               content: Column(
@@ -521,6 +537,14 @@ class _CartV2ViewState extends State<CartV2View> {
     final completedQrSessionId = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: EsnaftaVarColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(EsnaftaVarRadii.xxLarge),
+        ),
+      ),
       builder: (sheetContext) {
         return BlocProvider(
           create: (_) => sl<QrSessionCubit>(),

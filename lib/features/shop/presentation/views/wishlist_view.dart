@@ -1,3 +1,7 @@
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/common/widgets/progress_indicator.dart';
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
@@ -36,10 +40,11 @@ class _WishlistViewState extends State<WishlistView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
       body: SafeArea(
-        child: Center(
+        top: false,
+        child: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             key: const Key('wishlist-customer-content'),
             constraints: const BoxConstraints(maxWidth: 430),
@@ -88,8 +93,8 @@ class _WishlistViewState extends State<WishlistView> {
                 }
 
                 return RefreshIndicator(
-                  color: CustomerHomeV1Tokens.petrol,
-                  backgroundColor: CustomerHomeV1Tokens.surface,
+                  color: EsnaftaVarColors.primary,
+                  backgroundColor: EsnaftaVarColors.surface,
                   onRefresh: context.read<WishlistCubit>().getWishlist,
                   child: CustomScrollView(
                     key: const Key('wishlist-products-scroll'),
@@ -97,9 +102,9 @@ class _WishlistViewState extends State<WishlistView> {
                     slivers: [
                       SliverPadding(
                         padding: const EdgeInsets.fromLTRB(
-                          CustomerHomeV1Tokens.space16,
-                          CustomerHomeV1Tokens.space12,
-                          CustomerHomeV1Tokens.space16,
+                          EsnaftaVarSpacing.md,
+                          EsnaftaVarSpacing.sm,
+                          EsnaftaVarSpacing.md,
                           0,
                         ),
                         sliver: SliverToBoxAdapter(
@@ -109,23 +114,36 @@ class _WishlistViewState extends State<WishlistView> {
                         ),
                       ),
                       const SliverToBoxAdapter(
-                        child: SizedBox(height: CustomerHomeV1Tokens.space16),
+                        child: SizedBox(height: EsnaftaVarSpacing.md),
                       ),
                       SliverPadding(
                         padding: const EdgeInsets.fromLTRB(
-                          CustomerHomeV1Tokens.space16,
+                          EsnaftaVarSpacing.md,
                           0,
-                          CustomerHomeV1Tokens.space16,
-                          CustomerHomeV1Tokens.space24,
+                          EsnaftaVarSpacing.md,
+                          EsnaftaVarSpacing.xl,
                         ),
                         sliver: SliverGrid(
                           key: const Key('wishlist-products-grid'),
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: CustomerHomeV1Tokens.space12,
-                                crossAxisSpacing: CustomerHomeV1Tokens.space12,
-                                mainAxisExtent: 250,
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    MediaQuery.sizeOf(context).width < 350 ||
+                                        MediaQuery.textScalerOf(
+                                              context,
+                                            ).scale(14) >
+                                            17
+                                    ? 1
+                                    : 2,
+                                mainAxisSpacing: EsnaftaVarSpacing.sm,
+                                crossAxisSpacing: EsnaftaVarSpacing.sm,
+                                mainAxisExtent:
+                                    300 +
+                                    (MediaQuery.textScalerOf(
+                                              context,
+                                            ).scale(14) -
+                                            14) *
+                                        7,
                               ),
                           delegate: SliverChildBuilderDelegate(
                             (context, index) => _buildProductCard(items[index]),
@@ -205,15 +223,15 @@ class _WishlistStateLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        CustomerHomeV1Tokens.space16,
-        CustomerHomeV1Tokens.space12,
-        CustomerHomeV1Tokens.space16,
-        CustomerHomeV1Tokens.space24,
+        EsnaftaVarSpacing.md,
+        EsnaftaVarSpacing.sm,
+        EsnaftaVarSpacing.md,
+        EsnaftaVarSpacing.xl,
       ),
       child: Column(
         children: [
           _WishlistHeader(subtitle: subtitle),
-          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          const SizedBox(height: EsnaftaVarSpacing.md),
           Expanded(child: child),
         ],
       ),
@@ -228,59 +246,10 @@ class _WishlistHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return EsnaftaVarSectionHeader(
       key: const Key('wishlist-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFE6DF),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Iconsax.heart5,
-              color: CustomerHomeV1Tokens.coral,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Favorilerim',
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: 'Favorilerim',
+      subtitle: subtitle,
     );
   }
 }
@@ -304,18 +273,17 @@ class _WishlistProductCard extends StatelessWidget {
 
     return Material(
       key: Key('wishlist-product-${product.id}'),
-      color: CustomerHomeV1Tokens.surface,
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      color: EsnaftaVarColors.surface,
+      borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
       child: InkWell(
         key: Key('wishlist-product-link-${product.id}'),
         onTap: onTap,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         child: Container(
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+            border: Border.all(color: EsnaftaVarColors.borderDefault),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,16 +305,16 @@ class _WishlistProductCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: CustomerHomeV1Tokens.coral,
+                            color: EsnaftaVarColors.accent,
                             borderRadius: BorderRadius.circular(
-                              CustomerHomeV1Tokens.radiusPill,
+                              EsnaftaVarRadii.pill,
                             ),
                           ),
                           child: Text(
                             '%${product.discountPercentage.round()}',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 9,
+                              fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -375,21 +343,21 @@ class _WishlistProductCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 12.5,
+                          color: EsnaftaVarColors.textPrimary,
+                          fontSize: 14,
                           height: 1.15,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       if (secondaryText != null) ...[
-                        const SizedBox(height: CustomerHomeV1Tokens.space4),
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
                         Text(
                           secondaryText,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: CustomerHomeV1Tokens.muted,
-                            fontSize: 9.5,
+                            color: EsnaftaVarColors.textSecondary,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -400,8 +368,8 @@ class _WishlistProductCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: CustomerHomeV1Tokens.navy,
-                          fontSize: 12,
+                          color: EsnaftaVarColors.textPrimary,
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -449,13 +417,13 @@ class _FavoriteRemoveButton extends StatelessWidget {
       child: isRemoving
           ? SizedBox(
               key: Key('favorite-action-loading-$productId'),
-              width: 34,
-              height: 34,
+              width: 48,
+              height: 48,
               child: const Padding(
                 padding: EdgeInsets.all(9),
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: CustomerHomeV1Tokens.petrol,
+                  color: EsnaftaVarColors.primary,
                 ),
               ),
             )
@@ -463,11 +431,11 @@ class _FavoriteRemoveButton extends StatelessWidget {
               key: Key('favorite-action-$productId'),
               tooltip: 'Favorilerden çıkar',
               onPressed: onPressed,
-              constraints: const BoxConstraints.tightFor(width: 34, height: 34),
+              constraints: const BoxConstraints.tightFor(width: 48, height: 48),
               padding: EdgeInsets.zero,
               icon: const Icon(
                 Iconsax.heart5,
-                color: CustomerHomeV1Tokens.coral,
+                color: EsnaftaVarColors.accent,
                 size: 18,
               ),
             ),
@@ -519,11 +487,11 @@ class _WishlistProductImageFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ColoredBox(
-      color: CustomerHomeV1Tokens.mint,
+      color: EsnaftaVarColors.primarySoft,
       child: Center(
         child: Icon(
           Icons.inventory_2_rounded,
-          color: CustomerHomeV1Tokens.petrol,
+          color: EsnaftaVarColors.primary,
           size: 38,
         ),
       ),
@@ -533,104 +501,21 @@ class _WishlistProductImageFallback extends StatelessWidget {
 
 class _WishlistLoadingView extends StatelessWidget {
   const _WishlistLoadingView();
-
   @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      key: const Key('wishlist-loading'),
-      physics: const NeverScrollableScrollPhysics(),
-      slivers: [
-        const SliverPadding(
-          padding: EdgeInsets.fromLTRB(
-            CustomerHomeV1Tokens.space16,
-            CustomerHomeV1Tokens.space12,
-            CustomerHomeV1Tokens.space16,
-            0,
-          ),
-          sliver: SliverToBoxAdapter(
-            child: _WishlistHeader(subtitle: 'Favorilerin hazırlanıyor.'),
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: CustomerHomeV1Tokens.space16),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: CustomerHomeV1Tokens.space16,
-          ),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: CustomerHomeV1Tokens.space12,
-              crossAxisSpacing: CustomerHomeV1Tokens.space12,
-              mainAxisExtent: 250,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (_, _) => const _WishlistProductSkeleton(),
-              childCount: 4,
-            ),
+  Widget build(BuildContext context) => const Padding(
+    key: Key('wishlist-loading'),
+    padding: EdgeInsets.all(16),
+    child: Column(
+      children: [
+        _WishlistHeader(subtitle: 'Favorilerin hazırlanıyor.'),
+        Expanded(
+          child: Center(
+            child: TLoadingIndicator(label: 'Favoriler yükleniyor'),
           ),
         ),
       ],
-    );
-  }
-}
-
-class _WishlistProductSkeleton extends StatelessWidget {
-  const _WishlistProductSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 158,
-            width: double.infinity,
-            child: ColoredBox(color: CustomerHomeV1Tokens.mint),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                _SkeletonLine(width: 112),
-                SizedBox(height: CustomerHomeV1Tokens.space8),
-                _SkeletonLine(width: 72),
-                SizedBox(height: CustomerHomeV1Tokens.space12),
-                _SkeletonLine(width: 88),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SkeletonLine extends StatelessWidget {
-  const _SkeletonLine({required this.width});
-
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: 9,
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
-      ),
-    );
-  }
+    ),
+  );
 }
 
 class _WishlistStatus extends StatelessWidget {
@@ -651,76 +536,13 @@ class _WishlistStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 30, color: CustomerHomeV1Tokens.petrol),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space20),
-              FilledButton.icon(
-                onPressed: onAction,
-                style: FilledButton.styleFrom(
-                  backgroundColor: CustomerHomeV1Tokens.petrol,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: CustomerHomeV1Tokens.space20,
-                    vertical: CustomerHomeV1Tokens.space12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radiusPill,
-                    ),
-                  ),
-                ),
-                icon: Icon(
-                  actionLabel == 'Tekrar Dene'
-                      ? Icons.refresh_rounded
-                      : Icons.explore_outlined,
-                  size: 18,
-                ),
-                label: Text(actionLabel),
-              ),
-            ],
-          ),
-        ),
+    return SingleChildScrollView(
+      child: EsnaftaVarStateCard(
+        icon: icon,
+        title: title,
+        message: description,
+        actionLabel: actionLabel,
+        onAction: onAction,
       ),
     );
   }
