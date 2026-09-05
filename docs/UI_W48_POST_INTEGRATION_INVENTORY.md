@@ -1,5 +1,10 @@
 # W48 — Post-integration Customer Final UI inventory
 
+Historical W48 snapshot. Current remaining-work truth is the
+[W49 final closeout inventory](UI_W49_POST_INTEGRATION_INVENTORY.md):
+zero active Customer Final UI conversion units remain. This historical ledger
+and its inactive corrections are retained without rewriting the W48 result.
+
 Status: **RECOMPUTED FROM MERGED RUNTIME — 2026-09-05**.
 Main before: `cd1d566c36a669fc9b6cabeaee9a114979ae7fb7`.
 W48 source: `257c5aba9a40e6f461cd10ed98a7690f84769e75`.

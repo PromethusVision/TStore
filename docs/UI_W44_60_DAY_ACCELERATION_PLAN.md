@@ -504,3 +504,30 @@ Section 12 remain planning assumptions. No new evidence here closes Merchant
 minimum, physical QR, signing, legal/support or separately authorized Production
 rollout. Their longest unresolved dependency still controls commercial readiness.
 No linear extrapolation or shortened external gate follows from the UI milestone.
+
+## 14. W49 final UI conversion closeout
+
+Revision **2026-09-05**. This supersedes Section 13's pending W49 status and
+remaining Customer conversion proposals. W49 is accepted against current W48 main;
+all eight assigned active units and the reserved QR completion/rating dependency
+are closed. [Runtime inventory](UI_W49_POST_INTEGRATION_INVENTORY.md):
+**0 screens / 0 modals / 0 state families remaining**, Tier and Figma **0/0/0**.
+
+All 56 stable active IDs are Final. The approved C1 refund action's contained
+sheet is explicitly disclosed, giving 57 current compositions and 20 modal
+compositions; it does not inflate the eight-unit worker denominator.
+No new Customer conversion work is opened to satisfy a nominal package size.
+
+**CUSTOMER_V1_FINAL_UI_CONVERSION_COMPLETE: YES.** Full integration
+**2024 PASS / 0 FAIL / 6 existing conditional skips**, analyzer clean. W3B 01–08
+actual-runtime review and W48 shared/navigation/QR reconciliation passed without
+an Integration runtime correction. Worker and Integration are GREEN / SAME_SIZE;
+reported worker 44m15s is a bounded observation, not an extrapolated delivery rate.
+
+The earlier Customer UI forecast windows are now historical planning assumptions:
+the conversion milestone has actual acceptance evidence. This does not redate or
+automatically close the external Merchant, physical-device QR E2E, legal/privacy/
+support, signing/store publication or Production gates. Their evidence must be
+assessed separately; no pilot launch date or commercial-ready flag is created.
+Ready for that separately scoped Customer V1 release-gate assessment: **YES**.
+No Production access or remote Development write occurred.

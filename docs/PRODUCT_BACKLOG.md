@@ -1,6 +1,37 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — W48 / Astra Wave 3A integration, 2026-09-05
+## Güncel durum — W49 Final Customer V1 UI integration, 2026-09-05
+
+- **Customer V1 Final UI dönüşümü tamamlandı.** W49'un beş ekranı ve üç mevcut
+  modal birimi, toplam **8/8**, güncel W48 main üzerine alındı.
+  Alışverişler, Esnaf Değerlendirmeleri, Ürün Yorumları ve Mesajlaşma artık Final.
+- W3B 01–08 onaylı görselleri gerçek runtime ile eşleşiyor veya kabul edilebilir
+  eşdeğer. W47/W3B prototype dalları alınmadı; entegrasyon ek runtime düzeltmedi.
+- W48 tema/ortak bileşenleri, AuthGuard, bildirim hedefleri, Account, mağaza/ürün
+  geçişleri ve QR tamamlanma/puan verme bağımlılığı birleşik olarak doğrulandı.
+  Alışveriş/QR/yorum hakkı/puanlama/mesajlaşma iş kuralları değişmedi.
+- [Son envanter](UI_W49_POST_INTEGRATION_INVENTORY.md):
+  kalan **0 ekran + 0 modal + 0 durum ailesi**;
+  Tier A/B/C **0/0/0**, Figma Heavy/Light/None **0/0/0**.
+  56 sabit aktif envanter ID'si Final. FS-30 kapsamındaki yeni C1 iade hazırlık
+  penceresi ayrıca açıklanır: toplam 57 aktif kompozisyon, 20 modal kompozisyonu.
+  Bu pencere dokuzuncu atanmış W49 iş birimi değildir.
+- On üç inactive/legacy/non-customer dışlama korunur. Eski konum pencereleri
+  etkinleştirilmedi; onaylı Category ve önceki Final ekranlar değiştirilmedi.
+- Son kapı **2024 PASS / 0 FAIL / 6 mevcut koşullu skip**, analyzer temiz.
+  **170/170 test dosyası**, 217 main PNG'si ve W49'un 37 dosyası aynen korunur.
+  Entegrasyon dört test ve dört QR görsel kanıtı ekledi.
+  [Tam sonuç](ASTRA_W49_INTEGRATION_RESULT.md).
+- W49 worker ve Integration **GREEN / SAME_SIZE**.
+  Yeni Customer UI dönüşüm paketi kalmadı; tamamlanan ekranlar yeniden açılmaz.
+  AGENTS.md/protokol değişmedi; Figma erişimi, backend değişikliği,
+  Production erişimi ve uzak Development yazımı yok.
+- **Customer V1 release-gate değerlendirmesine geçişe hazır: YES.**
+  Bu, ticari yayın onayı değildir. Merchant minimumu, fiziksel cihaz QR E2E,
+  legal/privacy/support, signing/store publishing ve ayrı Production yetkisi
+  kendi kanıtlarını bekler. Aşağıdaki dalga kayıtları tarihsel bağlamdır.
+
+## Tarihsel durum — W48 / Astra Wave 3A integration, 2026-09-05
 
 - **W48 Customer Utility & Engagement: DONE / MAIN — 14/14 aktif birim.**
   Favoriler, Son Görüntülenenler, Bildirimler, Kuponlar ve mevcut ilişkili
