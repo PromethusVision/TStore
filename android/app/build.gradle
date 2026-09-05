@@ -29,9 +29,39 @@ def releaseSigningReady = keystorePropertiesFile.exists() &&
     releaseStoreFile.isFile()
 
 gradle.taskGraph.whenReady { taskGraph ->
+    // Android flavor and Dart entrypoint are independent Flutter CLI options.
+    // Reject cross-environment release binaries before compilation/packaging.
+    [production: "lib/main_production.dart", development: "lib/main_development.dart"].each { flavor, entrypoint ->
+        def capitalizedFlavor = flavor.capitalize()
+        // Flutter may add another variant's compile task as a dependency of a
+        // bundle. Validate the requested artifact, not incidental graph nodes.
+        def flavorReleaseRequested = gradle.startParameter.taskNames.any { taskName ->
+            taskName.tokenize(":").last().contains("${capitalizedFlavor}Release")
+        }
+        if (flavorReleaseRequested) {
+            def requestedTarget = new File((project.findProperty("target") ?: "lib/main.dart").toString())
+            def targetFile = requestedTarget.isAbsolute()
+                ? requestedTarget
+                : new File(rootProject.projectDir.parentFile, requestedTarget.path)
+            def expectedTargetFile = new File(rootProject.projectDir.parentFile, entrypoint)
+            if (targetFile.canonicalFile != expectedTargetFile.canonicalFile) {
+                throw new GradleException(
+                    "Customer release target must match its Android flavor (${flavor}). " +
+                    "Use the documented flavor and entrypoint together."
+                )
+            }
+        }
+    }
+
     def releasePackagingRequested = taskGraph.allTasks.any { task ->
         task.project == project &&
             task.name.toLowerCase().matches("(assemble|bundle|package).*release")
+    }
+    def explicitReleaseFlavor = gradle.startParameter.taskNames.any { taskName ->
+        taskName.contains("ProductionRelease") || taskName.contains("DevelopmentRelease")
+    }
+    if (releasePackagingRequested && !explicitReleaseFlavor) {
+        throw new GradleException("Customer release packaging requires an explicit Android flavor.")
     }
     if (releasePackagingRequested && !releaseSigningReady) {
         def reason = !keystorePropertiesFile.exists()

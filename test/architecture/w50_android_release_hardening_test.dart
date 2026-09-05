@@ -76,4 +76,87 @@ void main() {
     expect(cart, isNot(contains('MerchantQrScannerView')));
     expect(cart, contains('CartQrSessionBottomSheet'));
   });
+
+  test('release flavor and Dart entrypoint cannot silently diverge', () {
+    final gradle = File('android/app/build.gradle').readAsStringSync();
+    expect(gradle, contains('production: "lib/main_production.dart"'));
+    expect(gradle, contains('development: "lib/main_development.dart"'));
+    expect(
+      gradle,
+      contains('targetFile.canonicalFile != expectedTargetFile.canonicalFile'),
+    );
+    expect(
+      gradle,
+      contains('Customer release target must match its Android flavor'),
+    );
+  });
+
+  test('known local release input paths and signing keys are ignored', () {
+    final ignore = File('.gitignore').readAsStringSync();
+    expect(ignore, contains('/tool/production_release_config.json'));
+    expect(ignore, contains('/tool/production_mobile_release_config.json'));
+    expect(ignore, contains('**/*.keystore'));
+    expect(ignore, contains('**/*.jks'));
+  });
+
+  test(
+    'Android startup attributes stay in their supported resource levels',
+    () {
+      for (final folder in ['values', 'values-night']) {
+        final base = File(
+          'android/app/src/main/res/$folder/styles.xml',
+        ).readAsStringSync();
+        expect(base, isNot(contains('android:forceDarkAllowed')));
+        expect(
+          base,
+          isNot(contains('android:windowLayoutInDisplayCutoutMode')),
+        );
+        final android28 = File(
+          'android/app/src/main/res/$folder-v28/styles.xml',
+        ).readAsStringSync();
+        final android29 = File(
+          'android/app/src/main/res/$folder-v29/styles.xml',
+        ).readAsStringSync();
+        expect(android28, contains('android:windowLayoutInDisplayCutoutMode'));
+        expect(android28, isNot(contains('android:forceDarkAllowed')));
+        expect(android29, contains('android:forceDarkAllowed'));
+        expect(android29, contains('android:windowLayoutInDisplayCutoutMode'));
+      }
+    },
+  );
+
+  test(
+    'unused background notification lint exception cannot hide a new caller',
+    () {
+      final location = File(
+        'lib/features/shop/data/services/geolocator_customer_location_service.dart',
+      ).readAsStringSync();
+      expect(location, contains('Geolocator.getCurrentPosition('));
+      expect(location, contains('locationSettings: LocationSettings('));
+      final dartSources = Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((file) => file.path.endsWith('.dart'))
+          .map((file) => file.readAsStringSync())
+          .join('\n');
+      expect(dartSources, isNot(contains('foregroundNotificationConfig:')));
+      expect(dartSources, isNot(contains('Geolocator.getPositionStream(')));
+      final lint = File('android/app/lint.xml').readAsStringSync();
+      expect(
+        lint,
+        contains(
+          'usage from com[.]baseflow[.]geolocator[.]location[.]BackgroundNotification',
+        ),
+      );
+      expect(lint, isNot(contains('severity="ignore"')));
+      expect(
+        manifest,
+        isNot(contains('android.permission.POST_NOTIFICATIONS')),
+      );
+      expect(
+        manifest,
+        isNot(contains('android.permission.ACCESS_BACKGROUND_LOCATION')),
+      );
+    },
+  );
 }

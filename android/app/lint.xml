@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- Customer only calls getCurrentPosition with plain LocationSettings.
+         It does not enable Geolocator's foregroundNotificationConfig, stream
+         positions in the background, or post OS notifications. The warning is
+         from an unused dependency class, not an active notification caller.
+         Keep NotificationPermission enabled for every other caller. Revisit
+         this exact exception before introducing background location or push.
+         test/architecture/w50_android_release_hardening_test.dart guards this. -->
+    <issue id="NotificationPermission">
+        <ignore regexp=".*usage from com[.]baseflow[.]geolocator[.]location[.]BackgroundNotification.*" />
+    </issue>
+</lint>
