@@ -1,6 +1,30 @@
 # EsnaftaVar Project State
 
-## Güncel durum — W50B Customer V1 release-gate integration, 2026-09-05
+## Güncel durum — W51B RC signing/config readiness integration, 2026-09-05
+
+- W51A `5869971`, güncel main `8f8847b` üzerine çakışmasız alındı.
+  Yeni signing girdileri bütün checkout'ların dışından alınır; paketleme öncesi
+  mevcut owner sertifikası ve özel anahtar kanıtı zorunludur. Debug fallback yok.
+- **RC_SIGNING_CONFIG: FAIL. SIGNED_RELEASE_ARTIFACT_PROVEN: NO.
+  SIGNED_ARTIFACT_CREATED: NO.** Yerel wiring/test başarısı gerçek imza kanıtı
+  yerine geçmez. Mevcut anahtar korunur; güvenli dış parola girdisi hâlâ gereklidir.
+- **PRODUCTION_CONFIG_LOCAL_CONTRACT: PASS.**
+  **PRODUCTION_CONFIG_OWNER_DECISION_REQUIRED: YES.
+  PRODUCTION_REMOTE_PROOF_REQUIRED: YES.** Public ref/URL sözleşmede belirli;
+  gerçek client key ve onaylı dış JSON eksik. Şablon release preflight'ında reddedilir.
+  Uzak kanıt için ayrıca açık görev yetkisi gerekir; Production'a erişilmedi.
+- Entegrasyon kapısı: **2065 PASS / 0 FAIL / 6 değişmeyen koşullu skip**,
+  **175/175 test dosyası**, analyzer temiz; Gradle signing matrisi **14 PASS**.
+  Eski 174 test ve 245 PNG aynen korunur. Yeni APK/AAB oluşturulmadı.
+- Customer V1 Final UI **COMPLETE**, yerel hardening **PASS**, technical RC
+  **NOT READY**. UI/runtime/backend değişmedi; fiziksel QR, install/launch,
+  Merchant, legal/privacy, destek ve store yayın kapıları **OPEN**.
+- Sonraki iş: ayrıca yetkilendirilmiş signing input completion.
+  Hazırlık **YES**, signing veya yayın kabulü **NO**.
+  [W51B entegrasyon kanıtı](ASTRA_W51B_RC_READINESS_INTEGRATION_RESULT.md).
+  AGENTS.md/protokol değişmedi; kalibrasyon **YELLOW / SAME_SIZE**.
+
+## Tarihsel durum — W50B Customer V1 release-gate integration, 2026-09-05
 
 - **CUSTOMER V1 FINAL UI: COMPLETE. CUSTOMER CORE JOURNEYS: PASS (local).**
   W49'un 56 sabit aktif ID / 57 kompozisyon / 0 kalan dönüşüm envanteri korunur.

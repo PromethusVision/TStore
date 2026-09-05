@@ -517,6 +517,55 @@ coherent signing/config package for the two immediate technical blockers. Physic
 QR, install/launch, Merchant, professional legal/privacy, support and store gates
 remain explicitly OPEN. Customer UI conversion stays COMPLETE; technical RC NO.
 
+### W51A / W51B — RC signing/config local readiness (2026-09-05)
+
+W51A source **5869971108f1a3209d16f0e18c78f04aab191db8** is two commits above
+**8f8847bcdef610f40992f87dad03a9bc2a99a391**. The worker reports **7/10** phases
+closed, **13 files**, two checkpoints, seven new Flutter tests and fourteen
+Gradle negative signing checks. Runtime/UI/backend changes **0**. Full suite
+**2065 PASS / 0 FAIL / 6 unchanged conditional skips**, analyzer clean. Reported
+boundary **18:37:30–18:54:40 UTC = 17m10s**, including owner/tool waits and
+excluding final result/publication. [Source result](RELEASE_W51A_RC_READINESS_RESULT.md).
+
+Worker **YELLOW / SAME_SIZE** is preserved. Wiring is tested, but actual external
+password inputs, current private-key proof, approved client key/JSON and exact new
+signed artifact proof remain incomplete. **RC_SIGNING_CONFIG FAIL** is not changed
+to PASS by tests. Local Production contract PASS is neither owner approval nor
+remote proof. Signed artifact created/proven **NO**; Production accessed **NO**.
+
+W51B found **0 main commits after merge-base**, no newer conflicting release/
+signing/config edits and no conflict. Exact source was merged in checkpoint
+**5167cce0fdc9e08c054e4b21fda8c5dbee5d3608**, pushed to
+`integration/w51b-rc-signing-config-readiness`. The evidence commit and final
+normal main publication are recorded in delivered TASK_RESULT.
+[Integration report](ASTRA_W51B_RC_READINESS_INTEGRATION_RESULT.md).
+
+Independent targeted Flutter **86 PASS / 0 FAIL / 0 SKIP**, Gradle signing
+**14 PASS / 0 FAIL**, analyzer clean (17.6 s). One final full suite **2065 PASS /
+0 FAIL / 6 existing skips**, **175/175 test files**, runner **117.889 s**. All
+**174 baseline tests**, **245 PNGs** and **13 source files** remain unchanged.
+Missing signing is rejected by the proof task and APK/AAB dry-run guards. No final
+package is generated; two pre-existing debug APK copies remain hash/time-identical.
+Integration adds five Markdown paths, **18 total paths** from main. No test was
+weakened or newly skipped; an audit-script DateTime/string comparison was corrected
+without changing source or artifacts.
+
+Observable Integration start **19:00:12 UTC**; delivered TASK_RESULT supplies the
+later end boundary. Six integration gates cover freshness/review, targeted signing/
+config checks, Flutter/analyzer, safety, coordination evidence and publication.
+Final remote/clean-tree acceptance is reported at delivery. No scope drift,
+critical regression, substantive owner correction or shared collision was found.
+Android source shared config ownership was reviewed; extra integration runtime/
+config edits **0**, Figma **NOT_REQUIRED / 0 calls**, backend changes and remote
+Development/Production operations **0**. AGENTS.md/protocol unchanged.
+
+W51B **YELLOW / SAME_SIZE** retains meaningful RC input/acceptance blockers.
+Recommend one coherent separately authorized signing-input completion package
+using the existing key; no key rotation or artifact/Production authority is inferred.
+Owner approval for the real client key/JSON and separate remote proof remain
+required. Customer UI COMPLETE and technical RC NOT READY remain unchanged.
+No duration threshold or normalized model-speed claim is introduced.
+
 ## 4. Kayıt ve değerlendirme kuralları
 
 - Tüm metrics protokolün `TASK_RESULT` sözleşmesine göre doldurulur. Gözlenemeyen
