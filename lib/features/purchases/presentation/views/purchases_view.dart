@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
@@ -13,6 +15,8 @@ import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.da
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
+
+part 'purchases_final_ui.dart';
 
 class PurchasesView extends StatelessWidget {
   const PurchasesView({
@@ -61,9 +65,9 @@ class _PurchasesScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
-        backgroundColor: CustomerHomeV1Tokens.cream,
+        backgroundColor: EsnaftaVarColors.background,
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -73,21 +77,21 @@ class _PurchasesScaffold extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.fromLTRB(
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space8,
-                      CustomerHomeV1Tokens.space16,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xs,
+                      EsnaftaVarSpacing.md,
                       0,
                     ),
-                    child: _PurchasesHeader(),
+                    child: _PurchasesFinalHeader(),
                   ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const SizedBox(height: EsnaftaVarSpacing.sm),
                   const Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: CustomerHomeV1Tokens.space16,
+                      horizontal: EsnaftaVarSpacing.md,
                     ),
-                    child: _PurchasesTabBar(),
+                    child: _PurchasesFinalControls(),
                   ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space8),
+                  const SizedBox(height: EsnaftaVarSpacing.xs),
                   Expanded(
                     child: TabBarView(
                       children: [
@@ -98,7 +102,6 @@ class _PurchasesScaffold extends StatelessWidget {
                           shopProfileBuilder: shopProfileBuilder,
                         ),
                         const _ReturnRequestsTab(),
-                        const _CreateReturnRequestTab(),
                       ],
                     ),
                   ),
@@ -112,88 +115,6 @@ class _PurchasesScaffold extends StatelessWidget {
   }
 }
 
-class _PurchasesHeader extends StatelessWidget {
-  const _PurchasesHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('customer-purchases-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Material(
-            color: CustomerHomeV1Tokens.mint,
-            shape: const CircleBorder(),
-            child: IconButton(
-              key: const Key('customer-purchases-back-button'),
-              tooltip: 'Geri',
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                color: CustomerHomeV1Tokens.petrol,
-                size: 21,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Alışverişlerim',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  'Mağazada doğrulanan alışverişlerini takip et',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-            ),
-            child: const Icon(
-              Iconsax.receipt_item,
-              color: CustomerHomeV1Tokens.petrol,
-              size: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _PurchasesTabBar extends StatelessWidget {
   const _PurchasesTabBar();
 
@@ -201,29 +122,29 @@ class _PurchasesTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       key: const Key('customer-purchases-tab-bar'),
-      height: 54,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space4),
+      height: 64,
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.xxs),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       child: TabBar(
         dividerColor: Colors.transparent,
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
-          color: CustomerHomeV1Tokens.petrol,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+          color: EsnaftaVarColors.primary,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
         ),
         labelColor: Colors.white,
-        unselectedLabelColor: CustomerHomeV1Tokens.muted,
+        unselectedLabelColor: EsnaftaVarColors.textSecondary,
         labelStyle: const TextStyle(
-          fontSize: 10,
+          fontSize: 13,
           height: 1.15,
           fontWeight: FontWeight.w700,
         ),
         unselectedLabelStyle: const TextStyle(
-          fontSize: 9.5,
+          fontSize: 13,
           height: 1.15,
           fontWeight: FontWeight.w600,
         ),
@@ -238,13 +159,6 @@ class _PurchasesTabBar extends StatelessWidget {
           Tab(
             child: Text(
               'İade Taleplerim',
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Tab(
-            child: Text(
-              'İade Talebi Oluştur',
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
@@ -426,15 +340,15 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
             key: const Key('customer-purchases-list'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              CustomerHomeV1Tokens.space16,
-              CustomerHomeV1Tokens.space8,
-              CustomerHomeV1Tokens.space16,
-              CustomerHomeV1Tokens.space24,
+              EsnaftaVarSpacing.md,
+              EsnaftaVarSpacing.xs,
+              EsnaftaVarSpacing.md,
+              EsnaftaVarSpacing.xl,
             ),
             itemCount:
                 visiblePurchases.length + (showMissingTargetMessage ? 1 : 0),
             separatorBuilder: (_, _) =>
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                const SizedBox(height: EsnaftaVarSpacing.sm),
             itemBuilder: (context, index) {
               if (showMissingTargetMessage && index == 0) {
                 return _MissingTargetPurchaseMessage(
@@ -461,7 +375,7 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
                       shopName: purchase.shopName,
                       isRecentQrPurchase: isRecentQrPurchase,
                     ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    const SizedBox(height: EsnaftaVarSpacing.xs),
                   ],
                   _PurchaseCard(
                     purchase: purchase,
@@ -492,31 +406,31 @@ class _TargetPurchaseLabel extends StatelessWidget {
     return Container(
       key: const Key('customer-purchase-highlight'),
       padding: const EdgeInsets.symmetric(
-        horizontal: CustomerHomeV1Tokens.space12,
-        vertical: CustomerHomeV1Tokens.space8,
+        horizontal: EsnaftaVarSpacing.sm,
+        vertical: EsnaftaVarSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        color: EsnaftaVarColors.primarySoft,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
         border: Border.all(
-          color: CustomerHomeV1Tokens.petrol.withValues(alpha: 0.18),
+          color: EsnaftaVarColors.primary.withValues(alpha: 0.18),
         ),
       ),
       child: Row(
         children: [
           const Icon(
             Iconsax.tick_circle,
-            color: CustomerHomeV1Tokens.petrol,
+            color: EsnaftaVarColors.primary,
             size: 19,
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          const SizedBox(width: EsnaftaVarSpacing.xs),
           Expanded(
             child: Text(
               isRecentQrPurchase
                   ? 'Az önce onaylanan alışveriş: $shopName'
                   : 'Bildirimdeki alışveriş: $shopName',
               style: const TextStyle(
-                color: CustomerHomeV1Tokens.petrol,
+                color: EsnaftaVarColors.primary,
                 fontSize: 10.5,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
@@ -548,10 +462,10 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
             ? 'missing-recent-qr-purchase-message'
             : 'missing-notification-purchase-message',
       ),
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
         color: const Color(0xFFFFF6DF),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         border: Border.all(color: const Color(0xFFEED99B)),
       ),
       child: Column(
@@ -562,10 +476,10 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
             children: [
               const Icon(
                 Iconsax.info_circle,
-                color: CustomerHomeV1Tokens.petrol,
+                color: EsnaftaVarColors.primary,
                 size: 20,
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space8),
+              const SizedBox(width: EsnaftaVarSpacing.xs),
               Expanded(
                 child: Text(
                   isRecentQrPurchase
@@ -577,7 +491,7 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
                       : 'Bildirimdeki alışveriş artık bulunamıyor. '
                             'Diğer alışverişlerin gösteriliyor.',
                   style: const TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
+                    color: EsnaftaVarColors.textPrimary,
                     fontSize: 10.5,
                     height: 1.4,
                     fontWeight: FontWeight.w500,
@@ -587,15 +501,15 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
             ],
           ),
           if (isRecentQrPurchase) ...[
-            const SizedBox(height: CustomerHomeV1Tokens.space8),
+            const SizedBox(height: EsnaftaVarSpacing.xs),
             if (!automaticCheckCompleted) ...[
               const LinearProgressIndicator(
                 key: Key('automatic-purchase-check-progress'),
                 minHeight: 3,
-                color: CustomerHomeV1Tokens.petrol,
-                backgroundColor: CustomerHomeV1Tokens.surface,
+                color: EsnaftaVarColors.primary,
+                backgroundColor: EsnaftaVarColors.surface,
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              const SizedBox(height: EsnaftaVarSpacing.xxs),
             ],
             Align(
               alignment: Alignment.centerLeft,
@@ -603,7 +517,7 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
                 key: const Key('retry-recent-qr-purchase-action'),
                 onPressed: onRetry,
                 style: TextButton.styleFrom(
-                  foregroundColor: CustomerHomeV1Tokens.petrol,
+                  foregroundColor: EsnaftaVarColors.primary,
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   textStyle: const TextStyle(
@@ -637,325 +551,12 @@ class _PurchaseCard extends StatefulWidget {
   State<_PurchaseCard> createState() => _PurchaseCardState();
 }
 
-class _PurchaseItemRow extends StatelessWidget {
-  const _PurchaseItemRow({required this.item});
-
-  final VerifiedPurchaseItemEntity item;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
-          ),
-          child: const Icon(
-            Iconsax.bag_2,
-            color: CustomerHomeV1Tokens.petrol,
-            size: 16,
-          ),
-        ),
-        const SizedBox(width: CustomerHomeV1Tokens.space8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.productName,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 11.5,
-                  height: 1.25,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
-              Text(
-                '${item.quantity} adet × ${_formatMoney(item.unitPrice)}',
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: CustomerHomeV1Tokens.space8),
-        Text(
-          _formatMoney(item.lineTotal),
-          style: const TextStyle(
-            color: CustomerHomeV1Tokens.navy,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _PurchaseCardState extends State<_PurchaseCard> {
   bool _isOpeningShop = false;
   bool _isOpeningRating = false;
 
   @override
-  Widget build(BuildContext context) {
-    final purchase = widget.purchase;
-
-    return Container(
-      key: ValueKey('customer-purchase-card-${purchase.id}'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radius12,
-                  ),
-                ),
-                child: const Icon(
-                  Iconsax.shop,
-                  color: CustomerHomeV1Tokens.petrol,
-                  size: 21,
-                ),
-              ),
-              const SizedBox(width: CustomerHomeV1Tokens.space12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      purchase.shopName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: CustomerHomeV1Tokens.navy,
-                        fontSize: 14.5,
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space4),
-                    Text(
-                      _formatDate(purchase.confirmedAt),
-                      style: const TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: CustomerHomeV1Tokens.space8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: CustomerHomeV1Tokens.space8,
-                  vertical: CustomerHomeV1Tokens.space4,
-                ),
-                decoration: BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  borderRadius: BorderRadius.circular(
-                    CustomerHomeV1Tokens.radiusPill,
-                  ),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Iconsax.tick_circle,
-                      color: CustomerHomeV1Tokens.green,
-                      size: 14,
-                    ),
-                    SizedBox(width: CustomerHomeV1Tokens.space4),
-                    Text(
-                      'Onaylandı',
-                      style: TextStyle(
-                        color: CustomerHomeV1Tokens.green,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.cream,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-              border: Border.all(color: CustomerHomeV1Tokens.border),
-            ),
-            child: Column(
-              children: [
-                for (var index = 0; index < purchase.items.length; index++) ...[
-                  _PurchaseItemRow(item: purchase.items[index]),
-                  if (index != purchase.items.length - 1)
-                    const Divider(
-                      height: CustomerHomeV1Tokens.space16,
-                      color: CustomerHomeV1Tokens.border,
-                    ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: CustomerHomeV1Tokens.space12,
-              vertical: CustomerHomeV1Tokens.space8,
-            ),
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${purchase.itemCount} ürün',
-                    style: const TextStyle(
-                      color: CustomerHomeV1Tokens.muted,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Text(
-                  'Toplam: ${_formatMoney(purchase.totalAmount)}',
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.petrol,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (purchase.customerRating != null) ...[
-            const SizedBox(height: CustomerHomeV1Tokens.space12),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: CustomerHomeV1Tokens.space12,
-                vertical: CustomerHomeV1Tokens.space8,
-              ),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF6DF),
-                borderRadius: BorderRadius.circular(
-                  CustomerHomeV1Tokens.radius12,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.star_rounded,
-                    color: Color(0xFFE09B15),
-                    size: 19,
-                  ),
-                  const SizedBox(width: CustomerHomeV1Tokens.space4),
-                  Text(
-                    '${purchase.customerRating}/5 puan verdiniz',
-                    style: const TextStyle(
-                      color: CustomerHomeV1Tokens.navy,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
-          Wrap(
-            alignment: WrapAlignment.end,
-            spacing: CustomerHomeV1Tokens.space8,
-            runSpacing: CustomerHomeV1Tokens.space4,
-            children: [
-              OutlinedButton.icon(
-                key: Key('purchase-shop-profile-open-${purchase.id}'),
-                onPressed: _isOpeningShop ? null : _openShopProfile,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: CustomerHomeV1Tokens.petrol,
-                  side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius12,
-                    ),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                icon: _isOpeningShop
-                    ? const SizedBox.square(
-                        dimension: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Iconsax.shop, size: 17),
-                label: Text(
-                  _isOpeningShop ? 'Mağaza açılıyor' : 'Mağazayı Gör',
-                ),
-              ),
-              if (purchase.customerRating == null)
-                TextButton.icon(
-                  key: const Key('purchase-shop-rating-open-action'),
-                  onPressed: _isOpeningRating
-                      ? null
-                      : () => _openShopRating(context),
-                  style: TextButton.styleFrom(
-                    foregroundColor: CustomerHomeV1Tokens.coral,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        CustomerHomeV1Tokens.radius12,
-                      ),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  icon: const Icon(Icons.star_outline_rounded, size: 18),
-                  label: const Text('Esnafa Puan Ver'),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => _buildPurchaseFinalCard(this, context);
 
   Future<void> _openShopProfile() async {
     if (_isOpeningShop) return;
@@ -1001,12 +602,12 @@ class _PurchaseCardState extends State<_PurchaseCard> {
         useSafeArea: true,
         isDismissible: false,
         enableDrag: false,
-        backgroundColor: CustomerHomeV1Tokens.cream,
-        barrierColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.32),
+        backgroundColor: EsnaftaVarColors.background,
+        barrierColor: EsnaftaVarColors.textPrimary.withValues(alpha: 0.32),
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(CustomerHomeV1Tokens.radius24),
+            top: Radius.circular(EsnaftaVarRadii.xxLarge),
           ),
         ),
         builder: (_) => BlocProvider(
@@ -1059,16 +660,16 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
 
         return ColoredBox(
           key: const Key('purchase-shop-rating-sheet'),
-          color: CustomerHomeV1Tokens.cream,
+          color: EsnaftaVarColors.background,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 430),
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(
-                  CustomerHomeV1Tokens.space16,
-                  CustomerHomeV1Tokens.space12,
-                  CustomerHomeV1Tokens.space16,
-                  CustomerHomeV1Tokens.space24 + bottomInset,
+                  EsnaftaVarSpacing.md,
+                  EsnaftaVarSpacing.sm,
+                  EsnaftaVarSpacing.md,
+                  EsnaftaVarSpacing.xl + bottomInset,
                 ),
                 child: state is ShopRatingSuccess
                     ? _RatingSuccessContent(
@@ -1079,45 +680,43 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const _RatingSheetHandle(),
-                          const SizedBox(height: CustomerHomeV1Tokens.space12),
+                          const SizedBox(height: EsnaftaVarSpacing.sm),
                           _RatingEditorHeader(
                             shopName: widget.purchase.shopName,
                             isSubmitting: isSubmitting,
                             onClose: () => Navigator.of(context).pop(false),
                           ),
-                          const SizedBox(height: CustomerHomeV1Tokens.space16),
+                          const SizedBox(height: EsnaftaVarSpacing.md),
                           const _RatingInfoCard(),
-                          const SizedBox(height: CustomerHomeV1Tokens.space16),
+                          const SizedBox(height: EsnaftaVarSpacing.md),
                           Container(
                             key: const Key('purchase-rating-stars-card'),
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: CustomerHomeV1Tokens.space8,
-                              vertical: CustomerHomeV1Tokens.space16,
+                              horizontal: EsnaftaVarSpacing.xs,
+                              vertical: EsnaftaVarSpacing.md,
                             ),
                             decoration: BoxDecoration(
-                              color: CustomerHomeV1Tokens.surface,
+                              color: EsnaftaVarColors.surface,
                               borderRadius: BorderRadius.circular(
-                                CustomerHomeV1Tokens.radius20,
+                                EsnaftaVarRadii.xLarge,
                               ),
                               border: Border.all(
-                                color: CustomerHomeV1Tokens.border,
+                                color: EsnaftaVarColors.borderDefault,
                               ),
-                              boxShadow: CustomerHomeV1Tokens.softShadow,
+                              boxShadow: EsnaftaVarElevation.xs,
                             ),
                             child: Column(
                               children: [
                                 const Text(
                                   'Deneyimin nasıldı?',
                                   style: TextStyle(
-                                    color: CustomerHomeV1Tokens.navy,
+                                    color: EsnaftaVarColors.textPrimary,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: CustomerHomeV1Tokens.space8,
-                                ),
+                                const SizedBox(height: EsnaftaVarSpacing.xs),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
@@ -1151,24 +750,23 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                                       ? Container(
                                           key: ValueKey(_selectedRating),
                                           margin: const EdgeInsets.only(
-                                            top: CustomerHomeV1Tokens.space4,
+                                            top: EsnaftaVarSpacing.xxs,
                                           ),
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal:
-                                                CustomerHomeV1Tokens.space12,
-                                            vertical:
-                                                CustomerHomeV1Tokens.space4,
+                                            horizontal: EsnaftaVarSpacing.sm,
+                                            vertical: EsnaftaVarSpacing.xxs,
                                           ),
                                           decoration: BoxDecoration(
                                             color: const Color(0xFFFFF6DF),
                                             borderRadius: BorderRadius.circular(
-                                              CustomerHomeV1Tokens.radiusPill,
+                                              EsnaftaVarRadii.pill,
                                             ),
                                           ),
                                           child: Text(
                                             _ratingLabels[_selectedRating],
                                             style: const TextStyle(
-                                              color: CustomerHomeV1Tokens.navy,
+                                              color:
+                                                  EsnaftaVarColors.textPrimary,
                                               fontSize: 11,
                                               fontWeight: FontWeight.w700,
                                             ),
@@ -1181,8 +779,8 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                                             child: Text(
                                               'Bir yıldız seç',
                                               style: TextStyle(
-                                                color:
-                                                    CustomerHomeV1Tokens.muted,
+                                                color: EsnaftaVarColors
+                                                    .textSecondary,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -1194,12 +792,10 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                             ),
                           ),
                           if (state is ShopRatingFailure) ...[
-                            const SizedBox(
-                              height: CustomerHomeV1Tokens.space12,
-                            ),
+                            const SizedBox(height: EsnaftaVarSpacing.sm),
                             _RatingFailureCard(message: state.message),
                           ],
-                          const SizedBox(height: CustomerHomeV1Tokens.space20),
+                          const SizedBox(height: EsnaftaVarSpacing.lg),
                           SizedBox(
                             width: double.infinity,
                             height: 52,
@@ -1217,15 +813,15 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                                           rating: _selectedRating,
                                         ),
                               style: FilledButton.styleFrom(
-                                backgroundColor: CustomerHomeV1Tokens.petrol,
+                                backgroundColor: EsnaftaVarColors.primary,
                                 foregroundColor: Colors.white,
                                 disabledBackgroundColor:
-                                    CustomerHomeV1Tokens.mint,
+                                    EsnaftaVarColors.primarySoft,
                                 disabledForegroundColor:
-                                    CustomerHomeV1Tokens.muted,
+                                    EsnaftaVarColors.textSecondary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
-                                    CustomerHomeV1Tokens.radius16,
+                                    EsnaftaVarRadii.large,
                                   ),
                                 ),
                                 textStyle: const TextStyle(
@@ -1250,7 +846,7 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: CustomerHomeV1Tokens.space8),
+                          const SizedBox(height: EsnaftaVarSpacing.xs),
                           SizedBox(
                             width: double.infinity,
                             height: 44,
@@ -1262,13 +858,13 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
                                   ? null
                                   : () => Navigator.of(context).pop(false),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: CustomerHomeV1Tokens.navy,
+                                foregroundColor: EsnaftaVarColors.textPrimary,
                                 side: const BorderSide(
-                                  color: CustomerHomeV1Tokens.border,
+                                  color: EsnaftaVarColors.borderDefault,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
-                                    CustomerHomeV1Tokens.radius16,
+                                    EsnaftaVarRadii.large,
                                   ),
                                 ),
                                 textStyle: const TextStyle(
@@ -1300,8 +896,8 @@ class _RatingSheetHandle extends StatelessWidget {
         width: 42,
         height: 4,
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.border,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
+          color: EsnaftaVarColors.borderDefault,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
         ),
       ),
     );
@@ -1330,7 +926,7 @@ class _RatingEditorHeader extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: const Color(0xFFFFF6DF),
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
           ),
           child: const Icon(
             Icons.star_rounded,
@@ -1338,7 +934,7 @@ class _RatingEditorHeader extends StatelessWidget {
             size: 23,
           ),
         ),
-        const SizedBox(width: CustomerHomeV1Tokens.space12),
+        const SizedBox(width: EsnaftaVarSpacing.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1346,19 +942,19 @@ class _RatingEditorHeader extends StatelessWidget {
               const Text(
                 'Esnafa Puan Ver',
                 style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
+                  color: EsnaftaVarColors.textPrimary,
                   fontSize: 19,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
+              const SizedBox(height: EsnaftaVarSpacing.xxs),
               Text(
                 shopName,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
+                  color: EsnaftaVarColors.textSecondary,
                   fontSize: 10.5,
                   height: 1.25,
                   fontWeight: FontWeight.w500,
@@ -1367,11 +963,11 @@ class _RatingEditorHeader extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: CustomerHomeV1Tokens.space8),
+        const SizedBox(width: EsnaftaVarSpacing.xs),
         Material(
-          color: CustomerHomeV1Tokens.surface,
+          color: EsnaftaVarColors.surface,
           shape: const CircleBorder(
-            side: BorderSide(color: CustomerHomeV1Tokens.border),
+            side: BorderSide(color: EsnaftaVarColors.borderDefault),
           ),
           child: IconButton(
             key: const Key('purchase-shop-rating-close-action'),
@@ -1379,7 +975,7 @@ class _RatingEditorHeader extends StatelessWidget {
             onPressed: isSubmitting ? null : onClose,
             icon: const Icon(
               Icons.close_rounded,
-              color: CustomerHomeV1Tokens.navy,
+              color: EsnaftaVarColors.textPrimary,
               size: 20,
             ),
           ),
@@ -1396,26 +992,22 @@ class _RatingInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        color: EsnaftaVarColors.primarySoft.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Iconsax.shield_tick,
-            color: CustomerHomeV1Tokens.petrol,
-            size: 19,
-          ),
-          SizedBox(width: CustomerHomeV1Tokens.space8),
+          Icon(Iconsax.shield_tick, color: EsnaftaVarColors.primary, size: 19),
+          SizedBox(width: EsnaftaVarSpacing.xs),
           Expanded(
             child: Text(
               'Puanın doğrulanmış alışverişine dayanır ve yalnızca bir kez '
               'gönderilebilir.',
               style: TextStyle(
-                color: CustomerHomeV1Tokens.navy,
+                color: EsnaftaVarColors.textPrimary,
                 fontSize: 10,
                 height: 1.35,
                 fontWeight: FontWeight.w500,
@@ -1438,10 +1030,10 @@ class _RatingFailureCard extends StatelessWidget {
     return Container(
       key: const Key('purchase-rating-error'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
         color: const Color(0xFFFFF4F1),
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
         border: Border.all(color: const Color(0xFFF0C8BE)),
       ),
       child: Row(
@@ -1449,15 +1041,15 @@ class _RatingFailureCard extends StatelessWidget {
         children: [
           const Icon(
             Iconsax.info_circle,
-            color: CustomerHomeV1Tokens.coral,
+            color: EsnaftaVarColors.accent,
             size: 19,
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          const SizedBox(width: EsnaftaVarSpacing.xs),
           Expanded(
             child: Text(
               message,
               style: const TextStyle(
-                color: CustomerHomeV1Tokens.navy,
+                color: EsnaftaVarColors.textPrimary,
                 fontSize: 10.5,
                 height: 1.35,
                 fontWeight: FontWeight.w600,
@@ -1483,7 +1075,7 @@ class _RatingSuccessContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const _RatingSheetHandle(),
-        const SizedBox(height: CustomerHomeV1Tokens.space20),
+        const SizedBox(height: EsnaftaVarSpacing.lg),
         Container(
           width: 72,
           height: 72,
@@ -1497,28 +1089,28 @@ class _RatingSuccessContent extends StatelessWidget {
             color: Color(0xFFE09B15),
           ),
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space16),
+        const SizedBox(height: EsnaftaVarSpacing.md),
         const Text(
           'Puanınız kaydedildi',
           style: TextStyle(
-            color: CustomerHomeV1Tokens.navy,
+            color: EsnaftaVarColors.textPrimary,
             fontSize: 19,
             fontWeight: FontWeight.w700,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space8),
+        const SizedBox(height: EsnaftaVarSpacing.xs),
         Text(
           '$rating/5 puan verdiniz. Teşekkür ederiz.',
           style: const TextStyle(
-            color: CustomerHomeV1Tokens.muted,
+            color: EsnaftaVarColors.textSecondary,
             fontSize: 11,
             height: 1.4,
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space20),
+        const SizedBox(height: EsnaftaVarSpacing.lg),
         SizedBox(
           width: double.infinity,
           height: 52,
@@ -1526,12 +1118,10 @@ class _RatingSuccessContent extends StatelessWidget {
             key: const Key('purchase-shop-rating-success-close'),
             onPressed: onClose,
             style: FilledButton.styleFrom(
-              backgroundColor: CustomerHomeV1Tokens.petrol,
+              backgroundColor: EsnaftaVarColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  CustomerHomeV1Tokens.radius16,
-                ),
+                borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
               ),
               textStyle: const TextStyle(
                 fontSize: 13,
@@ -1555,13 +1145,13 @@ class _PurchaseLoadingState extends StatelessWidget {
     return Center(
       child: Container(
         key: const Key('customer-purchases-loading-state'),
-        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
+        margin: const EdgeInsets.all(EsnaftaVarSpacing.md),
+        padding: const EdgeInsets.all(EsnaftaVarSpacing.xl),
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
+          boxShadow: EsnaftaVarElevation.xs,
         ),
         child: const Column(
           mainAxisSize: MainAxisSize.min,
@@ -1570,14 +1160,14 @@ class _PurchaseLoadingState extends StatelessWidget {
               dimension: 28,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: CustomerHomeV1Tokens.petrol,
+                color: EsnaftaVarColors.primary,
               ),
             ),
-            SizedBox(height: CustomerHomeV1Tokens.space12),
+            SizedBox(height: EsnaftaVarSpacing.sm),
             Text(
               'Alışverişlerin hazırlanıyor',
               style: TextStyle(
-                color: CustomerHomeV1Tokens.navy,
+                color: EsnaftaVarColors.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
               ),
@@ -1604,7 +1194,8 @@ class _ReturnRequestsTab extends StatelessWidget {
 }
 
 class _CreateReturnRequestTab extends StatelessWidget {
-  const _CreateReturnRequestTab();
+  const _CreateReturnRequestTab({required this.onSeePurchases});
+  final VoidCallback onSeePurchases;
 
   @override
   Widget build(BuildContext context) {
@@ -1614,7 +1205,7 @@ class _CreateReturnRequestTab extends StatelessWidget {
       description:
           'İade talebini doğrulanmış bir alışveriş üzerinden başlatabileceksin.',
       actionLabel: 'Alışverişlerimi Gör',
-      onAction: () => DefaultTabController.of(context).animateTo(0),
+      onAction: onSeePurchases,
     );
   }
 }
@@ -1635,81 +1226,19 @@ class _CenteredState extends StatelessWidget {
   final VoidCallback? onAction;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        child: Container(
-          key: const Key('customer-purchases-state'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 30, color: CustomerHomeV1Tokens.petrol),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 16,
-                  height: 1.2,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                description,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 10.5,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: CustomerHomeV1Tokens.space20),
-                OutlinedButton.icon(
-                  onPressed: onAction,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: CustomerHomeV1Tokens.petrol,
-                    side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        CustomerHomeV1Tokens.radius12,
-                      ),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  icon: const Icon(Icons.arrow_forward_rounded, size: 17),
-                  label: Text(actionLabel!),
-                ),
-              ],
-            ],
-          ),
-        ),
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      child: EsnaftaVarStateCard(
+        key: const Key('customer-purchases-state'),
+        icon: icon,
+        title: title,
+        message: description,
+        actionLabel: actionLabel,
+        onAction: onAction,
       ),
-    );
-  }
+    ),
+  );
 }
 
 String _formatMoney(double amount) {

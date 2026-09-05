@@ -98,31 +98,47 @@ void main() {
     await sl.reset();
   });
 
-  testWidgets('gerçek alışveriş özetini ve üç sekmeyi gösterir', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
-    );
-    await tester.pumpAndSettle();
+  testWidgets(
+    'gerçek alışveriş özetini, iki sekme ve ayrı iade eylemini gösterir',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(home: PurchasesView(purchaseHistoryCubit: cubit)),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('customer-purchases-content')), findsOneWidget);
-    expect(find.byKey(const Key('customer-purchases-header')), findsOneWidget);
-    expect(find.byKey(const Key('customer-purchases-tab-bar')), findsOneWidget);
-    expect(
-      find.byKey(const Key('customer-purchase-card-purchase-1')),
-      findsOneWidget,
-    );
-    expect(find.text('Alışverişlerim'), findsNWidgets(2));
-    expect(find.text('İade Taleplerim'), findsOneWidget);
-    expect(find.text('İade Talebi Oluştur'), findsOneWidget);
-    expect(find.text('Mahalle Marketi'), findsOneWidget);
-    expect(find.text('Deneme Ürünü'), findsOneWidget);
-    expect(find.text('Toplam: 150,50 TL'), findsOneWidget);
-    expect(find.text('Onaylandı'), findsOneWidget);
-    expect(find.text('Mağazayı Gör'), findsOneWidget);
-    expect(find.text('Esnafa Puan Ver'), findsOneWidget);
-  });
+      expect(
+        find.byKey(const Key('customer-purchases-content')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-purchases-header')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-purchases-tab-bar')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('customer-purchase-card-purchase-1')),
+        findsOneWidget,
+      );
+      expect(find.text('Alışverişlerim'), findsNWidgets(2));
+      expect(find.text('İade Taleplerim'), findsOneWidget);
+      expect(find.text('İade Talebi Oluştur'), findsOneWidget);
+      expect(find.text('Mahalle Marketi'), findsOneWidget);
+      expect(find.text('Deneme Ürünü'), findsOneWidget);
+      expect(find.text('Alışveriş tutarı'), findsOneWidget);
+      expect(find.text('150,50 TL'), findsNWidgets(2));
+      expect(find.text('Mağazada doğrulandı'), findsOneWidget);
+      expect(tester.widget<TabBar>(find.byType(TabBar)).tabs, hasLength(2));
+      expect(
+        find.byKey(const Key('purchase-create-return-action')),
+        findsOneWidget,
+      );
+      expect(find.text('Mağazayı Gör'), findsOneWidget);
+      expect(find.text('Esnafa Puan Ver'), findsOneWidget);
+    },
+  );
 
   testWidgets('yükleniyor durumunu müşteri kabuğunda gösterir', (tester) async {
     whenListen(
@@ -244,7 +260,7 @@ void main() {
     await tester.pump();
 
     verify(() => getShopByIdUsecase('shop-1')).called(1);
-    expect(find.text('Mağaza açılıyor'), findsOneWidget);
+    expect(find.text('Açılıyor…'), findsOneWidget);
 
     completer.complete(const Right(shop));
     await tester.pump();
@@ -680,7 +696,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final ratingAction = tester.widget<TextButton>(
+    final ratingAction = tester.widget<FilledButton>(
       find.byKey(const Key('purchase-shop-rating-open-action')),
     );
     ratingAction.onPressed?.call();
@@ -695,7 +711,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final reopenedRatingAction = tester.widget<TextButton>(
+    final reopenedRatingAction = tester.widget<FilledButton>(
       find.byKey(const Key('purchase-shop-rating-open-action')),
     );
     expect(reopenedRatingAction.onPressed, isNotNull);
@@ -840,7 +856,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('5/5 puan verdiniz'), findsOneWidget);
+    expect(find.text('Puanın 5/5'), findsOneWidget);
     expect(
       find.byKey(const Key('purchase-shop-rating-open-action')),
       findsNothing,
@@ -902,5 +918,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('İade talebi oluşturma hazırlanıyor'), findsOneWidget);
     expect(find.text('Alışverişlerimi Gör'), findsOneWidget);
+    await tester.tap(find.text('Alışverişlerimi Gör'));
+    await tester.pumpAndSettle();
+    expect(find.text('İade talebi oluşturma hazırlanıyor'), findsNothing);
+    expect(
+      find.byKey(const Key('customer-purchase-card-purchase-1')),
+      findsOneWidget,
+    );
+    expect(tester.widget<TabBar>(find.byType(TabBar)).controller, isNull);
+    final tabContext = tester.element(find.byType(TabBar));
+    expect(DefaultTabController.of(tabContext).index, 0);
   });
 }
