@@ -110,21 +110,34 @@ final class ProductionReleasePreflight {
       config: config,
     );
 
-    final siteUri = _validatedSiteUri(
-      _requiredValue(values, authSiteUrlField),
-      mode,
-    );
-    _validateWebRedirect(
-      rawValue: _requiredValue(values, authWebRedirectUrlField),
-      siteUri: siteUri,
-      mode: mode,
-    );
     if (_requiredValue(values, authMobileCallbackUrlField) !=
         canonicalMobileCallback) {
       throw const ProductionReleasePreflightException(
         'PRODUCTION_AUTH_MOBILE_CALLBACK_URL must match the app callback.',
       );
     }
+
+    final siteUrl = _requiredValue(values, authSiteUrlField);
+    // The owner-final Android pilot uses the exact mobile callback as Site URL.
+    // A mobile-only release must not invent a hosted web recovery destination.
+    // Keep the web field present and explicitly empty to make that scope clear.
+    if (mode == ProductionReleasePreflightMode.release &&
+        siteUrl == canonicalMobileCallback) {
+      if (values[authWebRedirectUrlField]!.trim().isNotEmpty) {
+        throw const ProductionReleasePreflightException(
+          'a mobile-only Site URL requires an empty '
+          'PRODUCTION_AUTH_WEB_REDIRECT_URL.',
+        );
+      }
+      return;
+    }
+
+    final siteUri = _validatedSiteUri(siteUrl, mode);
+    _validateWebRedirect(
+      rawValue: _requiredValue(values, authWebRedirectUrlField),
+      siteUri: siteUri,
+      mode: mode,
+    );
   }
 
   static String expectedWebRecoveryRedirect(String siteUrl) {
