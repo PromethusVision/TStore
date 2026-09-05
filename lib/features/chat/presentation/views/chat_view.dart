@@ -590,39 +590,43 @@ class _MessageList extends StatelessWidget {
 
     return Stack(
       children: [
-        ListView.builder(
-          key: const Key('customer-chat-message-list'),
-          controller: scrollController,
-          reverse: true,
-          padding: const EdgeInsets.fromLTRB(
-            CustomerHomeV1Tokens.space16,
-            CustomerHomeV1Tokens.space8,
-            CustomerHomeV1Tokens.space16,
-            CustomerHomeV1Tokens.space16,
-          ),
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            final isMine =
-                currentUserId != null && message.senderId == currentUserId;
-            final showDateHeader = _shouldShowDateHeader(index);
+        Align(
+          alignment: Alignment.topCenter,
+          child: ListView.builder(
+            key: const Key('customer-chat-message-list'),
+            controller: scrollController,
+            shrinkWrap: visualPrototype,
+            reverse: true,
+            padding: const EdgeInsets.fromLTRB(
+              CustomerHomeV1Tokens.space16,
+              CustomerHomeV1Tokens.space8,
+              CustomerHomeV1Tokens.space16,
+              CustomerHomeV1Tokens.space16,
+            ),
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              final isMine =
+                  currentUserId != null && message.senderId == currentUserId;
+              final showDateHeader = _shouldShowDateHeader(index);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (showDateHeader && message.createdAt != null)
-                  if (visualPrototype)
-                    _ChatPrototypeDate(date: message.createdAt!)
-                  else
-                    _DateHeader(date: message.createdAt!),
-                _MessageBubble(
-                  message: message,
-                  isMine: isMine,
-                  visualPrototype: visualPrototype,
-                ),
-              ],
-            );
-          },
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showDateHeader && message.createdAt != null)
+                    if (visualPrototype)
+                      _ChatPrototypeDate(date: message.createdAt!)
+                    else
+                      _DateHeader(date: message.createdAt!),
+                  _MessageBubble(
+                    message: message,
+                    isMine: isMine,
+                    visualPrototype: visualPrototype,
+                  ),
+                ],
+              );
+            },
+          ),
         ),
         if (isLoadingMore)
           const Positioned(

@@ -72,7 +72,7 @@ class _PurchasesScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: visualPrototype ? 2 : 3,
       child: Scaffold(
         backgroundColor: CustomerHomeV1Tokens.cream,
         body: SafeArea(
@@ -94,11 +94,13 @@ class _PurchasesScaffold extends StatelessWidget {
                         : const _PurchasesHeader(),
                   ),
                   const SizedBox(height: CustomerHomeV1Tokens.space12),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: CustomerHomeV1Tokens.space16,
                     ),
-                    child: _PurchasesTabBar(),
+                    child: visualPrototype
+                        ? const _PurchasesPrototypeControls()
+                        : const _PurchasesTabBar(),
                   ),
                   const SizedBox(height: CustomerHomeV1Tokens.space8),
                   Expanded(
@@ -112,7 +114,7 @@ class _PurchasesScaffold extends StatelessWidget {
                           shopProfileBuilder: shopProfileBuilder,
                         ),
                         const _ReturnRequestsTab(),
-                        const _CreateReturnRequestTab(),
+                        if (!visualPrototype) const _CreateReturnRequestTab(),
                       ],
                     ),
                   ),
@@ -209,7 +211,8 @@ class _PurchasesHeader extends StatelessWidget {
 }
 
 class _PurchasesTabBar extends StatelessWidget {
-  const _PurchasesTabBar();
+  const _PurchasesTabBar({this.viewsOnly = false});
+  final bool viewsOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -241,28 +244,29 @@ class _PurchasesTabBar extends StatelessWidget {
           height: 1.15,
           fontWeight: FontWeight.w600,
         ),
-        tabs: const [
-          Tab(
+        tabs: [
+          const Tab(
             child: Text(
               'Alışverişlerim',
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
           ),
-          Tab(
+          const Tab(
             child: Text(
               'İade Taleplerim',
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
           ),
-          Tab(
-            child: Text(
-              'İade Talebi Oluştur',
-              maxLines: 2,
-              textAlign: TextAlign.center,
+          if (!viewsOnly)
+            const Tab(
+              child: Text(
+                'İade Talebi Oluştur',
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -1626,7 +1630,8 @@ class _ReturnRequestsTab extends StatelessWidget {
 }
 
 class _CreateReturnRequestTab extends StatelessWidget {
-  const _CreateReturnRequestTab();
+  const _CreateReturnRequestTab({this.onSeePurchases});
+  final VoidCallback? onSeePurchases;
 
   @override
   Widget build(BuildContext context) {
@@ -1636,7 +1641,8 @@ class _CreateReturnRequestTab extends StatelessWidget {
       description:
           'İade talebini doğrulanmış bir alışveriş üzerinden başlatabileceksin.',
       actionLabel: 'Alışverişlerimi Gör',
-      onAction: () => DefaultTabController.of(context).animateTo(0),
+      onAction:
+          onSeePurchases ?? () => DefaultTabController.of(context).animateTo(0),
     );
   }
 }
