@@ -1,6 +1,6 @@
 # Astra Wave 2B — Account Hub collision review
 
-Status: **PRE-MERGE SEMANTIC REVIEW PASS — 2026-09-05**.
+Status: **FINAL SEMANTIC ACCEPTANCE PASS — 2026-09-05**.
 Starting main: `c63e61d6363f2cbeb816b7cb55e970e40f798d78`.
 Final source: `5c2dc3b6dec6721a59ffe81aa863e89c3a0eaff3`,
 origin/astra-ui/w46-account-hub-final-ui.
@@ -119,3 +119,88 @@ Final UI. A major divergence is a blocker, not permission for broad redesign.
 Only Git remotes are authorized. Figma access, Development writes, Production,
 backend/auth config/taxonomy changes, canonical activation, Ads/Reward economics,
 Merchant implementation and dark mode are outside scope.
+
+## Final semantic acceptance — PASS
+
+Pre-merge review commit **489aa4e3c2ed101f03c5e804f397999231a0e3e9** precedes
+no-ff source merge **5ef2d5e8023790fadc5d3c5b480c645baacc81f0**.
+Text conflicts: **0**. Runtime reconciliation edits: **0**.
+
+Both SEMANTIC_RECONCILIATION_REQUIRED items are resolved:
+
+1. **Actual location handoff coverage — PASS**, checkpoint
+   **699b3a897935724ee63a77c78fc33ff9b347b1a2**:
+   `test/widget/personalization/wave2b_nearby_saved_locations_handoff_test.dart`
+   adds two real-view/real-Cubit offline tests. Changing the repository default
+   updates Nearby's label, merchant ordering and real computed distance; deleting
+   the only default clears stale label/source/distances. No GPS or permission
+   request occurs. Existing Home/seller callbacks and location service tests
+   remain intact. No coordinate, geocoding, editing or distance behavior invented.
+2. **Inventory and planning — PASS**:
+   [merged row ledger](UI_W46_POST_ACCOUNT_HUB_INVENTORY.md) independently counts
+   26 remaining = 9 screens + 15 modals + 2 state families; Tier 3/8/15, Figma
+   3/4/19. MD-08 is add-only. [Wave 3 ownership](ASTRA_WAVE3_SCOPE_RECOMMENDATION.md)
+   excludes Design Owner/Agent 3's 67 nominal h, rejects infeasible 70–100 h
+   padding and recommends an independent 24 h / 6-unit Agent 2 package.
+   Calibration, the three-scenario plan and four coordination docs are refreshed.
+
+Validation: **279 targeted, 603 overlap, 598 broader PASS**; analyzer clean;
+one combined full run **1841 PASS / 0 FAIL / 6 unchanged conditional skips**.
+All **165/165 expected test files** discovered. Exact skip names match the
+1766-test main baseline; source +73 and integration +2 explain all growth.
+No test/assertion loss, new skip, weakened business assertion or golden rewrite.
+
+All **30 source files** match final source byte-for-byte. All **186 existing main
+PNGs** remain exact; the source adds **12**. Runtime changes relative to main are
+only the source's **13 account presentation files**. Auth, core primitives,
+Category and every protected previous Final UI feature remain unchanged.
+
+Representative source visuals reviewed: Hub, Edit, Privacy, Saved Locations,
+320px/130% keyboard Add Location, and deletion confirmation. Final UI typography,
+spacing, colors, responsive layout, state truth and existing destructive copy
+are consistent; no major visual divergence or additional Product Owner gate.
+This is local visual/behavior acceptance, not a physical-device or pilot gate.
+
+Diff/secret/PII review: no whitespace errors or credential findings. The four
+email/phone candidates are reviewed synthetic fixture lines (43/45/77/79 in
+w46_account_fixture.dart); fixture names, address text and coordinates are local
+test data, never fetched from or sent to a remote account. No real PII identified.
+
+**SHARED_COMPONENT_CHANGE_REQUIRED: NO. SEMANTIC_COLLISIONS_RESOLVED: PASS.**
+No unresolved blocker, required owner decision, Figma call, Development write,
+Production access, backend/auth configuration/taxonomy change or legacy
+activation. Full delivery and Git publication details:
+[Wave 2B integration result](ASTRA_WAVE2B_ACCOUNT_HUB_INTEGRATION_RESULT.md).
+
+## Exact source path manifest
+
+- docs/UI_W46_ACCOUNT_HUB_SURFACE_MAP.md
+- docs/UI_W46_ACCOUNT_HUB_TASK_RESULT.md
+- lib/features/personalization/presentation/views/customer_saved_locations_view.dart
+- lib/features/personalization/presentation/views/help_and_support_view.dart
+- lib/features/personalization/presentation/views/privacy_and_permissions_view.dart
+- lib/features/personalization/presentation/views/profile_view.dart
+- lib/features/personalization/presentation/views/settings_view.dart
+- lib/features/personalization/presentation/widgets/account_deletion_confirmation_dialog.dart
+- lib/features/personalization/presentation/widgets/account_page_header.dart
+- lib/features/personalization/presentation/widgets/app_settings_section.dart
+- lib/features/personalization/presentation/widgets/edit_profile_bottom_sheet.dart
+- lib/features/personalization/presentation/widgets/settings_menu_tile.dart
+- lib/features/personalization/presentation/widgets/settings_menu_tile_list.dart
+- lib/features/personalization/presentation/widgets/settings_view_header_section.dart
+- lib/features/personalization/presentation/widgets/user_profile_tile.dart
+- test/widget/personalization/customer_saved_locations_view_test.dart
+- test/widget/personalization/goldens/w46_add_320_130.png
+- test/widget/personalization/goldens/w46_add_390_100.png
+- test/widget/personalization/goldens/w46_deletion_390_100.png
+- test/widget/personalization/goldens/w46_edit_390_100.png
+- test/widget/personalization/goldens/w46_help_390_100.png
+- test/widget/personalization/goldens/w46_hub_320_130.png
+- test/widget/personalization/goldens/w46_hub_390_100.png
+- test/widget/personalization/goldens/w46_locations_390_100.png
+- test/widget/personalization/goldens/w46_locations_430_130.png
+- test/widget/personalization/goldens/w46_privacy_390_100.png
+- test/widget/personalization/goldens/w46_profile_390_100.png
+- test/widget/personalization/goldens/w46_profile_430_130.png
+- test/widget/personalization/w46_account_final_test.dart
+- test/widget/personalization/w46_account_fixture.dart

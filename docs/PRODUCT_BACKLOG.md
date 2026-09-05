@@ -1,6 +1,40 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — Astra Wave 2A, 2026-09-05
+## Güncel durum — Astra Wave 2B, 2026-09-05
+
+- **Account Hub, Profile, Privacy, Saved Locations ve Help: DONE / MAIN.**
+  Mevcut Profile Edit, hesap silme, konum ekleme ve konum silme yüzeyleriyle
+  **5 ekran + 4 aktif sheet/dialog = 9/9 birim** tamamlandı.
+- Auth/Startup iş mantığı, guard/session akışları ve KVKK/Terms anlamı korunur.
+  Saved Locations → Nearby varsayılan konum dönüşü gerçek ekran testleriyle
+  doğrulandı. Konum düzenleme veya çıkış onayı icat edilmedi.
+- Home, onaylı Category/Recursive Browse, Listing, Details, Seller Comparison,
+  Search, Shop, Cart ve Nearby Final UI korunur; W40A yeniden açılmadı.
+- Güncel [envanter](UI_W46_POST_ACCOUNT_HUB_INVENTORY.md):
+  **26 kalan birim = 9 ekran + 15 modal + 2 durum ailesi**;
+  Tier A/B/C **3/8/15**, Figma Heavy/Light/None **3/4/19**;
+  tarihsel kalan kapsam **117 nominal h**.
+- **Figma 0**; backend, auth config, taxonomy ve ortak primitive değişmedi.
+  Development yazımı ve Production erişimi yok. AGENTS.md/protokol değişmedi.
+- Birleşik kapı: **1841 PASS / 0 FAIL / 6 mevcut koşullu skip**, analyzer temiz;
+  Account **GREEN**. [Teslim kanıtı](ASTRA_WAVE2B_ACCOUNT_HUB_INTEGRATION_RESULT.md).
+- [Agent 2 Wave 3 adayı](ASTRA_WAVE3_SCOPE_RECOMMENDATION.md):
+  Wishlist + Recently Viewed/iki eylemi + Notifications + truthful Coupons,
+  **24 nominal h / 6 birim**; hazırlanmış öneri, uygulama başlatılmadı.
+  **70–100 h önerilmez**: Design Owner/Agent 3 rezervasyonu sonrası toplam
+  50 h kalır; ilgisiz veya tamamlanmış işlerle kapsam şişirilmez.
+- Design Owner Batch 2 **Purchases, Reviews, Chat** ve bağımlı Agent 3 kapsamı
+  korunur; yaklaşık üç Tier A prototype ve Product Owner yön onayı gerekir.
+  Notifications yalnız mevcut hedef API'lerini tüketir. Shared dosyalarda tek
+  yazar kuralı korunur; kalan location/Cart/QR modalları ayrı sahiplik ister.
+- [60 günlük plan](UI_W44_60_DAY_ACCELERATION_PLAN.md) Bölüm 12 üç senaryoyu,
+  owner/integration/rework, Merchant minimumu, fiziksel QR, signing, legal/support
+  ve ayrı yetkili Production kapılarını korur. UI testleri pilot kabulü değildir.
+- Astra rol konuşmaları persistent; her yeni görev güncel main'e sabitlenir.
+  Aşağıdaki önceki dalga kayıtları tarihsel bağlamlarında korunmuştur.
+
+
+## Tarihsel durum — Astra Wave 2A, 2026-09-05
 
 - **Shop Details Final UI: DONE / MAIN. Cart V2 Final UI: DONE / MAIN.
   Nearby / Location Final UI: DONE / MAIN.**

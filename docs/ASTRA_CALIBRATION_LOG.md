@@ -1,6 +1,6 @@
 # Astra Calibration Log
 
-Durum: **WAVE 2A RECORDED — TIER-A CLOSEOUT AND INTEGRATION ACCEPTED, 2026-09-05**
+Durum: **WAVE 2B RECORDED — ACCOUNT IMPLEMENTATION AND INTEGRATION ACCEPTED, 2026-09-05**
 Kalibrasyon başlangıcı: **2026-09-05 (Europe/Istanbul)**
 Protokol: [Astra Execution Protocol](ASTRA_EXECUTION_PROTOCOL.md)
 
@@ -225,6 +225,83 @@ corrections and major scope drift **0**. No critical regression.
 **GREEN / SAME_SIZE** for a similarly bounded three-screen integration batch.
 Design Owner recommendation remains approximately **three Tier A prototypes**,
 selected from the refreshed inventory; no next implementation starts here.
+
+
+### Wave 2B — Account Hub independent implementation (2026-09-05)
+
+Third independent implementation GREEN package; source branch
+`astra-ui/w46-account-hub-final-ui`, source base **6cc5d16**, final source
+**5c2dc3b6dec6721a59ffe81aa863e89c3a0eaff3**. Source evidence:
+[task result](UI_W46_ACCOUNT_HUB_TASK_RESULT.md) and
+[active surface map](UI_W46_ACCOUNT_HUB_SURFACE_MAP.md).
+
+- Attempted/completed: **9/9 active units**, five screens FS-22–26 and four
+  sheets/dialogs MD-06–09. Historical nominal scope **~44 h**, 7 Tier B + 2 C.
+  Location editing and logout confirmation are absent; neither was invented.
+- **30 files**, **73 new tests**, **12 visual proofs**, **six checkpoints**:
+  0ae087e, 3355477, 3ff2f42, 172359d, 0ac2f6a, 5c2dc3b. Final source lineage
+  independently verified before integration.
+- Source full result **1710 PASS / 0 FAIL / 6 existing gated skips**, analyzer
+  clean. This is the source-base result, not the newer combined main count.
+- Elapsed is **REPORTED**, not estimated from Git timestamps: source states
+  **2026-09-05 01:58:05 UTC to approximately 02:44 UTC, about 46 minutes through
+  the last full-suite gate**; final report/push completed later. Do not describe
+  46 minutes as an exactly measured end-to-end delivery or use it as a time limit.
+- Figma: historical **2 LIGHT + 7 NOT_REQUIRED**, explicit task access forbidden,
+  **0 calls**. Existing Flutter Final UI and unchanged Auth form are reused.
+- No auth business/config, backend, taxonomy, shared-core or protected earlier UI
+  change; no Development writes or Production access. AccountPageHeader is local
+  composition. No reported blocker, required owner decision, substantive owner
+  correction or unresolved shared-component collision.
+- **GREEN / SAME_SIZE** as the worker reported: complete active scope, no critical
+  regression or major drift. Source implementation accepted by independent Wave
+  2B integration below. No AGENTS.md or protocol promotion in this task.
+
+### Wave 2B — Integration acceptance and observable boundary
+
+Persistent Integration task re-anchored to **c63e61d6363f2cbeb816b7cb55e970e40f798d78**.
+Pre-merge semantic review **489aa4e**, no-ff merge **5ef2d5e**, actual Nearby/Saved
+Locations test checkpoint **699b3a8**. All **17/17 contracted phases** and **9/9
+active source surfaces** completed; final documentation/publication follows
+the verified code. Complete delivery: [integration result](ASTRA_WAVE2B_ACCOUNT_HUB_INTEGRATION_RESULT.md).
+
+Observed start **2026-09-05 03:05:58 UTC**; completed full-suite audit observed
+**03:29:56 UTC**: **23m58s through that audit**, excluding final documentation and
+Git publication. Full runner **90.302 s**. This acceptance measurement is not a
+fourth independent implementation benchmark or a normalized model comparison.
+
+**279 targeted PASS, 603 overlap PASS, 598 broader Customer PASS; analyzer clean;
+one combined full suite 1841 PASS / 0 FAIL / 6 unchanged opt-in skips**.
+Discovery **165/165 test files**; no main/source test loss. The count is
+**1766 main + 73 source + 2 integration tests = 1841**, not a sum of targeted and
+full runs. All **186 main PNGs** and all **30 source files**, including **12 new
+source PNGs**, remain exact; no golden regeneration or runtime reconciliation.
+
+The two new offline integration tests use real Nearby/Saved Locations screens,
+real Cubits and preferred-location service with local repository/shop fakes:
+default changes update label/order/distance; deleting the only default clears
+stale location data without GPS/permission requests. Initial test-authoring
+attempts corrected exact Usecase spelling/state-null expectations and a repeated
+per-shop unknown-location label selector. No existing assertion was removed,
+business behavior altered or skip added to make the tests pass.
+
+Source/main changed-file intersections are empty. The semantic coverage gap and
+stale inventory/planning are reconciled explicitly; shared-component changes,
+unresolved collisions, blockers, required owner decisions and new substantive
+owner corrections **0**. Representative six source visuals match integrated
+Final UI. **GREEN / SAME_SIZE** for a similarly bounded Account integration
+package; no critical regression or major scope drift.
+
+Cumulative independent implementation evidence is now **Discovery 17 h GREEN,
+Auth/Startup 30 h GREEN, Account Hub 44 h GREEN**, historical nominal labels only.
+A 70–100 h experiment is conditional on coherent non-overlapping remaining work.
+The refreshed inventory has 117 h, of which 67 h belongs to Design Batch 2 /
+dependent Agent 3. Only 50 h is unreserved; therefore **70–100 is not recommended
+for the current inventory**. [Wave 3](ASTRA_WAVE3_SCOPE_RECOMMENDATION.md) instead
+prepares **24 h / 6 units** of customer saved-products/activity presentation.
+The available scope is smaller; this does not recast the three GREEN outcomes
+as capacity failures. Design Owner stays near three Tier A prototypes. Future
+package implementation is not started by this recommendation.
 
 ## 4. Kayıt ve değerlendirme kuralları
 
