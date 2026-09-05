@@ -1,0 +1,91 @@
+// Run from android with --init-script ../tool/test_external_release_signing.gradle
+// :app:testExternalReleaseSigning. Synthetic inputs only; no owner key is opened.
+gradle.projectsEvaluated {
+    def app = gradle.rootProject.findProject(":app")
+    if (app == null || !app.ext.has("resolveExternalReleaseSigning")) { return }
+    app.tasks.register("testExternalReleaseSigning") {
+        group = "verification"
+        doLast {
+            def resolve = app.ext.resolveExternalReleaseSigning
+            def prove = app.ext.proveExternalReleaseSigning
+            def fixtureRoot = java.nio.file.Files.createTempDirectory("esnaftavar-signing-test-").toFile()
+            int passed = 0
+            def check = { boolean condition ->
+                if (!condition) { throw new GradleException("External signing regression failed.") }
+                passed++
+            }
+            def propertiesFile = new File(fixtureRoot, "signing.properties")
+            def save = { Map values ->
+                def properties = new Properties()
+                values.each { key, value -> properties.setProperty(key, value) }
+                propertiesFile.withOutputStream { properties.store(it, "Synthetic negative test only") }
+                return propertiesFile.absolutePath
+            }
+            try {
+                check(!resolve(null).ready)
+                check(!resolve("relative.properties").ready)
+                check(!resolve(new File(app.rootProject.projectDir, "key.properties").absolutePath).ready)
+                check(!resolve(new File(fixtureRoot, "missing.properties").absolutePath).ready)
+                // A second checkout is also a repository, not an external secret store.
+                def otherCheckout = new File(fixtureRoot, "other-checkout")
+                otherCheckout.mkdir()
+                new File(otherCheckout, ".git").text = "synthetic git marker"
+                check(!resolve(new File(otherCheckout, "key.properties").absolutePath).ready)
+                check(!resolve(save([storeFile: "REPLACE_WITH_EXTERNAL_PATH"])).ready)
+                def values = [storeFile: "relative.jks", storePassword: "synthetic-only",
+                    keyAlias: "synthetic-only", keyPassword: "synthetic-only"]
+                check(!resolve(save(values)).ready)
+                values.storeFile = new File(app.rootProject.projectDir, "test.jks").absolutePath
+                check(!resolve(save(values)).ready)
+                values.storeFile = new File(fixtureRoot, "missing.jks").absolutePath
+                check(!resolve(save(values)).ready)
+                values.storeFile = new File(otherCheckout, "upload.jks").absolutePath
+                check(!resolve(save(values)).ready)
+                // Present but invalid keystore must never qualify as signing proof.
+                def invalidStore = new File(fixtureRoot, "invalid.jks")
+                invalidStore.text = "synthetic non-keystore"
+                values.storeFile = invalidStore.absolutePath
+                def present = resolve(save(values))
+                check(present.ready)
+                boolean rejected = false
+                try { prove(present) } catch (GradleException error) {
+                    rejected = error.message == "Release signing proof failed: credentials, private key, validity or owner certificate mismatch."
+                }
+                check(rejected)
+                // A functioning unrelated key (including Android debug identity)
+                // must also be rejected. This temporary TEST key is never an app
+                // signer and is removed below; it does not rotate the owner key.
+                def testStore = new File(fixtureRoot, "synthetic-debug.jks")
+                def keytool = new File(System.getProperty("java.home"),
+                    "bin/" + (System.getProperty("os.name").toLowerCase().contains("windows") ? "keytool.exe" : "keytool"))
+                def process = new ProcessBuilder(keytool.absolutePath, "-genkeypair", "-noprompt",
+                    "-keystore", testStore.absolutePath, "-storepass", "synthetic-only",
+                    "-keypass", "synthetic-only", "-alias", "synthetic-only", "-dname",
+                    "CN=Android Debug", "-keyalg", "RSA", "-keysize", "2048", "-validity", "1")
+                    .redirectErrorStream(true).start()
+                process.inputStream.text // Consume, never print fixture process output.
+                if (process.waitFor() != 0) { throw new GradleException("Synthetic key fixture unavailable.") }
+                values.storeFile = testStore.absolutePath
+                rejected = false
+                try { prove(resolve(save(values))) } catch (GradleException error) {
+                    rejected = error.message == "Release signing proof failed: credentials, private key, validity or owner certificate mismatch."
+                }
+                check(rejected)
+                values.keyPassword = "wrong-synthetic-password"
+                rejected = false
+                try { prove(resolve(save(values))) } catch (GradleException error) {
+                    rejected = !error.message.contains(values.keyPassword)
+                }
+                check(rejected)
+                println("External release signing regression: ${passed} PASS / 0 FAIL")
+            } finally {
+                // Only our explicitly named fixture children, never user directories.
+                def otherCheckout = new File(fixtureRoot, "other-checkout")
+                java.nio.file.Files.deleteIfExists(new File(otherCheckout, ".git").toPath())
+                java.nio.file.Files.deleteIfExists(otherCheckout.toPath())
+                fixtureRoot.listFiles()?.each { java.nio.file.Files.deleteIfExists(it.toPath()) }
+                java.nio.file.Files.deleteIfExists(fixtureRoot.toPath())
+            }
+        }
+    }
+}
