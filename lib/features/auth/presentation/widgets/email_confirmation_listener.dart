@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -188,37 +189,48 @@ class _EmailConfirmationDestinationState
         if (_noticeVisible)
           Positioned(
             top: 0,
-            left: 12,
-            right: 12,
+            left: EsnaftaVarSpacing.sm,
+            right: EsnaftaVarSpacing.sm,
             child: SafeArea(
-              child: Material(
-                key: const Key('email-confirmation-success-notice'),
-                elevation: 6,
-                color: const Color(0xFF176B5B),
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'E-posta adresiniz başarıyla doğrulandı.',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 430),
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Material(
+                      key: const Key('email-confirmation-success-notice'),
+                      elevation: 2,
+                      color: EsnaftaVarColors.success,
+                      borderRadius: BorderRadius.circular(
+                        EsnaftaVarRadii.large,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'E-posta adresiniz başarıyla doğrulandı.',
+                                style: TextStyle(
+                                  color: EsnaftaVarColors.textOnPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              key: const Key(
+                                'email-confirmation-success-notice-dismiss',
+                              ),
+                              tooltip: 'Bildirimi kapat',
+                              onPressed: _dismissNotice,
+                              color: EsnaftaVarColors.textOnPrimary,
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
                         ),
                       ),
-                      IconButton(
-                        key: const Key(
-                          'email-confirmation-success-notice-dismiss',
-                        ),
-                        tooltip: 'Bildirimi kapat',
-                        onPressed: _dismissNotice,
-                        color: Colors.white,
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

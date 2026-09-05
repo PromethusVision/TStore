@@ -56,9 +56,13 @@ class OnBoardingView extends StatelessWidget {
                       child: const Row(
                         children: [
                           Expanded(
-                            child: CustomerBrandWordmark(
-                              key: Key('onboarding-wordmark'),
-                              fontSize: 28,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: CustomerBrandWordmark(
+                                key: Key('onboarding-wordmark'),
+                                fontSize: 28,
+                              ),
                             ),
                           ),
                           OnBoardingSkipButton(),

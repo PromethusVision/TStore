@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/domain/legal/legal_document_versions.dart';
 
 class KvkkInformationView extends StatelessWidget {
@@ -211,8 +212,8 @@ class _LegalDocumentScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
+      safeAreaTop: false,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -222,36 +223,36 @@ class _LegalDocumentScaffold extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
                     0,
                   ),
                   child: _LegalHeader(title: title),
                 ),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
+                const SizedBox(height: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: ListView(
                     key: const Key('customer-legal-list'),
                     padding: const EdgeInsets.fromLTRB(
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space4,
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space24,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xxs,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xl,
                     ),
                     children: [
                       _LegalIntroductionCard(
                         introduction: introduction,
                         version: version,
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space20),
+                      const SizedBox(height: EsnaftaVarSpacing.lg),
                       for (var index = 0; index < sections.length; index++) ...[
                         _LegalSectionCard(
                           key: Key('customer-legal-section-$index'),
                           section: sections[index],
                         ),
                         if (index != sections.length - 1)
-                          const SizedBox(height: CustomerHomeV1Tokens.space12),
+                          const SizedBox(height: EsnaftaVarSpacing.sm),
                       ],
                     ],
                   ),
@@ -275,12 +276,12 @@ class _LegalHeader extends StatelessWidget {
     return Container(
       key: const Key('customer-legal-header'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: EsnaftaVarElevation.sm,
       ),
       child: Row(
         children: [
@@ -289,34 +290,33 @@ class _LegalHeader extends StatelessWidget {
             onPressed: () => Navigator.of(context).maybePop(),
             tooltip: 'Geri',
             style: IconButton.styleFrom(
-              backgroundColor: CustomerHomeV1Tokens.mint,
-              foregroundColor: CustomerHomeV1Tokens.petrol,
+              backgroundColor: EsnaftaVarColors.primarySoft,
+              foregroundColor: EsnaftaVarColors.primary,
             ),
             icon: const Icon(Icons.arrow_back_rounded),
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
+          const SizedBox(width: EsnaftaVarSpacing.sm),
           Expanded(
             child: Text(
               title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: CustomerHomeV1Tokens.navy,
+                color: EsnaftaVarColors.textPrimary,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          const SizedBox(width: CustomerHomeV1Tokens.space8),
+          const SizedBox(width: EsnaftaVarSpacing.xs),
           Container(
             width: 42,
             height: 42,
             decoration: const BoxDecoration(
-              color: Color(0xFFFFE4DE),
+              color: EsnaftaVarColors.accentSoft,
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.policy_outlined,
-              color: CustomerHomeV1Tokens.coral,
+              color: EsnaftaVarColors.accent,
             ),
           ),
         ],
@@ -339,11 +339,11 @@ class _LegalIntroductionCard extends StatelessWidget {
     return Container(
       key: const Key('customer-legal-introduction'),
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space20),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.lg),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.petrol,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius24),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.primary,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xxLarge),
+        boxShadow: EsnaftaVarElevation.sm,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,7 +357,7 @@ class _LegalIntroductionCard extends StatelessWidget {
             ),
             child: const Icon(Icons.shield_outlined, color: Colors.white),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          const SizedBox(height: EsnaftaVarSpacing.md),
           Text(
             introduction,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -366,17 +366,15 @@ class _LegalIntroductionCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          const SizedBox(height: EsnaftaVarSpacing.md),
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: CustomerHomeV1Tokens.space12,
-              vertical: CustomerHomeV1Tokens.space8,
+              horizontal: EsnaftaVarSpacing.sm,
+              vertical: EsnaftaVarSpacing.xs,
             ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radiusPill,
-              ),
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.pill),
             ),
             child: Text(
               'Metin sürümü: $version',
@@ -401,12 +399,12 @@ class _LegalSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: EsnaftaVarElevation.sm,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,23 +416,23 @@ class _LegalSectionCard extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
+                  color: EsnaftaVarColors.primarySoft,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.check_rounded,
                   size: 19,
-                  color: CustomerHomeV1Tokens.petrol,
+                  color: EsnaftaVarColors.primary,
                 ),
               ),
-              const SizedBox(width: CustomerHomeV1Tokens.space12),
+              const SizedBox(width: EsnaftaVarSpacing.sm),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(
                     section.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: CustomerHomeV1Tokens.navy,
+                      color: EsnaftaVarColors.textPrimary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -442,17 +440,17 @@ class _LegalSectionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          const SizedBox(height: EsnaftaVarSpacing.sm),
           for (var index = 0; index < section.paragraphs.length; index++) ...[
             SelectableText(
               section.paragraphs[index],
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 height: 1.55,
-                color: CustomerHomeV1Tokens.muted,
+                color: EsnaftaVarColors.textSecondary,
               ),
             ),
             if (index != section.paragraphs.length - 1)
-              const SizedBox(height: CustomerHomeV1Tokens.space12),
+              const SizedBox(height: EsnaftaVarSpacing.sm),
           ],
         ],
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 
 class ForgetPasswordHeaderSection extends StatelessWidget {
@@ -13,15 +13,15 @@ class ForgetPasswordHeaderSection extends StatelessWidget {
         Text(
           TTexts.forgetPasswordTitle,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: CustomerHomeV1Tokens.navy,
+            color: EsnaftaVarColors.textPrimary,
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space8),
+        const SizedBox(height: EsnaftaVarSpacing.xs),
         Text(
           TTexts.forgetPasswordSubTitle,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: CustomerHomeV1Tokens.muted,
+            color: EsnaftaVarColors.textSecondary,
             height: 1.4,
           ),
         ),

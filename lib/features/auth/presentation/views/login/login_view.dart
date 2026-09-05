@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/widgets/customer_auth_form_card.dart';
@@ -71,9 +72,10 @@ class _LoginContent extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           key: const Key('merchant-registration-dialog'),
+          scrollable: true,
           icon: const Icon(
             Icons.storefront_outlined,
-            color: CustomerHomeV1Tokens.petrol,
+            color: EsnaftaVarColors.primary,
           ),
           title: const Text('Esnafta Var İşletme'),
           content: const Text(
@@ -87,7 +89,7 @@ class _LoginContent extends StatelessWidget {
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               style: FilledButton.styleFrom(
-                backgroundColor: CustomerHomeV1Tokens.petrol,
+                backgroundColor: EsnaftaVarColors.primary,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Tamam'),
@@ -100,8 +102,8 @@ class _LoginContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
+      safeAreaTop: false,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -111,10 +113,10 @@ class _LoginContent extends StatelessWidget {
               key: const Key('customer-login-scroll'),
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space24,
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space32,
+                EsnaftaVarSpacing.md,
+                EsnaftaVarSpacing.xl,
+                EsnaftaVarSpacing.md,
+                EsnaftaVarSpacing.xxl,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -126,10 +128,10 @@ class _LoginContent extends StatelessWidget {
                         key: const Key('customer-login-continue-shopping'),
                         onPressed: () => _continueAsGuest(context),
                         style: TextButton.styleFrom(
-                          foregroundColor: CustomerHomeV1Tokens.petrol,
+                          foregroundColor: EsnaftaVarColors.primary,
                           minimumSize: const Size(44, 44),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: CustomerHomeV1Tokens.space8,
+                            horizontal: EsnaftaVarSpacing.xs,
                           ),
                         ),
                         icon: const Icon(Icons.arrow_back_rounded, size: 20),
@@ -139,10 +141,10 @@ class _LoginContent extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    const SizedBox(height: EsnaftaVarSpacing.xs),
                   ],
                   LoginHeaderSection(isMerchantLogin: isMerchantLogin),
-                  const SizedBox(height: CustomerHomeV1Tokens.space20),
+                  const SizedBox(height: EsnaftaVarSpacing.lg),
                   CustomerAuthFormCard(
                     key: const Key('customer-login-form-card'),
                     child: LoginFormSection(
@@ -151,13 +153,13 @@ class _LoginContent extends StatelessWidget {
                           returnToCallerAfterCustomerLogin,
                     ),
                   ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const SizedBox(height: EsnaftaVarSpacing.sm),
                   if (!isMerchantLogin)
                     TextButton.icon(
                       key: const Key('merchant-registration-link'),
                       onPressed: () => _showMerchantRegistrationInfo(context),
                       style: TextButton.styleFrom(
-                        foregroundColor: CustomerHomeV1Tokens.petrol,
+                        foregroundColor: EsnaftaVarColors.primary,
                         minimumSize: const Size(double.infinity, 44),
                       ),
                       icon: const Icon(Icons.storefront_outlined, size: 20),

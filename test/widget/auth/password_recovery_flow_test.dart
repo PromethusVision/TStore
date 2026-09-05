@@ -513,7 +513,10 @@ void main() {
 
     expect(find.byKey(const Key('update-password-success')), findsOneWidget);
     expect(
-      find.byKey(const Key('update-password-success-icon')),
+      find.descendant(
+        of: find.byKey(const Key('update-password-success')),
+        matching: find.byIcon(Icons.check_circle_outline_rounded),
+      ),
       findsOneWidget,
     );
     expect(find.byKey(const Key('update-password-new')), findsNothing);

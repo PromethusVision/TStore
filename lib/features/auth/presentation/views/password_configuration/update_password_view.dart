@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/enums/status.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/core/utils/validators/validation.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
@@ -121,8 +123,8 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
             state is AuthPasswordRecoveryVerifying ||
             _returningToLogin;
 
-        return Scaffold(
-          backgroundColor: CustomerHomeV1Tokens.cream,
+        return EsnaftaVarScaffold(
+          safeAreaTop: false,
           body: SafeArea(
             child: Center(
               child: ConstrainedBox(
@@ -132,10 +134,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
                   key: const Key('customer-update-password-scroll'),
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space8,
-                    CustomerHomeV1Tokens.space16,
-                    CustomerHomeV1Tokens.space32,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xs,
+                    EsnaftaVarSpacing.md,
+                    EsnaftaVarSpacing.xxl,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,12 +146,10 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
                         isLoading: isLoading,
                         onClose: _returnToLogin,
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space24),
+                      const SizedBox(height: EsnaftaVarSpacing.xl),
                       CustomerAuthFormCard(
                         key: const Key('customer-update-password-card'),
-                        padding: const EdgeInsets.all(
-                          CustomerHomeV1Tokens.space20,
-                        ),
+                        padding: const EdgeInsets.all(EsnaftaVarSpacing.lg),
                         child: _passwordUpdated
                             ? _buildSuccessContent(isLoading)
                             : _buildPasswordForm(isLoading),
@@ -172,29 +172,30 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const _UpdatePasswordIllustration(),
-          const SizedBox(height: CustomerHomeV1Tokens.space20),
+          const SizedBox(height: EsnaftaVarSpacing.lg),
           Text(
             'Yeni şifrenizi belirleyin',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: CustomerHomeV1Tokens.navy,
+              color: EsnaftaVarColors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
+          const SizedBox(height: EsnaftaVarSpacing.sm),
           Text(
             'Hesabınızı korumak için daha önce kullanmadığınız güçlü bir '
             'şifre seçin.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: CustomerHomeV1Tokens.muted,
+              color: EsnaftaVarColors.textSecondary,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space24),
+          const SizedBox(height: EsnaftaVarSpacing.xl),
           TextFormField(
             key: const Key('update-password-new'),
             controller: _passwordController,
+            readOnly: isLoading,
             keyboardType: TextInputType.visiblePassword,
             obscureText: _hidePassword,
             autocorrect: false,
@@ -207,6 +208,7 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
               labelText: 'Yeni şifre',
               suffixIcon: IconButton(
                 key: const Key('update-password-toggle-new'),
+                tooltip: _hidePassword ? 'Şifreyi göster' : 'Şifreyi gizle',
                 onPressed: () {
                   setState(() => _hidePassword = !_hidePassword);
                 },
@@ -214,10 +216,11 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
               ),
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space16),
+          const SizedBox(height: EsnaftaVarSpacing.md),
           TextFormField(
             key: const Key('update-password-confirm'),
             controller: _confirmPasswordController,
+            readOnly: isLoading,
             keyboardType: TextInputType.visiblePassword,
             obscureText: _hideConfirmation,
             autocorrect: false,
@@ -235,9 +238,12 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
             },
             decoration: InputDecoration(
               prefixIcon: const Icon(Iconsax.password_check),
-              labelText: 'Yeni şifreyi tekrar girin',
+              labelText: 'Şifre tekrarı',
               suffixIcon: IconButton(
                 key: const Key('update-password-toggle-confirm'),
+                tooltip: _hideConfirmation
+                    ? 'Şifre tekrarını göster'
+                    : 'Şifre tekrarını gizle',
                 onPressed: () {
                   setState(() => _hideConfirmation = !_hideConfirmation);
                 },
@@ -245,7 +251,7 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
               ),
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space24),
+          const SizedBox(height: EsnaftaVarSpacing.xl),
           ElevatedButton(
             key: const Key('update-password-submit'),
             onPressed: isLoading ? null : _submit,
@@ -260,27 +266,16 @@ class _UpdatePasswordViewState extends State<UpdatePasswordView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _PasswordUpdatedIllustration(),
-        const SizedBox(height: CustomerHomeV1Tokens.space20),
-        Text(
-          'Şifreniz yenilendi',
-          key: const Key('update-password-success'),
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: CustomerHomeV1Tokens.navy,
-            fontWeight: FontWeight.w700,
+        Semantics(
+          liveRegion: true,
+          child: const EsnaftaVarStateCard(
+            key: Key('update-password-success'),
+            icon: Icons.check_circle_outline_rounded,
+            title: 'Şifreniz yenilendi',
+            message: 'Yeni şifrenizle güvenli şekilde giriş yapabilirsiniz.',
           ),
-          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: CustomerHomeV1Tokens.space12),
-        Text(
-          'Yeni şifrenizle güvenli şekilde giriş yapabilirsiniz.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: CustomerHomeV1Tokens.muted,
-            height: 1.5,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: CustomerHomeV1Tokens.space24),
+        const SizedBox(height: EsnaftaVarSpacing.xl),
         ElevatedButton(
           key: const Key('update-password-back-to-login'),
           onPressed: isLoading ? null : _returnToLogin,
@@ -302,14 +297,14 @@ class _UpdatePasswordHeader extends StatelessWidget {
     return Container(
       key: const Key('customer-update-password-header'),
       padding: const EdgeInsets.symmetric(
-        horizontal: CustomerHomeV1Tokens.space12,
-        vertical: CustomerHomeV1Tokens.space8,
+        horizontal: EsnaftaVarSpacing.sm,
+        vertical: EsnaftaVarSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
+        color: EsnaftaVarColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        boxShadow: EsnaftaVarElevation.sm,
       ),
       child: Row(
         children: [
@@ -323,7 +318,7 @@ class _UpdatePasswordHeader extends StatelessWidget {
             key: const Key('update-password-close'),
             tooltip: 'İptal et ve girişe dön',
             onPressed: isLoading ? null : onClose,
-            color: CustomerHomeV1Tokens.petrol,
+            color: EsnaftaVarColors.primary,
             icon: const Icon(Icons.close_rounded),
           ),
         ],
@@ -343,37 +338,13 @@ class _UpdatePasswordIllustration extends StatelessWidget {
         width: 76,
         height: 76,
         decoration: const BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
+          color: EsnaftaVarColors.primarySoft,
           shape: BoxShape.circle,
         ),
         child: const Icon(
           Icons.lock_reset_rounded,
-          color: CustomerHomeV1Tokens.petrol,
+          color: EsnaftaVarColors.primary,
           size: 40,
-        ),
-      ),
-    );
-  }
-}
-
-class _PasswordUpdatedIllustration extends StatelessWidget {
-  const _PasswordUpdatedIllustration();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        key: const Key('update-password-success-icon'),
-        width: 76,
-        height: 76,
-        decoration: const BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.check_rounded,
-          color: CustomerHomeV1Tokens.green,
-          size: 42,
         ),
       ),
     );

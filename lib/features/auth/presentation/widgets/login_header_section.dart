@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
@@ -19,20 +19,20 @@ class LoginHeaderSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CustomerBrandWordmark(key: Key('login-wordmark'), fontSize: 34),
-          const SizedBox(height: CustomerHomeV1Tokens.space24),
+          const SizedBox(height: EsnaftaVarSpacing.xl),
           Text(
             TTexts.loginTitle,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: CustomerHomeV1Tokens.navy,
+              color: EsnaftaVarColors.textPrimary,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.4,
             ),
           ),
-          const SizedBox(height: CustomerHomeV1Tokens.space8),
+          const SizedBox(height: EsnaftaVarSpacing.xs),
           Text(
             TTexts.loginSubTitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: CustomerHomeV1Tokens.muted,
+              color: EsnaftaVarColors.textSecondary,
               height: 1.45,
             ),
           ),
