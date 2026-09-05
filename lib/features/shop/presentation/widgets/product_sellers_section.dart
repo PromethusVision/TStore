@@ -510,6 +510,10 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          scrollable: true,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          icon: const Icon(Icons.storefront_outlined),
           title: const Text('Sepetinizde başka bir esnafa ait ürünler var'),
           content: const Text(
             'Bu ürünü eklemek için mevcut mağaza sepetiniz iptal edilip bu esnafla devam edilecek.',
@@ -519,7 +523,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: const Text('Vazgeç'),
             ),
-            TextButton(
+            FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 if (!mounted) return;

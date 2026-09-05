@@ -1,3 +1,4 @@
+import '../w48/w48_fixture.dart';
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
@@ -175,6 +176,132 @@ void main() {
   tearDown(() async {
     await sl.reset();
   });
+
+  setUpAll(w48Fonts);
+  for (final width in [320.0, 390.0, 430.0]) {
+    for (final action in ['remove', 'clear', 'refresh']) {
+      testWidgets('W48 cart $action modal $width 130% keyboard', (
+        tester,
+      ) async {
+        w48Viewport(tester, width);
+        final fixture = W48Fixture();
+        final changes = StreamController<CartV2State>.broadcast();
+        addTearDown(changes.close);
+        var loads = 0;
+        if (action == 'refresh') {
+          whenListen(
+            cartV2Cubit,
+            changes.stream,
+            initialState: const CartV2Loaded([cartItem]),
+          );
+          when(() => cartV2Cubit.getActiveCartItems()).thenAnswer((_) async {
+            if (++loads == 2) {
+              final updated = CartV2Loaded([
+                cartItem.copyWith(
+                  shopProduct: cartItem.shopProduct!.copyWith(price: 140),
+                ),
+              ]);
+              when(() => cartV2Cubit.state).thenReturn(updated);
+              changes.add(updated);
+              await Future<void>.delayed(Duration.zero);
+            }
+          });
+        }
+        await tester.pumpWidget(
+          fixture.host(
+            BlocProvider<CartV2Cubit>.value(
+              value: cartV2Cubit,
+              child: const CartV2View(),
+            ),
+            keyboard: 280,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final trigger = switch (action) {
+          'remove' => find.byKey(const Key('customer-cart-item-item-1-remove')),
+          'clear' => find.byKey(const Key('cart-prototype-clear')),
+          _ => find.text('QR kod oluştur'),
+        };
+        await revealCartAction(tester, trigger);
+        await tester.tap(trigger);
+        // QR preparation stays pending while the customer reviews new totals.
+        if (action == 'refresh') {
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 400));
+        } else {
+          await tester.pumpAndSettle();
+        }
+        expect(find.byType(AlertDialog), findsOneWidget);
+        await w48Accessibility(tester);
+        if (width == 320 && action == 'remove') {
+          await expectLater(
+            find.byKey(const Key('w48-proof')),
+            matchesGoldenFile(
+              '../w48/goldens/w48_cart_remove_320_keyboard.png',
+            ),
+          );
+        }
+        if (width == 390 && action == 'refresh') {
+          await expectLater(
+            find.byKey(const Key('w48-proof')),
+            matchesGoldenFile(
+              '../w48/goldens/w48_cart_refresh_390_keyboard.png',
+            ),
+          );
+        }
+        verifyNever(() => qrSessionCubit.createQrSession(any()));
+        await tester.tap(find.text('Vazgeç'));
+        await tester.pumpAndSettle();
+        verifyNever(() => cartV2Cubit.removeItem(any()));
+        verifyNever(() => cartV2Cubit.cancelActiveCart());
+      });
+    }
+  }
+
+  for (final width in [320.0, 390.0, 430.0]) {
+    testWidgets('W48 actual Cart to QR sheet $width 130%', (tester) async {
+      w48Viewport(tester, width);
+      final fixture = W48Fixture();
+      whenListen(
+        qrSessionCubit,
+        const Stream<QrSessionState>.empty(),
+        initialState: QrSessionCreated(w48Session(count: null, total: 250)),
+      );
+      await tester.pumpWidget(
+        fixture.host(
+          BlocProvider<CartV2Cubit>.value(
+            value: cartV2Cubit,
+            child: const CartV2View(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await revealCartAction(tester, find.text('QR kod oluştur'));
+      await tester.tap(find.text('QR kod oluştur'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
+      expect(find.text('QR bilgileri doğrulanamadı'), findsOneWidget);
+      expect(
+        find.byKey(const Key('purchase-verification-qr-code')),
+        findsNothing,
+      );
+      verify(() => qrSessionCubit.createQrSession('cart-1')).called(1);
+      await w48Accessibility(tester, within: find.byType(BottomSheet));
+      if (width == 390) {
+        await expectLater(
+          find.byKey(const Key('w48-proof')),
+          matchesGoldenFile('../w48/goldens/w48_actual_cart_qr_390_130.png'),
+        );
+      }
+      await tester.tap(
+        find.byKey(const Key('qr-invalid-snapshot-back-action')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
+      verify(() => cartV2Cubit.getActiveCartItems()).called(3);
+    });
+  }
 
   testWidgets('boş sepet müşteriye nasıl ürün ekleyeceğini anlatır', (
     tester,
@@ -588,10 +715,10 @@ void main() {
       await tester.pumpAndSettle();
 
       final confirmAction = tester
-          .widget<TextButton>(
+          .widget<FilledButton>(
             find.descendant(
               of: find.byType(AlertDialog),
-              matching: find.widgetWithText(TextButton, 'Sepeti boşalt'),
+              matching: find.widgetWithText(FilledButton, 'Sepeti boşalt'),
             ),
           )
           .onPressed!;
@@ -708,7 +835,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final confirmAction = tester
-          .widget<TextButton>(find.widgetWithText(TextButton, 'Kaldır'))
+          .widget<FilledButton>(find.widgetWithText(FilledButton, 'Kaldır'))
           .onPressed!;
       confirmAction();
       confirmAction();
