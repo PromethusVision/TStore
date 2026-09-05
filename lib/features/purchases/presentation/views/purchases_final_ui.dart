@@ -18,6 +18,7 @@ class _PurchasesFinalControls extends StatelessWidget {
             showModalBottomSheet<void>(
               context: context,
               useSafeArea: true,
+              backgroundColor: EsnaftaVarColors.surface,
               builder: (sheetContext) => SizedBox(
                 height: MediaQuery.sizeOf(sheetContext).height * 0.65,
                 child: _CreateReturnRequestTab(
@@ -146,36 +147,49 @@ Widget _buildPurchaseFinalCard(_PurchaseCardState view, BuildContext context) {
         ),
         const Divider(height: EsnaftaVarSpacing.xl),
         for (var index = 0; index < purchase.items.length; index++) ...[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final item = purchase.items[index];
+              final name = Text(item.productName, style: text.titleSmall);
+              final quantity = Text(
+                '${item.quantity} adet × ${_formatMoney(item.unitPrice)}',
+                style: text.bodySmall?.copyWith(
+                  color: EsnaftaVarColors.textMuted,
+                ),
+              );
+              final amount = Text(
+                _formatMoney(item.lineTotal),
+                textAlign: TextAlign.end,
+                style: text.labelLarge,
+              );
+              if (constraints.maxWidth < 290 ||
+                  MediaQuery.textScalerOf(context).scale(14) > 16) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      purchase.items[index].productName,
-                      style: text.titleSmall,
-                    ),
-                    const SizedBox(height: EsnaftaVarSpacing.xxs),
-                    Text(
-                      '${purchase.items[index].quantity} adet × ${_formatMoney(purchase.items[index].unitPrice)}',
-                      style: text.bodySmall?.copyWith(
-                        color: EsnaftaVarColors.textMuted,
-                      ),
-                    ),
+                    name,
+                    const SizedBox(height: 4),
+                    quantity,
+                    const SizedBox(height: 8),
+                    amount,
                   ],
-                ),
-              ),
-              const SizedBox(width: EsnaftaVarSpacing.xs),
-              Flexible(
-                child: Text(
-                  _formatMoney(purchase.items[index].lineTotal),
-                  textAlign: TextAlign.end,
-                  style: text.labelLarge,
-                ),
-              ),
-            ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [name, const SizedBox(height: 4), quantity],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(fit: FlexFit.tight, child: amount),
+                ],
+              );
+            },
           ),
           if (index < purchase.items.length - 1)
             const SizedBox(height: EsnaftaVarSpacing.sm),
@@ -185,8 +199,10 @@ Widget _buildPurchaseFinalCard(_PurchaseCardState view, BuildContext context) {
           children: [
             Expanded(child: Text('Alışveriş tutarı', style: text.bodySmall)),
             Flexible(
+              fit: FlexFit.tight,
               child: Text(
                 _formatMoney(purchase.totalAmount),
+                textAlign: TextAlign.end,
                 style: text.titleMedium?.copyWith(
                   color: EsnaftaVarColors.primary,
                 ),

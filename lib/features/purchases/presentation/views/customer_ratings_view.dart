@@ -181,7 +181,9 @@ class _RatingsHeader extends StatelessWidget {
           children: [
             Text(
               'Esnaf değerlendirmelerim',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: MediaQuery.sizeOf(context).width < 360
+                  ? Theme.of(context).textTheme.titleMedium
+                  : Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: EsnaftaVarSpacing.xxs),
             Text(
@@ -329,6 +331,7 @@ class _RatingCard extends StatelessWidget {
                 ),
               ),
               Flexible(
+                fit: FlexFit.tight,
                 child: Text(
                   _formatMoney(purchase.totalAmount),
                   textAlign: TextAlign.end,

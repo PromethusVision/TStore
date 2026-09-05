@@ -379,77 +379,30 @@ class _ChatLoadErrorState extends StatelessWidget {
   final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
-        child: Container(
-          key: const Key('customer-chat-load-error-state'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(EsnaftaVarSpacing.xl),
-          decoration: BoxDecoration(
-            color: EsnaftaVarColors.surface,
-            borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
-            border: Border.all(color: EsnaftaVarColors.borderDefault),
-            boxShadow: EsnaftaVarElevation.xs,
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          EsnaftaVarStateCard(
+            key: const Key('customer-chat-load-error-state'),
+            icon: Icons.cloud_off_rounded,
+            title: 'Mesajlar yüklenemedi',
+            message: message,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFE4DE),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.cloud_off_rounded,
-                  color: EsnaftaVarColors.accent,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.md),
-              const Text(
-                'Mesajlar yüklenemedi',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: EsnaftaVarColors.textPrimary,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.xs),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: EsnaftaVarColors.textSecondary,
-                  fontSize: 12,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.md),
-              FilledButton.icon(
-                key: const Key('customer-chat-load-retry-action'),
-                onPressed: onRetry,
-                style: FilledButton.styleFrom(
-                  backgroundColor: EsnaftaVarColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
-                  ),
-                ),
-                icon: const Icon(Icons.refresh_rounded, size: 19),
-                label: const Text('Tekrar dene'),
-              ),
-            ],
+          const SizedBox(height: EsnaftaVarSpacing.sm),
+          FilledButton.icon(
+            key: const Key('customer-chat-load-retry-action'),
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Tekrar dene'),
           ),
-        ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _MessageList extends StatelessWidget {
@@ -699,7 +652,13 @@ class _MessageInput extends StatelessWidget {
                             color: EsnaftaVarColors.primary,
                           ),
                         )
-                      : const Icon(Icons.send_rounded, size: 20),
+                      : Icon(
+                          Icons.send_rounded,
+                          size: 20,
+                          color: canSend
+                              ? EsnaftaVarColors.textOnPrimary
+                              : EsnaftaVarColors.textMuted,
+                        ),
                 ),
               );
             },

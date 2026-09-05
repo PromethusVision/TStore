@@ -142,6 +142,8 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
         context: context,
         builder: (dialogContext) => AlertDialog(
           key: const Key('product-review-delete-dialog'),
+          backgroundColor: EsnaftaVarColors.surface,
+          surfaceTintColor: Colors.transparent,
           icon: const Icon(
             Icons.delete_outline_rounded,
             color: EsnaftaVarColors.error,

@@ -452,7 +452,9 @@ class _ConversationCard extends StatelessWidget {
                     ),
                     if (thread.lastMessageIsMine)
                       Flexible(
+                        fit: FlexFit.tight,
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           key: Key(
                             'conversation-delivery-status-${thread.otherUserId}',
                           ),

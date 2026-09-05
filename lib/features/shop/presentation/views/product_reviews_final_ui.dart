@@ -42,87 +42,91 @@ class _ReviewsFinalHeader extends StatelessWidget {
 class _ReviewsFinalSummary extends StatelessWidget {
   const _ReviewsFinalSummary({required this.stats});
   final ProductReviewStats stats;
-
   @override
-  Widget build(BuildContext context) => Container(
-    key: const Key('product-reviews-summary'),
-    padding: const EdgeInsets.all(16),
-    decoration: _reviewsFinalSurface,
-    child: Row(
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final summary = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'ÜRÜN PUANI',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: EsnaftaVarColors.accent,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                stats.averageRating.toStringAsFixed(1),
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontSize: 36,
-                  color: EsnaftaVarColors.primary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              _StarRow(rating: stats.averageRating),
-              const SizedBox(height: 8),
-              Text(
-                '${stats.totalReviews} değerlendirme',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+        Text(
+          'ÜRÜN PUANI',
+          style: text.labelSmall?.copyWith(color: EsnaftaVarColors.accent),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          stats.averageRating.toStringAsFixed(1),
+          style: text.headlineLarge?.copyWith(
+            fontSize: 36,
+            color: EsnaftaVarColors.primary,
           ),
         ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: Column(
-            children: [
-              for (var rating = 5; rating >= 1; rating--)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 14,
-                        child: Text(
-                          '$rating',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
+        const SizedBox(height: 4),
+        _StarRow(rating: stats.averageRating),
+        const SizedBox(height: 8),
+        Text('${stats.totalReviews} değerlendirme', style: text.bodySmall),
+      ],
+    );
+    final distribution = Column(
+      children: [
+        for (var rating = 5; rating >= 1; rating--)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              children: [
+                Text('$rating', style: text.labelSmall),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Semantics(
+                    label:
+                        '$rating yıldız, ${stats.ratingDistribution[rating] ?? 0} değerlendirme',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        EsnaftaVarRadii.small,
                       ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Semantics(
-                          label:
-                              '$rating yıldız, ${stats.ratingDistribution[rating] ?? 0} değerlendirme',
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: stats.totalReviews == 0
-                                  ? 0
-                                  : ((stats.ratingDistribution[rating] ?? 0) /
-                                            stats.totalReviews)
-                                        .clamp(0, 1),
-                              minHeight: 6,
-                              color: EsnaftaVarColors.primary,
-                              backgroundColor: EsnaftaVarColors.primarySoft,
-                            ),
-                          ),
-                        ),
+                      child: LinearProgressIndicator(
+                        value: stats.totalReviews == 0
+                            ? 0
+                            : ((stats.ratingDistribution[rating] ?? 0) /
+                                      stats.totalReviews)
+                                  .clamp(0, 1),
+                        minHeight: 6,
+                        color: EsnaftaVarColors.primary,
+                        backgroundColor: EsnaftaVarColors.primarySoft,
                       ),
-                    ],
+                    ),
                   ),
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
       ],
-    ),
-  );
+    );
+    return Container(
+      key: const Key('product-reviews-summary'),
+      padding: const EdgeInsets.all(16),
+      decoration: _reviewsFinalSurface,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final stacked =
+              constraints.maxWidth < 290 &&
+              MediaQuery.textScalerOf(context).scale(14) > 16;
+          if (stacked) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [summary, const SizedBox(height: 16), distribution],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: summary),
+              const SizedBox(width: 20),
+              Expanded(child: distribution),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }
 
 final _reviewsFinalSurface = BoxDecoration(
@@ -192,26 +196,34 @@ Widget _buildReviewsFinalCard(_ReviewCard card, BuildContext context) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                review.canEdit
-                    ? 'Sizin değerlendirmeniz'
-                    : 'Esnafta Var kullanıcısı',
-                style: Theme.of(context).textTheme.labelLarge,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final title = Text(
+              review.canEdit
+                  ? 'Sizin değerlendirmeniz'
+                  : 'Esnafta Var kullanıcısı',
+              style: Theme.of(context).textTheme.labelLarge,
+            );
+            final date = Text(
+              _formatReviewDate(review.createdAt),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: EsnaftaVarColors.textMuted,
               ),
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                _formatReviewDate(review.createdAt),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: EsnaftaVarColors.textMuted,
-                ),
-              ),
-            ),
-          ],
+            );
+            if (constraints.maxWidth < 290) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [title, const SizedBox(height: 4), date],
+              );
+            }
+            return Row(
+              children: [
+                Expanded(child: title),
+                const SizedBox(width: 8),
+                date,
+              ],
+            );
+          },
         ),
         const SizedBox(height: 8),
         _StarRow(rating: review.rating.toDouble()),

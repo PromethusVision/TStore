@@ -130,6 +130,7 @@ class _PurchasesTabBar extends StatelessWidget {
         border: Border.all(color: EsnaftaVarColors.borderDefault),
       ),
       child: TabBar(
+        labelPadding: const EdgeInsets.symmetric(horizontal: 4),
         dividerColor: Colors.transparent,
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
