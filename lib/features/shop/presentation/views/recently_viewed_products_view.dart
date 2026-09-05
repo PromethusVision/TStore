@@ -1,8 +1,13 @@
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/common/widgets/progress_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/recently_viewed_products_state.dart';
@@ -72,18 +77,19 @@ class _RecentlyViewedProductsContentState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomerHomeV1Tokens.cream,
+    return EsnaftaVarScaffold(
       body: SafeArea(
-        child: Center(
+        top: false,
+        child: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             key: const Key('recently-viewed-customer-content'),
             constraints: const BoxConstraints(maxWidth: 430),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space8,
-                CustomerHomeV1Tokens.space16,
+                EsnaftaVarSpacing.md,
+                EsnaftaVarSpacing.xs,
+                EsnaftaVarSpacing.md,
                 0,
               ),
               child:
@@ -108,7 +114,7 @@ class _RecentlyViewedProductsContentState
                                 ? () => _confirmClear(context)
                                 : null,
                           ),
-                          const SizedBox(height: CustomerHomeV1Tokens.space16),
+                          const SizedBox(height: EsnaftaVarSpacing.md),
                           Expanded(
                             child: _buildStateContent(context, state, products),
                           ),
@@ -158,17 +164,17 @@ class _RecentlyViewedProductsContentState
     }
 
     return RefreshIndicator(
-      color: CustomerHomeV1Tokens.petrol,
-      backgroundColor: CustomerHomeV1Tokens.surface,
+      color: EsnaftaVarColors.primary,
+      backgroundColor: EsnaftaVarColors.surface,
       onRefresh: () =>
           context.read<RecentlyViewedProductsCubit>().load(customerId),
       child: ListView.separated(
         key: const Key('recently-viewed-products-list'),
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.only(bottom: CustomerHomeV1Tokens.space24),
+        padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.xl),
         itemCount: products.length,
         separatorBuilder: (_, _) =>
-            const SizedBox(height: CustomerHomeV1Tokens.space12),
+            const SizedBox(height: EsnaftaVarSpacing.sm),
         itemBuilder: (context, index) => _RecentlyViewedProductCard(
           product: products[index],
           customerId: customerId,
@@ -235,21 +241,22 @@ class _RecentlyViewedProductsContentState
       final shouldClear = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          backgroundColor: CustomerHomeV1Tokens.surface,
+          scrollable: true,
+          backgroundColor: EsnaftaVarColors.surface,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
           ),
           title: const Text(
             'Görüntüleme geçmişi silinsin mi?',
             style: TextStyle(
-              color: CustomerHomeV1Tokens.navy,
+              color: EsnaftaVarColors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
           content: const Text(
             'Bu tarayıcıda kaydedilen son görüntülenen ürünler kaldırılacak.',
-            style: TextStyle(color: CustomerHomeV1Tokens.muted),
+            style: TextStyle(color: EsnaftaVarColors.textSecondary),
           ),
           actions: [
             TextButton(
@@ -259,7 +266,7 @@ class _RecentlyViewedProductsContentState
             FilledButton(
               onPressed: () => completeDialog(dialogContext, true),
               style: FilledButton.styleFrom(
-                backgroundColor: CustomerHomeV1Tokens.coral,
+                backgroundColor: EsnaftaVarColors.accent,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Tümünü Temizle'),
@@ -351,75 +358,42 @@ class _RecentlyViewedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Column(
       key: const Key('recently-viewed-header'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-        boxShadow: CustomerHomeV1Tokens.softShadow,
-      ),
-      child: Row(
-        children: [
-          Material(
-            color: CustomerHomeV1Tokens.mint,
-            shape: const CircleBorder(),
-            child: IconButton(
-              key: const Key('recently-viewed-back'),
-              tooltip: 'Geri',
-              onPressed: () => Navigator.of(context).maybePop(),
-              color: CustomerHomeV1Tokens.petrol,
-              icon: const Icon(Icons.arrow_back_rounded),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            MergeSemantics(
+              child: EsnaftaVarSurfaceIconButton(
+                buttonKey: const Key('recently-viewed-back'),
+                icon: Icons.arrow_back_rounded,
+                tooltip: 'Geri',
+                onPressed: () => Navigator.of(context).maybePop(),
+              ),
             ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Son Görüntülediklerim',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: CustomerHomeV1Tokens.navy,
-                    fontSize: 17,
-                    height: 1.1,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.25,
-                  ),
-                ),
-                const SizedBox(height: CustomerHomeV1Tokens.space4),
-                Text(
-                  _subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (onClear != null) ...[
-            const SizedBox(width: CustomerHomeV1Tokens.space8),
-            Material(
-              color: const Color(0xFFFFE6DF),
-              shape: const CircleBorder(),
-              child: IconButton(
-                tooltip: 'Geçmişi temizle',
-                onPressed: onClear,
-                color: CustomerHomeV1Tokens.coral,
-                icon: const Icon(Icons.delete_sweep_outlined),
+            const SizedBox(width: 12),
+            Expanded(
+              child: EsnaftaVarSectionHeader(
+                title: 'Son Görüntülediklerim',
+                subtitle: _subtitle,
               ),
             ),
           ],
-        ],
-      ),
+        ),
+        if (onClear != null)
+          Align(
+            alignment: Alignment.centerRight,
+            child: Tooltip(
+              message: 'Geçmişi temizle',
+              child: TextButton.icon(
+                onPressed: onClear,
+                icon: const Icon(Icons.delete_sweep_outlined),
+                label: const Text('Geçmişi temizle'),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -455,33 +429,30 @@ class _RecentlyViewedProductCard extends StatelessWidget {
       label: '${product.name} ürününü yeniden görüntüle',
       child: Material(
         key: Key('recently-viewed-product-${product.id}'),
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+        color: EsnaftaVarColors.surface,
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         child: InkWell(
           key: Key('recently-viewed-product-link-${product.id}'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
           child: Container(
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius16,
-              ),
-              border: Border.all(color: CustomerHomeV1Tokens.border),
-              boxShadow: CustomerHomeV1Tokens.softShadow,
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+              border: Border.all(color: EsnaftaVarColors.borderDefault),
             ),
             child: Row(
               children: [
                 _ProductThumbnail(product: product, width: isCompact ? 72 : 88),
                 SizedBox(
                   width: isCompact
-                      ? CustomerHomeV1Tokens.space8
-                      : CustomerHomeV1Tokens.space12,
+                      ? EsnaftaVarSpacing.xs
+                      : EsnaftaVarSpacing.sm,
                 ),
                 Expanded(
                   child: SizedBox(
-                    height: 108,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -489,52 +460,52 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: CustomerHomeV1Tokens.navy,
-                            fontSize: 13,
+                            color: EsnaftaVarColors.textPrimary,
+                            fontSize: 14,
                             height: 1.15,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         if (supportingText != null) ...[
-                          const SizedBox(height: CustomerHomeV1Tokens.space4),
+                          const SizedBox(height: EsnaftaVarSpacing.xxs),
                           Text(
                             supportingText,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              color: CustomerHomeV1Tokens.muted,
-                              fontSize: 10,
+                              color: EsnaftaVarColors.textSecondary,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
-                        const Spacer(),
+                        const SizedBox(height: 12),
                         Text(
                           _priceLabel,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: CustomerHomeV1Tokens.navy,
-                            fontSize: 12,
+                            color: EsnaftaVarColors.textPrimary,
+                            fontSize: 14,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space4),
-                        const Row(
-                          mainAxisSize: MainAxisSize.min,
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
+                        const Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(
                               'Ürünü İncele',
                               style: TextStyle(
-                                color: CustomerHomeV1Tokens.petrol,
-                                fontSize: 10,
+                                color: EsnaftaVarColors.primary,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             SizedBox(width: 2),
                             Icon(
                               Icons.arrow_forward_rounded,
-                              color: CustomerHomeV1Tokens.petrol,
+                              color: EsnaftaVarColors.primary,
                               size: 14,
                             ),
                           ],
@@ -545,33 +516,35 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                 ),
                 SizedBox(
                   width: isCompact
-                      ? CustomerHomeV1Tokens.space4
-                      : CustomerHomeV1Tokens.space8,
+                      ? EsnaftaVarSpacing.xxs
+                      : EsnaftaVarSpacing.xs,
                 ),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ProductFavoriteButton(
-                      productId: product.id,
-                      keyPrefix: 'recently-viewed-favorite-${product.id}',
-                      currentUserIdProvider: () => customerId,
-                      height: 34,
-                      width: 34,
-                      iconSize: 18,
-                      backgroundColor: Colors.white,
+                    MergeSemantics(
+                      child: ProductFavoriteButton(
+                        productId: product.id,
+                        keyPrefix: 'recently-viewed-favorite-${product.id}',
+                        currentUserIdProvider: () => customerId,
+                        height: 48,
+                        width: 48,
+                        iconSize: 18,
+                        backgroundColor: Colors.white,
+                      ),
                     ),
-                    const SizedBox(height: CustomerHomeV1Tokens.space8),
+                    const SizedBox(height: EsnaftaVarSpacing.xs),
                     SizedBox(
-                      width: 36,
-                      height: 36,
+                      width: 48,
+                      height: 48,
                       child: PopupMenuButton<_RecentlyViewedProductAction>(
                         tooltip: 'Ürün işlemleri',
                         padding: EdgeInsets.zero,
-                        color: CustomerHomeV1Tokens.surface,
+                        color: EsnaftaVarColors.surface,
                         surfaceTintColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radius12,
+                            EsnaftaVarRadii.medium,
                           ),
                         ),
                         onSelected: (action) {
@@ -586,17 +559,16 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.delete_outline_rounded,
-                                  color: CustomerHomeV1Tokens.coral,
+                                  color: EsnaftaVarColors.accent,
                                   size: 20,
                                 ),
-                                SizedBox(width: CustomerHomeV1Tokens.space8),
+                                SizedBox(width: EsnaftaVarSpacing.xs),
                                 Flexible(
                                   child: Text(
                                     'Geçmişten kaldır',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+
                                     style: TextStyle(
-                                      color: CustomerHomeV1Tokens.coral,
+                                      color: EsnaftaVarColors.accent,
                                     ),
                                   ),
                                 ),
@@ -606,7 +578,7 @@ class _RecentlyViewedProductCard extends StatelessWidget {
                         ],
                         icon: const Icon(
                           Icons.more_vert_rounded,
-                          color: CustomerHomeV1Tokens.muted,
+                          color: EsnaftaVarColors.textSecondary,
                           size: 20,
                         ),
                       ),
@@ -653,18 +625,18 @@ class _ProductThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final imagePath = _imagePath;
     const fallback = ColoredBox(
-      color: CustomerHomeV1Tokens.mint,
+      color: EsnaftaVarColors.primarySoft,
       child: Center(
         child: Icon(
           Icons.inventory_2_rounded,
-          color: CustomerHomeV1Tokens.petrol,
+          color: EsnaftaVarColors.primary,
           size: 34,
         ),
       ),
     );
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+      borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
       child: SizedBox(
         width: width,
         height: 108,
@@ -699,81 +671,11 @@ class _ProductThumbnail extends StatelessWidget {
 
 class _RecentlyViewedLoadingView extends StatelessWidget {
   const _RecentlyViewedLoadingView();
-
   @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      key: const Key('recently-viewed-loading'),
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 4,
-      separatorBuilder: (_, _) =>
-          const SizedBox(height: CustomerHomeV1Tokens.space12),
-      itemBuilder: (_, _) => const _RecentlyViewedProductSkeleton(),
-    );
-  }
-}
-
-class _RecentlyViewedProductSkeleton extends StatelessWidget {
-  const _RecentlyViewedProductSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 134,
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.surface,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
-        border: Border.all(color: CustomerHomeV1Tokens.border),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 88,
-            height: 108,
-            decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.mint,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius12,
-              ),
-            ),
-          ),
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _SkeletonLine(width: 126),
-                SizedBox(height: CustomerHomeV1Tokens.space8),
-                _SkeletonLine(width: 78),
-                SizedBox(height: CustomerHomeV1Tokens.space16),
-                _SkeletonLine(width: 92),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SkeletonLine extends StatelessWidget {
-  const _SkeletonLine({required this.width});
-
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: 9,
-      decoration: BoxDecoration(
-        color: CustomerHomeV1Tokens.mint,
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radiusPill),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Center(
+    key: Key('recently-viewed-loading'),
+    child: TLoadingIndicator(label: 'Görüntüleme geçmişi yükleniyor'),
+  );
 }
 
 class _RecentlyViewedStatus extends StatelessWidget {
@@ -794,76 +696,13 @@ class _RecentlyViewedStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 30, color: CustomerHomeV1Tokens.petrol),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space20),
-              FilledButton.icon(
-                onPressed: onAction,
-                style: FilledButton.styleFrom(
-                  backgroundColor: CustomerHomeV1Tokens.petrol,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: CustomerHomeV1Tokens.space20,
-                    vertical: CustomerHomeV1Tokens.space12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radiusPill,
-                    ),
-                  ),
-                ),
-                icon: Icon(
-                  actionLabel == 'Tekrar Dene'
-                      ? Icons.refresh_rounded
-                      : Icons.explore_outlined,
-                  size: 18,
-                ),
-                label: Text(actionLabel),
-              ),
-            ],
-          ),
-        ),
+    return SingleChildScrollView(
+      child: EsnaftaVarStateCard(
+        icon: icon,
+        title: title,
+        message: description,
+        actionLabel: actionLabel,
+        onAction: onAction,
       ),
     );
   }

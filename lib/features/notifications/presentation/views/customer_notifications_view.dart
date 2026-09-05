@@ -1,10 +1,14 @@
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/common/widgets/progress_indicator.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
@@ -190,10 +194,11 @@ class _CustomerNotificationsContentState
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(message)));
       },
-      child: Scaffold(
-        backgroundColor: CustomerHomeV1Tokens.cream,
+      child: EsnaftaVarScaffold(
         body: SafeArea(
-          child: Center(
+          top: false,
+          child: Align(
+            alignment: Alignment.topCenter,
             child: ConstrainedBox(
               key: const Key('customer-notifications-content'),
               constraints: const BoxConstraints(maxWidth: 430),
@@ -201,14 +206,14 @@ class _CustomerNotificationsContentState
                 children: [
                   const Padding(
                     padding: EdgeInsets.fromLTRB(
-                      CustomerHomeV1Tokens.space16,
-                      CustomerHomeV1Tokens.space8,
-                      CustomerHomeV1Tokens.space16,
+                      EsnaftaVarSpacing.md,
+                      EsnaftaVarSpacing.xs,
+                      EsnaftaVarSpacing.md,
                       0,
                     ),
                     child: _NotificationsHeader(),
                   ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space12),
+                  const SizedBox(height: EsnaftaVarSpacing.sm),
                   Expanded(
                     child: BlocBuilder<NotificationsCubit, NotificationsState>(
                       builder: (context, state) {
@@ -247,7 +252,7 @@ class _CustomerNotificationsContentState
                         }
 
                         return RefreshIndicator(
-                          color: CustomerHomeV1Tokens.petrol,
+                          color: EsnaftaVarColors.primary,
                           onRefresh: () => context
                               .read<NotificationsCubit>()
                               .getNotifications(refresh: true),
@@ -256,15 +261,14 @@ class _CustomerNotificationsContentState
                             controller: _scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
                             padding: const EdgeInsets.fromLTRB(
-                              CustomerHomeV1Tokens.space16,
-                              CustomerHomeV1Tokens.space4,
-                              CustomerHomeV1Tokens.space16,
-                              CustomerHomeV1Tokens.space24,
+                              EsnaftaVarSpacing.md,
+                              EsnaftaVarSpacing.xxs,
+                              EsnaftaVarSpacing.md,
+                              EsnaftaVarSpacing.xl,
                             ),
                             itemCount: state.notifications.length + 1,
-                            separatorBuilder: (_, _) => const SizedBox(
-                              height: CustomerHomeV1Tokens.space12,
-                            ),
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: EsnaftaVarSpacing.sm),
                             itemBuilder: (context, index) {
                               if (index == state.notifications.length) {
                                 return _NotificationsListFooter(state: state);
@@ -324,163 +328,53 @@ class _NotificationsHeader extends StatelessWidget {
       builder: (context, state) {
         final loadedState = state is NotificationsLoaded ? state : null;
         final unreadCount = loadedState?.unreadCount ?? 0;
-
-        return Container(
+        return Column(
           key: const Key('customer-notifications-header'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Material(
-                    color: CustomerHomeV1Tokens.mint,
-                    shape: const CircleBorder(),
-                    child: IconButton(
-                      key: const Key('customer-notifications-back-button'),
-                      tooltip: 'Geri',
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(
-                        Icons.arrow_back_rounded,
-                        color: CustomerHomeV1Tokens.petrol,
-                        size: 21,
-                      ),
-                    ),
+          children: [
+            Row(
+              children: [
+                MergeSemantics(
+                  child: EsnaftaVarSurfaceIconButton(
+                    buttonKey: const Key('customer-notifications-back-button'),
+                    icon: Icons.arrow_back_rounded,
+                    tooltip: 'Geri',
+                    onPressed: () => Navigator.of(context).maybePop(),
                   ),
-                  const SizedBox(width: CustomerHomeV1Tokens.space12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Bildirimlerim',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: CustomerHomeV1Tokens.navy,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        const SizedBox(height: CustomerHomeV1Tokens.space4),
-                        Text(
-                          unreadCount > 0
-                              ? '$unreadCount okunmamış bildirim'
-                              : 'Alışveriş ve mesaj gelişmelerini takip et',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: CustomerHomeV1Tokens.muted,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: unreadCount > 0
-                          ? const Color(0xFFFFE4DE)
-                          : CustomerHomeV1Tokens.mint,
-                      borderRadius: BorderRadius.circular(
-                        CustomerHomeV1Tokens.radius12,
-                      ),
-                    ),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Center(
-                          child: Icon(
-                            Iconsax.notification,
-                            color: unreadCount > 0
-                                ? CustomerHomeV1Tokens.coral
-                                : CustomerHomeV1Tokens.petrol,
-                            size: 21,
-                          ),
-                        ),
-                        if (unreadCount > 0)
-                          Positioned(
-                            right: -3,
-                            top: -3,
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                minWidth: 18,
-                                minHeight: 18,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: CustomerHomeV1Tokens.coral,
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                unreadCount > 99 ? '99+' : '$unreadCount',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (unreadCount > 0) ...[
-                const SizedBox(height: CustomerHomeV1Tokens.space8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    key: const Key('mark-all-notifications-read-button'),
-                    onPressed:
-                        loadedState!.isMarkingAllAsRead ||
-                            loadedState.markingAsReadIds.isNotEmpty ||
-                            loadedState.deletingIds.isNotEmpty ||
-                            loadedState.isDeletingAll
-                        ? null
-                        : () => context
-                              .read<NotificationsCubit>()
-                              .markAllAsRead(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: CustomerHomeV1Tokens.petrol,
-                      disabledForegroundColor: CustomerHomeV1Tokens.muted,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: CustomerHomeV1Tokens.space12,
-                        vertical: CustomerHomeV1Tokens.space8,
-                      ),
-                    ),
-                    icon: loadedState.isMarkingAllAsRead
-                        ? const SizedBox.square(
-                            dimension: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: CustomerHomeV1Tokens.petrol,
-                            ),
-                          )
-                        : const Icon(Icons.done_all_rounded, size: 19),
-                    label: const Text(
-                      'Tümünü oku',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: EsnaftaVarSectionHeader(
+                    title: 'Bildirimlerim',
+                    subtitle: unreadCount > 0
+                        ? '$unreadCount okunmamış bildirim'
+                        : 'Alışveriş ve mesaj gelişmelerini takip et',
                   ),
                 ),
               ],
-            ],
-          ),
+            ),
+            if (unreadCount > 0)
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  key: const Key('mark-all-notifications-read-button'),
+                  onPressed:
+                      loadedState!.isMarkingAllAsRead ||
+                          loadedState.markingAsReadIds.isNotEmpty ||
+                          loadedState.deletingIds.isNotEmpty ||
+                          loadedState.isDeletingAll
+                      ? null
+                      : () =>
+                            context.read<NotificationsCubit>().markAllAsRead(),
+                  icon: loadedState.isMarkingAllAsRead
+                      ? const TLoadingIndicator(
+                          size: 18,
+                          label: 'Bildirimler okundu olarak işaretleniyor',
+                        )
+                      : const Icon(Icons.done_all_rounded),
+                  label: const Text('Tümünü oku'),
+                ),
+              ),
+          ],
         );
       },
     );
@@ -489,50 +383,18 @@ class _NotificationsHeader extends StatelessWidget {
 
 class _NotificationsLoadingState extends StatelessWidget {
   const _NotificationsLoadingState();
-
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        key: const Key('customer-notifications-loading-state'),
-        margin: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        padding: const EdgeInsets.symmetric(
-          horizontal: CustomerHomeV1Tokens.space24,
-          vertical: CustomerHomeV1Tokens.space20,
-        ),
-        decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
-          boxShadow: CustomerHomeV1Tokens.softShadow,
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 22,
-              height: 22,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: CustomerHomeV1Tokens.petrol,
-              ),
-            ),
-            SizedBox(width: CustomerHomeV1Tokens.space12),
-            Flexible(
-              child: Text(
-                'Bildirimlerin yükleniyor',
-                style: TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Center(
+    key: Key('customer-notifications-loading-state'),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TLoadingIndicator(label: 'Bildirimler yükleniyor'),
+        SizedBox(height: 16),
+        Text('Bildirimlerin yükleniyor'),
+      ],
+    ),
+  );
 }
 
 class _NotificationCard extends StatelessWidget {
@@ -566,20 +428,18 @@ class _NotificationCard extends StatelessWidget {
         child: InkWell(
           key: Key('notification-card-${notification.id}'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
           child: Ink(
-            padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
             decoration: BoxDecoration(
-              color: CustomerHomeV1Tokens.surface,
-              borderRadius: BorderRadius.circular(
-                CustomerHomeV1Tokens.radius20,
-              ),
+              color: EsnaftaVarColors.surface,
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.xLarge),
               border: Border.all(
                 color: notification.isRead
-                    ? CustomerHomeV1Tokens.border
-                    : CustomerHomeV1Tokens.petrol.withValues(alpha: 0.3),
+                    ? EsnaftaVarColors.borderDefault
+                    : EsnaftaVarColors.primary.withValues(alpha: 0.3),
               ),
-              boxShadow: CustomerHomeV1Tokens.softShadow,
+              boxShadow: EsnaftaVarElevation.sm,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -598,7 +458,7 @@ class _NotificationCard extends StatelessWidget {
                     size: 22,
                   ),
                 ),
-                const SizedBox(width: CustomerHomeV1Tokens.space12),
+                const SizedBox(width: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,7 +470,7 @@ class _NotificationCard extends StatelessWidget {
                             child: Text(
                               notification.title,
                               style: const TextStyle(
-                                color: CustomerHomeV1Tokens.navy,
+                                color: EsnaftaVarColors.textPrimary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                                 height: 1.25,
@@ -618,33 +478,33 @@ class _NotificationCard extends StatelessWidget {
                             ),
                           ),
                           if (isProcessing) ...[
-                            const SizedBox(width: CustomerHomeV1Tokens.space8),
+                            const SizedBox(width: EsnaftaVarSpacing.xs),
                             const SizedBox.square(
                               key: Key('notification-read-progress'),
                               dimension: 18,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: CustomerHomeV1Tokens.petrol,
+                                color: EsnaftaVarColors.primary,
                               ),
                             ),
                           ] else if (!notification.isRead) ...[
-                            const SizedBox(width: CustomerHomeV1Tokens.space8),
+                            const SizedBox(width: EsnaftaVarSpacing.xs),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: CustomerHomeV1Tokens.space8,
-                                vertical: CustomerHomeV1Tokens.space4,
+                                horizontal: EsnaftaVarSpacing.xs,
+                                vertical: EsnaftaVarSpacing.xxs,
                               ),
                               decoration: BoxDecoration(
-                                color: CustomerHomeV1Tokens.coral,
+                                color: EsnaftaVarColors.accent,
                                 borderRadius: BorderRadius.circular(
-                                  CustomerHomeV1Tokens.radiusPill,
+                                  EsnaftaVarRadii.pill,
                                 ),
                               ),
                               child: const Text(
                                 'Yeni',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 9,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -652,38 +512,38 @@ class _NotificationCard extends StatelessWidget {
                           ],
                         ],
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space8),
+                      const SizedBox(height: EsnaftaVarSpacing.xs),
                       Text(
                         notification.body,
                         style: const TextStyle(
-                          color: CustomerHomeV1Tokens.muted,
+                          color: EsnaftaVarColors.textSecondary,
                           fontSize: 12,
                           height: 1.4,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: CustomerHomeV1Tokens.space12),
+                      const SizedBox(height: EsnaftaVarSpacing.sm),
                       Wrap(
-                        spacing: CustomerHomeV1Tokens.space8,
-                        runSpacing: CustomerHomeV1Tokens.space4,
+                        spacing: EsnaftaVarSpacing.xs,
+                        runSpacing: EsnaftaVarSpacing.xxs,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: CustomerHomeV1Tokens.space8,
-                              vertical: CustomerHomeV1Tokens.space4,
+                              horizontal: EsnaftaVarSpacing.xs,
+                              vertical: EsnaftaVarSpacing.xxs,
                             ),
                             decoration: BoxDecoration(
                               color: typePresentation.background,
                               borderRadius: BorderRadius.circular(
-                                CustomerHomeV1Tokens.radiusPill,
+                                EsnaftaVarRadii.pill,
                               ),
                             ),
                             child: Text(
                               typePresentation.label,
                               style: TextStyle(
                                 color: typePresentation.accent,
-                                fontSize: 9.5,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -692,8 +552,8 @@ class _NotificationCard extends StatelessWidget {
                             Text(
                               _formatDate(createdAt),
                               style: const TextStyle(
-                                color: CustomerHomeV1Tokens.muted,
-                                fontSize: 10,
+                                color: EsnaftaVarColors.textSecondary,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -727,20 +587,20 @@ class _NotificationsListFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     if (state.isLoadingMore) {
       return const Padding(
-        padding: EdgeInsets.symmetric(vertical: CustomerHomeV1Tokens.space16),
+        padding: EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.md),
         child: Center(
-          child: CircularProgressIndicator(color: CustomerHomeV1Tokens.petrol),
+          child: CircularProgressIndicator(color: EsnaftaVarColors.primary),
         ),
       );
     }
 
     if (state.loadMoreError != null) {
       return Container(
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space12),
+        padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.surface,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
-          border: Border.all(color: CustomerHomeV1Tokens.border),
+          color: EsnaftaVarColors.surface,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
+          border: Border.all(color: EsnaftaVarColors.borderDefault),
         ),
         child: Column(
           children: [
@@ -748,7 +608,7 @@ class _NotificationsListFooter extends StatelessWidget {
               state.loadMoreError!,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: CustomerHomeV1Tokens.muted,
+                color: EsnaftaVarColors.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -762,7 +622,7 @@ class _NotificationsListFooter extends StatelessWidget {
       );
     }
 
-    return const SizedBox(height: CustomerHomeV1Tokens.space8);
+    return const SizedBox(height: EsnaftaVarSpacing.xs);
   }
 }
 
@@ -783,76 +643,15 @@ class _NotificationStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-        child: Container(
-          key: const Key('customer-notifications-status'),
-          width: double.infinity,
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space24),
-          decoration: BoxDecoration(
-            color: CustomerHomeV1Tokens.surface,
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-            border: Border.all(color: CustomerHomeV1Tokens.border),
-            boxShadow: CustomerHomeV1Tokens.softShadow,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 58,
-                height: 58,
-                decoration: const BoxDecoration(
-                  color: CustomerHomeV1Tokens.mint,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 29, color: CustomerHomeV1Tokens.petrol),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 12.5,
-                  height: 1.45,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space20),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: onAction,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: CustomerHomeV1Tokens.petrol,
-                    side: const BorderSide(color: CustomerHomeV1Tokens.petrol),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: CustomerHomeV1Tokens.space12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        CustomerHomeV1Tokens.radius12,
-                      ),
-                    ),
-                  ),
-                  icon: const Icon(Icons.refresh_rounded, size: 19),
-                  label: Text(actionLabel),
-                ),
-              ),
-            ],
-          ),
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: EsnaftaVarStateCard(
+        key: const Key('customer-notifications-status'),
+        icon: icon,
+        title: title,
+        message: description,
+        actionLabel: actionLabel,
+        onAction: onAction,
       ),
     );
   }
@@ -876,26 +675,26 @@ class _NotificationTypePresentation {
       NotificationType.order => const _NotificationTypePresentation(
         icon: Icons.receipt_long_outlined,
         label: 'Alışveriş',
-        accent: CustomerHomeV1Tokens.petrol,
-        background: CustomerHomeV1Tokens.mint,
+        accent: EsnaftaVarColors.primary,
+        background: EsnaftaVarColors.primarySoft,
       ),
       NotificationType.promotion => const _NotificationTypePresentation(
         icon: Icons.local_offer_outlined,
         label: 'Kampanya',
-        accent: CustomerHomeV1Tokens.coral,
-        background: Color(0xFFFFE4DE),
+        accent: EsnaftaVarColors.accent,
+        background: EsnaftaVarColors.accentSoft,
       ),
       NotificationType.chat => const _NotificationTypePresentation(
         icon: Icons.chat_bubble_outline_rounded,
         label: 'Mesaj',
-        accent: Color(0xFF3F6E9C),
-        background: Color(0xFFE6F0F9),
+        accent: EsnaftaVarColors.primary,
+        background: EsnaftaVarColors.primarySoft,
       ),
       NotificationType.system => const _NotificationTypePresentation(
         icon: Icons.info_outline_rounded,
         label: 'Bilgilendirme',
-        accent: Color(0xFFA66A00),
-        background: Color(0xFFFFF0C7),
+        accent: EsnaftaVarColors.warning,
+        background: EsnaftaVarColors.surfaceAlt,
       ),
     };
   }
