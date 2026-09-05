@@ -43,7 +43,56 @@ bu closeout'un dışında kalır.
 
 ## 2. Cart V2 checkpoint
 
-Devam ediyor.
+- **249 PASS, 0 FAIL, 0 SKIP**: `test/widget/cart`, `test/unit/cart`,
+  W43 seller prototype + final goldens, W42 Product Details final goldens,
+  `product_sellers_section_test.dart`, `settings_cart_navigation_test.dart`.
+- 320/390/430 × 100/130% loaded ve uzun ürün/mağaza/adres + 99.999 adet /
+  büyük fiyat testleri. Tutar ve adet gerektiğinde alt satıra geçer; sayı
+  sıkıştırılmaz/kesilmez. Quantity sabit 24 px yerine minimum 24 px genişler.
+- Initial/loading/error/empty 320/390/430 ve 130%; tek ürün, 24 ürün, son
+  ürünün kaldırılması, unavailable/recovery, mutation error sırasında loaded
+  içeriğin korunması, clear confirm/cancel/double-submit ve QR double-submit
+  testleri eklendi. Existing price-change confirmation, QR validation/security,
+  review/Purchases handoff ve cart business testleri değiştirilmeden geçti.
+- `QR kod oluştur` exact assertion'ları korunur. Aynı
+  `_preparePurchaseVerification` → refresh → mevcut QR sheet çağrılır.
+  QR behavior/security/business-rule değişikliği **NO**.
+- Quantity düğmelerinde compact density gerçek hedefi 40 px yapıyordu;
+  standard density ve 48 px kapsayıcıyla 44 px minimum testi geçti.
+  Kapsayıcının border/padding etkisi testle doğrulandı. Dar legacy Cart'ta
+  bulunan 3 px taşma aynı private quantity widget'ında esnek satırla giderildi.
+- Unavailable recovery düğmeleri authoritative theme fontunu artık korur;
+  font yüklenmiş golden'da fallback blok yazı görünümü giderildi.
+- 19 yeni Cart PNG ve bir güncellenen 390 prototype golden. 390 farkı C1
+  dokunma hedefi/quantity satırı kaynaklıdır; kompozisyon değişmedi. Loaded,
+  320/130 QR, büyük tutar, empty ve unavailable PNG'leri açılıp incelendi.
+- Single-shop conflict Cart ekranında üretilmez; mevcut ekleme girişindeki
+  `ProductSellersSection` dialog'udur. W43 testine 320/390/430, 130%, cancel ve
+  exact listing/quantity ile confirm olmak üzere altı kontrol eklendi.
+  `Sepete ekle` terminolojisi aynı kaldı.
+- Yeni conflict testinin bulduğu mevcut Seller Comparison mesafe taşması:
+  `lib/features/shop/presentation/widgets/seller_comparison_offer_card.dart`
+  `_OfferFact` metni dar alanda Flexible ile sarılır. Daha geniş görünüm
+  değişmedi; W43 ve W42 eski golden'ları yeniden üretilmeden geçti.
+
+```text
+SHARED_COMPONENT_CHANGE_REQUIRED: YES
+EXACT_FILES: lib/features/shop/presentation/widgets/seller_comparison_offer_card.dart
+REASON: 320 px / 130% mevcut gerçek mesafe metni 29–31 px taşıyordu.
+CONSUMERS_AND_TESTS: ProductSellersSection visualPrototype → SellerComparisonView;
+  W43 prototype/final golden, product_sellers_section, W42 final Product Details.
+OWNER_BRANCH: astra-ui/w45a-tier-a-prototype-batch-1
+COLLISIONS: NONE (eşzamanlı W45B dalının bu dosyada değişikliği yok)
+```
+
+`lib/core/ui`, theme/token, global navigation ve diğer Final UI runtime
+dosyaları değiştirilmedi. Cart içindeki private quantity/recovery widget'ları
+iki Cart sunumunda ortak kullanılır; ikisi de regresyon kapsamındadır.
+
+![Cart 390](../test/widget/shop/goldens/w45a_r2_cart_loaded_390_scale_100.png)
+![Cart 320 / 130 QR](../test/widget/shop/goldens/w45a_r2_cart_qr_320_scale_130.png)
+![Cart stress](../test/widget/shop/goldens/w45a_r2_cart_stress_320_scale_130.png)
+![Cart empty](../test/widget/shop/goldens/w45a_r2_cart_empty_390_scale_130.png)
 
 ## 3. Nearby / Location checkpoint
 

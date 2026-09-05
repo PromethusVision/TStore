@@ -1137,10 +1137,8 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                   ),
                   style: TextButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.petrol,
-                    textStyle: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    textStyle: Theme.of(context).textTheme.labelMedium
+                        ?.copyWith(fontSize: 10.5, fontWeight: FontWeight.w700),
                   ),
                 ),
                 TextButton.icon(
@@ -1149,10 +1147,8 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                   label: const Text('Sepetten kaldır'),
                   style: TextButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.coral,
-                    textStyle: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    textStyle: Theme.of(context).textTheme.labelMedium
+                        ?.copyWith(fontSize: 10.5, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -1181,8 +1177,10 @@ class _CartV2QuantityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return OverflowBar(
+      alignment: MainAxisAlignment.spaceBetween,
+      overflowAlignment: OverflowBarAlignment.end,
+      overflowSpacing: EsnaftaVarSpacing.xxs,
       children: [
         const Text(
           'Adet',
@@ -1215,7 +1213,7 @@ class _CartV2QuantityRow extends StatelessWidget {
           )
         else
           Container(
-            height: 44,
+            height: EsnaftaVarTouchTargets.preferred,
             decoration: BoxDecoration(
               color: CustomerHomeV1Tokens.cream,
               borderRadius: BorderRadius.circular(
@@ -1228,7 +1226,7 @@ class _CartV2QuantityRow extends StatelessWidget {
               children: [
                 IconButton(
                   tooltip: 'Azalt',
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity.standard,
                   constraints: const BoxConstraints.tightFor(
                     width: 44,
                     height: 44,
@@ -1239,8 +1237,8 @@ class _CartV2QuantityRow extends StatelessWidget {
                       : onDecrement,
                   icon: const Icon(Icons.remove, size: 17),
                 ),
-                SizedBox(
-                  width: 24,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 24),
                   child: Text(
                     item.quantity.toString(),
                     textAlign: TextAlign.center,
@@ -1253,7 +1251,7 @@ class _CartV2QuantityRow extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: 'Artır',
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity.standard,
                   constraints: const BoxConstraints.tightFor(
                     width: 44,
                     height: 44,

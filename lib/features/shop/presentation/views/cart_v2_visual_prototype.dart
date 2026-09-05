@@ -27,7 +27,14 @@ class _CartPrototypeHeader extends StatelessWidget {
                 letterSpacing: 0.4,
               ),
             ),
-            Text('Sepet', style: Theme.of(context).textTheme.titleLarge),
+            Semantics(
+              container: true,
+              header: true,
+              child: Text(
+                'Sepet',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
           ],
         ),
       ),
@@ -129,9 +136,11 @@ Widget _buildCartLoadedPrototype(
         ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.xs),
-        child: Row(
+        child: OverflowBar(
+          alignment: MainAxisAlignment.spaceBetween,
+          overflowSpacing: EsnaftaVarSpacing.xxs,
           children: [
-            Expanded(child: Text('Ürün tutarı', style: theme.titleMedium)),
+            Text('Ürün tutarı', style: theme.titleMedium),
             Text(
               _prototypeCartPrice(cart.totalAmount),
               style: theme.titleLarge,
@@ -295,25 +304,28 @@ class _CartPrototypeItem extends StatelessWidget {
             ],
           ),
           const SizedBox(height: EsnaftaVarSpacing.xs),
-          Row(
+          OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            spacing: EsnaftaVarSpacing.xs,
+            overflowSpacing: EsnaftaVarSpacing.xs,
             children: [
-              Expanded(
-                child: Text(
-                  _prototypeCartPrice(item.totalPrice),
-                  style: theme.titleMedium?.copyWith(
-                    color: EsnaftaVarColors.primary,
-                  ),
+              Text(
+                _prototypeCartPrice(item.totalPrice),
+                style: theme.titleMedium?.copyWith(
+                  color: EsnaftaVarColors.primary,
                 ),
               ),
-              SizedBox(
-                width: 150,
-                child: _CartV2QuantityRow(
-                  item: item,
-                  isEnabled: enabled,
-                  isUpdating:
-                      pending == _CartItemPendingAction.updatingQuantity,
-                  onIncrement: increment,
-                  onDecrement: decrement,
+              IntrinsicWidth(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 150),
+                  child: _CartV2QuantityRow(
+                    item: item,
+                    isEnabled: enabled,
+                    isUpdating:
+                        pending == _CartItemPendingAction.updatingQuantity,
+                    onIncrement: increment,
+                    onDecrement: decrement,
+                  ),
                 ),
               ),
             ],

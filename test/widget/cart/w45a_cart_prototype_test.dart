@@ -82,13 +82,17 @@ void main() {
       poppins.addFont(rootBundle.load('assets/fonts/Poppins-$weight.ttf'));
     }
     final artifacts = File(Platform.resolvedExecutable).parent.parent.parent;
+    final iconsax = FontLoader('packages/iconsax_flutter/FlutterIconsax')
+      ..addFont(
+        rootBundle.load('packages/iconsax_flutter/fonts/FlutterIconsax.ttf'),
+      );
     final icons = FontLoader('MaterialIcons')
       ..addFont(
         File(
           '${artifacts.path}/material_fonts/MaterialIcons-Regular.otf',
         ).readAsBytes().then(ByteData.sublistView),
       );
-    await Future.wait([poppins.load(), icons.load()]);
+    await Future.wait([poppins.load(), icons.load(), iconsax.load()]);
   });
   setUp(() async {
     await sl.reset();
@@ -115,8 +119,13 @@ void main() {
   });
   tearDown(() async => sl.reset());
 
-  Future<void> pump(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(390, 844);
+  Future<void> pump(
+    WidgetTester tester, {
+    double width = 390,
+    double textScale = 1,
+    bool settle = true,
+  }) async {
+    tester.view.physicalSize = Size(width, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -126,6 +135,12 @@ void main() {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: EsnaftaVarTheme.light,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child!,
+          ),
           home: const RepaintBoundary(
             key: Key('evidence'),
             child: CartV2View(visualPrototype: true),
@@ -133,7 +148,11 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump(const Duration(milliseconds: 200));
+    }
     final context = tester.element(find.byKey(const Key('evidence')));
     await tester.runAsync(
       () => Future.wait([
@@ -141,7 +160,7 @@ void main() {
         precacheImage(const AssetImage(_slippersImage), context),
       ]),
     );
-    await tester.pumpAndSettle();
+    if (settle) await tester.pumpAndSettle();
   }
 
   testWidgets('390 px physical preparation owner evidence', (tester) async {
@@ -235,5 +254,278 @@ void main() {
   });
   test('presentation stays default off', () {
     expect(const CartV2View().visualPrototype, isFalse);
+  });
+
+  Future<void> evidence(WidgetTester tester, String name) => expectLater(
+    find.byKey(const Key('evidence')),
+    matchesGoldenFile('../shop/goldens/w45a_r2_cart_$name.png'),
+  );
+
+  for (final width in [320.0, 390.0, 430.0]) {
+    for (final scale in [1.0, 1.3]) {
+      testWidgets('loaded ${width.toInt()} scale $scale with exact QR CTA', (
+        tester,
+      ) async {
+        await pump(tester, width: width, textScale: scale);
+        expect(tester.takeException(), isNull);
+        await evidence(
+          tester,
+          'loaded_${width.toInt()}_scale_${(scale * 100).round()}',
+        );
+        final qrButton = find.byKey(const Key('customer-cart-verify-button'));
+        await tester.scrollUntilVisible(
+          qrButton.hitTestable(),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.descendant(of: qrButton, matching: find.text('QR kod oluştur')),
+          findsOneWidget,
+        );
+        expect(tester.widget<OutlinedButton>(qrButton).onPressed, isNotNull);
+        expect(find.text('Mağazada göster'), findsNothing);
+        expect(tester.takeException(), isNull);
+        if (width == 320 && scale == 1.3)
+          await evidence(tester, 'qr_320_scale_130');
+      });
+
+      testWidgets(
+        'large quantity, price and long product ${width.toInt()} scale $scale',
+        (tester) async {
+          final item = _shirt.copyWith(
+            quantity: 99999,
+            shopProduct: _shirt.shopProduct!.copyWith(
+              price: 9999999.99,
+              shop: _shop.copyWith(
+                name: 'Mahalle Giyim ve Ev Tekstili Uzun Mağaza Adı',
+                address:
+                    'Örnek Mahallesi Uzun Çarşı Caddesi Deneme İş Merkezi, Kadıköy / İstanbul',
+              ),
+              product: _shirt.shopProduct!.product!.copyWith(
+                name:
+                    'Uzun ürün adı: günlük pamuklu tişört ve mevsimlik giyim aksesuar seti',
+              ),
+            ),
+          );
+          when(() => cart.state).thenReturn(CartV2Loaded([item]));
+          await pump(tester, width: width, textScale: scale);
+          expect(find.text('99999'), findsOneWidget);
+          expect(find.text('999.989.999.000,01 TL'), findsWidgets);
+          final quantityText = tester.renderObject<RenderBox>(
+            find.text('99999'),
+          );
+          expect(quantityText.size.width, greaterThan(24));
+          expect(tester.takeException(), isNull);
+          await evidence(
+            tester,
+            'stress_${width.toInt()}_scale_${(scale * 100).round()}',
+          );
+          await tester.scrollUntilVisible(
+            find.text('QR kod oluştur').hitTestable(),
+            200,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
+  for (final scenario in ['empty', 'initial', 'loading', 'error']) {
+    for (final width in [320.0, 390.0, 430.0]) {
+      testWidgets('$scenario ${width.toInt()} scale 1.3', (tester) async {
+        final CartV2State state = switch (scenario) {
+          'empty' => const CartV2Loaded([]),
+          'initial' => CartV2Initial(),
+          'loading' => CartV2Loading(),
+          _ => const CartV2Error('Bağlantı kurulamadı. Lütfen tekrar dene.'),
+        };
+        when(() => cart.state).thenReturn(state);
+        await pump(
+          tester,
+          width: width,
+          textScale: 1.3,
+          settle: scenario != 'initial' && scenario != 'loading',
+        );
+        expect(find.text('QR kod oluştur'), findsNothing);
+        expect(tester.takeException(), isNull);
+        if (width == 390) await evidence(tester, '${scenario}_390_scale_130');
+        if (scenario == 'empty') {
+          expect(find.text('Henüz mağaza sepetinde ürün yok'), findsOneWidget);
+        }
+        if (scenario == 'error') {
+          await tester.tap(find.byKey(const Key('customer-cart-retry-button')));
+          await tester.pump();
+          verify(() => cart.getActiveCartItems()).called(2);
+        }
+      });
+    }
+  }
+
+  testWidgets('one item cannot decrement below one', (tester) async {
+    when(() => cart.state).thenReturn(const CartV2Loaded([_slippers]));
+    await pump(tester);
+    expect(find.text('1 ürün · 1 adet'), findsOneWidget);
+    final decrease = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.remove),
+    );
+    expect(decrease.onPressed, isNull);
+    await evidence(tester, 'one_item_390');
+  });
+
+  testWidgets('many items can reach exact last remove and QR', (tester) async {
+    final items = List.generate(
+      24,
+      (index) => _shirt.copyWith(id: 'fixture-item-$index'),
+    );
+    when(() => cart.state).thenReturn(CartV2Loaded(items));
+    await pump(tester, width: 320, textScale: 1.3);
+    final lastRemove = find.byKey(
+      const Key('customer-cart-item-fixture-item-23-remove'),
+    );
+    await tester.scrollUntilVisible(
+      lastRemove.hitTestable(),
+      400,
+      maxScrolls: 40,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(lastRemove);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Kaldır'));
+    await tester.pumpAndSettle();
+    verify(() => cart.removeItem('fixture-item-23')).called(1);
+    await tester.scrollUntilVisible(
+      find.text('QR kod oluştur').hitTestable(),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('QR kod oluştur').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('clear confirm empties cart and prevents double clear', (
+    tester,
+  ) async {
+    final states = StreamController<CartV2State>();
+    whenListen(cart, states.stream, initialState: const CartV2Loaded([_shirt]));
+    final pending = Completer<void>();
+    when(() => cart.cancelActiveCart()).thenAnswer((_) => pending.future);
+    await pump(tester, width: 320, textScale: 1.3);
+    final clear = find.byKey(const Key('cart-prototype-clear'));
+    await tester.scrollUntilVisible(
+      clear.hitTestable(),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(clear);
+    await tester.pumpAndSettle();
+    final confirm = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Sepeti boşalt').last,
+    );
+    confirm.onPressed!();
+    confirm.onPressed!();
+    await tester.pumpAndSettle();
+    verify(() => cart.cancelActiveCart()).called(1);
+    expect(find.text('Boşaltılıyor…'), findsOneWidget);
+    states.add(const CartV2Loaded([]));
+    pending.complete();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('customer-cart-empty-state')), findsOneWidget);
+    expect(find.text('QR kod oluştur'), findsNothing);
+    await states.close();
+  });
+
+  testWidgets(
+    'QR double tap keeps one refresh and restores exact CTA on failure',
+    (tester) async {
+      await pump(tester);
+      final pending = Completer<void>();
+      when(() => cart.getActiveCartItems()).thenAnswer((_) => pending.future);
+      final qrFinder = find.byKey(const Key('customer-cart-verify-button'));
+      await tester.scrollUntilVisible(
+        qrFinder.hitTestable(),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      final action = tester.widget<OutlinedButton>(qrFinder).onPressed!;
+      action();
+      action();
+      await tester.pump();
+      expect(find.text('Hazırlanıyor…'), findsOneWidget);
+      expect(tester.widget<OutlinedButton>(qrFinder).onPressed, isNull);
+      verify(() => cart.getActiveCartItems()).called(2);
+      when(
+        () => cart.state,
+      ).thenReturn(const CartV2Error('Bağlantı kurulamadı'));
+      pending.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('QR kod oluştur'), findsOneWidget);
+      verifyNever(() => qr.createQrSession(any()));
+    },
+  );
+
+  testWidgets('mutation error keeps loaded items visible', (tester) async {
+    final states = StreamController<CartV2State>();
+    whenListen(cart, states.stream, initialState: const CartV2Loaded([_shirt]));
+    await pump(tester);
+    states.add(const CartV2Error('Bağlantı kurulamadı'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text(_shirt.shopProduct!.product!.name), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byKey(const Key('customer-cart-error-state')), findsNothing);
+    await states.close();
+  });
+
+  testWidgets('unavailable item preserves refresh, removal and QR block', (
+    tester,
+  ) async {
+    final unavailable = _shirt.copyWith(
+      shopProduct: _shirt.shopProduct!.copyWith(
+        isAvailable: false,
+        product: _shirt.shopProduct!.product!.copyWith(images: const []),
+      ),
+    );
+    when(() => cart.state).thenReturn(CartV2Loaded([unavailable]));
+    await pump(tester, width: 320, textScale: 1.3);
+    expect(
+      find.text('Bu ürün artık bu mağazada satışta değil.'),
+      findsOneWidget,
+    );
+    expect(find.byTooltip('Artır'), findsOneWidget);
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.add))
+          .onPressed,
+      isNull,
+    );
+    expect(tester.takeException(), isNull);
+    await evidence(tester, 'unavailable_320_scale_130');
+    await tester.scrollUntilVisible(
+      find.text('QR kod oluştur').hitTestable(),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('QR kod oluştur'));
+    await tester.pumpAndSettle();
+    verifyNever(() => qr.createQrSession(any()));
+    expect(find.textContaining('Sepetteki ürünlerden biri'), findsOneWidget);
+  });
+
+  testWidgets('44 px targets and accessible labels remain usable', (
+    tester,
+  ) async {
+    await pump(tester, width: 320, textScale: 1.3);
+    final semantics = tester.ensureSemantics();
+    await tester.pump();
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+    semantics.dispose();
   });
 }
