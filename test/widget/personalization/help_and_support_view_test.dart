@@ -57,9 +57,8 @@ void main() {
     await tester.pumpWidget(buildSubject());
 
     const answer =
-        'Sepetindeki ürünleri mağazada doğrulatmak için “Alışverişi '
-        'Doğrula” ekranındaki QR kodu kullanabilirsin. Bu QR kod bir ödeme '
-        'yöntemi değildir.';
+        'Sepetindeki ürünleri mağazada doğrulatmak için “QR kod oluştur” '
+        'düğmesine dokunabilirsin. Oluşan QR kod bir ödeme yöntemi değildir.';
 
     await tester.scrollUntilVisible(
       find.text('Sepet ve QR ne işe yarar?'),
@@ -76,6 +75,29 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(answer), findsNothing);
   });
+
+  testWidgets(
+    'iade yardımı henüz desteklenmeyen talep oluşturmayı vaat etmez',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.scrollUntilVisible(
+        find.text('İade taleplerime nereden ulaşırım?'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('İade taleplerime nereden ulaşırım?'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('oluşturma henüz kullanıma açık değil.'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('“İade Talebi Oluştur” sekmelerine'),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('hızlı yardım seçenekleri doğru işlemleri çağırır', (
     tester,

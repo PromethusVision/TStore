@@ -98,7 +98,7 @@ void main() {
     );
   });
 
-  testWidgets('boş ürün görseli mevcut güvenli yerel görseli kullanır', (
+  testWidgets('boş ürün görseli başka bir ürün fotoğrafı göstermez', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -106,7 +106,9 @@ void main() {
     );
 
     expect(find.byType(CachedNetworkImage), findsNothing);
-    expect(find.byType(Image), findsOneWidget);
+    expect(find.byType(Image), findsNothing);
+    expect(find.byType(ProductImageFallback), findsOneWidget);
+    expect(find.byIcon(Icons.inventory_2_outlined), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

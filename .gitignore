@@ -3,6 +3,12 @@
 *.env
 !.env.example
 
+# Local Android release inputs; tracked *.example.json files remain safe templates.
+/tool/production_release_config.json
+/tool/production_mobile_release_config.json
+**/*.keystore
+**/*.jks
+
 # Miscellaneous
 *.class
 *.log
