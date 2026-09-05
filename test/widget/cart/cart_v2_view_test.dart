@@ -228,6 +228,9 @@ void main() {
         if (action == 'refresh') {
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 400));
+          // The refreshed state creates the route on the previous frame.
+          // Advance its entrance transition before capturing the dialog.
+          await tester.pump(const Duration(milliseconds: 400));
         } else {
           await tester.pumpAndSettle();
         }
