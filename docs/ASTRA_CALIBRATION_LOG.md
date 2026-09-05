@@ -1,6 +1,6 @@
 # Astra Calibration Log
 
-Durum: **WAVE 2B RECORDED — ACCOUNT IMPLEMENTATION AND INTEGRATION ACCEPTED, 2026-09-05**
+Durum: **W48 RECORDED — UTILITY IMPLEMENTATION AND INTEGRATION ACCEPTED, 2026-09-05**
 Kalibrasyon başlangıcı: **2026-09-05 (Europe/Istanbul)**
 Protokol: [Astra Execution Protocol](ASTRA_EXECUTION_PROTOCOL.md)
 
@@ -302,6 +302,83 @@ prepares **24 h / 6 units** of customer saved-products/activity presentation.
 The available scope is smaller; this does not recast the three GREEN outcomes
 as capacity failures. Design Owner stays near three Tier A prototypes. Future
 package implementation is not started by this recommendation.
+
+
+### W48 — Fourth independent implementation GREEN point (2026-09-05)
+
+Source **257c5aba9a40e6f461cd10ed98a7690f84769e75**, branch
+`astra-ui/w48-remaining-customer-utility-engagement-final-ui`, exact base
+**cd1d566c36a669fc9b6cabeaee9a114979ae7fb7**.
+Evidence: [worker result](UI_W48_TASK_RESULT.md),
+[scope ledger](UI_W48_SCOPE_LEDGER.md), [shared audit](UI_W48_SHARED_CONSUMER_AUDIT.md).
+
+- The explicit W48 task expanded the earlier 24 h candidate to all 18 unreserved
+  historical candidates. Four stale location-window reachability labels were
+  corrected with caller evidence; they were not converted or counted DONE.
+- **14/14 active scoped units complete**, four screens + eight modals/actions +
+  two shared families; Tier **0/4/10**, nominal historical active scope **43 h**
+  (50 h initial candidates minus 7 h inactive code). No time-based scope cut.
+- **36 files**, **102 new tests**, **15 visual proofs**, **seven checkpoints**:
+  3c3c507, 4e2c73c, 6047dfb, 5d72dc8, 2466b0c, 864c6a5, 257c5ab.
+- Worker final **1943 PASS / 0 FAIL / 6 existing conditional skips**, analyzer
+  PASS. Earlier 1940/3-fail Cart selector attempt and subsequent fixes remain
+  in the worker evidence; behavior assertions and old main goldens were retained.
+- Worker elapsed is **REPORTED**: **11:58:26–13:15:07 UTC = 76m41s**, through its
+  final full gate; final documentation/commit/push excluded. Full runner 74.329 s.
+  No elapsed value is inferred from commit timestamps or used as a success limit.
+- Figma **0 calls**, two historical LIGHT and twelve NOT_REQUIRED units.
+  Three declared shared files (loader, theme, typed snackbar helper) are the
+  worker's assigned families; no auth architecture, backend, taxonomy, QR rule or
+  eligibility change. W49 destinations and nested QR completion/rating remain
+  pending. No Production access or remote Development write.
+- **GREEN / SAME_SIZE**, complete active scope, no critical regression, final
+  scope drift or reported substantive owner correction. This is the fourth local
+  implementation point after Discovery 17 h, Auth/Startup 30 h and Account 44 h.
+  It is not a normalized model benchmark or a linear throughput forecast.
+
+The current task supplies later Product Owner approval of W3B 09–12 at
+**733b444445564a5d0efe263efdb5555ade7cf2de**. The fixture reference index predates
+approval. Three small integration presentation adjustments reconcile that later
+contract; they do not rewrite the worker's original scope/timing or fabricate an
+earlier owner review. W3B fixture implementations are not merged into runtime.
+
+### W48 — Integration acceptance (Wave 3A)
+
+Main re-anchored to **cd1d566**, full W48 source verified. Pre-merge review
+**f50f64d**, no-ff merge **499f0e2**, visual/runtime checkpoint **3436174**.
+Three presentation changes: Wishlist contain image/primary favorite, real
+Notifications destination arrow, and filled Coupons tabs. Recently Viewed is
+an acceptable equivalent. No business method, shared primitive, W49 class,
+prototype import or remote operation added by Integration.
+
+**14/14 active units accepted; four inactive classifications verified; all
+four approved visual contracts PASS.** Eight integration tests and four new
+390px/100% real-runtime proofs were added; four affected W48 PNGs were knowingly
+updated, while **198 main PNGs** and **11 other W48 PNGs** remain exact.
+
+Targeted **213 PASS**, adjacent/shared **1605 PASS**; analyzer clean; one final
+full suite **1951 PASS / 0 FAIL / 6 unchanged conditional skips**,
+**168/168 test files**. Count: 1841 main + 102 worker + 8 integration = 1951.
+Six test string-style analyzer notices were fixed before starting the full gate;
+no test or assertion was weakened. Full runner **70.671 s**.
+
+Observed Integration start **2026-09-05 13:30:15 UTC**, full-gate audit
+**13:58:22 UTC**: **28m07s**, excluding final docs and Git publication.
+This is integration acceptance cost, not a fifth independent implementation sample.
+Final delivery details: [W48 integration result](ASTRA_W48_INTEGRATION_RESULT.md).
+
+**GREEN / SAME_SIZE** for a similarly bounded utility integration. Critical
+regression, major drift, unresolved semantic collision, required additional owner
+decision and Integration shared-primitive edit: **0**. Source shared changes are
+declared and caller-tested. The existing W49 task must revalidate them later.
+
+[Refreshed inventory](UI_W48_POST_INTEGRATION_INVENTORY.md): **8 pending units =
+5 screens + 3 modals + 0 shared families**, Tier **3/4/1**, Figma **3/2/3**,
+all reserved to W49 Post-Purchase/Trust/Messaging, including its already recorded
+nested QR completion/rating dependency. **ONLY_W49_MAJOR_CUSTOMER_UI_REMAINS: YES**.
+No new unreserved Customer utility package is recommended; later W49 integration
+is the next bounded gate. Its work was neither merged nor marked done here.
+AGENTS.md and execution protocol remain unchanged.
 
 ## 4. Kayıt ve değerlendirme kuralları
 

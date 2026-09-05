@@ -6,7 +6,7 @@ Source: `5c2dc3b6dec6721a59ffe81aa863e89c3a0eaff3`.
 No-ff merge: `5ef2d5e8023790fadc5d3c5b480c645baacc81f0`.
 Acceptance: [Wave 2B result](ASTRA_WAVE2B_ACCOUNT_HUB_INTEGRATION_RESULT.md).
 
-This is the current ledger. [W45A](UI_W45A_POST_TIER_A_INTEGRATION_INVENTORY.md)
+This is the historical Wave 2B ledger. Current truth is [W48 post-integration inventory](UI_W48_POST_INTEGRATION_INVENTORY.md), including verified inactive MD-01–04 corrections. [W45A](UI_W45A_POST_TIER_A_INTEGRATION_INVENTORY.md)
 remains the historical pre-integration snapshot; W44 IDs and original Tier/Figma
 classifications are retained. Only reachable non-Final rows count as remaining.
 Goldens, viewport/state variants and unbound views do not create extra units.

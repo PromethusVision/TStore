@@ -1,9 +1,9 @@
 # Wave 44A — 60-Day Customer UI Acceleration Plan
 
-Durum: **WAVE 2B CALIBRATION REVISION — PLANNING ONLY, 2026-09-05**
+Durum: **W48 MILESTONE REVISION — PLANNING ONLY, 2026-09-05**
 Base: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
 
-Aşağıdaki **1–10. bölümler tarihsel W44A, Bölüm 11 tarihsel W45D planlamasıdır**. Güncel baseline, kapsam sahipliği ve korunmuş üç senaryo Bölüm 12'dedir: **26 kalan birim / 117 nominal h**. Eski saat/gün modeli güncel ölçülmüş forecast değildir.
+Aşağıdaki **1–10. bölümler tarihsel W44A, Bölüm 11 tarihsel W45D planlamasıdır**. Güncel milestone ve sahiplik Bölüm 13'tedir: **8 kalan birim / 67 nominal h**, tamamı W49. Bölüm 12'nin üç senaryosu ve dış kapı payları korunur; kalan iş sayıları tarihseldir. Eski saat/gün modeli güncel ölçülmüş forecast değildir.
 
 ## 1. Yönetici özeti — tarihsel W44A
 
@@ -471,3 +471,36 @@ Day 30 physical-transaction/signed-candidate readiness and Day 45–60 release
 defects against actual gate evidence. Do not cut auth, eligibility, data integrity,
 hardware or truthful-data checks to fit a date. After each future integration,
 recompute remaining IDs and package ownership before proposing scope growth.
+
+## 13. W48 integrated milestone — only W49 major Customer UI remains
+
+Revision **2026-09-05**. This section supersedes Section 12's remaining counts and
+next-work proposals. W48's explicit later assignment covered all unreserved
+utility/engagement candidates, not only the earlier 24 h recommendation.
+
+The [accepted ledger](UI_W48_POST_INTEGRATION_INVENTORY.md) now has **8 pending
+units = 5 screens + 3 modals + 0 shared-state families**, Tier **3/4/1**, Figma
+**3/2/3**, historical nominal **67 h**. Four legacy location windows are confirmed
+inactive and not counted complete. W48 closes all 14 actual unreserved units.
+There is no further unreserved Agent 2 Customer utility package to inflate.
+
+**ONLY_W49_MAJOR_CUSTOMER_UI_REMAINS: YES.** W49 Post-Purchase, Shop Ratings,
+Product Reviews and Messaging owns those eight units and the already recorded
+nested QR completion/rating dependency. The user has approved all 12 W3B visual
+surfaces; W48 09–12 have now passed runtime reconciliation. W49 remains running,
+unmerged and pending real-runtime/combined acceptance. Its later integration may
+be the final major Customer V1 UI gate; this document neither waits for nor starts
+another W49 task.
+
+The declared W48 shared loader/theme/snackbar changes have passed combined
+regression. W49 integration must review its source against this new main and
+recheck shared consumers, QR completion/rating and typed Notifications targets.
+Prototype approval alone cannot mark those destination implementations done.
+
+W48 worker timing **76m41s through its final full gate** is reported in source;
+it is a fourth local implementation GREEN point, not a minutes-per-screen rate.
+The conservative/expected/aggressive calendar windows and external buffers in
+Section 12 remain planning assumptions. No new evidence here closes Merchant
+minimum, physical QR, signing, legal/support or separately authorized Production
+rollout. Their longest unresolved dependency still controls commercial readiness.
+No linear extrapolation or shortened external gate follows from the UI milestone.

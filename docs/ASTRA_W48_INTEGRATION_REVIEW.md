@@ -1,6 +1,6 @@
 # W48 integration — semantic and approved visual contract review
 
-Status: **PRE-MERGE SEMANTIC REVIEW PASS — 2026-09-05**.
+Status: **FINAL SEMANTIC AND VISUAL ACCEPTANCE PASS — 2026-09-05**.
 Current main/source base: `cd1d566c36a669fc9b6cabeaee9a114979ae7fb7`.
 W48: `origin/astra-ui/w48-remaining-customer-utility-engagement-final-ui`,
 full verified source **257c5aba9a40e6f461cd10ed98a7690f84769e75**.
@@ -126,3 +126,61 @@ pending, update calibration and coordination and assess the only-W49 milestone.
 Record final counts, fixes, proof review and normal branch/main publication after
 all gates pass. No Figma, backend, remote Development, Production, taxonomy,
 auth architecture, QR rule, eligibility, Ads or Reward economics operation.
+
+## Final visual and semantic acceptance — PASS
+
+Pre-merge review **f50f64d08c1c344c88fb5aabfa02883a109708b7** precedes normal
+no-ff merge **499f0e2b8352e2bd4846b23c1cefd6ee2012a556**.
+Integration presentation/test checkpoint:
+**34361747055c71b3593d6d6516a82707b5966abb**. Text conflicts **0**.
+
+| Approved reference | Initial review | Final acceptance | Real runtime proof |
+|---|---|---|---|
+| 09 Wishlist | RECONCILIATION_REQUIRED | **ACCEPTABLE_EQUIVALENT — resolved / PASS** | [390/100](../test/widget/w48/goldens/w48_integration_09_wishlist_390_100.png) |
+| 10 Recently Viewed | ACCEPTABLE_EQUIVALENT | **ACCEPTABLE_EQUIVALENT / PASS**, runtime unchanged by Integration | [390/100](../test/widget/w48/goldens/w48_integration_10_recent_390_100.png) |
+| 11 Notifications | RECONCILIATION_REQUIRED | **ACCEPTABLE_EQUIVALENT — resolved / PASS** | [390/100](../test/widget/w48/goldens/w48_integration_11_notifications_390_100.png) |
+| 12 Coupons | RECONCILIATION_REQUIRED | **ACCEPTABLE_EQUIVALENT — resolved / PASS** | [390/100](../test/widget/w48/goldens/w48_integration_12_coupons_390_100.png) |
+
+The accepted equivalents preserve approved composition and real state contracts,
+not fixture values or pixel-identical text lengths. Wishlist has two columns at
+390/100, contain images and an independent primary favorite control; its existing
+narrow/130% single-column adaptation and real discount/fallback behavior remain.
+Recently Viewed retains horizontal rows and existing inspect/favorite/history
+actions. Notifications keeps its explicit unread badge/type label/processing UI
+as a truthful equivalent and adds the approved visible arrow solely from the
+existing destination predicate. Read-only system notifications gain no target.
+Coupons uses the approved filled segmented treatment and keeps the additional
+real-runtime notice that usage is not open. No business capability was added.
+
+Eight new tests check real runtime composition, independent removal/navigation,
+normal-text evidence and destination visibility for unread/read system,
+suppressed order and custom target cases. The actual destination builder remains
+exactly main's implementation. All existing tests/assertions are retained.
+
+Only three runtime files differ from final W48 source: wishlist_view.dart,
+customer_notifications_view.dart and customer_coupons_view.dart. Four W48 PNGs
+were intentionally updated (two Wishlist, Notifications, Coupons); four new
+real-runtime proofs added. The other **11 source PNGs** and **198 main PNGs**
+remain exact. No source W3B fixture file/import or W49 branch was merged.
+
+Final gates: **213 targeted PASS**, **1605 adjacent/shared PASS**, analyzer clean,
+one full suite **1951 PASS / 0 FAIL / 6 unchanged opt-in skips**. Exact discovered
+test paths match all **168 files**; 1841 main + 102 source + 8 integration explains
+the full count. Initial new-test string-style notices were fixed before full
+suite; no runtime failure, assertion weakening or skip was used to finish.
+
+The four location reclassifications remain **INACTIVE_CONFIRMED**. No unresolved
+semantic collision or additional owner decision remains. W48's three declared
+shared files are accepted with caller regression; Integration adds no shared
+primitive change. Later W49 integration must review its own diff against these
+accepted shared defaults and the unchanged QR completion/rating boundary.
+
+[Current inventory](UI_W48_POST_INTEGRATION_INVENTORY.md) has **8 remaining =
+5 screens + 3 modals + 0 families**, Tier **3/4/1**, Figma **3/2/3**, all W49.
+The nested QR completion/rating dependency remains recorded under that domain;
+prototype approval is not counted as W49 completion.
+
+Diff and added-line secret/PII scan **PASS**, no credential/email/phone finding;
+synthetic fixtures and source media were reviewed locally. No Figma, Production,
+remote Development, backend, taxonomy, auth architecture, QR rule or eligibility
+change. Full result and Git publication: [W48 integration result](ASTRA_W48_INTEGRATION_RESULT.md).

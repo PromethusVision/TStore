@@ -1,6 +1,43 @@
 # EsnaftaVar Parallel Work Map
 
-## Güncel durum — Astra Wave 2B, 2026-09-05
+## Güncel durum — W48 / Astra Wave 3A integration, 2026-09-05
+
+- **W48 Customer Utility & Engagement: DONE / MAIN — 14/14 aktif birim.**
+  Favoriler, Son Görüntülenenler, Bildirimler, Kuponlar ve mevcut ilişkili
+  eylemler/Cart-QR durumları/ortak loading-feedback aileleri tamamlandı.
+  Secondary Library ayrı yeni ekran değildir.
+- Onaylı W3B 09–12 görsel sözleşmesi gerçek runtime ile karşılaştırıldı.
+  Favoriler görsel sığdırma, Bildirimler hedef oku ve Kuponlar dolu sekmeleri
+  küçük sunum değişiklikleriyle uzlaştırıldı; Son Görüntülenenler kabul edilebilir
+  eşdeğer. Fixture prototype kodu runtime'a alınmadı.
+- MD-01–04 eski konum pencereleri **INACTIVE_CONFIRMED**: aktif çağırıcı yok.
+  Düzeltme korunur; bu dört satır DONE sayılmaz veya yeniden etkinleştirilmez.
+- Güncel [envanter](UI_W48_POST_INTEGRATION_INVENTORY.md):
+  **8 kalan birim = 5 ekran + 3 modal + 0 durum ailesi**;
+  Tier A/B/C **3/4/1**, Figma Heavy/Light/None **3/2/3**, tarihsel **67 nominal h**.
+  Gerçek aktif toplam 56; bunların 48'i Final UI.
+- **Yalnız çalışan W49'un Post-Purchase / Shop Ratings / Product Reviews /
+  Messaging alanı kaldı.** FS-30/31/32/33/34 ve MD-05/17/18 hâlâ PENDING.
+  QR'ın mevcut tamamlanma/puanlama alt ağacı da W49 kabul bağımlılığıdır;
+  yeni birim değildir ve W48 tarafından tamamlandı iddiası yoktur.
+- W49 beklenmedi veya merge edilmedi. Onaylı prototipler runtime kabulü sayılmaz.
+  Sonraki W49 integration, ana Customer V1 UI kapanış kapısı olabilir; ortak
+  tema, QR ve Notifications hedef sözleşmeleri o birleşimde yeniden doğrulanır.
+- Birleşik kapı **1951 PASS / 0 FAIL / 6 mevcut koşullu skip**, analyzer temiz;
+  168 test dosyası ve 198 eski main görsel kanıtı korunur.
+  [Entegrasyon sonucu](ASTRA_W48_INTEGRATION_RESULT.md).
+- W48 implementation **GREEN**, bildirilen süre **76dk41sn** (son full gate'e kadar).
+  Source'un üç ortak loader/theme/snackbar dosyası açıkça incelendi; Integration
+  ek ortak primitive değişikliği yapmadı. Çözülmemiş çakışma yok.
+- Figma 0; backend/taxonomy/auth mimarisi/QR kuralları/eligibility değişmedi.
+  Production erişimi ve uzak Development yazımı yok. W40A/Category korunur.
+  AGENTS.md/protokol değişmedi. Yeni Agent 2 Customer utility paketi kalmadı.
+- Merchant minimumu, fiziksel QR, signing, legal/support ve ayrı yetkili
+  Production kapıları UI kabulünden ayrı kalır; pilot hazır ilan edilmedi.
+  Aşağıdaki eski dalga kayıtları tarihsel bağlamlarında korunmuştur.
+
+
+## Tarihsel durum — Astra Wave 2B, 2026-09-05
 
 - **Account Hub, Profile, Privacy, Saved Locations ve Help: DONE / MAIN.**
   Mevcut Profile Edit, hesap silme, konum ekleme ve konum silme yüzeyleriyle
