@@ -48,7 +48,11 @@ Widget _buildShopVisualPrototype(
                           letterSpacing: 0.5,
                         ),
                       ),
-                      Text('Mağazayı keşfet', style: theme.titleLarge),
+                      Semantics(
+                        container: true,
+                        header: true,
+                        child: Text('Mağazayı keşfet', style: theme.titleLarge),
+                      ),
                     ],
                   ),
                 ),
@@ -220,6 +224,7 @@ Widget _buildShopVisualPrototype(
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const EsnaftaVarStateCard(
+                    key: Key('shop-profile-products-loading'),
                     icon: Icons.inventory_2_outlined,
                     title: 'Ürünler hazırlanıyor',
                     message: 'Mağazanın ürünleri yükleniyor.',
@@ -231,6 +236,11 @@ Widget _buildShopVisualPrototype(
                 );
                 if (snapshot.hasError || products == null || products.isEmpty) {
                   return EsnaftaVarStateCard(
+                    key: Key(
+                      products?.isEmpty == true
+                          ? 'shop-profile-products-empty'
+                          : 'shop-profile-products-error',
+                    ),
                     icon: Icons.inventory_2_outlined,
                     title: products?.isEmpty == true
                         ? 'Henüz ürün yok'
@@ -290,71 +300,78 @@ class _ShopPrototypeProduct extends StatelessWidget {
         borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
       ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        key: ValueKey('shop-profile-product-link-${listing.id}'),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
-          child: Row(
-            children: [
-              if (image.isNotEmpty)
-                RoundedImage(
-                  roundedImageModel: RoundedImageModel(
-                    image: image,
+      child: Semantics(
+        container: true,
+        button: onTap != null,
+        label: product?.name ?? 'Ürün bilgisi yok',
+        child: InkWell(
+          key: ValueKey('shop-profile-product-link-${listing.id}'),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
+            child: Row(
+              children: [
+                if (image.isNotEmpty)
+                  RoundedImage(
+                    roundedImageModel: RoundedImageModel(
+                      image: image,
+                      width: 76,
+                      height: 84,
+                      padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
+                      fit: BoxFit.contain,
+                      backgroundColor: EsnaftaVarColors.surfaceAlt,
+                      isNetworkImage: image.startsWith('http'),
+                      errorWidget: const _ShopProductFallback(),
+                    ),
+                  )
+                else
+                  const SizedBox(
                     width: 76,
                     height: 84,
-                    padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
-                    fit: BoxFit.contain,
-                    backgroundColor: EsnaftaVarColors.surfaceAlt,
-                    isNetworkImage: image.startsWith('http'),
-                    errorWidget: const _ShopProductFallback(),
+                    child: _ShopProductFallback(),
                   ),
-                )
-              else
-                const SizedBox(
-                  width: 76,
-                  height: 84,
-                  child: _ShopProductFallback(),
-                ),
-              const SizedBox(width: EsnaftaVarSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product?.name ?? 'Ürün bilgisi yok',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.titleSmall,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${listing.price.toStringAsFixed(2).replaceAll('.', ',')} TL',
-                      style: theme.titleMedium?.copyWith(
-                        color: EsnaftaVarColors.primary,
+                const SizedBox(width: EsnaftaVarSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ExcludeSemantics(
+                        child: Text(
+                          product?.name ?? 'Ürün bilgisi yok',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.titleSmall,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      listing.isAvailable
-                          ? 'Mağazada mevcut'
-                          : 'Şu an mevcut değil',
-                      style: theme.labelSmall?.copyWith(
-                        color: listing.isAvailable
-                            ? EsnaftaVarColors.success
-                            : EsnaftaVarColors.textMuted,
+                      const SizedBox(height: 4),
+                      Text(
+                        '${listing.price.toStringAsFixed(2).replaceAll('.', ',')} TL',
+                        style: theme.titleMedium?.copyWith(
+                          color: EsnaftaVarColors.primary,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        listing.isAvailable
+                            ? 'Mağazada mevcut'
+                            : 'Şu an mevcut değil',
+                        style: theme.labelSmall?.copyWith(
+                          color: listing.isAvailable
+                              ? EsnaftaVarColors.success
+                              : EsnaftaVarColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              if (onTap != null)
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: EsnaftaVarColors.primary,
-                  size: 20,
-                ),
-            ],
+                if (onTap != null)
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: EsnaftaVarColors.primary,
+                    size: 20,
+                  ),
+              ],
+            ),
           ),
         ),
       ),
