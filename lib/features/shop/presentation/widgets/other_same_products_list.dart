@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
@@ -15,9 +14,11 @@ class OtherSameProductsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
-    final displayImages = images.isEmpty
-        ? const [TImages.productImage5]
-        : images;
+    final displayImages = images
+        .map((image) => image.trim())
+        .where((image) => image.isNotEmpty)
+        .toList(growable: false);
+    if (displayImages.isEmpty) return const SizedBox.shrink();
 
     return Positioned(
       right: 0,

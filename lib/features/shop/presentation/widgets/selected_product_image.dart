@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 
@@ -21,7 +20,7 @@ class SelectedProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayImage = image.trim().isEmpty ? TImages.productImage13 : image;
+    final displayImage = image.trim();
 
     return SizedBox(
       height: height,
@@ -29,19 +28,31 @@ class SelectedProductImage extends StatelessWidget {
       child: Padding(
         padding: padding,
         child: Center(
-          child: RoundedImage(
-            roundedImageModel: RoundedImageModel(
-              image: displayImage,
-              width: imageExtent,
-              height: imageExtent,
-              backgroundColor: Colors.transparent,
-              isNetworkImage: _isNetworkImage(displayImage),
-              errorWidget: const ProductImageFallback(
-                key: Key('selected-product-image-fallback'),
-                iconSize: 52,
-              ),
-            ),
-          ),
+          child: displayImage.isEmpty
+              ? Semantics(
+                  image: true,
+                  label: 'Ürün görseli bulunmuyor',
+                  child: SizedBox.square(
+                    dimension: imageExtent,
+                    child: const ProductImageFallback(
+                      key: Key('selected-product-image-fallback'),
+                      iconSize: 52,
+                    ),
+                  ),
+                )
+              : RoundedImage(
+                  roundedImageModel: RoundedImageModel(
+                    image: displayImage,
+                    width: imageExtent,
+                    height: imageExtent,
+                    backgroundColor: Colors.transparent,
+                    isNetworkImage: _isNetworkImage(displayImage),
+                    errorWidget: const ProductImageFallback(
+                      key: Key('selected-product-image-fallback'),
+                      iconSize: 52,
+                    ),
+                  ),
+                ),
         ),
       ),
     );

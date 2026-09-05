@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/widgets/other_same_products_list.dart';
 import 'package:t_store/features/shop/presentation/widgets/selected_product_image.dart';
@@ -41,7 +40,7 @@ class ProductImageSlider extends StatelessWidget {
         children: [
           Positioned.fill(
             child: SelectedProductImage(
-              image: productImages.first,
+              image: productImages.firstOrNull ?? '',
               height: 340,
               imageExtent: 245,
               padding: const EdgeInsets.fromLTRB(30, 38, 30, 54),
@@ -99,7 +98,7 @@ class ProductImageSlider extends StatelessWidget {
         children: [
           Positioned.fill(
             child: SelectedProductImage(
-              image: productImages.first,
+              image: productImages.firstOrNull ?? '',
               height: 224,
               imageExtent: 184,
               padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
@@ -147,6 +146,6 @@ class ProductImageSlider extends StatelessWidget {
       return [thumbnail];
     }
 
-    return const [TImages.productImage13];
+    return const [];
   }
 }

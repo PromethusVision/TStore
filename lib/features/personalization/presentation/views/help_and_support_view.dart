@@ -281,9 +281,8 @@ class _FrequentlyAskedQuestions extends StatelessWidget {
     (
       question: 'Sepet ve QR ne işe yarar?',
       answer:
-          'Sepetindeki ürünleri mağazada doğrulatmak için “Alışverişi '
-          'Doğrula” ekranındaki QR kodu kullanabilirsin. Bu QR kod bir ödeme '
-          'yöntemi değildir.',
+          'Sepetindeki ürünleri mağazada doğrulatmak için “QR kod oluştur” '
+          'düğmesine dokunabilirsin. Oluşan QR kod bir ödeme yöntemi değildir.',
     ),
     (
       question: 'Alışverişimi nasıl doğrular ve mağazaya puan veririm?',
@@ -295,8 +294,9 @@ class _FrequentlyAskedQuestions extends StatelessWidget {
     (
       question: 'İade taleplerime nereden ulaşırım?',
       answer:
-          'Hesap ekranındaki Alışverişlerim bölümünden “İade Taleplerim” ve '
-          '“İade Talebi Oluştur” sekmelerine ulaşabilirsin.',
+          'Hesap ekranındaki Alışverişlerim bölümünden “İade Taleplerim” '
+          'sekmesini görüntüleyebilirsin. Uygulama üzerinden iade talebi '
+          'oluşturma henüz kullanıma açık değil.',
     ),
   ];
 
