@@ -41,24 +41,41 @@ class CustomerCouponsView extends StatelessWidget {
                   ],
                 ),
               ),
-              const TabBar(
-                key: Key('customer-coupons-tab-bar'),
-                labelColor: EsnaftaVarColors.primary,
-                unselectedLabelColor: EsnaftaVarColors.textSecondary,
-                indicatorColor: EsnaftaVarColors.primary,
-                tabs: [
-                  Tab(
-                    key: Key('available-coupons-tab'),
-                    height: 48,
-                    text: 'Kullanılabilir',
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: EsnaftaVarColors.surface,
+                    border: Border.all(color: EsnaftaVarColors.borderDefault),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  Tab(
-                    key: Key('coupon-history-tab'),
-                    height: 48,
-                    text: 'Geçmiş',
+                  child: TabBar(
+                    key: const Key('customer-coupons-tab-bar'),
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: EsnaftaVarColors.textOnPrimary,
+                    unselectedLabelColor: EsnaftaVarColors.textSecondary,
+                    indicator: BoxDecoration(
+                      color: EsnaftaVarColors.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    tabs: const [
+                      Tab(
+                        key: Key('available-coupons-tab'),
+                        height: 48,
+                        text: 'Kullanılabilir',
+                      ),
+                      Tab(
+                        key: Key('coupon-history-tab'),
+                        height: 48,
+                        text: 'Geçmiş',
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
+              const SizedBox(height: 16),
               const Expanded(
                 child: TabBarView(
                   children: [

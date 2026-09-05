@@ -294,6 +294,7 @@ class _CustomerNotificationsContentState
 
                               return _NotificationCard(
                                 notification: notification,
+                                canOpenDestination: canOpenDestination,
                                 isProcessing: isProcessing,
                                 interactionHint: _interactionHint(
                                   notification,
@@ -400,12 +401,14 @@ class _NotificationsLoadingState extends StatelessWidget {
 class _NotificationCard extends StatelessWidget {
   const _NotificationCard({
     required this.notification,
+    required this.canOpenDestination,
     required this.isProcessing,
     required this.interactionHint,
     required this.onTap,
   });
 
   final NotificationEntity notification;
+  final bool canOpenDestination;
   final bool isProcessing;
   final String? interactionHint;
   final VoidCallback? onTap;
@@ -556,6 +559,15 @@ class _NotificationCard extends StatelessWidget {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
+                            ),
+                          if (canOpenDestination)
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              key: Key(
+                                'notification-destination-${notification.id}',
+                              ),
+                              size: 18,
+                              color: EsnaftaVarColors.primary,
                             ),
                         ],
                       ),

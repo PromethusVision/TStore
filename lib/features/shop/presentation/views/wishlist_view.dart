@@ -435,7 +435,7 @@ class _FavoriteRemoveButton extends StatelessWidget {
               padding: EdgeInsets.zero,
               icon: const Icon(
                 Iconsax.heart5,
-                color: EsnaftaVarColors.accent,
+                color: EsnaftaVarColors.primary,
                 size: 18,
               ),
             ),
@@ -459,14 +459,14 @@ class _WishlistProductImage extends StatelessWidget {
     if (!isNetwork) {
       return Image.asset(
         imageUrl,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         errorBuilder: (_, _, _) => const _WishlistProductImageFallback(),
       );
     }
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       placeholder: (_, _) => const _WishlistProductImageFallback(),
       errorWidget: (_, _, _) => const _WishlistProductImageFallback(),
     );
