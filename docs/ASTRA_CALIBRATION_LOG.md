@@ -618,6 +618,53 @@ operations **0**. AGENTS.md/protocol unchanged. Recommend one coherent final-mai
 signed rebuild/verification package under separate authority, preserving the
 existing exact artifacts. No arbitrary time threshold or model-speed claim is used.
 
+### W51E / W51F — Frozen final-main RC and evidence-only integration
+
+Date: 2026-09-06 Türkiye / 2026-09-05 UTC. W51E source
+**0500c3030f8f64283cd79d784290d57c00279e1b** adds only its evidence document to
+artifact build main **6a1cf14639124bf709c6a988b9e8290ac7757c60**. The worker reports
+12 local phases completed, **GREEN / SAME_SIZE**, two new signed/frozen artifacts,
+full Flutter **2065 PASS / 0 FAIL / 6 unchanged skips**, analyzer/lint PASS and no
+binary input change. Reported interval **21:10:35–21:29:06.134 UTC = 18m31.134s**
+ends at freeze and excludes final report/publication.
+[Source evidence](RELEASE_W51E_FINAL_MAIN_SIGNED_RC_RESULT.md).
+
+W51F found exact expected main/merge-base and no newer main commit; source is one
+Markdown file, with no executable/test/build/config difference. No-ff merge
+**1ea0f5edfd064eba0304e8e0d6dc35b466b1edd3** was pushed to
+`integration/w51f-final-main-signed-rc-evidence`. The evidence commit and final
+normal main publication are identified in delivered TASK_RESULT.
+[Integration report](ASTRA_W51F_RC_EVIDENCE_INTEGRATION_RESULT.md).
+
+Independent frozen APK/AAB hashes, expected RSA-4096 certificate, package/version
+and three ABIs PASS. AAB verification covers **548 signed payloads, zero unsigned
+payloads/duplicate names**, while known JAR warnings remain disclosed. Twenty sample
+assets are absent and three approved Home images match in both files. Hashes,
+bytes, timestamps and read-only attributes are preserved; **no rebuild or repack**.
+
+W51F analyzer **PASS, 13.2 s**. Full Flutter rerun **NOT_REQUIRED / NOT_RUN** under
+the explicit docs-only exception: all **175 test files / 245 PNGs** and all binary
+inputs match the build main. W51E's 2065/0/6 run is source evidence, not a new W51F
+execution. Source added-text scan **227 lines / 0 findings**; final docs and tracked
+secret/config/artifact paths are checked before publication. Integration adds five
+Markdown paths, **6 documentation paths total**, no source/runtime/config edits.
+
+Six Integration gates cover freshness/scope, frozen artifacts, analyzer/runtime
+invariance, safety, evidence/coordination and publication. Observable start
+**21:38:02 UTC**; delivered TASK_RESULT supplies the later end boundary including
+waits/docs/publication. W51F **GREEN / SAME_SIZE** has no critical regression,
+scope drift, substantive owner correction, shared collision or in-scope blocker.
+It is evidence integration, not a new UI implementation or normalized model benchmark.
+Figma **NOT_REQUIRED / 0 calls**; Production, device/ADB, store and backend changes
+**0**; AGENTS.md/protocol unchanged. No arbitrary time threshold applies.
+
+W51D's rebuild requirement is closed by the new exact-main W51E build. W51F changes
+only documents, so **REBUILD_REQUIRED NO**, **READY_FOR_DEVICE_INSTALL_LAUNCH_GATE
+YES** for the frozen APK. Its actual build SHA remains 6a1cf14, not a later docs
+commit. Recommend one separately authorized controlled install/launch package
+using this exact hash without rebuilding. Actual device, physical QR, Production
+remote proof, Merchant, legal/privacy, support and store gates remain OPEN.
+
 ## 4. Kayıt ve değerlendirme kuralları
 
 - Tüm metrics protokolün `TASK_RESULT` sözleşmesine göre doldurulur. Gözlenemeyen

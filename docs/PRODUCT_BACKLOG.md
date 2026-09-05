@@ -1,6 +1,33 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — W51D signed RC evidence integration, 2026-09-05 UTC
+## Güncel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
+
+- W51E `0500c30` yalnız bir kanıt belgesi içerir; artifact build main'i
+  `6a1cf14639124bf709c6a988b9e8290ac7757c60` ile tüm binary girdileri aynıdır.
+  W51F de yalnız dokümantasyon ekler. **BINARY_AFFECTING_DELTA: NO.
+  REBUILD_REQUIRED: NO.** W51D'nin rebuild gereği W51E'nin yeni paketleriyle kapandı.
+- **W51E frozen final-main signed RC kanıtı: PASS.**
+  Build kaynağı hep `6a1cf14` olarak kalır; sonraki doküman merge SHA'sı
+  artifact'ın üretim SHA'sı gibi gösterilmez.
+- Exact APK SHA-256:
+  `c5d8835832c4d7c050e7da85b4074813a5a99f15ecdd01c00a715693adde037b`.
+  Exact AAB SHA-256:
+  `b785374a879dd35641c22114777a8e053565b2b28d6a766489268bf782d7eacb`.
+  Hash/boyut/tarih/salt okunur durumu korunur; dosyalar yeniden üretilmez veya değiştirilmez.
+- Package **com.esnaftavar.app**, version **1.0.0 / 1**, mevcut RSA-4096 upload
+  sertifikası ve üç ABI bağımsız doğrulandı. [Exact dosyalar ve kanıt](ASTRA_W51F_RC_EVIDENCE_INTEGRATION_RESULT.md).
+- W51F analyzer **PASS**. Tam suite tekrar edilmedi: bütün executable/test
+  girdileri değişmedi; aynı kaynakta W51E **2065 PASS / 0 FAIL / mevcut 6 skip**
+  kanıtı var. Diff, secret/PII ve tracked secret/artifact kontrolleri PASS.
+- **READY_FOR_DEVICE_INSTALL_LAUNCH_GATE: YES** — yalnız belirtilen donmuş APK.
+  Bu, cihaz kapısının geçtiği anlamına gelmez. Kurulum/başlatma, fiziksel iki cihaz
+  QR, Production uzak kanıtı, Merchant, legal/privacy, support ve store kapıları
+  hâlâ **OPEN**; ticari yayın onayı yok. Ayrı görev yetkisi gerekir.
+- W51F rebuild, Production, store, cihaz/ADB ve Figma işlemi yapmadı.
+  Runtime/backend/shared-component değişikliği ve çakışma yok.
+  AGENTS.md/protokol değişmedi; Integration **GREEN / SAME_SIZE**.
+
+## Tarihsel durum — W51D signed RC evidence integration, 2026-09-05 UTC
 
 - W51C-R source `a18c681`, güncel main `813f16f` üzerine alındı.
   Üç source commit'i incelendi; arada yeni main commit'i veya conflict yoktu.
