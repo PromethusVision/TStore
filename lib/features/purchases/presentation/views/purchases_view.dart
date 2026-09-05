@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -14,9 +16,12 @@ import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
+part 'purchases_visual_prototype.dart';
+
 class PurchasesView extends StatelessWidget {
   const PurchasesView({
     super.key,
+    this.visualPrototype = false,
     this.purchaseHistoryCubit,
     this.initialPurchaseId,
     this.initialQrSessionId,
@@ -25,6 +30,9 @@ class PurchasesView extends StatelessWidget {
   });
 
   final PurchaseHistoryCubit? purchaseHistoryCubit;
+
+  /// W47 owner gate only; existing customer entries keep their presentation.
+  final bool visualPrototype;
   final String? initialPurchaseId;
   final String? initialQrSessionId;
   final GetShopByIdUsecase? getShopByIdUsecase;
@@ -36,6 +44,7 @@ class PurchasesView extends StatelessWidget {
       create: (_) =>
           (purchaseHistoryCubit ?? sl<PurchaseHistoryCubit>())..loadPurchases(),
       child: _PurchasesScaffold(
+        visualPrototype: visualPrototype,
         initialPurchaseId: initialPurchaseId,
         initialQrSessionId: initialQrSessionId,
         getShopByIdUsecase: getShopByIdUsecase,
@@ -47,12 +56,14 @@ class PurchasesView extends StatelessWidget {
 
 class _PurchasesScaffold extends StatelessWidget {
   const _PurchasesScaffold({
+    required this.visualPrototype,
     required this.initialPurchaseId,
     required this.initialQrSessionId,
     required this.getShopByIdUsecase,
     required this.shopProfileBuilder,
   });
 
+  final bool visualPrototype;
   final String? initialPurchaseId;
   final String? initialQrSessionId;
   final GetShopByIdUsecase? getShopByIdUsecase;
@@ -71,14 +82,16 @@ class _PurchasesScaffold extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 430),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
                       CustomerHomeV1Tokens.space16,
                       CustomerHomeV1Tokens.space8,
                       CustomerHomeV1Tokens.space16,
                       0,
                     ),
-                    child: _PurchasesHeader(),
+                    child: visualPrototype
+                        ? const _PurchasesPrototypeHeader()
+                        : const _PurchasesHeader(),
                   ),
                   const SizedBox(height: CustomerHomeV1Tokens.space12),
                   const Padding(
@@ -92,6 +105,7 @@ class _PurchasesScaffold extends StatelessWidget {
                     child: TabBarView(
                       children: [
                         _PurchaseHistoryTab(
+                          visualPrototype: visualPrototype,
                           initialPurchaseId: initialPurchaseId,
                           initialQrSessionId: initialQrSessionId,
                           getShopByIdUsecase: getShopByIdUsecase,
@@ -257,12 +271,14 @@ class _PurchasesTabBar extends StatelessWidget {
 
 class _PurchaseHistoryTab extends StatefulWidget {
   const _PurchaseHistoryTab({
+    required this.visualPrototype,
     required this.initialPurchaseId,
     required this.initialQrSessionId,
     required this.getShopByIdUsecase,
     required this.shopProfileBuilder,
   });
 
+  final bool visualPrototype;
   final String? initialPurchaseId;
   final String? initialQrSessionId;
   final GetShopByIdUsecase? getShopByIdUsecase;
@@ -464,6 +480,7 @@ class _PurchaseHistoryTabState extends State<_PurchaseHistoryTab> {
                     const SizedBox(height: CustomerHomeV1Tokens.space8),
                   ],
                   _PurchaseCard(
+                    visualPrototype: widget.visualPrototype,
                     purchase: purchase,
                     getShopByIdUsecase: widget.getShopByIdUsecase,
                     shopProfileBuilder: widget.shopProfileBuilder,
@@ -624,12 +641,14 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
 
 class _PurchaseCard extends StatefulWidget {
   const _PurchaseCard({
+    this.visualPrototype = false,
     required this.purchase,
     required this.getShopByIdUsecase,
     required this.shopProfileBuilder,
   });
 
   final VerifiedPurchaseEntity purchase;
+  final bool visualPrototype;
   final GetShopByIdUsecase? getShopByIdUsecase;
   final Widget Function(ShopEntity shop)? shopProfileBuilder;
 
@@ -708,6 +727,8 @@ class _PurchaseCardState extends State<_PurchaseCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.visualPrototype)
+      return _buildPurchasePrototypeCard(this, context);
     final purchase = widget.purchase;
 
     return Container(
