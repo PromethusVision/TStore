@@ -1,6 +1,34 @@
 # EsnaftaVar Parallel Work Map
 
-## Güncel durum — W51B RC signing/config readiness integration, 2026-09-05
+## Güncel durum — W51D signed RC evidence integration, 2026-09-05 UTC
+
+- W51C-R source `a18c681`, güncel main `813f16f` üzerine alındı.
+  Üç source commit'i incelendi; arada yeni main commit'i veya conflict yoktu.
+- Exact build `633f5c9` için dış APK/AAB dosyalarının hash'leri, package
+  `com.esnaftavar.app`, sürüm `1.0.0 / 1`, üç ABI ve mevcut upload sertifikası
+  bağımsız yerel kontrollerle doğrulandı. Dosyalar değiştirilmedi.
+- **Başlangıç main'ine göre binary etkileyen değişiklik: YES — pubspec.yaml.**
+  Yirmi örnek görsel yalnız development flavor'a ayrılıyor; üç onaylı Home
+  fallback görseli Production paketinde korunuyor. Default flavor development;
+  Production build explicit flavor/entrypoint kullanır.
+- **Build commit'inden sonra binary etkileyen delta: NO.**
+  Bu, başlangıç main'inin aynı girdilere sahip olduğu anlamına gelmez.
+  Görevin açık lineage kuralı gereği **REBUILD_REQUIRED_AFTER_INTEGRATION: YES**.
+  Mevcut signed dosyalar final-main RC olarak yeniden etiketlenmez.
+  **READY_FOR_DEVICE_INSTALL_LAUNCH_GATE: NO**; önce final main'den ayrıca
+  yetkilendirilmiş rebuild ve exact yeni artifact kanıtı gerekir.
+- Birleşik Flutter **2065 PASS / 0 FAIL / 6 değişmeyen koşullu skip**;
+  **175/175 test**, analyzer temiz. 245 PNG ve tüm eski testler korunur.
+- W51C-R kaynak raporu güvenli signing/config girdilerinin tamamlandığını bildirir;
+  W51D bu secret dosyalarını açmadı. Mevcut artifact imzası PASS, final-main
+  RC lineage kabulü bekliyor. Production uzak kanıtı hâlâ ayrı yetki gerektirir.
+- UI/Dart runtime/backend değişmedi; bilinen tek ortak girdi `pubspec.yaml`.
+  Production, store, cihaz/ADB ve Figma erişimi yok; W51D yeni APK/AAB üretmedi.
+  Fiziksel QR, install/launch, Merchant, legal/privacy, destek ve store kapıları açık.
+  [Hash, imza ve lineage kanıtı](ASTRA_W51D_SIGNED_RC_INTEGRATION_RESULT.md).
+  AGENTS.md/protokol değişmedi; Integration **YELLOW / SAME_SIZE**.
+
+## Tarihsel durum — W51B RC signing/config readiness integration, 2026-09-05
 
 - W51A `5869971`, güncel main `8f8847b` üzerine çakışmasız alındı.
   Yeni signing girdileri bütün checkout'ların dışından alınır; paketleme öncesi
