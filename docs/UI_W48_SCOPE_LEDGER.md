@@ -156,3 +156,9 @@ W48 finishes preparation, loading/failure, active QR, delayed connection,
 expiration/cancellation, invalid snapshot and refreshed-summary presentation.
 This nested reservation adds no new inventory unit and does not claim Reviews
 or Purchases completion. Existing completion/rating/navigation tests still run.
+
+## Final closeout
+
+14/14 IN_THIS_PACKAGE units are FINAL_UI_V1_WORKER. Evidence and gates:
+[W48 task result](UI_W48_TASK_RESULT.md). Eight reservations and thirteen inactive
+exclusions remain as classified. No unknown active surface remains.
