@@ -173,8 +173,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final addAction = tester.widget<OutlinedButton>(
-      find.widgetWithText(OutlinedButton, 'Mevcut Konumumu Kaydet'),
+    final addAction = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Mevcut Konumumu Kaydet'),
     );
     addAction.onPressed?.call();
     addAction.onPressed?.call();
@@ -187,8 +187,8 @@ void main() {
     ).pop();
     await tester.pumpAndSettle();
 
-    final reopenedAddAction = tester.widget<OutlinedButton>(
-      find.widgetWithText(OutlinedButton, 'Mevcut Konumumu Kaydet'),
+    final reopenedAddAction = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Mevcut Konumumu Kaydet'),
     );
     expect(reopenedAddAction.onPressed, isNotNull);
   });
