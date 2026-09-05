@@ -2,6 +2,13 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
+import 'package:t_store/core/common/widgets/rounded_image.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -15,6 +22,8 @@ import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+part 'shop_profile_visual_prototype.dart';
 
 typedef ShopProfileUrlLauncher =
     Future<bool> Function(Uri uri, LaunchMode mode);
@@ -33,6 +42,9 @@ class ShopProfileView extends StatefulWidget {
   final ShopProfileProductDestinationBuilder? productDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
 
+  /// Owner-review presentation only; existing navigation stays on the default.
+  final bool visualPrototype;
+
   const ShopProfileView({
     super.key,
     required this.shop,
@@ -41,6 +53,7 @@ class ShopProfileView extends StatefulWidget {
     this.chatDestinationBuilder,
     this.productDestinationBuilder,
     this.pendingProductChatStorage,
+    this.visualPrototype = false,
   });
 
   @override
@@ -61,6 +74,7 @@ class _ShopProfileViewState extends State<ShopProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.visualPrototype) return _buildShopVisualPrototype(this, context);
     final shop = widget.shop;
     final currentUserIdProvider =
         widget.currentUserIdProvider ?? _currentShopProfileUserId;

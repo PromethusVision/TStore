@@ -1,6 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
+import 'package:t_store/core/common/widgets/rounded_image.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -12,8 +18,13 @@ import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
 import 'package:t_store/features/cart/presentation/widgets/cart_qr_session_bottom_sheet.dart';
 import 'package:t_store/features/purchases/presentation/views/purchases_view.dart';
 
+part 'cart_v2_visual_prototype.dart';
+
 class CartV2View extends StatefulWidget {
-  const CartV2View({super.key});
+  const CartV2View({super.key, this.visualPrototype = false});
+
+  /// Explicit owner-review opt-in; the customer shell does not enable it.
+  final bool visualPrototype;
 
   @override
   State<CartV2View> createState() => _CartV2ViewState();
@@ -52,14 +63,16 @@ class _CartV2ViewState extends State<CartV2View> {
             constraints: const BoxConstraints(maxWidth: 430),
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
                     CustomerHomeV1Tokens.space16,
                     CustomerHomeV1Tokens.space8,
                     CustomerHomeV1Tokens.space16,
                     0,
                   ),
-                  child: _CartV2Header(),
+                  child: widget.visualPrototype
+                      ? const _CartPrototypeHeader()
+                      : const _CartV2Header(),
                 ),
                 const SizedBox(height: CustomerHomeV1Tokens.space12),
                 Expanded(
@@ -94,6 +107,14 @@ class _CartV2ViewState extends State<CartV2View> {
                       if (state is CartV2Loaded) {
                         if (state.isEmpty) {
                           return const _CartV2EmptyState();
+                        }
+
+                        if (widget.visualPrototype) {
+                          return _buildCartLoadedPrototype(
+                            this,
+                            state,
+                            context,
+                          );
                         }
 
                         return Column(
@@ -1116,10 +1137,8 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                   ),
                   style: TextButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.petrol,
-                    textStyle: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    textStyle: Theme.of(context).textTheme.labelMedium
+                        ?.copyWith(fontSize: 10.5, fontWeight: FontWeight.w700),
                   ),
                 ),
                 TextButton.icon(
@@ -1128,10 +1147,8 @@ class _UnavailableCartItemNotice extends StatelessWidget {
                   label: const Text('Sepetten kaldır'),
                   style: TextButton.styleFrom(
                     foregroundColor: CustomerHomeV1Tokens.coral,
-                    textStyle: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    textStyle: Theme.of(context).textTheme.labelMedium
+                        ?.copyWith(fontSize: 10.5, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -1160,8 +1177,10 @@ class _CartV2QuantityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return OverflowBar(
+      alignment: MainAxisAlignment.spaceBetween,
+      overflowAlignment: OverflowBarAlignment.end,
+      overflowSpacing: EsnaftaVarSpacing.xxs,
       children: [
         const Text(
           'Adet',
@@ -1194,7 +1213,7 @@ class _CartV2QuantityRow extends StatelessWidget {
           )
         else
           Container(
-            height: 44,
+            height: EsnaftaVarTouchTargets.preferred,
             decoration: BoxDecoration(
               color: CustomerHomeV1Tokens.cream,
               borderRadius: BorderRadius.circular(
@@ -1207,7 +1226,7 @@ class _CartV2QuantityRow extends StatelessWidget {
               children: [
                 IconButton(
                   tooltip: 'Azalt',
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity.standard,
                   constraints: const BoxConstraints.tightFor(
                     width: 44,
                     height: 44,
@@ -1218,8 +1237,8 @@ class _CartV2QuantityRow extends StatelessWidget {
                       : onDecrement,
                   icon: const Icon(Icons.remove, size: 17),
                 ),
-                SizedBox(
-                  width: 24,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 24),
                   child: Text(
                     item.quantity.toString(),
                     textAlign: TextAlign.center,
@@ -1232,7 +1251,7 @@ class _CartV2QuantityRow extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: 'Artır',
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity.standard,
                   constraints: const BoxConstraints.tightFor(
                     width: 44,
                     height: 44,

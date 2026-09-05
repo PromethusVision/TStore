@@ -299,11 +299,13 @@ class _OfferFact extends StatelessWidget {
       children: [
         Icon(icon, size: EsnaftaVarIconSizes.small, color: iconColor),
         const SizedBox(width: EsnaftaVarSpacing.xxs),
-        Text(
-          text,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: EsnaftaVarColors.textSecondary,
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: EsnaftaVarColors.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

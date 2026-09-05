@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
+import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/core/common/view_models/cart_counter_icon_view_model.dart';
 import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -15,6 +20,8 @@ import 'package:t_store/features/shop/presentation/cubit/nearby_shops_state.dart
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
+
+part 'nearby_visual_prototype.dart';
 
 typedef NearbyCurrentUserIdProvider = String? Function();
 typedef NearbyCartDestinationBuilder = Widget Function(BuildContext context);
@@ -33,6 +40,8 @@ Widget _defaultNearbyCartDestinationBuilder(BuildContext context) {
 }
 
 class NearbyView extends StatelessWidget {
+  /// Owner gate only. Existing tab/navigation callers keep the current layout.
+  final bool visualPrototype;
   final Future<void> Function()? onChangeLocationRequested;
   final NearbyCurrentUserIdProvider currentUserIdProvider;
   final NearbyCartDestinationBuilder cartDestinationBuilder;
@@ -40,6 +49,7 @@ class NearbyView extends StatelessWidget {
 
   const NearbyView({
     super.key,
+    this.visualPrototype = false,
     this.onChangeLocationRequested,
     this.currentUserIdProvider = _nearbyCurrentUserId,
     this.cartDestinationBuilder = _defaultNearbyCartDestinationBuilder,
@@ -51,6 +61,7 @@ class NearbyView extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<NearbyShopsCubit>()..loadShops(),
       child: _NearbyContent(
+        visualPrototype: visualPrototype,
         onChangeLocationRequested: onChangeLocationRequested,
         currentUserIdProvider: currentUserIdProvider,
         cartDestinationBuilder: cartDestinationBuilder,
@@ -61,12 +72,14 @@ class NearbyView extends StatelessWidget {
 }
 
 class _NearbyContent extends StatefulWidget {
+  final bool visualPrototype;
   final Future<void> Function()? onChangeLocationRequested;
   final NearbyCurrentUserIdProvider currentUserIdProvider;
   final NearbyCartDestinationBuilder cartDestinationBuilder;
   final NearbyShopDestinationBuilder? shopDestinationBuilder;
 
   const _NearbyContent({
+    required this.visualPrototype,
     this.onChangeLocationRequested,
     required this.currentUserIdProvider,
     required this.cartDestinationBuilder,
@@ -134,9 +147,14 @@ class _NearbyContentState extends State<_NearbyContent>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _NearbyHeader(
-                    onCartPressed: () => unawaited(_openCart(context)),
-                  ),
+                  if (widget.visualPrototype)
+                    _NearbyPrototypeHeader(
+                      onCartPressed: () => unawaited(_openCart(context)),
+                    )
+                  else
+                    _NearbyHeader(
+                      onCartPressed: () => unawaited(_openCart(context)),
+                    ),
                   const SizedBox(height: CustomerHomeV1Tokens.space16),
                   Expanded(
                     child: BlocBuilder<NearbyShopsCubit, NearbyShopsState>(
@@ -170,6 +188,7 @@ class _NearbyContentState extends State<_NearbyContent>
 
                         if (state is NearbyShopsLoaded) {
                           return _LoadedNearbyShops(
+                            visualPrototype: widget.visualPrototype,
                             state: state,
                             onLocationRequested: () =>
                                 _showLocationExplanation(context),
@@ -506,6 +525,7 @@ class _NearbyLoading extends StatelessWidget {
 }
 
 class _LoadedNearbyShops extends StatelessWidget {
+  final bool visualPrototype;
   final NearbyShopsLoaded state;
   final VoidCallback onLocationRequested;
   final ValueChanged<NearbyLocationStatus> onLocationSettingsRequested;
@@ -514,6 +534,7 @@ class _LoadedNearbyShops extends StatelessWidget {
   final ValueChanged<ShopEntity> onShopSelected;
 
   const _LoadedNearbyShops({
+    this.visualPrototype = false,
     required this.state,
     required this.onLocationRequested,
     required this.onLocationSettingsRequested,
@@ -524,6 +545,7 @@ class _LoadedNearbyShops extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (visualPrototype) return _buildNearbyPrototype(this, context);
     return RefreshIndicator(
       color: CustomerHomeV1Tokens.petrol,
       onRefresh: onRefresh,

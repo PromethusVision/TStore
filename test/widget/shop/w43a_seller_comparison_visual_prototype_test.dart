@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_theme.dart';
+import 'package:t_store/features/cart/domain/entities/cart_v2_add_result.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_state.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -484,6 +485,80 @@ void main() {
       ),
     );
   });
+  for (final width in [320.0, 390.0, 430.0]) {
+    for (final accept in [false, true]) {
+      testWidgets(
+        'W45R2 single-shop conflict ${width.toInt()} accept $accept',
+        (tester) async {
+          tester.view.physicalSize = Size(width, 844);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          final states = StreamController<CartV2State>();
+          whenListen(cartV2Cubit, states.stream, initialState: CartV2Initial());
+          when(
+            () => cartV2Cubit.replaceActiveCartWithShopProduct(
+              shopProductId: any(named: 'shopProductId'),
+              quantity: any(named: 'quantity'),
+            ),
+          ).thenAnswer((_) async {});
+          await tester.pumpWidget(
+            subject(textScaler: const TextScaler.linear(1.3)),
+          );
+          await tester.pumpAndSettle();
+          expect(find.text('Sepete ekle'), findsWidgets);
+          states.add(
+            const CartV2ShopConflictState(
+              CartV2ShopConflict(
+                existingCartId: 'fixture-existing-cart',
+                existingShopId: 'fixture-existing-shop',
+                newShopId: 'shop-1',
+                shopProductId: 'listing-1',
+                quantity: 3,
+              ),
+            ),
+          );
+          await tester.pump();
+          await tester.pumpAndSettle();
+          expect(
+            find.text('Sepetinizde başka bir esnafa ait ürünler var'),
+            findsOneWidget,
+          );
+          expect(find.byType(AlertDialog), findsOneWidget);
+          verifyNever(
+            () => cartV2Cubit.replaceActiveCartWithShopProduct(
+              shopProductId: any(named: 'shopProductId'),
+              quantity: any(named: 'quantity'),
+            ),
+          );
+          expect(tester.takeException(), isNull);
+          await tester.tap(
+            find.text(
+              accept ? 'Mevcut mağaza sepetini iptal et ve devam et' : 'Vazgeç',
+            ),
+          );
+          await tester.pumpAndSettle();
+          if (accept) {
+            verify(
+              () => cartV2Cubit.replaceActiveCartWithShopProduct(
+                shopProductId: 'listing-1',
+                quantity: 3,
+              ),
+            ).called(1);
+          } else {
+            verifyNever(
+              () => cartV2Cubit.replaceActiveCartWithShopProduct(
+                shopProductId: any(named: 'shopProductId'),
+                quantity: any(named: 'quantity'),
+              ),
+            );
+          }
+          expect(find.byType(AlertDialog), findsNothing);
+          await states.close();
+        },
+      );
+    }
+  }
 }
 
 Future<void> _set390Surface(WidgetTester tester) async {
