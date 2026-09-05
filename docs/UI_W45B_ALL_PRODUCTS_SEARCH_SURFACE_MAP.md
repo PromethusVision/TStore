@@ -1,7 +1,9 @@
 # W45B — All Products + Search active-surface map
 
-Task branch: `astra-ui/w45b-all-products-search-final-ui`  
-Required and verified base: `4287972429d9befe4ef2637a565ea6d8a2393a5e`  
+Task branch: `astra-ui/w45b-all-products-search-final-ui`
+
+Required and verified base: `4287972429d9befe4ef2637a565ea6d8a2393a5e`
+
 First observed clock: 2026-09-05 03:01:02 Europe/Istanbul (00:01:02 UTC).
 
 ## Scope and authority

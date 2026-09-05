@@ -130,7 +130,9 @@ TextFormField finder'ı gerçek TextField'a düzeltildi; favori semantic label
 ayrışması giderildi; testin SemanticsHandle yaşam döngüsü düzeltildi; ilk analyzer
 iki test stili/import bulgusundan sonra temiz geçti. Görsel incelemede dar
 geçmiş başlığı düzeltilip yalnız yeni paket goldens yeniden üretildi.
-Test zayıflatma, mevcut golden güncelleme veya yeni skip yapılmadı.
+Base'e göre son diff kontrolünde envanter belgesindeki iki Markdown satır-sonu
+boşluğu da temizlendi. Test zayıflatma, mevcut golden güncelleme veya yeni skip
+yapılmadı.
 
 Tam suite'in test ettiği runtime/test içeriği **`82498a0`** ile commit edildi.
 Sonraki sonuç belgesi commit'i docs-only'dir. Lokal loglar `.buildlog/w45b-*.log`
@@ -146,7 +148,8 @@ doğrulaması fixture/widget/golden ve mevcut business-contract testleridir.
 | `6042c29` | Katalog core Final UI; 38 regression | Başarılı |
 | `560db34` | Arama core/geçmiş/öneri durumları; 66 regression | Başarılı |
 | `82498a0` | Responsive/accessibility, 136 yeni test, 27 golden, birleşik final gate | Başarılı |
-| Bu docs-only sonuç commit'i | TASK_RESULT ve Integration/Coordinator calibration handoff | Atanmış branch'e normal push |
+| `41cb8c4` | TASK_RESULT ve Integration/Coordinator calibration handoff | Başarılı |
+| Son docs-only hijyen commit'i | Base-relative whitespace closeout ve rapor kaydı | Atanmış branch'e normal push |
 
 **GREEN / SAME_SIZE.** 2/2 birim ve 6/6 alt paket tamamlandı; kritik regression,
 major scope drift, blocker veya substantive owner correction yok (0 düzeltme).
