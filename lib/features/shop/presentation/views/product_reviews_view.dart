@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -10,6 +12,8 @@ import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_state.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+
+part 'product_reviews_visual_prototype.dart';
 
 typedef ProductReviewLoginDestinationBuilder =
     Widget Function(BuildContext context);
@@ -23,17 +27,22 @@ class ProductReviewsView extends StatelessWidget {
     required this.product,
     this.reviewsCubit,
     this.loginDestinationBuilder = _defaultLoginDestinationBuilder,
+    this.visualPrototype = false,
   });
 
   final ProductEntity product;
   final ReviewsCubit? reviewsCubit;
   final ProductReviewLoginDestinationBuilder loginDestinationBuilder;
 
+  /// W47 presentation opt-in, pending Product Owner visual approval.
+  final bool visualPrototype;
+
   @override
   Widget build(BuildContext context) {
     final content = _ProductReviewsScaffold(
       product: product,
       loginDestinationBuilder: loginDestinationBuilder,
+      visualPrototype: visualPrototype,
     );
     final providedCubit = reviewsCubit;
     if (providedCubit != null) {
@@ -53,9 +62,11 @@ class _ProductReviewsScaffold extends StatefulWidget {
   const _ProductReviewsScaffold({
     required this.product,
     required this.loginDestinationBuilder,
+    required this.visualPrototype,
   });
 
   final ProductEntity product;
+  final bool visualPrototype;
   final ProductReviewLoginDestinationBuilder loginDestinationBuilder;
 
   @override
@@ -200,7 +211,11 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
                     CustomerHomeV1Tokens.space16,
                     0,
                   ),
-                  child: _ReviewsHeader(productName: widget.product.name),
+                  child: widget.visualPrototype
+                      ? _ReviewsPrototypeHeader(
+                          productName: widget.product.name,
+                        )
+                      : _ReviewsHeader(productName: widget.product.name),
                 ),
                 const SizedBox(height: CustomerHomeV1Tokens.space12),
                 Expanded(
@@ -221,6 +236,7 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
                       }
                       final loaded = state as ReviewsLoaded;
                       return _ReviewsList(
+                        visualPrototype: widget.visualPrototype,
                         state: loaded,
                         onRefresh: _refresh,
                         onLoadMore: _loadMore,
@@ -246,6 +262,7 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
 
 class _ReviewsList extends StatelessWidget {
   const _ReviewsList({
+    required this.visualPrototype,
     required this.state,
     required this.onRefresh,
     required this.onLoadMore,
@@ -257,6 +274,7 @@ class _ReviewsList extends StatelessWidget {
   });
 
   final ReviewsLoaded state;
+  final bool visualPrototype;
   final Future<void> Function() onRefresh;
   final Future<void> Function() onLoadMore;
   final Future<void> Function() onLogin;
@@ -281,9 +299,13 @@ class _ReviewsList extends StatelessWidget {
           CustomerHomeV1Tokens.space24,
         ),
         children: [
-          _ReviewsSummaryCard(stats: state.stats),
+          if (visualPrototype)
+            _ReviewsPrototypeSummary(stats: state.stats)
+          else
+            _ReviewsSummaryCard(stats: state.stats),
           const SizedBox(height: CustomerHomeV1Tokens.space12),
           _EligibilityCard(
+            compact: visualPrototype,
             state: state,
             onLogin: onLogin,
             onRetry: onRetryEligibility,
@@ -303,6 +325,7 @@ class _ReviewsList extends StatelessWidget {
           else
             for (var index = 0; index < state.reviews.length; index++) ...[
               _ReviewCard(
+                visualPrototype: visualPrototype,
                 review: state.reviews[index],
                 isMutating: state.isMutating,
                 onEdit: onEdit,
@@ -344,6 +367,7 @@ class _ReviewsList extends StatelessWidget {
 
 class _EligibilityCard extends StatelessWidget {
   const _EligibilityCard({
+    this.compact = false,
     required this.state,
     required this.onLogin,
     required this.onRetry,
@@ -351,6 +375,7 @@ class _EligibilityCard extends StatelessWidget {
   });
 
   final ReviewsLoaded state;
+  final bool compact;
   final Future<void> Function() onLogin;
   final Future<void> Function() onRetry;
   final VoidCallback onCreate;
@@ -360,6 +385,7 @@ class _EligibilityCard extends StatelessWidget {
     final failure = state.eligibilityFailure;
     if (failure != null) {
       return _ReviewActionCard(
+        compact: compact,
         key: const Key('product-review-eligibility-error'),
         icon: failure.requiresAuthentication
             ? Icons.login_rounded
@@ -378,6 +404,7 @@ class _EligibilityCard extends StatelessWidget {
     final eligibility = state.eligibility;
     if (eligibility == null) {
       return _ReviewActionCard(
+        compact: compact,
         key: const Key('product-review-eligibility-loading'),
         icon: Icons.hourglass_top_rounded,
         title: 'Değerlendirme hakkı kontrol ediliyor',
@@ -390,6 +417,7 @@ class _EligibilityCard extends StatelessWidget {
     switch (eligibility.status) {
       case ProductReviewEligibilityStatus.guest:
         return _ReviewActionCard(
+          compact: compact,
           key: const Key('product-review-eligibility-guest'),
           icon: Icons.login_rounded,
           title: 'Değerlendirme yazmak için giriş yapın',
@@ -400,8 +428,9 @@ class _EligibilityCard extends StatelessWidget {
           onAction: onLogin,
         );
       case ProductReviewEligibilityStatus.unverified:
-        return const _ReviewActionCard(
-          key: Key('product-review-eligibility-unverified'),
+        return _ReviewActionCard(
+          compact: compact,
+          key: const Key('product-review-eligibility-unverified'),
           icon: Icons.storefront_outlined,
           title: 'Doğrulanmış alışveriş gerekli',
           description:
@@ -410,6 +439,7 @@ class _EligibilityCard extends StatelessWidget {
         );
       case ProductReviewEligibilityStatus.canSubmit:
         return _ReviewActionCard(
+          compact: compact,
           key: const Key('product-review-eligibility-can-submit'),
           icon: Icons.rate_review_outlined,
           title: 'Bu ürünü değerlendirebilirsiniz',
@@ -419,8 +449,9 @@ class _EligibilityCard extends StatelessWidget {
           onAction: state.isMutating ? null : onCreate,
         );
       case ProductReviewEligibilityStatus.existingReview:
-        return const _ReviewActionCard(
-          key: Key('product-review-eligibility-existing'),
+        return _ReviewActionCard(
+          compact: compact,
+          key: const Key('product-review-eligibility-existing'),
           icon: Icons.verified_outlined,
           title: 'Değerlendirmeniz yayınlandı',
           description:
@@ -434,6 +465,7 @@ class _EligibilityCard extends StatelessWidget {
 class _ReviewActionCard extends StatelessWidget {
   const _ReviewActionCard({
     super.key,
+    this.compact = false,
     required this.icon,
     required this.title,
     required this.description,
@@ -442,6 +474,7 @@ class _ReviewActionCard extends StatelessWidget {
   });
 
   final IconData icon;
+  final bool compact;
   final String title;
   final String description;
   final String? actionLabel;
@@ -449,6 +482,7 @@ class _ReviewActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (compact) return _buildReviewsPrototypeAction(this, context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
@@ -520,6 +554,7 @@ class _ReviewActionCard extends StatelessWidget {
 
 class _ReviewCard extends StatelessWidget {
   const _ReviewCard({
+    this.visualPrototype = false,
     required this.review,
     required this.isMutating,
     required this.onEdit,
@@ -527,12 +562,14 @@ class _ReviewCard extends StatelessWidget {
   });
 
   final ReviewEntity review;
+  final bool visualPrototype;
   final bool isMutating;
   final ValueChanged<ReviewEntity> onEdit;
   final ValueChanged<ReviewEntity> onDelete;
 
   @override
   Widget build(BuildContext context) {
+    if (visualPrototype) return _buildReviewsPrototypeCard(this, context);
     final title = review.title?.trim();
     final comment = review.comment?.trim();
     return Container(

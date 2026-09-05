@@ -151,12 +151,14 @@ void main() {
         expect(find.textContaining(text), findsNothing);
       }
       expect(tester.takeException(), isNull);
-      await expectLater(
-        find.byKey(const Key('evidence')),
-        matchesGoldenFile(
-          'goldens/w47_${prototype ? 'purchases' : 'before_purchases'}_390.png',
-        ),
-      );
+      // Old button-local font overrides use Flutter test's block fallback.
+      // Keep the old render smoke, but publish only reliable visual evidence.
+      if (prototype) {
+        await expectLater(
+          find.byKey(const Key('evidence')),
+          matchesGoldenFile('goldens/w47_purchases_390.png'),
+        );
+      }
     });
   }
   testWidgets('shop handoff preserves purchase shop identifier', (
