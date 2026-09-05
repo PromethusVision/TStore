@@ -431,7 +431,7 @@ class _TargetPurchaseLabel extends StatelessWidget {
                   : 'Bildirimdeki alışveriş: $shopName',
               style: const TextStyle(
                 color: EsnaftaVarColors.primary,
-                fontSize: 10.5,
+                fontSize: 13,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
               ),
@@ -464,7 +464,7 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF6DF),
+        color: EsnaftaVarColors.warningSoft,
         borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         border: Border.all(color: const Color(0xFFEED99B)),
       ),
@@ -492,7 +492,7 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
                             'Diğer alışverişlerin gösteriliyor.',
                   style: const TextStyle(
                     color: EsnaftaVarColors.textPrimary,
-                    fontSize: 10.5,
+                    fontSize: 13,
                     height: 1.4,
                     fontWeight: FontWeight.w500,
                   ),
@@ -521,7 +521,7 @@ class _MissingTargetPurchaseMessage extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   textStyle: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -602,7 +602,7 @@ class _PurchaseCardState extends State<_PurchaseCard> {
         useSafeArea: true,
         isDismissible: false,
         enableDrag: false,
-        backgroundColor: EsnaftaVarColors.background,
+        backgroundColor: EsnaftaVarColors.surface,
         barrierColor: EsnaftaVarColors.textPrimary.withValues(alpha: 0.32),
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(
@@ -652,238 +652,139 @@ class _PurchaseShopRatingSheetState extends State<_PurchaseShopRatingSheet> {
   int _selectedRating = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ShopRatingCubit, ShopRatingState>(
-      builder: (context, state) {
-        final isSubmitting = state is ShopRatingSubmitting;
-        final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-
-        return ColoredBox(
+  Widget build(
+    BuildContext context,
+  ) => BlocBuilder<ShopRatingCubit, ShopRatingState>(
+    builder: (context, state) {
+      final isSubmitting = state is ShopRatingSubmitting;
+      final text = Theme.of(context).textTheme;
+      return PopScope(
+        canPop: !isSubmitting,
+        child: ColoredBox(
           key: const Key('purchase-shop-rating-sheet'),
-          color: EsnaftaVarColors.background,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 430),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(
-                  EsnaftaVarSpacing.md,
-                  EsnaftaVarSpacing.sm,
-                  EsnaftaVarSpacing.md,
-                  EsnaftaVarSpacing.xl + bottomInset,
-                ),
-                child: state is ShopRatingSuccess
-                    ? _RatingSuccessContent(
-                        rating: state.rating.rating,
-                        onClose: () => Navigator.of(context).pop(true),
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const _RatingSheetHandle(),
-                          const SizedBox(height: EsnaftaVarSpacing.sm),
-                          _RatingEditorHeader(
-                            shopName: widget.purchase.shopName,
-                            isSubmitting: isSubmitting,
-                            onClose: () => Navigator.of(context).pop(false),
-                          ),
-                          const SizedBox(height: EsnaftaVarSpacing.md),
-                          const _RatingInfoCard(),
-                          const SizedBox(height: EsnaftaVarSpacing.md),
-                          Container(
-                            key: const Key('purchase-rating-stars-card'),
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: EsnaftaVarSpacing.xs,
-                              vertical: EsnaftaVarSpacing.md,
-                            ),
-                            decoration: BoxDecoration(
-                              color: EsnaftaVarColors.surface,
-                              borderRadius: BorderRadius.circular(
-                                EsnaftaVarRadii.xLarge,
-                              ),
-                              border: Border.all(
-                                color: EsnaftaVarColors.borderDefault,
-                              ),
-                              boxShadow: EsnaftaVarElevation.xs,
-                            ),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Deneyimin nasıldı?',
-                                  style: TextStyle(
-                                    color: EsnaftaVarColors.textPrimary,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: EsnaftaVarSpacing.xs),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: List.generate(5, (index) {
-                                    final rating = index + 1;
-                                    final isSelected =
-                                        rating <= _selectedRating;
-                                    return IconButton(
-                                      key: Key(
-                                        'purchase-shop-rating-star-$rating',
-                                      ),
-                                      tooltip: '$rating yıldız',
-                                      onPressed: isSubmitting
-                                          ? null
-                                          : () => setState(
-                                              () => _selectedRating = rating,
-                                            ),
-                                      iconSize: 32,
-                                      icon: Icon(
-                                        isSelected
-                                            ? Icons.star_rounded
-                                            : Icons.star_border_rounded,
-                                        color: const Color(0xFFE09B15),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 180),
-                                  child: _selectedRating > 0
-                                      ? Container(
-                                          key: ValueKey(_selectedRating),
-                                          margin: const EdgeInsets.only(
-                                            top: EsnaftaVarSpacing.xxs,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: EsnaftaVarSpacing.sm,
-                                            vertical: EsnaftaVarSpacing.xxs,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFFFF6DF),
-                                            borderRadius: BorderRadius.circular(
-                                              EsnaftaVarRadii.pill,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            _ratingLabels[_selectedRating],
-                                            style: const TextStyle(
-                                              color:
-                                                  EsnaftaVarColors.textPrimary,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(
-                                          key: ValueKey(0),
-                                          height: 24,
-                                          child: Center(
-                                            child: Text(
-                                              'Bir yıldız seç',
-                                              style: TextStyle(
-                                                color: EsnaftaVarColors
-                                                    .textSecondary,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (state is ShopRatingFailure) ...[
-                            const SizedBox(height: EsnaftaVarSpacing.sm),
-                            _RatingFailureCard(message: state.message),
-                          ],
-                          const SizedBox(height: EsnaftaVarSpacing.lg),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 52,
-                            child: FilledButton.icon(
-                              key: const Key(
-                                'purchase-shop-rating-submit-action',
-                              ),
-                              onPressed: isSubmitting || _selectedRating == 0
-                                  ? null
-                                  : () => context
-                                        .read<ShopRatingCubit>()
-                                        .submitRating(
-                                          qrSessionId:
-                                              widget.purchase.sourceQrSessionId,
-                                          rating: _selectedRating,
-                                        ),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: EsnaftaVarColors.primary,
-                                foregroundColor: Colors.white,
-                                disabledBackgroundColor:
-                                    EsnaftaVarColors.primarySoft,
-                                disabledForegroundColor:
-                                    EsnaftaVarColors.textSecondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    EsnaftaVarRadii.large,
-                                  ),
-                                ),
-                                textStyle: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              icon: isSubmitting
-                                  ? const SizedBox.square(
-                                      dimension: 18,
-                                      child: CircularProgressIndicator(
-                                        key: Key('purchase-rating-progress'),
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Icon(Iconsax.send_2, size: 18),
-                              label: Text(
-                                isSubmitting
-                                    ? 'Gönderiliyor...'
-                                    : 'Puanı Gönder',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: EsnaftaVarSpacing.xs),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 44,
-                            child: OutlinedButton(
-                              key: const Key(
-                                'purchase-shop-rating-cancel-action',
-                              ),
-                              onPressed: isSubmitting
-                                  ? null
-                                  : () => Navigator.of(context).pop(false),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: EsnaftaVarColors.textPrimary,
-                                side: const BorderSide(
-                                  color: EsnaftaVarColors.borderDefault,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    EsnaftaVarRadii.large,
-                                  ),
-                                ),
-                                textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              child: const Text('Vazgeç'),
-                            ),
-                          ),
-                        ],
-                      ),
+          color: EsnaftaVarColors.surface,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                12,
+                16,
+                24 + MediaQuery.viewInsetsOf(context).bottom,
               ),
+              child: state is ShopRatingSuccess
+                  ? _RatingSuccessContent(
+                      rating: state.rating.rating,
+                      onClose: () => Navigator.of(context).pop(true),
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const _RatingSheetHandle(),
+                        const SizedBox(height: 12),
+                        _RatingEditorHeader(
+                          shopName: widget.purchase.shopName,
+                          isSubmitting: isSubmitting,
+                          onClose: () => Navigator.of(context).pop(false),
+                        ),
+                        const SizedBox(height: 16),
+                        const _RatingInfoCard(),
+                        const SizedBox(height: 24),
+                        Column(
+                          key: const Key('purchase-rating-stars-card'),
+                          children: [
+                            Text(
+                              'Mağaza deneyimin nasıldı?',
+                              style: text.titleSmall,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(5, (index) {
+                                final rating = index + 1;
+                                return Semantics(
+                                  selected: rating == _selectedRating,
+                                  child: IconButton(
+                                    key: Key(
+                                      'purchase-shop-rating-star-$rating',
+                                    ),
+                                    tooltip: '$rating yıldız',
+                                    constraints: const BoxConstraints(
+                                      minWidth: 48,
+                                      minHeight: 48,
+                                    ),
+                                    onPressed: isSubmitting
+                                        ? null
+                                        : () => setState(
+                                            () => _selectedRating = rating,
+                                          ),
+                                    iconSize: 32,
+                                    icon: Icon(
+                                      rating <= _selectedRating
+                                          ? Icons.star_rounded
+                                          : Icons.star_border_rounded,
+                                      color: EsnaftaVarColors.highlight,
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _selectedRating > 0
+                                  ? _ratingLabels[_selectedRating]
+                                  : 'Bir yıldız seç',
+                              style: text.bodySmall,
+                            ),
+                          ],
+                        ),
+                        if (state is ShopRatingFailure) ...[
+                          const SizedBox(height: 16),
+                          _RatingFailureCard(message: state.message),
+                        ],
+                        const SizedBox(height: 24),
+                        FilledButton.icon(
+                          key: const Key('purchase-shop-rating-submit-action'),
+                          onPressed: isSubmitting || _selectedRating == 0
+                              ? null
+                              : () => context
+                                    .read<ShopRatingCubit>()
+                                    .submitRating(
+                                      qrSessionId:
+                                          widget.purchase.sourceQrSessionId,
+                                      rating: _selectedRating,
+                                    ),
+                          icon: isSubmitting
+                              ? const SizedBox.square(
+                                  dimension: 18,
+                                  child: CircularProgressIndicator(
+                                    key: Key('purchase-rating-progress'),
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.check_rounded, size: 20),
+                          label: Text(
+                            isSubmitting ? 'Gönderiliyor...' : 'Puanı Gönder',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          key: const Key('purchase-shop-rating-cancel-action'),
+                          onPressed: isSubmitting
+                              ? null
+                              : () => Navigator.of(context).pop(false),
+                          child: const Text('Vazgeç'),
+                        ),
+                      ],
+                    ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }
 
 class _RatingSheetHandle extends StatelessWidget {
@@ -916,73 +817,37 @@ class _RatingEditorHeader extends StatelessWidget {
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      key: const Key('purchase-rating-header'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF6DF),
-            borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
-          ),
-          child: const Icon(
-            Icons.star_rounded,
-            color: Color(0xFFE09B15),
-            size: 23,
-          ),
-        ),
-        const SizedBox(width: EsnaftaVarSpacing.sm),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Esnafa Puan Ver',
-                style: TextStyle(
-                  color: EsnaftaVarColors.textPrimary,
-                  fontSize: 19,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.3,
-                ),
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.xxs),
-              Text(
-                shopName,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: EsnaftaVarColors.textSecondary,
-                  fontSize: 10.5,
-                  height: 1.25,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: EsnaftaVarSpacing.xs),
-        Material(
-          color: EsnaftaVarColors.surface,
-          shape: const CircleBorder(
-            side: BorderSide(color: EsnaftaVarColors.borderDefault),
-          ),
-          child: IconButton(
-            key: const Key('purchase-shop-rating-close-action'),
-            tooltip: 'Kapat',
-            onPressed: isSubmitting ? null : onClose,
-            icon: const Icon(
-              Icons.close_rounded,
-              color: EsnaftaVarColors.textPrimary,
-              size: 20,
+  Widget build(BuildContext context) => Row(
+    key: const Key('purchase-rating-header'),
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Esnafa Puan Ver',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          ),
+            const SizedBox(height: 4),
+            Text(
+              shopName,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: EsnaftaVarColors.textSecondary,
+              ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+      const SizedBox(width: 8),
+      IconButton(
+        key: const Key('purchase-shop-rating-close-action'),
+        tooltip: 'Kapat',
+        icon: const Icon(Icons.close_rounded),
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+        onPressed: isSubmitting ? null : onClose,
+      ),
+    ],
+  );
 }
 
 class _RatingInfoCard extends StatelessWidget {
@@ -1008,7 +873,7 @@ class _RatingInfoCard extends StatelessWidget {
               'gönderilebilir.',
               style: TextStyle(
                 color: EsnaftaVarColors.textPrimary,
-                fontSize: 10,
+                fontSize: 13,
                 height: 1.35,
                 fontWeight: FontWeight.w500,
               ),
@@ -1032,9 +897,9 @@ class _RatingFailureCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF4F1),
+        color: EsnaftaVarColors.errorSoft,
         borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
-        border: Border.all(color: const Color(0xFFF0C8BE)),
+        border: Border.all(color: EsnaftaVarColors.error),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1050,7 +915,7 @@ class _RatingFailureCard extends StatelessWidget {
               message,
               style: const TextStyle(
                 color: EsnaftaVarColors.textPrimary,
-                fontSize: 10.5,
+                fontSize: 13,
                 height: 1.35,
                 fontWeight: FontWeight.w600,
               ),
@@ -1080,13 +945,13 @@ class _RatingSuccessContent extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: const BoxDecoration(
-            color: Color(0xFFFFF6DF),
+            color: EsnaftaVarColors.warningSoft,
             shape: BoxShape.circle,
           ),
           child: const Icon(
             Icons.star_rounded,
             size: 40,
-            color: Color(0xFFE09B15),
+            color: EsnaftaVarColors.highlight,
           ),
         ),
         const SizedBox(height: EsnaftaVarSpacing.md),
@@ -1104,7 +969,7 @@ class _RatingSuccessContent extends StatelessWidget {
           '$rating/5 puan verdiniz. Teşekkür ederiz.',
           style: const TextStyle(
             color: EsnaftaVarColors.textSecondary,
-            fontSize: 11,
+            fontSize: 13,
             height: 1.4,
             fontWeight: FontWeight.w500,
           ),
