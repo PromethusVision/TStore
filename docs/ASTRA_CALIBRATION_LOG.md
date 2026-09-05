@@ -456,6 +456,67 @@ Customer V1 UI conversion is complete and ready for a separately authorized
 release-gate assessment; Merchant, device QR, legal/privacy/support, signing/
 store publication and Production readiness are not established here.
 
+### W50 — Customer V1 local release hardening (2026-09-05)
+
+Independent worker source: `efca66bcb14c067dc9c147632c59de1a7b413b76`,
+base `26b78e0bad764d5a160320f2027db36cd3d6196d`. The source reports **17 assessed/
+attempted phases, 15 local phases closed**, packaging blocked and device execution
+manual (two not completed). **33 files**, seven checkpoints, 34 added tests and
+two missing-media goldens. All safe independent hardening was completed.
+[Worker evidence and limits](W50_CUSTOMER_V1_RELEASE_GATE_RESULT.md).
+
+Reported full gate **2058 PASS / 0 FAIL / 6 unchanged conditional skips**,
+analyzer clean, three-ABI Android release compilation PASS, lint 0 errors / 16
+maintenance warnings. No final APK/AAB created; signed artifact not proven.
+Reported observable boundary **16:30:05–17:31:31 UTC = 61m26s**, excluding final
+result writing/publication; not normalized throughput or a model comparison.
+
+Worker classification remains **YELLOW / SAME_SIZE**: meaningful signing/config
+and physical/external gates remain. Customer V1 UI completion and local journeys
+PASS do not establish technical RC or commercial launch readiness. The exact two
+immediate blockers are **secure signing configuration / signed artifact proof**
+and **approved Production configuration**. No fabricated launch/signing success
+or reinterpretation of the worker result is recorded.
+
+### W50B — Release-gate integration acceptance
+
+Freshness audit found main equal to source merge-base **26b78e0**, no newer main
+commit and seven reviewed source commits. No stale UI reconciliation or conflict
+was needed. No-ff merge/checkpoint **51655067301f2c2e85a95e3a2944c3a530c4ef4b**
+was pushed to `codex/astra-w50b-customer-release-gate-integration`; the evidence
+commit and final normal main publication are identified in delivered TASK_RESULT.
+[Integration evidence](ASTRA_W50B_RELEASE_GATE_INTEGRATION_RESULT.md).
+
+Seven integration gates were attempted: source freshness/scope, merge, Flutter/
+customer contracts, Android local evidence, safety, coordination evidence and Git
+publication. Final remote/clean-tree acceptance is reported at delivery. Integration
+adds only **five documentation paths** (38 total paths from base); all **33 source
+files**, **170 baseline test files** and **243 baseline PNGs** are preserved.
+
+Independent targeted **893 PASS / 0 FAIL / 2 existing skips**, disjoint additional
+journeys **1063 PASS / 0 FAIL**, analyzer clean; one full suite **2058 PASS / 0 FAIL /
+6 existing skips**, **174/174 files**, runner **72.657 s**. No test weakening or new
+skip. Local offline Android compilation/lint PASS in **1m27s**, all three ABIs;
+0 lint errors / 16 maintenance warnings. No APK/AAB generated; two old debug APK
+copies remain hash/time-identical. Twelve merged 64-bit native libraries meet
+16 KB ELF alignment; SDK AOT GNU_RELRO follow-up remains disclosed.
+
+Observable start **17:41:01 UTC**, post-validation/checkpoint **17:58:38 UTC =
+17m37s**, including waits/setup and excluding remaining docs/final publication.
+This is a partial observable boundary, not end-to-end delivery time. Final result
+supplies the later boundary. No arbitrary time threshold determines success.
+
+**YELLOW / SAME_SIZE** retains the meaningful signing/config/external blockers;
+no critical regression, major scope drift, substantive owner correction or shared
+collision was observed. Integration runtime/shared edits **0**, Figma
+**FIGMA_NOT_REQUIRED / 0 calls**, backend changes/Production access/remote
+Development writes **0**. AGENTS.md and execution protocol are unchanged.
+No owner decision is needed to finish integration; separate secure input and
+external acceptance authority remain required for later work. Recommend one
+coherent signing/config package for the two immediate technical blockers. Physical
+QR, install/launch, Merchant, professional legal/privacy, support and store gates
+remain explicitly OPEN. Customer UI conversion stays COMPLETE; technical RC NO.
+
 ## 4. Kayıt ve değerlendirme kuralları
 
 - Tüm metrics protokolün `TASK_RESULT` sözleşmesine göre doldurulur. Gözlenemeyen

@@ -1,6 +1,35 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — W49 Final Customer V1 UI integration, 2026-09-05
+## Güncel durum — W50B Customer V1 release-gate integration, 2026-09-05
+
+- **CUSTOMER V1 FINAL UI: COMPLETE. CUSTOMER CORE JOURNEYS: PASS (local).**
+  W49'un 56 sabit aktif ID / 57 kompozisyon / 0 kalan dönüşüm envanteri korunur.
+  Onaylı Category ve önceki Final UI yeniden açılmadı.
+- **CUSTOMER V1 LOCAL HARDENING: PASS. CUSTOMER V1 TECHNICAL RC: NOT READY.**
+  W50 kaynak `efca66b`, güncel main `26b78e0` üzerine çakışmasız alındı.
+  Ortam eşleşmesi, Android uyumluluğu, görsel fallback ve doğru yardım metinleri
+  korundu; Integration ilave runtime veya ortak primitive değişikliği yapmadı.
+- Birleşik kapı: **2058 PASS / 0 FAIL / 6 değişmeyen koşullu skip**,
+  **174/174 test dosyası**, analyzer temiz. QR/yorum kanıtı sunucu otoritesinde;
+  Auth/deep-link, feature flags ve aktif runtime fixture kontrolleri PASS.
+- **Android release compilation: PASS**, üç ABI; lint **0 hata / 16 bakım uyarısı**.
+  **Final release artifact: NOT CREATED. Signed release artifact: NOT PROVEN.**
+  Install/launch yalnız manuel kapıdır. Mevcut debug APK'lar değişmedi.
+- Kalan iki doğrudan teknik engel:
+  **secure signing configuration / signed artifact proof**;
+  **approved Production configuration**.
+  Ayrı yetkili signing/config görevi hazırlanabilir; bu, Production erişim
+  yetkisi veya teknik RC kabulü değildir.
+- Ayrı manuel/dış kapılar **OPEN**: fiziksel iki cihaz QR, cihaz install/launch,
+  Merchant pilot, profesyonel legal/privacy incelemesi, support readiness,
+  Play Store publishing. **Commercial launch ready: NO.**
+- Backend değişikliği, Production erişimi, uzak Development yazımı, yeni APK/AAB,
+  signing secret commit'i ve Figma erişimi yok. AGENTS.md/protokol değişmedi.
+  [Entegrasyon kanıtı ve sınırlar](ASTRA_W50B_RELEASE_GATE_INTEGRATION_RESULT.md).
+  W50 worker ve W50B değerlendirmesi **YELLOW / SAME_SIZE**; açık yayın kapıları
+  Customer UI dönüşümünü yeniden açmaz.
+
+## Tarihsel durum — W49 Final Customer V1 UI integration, 2026-09-05
 
 - **Customer V1 Final UI dönüşümü tamamlandı.** W49'un beş ekranı ve üç mevcut
   modal birimi, toplam **8/8**, güncel W48 main üzerine alındı.
