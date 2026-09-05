@@ -124,3 +124,17 @@ into a route to make old counts fit.
 
 Pre-merge decision: **SAFE_TO_MERGE_FOR_VALIDATION**. This is not a claim that
 post-merge tests or main delivery have already passed.
+
+## Post-merge closeout — 2026-09-05
+
+The original pre-merge review is preserved at a103518. A merged as 0d6228d,
+B as a621d73; both --no-ff, textual conflicts 0. All 89 source-owned changed
+blobs are identical in the merge. Combined gates: 536 targeted + 407 adjacent
+regression PASS; full suite 1637 PASS / 0 FAIL / 6 unchanged gated skips;
+analyzer clean. Thirteen representative images from both packages and the five
+Final UI references were visually reviewed; no major divergence. MD-10 and the
+row-derived reuse-summary correction are resolved in the W44/W45 inventories.
+No runtime semantic patch was needed. Details and publication receipt:
+[Integration result](ASTRA_WAVE1_IMPLEMENTATION_INTEGRATION_RESULT.md).
+
+SEMANTIC_COLLISIONS_RESOLVED: PASS

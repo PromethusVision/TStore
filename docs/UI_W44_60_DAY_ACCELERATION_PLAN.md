@@ -1,9 +1,11 @@
 # Wave 44A — 60-Day Customer UI Acceleration Plan
 
-Durum: **ANALYSIS / PLANNING ONLY**
+Durum: **W45D CALIBRATION REVISION — PLANNING ONLY, 2026-09-05**
 Base: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
 
-## 1. Yönetici özeti
+Aşağıdaki **1–10. bölümler tarihsel W44A tahminleri olarak korunmuştur**; 54 birim, 250/280 h ve 35/46/64 günlük eski model güncel forecast değildir. Güncel baseline ve senaryolar Bölüm 11'dedir. Fiilî kalan iş: **38 birim / 203 nominal h**.
+
+## 1. Yönetici özeti — tarihsel W44A
 
 Customer UI'nin kalan işi 34 route-reachable tam ekrandan 30'u, 24 aktif modal
 yüzeyden 22'si ve üç shared-state ailesinden ikisidir: **54 dönüşüm birimi**.
@@ -267,3 +269,110 @@ Flutter language ile kapanır.
 Bu plan Customer UI bitişini Merchant pilot minimum, release gates ve Production
 rollout'tan ayrı tutar. Ads, Reward economics, Gamification ve advanced Reputation
 60 günlük Customer UI prerequisites değildir.
+
+## 11. W45D revision — actual calibration and current planning
+
+Revision date: **2026-09-05**, Day 0 of the scenarios below. This is a planning
+update, not new implementation/release authority or a promised launch date.
+Historical numbers above remain available for comparison. The active baseline
+is [W45 actual surface inventory](UI_W45_POST_CALIBRATION_SURFACE_INVENTORY.md):
+**34 reachable screens; 23 active modals; 38 remaining units (17 + 19 + 2)**;
+Tier A/B/C **6/15/17**, Figma HEAVY/LIGHT/NONE **6/6/26**. Nominal remaining direct
+size is **203 h**, excluding integration, owner waiting and commercial gates.
+
+### What the measured packages change
+
+Discovery closed 17 nominal h in 26m01s to its tested checkpoint; Auth/Startup
+closed 30 nominal h in ~28 minutes total. Both completed GREEN and their combined
+integration passed 1637 tests, zero failures, with six pre-existing gated skips
+and a clean analyzer. These are two local presentation-heavy packages with
+substantial foundation reuse. Their results show that W44 nominal estimates
+materially overstated observed Astra completion time for that work.
+
+No minutes-per-screen multiplier is applied to the remaining inventory. The
+remaining work contains permission/QR/purchase/review/chat interactions, active
+owner closeout, shared integration and potentially hard functional defects.
+A single frozen screen, signed release, hardware journey or backend incident may
+consume more calendar time than either measured package. Nominal hours are now
+used to compose coherent **40–60 h scope contracts**, not six productive hours
+per day as a measured throughput conversion. Design stays at **three decisions**.
+
+### Current workstream sequence
+
+1. W45A-R2 is already active on its own branch. New checkpoint 4ae9d6d reports
+   Shop/Cart/Nearby direction approval and continuing closeout; it is not merged
+   by W45D. Finish its separate acceptance/integration before claiming those
+   three main surfaces complete. Never create duplicate Shop/Cart/Nearby tasks.
+2. Proposed Wave 2 Agent 2: **Account Hub 44 nominal h / 9 units**. It uses
+   integrated Auth, no per-screen Tier B/C owner gate. Shared location helper
+   APIs stay frozen; Nearby and Account do not write them concurrently.
+3. Design Batch 2: at most **Purchases, Reviews, Chat** representative prototypes.
+   Resolve owner decisions in a bounded batch; no Figma states/variant expansion.
+4. Proposed Wave 2 Agent 3: **Purchases/Shop Ratings -> Product Reviews 45 nominal
+   h / 6 units**, sequentially in one branch after separately accepted Cart/QR
+   and the corresponding visual directions. No Cart or Shop owner files edited.
+5. Subsequent composition groups consume the remaining Messaging/Notifications,
+   Wishlist/secondary and shared-state work with another inventory refresh.
+   Integration owns common feedback/navigation primitives. These are candidates,
+   not started packages; scope/size is revisited after the two larger gates.
+
+The full proposed file ownership, checkpoints, test/Figma cadence and criteria
+for 70–100 h escalation or reduction are in
+[Wave 2 scope recommendation](ASTRA_WAVE2_SCOPE_RECOMMENDATION.md).
+
+### Scenarios — calendar windows from this revision
+
+The following ranges are **planning assumptions**, not statistically calibrated
+Astra forecasts. UI-ready includes local combined regression and accepted visual
+composition; pilot-ready additionally requires every external release gate.
+UI and commercial work overlap, so row endpoints must not be added together.
+
+| Scenario | Customer UI acceptance window | Conditional commercial pilot window | Explicit assumptions |
+|---|---|---|---|
+| CONSERVATIVE | **Day 20–30** | **Day 55–75** | PO decisions take 3–5 days per batch; two meaningful rework/integration cycles; a hard functional defect; Merchant minimum, device or signing work delays acceptance. The 60-day pilot is at risk. |
+| EXPECTED | **Day 12–20** | **Day 35–55** | PO batch decisions within 1–2 working days; current R2 completes under a separate gate; two isolated implementation lanes; at least one rework reserve per wave; Merchant minimum and release prerequisites proceed in parallel under separate owners. |
+| AGGRESSIVE | **Day 6–12** | **Day 21–35** | Existing and next visual directions settle promptly; no major business defect; shared APIs remain stable; daily bounded integration capacity; Merchant minimum, devices, signing and commercial owners are already available. |
+
+These windows deliberately leave multi-day integration, owner and functional
+rework buffers despite fast Wave 1 coding. The remaining 203 nominal h does not
+convert directly into any row. The old 64-day high case and the conservative
+75-day pilot tail remain visible; faster UI alone does not prove a 60-day launch.
+
+### Critical path and reserved acceptance windows
+
+| Gate / work | Expected sequencing and allowance | Exit evidence / limiting owner |
+|---|---|---|
+| Product Owner visual decisions | Early Day 0–7; batches of at most 3, responses assumed 1–2 working days | Recorded Shop/Cart/Nearby R2 direction and Purchases/Reviews/Chat decisions; prototype-ready is insufficient |
+| Integration, conflicts and regression | Across Day 1–20; reserve 1–2 days per combined wave for review/rework even when tools are faster | Shared single-writer plan, semantic merge review, no unexplained test loss, full suite/analyzer/golden acceptance |
+| Hard functional bugs | Rolling Day 5–30; expected reserve 5–10 calendar days, potentially longer in conservative case | Reproduction and contract evidence; security/session/QR eligibility correctness before cosmetics; explicit functional task if UI scope is exceeded |
+| Merchant App pilot minimum | Parallel separately owned work; target definition by Day 7 and acceptance by Day 20–35 | Minimum merchant receive/verify flow agreed, implemented and tested; current readiness is **not established by W45D** |
+| Physical QR acceptance | After customer + merchant builds; reserve Day 20–35 with 3–5 device/merchant test days | Real camera/device journey, session expiry, repeated scan/retry and correct verified purchase; local widgets do not substitute |
+| Release and signing | Prepare in parallel; reserve Day 25–40 and 3–7 working days for platform issues | Reproducible signed candidate, platform permission/config acceptance, distribution/review evidence; access and readiness unverified here |
+| Legal and support | Separate owner, target closure Day 25–40; reserve 3–7 days | Owner-approved legal/support readiness and operational contact paths; existing legal UI readability is not legal approval |
+| Production cutover | Only after all gates; conditional Day 35–55; reserve 2–5 controlled days | Explicitly authorized release/cutover plan, deployment/rollback checks and operational acceptance; no Production operation in this task |
+
+The longest unresolved owner/merchant/hardware/release dependency sets the pilot
+window. Production access, Development writes, signing changes, merchant work and
+legal decisions are not implicitly authorized by this plan. Their current status
+is unknown unless a separate owner supplies evidence; these are reserved windows,
+not claims of completed or already scheduled work.
+
+### Recalibration and decision points
+
+- After both 44/45-hour packages and their combined integration, measure actual
+  completion, elapsed bounds, corrective work, shared collisions, owner queue and
+  test retention. Do not scale to 70–100 solely from fast checkpoints.
+- Day 7: reconcile the R2 gate, Design Batch 2 and Merchant minimum definition.
+  If either prerequisite is missing, retain it explicitly on the critical path.
+- Day 14: review whether the expected UI window remains supported; one major
+  functional or owner correction moves planning toward conservative until fixed.
+- Day 30: if transaction/QR acceptance or signed candidate prerequisites lack an
+  owner and evidence, do not label the pilot ready. Only previously allowed
+  cosmetic secondary work can be deferred through the existing pilot cut line;
+  never drop auth, eligibility, hardware or truthful-data acceptance.
+- Day 45–60: keep time for release defects and commercial gates, not new
+  composition/artwork. Confirm the pilot date against actual gate evidence.
+
+No Owner gate, production cutover or new package is scheduled automatically by
+this document. Historical package ownership/order in Sections 4–5/9–10 is
+superseded for the proposed next wave by the non-overlapping 44/45-hour pairing.

@@ -1,6 +1,6 @@
 # Astra Calibration Log
 
-Durum: **INITIALIZED — NO ASTRA BENCHMARK YET**
+Durum: **WAVE 1 RECORDED — TWO IMPLEMENTATION PACKAGES INTEGRATED, 2026-09-05**
 Kalibrasyon başlangıcı: **2026-09-05 (Europe/Istanbul)**
 Protokol: [Astra Execution Protocol](ASTRA_EXECUTION_PROTOCOL.md)
 
@@ -19,7 +19,7 @@ state sayısı ve test yoğunluğundan tahmin üretir; kendisi de bunun stopwatc
 olmadığını belirtir. Bu saat/gün ve paralellik tahminleri Sol veya Astra için
 ölçülmüş throughput, hız üstünlüğü ya da başarı eşiği olarak kullanılamaz.
 
-## 2. Astra başlangıç kaydı
+## 2. Astra başlangıç kaydı — tarihsel W44B snapshot
 
 | Alan | Başlangıç durumu |
 |---|---|
@@ -43,44 +43,113 @@ Kalibrasyon çerçevesi şimdi başlar. W44B'nin docs-only tamamlanması ilk Ast
 uygulama benchmark'ı sayılmaz. Bu başlangıç kaydı Wave 1'i başlatma, envanterdeki
 işleri kendiliğinden uygulama veya remote/Figma erişim yetkisi vermez.
 
-## 3. Ölçülen paketler
+## 3. Wave 1 kanıtlı kayıtlar
 
-**Henüz kayıt yok.** İlk gerçek uygulama paketinin kanıtlı `TASK_RESULT` raporu
-gelince Integration/Coordinator bu bölüme kayıt ekler. Aşağıdaki şablon bir örnek
-sonuç değildir; boş ölçümlere varsayılan GREEN veya sahte süre yazılmaz.
+W44B başlangıç tablosundaki 0/henüz-yok değerleri tarihsel snapshot'tır. Güncel
+örneklem: **1 prototype paketi + 2 bağımsız implementation paketi**. W45D birleşik
+integration kontrolü üçüncü bağımsız implementation örneği sayılmaz. Kaynak
+TASK_RESULT'ları korunur; aşağıdaki değerler onların ölçüm sınırlarını gösterir.
 
-```text
-ASTRA_CALIBRATION_ENTRY
-Package / task:
-Model / fresh-session context:
-Start / end / timezone:
-Worktree / branch:
-Start HEAD / base SHA:
-Scope contract / inventory IDs:
-Subpackages scoped / attempted / completed:
-Conversion units scoped / completed / completion percentage:
-Blocked units retained in denominator:
-Elapsed wall-clock / observation boundaries:
-Files changed / exact paths:
-Commits / checkpoint-to-subpackage mapping / push results:
-Targeted tests / fixes / analyzer:
-Final full suite / tested revision / result:
-Figma classification by surface / actual access / observable calls / purpose:
-Design Owner handoff:
-Blockers / affected work / independent work continued:
-Owner decisions required:
-Substantive owner corrections / evidence:
-Shared-component change required / exact files / reason / owner branch:
-Shared-component collisions:
-Critical regressions / evidence:
-Scope drift / evidence:
-Calibration GREEN | YELLOW | RED / rationale:
-Next size SAME_SIZE | INCREASE_NEXT_SCOPE | REDUCE:
-Recommended subpackage / unit count and dependency rationale:
-Integration outcome / main revision when available:
-Remaining work / required manual acceptance:
-Evidence references:
-```
+| Paket | W44 nominal kapsam | Gözlenen süre ve sınırı | Sonuç kanıtı | Calibration |
+|---|---|---|---|---|
+| W45A Design Owner | FS-19/20/18; 3 Tier A prototype, full conversion değil | Görev raporu ~19 dk toplam; ilk belge 02:58:58–03:16:50 Europe/Istanbul = 17 dk 52 sn inceleme/test sonuna kadar, final docs/push hariç | 3/3 prototype; 13 dosya; 3 PNG; 107 targeted PASS; analyzer temiz; bu sözleşmede full suite ertelendi; Figma 0 | **GREEN / SAME_SIZE**; ilk teslimde PO review pending/partial |
+| W45B Discovery | WP-02 **17 nominal h**; FS-15/16 | 03:01:02–03:27:03 Europe/Istanbul = **26m01s**, doğrulanmış runtime/test checkpoint push'a kadar; son docs/push hariç | **34 dosya, 136 yeni test, 27 görsel kanıt, 6 commit; 1566 PASS / 0 FAIL / 6 mevcut skip**; analyzer temiz; Figma 0 | **GREEN**; 2/2 birim, 6/6 alt paket, %100 |
+| W45C Auth/Startup | WP-08 **30 nominal h**; FS-01–11, MD-10/11/24 | 02:59:59 başlangıç; final branch push 03:27:36 Europe/Istanbul: **~28 dk** toplam (27m37s gözlenen sınır) | **55 dosya, 71 yeni test, 27 golden, 4 commit; 1501 PASS / 0 FAIL / 6 mevcut skip**; analyzer temiz; Figma 0 | **GREEN**; 14/14 sözleşme birimi, 8/8 alt paket, %100 |
+
+### Design Owner — kayıt sınırı ve sonraki gelişme
+
+İlk Wave 1A ölçümü 6a9542b checkpoint'ine kadarki üç prototip paketidir. Kanıt:
+[W45A prototype review](https://github.com/PromethusVision/TStore/blob/6a9542b/docs/UI_W45A_TIER_A_PROTOTYPE_BATCH_REVIEW.md).
+Worker fresh Astra context, base 4287972, branch astra-ui/w45a-tier-a-prototype-batch-1,
+worktree 6e1f bildirdi. Shop 8276d8d, Cart 39a8653, Nearby 6a9542b checkpoint'leri
+pushed; shared-core/backend/config dosyası değişmedi. İlk teslimde blocker,
+major scope drift ve substantive owner correction 0 bildirildi; bu gözlem
+sonraki kararları yok saymak için kullanılmaz. Figma sınıfı üç HEAVY; fiilî çağrı 0.
+
+W45D'de salt okunur bakılan yeni HEAD **4ae9d6dcef19a93e03a5a82383f7fb130aeaf51a**
+önceki ölçümden sonraki işi de içeriyor: a261004 Cart CTA düzeltmesi ve 4ae9d6d
+Shop R2 closeout. [R2 checkpoint raporu](https://github.com/PromethusVision/TStore/blob/4ae9d6dcef19a93e03a5a82383f7fb130aeaf51a/docs/UI_W45A_R2_TIER_A_CLOSEOUT.md)
+üç görsel yönün PO tarafından onaylandığını, Cart CTA kararını ve devam eden
+Cart/Nearby closeout'unu bildiriyor. Shop hedefli gate 40 PASS; R2 birleşik gate
+henüz pending. İlk pending/partial kaydı tarihsel olarak korunur; güncel onay
+kanıtı bunun üstüne eklenir. Bu sonraki işi ~19 dk/107 test ölçümüne katmadık.
+R2 süre/nihai substantive correction sayısı burada yeniden ölçülmedi:
+NOT_OBSERVABLE. W45A/R2 **main'e merge edilmedi**, üç yüzey kalan envanterde.
+
+### Discovery — bağımsız implementation
+
+- Base 4287972429d9befe4ef2637a565ea6d8a2393a5e; source HEAD
+  44acd83181e9128afe97c43d5bc995e6377fd58c; runtime/test checkpoint 82498a0.
+  Worker fresh Astra context ve 8246 worktree'si bildirdi.
+- Kapsam: catalog + unified search + inline history/suggestion/state varyantları;
+  backend/taxonomy/navigation contract değişmedi. 2 runtime + 3 test/fixture +
+  27 PNG + 2 docs. Tam yollar ve checkpoint/test komutları:
+  [source map](UI_W45B_ALL_PRODUCTS_SEARCH_SURFACE_MAP.md),
+  [TASK_RESULT](UI_W45B_ALL_PRODUCTS_SEARCH_TASK_RESULT.md).
+- Hedefli final 281 PASS, yeni matrix 92 + 44 = 136 PASS. Runtime full suite
+  1566 PASS/0 FAIL, 101 sn; altı opt-in skip etkinleştirilmedi. Test düzeltmeleri
+  ve ara analyzer bulguları source raporunda saklı; mevcut assertion/golden silinmedi.
+- Blocker, kritik regression, major drift ve substantive owner correction: 0
+  bildirildi ve birleşik gate'te ters kanıt bulunmadı. Shared write yok; Home'un
+  home_search_bar.dart tüketimi Integration tarafından ayrıca incelendi.
+- Tarihsel Figma sınıfı iki HEAVY; görev doğrudan Final Flutter implementation'ı
+  yetkilendirdi, fiilî Figma 0. Ayrı görsel gate istisnası yalnız bu scope'a ait.
+- Worker SAME_SIZE önerdi. Integration, iki örnek + birleşik gate sonrası
+  **INCREASE_NEXT_SCOPE** öneriyor; worker kaydı değiştirilmedi.
+
+### Auth/Startup — bağımsız implementation
+
+- Aynı base; source HEAD 147a5e1a7c7d5462ab7ee3421712e822be35e65d;
+  runtime/test checkpoint f60daacaa776ac1cba46b48c2727e9919545fc22; efac worktree.
+  22 presentation runtime + 4 test Dart + 27 PNG + 2 docs.
+- 11 full screen + 2 aktif dialog/notice + 1 korunmuş compatibility dialogu.
+  MD-10 başlangıçta sözleşmeye dahildi ve tamamlandı; aktif caller yokluğu
+  saklanmadı, yeni route icat edilmedi. Scope paydası hâlâ 14; aktif closure 13.
+- Hedefli Auth 289 PASS; yeni matrix 68 + onboarding 3 = 71; full suite
+  1501 PASS/0 FAIL, 89 sn. Callback/PKCE/session/recovery/validation/legal content
+  ve role business behavior değişmedi. Notice listener'ın yalnız render bölümü
+  değişti. İki icon assertion shared StateCard içindeki gerçek icon'a taşındı.
+- Kanıt, tam yollar, ara düzeltmeler ve dört pushed checkpoint:
+  [inventory](UI_W45C_AUTH_STARTUP_INVENTORY.md),
+  [TASK_RESULT](UI_W45C_AUTH_STARTUP_TASK_RESULT.md).
+- Son görev dalı push'ı açık kullanıcı teyidinden sonra tamamlandı; ilk otomatik
+  push incelemesi beklemesi ~28 dk gözlem süresine dahildir. Bu teknik yetki teyidi
+  görsel/kapsamsal substantive owner correction değildir.
+- Blocker, kritik regression, major drift ve substantive owner correction: 0.
+  Tarihsel Figma üç LIGHT, kalan NONE; fiilî Figma 0. Worker GREEN/SAME_SIZE;
+  Integration kararı diğer örnekle birlikte INCREASE_NEXT_SCOPE.
+
+### W45D birleşik kontrol ve yorum
+
+W45D başlangıcı **2026-09-05 03:39:04 Europe/Istanbul**. Yeni integration branch,
+aynı kalıcı efac worktree; bu takip görevi yeni bir bağımsız implementation
+benchmark'ı olarak sayılmaz. Başlangıç main 4287972; ön-merge collision review
+**a103518**, A merge **0d6228d**, B merge/test edilen birleşim **a621d73**.
+
+- 536 hedefli PASS; 407 komşu regression PASS; analyzer 0 issue.
+- **1637 PASS / 0 FAIL / 6 mevcut opt-in skip**, 78.147 sn full test runner.
+  160 test dosyasının tamamı machine discovery'de; A'nın 159 ve B'nin 158 test
+  dosyasında kayıp yok. 136 + 71 yeni testin tamamı korunuyor; 1430 baseline ile
+  toplam tutarlı. Ayrı checkpoint sayıları toplam suite'e toplanmadı.
+- A/B'nin 89 değişen dosyasının tamamı kaynak blob'larıyla aynı; 54 PNG korundu.
+  Textual conflict 0; runtime semantic reconciliation 0. MD-10 reachability ve
+  eski reuse-summary aritmetiği doküman düzeltmesi olarak kaydedildi.
+- Birleşik feature acceptance %100; major drift/kritik regression yok. W45D
+  **GREEN**; main teslimi ve son revision [integration result](ASTRA_WAVE1_IMPLEMENTATION_INTEGRATION_RESULT.md)
+  ve görev final Git çıktısıyla bağlanır. Production/Development/Figma erişimi 0.
+
+**W44 nominal estimates materially overstated observed Astra completion time.**
+İki bağımsız büyük implementation paketi major scope drift veya regression
+olmadan GREEN tamamlandı. Nominal agent-hour ile gözlenen wall-clock farklı
+ölçülerdir; normalize edilmemiş hız çarpanı veya her sonraki iş için dakika
+öngörüsü çıkarılmaz. İki örnek hard-functional/backend, fiziksel QR, signing,
+merchant minimum veya PO-review hızını ölçmez.
+
+Karar: [Wave 2](ASTRA_WAVE2_SCOPE_RECOMMENDATION.md) implementation paketlerini
+**40–60 nominal h** aralığına kontrollü artırır (44 h Account ve 45 h
+Purchases/Ratings -> Reviews). Design Owner **SAME_SIZE**, en çok üç prototype.
+AGENTS.md/protokol terfisi yapılmadı. [Güncellenen plan](UI_W44_60_DAY_ACCELERATION_PLAN.md)
+eski tahminleri korur; üç senaryo dış kapıları ve integration/rework payını içerir.
 
 ## 4. Kayıt ve değerlendirme kuralları
 
@@ -104,4 +173,4 @@ Evidence references:
 
 `ASTRA_CALIBRATION_STARTED: YES`
 
-`ASTRA_BENCHMARK_RECORDED: NO`
+`ASTRA_BENCHMARK_RECORDED: YES — LOCAL PACKAGE EVIDENCE, NOT NORMALIZED MODEL COMPARISON`

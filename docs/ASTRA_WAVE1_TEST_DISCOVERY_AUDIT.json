@@ -1,0 +1,1315 @@
+{
+  "testedRevision": "a621d73a30904014d147b8ec2aad14d368b9bf0a",
+  "command": "flutter test --no-pub --machine",
+  "result": {
+    "pass": 1637,
+    "fail": 0,
+    "existingGatedSkip": 6,
+    "files": 160
+  },
+  "comparisonMethod": "Git source test-file inventories mapped to actual merged machine test discovery; hashes compared, all source-owned additions/changes preserved. Three pre-existing B test files have reviewed additive/structural changes; no assertion removal.",
+  "sources": {
+    "base": {
+      "revision": "4287972429d9befe4ef2637a565ea6d8a2393a5e",
+      "testFiles": 157,
+      "missingFromDiscovered": []
+    },
+    "sourceA": {
+      "revision": "44acd83181e9128afe97c43d5bc995e6377fd58c",
+      "testFiles": 159,
+      "missingFromDiscovered": []
+    },
+    "sourceB": {
+      "revision": "147a5e1a7c7d5462ab7ee3421712e822be35e65d",
+      "testFiles": 158,
+      "missingFromDiscovered": []
+    },
+    "merged": {
+      "revision": "a621d73a30904014d147b8ec2aad14d368b9bf0a",
+      "testFiles": 160,
+      "missingFromDiscovered": []
+    }
+  },
+  "files": [
+    {
+      "path": "test/architecture/auth_redirect_wiring_contract_test.dart",
+      "blob": "7e6a9e4a16bde6ddf23e365123ec4a9d19417fb7",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/legacy_order_isolation_test.dart",
+      "blob": "d50d2df72c7a9a83a070dd410d031f586461d77c",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/mobile_release_signing_contract_test.dart",
+      "blob": "cb8ba36298dc328def0c66d2eafdbc23440872f4",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/production_platform_contract_test.dart",
+      "blob": "fe0ecec5497f423a73c5ab5eeea72b13ace08dc4",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/release_logging_contract_test.dart",
+      "blob": "98114e3a3ff2f51629caf65ef3983a0bcb5c5dc2",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/review_client_security_contract_test.dart",
+      "blob": "261dcd41af32da85f0052998042753d610907641",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/architecture/taxonomy_runtime_wiring_contract_test.dart",
+      "blob": "3a01ab701533d4e99ab5f1593b93c25365faf2f0",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/integration/auth_flow_test.dart",
+      "blob": "2fc811caa5518ff8ca8934e3ba0541df69cac7a2",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/integration/live_development_auth_rls_test.dart",
+      "blob": "a028466671709eff62706c58173f0f03352e9bba",
+      "pass": 2,
+      "skip": 1,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/integration/live_development_product_reviews_test.dart",
+      "blob": "fcb61ff4d229079f3fb325a997353612f1c012ec",
+      "pass": 2,
+      "skip": 1,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/live/development_canonical_taxonomy_acceptance_test.dart",
+      "blob": "0af7796218ee280de102f258701e93885d0d3f48",
+      "pass": 1,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/live/development_realtime_integration_test.dart",
+      "blob": "351ba12f16f4ac75272856207af8be048c6e6e01",
+      "pass": 0,
+      "skip": 2,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/live/production_demo_functional_smoke_test.dart",
+      "blob": "2d32c6e14d8c0935129318af5109f3f810eb3505",
+      "pass": 3,
+      "skip": 1,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/live/production_readonly_integration_test.dart",
+      "blob": "aaaf8675ed9553c025ec53589d8d8ffb3b862015",
+      "pass": 4,
+      "skip": 1,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_callback_contract_test.dart",
+      "blob": "21e2ba02734a0164d247fcc0d2bfcc863606467c",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_cubit_test.dart",
+      "blob": "2276d8d7626a8919cd7c299c33c2f65dc6ecd36f",
+      "pass": 36,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_deep_link_contract_test.dart",
+      "blob": "d39863f858d80639555e55311745994de8327b2c",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_repository_impl_test.dart",
+      "blob": "8d91d5388895392c6c237f4508424473b8b35f97",
+      "pass": 18,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_repository_test.dart",
+      "blob": "44f198d3736affaf1811f8a80472bcbbc105cdad",
+      "pass": 17,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/auth_usecases_test.dart",
+      "blob": "e6fe3402775c2fc8f17666b2987723e8ba13fa9c",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/customer_onboarding_preferences_test.dart",
+      "blob": "8ae1bb1f5d635180d42c223012ecb137891520e9",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/auth/password_recovery_launch_test.dart",
+      "blob": "8a96e7f03d29d7e46adf8070705b008622e56d83",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/cart_item_purchase_verification_test.dart",
+      "blob": "8951bef4c0b29ac8dc1271116427e9ea4bd740ae",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/cart_v2_cubit_test.dart",
+      "blob": "779a6137c5758d00e394e6d2e2c11a668a309b37",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/qr_release_migration_contract_test.dart",
+      "blob": "2da7e62c529907118c121f25450e9eb30fbe4815",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/qr_session_cubit_test.dart",
+      "blob": "c10a9d746104c6a5661cbfcbefbacc739f442bb9",
+      "pass": 13,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/qr_verification_cubit_test.dart",
+      "blob": "d6a570a3cf1e88d6e3713e5820fff70231f06732",
+      "pass": 13,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/cart/qr_verification_model_test.dart",
+      "blob": "2eb5ea6ceda78bdab326d30e57041714ca338776",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/chat_conversations_cubit_test.dart",
+      "blob": "4cb1cef099109b51274f267610494acaa7b77042",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/chat_cubit_test.dart",
+      "blob": "1f742d7c167d138699070ffb0b565483e94d1204",
+      "pass": 31,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/chat_realtime_snapshot_tracker_test.dart",
+      "blob": "e7c13cb5c55bd62c5bd8410f9c3fe19d34e6b1b3",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/chat_thread_model_test.dart",
+      "blob": "3ce79e7e43e52ea3718bbf071cd721675c3729fc",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/chat_unread_cubit_test.dart",
+      "blob": "343c706b91256b282f12bd3f5e42f33006804798",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/chat/shared_preferences_pending_product_chat_storage_test.dart",
+      "blob": "7fa0e914686ed244fb16b59d2dba83839f5d863f",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/customer_error_message_test.dart",
+      "blob": "8c129034323f5a37b78d5f56b1ad4c0e43e2754f",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/development_taxonomy_opt_in_test.dart",
+      "blob": "dc06975f97cfd215a4cfdcb41f60c3745921c106",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/esnaftavar_design_tokens_test.dart",
+      "blob": "621df26e003954c22158dd2e34b5f39aa90100c4",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/iconsax_compat_test.dart",
+      "blob": "4644961813c5ef60c325cf28d3fcd6512be30f09",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/production_release_preflight_test.dart",
+      "blob": "79815d487e93cbb5994544f0878152058d3af66e",
+      "pass": 15,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/supabase_config_test.dart",
+      "blob": "abfd7f03234b99019b5723457f1c05891cfb7a46",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/core/taxonomy_dependency_configuration_test.dart",
+      "blob": "d26d052ed1b2aa4c39e72587514c23d81f38b2c2",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/demo_seed/esenler_demo_v1_contract_test.dart",
+      "blob": "8808fb337ddfc23d49e8bac17b3f98842ea60e5d",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/navigation/navigation_menu_cubit_test.dart",
+      "blob": "b49883b26eb04e0ab3860b1be84b1ecdd96f6300",
+      "pass": 1,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/notifications/notification_repository_impl_test.dart",
+      "blob": "b85c6daba06916221b7b8dc85088dc1ede94c649",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/notifications/notifications_cubit_test.dart",
+      "blob": "879e850985d9bcd29fd2692acf7c17639a4e8d23",
+      "pass": 33,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/notifications/notifications_pagination_test.dart",
+      "blob": "62221428bdfaa0fad112f782b7aad9a1e31a2ac8",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/orders/orders_cubit_test.dart",
+      "blob": "908856b9c09d373db90aa50b1bba31121a4fe71c",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/personalization/customer_saved_locations_cubit_test.dart",
+      "blob": "3e134ae68ba6f5c5d39fd989bf0abe2bb9b788e3",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/personalization/personalization_cubit_test.dart",
+      "blob": "3ddf4cba3bb7de3ecc779112022f104c05e5e4e9",
+      "pass": 22,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/purchases/purchase_history_cubit_test.dart",
+      "blob": "3d68d7d152dcf96fdf3241ff15636e32a0714b5f",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/purchases/verified_purchase_model_test.dart",
+      "blob": "03682927b8755387207f9126d936d1da5d2e05d1",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/reviews/review_repository_impl_test.dart",
+      "blob": "8d2de8bba50bfa67ee4da51d7de8aa255402f858",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/reviews/reviews_cubit_test.dart",
+      "blob": "951611b80a058a7704806b182e13dc4771d4b5d0",
+      "pass": 13,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/reviews/shop_rating_cubit_test.dart",
+      "blob": "a80fe3200d873e31952a82cb82f8ae1e56caf638",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/reviews/verified_review_storage_contract_test.dart",
+      "blob": "35a386fc16d35e31d4abac13861efb68471b3983",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/banner_entity_test.dart",
+      "blob": "c16b6129871986f9454aea8b08be3a1698e871e4",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/banner_model_test.dart",
+      "blob": "51a3a0e6f4200021aaa17dbdcc6a67062da1f81a",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/banners_cubit_test.dart",
+      "blob": "014c2da80e2cad42b62aeac134766fe4ebb68e9d",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/canonical_taxonomy_contract_dto_test.dart",
+      "blob": "cdd54896ae46e26979aeea83b6c83d634867d3b1",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/canonical_taxonomy_repository_impl_test.dart",
+      "blob": "1210ebf3a1e94bcb81a8212a512c706f72d0f207",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/customer_proximity_helper_test.dart",
+      "blob": "1056918dbf5f86fda17a4a50028d52bafdabc24c",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/customer_search_cubit_test.dart",
+      "blob": "60087e7810d1acd0d9ada01b5e1e0e6c93c3bc44",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/geolocator_customer_location_service_test.dart",
+      "blob": "15c21f6f0e84c2fff99b4f49edda008a19fe46b8",
+      "pass": 15,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/get_banners_usecase_test.dart",
+      "blob": "909f9f54060d95ebc3e8a6a4a4df0609beed379e",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/get_products_by_ids_usecase_test.dart",
+      "blob": "221f8ec6ad11dd59004cd10b61982e729d23eb5a",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/get_shop_by_id_usecase_test.dart",
+      "blob": "380a2f2337694706d5a7ac4989c8a7ca61e5920e",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/media_model_resolution_test.dart",
+      "blob": "c59881b519989f058ca0b260e326193f626ce8a0",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/nearby_shops_cubit_test.dart",
+      "blob": "4efb6d78ae281f3137a2a2e0690c668a31d307a0",
+      "pass": 21,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/products_cubit_test.dart",
+      "blob": "3e08391386292cd616d4dd526280f29afa775cb4",
+      "pass": 23,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/recently_viewed_products_cubit_test.dart",
+      "blob": "c09544c8c4cd9bfa08e2198c9fda103e7e237f0c",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/shared_preferences_recent_product_searches_storage_test.dart",
+      "blob": "a5586574921f26ca860458e6c5d46aabee361987",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/shared_preferences_recently_viewed_products_storage_test.dart",
+      "blob": "460e3f93c8bd5571ded8db17420fc022e25fa89a",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/shop_product_customer_purchasability_test.dart",
+      "blob": "8dc3782e9e4ab6fe498d20c3e4272044f46944ca",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/shop_usecases_test.dart",
+      "blob": "ae29c08a2fb72ebacd233fcc3d9c25447cd3c0e5",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/supabase_canonical_taxonomy_rpc_adapter_test.dart",
+      "blob": "15730290a64c60ff1635fbb20aafa2ec92febc0f",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/taxonomy_backend_capability_verifier_test.dart",
+      "blob": "408321233047b45566dbac46af0ffca41d00accc",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/taxonomy_categories_cubit_wiring_test.dart",
+      "blob": "bf7ae30a2b5c01553e984c65758bdf9ff72d60b5",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/taxonomy_category_hierarchy_test.dart",
+      "blob": "ae563c87481e594352ecf81d0999fba38710a20f",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/taxonomy_customer_search_wiring_test.dart",
+      "blob": "8bedc831b616dd36eb117ab6a0bac7696ebf1d9a",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/shop/taxonomy_product_scope_cubit_wiring_test.dart",
+      "blob": "a6c6d5f1ded6b54af9ccd7563e918eca15803eb1",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "blob": "5de062c9378bdca50b7e7b848f4e8dea38e1e75e",
+      "pass": 18,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/supabase/public_media_source_resolver_test.dart",
+      "blob": "75eb8e1100119362395296f22df73d8ba744e4aa",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/unit/wishlist/wishlist_cubit_test.dart",
+      "blob": "bed067ef3872b7e63075bb2b543e2c10af5423e5",
+      "pass": 25,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/auth_input_visibility_test.dart",
+      "blob": "7cfb886c3be6b4d60ebd4e6815cd49a9f2b0939c",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/customer_launch_gate_test.dart",
+      "blob": "af1ae2644c570bba991a67df9ef19ce6a8f696a5",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/customer_session_listener_test.dart",
+      "blob": "cd250775b04bc3f99e025d62e942e4eed3cf548b",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/email_confirmation_listener_test.dart",
+      "blob": "53c1c269d0808eb7f6fafb83ecd88f1f45ac1e3d",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/email_confirmation_navigation_test.dart",
+      "blob": "68318854aeac876ded9d7231b357c478c23f78cf",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/login_form_section_test.dart",
+      "blob": "72dfffe3f91e3ecfbb11b2ae1443df842c5544be",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/login_view_test.dart",
+      "blob": "fecd10484458e78730444834ac1f54ab7b04272f",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/on_boarding_view_test.dart",
+      "blob": "d0d87047bea79086cee0a203f2932e5dcc9996ad",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "reviewed_B_change",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/password_recovery_flow_test.dart",
+      "blob": "17be482353265857940c60be0001fda63102a64e",
+      "pass": 20,
+      "skip": 0,
+      "sourceA": "reviewed_B_change",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/password_recovery_listener_test.dart",
+      "blob": "e9391d5b088f7451c49cb6adad0503a8d4564e34",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "reviewed_B_change",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/sign_up_legal_consent_test.dart",
+      "blob": "ec7b4105fae8106381ba599c734cfdede1cbe86f",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/sign_up_view_test.dart",
+      "blob": "cc22e473ed154018d6df09657c70b22d9aed01d3",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/verify_email_view_test.dart",
+      "blob": "a2b1f92d367845c6826c50107036a16f4c6bb679",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/auth/w45c_auth_startup_final_ui_test.dart",
+      "blob": "5ed36823377b8adacd276ff725c8712db568a655",
+      "pass": 68,
+      "skip": 0,
+      "sourceA": "new_in_B",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/cart/cart_qr_session_bottom_sheet_test.dart",
+      "blob": "c6e40bb5cac029da5475ed0c030603fd35699131",
+      "pass": 23,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/cart/cart_v2_view_test.dart",
+      "blob": "16252d26ece2052b661082170b6501576be0e16b",
+      "pass": 21,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/chat/chat_view_test.dart",
+      "blob": "2e4b085808625f6c1227c968f167c77dc916cd70",
+      "pass": 17,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/chat/conversations_view_test.dart",
+      "blob": "b17915d1bdcda7bab4085a6b067874c3f7aceb60",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/chat/pending_product_chat_listener_test.dart",
+      "blob": "9fc6ce74cac1dac0e048fb782e056a2b031300f2",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/common/customer_light_input_theme_test.dart",
+      "blob": "44e5b43c020307311d86fc495c231e8d01347860",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/common/horizontal_product_card_favorite_test.dart",
+      "blob": "24cadaedf709321365946c1bfa9b501efed17813",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/common/location_dialog_localization_test.dart",
+      "blob": "93fbd4e7674f4fd5fee54ab2daa5edc200f8b2e9",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/common/reward_progress_card_test.dart",
+      "blob": "e164444a862c225540f20f80b19f8a9c3945095f",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/common/vertical_product_card_favorite_test.dart",
+      "blob": "ef2e28e982d7dbf26e94397c635967e292c9606a",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/navigation/customer_bottom_navigation_test.dart",
+      "blob": "2208ac3347698568eb19d038f0b401fbfa0df864",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/navigation/navigation_menu_unread_badge_test.dart",
+      "blob": "bd74b2b6843d668f6c07fb190613a73c6a37ed99",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/notifications/customer_notifications_view_test.dart",
+      "blob": "3832139f69676b2727ec392b89b087d56e2d6ef2",
+      "pass": 14,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/account_deletion_confirmation_dialog_test.dart",
+      "blob": "81d647407b97851bcdfc1e33a07a2ecf95fd0e43",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/customer_coupons_view_test.dart",
+      "blob": "8ede3f8fb78b234365fdb4165681a847c967791f",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/customer_profile_view_test.dart",
+      "blob": "cf7156c1733bd3c5d5bef5da8ba4138ad772e9fe",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/customer_saved_locations_view_test.dart",
+      "blob": "5a230c72a297e35a6e46dec2fed059664dd7532a",
+      "pass": 13,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/edit_profile_bottom_sheet_test.dart",
+      "blob": "5667dbfe611a7bebd2d80c2fc19c80fa24bb3001",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/help_and_support_view_test.dart",
+      "blob": "a94408d0af94b1bf77bb59f63f53482e3558594c",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/privacy_and_permissions_view_test.dart",
+      "blob": "ad8e5c11f0ec2cd46cec4873f7b5780734ad7680",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/personalization/settings_cart_navigation_test.dart",
+      "blob": "0260aca5bdda42b9331153accea1001be58a143c",
+      "pass": 34,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/purchases/customer_ratings_view_test.dart",
+      "blob": "8771209b2bcf8acd61443880fe269599091b71dd",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/purchases/purchases_view_test.dart",
+      "blob": "27caab82ce71459ad19da8e07f88c11b301610cf",
+      "pass": 27,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/all_products_view_test.dart",
+      "blob": "440214a2e37d6dd61aa0f93f11a0807e5c3df009",
+      "pass": 38,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/banner_carousel_slider_test.dart",
+      "blob": "b2cc99aab98f92f63ca8a910370c6501d94c23d8",
+      "pass": 1,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/customer_home_v1_layout_test.dart",
+      "blob": "324366d00b55b7c585c20099c67359f1b10c111d",
+      "pass": 6,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_app_bar_test.dart",
+      "blob": "54380461b6eddb0e591c53affcbf00fae810ffeb",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_categories_test.dart",
+      "blob": "4fc20111ad8dcba03864ba812b3f23eeebfe97a9",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_location_bar_test.dart",
+      "blob": "7087b08807944656c68fe5bedb83f294520ac8b8",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_nearby_shops_section_test.dart",
+      "blob": "ca95683f9be3d025ef574c3d3d65d5a4b09e2274",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_products_section_test.dart",
+      "blob": "6eb1ae3f10aebf82e78d174e834b28a795a17b4d",
+      "pass": 11,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_saved_locations_navigation_test.dart",
+      "blob": "fef7ed95be58d78f25f602128a7b75bfda905589",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/home_search_bar_test.dart",
+      "blob": "095b491ae606fbe68faf4863a5b1b424463018a8",
+      "pass": 20,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/nearby_view_test.dart",
+      "blob": "5ccf5ed16dc34588a1f5949d6f32b3b25fbb8e63",
+      "pass": 33,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_details_view_layout_test.dart",
+      "blob": "60cb422842ab5e5a5dd35ec0c2a26d70b8f155b6",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_image_fallback_test.dart",
+      "blob": "feaa18e5f4186a84bd3da0881c87d2b184a4ebb2",
+      "pass": 5,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_image_slider_favorite_test.dart",
+      "blob": "5e80fb79dd4e0a0dfea1cb3f71d881db506a7d66",
+      "pass": 7,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_metadata_test.dart",
+      "blob": "b0c24ff7dd00bdb4c06b7b4bfb4cf614403865da",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_reviews_view_test.dart",
+      "blob": "e7a46a3fabccee455f64549139336990d25be170",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_seller_price_summary_test.dart",
+      "blob": "241614b343c53bef20a0b12b1aa5b29234175e18",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/product_sellers_section_test.dart",
+      "blob": "f595b5dcb540390535755cb99ffee56c4cd172e7",
+      "pass": 29,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/promo_banner_carousel_slider_test.dart",
+      "blob": "70caccd6baa300135625dfd2646448798cec287e",
+      "pass": 8,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/recently_viewed_products_view_test.dart",
+      "blob": "3baa2a358b7fdb695ce3fbc18293000991882c14",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/shop_profile_view_test.dart",
+      "blob": "86e5a73e430d8c6676ffc10863af435c7fed3fa4",
+      "pass": 14,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/sub_category_view_test.dart",
+      "blob": "b95bb1d6d40bef6fb77d2138bfd09718261217dc",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/taxonomy_browse_view_test.dart",
+      "blob": "ee5e41767ea5fa5c460b437d4af4a11e70d63c4b",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w39a_category_visual_mapping_golden_test.dart",
+      "blob": "7c24936b529b67417a3278881144974290256d9a",
+      "pass": 3,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w39a_home_visual_review_golden_test.dart",
+      "blob": "50c7fc3c9282fd449c6c7a5962b9279cfe5cf51c",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w40a_category_recursive_browse_golden_test.dart",
+      "blob": "ca45327b5c5fbba183c17a93170ac8f9e3a9f2fe",
+      "pass": 1,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w40a_r2_category_recursive_browse_golden_test.dart",
+      "blob": "fbc08ff607832a0de6ea991bce1c31b62f157417",
+      "pass": 10,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w41a_product_listing_visual_prototype_golden_test.dart",
+      "blob": "5da8ad9884b2c734f291e5c902b134e1f24a0b37",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w41a_r2_product_listing_final_golden_test.dart",
+      "blob": "0819f855efe6e33280ade4cfeacb75168c64049b",
+      "pass": 9,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w42a_product_details_visual_prototype_golden_test.dart",
+      "blob": "fd00f51125d477967f8d0e56205d51598a102156",
+      "pass": 2,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w42a_product_details_visual_prototype_test.dart",
+      "blob": "c4ad3ef1e6c1ba055434cce727deed8c347df576",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w42a_r2_product_details_final_golden_test.dart",
+      "blob": "e155ff8486a22234afebc6759b42f1a846d66408",
+      "pass": 19,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w42a_r2_product_details_final_test.dart",
+      "blob": "dd3c52baf0de00ad586d76df98641393bcc0a8ec",
+      "pass": 15,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w43a_r2_seller_comparison_final_golden_test.dart",
+      "blob": "a381d9fd4d93fe3b3d979f3222624a3cbf140777",
+      "pass": 12,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w43a_seller_comparison_visual_prototype_test.dart",
+      "blob": "2ba778c5f14164163819fd572166098b0882ed99",
+      "pass": 16,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/shop/w45b_discovery_final_test.dart",
+      "blob": "adefeff9399aece2324682a7166f7ba2dc16d945",
+      "pass": 92,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "new_in_A"
+    },
+    {
+      "path": "test/widget/shop/w45b_inline_search_final_test.dart",
+      "blob": "a10b23414c76d2601233a37263f36c22ccc3d5b4",
+      "pass": 44,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "new_in_A"
+    },
+    {
+      "path": "test/widget/shop/wishlist_view_test.dart",
+      "blob": "077c504c62c29faf2aefa3fac9bfeb01f11d91ef",
+      "pass": 11,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget/wishlist/product_favorite_button_login_test.dart",
+      "blob": "0cbddca482a85dd5e8a8d8df1473af3e113d4b64",
+      "pass": 4,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    },
+    {
+      "path": "test/widget_test.dart",
+      "blob": "81f53b74e29bca1857d616bd34bb8598305180e5",
+      "pass": 1,
+      "skip": 0,
+      "sourceA": "identical",
+      "sourceB": "identical"
+    }
+  ]
+}

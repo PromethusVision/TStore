@@ -1,7 +1,10 @@
 # Wave 44A — Customer UI Surface Inventory
 
-Durum: **ANALYSIS ONLY — 2026-09-04**
-Kaynak: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
+Durum: **W45D POST-INTEGRATION REFRESH — 2026-09-05**
+Tarihsel kaynak: `origin/main@c0462dbaf3955a7a064f05c214e2517092629e3b`
+Birleşik runtime: `a621d73a30904014d147b8ec2aad14d368b9bf0a`. Yeni planlama baseline: [W45 envanteri](UI_W45_POST_CALIBRATION_SURFACE_INVENTORY.md).
+
+W44 tarihsel başlangıcı 34 ekran / 24 modal / 54 kalan birimdi. W45D, 13 ekran ve iki aktif Auth modalını tamamlanmış işaretler; MD-10 için eski erişilebilirlik hatasını düzeltir. Dönüşüm işinden ayrıca çıkarılan MD-10 korunmuş ve test edilmiş compatibility kodudur. Tier, Figma ve ESTIMATED_HOURS sütunları tarihsel sınıflandırma/nominal tahmin olarak korunur; tamamlanmış satırların saatleri kalan işe katılmaz.
 
 ## 1. Sayım sözleşmesi
 
@@ -21,25 +24,26 @@ deep-link listener'ları ve widget testleri birlikte okunarak çıkarıldı.
 - `EsnaftaVarStateCard` gibi paylaşılan durum ailesi, onu kullanan her ekran için
   yeniden sayılmadı.
 
-## 2. Kesin sayılar
+## 2. Kesin sayılar — W45D
 
 | Ölçü | Kesin sayı | Açıklama |
 |---|---:|---|
-| A. Erişilebilir müşteri tam ekran yüzeyi | **34** | Shell hariç; iki ayrı `AllProductsView` modu dahil |
-| B. Aktif modal/sheet/dialog/menu/overlay yüzeyi | **24** | 2 tanesi tamamlanan Final UI kapsamındadır |
-| C. Paylaşılan durum yüzeyi ailesi | **3** | 1 tanesi Final UI foundation'da tamamlandı |
-| D. Final UI V1 tamamlanan ana özellik yüzeyi | **5** | Home, Category, Product Listing, Product Details, Seller Comparison |
-| E. Kalan Tier A birimi | **8** | Tamamı tam ekran |
-| F. Kalan Tier B birimi | **18** | 13 tam ekran + 5 sheet |
-| G. Kalan Tier C birimi | **28** | 9 tam ekran + 17 modal + 2 shared-state |
-| H. Inactive/legacy/non-customer excluded | **8** | 5 customer inactive/dead + 3 merchant-only |
-| I. Unknown / follow-up | **0** | Reachability belirsizliği kalmadı |
+| Erişilebilir müşteri tam ekranı | **34** | Shell hariç; iki AllProductsView modu dahil |
+| Aktif modal/sheet/dialog/menu/overlay | **23** | MD-10 erişilemez; 4 aktif modal Final UI tamam |
+| Paylaşılan durum ailesi | **3** | ST-01 tamam; ST-02/03 kalan |
+| Final UI V1 tamamlanan ana yüzey | **18** | 17 erişilebilir tam ekran + route'a bağlı olmayan FD-05 |
+| Kalan Tier A | **6** | 6 tam ekran |
+| Kalan Tier B | **15** | 10 tam ekran + 5 sheet |
+| Kalan Tier C | **17** | 1 tam ekran + 14 modal + 2 shared-state |
+| Inactive/compatibility/non-customer excluded | **9** | 5 eski customer ekran + MD-10 compatibility + 3 merchant ekran |
+| Unknown / follow-up | **0** | Kapsamın reachability incelemesinde belirsizlik yok |
 
-Kalan dönüşüm birimi **54**'tür: 30 erişilebilir tam ekran + 22 aktif modal +
-2 paylaşılan durum ailesi. Final UI kapsamındaki iki menü ve tamamlanmış
-`EsnaftaVarStateCard` bu toplamda yoktur. Aktif tam ekranların **30'u
-PARTIALLY_FINAL**, saf `OLD_UI` sınıfında erişilebilir tam ekran yoktur. Eski
-customer yüzeyleri erişilemez/legacy olarak ayrıca dışlandı.
+Kalan **38 dönüşüm birimi = 17 tam ekran + 19 aktif modal + 2 shared-state**.
+17 erişilebilir tam ekran FINAL_UI_V1_MAIN; 17 tam ekran PARTIALLY_FINAL.
+Saf OLD_UI erişilebilir tam ekran yok. Tamamlanan aktif modallar MD-11/13/14/24;
+MD-10 tamamlanmış compatibility sunumu aktif toplama dahil değildir.
+W44 54 -> 38 hesabı: 2 Discovery + 13 aktif Auth/Startup birimi kapanışı ve
+1 yanlış aktif sayım düzeltmesi. Bu, 16 yeni aktif yüzey tamamlandı demek değildir.
 
 ## 3. Navigation ve reachability kanıtı
 
@@ -66,22 +70,22 @@ ayrıca plan belgesinde ele alınır.
 
 | ID | FEATURE | SURFACE | TYPE | ROUTE/ENTRY | REACHABLE | CURRENT_UI_STATUS | TIER | FIGMA_NEED | REUSE_LEVEL | OWNER_VISUAL_GATE | DEPENDENCIES | ESTIMATED_HOURS | NOTES |
 |---|---|---|---|---|---|---|---|---|---|---|---|---:|---|
-| FS-01 | Startup | Customer launch/loading gate | FULL_SCREEN_FLOW | `MaterialApp.home` | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Onboarding, Navigation shell | 1 | Tek splash/loading gate; child ekranları ayrıca sayılır. |
-| FS-02 | Onboarding | Onboarding carousel | SCREEN | Launch gate, first run | YES | PARTIALLY_FINAL | B | FIGMA_LIGHT | HIGH | NO | Navigation shell | 4 | Marka ilk teması; mevcut token dili yeniden kullanılabilir. |
-| FS-03 | Auth | Customer login | SCREEN | Auth guard, Settings, feature detours | YES | PARTIALLY_FINAL | B | FIGMA_LIGHT | HIGH | NO | Auth cubit, Navigation shell | 5 | Merchant outcome ayrı customer surface değildir. |
-| FS-04 | Auth | Customer signup | SCREEN | Login | YES | PARTIALLY_FINAL | B | FIGMA_LIGHT | HIGH | NO | Legal screens, Verify email | 6 | Consent ve validation korunmalı. |
-| FS-05 | Auth | Verify email waiting/resend | SCREEN | Signup/login confirmation-required | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Confirmation listener | 2 | State varyantları tek surface. |
-| FS-06 | Auth | Forgot password request | SCREEN | Login | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Reset email instructions | 2 | Form primitive reuse. |
-| FS-07 | Auth | Password reset email sent | SCREEN | Forgot-password success | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Recovery deep link | 2 | Bu ekran parola değiştirme ekranı değildir. |
-| FS-08 | Auth | Update password | SCREEN | Recovery deep link | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Recovery listener, Login | 2 | Security-sensitive behavior değişmez. |
-| FS-09 | Auth | Invalid/expired recovery | SCREEN | Invalid recovery deep link | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Forgot password, Login | 1 | Fail-closed state. |
-| FS-10 | Legal | KVKK information | SCREEN | Signup, Privacy | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Legal content | 1 | İçerik/policy değişikliği yok. |
-| FS-11 | Legal | Terms of Use | SCREEN | Signup, Privacy | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Legal content | 1 | İçerik/policy değişikliği yok. |
+| FS-01 | Startup | Customer launch/loading gate | FULL_SCREEN_FLOW | `MaterialApp.home` | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Onboarding, Navigation shell | 1 | Tek splash/loading gate; child ekranları ayrıca sayılır. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-02 | Onboarding | Onboarding carousel | SCREEN | Launch gate, first run | YES | FINAL_UI_V1_MAIN | B | FIGMA_LIGHT | HIGH | NO | Navigation shell | 4 | Marka ilk teması; mevcut token dili yeniden kullanılabilir. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-03 | Auth | Customer login | SCREEN | Auth guard, Settings, feature detours | YES | FINAL_UI_V1_MAIN | B | FIGMA_LIGHT | HIGH | NO | Auth cubit, Navigation shell | 5 | Merchant outcome ayrı customer surface değildir. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-04 | Auth | Customer signup | SCREEN | Login | YES | FINAL_UI_V1_MAIN | B | FIGMA_LIGHT | HIGH | NO | Legal screens, Verify email | 6 | Consent ve validation korunmalı. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-05 | Auth | Verify email waiting/resend | SCREEN | Signup/login confirmation-required | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Confirmation listener | 2 | State varyantları tek surface. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-06 | Auth | Forgot password request | SCREEN | Login | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Reset email instructions | 2 | Form primitive reuse. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-07 | Auth | Password reset email sent | SCREEN | Forgot-password success | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Recovery deep link | 2 | Bu ekran parola değiştirme ekranı değildir. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-08 | Auth | Update password | SCREEN | Recovery deep link | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Recovery listener, Login | 2 | Security-sensitive behavior değişmez. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-09 | Auth | Invalid/expired recovery | SCREEN | Invalid recovery deep link | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Forgot password, Login | 1 | Fail-closed state. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-10 | Legal | KVKK information | SCREEN | Signup, Privacy | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Legal content | 1 | İçerik/policy değişikliği yok. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
+| FS-11 | Legal | Terms of Use | SCREEN | Signup, Privacy | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Legal content | 1 | İçerik/policy değişikliği yok. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
 | FS-12 | Home | Home | SCREEN | Bottom tab 0 | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Navigation shell | 0 | **DONE / MAIN**; visual pack ayrı polish backlog'udur. |
 | FS-13 | Category | Recursive category browse | SCREEN | Home category; recursive push | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Canonical taxonomy capability | 0 | **DONE / MAIN**; variable depth korunur. |
 | FS-14 | Product listing | Category-scoped product listing | SCREEN | Recursive leaf; `SubCategoryView` | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Category browse | 0 | **DONE / MAIN**; Final UI branch sourceudur. |
-| FS-15 | Discovery | All products catalog | SCREEN | Home “Tümünü Gör”, promo | YES | PARTIALLY_FINAL | A | FIGMA_HEAVY | MEDIUM | YES | Product card, Product Details | 10 | Search olmayan catalog modu; mixed legacy spacing bulunuyor. |
-| FS-16 | Search | Search/suggestions/results | FULL_SCREEN_FLOW | Home query/search tap; `isSearchMode` | YES | PARTIALLY_FINAL | A | FIGMA_HEAVY | MEDIUM | YES | FS-15 ile aynı dosya; category/shop/product targets | 7 | FS-15 ile paralel düzenlenemez. |
+| FS-15 | Discovery | All products catalog | SCREEN | Home “Tümünü Gör”, promo | YES | FINAL_UI_V1_MAIN | A | FIGMA_HEAVY | MEDIUM | TASK_AUTHORIZED_DIRECT | Product card, Product Details | 10 | W45B + W45D PASS; tarihsel Tier A/HEAVY korunur, açık görev doğrudan uygulama ve integration görsel kabulünü yetkilendirdi. Yeni filtre/sort yok. |
+| FS-16 | Search | Search/suggestions/results | FULL_SCREEN_FLOW | Home query/search tap; `isSearchMode` | YES | FINAL_UI_V1_MAIN | A | FIGMA_HEAVY | MEDIUM | TASK_AUTHORIZED_DIRECT | FS-15 ile aynı dosya; category/shop/product targets | 7 | W45B + W45D PASS; tarihsel Tier A/HEAVY korunur, açık görev doğrudan uygulama ve integration görsel kabulünü yetkilendirdi. Yeni filtre/sort yok. |
 | FS-17 | Product | Product Details | SCREEN | Product cards/results | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Seller/review sections | 0 | **DONE / MAIN**. |
 | FS-18 | Nearby | Nearby shops/location | FULL_SCREEN_FLOW | Bottom tab 1 | YES | PARTIALLY_FINAL | A | FIGMA_HEAVY | MEDIUM | YES | Location helpers, Shop Details | 14 | Permission, sorting ve distance state'leri. |
 | FS-19 | Shop | Shop Details/Profile | SCREEN | Home/Nearby/seller/purchase | YES | PARTIALLY_FINAL | A | FIGMA_HEAVY | MEDIUM | YES | Shop/product cards, Chat | 12 | Yüksek reuse ama kendine özgü shop kompozisyonu. |
@@ -107,7 +111,7 @@ ayrıca plan belgesinde ele alınır.
 |---|---|---|---|---|---|---|---|---|---|---|---|---:|---|
 | FD-05 | Seller comparison | Dedicated Seller Comparison | SCREEN | Test/golden only; runtime route yok | NO | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Product Details seller section | 0 | **DONE / MAIN**; route activation ayrı entegrasyon konusu, UI conversion işi değildir. |
 
-## 6. Aktif modal, sheet, dialog, menu ve overlay yüzeyleri
+## 6. Modal, sheet, dialog, menu ve overlay kaydı (23 aktif + 1 compatibility)
 
 | ID | FEATURE | SURFACE | TYPE | ROUTE/ENTRY | REACHABLE | CURRENT_UI_STATUS | TIER | FIGMA_NEED | REUSE_LEVEL | OWNER_VISUAL_GATE | DEPENDENCIES | ESTIMATED_HOURS | NOTES |
 |---|---|---|---|---|---|---|---|---|---|---|---|---:|---|
@@ -120,8 +124,8 @@ ayrıca plan belgesinde ele alınır.
 | MD-07 | Profile | Account deletion confirmation | DIALOG | Profile | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Canonical delete flow | 2 | Destructive copy ve loading/error states korunur. |
 | MD-08 | Location | Add/edit saved location | BOTTOM_SHEET | Saved Locations | YES | PARTIALLY_FINAL | B | FIGMA_LIGHT | MEDIUM | NO | Permission, geolocation | 5 | Targeted reference yeterli. |
 | MD-09 | Location | Delete saved location | DIALOG | Saved Locations | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Saved location row | 2 | Exact-row confirmation. |
-| MD-10 | Auth | Wrong merchant-account warning | DIALOG | Login outcome | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Role contract | 1 | Customer app security feedback. |
-| MD-11 | Auth | Merchant registration information | DIALOG | Login | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Merchant handoff policy | 1 | Merchant app ekranı değildir. |
+| MD-10 | Auth | Wrong merchant-account warning | DIALOG | Compatibility branch; no active caller with isMerchantLogin=true | NO | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Role contract | 1 | W45C sunumu ve testi tamam; aktif müşteri modalı değildir. Tarihsel W44 YES kaydı düzeltildi; route eklenmedi. |
+| MD-11 | Auth | Merchant registration information | DIALOG | Login | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Merchant handoff policy | 1 | Merchant app ekranı değildir. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
 | MD-12 | Cart | Single-shop conflict | DIALOG | Seller add-to-cart | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Cart V2 | 2 | Business rule değişmez. |
 | MD-13 | Seller comparison | Seller sort menu | POPUP_MENU | Seller list | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Seller Comparison | 0 | Wave 43B kapsamı; kalan iş değildir. |
 | MD-14 | Product listing | Product sort menu | POPUP_MENU | Category product listing | YES | FINAL_UI_V1_MAIN | DONE | FIGMA_NOT_REQUIRED | HIGH | COMPLETED | Product Listing | 0 | Wave 41B kapsamı; kalan iş değildir. |
@@ -134,7 +138,7 @@ ayrıca plan belgesinde ele alınır.
 | MD-21 | Cart | Clear cart | DIALOG | Cart V2 | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Cart | 1 | Confirmation. |
 | MD-22 | Cart | Continue after refreshed totals | DIALOG | Cart V2 QR preparation | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Listing snapshot, QR | 2 | Truthful refreshed total contract. |
 | MD-23 | QR | Customer QR session | BOTTOM_SHEET | Cart V2 “Mağazada Göster” | YES | PARTIALLY_FINAL | B | FIGMA_LIGHT | MEDIUM | NO | Cart, session expiry, Purchases | 7 | Çok durumlu sheet; Cart Tier A gate'i altında uygulanır. |
-| MD-24 | Auth | Email confirmation success notice | TRANSIENT_OVERLAY | Confirmation deep link destination | YES | PARTIALLY_FINAL | C | FIGMA_NOT_REQUIRED | HIGH | NO | Global confirmation listener | 1 | Destination üstünde dismissible notice; snackbar değildir. |
+| MD-24 | Auth | Email confirmation success notice | TRANSIENT_OVERLAY | Confirmation deep link destination | YES | FINAL_UI_V1_MAIN | C | FIGMA_NOT_REQUIRED | HIGH | NO | Global confirmation listener | 1 | Destination üstünde dismissible notice; snackbar değildir. W45C + W45D PASS; FINAL_UI_V1_MAIN. |
 
 `THelperFunctions.showAlert` için runtime caller bulunmadı; görünür surface olarak
 sayılmadı. Sistem tarafından çizilen Android/iOS permission sheet'i de app-owned
@@ -166,6 +170,8 @@ düşüyor.
 | EX-07 | Merchant | My Shop form | SCREEN | EX-06 child | NO | NOT_CUSTOMER_RUNTIME | Merchant scope. |
 | EX-08 | Merchant | Merchant QR scanner | SCREEN | EX-06 child | NO | NOT_CUSTOMER_RUNTIME | Verifier/merchant scope. |
 
+MD-10 compatibility dialogu da aktif envanterden dışlanır; kimliği ve sunum tamamlanması Bölüm 6'da tutulur, yeni EX kimliğiyle ikinci kez sayılmaz.
+
 ## 9. Feature alanı sonucu
 
 - Repo'da müşteri için gerçek yüzeyi bulunan alanlar: startup/onboarding, auth,
@@ -181,23 +187,18 @@ düşüyor.
 
 ## 10. Figma ve reuse özeti
 
-Kalan 54 birim için:
+Kalan 38 birim için:
 
 | Figma sınıfı | Sayı | Kapsam |
 |---|---:|---|
-| FIGMA_HEAVY | **8** | Tier A tam ekranlar |
-| FIGMA_LIGHT | **9** | Onboarding, Login, Signup, Saved Locations, Notifications, Conversations ve üç complex sheet |
-| FIGMA_NOT_REQUIRED | **37** | Foundation ile doğrudan uygulanabilir |
+| FIGMA_HEAVY | **6** | Nearby, Shop Details, Cart V2, Purchases, Product Reviews, Chat |
+| FIGMA_LIGHT | **6** | Saved Locations, Notifications, Conversations, saved-location editor, review editor, QR sheet |
+| FIGMA_NOT_REQUIRED | **26** | Mevcut Flutter foundation ile doğrudan uygulanabilir |
 
-Reuse:
-
-- HIGH: 37 birim; scaffold/header/state/form/CTA/card dili doğrudan kullanılabilir.
-- MEDIUM: 16 birim; composition özeldir fakat foundation ve domain kartları
-  yeniden kullanılabilir.
-- LOW: 1 birim; Chat detail'in interaction/keyboard yapısı özeldir.
-
-Bu sınıflandırma Figma kullanımını 54 ayrı çalışma yerine sekiz owner-gated
-prototype ve dokuz hedefli referansla sınırlar.
+Reuse: HIGH **26**, MEDIUM **11**, LOW **1**. Bunlar kalan birim sayılarıdır.
+W45A Shop/Nearby/Cart bu entegrasyonda merge edilmedi. İlk teslimde onay
+bekliyordu; yeni 4ae9d6d R2 raporu üç onayı ve devam eden closeout'u kaydediyor.
+Ayrı final gate/main entegrasyonu olmadan bu yüzeyler tamamlanmış sayılmaz. Bu görevde Figma 0 çağrı.
 
 ## 11. Quality sonucu
 
@@ -207,4 +208,5 @@ prototype ve dokuz hedefli referansla sınırlar.
 - Reachability unknown: **0**.
 - Duplicate path/surface sayımı: **0**; state ve mode sayım kuralları yukarıda
   açıklandı.
-- Flutter/Figma/backend/taxonomy/remote environment değişikliği: **yok**.
+- W45D: 24 presentation Dart dosyası A/B birleşimiyle güncellendi; core/navigation/Cubit/data/backend/taxonomy değişmedi. Figma ve canlı ortam erişimi yok.
+- Birleşik doğrulama kanıtı: [Integration sonucu](ASTRA_WAVE1_IMPLEMENTATION_INTEGRATION_RESULT.md).
