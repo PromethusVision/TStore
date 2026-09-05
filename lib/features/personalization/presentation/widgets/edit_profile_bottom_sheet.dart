@@ -166,9 +166,24 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                           key: const Key('edit-profile-email-field'),
                           initialValue: widget.user.email,
                           enabled: false,
+                          style: const TextStyle(
+                            color: EsnaftaVarColors.textSecondary,
+                          ),
                           decoration: const InputDecoration(
                             labelText: 'E-posta',
                             prefixIcon: Icon(Icons.mail_outline_rounded),
+                            fillColor: EsnaftaVarColors.surfaceAlt,
+                            disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(EsnaftaVarRadii.medium),
+                              ),
+                              borderSide: BorderSide(
+                                color: EsnaftaVarColors.borderDefault,
+                              ),
+                            ),
+                            helperStyle: TextStyle(
+                              color: EsnaftaVarColors.textSecondary,
+                            ),
                             helperText:
                                 'E-posta adresin hesap güvenliği için sabittir.',
                             helperMaxLines: 3,

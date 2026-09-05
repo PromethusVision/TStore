@@ -136,7 +136,8 @@ class _ProfileViewState extends State<ProfileView> {
     return EsnaftaVarScaffold(
       safeAreaTop: false,
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             key: const Key('customer-account-content'),
             constraints: const BoxConstraints(maxWidth: 430),
@@ -168,10 +169,6 @@ class _ProfileViewState extends State<ProfileView> {
                           borderRadius: BorderRadius.circular(
                             EsnaftaVarRadii.large,
                           ),
-                        ),
-                        textStyle: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       icon: const Icon(Icons.edit_outlined, size: 19),
@@ -415,10 +412,6 @@ class _DangerZoneCard extends StatelessWidget {
               foregroundColor: EsnaftaVarColors.accent,
               padding: EdgeInsets.zero,
               minimumSize: const Size(48, 48),
-              textStyle: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
             ),
             icon: const Icon(Icons.delete_outline_rounded, size: 18),
             label: const Text('Hesabı Sil'),

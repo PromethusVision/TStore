@@ -7,56 +7,64 @@ class SettingsMenuTile extends StatelessWidget {
   final SettingsMenuTileModel settingsMenuTileModel;
 
   @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: EsnaftaVarSpacing.sm,
-        vertical: EsnaftaVarSpacing.xxs,
-      ),
-      minLeadingWidth: 32,
-      horizontalTitleGap: EsnaftaVarSpacing.sm,
-      title: Text(
-        settingsMenuTileModel.title,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: EsnaftaVarColors.textPrimary,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      onTap: settingsMenuTileModel.onTap,
-      subtitle: Text(
-        settingsMenuTileModel.subtitle,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: EsnaftaVarColors.textSecondary,
-          fontSize: 12,
-          height: 1.25,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      leading: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: EsnaftaVarColors.primarySoft,
-          borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
-        ),
-        child: Icon(
-          settingsMenuTileModel.leading,
-          color: EsnaftaVarColors.primary,
-          size: 20,
-        ),
-      ),
-      trailing:
-          settingsMenuTileModel.trailing ??
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: EsnaftaVarColors.textSecondary,
-            size: 20,
+  Widget build(BuildContext context) => MergeSemantics(
+    child: Semantics(
+      button: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: settingsMenuTileModel.onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 72),
+            child: Padding(
+              padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: EsnaftaVarColors.primarySoft,
+                      borderRadius: BorderRadius.circular(
+                        EsnaftaVarRadii.medium,
+                      ),
+                    ),
+                    child: Icon(
+                      settingsMenuTileModel.leading,
+                      color: EsnaftaVarColors.primary,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: EsnaftaVarSpacing.xs),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          settingsMenuTileModel.title,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: EsnaftaVarSpacing.xxs),
+                        Text(
+                          settingsMenuTileModel.subtitle,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: EsnaftaVarSpacing.xs),
+                  settingsMenuTileModel.trailing ??
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        color: EsnaftaVarColors.textSecondary,
+                        size: 20,
+                      ),
+                ],
+              ),
+            ),
           ),
-    );
-  }
+        ),
+      ),
+    ),
+  );
 }

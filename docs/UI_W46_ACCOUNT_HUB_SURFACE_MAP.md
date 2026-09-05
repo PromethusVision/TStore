@@ -8,7 +8,7 @@ Authority: AGENTS, Astra execution protocol, calibration log, W45 post-calibrati
 | --- | --- | --- |
 | FS-22 | Settings / account hub | NavigationMenuCubit customer tab; guest header signs in and returns; protected menu destinations require a current customer; public Help and Privacy remain public; unread refresh remains intact. |
 | FS-23 | Profile details | Authenticated header or Hesap Bilgilerim; real name, email, optional phone; no invented personal fields. |
-| FS-24 | Saved locations | Protected hub and Help entry, also existing Home handoff; loading/error/retry/empty/list, add, delete and Ana Konum Yap. |
+| FS-24 | Saved locations | Protected hub and Help entry, plus existing Home, Nearby and product-seller handoffs; loading/error/retry/empty/list, add, delete and Ana Konum Yap. |
 | FS-25 | Privacy and permissions | Public hub entry; read and refresh permission status only, no GPS request; existing informational/legal copy unchanged. |
 | FS-26 | Help and support | Public hub entry; three existing protected callbacks, expandable FAQ and selectable support email. |
 | MD-06 | Edit profile bottom sheet | Profile button; editable name/optional phone, immutable email, existing validation, duplicate-submit lock, updating/error/success return and AuthCubit profile sync. |
@@ -23,7 +23,7 @@ Total: **5 screens + 4 sheets/dialogs = 9 units (7 B, 2 C), nominal historical 4
 - Saved location Cubit/repository expose get/add/set-default/delete; no edit/update contract or reachable edit action. The W45 “add/edit” label resolves to add only. Do not invent editing, geocoding, coordinates, distance or address validation.
 - Selection is the existing `setDefaultLocation` / “Ana Konum Yap” action; first added location becomes default and removing the default preserves current fallback behavior. Existing Home/Nearby handoff is regression-tested, not redesigned.
 - `AppSettingsSection` signs out directly. There is no logout confirmation to convert. Preserve session check, cart/wishlist clearing, home tab and navigation reset.
-- Existing AuthGuard/global auth listeners and Login remain unchanged. Customer protected navigation is also guarded locally by SettingsView's current-user check and return-to-caller login.
+- No class named `AuthGuard` exists in current lib. Its actual equivalents remain unchanged: `NavigationMenu._handleDestinationSelected` gates customer tabs (index >= 2); SettingsView checks the current customer and uses return-to-caller login; `CustomerSessionListener` handles session changes and cleanup. Guest/expired/stale account render states remain supported and tested.
 - KVKK and Terms reuse Auth's integrated legal views without content or presentation duplication.
 - Notifications, chat, purchases, ratings, coupons and recent history retain navigation entries only. Their destination UI is excluded. Legacy address/profile helper views remain inactive; no route activation.
 

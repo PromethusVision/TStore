@@ -36,7 +36,6 @@ class _AppSettingsSectionState extends State<AppSettingsSection> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
           ),
-          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
         icon: _isSigningOut
             ? const SizedBox(
