@@ -326,6 +326,8 @@ class _AllProductsContentState extends State<_AllProductsContent> {
           onEditSearch: _editSearch,
           onShowAllProducts: _clearSearch,
           isUnifiedSearch: true,
+          warningMessage: state.warningMessage,
+          onRetry: _reloadProducts,
         );
       }
 
@@ -676,23 +678,28 @@ class _CustomerSearchResultsViewState
     return CustomScrollView(
       key: const Key('customer-search-results'),
       controller: controller,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
+            child: EsnaftaVarSectionHeader(
+              key: const Key('customer-search-summary'),
+              title: 'Arama sonuçları',
+              subtitle:
+                  '${state.products.length} ürün · ${state.categories.length} kategori · ${state.shops.length} mağaza',
+            ),
+          ),
+        ),
         if (state.warningMessage != null)
           SliverToBoxAdapter(
-            child: Container(
-              key: const Key('customer-search-warning'),
-              margin: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
-              padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.info_outline),
-                  const SizedBox(width: EsnaftaVarSpacing.xs),
-                  Expanded(child: Text(state.warningMessage!)),
-                ],
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.md),
+              child: EsnaftaVarStateCard(
+                key: const Key('customer-search-warning'),
+                icon: Icons.info_outline_rounded,
+                title: 'Bazı sonuçlar eksik',
+                message: state.warningMessage!,
               ),
             ),
           ),
@@ -713,11 +720,22 @@ class _CustomerSearchResultsViewState
                   for (final category in state.categories)
                     ActionChip(
                       key: ValueKey('customer-search-category-${category.id}'),
-                      avatar: const Icon(Icons.category_outlined, size: 18),
+                      avatar: const Icon(
+                        Icons.category_outlined,
+                        size: EsnaftaVarIconSizes.small,
+                      ),
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      visualDensity: VisualDensity.standard,
+                      backgroundColor: EsnaftaVarColors.surfaceElevated,
+                      side: const BorderSide(
+                        color: EsnaftaVarColors.borderDefault,
+                      ),
                       label: Text(
                         CustomerCategoryPresentationHelper.localizedTitle(
                           category.name,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       onPressed:
                           category.id.trim().isEmpty ||
@@ -1297,70 +1315,80 @@ class _CustomerSearchShopCard extends StatelessWidget {
     required this.shop,
     required this.onTap,
   });
-
   final ShopEntity shop;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final address = shop.address?.trim();
-
-    return Card(
-      margin: EdgeInsets.zero,
+    return Material(
+      color: EsnaftaVarColors.surfaceElevated,
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        side: const BorderSide(color: EsnaftaVarColors.borderDefault),
+      ),
       child: InkWell(
         key: Key('customer-search-shop-link-${shop.id}'),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+          padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: EsnaftaVarTouchTargets.minimum,
+                height: EsnaftaVarTouchTargets.minimum,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+                  color: EsnaftaVarColors.primarySoft,
+                  borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.storefront_outlined,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: EsnaftaVarColors.primary,
                 ),
               ),
-              const SizedBox(width: EsnaftaVarSpacing.md),
+              const SizedBox(width: EsnaftaVarSpacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      shop.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Tooltip(
+                      message: shop.name,
+                      child: Text(
+                        shop.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall,
+                      ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: EsnaftaVarSpacing.xxs),
                     Text(
                       address == null || address.isEmpty
                           ? 'Adres bilgisi paylaşılmamış'
                           : address,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: EsnaftaVarColors.textSecondary,
+                      ),
                     ),
                     if (shop.ratingCount > 0) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: EsnaftaVarSpacing.xxs),
                       Row(
                         children: [
                           const Icon(
                             Icons.star_rounded,
-                            size: 16,
-                            color: Colors.amber,
+                            size: EsnaftaVarIconSizes.small,
+                            color: EsnaftaVarColors.warning,
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${shop.rating.toStringAsFixed(1)} '
-                            '(${shop.ratingCount})',
-                            style: Theme.of(context).textTheme.bodySmall,
+                          const SizedBox(width: EsnaftaVarSpacing.xxs),
+                          Expanded(
+                            child: Text(
+                              '${shop.rating.toStringAsFixed(1)} (${shop.ratingCount})',
+                              style: theme.textTheme.labelSmall,
+                            ),
                           ),
                         ],
                       ),
@@ -1368,7 +1396,11 @@ class _CustomerSearchShopCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right),
+              const Icon(
+                Icons.chevron_right_rounded,
+                size: EsnaftaVarIconSizes.medium,
+                color: EsnaftaVarColors.textMuted,
+              ),
             ],
           ),
         ),
@@ -1383,73 +1415,64 @@ class _EmptySearchResult extends StatelessWidget {
     required this.onEditSearch,
     required this.onShowAllProducts,
     this.isUnifiedSearch = false,
+    this.warningMessage,
+    this.onRetry,
   });
-
   final String query;
   final VoidCallback onEditSearch;
   final VoidCallback onShowAllProducts;
   final bool isUnifiedSearch;
+  final String? warningMessage;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final normalizedQuery = query.trim();
-
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: EsnaftaVarSpacing.xl),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.search_off_rounded,
-                size: 56,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.md),
-              Text(
-                normalizedQuery.isEmpty
-                    ? isUnifiedSearch
-                          ? 'Aradığınız sonuç bulunamadı.'
-                          : 'Aradığınız ürün bulunamadı.'
-                    : isUnifiedSearch
-                    ? '"$normalizedQuery" için sonuç bulamadık.'
-                    : '"$normalizedQuery" için ürün bulamadık.',
-                key: const Key('empty-search-result-title'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.md / 2),
-              Text(
-                isUnifiedSearch
-                    ? 'Ürün, kategori veya mağaza adıyla yeniden arayabilirsiniz.'
-                    : 'Daha kısa veya farklı bir kelimeyle yeniden arayabilirsiniz.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.xl),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  key: const Key('edit-empty-product-search'),
-                  onPressed: onEditSearch,
-                  icon: const Icon(Icons.edit_outlined),
-                  label: const Text('Aramayı Düzenle'),
-                ),
-              ),
-              const SizedBox(height: EsnaftaVarSpacing.md / 2),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  key: const Key('show-all-products-after-empty-search'),
-                  onPressed: onShowAllProducts,
-                  child: const Text('Tüm Ürünleri Göster'),
-                ),
-              ),
-            ],
+    final title = normalizedQuery.isEmpty
+        ? isUnifiedSearch
+              ? 'Aradığınız sonuç bulunamadı.'
+              : 'Aradığınız ürün bulunamadı.'
+        : isUnifiedSearch
+        ? '"$normalizedQuery" için sonuç bulamadık.'
+        : '"$normalizedQuery" için ürün bulamadık.';
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: EsnaftaVarSpacing.xl),
+      child: Column(
+        children: [
+          EsnaftaVarStateCard(
+            key: const Key('empty-search-result-title'),
+            icon: warningMessage == null
+                ? Icons.search_off_rounded
+                : Icons.cloud_off_rounded,
+            title: warningMessage == null ? title : 'Sonuçlar tam yüklenemedi',
+            message: warningMessage == null
+                ? isUnifiedSearch
+                      ? 'Ürün, kategori veya mağaza adıyla yeniden arayabilirsiniz.'
+                      : 'Daha kısa veya farklı bir kelimeyle yeniden arayabilirsiniz.'
+                : 'Aramanın bir kısmı yüklenemedi. Sonuçları kontrol etmek için yeniden deneyebilirsin.',
+            actionLabel: warningMessage == null ? null : 'Tekrar Dene',
+            onAction: onRetry,
           ),
-        ),
+          const SizedBox(height: EsnaftaVarSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const Key('edit-empty-product-search'),
+              onPressed: onEditSearch,
+              icon: const Icon(Icons.edit_outlined),
+              label: const Text('Aramayı Düzenle'),
+            ),
+          ),
+          const SizedBox(height: EsnaftaVarSpacing.xs),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              key: const Key('show-all-products-after-empty-search'),
+              onPressed: onShowAllProducts,
+              child: const Text('Tüm Ürünleri Göster'),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1462,55 +1485,96 @@ class _RecentSearchesSection extends StatelessWidget {
     required this.onRemoved,
     required this.onClear,
   });
-
   final List<String> queries;
   final ValueChanged<String> onSelected;
   final ValueChanged<String> onRemoved;
   final VoidCallback onClear;
 
   @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      label: 'Son aramalar',
-      child: Column(
-        key: const Key('recent-product-searches-section'),
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => Column(
+    key: const Key('recent-product-searches-section'),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Son Aramalar',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(
+                'Son Aramalar',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              TextButton(
-                key: const Key('clear-recent-product-searches'),
-                onPressed: onClear,
-                child: const Text('Tümünü Temizle'),
-              ),
-            ],
+            ),
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final query in queries)
-                InputChip(
-                  key: ValueKey('recent-product-search-$query'),
-                  avatar: const Icon(Icons.history, size: 18),
-                  label: Text(query),
-                  onPressed: () => onSelected(query),
-                  onDeleted: () => onRemoved(query),
-                  deleteButtonTooltipMessage: '$query aramasını sil',
-                ),
-            ],
+          TextButton(
+            key: const Key('clear-recent-product-searches'),
+            onPressed: onClear,
+            child: const Text('Tümünü Temizle'),
           ),
         ],
       ),
-    );
-  }
+      Material(
+        color: EsnaftaVarColors.surface,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+          side: const BorderSide(color: EsnaftaVarColors.borderDefault),
+        ),
+        child: Column(
+          children: [
+            for (final query in queries)
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      key: ValueKey('recent-product-search-$query'),
+                      onTap: () => onSelected(query),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: EsnaftaVarTouchTargets.preferred,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: EsnaftaVarSpacing.sm,
+                            vertical: EsnaftaVarSpacing.xs,
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.history_rounded,
+                                size: EsnaftaVarIconSizes.medium,
+                                color: EsnaftaVarColors.textMuted,
+                              ),
+                              const SizedBox(width: EsnaftaVarSpacing.xs),
+                              Expanded(
+                                child: Text(
+                                  query,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: '$query aramasını sil',
+                    onPressed: () => onRemoved(query),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      size: EsnaftaVarIconSizes.medium,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class _ProductsScrollView extends StatefulWidget {
