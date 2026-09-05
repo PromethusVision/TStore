@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/cart/presentation/cubit/cart_v2_cubit.dart';
@@ -22,21 +22,21 @@ class _AppSettingsSectionState extends State<AppSettingsSection> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
+
       child: OutlinedButton.icon(
         key: const Key('customer-sign-out'),
         onPressed: _isSigningOut ? null : _signOut,
         style: OutlinedButton.styleFrom(
-          backgroundColor: CustomerHomeV1Tokens.surface,
-          foregroundColor: CustomerHomeV1Tokens.coral,
-          disabledForegroundColor: CustomerHomeV1Tokens.coral.withValues(
+          backgroundColor: EsnaftaVarColors.surface,
+          foregroundColor: EsnaftaVarColors.accent,
+          disabledForegroundColor: EsnaftaVarColors.accent.withValues(
             alpha: 0.55,
           ),
-          side: const BorderSide(color: Color(0xFFF0C8BE)),
+          side: const BorderSide(color: EsnaftaVarColors.borderDefault),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+            borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
           ),
-          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
         icon: _isSigningOut
             ? const SizedBox(
@@ -45,7 +45,7 @@ class _AppSettingsSectionState extends State<AppSettingsSection> {
                 height: 17,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: CustomerHomeV1Tokens.coral,
+                  color: EsnaftaVarColors.accent,
                 ),
               )
             : const Icon(Icons.logout_rounded, size: 20),

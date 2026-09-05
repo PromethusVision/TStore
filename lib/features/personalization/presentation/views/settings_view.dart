@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_theme.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/utils/constants/iconsax_compat.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -226,7 +227,7 @@ class _SettingsViewState extends State<SettingsView> {
         },
         title: "Mesajlarım",
         subtitle: "Geçmiş konuşmalarını görüntüle",
-        leading: Iconsax.direct,
+        leading: Icons.chat_bubble_outline_rounded,
         trailing: isLoggedIn ? const _UnreadBadge() : null,
       ),
       SettingsMenuTileModel(
@@ -326,46 +327,49 @@ class _SettingsViewState extends State<SettingsView> {
         leading: Icons.privacy_tip_outlined,
       ),
     ];
-    return ColoredBox(
-      color: CustomerHomeV1Tokens.cream,
-      child: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            key: const Key('customer-profile-content'),
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: SingleChildScrollView(
-              key: const Key('customer-profile-scroll'),
-              padding: const EdgeInsets.fromLTRB(
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space8,
-                CustomerHomeV1Tokens.space16,
-                CustomerHomeV1Tokens.space24,
-              ),
-              child: Column(
-                children: [
-                  SettingsViewHeaderSection(
-                    currentUserId: currentUserId,
-                    onSignIn: () => _signInFromProfileHeader(context),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  _CustomerProfileMenuSection(
-                    key: const Key('customer-profile-activity-section'),
-                    title: 'Alışveriş ve iletişim',
-                    subtitle:
-                        'Siparişlerini, mesajlarını ve fırsatlarını yönet',
-                    tiles: accountSettingsTiles.take(6).toList(),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  _CustomerProfileMenuSection(
-                    key: const Key('customer-profile-account-section'),
-                    title: 'Hesap ve destek',
-                    subtitle:
-                        'Bilgilerini, konumlarını ve tercihlerini düzenle',
-                    tiles: accountSettingsTiles.skip(6).toList(),
-                  ),
-                  const SizedBox(height: CustomerHomeV1Tokens.space16),
-                  const AppSettingsSection(),
-                ],
+    return Theme(
+      data: EsnaftaVarTheme.light,
+      child: ColoredBox(
+        color: EsnaftaVarColors.background,
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              key: const Key('customer-profile-content'),
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: SingleChildScrollView(
+                key: const Key('customer-profile-scroll'),
+                padding: const EdgeInsets.fromLTRB(
+                  EsnaftaVarSpacing.md,
+                  EsnaftaVarSpacing.xs,
+                  EsnaftaVarSpacing.md,
+                  EsnaftaVarSpacing.xl,
+                ),
+                child: Column(
+                  children: [
+                    SettingsViewHeaderSection(
+                      currentUserId: currentUserId,
+                      onSignIn: () => _signInFromProfileHeader(context),
+                    ),
+                    const SizedBox(height: EsnaftaVarSpacing.md),
+                    _CustomerProfileMenuSection(
+                      key: const Key('customer-profile-activity-section'),
+                      title: 'Alışveriş ve iletişim',
+                      subtitle:
+                          'Alışverişlerini, mesajlarını ve fırsatlarını yönet',
+                      tiles: accountSettingsTiles.take(6).toList(),
+                    ),
+                    const SizedBox(height: EsnaftaVarSpacing.md),
+                    _CustomerProfileMenuSection(
+                      key: const Key('customer-profile-account-section'),
+                      title: 'Hesap ve destek',
+                      subtitle:
+                          'Bilgilerini, konumlarını ve tercihlerini düzenle',
+                      tiles: accountSettingsTiles.skip(6).toList(),
+                    ),
+                    const SizedBox(height: EsnaftaVarSpacing.md),
+                    const AppSettingsSection(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -392,35 +396,8 @@ class _CustomerProfileMenuSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: CustomerHomeV1Tokens.space4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.2,
-                ),
-              ),
-              const SizedBox(height: CustomerHomeV1Tokens.space4),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.muted,
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: CustomerHomeV1Tokens.space12),
+        EsnaftaVarSectionHeader(title: title, subtitle: subtitle),
+        const SizedBox(height: EsnaftaVarSpacing.sm),
         SettingsMenuTileList(settingsMenuTiles: tiles),
       ],
     );
@@ -518,7 +495,7 @@ class _UnreadBadge extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 24),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
-                  color: CustomerHomeV1Tokens.coral,
+                  color: EsnaftaVarColors.accent,
                   borderRadius: BorderRadius.circular(999),
                 ),
                 alignment: Alignment.center,

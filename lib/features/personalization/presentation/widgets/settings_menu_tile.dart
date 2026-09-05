@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 
 class SettingsMenuTile extends StatelessWidget {
@@ -10,19 +10,19 @@ class SettingsMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
-        horizontal: CustomerHomeV1Tokens.space12,
-        vertical: CustomerHomeV1Tokens.space8,
+        horizontal: EsnaftaVarSpacing.sm,
+        vertical: EsnaftaVarSpacing.xxs,
       ),
-      minLeadingWidth: 44,
-      horizontalTitleGap: CustomerHomeV1Tokens.space12,
+      minLeadingWidth: 32,
+      horizontalTitleGap: EsnaftaVarSpacing.sm,
       title: Text(
         settingsMenuTileModel.title,
-        maxLines: 1,
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-          color: CustomerHomeV1Tokens.navy,
-          fontSize: 13.5,
-          fontWeight: FontWeight.w700,
+          color: EsnaftaVarColors.textPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
       onTap: settingsMenuTileModel.onTap,
@@ -31,31 +31,31 @@ class SettingsMenuTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-          color: CustomerHomeV1Tokens.muted,
-          fontSize: 10,
+          color: EsnaftaVarColors.textSecondary,
+          fontSize: 12,
           height: 1.25,
           fontWeight: FontWeight.w500,
         ),
       ),
       leading: Container(
-        width: 44,
-        height: 44,
+        width: 32,
+        height: 32,
         decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius12),
+          color: EsnaftaVarColors.primarySoft,
+          borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
         ),
         child: Icon(
           settingsMenuTileModel.leading,
-          color: CustomerHomeV1Tokens.petrol,
-          size: 22,
+          color: EsnaftaVarColors.primary,
+          size: 20,
         ),
       ),
       trailing:
           settingsMenuTileModel.trailing ??
           const Icon(
             Icons.chevron_right_rounded,
-            color: CustomerHomeV1Tokens.muted,
-            size: 22,
+            color: EsnaftaVarColors.textSecondary,
+            size: 20,
           ),
     );
   }
