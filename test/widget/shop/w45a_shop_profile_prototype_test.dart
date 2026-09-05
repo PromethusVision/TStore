@@ -91,7 +91,6 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     ShopEntity shop = _shop,
-    bool prototype = true,
     ShopProfileUrlLauncher? launcher,
     ShopProfileProductDestinationBuilder? destination,
     ShopProfileChatDestinationBuilder? chat,
@@ -117,7 +116,6 @@ void main() {
           key: const Key('evidence'),
           child: ShopProfileView(
             shop: shop,
-            visualPrototype: prototype,
             currentUserIdProvider: () => 'fixture-customer',
             urlLauncher: launcher,
             productDestinationBuilder: destination,
@@ -131,13 +129,11 @@ void main() {
     } else {
       await tester.pump();
     }
-    if (prototype) {
-      final context = tester.element(find.byKey(const Key('evidence')));
-      await tester.runAsync(
-        () => precacheImage(const AssetImage(_image), context),
-      );
-      await tester.pumpAndSettle();
-    }
+    final context = tester.element(find.byKey(const Key('evidence')));
+    await tester.runAsync(
+      () => precacheImage(const AssetImage(_image), context),
+    );
+    await tester.pumpAndSettle();
   }
 
   testWidgets('390 px visit-first owner evidence', (tester) async {
@@ -209,9 +205,19 @@ void main() {
     expect(find.byKey(const Key('shop-profile-message-action')), findsNothing);
     expect(tester.takeException(), isNull);
   });
-  test('presentation is default off', () {
-    expect(const ShopProfileView(shop: _shop).visualPrototype, isFalse);
-  });
+  test(
+    'Final UI is default and explicit legacy comparison remains available',
+    () {
+      expect(const ShopProfileView(shop: _shop).visualPrototype, isTrue);
+      expect(
+        const ShopProfileView(
+          shop: _shop,
+          visualPrototype: false,
+        ).visualPrototype,
+        isFalse,
+      );
+    },
+  );
 
   for (final width in [320.0, 390.0, 430.0]) {
     for (final scale in [1.0, 1.3]) {

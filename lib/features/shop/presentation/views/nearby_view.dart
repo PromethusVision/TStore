@@ -40,7 +40,8 @@ Widget _defaultNearbyCartDestinationBuilder(BuildContext context) {
 }
 
 class NearbyView extends StatelessWidget {
-  /// Owner gate only. Existing tab/navigation callers keep the current layout.
+  /// Owner-approved Final UI is the default for existing tab/navigation callers.
+  /// Explicit false retains the legacy presentation for regression comparison.
   final bool visualPrototype;
   final Future<void> Function()? onChangeLocationRequested;
   final NearbyCurrentUserIdProvider currentUserIdProvider;
@@ -49,7 +50,7 @@ class NearbyView extends StatelessWidget {
 
   const NearbyView({
     super.key,
-    this.visualPrototype = false,
+    this.visualPrototype = true,
     this.onChangeLocationRequested,
     this.currentUserIdProvider = _nearbyCurrentUserId,
     this.cartDestinationBuilder = _defaultNearbyCartDestinationBuilder,

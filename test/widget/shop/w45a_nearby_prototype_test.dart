@@ -140,7 +140,6 @@ void main() {
           home: RepaintBoundary(
             key: const Key('evidence'),
             child: NearbyView(
-              visualPrototype: true,
               currentUserIdProvider: () => 'fixture-customer',
               onChangeLocationRequested: changeLocation,
               shopDestinationBuilder: destination,
@@ -252,9 +251,13 @@ void main() {
     verify(() => nearby.openLocationSettings()).called(1);
     verifyNever(() => nearby.openAppSettings());
   });
-  test('presentation stays default off', () {
-    expect(const NearbyView().visualPrototype, isFalse);
-  });
+  test(
+    'Final UI is default and explicit legacy comparison remains available',
+    () {
+      expect(const NearbyView().visualPrototype, isTrue);
+      expect(const NearbyView(visualPrototype: false).visualPrototype, isFalse);
+    },
+  );
 
   Future<void> evidence(WidgetTester tester, String name) => expectLater(
     find.byKey(const Key('evidence')),
@@ -523,6 +526,13 @@ void main() {
         tester.widget<ShopProfileView>(find.byType(ShopProfileView)).shop,
         _shops.first,
       );
+      expect(
+        tester
+            .widget<ShopProfileView>(find.byType(ShopProfileView))
+            .visualPrototype,
+        isTrue,
+      );
+      expect(find.text('Mağazayı keşfet'), findsOneWidget);
       verify(() => repository.getShopProductsByShop(_shops.first.id)).called(1);
       await tester.tap(find.byKey(const Key('shop-profile-back')));
       await tester.pumpAndSettle();

@@ -143,7 +143,7 @@ void main() {
           ),
           home: const RepaintBoundary(
             key: Key('evidence'),
-            child: CartV2View(visualPrototype: true),
+            child: CartV2View(),
           ),
         ),
       ),
@@ -252,9 +252,13 @@ void main() {
     await tester.tap(find.widgetWithText(TextButton, 'Vazgeç'));
     await tester.pumpAndSettle();
   });
-  test('presentation stays default off', () {
-    expect(const CartV2View().visualPrototype, isFalse);
-  });
+  test(
+    'Final UI is default and explicit legacy comparison remains available',
+    () {
+      expect(const CartV2View().visualPrototype, isTrue);
+      expect(const CartV2View(visualPrototype: false).visualPrototype, isFalse);
+    },
+  );
 
   Future<void> evidence(WidgetTester tester, String name) => expectLater(
     find.byKey(const Key('evidence')),

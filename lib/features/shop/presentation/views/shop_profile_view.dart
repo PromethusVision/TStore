@@ -42,7 +42,8 @@ class ShopProfileView extends StatefulWidget {
   final ShopProfileProductDestinationBuilder? productDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
 
-  /// Owner-review presentation only; existing navigation stays on the default.
+  /// Owner-approved Final UI is the default for every existing shop handoff.
+  /// Explicit false retains the legacy presentation for regression comparison.
   final bool visualPrototype;
 
   const ShopProfileView({
@@ -53,7 +54,7 @@ class ShopProfileView extends StatefulWidget {
     this.chatDestinationBuilder,
     this.productDestinationBuilder,
     this.pendingProductChatStorage,
-    this.visualPrototype = false,
+    this.visualPrototype = true,
   });
 
   @override

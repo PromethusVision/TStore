@@ -111,6 +111,7 @@ void main() {
     ShopProfileProductDestinationBuilder? productDestinationBuilder,
     PendingProductChatStorage? pendingProductChatStorage,
     TextScaler? textScaler,
+    bool visualPrototype = true,
   }) {
     return MaterialApp(
       builder: textScaler == null
@@ -121,6 +122,7 @@ void main() {
             ),
       home: ShopProfileView(
         shop: shop,
+        visualPrototype: visualPrototype,
         urlLauncher: urlLauncher ?? successfulLauncher,
         currentUserIdProvider: currentUserIdProvider ?? () => 'customer-1',
         chatDestinationBuilder: chatDestinationBuilder,
@@ -165,7 +167,7 @@ void main() {
   testWidgets('müşteri UI kabuğunu ve marka kartlarını kullanır', (
     tester,
   ) async {
-    await tester.pumpWidget(buildSubject());
+    await tester.pumpWidget(buildSubject(visualPrototype: false));
     await tester.pumpAndSettle();
 
     final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
@@ -196,11 +198,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.byKey(const ValueKey('shop-profile-product-shop-product-1')),
+      find.byKey(const ValueKey('shop-profile-product-link-shop-product-1')),
       findsOneWidget,
     );
     expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
-    expect(find.text('₺129,90'), findsOneWidget);
+    expect(find.text('129,90 TL'), findsOneWidget);
     expect(find.text('Mağazada mevcut'), findsOneWidget);
   });
 
@@ -530,8 +532,14 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(
+    await tester.scrollUntilVisible(
       find.byKey(const Key('shop-profile-message-action')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('shop-profile-message-action')).hitTestable(),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);

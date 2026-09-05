@@ -32,6 +32,18 @@ class MockShopRatingCubit extends MockCubit<ShopRatingState>
 class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
     implements PurchaseHistoryCubit {}
 
+Future<void> revealCartAction(WidgetTester tester, Finder action) async {
+  await tester.scrollUntilVisible(
+    action,
+    200,
+    scrollable: find.descendant(
+      of: find.byKey(const Key('customer-cart-items-list')),
+      matching: find.byType(Scrollable),
+    ),
+  );
+  await tester.pump();
+}
+
 void main() {
   late MockCartV2Cubit cartV2Cubit;
   late MockQrSessionCubit qrSessionCubit;
@@ -177,7 +189,7 @@ void main() {
       MaterialApp(
         home: BlocProvider<CartV2Cubit>.value(
           value: cartV2Cubit,
-          child: const CartV2View(),
+          child: const CartV2View(visualPrototype: false),
         ),
       ),
     );
@@ -203,7 +215,7 @@ void main() {
       MaterialApp(
         home: BlocProvider<CartV2Cubit>.value(
           value: cartV2Cubit,
-          child: const CartV2View(),
+          child: const CartV2View(visualPrototype: false),
         ),
       ),
     );
@@ -243,7 +255,7 @@ void main() {
       MaterialApp(
         home: BlocProvider<CartV2Cubit>.value(
           value: cartV2Cubit,
-          child: const CartV2View(),
+          child: const CartV2View(visualPrototype: false),
         ),
       ),
     );
@@ -312,7 +324,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Alışverişi doğrula'));
+    await revealCartAction(tester, find.text('QR kod oluştur'));
+    await tester.tap(find.text('QR kod oluştur'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Alışveriş onaylandı'), findsOneWidget);
@@ -344,7 +357,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Alışverişi doğrula'));
+      await revealCartAction(tester, find.text('QR kod oluştur'));
+      await tester.tap(find.text('QR kod oluştur'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
       await tester.ensureVisible(find.text('Alışverişlerimde gör'));
@@ -405,7 +419,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Alışverişi doğrula'));
+    await revealCartAction(tester, find.text('QR kod oluştur'));
+    await tester.tap(find.text('QR kod oluştur'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -469,7 +484,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Alışverişi doğrula'));
+    await revealCartAction(tester, find.text('QR kod oluştur'));
+    await tester.tap(find.text('QR kod oluştur'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     final cancelAction = tester
@@ -480,7 +496,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Sepet tutarı güncellendi'), findsNothing);
-    expect(find.text('Alışverişi doğrula'), findsOneWidget);
+    expect(find.text('QR kod oluştur'), findsOneWidget);
     expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
     verifyNever(() => qrSessionCubit.createQrSession(any()));
   });
@@ -498,18 +514,37 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Mağaza sepetini boşalt'), findsOneWidget);
+    await revealCartAction(
+      tester,
+      find.byKey(const Key('cart-prototype-clear')),
+    );
+    expect(find.byKey(const Key('cart-prototype-clear')), findsOneWidget);
     expect(find.text('Mağaza Sepetini İptal Et'), findsNothing);
 
-    await tester.tap(find.text('Mağaza sepetini boşalt'));
+    await revealCartAction(
+      tester,
+      find.byKey(const Key('cart-prototype-clear')),
+    );
+    await tester.tap(find.byKey(const Key('cart-prototype-clear')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Mağaza sepetini boşalt'), findsNWidgets(2));
+    expect(find.text('Mağaza sepetini boşalt'), findsOneWidget);
     expect(find.text('Vazgeç'), findsOneWidget);
-    expect(find.text('Sepeti boşalt'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Sepeti boşalt'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('İptal Et'), findsNothing);
 
-    await tester.tap(find.text('Sepeti boşalt'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Sepeti boşalt'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     verify(() => cartV2Cubit.cancelActiveCart()).called(1);
@@ -528,7 +563,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await revealCartAction(
+        tester,
+        find.byKey(const Key('cart-prototype-clear')),
+      );
+      await tester.tap(find.byKey(const Key('cart-prototype-clear')));
       await tester.pumpAndSettle();
 
       final cancelAction = tester
@@ -541,11 +580,20 @@ void main() {
       expect(find.byKey(const Key('customer-cart-content')), findsOneWidget);
       verifyNever(() => cartV2Cubit.cancelActiveCart());
 
-      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await revealCartAction(
+        tester,
+        find.byKey(const Key('cart-prototype-clear')),
+      );
+      await tester.tap(find.byKey(const Key('cart-prototype-clear')));
       await tester.pumpAndSettle();
 
       final confirmAction = tester
-          .widget<TextButton>(find.widgetWithText(TextButton, 'Sepeti boşalt'))
+          .widget<TextButton>(
+            find.descendant(
+              of: find.byType(AlertDialog),
+              matching: find.widgetWithText(TextButton, 'Sepeti boşalt'),
+            ),
+          )
           .onPressed!;
       confirmAction();
       confirmAction();
@@ -617,7 +665,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Kaldırılıyor…'), findsOneWidget);
-    expect(removeButton, findsNothing);
+    expect(tester.widget<IconButton>(removeButton).onPressed, isNull);
     verify(() => cartV2Cubit.removeItem('item-1')).called(1);
 
     removeRequest.complete();
@@ -689,14 +737,23 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Mağaza sepetini boşalt'));
+      await revealCartAction(
+        tester,
+        find.byKey(const Key('cart-prototype-clear')),
+      );
+      await tester.tap(find.byKey(const Key('cart-prototype-clear')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Sepeti boşalt'));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text('Sepeti boşalt'),
+        ),
+      );
       await tester.pump();
 
-      expect(find.text('Sepet boşaltılıyor…'), findsOneWidget);
-      final clearButton = tester.widget<OutlinedButton>(
-        find.widgetWithText(OutlinedButton, 'Sepet boşaltılıyor…'),
+      expect(find.text('Boşaltılıyor…'), findsOneWidget);
+      final clearButton = tester.widget<TextButton>(
+        find.widgetWithText(TextButton, 'Boşaltılıyor…'),
       );
       expect(clearButton.onPressed, isNull);
       verify(() => cartV2Cubit.cancelActiveCart()).called(1);
@@ -704,8 +761,8 @@ void main() {
       clearRequest.complete();
       await tester.pumpAndSettle();
 
-      expect(find.text('Sepet boşaltılıyor…'), findsNothing);
-      expect(find.text('Mağaza sepetini boşalt'), findsOneWidget);
+      expect(find.text('Boşaltılıyor…'), findsNothing);
+      expect(find.byKey(const Key('cart-prototype-clear')), findsOneWidget);
     },
   );
 
@@ -728,7 +785,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Alışverişi doğrula'));
+    await revealCartAction(tester, find.text('QR kod oluştur'));
+    await tester.tap(find.text('QR kod oluştur'));
     await tester.pumpAndSettle();
 
     expect(
@@ -751,7 +809,7 @@ void main() {
       MaterialApp(
         home: BlocProvider<CartV2Cubit>.value(
           value: cartV2Cubit,
-          child: const CartV2View(),
+          child: const CartV2View(visualPrototype: false),
         ),
       ),
     );
@@ -883,7 +941,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 10));
 
     expect(find.text('Bu mağaza şu anda alışverişe kapalı.'), findsNothing);
-    expect(find.text('Sepet Toplamı'), findsOneWidget);
+    expect(find.text('Ürün tutarı'), findsOneWidget);
   });
 
   testWidgets('yenileme hatasında mevcut sepet ürününü ekranda tutar', (
@@ -946,7 +1004,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Alışverişi doğrula'));
+    await revealCartAction(tester, find.text('QR kod oluştur'));
+    await tester.tap(find.text('QR kod oluştur'));
     await tester.pump();
     expect(requestCount, 2);
 
@@ -994,13 +1053,16 @@ void main() {
             find.byKey(const Key('customer-cart-item-item-1-remove')),
           )
           .onPressed!;
+      await revealCartAction(
+        tester,
+        find.byKey(const Key('cart-prototype-clear')),
+      );
       final clearAction = tester
-          .widget<OutlinedButton>(
-            find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
-          )
+          .widget<TextButton>(find.byKey(const Key('cart-prototype-clear')))
           .onPressed!;
 
-      await tester.tap(find.text('Alışverişi doğrula'));
+      await revealCartAction(tester, find.text('QR kod oluştur'));
+      await tester.tap(find.text('QR kod oluştur'));
       await tester.pump();
 
       expect(find.text('Hazırlanıyor…'), findsOneWidget);
@@ -1020,9 +1082,7 @@ void main() {
       );
       expect(
         tester
-            .widget<OutlinedButton>(
-              find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
-            )
+            .widget<TextButton>(find.byKey(const Key('cart-prototype-clear')))
             .onPressed,
         isNull,
       );
@@ -1050,9 +1110,7 @@ void main() {
       );
       expect(
         tester
-            .widget<OutlinedButton>(
-              find.widgetWithText(OutlinedButton, 'Mağaza sepetini boşalt'),
-            )
+            .widget<TextButton>(find.byKey(const Key('cart-prototype-clear')))
             .onPressed,
         isNotNull,
       );

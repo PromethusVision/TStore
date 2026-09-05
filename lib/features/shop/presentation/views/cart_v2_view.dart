@@ -21,9 +21,10 @@ import 'package:t_store/features/purchases/presentation/views/purchases_view.dar
 part 'cart_v2_visual_prototype.dart';
 
 class CartV2View extends StatefulWidget {
-  const CartV2View({super.key, this.visualPrototype = false});
+  const CartV2View({super.key, this.visualPrototype = true});
 
-  /// Explicit owner-review opt-in; the customer shell does not enable it.
+  /// Owner-approved Final UI is the default for every customer entry.
+  /// Explicit false retains the legacy presentation for regression comparison.
   final bool visualPrototype;
 
   @override
