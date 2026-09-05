@@ -1,5 +1,27 @@
 # Customer App Final UI Rollout Plan
 
+## Güncel durum — Astra Wave 2A, 2026-09-05
+
+- **Shop Details Final UI: DONE / MAIN. Cart V2 Final UI: DONE / MAIN.
+  Nearby / Location Final UI: DONE / MAIN.**
+- Cart QR CTA tam olarak **QR kod oluştur**. Single-shop fiziksel alışveriş
+  hazırlığı, mevcut QR güvenliği/iş akışı ve konum gizlilik mimarisi korunur.
+- Wave 1 All Products/Search ve Auth/Startup main davranışı korunur. Üç onaylı
+  Tier A sunum gerçek constructor/tab/caller yollarında varsayılan olarak açılır.
+- Güncel [envanter](UI_W45A_POST_TIER_A_INTEGRATION_INVENTORY.md):
+  **35 kalan birim = 14 ekran + 19 modal + 2 shared-state**;
+  Tier A/B/C **3/15/17**, Figma Heavy/Light/None **3/6/26**.
+  Değişmeyen konum/Cart/QR modalları yalnız davranış testiyle DONE sayılmaz.
+- Astra rol konuşmaları **persistent by default**; her yeni görevde fetch ve
+  güncel origin/main + görev sözleşmesine yeniden sabitleme zorunludur.
+  [Protokol](ASTRA_EXECUTION_PROTOCOL.md) güncellendi; AGENTS.md değişmedi.
+- **Next Design Owner batch: to be selected from refreshed Tier-A inventory**.
+  Aday seti FS-30 Purchases, FS-32 Reviews, FS-34 Chat; yaklaşık üç prototype
+  büyüklüğü korunur. Görsel yön onayı Product Owner'a aittir.
+- Birleşik doğrulama, commit ve teslim kanıtı:
+  [Wave 2A integration result](ASTRA_WAVE2A_TIER_A_INTEGRATION_RESULT.md).
+  Aşağıdaki önceki dalga kayıtları kendi tarihsel bağlamında korunur.
+
 ## Governing rules
 
 - W39A semantic tokens, Poppins type ramp, shared primitives and light theme are the reuse baseline.
@@ -9,28 +31,26 @@
 - Each screen wave must cover loading, empty, error and success where applicable; 320/390/430 px, Turkish overflow, 44 px touch targets, accessibility semantics, targeted regressions and full analyzer.
 - Dark mode is deferred until a product-approved palette and contrast contract exist.
 
-## Operating model — single UI Agent
+## Operating model — Astra roles and bounded visual batches
 
-Final Customer UI rollout uses exactly:
+The Design Owner owns Tier A visual direction and shared-foundation consistency;
+the Integration Agent owns source/main reconciliation, combined regression and
+main delivery. Independent implementation packages use their explicitly assigned
+branches and file ownership. Do not interpret historical single-screen sequencing
+as permission to stop before all independent work in a current package is complete.
 
-`ONE UI AGENT + INTEGRATION AGENT`
+1. Design Owner prepares approximately three Tier A prototypes per visual batch.
+2. Product Owner reviews and approves each direction; record substantive corrections.
+3. Design Owner closes responsive/state/accessibility and behavior coverage for
+   the approved batch without structural redesign.
+4. Integration reviews current main, reconciles semantics, tests and merges the
+   full accepted batch. Shared primitives have one designated owner per wave.
+5. Select the next batch from current reachable inventory. Product Owner review
+   throughput sets the visual batch size; elapsed time is not a success criterion.
 
-The three-UI-agent parallel implementation model is not active. A single UI Agent
-owns visual consistency, shared-foundation reuse and the bounded screen diff;
-the Integration Agent owns merge review, regression gates, coordination state and
-main delivery.
-
-Each major screen follows this sequence:
-
-1. The UI Agent creates one `390 px` visual prototype.
-2. The Product Owner reviews and explicitly approves the visual direction.
-3. The UI Agent completes responsive/state/accessibility coverage and full
-   regression without structural redesign outside the approved direction.
-4. The Integration Agent reviews and merges the verified delivery to main.
-5. Only then does work move to the next major screen.
-
-No screen becomes FINAL solely from an agent's self-assessment. Shared tokens and
-components remain single-owner hotspots during each screen wave.
+Roles normally continue in persistent Astra conversations. Each new package
+fetches origin and re-anchors to current main plus its task contract. See
+[execution protocol](ASTRA_EXECUTION_PROTOCOL.md) for justified isolation exceptions.
 
 ## Figma budget policy
 
@@ -43,7 +63,7 @@ components remain single-owner hotspots during each screen wave.
   remains a selective visual reference and is not a parallel source of runtime
   behavior.
 
-## Sequence
+## Historical sequence — W39–W43
 
 Wave 39B-R semantic visual delta closes the Home root-category mapping gate:
 canonical-name resolution is `24/24`, order/root-id independent, and missing,
@@ -116,7 +136,7 @@ For every rollout wave:
 
 `W39A_FOUNDATION_COMPLETE: YES`
 
-`UI_ROLLOUT_MODEL: SINGLE_UI_AGENT`
+`UI_ROLLOUT_MODEL: ASTRA_DESIGN_OWNER_BATCH_PLUS_INDEPENDENT_IMPLEMENTATION_AND_INTEGRATION`
 
 `CATEGORY_RECURSIVE_BROWSE_V1_MAIN: YES`
 
@@ -126,11 +146,11 @@ For every rollout wave:
 
 `SELLER_COMPARISON_V1_MAIN: YES`
 
-`NEXT_ROLLOUT_STEP: UI_INVENTORY_ACCELERATION_PLAN`
+`NEXT_ROLLOUT_STEP: SELECT_DESIGN_OWNER_BATCH_2_FROM_REFRESHED_TIER_A`
 
-`NEXT_ROLLOUT_SURFACE: SHOP_DETAILS_OR_PRODUCT_OWNER_REPRIORITIZED`
+`NEXT_ROLLOUT_SURFACE: TO_BE_SELECTED_FROM_FS_30_FS_32_FS_34`
 
-`NEXT_REQUIRED_VISUAL_GATE: INVENTORY_PLAN_THEN_ONE_390PX_PRODUCT_OWNER_APPROVED_PROTOTYPE`
+`NEXT_REQUIRED_VISUAL_GATE: APPROXIMATELY_THREE_TIER_A_PROTOTYPES_THEN_OWNER_APPROVAL`
 
 `W39B_MAIN_INTEGRATED: YES`
 

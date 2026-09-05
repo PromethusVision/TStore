@@ -1,6 +1,6 @@
 # Astra Calibration Log
 
-Durum: **WAVE 1 RECORDED — TWO IMPLEMENTATION PACKAGES INTEGRATED, 2026-09-05**
+Durum: **WAVE 2A RECORDED — TIER-A CLOSEOUT AND INTEGRATION ACCEPTED, 2026-09-05**
 Kalibrasyon başlangıcı: **2026-09-05 (Europe/Istanbul)**
 Protokol: [Astra Execution Protocol](ASTRA_EXECUTION_PROTOCOL.md)
 
@@ -45,8 +45,8 @@ işleri kendiliğinden uygulama veya remote/Figma erişim yetkisi vermez.
 
 ## 3. Wave 1 kanıtlı kayıtlar
 
-W44B başlangıç tablosundaki 0/henüz-yok değerleri tarihsel snapshot'tır. Güncel
-örneklem: **1 prototype paketi + 2 bağımsız implementation paketi**. W45D birleşik
+W44B başlangıç tablosundaki 0/henüz-yok değerleri tarihsel snapshot'tır. Wave 1 snapshot
+örneklemi: **1 prototype paketi + 2 bağımsız implementation paketi**. W45D birleşik
 integration kontrolü üçüncü bağımsız implementation örneği sayılmaz. Kaynak
 TASK_RESULT'ları korunur; aşağıdaki değerler onların ölçüm sınırlarını gösterir.
 
@@ -154,6 +154,77 @@ Karar: [Wave 2](ASTRA_WAVE2_SCOPE_RECOMMENDATION.md) implementation paketlerini
 Purchases/Ratings -> Reviews). Design Owner **SAME_SIZE**, en çok üç prototype.
 AGENTS.md/protokol terfisi yapılmadı. [Güncellenen plan](UI_W44_60_DAY_ACCELERATION_PLAN.md)
 eski tahminleri korur; üç senaryo dış kapıları ve integration/rework payını içerir.
+
+### Wave 2A — Design Owner Tier-A final closeout (2026-09-05)
+
+This record supersedes the historical W45D note that Cart/Nearby closeout was
+pending; the original prototype and intermediate observations above remain
+historical evidence. Final source is
+`b5fe6304d8b3bdf47ee6d40609ff47d409279622`, including owner correction a261004.
+Evidence: [prototype review](UI_W45A_TIER_A_PROTOTYPE_BATCH_REVIEW.md) and
+[final closeout](UI_W45A_R2_TIER_A_CLOSEOUT.md).
+
+| Phase | Scope / measured boundary | Evidence | Calibration |
+|---|---|---|---|
+| Tier-A prototype batch | 3/3 prototypes, ~19 min reported; original ~17m52s observation excludes final docs/push | 107 targeted PASS; Figma 0 | GREEN / SAME_SIZE |
+| Owner review correction | All three directions approved; one correction after the prototype | Cart QR CTA copy only: exact `QR kod oluştur`; a261004 precedes final closeout | One substantive correction in the prototype-to-approval sequence; no redesign |
+| Tier-A closeout | 3/3 screens; 03:41:34–04:14:07 Europe/Istanbul = **32m33s**; final docs/push excluded | **65 files**, **54 new visual proofs** plus one Cart proof updated; **1558 PASS / 0 FAIL / 6 existing skips**; Figma 0 | **GREEN / SAME_SIZE**; no additional owner correction during closeout |
+
+Closeout checkpoints: 4ae9d6d Shop, e366149 Cart/shared offer-card overflow,
+b2652d6 Nearby, b5fe630 final regression/evidence; all were pushed on the Design
+Owner task branch. Targeted reported results: Shop 40, Cart 249, Nearby 164;
+combined adjacent 1061 PASS. Analyzer clean. The 65-file number is relative to
+a261004; the complete source delta from 4287972 is 70 files. Do not add targeted
+counts to full-suite totals or combine the two time boundaries as a new
+independently measured benchmark.
+
+The one shared change is
+`lib/features/shop/presentation/widgets/seller_comparison_offer_card.dart`:
+Flexible distance/fact text at narrow widths and large text. There is no
+current-main edit in that file. Integration independently reviews all callers
+and validates the combined Wave 1 + Tier-A result. Source-owned runtime/test
+and visual evidence paths are listed in the closeout report.
+
+Strategic direction: **Design Owner stays near three Tier-A prototypes per visual
+batch**. Product Owner review throughput, rather than observed Astra execution
+speed, is currently the main design bottleneck. This is the agreed batching
+decision; local wall-clock observations do not establish a normalized model
+speed comparison or a deadline. Select the next batch from the refreshed Tier-A
+inventory after integration. This recommendation does not start that work.
+
+Astra role conversations are now **persistent by default** under the Wave 2A
+session rule. Historical fresh-session descriptions above retain their original
+measurement context. AGENTS.md is unchanged.
+
+
+### Wave 2A — Integration acceptance and local measurement
+
+Persistent Integration task; current main re-anchored to **6cc5d16**, final source
+**b5fe630** including QR-copy correction **a261004**. All 11 contracted phases and
+3/3 approved screens completed. No-ff merge **656c395**, default/test reconciliation
+**5fe32fd**; pre-merge review **8d555c8**. Final docs publication follows that
+verified runtime. Combined delta: **82 files** (7 runtime Dart, 7 test Dart,
+57 PNG, 11 Markdown); no main/source test or golden loss.
+
+Observed start 2026-09-05 **01:57:22 UTC**, full-gate audit **02:39:28 UTC**:
+**42m06s** through verification; final docs/Git publication excluded. This
+integration/reconciliation measurement is not a third independent implementation
+benchmark and is not comparable directly to prototype-only timing.
+
+**758 targeted PASS; 572 adjacent PASS; 1766 full-suite PASS / 0 FAIL /
+6 existing opt-in skips; 163/163 discovered files; analyzer clean**.
+Full runner 105.610 s. Initial legacy selector/scroll/type failures were fixed
+without weakening business assertions, skipping tests or regenerating goldens.
+Source approved compositions remain intact; actual customer entries now default
+to them. Detail and intermediate attempts: [integration result](ASTRA_WAVE2A_TIER_A_INTEGRATION_RESULT.md).
+
+Figma: three historical HEAVY screens, task forbids access, **0 calls**.
+One source shared offer-card Flexible fix reviewed; competing edits/unresolved
+collisions **0**. Blockers, required owner decisions, new substantive owner
+corrections and major scope drift **0**. No critical regression.
+**GREEN / SAME_SIZE** for a similarly bounded three-screen integration batch.
+Design Owner recommendation remains approximately **three Tier A prototypes**,
+selected from the refreshed inventory; no next implementation starts here.
 
 ## 4. Kayıt ve değerlendirme kuralları
 

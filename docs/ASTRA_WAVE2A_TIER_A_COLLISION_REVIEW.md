@@ -1,6 +1,6 @@
 # Astra Wave 2A — Tier A collision review
 
-Status: **PRE-MERGE REVIEW PASS — 2026-09-05**.
+Status: **PRE-MERGE REVIEW PASS; FINAL COMBINED ACCEPTANCE PASS — 2026-09-05**.
 Current main: `6cc5d1607da96415f788d5324006bc89fe85d554`.
 Source: `origin/astra-ui/w45a-tier-a-prototype-batch-1` at
 `b5fe6304d8b3bdf47ee6d40609ff47d409279622`.
@@ -35,7 +35,7 @@ intersection between complete source and complete main deltas from 4287972 is
 | `lib/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart`, `lib/core/common/widgets/navigation_menu.dart` | NO_CONFLICT | The same five tabs construct NearbyView and CartV2View. Constructor defaults activate the accepted layouts without editing shell selection or the login return-to-caller guard. No generated/named router or standalone AuthGuard class exists. |
 | `lib/features/auth/presentation/`, auth/session/recovery listeners | NO_CONFLICT | Source does not modify these files. Wave 1 login/signup/startup/confirmation and auth/session behavior remain authoritative; target and adjacent tests will exercise them. |
 | `lib/features/shop/presentation/widgets/seller_comparison_offer_card.dart` | SAFE_TEXTUAL | Only `_OfferFact` Text gains Flexible. Narrow 320 px / 130% distance text previously overflowed by 29–31 px. No formatting, distance calculation, seller choice, callback, price or add-to-cart rule changes. Main has no delta in this file. |
-| `lib/features/shop/presentation/widgets/product_sellers_section.dart`, `views/seller_comparison_view.dart`, `views/product_details_view.dart` | NO_CONFLICT | ProductSellersSection is the sole direct runtime constructor of SellerComparisonOfferCard. Its Final branch is consumed by SellerComparisonView and the Final Product Details seller section. Existing W42/W43 goldens and new narrow conflict tests cover the shared fix. |
+| `lib/features/shop/presentation/widgets/product_sellers_section.dart`, `views/seller_comparison_view.dart`, `views/product_details_view.dart` | NO_CONFLICT | ProductSellersSection's private seller-card builder is the sole direct constructor of SellerComparisonOfferCard, only when visualPrototype=true. Dedicated SellerComparisonView opts in (still unbound); both Product Details compositions omit this flag and retain its default-false seller cards. W43/new narrow conflict tests exercise the fix directly; W42/Product Details are adjacent preservation checks. |
 | Home / Product Listing / Search / Nearby / Shop cards | NO_CONFLICT | These use their own card compositions; they do not directly instantiate SellerComparisonOfferCard. They remain adjacent regression targets because they share shop/product destinations and Final UI foundations. |
 | `lib/features/shop/presentation/views/cart_v2_view.dart` private quantity/recovery widgets | SAFE_TEXTUAL | Source adjusts wrapping, touch-target density and inherited label font in widgets consumed by both Cart presentations. Mutation methods and confirmation/QR methods are unchanged. Both legacy and Final presentation coverage must remain. |
 | `lib/features/cart/` QR Cubit, domain, repositories and `presentation/widgets/cart_qr_session_bottom_sheet.dart` | NO_CONFLICT | Source has no changes. Final exact CTA `QR kod oluştur` invokes the existing `_preparePurchaseVerification` -> refresh/availability/pricing checks -> existing QR sheet, preserving double-submit and verified-purchase handoff. |
@@ -71,3 +71,30 @@ Production/Development/Figma/backend/taxonomy are outside this integration.
 
 Final acceptance, exact test/discovery results, actual merge/reconciliation
 commits and recomputed inventory will be recorded after the combined gate.
+
+## Final combined acceptance — PASS
+
+Pre-merge review was committed as 8d555c8 before no-ff merge **656c395**.
+Semantic reconciliation is completed in **5fe32fd**: all three approved views
+default to Final UI, actual shell/tab and Shop handoff tests assert that default,
+and Wave 1 Search/Auth behavior remains intact. Only those three defaults/comments
+differ from source runtime. Legacy comparison checks are explicit; business
+assertions, pending guards and approved golden baselines are preserved.
+
+Final gates: **758 targeted PASS; 572 adjacent PASS; 1766 full-suite PASS / 0 FAIL /
+6 existing conditional skips; analyzer 0 issues**. All **163** expected test files
+were discovered, with no source/main file loss. All **57 source PNGs** and **129
+existing main PNGs** match their original blobs. Cart QR/action, Nearby location/
+navigation and Shop product/contact method blocks match starting main exactly.
+
+No unresolved BLOCKER or shared collision remains. The
+[35-unit inventory](UI_W45A_POST_TIER_A_INTEGRATION_INVENTORY.md) retains unchanged
+modals as remaining work; the protocol changes only the requested session section.
+Exact scope, source lineage, test adaptations, metrics and publication checkpoint
+are recorded in the [integration result](ASTRA_WAVE2A_TIER_A_INTEGRATION_RESULT.md).
+
+Final caller audit also narrows the pre-merge description: Product Details uses
+ProductSellersSection but does not opt into SellerComparisonOfferCard. Its
+existing default-false branch is preserved; direct offer-card coverage is W43
+and the explicit prototype/conflict tests. This is a documentation correction,
+not a further runtime change or an activation of unbound Seller Comparison.

@@ -45,20 +45,16 @@ benchmark veya otomatik kapsam azaltma yetkisi değildir. Astra'nın oturum,
 checkpoint ve test ritmi bu protokole göre yürütülür. Kabul edilen görev
 sözleşmesindeki kapsam, salt süre tahmini nedeniyle sessizce küçültülemez.
 
-## 2. Session rule
+## 2. Session rule — persistent Astra roles (Wave 2A)
 
-- **Yeni büyük iş paketi = yeni GPT-6 Astra konuşması.**
-- Mevcut bir Sol konuşması, konuşmanın ortasında Astra'ya çevrilmez.
-- **Worktree kalıcıdır; konuşma geçicidir.** Konuşma bittiğinde worktree, branch,
-  commit ve doğrulama kanıtları görevin devamı için korunur.
-- Branch, o worktree'nin/oturumun görevine aittir. Başka aktif görevin branch'i
-  sahiplenilmez; kullanıcının branch adı varsa aynen kullanılır.
-- Başlangıçta gerçek çalışma dizini, Git kökü/ortak dizini, çalışma ağacı,
-  başlangıç HEAD'i, base ve görev branch'i doğrulanır. Yeni konuşma mevcut
-  checkpoint'ten devam ediyorsa yalnız kalan kapsamı üstlenir.
-- Tamamlanan bir görevden sonra worktree yeniden kullanılacaksa önce temiz durum
-  ve yeni göreve ait branch doğrulanır. Konuşmanın yenilenmesi commit geçmişini
-  yeniden yazma veya eski worktree'yi silme gerekçesi değildir.
+Önceki "Yeni büyük iş paketi = yeni GPT-6 Astra konuşması" kuralı **SUPERSEDED**.
+
+- **Her Astra rolü, iş paketleri arasında normalde kendi kalıcı Astra konuşmasında devam eder.** Bu Integration konuşması zaten Astra olarak başladığı için yeni konuşma gerekmez.
+- Yeni konuşma yalnız model değişikliği, açıkça istenmiş clean-room/bağımsız audit, gözlenmiş context degradation veya somut gerekçesi belirtilen başka bir izolasyon ihtiyacı için kullanılır. Model değişikliği mevcut Sol konuşmasını ortasında Astra'ya çevirerek yapılmaz.
+- Her yeni iş paketinde yararlı mimari/proje bilgisi korunur; repo gerçeği **güncel `origin/main` ve açık görev sözleşmesine yeniden sabitlenir**. Önceki görev branch'i güncel Git gerçeği kabul edilmez.
+- Başlangıçta `git fetch origin --prune` yapılır; gerçek çalışma dizini, Git kökü/ortak dizini, temiz çalışma ağacı, fetched main ve source HEAD/ancestry doğrulanır. Beklenen main'den sonraki commit'ler varsa etkileri incelenir ve semantik çakışmalar açıkça uzlaştırılır.
+- Worktree ve checkpoint'ler korunur. Her yeni görev kendi task branch'ine aittir; kalıcı konuşma başka aktif görevin branch'ini sahiplenme veya eski branch'i yeniden yazma yetkisi vermez. Kullanıcının branch adı varsa aynen kullanılır.
+- Aynı görevin devamında doğrulanmış checkpoint'ten kalan kapsam sürdürülür. Worktree yeni göreve devredilecekse temiz durum ve yeni görevin branch'i doğrulanır; konuşma sürekliliği Git izolasyonunun yerine geçmez.
 
 ## 3. Autonomy ve large package mode
 

@@ -1,6 +1,28 @@
 # EsnaftaVar Project State
 
-## Snapshot Bilgisi
+## Güncel durum — Astra Wave 2A, 2026-09-05
+
+- **Shop Details Final UI: DONE / MAIN. Cart V2 Final UI: DONE / MAIN.
+  Nearby / Location Final UI: DONE / MAIN.**
+- Cart QR CTA tam olarak **QR kod oluştur**. Single-shop fiziksel alışveriş
+  hazırlığı, mevcut QR güvenliği/iş akışı ve konum gizlilik mimarisi korunur.
+- Wave 1 All Products/Search ve Auth/Startup main davranışı korunur. Üç onaylı
+  Tier A sunum gerçek constructor/tab/caller yollarında varsayılan olarak açılır.
+- Güncel [envanter](UI_W45A_POST_TIER_A_INTEGRATION_INVENTORY.md):
+  **35 kalan birim = 14 ekran + 19 modal + 2 shared-state**;
+  Tier A/B/C **3/15/17**, Figma Heavy/Light/None **3/6/26**.
+  Değişmeyen konum/Cart/QR modalları yalnız davranış testiyle DONE sayılmaz.
+- Astra rol konuşmaları **persistent by default**; her yeni görevde fetch ve
+  güncel origin/main + görev sözleşmesine yeniden sabitleme zorunludur.
+  [Protokol](ASTRA_EXECUTION_PROTOCOL.md) güncellendi; AGENTS.md değişmedi.
+- **Next Design Owner batch: to be selected from refreshed Tier-A inventory**.
+  Aday seti FS-30 Purchases, FS-32 Reviews, FS-34 Chat; yaklaşık üç prototype
+  büyüklüğü korunur. Görsel yön onayı Product Owner'a aittir.
+- Birleşik doğrulama, commit ve teslim kanıtı:
+  [Wave 2A integration result](ASTRA_WAVE2A_TIER_A_INTEGRATION_RESULT.md).
+  Aşağıdaki önceki dalga kayıtları kendi tarihsel bağlamında korunur.
+
+## Tarihsel Snapshot Bilgisi — Wave 43B
 
 - Son güncelleme: 2026-09-04
 - Son doğrulanan teslim: **WAVE 43B SELLER COMPARISON FINAL UI INTEGRATION PASS —
