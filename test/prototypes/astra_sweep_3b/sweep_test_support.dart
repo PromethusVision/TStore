@@ -123,7 +123,7 @@ const sweepProducts = [
   ),
   ProductEntity(
     id: 'fixture-product-4',
-    name: 'Mavi günlük gömlek',
+    name: 'Mavi polo tişört',
     price: 699.90,
     categoryId: 'fixture-category',
     stock: 5,

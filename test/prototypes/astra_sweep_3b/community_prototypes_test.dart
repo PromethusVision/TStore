@@ -58,9 +58,7 @@ void main() {
     expect(rating, 5);
     expect(find.byType(SweepShopRatingEditor), findsNothing);
   });
-  testWidgets('07 review editor 390 and canonical create payload', (
-    tester,
-  ) async {
+  testWidgets('review editor canonical create payload', (tester) async {
     List<Object?>? payload;
     await openSweepModal(
       tester,
@@ -90,7 +88,8 @@ void main() {
       find.byKey(const Key('sweep-review-comment')),
       'Mağazada deneyerek aldım. Kalıbı çok güzel.',
     );
-    await captureSweep(tester, '07_review_editor_390.png');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('sweep-review-submit')));
     await tester.pumpAndSettle();
     expect(payload, [
@@ -153,33 +152,35 @@ void main() {
       expect(find.text('Mesajlarım'), findsOneWidget);
     },
   );
-  testWidgets('editor edit mode preserves original review id and closes', (
-    tester,
-  ) async {
-    String? edited;
-    await openSweepModal(
-      tester,
-      (context) => SweepReviewEditor(
-        productId: sweepProductId,
-        productName: sweepProducts.first.name,
-        eligibility: sweepEligibility,
-        review: sweepOwnReview,
-        onClose: () => Navigator.of(context).pop(),
-        onSubmit: (product, review, rating, title, comment) {
-          edited = review;
-          Navigator.of(context).pop();
-        },
-      ),
-    );
-    expect(
-      tester
-          .widget<TextField>(find.byKey(const Key('sweep-review-title')))
-          .controller!
-          .text,
-      sweepOwnReview.title,
-    );
-    await tester.tap(find.byKey(const Key('sweep-review-submit')));
-    await tester.pumpAndSettle();
-    expect(edited, sweepOwnReview.id);
-  });
+  testWidgets(
+    '07 review editor 390 edit mode preserves original review id and closes',
+    (tester) async {
+      String? edited;
+      await openSweepModal(
+        tester,
+        (context) => SweepReviewEditor(
+          productId: sweepProductId,
+          productName: sweepProducts.first.name,
+          eligibility: sweepEligibility,
+          review: sweepOwnReview,
+          onClose: () => Navigator.of(context).pop(),
+          onSubmit: (product, review, rating, title, comment) {
+            edited = review;
+            Navigator.of(context).pop();
+          },
+        ),
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('sweep-review-title')))
+            .controller!
+            .text,
+        sweepOwnReview.title,
+      );
+      await captureSweep(tester, '07_review_editor_390.png');
+      await tester.tap(find.byKey(const Key('sweep-review-submit')));
+      await tester.pumpAndSettle();
+      expect(edited, sweepOwnReview.id);
+    },
+  );
 }
