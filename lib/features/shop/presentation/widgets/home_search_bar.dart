@@ -486,20 +486,25 @@ class _RecentSearchesCard extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 8, 2),
-                      child: Row(
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.history_rounded,
-                            size: 20,
-                            color: CustomerHomeV1Tokens.petrol,
-                          ),
-                          const SizedBox(width: CustomerHomeV1Tokens.space8),
-                          Expanded(
-                            child: Text(
-                              'Son Aramalar',
-                              style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.history_rounded,
+                                size: EsnaftaVarIconSizes.medium,
+                                color: EsnaftaVarColors.primary,
+                              ),
+                              const SizedBox(width: EsnaftaVarSpacing.xs),
+                              Text(
+                                'Son Aramalar',
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                              ),
+                            ],
                           ),
                           TextButton(
                             key: const Key('clear-home-recent-searches'),

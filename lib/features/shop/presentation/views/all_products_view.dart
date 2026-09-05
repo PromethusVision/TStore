@@ -1102,14 +1102,16 @@ class _AllProductsProductCard extends StatelessWidget {
                       Positioned(
                         right: 6,
                         top: 6,
-                        child: ProductFavoriteButton(
-                          productId: product.id,
-                          keyPrefix: 'all-products-favorite-${product.id}',
-                          currentUserIdProvider: currentUserIdProvider,
-                          height: EsnaftaVarTouchTargets.minimum,
-                          width: EsnaftaVarTouchTargets.minimum,
-                          iconSize: EsnaftaVarIconSizes.medium,
-                          backgroundColor: EsnaftaVarColors.surface,
+                        child: MergeSemantics(
+                          child: ProductFavoriteButton(
+                            productId: product.id,
+                            keyPrefix: 'all-products-favorite-${product.id}',
+                            currentUserIdProvider: currentUserIdProvider,
+                            height: EsnaftaVarTouchTargets.minimum,
+                            width: EsnaftaVarTouchTargets.minimum,
+                            iconSize: EsnaftaVarIconSizes.medium,
+                            backgroundColor: EsnaftaVarColors.surface,
+                          ),
                         ),
                       ),
                     ],
@@ -1495,15 +1497,15 @@ class _RecentSearchesSection extends StatelessWidget {
     key: const Key('recent-product-searches-section'),
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Row(
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(
-                'Son Aramalar',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+          Semantics(
+            header: true,
+            child: Text(
+              'Son Aramalar',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           TextButton(
