@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
@@ -10,6 +12,8 @@ import 'package:t_store/features/chat/domain/chat_message_rules.dart';
 import 'package:t_store/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:t_store/features/chat/presentation/cubit/chat_state.dart';
+
+part 'chat_visual_prototype.dart';
 
 typedef ChatCurrentUserIdProvider = String? Function();
 
@@ -22,6 +26,7 @@ class ChatView extends StatelessWidget {
     this.chatCubit,
     this.currentUserIdProvider,
     this.autoRefreshInterval = const Duration(seconds: 15),
+    this.visualPrototype = false,
   });
 
   final String receiverId;
@@ -30,6 +35,9 @@ class ChatView extends StatelessWidget {
   final ChatCubit? chatCubit;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
   final Duration autoRefreshInterval;
+
+  /// W47 presentation opt-in, pending Product Owner visual approval.
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +52,7 @@ class ChatView extends StatelessWidget {
         initialDraft: initialDraft,
         currentUserIdProvider: currentUserIdProvider,
         autoRefreshInterval: autoRefreshInterval,
+        visualPrototype: visualPrototype,
       ),
     );
   }
@@ -56,6 +65,7 @@ class _ChatViewBody extends StatefulWidget {
     required this.initialDraft,
     required this.currentUserIdProvider,
     required this.autoRefreshInterval,
+    required this.visualPrototype,
   });
 
   final String receiverId;
@@ -63,6 +73,7 @@ class _ChatViewBody extends StatefulWidget {
   final String? initialDraft;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
   final Duration autoRefreshInterval;
+  final bool visualPrototype;
 
   @override
   State<_ChatViewBody> createState() => _ChatViewBodyState();
@@ -133,7 +144,9 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                     CustomerHomeV1Tokens.space16,
                     0,
                   ),
-                  child: _ChatHeader(receiverName: widget.receiverName),
+                  child: widget.visualPrototype
+                      ? _ChatPrototypeHeader(receiverName: widget.receiverName)
+                      : _ChatHeader(receiverName: widget.receiverName),
                 ),
                 const SizedBox(height: CustomerHomeV1Tokens.space8),
                 Expanded(
@@ -206,6 +219,7 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                                     ),
                                   )
                                 : _MessageList(
+                                    visualPrototype: widget.visualPrototype,
                                     messages: _messages,
                                     currentUserId: currentUserId,
                                     scrollController: _scrollController,
@@ -213,6 +227,7 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                                   ),
                           ),
                           _MessageInput(
+                            visualPrototype: widget.visualPrototype,
                             controller: _messageController,
                             isSending: isSending,
                             isEnabled: !isInitialLoading && !isInitialLoadError,
@@ -554,6 +569,7 @@ class _ChatLoadErrorState extends StatelessWidget {
 
 class _MessageList extends StatelessWidget {
   const _MessageList({
+    required this.visualPrototype,
     required this.messages,
     required this.currentUserId,
     required this.scrollController,
@@ -564,6 +580,7 @@ class _MessageList extends StatelessWidget {
   final String? currentUserId;
   final ScrollController scrollController;
   final bool isLoadingMore;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
@@ -594,8 +611,15 @@ class _MessageList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (showDateHeader && message.createdAt != null)
-                  _DateHeader(date: message.createdAt!),
-                _MessageBubble(message: message, isMine: isMine),
+                  if (visualPrototype)
+                    _ChatPrototypeDate(date: message.createdAt!)
+                  else
+                    _DateHeader(date: message.createdAt!),
+                _MessageBubble(
+                  message: message,
+                  isMine: isMine,
+                  visualPrototype: visualPrototype,
+                ),
               ],
             );
           },
@@ -744,13 +768,19 @@ class _DateHeader extends StatelessWidget {
 }
 
 class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({required this.message, required this.isMine});
+  const _MessageBubble({
+    required this.message,
+    required this.isMine,
+    required this.visualPrototype,
+  });
 
   final ChatMessageEntity message;
   final bool isMine;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
+    if (visualPrototype) return _buildChatPrototypeBubble(this, context);
     final maxWidth =
         MediaQuery.sizeOf(context).width.clamp(0, 430).toDouble() * 0.76;
     final backgroundColor = isMine
@@ -854,6 +884,7 @@ class _MessageBubble extends StatelessWidget {
 
 class _MessageInput extends StatelessWidget {
   const _MessageInput({
+    required this.visualPrototype,
     required this.controller,
     required this.isSending,
     required this.isEnabled,
@@ -864,23 +895,28 @@ class _MessageInput extends StatelessWidget {
   final bool isSending;
   final bool isEnabled;
   final VoidCallback onSend;
+  final bool visualPrototype;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       key: const Key('customer-chat-input-area'),
-      padding: const EdgeInsets.fromLTRB(
-        CustomerHomeV1Tokens.space12,
-        CustomerHomeV1Tokens.space8,
-        CustomerHomeV1Tokens.space12,
-        CustomerHomeV1Tokens.space12,
-      ),
+      padding: visualPrototype
+          ? const EdgeInsets.fromLTRB(16, 12, 16, 12)
+          : const EdgeInsets.fromLTRB(
+              CustomerHomeV1Tokens.space12,
+              CustomerHomeV1Tokens.space8,
+              CustomerHomeV1Tokens.space12,
+              CustomerHomeV1Tokens.space12,
+            ),
       decoration: const BoxDecoration(
         color: CustomerHomeV1Tokens.surface,
         border: Border(top: BorderSide(color: CustomerHomeV1Tokens.border)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: visualPrototype
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
         children: [
           Expanded(
             child: ValueListenableBuilder<TextEditingValue>(
@@ -893,28 +929,39 @@ class _MessageInput extends StatelessWidget {
                 minLines: 1,
                 maxLines: 4,
                 textInputAction: TextInputAction.newline,
-                style: const TextStyle(
-                  color: CustomerHomeV1Tokens.navy,
-                  fontSize: 13,
-                ),
+                style: visualPrototype
+                    ? Theme.of(context).textTheme.bodyMedium
+                    : const TextStyle(
+                        color: CustomerHomeV1Tokens.navy,
+                        fontSize: 13,
+                      ),
                 decoration: InputDecoration(
+                  isDense: visualPrototype ? true : null,
                   hintText: 'Mesaj yaz',
                   counterText:
                       '${ChatMessageRules.characterCount(value.text)} / '
                       '${ChatMessageRules.maxTextLength}',
-                  hintStyle: const TextStyle(
-                    color: CustomerHomeV1Tokens.muted,
-                    fontSize: 12.5,
-                  ),
+                  hintStyle: visualPrototype
+                      ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: EsnaftaVarColors.textMuted,
+                        )
+                      : const TextStyle(
+                          color: CustomerHomeV1Tokens.muted,
+                          fontSize: 12.5,
+                        ),
                   filled: true,
-                  fillColor: CustomerHomeV1Tokens.cream,
+                  fillColor: visualPrototype
+                      ? EsnaftaVarColors.surfaceAlt
+                      : CustomerHomeV1Tokens.cream,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: CustomerHomeV1Tokens.space16,
                     vertical: CustomerHomeV1Tokens.space12,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
+                      visualPrototype
+                          ? EsnaftaVarRadii.medium
+                          : CustomerHomeV1Tokens.radius20,
                     ),
                     borderSide: const BorderSide(
                       color: CustomerHomeV1Tokens.border,
@@ -922,7 +969,9 @@ class _MessageInput extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
+                      visualPrototype
+                          ? EsnaftaVarRadii.medium
+                          : CustomerHomeV1Tokens.radius20,
                     ),
                     borderSide: const BorderSide(
                       color: CustomerHomeV1Tokens.border,
@@ -930,7 +979,9 @@ class _MessageInput extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                      CustomerHomeV1Tokens.radius20,
+                      visualPrototype
+                          ? EsnaftaVarRadii.medium
+                          : CustomerHomeV1Tokens.radius20,
                     ),
                     borderSide: const BorderSide(
                       color: CustomerHomeV1Tokens.petrol,
@@ -951,12 +1002,21 @@ class _MessageInput extends StatelessWidget {
                   ChatMessageRules.validationError(value.text) == null;
 
               return SizedBox.square(
-                dimension: 46,
+                dimension: visualPrototype
+                    ? EsnaftaVarTouchTargets.preferred
+                    : 46,
                 child: IconButton.filled(
                   key: const Key('chat-message-send-action'),
                   tooltip: 'Gönder',
                   onPressed: canSend ? onSend : null,
                   style: IconButton.styleFrom(
+                    shape: visualPrototype
+                        ? RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              EsnaftaVarRadii.medium,
+                            ),
+                          )
+                        : null,
                     backgroundColor: CustomerHomeV1Tokens.petrol,
                     disabledBackgroundColor: CustomerHomeV1Tokens.mint,
                     foregroundColor: Colors.white,

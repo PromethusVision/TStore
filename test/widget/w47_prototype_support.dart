@@ -1,6 +1,5 @@
 // Fonts and viewport scoped only to the three W47 owner-review test files.
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
