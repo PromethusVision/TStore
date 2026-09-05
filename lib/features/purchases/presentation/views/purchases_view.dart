@@ -727,8 +727,9 @@ class _PurchaseCardState extends State<_PurchaseCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.visualPrototype)
+    if (widget.visualPrototype) {
       return _buildPurchasePrototypeCard(this, context);
+    }
     final purchase = widget.purchase;
 
     return Container(
