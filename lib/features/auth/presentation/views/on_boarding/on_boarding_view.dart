@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
 import 'package:t_store/features/auth/presentation/view_models/on_boarding_model.dart';
@@ -19,8 +20,8 @@ class OnBoardingView extends StatelessWidget {
       builder: (context, state) {
         final onBoardingCubit = context.read<OnBoardingCubit>();
         final pageController = onBoardingCubit.pageController;
-        return Scaffold(
-          backgroundColor: CustomerHomeV1Tokens.cream,
+        return EsnaftaVarScaffold(
+          safeAreaTop: false,
           body: SafeArea(
             child: Center(
               child: ConstrainedBox(
@@ -31,24 +32,26 @@ class OnBoardingView extends StatelessWidget {
                     Container(
                       key: const Key('customer-onboarding-header'),
                       margin: const EdgeInsets.fromLTRB(
-                        CustomerHomeV1Tokens.space16,
-                        CustomerHomeV1Tokens.space8,
-                        CustomerHomeV1Tokens.space16,
+                        EsnaftaVarSpacing.md,
+                        EsnaftaVarSpacing.xs,
+                        EsnaftaVarSpacing.md,
                         0,
                       ),
                       padding: const EdgeInsets.fromLTRB(
-                        CustomerHomeV1Tokens.space16,
-                        CustomerHomeV1Tokens.space12,
-                        CustomerHomeV1Tokens.space8,
-                        CustomerHomeV1Tokens.space12,
+                        EsnaftaVarSpacing.md,
+                        EsnaftaVarSpacing.sm,
+                        EsnaftaVarSpacing.xs,
+                        EsnaftaVarSpacing.sm,
                       ),
                       decoration: BoxDecoration(
-                        color: CustomerHomeV1Tokens.surface,
+                        color: EsnaftaVarColors.surfaceElevated,
                         borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radius20,
+                          EsnaftaVarRadii.xLarge,
                         ),
-                        border: Border.all(color: CustomerHomeV1Tokens.border),
-                        boxShadow: CustomerHomeV1Tokens.softShadow,
+                        border: Border.all(
+                          color: EsnaftaVarColors.borderDefault,
+                        ),
+                        boxShadow: EsnaftaVarElevation.sm,
                       ),
                       child: const Row(
                         children: [
@@ -76,8 +79,8 @@ class OnBoardingView extends StatelessWidget {
                           OnBoardingPage(
                             onBoardingModel: OnBoardingModel(
                               icon: Icons.search_rounded,
-                              iconColor: CustomerHomeV1Tokens.petrol,
-                              iconSurfaceColor: CustomerHomeV1Tokens.mint,
+                              iconColor: EsnaftaVarColors.primary,
+                              iconSurfaceColor: EsnaftaVarColors.primarySoft,
                               title: TTexts.onBoardingTitle1,
                               subTitle: TTexts.onBoardingSubTitle1,
                             ),
@@ -85,8 +88,8 @@ class OnBoardingView extends StatelessWidget {
                           OnBoardingPage(
                             onBoardingModel: OnBoardingModel(
                               icon: Icons.storefront_rounded,
-                              iconColor: CustomerHomeV1Tokens.coral,
-                              iconSurfaceColor: CustomerHomeV1Tokens.yellow,
+                              iconColor: EsnaftaVarColors.accent,
+                              iconSurfaceColor: EsnaftaVarColors.highlight,
                               title: TTexts.onBoardingTitle2,
                               subTitle: TTexts.onBoardingSubTitle2,
                             ),
@@ -94,8 +97,8 @@ class OnBoardingView extends StatelessWidget {
                           OnBoardingPage(
                             onBoardingModel: OnBoardingModel(
                               icon: Icons.qr_code_rounded,
-                              iconColor: CustomerHomeV1Tokens.green,
-                              iconSurfaceColor: CustomerHomeV1Tokens.mint,
+                              iconColor: EsnaftaVarColors.success,
+                              iconSurfaceColor: EsnaftaVarColors.primarySoft,
                               title: TTexts.onBoardingTitle3,
                               subTitle: TTexts.onBoardingSubTitle3,
                             ),
@@ -106,28 +109,44 @@ class OnBoardingView extends StatelessWidget {
                     Container(
                       key: const Key('customer-onboarding-footer'),
                       margin: const EdgeInsets.fromLTRB(
-                        CustomerHomeV1Tokens.space16,
+                        EsnaftaVarSpacing.md,
                         0,
-                        CustomerHomeV1Tokens.space16,
-                        CustomerHomeV1Tokens.space16,
+                        EsnaftaVarSpacing.md,
+                        EsnaftaVarSpacing.md,
                       ),
-                      padding: const EdgeInsets.all(
-                        CustomerHomeV1Tokens.space12,
-                      ),
+                      padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
                       decoration: BoxDecoration(
-                        color: CustomerHomeV1Tokens.surface,
+                        color: EsnaftaVarColors.surfaceElevated,
                         borderRadius: BorderRadius.circular(
-                          CustomerHomeV1Tokens.radius20,
+                          EsnaftaVarRadii.xLarge,
                         ),
-                        border: Border.all(color: CustomerHomeV1Tokens.border),
-                        boxShadow: CustomerHomeV1Tokens.softShadow,
+                        border: Border.all(
+                          color: EsnaftaVarColors.borderDefault,
+                        ),
+                        boxShadow: EsnaftaVarElevation.sm,
                       ),
-                      child: const Row(
-                        children: [
-                          Expanded(child: OnBoardingDotNavigation()),
-                          SizedBox(width: CustomerHomeV1Tokens.space12),
-                          OnBoardingNextButton(),
-                        ],
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth < 310) {
+                            return const Column(
+                              children: [
+                                OnBoardingDotNavigation(),
+                                SizedBox(height: EsnaftaVarSpacing.xs),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OnBoardingNextButton(),
+                                ),
+                              ],
+                            );
+                          }
+                          return const Row(
+                            children: [
+                              Expanded(child: OnBoardingDotNavigation()),
+                              SizedBox(width: EsnaftaVarSpacing.sm),
+                              OnBoardingNextButton(),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],

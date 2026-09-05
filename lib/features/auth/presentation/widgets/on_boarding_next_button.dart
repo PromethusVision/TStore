@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
 
 class OnBoardingNextButton extends StatelessWidget {
@@ -20,16 +20,14 @@ class OnBoardingNextButton extends StatelessWidget {
               await context.read<OnBoardingCubit>().goToNextPage(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: CustomerHomeV1Tokens.petrol,
+              backgroundColor: EsnaftaVarColors.primary,
               foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(
-                horizontal: CustomerHomeV1Tokens.space16,
+                horizontal: EsnaftaVarSpacing.md,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  CustomerHomeV1Tokens.radius16,
-                ),
+                borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
               ),
             ),
             icon: Icon(
