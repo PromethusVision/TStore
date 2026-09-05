@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/category_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -462,9 +463,10 @@ class _RecentSearchesCard extends StatelessWidget {
     return Material(
       key: const Key('home-recent-searches'),
       color: CustomerHomeV1Tokens.surface,
-      elevation: 8,
-      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        side: const BorderSide(color: EsnaftaVarColors.borderDefault),
+      ),
       clipBehavior: Clip.antiAlias,
       child: isLoading && queries.isEmpty
           ? const _SuggestionStatus(
@@ -476,67 +478,81 @@ class _RecentSearchesCard extends StatelessWidget {
               ),
               message: 'Son aramalar yükleniyor...',
             )
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 8, 2),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.history_rounded,
-                        size: 20,
-                        color: CustomerHomeV1Tokens.petrol,
-                      ),
-                      const SizedBox(width: CustomerHomeV1Tokens.space8),
-                      Expanded(
-                        child: Text(
-                          'Son Aramalar',
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      TextButton(
-                        key: const Key('clear-home-recent-searches'),
-                        onPressed: onClear,
-                        child: const Text('Tümünü temizle'),
-                      ),
-                    ],
-                  ),
-                ),
-                for (var index = 0; index < queries.length; index++)
-                  InkWell(
-                    key: ValueKey('home-recent-search-$index'),
-                    onTap: () => onSelected(queries[index]),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
-                      child: Row(
+          : ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 320),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 8, 2),
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.history_rounded,
-                            size: 19,
-                            color: CustomerHomeV1Tokens.muted,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.history_rounded,
+                                size: EsnaftaVarIconSizes.medium,
+                                color: EsnaftaVarColors.primary,
+                              ),
+                              const SizedBox(width: EsnaftaVarSpacing.xs),
+                              Text(
+                                'Son Aramalar',
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: CustomerHomeV1Tokens.space12),
-                          Expanded(
-                            child: Text(
-                              queries[index],
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            key: ValueKey('remove-home-recent-search-$index'),
-                            tooltip: '${queries[index]} aramasını sil',
-                            onPressed: () => onRemoved(queries[index]),
-                            icon: const Icon(Icons.close_rounded, size: 18),
+                          TextButton(
+                            key: const Key('clear-home-recent-searches'),
+                            onPressed: onClear,
+                            child: const Text('Tümünü temizle'),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                const SizedBox(height: 4),
-              ],
+                    for (var index = 0; index < queries.length; index++)
+                      InkWell(
+                        key: ValueKey('home-recent-search-$index'),
+                        onTap: () => onSelected(queries[index]),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.history_rounded,
+                                size: 19,
+                                color: CustomerHomeV1Tokens.muted,
+                              ),
+                              const SizedBox(
+                                width: CustomerHomeV1Tokens.space12,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  queries[index],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              IconButton(
+                                key: ValueKey(
+                                  'remove-home-recent-search-$index',
+                                ),
+                                tooltip: '${queries[index]} aramasını sil',
+                                onPressed: () => onRemoved(queries[index]),
+                                icon: const Icon(Icons.close_rounded, size: 18),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 4),
+                  ],
+                ),
+              ),
             ),
     );
   }
@@ -630,9 +646,10 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
     return Material(
       key: const Key('home-search-suggestions'),
       color: CustomerHomeV1Tokens.surface,
-      elevation: 8,
-      shadowColor: CustomerHomeV1Tokens.navy.withValues(alpha: 0.16),
-      borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        side: const BorderSide(color: EsnaftaVarColors.borderDefault),
+      ),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 360),
@@ -694,7 +711,9 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
       return _SuggestionStatus(
         key: const Key('home-search-suggestions-empty'),
         icon: const Icon(Icons.search_off_rounded),
-        message: 'Bu aramayla eşleşen öneri bulunamadı.',
+        message: loaded.warningMessage == null
+            ? 'Bu aramayla eşleşen öneri bulunamadı.'
+            : 'Öneriler tam yüklenemedi.',
         actionLabel: 'Tüm sonuçları gör',
         onAction: widget.onViewAll,
       );
@@ -705,6 +724,16 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
       shrinkWrap: true,
       padding: const EdgeInsets.symmetric(vertical: 6),
       children: [
+        if (loaded.warningMessage != null)
+          Padding(
+            padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
+            child: EsnaftaVarStateCard(
+              key: const Key('home-search-suggestions-warning'),
+              icon: Icons.info_outline_rounded,
+              title: 'Bazı öneriler eksik',
+              message: loaded.warningMessage!,
+            ),
+          ),
         if (categories.isNotEmpty) ...[
           const _SuggestionSectionTitle('Kategoriler'),
           for (final category in categories)
@@ -753,7 +782,12 @@ class _SuggestionsCardState extends State<_SuggestionsCard> {
           key: const Key('view-all-home-search-results'),
           onPressed: widget.onViewAll,
           icon: const Icon(Icons.search_rounded, size: 18),
-          label: Text('“${widget.query}” için tüm sonuçları gör'),
+          label: Text(
+            '“${widget.query}” için tüm sonuçları gör',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
@@ -938,18 +972,28 @@ class _SuggestionStatus extends StatelessWidget {
   final VoidCallback? onAction;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(CustomerHomeV1Tokens.space16),
-      child: Row(
-        children: [
-          icon,
-          const SizedBox(width: CustomerHomeV1Tokens.space12),
-          Expanded(child: Text(message)),
-          if (actionLabel != null)
-            TextButton(onPressed: onAction, child: Text(actionLabel!)),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SingleChildScrollView(
+    padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        EsnaftaVarStateCard(
+          icon: icon is Icon
+              ? (icon as Icon).icon!
+              : Icons.hourglass_top_rounded,
+          title: message,
+          message: actionLabel == null
+              ? 'Kısa bir süre bekleyebilirsin.'
+              : 'Aramaya buradan devam edebilirsin.',
+          actionLabel: actionLabel,
+          onAction: onAction,
+        ),
+        if (icon is! Icon)
+          Padding(
+            padding: const EdgeInsets.only(top: EsnaftaVarSpacing.xs),
+            child: icon,
+          ),
+      ],
+    ),
+  );
 }
