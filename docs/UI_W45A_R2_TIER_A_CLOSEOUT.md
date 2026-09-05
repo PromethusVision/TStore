@@ -96,7 +96,36 @@ iki Cart sunumunda ortak kullanılır; ikisi de regresyon kapsamındadır.
 
 ## 3. Nearby / Location checkpoint
 
-Devam ediyor.
+- **164 PASS, 0 FAIL, 0 SKIP**: W45 Nearby, mevcut Nearby view/Cubit,
+  geolocator service, Home location bar/nearby merchants/saved navigation,
+  Saved Locations widget/Cubit.
+- Loaded 320/390/430 × 100/130%; sekiz mevcut location status × üç genişlik,
+  hepsi 130%; initial/loading/empty/error × üç genişlik, 130%.
+- Kayıtlı ve cihaz konumu, permission denied/denied forever, service disabled,
+  requesting/timed out/unavailable; consent cancel/confirm ve doğru settings
+  hedefleri doğrulandı. State geçişinde mağazalar erişilebilir kaldı.
+- Mesafe üst başlığı artık yalnız listelenen bir mağazada finite/non-negative
+  mesafe varsa sıralama iddiası üretir. NaN/infinity/negatif, ilgisiz mağaza map
+  girdileri ve stale non-ready mesafelerden proximity bilgisi üretilmez.
+- Uzun mağaza/adres/açıklama/kayıtlı konum adı, puansız mağaza, büyük mesafe,
+  30 mağaza, son karta kaydırma, double-tap navigation guard ve aynı listeye
+  dönüş geçti. Default ShopProfileView hedefi ve original entity eşleşti.
+- Default ShopProfileView gerçek bootstrap auth accessor'ını kullandığı için
+  handoff testi mevcut `widget_test.dart` offline setup'ını kullanır: mock
+  preferences, sentetik widget-test URL/public key, oturum/remote data yok.
+  İlk testteki eksik bootstrap bu fixture içinde giderildi; runtime değiştirilmedi.
+- Header ve kayıtlı konum satırı semantik sınırları eklendi. Mevcut location
+  actions ve mağaza/selector düğmeleri etiket ve 44 px hedef testlerinden geçti.
+- 22 yeni PNG; loaded, dar/130%, kalıcı izin reddi, bilinmeyen mesafe, uzun
+  içerik, cihaz konumu ve empty kanıtları açılıp incelendi. Onaylı eski 390
+  golden değişmedi. No new tracking, coordinates, remote merchants or data.
+- Shared component değişikliği yok. Nearby tab kabuğu mevcut navigator/back
+  modelini korur; ekstra geri eylemi veya konum davranışı eklenmedi.
+
+![Nearby 390](../test/widget/shop/goldens/w45a_r2_nearby_loaded_390_scale_100.png)
+![Nearby 320 / 130](../test/widget/shop/goldens/w45a_r2_nearby_loaded_320_scale_130.png)
+![Nearby no distance](../test/widget/shop/goldens/w45a_r2_nearby_no_distance_390.png)
+![Nearby empty](../test/widget/shop/goldens/w45a_r2_nearby_empty_390_scale_130.png)
 
 ## Birleşik gate ve calibration
 

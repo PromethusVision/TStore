@@ -18,9 +18,13 @@ class _NearbyPrototypeHeader extends StatelessWidget {
                 letterSpacing: 0.5,
               ),
             ),
-            Text(
-              'Yakınındakiler',
-              style: Theme.of(context).textTheme.headlineSmall,
+            Semantics(
+              container: true,
+              header: true,
+              child: Text(
+                'Yakınındakiler',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
             ),
           ],
         ),
@@ -45,7 +49,12 @@ Widget _buildNearbyPrototype(_LoadedNearbyShops view, BuildContext context) {
       ready &&
       state.locationSource == NearbyLocationSource.savedLocation &&
       state.locationLabel?.trim().isNotEmpty == true;
-  final hasDistances = state.distanceMetersByShopId.isNotEmpty;
+  final hasDistances =
+      ready &&
+      state.shops.any((shop) {
+        final distance = state.distanceForShop(shop.id);
+        return distance != null && distance.isFinite && distance >= 0;
+      });
   final theme = Theme.of(context).textTheme;
   final locationCard = _NearbyLocationCard(
     status: state.locationStatus,
@@ -70,62 +79,66 @@ Widget _buildNearbyPrototype(_LoadedNearbyShops view, BuildContext context) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Material(
-                key: const Key('nearby-location-card'),
-                color: Colors.transparent,
-                child: InkWell(
-                  key: const Key('nearby-change-location'),
-                  onTap: saved ? view.onSavedLocationRequested : null,
-                  borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: EsnaftaVarSpacing.xs,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: EsnaftaVarColors.primarySoft,
-                            borderRadius: BorderRadius.circular(
-                              EsnaftaVarRadii.medium,
+              Semantics(
+                container: true,
+                button: saved,
+                child: Material(
+                  key: const Key('nearby-location-card'),
+                  color: Colors.transparent,
+                  child: InkWell(
+                    key: const Key('nearby-change-location'),
+                    onTap: saved ? view.onSavedLocationRequested : null,
+                    borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: EsnaftaVarSpacing.xs,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: EsnaftaVarColors.primarySoft,
+                              borderRadius: BorderRadius.circular(
+                                EsnaftaVarRadii.medium,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.location_on_rounded,
+                              size: 20,
+                              color: EsnaftaVarColors.primary,
                             ),
                           ),
-                          child: const Icon(
-                            Icons.location_on_rounded,
-                            size: 20,
-                            color: EsnaftaVarColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: EsnaftaVarSpacing.xs),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                saved
-                                    ? state.locationLabel!.trim()
-                                    : 'Mevcut konumun',
-                                style: theme.titleSmall,
-                              ),
-                              Text(
-                                hasDistances
-                                    ? 'Yakından uzağa sıralandı'
-                                    : 'Mesafe bilgisi henüz yok',
-                                style: theme.bodySmall?.copyWith(
-                                  color: EsnaftaVarColors.textMuted,
+                          const SizedBox(width: EsnaftaVarSpacing.xs),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  saved
+                                      ? state.locationLabel!.trim()
+                                      : 'Mevcut konumun',
+                                  style: theme.titleSmall,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  hasDistances
+                                      ? 'Yakından uzağa sıralandı'
+                                      : 'Mesafe bilgisi henüz yok',
+                                  style: theme.bodySmall?.copyWith(
+                                    color: EsnaftaVarColors.textMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        if (saved)
-                          const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: EsnaftaVarColors.primary,
-                          ),
-                      ],
+                          if (saved)
+                            const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: EsnaftaVarColors.primary,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
