@@ -1,8 +1,8 @@
 # Astra Calibration Wave 1 Implementation Integration Result
 
-Date: 2026-09-05. **Local acceptance PASS; Git publication follows the gated
-delivery procedure below.** This report contains the exact tested source
-revision; the final delivery commit also contains the inventory/calibration docs.
+Date: 2026-09-05. **PASS — integration branch and origin/main published and
+verified.** This report contains the exact tested runtime and first published
+integration revision; the final docs-only receipt commit is its descendant.
 
 ## Git and scope
 
@@ -19,7 +19,7 @@ revision; the final delivery commit also contains the inventory/calibration docs
 | Textual conflicts | **0** |
 | Runtime semantic reconciliations | **0 required**; both complete source blobs preserved |
 | Documentation reconciliation | MD-10 inactive compatibility correction; W44 reuse-summary arithmetic corrected from unchanged row classifications |
-| Final origin/main | Publication receipt appended after successful normal push; exact final branch SHA also returned in the task final response |
+| Verified main integration publication | `e50753da5fe82fc308c3b77ba901cee612e190fc`; identical main/task remote refs confirmed. The final docs-only receipt SHA is returned in the task final response |
 
 Source A changes 34 files, B 55; their changed-path intersection is empty. The
 merged tree retains **all 89 changed source blobs byte-for-byte**, including all
@@ -178,8 +178,9 @@ by a local UI suite.
 
 ## Delivery and boundaries
 
-Start observed: **2026-09-05 03:39:04 Europe/Istanbul** (00:39:04 UTC). Final
-elapsed observation and remote commit verification are recorded with publication.
+Start observed: **2026-09-05 03:39:04 Europe/Istanbul** (00:39:04 UTC). First publication verification: **04:08:49 Europe/Istanbul** (01:08:49 UTC),
+**29m45s** observed elapsed including review, tests, planning and push review.
+Final docs-only receipt/verification follows that observation boundary.
 All 12 phases were attempted; feature/test/document acceptance is complete.
 No known local blocker, critical regression, scope drift or substantive owner
 correction. Runtime integration was unchanged after the full gate. Figma calls
@@ -192,7 +193,30 @@ reserved example-domain test fixture. Existing legal public-contact content
 was not modified. Changed paths were checked against the presentation/test/docs
 allowlist; no unexpected file. No private live-service validation is claimed.
 
-After this report's commit, fetch main again, verify it still matches the
-reviewed base (otherwise inspect/reconcile any newer commits), normal-push the
-integration branch and then origin/main, and verify both remote refs and a clean
-worktree. User's W45D task explicitly authorizes these pushes after PASS.
+Pre-push fetch revalidated unchanged main 4287972 and exact A/B HEADs. Normal
+push created the integration branch and advanced main 4287972 -> e50753d;
+ls-remote confirmed identical refs and status was clean. No force push. The
+initial automatic approval review rejected the combined push because it read
+the earlier Auth-only approval as the available authority. The W45D user
+attachment's explicit GIT instruction (push integration branch; push origin/main
+after PASS) and exact remote destination were rechecked; the evidenced retry
+was approved and both pushes succeeded without a new user approval.
+
+This final receipt is docs-only. Its normal task/main push and remote equality
+are verified in the final tool result; no runtime changed after the 1637-pass
+gate. No remaining integration blocker. Wave 2 readiness means the next bounded
+assignments can be issued with the documented Cart/visual prerequisites, not
+that a commercial release or all future tasks are already accepted.
+
+```text
+ASTRA_WAVE1_IMPLEMENTATION_INTEGRATION: PASS
+ALL_PRODUCTS_SEARCH_MAIN: PASS
+AUTH_STARTUP_MAIN: PASS
+COMBINED_FULL_SUITE: PASS
+SEMANTIC_COLLISIONS_RESOLVED: PASS
+INVENTORY_REFRESHED: PASS
+ASTRA_CALIBRATION_LOG_UPDATED: PASS
+IMPLEMENTATION_SCOPE_INCREASE_RECOMMENDED: YES
+PRODUCTION_ACCESSED: NO
+READY_FOR_ASTRA_CALIBRATION_WAVE2: YES
+```

@@ -125,6 +125,10 @@ W45D başlangıcı **2026-09-05 03:39:04 Europe/Istanbul**. Yeni integration bra
 aynı kalıcı efac worktree; bu takip görevi yeni bir bağımsız implementation
 benchmark'ı olarak sayılmaz. Başlangıç main 4287972; ön-merge collision review
 **a103518**, A merge **0d6228d**, B merge/test edilen birleşim **a621d73**.
+İlk main/task publication e50753da5fe82fc308c3b77ba901cee612e190fc olarak
+04:08:49 Europe/Istanbul'da doğrulandı: **29m45s** gözlenen integration/test/planlama
+ve push süresi; son docs-only receipt bunun dışındadır. İlk otomatik push reddi,
+W45D ekindeki açık main yetkisi yeniden doğrulanınca çözüldü; yeni PO kararı yok.
 
 - 536 hedefli PASS; 407 komşu regression PASS; analyzer 0 issue.
 - **1637 PASS / 0 FAIL / 6 mevcut opt-in skip**, 78.147 sn full test runner.
