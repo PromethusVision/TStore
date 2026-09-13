@@ -87,6 +87,71 @@ void main() {
     await Future.wait([poppins.load(), iconsax.load(), materialIcons.load()]);
   });
 
+  for (final scenario in [
+    _HomeVisualScenario.guest,
+    _HomeVisualScenario.authenticated,
+  ]) {
+    for (final brightness in [Brightness.dark, Brightness.light]) {
+      testWidgets(
+        'W53A Home eight roots $scenario system $brightness and public browse',
+        (tester) async {
+          tester.view.physicalSize = const Size(390, 844);
+          tester.view.devicePixelRatio = 1;
+          tester.binding.platformDispatcher.platformBrightnessTestValue =
+              brightness;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(
+            tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+          );
+          await tester.pumpWidget(
+            _buildScenario(
+              scenario,
+              visualPrototype: false,
+              categories: const [
+                ..._prototypeCategories,
+                CategoryEntity(id: 'kitap', name: 'Kitap'),
+                CategoryEntity(id: 'spor', name: 'Spor'),
+              ],
+            ),
+          );
+          final imageContext = tester.element(
+            find.byKey(const Key('w39a-home-visual-evidence')),
+          );
+          await tester.runAsync(() async {
+            await Future.wait([
+              for (final image in tester.widgetList<Image>(find.byType(Image)))
+                precacheImage(image.image, imageContext),
+            ]);
+          });
+          await tester.pumpAndSettle();
+          for (final id in [
+            ..._prototypeCategories.map((c) => c.id),
+            'kitap',
+            'spor',
+          ]) {
+            expect(
+              find.byKey(Key('home-category-$id')).hitTestable(),
+              findsOneWidget,
+            );
+          }
+          expect(tester.takeException(), isNull);
+          await expectLater(
+            find.byKey(const Key('w39a-home-visual-evidence')),
+            matchesGoldenFile(
+              'goldens/w53a_home_eight_${scenario.name}_390.png',
+            ),
+          );
+          await tester.tap(find.byKey(const Key('home-all-categories')));
+          await tester.pumpAndSettle();
+          expect(find.byKey(const Key('all-categories-root')), findsOneWidget);
+          expect(find.text('Tüm kategoriler'), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   const evidenceCases = [
     _HomeGoldenCase(
       name: 'w39a_r3_home_authenticated_390',
@@ -196,7 +261,12 @@ class _HomeGoldenCase {
   final double textScale;
 }
 
-Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
+Widget _buildScenario(
+  _HomeVisualScenario scenario, {
+  double textScale = 1,
+  bool visualPrototype = true,
+  List<CategoryEntity>? categories,
+}) {
   final authCubit = _MockAuthCubit();
   final bannersCubit = _MockBannersCubit();
   final categoriesCubit = _MockCategoriesCubit();
@@ -242,7 +312,7 @@ Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
         'Kategoriler yüklenemedi',
       ),
       _ => CategoriesLoaded(
-        isLongText ? _longCategories : _prototypeCategories,
+        categories ?? (isLongText ? _longCategories : _prototypeCategories),
       ),
     },
   );
@@ -328,6 +398,7 @@ Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
     ],
     child: MaterialApp(
       theme: TAppTheme.lightTheme,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(
@@ -341,7 +412,7 @@ Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
           bottomNavigationBar: CustomerBottomNavigation(
             selectedIndex: 0,
             onSelected: (_) {},
-            visualPrototype: true,
+            visualPrototype: visualPrototype,
           ),
           body: SafeArea(
             bottom: false,
@@ -353,7 +424,7 @@ Widget _buildScenario(_HomeVisualScenario scenario, {double textScale = 1}) {
               productShopProductsLoader: isLongText
                   ? _longShopProductsLoader
                   : _prototypeShopProductsLoader,
-              visualPrototype: true,
+              visualPrototype: visualPrototype,
               productFavoriteCurrentUserIdProvider: () =>
                   isAuthenticated ? 'visual-customer' : null,
               onSearchSubmitted: (_) {},

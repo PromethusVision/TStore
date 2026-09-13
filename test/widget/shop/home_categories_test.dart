@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -41,7 +42,8 @@ void main() {
     required CategoriesState state,
     HomeCategoryDestinationBuilder? destinationBuilder,
     HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder,
-    Size physicalSize = const Size(1400, 400),
+    Size physicalSize = const Size(1400, 500),
+    double textScale = 1,
   }) async {
     tester.view.physicalSize = physicalSize;
     tester.view.devicePixelRatio = 1;
@@ -56,6 +58,13 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        theme: EsnaftaVarTheme.light,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child!,
+        ),
         home: Scaffold(
           body: BlocProvider<CategoriesCubit>.value(
             value: categoriesCubit,
@@ -69,6 +78,124 @@ void main() {
     );
     await tester.pump();
   }
+
+  for (final count in [0, 1, 3, 7, 8, 11]) {
+    testWidgets('W53A Home renders min($count, 8) roots in supplied order', (
+      tester,
+    ) async {
+      final categories = List.generate(
+        count,
+        (i) => CategoryEntity(
+          id: 'root-$i',
+          name: 'Kategori $i',
+          sortOrder: count - i,
+        ),
+      );
+      await pumpCategories(
+        tester,
+        state: CategoriesLoaded(categories),
+        physicalSize: const Size(390, 844),
+      );
+      for (var i = 0; i < count; i++) {
+        final item = find.byKey(Key('home-category-root-$i'));
+        expect(item, i < 8 ? findsOneWidget : findsNothing);
+        if (i < 8) expect(item.hitTestable(), findsOneWidget);
+      }
+      final positions = [
+        for (var i = 0; i < count && i < 8; i++)
+          tester.getTopLeft(find.byKey(Key('home-category-root-$i'))),
+      ];
+      for (var i = 1; i < positions.length; i++) {
+        expect(
+          positions[i].dy > positions[i - 1].dy ||
+              (positions[i].dy == positions[i - 1].dy &&
+                  positions[i].dx > positions[i - 1].dx),
+          isTrue,
+        );
+      }
+      expect(find.text('Tüm kategoriler'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('W53A duplicate IDs and children do not consume root slots', (
+    tester,
+  ) async {
+    await pumpCategories(
+      tester,
+      state: const CategoriesLoaded([
+        CategoryEntity(id: 'same', name: 'Birinci'),
+        CategoryEntity(id: ' same ', name: 'Tekrar'),
+        CategoryEntity(id: 'child', name: 'Alt kategori', parentId: 'same'),
+        CategoryEntity(id: 'second', name: 'İkinci'),
+      ]),
+    );
+    expect(find.text('Birinci'), findsOneWidget);
+    expect(find.text('İkinci'), findsOneWidget);
+    expect(find.text('Tekrar'), findsNothing);
+    expect(find.text('Alt kategori'), findsNothing);
+  });
+
+  testWidgets('W53A full roots reuse selected identity and guard rapid taps', (
+    tester,
+  ) async {
+    String? selected;
+    await pumpCategories(
+      tester,
+      physicalSize: const Size(390, 844),
+      state: CategoriesLoaded(
+        List.generate(
+          11,
+          (i) => CategoryEntity(id: 'root-$i', name: 'Kategori $i'),
+        ),
+      ),
+      destinationBuilder: (category, title) {
+        selected = category.id;
+        return Scaffold(appBar: AppBar(), body: Text('Seçim: $title'));
+      },
+    );
+    final action = find.byKey(const Key('home-all-categories'));
+    await tester.tap(action);
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('all-categories-root')), findsOneWidget);
+    expect(find.byKey(const Key('home-category-root-10')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('home-category-root-10')));
+    await tester.pumpAndSettle();
+    expect(selected, 'root-10');
+    expect(find.text('Seçim: Kategori 10'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('all-categories-root')), findsNothing);
+    expect(find.byKey(const Key('home-category-root-8')), findsNothing);
+  });
+
+  testWidgets('W53A category grid at 320 and enlarged text remains usable', (
+    tester,
+  ) async {
+    await pumpCategories(
+      tester,
+      physicalSize: const Size(320, 844),
+      textScale: 1.3,
+      state: CategoriesLoaded(
+        List.generate(
+          8,
+          (i) => CategoryEntity(id: 'root-$i', name: 'Kategori $i'),
+        ),
+      ),
+    );
+    expect(
+      find.byKey(const Key('home-category-root-7')).hitTestable(),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('home-all-categories')).hitTestable(),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
 
   void expectTurkishCategoryTitles() {
     for (final title in TTexts.homeCategoryTitles) {
@@ -292,6 +419,42 @@ void main() {
     expect(find.text('Canonical root hedefi'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'W53A full index preserves canonical browse capability and roots beyond eight',
+    (tester) async {
+      final roots = canonicalRoots();
+      String? selected;
+      await pumpCategories(
+        tester,
+        physicalSize: const Size(390, 844),
+        state: CategoriesLoaded(
+          roots
+              .map(
+                (node) => CategoryEntity(id: node.id, name: node.displayName),
+              )
+              .toList(),
+          runtimeMode: TaxonomyRuntimeMode.canonicalV1Runtime,
+          canonicalNodes: roots,
+        ),
+        canonicalDestinationBuilder: (node) {
+          selected = node.id;
+          return Scaffold(appBar: AppBar(), body: Text(node.displayName));
+        },
+      );
+      expect(find.byKey(const Key('home-category-root-9')), findsNothing);
+      await tester.tap(find.byKey(const Key('home-all-categories')));
+      await tester.pumpAndSettle();
+      final last = find.byKey(Key('home-category-${roots.last.id}'));
+      await tester.ensureVisible(last);
+      await tester.pumpAndSettle();
+      await tester.tap(last);
+      await tester.pumpAndSettle();
+      expect(selected, roots.last.id);
+      expect(find.text(roots.last.displayName), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('48 karakterli Türkçe kategori adı anlamlı üç satır alanı alır', (
     tester,

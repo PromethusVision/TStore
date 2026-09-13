@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
@@ -23,7 +24,16 @@ class HomeCategories extends StatefulWidget {
     this.destinationBuilder,
     this.canonicalDestinationBuilder,
     this.visualPrototype = false,
-  });
+  }) : _showAll = false;
+
+  const HomeCategories._all({
+    required this.destinationBuilder,
+    required this.canonicalDestinationBuilder,
+    required this.visualPrototype,
+  }) : _showAll = true;
+
+  static const maxHomeCategories = 8;
+  final bool _showAll;
 
   final HomeCategoryDestinationBuilder? destinationBuilder;
   final HomeCanonicalCategoryDestinationBuilder? canonicalDestinationBuilder;
@@ -73,110 +83,162 @@ class _HomeCategoriesState extends State<HomeCategories> {
       key: const Key('home-categories'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Kategoriler',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: CustomerHomeV1Tokens.navy,
-            fontWeight: widget.visualPrototype ? FontWeight.w700 : null,
+        if (!widget._showAll) ...[
+          EsnaftaVarSectionHeader(
+            title: 'Kategoriler',
+            actionLabel: 'Tüm kategoriler',
+            actionKey: const Key('home-all-categories'),
+            onAction: () => _openAllCategories(context),
           ),
-        ),
-        if (!widget.visualPrototype) ...[
-          const SizedBox(height: CustomerHomeV1Tokens.space4),
-          Text(
-            'Mahallende aradığını kolayca bul',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: CustomerHomeV1Tokens.muted),
-          ),
+          if (!widget.visualPrototype)
+            Text(
+              'Mahallende aradığını kolayca bul',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: CustomerHomeV1Tokens.muted,
+              ),
+            ),
+          const SizedBox(height: CustomerHomeV1Tokens.space8),
         ],
-        const SizedBox(height: CustomerHomeV1Tokens.space8),
-        SizedBox(
-          height: widget.visualPrototype
-              ? usesScaledText
-                    ? 132
-                    : 108
-              : 112,
-          child: BlocBuilder<CategoriesCubit, CategoriesState>(
-            builder: (context, state) {
-              if (state is CategoriesLoading || state is CategoriesInitial) {
+        BlocBuilder<CategoriesCubit, CategoriesState>(
+          builder: (context, state) {
+            if (state is CategoriesLoading || state is CategoriesInitial) {
+              return const _CategoryStatus(
+                key: Key('home-categories-loading'),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: CustomerHomeV1Tokens.petrol,
+                    strokeWidth: 2,
+                  ),
+                ),
+              );
+            }
+
+            if (state is CategoriesError) {
+              return _CategoryStatus(
+                child: TextButton.icon(
+                  key: const Key('home-categories-retry'),
+                  onPressed: context.read<CategoriesCubit>().getCategories,
+                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                  label: const Text('Kategorileri Tekrar Yükle'),
+                ),
+              );
+            }
+
+            if (state is CategoriesLoaded) {
+              // Keep supplied root ordering and identity; never fill gaps.
+              final seen = <String>{};
+              final roots = state.categories.where(
+                (category) => category.isParent && seen.add(category.id.trim()),
+              );
+              final categories =
+                  (widget._showAll
+                          ? roots
+                          : roots.take(HomeCategories.maxHomeCategories))
+                      .toList();
+              if (categories.isEmpty) {
                 return const _CategoryStatus(
-                  key: Key('home-categories-loading'),
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: CustomerHomeV1Tokens.petrol,
-                      strokeWidth: 2,
+                  child: Text(
+                    'Şu anda gösterilecek kategori bulunamadı.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: CustomerHomeV1Tokens.muted,
+                      fontSize: 11,
                     ),
                   ),
                 );
               }
 
-              if (state is CategoriesError) {
-                return _CategoryStatus(
-                  child: TextButton.icon(
-                    key: const Key('home-categories-retry'),
-                    onPressed: context.read<CategoriesCubit>().getCategories,
-                    icon: const Icon(Icons.refresh_rounded, size: 18),
-                    label: const Text('Kategorileri Tekrar Yükle'),
-                  ),
-                );
-              }
-
-              if (state is CategoriesLoaded) {
-                if (state.categories.isEmpty) {
-                  return const _CategoryStatus(
-                    child: Text(
-                      'Şu anda gösterilecek kategori bulunamadı.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: CustomerHomeV1Tokens.muted,
-                        fontSize: 11,
-                      ),
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: constraints.maxWidth < 340 ? 3 : 4,
+                      crossAxisSpacing: CustomerHomeV1Tokens.space8,
+                      mainAxisExtent: usesScaledText ? 136 : 112,
                     ),
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      final categoryId = category.id.trim();
+                      final canonicalNode = state.canonicalNodeFor(categoryId);
+                      final categoryVisual = HomeCategoryVisualCatalog.resolve(
+                        categoryId: categoryId,
+                        categoryName: category.name,
+                      );
+                      return _HomeCategoryItem(
+                        key: Key('home-category-${category.id}'),
+                        category: category,
+                        title: _localizedTitle(category.name),
+                        fallbackIcon: categoryVisual.icon,
+                        backgroundColor:
+                            _pastelSurfaces[index % _pastelSurfaces.length],
+                        visualPrototype: widget.visualPrototype,
+                        onTap: categoryId.isEmpty
+                            ? null
+                            : () => _openCategory(
+                                context,
+                                category,
+                                canonicalNode: canonicalNode,
+                              ),
+                      );
+                    },
                   );
-                }
+                },
+              );
+            }
 
-                return ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: state.categories.length,
-                  separatorBuilder: (_, _) =>
-                      const SizedBox(width: CustomerHomeV1Tokens.space8),
-                  itemBuilder: (context, index) {
-                    final category = state.categories[index];
-                    final categoryId = category.id.trim();
-                    final canonicalNode = state.canonicalNodeFor(categoryId);
-                    final categoryVisual = HomeCategoryVisualCatalog.resolve(
-                      categoryId: categoryId,
-                      categoryName: category.name,
-                    );
-                    return _HomeCategoryItem(
-                      key: Key('home-category-${category.id}'),
-                      category: category,
-                      title: _localizedTitle(category.name),
-                      fallbackIcon: categoryVisual.icon,
-                      backgroundColor:
-                          _pastelSurfaces[index % _pastelSurfaces.length],
-                      visualPrototype: widget.visualPrototype,
-                      onTap: categoryId.isEmpty
-                          ? null
-                          : () => _openCategory(
-                              context,
-                              category,
-                              canonicalNode: canonicalNode,
-                            ),
-                    );
-                  },
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
+            return const SizedBox.shrink();
+          },
         ),
       ],
     );
+  }
+
+  bool _isOpeningAllCategories = false;
+
+  Future<void> _openAllCategories(BuildContext context) async {
+    if (_isOpeningAllCategories) return;
+    _isOpeningAllCategories = true;
+    final cubit = context.read<CategoriesCubit>();
+    try {
+      // Reuse the current source, capability and category destination flow.
+      // This root index neither gates guests nor enables canonical runtime.
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => BlocProvider<CategoriesCubit>.value(
+            value: cubit,
+            child: Scaffold(
+              key: const Key('all-categories-root'),
+              appBar: AppBar(title: const Text('Tüm kategoriler')),
+              body: SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 430),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+                      child: HomeCategories._all(
+                        destinationBuilder: widget.destinationBuilder,
+                        canonicalDestinationBuilder:
+                            widget.canonicalDestinationBuilder,
+                        visualPrototype: widget.visualPrototype,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    } finally {
+      _isOpeningAllCategories = false;
+    }
   }
 
   Future<void> _openCategory(
@@ -381,6 +443,6 @@ class _CategoryStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: child);
+    return SizedBox(height: 112, child: Center(child: child));
   }
 }

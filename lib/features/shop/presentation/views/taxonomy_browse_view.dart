@@ -353,7 +353,7 @@ class TaxonomyBreadcrumbBar extends StatelessWidget {
                   Text(
                     '…',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: EsnaftaVarColors.textMuted,
+                      color: EsnaftaVarColors.textSecondary,
                     ),
                   ),
                   const _BreadcrumbChevron(),
@@ -401,7 +401,7 @@ class _BreadcrumbChevron extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 3),
       child: Icon(
         Icons.chevron_right_rounded,
-        color: EsnaftaVarColors.textMuted,
+        color: EsnaftaVarColors.textSecondary,
         size: EsnaftaVarIconSizes.small,
       ),
     );
