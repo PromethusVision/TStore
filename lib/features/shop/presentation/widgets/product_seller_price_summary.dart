@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 
@@ -124,7 +125,7 @@ class ProductSellerPriceSummaryView extends StatelessWidget {
                   Text(
                     content.description!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: CustomerHomeV1Tokens.muted,
+                      color: EsnaftaVarColors.textSecondary,
                     ),
                   ),
                 ],

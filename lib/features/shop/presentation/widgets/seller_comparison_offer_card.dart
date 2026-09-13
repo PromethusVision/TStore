@@ -256,7 +256,7 @@ class _AvailabilityChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final foreground = isAvailable
         ? EsnaftaVarColors.success
-        : EsnaftaVarColors.textMuted;
+        : EsnaftaVarColors.textSecondary;
     final background = isAvailable
         ? EsnaftaVarColors.successSoft
         : EsnaftaVarColors.surfaceAlt;

@@ -173,10 +173,11 @@ class _ApprovedHeroCarousel extends StatelessWidget {
                               CustomerHomeV1Tokens.radiusPill,
                             ),
                           ),
-                          textStyle: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          textStyle: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                         child: const Text('Keşfet'),
                       ),

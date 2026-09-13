@@ -21,6 +21,8 @@ import 'package:t_store/features/shop/presentation/views/product_details_view.da
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
 
+import '../../helpers/customer_contrast_test_support.dart';
+
 class _MockShopRepository extends Mock implements ShopRepository {}
 
 class _MockCustomerLocationService extends Mock
@@ -64,10 +66,20 @@ void main() {
   });
 
   for (final evidence in const [
+    (name: 'w53a_product_details_system_dark_390', visualPrototype: false),
+    (name: 'w53a_product_details_system_light_390', visualPrototype: false),
     (name: 'w42a_before_product_details_390', visualPrototype: false),
     (name: 'w42a_product_details_visual_prototype_390', visualPrototype: true),
   ]) {
     testWidgets('${evidence.name} visual evidence', (tester) async {
+      final w53 = evidence.name.startsWith('w53a');
+      tester.binding.platformDispatcher.platformBrightnessTestValue =
+          evidence.name.contains('system_dark')
+          ? Brightness.dark
+          : Brightness.light;
+      addTearDown(
+        tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+      );
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -111,6 +123,7 @@ void main() {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: EsnaftaVarTheme.light,
+            themeMode: ThemeMode.light,
             home: RepaintBoundary(
               key: const Key('w42a-product-details-visual-evidence'),
               child: ProductDetailsView(
@@ -140,10 +153,27 @@ void main() {
         expect(find.text('Esnafları karşılaştır'), findsOne);
       }
 
+      if (w53) expectCustomerTextContrast(tester);
       await expectLater(
         find.byKey(const Key('w42a-product-details-visual-evidence')),
-        matchesGoldenFile('goldens/${evidence.name}.png'),
+        matchesGoldenFile(
+          'goldens/${w53 ? 'w53a_product_details_system_dark_390' : evidence.name}.png',
+        ),
       );
+      if (w53) {
+        await tester.drag(
+          find.byKey(const Key('product-details-scroll')),
+          const Offset(0, -650),
+        );
+        await tester.pumpAndSettle();
+        expectCustomerTextContrast(tester);
+        await expectLater(
+          find.byKey(const Key('w42a-product-details-visual-evidence')),
+          matchesGoldenFile(
+            'goldens/w53a_product_details_system_dark_scrolled_390.png',
+          ),
+        );
+      }
     });
   }
 }

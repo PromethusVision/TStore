@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -20,6 +22,31 @@ void main() {
 
   tearDownAll(() async {
     await sl.reset();
+  });
+
+  testWidgets('W53A actual app stays light across OS brightness changes', (
+    tester,
+  ) async {
+    final dispatcher = tester.binding.platformDispatcher;
+    addTearDown(dispatcher.clearPlatformBrightnessTestValue);
+    for (final brightness in [
+      Brightness.dark,
+      Brightness.light,
+      Brightness.dark,
+    ]) {
+      dispatcher.platformBrightnessTestValue = brightness;
+      await tester.pumpWidget(const TStore());
+      await tester.pump();
+      final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+      expect(app.themeMode, ThemeMode.light);
+      expect(app.darkTheme, isNull);
+      final context = tester.element(find.byType(Navigator).first);
+      final theme = Theme.of(context);
+      expect(theme.brightness, Brightness.light);
+      expect(theme.colorScheme.onSurface, EsnaftaVarColors.textPrimary);
+      expect(theme.scaffoldBackgroundColor, EsnaftaVarColors.background);
+      expect(MediaQuery.platformBrightnessOf(context), brightness);
+    }
   });
 
   testWidgets('TStore app loads successfully', (WidgetTester tester) async {

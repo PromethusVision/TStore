@@ -1224,14 +1224,14 @@ class _AvailabilityChip extends StatelessWidget {
         vertical: TSizes.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.12),
+        color: EsnaftaVarColors.successSoft,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         'Rafta var',
         style: Theme.of(
           context,
-        ).textTheme.labelSmall?.copyWith(color: Colors.green.shade700),
+        ).textTheme.labelSmall?.copyWith(color: EsnaftaVarColors.success),
       ),
     );
   }

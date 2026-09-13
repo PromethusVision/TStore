@@ -15,6 +15,8 @@ import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_usecase.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 
+import '../../helpers/customer_contrast_test_support.dart';
+
 class _Repository extends Mock implements ShopRepository {}
 
 const _shop = ShopEntity(
@@ -106,6 +108,7 @@ void main() {
       MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: EsnaftaVarTheme.light,
+        themeMode: ThemeMode.light,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(
             context,
@@ -134,6 +137,32 @@ void main() {
       () => precacheImage(const AssetImage(_image), context),
     );
     await tester.pumpAndSettle();
+  }
+
+  for (final brightness in [Brightness.dark, Brightness.light]) {
+    testWidgets('W53A shop contrast with system $brightness', (tester) async {
+      tester.binding.platformDispatcher.platformBrightnessTestValue =
+          brightness;
+      addTearDown(
+        tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+      );
+      await pump(tester);
+      expectCustomerTextContrast(tester);
+      await expectLater(
+        find.byKey(const Key('evidence')),
+        matchesGoldenFile('goldens/w53a_shop_details_system_dark_390.png'),
+      );
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -500));
+      await tester.pumpAndSettle();
+      expectCustomerTextContrast(tester);
+      await expectLater(
+        find.byKey(const Key('evidence')),
+        matchesGoldenFile(
+          'goldens/w53a_shop_details_system_dark_scrolled_390.png',
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
   }
 
   testWidgets('390 px visit-first owner evidence', (tester) async {
