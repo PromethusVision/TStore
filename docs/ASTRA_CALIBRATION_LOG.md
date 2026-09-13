@@ -665,6 +665,45 @@ commit. Recommend one separately authorized controlled install/launch package
 using this exact hash without rebuilding. Actual device, physical QR, Production
 remote proof, Merchant, legal/privacy, support and store gates remain OPEN.
 
+### W53A / W53B — Light-only Customer, Home categories and contrast
+
+Date: 2026-09-14 Türkiye / 2026-09-13 UTC. Source `2543f05` starts directly from
+current main `4f0da82`; no newer conflicting main change. W53A reports **8/8**
+phases, **2086/0/6** full suite, analyzer PASS, approximately 29 minutes through
+verification, **GREEN / SAME_SIZE**. This is reported worker evidence, not a new
+Integration measurement. [Source audit](UI_W53A_CUSTOMER_CONTRAST_AUDIT.md).
+
+W53B retains all 42 source paths exactly and adds two meaningful tests using the
+real existing legacy/canonical category destinations beyond Home's eight-root
+cap. Independent targeted **117 PASS + 2 PASS**; full **2088 PASS / 0 FAIL / six
+unchanged opt-in live skips**, **78.985 s**; analyzer **PASS, 14.0 s**. All 175
+baseline test files retained; all 177 current test files executed. Six new images
+and 21 intentional baseline updates accepted; 224 older PNGs unchanged. New
+Integration test initially used generic pageBack; corrected to the actual custom
+back control before the single full run. No weakened test or new skip.
+
+Six Integration subpackages cover freshness, UI/contrast, automated gates, safety,
+evidence and publication. Merge checkpoint **fa7c462** pushed normally to
+`integration/w53b-light-home-category-contrast`; final evidence/main SHA is in
+delivered TASK_RESULT. Observed **21:04:49–21:15:13 UTC = 10m24s** through that
+checkpoint, excluding later docs/publication; final elapsed boundary is delivered
+with the result. [Integration report](ASTRA_W53B_UI_HARDENING_INTEGRATION_RESULT.md).
+
+Final 48 paths: seven runtime Dart, eight test Dart, 27 PNG, six Markdown.
+Integration itself adds no runtime beyond source. Shared root `lib/t_store.dart`
+needs single-owner light-only selection; primitive/token definitions unchanged,
+collisions **NONE**. Figma **NOT_REQUIRED / 0 calls**, Production/backend/taxonomy
+changes **0**, AGENTS.md/protocol unchanged. Calibration **GREEN / SAME_SIZE**:
+scoped completion, no critical regression/scope drift, zero substantive owner
+corrections or in-scope blockers. Visual audit is bounded source/render evidence,
+not whole-device accessibility certification.
+
+Next size: one coherent RC build/verification package after separately authorized
+Production taxonomy work. This recommendation neither proves that external gate
+nor authorizes remote access. W53B changes binary inputs, so frozen W51E artifacts
+remain historical and are not the new main's RC. No rebuild/device/store operation
+occurred. No arbitrary time limit or normalized model benchmark is asserted.
+
 ## 4. Kayıt ve değerlendirme kuralları
 
 - Tüm metrics protokolün `TASK_RESULT` sözleşmesine göre doldurulur. Gözlenemeyen

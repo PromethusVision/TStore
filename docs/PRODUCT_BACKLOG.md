@@ -1,6 +1,22 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
+## Güncel durum — W53B UI hardening, 2026-09-14 Türkiye
+
+- **DONE:** pilot light-only root; OS dark tema geçişine karşı Customer koruması;
+  Home en fazla sekiz gerçek kategori; mevcut akışa bağlanan tam kategori listesi;
+  Product/Shop Details ve global Customer kontrast audit düzeltmeleri.
+- Source `2543f05`, merge `fa7c462`; **2088 PASS / 0 FAIL / mevcut 6 skip**,
+  analyzer PASS. [W53B entegrasyon kanıtı](ASTRA_W53B_UI_HARDENING_INTEGRATION_RESULT.md).
+- **NEXT, CONDITIONAL:** ayrı Production taxonomy işi/kanıtı tamamlandıktan sonra
+  güncel main'den yetkili yeni RC build/verification. W53B yalnız yerel UI
+  önkoşulunu kapatır; Production'a erişmez veya taxonomy durumunu doğrulamaz.
+  `READY_FOR_NEXT_RC_AFTER_PRODUCTION_TAXONOMY: YES` bu koşula bağlıdır.
+- W53B runtime UI değişikliği nedeniyle W51E'nin eski frozen APK/AAB'si yeni main
+  ile source-equivalent değildir. Tarihsel hash/build lineage değiştirilmez.
+  Yeni artifact, kurulum, fiziksel QR, legal/privacy, Merchant, support veya store
+  kabulü bu paket kapsamında yapılmadı; ticari release onayı verilmedi.
+
+## Tarihsel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
 
 - W51E `0500c30` yalnız bir kanıt belgesi içerir; artifact build main'i
   `6a1cf14639124bf709c6a988b9e8290ac7757c60` ile tüm binary girdileri aynıdır.

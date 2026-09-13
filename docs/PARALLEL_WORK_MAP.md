@@ -1,6 +1,24 @@
 # EsnaftaVar Parallel Work Map
 
-## Güncel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
+## Güncel durum — W53B UI hardening integration, 2026-09-14 Türkiye
+
+- Owner source: `ui/w53a-light-theme-home-category-contrast-fix`, exact `2543f05`.
+  Integration: `integration/w53b-light-home-category-contrast`, merge `fa7c462`.
+  Main/base `4f0da82`; yeni çakışan UI/theme commit'i ve merge conflict yok.
+- W53A'nın 42 dosyası aynen korundu; Integration bir test dosyası ve beş doküman
+  değişikliği ekler. Toplam 48 path; ek runtime müdahalesi yok.
+- **SHARED_COMPONENT_CHANGE_REQUIRED: YES — `lib/t_store.dart`.** Pilot light-only
+  seçimi tek root noktasında W53A sahipliğinde düzeltildi. Ortak primitive/token
+  tanımları değişmedi; collision **NONE**. Yeni paralel root/theme düzenlemesi bu
+  entegre durumdan başlamalıdır. AGENTS.md/protokol değişmedi.
+- Hedefli **117 + 2 PASS**; tam suite **2088/0/6**, analyzer PASS.
+  [Detay ve tüm dosyalar](ASTRA_W53B_UI_HARDENING_INTEGRATION_RESULT.md).
+- Backend/taxonomy/Figma/Production işi yapılmadı. Production taxonomy kapısı
+  ayrı yetki/sahiplik gerektirir; burada tamamlandı sayılmaz. Ardından tek tutarlı
+  RC build/verification paketi önerilir (**GREEN / SAME_SIZE**).
+  Eski W51E frozen paketlerin lineage'ı korunur; yeni UI için eşdeğer sayılmazlar.
+
+## Tarihsel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
 
 - W51E `0500c30` yalnız bir kanıt belgesi içerir; artifact build main'i
   `6a1cf14639124bf709c6a988b9e8290ac7757c60` ile tüm binary girdileri aynıdır.

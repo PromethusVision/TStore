@@ -1,6 +1,26 @@
 # EsnaftaVar Project State
 
-## Güncel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
+## Güncel durum — W53B light-only / Home / contrast, 2026-09-14 Türkiye
+
+- W53A `2543f05`, başlangıç main `4f0da82` üzerine çakışmasız alındı;
+  merge `fa7c462`. Arada yeni main/UI/theme commit'i yok.
+- **LIGHT_ONLY / HOME_MAX_8_CATEGORIES / ALL_CATEGORIES_ACTION /
+  GLOBAL_CONTRAST: PASS.** Home en fazla sekiz gerçek kökü gelen sırayla gösterir;
+  tam liste mevcut legacy/canonical akışları ve aynı kategori kaynağını kullanır.
+  OS karanlık modu uygulama temasını değiştirmez. Product/Shop Details kontrastı PASS.
+- Birleşik yerel doğrulama **2088 PASS / 0 FAIL / mevcut 6 skip**; analyzer temiz.
+  117 kaynak/ilişkili hedefli test ve iki ek gerçek kategori geçiş testi PASS.
+  [Entegrasyon kapsamı, sınırlar ve kanıt](ASTRA_W53B_UI_HARDENING_INTEGRATION_RESULT.md).
+- Backend/taxonomy verisi veya sözleşmesi, Figma ve Production değişikliği/erişimi yok.
+  Yedi runtime dosyasındaki yetkili UI düzeltmeleri dışında kapsam genişlemedi.
+- **READY_FOR_NEXT_RC_AFTER_PRODUCTION_TAXONOMY: YES**, koşullu yerel hazırlık.
+  Production taxonomy işi burada doğrulanmadı; ayrı kapı olarak kalır.
+  W53B binary girdilerini değiştirir: aşağıdaki tarihsel W51E frozen dosyaları
+  W53B main ile eşdeğer değildir. Sonraki RC için ayrı yetkili yeni build gerekir.
+  Bu görev artifact üretmedi/kurmadı; fiziksel QR, cihaz, legal/privacy, Merchant,
+  support ve store kabulünü veya ticari yayın hazırlığını PASS yapmaz.
+
+## Tarihsel durum — W51F final-main frozen RC evidence, 2026-09-06 Türkiye
 
 - W51E `0500c30` yalnız bir kanıt belgesi içerir; artifact build main'i
   `6a1cf14639124bf709c6a988b9e8290ac7757c60` ile tüm binary girdileri aynıdır.
