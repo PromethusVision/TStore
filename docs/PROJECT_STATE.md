@@ -1,6 +1,27 @@
 # EsnaftaVar Project State
 
-## Güncel durum — W53B light-only / Home / contrast, 2026-09-14 Türkiye
+## Güncel durum — W53D Category Icon V1, 2026-09-16 Türkiye
+
+- **CATEGORY ICON ART DIRECTION: CODEX-SELECTED V1 / PRODUCT OWNER ACCEPTED.**
+  W53D görevindeki açık ürün sahibi kararı mevcut 24 kategori ikon setini ticari
+  V1 olarak kabul eder. Bu, nihai el yapımı sanat yönü onayı değildir.
+- **FINAL CUSTOM CATEGORY ART: DEFERRED UNTIL APPLICATION COMPLETION.** Özel
+  24 kategori görsel paketi ertelenmiş polish'tir; Customer V1'i artık bloke etmez.
+  Küçük metafor tercihleri yeni owner kararı veya entegrasyon engeli oluşturmaz.
+- W53C source `5a088bb`, başlangıç main `c10b40d`. 24/24 eşleme, eksik/boş ikon
+  **0**, semantic mismatch **0**, canonical fallback **0**. Açık tema okunurluğu
+  ve sistem karanlık ayarında görünürlük PASS; Home/Category yerleşimleri aynı.
+- Yalnız ikon/font/eşleme/test/doküman kapsamı. Backend, taxonomy kimliği/verisi,
+  Reward, gezinme, Production config değişmedi; Production/Figma erişimi yok.
+  Birleşik tam test **2094 PASS / 0 FAIL / mevcut 6 skip**, hedefli **76 PASS**;
+  analyzer, diff ve secret/PII PASS. Merge `7e7b79a`.
+  [W53D doğrulama ve teslim kanıtı](ASTRA_W53D_CATEGORY_ICON_V1_INTEGRATION_RESULT.md).
+- **READY_TO_RESUME_PRODUCTION_TAXONOMY_WORK: YES**, yalnız bu yerel UI engelinin
+  kalktığını belirtir. Ayrı Production görevinin yetkisi ve kanıtı gerekir; W53D
+  onu çalıştırmaz veya tamamlandı saymaz. Yeni font/ikon girdileri eski frozen
+  RC'de var sayılmaz; sonraki build ve dış kabul kapıları ayrı görevlerdir.
+
+## Tarihsel durum — W53B light-only / Home / contrast, 2026-09-14 Türkiye
 
 - W53A `2543f05`, başlangıç main `4f0da82` üzerine çakışmasız alındı;
   merge `fa7c462`. Arada yeni main/UI/theme commit'i yok.

@@ -1,6 +1,23 @@
 # EsnaftaVar Parallel Work Map
 
-## Güncel durum — W53B UI hardening integration, 2026-09-14 Türkiye
+## Güncel durum — W53D Category Icon V1 integration, 2026-09-16 Türkiye
+
+- Source owner: `ui/w53c-canonical-category-icon-polish`, latest `5a088bb`.
+  Integration: `integration/w53d-category-icon-v1`, base/main `c10b40d`.
+  Kaynak güncel main'den çıkar; yeni UI/category çakışması yok.
+- 29 kaynak path'i; 28 uygulama/test/font girdisi Integration'da aynen korunur.
+  Yalnız audit kabul durumu ve beş koordinasyon/kanıt dokümanı güncellenir.
+  [W53D kapsam ve test sonucu](ASTRA_W53D_CATEGORY_ICON_V1_INTEGRATION_RESULT.md).
+- Ortak alanlar: `pubspec.yaml` yalnız yerel font kaydı; category visual catalog
+  ve recursive visual resolver aynı eşlemeyi tüketir. Shared primitive/theme,
+  navigation ve service locator değişmez. Collision **NONE**; AGENTS.md değişmez.
+- **CATEGORY ICON ART DIRECTION: CODEX-SELECTED V1 / PRODUCT OWNER ACCEPTED.**
+  **FINAL CUSTOM CATEGORY ART: DEFERRED UNTIL APPLICATION COMPLETION.** Bu polish
+  için yeni paralel ikon seçimi/owner onayı görevi açılmaz; Customer V1 engeli yok.
+- Sonraki bağımsız paket Production taxonomy işidir; ayrı yetkiyle sürdürülür.
+  W53D backend/taxonomy/Figma yazması veya Production erişimi içermez.
+
+## Tarihsel durum — W53B UI hardening integration, 2026-09-14 Türkiye
 
 - Owner source: `ui/w53a-light-theme-home-category-contrast-fix`, exact `2543f05`.
   Integration: `integration/w53b-light-home-category-contrast`, merge `fa7c462`.

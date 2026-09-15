@@ -1,6 +1,20 @@
 # EsnaftaVar Product Backlog
 
-## Güncel durum — W53B UI hardening, 2026-09-14 Türkiye
+## Güncel durum — W53D Category Icon V1 kabulü, 2026-09-16 Türkiye
+
+- **DONE — CATEGORY ICON ART DIRECTION: CODEX-SELECTED V1 / PRODUCT OWNER
+  ACCEPTED.** Mevcut 24 kategori seti ticari V1 olarak kabul edildi; bütün ikonlar
+  görünür, 24/24 eşleme geçerli, canonical fallback/eksik/ilgisiz eşleme **0**.
+- **DEFERRED — FINAL CUSTOM CATEGORY ART: DEFERRED UNTIL APPLICATION
+  COMPLETION.** Özel 24 kategori görsel paketi sonraki polish'tir. Customer V1
+  tamamlanması veya W53D entegrasyonu için engel değildir; yeni mikro-onay yok.
+- Home/Category yerleşimi, Reward, navigation ve taxonomy IDs/names/order aynı.
+  [W53D sonuç ve doğrulama](ASTRA_W53D_CATEGORY_ICON_V1_INTEGRATION_RESULT.md).
+- **NEXT:** ayrı yetkili Production taxonomy görevine dönülebilir. W53D hiçbir
+  Production işlemi veya backend/taxonomy değişikliği yapmaz. Bu readiness o
+  görevin tamamlandığı anlamına gelmez; RC build ve dış release kapıları ayrıdır.
+
+## Tarihsel durum — W53B UI hardening, 2026-09-14 Türkiye
 
 - **DONE:** pilot light-only root; OS dark tema geçişine karşı Customer koruması;
   Home en fazla sekiz gerçek kategori; mevcut akışa bağlanan tam kategori listesi;

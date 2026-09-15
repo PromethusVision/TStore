@@ -1,8 +1,19 @@
 # W53C — Canonical category Icon V1 audit
 
-Status: **AWAITING_PRODUCT_OWNER_VISUAL_ACCEPTANCE**
+Status: **CATEGORY_ICON_V1_ACCEPTED — W53D Product Owner decision**
 
-The Product Owner asked for a coherent initial icon system and deferred the final artwork decision until the application is complete. The artwork decisions and assets from the other context are not imported or overwritten here. Technical checks do not constitute Product Owner visual acceptance.
+On 2026-09-16 Europe/Istanbul, the Product Owner explicitly accepted this
+Codex-selected set as the commercial V1 category icons. Category icon art
+direction is **CODEX-SELECTED V1 / PRODUCT OWNER ACCEPTED**. Final custom
+24-category art is **DEFERRED UNTIL APPLICATION COMPLETION** and no longer
+blocks Customer V1 completion. This is not final handcrafted art-direction
+approval; minor metaphor preferences remain deferred polish. No further owner
+micro-decision is required for this integration.
+
+The original W53C delivery awaited acceptance; that historical state and the
+review labels on its screenshots are superseded by this explicit W53D decision.
+The technical evidence below is retained. Technical checks alone do not grant
+Product Owner acceptance, and artwork from another task was not imported.
 
 ## Scope and baseline
 
@@ -156,7 +167,7 @@ MISSING_CATEGORY_ICONS_BEFORE: 0 (fresh reproduction; reported >=2, identities U
 MISSING_CATEGORY_ICONS_AFTER: 0
 CANONICAL_MAPPING_24_24: PASS
 CANONICAL_FALLBACK_USAGE: 0
-SEMANTIC_MISMATCHES_REMAINING: 0 (engineering review; Product Owner acceptance pending)
+SEMANTIC_MISMATCHES_REMAINING: 0 (engineering review; V1 accepted by Product Owner)
 VISUAL_FAMILY_CONSISTENT: PASS
 LIGHT_THEME_ICON_CONTRAST: PASS
 SYSTEM_DARK_ICON_VISIBILITY: PASS
@@ -168,9 +179,11 @@ BACKEND_CHANGED: NO
 TAXONOMY_CHANGED: NO
 PRODUCTION_ACCESSED: NO
 FIGMA_ACCESSED: NO
-READY_FOR_PRODUCT_OWNER_VISUAL_ACCEPTANCE: YES
-READY_FOR_INTEGRATION: NO
-STATUS: AWAITING_PRODUCT_OWNER_VISUAL_ACCEPTANCE
+PRODUCT_OWNER_V1_ACCEPTANCE: ACCEPTED
+READY_FOR_INTEGRATION: YES
+STATUS: CATEGORY_ICON_V1_ACCEPTED_CUSTOM_ART_DEFERRED
 ```
 
-Integration and final artwork approval remain with the Product Owner's later review. No main merge is part of this task.
+W53C itself did not merge main. W53D integrates this accepted V1 set after its
+independent validation. Final custom artwork remains deferred until application
+completion and is not an additional integration gate.
