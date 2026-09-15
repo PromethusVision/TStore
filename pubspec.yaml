@@ -114,6 +114,9 @@ flutter:
     - assets/images/
     - assets/logos/
   fonts:
+    - family: EsnaftaVarCategorySymbols
+      fonts:
+        - asset: assets/fonts/EsnaftaVarCategorySymbols.ttf
     - family: Coolvetica
       fonts:
         - asset: assets/fonts/coolvetica_regular.otf

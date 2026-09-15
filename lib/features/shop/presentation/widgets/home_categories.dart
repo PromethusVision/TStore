@@ -46,8 +46,6 @@ class HomeCategories extends StatefulWidget {
 class _HomeCategoriesState extends State<HomeCategories> {
   final Set<String> _openingCategoryIds = {};
 
-  static const _pastelSurfaces = CustomerHomeV1Tokens.categorySurfaces;
-
   static String _normalizedName(String name) => name.trim().toLowerCase();
 
   static String _localizedTitle(String name) {
@@ -175,8 +173,8 @@ class _HomeCategoriesState extends State<HomeCategories> {
                         category: category,
                         title: _localizedTitle(category.name),
                         fallbackIcon: categoryVisual.icon,
-                        backgroundColor:
-                            _pastelSurfaces[index % _pastelSurfaces.length],
+                        backgroundColor: categoryVisual.surfaceColor,
+                        preferMappedIcon: categoryVisual.isCanonical,
                         visualPrototype: widget.visualPrototype,
                         onTap: categoryId.isEmpty
                             ? null
@@ -290,6 +288,7 @@ class _HomeCategoryItem extends StatelessWidget {
     required this.backgroundColor,
     required this.onTap,
     required this.visualPrototype,
+    required this.preferMappedIcon,
   });
 
   final CategoryEntity category;
@@ -298,10 +297,13 @@ class _HomeCategoryItem extends StatelessWidget {
   final Color backgroundColor;
   final VoidCallback? onTap;
   final bool visualPrototype;
+  final bool preferMappedIcon;
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = category.imageUrl?.trim() ?? '';
+    // Canonical Icon V1 must not be replaced by an unrelated or transparent
+    // legacy image. Unknown categories retain their existing media behavior.
+    final imageUrl = preferMappedIcon ? '' : category.imageUrl?.trim() ?? '';
     final imageUri = Uri.tryParse(imageUrl);
     final isNetworkImage =
         imageUri != null &&
@@ -419,7 +421,7 @@ class _CategoryFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!visualPrototype) {
-      return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 23);
+      return Icon(icon, color: CustomerHomeV1Tokens.navy, size: 28);
     }
     return Center(
       child: Container(
@@ -430,7 +432,7 @@ class _CategoryFallback extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: EsnaftaVarColors.divider),
         ),
-        child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 24),
+        child: Icon(icon, color: CustomerHomeV1Tokens.petrol, size: 28),
       ),
     );
   }

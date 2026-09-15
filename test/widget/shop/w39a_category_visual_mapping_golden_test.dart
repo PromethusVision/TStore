@@ -6,9 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/theme/theme.dart';
 import 'package:t_store/features/shop/presentation/helpers/home_category_visual_catalog.dart';
+import 'package:t_store/features/shop/presentation/helpers/category_symbols.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
 
 import '../../helpers/canonical_taxonomy_test_support.dart';
+import '../../helpers/category_icon_font_test_support.dart';
 
 void main() {
   setUpAll(() async {
@@ -27,7 +29,11 @@ void main() {
           '${Platform.pathSeparator}MaterialIcons-Regular.otf',
         ).readAsBytes().then(ByteData.sublistView),
       );
-    await Future.wait([poppins.load(), materialIcons.load()]);
+    await Future.wait([
+      poppins.load(),
+      materialIcons.load(),
+      loadCategoryIconFont(),
+    ]);
   });
 
   test('24 canonical roots map to 24 valid and unique semantic visuals', () {
@@ -49,7 +55,7 @@ void main() {
     );
     expect(
       HomeCategoryVisualCatalog.canonicalForName('Giyim & Moda')?.icon,
-      Icons.checkroom_rounded,
+      CategorySymbols.apparel,
     );
   });
 
@@ -64,7 +70,7 @@ void main() {
       );
       expect(resolved.isCanonical, isTrue, reason: name);
       expect(resolved.categoryName, name, reason: name);
-      expect(resolved.icon, isNot(Icons.category_rounded), reason: name);
+      expect(resolved.icon, isNot(CategorySymbols.category), reason: name);
     }
   });
 

@@ -11,6 +11,7 @@ import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capabilit
 import 'package:t_store/features/shop/presentation/cubit/categories_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/categories_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/home_categories.dart';
+import 'package:t_store/features/shop/presentation/helpers/category_symbols.dart';
 
 import '../../helpers/canonical_taxonomy_test_support.dart';
 
@@ -216,20 +217,20 @@ void main() {
         expect(find.text(category.name), findsNothing);
       }
 
-      expect(find.byIcon(Icons.devices_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.checkroom_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.roller_skating_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.chair_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.business_center_rounded), findsOneWidget);
+      expect(find.byIcon(CategorySymbols.devices), findsOneWidget);
+      expect(find.byIcon(CategorySymbols.apparel), findsOneWidget);
+      expect(find.byIcon(CategorySymbols.steps), findsOneWidget);
+      expect(find.byIcon(CategorySymbols.chair), findsOneWidget);
+      expect(find.byIcon(CategorySymbols.shoppingBag), findsOneWidget);
     },
   );
 
-  testWidgets('gerçek kategori görseli varsa ağ adresini kullanır', (
+  testWidgets('özel kategori görseli varsa ağ adresini kullanır', (
     tester,
   ) async {
     const category = CategoryEntity(
-      id: 'market',
-      name: 'Market',
+      id: 'custom-category',
+      name: 'Özel kategori',
       imageUrl: 'https://example.com/market.png',
     );
 

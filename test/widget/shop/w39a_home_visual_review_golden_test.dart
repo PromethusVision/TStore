@@ -37,6 +37,8 @@ import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/home_view.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
+import '../../helpers/category_icon_font_test_support.dart';
+import '../../helpers/canonical_taxonomy_test_support.dart';
 
 class _MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -84,7 +86,56 @@ void main() {
           '${Platform.pathSeparator}MaterialIcons-Regular.otf',
         ).readAsBytes().then(ByteData.sublistView),
       );
-    await Future.wait([poppins.load(), iconsax.load(), materialIcons.load()]);
+    await Future.wait([
+      poppins.load(),
+      iconsax.load(),
+      materialIcons.load(),
+      loadCategoryIconFont(),
+    ]);
+  });
+
+  testWidgets('W53C Home 390 canonical eight roots final UI evidence', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      _buildScenario(
+        _HomeVisualScenario.guest,
+        visualPrototype: false,
+        categories: [
+          for (final root in canonicalRoots())
+            CategoryEntity(id: root.id, name: root.displayName),
+        ],
+      ),
+    );
+    final context = tester.element(
+      find.byKey(const Key('w39a-home-visual-evidence')),
+    );
+    await tester.runAsync(() async {
+      await Future.wait([
+        for (final image in tester.widgetList<Image>(find.byType(Image)))
+          precacheImage(image.image, context),
+      ]);
+    });
+    await tester.pumpAndSettle();
+    for (final root in canonicalRoots().take(8)) {
+      expect(
+        find.byKey(Key('home-category-${root.id}')).hitTestable(),
+        findsOneWidget,
+      );
+    }
+    expect(
+      find.byKey(const Key('home-all-categories')).hitTestable(),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await expectLater(
+      find.byKey(const Key('w39a-home-visual-evidence')),
+      matchesGoldenFile('goldens/w53c_home_canonical_eight_390.png'),
+    );
   });
 
   for (final scenario in [
