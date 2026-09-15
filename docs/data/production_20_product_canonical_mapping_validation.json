@@ -1,6 +1,6 @@
 {
   "task": "W52G",
-  "validated_at_utc": "2026-09-15T22:56:07.635519+00:00",
+  "validated_at_utc": "2026-09-15T23:56:46.322813+00:00",
   "base_head": "79528e17e5f8ca2a6f7947acf7a421e34254cb15",
   "production_read": {
     "captured_at_utc": "2026-09-15T22:43:24.9770101Z",
@@ -253,7 +253,7 @@
     "L4": 199
   },
   "canonical_terminal_count": 1245,
-  "mapping_sha256_lf_utf8": "8eea95e0a629834ed785b7dbb95e7072d5ac3ad07921669fd8653d2e829f60cb",
+  "mapping_sha256_lf_utf8": "f589308535f42936a1ef4c873ea446b00ed4849fb8ef872c4112956b56a28663",
   "products_total": 20,
   "mapping_rows": 20,
   "duplicate_products": 0,
@@ -262,8 +262,9 @@
   "confidence_counts": {
     "HIGH_CONFIDENCE": 16,
     "MEDIUM_CONFIDENCE": 2,
+    "OWNER_FINAL": 2,
     "OWNER_REVIEW_REQUIRED": 0,
-    "UNRESOLVED": 2
+    "UNRESOLVED": 0
   },
   "legacy_category_counts": {
     "Ayakkabı": 5,
@@ -272,25 +273,24 @@
     "Gıda": 5
   },
   "canonical_target_family_counts": {
-    "Ayakkabı": 3,
+    "Ayakkabı": 5,
     "Elektronik": 4,
     "Kırtasiye & Ofis": 5,
     "Gıda & İçecek": 5,
-    "UNRESOLVED": 2,
     "Bilgisayar & Tablet": 1
   },
-  "proposed_targets": 18,
-  "valid_existing_terminal_targets": 18,
-  "unresolved_targets_excluded_from_pass_denominator": 2,
+  "proposed_targets": 20,
+  "valid_existing_terminal_targets": 20,
+  "unresolved_targets_excluded_from_pass_denominator": 0,
   "invalid_canonical_uuids": 0,
-  "unique_terminal_targets": 14,
+  "unique_terminal_targets": 16,
   "proposed_target_level_counts": {
-    "L3": 12,
+    "L3": 14,
     "L2": 5,
     "L4": 1
   },
   "runtime_qualification_counts_by_product": {
-    "PROFESSIONAL_REVIEW": 1,
+    "PROFESSIONAL_REVIEW": 3,
     "LEAF_ASSIGNABLE_CANDIDATE": 14,
     "POLICY_BLOCKED": 3
   },
@@ -310,6 +310,13 @@
       "fail_closed_reason": "POLICY_CHAIN=Kırtasiye & Ofis > Kalem & Yazım Gereçleri:REGULATED; PROFESSIONAL_REVIEW_CHAIN=Kırtasiye & Ofis > Kalem & Yazım Gereçleri"
     },
     {
+      "product_id": "a8460aa7-71ff-5e20-81cb-f1edf4c09305",
+      "product_name": "Su Geçirmez Bot",
+      "target_uuid": "458c23a5-82e4-425c-b877-a4816a49d916",
+      "qualification": "PROFESSIONAL_REVIEW",
+      "fail_closed_reason": "PROFESSIONAL_REVIEW_CHAIN=Ayakkabı > Bot & Çizmeler | Ayakkabı > Bot & Çizmeler > Yağmur Botları"
+    },
+    {
       "product_id": "d9d7732d-575d-5010-908a-28a52c54ae28",
       "product_name": "UHT Süt 1 L",
       "target_uuid": "41c349e6-6e2f-41fb-be06-2a8ec864bb2f",
@@ -322,6 +329,13 @@
       "target_uuid": "9800a0e5-7a43-4562-b0e9-f4bcd06f7664",
       "qualification": "POLICY_BLOCKED",
       "fail_closed_reason": "POLICY_CHAIN=Kırtasiye & Ofis > Okul Kırtasiyesi & Eğitim Gereçleri:REGULATED; PROFESSIONAL_REVIEW_CHAIN=Kırtasiye & Ofis > Okul Kırtasiyesi & Eğitim Gereçleri"
+    },
+    {
+      "product_id": "f530789f-4cd2-5d03-9ddc-06d92ae4c02d",
+      "product_name": "Günlük Terlik",
+      "target_uuid": "24d09297-c222-40f5-a1f6-418550da60df",
+      "qualification": "PROFESSIONAL_REVIEW",
+      "fail_closed_reason": "PROFESSIONAL_REVIEW_CHAIN=Ayakkabı > Sandalet & Terlikler"
     }
   ],
   "checks": {
@@ -329,26 +343,245 @@
     "taxonomy_uuid_path_and_parent_graph": "PASS",
     "csv_consistency": "PASS",
     "frozen_source_hashes": "PASS",
-    "secret_pii_scan": "PASS"
+    "secret_pii_scan": "PASS",
+    "owner_approval_coverage": "PASS",
+    "existing_approved_mappings_preserved": "PASS",
+    "policy_review_gates_preserved": "PASS"
   },
   "negative_fixture_rejections": [
     "missing_product",
     "duplicate_product",
+    "missing_uuid",
     "unknown_uuid",
-    "parent_instead_of_terminal",
+    "non_terminal_parent",
+    "missing_path",
     "wrong_path",
     "wrong_level",
-    "invented_brand",
-    "filled_unresolved_target"
+    "pending_owner_decision",
+    "unresolved_regression",
+    "arbitrary_other_terminal",
+    "approved_mapping_changed"
   ],
   "arbitrary_split_mapping": 0,
-  "semantic_validation_method": "Manual product-level review of all 20 names, descriptions and available classification fields against current terminal paths; reasons preserved in CSV. No legacy-category-wide or first-child split. Structural validator does not prove semantics.",
-  "owner_approval_received": false,
+  "semantic_validation_method": "Original W52G product-level evidence and all 18 existing targets preserved. W52G-R explicitly approves those targets and supplies final usage/type for two previously unresolved products; exact owner-selected terminal paths verified. No arbitrary split or first-child assignment.",
+  "owner_approval_received": true,
   "owner_review_pack_ready": true,
-  "production_adapter_readiness": "BLOCKED",
-  "readiness_reason": "Two products need classification evidence; all proposals await owner approval. Existing runtime qualification gates must be preserved independently.",
+  "production_adapter_readiness": "READY_AFTER_OWNER_APPROVAL",
+  "readiness_reason": "Owner approval received for all 20 exact terminal mappings. Suitable classification input for Production-specific adapter migration design; all existing policy/professional review conditions remain in force. No migration, write or activation approved or performed.",
   "production_write_performed": false,
   "development_accessed": false,
   "migration_generated_or_applied": false,
-  "flutter_tests_analyzer_client_build": "NOT_REQUIRED — DOCS_ONLY"
+  "flutter_tests_analyzer_client_build": "NOT_REQUIRED — DOCS_ONLY",
+  "revision": "W52G-R",
+  "previous_package_head": "73926ed194351d445a2b9f8c979ca1a53dfadd47",
+  "previous_package_summary": {
+    "resolved_targets": 18,
+    "unresolved_targets": 2,
+    "owner_approval_received": false,
+    "production_adapter_readiness": "BLOCKED",
+    "mapping_sha256_lf_utf8": "8eea95e0a629834ed785b7dbb95e7072d5ac3ad07921669fd8653d2e829f60cb"
+  },
+  "owner_decision_source": {
+    "title": "ASTRA W52G-R — PRODUCT OWNER 20/20 CANONICAL MAPPING FINALIZATION",
+    "attachment_sha256": "2478f93799ea574e6ae37d93092b48261e0dce0da4dc2ff2997c64db344f1398",
+    "scope": "Classification only; does not approve Production writes, publication, activation or migration execution."
+  },
+  "owner_approval_records": [
+    {
+      "product_id": "0af0e09d-4192-50a2-9f5e-a892d75e97b8",
+      "product_name": "Çocuk Spor Ayakkabı",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Ayakkabı > Çocuk & Bebek Ayakkabıları > Çocuk Spor Ayakkabıları",
+      "approved_canonical_uuid": "20cd410c-342b-4fdc-913c-349ef48092b6"
+    },
+    {
+      "product_id": "28f68fd1-6a2a-55ff-93ca-e65b4c7e4ea4",
+      "product_name": "10.000 mAh Powerbank",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Elektronik > Güç, Şarj & Bağlantı",
+      "approved_canonical_uuid": "1bd43c2b-adb9-42a9-9a8e-f179e11739e8"
+    },
+    {
+      "product_id": "6dcb8b1f-ebac-521e-a74d-e86287c04ee2",
+      "product_name": "A4 Fotokopi Kağıdı 500 Yaprak",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Kırtasiye & Ofis > Kağıt, Etiket & Baskı Sarfı > Fotokopi & Yazıcı Kağıtları",
+      "approved_canonical_uuid": "8d968ee1-3518-47ae-aad9-d9ebaf4b7fce"
+    },
+    {
+      "product_id": "77cd34a3-307b-5c5b-8a9a-c87bb0c04ea0",
+      "product_name": "Mavi Tükenmez Kalem 5'li",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Kırtasiye & Ofis > Kalem & Yazım Gereçleri > Tükenmez & Roller Kalemler",
+      "approved_canonical_uuid": "1492b2ab-1147-4255-b6ee-4900f3af333a"
+    },
+    {
+      "product_id": "88ddf8f4-8d92-5dfe-8d88-5fe0ef73c3d7",
+      "product_name": "A5 Spiralli Defter",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Kırtasiye & Ofis > Defter, Ajanda & Planlayıcılar > Defterler",
+      "approved_canonical_uuid": "b25a9b03-afec-4b95-a372-3b8437579829"
+    },
+    {
+      "product_id": "91a66439-36bf-5827-a675-31e536757009",
+      "product_name": "Pirinç 1 kg",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Gıda & İçecek > Bakliyat, Tahıl & Makarna > Pirinç & Bulgur",
+      "approved_canonical_uuid": "8f7811ef-faba-4f9d-bb62-90012af7ceae"
+    },
+    {
+      "product_id": "96e74a37-7cf1-56ff-af6f-25b4c13ecb0f",
+      "product_name": "Kadın Günlük Spor Ayakkabı",
+      "previous_confidence": "MEDIUM_CONFIDENCE",
+      "decision": "APPROVED_BY_PRODUCT_OWNER",
+      "previous_notes": "Ad günlük kullanımı açıkça belirtiyor; günlük spor ayakkabısı ifadesi günlük sneaker olarak yorumlandı. Kadın ayrı kanonik çocuk düğüm değil. PO günlük sneaker terim eşlemesini teyit etmeli; branşa özgü spor kullanımı varsayılmadı.",
+      "approved_canonical_path": "Ayakkabı > Günlük Ayakkabılar > Günlük Sneaker",
+      "approved_canonical_uuid": "40baf723-e808-4bdf-a7fd-6ab32f725681"
+    },
+    {
+      "product_id": "992bfb3e-002b-5b13-a0cc-605d6071a754",
+      "product_name": "Toz Şeker 1 kg",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Gıda & İçecek > Un, Şeker & Pişirme Malzemeleri > Şeker & Tatlandırıcılar",
+      "approved_canonical_uuid": "2c5d7dd3-8f88-4f0e-861a-cf7aef34f69a"
+    },
+    {
+      "product_id": "a7269375-10c6-5ed4-a71c-7924f0b1c77c",
+      "product_name": "Ayçiçek Yağı 1 L",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Gıda & İçecek > Yağ & Sirke > Yemeklik Yağlar > Bitkisel Sıvı Yağlar",
+      "approved_canonical_uuid": "1d4933d5-55d4-45f1-9b09-86c374472646"
+    },
+    {
+      "product_id": "a8460aa7-71ff-5e20-81cb-f1edf4c09305",
+      "product_name": "Su Geçirmez Bot",
+      "previous_confidence": "UNRESOLVED",
+      "decision": "RESOLVED_BY_PRODUCT_OWNER",
+      "owner_supplied_usage_type": "YAĞMUR BOTU",
+      "previous_ambiguity": "Günlük bot, yağmur botu veya kar/kış botu ayrımı için kullanım amacı ve ürün tipi gerekli; outdoor/trekking olduğu da varsayılmadı.",
+      "previous_notes": "Su geçirmezlik tek başına botun kullanım türünü belirtmiyor; açıklama adı tekrar ediyor, model/kullanım/tür alanları boş.",
+      "approved_canonical_path": "Ayakkabı > Bot & Çizmeler > Yağmur Botları",
+      "approved_canonical_uuid": "458c23a5-82e4-425c-b877-a4816a49d916"
+    },
+    {
+      "product_id": "a8aed1f2-4a3a-5751-951a-cb521862eb71",
+      "product_name": "USB-C Şarj Adaptörü 20W",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Elektronik > Güç, Şarj & Bağlantı",
+      "approved_canonical_uuid": "1bd43c2b-adb9-42a9-9a8e-f179e11739e8"
+    },
+    {
+      "product_id": "aad6f2f8-29cc-530a-a1a0-77559c378b3c",
+      "product_name": "A4 Kareli Defter",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Kırtasiye & Ofis > Defter, Ajanda & Planlayıcılar > Defterler",
+      "approved_canonical_uuid": "b25a9b03-afec-4b95-a372-3b8437579829"
+    },
+    {
+      "product_id": "b764f5f9-a820-5117-b007-bcdaf66053ac",
+      "product_name": "Bluetooth Kulaklık",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Elektronik > Ses & Kulaklık",
+      "approved_canonical_uuid": "b7d2e9fc-fcab-4426-9a43-1831071ef0c3"
+    },
+    {
+      "product_id": "bc480d2d-d17c-5c6c-9037-c7b210f0ab57",
+      "product_name": "USB-C Şarj Kablosu 1 m",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Elektronik > Güç, Şarj & Bağlantı",
+      "approved_canonical_uuid": "1bd43c2b-adb9-42a9-9a8e-f179e11739e8"
+    },
+    {
+      "product_id": "bd614753-920b-5984-b8b9-de88aae9b67f",
+      "product_name": "Erkek Günlük Spor Ayakkabı",
+      "previous_confidence": "MEDIUM_CONFIDENCE",
+      "decision": "APPROVED_BY_PRODUCT_OWNER",
+      "previous_notes": "Ad günlük kullanımı açıkça belirtiyor; günlük spor ayakkabısı ifadesi günlük sneaker olarak yorumlandı. Erkek ayrı kanonik çocuk düğüm değil. PO günlük sneaker terim eşlemesini teyit etmeli; branşa özgü spor kullanımı varsayılmadı.",
+      "approved_canonical_path": "Ayakkabı > Günlük Ayakkabılar > Günlük Sneaker",
+      "approved_canonical_uuid": "40baf723-e808-4bdf-a7fd-6ab32f725681"
+    },
+    {
+      "product_id": "d531512a-b96e-5511-986b-a8db550321d2",
+      "product_name": "Kablosuz Mouse",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Bilgisayar & Tablet > Klavye, Mouse & Çevre Birimleri",
+      "approved_canonical_uuid": "00084e98-e0ba-494a-8c19-8fa57272abd3"
+    },
+    {
+      "product_id": "d9d7732d-575d-5010-908a-28a52c54ae28",
+      "product_name": "UHT Süt 1 L",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Gıda & İçecek > Süt Ürünleri & Yumurta > Süt",
+      "approved_canonical_uuid": "41c349e6-6e2f-41fb-be06-2a8ec864bb2f"
+    },
+    {
+      "product_id": "d9f25619-806e-5120-859c-76ab4a48be8f",
+      "product_name": "Kalem Kutusu",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Kırtasiye & Ofis > Okul Kırtasiyesi & Eğitim Gereçleri > Kalem Kutuları",
+      "approved_canonical_uuid": "9800a0e5-7a43-4562-b0e9-f4bcd06f7664"
+    },
+    {
+      "product_id": "dbb9ce90-bbe1-5625-8646-ae0d74e16c45",
+      "product_name": "Makarna 500 g",
+      "previous_confidence": "HIGH_CONFIDENCE",
+      "decision": "APPROVED",
+      "approved_canonical_path": "Gıda & İçecek > Bakliyat, Tahıl & Makarna > Makarna & Erişte",
+      "approved_canonical_uuid": "e3a6976d-4b89-44db-9202-06dbd2d836ef"
+    },
+    {
+      "product_id": "f530789f-4cd2-5d03-9ddc-06d92ae4c02d",
+      "product_name": "Günlük Terlik",
+      "previous_confidence": "UNRESOLVED",
+      "decision": "RESOLVED_BY_PRODUCT_OWNER",
+      "owner_supplied_usage_type": "EV TERLİĞİ",
+      "previous_ambiguity": "Ev Terlikleri, Plaj & Havuz Terlikleri veya Sabo & Mule ayrımı için kullanım yeri ve form bilgisi gerekli.",
+      "previous_notes": "Günlük ifadesi ev/plaj veya sabo/mule ayrımını açıklamıyor; açıklama adı tekrar ediyor, model/kullanım/tür alanları boş.",
+      "approved_canonical_path": "Ayakkabı > Sandalet & Terlikler > Ev Terlikleri",
+      "approved_canonical_uuid": "24d09297-c222-40f5-a1f6-418550da60df"
+    }
+  ],
+  "owner_approved": 20,
+  "high_confidence_approved": 16,
+  "medium_approved": 2,
+  "owner_resolved_from_unresolved": 2,
+  "resolved_targets": 20,
+  "owner_approved_terminal_targets": 20,
+  "unresolved": 0,
+  "missing_target_uuids": 0,
+  "missing_paths": 0,
+  "non_terminal_targets": 0,
+  "new_targets_existing_runtime_gates": [
+    {
+      "product_id": "a8460aa7-71ff-5e20-81cb-f1edf4c09305",
+      "product_name": "Su Geçirmez Bot",
+      "target_uuid": "458c23a5-82e4-425c-b877-a4816a49d916",
+      "qualification": "PROFESSIONAL_REVIEW",
+      "fail_closed_reason": "PROFESSIONAL_REVIEW_CHAIN=Ayakkabı > Bot & Çizmeler | Ayakkabı > Bot & Çizmeler > Yağmur Botları"
+    },
+    {
+      "product_id": "f530789f-4cd2-5d03-9ddc-06d92ae4c02d",
+      "product_name": "Günlük Terlik",
+      "target_uuid": "24d09297-c222-40f5-a1f6-418550da60df",
+      "qualification": "PROFESSIONAL_REVIEW",
+      "fail_closed_reason": "PROFESSIONAL_REVIEW_CHAIN=Ayakkabı > Sandalet & Terlikler"
+    }
+  ],
+  "ready_for_production_adapter_migration_design": true,
+  "revision_remote_database_access_performed": false
 }
