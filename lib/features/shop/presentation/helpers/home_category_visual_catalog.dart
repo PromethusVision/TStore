@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
+import 'package:t_store/features/shop/presentation/helpers/category_symbols.dart';
 
 /// The semantic visual used for a Home category.
 ///
@@ -12,6 +14,7 @@ class HomeCategoryVisualSpec {
     required this.assetLabel,
     required this.visualMeaning,
     this.isCanonical = true,
+    this.tone = CategoryVisualTone.mint,
   });
 
   final String categoryName;
@@ -19,160 +22,196 @@ class HomeCategoryVisualSpec {
   final String assetLabel;
   final String visualMeaning;
   final bool isCanonical;
+  final CategoryVisualTone tone;
+
+  Color get surfaceColor => switch (tone) {
+    CategoryVisualTone.mint => CustomerHomeV1Tokens.categorySurfaces[0],
+    CategoryVisualTone.sage => CustomerHomeV1Tokens.categorySurfaces[1],
+    CategoryVisualTone.sand => CustomerHomeV1Tokens.categorySurfaces[2],
+    CategoryVisualTone.coral => CustomerHomeV1Tokens.categorySurfaces[3],
+    CategoryVisualTone.rose => CustomerHomeV1Tokens.categorySurfaces[4],
+    CategoryVisualTone.teal => CustomerHomeV1Tokens.categorySurfaces[5],
+  };
 }
+
+enum CategoryVisualTone { mint, sage, sand, coral, rose, teal }
 
 abstract final class HomeCategoryVisualCatalog {
   static const canonicalVisuals = <HomeCategoryVisualSpec>[
     HomeCategoryVisualSpec(
       categoryName: 'Gıda & İçecek',
-      icon: Icons.restaurant_rounded,
-      assetLabel: 'material:restaurant_rounded',
-      visualMeaning: 'çatal-bıçak / yiyecek ve içecek',
+      icon: CategorySymbols.grocery,
+      assetLabel: 'symbols-rounded:grocery',
+      visualMeaning: 'meyve ve market alışverişi',
+      tone: CategoryVisualTone.mint,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Giyim & Moda',
-      icon: Icons.checkroom_rounded,
-      assetLabel: 'material:checkroom_rounded',
-      visualMeaning: 'askıdaki giysi / moda',
+      icon: CategorySymbols.apparel,
+      assetLabel: 'symbols-rounded:apparel',
+      visualMeaning: 'tişört / giyim',
+      tone: CategoryVisualTone.sage,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Ayakkabı',
-      icon: Icons.roller_skating_rounded,
-      assetLabel: 'material:roller_skating_rounded',
-      visualMeaning: 'belirgin ayakkabı / patenli ayakkabı silüeti',
+      icon: CategorySymbols.steps,
+      assetLabel: 'symbols-rounded:steps',
+      visualMeaning: 'ayakkabı silüeti',
+      tone: CategoryVisualTone.sand,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Çanta & Aksesuar',
-      icon: Icons.business_center_rounded,
-      assetLabel: 'material:business_center_rounded',
-      visualMeaning: 'taşınabilir çanta / aksesuar',
+      icon: CategorySymbols.shoppingBag,
+      assetLabel: 'symbols-rounded:shopping_bag',
+      visualMeaning: 'saplı çanta / aksesuar',
+      tone: CategoryVisualTone.coral,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Elektronik',
-      icon: Icons.devices_rounded,
-      assetLabel: 'material:devices_rounded',
+      icon: CategorySymbols.devices,
+      assetLabel: 'symbols-rounded:devices',
       visualMeaning: 'telefon ve elektronik ekranlar',
+      tone: CategoryVisualTone.rose,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Bilgisayar & Tablet',
-      icon: Icons.computer_rounded,
-      assetLabel: 'material:computer_rounded',
-      visualMeaning: 'masaüstü bilgisayar ekranı',
+      icon: CategorySymbols.computer,
+      assetLabel: 'symbols-rounded:computer',
+      visualMeaning: 'bilgisayar ekranı',
+      tone: CategoryVisualTone.teal,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Beyaz Eşya & Ev Aletleri',
-      icon: Icons.kitchen_rounded,
-      assetLabel: 'material:kitchen_rounded',
-      visualMeaning: 'buzdolabı / elektrikli ev aleti',
+      icon: CategorySymbols.kitchen,
+      assetLabel: 'symbols-rounded:kitchen',
+      visualMeaning: 'buzdolabı / ev aleti',
+      tone: CategoryVisualTone.mint,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Ev & Yaşam',
-      icon: Icons.chair_rounded,
-      assetLabel: 'material:chair_rounded',
+      icon: CategorySymbols.chair,
+      assetLabel: 'symbols-rounded:chair',
       visualMeaning: 'koltuk / ev yaşam alanı',
+      tone: CategoryVisualTone.sage,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Züccaciye & Mutfak',
-      icon: Icons.flatware_rounded,
-      assetLabel: 'material:flatware_rounded',
-      visualMeaning: 'çatal-bıçak / mutfak gereci',
+      icon: CategorySymbols.skillet,
+      assetLabel: 'symbols-rounded:skillet',
+      visualMeaning: 'tava / mutfak gereci',
+      tone: CategoryVisualTone.sand,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Yapı, Hırdavat & Tesisat',
-      icon: Icons.handyman_rounded,
-      assetLabel: 'material:handyman_rounded',
+      icon: CategorySymbols.handyman,
+      assetLabel: 'symbols-rounded:handyman',
       visualMeaning: 'çekiç ve anahtar / el aletleri',
+      tone: CategoryVisualTone.coral,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Otomotiv & Motosiklet',
-      icon: Icons.directions_car_rounded,
-      assetLabel: 'material:directions_car_rounded',
+      icon: CategorySymbols.directionsCar,
+      assetLabel: 'symbols-rounded:directions_car',
       visualMeaning: 'otomobil / motorlu araç',
+      tone: CategoryVisualTone.rose,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Kozmetik & Kişisel Bakım',
-      icon: Icons.spa_rounded,
-      assetLabel: 'material:spa_rounded',
-      visualMeaning: 'bakım ve kozmetik yaprağı',
+      icon: CategorySymbols.healthAndBeauty,
+      assetLabel: 'symbols-rounded:health_and_beauty',
+      visualMeaning: 'bakım şişesi / kozmetik',
+      tone: CategoryVisualTone.teal,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Anne & Bebek',
-      icon: Icons.child_friendly_rounded,
-      assetLabel: 'material:child_friendly_rounded',
+      icon: CategorySymbols.childFriendly,
+      assetLabel: 'symbols-rounded:child_friendly',
       visualMeaning: 'bebek arabası',
+      tone: CategoryVisualTone.mint,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Oyuncak & Hobi',
-      icon: Icons.toys_rounded,
-      assetLabel: 'material:toys_rounded',
-      visualMeaning: 'oyuncak / oyun nesnesi',
+      icon: CategorySymbols.toys,
+      assetLabel: 'symbols-rounded:toys',
+      visualMeaning: 'oyuncak araba',
+      tone: CategoryVisualTone.sage,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Müzik & Enstrüman',
-      icon: Icons.piano_rounded,
-      assetLabel: 'material:piano_rounded',
+      icon: CategorySymbols.piano,
+      assetLabel: 'symbols-rounded:piano',
       visualMeaning: 'piyano tuşları / enstrüman',
+      tone: CategoryVisualTone.sand,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Spor & Outdoor',
-      icon: Icons.fitness_center_rounded,
-      assetLabel: 'material:fitness_center_rounded',
+      icon: CategorySymbols.fitnessCenter,
+      assetLabel: 'symbols-rounded:fitness_center',
       visualMeaning: 'dambıl / spor ekipmanı',
+      tone: CategoryVisualTone.coral,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Kitap',
-      icon: Icons.menu_book_rounded,
-      assetLabel: 'material:menu_book_rounded',
+      icon: CategorySymbols.menuBook,
+      assetLabel: 'symbols-rounded:menu_book',
       visualMeaning: 'açık kitap',
+      tone: CategoryVisualTone.rose,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Kırtasiye & Ofis',
-      icon: Icons.edit_note_rounded,
-      assetLabel: 'material:edit_note_rounded',
+      icon: CategorySymbols.editNote,
+      assetLabel: 'symbols-rounded:edit_note',
       visualMeaning: 'kalem ve not satırları',
+      tone: CategoryVisualTone.teal,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Evcil Hayvan Ürünleri',
-      icon: Icons.pets_rounded,
-      assetLabel: 'material:pets_rounded',
+      icon: CategorySymbols.pets,
+      assetLabel: 'symbols-rounded:pets',
       visualMeaning: 'pati / evcil hayvan',
+      tone: CategoryVisualTone.mint,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Gözlük & Optik',
-      icon: Icons.visibility_rounded,
-      assetLabel: 'material:visibility_rounded',
-      visualMeaning: 'göz / görüş ve optik',
+      icon: CategorySymbols.eyeglasses,
+      assetLabel: 'symbols-rounded:eyeglasses',
+      visualMeaning: 'gözlük çerçevesi / optik',
+      tone: CategoryVisualTone.sage,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Saat & Takı',
-      icon: Icons.watch_rounded,
-      assetLabel: 'material:watch_rounded',
+      icon: CategorySymbols.watch,
+      assetLabel: 'symbols-rounded:watch',
       visualMeaning: 'kol saati / takı aksesuarı',
+      tone: CategoryVisualTone.sand,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Sağlık & Medikal',
-      icon: Icons.medical_services_rounded,
-      assetLabel: 'material:medical_services_rounded',
+      icon: CategorySymbols.medicalServices,
+      assetLabel: 'symbols-rounded:medical_services',
       visualMeaning: 'ilk yardım çantası / medikal ürün',
+      tone: CategoryVisualTone.coral,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Çiçek & Bahçe',
-      icon: Icons.local_florist_rounded,
-      assetLabel: 'material:local_florist_rounded',
-      visualMeaning: 'çiçek / bitki ve bahçe',
+      icon: CategorySymbols.pottedPlant,
+      assetLabel: 'symbols-rounded:potted_plant',
+      visualMeaning: 'saksıda bitki / çiçek ve bahçe',
+      tone: CategoryVisualTone.rose,
     ),
     HomeCategoryVisualSpec(
       categoryName: 'Hediyelik & Parti',
-      icon: Icons.redeem_rounded,
-      assetLabel: 'material:redeem_rounded',
+      icon: CategorySymbols.redeem,
+      assetLabel: 'symbols-rounded:redeem',
       visualMeaning: 'kurdeleli hediye kutusu',
+      tone: CategoryVisualTone.teal,
     ),
   ];
 
   static const unknownVisual = HomeCategoryVisualSpec(
     categoryName: 'Bilinmeyen kategori',
-    icon: Icons.category_rounded,
-    assetLabel: 'material:category_rounded',
+    icon: CategorySymbols.category,
+    assetLabel: 'symbols-rounded:category',
     visualMeaning: 'nötr kategori işareti',
     isCanonical: false,
   );
@@ -196,16 +235,22 @@ abstract final class HomeCategoryVisualCatalog {
     final key = _normalize(categoryName);
     final id = _normalize(categoryId);
     return switch (key) {
-      'electronics' || 'elektronik' => canonicalVisuals[4],
-      'clothes' || 'clothing' || 'giyim' => canonicalVisuals[1],
-      'shoes' || 'ayakkabı' || 'ayakkabi' => canonicalVisuals[2],
-      'furniture' || 'mobilya' => canonicalVisuals[7],
-      'accessories' || 'aksesuar' => canonicalVisuals[3],
+      'electronics' ||
+      'elektronik' => _canonicalByName[_normalize('Elektronik')]!,
+      'clothes' ||
+      'clothing' ||
+      'giyim' => _canonicalByName[_normalize('Giyim & Moda')]!,
+      'shoes' ||
+      'ayakkabı' ||
+      'ayakkabi' => _canonicalByName[_normalize('Ayakkabı')]!,
+      'furniture' || 'mobilya' => _canonicalByName[_normalize('Ev & Yaşam')]!,
+      'accessories' ||
+      'aksesuar' => _canonicalByName[_normalize('Çanta & Aksesuar')]!,
       'grocery' ||
       'groceries' ||
       'gıda' ||
       'gida' ||
-      'market' => canonicalVisuals[0],
+      'market' => _canonicalByName[_normalize('Gıda & İçecek')]!,
       'greengrocer' || 'produce' || 'manav' => const HomeCategoryVisualSpec(
         categoryName: 'Manav',
         icon: Icons.eco_rounded,
@@ -227,45 +272,59 @@ abstract final class HomeCategoryVisualCatalog {
         visualMeaning: 'et ürünü',
         isCanonical: false,
       ),
-      'cosmetics' || 'kozmetik' => canonicalVisuals[11],
+      'spor' || 'sports' => _canonicalByName[_normalize('Spor & Outdoor')]!,
+      'kirtasiye' => _canonicalByName[_normalize('Kırtasiye & Ofis')]!,
+      'cosmetics' ||
+      'kozmetik' => _canonicalByName[_normalize('Kozmetik & Kişisel Bakım')]!,
       'home & living' ||
       'home and living' ||
       'ev & yaşam' ||
-      'ev-yasam' => canonicalVisuals[7],
+      'ev-yasam' => _canonicalByName[_normalize('Ev & Yaşam')]!,
       _ => _resolveByStableAlias(id) ?? unknownVisual,
     };
   }
 
   static HomeCategoryVisualSpec? _resolveByStableAlias(String value) {
-    const aliases = <String, int>{
-      'gida-icecek': 0,
-      'giyim-moda': 1,
-      'ayakkabi': 2,
-      'canta-aksesuar': 3,
-      'elektronik': 4,
-      'bilgisayar-tablet': 5,
-      'beyaz-esya-ev-aletleri': 6,
-      'ev-yasam': 7,
-      'zuccaciye-mutfak': 8,
-      'yapi-hirdavat-tesisat': 9,
-      'otomotiv-motosiklet': 10,
-      'kozmetik-kisisel-bakim': 11,
-      'anne-bebek': 12,
-      'oyuncak-hobi': 13,
-      'muzik-enstruman': 14,
-      'spor-outdoor': 15,
-      'kitap': 16,
-      'kirtasiye-ofis': 17,
-      'evcil-hayvan-urunleri': 18,
-      'gozluk-optik': 19,
-      'saat-taki': 20,
-      'saglik-medikal': 21,
-      'cicek-bahce': 22,
-      'hediyelik-parti': 23,
+    const aliases = <String, String>{
+      'gida-icecek': 'Gıda & İçecek',
+      'giyim-moda': 'Giyim & Moda',
+      'ayakkabi': 'Ayakkabı',
+      'canta-aksesuar': 'Çanta & Aksesuar',
+      'elektronik': 'Elektronik',
+      'bilgisayar-tablet': 'Bilgisayar & Tablet',
+      'beyaz-esya-ev-aletleri': 'Beyaz Eşya & Ev Aletleri',
+      'ev-yasam': 'Ev & Yaşam',
+      'zuccaciye-mutfak': 'Züccaciye & Mutfak',
+      'yapi-hirdavat-tesisat': 'Yapı, Hırdavat & Tesisat',
+      'otomotiv-motosiklet': 'Otomotiv & Motosiklet',
+      'kozmetik-kisisel-bakim': 'Kozmetik & Kişisel Bakım',
+      'anne-bebek': 'Anne & Bebek',
+      'oyuncak-hobi': 'Oyuncak & Hobi',
+      'muzik-enstruman': 'Müzik & Enstrüman',
+      'spor-outdoor': 'Spor & Outdoor',
+      'kitap': 'Kitap',
+      'kirtasiye-ofis': 'Kırtasiye & Ofis',
+      'evcil-hayvan-urunleri': 'Evcil Hayvan Ürünleri',
+      'gozluk-optik': 'Gözlük & Optik',
+      'saat-taki': 'Saat & Takı',
+      'saglik-medikal': 'Sağlık & Medikal',
+      'cicek-bahce': 'Çiçek & Bahçe',
+      'hediyelik-parti': 'Hediyelik & Parti',
     };
-    final index = aliases[value];
-    return index == null ? null : canonicalVisuals[index];
+    final canonicalName = aliases[value];
+    return canonicalName == null ? null : canonicalForName(canonicalName);
   }
 
-  static String _normalize(String value) => value.trim().toLowerCase();
+  static String _normalize(String value) => value
+      .trim()
+      .replaceAll('İ', 'i')
+      .toLowerCase()
+      .replaceAll('ı', 'i')
+      .replaceAll('i\u0307', 'i')
+      .replaceAll('ş', 's')
+      .replaceAll('ğ', 'g')
+      .replaceAll('ü', 'u')
+      .replaceAll('ö', 'o')
+      .replaceAll('ç', 'c')
+      .replaceAll(RegExp(r'\s+'), ' ');
 }

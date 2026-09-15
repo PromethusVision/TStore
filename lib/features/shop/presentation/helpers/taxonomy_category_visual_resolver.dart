@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/features/shop/presentation/helpers/home_category_visual_catalog.dart';
 
 /// Resolves a semantic child-category visual without relying on list position.
 ///
@@ -8,6 +9,8 @@ import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 /// dedicated child-category art stream supplies approved artwork.
 abstract final class TaxonomyCategoryVisualResolver {
   static IconData resolve(String categoryName) {
+    final root = HomeCategoryVisualCatalog.canonicalForName(categoryName);
+    if (root != null) return root.icon;
     return switch (categoryName.trim().toLowerCase()) {
       'telefon & aksesuarları' => Icons.smartphone_rounded,
       'tv & görüntü sistemleri' => Icons.tv_rounded,
@@ -23,6 +26,8 @@ abstract final class TaxonomyCategoryVisualResolver {
   }
 
   static Color resolveSurface(String categoryName) {
+    final root = HomeCategoryVisualCatalog.canonicalForName(categoryName);
+    if (root != null) return root.surfaceColor;
     return switch (categoryName.trim().toLowerCase()) {
       'telefon & aksesuarları' => EsnaftaVarDiscoveryColors.categorySurfaces[0],
       'tv & görüntü sistemleri' =>
