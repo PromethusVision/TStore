@@ -1,6 +1,6 @@
 {
   "contract": "w52h-r-real-production-backup-restore-proof-v1",
-  "status": "BACKUP_VERIFIED_BLOCKED_MISSING_ISOLATED_PG176_RUNTIME",
+  "status": "BACKUP_VERIFIED_DOCKER_INSTALLED_BLOCKED_WSL_ADMIN_SETUP",
   "project_ref": "mefhfvrgkwciubeajjeb",
   "branch": "astra-release/w52h-r-production-backup-restore-proof",
   "authoritative_main": "8f87b7e5034427389047f076f03658b5cb2dbc98",
@@ -42,19 +42,48 @@
     "pg_restore_on_path": false,
     "psql_on_path": false,
     "supabase_cli_on_path": false,
-    "docker_on_path_or_standard_install_location": false,
+    "docker_on_path_or_standard_install_location": true,
     "podman_on_path": false,
     "postgresql_17_standard_install_present": false,
     "wsl_executable_present": true,
     "wsl_subsystem_installed": false,
     "pg176_target_created": false,
-    "tool_installation_attempted": false,
+    "tool_installation_attempted": true,
     "pg_dump_available_by_absolute_path": "17.11",
     "pg_restore_available_by_absolute_path": "17.11",
     "available_native_server_version": "17.11",
     "pg176_found_in_checked_locations": false,
     "portable_client_package_prepared": true,
-    "new_downloads_after_owner_prohibition": false
+    "new_downloads_after_owner_prohibition": true,
+    "download_authorization": "Owner explicitly authorized Docker Desktop/WSL2 and the Supabase PostgreSQL 17.6 runtime for this isolated restore test after the earlier no-download instruction.",
+    "docker_installer": {
+      "path": "C:\\Users\\Mustafa\\EsnaftavarTools\\w52h-r-runtime\\Docker Desktop Installer.exe",
+      "version": "4.91.0.239619",
+      "size_bytes": 628014512,
+      "sha256": "ac405b09942701770d581b173747fc1024cf0e6047cbe60f13d1df85437311ac",
+      "source": "Official Docker Windows installation page download link",
+      "authenticode_status": "Valid",
+      "authenticode_publisher": "Docker Inc",
+      "execution": "PASS_PER_USER_INSTALLATION_EXIT_0",
+      "completed_at_utc": "2026-09-16T21:46:51.9660678Z"
+    },
+    "host_prerequisites": {
+      "os": "Windows 11 Pro 64-bit, build 26200",
+      "physical_memory_bytes": 17003749376,
+      "system_drive_free_bytes_before_setup": 65574060032,
+      "firmware_virtualization_enabled": true,
+      "second_level_address_translation": true,
+      "hypervisor_present_before_setup": false,
+      "virtual_machine_platform_before_setup": "DISABLED",
+      "wsl_component_before_setup": "DISABLED",
+      "wsl_installation": "NOT_STARTED_WINDOWS_ELEVATION_CANCELLED",
+      "restart_initiated_by_agent": false,
+      "virtual_machine_platform_after_setup": "DISABLED",
+      "wsl_component_after_setup": "DISABLED"
+    },
+    "docker_cli_path": "C:\\Users\\Mustafa\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe",
+    "docker_cli_version": "29.8.0, build 88096ef",
+    "docker_engine_started": false
   },
   "backup_artifact": {
     "created": true,
@@ -85,7 +114,7 @@
     "listings": null,
     "shops": null,
     "baseline_comparison_execution": "NOT_RUN_BLOCKED",
-    "blocker": "Exact PostgreSQL 17.6 runtime absent in checked local locations; no Docker/Podman/WSL runtime; owner prohibits further package downloads",
+    "blocker": "Docker Desktop is installed and verified. WSL setup did not start: Windows elevation returned operation cancelled by user. VirtualMachinePlatform remains disabled and no hypervisor is running.",
     "required_extensions": [
       "pg_stat_statements",
       "pgcrypto",
@@ -102,7 +131,7 @@
       "published_ports": [],
       "dump_mount": "read-only",
       "production_credentials_in_target": false,
-      "prerequisites": "Local Linux-container runtime; Docker Desktop/WSL2 not installed. Any required download or host installation awaits owner authorization."
+      "prerequisites": "Docker Desktop 4.91.0.239619 installed per-user; Docker CLI 29.8.0 verified. Administrator must run wsl --install --no-distribution --web-download. Restart only if requested by Windows. Supabase image has not been downloaded or started."
     }
   },
   "candidate": {
@@ -196,10 +225,10 @@
     "required": true,
     "backup_step_completed": true,
     "password_reentry_needed": false,
-    "action": "Authorize the downloads and local Docker Desktop/WSL2 setup needed for an isolated Supabase PostgreSQL 17.6 test runtime, or provide an already prepared equivalent offline runtime. No package downloads or host setup will occur while the current prohibition remains.",
-    "reason": "Owner instruction: Do not download anything else. Required PostgreSQL 17.6 environment is absent.",
+    "action": "Run wsl --install --no-distribution --web-download in a Windows Terminal opened as Administrator. Restart only if installation reports it is required; the agent will not restart automatically.",
+    "reason": "The standard Windows elevation request returned operation cancelled by user before WSL started. Existing owner authorization covers setup; Windows still requires local administrative interaction.",
     "production_write_authorized": false,
-    "local_runtime_setup_authorized": false
+    "local_runtime_setup_authorized": true
   },
   "production_write_performed": false,
   "production_settings_changed": false,
@@ -212,14 +241,17 @@
     "https://www.postgresql.org/docs/17/app-pgdump.html",
     "https://www.postgresql.org/docs/17/app-pgrestore.html",
     "https://supabase.com/docs/guides/self-hosting/restore-from-platform",
-    "https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions"
+    "https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions",
+    "https://docs.docker.com/desktop/setup/install/windows-install/",
+    "https://learn.microsoft.com/en-us/windows/wsl/basic-commands"
   ],
   "owner_constraints": {
     "credential_file_access_or_diagnosis_prohibited": true,
     "interactive_owner_backup_completed": true,
     "password_in_chat_args_scripts_logs_docs_prohibited": true,
     "password_environment_variable_prohibited": true,
-    "new_package_downloads_prohibited": true,
+    "new_package_downloads_prohibited": false,
+    "package_download_authorization_scope": "Docker Desktop/WSL2 and required Supabase PostgreSQL 17.6 isolated test runtime only",
     "explorer_folder_movements_prohibited": true
   },
   "offline_archive_inspection": {
@@ -253,6 +285,9 @@
     "truncated_archive_rejection": "PASS",
     "backup_overwrite_protection": "PASS",
     "secret_pii_scan": "PASS_SANITIZED_METADATA_AND_SOURCE_REVIEW",
-    "git_diff_check": "PASS"
+    "git_diff_check": "PASS",
+    "docker_installer_signature": "PASS_VALID_DOCKER_INC",
+    "docker_per_user_installation": "PASS_EXIT_0_DESKTOP_AND_CLI_VERIFIED",
+    "wsl_setup": "NOT_STARTED_WINDOWS_ELEVATION_CANCELLED"
   }
 }

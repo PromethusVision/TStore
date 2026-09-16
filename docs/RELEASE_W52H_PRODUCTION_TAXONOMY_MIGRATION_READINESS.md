@@ -10,8 +10,11 @@ salt okunur sorgular gönderildi; Development'a erişilmedi. Client build yoktur
 Owner gerçek Production dump'ını manuel aldı. 537274 baytlık CUSTOM arşivin
 SHA-256'sı, kaynak PG17.6 / pg_dump17.11 başlığı ve 4/20/285/57 veri sayımları
 çevrimdışı doğrulandı; 20 ürün referansı, ilan ilişkileri ve 9 ledger kaydı eşleşti.
-Restore henüz yapılmadı: yerel izole PG17.6 ortamı yok ve owner yeni indirmeleri
-yasakladı. Credential-file incelemesi kapsam dışıdır; parola tekrar istenmiyor.
+Restore henüz yapılmadı: owner izole test için Docker Desktop/WSL2 ve gerekli
+Supabase PG17.6 paketlerinin indirilip kurulmasına izin verdi. Docker kullanıcı
+hesabına kuruldu ve sürümü doğrulandı. WSL için Windows yönetici onayı iptal
+sonucuyla döndü; gereken Windows bileşenleri hâlâ kapalı, restore ortamı hazır değil.
+Credential-file incelemesi kapsam dışıdır; parola tekrar istenmiyor.
 W52H sentetik sonuçları gerçek restore PASS'e yükseltilmedi; hazırlık kararı **NO**.
 
 | Bağımsız kapı | Sonuç | Kanıt / sınır |

@@ -5,8 +5,9 @@
 Product Owner manuel pg_dump işleminin tamamlandığını bildirdi. Agent gerçek
 arşivi okuyup SHA-256, kaynak/araç sürümü, veri sayımları ve mevcut baseline ile
 ilişkileri doğruladı. SQL çalıştırılmadı; restore yapılmadı. Kalan engel, izole
-**PostgreSQL 17.6** ortamının bulunmaması ve yeni indirmelerin owner tarafından
-yasaklanmış olmasıdır. Önceki credential-file incelemesi kapatıldı ve kapsam dışıdır.
+**PostgreSQL 17.6** ortamının henüz hazır olmamasıdır. Owner bu test için Docker
+Desktop/WSL2 ve gerekli Supabase PG17.6 paketlerinin indirilip kurulmasını açıkça
+yetkilendirdi. Önceki credential-file incelemesi kapatıldı ve kapsam dışıdır.
 Tekrar parola veya aynı yedekleme işlemi istenmiyor.
 
 ## 1. Kaynak ve branch
@@ -79,14 +80,29 @@ ARCHIVE_INSPECTION_ONLY_NOT_RESTORE_PROOF sınırını açıkça taşır.
 ## 4. İzole restore ortamı engeli ve hazırlanmış devam planı
 
 - Mevcut portable native PostgreSQL motoru **17.11**; istenen **17.6** değil.
-- Kontrol edilen PATH, standart kurulum, Downloads ve EsnaftavarTools konumlarında
-  PG17.6 yok. Docker/Podman bulunmadı; WSL alt sistemi yüklü değil.
+- Kurulum öncesi kontrol edilen PATH, standart kurulum, Downloads ve EsnaftavarTools
+  konumlarında PG17.6 veya Docker/Podman bulunmadı; WSL alt sistemi yüklü değildi.
 - Arşiv extension'ları: pg_stat_statements, pgcrypto, supabase_vault, uuid-ossp.
 - pg_dump cluster rol tanımlarını içermez. Hedefte platform/custom rol tanımları,
   privilege özellikleri ve extension bağımlılıkları eksiksiz karşılanmadan restore
   PASS verilemez. Bunları atlamak veya boş stub ile değiştirmek kabul edilmez.
-- Owner'ın **“Do not download anything else”** talimatı sürüyor. Bu devam adımında
-  paket indirilmedi, Docker/WSL kurulmadı, klasör taşınmadı, sunucu başlatılmadı.
+- Owner önceki indirme yasağına yalnız bu izole test ortamı için açık istisna verdi.
+  Resmî Docker bağlantısından **4.91.0.239619** kurulum dosyası indirildi;
+  Authenticode **Valid**, yayıncı **Docker Inc** olarak doğrulandı.
+- Kurulum dosyası repo dışında EsnaftavarTools/w52h-r-runtime dizinindedir.
+  Boyut 628014512 bayt, SHA-256
+  ac405b09942701770d581b173747fc1024cf0e6047cbe60f13d1df85437311ac.
+- Windows 11 Pro build 26200, yaklaşık 16 GB RAM, 61 GB boş alan ve açık firmware
+  sanallaştırması doğrulandı. WSL kurulumu dağıtım yüklemeden Windows yönetici
+  onayıyla başlatılmak istendi; Windows **“İşlem kullanıcı tarafından iptal edildi”**
+  sonucu döndürdü. WSL başlamadı. Bu, otomatik araç izin incelemesinin reddi değildir.
+- Docker **kullanıcı hesabına kuruldu**, installer exit **0**; tamamlanma UTC
+  **2026-09-16T21:46:51.9660678Z**. Uygulama sürümü **4.91.0.239619**, CLI
+  **29.8.0, build 88096ef** doğrudan kurulu dosyalardan doğrulandı.
+  Kurulum konumu: C:\Users\Mustafa\AppData\Local\Programs\DockerDesktop.
+- Son kontrolde VirtualMachinePlatform ve WSL bileşenleri hâlâ kapalı;
+  hypervisor çalışmıyor. Docker engine veya PostgreSQL sunucusu başlatılmadı.
+  Agent bilgisayarı yeniden başlatmadı; PostgreSQL klasörü taşınmadı.
 
 Devam planı: Yerel Linux container runtime hazırlandıktan sonra,
 [Supabase'in belgelediği](https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions)
@@ -101,11 +117,23 @@ native pg_dump'ın platform iç nesnelerini de içerdiğini ve restore sırasın
 rol/izin uyarlamaları gerektirebileceğini belirtir. Orijinal dump korunacak; kapsam
 daraltılarak, extension veya tablo atılarak başarılı restore iddiası üretilmeyecek.
 
-**Minimum owner kararı:** Yalnız bu izole test ortamı için gerekli paket indirmeleri
-ve yerel Docker Desktop/WSL2 kurulumu yetkilendirilmeli veya önceden hazırlanmış
-eşdeğer bir izole PG17.6 ortamı sağlanmalı. Kurulum yönetici işlemi/yeniden başlatma
-gerektirebilir. Bu karar Production yazma yetkisi vermez. Tekrar parola ya da dump
-gerekmez. Mevcut yasak kalkmadan ortam hazırlığına geçilmeyecek.
+**Owner yetkisi alındı:** Yerel Docker Desktop/WSL2 ve gerekli Supabase PG17.6
+paketleri bu izole test kapsamında indirilebilir ve kurulabilir. Windows'un
+yönetici onayı ve kurulumun gerektirmesi durumunda yeniden başlatma kullanıcı
+etkileşimi gerektirir. Bu yetki Production yazma yetkisi vermez. Tekrar parola ya da
+dump gerekmez. Restore kapıları yalnız gerçekten çalıştırıldıktan sonra güncellenir.
+
+**Kalan manuel adım:** Windows Terminal'i **Yönetici olarak çalıştır** seçeneğiyle
+açıp aşağıdaki komutu çalıştırın. Windows isterse bilgisayarı yeniden başlatın;
+otomatik yeniden başlatma yapılmaz. Kurulum sonucundan sonra aynı görevde devam edilir.
+
+```powershell
+wsl --install --no-distribution --web-download
+```
+
+Komut [Microsoft'un belgelenmiş WSL kurulumunu](https://learn.microsoft.com/en-us/windows/wsl/basic-commands)
+kullanır. Docker kurulumu [resmî per-user kurulum yoluyla](https://docs.docker.com/desktop/setup/install/windows-install/)
+tamamlandı. Bu adım Production bağlantısı veya veritabanı parolası gerektirmez.
 
 ## 5. Bağımsız kapılar
 
@@ -137,6 +165,8 @@ aktivasyon, rollback ve ikinci temiz restore henüz çalıştırılmadı. Gerçe
 - Metadata tutarlılığı, frozen candidate/mapping hash, secret/PII scan ve
   git diff --check: PASS.
 - Flutter analyzer/test: NOT_REQUIRED — client kodu değişmedi.
+- Docker imza ve kullanıcı kurulumu/sürüm kontrolü: PASS. WSL kurulumu:
+  NOT_STARTED_WINDOWS_ELEVATION_CANCELLED; restore doğrulamaları hâlâ NOT_RUN.
 - Branch üzerinde normal commit/push; main merge veya force push yok.
 
     PRODUCTION_SOURCE_PG: 17.6
