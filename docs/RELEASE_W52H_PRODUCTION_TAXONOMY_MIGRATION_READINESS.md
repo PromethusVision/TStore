@@ -6,6 +6,13 @@ projesinden alınmış tam yedeğin izole hedefe geri yüklenmesi kanıtlanmadı
 Yerel sentetik restore, bu eksik kanıtın yerine geçmez. Production'a yalnız
 salt okunur sorgular gönderildi; Development'a erişilmedi. Client build yoktur.
 
+**W52H-R devam durumu:** [Gerçek backup/restore araştırması](RELEASE_W52H_R_PRODUCTION_BACKUP_RESTORE_PROOF.md)
+Production Dashboard erişimini ve 17.6 / 4 / 20 / 285 / 57 kaynak baseline'ını
+yeniden doğruladı. İndirilebilir backup ve kullanılabilir mevcut DB parolası
+bulunmadığından gerçek dump/restore başlatılmadı; owner'ın parolayı yalnız yerelde
+sağlaması gerekiyor. W52H'nin yerel PASS sonuçları gerçek restore PASS'e yükseltilmedi;
+hazırlık kararı **NO** olarak kalır.
+
 | Bağımsız kapı | Sonuç | Kanıt / sınır |
 |---|---|---|
 | BACKUP_CAPTURE_READY | PARTIAL | Dashboard ve SQL okuması doğrulandı; tam logical dump alınmadı. |
