@@ -73,11 +73,19 @@ ayrıca korunmasını gerektirebilir. Bu belgeyi okumak gerçek backup/restore k
 
 **Owner'ın yerel parola kaydı adımı tamamlandı. Parola tekrar girilmeyecek.**
 Dosya metadata'sı owner tarafından paylaşıldı; parola içeriği paylaşılmadı.
-Sonraki minimum teşhis adımı Codex'i tamamen kapatıp yeniden açarak aynı göreve
-dönmektir. [Resmî Windows sandbox sorun giderme belgesi](https://learn.chatgpt.com/docs/windows/windows-sandbox)
-erişim sorunlarında yeniden başlatmayı önerir; bunun bu uyuşmazlığı çözeceği henüz
-kanıtlanmış değildir. Agent sonrasında yalnız metadata / placeholder durumunu
-yeniden kontrol edecek ve erişim sağlanırsa yetkili read-only backup işine devam edecek.
+Owner Codex'i yeniden açtı; normal dosya okuması erişim reddi verdi ve onaylı
+kontrol hâlâ ilk şablonun zaman damgasını ve placeholder'ını gördü. Yeniden
+başlatma sorunu çözmedi. Owner başka bir sohbette `/sandbox-add-read-dir` denedi;
+o sohbetin yanıtı erişimin veya izin eklenmesinin doğrulanamadığını belirtiyor.
+Bu, başarılı bir izin değişikliği sayılmıyor. Klasör okuma komutu
+[Windows belgesinde](https://learn.chatgpt.com/docs/windows/windows-sandbox)
+yer alsa da bu masaüstü oturumunda çalıştırılabildiği doğrulanmadı.
+Artık aynı parola kaydı, yeniden başlatma veya slash komutu tekrarlatılmayacak.
+Sonraki minimum owner adımı uygulamadaki `/feedback` üzerinden, parola veya
+dosya içeriği eklemeden bu dosya erişim/görünüm uyuşmazlığını bildirmektir.
+[`/feedback` masaüstü komut referansında](https://learn.chatgpt.com/docs/reference/slash-commands)
+belgelenmiştir. Erişim düzeldiğinde agent yalnız metadata / placeholder durumunu
+yeniden kontrol ederek yetkili read-only backup işine devam edecek.
 Parola veya tam bağlantı URI'si sohbete, repoya ya da rapora alınmayacak.
 
 Dosya: `C:\Users\Mustafa\AppData\Roaming\postgresql\pgpass.conf`.
