@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "captured_at_utc": "2026-09-16T22:49:28.254Z",
+  "original_public_tables": 23,
+  "original_public_functions": 29,
+  "fingerprints": {
+    "public_columns_md5": "ebf3964a75f50c6100ea5c37900999d4",
+    "public_policies_md5": "3a79075bc95e9245d241a16688f359cd",
+    "ledger_full_rows_md5": "4759456ee8fc7a711fa575bd2e14f389",
+    "public_functions_md5": "b6a2142e2a03b66fd904de34ec1bda82",
+    "products_full_rows_md5": "81f08a6da06d4838ce55f8ef817b5f8f",
+    "categories_full_rows_md5": "6fcebc75c9afb895842d8e3fed17e4f6"
+  },
+  "source_comparison": "All original public column/policy/function definitions plus product/category/ledger rows equal fresh Production read-only fingerprints after rollback; added canonical objects are intentionally outside the original scope"
+}
