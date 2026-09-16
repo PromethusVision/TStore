@@ -1,6 +1,13 @@
 # W52H — Production canonical taxonomy migration readiness
 
-**Karar: NO-GO — `READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: NO`.**
+**Güncel W52H-R sonucu: 9/9 PASS — `READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: YES`.**
+Gerçek Production dump iki ayrı boş PostgreSQL 17.6 hedefinde doğrulandı. Exact
+adapter, SQL/HTTP eski istemci sözleşmeleri, 14/6 aktivasyon ve rollback geçti.
+Bu sonuç Production yazma yetkisi değildir; Production'a yazılmadı. Ayrıntı ve
+nihai karar [W52H-R kanıt raporundadır](RELEASE_W52H_R_PRODUCTION_BACKUP_RESTORE_PROOF.md).
+
+**Aşağıdaki W52H ilk karar ve sentetik prova kayıtları tarihsel bağlamdır:**
+İlk karar NO-GO — `READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: NO` idi.
 Adapter adayı ve iki temiz yerel prova başarılıdır. Ancak **bu Production
 projesinden alınmış tam yedeğin izole hedefe geri yüklenmesi kanıtlanmadı**.
 Yerel sentetik restore, bu eksik kanıtın yerine geçmez. Production'a yalnız
@@ -10,12 +17,13 @@ salt okunur sorgular gönderildi; Development'a erişilmedi. Client build yoktur
 Owner gerçek Production dump'ını manuel aldı. 537274 baytlık CUSTOM arşivin
 SHA-256'sı, kaynak PG17.6 / pg_dump17.11 başlığı ve 4/20/285/57 veri sayımları
 çevrimdışı doğrulandı; 20 ürün referansı, ilan ilişkileri ve 9 ledger kaydı eşleşti.
-Restore henüz yapılmadı: owner izole test için Docker Desktop/WSL2 ve gerekli
-Supabase PG17.6 paketlerinin indirilip kurulmasına izin verdi. Docker kullanıcı
-hesabına kuruldu ve sürümü doğrulandı. WSL için Windows yönetici onayı iptal
-sonucuyla döndü; gereken Windows bileşenleri hâlâ kapalı, restore ortamı hazır değil.
-Credential-file incelemesi kapsam dışıdır; parola tekrar istenmiyor.
-W52H sentetik sonuçları gerçek restore PASS'e yükseltilmedi; hazırlık kararı **NO**.
+Owner'ın yetkilendirdiği Docker/WSL2 kurulumu ve yeniden başlatma tamamlandı.
+Gerçek yedek iki ayrı boş PG17.6 veritabanına geri yüklendi; 69 tablo verisi,
+6 canlı kaynak parmak izi ve 33 public FK doğrulandı. Exact adapter sonrası
+1563/24/1245 kategori yapısı ve 20/20 mapping; aktivasyonda 14 görünür/6 gated;
+SQL/HTTP eski istemci sözleşmeleri ve 271 ms rollback PASS. İkinci restore
+orijinal yedekten bağımsız olarak geçti. Credential-file incelemesi kapsam dışı
+kaldı. W52H sentetik kanıtları değiştirilmedi; W52H-R gerçek kanıtı ayrıca üretildi.
 
 | Bağımsız kapı | Sonuç | Kanıt / sınır |
 |---|---|---|

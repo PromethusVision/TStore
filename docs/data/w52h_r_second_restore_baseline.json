@@ -1,0 +1,564 @@
+{
+  "contract": "w52h-r-restored-baseline-v1",
+  "captured_at_utc": "2026-09-16T22:45:43.301Z",
+  "database": "w52hr_second",
+  "result": "PASS",
+  "counts": {
+    "categories": 4,
+    "products": 20,
+    "shop_products": 285,
+    "shops": 57,
+    "orphan_products": 0,
+    "orphan_listings": 0
+  },
+  "fingerprints": {
+    "public_columns_md5": "ebf3964a75f50c6100ea5c37900999d4",
+    "public_policies_md5": "3a79075bc95e9245d241a16688f359cd",
+    "ledger_full_rows_md5": "4759456ee8fc7a711fa575bd2e14f389",
+    "public_functions_md5": "b6a2142e2a03b66fd904de34ec1bda82",
+    "products_full_rows_md5": "81f08a6da06d4838ce55f8ef817b5f8f",
+    "categories_full_rows_md5": "6fcebc75c9afb895842d8e3fed17e4f6"
+  },
+  "source_comparison": "All six fingerprints match fresh READ ONLY Production observations",
+  "extensions": [
+    {
+      "name": "pg_stat_statements",
+      "version": "1.11"
+    },
+    {
+      "name": "pgcrypto",
+      "version": "1.3"
+    },
+    {
+      "name": "plpgsql",
+      "version": "1.0"
+    },
+    {
+      "name": "supabase_vault",
+      "version": "0.3.1"
+    },
+    {
+      "name": "uuid-ossp",
+      "version": "1.1"
+    }
+  ],
+  "database_locale": {
+    "ctype": "en_US.UTF-8",
+    "collate": "en_US.UTF-8",
+    "encoding": "UTF8"
+  },
+  "public_foreign_keys": {
+    "total": 33,
+    "unvalidated": 0
+  },
+  "event_triggers": [
+    {
+      "name": "ensure_rls",
+      "owner": "postgres",
+      "enabled": "O"
+    },
+    {
+      "name": "issue_graphql_placeholder",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    },
+    {
+      "name": "issue_pg_cron_access",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    },
+    {
+      "name": "issue_pg_graphql_access",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    },
+    {
+      "name": "issue_pg_net_access",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    },
+    {
+      "name": "pgrst_ddl_watch",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    },
+    {
+      "name": "pgrst_drop_watch",
+      "owner": "supabase_admin",
+      "enabled": "O"
+    }
+  ],
+  "archive_table_data": [
+    {
+      "table": "auth.audit_log_entries",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.custom_oauth_providers",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.flow_state",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.identities",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.instances",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.mfa_amr_claims",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.mfa_challenges",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.mfa_factors",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.mfa_recovery_code_sets",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.mfa_recovery_codes",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.oauth_authorizations",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.oauth_client_states",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.oauth_clients",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.oauth_consents",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.one_time_tokens",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.refresh_tokens",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.saml_providers",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.saml_relay_states",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.schema_migrations",
+      "rows": 82,
+      "ordered_copy_sha256": "7315402992f867a9b5f03b14aef2c1d0f9cf9a7ad66b15ae01c965102b21c4f2",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.scim_tokens",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.scim_users",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.sessions",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.sso_domains",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.sso_providers",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.users",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.webauthn_challenges",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "auth.webauthn_credentials",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.addresses",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.banners",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.brands",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.cart_items_v2",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.carts",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.categories",
+      "rows": 4,
+      "ordered_copy_sha256": "eb89f65b63ee9a644918ef1e16092de87991ea3363c0b613e76e9e1ce642d066",
+      "match": "PASS"
+    },
+    {
+      "table": "public.chat_messages",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.customer_saved_locations",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.legal_consents",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.notifications",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.order_items",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.orders",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.products",
+      "rows": 20,
+      "ordered_copy_sha256": "eb2077f9dc1aa7fa8a1369f0f64643b369ef5425b7955fe6ba576b11236e151d",
+      "match": "PASS"
+    },
+    {
+      "table": "public.profiles",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.qr_session_items",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.qr_sessions",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.reviews",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.shop_products",
+      "rows": 285,
+      "ordered_copy_sha256": "1305bf1585b793b2fbf9176c0d4b8f16ae4c08a08f776eb87d6b8925074e2093",
+      "match": "PASS"
+    },
+    {
+      "table": "public.shop_ratings",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.shops",
+      "rows": 57,
+      "ordered_copy_sha256": "292e884549e9caf2d4f948e703aeeb43506ec045549bdaa05d1738615208cc6f",
+      "match": "PASS"
+    },
+    {
+      "table": "public.verified_transaction_items",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.verified_transactions",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "public.wishlist",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_19",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_20",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_21",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_22",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_23",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_24",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.messages_2026_08_25",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.schema_migrations",
+      "rows": 83,
+      "ordered_copy_sha256": "9a634ee658d71913c304000e321a126491739d91f5460b8036d274bf10702d33",
+      "match": "PASS"
+    },
+    {
+      "table": "realtime.subscription",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.buckets",
+      "rows": 3,
+      "ordered_copy_sha256": "c3347306b5fe4b653e139a552ae30afd528da1ab264f9de866e02c7b7fa214be",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.buckets_analytics",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.buckets_vectors",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.migrations",
+      "rows": 68,
+      "ordered_copy_sha256": "7bd8c8754915e662759e5f4f36f16094302200490782b3a08fdc8c45dd42ed88",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.objects",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.s3_multipart_uploads",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.s3_multipart_uploads_parts",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "storage.vector_indexes",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    },
+    {
+      "table": "supabase_migrations.schema_migrations",
+      "rows": 9,
+      "ordered_copy_sha256": "2a9d9ff5bcfbb3ce1ef03c342a2efac5a944ee591e950d4e0b84c96c5c18e48f",
+      "match": "PASS"
+    },
+    {
+      "table": "vault.secrets",
+      "rows": 0,
+      "ordered_copy_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": "PASS"
+    }
+  ],
+  "archive_rows_match": "PASS_ALL_TABLE_DATA_ENTRIES",
+  "legacy_queries": {
+    "anon": {
+      "home_categories": {
+        "rows": 4,
+        "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+      },
+      "product_listing": {
+        "rows": 4,
+        "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+      },
+      "product_details": {
+        "rows": 20,
+        "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+      },
+      "seller_comparison": {
+        "rows": 20,
+        "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+      },
+      "shop_details": {
+        "rows": 57,
+        "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+      },
+      "search": {
+        "rows": 2,
+        "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+      }
+    },
+    "authenticated": {
+      "home_categories": {
+        "rows": 4,
+        "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+      },
+      "product_listing": {
+        "rows": 4,
+        "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+      },
+      "product_details": {
+        "rows": 20,
+        "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+      },
+      "seller_comparison": {
+        "rows": 20,
+        "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+      },
+      "shop_details": {
+        "rows": 57,
+        "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+      },
+      "search": {
+        "rows": 2,
+        "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+      }
+    }
+  },
+  "legacy_metadata_sha256": "c2d6ba227f9bb036c9ced038b1ccf577740c4cf578d308f57b667933de4462e8",
+  "production_rows_emitted_or_saved": false
+}

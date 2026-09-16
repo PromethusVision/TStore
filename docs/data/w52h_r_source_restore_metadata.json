@@ -1,0 +1,435 @@
+{
+  "contract": "w52h-r-live-readonly-restore-metadata-v1",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "source": "Production Dashboard SQL Editor, BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY; SELECT catalog attributes and aggregate hashes; COMMIT",
+  "captured_at_utc": "2026-09-16T22:18:07.073066+00:00",
+  "server_version": "17.6",
+  "database": {
+    "ctype": "en_US.UTF-8",
+    "collate": "en_US.UTF-8",
+    "encoding": "UTF8"
+  },
+  "roles": [
+    {
+      "name": "anon",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": false,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "authenticated",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": false,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "authenticator",
+      "superuser": false,
+      "inherit": false,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "cli_login_postgres",
+      "superuser": false,
+      "inherit": false,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "dashboard_user",
+      "superuser": false,
+      "inherit": true,
+      "createrole": true,
+      "createdb": true,
+      "login": false,
+      "replication": true,
+      "bypassrls": false
+    },
+    {
+      "name": "pgbouncer",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "postgres",
+      "superuser": false,
+      "inherit": true,
+      "createrole": true,
+      "createdb": true,
+      "login": true,
+      "replication": true,
+      "bypassrls": true
+    },
+    {
+      "name": "service_role",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": false,
+      "replication": false,
+      "bypassrls": true
+    },
+    {
+      "name": "supabase_admin",
+      "superuser": true,
+      "inherit": true,
+      "createrole": true,
+      "createdb": true,
+      "login": true,
+      "replication": true,
+      "bypassrls": true
+    },
+    {
+      "name": "supabase_auth_admin",
+      "superuser": false,
+      "inherit": false,
+      "createrole": true,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "supabase_etl_admin",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": true,
+      "bypassrls": true
+    },
+    {
+      "name": "supabase_privileged_role",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": false,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "supabase_read_only_user",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": true
+    },
+    {
+      "name": "supabase_realtime_admin",
+      "superuser": false,
+      "inherit": false,
+      "createrole": false,
+      "createdb": false,
+      "login": false,
+      "replication": false,
+      "bypassrls": false
+    },
+    {
+      "name": "supabase_replication_admin",
+      "superuser": false,
+      "inherit": true,
+      "createrole": false,
+      "createdb": false,
+      "login": true,
+      "replication": true,
+      "bypassrls": false
+    },
+    {
+      "name": "supabase_storage_admin",
+      "superuser": false,
+      "inherit": false,
+      "createrole": true,
+      "createdb": false,
+      "login": true,
+      "replication": false,
+      "bypassrls": false
+    }
+  ],
+  "memberships": [
+    {
+      "role": "anon",
+      "member": "authenticator",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "anon",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "anon",
+      "member": "supabase_realtime_admin",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "authenticated",
+      "member": "authenticator",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "authenticated",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "authenticated",
+      "member": "supabase_realtime_admin",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "authenticator",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "authenticator",
+      "member": "supabase_storage_admin",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "pg_create_subscription",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_monitor",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_monitor",
+      "member": "supabase_etl_admin",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_monitor",
+      "member": "supabase_read_only_user",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_read_all_data",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_read_all_data",
+      "member": "supabase_etl_admin",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_read_all_data",
+      "member": "supabase_read_only_user",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "pg_signal_backend",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "postgres",
+      "member": "cli_login_postgres",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "service_role",
+      "member": "authenticator",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "service_role",
+      "member": "postgres",
+      "admin": true,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "service_role",
+      "member": "supabase_realtime_admin",
+      "admin": false,
+      "inherit": false,
+      "set": true
+    },
+    {
+      "role": "supabase_privileged_role",
+      "member": "postgres",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    },
+    {
+      "role": "supabase_privileged_role",
+      "member": "supabase_etl_admin",
+      "admin": false,
+      "inherit": true,
+      "set": true
+    }
+  ],
+  "extensions": [
+    {
+      "name": "pg_stat_statements",
+      "version": "1.11"
+    },
+    {
+      "name": "pgcrypto",
+      "version": "1.3"
+    },
+    {
+      "name": "plpgsql",
+      "version": "1.0"
+    },
+    {
+      "name": "supabase_vault",
+      "version": "0.3.1"
+    },
+    {
+      "name": "uuid-ossp",
+      "version": "1.1"
+    }
+  ],
+  "counts": {
+    "shops": 57,
+    "listings": 285,
+    "products": 20,
+    "categories": 4
+  },
+  "fingerprints": {
+    "public_columns_md5": "ebf3964a75f50c6100ea5c37900999d4",
+    "public_policies_md5": "3a79075bc95e9245d241a16688f359cd",
+    "ledger_full_rows_md5": "4759456ee8fc7a711fa575bd2e14f389",
+    "public_functions_md5": "b6a2142e2a03b66fd904de34ec1bda82",
+    "products_full_rows_md5": "81f08a6da06d4838ce55f8ef817b5f8f",
+    "categories_full_rows_md5": "6fcebc75c9afb895842d8e3fed17e4f6"
+  },
+  "passwords_or_personal_rows_read": false,
+  "runtime": {
+    "captured_at_utc": "2026-09-16T22:23:24.63715+00:00",
+    "settings": {
+      "supautils.superuser": "supabase_admin",
+      "supautils.reserved_roles": "supabase_admin, supabase_auth_admin, supabase_storage_admin, supabase_read_only_user, supabase_realtime_admin, supabase_replication_admin, supabase_etl_admin, dashboard_user, pgbouncer, service_role*, authenticator*, authenticated*, anon*, supabase_privileged_role",
+      "session_preload_libraries": "supautils",
+      "supautils.privileged_role": "supabase_privileged_role",
+      "supautils.reserved_memberships": "pg_read_server_files, pg_write_server_files, pg_execute_server_program, supabase_admin, supabase_auth_admin, supabase_storage_admin, supabase_read_only_user, supabase_realtime_admin, supabase_replication_admin, supabase_etl_admin, dashboard_user, pgbouncer, authenticator",
+      "supautils.privileged_extensions": "address_standardizer, address_standardizer_data_us, autoinc, bloom, btree_gin, btree_gist, citext, cube, dblink, dict_int, dict_xsyn, earthdistance, fuzzystrmatch, hstore, http, hypopg, index_advisor, insert_username, intarray, isn, ltree, moddatetime, orioledb, pg_buffercache, pg_cron, pg_graphql, pg_hashids, pg_jsonschema, pg_net, pg_prewarm, pg_repack, pg_stat_monitor, pg_stat_statements, pg_tle, pg_trgm, pg_walinspect, pgaudit, pgcrypto, pgjwt, pgroonga, pgroonga_database, pgrouting, pgrowlocks, pgsodium, pgstattuple, pgtap, plcoffee, pljava, plls, plpgsql_check, plv8, postgis, postgis_raster, postgis_sfcgal, postgis_tiger_geocoder, postgis_topology, postgres_fdw, refint, rum, seg, sslinfo, supabase_vault, supautils, tablefunc, tcn, timescaledb, tsm_system_rows, tsm_system_time, unaccent, uuid-ossp, vector, wrappers",
+      "supautils.privileged_role_allowed_configs": "auto_explain.*, deadlock_timeout, log_duration, log_lock_waits, log_min_duration_statement, log_min_error_statement, log_min_messages, log_parameter_max_length, log_replication_commands, log_statement, log_temp_files, pg_net.batch_size, pg_net.ttl, pg_stat_statements.*, pgaudit.log, pgaudit.log_catalog, pgaudit.log_client, pgaudit.log_level, pgaudit.log_relation, pgaudit.log_rows, pgaudit.log_statement, pgaudit.log_statement_once, pgaudit.role, pgrst.*, plan_filter.*, safeupdate.enabled, session_replication_role, track_functions, track_io_timing, wal_compression"
+    },
+    "role_settings": [
+      {
+        "role": "anon",
+        "setting": "statement_timeout=3s"
+      },
+      {
+        "role": "authenticated",
+        "setting": "statement_timeout=8s"
+      },
+      {
+        "role": "authenticator",
+        "setting": "lock_timeout=8s"
+      },
+      {
+        "role": "authenticator",
+        "setting": "session_preload_libraries=supautils, safeupdate"
+      },
+      {
+        "role": "authenticator",
+        "setting": "statement_timeout=8s"
+      },
+      {
+        "role": "postgres",
+        "setting": "search_path=\"\\$user\", public, extensions"
+      },
+      {
+        "role": "supabase_admin",
+        "setting": "search_path=\"$user\", public, auth, extensions"
+      },
+      {
+        "role": "supabase_admin",
+        "setting": "statement_timeout=0"
+      },
+      {
+        "role": "supabase_auth_admin",
+        "setting": "idle_in_transaction_session_timeout=60000"
+      },
+      {
+        "role": "supabase_auth_admin",
+        "setting": "search_path=auth"
+      },
+      {
+        "role": "supabase_realtime_admin",
+        "setting": "search_path=public, extensions, realtime"
+      },
+      {
+        "role": "supabase_storage_admin",
+        "setting": "search_path=storage"
+      }
+    ]
+  },
+  "fingerprint_capture": {
+    "captured_at_utc": "2026-09-16T22:38:08.927304+00:00",
+    "delimiter": "chr(10)",
+    "reason": "Explicit LF avoids editor indentation within a multiline SQL string; source query re-executed READ ONLY before comparison",
+    "source_search_path": "\"\\$user\", public, extensions"
+  }
+}

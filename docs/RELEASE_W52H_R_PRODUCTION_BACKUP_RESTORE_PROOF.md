@@ -1,196 +1,185 @@
 # W52H-R — Production backup / real restore proof
 
-**Gerçek Production yedeği alındı ve çevrimdışı doğrulandı. Restore proof henüz yok; karar NO-GO.**
+**PASS — 9/9 bağımsız kapı geçti.** Gerçek Production yedeği, iki ayrı boş
+PostgreSQL **17.6** veritabanına geri yüklendi. İlk gerçek kopyada exact W52H
+migration, aktivasyon, eski W52C SQL/HTTP sözleşmeleri ve rollback doğrulandı.
+**READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: YES.**
+Bu sonuç Production'a yazma yetkisi değildir; Production'a yazılmadı.
 
-Product Owner manuel pg_dump işleminin tamamlandığını bildirdi. Agent gerçek
-arşivi okuyup SHA-256, kaynak/araç sürümü, veri sayımları ve mevcut baseline ile
-ilişkileri doğruladı. SQL çalıştırılmadı; restore yapılmadı. Kalan engel, izole
-**PostgreSQL 17.6** ortamının henüz hazır olmamasıdır. Owner bu test için Docker
-Desktop/WSL2 ve gerekli Supabase PG17.6 paketlerinin indirilip kurulmasını açıkça
-yetkilendirdi. Önceki credential-file incelemesi kapatıldı ve kapsam dışıdır.
-Tekrar parola veya aynı yedekleme işlemi istenmiyor.
+## Kaynak, yedek ve izolasyon
 
-## 1. Kaynak ve branch
+- Branch: `astra-release/w52h-r-production-backup-restore-proof`.
+- W52H source: `0c0161e36cd7489f9ea8fac1c03f4abc5d988895`.
+- Başlangıç authoritative main: `8f87b7e5034427389047f076f03658b5cb2dbc98`.
+- Production: `mefhfvrgkwciubeajjeb`; Development'a erişilmedi.
+- Owner mevcut parolayı kendi terminaline girerek tam CUSTOM dump aldı.
+- Bu devam adımında Production Dashboard üzerinden yalnız `READ ONLY`
+  transaction içinde katalog metadata'sı ve anonim parmak izleri okundu.
+  Parola veya kişisel satır değerleri sorgulanmadı.
+- Credential-file incelemesi kapalı ve kapsam dışı kaldı.
 
-- Branch: astra-release/w52h-r-production-backup-restore-proof.
-- W52H source HEAD: 0c0161e36cd7489f9ea8fac1c03f4abc5d988895.
-- Başlangıçta doğrulanan authoritative main: 8f87b7e5034427389047f076f03658b5cb2dbc98.
-- Production: mefhfvrgkwciubeajjeb; Development'a erişim yok.
-- Son canlı aggregate baseline: 2026-09-16T01:08:24.030103+00:00, Dashboard
-  üzerinden REPEATABLE READ READ ONLY transaction: PG17.6, 4/20/285/57, ledger 9.
-- Manuel komut Production metadata'sını açıkça seçti. Parola yalnız owner'ın
-  terminalindeki gizli girişte kullanıldı; agent bağlantı kurmadı.
-- Bu devam adımında Production'a hiçbir sorgu veya değişiklik gönderilmedi.
-
-## 2. Gerçek backup artifact
-
-Dosya repo dışında:
+Orijinal backup repo dışında korunuyor:
 
     C:\Users\Mustafa\EsnaftavarBackups\w52h-r\EsnaftaVar-Production-W52H-R-full.dump
 
-| Alan | Gerçek gözlem |
+| Backup alanı | Doğrulanan değer |
 |---|---|
-| Format | PostgreSQL CUSTOM, gzip, dump format 1.16-0 |
-| Kaynak PostgreSQL | **17.6** — arşiv başlığından |
-| Backup aracı | **pg_dump 17.11** — arşiv başlığından |
-| Tamamlanma zaman dayanağı | LastWriteTimeUtc: **2026-09-16T21:18:01.0568527Z** |
-| Arşiv oluşturma başlığı | 2026-09-17 00:17:39; başlık timezone kodlamıyor |
-| Boyut | **537274 bayt** |
-| TOC kayıt sayısı | **965** |
+| Kaynak / araç | PostgreSQL 17.6 / pg_dump 17.11 |
+| Format | CUSTOM, gzip, format 1.16-0 |
+| Tamamlanma zamanı | LastWriteTimeUtc 2026-09-16T21:18:01.0568527Z |
+| Boyut | 537274 bayt |
 | SHA-256 | 83029c3871ce1689851b08beb2690be202d7d22d79bcdbdda3b5eadd46c64b10 |
-| Çevrimdışı okuyucu | pg_restore 17.11 |
+| Arşiv başlığı / restore listesi | 965 TOC kaydı / 958 listelenen giriş |
 
-Hash incelemenin başında ve sonunda aynı kaldı. Orijinal dump değiştirilmedi,
-repo içine kopyalanmadı. Raw SQL bellekte render edildi; satırlar ekrana/loga
-yazdırılmadı veya ek bir SQL dosyasına kaydedilmedi.
+Orijinal hash tüm testlerden sonra aynı. Dump veya kişisel veriler git'e alınmadı.
 
-## 3. Çevrimdışı arşiv doğrulaması — restore sonucu değildir
+Owner indirme/kurulum yetkisini açıkça verdi. Docker Desktop 4.91.0.239619,
+Docker Engine 29.8.0 ve WSL2 2.7.14.0 doğrulandı. Owner'ın yeniden başlatması
+sonrasında VirtualMachinePlatform ve hypervisor çalıştı; WSL1 kurulması gerekmedi.
 
-[Tekrarlanabilir denetleyici](../tool/production_taxonomy/inspect_backup.mjs),
-pg_restore --list ve pg_restore --file=- kullanır; bağlantı argümanı yoktur.
-Dump'ın tümü hatasız belleğe açıldı ve tamamlanma işareti doğrulandı.
-İlgili COPY blokları parse edilerek yalnız aşağıdaki anonim metadata üretildi.
+| Test ortamı | Kanıt |
+|---|---|
+| Motor | Çalışan sunucuda `server_version = 17.6` |
+| Resmî imaj | `supabase/postgres:17.6.1.136` |
+| İmaj digest | `sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00` |
+| Ağ / port | `--network none`, yayımlanan port yok; PostgreSQL TCP dinlemesi kapalı |
+| Erişim | Yalnız container içi Unix socket; Production bağlantı bilgisi/parolası kullanılmadı |
+| Yedek bağlantısı | Tek bind mount, read-only |
+| İlk / ikinci hedef | `w52hr_first` / `w52hr_second`, ikisi de template0'dan boş oluşturuldu |
+| Test sonrası | PostgREST durduruldu, geçici yerel JWT ayarı silindi; DB container durduruldu |
 
-| Kontrol | Arşivde ölçülen değer | Sonuç |
-|---|---:|---|
-| categories | 4 | Kaynak baseline ile eşleşti |
-| products | 20 | Kaynak baseline ile eşleşti |
-| shop_products/listings | 285 | Kaynak baseline ile eşleşti |
-| shops | 57 | Kaynak baseline ile eşleşti |
-| migration ledger | 9 | Beklenen version/name ve boş olmayan statements |
-| Ürün-kategori referansları | 20/20 | W52H baseline ile birebir eşleşti |
-| İlan ilişki fingerprint | 3cdc33b78d268e2e92509371e0250c0c | W52H MD5 ile eşleşti |
-| Orphan products / listings | 0 / 0 | Arşiv satır ilişkileri kontrolü |
-| Temel tablolarda duplicate ID | 0 | Arşiv satır kontrolü |
-| Public function envanteri | 29 | W52H ad envanteri birebir eşleşti |
-| Public policy / FK / index | 52 / 33 / 50 | Arşiv TOC gözlemi |
-| Dört temel tabloda RLS enable | 4/4 | SQL tanımları mevcut |
+## Tam restore ve kaynak eşitliği
 
-App schema/data, PK/FK, indeks, fonksiyonlar, RLS/policy ve migration ledger
-arşivde mevcut. auth, storage, realtime, supabase_migrations, vault dahil platform
-şemaları da alınmış. Public view sayısı 0; bu bir dışlama filtresi değildir.
-Tam ürün satırları için bağımsız canlı fingerprint önceki baseline'da yok.
-Fonksiyon body/policy expression/schema fingerprint eşitliği ve DB tarafından
-FK enforcement henüz doğrulanmadı. Parse edilmiş ilişkiler DB restore kontrolü
-olarak gösterilmez.
+pg_dump cluster rol tanımlarını taşımaz. Bu eksik, Production'dan salt okunur
+alınan **16 rolün özellikleri, 22 üyelik ve ilgili oturum ayarları** ile kapatıldı.
+Yerel rol parolaları kopyalanmadı. Kaynak uzantı sürümleri hedefte eşleşti:
+pg_stat_statements 1.11, pgcrypto 1.3, plpgsql 1.0, supabase_vault 0.3.1,
+uuid-ossp 1.1. Supautils yüklenip kaynak privileged-role davranışı doğrulandı.
 
-[Makine arşiv kanıtı](data/w52h_r_backup_archive_inspection.json)
-ARCHIVE_INSPECTION_ONLY_NOT_RESTORE_PROOF sınırını açıkça taşır.
+Supabase'in event-trigger sahiplik koruması nedeniyle restore iki bölümde yapıldı:
+**951 normal giriş**, ardından **7 event trigger kendi asıl sahipleriyle**.
+Standart pg_restore listesindeki **958 girişin tamamı** işlendi; tablo, şema,
+veri, ACL veya sahiplik atlanmadı. İki bölümün de çıkış kodu 0.
+Bu yöntem postgres rolünü SUPERUSER yapmayı gerektirmedi.
 
-## 4. İzole restore ortamı engeli ve hazırlanmış devam planı
+| Kontrol | İlk restore | İkinci temiz restore |
+|---|---:|---:|
+| Başlangıç kullanıcı tablosu | 0 | 0 |
+| categories / products | 4 / 20 | 4 / 20 |
+| listings / shops | 285 / 57 | 285 / 57 |
+| Migration ledger | 9 | 9 |
+| Ürün-kategori referansları | 20/20 | 20/20 |
+| Orphan products / listings | 0 / 0 | 0 / 0 |
+| Tam satırları yedekle eşleşen TABLE DATA girişleri | 69/69 | 69/69 |
+| Public FK, tamamı validated | 33 | 33 |
+| Kaynakla eşleşen parmak izleri | 6/6 | 6/6 |
+| Event trigger, sahiplik korunarak | 7 | 7 |
 
-- Mevcut portable native PostgreSQL motoru **17.11**; istenen **17.6** değil.
-- Kurulum öncesi kontrol edilen PATH, standart kurulum, Downloads ve EsnaftavarTools
-  konumlarında PG17.6 veya Docker/Podman bulunmadı; WSL alt sistemi yüklü değildi.
-- Arşiv extension'ları: pg_stat_statements, pgcrypto, supabase_vault, uuid-ossp.
-- pg_dump cluster rol tanımlarını içermez. Hedefte platform/custom rol tanımları,
-  privilege özellikleri ve extension bağımlılıkları eksiksiz karşılanmadan restore
-  PASS verilemez. Bunları atlamak veya boş stub ile değiştirmek kabul edilmez.
-- Owner önceki indirme yasağına yalnız bu izole test ortamı için açık istisna verdi.
-  Resmî Docker bağlantısından **4.91.0.239619** kurulum dosyası indirildi;
-  Authenticode **Valid**, yayıncı **Docker Inc** olarak doğrulandı.
-- Kurulum dosyası repo dışında EsnaftavarTools/w52h-r-runtime dizinindedir.
-  Boyut 628014512 bayt, SHA-256
-  ac405b09942701770d581b173747fc1024cf0e6047cbe60f13d1df85437311ac.
-- Windows 11 Pro build 26200, yaklaşık 16 GB RAM, 61 GB boş alan ve açık firmware
-  sanallaştırması doğrulandı. WSL kurulumu dağıtım yüklemeden Windows yönetici
-  onayıyla başlatılmak istendi; Windows **“İşlem kullanıcı tarafından iptal edildi”**
-  sonucu döndürdü. WSL başlamadı. Bu, otomatik araç izin incelemesinin reddi değildir.
-- Docker **kullanıcı hesabına kuruldu**, installer exit **0**; tamamlanma UTC
-  **2026-09-16T21:46:51.9660678Z**. Uygulama sürümü **4.91.0.239619**, CLI
-  **29.8.0, build 88096ef** doğrudan kurulu dosyalardan doğrulandı.
-  Kurulum konumu: C:\Users\Mustafa\AppData\Local\Programs\DockerDesktop.
-- Son kontrolde VirtualMachinePlatform ve WSL bileşenleri hâlâ kapalı;
-  hypervisor çalışmıyor. Docker engine veya PostgreSQL sunucusu başlatılmadı.
-  Agent bilgisayarı yeniden başlatmadı; PostgreSQL klasörü taşınmadı.
+69 tablo karşılaştırması auth/storage/realtime dahil yedekteki tüm TABLE DATA
+girişlerini kapsar. COPY satırları yalnız bellekte karşılaştırıldı; raporlar
+sadece tablo adları, sayılar ve hash içerir.
 
-Devam planı: Yerel Linux container runtime hazırlandıktan sonra,
-[Supabase'in belgelediği](https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions)
-supabase/postgres:17.6.1.136 imajı adaydır; gerçek motor sürümü çalıştırıldığında
-17.6 olarak doğrulanmalıdır. Bu imaj indirilmedi veya çalıştırılmadı. Disposable
-hedef --network none, sıfır yayımlanan port, yalnız read-only dump mount ve
-Production credential'ı olmadan çalışacak. SQL testleri container içinde yapılacak.
-HTTP contract gerekiyorsa yalnız dış ağa çıkışı olmayan yerel test ortamı kullanılacak.
+Altı canlı kaynak parmak izi; tüm ürün satırları, kategori satırları, ledger
+satırları, public kolon tanımları, policy'ler ve fonksiyon tanımlarını kapsar.
+Kaynak sorgu 2026-09-16T22:38:08.927304Z'de READ ONLY çalıştı. Parmak izi
+ayırıcısı açık `chr(10)` olarak tanımlandı; editörün çok satırlı string girintisi
+etkisi giderildi. Kaynakla aynı şema çözümlemesi kullanıldı.
 
-[Supabase restore belgesi](https://supabase.com/docs/guides/self-hosting/restore-from-platform)
-native pg_dump'ın platform iç nesnelerini de içerdiğini ve restore sırasında
-rol/izin uyarlamaları gerektirebileceğini belirtir. Orijinal dump korunacak; kapsam
-daraltılarak, extension veya tablo atılarak başarılı restore iddiası üretilmeyecek.
+## Gerçek kopyada migration, sözleşme ve rollback
 
-**Owner yetkisi alındı:** Yerel Docker Desktop/WSL2 ve gerekli Supabase PG17.6
-paketleri bu izole test kapsamında indirilebilir ve kurulabilir. Windows'un
-yönetici onayı ve kurulumun gerektirmesi durumunda yeniden başlatma kullanıcı
-etkileşimi gerektirir. Bu yetki Production yazma yetkisi vermez. Tekrar parola ya da
-dump gerekmez. Restore kapıları yalnız gerçekten çalıştırıldıktan sonra güncellenir.
+Exact candidate değişmedi:
 
-**Kalan manuel adım:** Windows Terminal'i **Yönetici olarak çalıştır** seçeneğiyle
-açıp aşağıdaki komutu çalıştırın. Windows isterse bilgisayarı yeniden başlatın;
-otomatik yeniden başlatma yapılmaz. Kurulum sonucundan sonra aynı görevde devam edilir.
+- `supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql`
+- LF UTF-8 SHA-256: `a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834`
+- Owner mapping SHA-256: `f589308535f42936a1ef4c873ea446b00ed4849fb8ef872c4112956b56a28663`
 
-```powershell
-wsl --install --no-distribution --web-download
-```
+| Kontrol | Gerçek sonuç |
+|---|---:|
+| Products / listings / shops korundu | 20 / 285 / 57 |
+| Canonical nodes / roots / terminal leaves | 1563 / 24 / 1245 |
+| Exact owner mapping | 20/20 |
+| Orphan / kopuk parent / duplicate UUID | 0 / 0 / 0 |
+| Aktivasyonda görünür / kurallarla kapalı | 14 / 6 |
+| Rollback süresi | 271 ms |
+| Rollback sonrası canonical public gate | Kapalı |
+| Rollback sonrası tüm özgün tablo satırları | 69/69 eşit |
+| Rollback sonrası özgün public kolon/policy/fonksiyonlar | Kaynak parmak izleriyle eşit |
 
-Komut [Microsoft'un belgelenmiş WSL kurulumunu](https://learn.microsoft.com/en-us/windows/wsl/basic-commands)
-kullanır. Docker kurulumu [resmî per-user kurulum yoluyla](https://docs.docker.com/desktop/setup/install/windows-install/)
-tamamlandı. Bu adım Production bağlantısı veya veritabanı parolası gerektirmez.
+Eski W52C APK SHA-256'sı ve `4f0da82` kaynak sorguları doğrulandı. Home
+categories, Product Listing, Product Details, Seller Comparison, Shop Details
+ve Search; `anon` ve `authenticated` rolleriyle **SQL ve gerçek PostgREST HTTP**
+üzerinden test edildi. İç içe category/brand/product/shop DTO'ları da kontrol edildi.
+HTTP yanıtlarının ve SQL sonuçlarının hash'leri dört aşamada aynı kaldı:
+pre-migration, staged migration sonrası, aktivasyon sonrası, rollback sonrası.
 
-## 5. Bağımsız kapılar
+HTTP testinde Supabase'in resmî self-hosting yapılandırmasındaki PostgREST 14.17
+kullanıldı. Test yalnız ağsız container içindeydi; authenticated isteklerde geçici
+bir yerel test JWT'si kullanıldı. Production token/parolası kullanılmadı.
+**Fiziksel cihaz/APK çalıştırma: NOT_RUN.** HTTP testi fiziksel cihaz sonucu değildir.
 
-| Kapı | Sonuç | Execution |
-|---|---|---|
-| PRODUCTION_BACKUP_CAPTURE | PASS | Owner aldı; gerçek arşiv çevrimdışı doğrulandı |
-| PRODUCTION_BACKUP_HASHED | PASS | SHA-256 ölçüldü; inceleme boyunca değişmedi |
-| PG_VERSION_MATCH | FAIL | TARGET_NOT_CREATED |
-| REAL_PRODUCTION_COPY_RESTORED | FAIL | NOT_RUN_BLOCKED |
-| RESTORED_BASELINE_MATCH | FAIL | NOT_RUN_BLOCKED |
-| ADAPTER_REHEARSAL_ON_REAL_COPY | FAIL | NOT_RUN_BLOCKED |
-| OLD_W52C_CONTRACT_ON_REAL_COPY | FAIL | NOT_RUN_BLOCKED |
-| ROLLBACK_ON_REAL_COPY | FAIL | NOT_RUN_BLOCKED |
-| SECOND_CLEAN_RESTORE | FAIL | NOT_RUN_BLOCKED |
+İkinci restore rollback'ten bağımsızdır: yeni boş `w52hr_second` veritabanına
+**orijinal Production dump** yeniden yüklendi; aynı 69 tablo ve 6 canlı parmak izi
+karşılaştırması tekrar geçti. Sentetik W52H sonuçları gerçek kanıt yerine kullanılmadı.
 
-FAIL, gereken kanıtın henüz bulunmadığını belirtir; çalıştırılmış başarısız bir
-restore anlamına gelmez. **2/9 kapı PASS**. Owner'ın tüm kapılar PASS şartı nedeniyle
-capability/restore-proof genel kararı yükseltilmedi. W52H sentetik prova yeniden
-çalıştırılmadı veya gerçek restore kanıtı olarak kullanılmadı.
+## Bağımsız kabul kapıları
 
-W52H adapter ve 20/20 owner mapping hash'leri korunur. Migration, canonical
-aktivasyon, rollback ve ikinci temiz restore henüz çalıştırılmadı. Gerçek hedefte
-1563/24/1245 ve 14 görünür / 6 gated sonuçları ölçülmedi; null kalır.
+| Kapı | Sonuç |
+|---|---|
+| PRODUCTION_BACKUP_CAPTURE | PASS |
+| PRODUCTION_BACKUP_HASHED | PASS |
+| PG_VERSION_MATCH | PASS |
+| REAL_PRODUCTION_COPY_RESTORED | PASS |
+| RESTORED_BASELINE_MATCH | PASS |
+| ADAPTER_REHEARSAL_ON_REAL_COPY | PASS |
+| OLD_W52C_CONTRACT_ON_REAL_COPY | PASS |
+| ROLLBACK_ON_REAL_COPY | PASS |
+| SECOND_CLEAN_RESTORE | PASS |
 
-## 6. Kalite ve TASK_RESULT
+## Kanıt ve kalite
 
-- Offline denetleyici Node syntax ve gerçek arşiv kontrolü: PASS.
-- Truncated arşiv reddi: PASS; gerçek dump'a dokunulmadı.
-- Metadata tutarlılığı, frozen candidate/mapping hash, secret/PII scan ve
-  git diff --check: PASS.
+- [Ana doğrulama manifesti](data/w52h_r_backup_restore_validation.json)
+- [Salt okunur kaynak metadata](data/w52h_r_source_restore_metadata.json)
+- [İlk restore](data/w52h_r_first_restore_execution.json) ve [baseline](data/w52h_r_first_restore_baseline.json)
+- [Gerçek migration/SQL/HTTP/rollback](data/w52h_r_real_copy_rehearsal.json)
+- [Rollback tanım eşitliği](data/w52h_r_rollback_preservation.json)
+- [İkinci restore](data/w52h_r_second_restore_execution.json) ve [baseline](data/w52h_r_second_restore_baseline.json)
+- [Rol/uyumluluk doğrulaması](data/w52h_r_role_runtime_validation.json)
+- Yerel test araçları: `tool/production_taxonomy/*real*.mjs`.
+- Node syntax, kaynak/rapor tutarlılığı, frozen hash, secret/PII scan ve `git diff --check`: PASS.
 - Flutter analyzer/test: NOT_REQUIRED — client kodu değişmedi.
-- Docker imza ve kullanıcı kurulumu/sürüm kontrolü: PASS. WSL kurulumu:
-  NOT_STARTED_WINDOWS_ELEVATION_CANCELLED; restore doğrulamaları hâlâ NOT_RUN.
-- Branch üzerinde normal commit/push; main merge veya force push yok.
+- Aynı task branch; main merge ve force push yok.
 
-    PRODUCTION_SOURCE_PG: 17.6
-    RESTORE_TARGET_PG: NOT_CREATED
-    BACKUP_CAPTURE_CAPABILITY: PARTIAL
-    BACKUP_ARTIFACT_CREATED: YES
-    BACKUP_SHA256_RECORDED: YES
-    RESTORE_CAPABILITY: PARTIAL
-    REAL_PRODUCTION_COPY_RESTORED: NO
-    ARCHIVE_COUNTS: categories=4 products=20 listings=285 shops=57
-    RESTORED_BASELINE: categories=NOT_MEASURED products=NOT_MEASURED listings=NOT_MEASURED shops=NOT_MEASURED
-    RESTORED_BASELINE_MATCH: FAIL
-    ADAPTER_MIGRATION_ON_RESTORED_COPY: FAIL
-    PRODUCTS_AFTER: NOT_MEASURED
-    LISTINGS_AFTER: NOT_MEASURED
-    CANONICAL_NODES: NOT_MEASURED
-    OWNER_MAPPINGS: NOT_MEASURED_ON_REAL_COPY
-    ORPHANS: NOT_MEASURED_ON_REAL_COPY
-    OLD_W52C_SQL_HTTP_CONTRACT_COMPATIBILITY: FAIL
-    OLD_W52C_PHYSICAL_DEVICE_POST_MIGRATION: NOT_RUN
-    ROLLBACK_ON_RESTORED_COPY: FAIL
-    SECOND_CLEAN_RESTORE: FAIL
-    RESTORE_PROOF: FAIL
-    PRODUCTION_WRITE_PERFORMED: NO
-    DEVELOPMENT_ACCESSED: NO
-    MANUAL_OWNER_ACTION_REQUIRED: YES
-    READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: NO
+Resmî dayanaklar: [pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html),
+[Supabase restore](https://supabase.com/docs/guides/self-hosting/restore-from-platform),
+[Supabase PG17 imajı](https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions),
+[Supautils sahiplik kuralları](https://github.com/supabase/supautils),
+[Supabase PostgREST paketi](https://raw.githubusercontent.com/supabase/supabase/master/docker/docker-compose.yml).
+
+## TASK_RESULT
+
+```text
+PRODUCTION_SOURCE_PG: 17.6
+RESTORE_TARGET_PG: 17.6
+BACKUP_CAPTURE_CAPABILITY: PASS
+BACKUP_ARTIFACT_CREATED: YES
+BACKUP_SHA256_RECORDED: YES
+RESTORE_CAPABILITY: PASS
+REAL_PRODUCTION_COPY_RESTORED: YES
+RESTORED_BASELINE: categories=4 products=20 listings=285 shops=57
+RESTORED_BASELINE_MATCH: PASS
+ADAPTER_MIGRATION_ON_RESTORED_COPY: PASS
+PRODUCTS_AFTER: 20/20
+LISTINGS_AFTER: 285/285
+CANONICAL_NODES: 1563/1563
+OWNER_MAPPINGS: 20/20
+ORPHANS: 0
+OLD_W52C_SQL_HTTP_CONTRACT_COMPATIBILITY: PASS
+OLD_W52C_PHYSICAL_DEVICE_POST_MIGRATION: NOT_RUN
+ROLLBACK_ON_RESTORED_COPY: PASS
+SECOND_CLEAN_RESTORE: PASS
+RESTORE_PROOF: PASS
+PRODUCTION_WRITE_PERFORMED: NO
+DEVELOPMENT_ACCESSED: NO
+MANUAL_OWNER_ACTION_REQUIRED: NO
+READY_FOR_PRODUCT_OWNER_PRODUCTION_WRITE_DECISION: YES
+```

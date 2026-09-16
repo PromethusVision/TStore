@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "captured_at_utc": "2026-09-16T22:48:04.145Z",
+  "source_role_settings_semantically_equal": true,
+  "unit_normalization": "Source 60000 milliseconds equals server display 1min; other settings identical",
+  "supautils": {
+    "privileged_role": "supabase_privileged_role",
+    "superuser_setting": "",
+    "bootstrap_superuser": "supabase_admin",
+    "session_preload_libraries": "supautils"
+  },
+  "supautils_effective_superuser": "supabase_admin",
+  "source_cluster_role_passwords_copied": false,
+  "production_database_credentials_used": false
+}

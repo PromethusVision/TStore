@@ -1,6 +1,6 @@
 {
   "contract": "w52h-r-real-production-backup-restore-proof-v1",
-  "status": "BACKUP_VERIFIED_DOCKER_INSTALLED_BLOCKED_WSL_ADMIN_SETUP",
+  "status": "PASS_REAL_PRODUCTION_BACKUP_RESTORE_MIGRATION_ROLLBACK_AND_SECOND_RESTORE",
   "project_ref": "mefhfvrgkwciubeajjeb",
   "branch": "astra-release/w52h-r-production-backup-restore-proof",
   "authoritative_main": "8f87b7e5034427389047f076f03658b5cb2dbc98",
@@ -46,8 +46,8 @@
     "podman_on_path": false,
     "postgresql_17_standard_install_present": false,
     "wsl_executable_present": true,
-    "wsl_subsystem_installed": false,
-    "pg176_target_created": false,
+    "wsl_subsystem_installed": true,
+    "pg176_target_created": true,
     "tool_installation_attempted": true,
     "pg_dump_available_by_absolute_path": "17.11",
     "pg_restore_available_by_absolute_path": "17.11",
@@ -55,7 +55,7 @@
     "pg176_found_in_checked_locations": false,
     "portable_client_package_prepared": true,
     "new_downloads_after_owner_prohibition": true,
-    "download_authorization": "Owner explicitly authorized Docker Desktop/WSL2 and the Supabase PostgreSQL 17.6 runtime for this isolated restore test after the earlier no-download instruction.",
+    "download_authorization": "Owner explicitly authorized the Docker Desktop/WSL2 and required isolated Supabase test runtime; official PostgreSQL 17.6 and PostgREST packages used.",
     "docker_installer": {
       "path": "C:\\Users\\Mustafa\\EsnaftavarTools\\w52h-r-runtime\\Docker Desktop Installer.exe",
       "version": "4.91.0.239619",
@@ -76,14 +76,24 @@
       "hypervisor_present_before_setup": false,
       "virtual_machine_platform_before_setup": "DISABLED",
       "wsl_component_before_setup": "DISABLED",
-      "wsl_installation": "NOT_STARTED_WINDOWS_ELEVATION_CANCELLED",
+      "wsl_installation": "PASS_OWNER_INSTALLED_AND_REBOOTED",
       "restart_initiated_by_agent": false,
-      "virtual_machine_platform_after_setup": "DISABLED",
-      "wsl_component_after_setup": "DISABLED"
+      "virtual_machine_platform_after_setup": "ENABLED",
+      "wsl_component_after_setup": "WSL1 optional component remains disabled; WSL2 verified working",
+      "wsl_version": "2.7.14.0",
+      "wsl_kernel": "6.18.33.2-microsoft-standard-WSL2",
+      "hypervisor_present_after_reboot": true
     },
     "docker_cli_path": "C:\\Users\\Mustafa\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe",
     "docker_cli_version": "29.8.0, build 88096ef",
-    "docker_engine_started": false
+    "docker_engine_started": true,
+    "isolated_container_stopped_after_proof": true,
+    "postgrest": {
+      "version": "14.17",
+      "image_digest": "postgrest/postgrest@sha256:c9dc201e555f5d8e37e7f39cdd4df0229774996e213bfd7de8d10ac609030f2c",
+      "official_source": "https://raw.githubusercontent.com/supabase/supabase/master/docker/docker-compose.yml",
+      "execution": "Inside the network-disabled PostgreSQL test container; no published HTTP port"
+    }
   },
   "backup_artifact": {
     "created": true,
@@ -104,41 +114,49 @@
     "global_role_definitions_included": false
   },
   "restore_target": {
-    "created": false,
+    "created": true,
     "required_postgres_version": "17.6",
-    "actual_postgres_version": null,
-    "production_network_isolation_verified": false,
-    "real_production_copy_restored": false,
-    "categories": null,
-    "products": null,
-    "listings": null,
-    "shops": null,
-    "baseline_comparison_execution": "NOT_RUN_BLOCKED",
-    "blocker": "Docker Desktop is installed and verified. WSL setup did not start: Windows elevation returned operation cancelled by user. VirtualMachinePlatform remains disabled and no hypervisor is running.",
+    "actual_postgres_version": "17.6",
+    "production_network_isolation_verified": true,
+    "real_production_copy_restored": true,
+    "categories": 4,
+    "products": 20,
+    "listings": 285,
+    "shops": 57,
+    "baseline_comparison_execution": "PASS",
+    "blocker": null,
     "required_extensions": [
       "pg_stat_statements",
       "pgcrypto",
       "supabase_vault",
       "uuid-ossp"
     ],
-    "platform_roles_and_extensions_validated": false,
-    "role_definition_gap": "pg_dump does not export cluster role definitions; platform/custom role attributes and grants must be verified before proof can pass",
+    "platform_roles_and_extensions_validated": true,
+    "role_definition_gap": null,
     "proposed_runtime": {
       "engine_image": "supabase/postgres:17.6.1.136",
-      "status": "PROPOSED_NOT_DOWNLOADED_NOT_EXECUTED",
+      "status": "EXECUTED_VERIFIED_AND_STOPPED",
       "engine_version_must_be_verified_at_startup": "17.6",
       "container_network": "none",
       "published_ports": [],
       "dump_mount": "read-only",
       "production_credentials_in_target": false,
-      "prerequisites": "Docker Desktop 4.91.0.239619 installed per-user; Docker CLI 29.8.0 verified. Administrator must run wsl --install --no-distribution --web-download. Restart only if requested by Windows. Supabase image has not been downloaded or started."
-    }
+      "prerequisites": "Docker/WSL2 ready; both PG17.6 restore tests completed. Test container stopped after proof.",
+      "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00"
+    },
+    "first_database": "w52hr_first",
+    "second_database": "w52hr_second",
+    "container_state_after_proof": "STOPPED",
+    "container_id": "ae10e7bc11d0eb13c50e7531c8291d23f2ddf27eeaca93e46cae590a84d6fdd2",
+    "role_bootstrap_evidence": "docs/data/w52h_r_source_restore_metadata.json",
+    "role_runtime_evidence": "docs/data/w52h_r_role_runtime_validation.json",
+    "restore_method": "All 958 pg_restore-listed entries restored: 951 ordinary entries with normal ownership, then 7 Supautils event triggers under original session ownership. No table/schema/ACL omission. Original archive header has 965 TOC entries."
   },
   "candidate": {
     "file": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
     "sha256_lf_utf8": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
     "modified_in_w52h_r": false,
-    "applied_to_real_restored_copy": false
+    "applied_to_real_restored_copy": true
   },
   "owner_mapping": {
     "file": "docs/data/production_20_product_canonical_mapping.csv",
@@ -147,27 +165,28 @@
     "modified_in_w52h_r": false
   },
   "real_copy_rehearsal": {
-    "execution": "NOT_RUN_BLOCKED",
-    "products_after": null,
-    "listings_after": null,
-    "shops_after": null,
-    "canonical_nodes": null,
-    "canonical_roots": null,
-    "terminal_leaves": null,
-    "owner_mappings_applied": null,
-    "orphans": null,
-    "broken_parent_chains": null,
-    "duplicate_canonical_uuids": null,
-    "canonical_activation_simulation": "NOT_RUN_BLOCKED",
-    "canonical_products_visible": null,
-    "canonical_products_gated": null,
-    "rollback_execution": "NOT_RUN_BLOCKED",
-    "rollback_duration_ms": null,
-    "second_clean_restore_execution": "NOT_RUN_BLOCKED"
+    "execution": "PASS",
+    "products_after": 20,
+    "listings_after": 285,
+    "shops_after": 57,
+    "canonical_nodes": 1563,
+    "canonical_roots": 24,
+    "terminal_leaves": 1245,
+    "owner_mappings_applied": 20,
+    "orphans": 0,
+    "broken_parent_chains": 0,
+    "duplicate_canonical_uuids": 0,
+    "canonical_activation_simulation": "PASS",
+    "canonical_products_visible": 14,
+    "canonical_products_gated": 6,
+    "rollback_execution": "PASS",
+    "rollback_duration_ms": 271,
+    "second_clean_restore_execution": "PASS",
+    "evidence": "docs/data/w52h_r_real_copy_rehearsal.json"
   },
   "old_w52c": {
-    "sql_contract_execution": "NOT_RUN_BLOCKED",
-    "http_contract_execution": "NOT_RUN_BLOCKED",
+    "sql_contract_execution": "PASS",
+    "http_contract_execution": "PASS",
     "physical_device_post_migration": "NOT_RUN",
     "required_surfaces": [
       "Home categories",
@@ -177,56 +196,68 @@
       "Shop Details",
       "Search"
     ],
-    "w52h_synthetic_result_reused_as_real_proof": false
+    "w52h_synthetic_result_reused_as_real_proof": false,
+    "postgrest_version": "14.17",
+    "tested_roles": [
+      "anon",
+      "authenticated"
+    ],
+    "http_scope": "Actual PostgREST requests and nested DTOs inside the offline container, with ephemeral local JWT for authenticated role. No live HTTP request or physical-device claim.",
+    "tested_phases": [
+      "PRE_MIGRATION",
+      "POST_STAGED_MIGRATION",
+      "POST_ACTIVATION",
+      "POST_ROLLBACK"
+    ]
   },
   "independent_gates": {
     "PRODUCTION_BACKUP_CAPTURE": {
       "result": "PASS",
-      "execution": "OWNER_EXECUTED_AGENT_OFFLINE_VERIFIED"
+      "execution": "OWNER_EXECUTED_ACTUAL_DUMP_VERIFIED"
     },
     "PRODUCTION_BACKUP_HASHED": {
       "result": "PASS",
-      "execution": "SHA256_VERIFIED_UNCHANGED_DURING_INSPECTION"
+      "execution": "SHA256_UNCHANGED_AFTER_ALL_TESTS"
     },
     "PG_VERSION_MATCH": {
-      "result": "FAIL",
-      "execution": "TARGET_NOT_CREATED"
+      "result": "PASS",
+      "execution": "SOURCE_AND_BOTH_TARGETS_POSTGRESQL_17_6"
     },
     "REAL_PRODUCTION_COPY_RESTORED": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "ALL_958_LISTED_ENTRIES_RESTORED"
     },
     "RESTORED_BASELINE_MATCH": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "69_TABLE_DATA_ENTRIES_AND_SIX_LIVE_FINGERPRINTS_MATCH"
     },
     "ADAPTER_REHEARSAL_ON_REAL_COPY": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "EXACT_FROZEN_CANDIDATE_PASS_1563_24_1245_20"
     },
     "OLD_W52C_CONTRACT_ON_REAL_COPY": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "SQL_AND_HTTP_BOTH_ROLES_ALL_FOUR_PHASES_PASS"
     },
     "ROLLBACK_ON_REAL_COPY": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "LEGACY_ROWS_DEFINITIONS_AND_QUERY_RESULTS_PRESERVED"
     },
     "SECOND_CLEAN_RESTORE": {
-      "result": "FAIL",
-      "execution": "NOT_RUN_BLOCKED"
+      "result": "PASS",
+      "execution": "ORIGINAL_DUMP_RESTORED_IN_NEW_EMPTY_W52HR_SECOND_DATABASE"
     }
   },
-  "gate_result_semantics": "FAIL means required proof is absent. Dependent restore/migration checks were NOT_RUN_BLOCKED, not executed and observed to fail.",
-  "backup_capture_capability": "PARTIAL",
-  "restore_capability": "PARTIAL",
-  "restore_proof": "FAIL",
+  "gate_result_semantics": "PASS is based on completed real PG17.6 execution and sanitized evidence. All nine independent gates passed; no synthetic result reused.",
+  "backup_capture_capability": "PASS",
+  "restore_capability": "PASS",
+  "restore_proof": "PASS",
   "manual_owner_action": {
-    "required": true,
+    "required": false,
     "backup_step_completed": true,
     "password_reentry_needed": false,
-    "action": "Run wsl --install --no-distribution --web-download in a Windows Terminal opened as Administrator. Restart only if installation reports it is required; the agent will not restart automatically.",
-    "reason": "The standard Windows elevation request returned operation cancelled by user before WSL started. Existing owner authorization covers setup; Windows still requires local administrative interaction.",
+    "action": "None for W52H-R proof. Any Production write still requires a separate Product Owner decision.",
+    "reason": "Manual backup and host setup completed; all required isolated tests passed.",
     "production_write_authorized": false,
     "local_runtime_setup_authorized": true
   },
@@ -236,14 +267,16 @@
   "development_accessed": false,
   "client_code_changed": false,
   "flutter_tests_analyzer": "NOT_REQUIRED — NO_CLIENT_CHANGES",
-  "ready_for_product_owner_production_write_decision": false,
+  "ready_for_product_owner_production_write_decision": true,
   "official_references": [
     "https://www.postgresql.org/docs/17/app-pgdump.html",
     "https://www.postgresql.org/docs/17/app-pgrestore.html",
     "https://supabase.com/docs/guides/self-hosting/restore-from-platform",
     "https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions",
     "https://docs.docker.com/desktop/setup/install/windows-install/",
-    "https://learn.microsoft.com/en-us/windows/wsl/basic-commands"
+    "https://learn.microsoft.com/en-us/windows/wsl/basic-commands",
+    "https://github.com/supabase/supautils",
+    "https://raw.githubusercontent.com/supabase/supabase/master/docker/docker-compose.yml"
   ],
   "owner_constraints": {
     "credential_file_access_or_diagnosis_prohibited": true,
@@ -251,7 +284,7 @@
     "password_in_chat_args_scripts_logs_docs_prohibited": true,
     "password_environment_variable_prohibited": true,
     "new_package_downloads_prohibited": false,
-    "package_download_authorization_scope": "Docker Desktop/WSL2 and required Supabase PostgreSQL 17.6 isolated test runtime only",
+    "package_download_authorization_scope": "Docker Desktop/WSL2 and required Supabase isolated-test components (PostgreSQL 17.6 and PostgREST); no unrelated downloads",
     "explorer_folder_movements_prohibited": true
   },
   "offline_archive_inspection": {
@@ -278,16 +311,49 @@
     "offline_inspector_node_syntax": "PASS",
     "real_archive_offline_inspection": "PASS",
     "candidate_and_mapping_changed": false,
-    "restore_integrity": "NOT_RUN_BLOCKED",
-    "adapter_validation_on_real_copy": "NOT_RUN_BLOCKED",
-    "rollback": "NOT_RUN_BLOCKED",
-    "second_clean_restore": "NOT_RUN_BLOCKED",
+    "restore_integrity": "PASS",
+    "adapter_validation_on_real_copy": "PASS",
+    "rollback": "PASS",
+    "second_clean_restore": "PASS",
     "truncated_archive_rejection": "PASS",
     "backup_overwrite_protection": "PASS",
     "secret_pii_scan": "PASS_SANITIZED_METADATA_AND_SOURCE_REVIEW",
     "git_diff_check": "PASS",
     "docker_installer_signature": "PASS_VALID_DOCKER_INC",
     "docker_per_user_installation": "PASS_EXIT_0_DESKTOP_AND_CLI_VERIFIED",
-    "wsl_setup": "NOT_STARTED_WINDOWS_ELEVATION_CANCELLED"
+    "wsl_setup": "PASS_OWNER_INSTALLED_AND_REBOOTED",
+    "source_role_settings_and_supautils": "PASS",
+    "all_original_public_definitions_after_rollback": "PASS",
+    "node_syntax": "PASS",
+    "negative_cli_target_guards": "PASS_3_INVALID_TARGET_ARGUMENTS_REJECTED_BEFORE_CONNECTION",
+    "first_second_restore_evidence_equality": "PASS",
+    "original_backup_hash_after_all_tests": "PASS"
+  },
+  "completed_at_utc": "2026-09-16T22:51:38.103Z",
+  "fresh_source_comparison": {
+    "evidence": "docs/data/w52h_r_source_restore_metadata.json",
+    "fingerprint_capture_utc": "2026-09-16T22:38:08.927304+00:00",
+    "read_only": true,
+    "full_product_rows": 20,
+    "source_fingerprints_matched": 6,
+    "public_foreign_keys_validated": 33,
+    "archive_table_data_entries_compared": 69
+  },
+  "evidence": {
+    "first_restore": "docs/data/w52h_r_first_restore_execution.json",
+    "first_baseline": "docs/data/w52h_r_first_restore_baseline.json",
+    "rehearsal": "docs/data/w52h_r_real_copy_rehearsal.json",
+    "rollback_preservation": "docs/data/w52h_r_rollback_preservation.json",
+    "second_restore": "docs/data/w52h_r_second_restore_execution.json",
+    "second_baseline": "docs/data/w52h_r_second_restore_baseline.json"
+  },
+  "cleanup": {
+    "test_container_stopped": true,
+    "container_network_after_stop": "none",
+    "published_ports_after_stop": [],
+    "postgrest_stopped": true,
+    "ephemeral_local_jwt_configuration_removed": true,
+    "original_backup_preserved": true,
+    "production_data_committed": false
   }
 }
