@@ -1,0 +1,609 @@
+{
+  "task": "W52H",
+  "captured_at_utc": "2026-09-16T00:54:45.378Z",
+  "base_head": "8f87b7e5034427389047f076f03658b5cb2dbc98",
+  "execution": "LOCAL_PGLITE_ONLY",
+  "candidate": {
+    "candidate": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+    "sha256_lf_utf8": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "bytes_lf_utf8": 1686386,
+    "owner_mapping_sha256": "f589308535f42936a1ef4c873ea446b00ed4849fb8ef872c4112956b56a28663",
+    "source_0010_sha256": "40fade490cde5f31b5c649ada301852b2abb40c0979a4f2e45bcd735b4f876b8",
+    "source_0011_sha256": "63552485c8b86cbc6bab3fe24dcd3b0783063464020c4ece00241c42f10f2bb5",
+    "canonical_sources": [
+      {
+        "path": "docs/TAXONOMY_W34_CANONICAL_RUNTIME_MANIFEST.csv",
+        "git_blob_sha256": "0bb853f76a0b27d275b89cacbabcfe0172de2d1f96659ec6f15dc6aa743e0b45",
+        "rows": 1563
+      },
+      {
+        "path": "docs/TAXONOMY_W36_DEVELOPMENT_UUID_ALLOCATION.csv",
+        "git_blob_sha256": "83220cd7b1fa78e8672f6a137cdc20158692bf9406ce62c9133e589db2f27de2",
+        "rows": 1563
+      },
+      {
+        "path": "docs/TAXONOMY_W36_CATEGORY_IMPORT.csv",
+        "git_blob_sha256": "4c3fa47f1174312606bea59dc5c1629730bd8ba826ce85d61fd0508d6738db78",
+        "rows": 1563
+      },
+      {
+        "path": "docs/TAXONOMY_W36_ACTIVATION_QUALIFICATION.csv",
+        "git_blob_sha256": "52c35da75129c4c21e4492f658e28452123baeb2532e373c347458762937549d",
+        "rows": 1563
+      }
+    ],
+    "target": "production-shaped local rehearsal only"
+  },
+  "rehearsal_runs": 2,
+  "local_rehearsal": "PASS",
+  "fixture": {
+    "categories": 4,
+    "products": 20,
+    "listings": 285,
+    "shops": 57,
+    "ledger": "Production exact versions through 0009",
+    "synthetic_shop_and_listing_values": true,
+    "real_personal_data": false
+  },
+  "old_w52c": {
+    "apk": "EsnaftaVar-1.0.0+1-w52c-main-4f0da82-production.apk",
+    "sha256": "096b54c4c7d69d06c6cd92253d88a62afaf610301eed7ac3358aab01eb74b19a",
+    "source_head": "4f0da8201e2571200e99fa3dfe76387e3a1486ce",
+    "source_evidence": [
+      {
+        "path": "lib/features/shop/data/repositories/category_repository_impl.dart",
+        "sha256_lf_utf8": "11ac38ce46d2cc5f808771eaa8fdd4d9feb44468317966a845988d3b2602be94"
+      },
+      {
+        "path": "lib/features/shop/data/repositories/product_repository_impl.dart",
+        "sha256_lf_utf8": "06ae82a8f11d0838e8b418315d31514d6c7f6b9ae6cf7d8673910acf3a81eb03"
+      },
+      {
+        "path": "lib/features/shop/data/repositories/shop_repository_impl.dart",
+        "sha256_lf_utf8": "0b8b71ad6e9c423792523c8f15074a13e08b105eb02e1ff52127f67ea6c8c0a8"
+      },
+      {
+        "path": "lib/core/dependency_injection/taxonomy_dependency_configuration.dart",
+        "sha256_lf_utf8": "c2515a10d8eef2330f651c38d9dc634d1325a79b9a3b8ffe8e18935fd0f10089"
+      }
+    ],
+    "contract_compatibility": "PASS",
+    "validation_scope": "Source-derived PostgreSQL queries under anon/authenticated; exact frozen APK hash verified. APK UI and PostgREST HTTP serialization not executed locally."
+  },
+  "compatibility_matrix": [
+    {
+      "phase": "PRE_MIGRATION",
+      "old_client": "PASS",
+      "new_canonical_client": "NOT_APPLICABLE"
+    },
+    {
+      "phase": "POST_SCHEMA_PRE_ACTIVATION",
+      "old_client": "PASS",
+      "new_canonical_client": "NOT_APPLICABLE"
+    },
+    {
+      "phase": "POST_PRODUCT_RECLASSIFICATION",
+      "old_client": "PASS",
+      "new_canonical_client": "NOT_APPLICABLE"
+    },
+    {
+      "phase": "POST_CANONICAL_ACTIVATION",
+      "old_client": "PASS",
+      "new_canonical_client": "PASS"
+    }
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "engine": "PostgreSQL 18.3 (PGlite 0.5.5) on wasm32-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+      "baseline": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "staged": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "activated": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "legacy_schema_rls_fk_fingerprint": "01e93cb1684e9c00a8613bbe150eea7d689db56522936aa1a0a7fa6bbcd1427f",
+      "legacy_schema_rls_fk_preserved": true,
+      "rollback": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "gate": {
+          "public_roots": 0,
+          "canonical_products_visible": 0,
+          "policy_gated_products_preserved": 20,
+          "alias_query_rows": 0,
+          "search_query_rows": 0,
+          "strict_rpc_contracts": "PASS"
+        }
+      },
+      "restore": {
+        "result": "PASS_LOCAL_SYNTHETIC_ONLY",
+        "backup_sha256": "69880cf00cd94dfed5d0f9a50a821b29b71344ef2345e8947afe1c481ddf58e7",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "orphan_products": 0,
+          "orphan_listings": 0
+        }
+      },
+      "legacy_queries": {
+        "anon": {
+          "home_categories": {
+            "rows": 4,
+            "result_sha256": "e1d91a9e7dad3d3fb4c5f6eafadefea2bb4be3a411c0722ea5d90d7211232f31"
+          },
+          "product_listing": {
+            "rows": 4,
+            "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+          },
+          "product_details": {
+            "rows": 20,
+            "result_sha256": "5980de9f06ac30b79bdf6beb0f4978588caef607b49b43043501a159d99ca19c"
+          },
+          "seller_comparison": {
+            "rows": 20,
+            "result_sha256": "eee31b68ef54a20408a2c3f4b50767df46606fbfed1325405f07f4e9d1243e39"
+          },
+          "shop_details": {
+            "rows": 57,
+            "result_sha256": "bbebd3ac52f40f9dd343bdd378b0ccd129e6ba7ed2cfd9987365ec731f66f020"
+          },
+          "search": {
+            "rows": 2,
+            "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "rows": 4,
+            "result_sha256": "e1d91a9e7dad3d3fb4c5f6eafadefea2bb4be3a411c0722ea5d90d7211232f31"
+          },
+          "product_listing": {
+            "rows": 4,
+            "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+          },
+          "product_details": {
+            "rows": 20,
+            "result_sha256": "5980de9f06ac30b79bdf6beb0f4978588caef607b49b43043501a159d99ca19c"
+          },
+          "seller_comparison": {
+            "rows": 20,
+            "result_sha256": "eee31b68ef54a20408a2c3f4b50767df46606fbfed1325405f07f4e9d1243e39"
+          },
+          "shop_details": {
+            "rows": 57,
+            "result_sha256": "bbebd3ac52f40f9dd343bdd378b0ccd129e6ba7ed2cfd9987365ec731f66f020"
+          },
+          "search": {
+            "rows": 2,
+            "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+          }
+        }
+      },
+      "phases": [
+        {
+          "phase": "POST_SCHEMA_PRE_ACTIVATION",
+          "old_client": "PASS",
+          "new_canonical_client": "NOT_APPLICABLE",
+          "canonical_gate": {
+            "public_roots": 0,
+            "canonical_products_visible": 0,
+            "policy_gated_products_preserved": 20,
+            "alias_query_rows": 0,
+            "search_query_rows": 0,
+            "strict_rpc_contracts": "PASS"
+          }
+        },
+        {
+          "phase": "POST_PRODUCT_RECLASSIFICATION",
+          "old_client": "PASS",
+          "new_canonical_client": "NOT_APPLICABLE",
+          "canonical_gate": {
+            "public_roots": 0,
+            "canonical_products_visible": 0,
+            "policy_gated_products_preserved": 20,
+            "alias_query_rows": 0,
+            "search_query_rows": 0,
+            "strict_rpc_contracts": "PASS"
+          }
+        },
+        {
+          "phase": "POST_CANONICAL_ACTIVATION",
+          "old_client": "PASS",
+          "new_canonical_client": "PASS",
+          "canonical_contract": {
+            "anon": {
+              "public_roots": 12,
+              "canonical_products_visible": 14,
+              "policy_gated_products_preserved": 6,
+              "alias_query_rows": 1,
+              "search_query_rows": 1,
+              "strict_rpc_contracts": "PASS"
+            },
+            "authenticated": {
+              "public_roots": 12,
+              "canonical_products_visible": 14,
+              "policy_gated_products_preserved": 6,
+              "alias_query_rows": 1,
+              "search_query_rows": 1,
+              "strict_rpc_contracts": "PASS"
+            }
+          }
+        }
+      ],
+      "negative_checks": [
+        {
+          "name": "candidate_without_local_authorization",
+          "result": "PASS",
+          "rejection": "W52H_LOCAL_REHEARSAL_ONLY_NO_PRODUCTION_WRITE_AUTHORIZATION"
+        },
+        {
+          "name": "0010_on_production_shape",
+          "result": "PASS",
+          "rejection": "W36_UNEXPECTED_NON_EMPTY_APPLICATION_TARGET"
+        },
+        {
+          "name": "0011_on_production_ledger",
+          "result": "PASS",
+          "rejection": "W38_MIGRATION_LEDGER_MISMATCH"
+        },
+        {
+          "name": "double_apply_rejected_without_partial_changes",
+          "result": "PASS",
+          "rejection": "W52H_ADAPTER_ALREADY_PRESENT_OR_CONFLICTING"
+        },
+        {
+          "name": "nonterminal_mapping_rejected",
+          "result": "PASS",
+          "rejection": "W52H_ASSIGNMENT_TARGET_NOT_CANONICAL_TERMINAL"
+        },
+        {
+          "name": "wrong_client_contract",
+          "result": "PASS",
+          "rejection": "W38_CLIENT_CONTRACT_VERSION_MISMATCH"
+        },
+        {
+          "name": "preview_never_exposes_staged_data",
+          "result": "PASS",
+          "rejection": "W38_PREVIEW_DISABLED"
+        },
+        {
+          "name": "anon_direct_staged_table_access",
+          "result": "PASS",
+          "rejection": "permission denied for table canonical_categories"
+        },
+        {
+          "name": "anon_private_helper_execute",
+          "result": "PASS",
+          "rejection": "permission denied for function _production_taxonomy_visible_v1"
+        },
+        {
+          "name": "authenticated_direct_staged_table_access",
+          "result": "PASS",
+          "rejection": "permission denied for table canonical_categories"
+        },
+        {
+          "name": "authenticated_private_helper_execute",
+          "result": "PASS",
+          "rejection": "permission denied for function _production_taxonomy_visible_v1"
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "engine": "PostgreSQL 18.3 (PGlite 0.5.5) on wasm32-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+      "baseline": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "staged": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "activated": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "legacy_schema_rls_fk_fingerprint": "01e93cb1684e9c00a8613bbe150eea7d689db56522936aa1a0a7fa6bbcd1427f",
+      "legacy_schema_rls_fk_preserved": true,
+      "rollback": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "gate": {
+          "public_roots": 0,
+          "canonical_products_visible": 0,
+          "policy_gated_products_preserved": 20,
+          "alias_query_rows": 0,
+          "search_query_rows": 0,
+          "strict_rpc_contracts": "PASS"
+        }
+      },
+      "restore": {
+        "result": "PASS_LOCAL_SYNTHETIC_ONLY",
+        "backup_sha256": "d4008a8d9271fef58e4ad46b2fb7c99851ad9bf7210b93c27f4506e145df9522",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "orphan_products": 0,
+          "orphan_listings": 0
+        }
+      },
+      "legacy_queries": {
+        "anon": {
+          "home_categories": {
+            "rows": 4,
+            "result_sha256": "e1d91a9e7dad3d3fb4c5f6eafadefea2bb4be3a411c0722ea5d90d7211232f31"
+          },
+          "product_listing": {
+            "rows": 4,
+            "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+          },
+          "product_details": {
+            "rows": 20,
+            "result_sha256": "5980de9f06ac30b79bdf6beb0f4978588caef607b49b43043501a159d99ca19c"
+          },
+          "seller_comparison": {
+            "rows": 20,
+            "result_sha256": "eee31b68ef54a20408a2c3f4b50767df46606fbfed1325405f07f4e9d1243e39"
+          },
+          "shop_details": {
+            "rows": 57,
+            "result_sha256": "bbebd3ac52f40f9dd343bdd378b0ccd129e6ba7ed2cfd9987365ec731f66f020"
+          },
+          "search": {
+            "rows": 2,
+            "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "rows": 4,
+            "result_sha256": "e1d91a9e7dad3d3fb4c5f6eafadefea2bb4be3a411c0722ea5d90d7211232f31"
+          },
+          "product_listing": {
+            "rows": 4,
+            "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+          },
+          "product_details": {
+            "rows": 20,
+            "result_sha256": "5980de9f06ac30b79bdf6beb0f4978588caef607b49b43043501a159d99ca19c"
+          },
+          "seller_comparison": {
+            "rows": 20,
+            "result_sha256": "eee31b68ef54a20408a2c3f4b50767df46606fbfed1325405f07f4e9d1243e39"
+          },
+          "shop_details": {
+            "rows": 57,
+            "result_sha256": "bbebd3ac52f40f9dd343bdd378b0ccd129e6ba7ed2cfd9987365ec731f66f020"
+          },
+          "search": {
+            "rows": 2,
+            "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+          }
+        }
+      },
+      "phases": [
+        {
+          "phase": "POST_SCHEMA_PRE_ACTIVATION",
+          "old_client": "PASS",
+          "new_canonical_client": "NOT_APPLICABLE",
+          "canonical_gate": {
+            "public_roots": 0,
+            "canonical_products_visible": 0,
+            "policy_gated_products_preserved": 20,
+            "alias_query_rows": 0,
+            "search_query_rows": 0,
+            "strict_rpc_contracts": "PASS"
+          }
+        },
+        {
+          "phase": "POST_PRODUCT_RECLASSIFICATION",
+          "old_client": "PASS",
+          "new_canonical_client": "NOT_APPLICABLE",
+          "canonical_gate": {
+            "public_roots": 0,
+            "canonical_products_visible": 0,
+            "policy_gated_products_preserved": 20,
+            "alias_query_rows": 0,
+            "search_query_rows": 0,
+            "strict_rpc_contracts": "PASS"
+          }
+        },
+        {
+          "phase": "POST_CANONICAL_ACTIVATION",
+          "old_client": "PASS",
+          "new_canonical_client": "PASS",
+          "canonical_contract": {
+            "anon": {
+              "public_roots": 12,
+              "canonical_products_visible": 14,
+              "policy_gated_products_preserved": 6,
+              "alias_query_rows": 1,
+              "search_query_rows": 1,
+              "strict_rpc_contracts": "PASS"
+            },
+            "authenticated": {
+              "public_roots": 12,
+              "canonical_products_visible": 14,
+              "policy_gated_products_preserved": 6,
+              "alias_query_rows": 1,
+              "search_query_rows": 1,
+              "strict_rpc_contracts": "PASS"
+            }
+          }
+        }
+      ],
+      "negative_checks": [
+        {
+          "name": "candidate_without_local_authorization",
+          "result": "PASS",
+          "rejection": "W52H_LOCAL_REHEARSAL_ONLY_NO_PRODUCTION_WRITE_AUTHORIZATION"
+        },
+        {
+          "name": "0010_on_production_shape",
+          "result": "PASS",
+          "rejection": "W36_UNEXPECTED_NON_EMPTY_APPLICATION_TARGET"
+        },
+        {
+          "name": "0011_on_production_ledger",
+          "result": "PASS",
+          "rejection": "W38_MIGRATION_LEDGER_MISMATCH"
+        },
+        {
+          "name": "double_apply_rejected_without_partial_changes",
+          "result": "PASS",
+          "rejection": "W52H_ADAPTER_ALREADY_PRESENT_OR_CONFLICTING"
+        },
+        {
+          "name": "nonterminal_mapping_rejected",
+          "result": "PASS",
+          "rejection": "W52H_ASSIGNMENT_TARGET_NOT_CANONICAL_TERMINAL"
+        },
+        {
+          "name": "wrong_client_contract",
+          "result": "PASS",
+          "rejection": "W38_CLIENT_CONTRACT_VERSION_MISMATCH"
+        },
+        {
+          "name": "preview_never_exposes_staged_data",
+          "result": "PASS",
+          "rejection": "W38_PREVIEW_DISABLED"
+        },
+        {
+          "name": "anon_direct_staged_table_access",
+          "result": "PASS",
+          "rejection": "permission denied for table canonical_categories"
+        },
+        {
+          "name": "anon_private_helper_execute",
+          "result": "PASS",
+          "rejection": "permission denied for function _production_taxonomy_visible_v1"
+        },
+        {
+          "name": "authenticated_direct_staged_table_access",
+          "result": "PASS",
+          "rejection": "permission denied for table canonical_categories"
+        },
+        {
+          "name": "authenticated_private_helper_execute",
+          "result": "PASS",
+          "rejection": "permission denied for function _production_taxonomy_visible_v1"
+        }
+      ]
+    }
+  ],
+  "products_after": 20,
+  "listings_after": 285,
+  "shops_after": 57,
+  "canonical_nodes": 1563,
+  "canonical_roots": 24,
+  "terminal_leaves": 1245,
+  "owner_mappings_applied_locally": 20,
+  "orphans": 0,
+  "sql_validation": "PASS",
+  "rollback_rehearsal": "PASS",
+  "canonical_activation_plan": "PASS_LOCAL_SIMULATION",
+  "flutter_tests_analyzer": "NOT_REQUIRED — NO_CLIENT_CHANGES",
+  "backup_capture_capability": "PARTIAL",
+  "restore_capability": "PARTIAL",
+  "restore_proof": "PARTIAL",
+  "limits": [
+    "Synthetic local database snapshot restore is not a logical Production dump restore.",
+    "PGlite PostgreSQL version differs from observed Production PostgreSQL 17.6.",
+    "PostgREST transport and physical W52C APK screens are not exercised by SQL replay.",
+    "Six owner-mapped products retain policy/professional gates and remain unavailable in canonical public scopes; all 20 remain in legacy runtime."
+  ],
+  "production_write_performed": false,
+  "development_accessed": false,
+  "ready_for_product_owner_production_write_decision": false
+}
