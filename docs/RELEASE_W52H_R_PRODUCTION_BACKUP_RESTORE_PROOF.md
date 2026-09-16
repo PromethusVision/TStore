@@ -6,7 +6,13 @@
 Production Dashboard erişimi var. Scheduled backups ekranı, mevcut Free planın
 proje yedeği içermediğini gösteriyor; indirilebilir backup bulunmuyor. Resmî
 Direct / Session pooler bağlantı ekranları mevcut DB parolası için placeholder
-gösteriyor. Kontrol edilen yetkili yerel kaynaklarda bu parola bulunmadı.
+gösteriyor. İlk kontrolde mevcut DB parolası agent tarafından erişilebilir değildi.
+Owner daha sonra yerel güvenli girişte `KAYDEDILDI` mesajını gördüğünü doğruladı;
+paylaştığı dosya metadata'sı **2026-09-16 01:48:56 UTC** kayıt zamanını gösteriyor.
+Agent aynı yol için hâlâ **2026-09-16 01:11:27.942143 UTC** tarihli ilk şablonu
+görüyor; ikinci yerel aracın metadata okuması `EPERM` ile reddedildi. Güncel engel
+**agent dosya görünümü / erişim uyuşmazlığıdır**; owner'dan tekrar parola istenmiyor.
+Kök neden ve kaydedilen parolanın DB bağlantısında geçerliliği henüz doğrulanmadı.
 Görevin “If required credentials are unavailable: STOP this phase safely”
 koşulu uygulandı. Parola tahmini, parola sıfırlama, yeni rol oluşturma veya
 Dashboard sorgularından özel bir dump mekanizması üretme yapılmadı.
@@ -44,16 +50,17 @@ kanıt olarak korunur; W52H-R sorgusu bunların tamamını yeniden çıkarmadı.
 | Resmî logical export | CLI / pg_dump yolu belgelenmiş; bu projeye ait authenticated DB bağlantısı kurulamadı. |
 | Direct ve Session pooler bağlantısı | Projeye ait bağlantı parametreleri görüldü; mevcut DB parolası gerekiyor. Parola reset kontrolüne dokunulmadı. |
 | Süreç environment | PG / DATABASE_URL / DB_ / SUPABASE adlarıyla DB bağlantı credential'ı bulunmadı; değerler yazdırılmadı. |
-| Standart libpq dosyaları | İlk kontrolde dosyalar yoktu. Owner yolun görünmediğini bildirince korumalı klasör ve parolasız pgpass şablonu oluşturuldu; credential sağlanmış sayılmadı. |
+| Standart libpq dosyaları | İlk kontrolde dosyalar yoktu; korumalı klasör ve parolasız şablon oluşturuldu. Owner daha sonra yerel kaydı doğruladı. Owner ve agent aynı dosya yolunda farklı zaman damgaları görüyor; ikinci araç metadata okumasında EPERM aldı. |
 | Bilinen Production client config | Yalnız client URL, public client key, project ref ve auth callback alanları; DB parola alanı yok. Değerler rapora alınmadı. |
 | Yerel proje config | Worktree'de gerçek DB config yok; ana checkout `.env` yalnız client URL/anon key içeriyor, Production binding değil ve bağlantı için kullanılmadı. |
 | Yerel araçlar | pg_dump, pg_restore, psql, Supabase CLI, Docker ve Podman PATH üzerinde bulunmadı. Standart Docker/PG17 konumları yok; WSL sorgusu alt sistemin yüklü olmadığını bildirdi. PG17.6 çalıştırılmadı. |
 | Kullanılabilir connector | Hazır Supabase / PostgreSQL backup connector bulunmadı. |
 
 Parolanın kullanıcının diğer güvenli depolarında hiç bulunmadığı iddia edilmiyor;
-yalnız kontrol edilen kaynaklarda kullanılabilir DB credential'ı olmadığı saptandı.
+yalnız ilk kontrolde kullanılabilir DB credential'ına erişilemediği saptandı.
 İlk config okumasındaki sandbox erişim sınırı, yetkili salt okunur kontrolle
-çözüldü. Açık kalan engel onay mekanizması değil, mevcut DB parolasının eksikliği.
+çözüldü. Sonraki passfile erişim uyuşmazlığının nedeni henüz belirlenmedi.
+Bu durum bir otomatik onay incelemesi reddi olarak sınıflandırılmıyor.
 
 [Supabase backup belgesi](https://supabase.com/docs/guides/platform/backups)
 Free projeler için logical export önerir. Dashboard oturumu veya public client
@@ -64,16 +71,20 @@ ayrıca korunmasını gerektirebilir. Bu belgeyi okumak gerçek backup/restore k
 
 ## 3. Gereken minimum Product Owner adımı
 
-**Production'ın mevcut DB parolasını yalnız bu bilgisayardaki korumalı libpq parola
-dosyasına yerleştirin; sonra yalnız “yerelde hazır” deyin.** Parola veya tam bağlantı
-URI'sini sohbete, repoya, dokümana ya da komut satırına göndermeyin.
+**Owner'ın yerel parola kaydı adımı tamamlandı. Parola tekrar girilmeyecek.**
+Dosya metadata'sı owner tarafından paylaşıldı; parola içeriği paylaşılmadı.
+Sonraki minimum teşhis adımı Codex'i tamamen kapatıp yeniden açarak aynı göreve
+dönmektir. [Resmî Windows sandbox sorun giderme belgesi](https://learn.chatgpt.com/docs/windows/windows-sandbox)
+erişim sorunlarında yeniden başlatmayı önerir; bunun bu uyuşmazlığı çözeceği henüz
+kanıtlanmış değildir. Agent sonrasında yalnız metadata / placeholder durumunu
+yeniden kontrol edecek ve erişim sağlanırsa yetkili read-only backup işine devam edecek.
+Parola veya tam bağlantı URI'si sohbete, repoya ya da rapora alınmayacak.
 
 Dosya: `C:\Users\Mustafa\AppData\Roaming\postgresql\pgpass.conf`.
 Klasör ve parolasız şablon bu görevde oluşturuldu; yeni klasörün ACL'si yalnız
 mevcut Windows hesabı ve SYSTEM'e erişim verecek şekilde sınırlandı. Var olan
-dosya ezilmedi. Dosyayı Not Defteri ile açıp son satırdaki
-`REPLACE_LOCALLY_WITH_EXISTING_PASSWORD` alanını yalnız yerelde değiştirin.
-Dosya adını `pgpass.conf` olarak koruyun; `.txt` eklemeyin. Şablondaki alanlar:
+dosya ezilmedi. Owner'ın çalıştırdığı yerel güvenli giriş, diğer kayıtları koruyan
+ve libpq özel karakterlerini kaçıran bir kayıt işlemiydi. Bağlantı alanları:
 
 | Alan | Değer |
 |---|---|
@@ -84,12 +95,10 @@ Dosya adını `pgpass.conf` olarak koruyun; `.txt` eklemeyin. Şablondaki alanla
 | password | Mevcut Production DB parolası — yalnız yerel dosyada |
 
 Bu parametreler Production Connect → Direct → Session pooler ekranından okundu.
-Dosyanın erişimini kendi Windows hesabınızla sınırlayın. Parolada `:` veya `\`
-varsa her birinin önüne `\` ekleyerek kaçırın. Windows dosya konumu ve kaçış
+Windows dosya konumu ve kaçış
 kuralları [PostgreSQL 17 libpq belgesinde](https://www.postgresql.org/docs/17/libpq-pgpass.html)
-tanımlıdır. Varsa başka kayıtları silmeyin; wildcard kullanmayın.
+tanımlıdır. Agent parola içeriğini kaydetmedi; DB kimlik doğrulaması yapılmadı.
 
-**Mevcut parola bilinmiyorsa** mevcut yetkili parola sahibinden temin edilmesi gerekir.
 W52H-R kapsamında parola sıfırlanmaz, Production ayarı değiştirilmez ve plan yükseltilmez.
 Bu adım yeni Production yazma izni vermez; yalnız önceden yetkilendirilmiş read-only
 backup bağlantısını mümkün kılar. Araçların kurulumu ve izole hedefin hazırlanması,
@@ -155,14 +164,14 @@ Orijinal artifact ikinci boş hedefe de geri yüklenmeden final proof PASS olmay
 - Phase 1 araştırması tamamlandı fakat erişim kriteri bloke; phase 2–10 çalıştırılmadı.
   Phase 11 kanıt paketi, phase 12 NO-GO sınıflandırması tamamlandı. Backup/proof
   ana hedefinin tamamlanma oranı **0/9 kabul kapısı**; plan tamamlanması başarı sayılmaz.
-- Calibration: **YELLOW — credential blocker**. Scope drift / gözlenen regression:
+- Calibration: **YELLOW — agent credential-file access/view blocker**. Scope drift / gözlenen regression:
   yok. Sonraki paket: **SAME_SIZE**, bu aynı W52H-R kapsamına erişim sağlanınca devam.
 - Main merge / force push yok. Başka görev dosyası ve ortak runtime değişikliği yok.
 
 [Makine kanıtı](data/w52h_r_backup_restore_validation.json) gerçek gözlemleri,
 boş artifact alanlarını, bağımsız FAIL kapılarını ve tek owner adımını saklar.
 
-## TASK_RESULT — credential handoff checkpoint
+## TASK_RESULT — local credential access checkpoint
 
 Bu checkpoint görevin tamamlandığını iddia etmez. FAIL alanlarının execution
 durumu `NOT_RUN_BLOCKED`; `NOT_MEASURED` alanları gerçek kopya olmadığından boş.

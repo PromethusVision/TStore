@@ -8,9 +8,11 @@ salt okunur sorgular gönderildi; Development'a erişilmedi. Client build yoktur
 
 **W52H-R devam durumu:** [Gerçek backup/restore araştırması](RELEASE_W52H_R_PRODUCTION_BACKUP_RESTORE_PROOF.md)
 Production Dashboard erişimini ve 17.6 / 4 / 20 / 285 / 57 kaynak baseline'ını
-yeniden doğruladı. İndirilebilir backup ve kullanılabilir mevcut DB parolası
-bulunmadığından gerçek dump/restore başlatılmadı; owner'ın parolayı yalnız yerelde
-sağlaması gerekiyor. W52H'nin yerel PASS sonuçları gerçek restore PASS'e yükseltilmedi;
+yeniden doğruladı. Owner mevcut DB parolasını yerelde kaydettiğini doğruladı;
+owner ve agent aynı dosya için farklı zaman damgaları görüyor, ikinci araç
+metadata okumasında EPERM aldı. Agent erişim/görünüm engeli nedeniyle gerçek
+dump/restore başlatılmadı; yeniden parola istenmiyor.
+W52H'nin yerel PASS sonuçları gerçek restore PASS'e yükseltilmedi;
 hazırlık kararı **NO** olarak kalır.
 
 | Bağımsız kapı | Sonuç | Kanıt / sınır |

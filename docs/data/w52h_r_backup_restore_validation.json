@@ -1,6 +1,6 @@
 {
   "contract": "w52h-r-real-production-backup-restore-proof-v1",
-  "status": "BLOCKED_MISSING_EXISTING_PRODUCTION_DATABASE_PASSWORD",
+  "status": "BLOCKED_AGENT_CREDENTIAL_FILE_VIEW_OR_ACCESS",
   "project_ref": "mefhfvrgkwciubeajjeb",
   "branch": "astra-release/w52h-r-production-backup-restore-proof",
   "authoritative_main": "8f87b7e5034427389047f076f03658b5cb2dbc98",
@@ -35,7 +35,18 @@
     "client_config_values_recorded": false,
     "other_project_client_config_used_for_connection": false,
     "supabase_or_postgresql_backup_connector_available": false,
-    "scope_limit": "Absence is limited to checked environment, standard libpq locations, project config and known Production config; unrelated credential stores were not searched."
+    "scope_limit": "Initial absence was limited to checked sources. Owner subsequently confirmed local credential save; current agent file view differs and authenticated database access remains unverified. Unrelated credential stores were not searched."
+  },
+  "credential_file_observation": {
+    "owner_confirmed_saved_message": true,
+    "owner_reported_file_modified_at_utc": "2026-09-16T01:48:56Z",
+    "agent_observed_file_modified_at_utc": "2026-09-16T01:11:27.9421430Z",
+    "same_computer_and_passfile_path_reported": true,
+    "agent_view_contains_original_placeholder": true,
+    "second_local_tool_metadata_result": "EPERM",
+    "root_cause": "UNDETERMINED",
+    "password_reentry_requested": false,
+    "database_authentication_validated": false
   },
   "local_tooling_observation": {
     "pg_dump_on_path": false,
@@ -128,7 +139,7 @@
   "restore_proof": "FAIL",
   "manual_owner_action": {
     "required": true,
-    "action": "Replace the local pgpass.conf template placeholder with the existing Production database password, save locally, and reply only that it is ready. Do not send the password in chat.",
+    "action": "Restart Codex and reopen this same task so the agent can recheck its file view. Owner already confirmed local credential save; do not re-enter or send the password. Restart is a troubleshooting step, not a verified fix.",
     "passfile": "C:\\Users\\Mustafa\\AppData\\Roaming\\postgresql\\pgpass.conf",
     "template_created_outside_repo": true,
     "directory_acl_restricted_to_current_user_and_system": true,
@@ -151,6 +162,7 @@
   "official_references": [
     "https://supabase.com/docs/guides/platform/backups",
     "https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore",
-    "https://www.postgresql.org/docs/17/libpq-pgpass.html"
+    "https://www.postgresql.org/docs/17/libpq-pgpass.html",
+    "https://learn.chatgpt.com/docs/windows/windows-sandbox"
   ]
 }
