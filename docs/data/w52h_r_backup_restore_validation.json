@@ -1,6 +1,6 @@
 {
   "contract": "w52h-r-real-production-backup-restore-proof-v1",
-  "status": "BLOCKED_AGENT_CREDENTIAL_FILE_VIEW_OR_ACCESS",
+  "status": "BACKUP_VERIFIED_BLOCKED_MISSING_ISOLATED_PG176_RUNTIME",
   "project_ref": "mefhfvrgkwciubeajjeb",
   "branch": "astra-release/w52h-r-production-backup-restore-proof",
   "authoritative_main": "8f87b7e5034427389047f076f03658b5cb2dbc98",
@@ -25,9 +25,8 @@
     "downloadable_project_backup_available": false,
     "direct_connection_parameters_observed": true,
     "session_pooler_parameters_observed": true,
-    "database_password_placeholder_present": true,
     "password_reset_attempted": false,
-    "authorized_database_connection_established": false,
+    "authorized_database_connection_established": true,
     "database_credentials_found_in_checked_process_environment": false,
     "standard_libpq_credential_files_existed_at_initial_check": false,
     "known_production_client_config_has_database_password": false,
@@ -35,23 +34,8 @@
     "client_config_values_recorded": false,
     "other_project_client_config_used_for_connection": false,
     "supabase_or_postgresql_backup_connector_available": false,
-    "scope_limit": "Initial absence was limited to checked sources. Owner subsequently confirmed local credential save; current agent file view differs and authenticated database access remains unverified. Unrelated credential stores were not searched."
-  },
-  "credential_file_observation": {
-    "owner_confirmed_saved_message": true,
-    "owner_reported_file_modified_at_utc": "2026-09-16T01:48:56Z",
-    "agent_observed_file_modified_at_utc": "2026-09-16T01:11:27.9421430Z",
-    "same_computer_and_passfile_path_reported": true,
-    "agent_view_contains_original_placeholder": true,
-    "second_local_tool_metadata_result": "EPERM",
-    "root_cause": "UNDETERMINED",
-    "owner_restarted_codex": true,
-    "restart_resolved_discrepancy": false,
-    "post_restart_sandbox_file_read": "ACCESS_DENIED",
-    "post_restart_approved_check_contains_original_placeholder": true,
-    "other_chat_read_directory_command_success_confirmed": false,
-    "password_reentry_requested": false,
-    "database_authentication_validated": false
+    "scope_limit": "Owner confirmed successful manual Production dump. Agent verified the actual archive offline. Credential-file investigation is closed and out of scope.",
+    "connection_actor": "Product Owner interactive manual pg_dump; agent did not connect"
   },
   "local_tooling_observation": {
     "pg_dump_on_path": false,
@@ -64,18 +48,31 @@
     "wsl_executable_present": true,
     "wsl_subsystem_installed": false,
     "pg176_target_created": false,
-    "tool_installation_attempted": false
+    "tool_installation_attempted": false,
+    "pg_dump_available_by_absolute_path": "17.11",
+    "pg_restore_available_by_absolute_path": "17.11",
+    "available_native_server_version": "17.11",
+    "pg176_found_in_checked_locations": false,
+    "portable_client_package_prepared": true,
+    "new_downloads_after_owner_prohibition": false
   },
   "backup_artifact": {
-    "created": false,
-    "path": null,
-    "captured_at_utc": null,
-    "tool": null,
-    "tool_version": null,
-    "source_postgres_version_in_dump": null,
-    "size_bytes": null,
-    "sha256": null,
-    "production_rows_committed": false
+    "created": true,
+    "path": "C:\\Users\\Mustafa\\EsnaftavarBackups\\w52h-r\\EsnaftaVar-Production-W52H-R-full.dump",
+    "captured_at_utc": "2026-09-16T21:18:01.057Z",
+    "timestamp_basis": "File last-write UTC at completion; archive creation header has no timezone",
+    "archive_created_at_raw": "2026-09-17 00:17:39",
+    "tool": "pg_dump",
+    "tool_version": "17.11",
+    "source_postgres_version_in_dump": "17.6",
+    "size_bytes": 537274,
+    "sha256": "83029c3871ce1689851b08beb2690be202d7d22d79bcdbdda3b5eadd46c64b10",
+    "format": "CUSTOM",
+    "toc_entries": 965,
+    "capture_method": "Owner manually entered the existing password into the pg_dump hidden prompt; command explicitly selected Production metadata",
+    "actor": "Product Owner",
+    "production_rows_committed": false,
+    "global_role_definitions_included": false
   },
   "restore_target": {
     "created": false,
@@ -87,7 +84,26 @@
     "products": null,
     "listings": null,
     "shops": null,
-    "baseline_comparison_execution": "NOT_RUN_BLOCKED"
+    "baseline_comparison_execution": "NOT_RUN_BLOCKED",
+    "blocker": "Exact PostgreSQL 17.6 runtime absent in checked local locations; no Docker/Podman/WSL runtime; owner prohibits further package downloads",
+    "required_extensions": [
+      "pg_stat_statements",
+      "pgcrypto",
+      "supabase_vault",
+      "uuid-ossp"
+    ],
+    "platform_roles_and_extensions_validated": false,
+    "role_definition_gap": "pg_dump does not export cluster role definitions; platform/custom role attributes and grants must be verified before proof can pass",
+    "proposed_runtime": {
+      "engine_image": "supabase/postgres:17.6.1.136",
+      "status": "PROPOSED_NOT_DOWNLOADED_NOT_EXECUTED",
+      "engine_version_must_be_verified_at_startup": "17.6",
+      "container_network": "none",
+      "published_ports": [],
+      "dump_mount": "read-only",
+      "production_credentials_in_target": false,
+      "prerequisites": "Local Linux-container runtime; Docker Desktop/WSL2 not installed. Any required download or host installation awaits owner authorization."
+    }
   },
   "candidate": {
     "file": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
@@ -124,19 +140,53 @@
     "sql_contract_execution": "NOT_RUN_BLOCKED",
     "http_contract_execution": "NOT_RUN_BLOCKED",
     "physical_device_post_migration": "NOT_RUN",
-    "required_surfaces": ["Home categories", "Product Listing", "Product Details", "Seller Comparison", "Shop Details", "Search"],
+    "required_surfaces": [
+      "Home categories",
+      "Product Listing",
+      "Product Details",
+      "Seller Comparison",
+      "Shop Details",
+      "Search"
+    ],
     "w52h_synthetic_result_reused_as_real_proof": false
   },
   "independent_gates": {
-    "PRODUCTION_BACKUP_CAPTURE": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "PRODUCTION_BACKUP_HASHED": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "PG_VERSION_MATCH": {"result": "FAIL", "execution": "TARGET_NOT_CREATED"},
-    "REAL_PRODUCTION_COPY_RESTORED": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "RESTORED_BASELINE_MATCH": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "ADAPTER_REHEARSAL_ON_REAL_COPY": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "OLD_W52C_CONTRACT_ON_REAL_COPY": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "ROLLBACK_ON_REAL_COPY": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"},
-    "SECOND_CLEAN_RESTORE": {"result": "FAIL", "execution": "NOT_RUN_BLOCKED"}
+    "PRODUCTION_BACKUP_CAPTURE": {
+      "result": "PASS",
+      "execution": "OWNER_EXECUTED_AGENT_OFFLINE_VERIFIED"
+    },
+    "PRODUCTION_BACKUP_HASHED": {
+      "result": "PASS",
+      "execution": "SHA256_VERIFIED_UNCHANGED_DURING_INSPECTION"
+    },
+    "PG_VERSION_MATCH": {
+      "result": "FAIL",
+      "execution": "TARGET_NOT_CREATED"
+    },
+    "REAL_PRODUCTION_COPY_RESTORED": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    },
+    "RESTORED_BASELINE_MATCH": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    },
+    "ADAPTER_REHEARSAL_ON_REAL_COPY": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    },
+    "OLD_W52C_CONTRACT_ON_REAL_COPY": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    },
+    "ROLLBACK_ON_REAL_COPY": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    },
+    "SECOND_CLEAN_RESTORE": {
+      "result": "FAIL",
+      "execution": "NOT_RUN_BLOCKED"
+    }
   },
   "gate_result_semantics": "FAIL means required proof is absent. Dependent restore/migration checks were NOT_RUN_BLOCKED, not executed and observed to fail.",
   "backup_capture_capability": "PARTIAL",
@@ -144,31 +194,65 @@
   "restore_proof": "FAIL",
   "manual_owner_action": {
     "required": true,
-    "action": "Report the unresolved file access/view discrepancy through the desktop app /feedback command without attaching the passfile or password. Restart did not resolve it; another chat did not confirm the directory-read permission. Do not repeat credential entry, restart, or the unconfirmed slash command.",
-    "passfile": "C:\\Users\\Mustafa\\AppData\\Roaming\\postgresql\\pgpass.conf",
-    "template_created_outside_repo": true,
-    "directory_acl_restricted_to_current_user_and_system": true,
-    "existing_file_overwritten": false,
-    "host": "aws-0-eu-central-1.pooler.supabase.com",
-    "port": 5432,
-    "database": "postgres",
-    "username": "postgres.mefhfvrgkwciubeajjeb",
-    "password_value_recorded": false,
-    "password_reset_authorized": false,
-    "owner_must_install_database_tools": false
+    "backup_step_completed": true,
+    "password_reentry_needed": false,
+    "action": "Authorize the downloads and local Docker Desktop/WSL2 setup needed for an isolated Supabase PostgreSQL 17.6 test runtime, or provide an already prepared equivalent offline runtime. No package downloads or host setup will occur while the current prohibition remains.",
+    "reason": "Owner instruction: Do not download anything else. Required PostgreSQL 17.6 environment is absent.",
+    "production_write_authorized": false,
+    "local_runtime_setup_authorized": false
   },
   "production_write_performed": false,
   "production_settings_changed": false,
   "production_restore_attempted": false,
   "development_accessed": false,
   "client_code_changed": false,
-  "flutter_tests_analyzer": "NOT_REQUIRED — DOCS_ONLY",
+  "flutter_tests_analyzer": "NOT_REQUIRED — NO_CLIENT_CHANGES",
   "ready_for_product_owner_production_write_decision": false,
   "official_references": [
-    "https://supabase.com/docs/guides/platform/backups",
-    "https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore",
-    "https://www.postgresql.org/docs/17/libpq-pgpass.html",
-    "https://learn.chatgpt.com/docs/windows/windows-sandbox",
-    "https://learn.chatgpt.com/docs/reference/slash-commands"
-  ]
+    "https://www.postgresql.org/docs/17/app-pgdump.html",
+    "https://www.postgresql.org/docs/17/app-pgrestore.html",
+    "https://supabase.com/docs/guides/self-hosting/restore-from-platform",
+    "https://supabase.com/docs/guides/self-hosting/custom-postgres-extensions"
+  ],
+  "owner_constraints": {
+    "credential_file_access_or_diagnosis_prohibited": true,
+    "interactive_owner_backup_completed": true,
+    "password_in_chat_args_scripts_logs_docs_prohibited": true,
+    "password_environment_variable_prohibited": true,
+    "new_package_downloads_prohibited": true,
+    "explorer_folder_movements_prohibited": true
+  },
+  "offline_archive_inspection": {
+    "evidence": "docs/data/w52h_r_backup_archive_inspection.json",
+    "result": "PASS",
+    "scope": "Archive rendered to memory and COPY records parsed; no SQL executed and no database restored",
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "listings": 285,
+      "shops": 57,
+      "migration_ledger": 9
+    },
+    "product_category_references_matched": 20,
+    "listing_relations_match_w52h": true,
+    "ledger_versions_names_and_nonempty_statements": "PASS",
+    "public_function_inventory_match_w52h": true,
+    "core_rls_enable_statements_present": true,
+    "orphan_products": 0,
+    "orphan_listings": 0,
+    "restored_baseline_result": false
+  },
+  "validation": {
+    "offline_inspector_node_syntax": "PASS",
+    "real_archive_offline_inspection": "PASS",
+    "candidate_and_mapping_changed": false,
+    "restore_integrity": "NOT_RUN_BLOCKED",
+    "adapter_validation_on_real_copy": "NOT_RUN_BLOCKED",
+    "rollback": "NOT_RUN_BLOCKED",
+    "second_clean_restore": "NOT_RUN_BLOCKED",
+    "truncated_archive_rejection": "PASS",
+    "backup_overwrite_protection": "PASS",
+    "secret_pii_scan": "PASS_SANITIZED_METADATA_AND_SOURCE_REVIEW",
+    "git_diff_check": "PASS"
+  }
 }

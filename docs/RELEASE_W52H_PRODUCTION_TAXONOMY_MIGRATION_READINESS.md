@@ -7,13 +7,12 @@ Yerel sentetik restore, bu eksik kanıtın yerine geçmez. Production'a yalnız
 salt okunur sorgular gönderildi; Development'a erişilmedi. Client build yoktur.
 
 **W52H-R devam durumu:** [Gerçek backup/restore araştırması](RELEASE_W52H_R_PRODUCTION_BACKUP_RESTORE_PROOF.md)
-Production Dashboard erişimini ve 17.6 / 4 / 20 / 285 / 57 kaynak baseline'ını
-yeniden doğruladı. Owner mevcut DB parolasını yerelde kaydettiğini doğruladı;
-owner ve agent aynı dosya için farklı zaman damgaları görüyor, ikinci araç
-metadata okumasında EPERM aldı. Agent erişim/görünüm engeli nedeniyle gerçek
-dump/restore başlatılmadı; yeniden parola istenmiyor.
-W52H'nin yerel PASS sonuçları gerçek restore PASS'e yükseltilmedi;
-hazırlık kararı **NO** olarak kalır.
+Owner gerçek Production dump'ını manuel aldı. 537274 baytlık CUSTOM arşivin
+SHA-256'sı, kaynak PG17.6 / pg_dump17.11 başlığı ve 4/20/285/57 veri sayımları
+çevrimdışı doğrulandı; 20 ürün referansı, ilan ilişkileri ve 9 ledger kaydı eşleşti.
+Restore henüz yapılmadı: yerel izole PG17.6 ortamı yok ve owner yeni indirmeleri
+yasakladı. Credential-file incelemesi kapsam dışıdır; parola tekrar istenmiyor.
+W52H sentetik sonuçları gerçek restore PASS'e yükseltilmedi; hazırlık kararı **NO**.
 
 | Bağımsız kapı | Sonuç | Kanıt / sınır |
 |---|---|---|
