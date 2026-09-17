@@ -1,0 +1,156 @@
+{
+  "contract": "w52j-a-production-side-by-side-prewrite-inspection-v1",
+  "status": "STOP_BEFORE_WRITE",
+  "scope": "Offline inspection of authoritative repository evidence; not live Production validation",
+  "inspection_started_at_utc": "2026-09-17T21:57:48.328Z",
+  "inspection_completed_at_utc": "2026-09-17T21:57:49.247Z",
+  "production_execution_started_at_utc": null,
+  "production_execution_completed_at_utc": null,
+  "production_write_authorized": true,
+  "authoritative_main": "2343658ee0331a20b3bfc021ed4270764943e3a8",
+  "branch": "astra-release/w52j-a-production-side-by-side-rollout",
+  "target_project": "mefhfvrgkwciubeajjeb",
+  "live_target_identity_verified": false,
+  "candidate": {
+    "file": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+    "rehearsed_sha256_lf_utf8": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "current_git_blob_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "current_checkout_sha256_raw": "39f73f5f05d870ee18b14b1797b708e13d5c7cedc5d511c03abffc338bab8a7c",
+    "current_checkout_sha256_lf_utf8": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "rehearsed_hash_match": "PASS",
+    "line_ending_note": "Windows checkout CRLF differs in raw bytes; normalized content and authoritative Git blob match the exact LF UTF-8 rehearsal artifact.",
+    "modified": false
+  },
+  "owner_mapping_package": {
+    "result": "PASS",
+    "approved": 20,
+    "unique_products": 20,
+    "sha256_lf_utf8": "f589308535f42936a1ef4c873ea446b00ed4849fb8ef872c4112956b56a28663",
+    "live_product_reference_comparison": "NOT_RUN"
+  },
+  "historical_w52h_r_proof": {
+    "result": "PASS",
+    "independent_gates_passed": 9,
+    "pg_version": "17.6",
+    "restores": [
+      {
+        "execution": "docs/data/w52h_r_first_restore_execution.json",
+        "baseline": "docs/data/w52h_r_first_restore_baseline.json",
+        "result": "PASS",
+        "observed_at_utc": "2026-09-16T22:39:20.351Z"
+      },
+      {
+        "execution": "docs/data/w52h_r_second_restore_execution.json",
+        "baseline": "docs/data/w52h_r_second_restore_baseline.json",
+        "result": "PASS",
+        "observed_at_utc": "2026-09-16T22:45:43.301Z"
+      }
+    ],
+    "rehearsal_observed_at_utc": "2026-09-16T22:44:43.454Z",
+    "staged_counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "rollback_result": "PASS",
+    "rollback_duration_ms": 271,
+    "old_w52c_sql_contract": "PASS",
+    "old_w52c_http_contract": "PASS",
+    "is_current_production_baseline": false
+  },
+  "blockers": [
+    {
+      "code": "APPROVED_0012_EXECUTION_IS_LOCAL_ONLY",
+      "file": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+      "line": 14,
+      "detail": "Exact candidate requires local-rehearsal. Setting that on Production or editing the approved SQL is outside the proven safe mechanism required by this Wave."
+    },
+    {
+      "code": "PRODUCTION_LEDGER_EXECUTOR_NOT_REHEARSED",
+      "file": "docs/RELEASE_W52H_PRODUCTION_TAXONOMY_MIGRATION_READINESS.md",
+      "line": 174,
+      "detail": "W52H explicitly defers actual 0012 ledger recording to a future executor. Candidate and rehearsal do not record it. No state was improvised."
+    },
+    {
+      "code": "REHEARSED_ROLLBACK_EXECUTION_IS_LOCAL_ONLY",
+      "file": "tool/production_taxonomy/rollback.sql",
+      "line": 6,
+      "detail": "Available rollback is a guarded local simulation; no previously reviewed remote execution package is present."
+    }
+  ],
+  "pre_write_gate": {
+    "TARGET_PROJECT_IDENTITY": "NOT_RUN",
+    "MAIN_SHA": "PASS",
+    "0012_HASH": "PASS",
+    "LIVE_BASELINE": "NOT_RUN",
+    "MAPPING_20_20": "PASS_OFFLINE_PACKAGE_ONLY",
+    "FRESH_BACKUP_CREATED": "NOT_RUN",
+    "FRESH_BACKUP_HASHED": "NOT_RUN",
+    "ROLLBACK_PROCEDURE_AVAILABLE": "FAIL_PRODUCTION_EXECUTOR_UNPROVEN",
+    "EXACT_PRODUCTION_APPLY_MECHANISM": "FAIL_LOCAL_ONLY",
+    "MIGRATION_LEDGER_HANDLING": "FAIL_NOT_REHEARSED",
+    "decision": "NO_GO_STOP_BEFORE_WRITE"
+  },
+  "live_baseline": {
+    "status": "NOT_RUN",
+    "categories": null,
+    "products": null,
+    "listings": null,
+    "shops": null,
+    "migration_ledger": null,
+    "schema_fingerprint": null
+  },
+  "fresh_prewrite_backup": {
+    "status": "NOT_RUN",
+    "reason": "Stopped at offline prerequisite gate before any remote access.",
+    "timestamp_utc": null,
+    "source_pg_version": null,
+    "backup_tool_version": null,
+    "size_bytes": null,
+    "sha256": null
+  },
+  "migrations_applied_in_this_wave": [],
+  "post_migration_validation": {
+    "status": "NOT_RUN",
+    "products": null,
+    "listings": null,
+    "shops": null,
+    "canonical_nodes": null,
+    "canonical_roots": null,
+    "terminal_leaves": null,
+    "owner_mappings": null,
+    "orphan_products": null,
+    "orphan_listings": null,
+    "broken_parent_chains": null,
+    "duplicate_canonical_uuids": null,
+    "policy_review_gates": "NOT_RUN",
+    "security_access": "NOT_RUN",
+    "old_w52c_sql_contract": "NOT_RUN",
+    "old_w52c_http_contract": "NOT_RUN",
+    "old_w52c_physical_device_post_migration": "NOT_RUN",
+    "canonical_staged_backend_contract": "NOT_RUN"
+  },
+  "public_canonical_activation_performed": false,
+  "rollback_triggered": false,
+  "rollback_result": "NOT_REQUIRED_NO_WRITE_ATTEMPTED",
+  "production_left_in_safe_side_by_side_state": false,
+  "production_state_note": "No change performed; existing live state was not queried. A successful side-by-side rollout is not claimed.",
+  "production_accessed": false,
+  "production_write_performed": false,
+  "development_accessed": false,
+  "credential_files_accessed": false,
+  "backup_files_accessed": false,
+  "auth_customer_storage_qr_mutations": false,
+  "ready_for_new_canonical_production_client_build": false,
+  "ready_for_public_canonical_activation": false
+}
