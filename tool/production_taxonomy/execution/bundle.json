@@ -1,0 +1,26 @@
+{
+  "format": "w52jb-execution-bundle-v1",
+  "files": {
+    "tool/production_taxonomy/execution/common.mjs": "107de519d3acd31f2a7263a4958e597dbfde709e16a5fd8fd145d522be650d47",
+    "tool/production_taxonomy/execution/session.mjs": "8fe2add2d4ec77d4397a5e5908426882661cf857f5ec8546d4e76c8a37eb391e",
+    "tool/production_taxonomy/execution/catalog.mjs": "f40f708a487e60581ff4e3ae4064fa60974d4df1a46491b6b2a9dff05d3ad47b",
+    "tool/production_taxonomy/execution/validators.mjs": "ceb84641a0d8a3657781bd1a0423a7b6ea364b1aa4473169a502c143e1256d8f",
+    "tool/production_taxonomy/execution/engine.mjs": "4bb89f21c08b3c2758d11226cd0efdf9a541fb117c1aab63a8b5818cec9408d5",
+    "tool/production_taxonomy/execution/production.mjs": "18b5ff875e7782c45e1edd79ec735bec5489c161bfe05bd05f3abe24988d6942",
+    "tool/production_taxonomy/execution/seal.mjs": "43c48794e38ba00720765475d7c0e34c09ba46738e2ae1e4fbe56185503d8d9d",
+    "tool/production_taxonomy/execution/cli.mjs": "fe69897b6e3b5a1a2b08801f133734485c65ac36a79e14c0f4f5cfe58e2354f2",
+    "tool/production_taxonomy/execution/contract.json": "0e29a6f8731b0be4197d9f6f8fc6ce76a7d2fac63e6bdbeea3df49619d994273",
+    "tool/production_taxonomy/real_contract_checks.mjs": "742f2c6a5f49091055fd3827efa8bb49add3a391d7cdc5493f69fa0e2fd328ad",
+    "tool/production_taxonomy/real_restore_lib.mjs": "0fd4bc19600758382a32a98892bedc4fb8080c6501e2f2b18b99c5ed96029fb1",
+    "tool/taxonomy_migration/lib.mjs": "2336a6adf7e1364f0d49066662d0f8e809e69f179f4f6dd0207eef6c94603d54",
+    "docs/TAXONOMY_W36_CATEGORY_IMPORT.csv": "4c3fa47f1174312606bea59dc5c1629730bd8ba826ce85d61fd0508d6738db78",
+    "docs/TAXONOMY_W36_ACTIVATION_QUALIFICATION.csv": "52c35da75129c4c21e4492f658e28452123baeb2532e373c347458762937549d",
+    "docs/data/production_20_product_canonical_mapping.csv": "f589308535f42936a1ef4c873ea446b00ed4849fb8ef872c4112956b56a28663",
+    "docs/data/w52h_r_source_restore_metadata.json": "6ed927fbf7a13d1a6a7fb9aba17f2ed6c564f030e783a05255fa0c9a2cabfb61",
+    "docs/data/production_20_product_canonical_mapping_validation.json": "a69a0df1892c89628eca7458f24aacd771bf018922041ecbd2da870783ff3de2",
+    "docs/data/w52h_production_migration_rehearsal_result.json": "1724798a7c27f1c70779c00d6e7a1a23993e87697ad05adf6b618cb6c18e76d7",
+    "docs/data/w52h_production_preflight_manifest.json": "1dd598a0ff1430b6215d2889866b4eb05b8104a496f680c1f2a917625a42bb83"
+  },
+  "payload_sha256": "0983f9dec3f4621136add373be147005e4c6101c0de5886a8c10dc79527f12d3",
+  "source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834"
+}

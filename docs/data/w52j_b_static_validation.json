@@ -1,0 +1,28 @@
+{
+  "result": "PASS",
+  "bundle_sha256": "3d124524bf1f7e3b30cd592c1c457e048aad5bc7a896e47401cd29a6e5b85e11",
+  "payload_sha256": "0983f9dec3f4621136add373be147005e4c6101c0de5886a8c10dc79527f12d3",
+  "original_0012_unchanged": true,
+  "semantic_reverse_reconstruction": "PASS",
+  "sql_static_mutation_targets": [
+    "canonical_categories",
+    "canonical_category_qualification",
+    "product_canonical_assignments",
+    "production_taxonomy_config",
+    "taxonomy_alias_targets",
+    "taxonomy_aliases",
+    "taxonomy_id_allocations",
+    "taxonomy_import_runs",
+    "taxonomy_node_relationships"
+  ],
+  "sql_static_validation": "PASS",
+  "node_syntax_files": 16,
+  "ledger_atomic_placement": "PASS",
+  "rollback_no_cascade": "PASS",
+  "read_only_validators": "PASS",
+  "secret_pii_absolute_user_path_scan": "PASS",
+  "scanned_files": 25,
+  "production_accessed": false,
+  "final_proof": "PASS",
+  "failure_cases": 18
+}

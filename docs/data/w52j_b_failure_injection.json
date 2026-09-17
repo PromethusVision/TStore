@@ -1,0 +1,119 @@
+{
+  "result": "PASS",
+  "bundle_sha256": "3d124524bf1f7e3b30cd592c1c457e048aad5bc7a896e47401cd29a6e5b85e11",
+  "captured_at_utc": "2026-09-17T22:58:52.991Z",
+  "cases": 18,
+  "results": [
+    {
+      "case": "wrong_target_identity",
+      "result": "PASS",
+      "detected": "W52JB_TARGET_TRANSPORT_IDENTITY",
+      "partial_corruption": false
+    },
+    {
+      "case": "wrong_baseline_count",
+      "result": "PASS",
+      "detected": "W52JB_CONTRACT_LEGACY_COUNTS_CHANGED",
+      "partial_corruption": false
+    },
+    {
+      "case": "0012_marked_without_objects",
+      "result": "PASS",
+      "detected": "W52JB_0012_ALREADY_APPLIED",
+      "partial_corruption": false
+    },
+    {
+      "case": "unexpected_0010_ledger",
+      "result": "PASS",
+      "detected": "W52JB_UNEXPECTED_0010_0011",
+      "partial_corruption": false
+    },
+    {
+      "case": "unexpected_0011_ledger",
+      "result": "PASS",
+      "detected": "W52JB_UNEXPECTED_0010_0011",
+      "partial_corruption": false
+    },
+    {
+      "case": "missing_mapping_row",
+      "result": "PASS",
+      "detected": "W52JB_CONTRACT_EXACT_OWNER_MAPPING",
+      "partial_corruption": false
+    },
+    {
+      "case": "sql_failure_before_completion",
+      "result": "PASS",
+      "detected": "W52JB_PSQL_22012",
+      "partial_corruption": false
+    },
+    {
+      "case": "ledger_insert_failure",
+      "result": "PASS",
+      "detected": "W52JB_PSQL_22012",
+      "partial_corruption": false
+    },
+    {
+      "case": "missing_backup",
+      "result": "PASS",
+      "detected": "W52JB_FRESH_BACKUP_REQUIRED",
+      "partial_corruption": false
+    },
+    {
+      "case": "stale_backup",
+      "result": "PASS",
+      "detected": "W52JB_BACKUP_NOT_FRESH",
+      "partial_corruption": false
+    },
+    {
+      "case": "rollback_before_apply",
+      "result": "PASS",
+      "outcome": "ALREADY_BASELINE_NO_OP",
+      "partial_corruption": false
+    },
+    {
+      "case": "0012_already_applied_reapply",
+      "result": "PASS",
+      "detected": "W52JB_0012_ALREADY_APPLIED",
+      "partial_corruption": false
+    },
+    {
+      "case": "rollback_external_dependency",
+      "result": "PASS",
+      "detected": "W52JB_ROLLBACK_SCHEMA_DRIFT",
+      "partial_corruption": false
+    },
+    {
+      "case": "rollback_called_twice",
+      "result": "PASS",
+      "outcome": "ALREADY_BASELINE_NO_OP",
+      "partial_corruption": false
+    },
+    {
+      "case": "production_wrong_project_before_connection",
+      "result": "PASS",
+      "detected": "W52JB_TARGET_PROJECT",
+      "connection_opened": false
+    },
+    {
+      "case": "production_authorization_absent",
+      "result": "PASS",
+      "detected": "W52JB_FUTURE_PRODUCTION_AUTHORIZATION_REQUIRED",
+      "connection_opened": false
+    },
+    {
+      "case": "wrong_bundle_hash",
+      "result": "PASS",
+      "detected": "W52JB_BUNDLE_HASH_MISMATCH",
+      "connection_opened": false
+    },
+    {
+      "case": "backup_hash_mismatch",
+      "result": "PASS",
+      "detected": "W52JB_BACKUP_HASH",
+      "connection_opened": false
+    }
+  ],
+  "automatic_transaction_rollback": true,
+  "manual_sql_repairs": 0,
+  "production_accessed": false
+}

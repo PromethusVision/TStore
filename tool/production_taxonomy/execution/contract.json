@@ -1,0 +1,312 @@
+{
+  "format": "w52jb-original-artifact-derived-contract-v1",
+  "ledger_schema": [
+    {
+      "udt_name": "text",
+      "data_type": "text",
+      "column_name": "version",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "udt_name": "_text",
+      "data_type": "ARRAY",
+      "column_name": "statements",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "udt_name": "text",
+      "data_type": "text",
+      "column_name": "name",
+      "is_nullable": "YES",
+      "column_default": null
+    }
+  ],
+  "ledger_baseline": [
+    {
+      "name": "0001_core_auth_catalog",
+      "version": "20260812000100",
+      "statements_md5": "57a3c685b7624a116ded3bd0bd5d220c",
+      "statements_count": 123
+    },
+    {
+      "name": "0002_shops",
+      "version": "20260812000200",
+      "statements_md5": "c96d243d77add8a5a20d9d01c26ed1f3",
+      "statements_count": 30
+    },
+    {
+      "name": "0003_carts_v2",
+      "version": "20260812000300",
+      "statements_md5": "a9f4bd0548ce73b086e95095b3aea20b",
+      "statements_count": 27
+    },
+    {
+      "name": "0004_qr_verified_purchases",
+      "version": "20260812000400",
+      "statements_md5": "84a35f42f42313903e87d5bd506a1370",
+      "statements_count": 46
+    },
+    {
+      "name": "0005_verified_shop_ratings",
+      "version": "20260812000500",
+      "statements_md5": "eb850f6d9ed9089aca8bd1d447b3f0f7",
+      "statements_count": 21
+    },
+    {
+      "name": "0006_chat_notifications_account",
+      "version": "20260812000600",
+      "statements_md5": "e0712231a219293b63a800538870a309",
+      "statements_count": 26
+    },
+    {
+      "name": "0007_storage_realtime",
+      "version": "20260812000700",
+      "statements_md5": "96c564a6cfe42d9d12f41f652e22d1a0",
+      "statements_count": 6
+    },
+    {
+      "name": "0008_fix_profile_role_guard",
+      "version": "20260814000800",
+      "statements_md5": "5b1c932853343e2ca622b1d9034b19ea",
+      "statements_count": 7
+    },
+    {
+      "name": "0009_verified_product_reviews_storage",
+      "version": "20260815000900",
+      "statements_md5": "76879b59b82c5251174adf2b7d7e5d1f",
+      "statements_count": 58
+    }
+  ],
+  "legacy_data": {
+    "categories": {
+      "count": 4,
+      "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+    },
+    "products": {
+      "count": 20,
+      "sha256": "b41b0d7b6f3c016e035384bfed23dd25be773ad222ba0e097a7c4fa83596c52d"
+    },
+    "shop_products": {
+      "count": 285,
+      "sha256": "c0950bdbb2e2d0dd0efb8dae13c5e694fc2e11e56a4a77a018b19e021da0c58e"
+    },
+    "shops": {
+      "count": 57,
+      "sha256": "0f0c72bb8dd0f46533d581abb606e378ba83ef179a5995e07045b65e57023feb"
+    },
+    "brands": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "legacy_queries": {
+    "anon": {
+      "home_categories": {
+        "rows": 4,
+        "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+      },
+      "product_listing": {
+        "rows": 4,
+        "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+      },
+      "product_details": {
+        "rows": 20,
+        "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+      },
+      "seller_comparison": {
+        "rows": 20,
+        "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+      },
+      "shop_details": {
+        "rows": 57,
+        "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+      },
+      "search": {
+        "rows": 2,
+        "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+      }
+    },
+    "authenticated": {
+      "home_categories": {
+        "rows": 4,
+        "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+      },
+      "product_listing": {
+        "rows": 4,
+        "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+      },
+      "product_details": {
+        "rows": 20,
+        "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+      },
+      "seller_comparison": {
+        "rows": 20,
+        "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+      },
+      "shop_details": {
+        "rows": 57,
+        "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+      },
+      "search": {
+        "rows": 2,
+        "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+      }
+    }
+  },
+  "catalog_before": {
+    "relations": "27c296d46c7824fe23bc14990f159b51643bd7372d02215e06104c676b2584b8",
+    "columns": "00a33ed8ba302904ffea5ebddb2dc931ea82fa8b8cd355b8b9d4eb763b99bb18",
+    "constraints": "772af619254c505724ac40e5d1256d46672cf83362f66bedafa81fa3db809a9e",
+    "indexes": "b8e2aecd7db00db3c7bef26df1193343aef3ccd7fe6c01610c383dea5f237e3c",
+    "functions": "e75a115073bc972d26c788f2001c1419205be09e42c0577276019c4232a0a735",
+    "triggers": "44c00605e8a1917a64931b0cdb6682a73f78f9b05a0f0d15c30d1046a7ab1124",
+    "policies": "1c5ffea8b2fe975a271e22749af4d553b541a234b5b900d64b3b82ea4c3cd0c2"
+  },
+  "catalog_after": {
+    "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
+    "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+    "constraints": "f921f80f276ebe639dc5cfc2437a609942ffd857ae762803a971f6d5dbccd37e",
+    "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+    "functions": "782e485b915c5fbf7456804ffda599f5e0901e8784a17da62398e554372ce418",
+    "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+    "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+  },
+  "owned": {
+    "relations": [
+      {
+        "name": "canonical_categories",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "canonical_category_qualification",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "product_canonical_assignments",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_config",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "taxonomy_alias_targets",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "taxonomy_aliases",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "taxonomy_id_allocations",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "taxonomy_import_runs",
+        "kind": "r",
+        "owner": "postgres"
+      },
+      {
+        "name": "taxonomy_node_relationships",
+        "kind": "r",
+        "owner": "postgres"
+      }
+    ],
+    "functions": [
+      {
+        "name": "_production_taxonomy_assert_contract_v1",
+        "arguments": "p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "_production_taxonomy_node_json_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "_production_taxonomy_path_json_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "_production_taxonomy_visible_v1",
+        "arguments": "p_category_id uuid, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "_w52h_validate_product_assignment",
+        "arguments": "",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_assignment_visible_v1",
+        "arguments": "p_category_id uuid",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_breadcrumb_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_capabilities_v1",
+        "arguments": "p_client_contract_version text, p_taxonomy_version text",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_children_v1",
+        "arguments": "p_parent_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_descendants_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_exact_leaf_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_products_v1",
+        "arguments": "p_category_id uuid, p_client_contract_version text, p_taxonomy_version text, p_limit integer, p_offset integer",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_resolve_alias_v1",
+        "arguments": "p_alias_locator text, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_roots_v1",
+        "arguments": "p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_runtime_v1",
+        "arguments": "",
+        "owner": "postgres"
+      },
+      {
+        "name": "production_taxonomy_search_context_v1",
+        "arguments": "p_term text, p_client_contract_version text, p_taxonomy_version text, p_preview boolean",
+        "owner": "postgres"
+      },
+      {
+        "name": "validate_taxonomy_category_hierarchy",
+        "arguments": "",
+        "owner": "postgres"
+      }
+    ]
+  }
+}
