@@ -9,6 +9,9 @@ export const container = process.env.W52JB_CONTAINER;
 export const docker = process.env.W52JB_DOCKER;
 export const dump = process.env.W52JB_DUMP;
 export const imageDigest = 'supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00';
+// Explicitly frozen W52J-A prewrite archive; no arbitrary rehearsal backup accepted.
+export const latestBackupHash = 'e89b13e4481d4a5e2c6b60181df290791455b0dc39acec99fadc184112879b65';
+const approvedBackup = () => [originalBackupHash, latestBackupHash].includes(hash(readFileSync(dump)));
 export function run(args, input, binary = false) {
   check(docker && /^w52jb-(pilot|first|second|failure)-[a-z0-9]+$/.test(container ?? ''), 'LOCAL_PARAMETERS');
   const result = spawnSync(docker, ['--context','desktop-linux',...args], {input,encoding:binary?null:'utf8',windowsHide:true,maxBuffer:64*1024*1024,timeout:240000});
@@ -31,7 +34,7 @@ export function guard() {
   check(JSON.parse(run(['image','inspect',state.Image]))[0].RepoDigests.includes(imageDigest),'PINNED_IMAGE');
   check(state.Mounts.length===1 && state.Mounts[0].Destination==='/backup/production.dump' && !state.Mounts[0].RW,'READONLY_BACKUP_MOUNT');
   const norm=p=>p.replaceAll('\\','/').toLowerCase();
-  check(norm(state.Mounts[0].Source)===norm(dump) && hash(readFileSync(dump))===originalBackupHash,'ORIGINAL_BACKUP');
+  check(norm(state.Mounts[0].Source)===norm(dump) && approvedBackup(),'ORIGINAL_BACKUP');
   check(sql('postgres','SHOW server_version;').trim()==='17.6' && sql('postgres','SHOW listen_addresses;').trim()==='','LOCAL_POSTGRES_IDENTITY');
   return {kind:'ISOLATED_REAL_BACKUP_RESTORE',project_ref:project,verified:true,container_id:state.Id,image_digest:imageDigest,network:'none',ports:[],backup_readonly:true};
 }
@@ -41,7 +44,7 @@ export function session() {
   db.name='postgres'; return db;
 }
 export async function create() {
-  check(hash(readFileSync(dump))===originalBackupHash,'ORIGINAL_BACKUP_HASH');
+  check(approvedBackup(),'ORIGINAL_BACKUP_HASH');
   const context=JSON.parse(run(['context','inspect','desktop-linux']))[0];
   check(context.Endpoints.docker.Host==='npipe:////./pipe/dockerDesktopLinuxEngine','LOCAL_DOCKER_ENDPOINT');
   const cmd='set -eu\ninitdb --username=supabase_admin --auth-local=trust --auth-host=reject --encoding=UTF8 --locale=C.UTF-8 -D /tmp/w52jb-pgdata > /tmp/w52jb-initdb.log\nexec postgres -D /tmp/w52jb-pgdata -c listen_addresses= -c unix_socket_directories=/tmp -c shared_preload_libraries=pg_stat_statements -c log_statement=none -c log_min_error_statement=panic -c log_error_verbosity=terse';
