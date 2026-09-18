@@ -1,0 +1,509 @@
+{
+  "contract": "w52ja-live-production-side-by-side-validation-v1",
+  "captured_at_utc": "2026-09-18T22:33:41.809Z",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "authoritative_main": "fb4d4dffe5dccc39437cd3898e68d92b642bdce0",
+  "branch": "astra-release/w52j-a-live-production-side-by-side-rollout",
+  "W52J_A_LIVE_PRODUCTION_ROLLOUT": "ROLLED_BACK",
+  "LIVE_PREFLIGHT": "PASS",
+  "PRE_WRITE_BASELINE": {
+    "categories": 4,
+    "products": 20,
+    "listings": 285,
+    "shops": 57
+  },
+  "FRESH_PREWRITE_BACKUP": "PASS",
+  "FRESH_BACKUP_SHA256_RECORDED": "YES",
+  "0012_HASH_VERIFIED": "PASS",
+  "0010_APPLIED": "NO",
+  "0011_APPLIED": "NO",
+  "0012_APPLIED": "NO",
+  "0012_LEDGER_ENTRY": "NOT_APPLIED",
+  "POST_MIGRATION_PRODUCTS": "20/20",
+  "POST_MIGRATION_LISTINGS": "285/285",
+  "POST_MIGRATION_SHOPS": "57/57",
+  "CANONICAL_NODES": "0/1563",
+  "CANONICAL_ROOTS": "0/24",
+  "TERMINAL_LEAVES": "0/1245",
+  "OWNER_MAPPINGS": "0/20",
+  "ORPHAN_PRODUCTS": 0,
+  "ORPHAN_LISTINGS": 0,
+  "BROKEN_PARENT_CHAINS": "NOT_APPLIED",
+  "POLICY_REVIEW_GATES_PRESERVED": "NOT_APPLIED",
+  "OLD_W52C_SQL_CONTRACT": "PASS",
+  "OLD_W52C_HTTP_CONTRACT": "PASS",
+  "OLD_W52C_PHYSICAL_DEVICE_POST_MIGRATION": "NOT_RUN",
+  "CANONICAL_STAGED_BACKEND_CONTRACT": "FAIL",
+  "SECURITY_RLS_CHECK": "PASS",
+  "PUBLIC_CANONICAL_ACTIVATION_PERFORMED": "NO",
+  "ROLLBACK_TRIGGERED": "YES",
+  "ROLLBACK_RESULT": "PASS",
+  "PRODUCTION_LEFT_IN_SAFE_SIDE_BY_SIDE_STATE": "NO",
+  "PRODUCTION_WRITE_PERFORMED": "YES",
+  "READY_FOR_NEW_CANONICAL_PRODUCTION_CLIENT_BUILD": "NO",
+  "READY_FOR_PUBLIC_CANONICAL_ACTIVATION": "NO",
+  "outcome_explanation": {
+    "failed_gate": "W52JB_SCHEMA_FINGERPRINT",
+    "execution_phase": "Within sealed apply0012; no successful return or commit acknowledgment",
+    "exact_fingerprint_component": "UNKNOWN_NOT_CAPTURED_BY_SEALED_VALIDATOR",
+    "pre_vs_post_payload_failure_site": "UNKNOWN_SHARED_CHECKLEGACY_ERROR_TAG",
+    "write_flag_semantics": "Conservative YES: the authorized READ WRITE executor was invoked. Exact payload progress is not recorded. This does not assert any durable change.",
+    "durable_production_change": false,
+    "apply_commit_acknowledged": false,
+    "rollback_action": "Engine transaction rolled back on error; reviewed rollback then reconciled ALREADY_BASELINE_NO_OP, so no manual repair or destructive cleanup ran.",
+    "final_state": "ORIGINAL_LEGACY_BASELINE_OPERATIONAL",
+    "canonical_objects": "ABSENT_CONFIRMED_BY_REVIEWED_BASELINE_CATALOG_AND_TO_REGCLASS",
+    "canonical_counts_semantics": "0 means not installed after rollback; no canonical table row count was fabricated.",
+    "policy_check_semantics": "Canonical post-apply conditions NOT_APPLIED, not a passing staged validation. Original legacy RLS/ACL/schema fingerprint restored.",
+    "post_migration_count_semantics": "Counts after failed attempt and verified rollback, not a successful migration.",
+    "new_live_retry_performed": false
+  },
+  "execution": {
+    "bundle_sha256": "3d124524bf1f7e3b30cd592c1c457e048aad5bc7a896e47401cd29a6e5b85e11",
+    "source_0012_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "payload_sha256": "0983f9dec3f4621136add373be147005e4c6101c0de5886a8c10dc79527f12d3",
+    "engine": "Unmodified main-integrated W52J-B engine.mjs apply0012 / rollback0012",
+    "credential_transport": "Owner-run temporary process PGPASSWORD; exact direct Production target, TLS verify-full, pinned CA; passfile-only repository transport left unchanged.",
+    "private_orchestration_only": true,
+    "reviewed_sql_modified": false,
+    "preflight_order": "Reviewed read-only identity/ledger/checkLegacy before backup; complete readPreflight after fresh backup; apply0012 repeats preflight under its locks.",
+    "no_generic_migration_push": true,
+    "no_manual_live_repair": true,
+    "no_main_merge": true,
+    "development_accessed": false,
+    "rebuild_performed": false,
+    "auth_or_storage_api_write": false
+  },
+  "fresh_backup": {
+    "project_ref": "mefhfvrgkwciubeajjeb",
+    "database": "postgres",
+    "source_pg_version": "17.6",
+    "format": "CUSTOM",
+    "tool_version": "17.11",
+    "completed_at_utc": "2026-09-18T22:33:14.012Z",
+    "size_bytes": 537274,
+    "sha256": "e89b13e4481d4a5e2c6b60181df290791455b0dc39acec99fadc184112879b65",
+    "result": "PASS",
+    "started_at_utc": "2026-09-18T22:32:58.694Z",
+    "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52j-live-prewrite/EsnaftaVar-Production-W52J-LIVE-20260918T223258694Z.dump",
+    "archive_table_data_entries": 69,
+    "raw_archive_in_repository": false
+  },
+  "prewrite_gates": {
+    "TARGET_IDENTITY": "PASS",
+    "FULL_PREFLIGHT": "PASS",
+    "LIVE_BASELINE": "PASS",
+    "EXECUTION_PACKAGE_HASH": "PASS",
+    "0012_HASH": "PASS",
+    "MAPPING_20_20": "PASS",
+    "LEDGER_STATE": "PASS",
+    "FRESH_BACKUP": "PASS",
+    "BACKUP_SHA256": "PASS",
+    "ROLLBACK_READY": "PASS"
+  },
+  "preflight": {
+    "result": "PASS",
+    "target": {
+      "project_ref": "mefhfvrgkwciubeajjeb",
+      "role": "postgres",
+      "database": "postgres",
+      "server_version": "17.6",
+      "transport": "PRODUCTION_DIRECT_TLS_VERIFY_FULL"
+    },
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "orphan_products": 0,
+      "orphan_listings": 0
+    },
+    "mapping": "20/20_FROZEN_PACKAGE_AND_LEGACY_REFERENCES",
+    "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+    "schema_fingerprint": "PASS",
+    "legacy_sql_contract": "PASS",
+    "fresh_backup": {
+      "sha256": "e89b13e4481d4a5e2c6b60181df290791455b0dc39acec99fadc184112879b65",
+      "size_bytes": 537274,
+      "completed_at_utc": "2026-09-18T22:33:14.012Z"
+    },
+    "captured_at_utc": "2026-09-18T22:33:18.400Z",
+    "transaction": "READ_ONLY_COMPLETED"
+  },
+  "live_attempt": {
+    "format": "w52ja-live-orchestration-v1",
+    "started_at_utc": "2026-09-18T22:32:52.175Z",
+    "result": "ROLLED_BACK",
+    "apply_attempted": true,
+    "commit_acknowledged": false,
+    "rollback_triggered": true,
+    "rollback_result": "PASS",
+    "public_activation_performed": false,
+    "physical_smoke": "NOT_RUN",
+    "preliminary": {
+      "result": "PASS",
+      "target": {
+        "project_ref": "mefhfvrgkwciubeajjeb",
+        "role": "postgres",
+        "database": "postgres",
+        "server_version": "17.6",
+        "transport": "PRODUCTION_DIRECT_TLS_VERIFY_FULL"
+      },
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "legacy_sql_contract": "PASS",
+      "schema_fingerprint": "PASS",
+      "mapping": "20/20_FROZEN_PACKAGE_AND_LEGACY_REFERENCES",
+      "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+      "backup_gate": "PENDING_FRESH_BACKUP",
+      "captured_at_utc": "2026-09-18T22:32:57.709Z"
+    },
+    "http_before": {
+      "result": "PASS",
+      "host": "mefhfvrgkwciubeajjeb.supabase.co",
+      "role": "anon",
+      "requests_method": "GET_ONLY",
+      "flows": {
+        "home_categories": {
+          "http_status": 200,
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "product_listing": {
+          "http_status": 200,
+          "rows": 20,
+          "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category_product_listing": {
+          "http_status": 200,
+          "rows": 5,
+          "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "product_details": {
+          "http_status": 200,
+          "rows": 1,
+          "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "seller_comparison": {
+          "http_status": 200,
+          "rows": 15,
+          "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop_details": {
+          "http_status": 200,
+          "rows": 1,
+          "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "http_status": 200,
+          "rows": 5,
+          "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "http_status": 200,
+          "rows": 2,
+          "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      }
+    },
+    "backup": {
+      "project_ref": "mefhfvrgkwciubeajjeb",
+      "database": "postgres",
+      "source_pg_version": "17.6",
+      "format": "CUSTOM",
+      "tool_version": "17.11",
+      "completed_at_utc": "2026-09-18T22:33:14.012Z",
+      "size_bytes": 537274,
+      "sha256": "e89b13e4481d4a5e2c6b60181df290791455b0dc39acec99fadc184112879b65",
+      "result": "PASS",
+      "started_at_utc": "2026-09-18T22:32:58.694Z",
+      "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52j-live-prewrite/EsnaftaVar-Production-W52J-LIVE-20260918T223258694Z.dump",
+      "archive_table_data_entries": 69,
+      "raw_archive_in_repository": false
+    },
+    "preflight": {
+      "result": "PASS",
+      "target": {
+        "project_ref": "mefhfvrgkwciubeajjeb",
+        "role": "postgres",
+        "database": "postgres",
+        "server_version": "17.6",
+        "transport": "PRODUCTION_DIRECT_TLS_VERIFY_FULL"
+      },
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "mapping": "20/20_FROZEN_PACKAGE_AND_LEGACY_REFERENCES",
+      "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+      "schema_fingerprint": "PASS",
+      "legacy_sql_contract": "PASS",
+      "fresh_backup": {
+        "sha256": "e89b13e4481d4a5e2c6b60181df290791455b0dc39acec99fadc184112879b65",
+        "size_bytes": 537274,
+        "completed_at_utc": "2026-09-18T22:33:14.012Z"
+      },
+      "captured_at_utc": "2026-09-18T22:33:18.400Z",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "prewrite_gates": {
+      "TARGET_IDENTITY": "PASS",
+      "FULL_PREFLIGHT": "PASS",
+      "LIVE_BASELINE": "PASS",
+      "EXECUTION_PACKAGE_HASH": "PASS",
+      "0012_HASH": "PASS",
+      "MAPPING_20_20": "PASS",
+      "LEDGER_STATE": "PASS",
+      "FRESH_BACKUP": "PASS",
+      "BACKUP_SHA256": "PASS",
+      "ROLLBACK_READY": "PASS"
+    },
+    "error_code": "W52JB_SCHEMA_FINGERPRINT",
+    "rollback": {
+      "result": "ALREADY_BASELINE_NO_OP",
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+      "transaction": "COMMIT_ACKNOWLEDGED"
+    },
+    "rolled_back_baseline": {
+      "result": "PASS",
+      "target": {
+        "project_ref": "mefhfvrgkwciubeajjeb",
+        "role": "postgres",
+        "database": "postgres",
+        "server_version": "17.6",
+        "transport": "PRODUCTION_DIRECT_TLS_VERIFY_FULL"
+      },
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "legacy_sql_contract": "PASS",
+      "schema_fingerprint": "PASS",
+      "mapping": "20/20_FROZEN_PACKAGE_AND_LEGACY_REFERENCES",
+      "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+      "backup_gate": "PENDING_FRESH_BACKUP",
+      "captured_at_utc": "2026-09-18T22:33:40.995Z"
+    },
+    "http_rollback": {
+      "result": "PASS",
+      "host": "mefhfvrgkwciubeajjeb.supabase.co",
+      "role": "anon",
+      "requests_method": "GET_ONLY",
+      "flows": {
+        "home_categories": {
+          "http_status": 200,
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "product_listing": {
+          "http_status": 200,
+          "rows": 20,
+          "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category_product_listing": {
+          "http_status": 200,
+          "rows": 5,
+          "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "product_details": {
+          "http_status": 200,
+          "rows": 1,
+          "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "seller_comparison": {
+          "http_status": 200,
+          "rows": 15,
+          "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop_details": {
+          "http_status": 200,
+          "rows": 1,
+          "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "http_status": 200,
+          "rows": 5,
+          "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "http_status": 200,
+          "rows": 2,
+          "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      }
+    },
+    "completed_at_utc": "2026-09-18T22:33:41.809Z"
+  },
+  "physical_availability": {
+    "reason": "No connected Android device",
+    "connected_device_count": 0,
+    "serial_numbers_recorded": false,
+    "result": "NOT_RUN",
+    "captured_at_utc": "2026-09-18T22:29:24.4140402Z"
+  },
+  "local_orchestration_rehearsal": {
+    "result": "PASS",
+    "captured_at_utc": "2026-09-18T22:26:46.693Z",
+    "bundle_sha256": "3d124524bf1f7e3b30cd592c1c457e048aad5bc7a896e47401cd29a6e5b85e11",
+    "private_helper_sha256": {
+      "rollout-flow.mjs": "627e949d8cc5afd562f8dbdf4cd1e14057db0cc54a0c402f774cc2d194ccb8a2",
+      "staged.mjs": "ddf89a41a24301bbd5cb05992dbf5e27846afc4ee642c23b7460ad64b9639b95",
+      "api.mjs": "ca3e52dc1a5d6c1c8f2958d8c07d01dea100b2f4d780303dcb745f36dc2ffc33",
+      "run-live.mjs": "77ca2a551ab77897e9157ac80acbce1759e66e5a60ea15f8e630a60e9e798fdd"
+    },
+    "normal_rollout": "PASS",
+    "failure_rollback": "PASS",
+    "staged": {
+      "result": "PASS",
+      "levels": [
+        {
+          "level": 1,
+          "nodes": 24
+        },
+        {
+          "level": 2,
+          "nodes": 244
+        },
+        {
+          "level": 3,
+          "nodes": 1096
+        },
+        {
+          "level": 4,
+          "nodes": 199
+        }
+      ],
+      "mapping_breadcrumbs": {
+        "mapped": 20,
+        "valid_breadcrumbs": 20
+      },
+      "policy": {
+        "gated": 6,
+        "qualified": 14
+      },
+      "staged_search_data": {
+        "matches": 1
+      },
+      "staged_alias_data": {
+        "total": 651,
+        "broken_targets": 0,
+        "powerbank_matches": 1
+      },
+      "public_rpc_fail_closed": {
+        "anon": {
+          "children": 0,
+          "descendants": 0,
+          "breadcrumb": 0,
+          "exact_leaf": 0,
+          "product_scope": 0,
+          "alias": 0,
+          "search": 0
+        },
+        "authenticated": {
+          "children": 0,
+          "descendants": 0,
+          "breadcrumb": 0,
+          "exact_leaf": 0,
+          "product_scope": 0,
+          "alias": 0,
+          "search": 0
+        }
+      },
+      "private_privileged_helpers_exposed": 0,
+      "public_activation_performed": false
+    },
+    "baseline_counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "orphan_products": 0,
+      "orphan_listings": 0
+    },
+    "production_accessed": false,
+    "production_write_performed": false
+  },
+  "earlier_stopped_before_write_attempt": {
+    "format": "w52ja-live-orchestration-v1",
+    "started_at_utc": "2026-09-18T22:28:46.508Z",
+    "result": "STOPPED_BEFORE_WRITE",
+    "apply_attempted": false,
+    "commit_acknowledged": false,
+    "rollback_triggered": false,
+    "rollback_result": "NOT_REQUIRED",
+    "public_activation_performed": false,
+    "physical_smoke": "NOT_RUN",
+    "preliminary": {
+      "result": "PASS",
+      "target": {
+        "project_ref": "mefhfvrgkwciubeajjeb",
+        "role": "postgres",
+        "database": "postgres",
+        "server_version": "17.6",
+        "transport": "PRODUCTION_DIRECT_TLS_VERIFY_FULL"
+      },
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "orphan_products": 0,
+        "orphan_listings": 0
+      },
+      "legacy_sql_contract": "PASS",
+      "schema_fingerprint": "PASS",
+      "mapping": "20/20_FROZEN_PACKAGE_AND_LEGACY_REFERENCES",
+      "ledger": "9_HISTORICAL_ENTRIES_UNCHANGED",
+      "backup_gate": "PENDING_FRESH_BACKUP",
+      "captured_at_utc": "2026-09-18T22:28:52.292Z"
+    },
+    "error_code": "W52JB_OPERATION_FAILED_PRIVATE_DETAILS_SUPPRESSED",
+    "completed_at_utc": "2026-09-18T22:28:52.627Z"
+  },
+  "privacy": {
+    "raw_backup_committed": false,
+    "password_committed": false,
+    "publishable_key_committed": false,
+    "tokens_committed": false,
+    "personal_rows_committed": false,
+    "absolute_local_paths_committed": false
+  }
+}
