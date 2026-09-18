@@ -31,7 +31,15 @@ export async function restore() {
   }
   sql('template1', 'DROP DATABASE postgres;');
   const exists = sql('template1', `SELECT count(*) FROM pg_database WHERE datname='${name}';`).trim() === '1';
-  if (!exists) sql('template1', `CREATE DATABASE ${name} OWNER postgres TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8';`);
+  if (!exists) {
+    // LC_COLLATE/LC_CTYPE alone did not preserve the source ICU provider.
+    // Recover the exact declaration from the hash-pinned real archive.
+    const schema = run(['exec',container,'pg_restore','--create','--schema-only','--file=-','/backup/production.dump']);
+    const declarations = schema.split(/\r?\n/).filter(line => line.startsWith('CREATE DATABASE '));
+    const expected = "CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = icu LOCALE = 'en_US.UTF-8' ICU_LOCALE = 'en-US';";
+    check(declarations.length === 1 && declarations[0] === expected, 'SOURCE_DATABASE_LOCALE_METADATA');
+    sql('template1', declarations[0] + '\nALTER DATABASE postgres OWNER TO postgres;');
+  }
   const emptyTables = Number(sql(name, "SELECT count(*) FROM pg_tables WHERE schemaname NOT IN ('pg_catalog','information_schema');").trim());
   check(emptyTables === 0, 'FRESH_EMPTY_DATABASE_REQUIRED');
   check(Number(sql(name,"SELECT count(*) FROM pg_namespace WHERE nspname NOT IN ('pg_catalog','information_schema','public') AND nspname !~ '^pg_toast';")) === 0, 'EMPTY_SCHEMA_REQUIRED');

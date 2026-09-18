@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { check, directory, hash, json, payload, read, root, stable } from './common.mjs';
 
 export function measuredBundle() {
-  const files = ['common.mjs','session.mjs','catalog.mjs','validators.mjs','engine.mjs','production.mjs','seal.mjs','cli.mjs','contract.json'].map(name => `${directory}/${name}`);
+  const files = ['common.mjs','session.mjs','catalog.mjs','validators.mjs','engine.mjs','production.mjs','seal.mjs','cli.mjs','contract.json','local.mjs','restore.mjs','fingerprint_rehearsal.mjs'].map(name => `${directory}/${name}`);
   files.push('tool/production_taxonomy/real_contract_checks.mjs', 'tool/production_taxonomy/real_restore_lib.mjs',
     'tool/taxonomy_migration/lib.mjs', 'docs/TAXONOMY_W36_CATEGORY_IMPORT.csv', 'docs/TAXONOMY_W36_ACTIVATION_QUALIFICATION.csv',
     'docs/data/production_20_product_canonical_mapping.csv', 'docs/data/w52h_r_source_restore_metadata.json');

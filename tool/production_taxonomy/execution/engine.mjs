@@ -29,6 +29,10 @@ async function transaction(db, operation, readOnly = false) {
 export async function readPreflight(db, backup) { return transaction(db, () => preflight(db, backup), true); }
 export async function readPostflight(db) { return transaction(db, () => postflight(db), true); }
 export async function apply0012(db, backup) {
+  // Mandatory even when the caller skipped the separate CLI preflight command.
+  // Drift fails in READ ONLY before any READ WRITE transaction or table lock.
+  // The locked preflight below remains to catch changes between these snapshots.
+  const readonlyPreflight = await readPreflight(db, backup);
   return transaction(db, async () => {
     const before = await preflight(db, backup);
     const application = payload();
@@ -38,7 +42,7 @@ export async function apply0012(db, backup) {
     await db.exec(`INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES (${literal(version)},${literal(migrationName)},${literal([application.sql])}::text[]);`);
     after.ledger = await verifyEntry(db);
     check((await ledger(db)).length === contract().ledger_baseline.length + 1, 'LEDGER_COUNT_AFTER_APPLY');
-    return { result: 'PASS', before, after, applied_only: version, payload_sha256: application.sha256 };
+    return { result: 'PASS', readonly_preflight: readonlyPreflight, before, after, applied_only: version, payload_sha256: application.sha256 };
   });
 }
 

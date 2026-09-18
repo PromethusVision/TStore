@@ -24,7 +24,10 @@ export async function checkLegacy(db, state = 'baseline') {
   const rows = await ledger(db);
   check(stable(rows.filter(row => row.version !== version)) === stable(expected.ledger_baseline), 'HISTORICAL_LEDGER_DRIFT');
   const hashes = catalogHashes(await catalog(db));
-  check(stable(hashes) === stable(state === 'baseline' ? expected.catalog_before : expected.catalog_after), 'SCHEMA_FINGERPRINT');
+  const expectedHashes = state === 'baseline' ? expected.catalog_before : expected.catalog_after;
+  const mismatches = Object.keys(expectedHashes).filter(key => hashes[key] !== expectedHashes[key]);
+  check(stable(Object.keys(hashes).sort()) === stable(Object.keys(expectedHashes).sort()), 'SCHEMA_FINGERPRINT_COMPONENTS');
+  check(mismatches.length === 0, `SCHEMA_FINGERPRINT_${state.toUpperCase()}_${mismatches.join('_').toUpperCase()}`);
   await legacyContract(db);
   return counts;
 }
