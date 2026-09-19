@@ -8,17 +8,20 @@ import {removeTester,containAndRollback} from './containment.mjs';
 import {baseline} from './validators.mjs';
 import {transaction} from './transaction.mjs';
 import {failures} from './failure-tests.mjs';
+import {securityFailures} from './security-failure-tests.mjs';
 const path=process.env.W52KBY_PROOF_DIR,rel=relative(root,path??root),seal=process.env.W52KBY_SEAL_SHA256;
 check(isAbsolute(path??'')&&(rel==='..'||rel.startsWith('..'+sep)||isAbsolute(rel)),'PRIVATE_PROOF_DIRECTORY');mkdirSync(path,{recursive:true});
-const h=new Harness(),result={format:'w52k-by-real-copy-proof-v1',result:'FAIL',started_at_utc:new Date().toISOString(),source_backup_sha256:latestBackupHash,package_sha256:seal,production_accessed:false,production_write_performed:false,development_accessed:false};
+const h=new Harness(),result={format:'w52k-ca-real-copy-proof-v1',result:'FAIL',started_at_utc:new Date().toISOString(),source_backup_sha256:latestBackupHash,package_sha256:seal,production_accessed:false,production_write_performed:false,development_accessed:false};
 try{
  result.seal_before=verify(seal);await h.bootstrap();console.log('BY_FRESH_RESTORE_AND_0012: PASS');
  result.restore={toc_entries:h.restore.toc_entries,omitted:h.restore.omitted,restored_owner_acl:h.restore.restored_owner_acl,source_roles_memberships:h.restore.source_roles_memberships,container_identity_sha256:hash(h.restore.isolation.container_id),network:h.restore.isolation.network,ports:h.restore.isolation.ports,backup_readonly:h.restore.isolation.backup_readonly,image_digest:h.restore.isolation.image_digest};
+ result.platform_reconstruction=h.restore.reconstruction;
  // Catch a successful grant-path regression before the longer fault matrix.
  await h.reset();const smoke=await deployStaged(h.ctx,seal,h.handle,h.backup);
  check(smoke.result==='PASS','INITIAL_STAGED_DEPLOY');
  check((await containAndRollback(h.ctx,seal,h.ids[0])).result==='ROLLED_BACK','INITIAL_STAGED_ROLLBACK');
  result.initial_staged_round_trip='PASS';console.log('BY_INITIAL_STAGED_ROUND_TRIP: PASS');
+ result.security_failure_tests=await securityFailures(h,seal);
  result.failure_tests=await failures(h,seal);
  await h.reset();const legacy=await h.client.legacy();result.identity={...h.handle};
  result.preflight=await readPreflight(h.ctx,seal,h.handle);

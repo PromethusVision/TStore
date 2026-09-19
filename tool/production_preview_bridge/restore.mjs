@@ -1,6 +1,7 @@
 import { guard, source, sql, run, container, stableJson } from './local.mjs';
 import { check } from '../production_taxonomy/execution/common.mjs';
-export async function restore() {
+import {reconstructPlatform} from './platform-reconstruction.mjs';
+export async function restore({reconcileSecurity=false}={}) {
   const isolation = guard();
   const name = 'postgres';
   {
@@ -56,5 +57,6 @@ export async function restore() {
   run(args,ordinary.join('\n')+'\n');
   console.log('LOCAL_RESTORE_OBJECTS_COMPLETE');
   run([...args.slice(0,-1),'--use-set-session-authorization',args.at(-1)],triggers.join('\n')+'\n');
-  return {result:'PASS', isolation, toc_entries:entries.length, omitted:0, restored_owner_acl:true, source_roles_memberships:'PASS', duration_ms:Date.now()-started};
+  const reconstruction=reconcileSecurity?reconstructPlatform():null;
+  return {result:'PASS', isolation, toc_entries:entries.length, omitted:0, restored_owner_acl:true, source_roles_memberships:'PASS', reconstruction, duration_ms:Date.now()-started};
 }

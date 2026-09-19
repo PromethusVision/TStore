@@ -1,6 +1,6 @@
 {
-  "format": "w52k-by-runtime-seal-v1",
-  "authority_main": "ddb0bef7c0d0941c736d708540aafed815903dcd",
+  "format": "w52k-ca-runtime-seal-v1",
+  "authority_main": "c978ed774be26eafdb7f60fbeff40fca1b21bad8",
   "encoding": "UTF-8, CRLF normalized to LF",
   "inventory": [
     {
@@ -54,8 +54,8 @@
     {
       "path": "tool/production_preview_bridge/execution/catalog.mjs",
       "role": "runtime-security-dependency",
-      "size": 4398,
-      "sha256": "21f3892425167b1d9646c94e010f31be1f2c0ff1756b407b9edae1f88dcf6727"
+      "size": 4637,
+      "sha256": "75ed78eb322f748973cfd221d44e691806e11fbdda86b78a7399114ece8a1a09"
     },
     {
       "path": "tool/production_preview_bridge/execution/common.mjs",
@@ -66,14 +66,26 @@
     {
       "path": "tool/production_preview_bridge/execution/contract.json",
       "role": "bridge-schema-contract",
-      "size": 4167,
-      "sha256": "16ecfe50c111aeb4bb0669ed0be51292859db695a155bc7a018266fcdb58585a"
+      "size": 4281,
+      "sha256": "e3e64c13afb517ddfb5f07ce25a63e47e17af29ff67e727e51d3815b26c910dc"
     },
     {
       "path": "tool/production_preview_bridge/execution/rpc-checks.mjs",
       "role": "runtime-security-dependency",
       "size": 5718,
       "sha256": "0cd7e1e07b95ae430c1b3dc79ca7208b6a2e0898eb0e831d027af37295a9e479"
+    },
+    {
+      "path": "tool/production_preview_bridge/execution/security-baseline.json",
+      "role": "reviewed-object-security-baseline",
+      "size": 127428,
+      "sha256": "66c9f15dda9670c06f6097b3ad7f443430d3a913657f6d0af918100d8a82f838"
+    },
+    {
+      "path": "tool/production_preview_bridge/execution/security-semantics.mjs",
+      "role": "runtime-security-dependency",
+      "size": 5872,
+      "sha256": "52fc072d9a3073ed41e7e7c321109a14601eeddfc5808566a2e85742ad1b9d43"
     },
     {
       "path": "tool/production_preview_bridge/execution/validators.mjs",
@@ -91,7 +103,7 @@
       "path": "tool/production_preview_bridge/live_v2/common.mjs",
       "role": "runtime-security-dependency",
       "size": 899,
-      "sha256": "9076a3005fbb4c0be5ff0771fe5db6526bcdfcc6c3eb22c468c4ef4b3a7eec12"
+      "sha256": "0ebd4b6d614d924ed305421b86e8051e3d6ce883d58fe35d813e7df98356595c"
     },
     {
       "path": "tool/production_preview_bridge/live_v2/containment.mjs",
@@ -126,14 +138,14 @@
     {
       "path": "tool/production_preview_bridge/live_v2/runtime-manifest.json",
       "role": "runtime-operations-and-ownership",
-      "size": 856,
-      "sha256": "558414532dfbdf73db10adc804541c28fcfcf93b5fb406dfdf10a1f63f719257"
+      "size": 1258,
+      "sha256": "434847b16e4dc01ad123590e1b6a4aafdc403edd68f1e7b1021510e1a9a6320f"
     },
     {
       "path": "tool/production_preview_bridge/live_v2/seal.mjs",
       "role": "seal-verifier",
-      "size": 3089,
-      "sha256": "1a94c81bfbca0049402acbf6787be281a00872e2335e0f8747f45f58d97062f1"
+      "size": 3384,
+      "sha256": "3a7451de27d2413bb24f91af583867c1c3fc558f9db9f0aebea5d99446baf035"
     },
     {
       "path": "tool/production_preview_bridge/live_v2/transaction.mjs",
@@ -146,6 +158,24 @@
       "role": "runtime-security-dependency",
       "size": 2337,
       "sha256": "c11615c1c37e6bb699b80a87ea3f02dd0a5f60ec1c02aeb261d7d6e376aa6db8"
+    },
+    {
+      "path": "tool/production_preview_bridge/local.mjs",
+      "role": "runtime-security-dependency",
+      "size": 5005,
+      "sha256": "2dec8e49965fd871426f0385e64eac81f8cabb53cdb09b03f0a805f8881874eb"
+    },
+    {
+      "path": "tool/production_preview_bridge/platform-reconstruction.mjs",
+      "role": "isolated-platform-reconstruction-only",
+      "size": 4432,
+      "sha256": "18c495a1f2cb0e94026f1fb06ff86c775a61640451cf4fecbab15e0e0909a69d"
+    },
+    {
+      "path": "tool/production_preview_bridge/restore.mjs",
+      "role": "isolated-complete-archive-restore-only",
+      "size": 5728,
+      "sha256": "44650e8e509d11f599c02bb6c51f5e5965a7d593d2f91664d8cc71b5b171d656"
     },
     {
       "path": "tool/production_preview_bridge/rollback.sql",

@@ -1,8 +1,9 @@
-# W52K-BY staged private-preview executor
+# W52K-CA reconciled security baseline and staged private-preview executor
 
-This package supersedes the BX live orchestration, not the immutable 0013 SQL
-payload. It must be used only under a separately authorized live task. BY itself
-uses network-disabled local copies of an existing backup and performs no live
+This revision preserves BY staged orchestration and the immutable 0013 SQL
+payload while replacing the restored security reference and semantic comparison.
+It must be used only under a separately authorized live task. CA validation uses
+network-disabled local copies of an existing backup and performs no live
 Production or Development access.
 
 ## Trust and identity inputs
@@ -12,7 +13,33 @@ the entrypoint, all transitive runtime dependencies, validators, frozen SQL,
 runtime manifest and the data files actually read by those validators. Tests,
 this README and the new result documents are outside the runtime seal. Runtime
 verification never rebuilds the seal. The authority is main
-`ddb0bef7c0d0941c736d708540aafed815903dcd`.
+`c978ed774be26eafdb7f60fbeff40fca1b21bad8`.
+
+CA retains the BY identity, Stage A/B, containment and bridge payload semantics.
+Its new seal also covers the explicit local-only restore/reconstruction helper
+and reviewed security baseline. Those helpers are sealed provenance inputs, not
+imports of the live CLI. The old BX/BY seals do not authorize this changed package.
+Use only the new externally approved CA seal for a separately authorized retry.
+
+The baseline identifies every audited security object, with the BZ capture hash
+and six reconstructed properties. Local restore first preserves every original
+archive entry, then reconstructs the two reviewed GraphQL USAGE ACLs, three
+extension owners and read-only role default. PostgreSQL 17 has no
+[ALTER EXTENSION OWNER operation](https://www.postgresql.org/docs/17/sql-alterextension.html).
+The isolated helper therefore updates only the three named extension owner
+fields and their ownership dependencies, after checking exact source versions,
+schemas and previous owners. It does not promote a role, alter extension member
+objects or rewrite the archive. This is explicit automated platform metadata
+reconstruction before the rehearsal, never a manual repair during the staged
+flow. The live comparator asserts these properties and cannot import or execute
+their reconstruction.
+
+Only semantic ACL ordering, unique role-config key order, the audited Auth
+timeout units, and three effective logging settings are normalized. Inheritance
+requires a proven none server default, with no session/client/user masking or
+relevant database-role override. Other values and all owner/grant options remain
+significant. New override checks are evaluated during the next authorized live
+preflight; CA does not make a new Production connection.
 
 For grant operations, the owner supplies the absolute path of an **existing**
 Flutter Windows `shared_preferences.json` outside the repository. The helper
@@ -135,8 +162,14 @@ isolated rehearsal and are removed before the final archive-data comparison.
 The mock Auth endpoint validates signatures against a local throwaway signer;
 it is explicitly not evidence of a live Production Auth response.
 
-Run rehearsal with `W52KB_DOCKER`, `W52KB_CONTAINER` (`w52kb-byone` or
-`w52kb-bytwo`), `W52KB_DUMP`, `W52KBY_PROOF_DIR` (outside repo), and the approved
+Run rehearsal with `W52KB_DOCKER`, `W52KB_CONTAINER` (`w52kb-caone` or
+`w52kb-catwo`), `W52KB_DUMP`, `W52KBY_PROOF_DIR` (outside repo), and the approved
 `W52KBY_SEAL_SHA256`. No Production transport is used. The result documents retain
 only sanitized counts, assertions, hashes and outcomes, never session data,
 personal paths, raw backup data or account identifiers.
+
+`prepare-security.mjs` is a separate local-only preparation command restricted to
+`w52kb-caprepare`. It requires the reviewed baseline already present, checks all
+15 normalized security components against its object-level metadata, and records
+the before/after hashes using the immutable bridge payload in a rolled-back
+local transaction. It cannot silently adopt an unmatched local or live hash.

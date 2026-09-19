@@ -1,6 +1,6 @@
 {
-  "format": "w52k-bx-schema-security-v1",
-  "source": "Newest real pre-0012 archive; exact reviewed 0012 reconstituted locally",
+  "format": "w52k-ca-semantic-schema-security-v1",
+  "source": "Hash-pinned real pre-0012 archive; unchanged 0012; explicit reviewed six-property local platform reconstruction; semantic before matches every verified BZ live security object.",
   "before": {
     "public": {
       "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
@@ -12,12 +12,12 @@
       "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
     },
     "security": {
-      "schemas": "4b68fa5c72013a4b22852a6122941d544594f295ecfc3cf147b8fc5032c750fd",
-      "roles": "3825a9bec8bee1abc5178645237a467aa4f9d7effebafb728b6774299e27ea15",
+      "schemas": "d14805169f812d9cf740f6236a23a6a30b9008362b12868c1061c4182b8d7895",
+      "roles": "ffa705d34db2e9ca8edfe49e47d8090512905536f13ceb5c1bd6f156d0d5a5ef",
       "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
-      "defaults": "cbae16ee344c9f8c5a31e905bebe933aeb73ede768544531dc63b718d6cbf294",
-      "authFunctions": "c29a2a91095bda8a9c8084dfbd0df264b308df71f67a3a801b5c57f9ea6922a3",
-      "extensions": "930a5ff15087018b8d632a3e709c2af92adf6c6ac1ad0d83617267e15e1c6907",
+      "defaults": "b222bafa6635317f4a6ffca176aeb113db77df114f70cf851dd531e5ebc3b6ca",
+      "authFunctions": "abb830e674b101c556f0bb4d1cf75875ad640b65538b93016f108d96de3104c8",
+      "extensions": "4deeae837b35bd5a24fc54e28f5f328dc54ba9162002b89b814f6634843d80ba",
       "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
       "privateRelations": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "privateColumns": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
@@ -40,12 +40,12 @@
       "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
     },
     "security": {
-      "schemas": "3091981cdddb27f8a34364d9802c488a2e5f23041c61eb845a966836eb19e5f9",
-      "roles": "3825a9bec8bee1abc5178645237a467aa4f9d7effebafb728b6774299e27ea15",
+      "schemas": "3338959d653a6c4d04de3d0673267ecdae36bb3ddbe71631ac99b5be1d8ea81c",
+      "roles": "ffa705d34db2e9ca8edfe49e47d8090512905536f13ceb5c1bd6f156d0d5a5ef",
       "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
-      "defaults": "cbae16ee344c9f8c5a31e905bebe933aeb73ede768544531dc63b718d6cbf294",
-      "authFunctions": "c29a2a91095bda8a9c8084dfbd0df264b308df71f67a3a801b5c57f9ea6922a3",
-      "extensions": "930a5ff15087018b8d632a3e709c2af92adf6c6ac1ad0d83617267e15e1c6907",
+      "defaults": "b222bafa6635317f4a6ffca176aeb113db77df114f70cf851dd531e5ebc3b6ca",
+      "authFunctions": "abb830e674b101c556f0bb4d1cf75875ad640b65538b93016f108d96de3104c8",
+      "extensions": "4deeae837b35bd5a24fc54e28f5f328dc54ba9162002b89b814f6634843d80ba",
       "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
       "privateRelations": "6100752a272e9452247f7bb3ba0da071a84b3efd13270222f1c8c8007638df80",
       "privateColumns": "d3c0ec5c6bad938a9a9bb7c6ed9918689781ecc52b06c730d7b2ab0a25ad19aa",
