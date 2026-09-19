@@ -16,6 +16,13 @@ const _expectedMigrationFiles = <String>[
   '20260830001100_0011_canonical_taxonomy_contract_v2.sql',
 ];
 
+// Production uses 0001..0009 + 0012 + 0013. It must never run the
+// mutually exclusive Development 0010/0011 bootstrap over that schema.
+const _productionOnlyMigrationFiles = <String>[
+  '20260916001200_0012_production_canonical_side_by_side.sql',
+  '20260919001300_0013_production_canonical_private_preview.sql',
+];
+
 const _baselinePublicTables = <String>{
   'addresses',
   'banners',
@@ -83,19 +90,25 @@ const _forbiddenPlpgsqlLocalIdentifiers = <String>{
 };
 
 void main() {
+  late List<File> allMigrationFiles;
   late List<File> migrationFiles;
   late String canonicalSql;
   late String baselineCanonicalSql;
   late String taxonomySql;
 
   setUpAll(() {
-    migrationFiles =
+    allMigrationFiles =
         Directory('supabase/migrations')
             .listSync()
             .whereType<File>()
             .where((file) => file.path.endsWith('.sql'))
             .toList()
           ..sort((left, right) => left.path.compareTo(right.path));
+    migrationFiles = allMigrationFiles
+        .where(
+          (file) => !_productionOnlyMigrationFiles.contains(_basename(file)),
+        )
+        .toList();
     canonicalSql = migrationFiles
         .map((file) => file.readAsStringSync())
         .join('\n');
@@ -115,6 +128,11 @@ void main() {
   test(
     'canonical migration filenames define the required dependency order',
     () {
+      // Keep an exact, exhaustive inventory; unknown files cannot escape tests.
+      expect(allMigrationFiles.map(_basename).toList(), [
+        ..._expectedMigrationFiles,
+        ..._productionOnlyMigrationFiles,
+      ]);
       expect(migrationFiles.map(_basename).toList(), _expectedMigrationFiles);
 
       for (final file in migrationFiles) {

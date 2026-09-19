@@ -9,9 +9,11 @@ class BrandsCubit extends Cubit<BrandsState> {
   BrandsCubit({required this.getBrandsUsecase}) : super(BrandsInitial());
 
   Future<void> getBrands() async {
+    if (isClosed) return;
     emit(BrandsLoading());
 
     final result = await getBrandsUsecase(const NoParams());
+    if (isClosed) return;
 
     result.fold(
       (error) => emit(BrandsError(error)),

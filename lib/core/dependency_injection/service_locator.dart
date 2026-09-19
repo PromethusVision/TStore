@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
+import 'package:t_store/features/shop/data/repositories/production_preview_product_repository.dart';
+import 'package:t_store/features/shop/data/services/production_preview_taxonomy_adapter.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 
@@ -161,10 +163,23 @@ Future<void> setupServiceLocator({
       ),
   CanonicalTaxonomyContractAdapter? verifiedCanonicalTaxonomyAdapter,
   TaxonomyScopedProductRepository? verifiedTaxonomyScopedProductRepository,
+  ProductionPreviewTaxonomyAdapter? productionPreviewAdapter,
+  ProductionPreviewProductRepository? productionPreviewProducts,
 }) async {
   final taxonomyPlan = const TaxonomyDependencyPlanner().resolve(
     taxonomyConfiguration,
   );
+  if (taxonomyPlan.registerProductionPreviewAdapter &&
+      (productionPreviewAdapter == null ||
+          !productionPreviewAdapter.hasCurrentAuthorization ||
+          productionPreviewAdapter.authorizedSubject !=
+              taxonomyConfiguration.productionPreviewAuthorization?.subject ||
+          productionPreviewProducts == null ||
+          productionPreviewProducts.adapter != productionPreviewAdapter)) {
+    throw const TaxonomyDependencyConfigurationException(
+      'Production preview bindings require current server authorization.',
+    );
+  }
   // ==================== Core ====================
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
   sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
@@ -184,12 +199,14 @@ Future<void> setupServiceLocator({
     sl.registerLazySingleton<CanonicalTaxonomyRepository>(
       () => CanonicalTaxonomyRepositoryImpl(
         adapter:
+            productionPreviewAdapter ??
             verifiedCanonicalTaxonomyAdapter ??
             sl<SupabaseCanonicalTaxonomyRpcAdapter>(),
       ),
     );
     sl.registerLazySingleton<TaxonomyScopedProductRepository>(
       () =>
+          productionPreviewProducts ??
           verifiedTaxonomyScopedProductRepository ??
           CanonicalTaxonomyScopedProductRepositoryImpl(
             supabaseService: sl(),
@@ -232,7 +249,9 @@ Future<void> setupServiceLocator({
   // ==================== Products ====================
   // Repository
   sl.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(supabaseService: sl()),
+    () => taxonomyPlan.registerProductionPreviewAdapter
+        ? productionPreviewProducts!
+        : ProductRepositoryImpl(supabaseService: sl()),
   );
 
   // Use Cases
