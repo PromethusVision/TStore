@@ -1,0 +1,598 @@
+{
+  "format": "w52k-bz-schema-security-diff-v1",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "live_captured_at_utc": "2026-09-19T16:41:38.713Z",
+  "expected_source": "Exact hash-pinned archive and unchanged restore/0012 pipeline; recovered hashes match every sealed contract.before component.",
+  "classification_summary": {
+    "MATERIAL_SECURITY_DRIFT": 6,
+    "BENIGN_DETERMINISTIC_NORMALIZATION_BUG": 21,
+    "BENIGN_PLATFORM_VARIANCE": 3
+  },
+  "count_definition": "One differing catalog object and property cell; an ACL or rolconfig array is one property, with every entry shown. No objects are missing and no row-order-only differences exist.",
+  "differing_object_count": 30,
+  "differing_property_count": 30,
+  "fingerprint_components": {
+    "expected": {
+      "public": {
+        "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
+        "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+        "constraints": "46317008300232f9fd6f1418794f7e3de204e923995fac5545ce6790c44aec16",
+        "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+        "functions": "782e485b915c5fbf7456804ffda599f5e0901e8784a17da62398e554372ce418",
+        "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+        "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+      },
+      "security": {
+        "schemas": "4b68fa5c72013a4b22852a6122941d544594f295ecfc3cf147b8fc5032c750fd",
+        "roles": "3825a9bec8bee1abc5178645237a467aa4f9d7effebafb728b6774299e27ea15",
+        "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
+        "defaults": "cbae16ee344c9f8c5a31e905bebe933aeb73ede768544531dc63b718d6cbf294",
+        "authFunctions": "c29a2a91095bda8a9c8084dfbd0df264b308df71f67a3a801b5c57f9ea6922a3",
+        "extensions": "930a5ff15087018b8d632a3e709c2af92adf6c6ac1ad0d83617267e15e1c6907",
+        "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
+        "privateRelations": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateColumns": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateConstraints": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privatePolicies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateTriggers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateFunctions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateIndexes": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "columnGrants": "144beeacce0c001b07bc12aaec9b844d38770e435993ee7fc847e7df8b52fef6"
+      }
+    },
+    "live": {
+      "public": {
+        "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
+        "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+        "constraints": "46317008300232f9fd6f1418794f7e3de204e923995fac5545ce6790c44aec16",
+        "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+        "functions": "782e485b915c5fbf7456804ffda599f5e0901e8784a17da62398e554372ce418",
+        "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+        "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+      },
+      "security": {
+        "schemas": "e9c251cfae2344f009990a99903a581e54ed53d9e9ddeff0d8f6119758feec3a",
+        "roles": "16fb67fa64f13fdac18dfcda49f2b027b5d14b1c23e24395f8b29f29ad35feba",
+        "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
+        "defaults": "d3565078b90623a25740a1cfa495885b618ffb9a816e21f907c6eb200aef4021",
+        "authFunctions": "659aca9914edbdd4e34f2fade9ae2a4a093f974d4963f4a8e30b459128e2784e",
+        "extensions": "4deeae837b35bd5a24fc54e28f5f328dc54ba9162002b89b814f6634843d80ba",
+        "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
+        "privateRelations": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateColumns": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateConstraints": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privatePolicies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateTriggers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateFunctions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "privateIndexes": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "columnGrants": "144beeacce0c001b07bc12aaec9b844d38770e435993ee7fc847e7df8b52fef6"
+      }
+    }
+  },
+  "matching_public_components": [
+    "relations",
+    "columns",
+    "constraints",
+    "indexes",
+    "functions",
+    "triggers",
+    "policies"
+  ],
+  "differing_components": [
+    "security.schemas",
+    "security.roles",
+    "security.defaults",
+    "security.authFunctions",
+    "security.extensions"
+  ],
+  "object_property_diff": [
+    {
+      "OBJECT_CLASS": "schemas",
+      "SCHEMA": "graphql",
+      "OBJECT_NAME": "graphql",
+      "PROPERTY": "acl",
+      "EXPECTED": null,
+      "LIVE": "{supabase_admin=UC/supabase_admin,postgres=U*/supabase_admin,anon=U/supabase_admin,authenticated=U/supabase_admin,service_role=U/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Real semantic privilege difference: the sealed restored baseline has owner-only default ACL; live also grants USAGE to anon, authenticated and service_role, plus postgres USAGE WITH GRANT OPTION. The archive has CREATE/OWNER schema metadata but no top-level GRANT/REVOKE for these schemas. Direct bridge/0012 functions do not use GraphQL, but this changes a security boundary and must not be silently accepted."
+    },
+    {
+      "OBJECT_CLASS": "schemas",
+      "SCHEMA": "graphql_public",
+      "OBJECT_NAME": "graphql_public",
+      "PROPERTY": "acl",
+      "EXPECTED": null,
+      "LIVE": "{supabase_admin=UC/supabase_admin,postgres=U*/supabase_admin,anon=U/supabase_admin,authenticated=U/supabase_admin,service_role=U/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Real semantic privilege difference: the sealed restored baseline has owner-only default ACL; live also grants USAGE to anon, authenticated and service_role, plus postgres USAGE WITH GRANT OPTION. The archive has CREATE/OWNER schema metadata but no top-level GRANT/REVOKE for these schemas. Direct bridge/0012 functions do not use GraphQL, but this changes a security boundary and must not be silently accepted."
+    },
+    {
+      "OBJECT_CLASS": "roles",
+      "SCHEMA": "",
+      "OBJECT_NAME": "authenticator",
+      "PROPERTY": "rolconfig",
+      "EXPECTED": [
+        "lock_timeout=8s",
+        "session_preload_libraries=supautils, safeupdate",
+        "statement_timeout=8s"
+      ],
+      "LIVE": [
+        "session_preload_libraries=supautils, safeupdate",
+        "statement_timeout=8s",
+        "lock_timeout=8s"
+      ],
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Same three unique GUC keys and exact values in a different array order. Timeout and preload-library settings are preserved."
+    },
+    {
+      "OBJECT_CLASS": "roles",
+      "SCHEMA": "",
+      "OBJECT_NAME": "supabase_admin",
+      "PROPERTY": "rolconfig",
+      "EXPECTED": [
+        "search_path=\"$user\", public, auth, extensions",
+        "statement_timeout=0"
+      ],
+      "LIVE": [
+        "search_path=\"$user\", public, auth, extensions",
+        "log_statement=none",
+        "statement_timeout=0"
+      ],
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_PLATFORM_VARIANCE",
+      "NOTES": "Live explicitly stores log_statement=none. Fresh source-faithful restore connections for this role prove inherited effective log_statement=none. Current effective logging is identical; this is not a license to ignore future logging values. For supabase_auth_admin, 60000 milliseconds and 1min are also equivalent; key order is immaterial."
+    },
+    {
+      "OBJECT_CLASS": "roles",
+      "SCHEMA": "",
+      "OBJECT_NAME": "supabase_auth_admin",
+      "PROPERTY": "rolconfig",
+      "EXPECTED": [
+        "idle_in_transaction_session_timeout=1min",
+        "search_path=auth"
+      ],
+      "LIVE": [
+        "search_path=auth",
+        "idle_in_transaction_session_timeout=60000",
+        "log_statement=none"
+      ],
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_PLATFORM_VARIANCE",
+      "NOTES": "Live explicitly stores log_statement=none. Fresh source-faithful restore connections for this role prove inherited effective log_statement=none. Current effective logging is identical; this is not a license to ignore future logging values. For supabase_auth_admin, 60000 milliseconds and 1min are also equivalent; key order is immaterial."
+    },
+    {
+      "OBJECT_CLASS": "roles",
+      "SCHEMA": "",
+      "OBJECT_NAME": "supabase_read_only_user",
+      "PROPERTY": "rolconfig",
+      "EXPECTED": null,
+      "LIVE": [
+        "default_transaction_read_only=on"
+      ],
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Live role explicitly defaults transactions to READ ONLY; restored role has no setting and an actual local login defaults to READ WRITE. Source role-settings metadata omitted this key. This is a real operational safeguard difference; live is stricter than the sealed restore baseline."
+    },
+    {
+      "OBJECT_CLASS": "roles",
+      "SCHEMA": "",
+      "OBJECT_NAME": "supabase_storage_admin",
+      "PROPERTY": "rolconfig",
+      "EXPECTED": [
+        "search_path=storage"
+      ],
+      "LIVE": [
+        "search_path=storage",
+        "log_statement=none"
+      ],
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_PLATFORM_VARIANCE",
+      "NOTES": "Live explicitly stores log_statement=none. Fresh source-faithful restore connections for this role prove inherited effective log_statement=none. Current effective logging is identical; this is not a license to ignore future logging values. For supabase_auth_admin, 60000 milliseconds and 1min are also equivalent; key order is immaterial."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "public",
+      "OBJECT_NAME": "postgres | public | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=Dxtm/postgres,authenticated=Dxtm/postgres,postgres=arwdDxtm/postgres,service_role=Dxtm/postgres}",
+      "LIVE": "{postgres=arwdDxtm/postgres,anon=Dxtm/postgres,authenticated=Dxtm/postgres,service_role=Dxtm/postgres}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "storage",
+      "OBJECT_NAME": "postgres | storage | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=rwU/postgres,authenticated=rwU/postgres,postgres=rwU/postgres,service_role=rwU/postgres}",
+      "LIVE": "{postgres=rwU/postgres,anon=rwU/postgres,authenticated=rwU/postgres,service_role=rwU/postgres}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "storage",
+      "OBJECT_NAME": "postgres | storage | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=X/postgres,authenticated=X/postgres,postgres=X/postgres,service_role=X/postgres}",
+      "LIVE": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "storage",
+      "OBJECT_NAME": "postgres | storage | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "LIVE": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql",
+      "OBJECT_NAME": "supabase_admin | graphql | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "LIVE": "{postgres=rwU/supabase_admin,anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql",
+      "OBJECT_NAME": "supabase_admin | graphql | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin}",
+      "LIVE": "{postgres=X/supabase_admin,anon=X/supabase_admin,authenticated=X/supabase_admin,service_role=X/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql",
+      "OBJECT_NAME": "supabase_admin | graphql | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "LIVE": "{postgres=arwdDxtm/supabase_admin,anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql_public",
+      "OBJECT_NAME": "supabase_admin | graphql_public | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "LIVE": "{postgres=rwU/supabase_admin,anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql_public",
+      "OBJECT_NAME": "supabase_admin | graphql_public | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin}",
+      "LIVE": "{postgres=X/supabase_admin,anon=X/supabase_admin,authenticated=X/supabase_admin,service_role=X/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "graphql_public",
+      "OBJECT_NAME": "supabase_admin | graphql_public | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "LIVE": "{postgres=arwdDxtm/supabase_admin,anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "public",
+      "OBJECT_NAME": "supabase_admin | public | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "LIVE": "{postgres=rwU/supabase_admin,anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "public",
+      "OBJECT_NAME": "supabase_admin | public | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin}",
+      "LIVE": "{postgres=X/supabase_admin,anon=X/supabase_admin,authenticated=X/supabase_admin,service_role=X/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "public",
+      "OBJECT_NAME": "supabase_admin | public | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "LIVE": "{postgres=arwdDxtm/supabase_admin,anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "realtime",
+      "OBJECT_NAME": "supabase_admin | realtime | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=rwU/supabase_admin,postgres=rwU/supabase_admin}",
+      "LIVE": "{postgres=rwU/supabase_admin,dashboard_user=rwU/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "realtime",
+      "OBJECT_NAME": "supabase_admin | realtime | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=X/supabase_admin,postgres=X/supabase_admin}",
+      "LIVE": "{postgres=X/supabase_admin,dashboard_user=X/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "realtime",
+      "OBJECT_NAME": "supabase_admin | realtime | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin}",
+      "LIVE": "{postgres=arwdDxtm/supabase_admin,dashboard_user=arwdDxtm/supabase_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "auth",
+      "OBJECT_NAME": "supabase_auth_admin | auth | S",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=rwU/supabase_auth_admin,postgres=rwU/supabase_auth_admin}",
+      "LIVE": "{postgres=rwU/supabase_auth_admin,dashboard_user=rwU/supabase_auth_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "auth",
+      "OBJECT_NAME": "supabase_auth_admin | auth | f",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=X/supabase_auth_admin,postgres=X/supabase_auth_admin}",
+      "LIVE": "{postgres=X/supabase_auth_admin,dashboard_user=X/supabase_auth_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "defaults",
+      "SCHEMA": "auth",
+      "OBJECT_NAME": "supabase_auth_admin | auth | r",
+      "PROPERTY": "defaclacl",
+      "EXPECTED": "{dashboard_user=arwdDxtm/supabase_auth_admin,postgres=arwdDxtm/supabase_auth_admin}",
+      "LIVE": "{postgres=arwdDxtm/supabase_auth_admin,dashboard_user=arwdDxtm/supabase_auth_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "Only ACL array entry order differs. aclexplode tuples (owner/schema/object type/grantee/grantor/privilege/grant option) match exactly; no privilege is added or removed."
+    },
+    {
+      "OBJECT_CLASS": "authFunctions",
+      "SCHEMA": "auth",
+      "OBJECT_NAME": "jwt | ",
+      "PROPERTY": "proacl",
+      "EXPECTED": "{=X/supabase_auth_admin,supabase_auth_admin=X/supabase_auth_admin,postgres=X/supabase_auth_admin,dashboard_user=X/supabase_auth_admin}",
+      "LIVE": "{=X/supabase_auth_admin,postgres=X/supabase_auth_admin,supabase_auth_admin=X/supabase_auth_admin,dashboard_user=X/supabase_auth_admin}",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": true,
+      "0012_RELEVANT": true,
+      "CLASSIFICATION": "BENIGN_DETERMINISTIC_NORMALIZATION_BUG",
+      "NOTES": "auth.jwt() definition, signature, owner and effective EXECUTE grants are identical. Only proacl entry order differs; runtime auth semantics are unchanged."
+    },
+    {
+      "OBJECT_CLASS": "extensions",
+      "SCHEMA": "extensions",
+      "OBJECT_NAME": "pg_stat_statements",
+      "PROPERTY": "owner",
+      "EXPECTED": "supabase_admin",
+      "LIVE": "postgres",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Real ownership difference: restore creates this extension as supabase_admin; live owner is postgres. Archive CREATE EXTENSION statements carry no owner restoration. Extension version and schema match. Ownership is administrative authority, even though no direct bridge RPC or RLS definition differs."
+    },
+    {
+      "OBJECT_CLASS": "extensions",
+      "SCHEMA": "extensions",
+      "OBJECT_NAME": "pgcrypto",
+      "PROPERTY": "owner",
+      "EXPECTED": "supabase_admin",
+      "LIVE": "postgres",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Real ownership difference: restore creates this extension as supabase_admin; live owner is postgres. Archive CREATE EXTENSION statements carry no owner restoration. Extension version and schema match. Ownership is administrative authority, even though no direct bridge RPC or RLS definition differs."
+    },
+    {
+      "OBJECT_CLASS": "extensions",
+      "SCHEMA": "extensions",
+      "OBJECT_NAME": "uuid-ossp",
+      "PROPERTY": "owner",
+      "EXPECTED": "supabase_admin",
+      "LIVE": "postgres",
+      "FINGERPRINT_INCLUDED": true,
+      "SECURITY_RELEVANT": true,
+      "BRIDGE_RELEVANT": false,
+      "0012_RELEVANT": false,
+      "CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+      "NOTES": "Real ownership difference: restore creates this extension as supabase_admin; live owner is postgres. Archive CREATE EXTENSION statements carry no owner restoration. Extension version and schema match. Ownership is administrative authority, even though no direct bridge RPC or RLS definition differs."
+    }
+  ],
+  "semantic_proofs": {
+    "default_acl_effective_sets_equal": true,
+    "auth_and_public_function_effective_grants_equal": true,
+    "relevant_function_security_metadata_equal": true,
+    "auth_public_data_trigger_metadata_equal": true,
+    "types_equal": true,
+    "views_equal": true,
+    "database_locale_and_collation_version_equal": true,
+    "object_row_order_differences": 0,
+    "logging_effective_settings_proof": [
+      {
+        "role": "supabase_admin",
+        "log_statement": "none",
+        "default_transaction_read_only": "off",
+        "idle_in_transaction_session_timeout": "0"
+      },
+      {
+        "role": "supabase_auth_admin",
+        "log_statement": "none",
+        "default_transaction_read_only": "off",
+        "idle_in_transaction_session_timeout": "1min"
+      },
+      {
+        "role": "supabase_storage_admin",
+        "log_statement": "none",
+        "default_transaction_read_only": "off",
+        "idle_in_transaction_session_timeout": "0"
+      },
+      {
+        "role": "supabase_read_only_user",
+        "log_statement": "none",
+        "default_transaction_read_only": "off",
+        "idle_in_transaction_session_timeout": "0"
+      }
+    ],
+    "after_proven_benign_normalization_remaining_material_objects": [
+      "schemas|graphql",
+      "schemas|graphql_public",
+      "roles|supabase_read_only_user",
+      "extensions|pg_stat_statements",
+      "extensions|pgcrypto",
+      "extensions|uuid-ossp"
+    ],
+    "normalization_applied_to_live_guard": false
+  },
+  "supplemental_not_in_fingerprint": {
+    "shared_preload_libraries": {
+      "expected": "pg_stat_statements",
+      "live": "pg_stat_statements, pgaudit, plpgsql, plpgsql_check, pg_cron, pg_net, pgsodium, auto_explain, pg_tle, plan_filter, supabase_vault",
+      "classification": "PLATFORM_RUNTIME_NOT_FULLY_REPRODUCED",
+      "note": "Not a cause of this hash mismatch. Local harness preloads pg_stat_statements and session supautils; the live platform has additional modules. Their complete behavior was not reproduced by the rehearsals."
+    },
+    "collector_default_readonly": {
+      "expected": "off",
+      "live": "on",
+      "note": "Collector/transport setting, not a fingerprint component; live was verified transaction_read_only=on and TLS=true."
+    }
+  },
+  "historical_causation_limit": "The manifest proves current metadata differences, not when live permissions/settings first changed. No account-causation or unauthorized-live-change claim is made."
+}
