@@ -1,0 +1,252 @@
+{
+  "format": "w52k-bz-schema-security-validation-v1",
+  "captured_at_utc": "2026-09-19T17:02:16.240Z",
+  "task_result": {
+    "W52K_BZ_SCHEMA_SECURITY_DIFFERENTIAL": "PASS",
+    "ROOT_CAUSE_IDENTIFIED": "YES",
+    "DIFFERING_OBJECT_COUNT": 30,
+    "DIFFERING_PROPERTY_COUNT": 30,
+    "DIFFERENCE_CLASSIFICATION": "MATERIAL_SECURITY_DRIFT",
+    "MATERIAL_SCHEMA_DIFFERENCE_COUNT": 0,
+    "MATERIAL_SECURITY_DIFFERENCE_COUNT": 6,
+    "TESTER_ACCOUNT_CAUSED_DRIFT": "NOT_PROVEN",
+    "REAL_COPY_GAP_EXPLAINED": "YES",
+    "PUBLIC_CANONICAL_ACTIVATION_CURRENT": "OFF",
+    "FINGERPRINT_CORRECTION_REQUIRED": "YES",
+    "FINGERPRINT_GUARD_WEAKENED": "NO",
+    "EXPLICIT_RLS_POLICY_GRANT_CHECKS_PRESERVED": "PASS",
+    "PRE_WRITE_GATE_PRESERVED": "PASS",
+    "MATERIAL_MISMATCH_STOPS_BEFORE_WRITE": "PASS",
+    "0012_CHANGED": "NO",
+    "LATEST_REAL_COPY_REHEARSAL": "NOT_RUN",
+    "SECOND_CLEAN_REHEARSAL": "NOT_RUN",
+    "ROLLBACK_REHEARSAL": "NOT_RUN",
+    "PRODUCTION_ACCESSED": "READ_ONLY",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "READY_FOR_W52K_B_LIVE_RETRY": "NO"
+  },
+  "authority": {
+    "main": "52740871087aed4fd843f7b93d4ecefd417657f2",
+    "prior_stop_commit": "0ac8fe916db62fbc3a80024ecd26d57b85728c45",
+    "branch": "astra-release/w52k-bz-schema-security-differential"
+  },
+  "seal": {
+    "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+    "files": 33,
+    "unchanged": true,
+    "resealed": false
+  },
+  "provenance": {
+    "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "backup_completed_at_utc": "2026-09-19T00:06:07.493Z",
+    "source_pg": "17.6",
+    "dump_tool": "17.11",
+    "newest_available_backup": true,
+    "archive_predates_0012": true,
+    "immutable_0012_reconstituted_locally": true,
+    "restored": {
+      "toc_entries": 958,
+      "omitted": 0,
+      "owners_acl": true,
+      "roles_memberships": "PASS"
+    },
+    "isolation": {
+      "network": "none",
+      "ports": [],
+      "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+      "backup_readonly": true,
+      "instance_sha256": "75fb43733d8ea6128b84fe0eb055b8bfd24b7778e281c094abeb32520a1da19a"
+    },
+    "expected_sealed_hashes_recovered_exactly": true,
+    "archive_global_role_ddl_count": 0,
+    "archive_graphql_schema_acl_statements": [],
+    "archive_extension_statements": [
+      "CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA extensions;",
+      "CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;",
+      "CREATE EXTENSION IF NOT EXISTS supabase_vault WITH SCHEMA vault;",
+      "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" WITH SCHEMA extensions;"
+    ],
+    "role_seed_source": "docs/data/w52h_r_source_restore_metadata.json",
+    "role_seed_captured_at_utc": "2026-09-16T22:18:07.073066+00:00"
+  },
+  "manifests": {
+    "live_sha256": "7d97aa3e9ad59f791a5959d58efd6aeb75be2e4a7a697f97dd38fa0d1a49a4de",
+    "expected_sha256": "b351be070a182c6cbbb1f0486f15b59ea3abc7cc0b65bec4d832d1030e7d7846",
+    "storage": "<LOCAL_APP_DATA>/EsnaftaVar/w52kbz-audit/",
+    "row_contents_captured": false,
+    "activation": {
+      "public_enabled": false,
+      "preview_enabled": false
+    },
+    "tls": true,
+    "transaction_read_only": "on"
+  },
+  "deterministic_reader": {
+    "result": "PASS",
+    "deterministic_capture": "PASS",
+    "queries_checked": 68,
+    "metadata_only": "PASS",
+    "live_accessed": false,
+    "helper_sha256": {
+      "manifest.mjs": "e0397142b0629691d1b1bf3792f0a6d1cc8bd4be07ea6b497afb59ab4a901b6d",
+      "read-live.mjs": "22605b82beadce81168135a8876c60417a2c62c0c69aa658794548da23adb85e",
+      "read-owner.ps1": "3d90157e2687fb15d8092c6c90c7c71410221e135637fa3a7f222b4ef9856a3e"
+    }
+  },
+  "schema_diff_validation": {
+    "result": "PASS",
+    "all_30_changes_applied_to_expected_reproduce_live_manifest_exactly": true,
+    "unaccounted_fingerprint_differences": 0
+  },
+  "prewrite_failure_tests": {
+    "result": "PASS",
+    "tests": [
+      {
+        "case": "real_material_rls",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "FAIL_MATERIAL",
+        "active_preview_authorizations": 0
+      },
+      {
+        "case": "relevant_grant",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "FAIL_MATERIAL",
+        "active_preview_authorizations": 0
+      },
+      {
+        "case": "relevant_policy",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "FAIL_MATERIAL",
+        "active_preview_authorizations": 0
+      },
+      {
+        "case": "relevant_rpc_signature",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "FAIL_MATERIAL",
+        "active_preview_authorizations": 0
+      },
+      {
+        "case": "irrelevant_acl_order",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_SCHEMA_SECURITY_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "PASS_EQUIVALENT",
+        "active_preview_authorizations": 0
+      },
+      {
+        "case": "nonportable_timeout_spelling",
+        "result": "PASS",
+        "sealed_precheck": "FAIL_CLOSED",
+        "safe_error": "W52JB_BX_SCHEMA_SECURITY_DRIFT",
+        "write_capable_transactions": 0,
+        "bridge_payloads": 0,
+        "analysis_semantic_comparison": "PASS_EQUIVALENT",
+        "active_preview_authorizations": 0
+      }
+    ],
+    "analysis_normalization_only": true,
+    "live_guard_changed": false,
+    "production_accessed": false,
+    "production_write_performed": false
+  },
+  "explicit_security": {
+    "public_relations_rls_force_owner_acl_exact": true,
+    "public_policies_exact": true,
+    "public_rpc_signatures_definitions_security_search_path_exact": true,
+    "auth_rpc_effective_grants_exact": true,
+    "live_preview_bridge_present": false,
+    "live_preview_denial_runtime_test": "NOT_APPLICABLE_BRIDGE_ABSENT",
+    "existing_stage_a_b_denial_security_assertions_unchanged": true,
+    "public_activation_off": true,
+    "canonical_write_exposure_metadata_matches_sealed_0012": true
+  },
+  "tester_impact": {
+    "auth_users_rows_in_fingerprint": false,
+    "auth_sessions_rows_in_fingerprint": false,
+    "auth_public_data_trigger_metadata_matches_expected": true,
+    "normal_row_change_cannot_change_pure_catalog_hash": true,
+    "causal_ddl_audit_trail_available": false,
+    "conclusion": "NOT_PROVEN; no evidence the tester caused the metadata differences."
+  },
+  "correction": {
+    "required": true,
+    "applied": false,
+    "eligible_for_acceptance": false,
+    "reason": "Six semantic security differences prevent accepting the whole drift as benign. Existing guard remains unchanged and fails closed.",
+    "narrow_plan": [
+      "Reproduce separately verified GraphQL ACLs, extension creation ownership and complete role settings in the isolated restore source; do not change Production to resemble an incomplete clone.",
+      "Canonicalize only proven equivalent ACL privilege tuples, unique GUC-key ordering and typed timeout units; preserve grantee, grantor, grant option, owner, schema, object identity and exact values.",
+      "Represent explicit-vs-inherited logging only with a matching effective-setting assertion; never ignore arbitrary rolconfig entries or logging values.",
+      "Retain exact public RLS/policy/RPC/owner/grant checks, public OFF, Stage A committed default-deny and Stage B exact temporary tester checks.",
+      "After the six security discrepancies are explicitly reconciled in the expected source, run two fresh full staged/containment/rollback rehearsals before preparing any new sealed package. No current live retry."
+    ],
+    "blanket_exclusion": false,
+    "current_live_hash_adopted": false,
+    "production_remediation_performed": false
+  },
+  "conditional_rehearsals": {
+    "eligible": false,
+    "reason": "Material security differences; no corrected package approved by evidence. Metadata recovery and prewrite fault tests are not claimed as two successful corrected Stage A/B rollouts.",
+    "full_stage_a_b_rehearsals": 0,
+    "bridge_rollbacks": 0
+  },
+  "cleanup": {
+    "owner_pgpassword_cleared": true,
+    "owner_confirmation_received": true,
+    "production_auth_mutations": 0,
+    "production_storage_mutations": 0,
+    "production_backup_created": false,
+    "production_writes": 0,
+    "local": {
+      "result": "PASS",
+      "owned_containers": [
+        {
+          "name": "w52kb-bzexpected",
+          "removed": true,
+          "network": "none",
+          "backup_readonly": true
+        },
+        {
+          "name": "w52kb-byone",
+          "removed": true,
+          "network": "none",
+          "backup_readonly": true
+        },
+        {
+          "name": "w52kb-bzsettings",
+          "removed": true,
+          "network": "none",
+          "backup_readonly": true
+        }
+      ],
+      "source_backup_unchanged": true
+    }
+  },
+  "evidence_sanitized": {
+    "credentials": false,
+    "jwt": false,
+    "tester_uid": false,
+    "email": false,
+    "pii": false,
+    "row_data": false,
+    "absolute_local_user_paths": false
+  }
+}
