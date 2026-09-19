@@ -14,6 +14,9 @@ const inputs={
  'docs/TAXONOMY_W36_CATEGORY_IMPORT.csv':'runtime-taxonomy-identities',
  'docs/TAXONOMY_W36_ACTIVATION_QUALIFICATION.csv':'runtime-qualification',
  'docs/data/w52h_r_source_restore_metadata.json':'runtime-source-metadata',
+ 'tool/production_preview_bridge/execution/security-baseline.json':'reviewed-object-security-baseline',
+ 'tool/production_preview_bridge/platform-reconstruction.mjs':'isolated-platform-reconstruction-only',
+ 'tool/production_preview_bridge/restore.mjs':'isolated-complete-archive-restore-only',
 };
 export function measure(){
  const files=new Map(Object.entries(inputs));
@@ -31,12 +34,12 @@ export function measure(){
 export function verify(expected){
  check(/^[a-f0-9]{64}$/.test(expected??''),'EXTERNAL_SEAL_HASH_REQUIRED');
  check(hash(read(`${directory}/seal.json`))===expected,'PACKAGE_HASH');
- const manifest=json(`${directory}/seal.json`);check(manifest.authority_main===authority&&manifest.format==='w52k-by-runtime-seal-v1','SEAL_AUTHORITY');
+ const manifest=json(`${directory}/seal.json`);check(manifest.authority_main===authority&&manifest.format==='w52k-ca-runtime-seal-v1','SEAL_AUTHORITY');
  check(stable(manifest.inventory)===stable(measure()),'RUNTIME_INPUT_DRIFT');payload();payload(true);
  return {result:'PASS',sha256:expected,files:manifest.inventory.length};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  const [operation,expected]=process.argv.slice(2);check(['build','verify'].includes(operation),'SEAL_OPERATION');
- if(operation==='build'){payload();payload(true);writeFileSync(resolve(root,directory,'seal.json'),JSON.stringify({format:'w52k-by-runtime-seal-v1',authority_main:authority,encoding:'UTF-8, CRLF normalized to LF',inventory:measure()},null,2)+'\n');console.log(hash(read(`${directory}/seal.json`)));}
+ if(operation==='build'){payload();payload(true);writeFileSync(resolve(root,directory,'seal.json'),JSON.stringify({format:'w52k-ca-runtime-seal-v1',authority_main:authority,encoding:'UTF-8, CRLF normalized to LF',inventory:measure()},null,2)+'\n');console.log(hash(read(`${directory}/seal.json`)));}
  else console.log(JSON.stringify(verify(expected)));
 }

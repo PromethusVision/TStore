@@ -1,8 +1,9 @@
 import {catalog,catalogHashes} from '../../production_taxonomy/execution/catalog.mjs';
 import {hash,stable,functions} from './common.mjs';
+import {semanticSecurity} from './security-semantics.mjs';
 export {catalog,catalogHashes};
 // No OIDs, passwords, data rows, Auth identifiers or time-dependent fields.
-export async function securityCatalog(db){
+export async function securityMetadata(db){
  const queries={
   schemas:`SELECT nspname,pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname<>'information_schema' ORDER BY nspname`,
   roles:`SELECT rolname,rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls,rolconfig FROM pg_roles ORDER BY rolname`,
@@ -20,9 +21,10 @@ export async function securityCatalog(db){
   privateIndexes:`SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='production_preview_private' ORDER BY 1,2`,
   columnGrants:`SELECT n.nspname,c.relname,a.attname,a.attacl::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','auth','production_preview_private','supabase_migrations') AND a.attnum>0 AND NOT a.attisdropped AND a.attacl IS NOT NULL ORDER BY 1,2,3`,
  };
- const result={};for(const [key,sql]of Object.entries(queries))result[key]=hash(stable((await db.query(sql)).rows));
+ const result={};for(const [key,sql]of Object.entries(queries))result[key]=(await db.query(sql)).rows;
  return result;
 }
+export async function securityCatalog(db){const value=await semanticSecurity(db,await securityMetadata(db));return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,hash(stable(v))]));}
 export async function snapshot(db){return {public:catalogHashes(await catalog(db)),security:await securityCatalog(db)};}
 export async function unchanged0012Catalog(db){const data=await catalog(db);data.functions=data.functions.filter(f=>!functions.includes(f.name));return catalogHashes(data);}
 export async function canonicalData(db){

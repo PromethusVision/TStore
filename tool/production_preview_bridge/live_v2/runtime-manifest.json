@@ -1,5 +1,8 @@
 {
-  "format": "w52k-by-runtime-operations-v1",
+  "format": "w52k-ca-runtime-operations-v1",
+  "security_baseline": "tool/production_preview_bridge/execution/security-baseline.json",
+  "security_comparison": "Semantic ACL tuples, unique role config keys, audited timeout units and proven effective logging; explicit GraphQL grants, extension owners and read-only-role assertions",
+  "local_reconstruction": "Only network-disabled real-copy rehearsals; never imported or called by the live CLI",
   "project_ref": "mefhfvrgkwciubeajjeb",
   "postgres_version": "17.6",
   "bridge_version": "20260919001300",

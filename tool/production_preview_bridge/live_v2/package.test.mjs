@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {mkdtempSync,readFileSync,writeFileSync,unlinkSync,rmdirSync,existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {resolve} from 'node:path';
+import {resolve,posix} from 'node:path';
 import {resolveIdentity,subject,disposeIdentity,origin,cacheKey,readExistingSession,recoverySubject} from './identity.mjs';
 import {leaseSeconds} from './engine.mjs';
 import {connectionFactory} from './production.mjs';
 import {measure,verify} from './seal.mjs';
-import {hash,read,root,directory,operationSucceeded} from './common.mjs';
+import {hash,read,root,directory,operationSucceeded,json,stable} from './common.mjs';
 import {httpClient} from './http.mjs';
 const key='sb_'+'publishable_unit_fixture';
 function fixture(claims={}){const uid=randomUUID(),payload={iss:origin+'/auth/v1',sub:uid,role:'authenticated',aud:'authenticated',exp:Math.floor(Date.now()/1000)+3600,...claims};return {access_token:Buffer.from('{"alg":"HS256"}').toString('base64url')+'.'+Buffer.from(JSON.stringify(payload)).toString('base64url')+'.unit_signature',user:{id:uid}};}
@@ -53,4 +53,21 @@ test('runtime tamper refused; unrelated evidence and test files outside live sea
  try{writeFileSync(doc,'{}\n');verify(expected);}finally{unlinkSync(doc);}
  const paths=measure().map(x=>x.path);for(const name of ['identity','engine','containment','validators','transaction','http','production','cli'])assert.ok(paths.includes(`${directory}/${name}.mjs`));
  assert.ok(!paths.includes(`${directory}/rehearse.mjs`));assert.ok(!paths.includes(`${directory}/package.test.mjs`));verify(expected);
+});
+
+test('reviewed object baseline agrees with every expected security component',()=>{
+ const baseline=json('tool/production_preview_bridge/execution/security-baseline.json');
+ const contract=json('tool/production_preview_bridge/execution/contract.json');
+ for(const [key,rows] of Object.entries(baseline.semantic_security_before))assert.equal(hash(stable(rows)),contract.before.security[key],key);
+ assert.equal(baseline.reconstruction.length,6);
+});
+
+test('local reconstruction is sealed but unreachable from the live CLI import graph',()=>{
+ const paths=new Set(measure().map(x=>x.path));
+ for(const path of ['tool/production_preview_bridge/platform-reconstruction.mjs','tool/production_preview_bridge/restore.mjs','tool/production_preview_bridge/execution/security-baseline.json','tool/production_preview_bridge/execution/security-semantics.mjs'])assert.ok(paths.has(path));
+ const reachable=new Set([`${directory}/cli.mjs`]);
+ for(const path of reachable){for(const m of read(path).matchAll(/(?:\bfrom\s*|\bimport\s*)['"]([^'"]+)['"]/g)){if(m[1].startsWith('.'))reachable.add(posix.normalize(posix.join(posix.dirname(path),m[1])));}}
+ assert.ok(!reachable.has('tool/production_preview_bridge/platform-reconstruction.mjs'));
+ assert.ok(!reachable.has('tool/production_preview_bridge/restore.mjs'));
+ assert.ok(!reachable.has('tool/production_preview_bridge/local.mjs'));
 });

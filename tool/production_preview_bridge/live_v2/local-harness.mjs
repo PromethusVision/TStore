@@ -12,8 +12,8 @@ export {guard,stop,run,sql,container,freshBackup,latestBackupHash,archiveRows};
 export class Harness {
  constructor(){this.ctx=null;this.http=null;this.handles=[];this.key='sb_publishable_isolated_fixture_only';}
  async bootstrap(){
-  check(['w52kb-byone','w52kb-bytwo'].includes(container),'LOCAL_CONTAINER_ALLOWLIST');
-  await create();this.restore=await restore();this.ctx={db:session(),reconnect:()=>session()};
+  check(['w52kb-caone','w52kb-catwo','w52kb-caprepare'].includes(container),'LOCAL_CONTAINER_ALLOWLIST');
+  await create();this.restore=await restore({reconcileSecurity:true});this.ctx={db:session(),reconnect:()=>session()};
   await this.ctx.db.exec("SET search_path=public,extensions; SET timezone='UTC'; SET datestyle='ISO';");
   await baseline(this.ctx.db);await apply0012(this.ctx.db,freshBackup());await readPostflight(this.ctx.db);
   const binary=run(['cp','w52hr-pg176-proof:/tmp/postgrest','-'],undefined,true);run(['cp','-',container+':/tmp'],binary);
