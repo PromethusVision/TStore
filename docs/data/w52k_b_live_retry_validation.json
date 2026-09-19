@@ -1,32 +1,23 @@
 {
-  "format": "w52k-b-live-retry-validation-v1",
-  "captured_at_utc": "2026-09-19T15:07:29.900Z",
+  "format": "w52k-b-live-retry-validation-v2",
+  "captured_at_utc": "2026-09-19T16:26:43.063Z",
+  "attempt_completed_at_utc": "2026-09-19T16:22:38.946Z",
   "branch": "astra-release/w52k-b-live-retry",
+  "authoritative_main": "52740871087aed4fd843f7b93d4ecefd417657f2",
+  "target_project": "mefhfvrgkwciubeajjeb",
   "task_result": {
     "W52K_B_LIVE_RETRY": "STOPPED_BEFORE_WRITE",
-    "PRODUCTION_WRITE_AUTHORIZED": "YES",
-    "AUTHORITATIVE_MAIN": "52740871087aed4fd843f7b93d4ecefd417657f2",
-    "TARGET_PROJECT": "mefhfvrgkwciubeajjeb",
-    "TESTER_SESSION_VALID": "FAIL",
-    "TESTER_UID_RESOLVED": "NO",
-    "TESTER_UID_UUID_VALID": "NOT_RUN",
-    "TESTER_PROJECT_IDENTITY_MATCH": "NOT_RUN",
-    "LIVE_PREFLIGHT": "NOT_RUN",
-    "SEALED_PACKAGE": "PASS",
+    "TESTER_SESSION_VALID_NOW": "PASS",
+    "TESTER_UID_RESOLVED": "YES",
+    "LIVE_PREFLIGHT": "FAIL",
     "FRESH_PREWRITE_BACKUP": "NOT_RUN",
-    "FRESH_BACKUP_SHA256_RECORDED": "NO",
     "STAGE_A_BRIDGE_APPLIED": "NO",
-    "BRIDGE_LEDGER": "NOT_APPLIED",
-    "STAGE_A_TESTER_DENIED": "NOT_RUN",
-    "STAGE_A_ANON_DENIED": "NOT_RUN",
-    "STAGE_A_NON_PREVIEW_DENIED": "NOT_RUN",
+    "STAGE_A_DEFAULT_DENY": "NOT_RUN",
     "STAGE_B_ALLOWLIST_APPLIED": "NO",
     "ALLOWLIST_EXPIRY_ENFORCED": "NOT_APPLIED",
     "AUTHORIZED_PREVIEW": "NOT_RUN",
     "ROOTS_24": "NOT_RUN",
-    "RECURSIVE_L2": "NOT_RUN",
-    "RECURSIVE_L3": "NOT_RUN",
-    "RECURSIVE_L4": "NOT_RUN",
+    "RECURSIVE_L2_L3_L4": "NOT_RUN",
     "BREADCRUMB": "NOT_RUN",
     "SEARCH_ALIAS": "NOT_RUN",
     "PRODUCT_MAPPING_20_20": "NOT_RUN",
@@ -34,120 +25,163 @@
     "ANONYMOUS_PREVIEW_DENIED": "NOT_RUN",
     "AUTHENTICATED_NON_PREVIEW_DENIED": "NOT_RUN",
     "LEGACY_SQL_CONTRACT": "NOT_RUN",
-    "LEGACY_HTTP_CONTRACT": "NOT_RUN",
-    "SECURITY_RLS_CHECK": "NOT_RUN",
-    "POST_DEPLOY_PRODUCTS": "NOT_CHECKED",
-    "POST_DEPLOY_LISTINGS": "NOT_CHECKED",
-    "POST_DEPLOY_SHOPS": "NOT_CHECKED",
-    "CANONICAL_NODES": "NOT_CHECKED",
+    "LEGACY_HTTP_CONTRACT": "PASS",
+    "SECURITY_RLS_CHECK": "FAIL",
     "PUBLIC_CANONICAL_ACTIVATION": "NOT_CHECKED",
-    "PUBLIC_CANONICAL_ACTIVATION_WRITE_PERFORMED": "NO",
-    "0012_CHANGED": "NO",
-    "CONTAINMENT_TRIGGERED": "NO",
-    "ALLOWLIST_REMOVED_ON_FAILURE": "NOT_REQUIRED",
+    "PUBLIC_CANONICAL_ACTIVATION_PERFORMED": "NO",
     "ROLLBACK_TRIGGERED": "NO",
     "ROLLBACK_RESULT": "NOT_REQUIRED",
     "PRODUCTION_LEFT_WITH_PRIVATE_PREVIEW_READY": "NO",
-    "PRODUCTION_ACCESSED": "NO",
     "PRODUCTION_WRITE_PERFORMED": "NO",
-    "PGPASSWORD_CLEARED": "YES",
-    "READY_FOR_W52K_C_SIGNED_CANONICAL_RC": "NO",
-    "READY_FOR_PUBLIC_CANONICAL_ACTIVATION": "NO"
-  },
-  "main_package_gates": {
-    "NEW_SEAL_MAIN": "PASS",
-    "TESTER_IDENTITY_HANDOFF_MAIN": "PASS",
-    "UID_RUNTIME_ONLY_MAIN": "PASS",
-    "STAGE_A_BRIDGE_ONLY_MAIN": "PASS",
-    "STAGE_A_DEFAULT_DENY_MAIN": "PASS",
-    "STAGE_B_ALLOWLIST_MAIN": "PASS",
-    "ALLOWLIST_EXPIRY_MAIN": "PASS",
-    "STANDALONE_ALLOWLIST_REMOVAL_MAIN": "PASS",
-    "CONTAINMENT_FIRST_ROLLBACK_MAIN": "PASS",
-    "ROLLBACK_TRIGGER_STATE_FIX_MAIN": "PASS"
+    "READY_FOR_W52K_C_SIGNED_CANONICAL_RC": "NO"
   },
   "seal": {
     "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
     "inventory_files": 33,
     "all_runtime_hashes_match": true,
-    "integrated_by_commit": "637a3f2e175b5555007242a52f5e31a6f16de1f1",
-    "runtime_difference_from_reviewed_by": [],
     "package_modified": false,
-    "resealed": false
+    "resealed": false,
+    "source_0013_sha256": "9b56e249a6e3054b8303742ca4bcc41d40e216de9c1a62a72193e4bae81091a4",
+    "rollback_source_sha256": "fa138b7d9c42086323e10ef9e05985bc71f65357fc3c4a81e38dbdaab52104d4"
+  },
+  "auth": {
+    "tester_session_valid_now": "PASS",
+    "tester_uid_resolved": true,
+    "tester_uid_uuid_valid": true,
+    "tester_project_identity_match": true,
+    "session_file": "<LOCAL_APP_DATA>/EsnaftaVar/preview-tester-session/session-cache.json",
+    "session_retained": true,
+    "session_expires_at_utc": "2026-09-19T17:10:22.000Z",
+    "mechanism": "Unchanged sealed exact-project session reader and GET /auth/v1/user; real UID and token remain runtime-only."
   },
   "stop": {
-    "phase": 1,
-    "reason": "NO_EXISTING_TESTER_SESSION",
-    "safe_error": "W52KBY_EXISTING_SESSION_UNAVAILABLE_SIGN_IN_EXISTING_ACCOUNT",
-    "owner_confirmed_no_active_session": true,
-    "reviewed_adapter": "Existing Flutter Windows shared_preferences session, exact Production project key only",
-    "cache_location": "<ROAMING_APP_DATA>/EsnaftaVar/t_store/shared_preferences.json",
-    "application_data_directory_exists": false,
-    "session_cache_exists": false,
-    "sealed_read_existing_session_invoked": true,
-    "server_auth_verification_attempted": false,
-    "uid_read": false,
-    "jwt_read": false,
-    "broader_credential_search_performed": false,
-    "minimum_manual_action": "In the approved Production Windows EsnaftaVar application, sign in to the intended EXISTING tester account using the normal login screen. Leave that application session intact, then request continuation. Do not provide credentials, UID or JWT in chat.",
-    "adapter_boundary": "A phone-only or browser-only session is not supported by this immutable package. If the approved Production Windows app is unavailable, this live retry remains stopped; no build, session export or unreviewed handoff is authorized here."
+    "phase": "FULL_LIVE_READ_ONLY_PREFLIGHT",
+    "safe_error": "W52JB_BX_SCHEMA_SECURITY_DRIFT",
+    "check": "snapshot(db) equals sealed contract.before",
+    "source": "tool/production_preview_bridge/execution/validators.mjs baseline",
+    "exact_differing_component": "NOT_CAPTURED_BY_SEALED_CLI",
+    "interpretation": "The full schema/security snapshot did not match. This is not proof of a specific RLS denial or unsafe privilege, and no guard was weakened."
   },
-  "expected_state_not_live_verified": {
+  "completed_preceding_gates": {
+    "evidence_basis": "Reaching the unique schema/security comparison implies these earlier awaited sealed checks passed; their detailed live outputs were not separately exported.",
+    "target_identity": "PASS",
     "postgres_version": "17.6",
-    "0012": "APPLIED",
-    "0010": "ABSENT",
-    "0011": "ABSENT",
-    "bridge": "ABSENT",
-    "public_canonical_activation": "OFF",
+    "existing_tester_auth_user": "PASS",
+    "migration_0012_exact_ledger": "PASS",
+    "historical_ledger_0010_0011_absent": "PASS",
+    "bridge_ledger_absent": "PASS",
+    "ledger_schema": "PASS",
+    "legacy_data_hashes": "PASS",
+    "unchanged_0012_public_catalog": "PASS",
+    "legacy_http_anon_and_tester": "PASS"
+  },
+  "unexecuted_checks": [
+    "integrity counts and hierarchy",
+    "public/preview activation flag query",
+    "legacy SQL role contracts",
+    "Stage A default deny",
+    "Stage B authorization",
+    "authorized preview and postflight"
+  ],
+  "expected_counts_not_freshly_enumerated": {
     "products": 20,
     "listings": 285,
     "shops": 57,
     "canonical_nodes": 1563,
-    "canonical_roots": 24,
+    "roots": 24,
     "terminal_leaves": 1245,
     "owner_mappings": 20
   },
+  "public_activation": {
+    "expected": "OFF",
+    "live_flag_query_reached": false,
+    "activation_write_performed": false
+  },
   "execution": {
-    "production_auth_api_requests": 0,
-    "production_database_connections": 0,
-    "production_sql_statements": 0,
-    "production_http_checks": 0,
+    "production_auth_accessed": true,
+    "production_database_accessed": true,
+    "database_mode": "READ_ONLY",
     "fresh_backups_created": 0,
-    "stage_a_transactions": 0,
-    "stage_b_transactions": 0,
-    "production_mutations": 0,
-    "auth_user_creations": 0,
-    "password_changes": 0,
-    "customer_data_mutations": 0,
-    "storage_mutations": 0,
+    "backup_archive_files_in_task_directory": 0,
+    "deployment_invoked": false,
+    "stage_a_invoked": false,
+    "stage_b_invoked": false,
+    "allowlist_written": false,
+    "rollback_invoked": false,
+    "production_write_performed": false,
     "development_accessed": false,
     "apk_aab_built": false,
-    "containment_invocations": 0,
-    "rollback_invocations": 0
+    "session_deleted": false
   },
   "credential_cleanup": {
-    "database_password_requested": false,
-    "database_password_read": false,
-    "executor_pgpassword_present_after_probe": false,
-    "tool_powershell_pgpassword_present_after_probe": false,
-    "owner_normal_app_session_cleared": false,
-    "scope": "Executor and tool PowerShell only; no claim about unrelated user-owned process environments."
+    "child_pgpassword_cleared": true,
+    "tool_powershell_pgpassword_present": false,
+    "owner_powershell_cleanup": "FINALLY_CONFIGURED_OWNER_OUTPUT_NOT_YET_CAPTURED"
   },
-  "evidence_sanitization": {
-    "real_tester_uid": false,
+  "offline_orchestration": {
+    "result": "PASS",
+    "network_used": false,
+    "cases": [
+      {
+        "case": "success",
+        "result": "PASS"
+      },
+      {
+        "case": "auth",
+        "result": "PASS"
+      },
+      {
+        "case": "preflight",
+        "result": "PASS"
+      },
+      {
+        "case": "observe-preflight",
+        "result": "PASS"
+      },
+      {
+        "case": "backup",
+        "result": "PASS"
+      },
+      {
+        "case": "gates",
+        "result": "PASS"
+      },
+      {
+        "case": "deploy-staged",
+        "result": "PASS"
+      },
+      {
+        "case": "postflight",
+        "result": "PASS"
+      },
+      {
+        "case": "observe-postflight",
+        "result": "PASS"
+      },
+      {
+        "case": "rollback-bridge",
+        "result": "PASS"
+      }
+    ],
+    "helper_sha256": {
+      "context.mjs": "178395c5e9980c9067b12c7d749ab676a59c3397a3cc434db262f5384c97672e",
+      "flow.mjs": "fc6de307c0b265004497d8271e4ceeae689b1442cd3c4078a3dac04e89de9c28",
+      "observe.mjs": "f90d03a6939561a574a60cdab2a3fc5bd4d76fb3af030f8fd86019e66c44382b",
+      "run-live.mjs": "0042586912fffb7f062e63b820202aada0d4062905fb2d8be20530c9363c4d0f",
+      "run-owner.ps1": "ef31acc671d29877dbbefa5e6dbadff459679989ba21659ccb7971e834d47e52",
+      "offline-tests.mjs": "a452194dd4b42f3d2883b45727dd0765245cd4bad8b52184f92df1f9fe8abf89"
+    },
+    "scope": "Local mocked sequencing only; not a substitute for live database preflight."
+  },
+  "sanitization": {
+    "password": false,
     "jwt": false,
-    "email_or_password": false,
-    "db_password": false,
-    "session_token": false,
+    "refresh_token": false,
+    "real_uid": false,
+    "email": false,
     "publishable_key_value": false,
-    "raw_backup": false,
-    "personal_data": false,
-    "absolute_local_user_paths": false
+    "absolute_local_user_path": false,
+    "raw_backup": false
   },
-  "reporting_notes": [
-    "NOT_RUN and NOT_CHECKED identify unexecuted checks; they do not assert a live schema, RLS, connectivity or data failure.",
-    "Main package gates are local code/seal and integrated BY evidence verification, not live Production test results.",
-    "Public activation OFF and numeric counts are expected prior state only; this attempt did not read or change them.",
-    "The task authorization remains explicit; the blocking condition is the missing existing tester session, not missing write permission."
-  ]
+  "next_action": "Read-only schema/security fingerprint differential audit against the same sealed contract. Do not reseal, patch, migrate, grant preview or retry write until the material mismatch is explained under a separate corrective instruction."
 }
