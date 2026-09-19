@@ -1,0 +1,443 @@
+{
+  "format": "w52kb-preview-bridge-validation-v1",
+  "base_revision": "a1acc9fe626ae3add5109d73190603bb808718af",
+  "branch": "astra-release/w52k-b-production-canonical-preview-bridge",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "result": "PASS",
+  "preview_auth_mechanism": "Supabase authenticated JWT subject plus private operator-managed enabled expiring Auth-UID allowlist; per-request server check",
+  "production_accessed": false,
+  "development_accessed": false,
+  "production_write_performed": false,
+  "public_activation_performed": false,
+  "public_activation_required": false,
+  "secret_embedded_in_client": false,
+  "service_role_in_client": false,
+  "applied_0012_changed": false,
+  "sealed_execution_bundle_sha256": "f491e08aae3241f218fa2d3bced6ea05ff68d2fa46589d5892f77b62f0ee0cf0",
+  "server_compatibility_contract": "PASS",
+  "flutter_adapter": "PASS",
+  "capability": "PASS",
+  "legacy_preserved": "PASS",
+  "real_copy_rehearsal": {
+    "format": "w52kb-real-copy-rehearsal-v1",
+    "result": "PASS",
+    "started_at_utc": "2026-09-19T01:21:20.271Z",
+    "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "migration_sha256": "9b56e249a6e3054b8303742ca4bcc41d40e216de9c1a62a72193e4bae81091a4",
+    "rollback_sha256": "fa138b7d9c42086323e10ef9e05985bc71f65357fc3c4a81e38dbdaab52104d4",
+    "production_accessed": false,
+    "development_accessed": false,
+    "production_write_performed": false,
+    "failures": [
+      {
+        "case": "anon_all_preview_rpcs",
+        "result": "PASS_DENIED",
+        "operations": 10
+      },
+      {
+        "case": "normal_all_preview_rpcs",
+        "result": "PASS_DENIED",
+        "operations": 10
+      },
+      {
+        "case": "spoofed_metadata_all_preview_rpcs",
+        "result": "PASS_DENIED",
+        "operations": 10
+      },
+      {
+        "case": "invalid_auth_signature",
+        "result": "PASS_DENIED"
+      },
+      {
+        "case": "root_as_exact_leaf",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "wrong_contract",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "public_request",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "invalid_uuid",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "unknown_category",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "revoked_tester",
+        "result": "PASS_DENIED"
+      },
+      {
+        "case": "expired_tester",
+        "result": "PASS_DENIED"
+      },
+      {
+        "case": "missing_mapping",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "public_activation_conflicts_with_private_preview",
+        "result": "PASS_FAIL_CLOSED"
+      },
+      {
+        "case": "bridge_unavailable_after_rollback",
+        "result": "PASS_FAIL_CLOSED"
+      }
+    ],
+    "restore": {
+      "result": "PASS",
+      "toc_entries": 958,
+      "omitted": 0,
+      "restored_owner_acl": true,
+      "source_roles_memberships": "PASS",
+      "duration_ms": 890
+    },
+    "all_archive_table_data": "PASS_69_TABLES",
+    "reconstituted_0012_from_latest_prewrite_backup": true,
+    "baseline_counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "identity_fixtures": "Two disposable local-only identities; no synthetic category/product data",
+    "product_rls_restrictive_policy_probe": "PASS",
+    "security": {
+      "result": "PASS",
+      "functions": [
+        {
+          "proname": "_w52kb_assert_contract_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": false
+        },
+        {
+          "proname": "_w52kb_assignable",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": false
+        },
+        {
+          "proname": "_w52kb_node_json_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": false
+        },
+        {
+          "proname": "_w52kb_path_json_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": false
+        },
+        {
+          "proname": "_w52kb_visible_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": false
+        },
+        {
+          "proname": "production_preview_mappings_v1",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "production_preview_products_v1",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": false,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_breadcrumb_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_capabilities_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_children_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_descendants_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_exact_leaf_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_resolve_alias_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_roots_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        },
+        {
+          "proname": "taxonomy_search_context_v2",
+          "proconfig": [
+            "search_path=pg_catalog, public"
+          ],
+          "prosecdef": true,
+          "provolatile": "s",
+          "anon_execute": false,
+          "authenticated_execute": true
+        }
+      ],
+      "private_allowlist_has_client_grants": false
+    },
+    "authorized_preview": {
+      "roots": 24,
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "mappings": 20,
+      "eligible_products": 14,
+      "gated_products": 6,
+      "search_alias": "PASS",
+      "product_details": "PASS",
+      "public_activation": false
+    },
+    "rollback": {
+      "result": "PASS",
+      "only_preview_bridge_removed": true,
+      "unchanged_0012_catalog_ledger_data": true,
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      }
+    },
+    "completed_at_utc": "2026-09-19T01:22:40.159Z"
+  },
+  "flutter_real_copy_capture_contract": {
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "network_access": false
+  },
+  "failure_families": [
+    {
+      "case": "anon_all_preview_rpcs",
+      "result": "PASS_DENIED",
+      "operations": 10
+    },
+    {
+      "case": "normal_all_preview_rpcs",
+      "result": "PASS_DENIED",
+      "operations": 10
+    },
+    {
+      "case": "spoofed_metadata_all_preview_rpcs",
+      "result": "PASS_DENIED",
+      "operations": 10
+    },
+    {
+      "case": "invalid_auth_signature",
+      "result": "PASS_DENIED"
+    },
+    {
+      "case": "root_as_exact_leaf",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "wrong_contract",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "public_request",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "invalid_uuid",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "unknown_category",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "revoked_tester",
+      "result": "PASS_DENIED"
+    },
+    {
+      "case": "expired_tester",
+      "result": "PASS_DENIED"
+    },
+    {
+      "case": "missing_mapping",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "public_activation_conflicts_with_private_preview",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "bridge_unavailable_after_rollback",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "missing_capability",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "development_or_wrong_project_config",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "forged_capability_subject",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "incompatible_capability_fields",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "logout_account_switch",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "stale_capability_response",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "stale_product_response",
+      "result": "PASS_FAIL_CLOSED"
+    },
+    {
+      "case": "unmapped_or_malformed_product_projection",
+      "result": "PASS_FAIL_CLOSED"
+    }
+  ],
+  "failure_cases": 22,
+  "full_flutter": {
+    "pass": 2134,
+    "fail": 0,
+    "skip": 6
+  },
+  "documented_skips": [
+    "normal Auth clients enforce live development customer ownership and RLS",
+    "normal Auth clients verified lifecycle ve unverified rejection görür",
+    "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+    "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+    "anonymous Production client sees the complete Esenler demo customer flow",
+    "anonymous Production client initializes and sees canonical demo reads"
+  ],
+  "analyzer": "PASS",
+  "new_skips": 0,
+  "removed_assertions": 0,
+  "ready_for_preview_bridge_production_write_decision": true,
+  "ready_for_canonical_rc_build": false,
+  "bundle_audit": {
+    "recorded_members_unchanged": true,
+    "recorded_bundle_hash_verified": true,
+    "dynamic_verifyBundle_current_main": "FAIL_PRE_EXISTING_EXTRA_EVIDENCE_DOCUMENT",
+    "extra_inventory_members": [
+      "docs/data/w52k_a_canonical_production_rc_validation.json"
+    ],
+    "extra_document_present_in_required_base": true,
+    "engine_or_seal_modified": false,
+    "live_executor_gate_bypassed": false,
+    "scope": "Local rehearsal calls unchanged engine directly; no live executor ran. Future authorized deployment must review its own execution package, never bypass the old seal gate."
+  },
+  "private_capture_outside_git_guard": "PASS",
+  "disposable_local_containers_removed": 4
+}

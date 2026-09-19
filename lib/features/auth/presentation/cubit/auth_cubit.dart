@@ -38,9 +38,11 @@ class AuthCubit extends Cubit<AuthState> {
   }) : super(AuthInitial());
 
   Future<void> checkAuthStatus() async {
+    if (isClosed) return;
     emit(AuthLoading());
 
     final result = await getCurrentUserUsecase(const NoParams());
+    if (isClosed) return;
 
     result.fold((error) => emit(AuthUnauthenticated()), (user) {
       if (user != null) {
@@ -105,6 +107,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     final result = await signOutUsecase(const NoParams());
+
+    // A private preview session gate may dispose this cubit on sign-out.
+    if (isClosed) return;
 
     result.fold((error) {
       _userInitiatedSignOutAt = null;

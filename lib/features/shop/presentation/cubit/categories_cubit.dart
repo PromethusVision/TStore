@@ -22,10 +22,12 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       taxonomyCapability.isCanonicalV1 ? canonicalTaxonomyRepository : null;
 
   Future<void> getCategories() async {
+    if (isClosed) return;
     emit(CategoriesLoading());
 
     if (taxonomyCapability.isLegacy) {
       final result = await getCategoriesUsecase(const NoParams());
+      if (isClosed) return;
 
       result.fold(
         (error) => emit(CategoriesError(error)),
@@ -45,6 +47,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
 
     final result = await repository.getRoots();
+    if (isClosed) return;
     result.fold(
       (error) => emit(CategoriesError(error)),
       (roots) => _emitCanonicalRoots(roots),

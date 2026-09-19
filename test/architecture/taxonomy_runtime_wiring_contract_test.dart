@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test(
-    'legacy remains default and canonical opt-in exists only in Development',
+    'legacy remains default; Production private preview has a separate gate',
     () {
       final development = File('lib/main_development.dart').readAsStringSync();
       final production = File('lib/main_production.dart').readAsStringSync();
@@ -18,6 +18,8 @@ void main() {
       expect(development, contains('const bool.fromEnvironment'));
       expect(production, isNot(contains('DEVELOPMENT_CANONICAL_TAXONOMY')));
       expect(production, isNot(contains('taxonomy_capabilities_v2')));
+      expect(production, contains('ESNAFTAVAR_PRODUCTION_CANONICAL_PREVIEW'));
+      expect(production, contains('productionPreviewApplication'));
       expect(development, isNot(contains('tnipyxnvhgelwdpykyez')));
     },
   );

@@ -1,10 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/features/shop/data/services/deployed_canonical_taxonomy_rpc_contract.dart';
+import 'package:t_store/features/shop/data/services/production_preview_taxonomy_adapter.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_backend_contract_inventory.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 
-enum TaxonomyRuntimeRequest { legacy, canonicalV1Acceptance }
+enum TaxonomyRuntimeRequest {
+  legacy,
+  canonicalV1Acceptance,
+  productionPrivatePreview,
+}
 
 class TaxonomyDependencyConfiguration extends Equatable {
   const TaxonomyDependencyConfiguration({
@@ -12,6 +17,7 @@ class TaxonomyDependencyConfiguration extends Equatable {
     this.runtimeRequest = TaxonomyRuntimeRequest.legacy,
     this.contractInventory,
     this.contractProof,
+    this.productionPreviewAuthorization,
   });
 
   factory TaxonomyDependencyConfiguration.legacy(AppEnvironment environment) {
@@ -32,6 +38,16 @@ class TaxonomyDependencyConfiguration extends Equatable {
   final TaxonomyRuntimeRequest runtimeRequest;
   final TaxonomyBackendContractInventory? contractInventory;
   final TaxonomyBackendContractProof? contractProof;
+  final ProductionPreviewAuthorization? productionPreviewAuthorization;
+
+  factory TaxonomyDependencyConfiguration.productionPrivatePreview(
+    ProductionPreviewAuthorization authorization,
+  ) => TaxonomyDependencyConfiguration(
+    environment: AppEnvironment.production,
+    runtimeRequest: TaxonomyRuntimeRequest.productionPrivatePreview,
+    contractProof: authorization.contractProof,
+    productionPreviewAuthorization: authorization,
+  );
 
   @override
   List<Object?> get props => [
@@ -39,6 +55,7 @@ class TaxonomyDependencyConfiguration extends Equatable {
     runtimeRequest,
     contractInventory,
     contractProof,
+    productionPreviewAuthorization,
   ];
 }
 
@@ -48,12 +65,14 @@ class TaxonomyDependencyPlan extends Equatable {
     required this.capability,
     required this.contractAssessment,
     required this.registerDevelopmentRpcAdapter,
+    this.registerProductionPreviewAdapter = false,
   });
 
   final AppEnvironment environment;
   final TaxonomyRuntimeCapability capability;
   final TaxonomyCapabilityAssessment contractAssessment;
   final bool registerDevelopmentRpcAdapter;
+  final bool registerProductionPreviewAdapter;
 
   bool get requiresCanonicalBindings => capability.isCanonicalV1;
 
@@ -63,6 +82,7 @@ class TaxonomyDependencyPlan extends Equatable {
     capability,
     contractAssessment,
     registerDevelopmentRpcAdapter,
+    registerProductionPreviewAdapter,
   ];
 }
 
@@ -94,6 +114,32 @@ class TaxonomyDependencyPlanner {
         contractAssessment: assessment,
         registerDevelopmentRpcAdapter:
             config.environment == AppEnvironment.development,
+      );
+    }
+
+    if (config.runtimeRequest ==
+        TaxonomyRuntimeRequest.productionPrivatePreview) {
+      final authorization = config.productionPreviewAuthorization;
+      if (config.environment != AppEnvironment.production ||
+          authorization == null ||
+          authorization.contractProof != config.contractProof) {
+        throw const TaxonomyDependencyConfigurationException(
+          'Verified Production preview authorization is required.',
+        );
+      }
+      return TaxonomyDependencyPlan(
+        environment: config.environment,
+        capability: TaxonomyRuntimeCapability.canonicalV1(
+          proof: authorization.contractProof,
+        ),
+        contractAssessment: TaxonomyCapabilityAssessment(
+          compatibility: TaxonomyContractCompatibility.match,
+          blockers: const [],
+          adapterDifferences: const [],
+          proof: authorization.contractProof,
+        ),
+        registerDevelopmentRpcAdapter: false,
+        registerProductionPreviewAdapter: true,
       );
     }
 

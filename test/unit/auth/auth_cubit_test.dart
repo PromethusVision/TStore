@@ -91,6 +91,20 @@ void main() {
     authCubit.close();
   });
 
+  test(
+    'preview disposal discards pending authenticated profile status',
+    () async {
+      final pending = Completer<Either<String, UserEntity?>>();
+      when(
+        () => mockGetCurrentUserUsecase(any()),
+      ).thenAnswer((_) => pending.future);
+      final request = authCubit.checkAuthStatus();
+      await authCubit.close();
+      pending.complete(const Right(null));
+      await expectLater(request, completes);
+    },
+  );
+
   // Test data
   const testEmail = 'test@example.com';
   const testPassword = 'password123';
@@ -336,6 +350,19 @@ void main() {
     });
 
     group('signOut', () {
+      test(
+        'preview gate disposal during sign-out cannot emit into closed cubit',
+        () async {
+          final pending = Completer<Either<String, void>>();
+          when(
+            () => mockSignOutUsecase(any()),
+          ).thenAnswer((_) => pending.future);
+          final request = authCubit.signOut();
+          await authCubit.close();
+          pending.complete(const Right(null));
+          await expectLater(request, completes);
+        },
+      );
       blocTest<AuthCubit, AuthState>(
         'emits [AuthLoading, AuthUnauthenticated] when sign out succeeds',
         build: () {
