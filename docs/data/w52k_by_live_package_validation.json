@@ -1,0 +1,1510 @@
+{
+  "format": "w52k-by-live-package-validation-v1",
+  "captured_at_utc": "2026-09-19T14:37:34.169Z",
+  "authority_main": "ddb0bef7c0d0941c736d708540aafed815903dcd",
+  "branch": "astra-release/w52k-by-preview-live-package-correction",
+  "task_result": {
+    "W52K_BY_LIVE_PACKAGE_CORRECTION": "PASS",
+    "TESTER_IDENTITY_HANDOFF_READY": "PASS",
+    "UID_RUNTIME_ONLY": "PASS",
+    "STAGE_A_BRIDGE_ONLY_DEPLOY": "PASS",
+    "STAGE_A_DEFAULT_DENY_VERIFIED": "PASS",
+    "STAGE_B_ALLOWLIST_SEPARATE_TRANSACTION": "PASS",
+    "ALLOWLIST_EXPIRY_ENFORCED": "PASS",
+    "STANDALONE_ALLOWLIST_REMOVAL": "PASS",
+    "CONTAINMENT_FIRST_ROLLBACK": "PASS",
+    "ROLLBACK_NO_LONGER_BLOCKED_BY_TRIGGER_STATE": "PASS",
+    "REAL_PRODUCTION_COPY_REHEARSAL_1": "PASS",
+    "REAL_PRODUCTION_COPY_REHEARSAL_2": "PASS",
+    "FAILURE_INJECTION_SUITE": "PASS",
+    "NEW_SEAL_READY": "PASS",
+    "LEGACY_RUNTIME_PRESERVED": "PASS",
+    "CANONICAL_STAGED_BACKEND_PRESERVED": "PASS",
+    "FAILURE_INJECTION_CASES": 28,
+    "PREVIEW_AUTH_LEFT_ACTIVE_AFTER_FAILURE": 0,
+    "PUBLIC_CANONICAL_ACTIVATION": "OFF",
+    "FULL_FLUTTER": "2134 PASS / 0 FAIL / 6 SKIP",
+    "ANALYZER": "PASS",
+    "0012_CHANGED": "NO",
+    "PRODUCTION_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "READY_FOR_PREVIEW_BRIDGE_LIVE_DEPLOY_RETRY": "YES"
+  },
+  "seal": {
+    "package_sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+    "inventory_files": 33,
+    "encoding": "UTF-8; CRLF normalized to LF",
+    "runtime_only": true,
+    "evidence_and_tests_excluded": true,
+    "prior_bx_seal_unchanged": true
+  },
+  "frozen_artifacts": {
+    "0012_source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "bridge_source_sha256": "9b56e249a6e3054b8303742ca4bcc41d40e216de9c1a62a72193e4bae81091a4",
+    "bridge_body_sha256": "a6713ff41aaa1c210530c995eb8ba92cb6412cf6bdb6357ab7404b0c8de7a563",
+    "rollback_source_sha256": "fa138b7d9c42086323e10ef9e05985bc71f65357fc3c4a81e38dbdaab52104d4"
+  },
+  "backup": {
+    "source_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "size_bytes": 537274,
+    "completed_at_utc": "2026-09-19T00:06:07.492Z",
+    "source_pg_version": "17.6",
+    "pg_dump_version": "17.11",
+    "format": "CUSTOM",
+    "newest_existing_local_backup": true,
+    "pre_0012": true,
+    "unchanged_reviewed_0012_reconstructed_locally": true,
+    "archive_entries": 958,
+    "table_data_sections": 69,
+    "live_backup_taken": false
+  },
+  "identity": {
+    "adapter": "explicit existing Flutter Windows shared_preferences cache; exact project SDK key",
+    "future_auth_verification": "GET /auth/v1/user at exact Production origin; no refresh or Auth mutation",
+    "real_owner_session_resolved_in_by": false,
+    "synthetic_sessions_used_for_rehearsal": true,
+    "local_auth_fixture_cryptographically_verifies_signature": true,
+    "uid_or_jwt_in_cli_output": false,
+    "missing_or_phone_only_session": "STOP_BEFORE_WRITE; owner signs into intended EXISTING account in approved app with supported desktop cache; no automatic account creation or phone token extraction"
+  },
+  "authorization": {
+    "stage_a_allowlist_rows": 0,
+    "stage_a_rpc_denials": 30,
+    "stage_b_exact_subjects": 1,
+    "default_lease_seconds": 3600,
+    "maximum_lease_seconds": 86400,
+    "unchanged_sql_check_maximum_days": 30,
+    "stricter_runtime_and_stored_lease_gate_hours": 24
+  },
+  "containment": {
+    "durable_subject_removal_first": true,
+    "durable_execute_revocation_before_teardown": true,
+    "reconnect_after_failed_sql": true,
+    "full_healthy_baseline_not_a_prerequisite": true,
+    "teardown_uses_restrict": true,
+    "core_drift_repaired": false,
+    "public_on_fault_left_unchanged": true,
+    "impossible_teardown": "EMERGENCY_CONTAINMENT with preview EXECUTE revoked; external backup retained",
+    "database_access_loss": "CONTAINMENT_FAILED; no false success claim"
+  },
+  "rehearsals": [
+    {
+      "run": 1,
+      "format": "w52k-by-real-copy-proof-v1",
+      "result": "PASS",
+      "started_at_utc": "2026-09-19T14:27:08.005Z",
+      "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+      "package_sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+      "production_accessed": false,
+      "production_write_performed": false,
+      "development_accessed": false,
+      "seal_before": {
+        "result": "PASS",
+        "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+        "files": 33
+      },
+      "restore": {
+        "toc_entries": 958,
+        "omitted": 0,
+        "restored_owner_acl": true,
+        "source_roles_memberships": "PASS",
+        "container_identity_sha256": "e72f770f3d506ac168f1aa213ecb1905c753bc444796ec25a24245e23c04bf52",
+        "network": "none",
+        "ports": [],
+        "backup_readonly": true,
+        "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00"
+      },
+      "initial_staged_round_trip": "PASS",
+      "failure_tests": [
+        {
+          "case": "tester_uid_missing",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_UID_MISSING_OR_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_uid",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_UID_MISSING_OR_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "tester_session_wrong_project",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_PROJECT_IDENTITY_MISMATCH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "expired_tester_session",
+          "result": "PASS",
+          "outcome": "W52KBY_SESSION_EXPIRED_SIGN_IN_EXISTING_ACCOUNT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_session_signature",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_SESSION_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "wrong_package_hash",
+          "result": "PASS",
+          "outcome": "W52KBY_PACKAGE_HASH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_on_before_apply",
+          "result": "PASS",
+          "outcome": "W52JB_BX_PUBLIC_ACTIVATION_OFF",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "schema_fingerprint_drift_before_apply",
+          "result": "PASS",
+          "outcome": "W52JB_BX_0012_SCHEMA_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "missing_0012",
+          "result": "PASS",
+          "outcome": "W52JB_0012_LEDGER_ENTRY_MISMATCH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "allowlist_expiry_invalid",
+          "result": "PASS",
+          "outcome": "W52KBY_LEASE_MUST_BE_POSITIVE_AT_MOST_24_HOURS",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_deployed_default_deny_fails",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "anonymous_gains_preview",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "normal_auth_gains_preview",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "schema_fingerprint_drift_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "rls_drift_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "product_integrity_mismatch",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "listing_integrity_mismatch",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_ledger_inconsistency",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_ledger_missing",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "teardown_dependency_emergency",
+          "result": "PASS",
+          "outcome": "EMERGENCY_CONTAINMENT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "insertion_failure",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "partial_stage_b_failure",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_stored_expiry",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "rollback_before_apply",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "allowlist_removal_twice",
+          "result": "PASS",
+          "outcome": "PASS",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_rollback_twice",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_after_stage_b",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        }
+      ],
+      "identity": {
+        "tester_uid_resolved": true,
+        "tester_session_valid": true,
+        "tester_project_identity_match": true
+      },
+      "preflight": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_a_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_a_other_auth_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_a_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "default_deny": {
+          "result": "PASS",
+          "allowlist_rows": 0,
+          "anonymous": "DENIED",
+          "ordinary_authenticated": "DENIED",
+          "tester_before_allowlisting": "DENIED",
+          "rpc_checks": 30
+        },
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_b_http": {
+        "result": "PASS",
+        "tester": "ALLOWED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_b_other_auth_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_b_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "allowlist": {
+          "count": 1,
+          "expiry_enforced": true
+        },
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "preview": {
+          "result": "PASS",
+          "authorized_subjects": 1,
+          "roots": 24,
+          "recursive_levels": [
+            2,
+            3,
+            4
+          ],
+          "mappings": 20,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "denied_rpc_checks": 20,
+          "search_alias": "PASS",
+          "breadcrumb": "PASS",
+          "product_scope": "PASS"
+        },
+        "lease_expiry_utc": "2026-09-19T15:35:43.455Z",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_a": {
+        "result": "PASS",
+        "stage": "A",
+        "atomic": "BRIDGE_AND_LEDGER_ONLY",
+        "allowlist_rows": 0,
+        "after": {
+          "result": "PASS",
+          "counts": {
+            "categories": 4,
+            "products": 20,
+            "shop_products": 285,
+            "shops": 57,
+            "canonical_nodes": 1563,
+            "canonical_roots": 24,
+            "terminal_leaves": 1245,
+            "exact_owner_mappings": 20,
+            "orphan_products": 0,
+            "orphan_listings": 0,
+            "broken_parent_chains": 0,
+            "duplicate_canonical_uuids": 0,
+            "invalid_product_targets": 0
+          },
+          "public_activation": false,
+          "legacy": "PASS",
+          "schema_security": "PASS",
+          "ledger": "PASS",
+          "security": {
+            "result": "PASS",
+            "stable_functions": 15,
+            "private_client_grants": 0,
+            "product_rls": "INVOKER_PRESERVED"
+          },
+          "default_deny": {
+            "result": "PASS",
+            "allowlist_rows": 0,
+            "anonymous": "DENIED",
+            "ordinary_authenticated": "DENIED",
+            "tester_before_allowlisting": "DENIED",
+            "rpc_checks": 30
+          }
+        },
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "stage_b": {
+        "result": "PASS",
+        "stage": "B",
+        "atomic": "ONE_EXACT_RUNTIME_TESTER_LEASE",
+        "lease_seconds": 3600,
+        "after": {
+          "result": "PASS",
+          "counts": {
+            "categories": 4,
+            "products": 20,
+            "shop_products": 285,
+            "shops": 57,
+            "canonical_nodes": 1563,
+            "canonical_roots": 24,
+            "terminal_leaves": 1245,
+            "exact_owner_mappings": 20,
+            "orphan_products": 0,
+            "orphan_listings": 0,
+            "broken_parent_chains": 0,
+            "duplicate_canonical_uuids": 0,
+            "invalid_product_targets": 0
+          },
+          "public_activation": false,
+          "legacy": "PASS",
+          "schema_security": "PASS",
+          "ledger": "PASS",
+          "allowlist": {
+            "count": 1,
+            "expiry_enforced": true
+          },
+          "security": {
+            "result": "PASS",
+            "stable_functions": 15,
+            "private_client_grants": 0,
+            "product_rls": "INVOKER_PRESERVED"
+          },
+          "preview": {
+            "result": "PASS",
+            "authorized_subjects": 1,
+            "roots": 24,
+            "recursive_levels": [
+              2,
+              3,
+              4
+            ],
+            "mappings": 20,
+            "eligible_products": 14,
+            "gated_products": 6,
+            "denied_rpc_checks": 20,
+            "search_alias": "PASS",
+            "breadcrumb": "PASS",
+            "product_scope": "PASS"
+          },
+          "lease_expiry_utc": "2026-09-19T15:35:43.455Z"
+        },
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "standalone_removal": {
+        "result": "PASS",
+        "removed": 1,
+        "remaining_for_subject": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "removal_repeat": {
+        "result": "PASS",
+        "removed": 0,
+        "remaining_for_subject": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "removal_denial": {
+        "active_authorizations": 0,
+        "tester": "DENIED",
+        "ordinary_authenticated": "DENIED",
+        "anonymous": "DENIED"
+      },
+      "rollback": {
+        "result": "ROLLED_BACK",
+        "removal": {
+          "result": "PASS",
+          "removed": 0,
+          "remaining_for_subject": 0,
+          "transaction": "COMMIT_ACKNOWLEDGED"
+        },
+        "exposure": {
+          "result": "PASS",
+          "functions_revoked": 15,
+          "client_execute_exposure": 0,
+          "transaction": "COMMIT_ACKNOWLEDGED"
+        },
+        "bridge_removed": true,
+        "core_repaired": false,
+        "errors": [],
+        "preview_access_disabled": true,
+        "observed_core_preserved": true,
+        "ledger_reconciled": true,
+        "already_absent": false,
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "core_health": "PASS"
+      },
+      "rollback_denial": {
+        "active_authorizations": 0,
+        "tester": "DENIED",
+        "ordinary_authenticated": "DENIED",
+        "anonymous": "DENIED"
+      },
+      "final_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "archive_data_sections_checked": 69,
+      "manual_sql_repairs": false,
+      "seal_after": {
+        "result": "PASS",
+        "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+        "files": 33
+      },
+      "completed_at_utc": "2026-09-19T14:36:30.885Z"
+    },
+    {
+      "run": 2,
+      "format": "w52k-by-real-copy-proof-v1",
+      "result": "PASS",
+      "started_at_utc": "2026-09-19T14:27:21.512Z",
+      "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+      "package_sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+      "production_accessed": false,
+      "production_write_performed": false,
+      "development_accessed": false,
+      "seal_before": {
+        "result": "PASS",
+        "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+        "files": 33
+      },
+      "restore": {
+        "toc_entries": 958,
+        "omitted": 0,
+        "restored_owner_acl": true,
+        "source_roles_memberships": "PASS",
+        "container_identity_sha256": "754f992bdd1328ba8cafaf2600ea119e399b8c6c3a42d2640bd0a316b334de1f",
+        "network": "none",
+        "ports": [],
+        "backup_readonly": true,
+        "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00"
+      },
+      "initial_staged_round_trip": "PASS",
+      "failure_tests": [
+        {
+          "case": "tester_uid_missing",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_UID_MISSING_OR_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_uid",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_UID_MISSING_OR_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "tester_session_wrong_project",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_PROJECT_IDENTITY_MISMATCH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "expired_tester_session",
+          "result": "PASS",
+          "outcome": "W52KBY_SESSION_EXPIRED_SIGN_IN_EXISTING_ACCOUNT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_session_signature",
+          "result": "PASS",
+          "outcome": "W52KBY_TESTER_SESSION_INVALID",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "wrong_package_hash",
+          "result": "PASS",
+          "outcome": "W52KBY_PACKAGE_HASH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_on_before_apply",
+          "result": "PASS",
+          "outcome": "W52JB_BX_PUBLIC_ACTIVATION_OFF",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "schema_fingerprint_drift_before_apply",
+          "result": "PASS",
+          "outcome": "W52JB_BX_0012_SCHEMA_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "missing_0012",
+          "result": "PASS",
+          "outcome": "W52JB_0012_LEDGER_ENTRY_MISMATCH",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "allowlist_expiry_invalid",
+          "result": "PASS",
+          "outcome": "W52KBY_LEASE_MUST_BE_POSITIVE_AT_MOST_24_HOURS",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_deployed_default_deny_fails",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "anonymous_gains_preview",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "normal_auth_gains_preview",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "schema_fingerprint_drift_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "rls_drift_after_stage_a",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "product_integrity_mismatch",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "listing_integrity_mismatch",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_ledger_inconsistency",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_ledger_missing",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "teardown_dependency_emergency",
+          "result": "PASS",
+          "outcome": "EMERGENCY_CONTAINMENT",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "insertion_failure",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "partial_stage_b_failure",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "invalid_stored_expiry",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "rollback_before_apply",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "allowlist_removal_twice",
+          "result": "PASS",
+          "outcome": "PASS",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "bridge_rollback_twice",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK",
+          "preview_authorization_left_active": 0
+        },
+        {
+          "case": "public_activation_after_stage_b",
+          "result": "PASS",
+          "outcome": "ROLLED_BACK_CORE_DRIFT",
+          "preview_authorization_left_active": 0
+        }
+      ],
+      "identity": {
+        "tester_uid_resolved": true,
+        "tester_session_valid": true,
+        "tester_project_identity_match": true
+      },
+      "preflight": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_a_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_a_other_auth_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_a_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "default_deny": {
+          "result": "PASS",
+          "allowlist_rows": 0,
+          "anonymous": "DENIED",
+          "ordinary_authenticated": "DENIED",
+          "tester_before_allowlisting": "DENIED",
+          "rpc_checks": 30
+        },
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_b_http": {
+        "result": "PASS",
+        "tester": "ALLOWED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 200,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_b_other_auth_http": {
+        "result": "PASS",
+        "tester": "DENIED",
+        "anonymous": "DENIED",
+        "rpcs": {
+          "taxonomy_capabilities_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_roots_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_children_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_descendants_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_exact_leaf_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_breadcrumb_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_resolve_alias_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "taxonomy_search_context_v2": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_mappings_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          },
+          "production_preview_products_v1": {
+            "tester_status": 403,
+            "anonymous_status": 401
+          }
+        }
+      },
+      "stage_b_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "allowlist": {
+          "count": 1,
+          "expiry_enforced": true
+        },
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "preview": {
+          "result": "PASS",
+          "authorized_subjects": 1,
+          "roots": 24,
+          "recursive_levels": [
+            2,
+            3,
+            4
+          ],
+          "mappings": 20,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "denied_rpc_checks": 20,
+          "search_alias": "PASS",
+          "breadcrumb": "PASS",
+          "product_scope": "PASS"
+        },
+        "lease_expiry_utc": "2026-09-19T15:35:58.678Z",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "stage_a": {
+        "result": "PASS",
+        "stage": "A",
+        "atomic": "BRIDGE_AND_LEDGER_ONLY",
+        "allowlist_rows": 0,
+        "after": {
+          "result": "PASS",
+          "counts": {
+            "categories": 4,
+            "products": 20,
+            "shop_products": 285,
+            "shops": 57,
+            "canonical_nodes": 1563,
+            "canonical_roots": 24,
+            "terminal_leaves": 1245,
+            "exact_owner_mappings": 20,
+            "orphan_products": 0,
+            "orphan_listings": 0,
+            "broken_parent_chains": 0,
+            "duplicate_canonical_uuids": 0,
+            "invalid_product_targets": 0
+          },
+          "public_activation": false,
+          "legacy": "PASS",
+          "schema_security": "PASS",
+          "ledger": "PASS",
+          "security": {
+            "result": "PASS",
+            "stable_functions": 15,
+            "private_client_grants": 0,
+            "product_rls": "INVOKER_PRESERVED"
+          },
+          "default_deny": {
+            "result": "PASS",
+            "allowlist_rows": 0,
+            "anonymous": "DENIED",
+            "ordinary_authenticated": "DENIED",
+            "tester_before_allowlisting": "DENIED",
+            "rpc_checks": 30
+          }
+        },
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "stage_b": {
+        "result": "PASS",
+        "stage": "B",
+        "atomic": "ONE_EXACT_RUNTIME_TESTER_LEASE",
+        "lease_seconds": 3600,
+        "after": {
+          "result": "PASS",
+          "counts": {
+            "categories": 4,
+            "products": 20,
+            "shop_products": 285,
+            "shops": 57,
+            "canonical_nodes": 1563,
+            "canonical_roots": 24,
+            "terminal_leaves": 1245,
+            "exact_owner_mappings": 20,
+            "orphan_products": 0,
+            "orphan_listings": 0,
+            "broken_parent_chains": 0,
+            "duplicate_canonical_uuids": 0,
+            "invalid_product_targets": 0
+          },
+          "public_activation": false,
+          "legacy": "PASS",
+          "schema_security": "PASS",
+          "ledger": "PASS",
+          "allowlist": {
+            "count": 1,
+            "expiry_enforced": true
+          },
+          "security": {
+            "result": "PASS",
+            "stable_functions": 15,
+            "private_client_grants": 0,
+            "product_rls": "INVOKER_PRESERVED"
+          },
+          "preview": {
+            "result": "PASS",
+            "authorized_subjects": 1,
+            "roots": 24,
+            "recursive_levels": [
+              2,
+              3,
+              4
+            ],
+            "mappings": 20,
+            "eligible_products": 14,
+            "gated_products": 6,
+            "denied_rpc_checks": 20,
+            "search_alias": "PASS",
+            "breadcrumb": "PASS",
+            "product_scope": "PASS"
+          },
+          "lease_expiry_utc": "2026-09-19T15:35:58.678Z"
+        },
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "standalone_removal": {
+        "result": "PASS",
+        "removed": 1,
+        "remaining_for_subject": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "removal_repeat": {
+        "result": "PASS",
+        "removed": 0,
+        "remaining_for_subject": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "removal_denial": {
+        "active_authorizations": 0,
+        "tester": "DENIED",
+        "ordinary_authenticated": "DENIED",
+        "anonymous": "DENIED"
+      },
+      "rollback": {
+        "result": "ROLLED_BACK",
+        "removal": {
+          "result": "PASS",
+          "removed": 0,
+          "remaining_for_subject": 0,
+          "transaction": "COMMIT_ACKNOWLEDGED"
+        },
+        "exposure": {
+          "result": "PASS",
+          "functions_revoked": 15,
+          "client_execute_exposure": 0,
+          "transaction": "COMMIT_ACKNOWLEDGED"
+        },
+        "bridge_removed": true,
+        "core_repaired": false,
+        "errors": [],
+        "preview_access_disabled": true,
+        "observed_core_preserved": true,
+        "ledger_reconciled": true,
+        "already_absent": false,
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "core_health": "PASS"
+      },
+      "rollback_denial": {
+        "active_authorizations": 0,
+        "tester": "DENIED",
+        "ordinary_authenticated": "DENIED",
+        "anonymous": "DENIED"
+      },
+      "final_validation": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "archive_data_sections_checked": 69,
+      "manual_sql_repairs": false,
+      "seal_after": {
+        "result": "PASS",
+        "sha256": "9c13e4052ada602fa2cda4bb40725c1d800d6e84eb8b0de8274675d7fa39fe9c",
+        "files": 33
+      },
+      "completed_at_utc": "2026-09-19T14:36:46.031Z"
+    }
+  ],
+  "tests": {
+    "offline_package": {
+      "pass": 23,
+      "fail": 0,
+      "skip": 0,
+      "private_log_sha256": "b4b66b4add01c7b63b587a85328eb64d3c5754f7fef02193a70457c420af99c4"
+    },
+    "targeted_flutter": {
+      "pass": 38,
+      "fail": 0,
+      "skip": 0,
+      "success": true,
+      "private_log_sha256": "31e6dc0697d271599d4adbd8e62d8334eb7e3a277b2185dc5f990a7108e5e04b"
+    },
+    "full_flutter": {
+      "pass": 2134,
+      "fail": 0,
+      "skip": 6,
+      "success": true,
+      "private_log_sha256": "47d8933743afc425195eb12cf99f33ce466fa122aeb5e81b8d37a5a0582b8c0d"
+    },
+    "analyzer": "PASS",
+    "failure_scenarios_distinct": 28,
+    "failure_scenario_executions": 56
+  },
+  "security": {
+    "real_uid_committed": false,
+    "jwt_committed": false,
+    "password_committed": false,
+    "service_role_in_client": false,
+    "db_credentials_in_client": false,
+    "client_changed": false,
+    "bridge_read_only": true,
+    "production_accessed": false,
+    "development_accessed": false,
+    "signed_rc_built": false
+  },
+  "test_harness_provenance": {
+    "local-harness.mjs": "e36cdfe3bc2eb24b0b1f85ec642bdb37a2e97bec98e63a4d645291b5e698ef71",
+    "failure-tests.mjs": "6842d5f86314594fd7ebed41100b0b0195d4ad50233591bad8fcc6e9067ac456",
+    "rehearse.mjs": "bd4019acc6368d96d048b581fecf56efc2a27b8a2394e194a73d4b1b7bfcc319",
+    "package.test.mjs": "b4e02308e7302e785ecb96d76e6f9f4f9352e2b6a3767699980db8d93388033b"
+  },
+  "preliminary_validation_notes": [
+    "Local Docker startup was recovered by preserving and renaming directories containing only stale zero-byte socket entries; no database or backup files were removed.",
+    "A candidate caught transaction-time versus wall-clock grant validation; the grant now uses transaction_timestamp to agree with the unchanged server guard.",
+    "A recovered failed deployment now exits nonzero; explicit healthy rollback remains independently successful.",
+    "Candidate clones were discarded. Both final fresh restores use the same final runtime seal and test harness; no manual SQL repairs."
+  ],
+  "limits": [
+    "Package readiness is based on isolated real-backup copies, not a new live check.",
+    "A future authorized live retry must independently resolve the actual owner session, verify target identity, obtain a fresh reviewed backup and pass all gates.",
+    "Public OFF is the nominal baseline and final state; injected ON faults were preserved, not silently repaired.",
+    "The existing desktop-cache adapter does not automatically transfer a phone-only session.",
+    "No main merge, force push, APK/AAB build or upload is part of BY."
+  ]
+}

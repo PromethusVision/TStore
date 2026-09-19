@@ -1,0 +1,17 @@
+{
+  "format": "w52k-by-runtime-operations-v1",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "postgres_version": "17.6",
+  "bridge_version": "20260919001300",
+  "private_schema": "production_preview_private",
+  "allowlist_table": "testers",
+  "owner": "postgres",
+  "maximum_testers": 1,
+  "default_lease_seconds": 3600,
+  "maximum_lease_seconds": 86400,
+  "operations": ["preflight", "stage-a", "validate-a", "stage-b", "postflight", "deploy-staged", "remove-tester", "rollback-bridge"],
+  "stage_a": "bridge objects and ledger only; no tester lease",
+  "stage_b": "one verified runtime subject, separate transaction after default-deny validation",
+  "containment": "commit exact UID removal, then commit bridge EXECUTE revocation, before teardown",
+  "rollback": "exact bridge objects with RESTRICT; preserve observed core state, never repair core drift"
+}
