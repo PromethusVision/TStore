@@ -1,0 +1,60 @@
+{
+  "format": "w52k-bx-schema-security-v1",
+  "source": "Newest real pre-0012 archive; exact reviewed 0012 reconstituted locally",
+  "before": {
+    "public": {
+      "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
+      "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+      "constraints": "46317008300232f9fd6f1418794f7e3de204e923995fac5545ce6790c44aec16",
+      "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+      "functions": "782e485b915c5fbf7456804ffda599f5e0901e8784a17da62398e554372ce418",
+      "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+      "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+    },
+    "security": {
+      "schemas": "4b68fa5c72013a4b22852a6122941d544594f295ecfc3cf147b8fc5032c750fd",
+      "roles": "3825a9bec8bee1abc5178645237a467aa4f9d7effebafb728b6774299e27ea15",
+      "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
+      "defaults": "cbae16ee344c9f8c5a31e905bebe933aeb73ede768544531dc63b718d6cbf294",
+      "authFunctions": "c29a2a91095bda8a9c8084dfbd0df264b308df71f67a3a801b5c57f9ea6922a3",
+      "extensions": "930a5ff15087018b8d632a3e709c2af92adf6c6ac1ad0d83617267e15e1c6907",
+      "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
+      "privateRelations": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateColumns": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateConstraints": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privatePolicies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateTriggers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateFunctions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateIndexes": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "columnGrants": "144beeacce0c001b07bc12aaec9b844d38770e435993ee7fc847e7df8b52fef6"
+    }
+  },
+  "after": {
+    "public": {
+      "relations": "3e2eb763d747c323a13f8e7cb0c368f8ce7f087fc439b332a86cea9f9da36104",
+      "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+      "constraints": "46317008300232f9fd6f1418794f7e3de204e923995fac5545ce6790c44aec16",
+      "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+      "functions": "c588cdf0b218b3da3fe66f93924fea5febb14be995af31e4a208c85d94d971b1",
+      "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+      "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+    },
+    "security": {
+      "schemas": "3091981cdddb27f8a34364d9802c488a2e5f23041c61eb845a966836eb19e5f9",
+      "roles": "3825a9bec8bee1abc5178645237a467aa4f9d7effebafb728b6774299e27ea15",
+      "membership": "8430a4704d594c112c61856ef417e3643bd3dc68e39235437207cbabcd1930df",
+      "defaults": "cbae16ee344c9f8c5a31e905bebe933aeb73ede768544531dc63b718d6cbf294",
+      "authFunctions": "c29a2a91095bda8a9c8084dfbd0df264b308df71f67a3a801b5c57f9ea6922a3",
+      "extensions": "930a5ff15087018b8d632a3e709c2af92adf6c6ac1ad0d83617267e15e1c6907",
+      "events": "fa85deeb7f522ac6c4275b88f47e692da05a9166942dabf8b531ac185c334ded",
+      "privateRelations": "6100752a272e9452247f7bb3ba0da071a84b3efd13270222f1c8c8007638df80",
+      "privateColumns": "d3c0ec5c6bad938a9a9bb7c6ed9918689781ecc52b06c730d7b2ab0a25ad19aa",
+      "privateConstraints": "0eba226d6d73e55c5b0993b29f2e34a8405f6e119800bc0df3f50b285010b934",
+      "privatePolicies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateTriggers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateFunctions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "privateIndexes": "fd2f7ed1ddd03b09fb97886c75e342e452036657437c5edfe4890d085e6c6584",
+      "columnGrants": "144beeacce0c001b07bc12aaec9b844d38770e435993ee7fc847e7df8b52fef6"
+    }
+  }
+}
