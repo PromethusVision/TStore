@@ -1,0 +1,515 @@
+{
+  "format": "w52k-b-live-final-evidence-v1",
+  "captured_at_utc": "2026-09-19T18:56:11.862Z",
+  "task_result": {
+    "W52K_B_LIVE_FINAL": "ROLLED_BACK",
+    "PRODUCTION_WRITE_AUTHORIZED": "YES",
+    "AUTHORITATIVE_MAIN": "5bc328c5e72199b62c754c77a20fb2490eb46bbf",
+    "TARGET_PROJECT": "mefhfvrgkwciubeajjeb",
+    "TESTER_SESSION_VALID_NOW": "PASS",
+    "TESTER_UID_RESOLVED": "YES",
+    "TESTER_PROJECT_IDENTITY_MATCH": "PASS",
+    "LIVE_PREFLIGHT": "PASS",
+    "SECURITY_BASELINE": "PASS",
+    "SEALED_PACKAGE": "PASS",
+    "FRESH_PREWRITE_BACKUP": "PASS",
+    "FRESH_BACKUP_SHA256_RECORDED": "YES",
+    "STAGE_A_BRIDGE_APPLIED": "YES",
+    "BRIDGE_LEDGER": "PASS",
+    "STAGE_A_DEFAULT_DENY": "PASS",
+    "STAGE_A_TESTER_DENIED": "PASS",
+    "STAGE_A_ANON_DENIED": "PASS",
+    "STAGE_A_NON_PREVIEW_DENIED": "PASS",
+    "STAGE_B_ALLOWLIST_APPLIED": "YES",
+    "ALLOWLIST_EXPIRY_ENFORCED": "PASS",
+    "AUTHORIZED_PREVIEW": "FAIL",
+    "ROOTS_24": "PASS",
+    "RECURSIVE_L2_L3_L4": "PASS",
+    "BREADCRUMB": "PASS",
+    "SEARCH_ALIAS": "PASS",
+    "PRODUCT_MAPPING_20_20": "PASS",
+    "PRODUCT_SCOPE": "PASS",
+    "ANONYMOUS_PREVIEW_DENIED": "PASS",
+    "AUTHENTICATED_NON_PREVIEW_DENIED": "PASS",
+    "LEGACY_SQL_CONTRACT": "PASS",
+    "LEGACY_HTTP_CONTRACT": "PASS",
+    "SECURITY_RLS_CHECK": "PASS",
+    "POST_DEPLOY_PRODUCTS": "20/20",
+    "POST_DEPLOY_LISTINGS": "285/285",
+    "POST_DEPLOY_SHOPS": "57/57",
+    "CANONICAL_NODES": "1563/1563",
+    "PUBLIC_CANONICAL_ACTIVATION": "OFF",
+    "0012_CHANGED": "NO",
+    "CONTAINMENT_TRIGGERED": "YES",
+    "ALLOWLIST_REMOVED_ON_FAILURE": "YES",
+    "ROLLBACK_TRIGGERED": "YES",
+    "ROLLBACK_RESULT": "PASS",
+    "PRODUCTION_LEFT_WITH_PRIVATE_PREVIEW_READY": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "YES",
+    "PGPASSWORD_CLEARED": "YES",
+    "READY_FOR_W52K_C_SIGNED_CANONICAL_RC": "NO",
+    "READY_FOR_PUBLIC_CANONICAL_ACTIVATION": "NO"
+  },
+  "interpretation": "Stage and contract PASS values describe the successful deployment/checks before containment. Final state has no bridge, bridge ledger or tester allowlist. AUTHORIZED_PREVIEW is FAIL for overall acceptance because the additional observer failed, despite sealed deployment and postflight PASS.",
+  "source": {
+    "main": "5bc328c5e72199b62c754c77a20fb2490eb46bbf",
+    "branch": "astra-release/w52k-b-live-retry-final",
+    "project_ref": "mefhfvrgkwciubeajjeb",
+    "seal": {
+      "result": "PASS",
+      "sha256": "7fd358e2322064cff30dbb678a4b16af0ee4179643e5cf391e6d551a49afb168",
+      "files": 38
+    },
+    "runtime_source_unchanged": true,
+    "live_reseal_performed": false
+  },
+  "main_checks": {
+    "security_baseline": "PASS",
+    "graphql_grants": "PASS",
+    "extension_owners": "PASS",
+    "read_only_role": "PASS",
+    "semantic_normalization": "PASS",
+    "material_security_guards": "PASS",
+    "fingerprint_guard_weakened": false,
+    "sealed_package_tests": 33
+  },
+  "local_wrapper_checks": {
+    "result": "PASS",
+    "network_used": false,
+    "cases": [
+      {
+        "case": "success",
+        "result": "PASS"
+      },
+      {
+        "case": "auth",
+        "result": "PASS"
+      },
+      {
+        "case": "preflight",
+        "result": "PASS"
+      },
+      {
+        "case": "observe-preflight",
+        "result": "PASS"
+      },
+      {
+        "case": "backup",
+        "result": "PASS"
+      },
+      {
+        "case": "gates",
+        "result": "PASS"
+      },
+      {
+        "case": "deploy-staged",
+        "result": "PASS"
+      },
+      {
+        "case": "postflight",
+        "result": "PASS"
+      },
+      {
+        "case": "observe-postflight",
+        "result": "PASS"
+      },
+      {
+        "case": "rollback-bridge",
+        "result": "PASS"
+      },
+      {
+        "case": "sealed_cli_explicit_prewrite_stop_no_recovery_write",
+        "result": "PASS"
+      },
+      {
+        "case": "expiry_guard_strict_source_and_boundary",
+        "result": "PASS"
+      }
+    ],
+    "helper_sha256": {
+      "context.mjs": "34f7318b384f3f2604ef5c59ce70c1a6a1fcf836617f0db993afc2bed0bf27c4",
+      "flow.mjs": "8c7c192d3954160ee7c890e183db8a3f4bdd42607bbfa8150abc083133e99543",
+      "observe.mjs": "9c2cb44f21545fbcc52306de0d167274d058848e4a67a7e9c1e2011d047350d7",
+      "supplemental.mjs": "c76b565a511edfee93f9f76ed0f4378bcbde3fa7094561ee7d0d7cb2c730b231",
+      "run-live.mjs": "0a1469c82a2effdc3dfb04f9a45d51830891b8047f4988be6193057fc5851d48",
+      "run-owner.ps1": "18401db63ca22efbf738a97379de1ad83d628ec3d0768e8ffafb15aba166d6c7",
+      "offline-tests.mjs": "1e0f3e3a6f037f7ae2b8dd82bb90ba3adddd5ee9d26778290c45f7d8c857756f"
+    }
+  },
+  "live": {
+    "result": "ROLLED_BACK",
+    "deployment_invoked": true,
+    "production_write_performed": true,
+    "public_activation_performed": false,
+    "rollback_triggered": true,
+    "auth": {
+      "result": "PASS",
+      "tester_session_valid_now": "PASS",
+      "tester_uid_resolved": true,
+      "project_identity": "PASS",
+      "session_expires_at_utc": "2026-09-19T19:42:06.000Z"
+    },
+    "preflight_cli": {
+      "operation": "preflight",
+      "result": "PASS",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "preflight": {
+      "result": "PASS",
+      "state": {
+        "result": "PASS",
+        "target": {
+          "project_ref": "mefhfvrgkwciubeajjeb",
+          "role": "postgres",
+          "database": "postgres",
+          "server_version": "17.6",
+          "transport": "TLS_VERIFY_FULL_EXACT_PRODUCTION_HOST"
+        },
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "transaction": "READ_ONLY_COMPLETED"
+      },
+      "legacy_http": {
+        "anon": {
+          "home": {
+            "status": 200,
+            "rows": 4,
+            "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+          },
+          "listing": {
+            "status": 200,
+            "rows": 20,
+            "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a"
+          },
+          "category": {
+            "status": 200,
+            "rows": 5,
+            "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae"
+          },
+          "details": {
+            "status": 200,
+            "rows": 1,
+            "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66"
+          },
+          "sellers": {
+            "status": 200,
+            "rows": 15,
+            "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e"
+          },
+          "shop": {
+            "status": 200,
+            "rows": 1,
+            "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9"
+          },
+          "shop_listings": {
+            "status": 200,
+            "rows": 5,
+            "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf"
+          },
+          "search": {
+            "status": 200,
+            "rows": 2,
+            "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df"
+          }
+        },
+        "tester": {
+          "home": {
+            "status": 200,
+            "rows": 4,
+            "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+          },
+          "listing": {
+            "status": 200,
+            "rows": 20,
+            "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a"
+          },
+          "category": {
+            "status": 200,
+            "rows": 5,
+            "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae"
+          },
+          "details": {
+            "status": 200,
+            "rows": 1,
+            "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66"
+          },
+          "sellers": {
+            "status": 200,
+            "rows": 15,
+            "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e"
+          },
+          "shop": {
+            "status": 200,
+            "rows": 1,
+            "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9"
+          },
+          "shop_listings": {
+            "status": 200,
+            "rows": 5,
+            "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf"
+          },
+          "search": {
+            "status": 200,
+            "rows": 2,
+            "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df"
+          }
+        }
+      },
+      "preview_http": null,
+      "supplemental": null
+    },
+    "backup": {
+      "project_ref": "mefhfvrgkwciubeajjeb",
+      "database": "postgres",
+      "source_pg_version": "17.6",
+      "format": "CUSTOM",
+      "tool_version": "17.11",
+      "completed_at_utc": "2026-09-19T18:47:49.417Z",
+      "size_bytes": 1333576,
+      "sha256": "97dfe3451c56946b4bcf81040d265c9d5909c57602c1d07da961ba1931f18626",
+      "result": "PASS",
+      "started_at_utc": "2026-09-19T18:47:33.511Z",
+      "archive_name": "EsnaftaVar-Production-W52K-B-FINAL-20260919T184733511Z.dump",
+      "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52k-preview-live-final/EsnaftaVar-Production-W52K-B-FINAL-20260919T184733511Z.dump",
+      "table_data_entries": 78
+    },
+    "auth_before_write": {
+      "result": "PASS",
+      "tester_session_valid_now": "PASS",
+      "tester_uid_resolved": true,
+      "project_identity": "PASS",
+      "session_expires_at_utc": "2026-09-19T19:42:06.000Z"
+    },
+    "deployment": {
+      "operation": "deploy-staged",
+      "result": "PASS"
+    },
+    "postflight_cli": {
+      "operation": "postflight",
+      "result": "PASS",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "safe_error": "W52KBY_HTTP_CAPABILITY_IDENTITY",
+    "rollback": {
+      "operation": "rollback-bridge",
+      "result": "ROLLED_BACK",
+      "transaction": "COMMIT_ACKNOWLEDGED",
+      "bridge_removed": true,
+      "core_health": "PASS",
+      "preview_access_disabled": true
+    },
+    "updated_at_utc": "2026-09-19T18:51:30.418Z"
+  },
+  "root_cause": {
+    "result": "PASS",
+    "classification": "EXTERNAL_READ_ONLY_OBSERVER_RESPONSE_SHAPE_BUG",
+    "declared_return": "SETOF jsonb",
+    "http_response_shape": "ARRAY_OF_CAPABILITY_OBJECTS",
+    "observer_expected": "CAPABILITY_OBJECT",
+    "synthetic_array_false_failure_reproduced": true,
+    "synthetic_single_row_decode_passed": true,
+    "sealed_package_modified": false,
+    "live_redeployment_attempted": false,
+    "safe_error": "W52KBY_HTTP_CAPABILITY_IDENTITY",
+    "origin": "AGENT_ADDED_EXTERNAL_SUPPLEMENTAL_OBSERVER",
+    "faulty_check": "capability.body.preview_authorized assumes an object; the sealed SQL returns SETOF jsonb and the current client requires a one-row List",
+    "sealed_sql": "supabase/migrations/20260919001300_0013_production_canonical_private_preview.sql:66",
+    "existing_client": "lib/features/shop/data/services/production_preview_taxonomy_adapter.dart:49",
+    "raw_response_retained": false,
+    "production_schema_failure_observed": false,
+    "production_permission_failure_observed": false,
+    "offline_test_gap": "The 12 wrapper cases covered orchestration and expiry-predicate strictness, not the full HTTP capability response shape."
+  },
+  "recovery": {
+    "result": "PASS",
+    "diagnosis": {
+      "result": "PASS",
+      "classification": "EXTERNAL_READ_ONLY_OBSERVER_RESPONSE_SHAPE_BUG",
+      "declared_return": "SETOF jsonb",
+      "http_response_shape": "ARRAY_OF_CAPABILITY_OBJECTS",
+      "observer_expected": "CAPABILITY_OBJECT",
+      "synthetic_array_false_failure_reproduced": true,
+      "synthetic_single_row_decode_passed": true,
+      "sealed_package_modified": false,
+      "live_redeployment_attempted": false
+    },
+    "post_rollback_legacy_http": {
+      "anon": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a"
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae"
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66"
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e"
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9"
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf"
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df"
+        }
+      },
+      "tester": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a"
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae"
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66"
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e"
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9"
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf"
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df"
+        }
+      }
+    },
+    "preflight_hashes_unchanged": true,
+    "tester_session_still_valid": true,
+    "database_accessed": false,
+    "database_write_performed": false,
+    "captured_at_utc": "2026-09-19T18:53:58.788Z"
+  },
+  "final_state": {
+    "legacy_runtime": "OPERATIONAL",
+    "canonical_backend": "STAGED",
+    "private_preview_bridge": "ABSENT",
+    "bridge_ledger": "ABSENT",
+    "tester_allowlist": "REMOVED",
+    "preview_access_disabled": true,
+    "public_activation": "OFF",
+    "0012_unchanged": true,
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "counts_proof": "The sealed postflight and post-rollback baseline both asserted these exact counts and core hashes; rollback core_health is PASS.",
+    "normal_tester_session_preserved": true,
+    "child_pgpassword_cleared": true,
+    "owner_pgpassword_cleared": true,
+    "credential_cleanup_confirmation": "Product Owner returned both cleanup YES flags after execution.",
+    "apk_aab_built": false,
+    "development_accessed": false,
+    "subsequent_deploy_attempts": 0
+  },
+  "security_semantics": {
+    "graphql_and_graphql_public": "EXPECTED_EFFECTIVE_ACL_TUPLES",
+    "extension_owners": [
+      {
+        "name": "pg_stat_statements",
+        "result": "PASS"
+      },
+      {
+        "name": "pgcrypto",
+        "result": "PASS"
+      },
+      {
+        "name": "uuid-ossp",
+        "result": "PASS"
+      }
+    ],
+    "supabase_read_only_user": "DEFAULT_TRANSACTION_READ_ONLY_ON",
+    "rls_policies_grants_definers_search_path": "SEALED_SCHEMA_SECURITY_MATCH_BEFORE_DEPLOY_AND_AFTER_ROLLBACK",
+    "client_privileged_secret_added": false,
+    "client_database_credential_added": false,
+    "anonymous_canonical_write_exposure": "NONE",
+    "unintended_auth_storage_writes": 0
+  },
+  "coverage_notes": [
+    "All DB mutations used the unchanged CA-sealed live_v2 CLI. External helpers scheduled the CLI, made read-only observations and ran the authorized fresh pg_dump.",
+    "deploy-staged PASS proves atomic Stage A and ledger, committed-state SQL deny for anon/non-listed/tester and HTTP deny for anon/tester before a separate exact-subject 3600-second Stage B.",
+    "Standalone sealed postflight returned PASS after deployment: counts, security, 24 roots, L2/L3/L4, breadcrumbs, search/alias, 20 mappings, 14 eligible products and 6 gated products; real tester/anonymous HTTP RPC checks also passed.",
+    "The non-listed authenticated negative used SET LOCAL ROLE and a generated non-listed subject in READ ONLY transactions; no new real Auth user was created.",
+    "Before the capability observer failed, its exact installed expiry predicate boundary checks and authenticated HTTP L2/L3/L4 plus breadcrumb checks completed. This is inferred from sequential control flow and the precise failure code, not a separately retained successful observer report.",
+    "Expiry was checked read-only at the actual lease boundary, not by expiring a live lease or executing an expired-lease RPC. Wrong-contract SQL denial passed in the sealed validator; the later supplemental wrong-contract HTTP check was not reached.",
+    "The raw capability payload was intentionally not retained because it contains the tester subject. The response-shape bug was independently reproduced offline with a synthetic array and confirmed against the sealed SQL signature and existing client decoder.",
+    "Containment first durably removed the exact tester authorization, then revoked bridge EXECUTE exposure, then removed only exact bridge objects/ledger. The sealed rollback returned COMMIT_ACKNOWLEDGED, bridge_removed=true, preview_access_disabled=true and core_health=PASS.",
+    "Post-rollback legacy HTTP reads under anon and the actual tester remained HTTP 200 with the same counts/content hashes as preflight for Home, listing, category, details, sellers, shop, shop listings and search.",
+    "No new deployment was attempted after the rollback. The original attempt wrapper and sealed package were preserved unchanged. Only sanitized evidence is committed.",
+    "The authorized existing-account Auth bootstrap re-login is distinct from zero unintended Auth/Storage writes by deployment. Normal session is preserved; no passwords, keys, JWTs, subjects or email values are included.",
+    "A future retry needs the external observer to honor the existing one-row-list capability contract and full response-shape tests, then fresh gates and a fresh backup. No sealed migration/client change is indicated by this failure. Private preview is not ready in the final state."
+  ]
+}
