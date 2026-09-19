@@ -1,0 +1,412 @@
+{
+  "format": "w52ka-canonical-production-rc-validation-v1",
+  "captured_at_utc": "2026-09-19T00:24:51.327Z",
+  "W52K_A_CANONICAL_PRODUCTION_RC": "BLOCKED",
+  "AUTHORITATIVE_MAIN": "c02186873ff7939de7007794bcbe14b141450e33",
+  "CANONICAL_CLIENT_OPT_IN_MECHANISM": "NONE_FOR_PRODUCTION; Development-only ESNAFTAVAR_DEVELOPMENT_CANONICAL_TAXONOMY + capability proof + previewRequested=true",
+  "PUBLIC_CANONICAL_ACTIVATION_REQUIRED_FOR_RC": "YES",
+  "PRODUCTION_WRITE_PERFORMED": "NO",
+  "DEVELOPMENT_ACCESSED": "NO",
+  "CANONICAL_PRODUCTION_READ_CONTRACT": "FAIL",
+  "HOME_CANONICAL_ROOTS": "FAIL",
+  "RECURSIVE_L2_L3_L4": "FAIL",
+  "PRODUCT_SCOPE": "FAIL",
+  "SEARCH_ALIAS": "FAIL",
+  "FULL_FLUTTER": "NOT_RUN_PHASE_2_STOP",
+  "ANALYZER": "NOT_RUN_PHASE_2_STOP",
+  "VERSION_NAME": "NOT_SELECTED",
+  "VERSION_CODE": "NOT_SELECTED",
+  "APK_PATH": "NOT_BUILT",
+  "APK_SHA256": "NOT_BUILT",
+  "AAB_PATH": "NOT_BUILT",
+  "AAB_SHA256": "NOT_BUILT",
+  "SIGNING_CERT_SHA256": "NOT_VERIFIED_NO_BUILD",
+  "PRODUCTION_PROJECT_VERIFIED": "PASS",
+  "DEVELOPMENT_FALLBACK": "NONE",
+  "PHYSICAL_INSTALL": "NOT_RUN",
+  "PUBLIC_CANONICAL_ACTIVATION_PERFORMED": "NO",
+  "READY_FOR_PHYSICAL_CANONICAL_PRODUCTION_SMOKE": "NO",
+  "branch": "astra-release/w52k-a-canonical-production-rc",
+  "stop_phase": 2,
+  "status_semantics": {
+    "canonical_fail_flags": "Required staged data cannot be read by the normal Production client; fail-closed protection works correctly. These are blocked acceptance gates, not results from a built Flutter artifact.",
+    "public_activation_required": "YES only for the unchanged current public-read implementation: public_enabled and active node/ancestor publication are necessary. This is not authorization or a recommendation to activate. A separately designed server-authorized private preview can avoid public activation.",
+    "development_fallback": "NONE in source/config path. Artifact-level scanning is NOT_RUN because no artifact was built.",
+    "tests": "No app-level tests, analyzer, full Flutter suite, build, signing or install ran after the mandatory Phase 2 stop. Historical 2094 PASS / 6 skips is not claimed as a new run."
+  },
+  "source_trace": [
+    {
+      "path": "lib/main_production.dart",
+      "line": 25,
+      "symbol": "main",
+      "behavior": "Explicit TaxonomyDependencyConfiguration.legacy(AppEnvironment.production); no Production canonical or preview dart-define.",
+      "source_sha256": "88cc4426af4174daa51091bbd119d9909988fe277d107877dee674ced0bce594"
+    },
+    {
+      "path": "lib/core/supabase/supabase_config.dart",
+      "line": 34,
+      "symbol": "SupabaseConfig",
+      "behavior": "Only SUPABASE_PRODUCTION_URL and SUPABASE_PRODUCTION_ANON_KEY select Production credentials; environment-specific values have no cross-environment fallback and the Development project is rejected in Production.",
+      "source_sha256": "2e1e65c88c0dcdc564b3ed989f55fff82eff4692a6c2574bef7925182d516f55"
+    },
+    {
+      "path": "lib/main_development.dart",
+      "line": 32,
+      "symbol": "createDevelopmentTaxonomyConfiguration",
+      "behavior": "ESNAFTAVAR_DEVELOPMENT_CANONICAL_TAXONOMY enables Development-only acceptance after a fresh capability proof, with previewRequested=true. Source inspection only; no Development backend access.",
+      "source_sha256": "b6f03406fdbbe1edd9c44fc3cfade32f1c8e0a54d9d5deb679f8e9caeb17128b"
+    },
+    {
+      "path": "lib/core/dependency_injection/taxonomy_dependency_configuration.dart",
+      "line": 85,
+      "symbol": "TaxonomyDependencyPlanner.resolve",
+      "behavior": "Non-legacy requests outside Development throw; canonical support also requires a compatible authoritative proof and customer-visible roots.",
+      "source_sha256": "c2515a10d8eef2330f651c38d9dc634d1325a79b9a3b8ffe8e18935fd0f10089"
+    },
+    {
+      "path": "lib/core/dependency_injection/service_locator.dart",
+      "line": 157,
+      "symbol": "setupServiceLocator",
+      "behavior": "Registers the RPC adapter only when registerDevelopmentRpcAdapter is true, and canonical repositories/scoped products only when requiresCanonicalBindings is true; categories and search receive the selected capability.",
+      "source_sha256": "6990c1e54ac3884f31b9ea5899953c4727a99f4f1d28b919295379b40e6c844d"
+    },
+    {
+      "path": "lib/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart",
+      "line": 114,
+      "symbol": "TaxonomyBackendContractProof.supportsCanonicalV1",
+      "behavior": "Requires taxonomy-client-v1, taxonomy-rpc-v2, RPC generation 2, previewSupported, and exact-leaf-visible-assignable-policy-eligible product scope. Production v1 proof does not satisfy this contract.",
+      "source_sha256": "89a1eb370feed1eb0191782e9dad3a0325701f9876e9a2ce7496aa108b263c53"
+    },
+    {
+      "path": "lib/features/shop/data/services/supabase_canonical_taxonomy_rpc_adapter.dart",
+      "line": 93,
+      "symbol": "SupabaseCanonicalTaxonomyRpcAdapter",
+      "behavior": "Uses taxonomy_capabilities_v2, taxonomy_roots_v2, taxonomy_children_v2, taxonomy_descendants_v2, taxonomy_exact_leaf_v2, taxonomy_breadcrumb_v2, taxonomy_resolve_alias_v2, taxonomy_search_context_v2; forwards p_preview from previewRequested.",
+      "source_sha256": "82f2836f8a87d382f430301f95e81ea907065214d87162cd9373649b0956dc9c"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/category_repository_impl.dart",
+      "line": 22,
+      "symbol": "CategoryRepositoryImpl.getCategories",
+      "behavior": "Legacy reads categories where is_active=true ordered by sort_order; legacy children filter parent_id.",
+      "source_sha256": "11ac38ce46d2cc5f808771eaa8fdd4d9feb44468317966a845988d3b2602be94"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/canonical_taxonomy_repository_impl.dart",
+      "line": 9,
+      "symbol": "CanonicalTaxonomyRepositoryImpl",
+      "behavior": "Delegates roots, children, descendants, breadcrumb, alias and search to the canonical adapter and validates DTO/hierarchy data.",
+      "source_sha256": "32233b7a4ce0c9d189836ea8a22488c94c977995b1821ddc862ab8e17f7428c8"
+    },
+    {
+      "path": "lib/features/shop/presentation/cubit/categories_cubit.dart",
+      "line": 24,
+      "symbol": "CategoriesCubit.getCategories / _emitCanonicalRoots",
+      "behavior": "Legacy uses GetCategoriesUsecase; canonical uses repository.getRoots and requires exactly 24 discoverable root nodes. Failure never substitutes legacy roots.",
+      "source_sha256": "ff5f68c86b9ed68537ee7558f7957766a947b715b1469149cc9846babecaa6bb"
+    },
+    {
+      "path": "lib/features/shop/presentation/widgets/home_categories.dart",
+      "line": 35,
+      "symbol": "HomeCategories.maxHomeCategories / _openAllCategories",
+      "behavior": "Home shows up to eight unique actual roots; Tüm kategoriler reuses the same CategoriesCubit and shows every supplied root. It does not switch runtime or fabricate categories.",
+      "source_sha256": "0118127da0ad9eb63a6e41f6ab08294b1fc87228731695fc93f1eb554486f714"
+    },
+    {
+      "path": "lib/features/shop/presentation/helpers/taxonomy_category_destination.dart",
+      "line": 9,
+      "symbol": "buildCanonicalTaxonomyDestination",
+      "behavior": "Routes discoverable parents to TaxonomyBrowseView and eligible leaves to SubCategoryView with taxonomyQueryScope; rejects missing capability/repository/breadcrumb.",
+      "source_sha256": "12cdd719148bc50a8939949674bdd967908236ec002dacb4e0264e3fc456d6f8"
+    },
+    {
+      "path": "lib/features/shop/presentation/cubit/taxonomy_browse_cubit.dart",
+      "line": 16,
+      "symbol": "TaxonomyBrowseCubit.load",
+      "behavior": "Loads breadcrumb then direct children; validates matching parent, next hierarchy level, taxonomy version and discoverability.",
+      "source_sha256": "199b32fa163bf34d02ccbf73b2e21da408488baaae9d9988bcb329c870947a1b"
+    },
+    {
+      "path": "lib/features/shop/presentation/views/sub_category_view.dart",
+      "line": 34,
+      "symbol": "SubCategoryView",
+      "behavior": "Carries canonical query scope into product loading and deeper product-list navigation.",
+      "source_sha256": "c28ed928023c3c27d9295023e8cacc9904350ec13d330aace85cd6af74a4eebc"
+    },
+    {
+      "path": "lib/features/shop/presentation/cubit/products_cubit.dart",
+      "line": 168,
+      "symbol": "ProductsCubit._loadProductsPage",
+      "behavior": "Canonical hierarchy evidence routes to GetProductsByTaxonomyScopeUsecase; missing adapter fails closed.",
+      "source_sha256": "be0ff330ebd57666ac54fef91bdf3b9f6782c98c87f58b64b85d9060a0ca03bf"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/canonical_taxonomy_scoped_product_repository_impl.dart",
+      "line": 32,
+      "symbol": "CanonicalTaxonomyScopedProductRepositoryImpl.getProductsByTaxonomyScope",
+      "behavior": "Resolves canonical IDs with the Development adapter, then filters products.category_id by those IDs. Production preserves legacy category_id and uses shadow assignments plus production_taxonomy_products_v1; simple RPC renaming is insufficient.",
+      "source_sha256": "abddd02330824161bfa2fb70444bf57dc062223daa91d469fcab38a2cf39daf4"
+    },
+    {
+      "path": "lib/features/shop/presentation/cubit/customer_search_cubit.dart",
+      "line": 156,
+      "symbol": "CustomerSearchCubit._loadCategoryMatches",
+      "behavior": "Legacy searches legacy categories; canonical calls repository.searchTaxonomy, validates discoverability/version, and retains canonical search context.",
+      "source_sha256": "2be632d5fe38e64447ba38ceec33f29df4b29b4805255c6b81ae816f10c8e83e"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/product_repository_impl.dart",
+      "line": 78,
+      "symbol": "ProductRepositoryImpl.getProductById",
+      "behavior": "Product details keep the products/categories/brands legacy join by product ID.",
+      "source_sha256": "06ae82a8f11d0838e8b418315d31514d6c7f6b9ae6cf7d8673910acf3a81eb03"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/shop_repository_impl.dart",
+      "line": 250,
+      "symbol": "ShopRepositoryImpl.getShopProductsByProduct",
+      "behavior": "Seller comparison reads shop_products by stable product_id; shop details/listings remain on shops/shop_products legacy relations.",
+      "source_sha256": "0b8b71ad6e9c423792523c8f15074a13e08b105eb02e1ff52127f67ea6c8c0a8"
+    },
+    {
+      "path": "lib/features/shop/presentation/views/shop_profile_view.dart",
+      "line": 71,
+      "symbol": "ShopProfileView",
+      "behavior": "Shop profile loads products with GetShopProductsByShopUsecase and existing shop ID.",
+      "source_sha256": "f10282c9f954508e57f82f68bb2c9ebf7079c491e30748296127a3056b421ba1"
+    },
+    {
+      "path": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+      "line": 7714,
+      "symbol": "_production_taxonomy_assert_contract_v1",
+      "behavior": "Checks production-taxonomy-client-v1 / production-taxonomy-rpc-v1 / generation 1; preview_supported must be false; every p_preview=true request raises W38_PREVIEW_DISABLED.",
+      "source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834"
+    },
+    {
+      "path": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+      "line": 8443,
+      "symbol": "_production_taxonomy_visible_v1 (final definition)",
+      "behavior": "Requires p_preview=false, public_enabled=true, active node and ancestors, matching taxonomy version, and PASS policy/professional gates.",
+      "source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834"
+    },
+    {
+      "path": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+      "line": 8479,
+      "symbol": "production_taxonomy_runtime_v1",
+      "behavior": "Advertises preview_enabled=false and Production shadow-mapping product scope.",
+      "source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834"
+    },
+    {
+      "path": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+      "line": 8488,
+      "symbol": "production_taxonomy_products_v1",
+      "behavior": "Reads product_canonical_assignments under RLS and calls descendants with preview=false; no product preview parameter exists.",
+      "source_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834"
+    }
+  ],
+  "live_readonly": {
+    "format": "w52ka-production-readonly-discovery-v1",
+    "project_ref": "mefhfvrgkwciubeajjeb",
+    "started_at_utc": "2026-09-19T00:24:49.343Z",
+    "method": "GET_ONLY",
+    "auth_session_created": false,
+    "privileged_credentials_used": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "reads": {
+      "legacy_categories": {
+        "http_status": 200,
+        "rows": 4
+      },
+      "production_runtime": {
+        "http_status": 200,
+        "rows": 1,
+        "metadata": {
+          "client_contract": "production-taxonomy-client-v1",
+          "taxonomy_version": "canonical-v1.0.0",
+          "rpc_contract": "production-taxonomy-rpc-v1",
+          "public_enabled": false,
+          "preview_enabled": false,
+          "product_scope_rpc": "production_taxonomy_products_v1",
+          "legacy_fallback_supported": true
+        }
+      },
+      "production_capabilities": {
+        "http_status": 200,
+        "rows": 1,
+        "metadata": {
+          "contract_version": "production-taxonomy-client-v1",
+          "rpc_contract_version": "production-taxonomy-rpc-v1",
+          "rpc_generation": 1,
+          "preview_support": false,
+          "preview_enabled": false,
+          "public_active_root_count": 0,
+          "pilot_active_root_count": 0,
+          "preview_root_count": 0,
+          "product_scope_contract": "production-shadow-mapping-policy-eligible-v1",
+          "product_scope_requires_assignable": true,
+          "product_scope_policy_fail_closed": true
+        }
+      },
+      "current_flutter_capabilities": {
+        "http_status": 404,
+        "error_code": "PGRST202"
+      },
+      "roots_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "roots_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "children_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "children_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "descendants_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "descendants_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "breadcrumb_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "breadcrumb_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "exact_leaf_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "exact_leaf_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "alias_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "alias_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "search_public": {
+        "http_status": 200,
+        "rows": 0
+      },
+      "search_preview": {
+        "http_status": 400,
+        "error_code": "P0001",
+        "error_tag": "W38_PREVIEW_DISABLED"
+      },
+      "product_scope": {
+        "http_status": 200,
+        "rows": 0
+      }
+    },
+    "reference_ids_source": "Main-integrated frozen canonical import; exact UUIDs already validated by 0012 rollout",
+    "diagnostic_result": "PASS",
+    "rc_access_gate": "BLOCKED",
+    "publishable_key_accepted": true,
+    "completed_at_utc": "2026-09-19T00:24:51.327Z"
+  },
+  "client_server_differences": {
+    "client_contract": {
+      "name": "taxonomy-client-v1",
+      "rpc": "taxonomy-rpc-v2",
+      "generation": 2,
+      "product_scope": "exact-leaf-visible-assignable-policy-eligible",
+      "product_query": "products.category_id IN canonical IDs"
+    },
+    "production_contract": {
+      "contract_version": "production-taxonomy-client-v1",
+      "rpc_contract_version": "production-taxonomy-rpc-v1",
+      "rpc_generation": 1,
+      "preview_support": false,
+      "preview_enabled": false,
+      "public_active_root_count": 0,
+      "pilot_active_root_count": 0,
+      "preview_root_count": 0,
+      "product_scope_contract": "production-shadow-mapping-policy-eligible-v1",
+      "product_scope_requires_assignable": true,
+      "product_scope_policy_fail_closed": true
+    },
+    "production_product_query": "production_taxonomy_products_v1 via product_canonical_assignments; legacy products.category_id unchanged"
+  },
+  "blockers": [
+    "Production entrypoint explicitly selects legacy and planner rejects Production canonical acceptance.",
+    "Production RPC v1 denies preview; staged roots and product assignments remain invisible to the normal client.",
+    "Existing Flutter RPC v2 names/contract and direct canonical category_id product filter do not implement the Production shadow-mapping contract."
+  ],
+  "minimum_separate_gate": {
+    "implementation_performed": false,
+    "scope": "Separately authorized server-side private preview capability and matching Production client adapter.",
+    "requirements": [
+      "Keep public_enabled=false, legacy runtime operational and all canonical lifecycle/public activation unchanged.",
+      "Authorize preview server-side for explicitly permitted normal client identities; a shared publishable key or client-controlled build flag is not a private authorization boundary.",
+      "Provide consistent preview capability, contract assertion, hierarchy, breadcrumb, alias/search and shadow-assignment product-scope reads; preserve RLS and policy/professional-review restrictions.",
+      "Do not merely flip preview_enabled or preview_supported: the assertion rejects preview, visibility requires preview=false and active publication, and product scope has no preview path.",
+      "After separate server work is approved, add a Production-specific opt-in/capability adapter and product mapping projection; retain Development v2 behavior and fail-closed checks.",
+      "Re-run real Production client contracts before selecting version/build/signing."
+    ]
+  },
+  "version": {
+    "repository_version": "1.0.0+1",
+    "package": "com.esnaftavar.app",
+    "selected_rc_version": null,
+    "preferred_next_candidate": "1.0.0+2",
+    "later_artifact_or_installed_version_audit": "NOT_RUN_PHASE_2_STOP",
+    "version_files_modified": false
+  },
+  "ui": {
+    "source_unchanged": true,
+    "home_max_categories": 8,
+    "all_categories_action": "Tüm kategoriler",
+    "light_only_pilot": true,
+    "category_icon_v1_unchanged": true,
+    "contrast_cart_reward_unchanged": true,
+    "custom_24_category_visual_pack": "DEFERRED",
+    "runtime_regression_suite": "NOT_RUN_PHASE_2_STOP"
+  },
+  "safety": {
+    "production_get_requests": 19,
+    "production_write": false,
+    "activation": false,
+    "development_access": false,
+    "auth_mutation": false,
+    "storage_mutation": false,
+    "rls_bypass": false,
+    "privileged_credentials": false,
+    "signing_files_opened": false,
+    "apk_aab_created": false,
+    "application_code_modified": false,
+    "migration_modified": false,
+    "secret_or_pii_committed": false,
+    "absolute_user_paths_committed": false
+  },
+  "validation": {
+    "source_trace": "PASS",
+    "live_readonly_diagnostic": "PASS_EXPECTED_BLOCK_CONFIRMED",
+    "evidence_consistency": "PASS",
+    "secret_pii_scan": "PASS",
+    "git_diff_check": "PASS",
+    "new_test_skips": 0,
+    "weakened_assertions": 0
+  }
+}
