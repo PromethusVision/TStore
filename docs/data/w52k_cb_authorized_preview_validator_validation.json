@@ -1,0 +1,735 @@
+{
+  "format": "w52k-cb-validator-fix-v1",
+  "captured_at_utc": "2026-09-20T14:39:18.352Z",
+  "task_result": {
+    "W52K_CB_AUTHORIZED_PREVIEW_VALIDATOR_FIX": "PASS",
+    "ROOT_CAUSE_CONFIRMED": "PASS",
+    "ACTUAL_RESPONSE_SHAPE": "JSON_ARRAY_EXACTLY_ONE_CAPABILITY_OBJECT",
+    "ARRAY_RESPONSE_HANDLING": "PASS",
+    "MALFORMED_RESPONSE_FAIL_CLOSED": "PASS",
+    "UNAUTHORIZED_FAIL_CLOSED": "PASS",
+    "PUBLIC_ACTIVATION_GUARD_PRESERVED": "PASS",
+    "BRIDGE_SQL_CHANGED": "NO",
+    "STAGE_A_CHANGED": "NO",
+    "STAGE_B_CHANGED": "NO",
+    "ROLLBACK_CHANGED": "NO",
+    "0012_CHANGED": "NO",
+    "REAL_PRODUCTION_COPY_REHEARSAL": "PASS",
+    "AUTHORIZED_PREVIEW": "PASS",
+    "ROOTS_24": "PASS",
+    "RECURSIVE_L2_L3_L4": "PASS",
+    "PRODUCT_MAPPING_20_20": "PASS",
+    "PRODUCT_SCOPE": "PASS",
+    "ANONYMOUS_PREVIEW_DENIED": "PASS",
+    "AUTHENTICATED_NON_PREVIEW_DENIED": "PASS",
+    "ROLLBACK_REHEARSAL": "PASS",
+    "NEW_SEAL_READY": "PASS",
+    "NEW_SEAL_SHA256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+    "NEW_SEAL_INPUT_COUNT": 39,
+    "CLIENT_CODE_CHANGED": "NO",
+    "PRODUCTION_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "READY_FOR_W52K_B_LIVE_FINAL_RETRY": "YES"
+  },
+  "authoritative_main": "5bc328c5e72199b62c754c77a20fb2490eb46bbf",
+  "branch": "astra-release/w52k-cb-authorized-preview-validator-fix",
+  "prior_rollback_commit": "b46e04241ec0a7f817dd32fc3ed0307b42dc353d",
+  "root_cause": {
+    "location": "<LOCAL_RUNTIME>/w52k-live-final-runtime/supplemental.mjs",
+    "rpc": "taxonomy_capabilities_v2",
+    "method": "GET",
+    "expected_http_status": 200,
+    "actual_shape": "one-element JSON array of capability objects",
+    "old_assumption": "Read capability.body.preview_authorized directly from the array",
+    "why_wrong": "SETOF jsonb returns a list; the reviewed client also requires raw is List and exactly one row.",
+    "live_raw_payload_retained": false,
+    "actual_postgrest_shape_verified_in_this_rehearsal": true
+  },
+  "implementation": {
+    "validator": "tool/production_preview_bridge/live_v2/authorized-preview.mjs",
+    "consumer": "tool/production_preview_bridge/live_v2/http.mjs::preview",
+    "scope": "Exact capability response contract only",
+    "empty_or_multiple_rows": "REJECT",
+    "object_instead_of_list": "REJECT",
+    "unknown_missing_fields": "REJECT",
+    "semantic_fields": "Exact reviewed scalar values and types, verified subject/project, versions, private preview authorization, public OFF, 24 preview roots, zero public/pilot roots, all expected feature/evidence sets and fail-closed product scope",
+    "sanitized_result_only": true,
+    "old_external_parser": "Superseded historical failed-attempt artifact; future runners must use the corrected sealed client.preview gate, not rerun that object-only expression."
+  },
+  "seal": {
+    "result": "PASS",
+    "sha256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+    "files": 39,
+    "previous_sha256": "7fd358e2322064cff30dbb678a4b16af0ee4179643e5cf391e6d551a49afb168",
+    "previous_inputs": 38,
+    "changed_or_added_inputs": [
+      "tool/production_preview_bridge/live_v2/authorized-preview.mjs",
+      "tool/production_preview_bridge/live_v2/http.mjs"
+    ],
+    "other_37_existing_inputs_unchanged": true,
+    "no_unrelated_sealed_changes": true
+  },
+  "quality": {
+    "validator_regression_tests": {
+      "tests": 90,
+      "pass": 90,
+      "fail": 0
+    },
+    "active_live_package_and_security_tests": {
+      "tests": 33,
+      "pass": 33,
+      "fail": 0
+    },
+    "total_required_offline_tests": {
+      "tests": 123,
+      "pass": 123,
+      "fail": 0
+    },
+    "additional_archived_bx_test": {
+      "file": "tool/production_preview_bridge/execution/package.test.mjs",
+      "tests": 15,
+      "pass": 14,
+      "fail": 1,
+      "error": "W52JB_BX_SEALED_INPUT_DRIFT",
+      "same_on_authoritative_main": true,
+      "baseline_comparison_checkout": "Unchanged runtime at authoritative main plus prior evidence-only commit",
+      "classification": "PRE_EXISTING_ARCHIVED_PACKAGE_SEAL_FAILURE",
+      "changed_or_weakened": false,
+      "not_a_new_live_v2_regression": true
+    },
+    "flutter_tests": "NOT_REQUIRED_NO_CLIENT_CHANGE",
+    "git_diff_check": "PASS"
+  },
+  "archive_selection": {
+    "newest_available": {
+      "sha256": "97dfe3451c56946b4bcf81040d265c9d5909c57602c1d07da961ba1931f18626",
+      "completed_utc": "2026-09-19T18:47:49.417Z",
+      "source_pg": "17.6",
+      "dump_tool": "17.11",
+      "size_bytes": 1333576,
+      "toc_entries": 1066,
+      "table_data_entries": 78,
+      "trial_result": "W52JB_SCHEMA_FINGERPRINT_APPLIED_RELATIONS",
+      "bridge_apply_reached": false,
+      "suitability": "NOT_COMPATIBLE_WITH_UNCHANGED_EXACT_RESTORE_FINGERPRINT",
+      "diagnostic": {
+        "result": "PASS",
+        "method": "READ_ONLY_ISOLATED_RESTORE_VS_HASH_PINNED_PRIOR_CATALOG",
+        "differences": [
+          {
+            "component": "relations",
+            "name": "canonical_categories",
+            "properties": [
+              "acl"
+            ],
+            "acl_entry_order_only": false,
+            "expected_acl": "{postgres=arwdDxtm/postgres}",
+            "restored_acl": null
+          },
+          {
+            "component": "relations",
+            "name": "canonical_category_qualification",
+            "properties": [
+              "acl"
+            ],
+            "acl_entry_order_only": false,
+            "expected_acl": "{postgres=arwdDxtm/postgres}",
+            "restored_acl": null
+          }
+        ],
+        "catalog_hashes": {
+          "relations": "fbca991984c571950279f1da59d264104e0f7436cf6fa4139477702a5e24f695",
+          "columns": "c57587d4243a5a99cbfb9565dcdb064267578f07285b13f892e48504c4a2bac0",
+          "constraints": "46317008300232f9fd6f1418794f7e3de204e923995fac5545ce6790c44aec16",
+          "indexes": "30d7b03dea27cc8702d3a30e93e8e005f0503312497ea975a282f48dbd8bf65a",
+          "functions": "782e485b915c5fbf7456804ffda599f5e0901e8784a17da62398e554372ce418",
+          "triggers": "29299d0007dfdf6002041e00fac6226578716dbdb59b49acd09849e91e4c8772",
+          "policies": "c22d97808620df6621856549ff178bf699b7143b4942fe66130dc1e7605bfd5b"
+        },
+        "production_accessed": false,
+        "sql_repairs": false
+      }
+    },
+    "selected_newest_suitable": {
+      "sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+      "completed_utc": "2026-09-19T00:06:07.493Z",
+      "source_pg": "17.6",
+      "dump_tool": "17.11",
+      "size_bytes": 537274,
+      "toc_entries": 958,
+      "table_data_entries": 69,
+      "reason": "Newest earlier complete real archive supported by the unchanged approved restore adapter. Its pre-0012 copy receives the unchanged 0012 during isolated bootstrap, as in the existing reviewed rehearsal.",
+      "original_backup_unchanged": true
+    },
+    "no_catalog_repair_or_normalization_added": true
+  },
+  "rehearsal": {
+    "format": "w52k-cb-real-copy-proof-v1",
+    "result": "PASS",
+    "started_at_utc": "2026-09-20T14:34:10.127Z",
+    "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "source_archive_state": "PRE_0012_APPROVED_RESTORE_PLUS_UNCHANGED_0012",
+    "source_pg_version": "17.6",
+    "source_dump_tool_version": "17.11",
+    "source_archive_bytes": 537274,
+    "package_sha256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+    "production_accessed": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "seal_before": {
+      "result": "PASS",
+      "sha256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+      "files": 39
+    },
+    "restore": {
+      "toc_entries": 958,
+      "omitted": 0,
+      "restored_owner_acl": true,
+      "source_roles_memberships": "PASS",
+      "container_identity_sha256": "6d509fa93e8e55f4a7fd3655a98bada566e61cd5f485732cb4c92f4d66134e6f",
+      "network": "none",
+      "ports": [],
+      "backup_readonly": true,
+      "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+      "platform_reconstruction": {
+        "result": "PASS",
+        "scope": "ISOLATED_PLATFORM_METADATA_RECONSTRUCTION",
+        "properties": 6,
+        "extension_ownership_dependencies": 3,
+        "roles": [
+          {
+            "role": "supabase_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_auth_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_storage_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_read_only_user",
+            "log_statement": "none",
+            "default_transaction_read_only": "on"
+          }
+        ]
+      }
+    },
+    "preflight": {
+      "result": "PASS",
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "public_activation": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "ledger": "PASS",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "stage_a_http": {
+      "result": "PASS",
+      "tester": "DENIED",
+      "anonymous": "DENIED",
+      "rpcs": {
+        "taxonomy_capabilities_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_roots_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_children_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_descendants_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_exact_leaf_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_breadcrumb_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_resolve_alias_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_search_context_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_mappings_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_products_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        }
+      }
+    },
+    "stage_a_other_auth_http": {
+      "result": "PASS",
+      "tester": "DENIED",
+      "anonymous": "DENIED",
+      "rpcs": {
+        "taxonomy_capabilities_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_roots_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_children_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_descendants_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_exact_leaf_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_breadcrumb_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_resolve_alias_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_search_context_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_mappings_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_products_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        }
+      }
+    },
+    "stage_a_validation": {
+      "result": "PASS",
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "public_activation": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "ledger": "PASS",
+      "security": {
+        "result": "PASS",
+        "stable_functions": 15,
+        "private_client_grants": 0,
+        "product_rls": "INVOKER_PRESERVED"
+      },
+      "default_deny": {
+        "result": "PASS",
+        "allowlist_rows": 0,
+        "anonymous": "DENIED",
+        "ordinary_authenticated": "DENIED",
+        "tester_before_allowlisting": "DENIED",
+        "rpc_checks": 30
+      },
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "stage_b_http": {
+      "result": "PASS",
+      "tester": "ALLOWED",
+      "anonymous": "DENIED",
+      "rpcs": {
+        "taxonomy_capabilities_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401,
+          "authorized_preview": {
+            "result": "PASS",
+            "response_shape": "SINGLE_ITEM_JSON_ARRAY",
+            "rows": 1,
+            "subject_match": true,
+            "contract": "taxonomy-client-v1",
+            "preview_authorized": true,
+            "public_enabled": false,
+            "roots": 24
+          }
+        },
+        "taxonomy_roots_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_children_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_descendants_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_exact_leaf_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_breadcrumb_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_resolve_alias_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "taxonomy_search_context_v2": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "production_preview_mappings_v1": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        },
+        "production_preview_products_v1": {
+          "tester_status": 200,
+          "anonymous_status": 401
+        }
+      }
+    },
+    "stage_b_other_auth_http": {
+      "result": "PASS",
+      "tester": "DENIED",
+      "anonymous": "DENIED",
+      "rpcs": {
+        "taxonomy_capabilities_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_roots_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_children_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_descendants_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_exact_leaf_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_breadcrumb_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_resolve_alias_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "taxonomy_search_context_v2": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_mappings_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        },
+        "production_preview_products_v1": {
+          "tester_status": 403,
+          "anonymous_status": 401
+        }
+      }
+    },
+    "stage_b_validation": {
+      "result": "PASS",
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "public_activation": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "ledger": "PASS",
+      "allowlist": {
+        "count": 1,
+        "expiry_enforced": true
+      },
+      "security": {
+        "result": "PASS",
+        "stable_functions": 15,
+        "private_client_grants": 0,
+        "product_rls": "INVOKER_PRESERVED"
+      },
+      "preview": {
+        "result": "PASS",
+        "authorized_subjects": 1,
+        "roots": 24,
+        "recursive_levels": [
+          2,
+          3,
+          4
+        ],
+        "mappings": 20,
+        "eligible_products": 14,
+        "gated_products": 6,
+        "denied_rpc_checks": 20,
+        "search_alias": "PASS",
+        "breadcrumb": "PASS",
+        "product_scope": "PASS"
+      },
+      "lease_expiry_utc": "2026-09-20T15:35:10.486Z",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "stage_a": {
+      "result": "PASS",
+      "stage": "A",
+      "atomic": "BRIDGE_AND_LEDGER_ONLY",
+      "allowlist_rows": 0,
+      "after": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "default_deny": {
+          "result": "PASS",
+          "allowlist_rows": 0,
+          "anonymous": "DENIED",
+          "ordinary_authenticated": "DENIED",
+          "tester_before_allowlisting": "DENIED",
+          "rpc_checks": 30
+        }
+      },
+      "transaction": "COMMIT_ACKNOWLEDGED"
+    },
+    "stage_b": {
+      "result": "PASS",
+      "stage": "B",
+      "atomic": "ONE_EXACT_RUNTIME_TESTER_LEASE",
+      "lease_seconds": 3600,
+      "after": {
+        "result": "PASS",
+        "counts": {
+          "categories": 4,
+          "products": 20,
+          "shop_products": 285,
+          "shops": 57,
+          "canonical_nodes": 1563,
+          "canonical_roots": 24,
+          "terminal_leaves": 1245,
+          "exact_owner_mappings": 20,
+          "orphan_products": 0,
+          "orphan_listings": 0,
+          "broken_parent_chains": 0,
+          "duplicate_canonical_uuids": 0,
+          "invalid_product_targets": 0
+        },
+        "public_activation": false,
+        "legacy": "PASS",
+        "schema_security": "PASS",
+        "ledger": "PASS",
+        "allowlist": {
+          "count": 1,
+          "expiry_enforced": true
+        },
+        "security": {
+          "result": "PASS",
+          "stable_functions": 15,
+          "private_client_grants": 0,
+          "product_rls": "INVOKER_PRESERVED"
+        },
+        "preview": {
+          "result": "PASS",
+          "authorized_subjects": 1,
+          "roots": 24,
+          "recursive_levels": [
+            2,
+            3,
+            4
+          ],
+          "mappings": 20,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "denied_rpc_checks": 20,
+          "search_alias": "PASS",
+          "breadcrumb": "PASS",
+          "product_scope": "PASS"
+        },
+        "lease_expiry_utc": "2026-09-20T15:35:10.486Z"
+      },
+      "transaction": "COMMIT_ACKNOWLEDGED"
+    },
+    "expired_allowlist": "PASS_DENIED_LOCAL_TRANSACTION_ROLLED_BACK",
+    "standalone_removal": {
+      "result": "PASS",
+      "removed": 1,
+      "remaining_for_subject": 0,
+      "transaction": "COMMIT_ACKNOWLEDGED"
+    },
+    "removal_denial": {
+      "active_authorizations": 0,
+      "tester": "DENIED",
+      "ordinary_authenticated": "DENIED",
+      "anonymous": "DENIED"
+    },
+    "rollback": {
+      "result": "ROLLED_BACK",
+      "removal": {
+        "result": "PASS",
+        "removed": 0,
+        "remaining_for_subject": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "exposure": {
+        "result": "PASS",
+        "functions_revoked": 15,
+        "client_execute_exposure": 0,
+        "transaction": "COMMIT_ACKNOWLEDGED"
+      },
+      "bridge_removed": true,
+      "core_repaired": false,
+      "errors": [],
+      "preview_access_disabled": true,
+      "observed_core_preserved": true,
+      "ledger_reconciled": true,
+      "already_absent": false,
+      "transaction": "COMMIT_ACKNOWLEDGED",
+      "core_health": "PASS"
+    },
+    "rollback_denial": {
+      "active_authorizations": 0,
+      "tester": "DENIED",
+      "ordinary_authenticated": "DENIED",
+      "anonymous": "DENIED"
+    },
+    "final_validation": {
+      "result": "PASS",
+      "counts": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "public_activation": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "ledger": "PASS",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "archive_data_sections_checked": 69,
+    "legacy_http_before_after": "PASS_IDENTICAL",
+    "manual_sql_repairs": false,
+    "seal_after": {
+      "result": "PASS",
+      "sha256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+      "files": 39
+    },
+    "completed_at_utc": "2026-09-20T14:35:56.387Z"
+  },
+  "cleanup": {
+    "result": "PASS",
+    "owned_containers_removed": [
+      "w52kb-caone",
+      "w52kb-cbone"
+    ],
+    "both_source_archives_unchanged": true,
+    "other_containers_modified": false,
+    "production_accessed": false
+  },
+  "security_preservation": {
+    "anonymous_and_other_auth_denied": "PASS_REAL_LOCAL_HTTP_AND_SQL",
+    "expiry": "PASS_REAL_LOCAL_SQL_EXPIRED_GRANT_DENIED_TRANSACTION_ROLLED_BACK",
+    "rls_policies_grants_definers_search_path": "PASS_UNCHANGED_FINGERPRINT",
+    "material_security_baseline": "UNCHANGED_ALL_ASSERTIONS_EXECUTED",
+    "containment_first_rollback": "UNCHANGED_REAL_LOCAL_ROLLBACK_PASS",
+    "core_counts_and_mapping_unchanged": true,
+    "client_code_changed": false,
+    "production_accessed": false,
+    "development_accessed": false
+  },
+  "limitations": [
+    "Package readiness only: current Production session, state and a fresh backup must be revalidated in a separately authorized live retry. No live access occurred here.",
+    "The newest post-0012 archive could not satisfy the unchanged raw relation-ACL fingerprint after pg_restore. No grant repair, new normalization or baseline change was made; the next newest suitable real archive was used for the complete rehearsal.",
+    "The archived BX execution manifest test already fails on main. Its manifest and test were deliberately left unchanged; current CA/live_v2 package and security suites passed.",
+    "The previous external failed-attempt wrapper is historical evidence. Future execution must consume this new sealed HTTP validator and must not repeat the superseded object-only supplemental check."
+  ]
+}
