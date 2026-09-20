@@ -1,5 +1,6 @@
 import {check,hash,stable,facade} from './common.mjs';
-import {authHeaders,origin} from './identity.mjs';
+import {authHeaders,origin,subject} from './identity.mjs';
+import {validateAuthorizedPreview} from './authorized-preview.mjs';
 import {params,rpcArguments} from '../execution/rpc-checks.mjs';
 export function httpClient(key,handle,fetcher=globalThis.fetch){
  check(typeof key==='string'&&key.startsWith('sb_publishable_'),'PUBLISHABLE_KEY_ONLY');
@@ -22,6 +23,7 @@ export function httpClient(key,handle,fetcher=globalThis.fetch){
    const a=await request('/rpc/'+fn,{...params,...args(fn)}),anon=await request('/rpc/'+fn,{...params,...args(fn)},false);
    check(allowed?a.status===200:[401,403].includes(a.status),'HTTP_TESTER_CONTRACT');check([401,403].includes(anon.status),'HTTP_ANON_DENIED');
    result[fn]={tester_status:a.status,anonymous_status:anon.status};
+   if(allowed&&fn==='taxonomy_capabilities_v2')result[fn].authorized_preview=validateAuthorizedPreview(a,subject(handle));
    if(allowed&&fn==='taxonomy_roots_v2')check(a.body.length===24,'HTTP_ROOTS_24');
    if(allowed&&fn==='production_preview_mappings_v1')check(a.body.length===20,'HTTP_MAPPINGS_20');
    if(allowed&&fn==='production_preview_products_v1')check(a.body.length===14,'HTTP_PRODUCT_SCOPE_14');

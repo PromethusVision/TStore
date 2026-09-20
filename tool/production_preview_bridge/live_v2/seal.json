@@ -94,6 +94,12 @@
       "sha256": "55687a6c75afa07c3c418cfd4f558484c4af5acd2426b4584ccc0eae5002300c"
     },
     {
+      "path": "tool/production_preview_bridge/live_v2/authorized-preview.mjs",
+      "role": "runtime-security-dependency",
+      "size": 2593,
+      "sha256": "7d544487033a846e29dad3bc4abf4864ea09d63281ab074d979498aa916c99e3"
+    },
+    {
       "path": "tool/production_preview_bridge/live_v2/cli.mjs",
       "role": "live-entrypoint",
       "size": 5484,
@@ -120,8 +126,8 @@
     {
       "path": "tool/production_preview_bridge/live_v2/http.mjs",
       "role": "runtime-security-dependency",
-      "size": 4108,
-      "sha256": "cc52a4d70a84dcf45273227d4c792b569ff669a9768e18c53f22c4c544000465"
+      "size": 4307,
+      "sha256": "b4857fd620e3a1854c44ce5b3d951bfc57bca8e7f2b39970b960301192e24c41"
     },
     {
       "path": "tool/production_preview_bridge/live_v2/identity.mjs",
