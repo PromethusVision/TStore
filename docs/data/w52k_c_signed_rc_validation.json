@@ -1,0 +1,397 @@
+{
+  "format": "w52k-c-signed-production-private-preview-rc-v1",
+  "captured_at_utc": "2026-09-20T16:59:02.090565+00:00",
+  "task_result": {
+    "W52K_C_SIGNED_CANONICAL_RC": "PASS",
+    "AUTHORITATIVE_MAIN": "6f765ef9fd22bdd5749f0fbe0eb99d2640091c37",
+    "CANONICAL_PRIVATE_PREVIEW_CLIENT_MODE": "PASS",
+    "PRODUCTION_PROJECT_VERIFIED": "PASS",
+    "DEVELOPMENT_FALLBACK": "NONE",
+    "FULL_FLUTTER": "2134 PASS / 0 FAIL / 6 SKIP",
+    "ANALYZER": "PASS",
+    "VERSION_NAME": "1.0.0",
+    "VERSION_CODE": 2,
+    "PACKAGE": "com.esnaftavar.app",
+    "APK_PATH": "<USER_HOME>/EsnaftavarReleases/w52k-c/1.0.0+2-main-6f765ef/EsnaftaVar-1.0.0+2-w52k-c-main-6f765ef-production-preview.apk",
+    "APK_SHA256": "97017d652781c50c2bcb331b442109bdb8d53b1b46f0b8c016f43de04eed581c",
+    "APK_SIZE": 89481479,
+    "AAB_PATH": "<USER_HOME>/EsnaftavarReleases/w52k-c/1.0.0+2-main-6f765ef/EsnaftaVar-1.0.0+2-w52k-c-main-6f765ef-production-preview.aab",
+    "AAB_SHA256": "acaba6132e92314e22253afd2f57d28e4e8306dfc8245769787b89d38d2d22d7",
+    "AAB_SIZE": 68917978,
+    "SIGNING_CERT_SHA256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+    "SERVICE_ROLE_IN_ARTIFACT": "NO",
+    "DB_PASSWORD_IN_ARTIFACT": "NO",
+    "TESTER_UID_IN_ARTIFACT": "NO",
+    "JWT_IN_ARTIFACT": "NO",
+    "PUBLIC_CANONICAL_ACTIVATION_PERFORMED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "PHYSICAL_INSTALL": "NOT_RUN",
+    "READY_FOR_W52K_D_PHYSICAL_CANONICAL_SMOKE": "YES"
+  },
+  "source": {
+    "authoritative_main": "6f765ef9fd22bdd5749f0fbe0eb99d2640091c37",
+    "branch": "astra-release/w52k-c-signed-canonical-production-rc",
+    "changes": [
+      "pubspec.yaml: 1.0.0+1 -> 1.0.0+2"
+    ],
+    "tracked_source_sha256_lf_normalized": "71637db321b7cb15d3e6de164591413afc4f2c3f69cbbe5b5a0e03b14b292f7f",
+    "source_stable_during_tests_and_build": true,
+    "runtime_source_changed": false,
+    "tests_changed": false,
+    "dependency_lock_changed": false
+  },
+  "configuration": {
+    "flavor": "production",
+    "entrypoint": "lib/main_production.dart",
+    "runtime_mode": "PRODUCTION_CANONICAL_PRIVATE_PREVIEW",
+    "production_project": "mefhfvrgkwciubeajjeb",
+    "extra_dart_define": {
+      "ESNAFTAVAR_PRODUCTION_CANONICAL_PREVIEW": "true"
+    },
+    "external_define_fields": [
+      "SUPABASE_PRODUCTION_URL",
+      "SUPABASE_PRODUCTION_ANON_KEY",
+      "PRODUCTION_PROJECT_REF",
+      "PRODUCTION_AUTH_SITE_URL",
+      "PRODUCTION_AUTH_WEB_REDIRECT_URL",
+      "PRODUCTION_AUTH_MOBILE_CALLBACK_URL"
+    ],
+    "key_value_recorded": false,
+    "config_file_copied_into_repository": false,
+    "server_capability_required": true,
+    "exact_current_subject_required": true,
+    "single_item_capability_array_required": true,
+    "public_activation_must_be_off": true,
+    "preview_absent_behavior": "LOGIN_OR_CONTROLLED_DENIAL_WITHOUT_LEGACY_APP",
+    "development_fallback": false
+  },
+  "checks": {
+    "targeted": {
+      "stage": "targeted-tests",
+      "startUtc": "2026-09-20T16:15:01.690317+00:00",
+      "endUtc": "2026-09-20T16:16:46.684054+00:00",
+      "elapsedSeconds": 104.985,
+      "exit": 0,
+      "safeOutput": [],
+      "passed": 148,
+      "failed": 0,
+      "skipped": [],
+      "complete": true
+    },
+    "targeted_files": [
+      "test/architecture/taxonomy_runtime_wiring_contract_test.dart",
+      "test/architecture/mobile_release_signing_contract_test.dart",
+      "test/unit/core/taxonomy_dependency_configuration_test.dart",
+      "test/unit/core/supabase_config_test.dart",
+      "test/unit/core/production_preview_di_test.dart",
+      "test/unit/core/development_taxonomy_opt_in_test.dart",
+      "test/unit/shop/taxonomy_product_scope_cubit_wiring_test.dart",
+      "test/unit/shop/taxonomy_customer_search_wiring_test.dart",
+      "test/unit/shop/taxonomy_category_hierarchy_test.dart",
+      "test/unit/shop/taxonomy_categories_cubit_wiring_test.dart",
+      "test/unit/shop/taxonomy_backend_capability_verifier_test.dart",
+      "test/unit/shop/supabase_canonical_taxonomy_rpc_adapter_test.dart",
+      "test/unit/shop/production_preview_adapter_test.dart",
+      "test/unit/shop/canonical_taxonomy_repository_impl_test.dart",
+      "test/unit/shop/canonical_taxonomy_contract_dto_test.dart",
+      "test/widget/shop/customer_home_v1_layout_test.dart",
+      "test/widget/shop/home_categories_test.dart",
+      "test/widget/shop/production_preview_gate_test.dart",
+      "test/widget/shop/taxonomy_browse_view_test.dart",
+      "test/widget/shop/w53c_category_icon_polish_test.dart",
+      "test/widget/shop/w53b_all_categories_flow_test.dart",
+      "test/widget/shop/w53a_semantic_contrast_test.dart"
+    ],
+    "full_flutter": {
+      "stage": "full-tests",
+      "startUtc": "2026-09-20T16:19:15.635902+00:00",
+      "endUtc": "2026-09-20T16:34:26.677776+00:00",
+      "elapsedSeconds": 911.047,
+      "exit": 0,
+      "safeOutput": [],
+      "passed": 2134,
+      "failed": 0,
+      "skipped": [
+        "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+        "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+        "anonymous Production client initializes and sees canonical demo reads",
+        "anonymous Production client sees the complete Esenler demo customer flow",
+        "normal Auth clients enforce live development customer ownership and RLS",
+        "normal Auth clients verified lifecycle ve unverified rejection görür"
+      ],
+      "complete": true
+    },
+    "analyzer": {
+      "stage": "analyze",
+      "startUtc": "2026-09-20T16:16:46.694962+00:00",
+      "endUtc": "2026-09-20T16:19:15.634863+00:00",
+      "elapsedSeconds": 148.938,
+      "exit": 0,
+      "safeOutput": [
+        "No issues found! (ran in 139.7s)"
+      ]
+    },
+    "config_preflight": {
+      "stage": "config-preflight",
+      "startUtc": "2026-09-20T16:37:14.325106+00:00",
+      "endUtc": "2026-09-20T16:37:16.675461+00:00",
+      "elapsedSeconds": 2.36,
+      "exit": 0,
+      "safeOutput": [
+        "Production config preflight: PASS (STRUCTURAL_RELEASE)"
+      ]
+    },
+    "signing_proof": {
+      "stage": "signing-proof",
+      "startUtc": "2026-09-20T16:37:17.954794+00:00",
+      "endUtc": "2026-09-20T16:40:00.471312+00:00",
+      "elapsedSeconds": 162.516,
+      "exit": 0,
+      "safeOutput": [
+        "W52KC_INPUT_VALIDATION: PASS",
+        "W52KC_KEYSTORE_MATCH: PASS",
+        "W52KC_ALIAS_MATCH: PASS",
+        "W52KC_EXTERNAL_PATHS: PASS",
+        "Release signing proof: PASS",
+        "Certificate SHA-256: 3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+        "BUILD SUCCESSFUL in 2m 40s"
+      ]
+    },
+    "signing_password_exclusion": {
+      "stage": "password-scan",
+      "startUtc": "2026-09-20T16:58:00.434114+00:00",
+      "endUtc": "2026-09-20T16:58:16.374052+00:00",
+      "elapsedSeconds": 15.937,
+      "exit": 0,
+      "safeOutput": [
+        "W52KC_PASSWORD_SCAN: PASS; entries=1091",
+        "BUILD SUCCESSFUL in 15s"
+      ]
+    },
+    "aab_signed_payload_integrity": {
+      "signedPayloadEntries": 549,
+      "unsignedPayloadEntries": 0,
+      "duplicateNames": 0,
+      "allPayloadCertificatesMatch": true
+    },
+    "exact_cached_tester_identity_exclusion_checked": true,
+    "no_new_skips": true,
+    "git_diff_check": "PASS",
+    "aab_manifest_physical_index": 551
+  },
+  "builds": [
+    {
+      "stage": "apk-build",
+      "startUtc": "2026-09-20T16:40:04.236839+00:00",
+      "endUtc": "2026-09-20T16:57:12.276002+00:00",
+      "elapsedSeconds": 1028.046,
+      "exit": 0,
+      "safeOutput": []
+    },
+    {
+      "stage": "aab-build",
+      "startUtc": "2026-09-20T16:57:13.441976+00:00",
+      "endUtc": "2026-09-20T16:57:59.893536+00:00",
+      "elapsedSeconds": 46.453,
+      "exit": 0,
+      "safeOutput": []
+    }
+  ],
+  "toolchain": {
+    "flutter": "3.41.9",
+    "dart": "3.11.5",
+    "framework_revision": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "engine_revision": "42d3d75a56efe1a2e9902f52dc8006099c45d937",
+    "gradle": "8.12",
+    "android_gradle_plugin": "8.9.2",
+    "kotlin": "2.1.0",
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "android_build_tools": "37.0.0"
+  },
+  "artifacts": [
+    {
+      "kind": "apk",
+      "size": 89481479,
+      "sha256": "97017d652781c50c2bcb331b442109bdb8d53b1b46f0b8c016f43de04eed581c",
+      "manifest": {
+        "package": "com.esnaftavar.app",
+        "versionName": "1.0.0",
+        "versionCode": "2"
+      },
+      "certificateSha256": "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+      "certificateMatch": true,
+      "readOnly": true,
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "debuggable": false,
+      "clientInputMatches": {
+        "lib/arm64-v8a/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        },
+        "lib/armeabi-v7a/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        },
+        "lib/x86_64/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        }
+      },
+      "markers": {
+        "development_ref": [
+          "lib/arm64-v8a/libapp.so",
+          "lib/armeabi-v7a/libapp.so",
+          "lib/x86_64/libapp.so"
+        ]
+      },
+      "privateSessionValueHits": [],
+      "jwtHits": [],
+      "credentialAssignments": [],
+      "secretPatternHits": [],
+      "forbiddenPackagedPaths": [],
+      "path": "<USER_HOME>/EsnaftavarReleases/w52k-c/1.0.0+2-main-6f765ef/EsnaftaVar-1.0.0+2-w52k-c-main-6f765ef-production-preview.apk",
+      "signature_verified": true,
+      "native_64bit_16k_alignment": true,
+      "zip_alignment_16k": true,
+      "signature_schemes": {
+        "v1": false,
+        "v2": true,
+        "v3": false,
+        "v4": false
+      }
+    },
+    {
+      "kind": "aab",
+      "size": 68917978,
+      "sha256": "acaba6132e92314e22253afd2f57d28e4e8306dfc8245769787b89d38d2d22d7",
+      "manifest": {
+        "package": "com.esnaftavar.app",
+        "versionName": "1.0.0",
+        "versionCode": "2"
+      },
+      "certificateSha256": "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+      "certificateMatch": true,
+      "readOnly": true,
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "debuggable": false,
+      "clientInputMatches": {
+        "base/lib/arm64-v8a/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        },
+        "base/lib/armeabi-v7a/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        },
+        "base/lib/x86_64/libapp.so": {
+          "approvedUrl": true,
+          "approvedClientKey": true,
+          "privatePreviewContract": true,
+          "privatePreviewProductsRpc": true,
+          "capabilityDeniedMessage": true,
+          "capabilityArrayGateMessage": true,
+          "callback": true,
+          "onlyProductionHost": true
+        }
+      },
+      "markers": {
+        "development_ref": [
+          "base/lib/arm64-v8a/libapp.so",
+          "base/lib/armeabi-v7a/libapp.so",
+          "base/lib/x86_64/libapp.so"
+        ]
+      },
+      "privateSessionValueHits": [],
+      "jwtHits": [],
+      "credentialAssignments": [],
+      "secretPatternHits": [],
+      "forbiddenPackagedPaths": [],
+      "path": "<USER_HOME>/EsnaftavarReleases/w52k-c/1.0.0+2-main-6f765ef/EsnaftaVar-1.0.0+2-w52k-c-main-6f765ef-production-preview.aab",
+      "signature_verified": true,
+      "native_64bit_16k_alignment": true,
+      "jar_warning_classes": [
+        "self_signed_upload_certificate",
+        "untrusted_public_pkix_chain",
+        "no_timestamp",
+        "stream_and_jarfile_signing_view_discrepancy"
+      ]
+    }
+  ],
+  "frozen_at_utc": "2026-09-20T16:59:01.842473+00:00",
+  "preserved_ui": [
+    "Customer V1 light-only",
+    "Home maximum 8 categories",
+    "Tum kategoriler",
+    "Category Icon V1",
+    "contrast fixes",
+    "Reward V1",
+    "Cart V2",
+    "Product Listing",
+    "Product Details",
+    "Seller Comparison",
+    "Shop Details",
+    "Search"
+  ],
+  "scope": {
+    "production_accessed": false,
+    "production_write": false,
+    "development_accessed": false,
+    "auth_request_made": false,
+    "allowlist_renewed": false,
+    "preview_bridge_modified": false,
+    "public_activation_performed": false,
+    "0012_changed": false,
+    "physical_install": false,
+    "physical_smoke": false,
+    "store_upload": false
+  },
+  "coverage_notes": [
+    "The integrated Production entrypoint selects the existing private-preview bootstrap through the true compile-time flag. The adapter accepts only the approved Production host and verified current-subject capability proof before canonical bindings are installed.",
+    "Each APK/AAB native ABI contains the approved Production URL/key, private-preview contract, products RPC and capability rejection messages. Development URL/key/opt-in/callback markers are absent. The known Development project-ref string remains solely in the existing reject-Development configuration guard; it is not a fallback endpoint.",
+    "All uncompressed APK/AAB entries were checked for server-only key patterns, JWTs, actual cached tester identifiers/tokens, DB credential assignments and signing passwords. No DB credential was supplied to the build. Ordinary service_role rejection text, if retained by AOT, is a guard string rather than a credential.",
+    "The tests used local fixtures with all live opt-ins unset and no real Production inputs. The 6 existing live integration skips are unchanged. No new assertions or skips were introduced.",
+    "The Auth cache was read locally only to exclude actual tester identifiers/tokens from artifacts; it was not used to authenticate or build. Build success is independent of Auth/allowlist expiry.",
+    "Before W52K-D physical install, separately refresh/re-login the existing tester, renew the temporary allowlist under separate authorization, and verify the exact frozen APK hash. No physical acceptance is claimed here.",
+    "Repository paths are sanitized. Absolute artifact paths are recorded in the external release verification.json and final task response. APK/AAB and private signing/config files are not committed.",
+    "AAB jarsigner returned success with four recorded warning classes. All 549 payload entries passed independent JarFile certificate verification, with no unsigned entries or duplicate names. The manifest is physically located late in the ZIP archive; a streaming JAR view is not the authoritative full-archive verification used here. No store upload was performed."
+  ]
+}
