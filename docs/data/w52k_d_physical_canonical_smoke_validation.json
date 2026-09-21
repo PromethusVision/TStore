@@ -1,0 +1,336 @@
+{
+  "wave": "W52K-D",
+  "result": "PASS",
+  "result_scope": "Functional physical smoke; open visual/product follow-ups are listed explicitly.",
+  "completed_at_utc": "2026-09-21T23:18:01.200234+00:00",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "build_source_main": "6f765ef9fd22bdd5749f0fbe0eb99d2640091c37",
+  "evidence_base_main": "1f6bb7b92c360888c9cdecfc7e9f4535d07c3be0",
+  "branch": "astra-release/w52k-d-physical-canonical-smoke",
+  "task_result": {
+    "W52K_D_PHYSICAL_CANONICAL_SMOKE": "PASS",
+    "DEVICE_CONNECTED": "PASS",
+    "DEVICE_MODEL": "POCO X7 Pro (2412DPC0AG)",
+    "ANDROID_VERSION": "16",
+    "SDK": 36,
+    "FROZEN_APK_SHA256": "PASS",
+    "APK_INSTALLED": "PASS",
+    "VERSION_NAME": "1.0.0",
+    "VERSION_CODE": 2,
+    "TESTER_SESSION_VALID": "PASS",
+    "TESTER_ALLOWLIST_RENEWED": "YES",
+    "ALLOWLIST_TTL": "7200 seconds (2 hours)",
+    "SERVER_AUTHORIZED_PREVIEW": "PASS",
+    "PUBLIC_CANONICAL_ACTIVATION": "OFF",
+    "APP_LAUNCH": "PASS",
+    "HOME": "PASS",
+    "HOME_UP_TO_8_CANONICAL_CATEGORIES": "PASS",
+    "ALL_CATEGORIES_24": "PASS",
+    "RECURSIVE_L2": "PASS",
+    "RECURSIVE_L3": "PASS",
+    "RECURSIVE_L4": "PASS",
+    "BREADCRUMB": "PASS",
+    "PRODUCT_LISTING": "PASS",
+    "PRODUCT_DETAILS": "PASS",
+    "SELLER_COMPARISON": "PASS",
+    "SHOP_DETAILS": "PASS",
+    "SEARCH": "PASS",
+    "BACK_NAVIGATION": "PASS",
+    "CRASH": "NO",
+    "ANR": "NO",
+    "UNAUTHORIZED_PREVIEW_ERROR": "NO",
+    "PRODUCTION_PRODUCTS": "20/20",
+    "PRODUCTION_LISTINGS": "285/285",
+    "PRODUCTION_SHOPS": "57/57",
+    "CANONICAL_NODES": "1563/1563",
+    "UNEXPECTED_PRODUCTION_WRITE": "NO",
+    "MUTATION_FLOWS_RUN": "NO",
+    "READY_FOR_CUSTOMER_V1_TAXONOMY_CLOSEOUT": "YES",
+    "READY_FOR_PUBLIC_CANONICAL_ACTIVATION_DECISION": "YES"
+  },
+  "artifact": {
+    "apk_filename": "EsnaftaVar-1.0.0+2-w52k-c-main-6f765ef-production-preview.apk",
+    "sha256": "97017d652781c50c2bcb331b442109bdb8d53b1b46f0b8c016f43de04eed581c",
+    "certificate_sha256": "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+    "package": "com.esnaftavar.app",
+    "version_name": "1.0.0",
+    "version_code": 2,
+    "installed_hash_matches": true,
+    "installed_certificate_verified": true,
+    "upgrade_preserved_app_data": true,
+    "uninstalled": false,
+    "data_cleared": false,
+    "rebuilt": false,
+    "re_signed": false
+  },
+  "device": {
+    "market_name": "POCO X7 Pro",
+    "model": "2412DPC0AG",
+    "android": "16",
+    "sdk": 36,
+    "physical": true,
+    "adb_authorized": true,
+    "serial_recorded": false
+  },
+  "authorization": {
+    "method": "Existing sealed removeTester for exact expired subject, then existing sealed stageB; no Stage A or CLI deploy/rollback wrapper",
+    "seal_sha256": "e87a1a2b0a7eb19c0b11640c95eb617f5f1fce6fd207d0a28d900c63f6f4f2a7",
+    "sealed_inputs": 39,
+    "offline_orchestration_checks": 16,
+    "tester_count": 1,
+    "existing_auth_subject_verified": true,
+    "ttl_seconds": 7200,
+    "expires_at_utc": "2026-09-22T00:55:23.149Z",
+    "after_test": "LET_EXPIRE_NATURALLY",
+    "second_extension_performed": false,
+    "wildcards": false,
+    "new_auth_user_created": false,
+    "real_subject_recorded": false,
+    "db_password_cleared_owner_and_child": true
+  },
+  "server_preview": {
+    "result": "PASS",
+    "response_shape": "SINGLE_ITEM_JSON_ARRAY",
+    "tester_http_status": 200,
+    "anonymous_http_status": 401,
+    "rpc_count": 10,
+    "roots": 24,
+    "recursive_levels": [
+      2,
+      3,
+      4
+    ],
+    "breadcrumb": "PASS",
+    "alias": "PASS",
+    "search": "PASS",
+    "product_scope": "PASS",
+    "eligible_products": 14,
+    "gated_products": 6,
+    "expiry_guard": "Read-only evaluation of exact installed predicate at actual lease boundary; no live expired-lease request executed."
+  },
+  "physical_evidence": {
+    "agent_observed": [
+      "exact APK install and launch",
+      "Home eight canonical roots",
+      "All Categories exact 24 canonical root names",
+      "light presentation, readable cards and visible icons",
+      "sanitized application logs and exit history"
+    ],
+    "product_owner_checklist": {
+      "RECURSIVE_L2": "PASS",
+      "RECURSIVE_L3": "PASS",
+      "RECURSIVE_L4": "PASS",
+      "BREADCRUMB": "PASS",
+      "PRODUCT_LISTING": "PASS",
+      "PRODUCT_DETAILS": "PASS",
+      "SELLER_COMPARISON": "PASS",
+      "SHOP_DETAILS": "PASS",
+      "SEARCH": "PASS",
+      "BACK_NAVIGATION": "PASS",
+      "PRODUCT_IMAGE": "PLACEHOLDER",
+      "CRASH_FREEZE_AUTH_ERROR": "NONE_REPORTED"
+    },
+    "checklist_path": "Gıda & İçecek > Yağ & Sirke > Yemeklik Yağlar > Bitkisel Sıvı Yağlar",
+    "checklist_product": "Ayçiçek Yağı 1 L",
+    "checklist_search": "USB",
+    "method_note": "At the Product Owner request, remaining physical navigation was performed and reported by the owner in one checklist. Those screens were not independently captured or witnessed by the agent. Home and All Categories were directly inspected through ADB.",
+    "category_ui": {
+      "physical_root_count": 24,
+      "physical_names_match_frozen_taxonomy": true,
+      "physical_home_root_count": 8,
+      "all_icons_visually_present": true,
+      "text_readable": true,
+      "light_presentation": true,
+      "category_root_names": [
+        "Gıda & İçecek",
+        "Giyim & Moda",
+        "Ayakkabı",
+        "Çanta & Aksesuar",
+        "Elektronik",
+        "Bilgisayar & Tablet",
+        "Beyaz Eşya & Ev Aletleri",
+        "Ev & Yaşam",
+        "Züccaciye & Mutfak",
+        "Yapı, Hırdavat & Tesisat",
+        "Otomotiv & Motosiklet",
+        "Kozmetik & Kişisel Bakım",
+        "Anne & Bebek",
+        "Oyuncak & Hobi",
+        "Müzik & Enstrüman",
+        "Spor & Outdoor",
+        "Kitap",
+        "Kırtasiye & Ofis",
+        "Evcil Hayvan Ürünleri",
+        "Gözlük & Optik",
+        "Saat & Takı",
+        "Sağlık & Medikal",
+        "Çiçek & Bahçe",
+        "Hediyelik & Parti"
+      ]
+    },
+    "feedback": [
+      {
+        "id": "W52KD-N1",
+        "classification": "EXPECTED_CURRENT_POLICY_GATE",
+        "title": "Locked milk and egg terminal categories",
+        "source": "PRODUCT_OWNER_PHYSICAL_REPORT_AND_LIVE_READ",
+        "live_http_status": 200,
+        "children": 6,
+        "policy_class": "REGULATED",
+        "professional_review_status": "pending",
+        "is_assignable": false,
+        "resolution": "Matches current sealed taxonomy and client navigation. This establishes configured behavior, not legal necessity or final approval of that classification. No category was activated."
+      },
+      {
+        "id": "W52KD-UI1",
+        "classification": "OPEN_VISUAL_POLISH",
+        "title": "Seller cards need clearer visual separation",
+        "source": "PRODUCT_OWNER_PHYSICAL_REPORT",
+        "functional_result": "PASS",
+        "requested_follow_up": "Improve separation between adjacent seller cards with reviewed borders, spacing or surface contrast. No change in this wave."
+      },
+      {
+        "id": "W52KD-UI2",
+        "classification": "OPEN_PRODUCT_REQUEST",
+        "title": "Show shop logos on seller cards",
+        "source": "PRODUCT_OWNER_REQUEST",
+        "requested_follow_up": "Use the shop logo where available, with a consistent fallback when absent. Appropriate for a dedicated seller-card polish task. No change in this wave."
+      },
+      {
+        "id": "W52KD-N2",
+        "classification": "OBSERVED_MEDIA_LIMITATION",
+        "title": "Product image uses placeholder",
+        "source": "PRODUCT_OWNER_PHYSICAL_REPORT",
+        "functional_result": "PASS",
+        "resolution": "Readable product content and seller data passed; no claim that a real product photograph loaded."
+      }
+    ]
+  },
+  "stability": {
+    "result": "PASS",
+    "application_running": true,
+    "log_lines_examined": 3369,
+    "flutter_error_priority_lines": 0,
+    "matching_error_classes": {},
+    "android_exit_history_current_test_entries": 0,
+    "older_exit_entries_excluded": true,
+    "raw_logs_saved": false,
+    "user_report": "No crash, freeze or authorization error"
+  },
+  "server_postcheck": {
+    "result": "PASS",
+    "observed_at_utc": "2026-09-21T23:12:52.340Z",
+    "private_preview_bridge": "ACTIVE",
+    "public_canonical_activation": "OFF",
+    "canonical_backend": "STAGED_OPERATIONAL",
+    "legacy_sql": "PASS",
+    "legacy_http": "PASS",
+    "ledger": "PASS",
+    "schema_security": "PASS",
+    "0012_unchanged": true,
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "public_tables_compared": 32,
+    "public_table_counts_and_content_fingerprints_unchanged": true,
+    "legacy_http_pre_post_hashes_unchanged": true,
+    "measurement_limit": "Before/after snapshots agree; this is not a full database audit of transient activity."
+  },
+  "scope": {
+    "production_write_performed": "YES_EXACT_TESTER_ALLOWLIST_ONLY",
+    "unexpected_production_write": false,
+    "public_activation_performed": false,
+    "bridge_deployed_or_modified": false,
+    "backup_or_migration_run": false,
+    "development_accessed": false,
+    "mutation_flows_run": false,
+    "app_source_changed": false,
+    "rebuild_performed": false,
+    "artifacts_committed": false
+  },
+  "privacy": {
+    "keys_passwords_tokens_email_tester_uid_device_serial_local_user_paths_in_committed_evidence": false,
+    "home_personal_greeting_screenshot_suppressed": true,
+    "login_credentials_captured": false,
+    "local_screenshots_committed": false
+  },
+  "local_proof_inventory": [
+    {
+      "name": "apk-proof.json",
+      "sha256": "e76764641bd428a25a51ee2120405dcdf831792075e9265b64d5830747fd2d13"
+    },
+    {
+      "name": "device-proof.json",
+      "sha256": "c7b1b92184a9389efb4865a838d2efa7cd4ff0664c57ab6dbd371610053f7b39"
+    },
+    {
+      "name": "category-ui-proof.json",
+      "sha256": "1ab0f7fd1e59326e004be8e024fe59cfaeafe361d251da830728f109dba093e7"
+    },
+    {
+      "name": "renew-result.json",
+      "sha256": "10955e253de0785b6d9ef7fe11c187b7c9e4bc170a1186485a9ed391bd34985f"
+    },
+    {
+      "name": "postcheck-result.json",
+      "sha256": "cc14df04452cf79a0291e6c59962578a1e41d11499c16cd71d64cb146f104043"
+    },
+    {
+      "name": "milk-read-proof.json",
+      "sha256": "c0dab6954148f0c56612b7c924bc46deba4b5b6724fe879d4604dcf5c33f2bb0"
+    },
+    {
+      "name": "owner-cleanup-renew.json",
+      "sha256": "51e1a208bee2f0b11b703bfbc4f7d5eccf26dbbd20bd51467ed01f8b68f72925"
+    },
+    {
+      "name": "owner-cleanup-postcheck.json",
+      "sha256": "461bd946f04f20f46ed7646c5262a930322198c8343a871308aca5916fc1d03e"
+    },
+    {
+      "name": "phone/w52kd-install.json",
+      "sha256": "dff1ad7d1ddc365af4224dece4ee5d48d1772f8db3062ab2b3f26a0e8cd25d47"
+    },
+    {
+      "name": "phone/w52kd-screen-home.json",
+      "sha256": "a9a4a74a4ca74d0162c028d1356492038ce3d5540cc5a05e628be67eef943ce4"
+    },
+    {
+      "name": "phone/w52kd-screen-home-categories.json",
+      "sha256": "a357346456848ebe5e2c2b12bcad40df679f8a681bd537d218d41ba67c29ba0d"
+    },
+    {
+      "name": "phone/w52kd-screen-all-categories.json",
+      "sha256": "5ad3a7fa4625afe47ad671e660cecfb18cf8149119f8117ea588d6f76393c542"
+    },
+    {
+      "name": "phone/screen-home-categories.png",
+      "sha256": "b91e202b45c341e43a6edcc3b88e80a4576c73157e7b0a559204ed18ade5f68c"
+    },
+    {
+      "name": "phone/screen-all-categories.png",
+      "sha256": "8f94a5188d07ccf90085cc2427222bbcc229e35bd9d08dfacc37854aed28725a"
+    },
+    {
+      "name": "phone/final-device.json",
+      "sha256": "54f92fbc87db0926dc9022e90e6a14795276582fcd6435a813ed7a5eb3d11fd2"
+    },
+    {
+      "name": "phone/final-log-proof.json",
+      "sha256": "d91dde799273ba297e2b2eac9ca614a2bd2b35e65e7c3586697d0fa244e3d187"
+    }
+  ],
+  "readiness_note": "Ready for taxonomy closeout and a separate public activation decision; not public activation approval, not all categories policy-cleared, and not completion of the seller visual follow-ups."
+}
