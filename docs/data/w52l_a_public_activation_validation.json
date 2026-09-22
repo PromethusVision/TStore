@@ -1,0 +1,1379 @@
+{
+  "format": "w52l-a-public-activation-validation-v1",
+  "authority_main": "513ab9ce7fcec517bbad9922743a629d1512e9b6",
+  "branch": "astra-release/w52l-a-public-canonical-activation-readiness",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "task_result": {
+    "W52L_A_PUBLIC_ACTIVATION_READINESS": "FAIL",
+    "PUBLIC_ACTIVATION_MECHANISM_IDENTIFIED": "PASS",
+    "PUBLIC_CLIENT_CONTRACT_READY": "FAIL",
+    "LEGACY_CLIENT_AFTER_ACTIVATION": "PASS",
+    "NEW_CANONICAL_CLIENT_AFTER_ACTIVATION": "FAIL",
+    "POLICY_REVIEW_GATES_PRESERVED": "PASS",
+    "ELIGIBLE_PRODUCTS": "14/14",
+    "GATED_PRODUCTS": "6/6",
+    "PRIVATE_PREVIEW_BRIDGE_POST_ACTIVATION": "REMOVE_AFTER_SMOKE",
+    "PUBLIC_ACTIVATION_EXECUTOR_READY": "PASS",
+    "PUBLIC_ACTIVATION_ROLLBACK_READY": "PASS",
+    "REAPPLY_PROTECTION": "PASS",
+    "REAL_PRODUCTION_COPY_REHEARSAL_1": "PASS",
+    "REAL_PRODUCTION_COPY_REHEARSAL_2": "PASS",
+    "ROLLBACK_REHEARSAL_1": "PASS",
+    "ROLLBACK_REHEARSAL_2": "PASS",
+    "FAILURE_INJECTION_CASES": 17,
+    "FAILURE_INJECTION_SUITE": "PASS",
+    "FINAL_PUBLIC_BUILD_RECIPE_READY": "FAIL",
+    "PUBLIC_CANONICAL_PREVIEW_REQUIRED_AFTER_ACTIVATION": "NO",
+    "NEW_SEAL_READY": "PASS",
+    "0012_CHANGED": "NO",
+    "PRODUCTION_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "READY_FOR_PUBLIC_CANONICAL_ACTIVATION_WRITE_DECISION": "NO",
+    "READY_FOR_W52L_B_FINAL_PUBLIC_BUILD": "NO"
+  },
+  "readiness_scope": {
+    "server_executor_and_rollback_pass_means": "Exact isolated candidate verified, not a live deployment approval or executable live runner",
+    "live_write_enabled": false,
+    "blockers": [
+      "No Production public canonical Flutter bootstrap/bindings",
+      "Current capability verifier requires incompatible v2 contract and preview support",
+      "Public v1 product scope lacks preview detail/search/filter signatures",
+      "No valid final public build define/config set exists on authoritative main"
+    ],
+    "client_changes": false,
+    "apk_aab_built": false,
+    "development_accessed": false,
+    "production_accessed": false,
+    "production_write_performed": false
+  },
+  "newest_archive_suitability": {
+    "format": "w52la-local-preparation-v1",
+    "result": "PASS_SUITABILITY_CHECK_COMPLETED",
+    "source_backup_sha256": "70d85d3da72ef272630d02307ba6362a8ba15daf92a30396d78d3ee759ea65d9",
+    "production_accessed": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "restore": {
+      "result": "PASS",
+      "isolation": {
+        "kind": "ISOLATED_REAL_BACKUP_RESTORE",
+        "verified": true,
+        "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+        "network": "none",
+        "ports": [],
+        "backup_readonly": true
+      },
+      "toc_entries": 1066,
+      "omitted": 0,
+      "restored_owner_acl": true,
+      "source_roles_memberships": "PASS",
+      "reconstruction": {
+        "result": "PASS",
+        "scope": "ISOLATED_PLATFORM_METADATA_RECONSTRUCTION",
+        "properties": 6,
+        "extension_ownership_dependencies": 3,
+        "roles": [
+          {
+            "role": "supabase_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_auth_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_storage_admin",
+            "log_statement": "none",
+            "default_transaction_read_only": "off"
+          },
+          {
+            "role": "supabase_read_only_user",
+            "log_statement": "none",
+            "default_transaction_read_only": "on"
+          }
+        ]
+      },
+      "duration_ms": 3909
+    },
+    "archive_data_sections": 78,
+    "suitability": "FAIL",
+    "safe_error": "W52JB_SCHEMA_FINGERPRINT_APPLIED_RELATIONS",
+    "owner_acl_metadata": [
+      {
+        "acl": null,
+        "rls": true,
+        "kind": "r",
+        "name": "canonical_categories",
+        "owner": "postgres",
+        "forced": false
+      },
+      {
+        "acl": null,
+        "rls": true,
+        "kind": "r",
+        "name": "canonical_category_qualification",
+        "owner": "postgres",
+        "forced": false
+      }
+    ]
+  },
+  "next_newer_archive": {
+    "sha256": "97dfe3451c56946b4bcf81040d265c9d5909c57602c1d07da961ba1931f18626",
+    "suitability": "FAIL_PREVIOUSLY_PROVED_OWNER_ACL_REPRESENTATION",
+    "source": "docs/data/w52k_cb_authorized_preview_validator_validation.json"
+  },
+  "selected_archive": {
+    "sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "bytes": 537274,
+    "state": "PRE_0012",
+    "source_pg": "17.6",
+    "pg_dump": "17.11",
+    "local_reconstruction": [
+      "Approved platform-security reconstruction",
+      "Immutable 0012 using approved executor",
+      "Immutable 0013 bridge and exact ledger; no live deploy"
+    ]
+  },
+  "seal": {
+    "result": "PASS",
+    "sha256": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+    "files": 35
+  },
+  "package_tests": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "failure_injection": [
+    {
+      "case": "wrong_production_identity",
+      "result": "PASS",
+      "safe_stop": "W52JB_TARGET_TRANSPORT_IDENTITY"
+    },
+    {
+      "case": "public_already_on",
+      "result": "PASS",
+      "safe_stop": "W52LA_PUBLIC_ALREADY_ON",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "node_count_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LA_PRIVATE_ERROR_SUPPRESSED",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "root_count_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LA_PRIVATE_ERROR_SUPPRESSED",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "mapping_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LA_PRIVATE_ERROR_SUPPRESSED",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "policy_gate_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_QUALIFICATION_GATES",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "legacy_contract_broken",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_LEGACY_DATA",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "public_capability_incorrect",
+      "result": "PASS",
+      "safe_stop": "W52JB_PSQL_P0001",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "anonymous_write_exposure",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_0012_SCHEMA_DRIFT",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "rls_policy_drift",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_0012_SCHEMA_DRIFT",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "active_private_preview_lease",
+      "result": "PASS",
+      "safe_stop": "W52LA_ACTIVE_PREVIEW_LEASE_MUST_EXPIRE_FIRST",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "alias_data_drift",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_STRUCTURAL_DATA",
+      "state_restored": "EXACT"
+    },
+    {
+      "case": "activation_transaction_failure_after_sql",
+      "result": "PASS",
+      "public_state_and_ledger": "EXACT_ROLLBACK"
+    },
+    {
+      "case": "rollback_before_activation",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_ACTIVATION_LEDGER"
+    },
+    {
+      "case": "live_write_transport_refused",
+      "result": "PASS",
+      "safe_stop": "W52LA_READINESS_PACKAGE_LOCAL_WRITE_ONLY"
+    },
+    {
+      "case": "reapply_after_activation",
+      "result": "PASS",
+      "safe_stop": "W52LA_REAPPLY_PROTECTION"
+    },
+    {
+      "case": "rollback_twice",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_ACTIVATION_LEDGER"
+    }
+  ],
+  "rehearsals": [
+    {
+      "number": 1,
+      "result": "PASS",
+      "started_at_utc": "2026-09-22T00:04:16.541Z",
+      "completed_at_utc": "2026-09-22T00:06:24.437Z",
+      "container_identity_sha256": "2542a8c819a6232cf53074b6299329d128e2c46c4b9246764f8ceee14b5ae087",
+      "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+      "restore": {
+        "result": "PASS",
+        "isolation": {
+          "kind": "ISOLATED_REAL_BACKUP_RESTORE",
+          "project_ref": "mefhfvrgkwciubeajjeb",
+          "verified": true,
+          "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+          "network": "none",
+          "ports": [],
+          "backup_readonly": true
+        },
+        "toc_entries": 958,
+        "omitted": 0,
+        "restored_owner_acl": true,
+        "source_roles_memberships": "PASS",
+        "reconstruction": {
+          "result": "PASS",
+          "scope": "ISOLATED_PLATFORM_METADATA_RECONSTRUCTION",
+          "properties": 6,
+          "extension_ownership_dependencies": 3,
+          "roles": [
+            {
+              "role": "supabase_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_auth_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_storage_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_read_only_user",
+              "log_statement": "none",
+              "default_transaction_read_only": "on"
+            }
+          ]
+        },
+        "duration_ms": 3875
+      },
+      "source_data_sections": 69,
+      "seal_before": {
+        "result": "PASS",
+        "sha256": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+        "files": 35
+      },
+      "seal_after": {
+        "result": "PASS",
+        "sha256": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+        "files": 35
+      },
+      "activation": {
+        "result": "PASS",
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "atomic": "PUBLIC_STATE_AND_EXACT_LEDGER"
+      },
+      "rollback": {
+        "result": "PASS",
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "atomic": "PUBLIC_OFF_STAGED_AND_LEDGER"
+      },
+      "policy_active": {
+        "result": "PASS",
+        "published_nodes": 325,
+        "assignable_leaves": 247,
+        "staged_nodes": 1238,
+        "roots": 24,
+        "publication_set_sha256": "572ccd8ddb69f56ccf773aa27b5ed7de7228f464ca1fc265d6dfcb1963f3c0dc"
+      },
+      "active_aliases": 148,
+      "counts_after_rollback": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "security": {
+        "result": "PASS",
+        "client_write_grants": 0,
+        "canonical_tables_with_rls": 9,
+        "catalog_unchanged": true
+      },
+      "legacy_http_before": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "legacy_http_after_activation": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "legacy_http_after_rollback": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "public_http_before": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "public_http_after_activation": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 60,
+          "roots": 24,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 60,
+          "roots": 24,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884"
+        }
+      },
+      "public_http_after_rollback": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "full_rows_including_timestamps_restored": "PASS",
+      "private_allowlist_preserved": "PASS",
+      "original_archive_rows_after": "PASS_ALL_69",
+      "manual_sql_repairs": false,
+      "flutter_client_executed": false
+    },
+    {
+      "number": 2,
+      "result": "PASS",
+      "started_at_utc": "2026-09-22T00:04:18.019Z",
+      "completed_at_utc": "2026-09-22T00:06:18.900Z",
+      "container_identity_sha256": "80dc3f83b71918817449d4f943b1304704a382ae7be220785f642d29e25ef366",
+      "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+      "restore": {
+        "result": "PASS",
+        "isolation": {
+          "kind": "ISOLATED_REAL_BACKUP_RESTORE",
+          "project_ref": "mefhfvrgkwciubeajjeb",
+          "verified": true,
+          "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+          "network": "none",
+          "ports": [],
+          "backup_readonly": true
+        },
+        "toc_entries": 958,
+        "omitted": 0,
+        "restored_owner_acl": true,
+        "source_roles_memberships": "PASS",
+        "reconstruction": {
+          "result": "PASS",
+          "scope": "ISOLATED_PLATFORM_METADATA_RECONSTRUCTION",
+          "properties": 6,
+          "extension_ownership_dependencies": 3,
+          "roles": [
+            {
+              "role": "supabase_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_auth_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_storage_admin",
+              "log_statement": "none",
+              "default_transaction_read_only": "off"
+            },
+            {
+              "role": "supabase_read_only_user",
+              "log_statement": "none",
+              "default_transaction_read_only": "on"
+            }
+          ]
+        },
+        "duration_ms": 3739
+      },
+      "source_data_sections": 69,
+      "seal_before": {
+        "result": "PASS",
+        "sha256": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+        "files": 35
+      },
+      "seal_after": {
+        "result": "PASS",
+        "sha256": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+        "files": 35
+      },
+      "activation": {
+        "result": "PASS",
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "atomic": "PUBLIC_STATE_AND_EXACT_LEDGER"
+      },
+      "rollback": {
+        "result": "PASS",
+        "transaction": "COMMIT_ACKNOWLEDGED",
+        "atomic": "PUBLIC_OFF_STAGED_AND_LEDGER"
+      },
+      "policy_active": {
+        "result": "PASS",
+        "published_nodes": 325,
+        "assignable_leaves": 247,
+        "staged_nodes": 1238,
+        "roots": 24,
+        "publication_set_sha256": "572ccd8ddb69f56ccf773aa27b5ed7de7228f464ca1fc265d6dfcb1963f3c0dc"
+      },
+      "active_aliases": 148,
+      "counts_after_rollback": {
+        "categories": 4,
+        "products": 20,
+        "shop_products": 285,
+        "shops": 57,
+        "canonical_nodes": 1563,
+        "canonical_roots": 24,
+        "terminal_leaves": 1245,
+        "exact_owner_mappings": 20,
+        "orphan_products": 0,
+        "orphan_listings": 0,
+        "broken_parent_chains": 0,
+        "duplicate_canonical_uuids": 0,
+        "invalid_product_targets": 0
+      },
+      "security": {
+        "result": "PASS",
+        "client_write_grants": 0,
+        "canonical_tables_with_rls": 9,
+        "catalog_unchanged": true
+      },
+      "legacy_http_before": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "legacy_http_after_activation": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "legacy_http_after_rollback": {
+        "anon": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        },
+        "authenticated": {
+          "home_categories": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 4,
+            "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+            "object_response": false
+          },
+          "product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 20,
+            "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+            "object_response": false
+          },
+          "category_product_listing": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+            "object_response": false
+          },
+          "product_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+            "object_response": true
+          },
+          "seller_comparison": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 15,
+            "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+            "object_response": false
+          },
+          "shop_details": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 1,
+            "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+            "object_response": true
+          },
+          "shop_listings": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 5,
+            "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+            "object_response": false
+          },
+          "search": {
+            "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+            "rows": 2,
+            "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+            "object_response": false
+          }
+        }
+      },
+      "public_http_before": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "public_http_after_activation": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 60,
+          "roots": 24,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 60,
+          "roots": 24,
+          "eligible_products": 14,
+          "gated_products": 6,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884"
+        }
+      },
+      "public_http_after_rollback": {
+        "anon": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 401,
+          "preview_status": 401,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authenticated": {
+          "result": "PASS",
+          "reads_200": 12,
+          "roots": 0,
+          "eligible_products": 0,
+          "gated_products": 20,
+          "levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "search_alias": "PASS",
+          "write_status": 403,
+          "preview_status": 403,
+          "current_client_product_signature_status": 404,
+          "current_client_product_signature_code": "PGRST202",
+          "product_ids_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "full_rows_including_timestamps_restored": "PASS",
+      "private_allowlist_preserved": "PASS",
+      "original_archive_rows_after": "PASS_ALL_69",
+      "manual_sql_repairs": false,
+      "flutter_client_executed": false
+    }
+  ],
+  "public_contract": {
+    "client": "production-taxonomy-client-v1",
+    "taxonomy": "canonical-v1.0.0",
+    "rpc": "production-taxonomy-rpc-v1",
+    "generation": 1,
+    "preview": false,
+    "tester_required": false,
+    "product_scope": "production_taxonomy_products_v1",
+    "roots": 24,
+    "published_nodes": 325,
+    "assignable_leaves": 247,
+    "active_aliases": 148,
+    "eligible_products": 14,
+    "gated_products": 6
+  },
+  "build_recipe": {
+    "ready": false,
+    "flavor": "production",
+    "existing_entrypoint": "lib/main_production.dart",
+    "existing_config_field_names": [
+      "SUPABASE_PRODUCTION_URL",
+      "SUPABASE_PRODUCTION_ANON_KEY",
+      "PRODUCTION_PROJECT_REF",
+      "PRODUCTION_AUTH_SITE_URL",
+      "PRODUCTION_AUTH_WEB_REDIRECT_URL",
+      "PRODUCTION_AUTH_MOBILE_CALLBACK_URL"
+    ],
+    "preview_define_must_not_be_true": true,
+    "preview_false_currently_selects": "LEGACY",
+    "public_selector_on_authoritative_main": null,
+    "new_build_run": false
+  },
+  "remaining_decisions": [
+    "Implement and validate the public client contract before live activation or final public RC",
+    "Future explicitly authorized live handoff needs fresh read-only state/preflight, approved backup and a reviewed new seal",
+    "Keep bridge for rollback; consider separate cleanup only after final public smoke"
+  ],
+  "evidence_sanitization": {
+    "absolute_user_paths": false,
+    "real_tester_uid": false,
+    "jwt_or_session": false,
+    "key_values": false,
+    "db_password": false,
+    "raw_backup": false
+  },
+  "quality": {
+    "node_syntax_modules": 12,
+    "syntax": "PASS",
+    "package_tests": "8/8 PASS",
+    "failure_cases": "17/17 PASS",
+    "two_fresh_sealed_rehearsals": "PASS",
+    "source_backups_unchanged": "PASS",
+    "task_owned_containers_removed": 4,
+    "secret_pii_scan_files": 19,
+    "secret_pii_scan": "PASS",
+    "client_files_unchanged": true,
+    "immutable_0012_0013_unchanged": true,
+    "git_diff_check": "PASS",
+    "flutter_analyze_and_full_tests": "NOT_RUN_NO_FLUTTER_CHANGE"
+  }
+}

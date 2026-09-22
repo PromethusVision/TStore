@@ -1,0 +1,25 @@
+{
+  "format": "w52l-a-public-activation-runtime-v1",
+  "authority_main": "513ab9ce7fcec517bbad9922743a629d1512e9b6",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "database": "postgres",
+  "database_role": "postgres",
+  "postgres_version": "17.6",
+  "live_write_enabled": false,
+  "readiness_blocker": "Authoritative main has no Production public canonical Flutter runtime. A future explicitly authorized live package must be reviewed and resealed; this package refuses non-isolated writes.",
+  "operations": ["readPreflight", "activate", "readPostflight", "rollback"],
+  "activation_ledger_version": "20260922001400",
+  "activation_ledger_name": "0014_public_canonical_activation",
+  "permitted_changes": {
+    "canonical_categories": ["is_active", "is_assignable", "lifecycle_state"],
+    "production_taxonomy_config": ["public_enabled"],
+    "taxonomy_aliases": ["is_active"],
+    "supabase_migrations.schema_migrations": ["exact 0014 row"]
+  },
+  "source_counts": {"nodes": 1563, "roots": 24, "terminal_leaves": 1245, "mappings": 20, "products": 20, "listings": 285, "shops": 57},
+  "public_counts": {"nodes": 325, "roots": 24, "assignable_leaves": 247, "staged_nodes": 1238, "eligible_products": 14, "gated_products": 6},
+  "private_preview": {"required_after_activation": false, "active_leases_preflight": 0, "rows_mutated": false, "disposition": "REMOVE_AFTER_SMOKE", "retained_for_rollback": true},
+  "public_contract": {"client": "production-taxonomy-client-v1", "taxonomy": "canonical-v1.0.0", "rpc": "production-taxonomy-rpc-v1", "generation": 1, "preview": false, "tester_required": false, "legacy_fallback_allowed_in_future_client": false},
+  "client_discovery": {"production_public_runtime_exists": false, "preview_true_selects": "productionPrivatePreview", "preview_false_selects": "legacy", "exact_public_build_recipe_ready": false, "flutter_changes": false},
+  "transactions": {"read": "REPEATABLE READ READ ONLY", "write": "READ COMMITTED; advisory lock plus SHARE ROW EXCLUSIVE core and tester locks; strict preflight repeated under locks; state and ledger commit together", "statement_timeout_seconds": 120, "lock_timeout_seconds": 3, "commit_ack_lost": "STOP_UNKNOWN; reconcile independently; never assume rollback or retry automatically", "rollback_precondition": "Exact active 0014 state; refuse drift, absent ledger, before activation or second rollback"}
+}

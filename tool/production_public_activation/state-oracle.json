@@ -1,0 +1,32 @@
+{
+  "format": "w52la-immutable-source-derived-states-v1",
+  "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+  "derivation": "Full original archive restore; unchanged approved 0012 and 0013 payloads; reviewed public-state SQL inside a rolled-back isolated transaction",
+  "excluded_cross_install_fields": [
+    "created_at",
+    "updated_at",
+    "applied_at"
+  ],
+  "staged": {
+    "canonical_categories": "f69c5680efcf02aa9d85f9eac27a23e5690c32935c64bd9d3963e07224027cef",
+    "canonical_category_qualification": "c43c3ee00d4966620040bde215aa4e441bf00c7e8f360453bd0698f9ad71e3be",
+    "taxonomy_aliases": "b90bee1e327cf0c44bd13090db6703538e86b2a5bf4102cb38bbc93414c3bbf5",
+    "taxonomy_alias_targets": "1a0eb112bd3e9800a4334cb3629b7c195e813a8ecb0bcd40fd21ac3e74c40a1e",
+    "taxonomy_id_allocations": "4724cae86900c901829bd9a14476c5dcde069511bfcec5a11cdcc43bae5bd15d",
+    "taxonomy_import_runs": "4d86c97ded2733b04e271a3a03e6345ae18787f3231f4e26d34fb5749c1fcb26",
+    "taxonomy_node_relationships": "24db145a8385e5f608e89132b5968b137f52814ceadea6028e08ff626cda7808",
+    "production_taxonomy_config": "ad8f988b7db4a7f89c5134cc503a9ed904db9943a9f2d0858539908e6d744672",
+    "product_canonical_assignments": "191fc1b0e9d97003d9c56853965451476b01baf548b50eea91d0d7b1e4aacdea"
+  },
+  "active": {
+    "canonical_categories": "417983b70ba54fe78e6e382cb42164e74765aef7a07d25f8d8f4d1eff680a04b",
+    "canonical_category_qualification": "c43c3ee00d4966620040bde215aa4e441bf00c7e8f360453bd0698f9ad71e3be",
+    "taxonomy_aliases": "0111d11ac8eb2ee57b7b3c4410f5f6599551a589dff439a40bf68957c78dbd8f",
+    "taxonomy_alias_targets": "1a0eb112bd3e9800a4334cb3629b7c195e813a8ecb0bcd40fd21ac3e74c40a1e",
+    "taxonomy_id_allocations": "4724cae86900c901829bd9a14476c5dcde069511bfcec5a11cdcc43bae5bd15d",
+    "taxonomy_import_runs": "4d86c97ded2733b04e271a3a03e6345ae18787f3231f4e26d34fb5749c1fcb26",
+    "taxonomy_node_relationships": "24db145a8385e5f608e89132b5968b137f52814ceadea6028e08ff626cda7808",
+    "production_taxonomy_config": "7589d28dd7333bb7ebd0c33790307acab5b3add99250471ce21c67944760687f",
+    "product_canonical_assignments": "191fc1b0e9d97003d9c56853965451476b01baf548b50eea91d0d7b1e4aacdea"
+  }
+}
