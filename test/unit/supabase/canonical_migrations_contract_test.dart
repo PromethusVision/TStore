@@ -16,11 +16,13 @@ const _expectedMigrationFiles = <String>[
   '20260830001100_0011_canonical_taxonomy_contract_v2.sql',
 ];
 
-// Production uses 0001..0009 + 0012 + 0013. It must never run the
+// Production uses 0001..0009 + 0012 + 0013 + additive 0015 (0014 publication
+// lives in its sealed execution package). It must never run the
 // mutually exclusive Development 0010/0011 bootstrap over that schema.
 const _productionOnlyMigrationFiles = <String>[
   '20260916001200_0012_production_canonical_side_by_side.sql',
   '20260919001300_0013_production_canonical_private_preview.sql',
+  '20260922001500_0015_production_public_customer_reads.sql',
 ];
 
 const _baselinePublicTables = <String>{

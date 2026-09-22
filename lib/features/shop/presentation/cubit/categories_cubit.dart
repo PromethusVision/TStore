@@ -81,7 +81,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       emit(
         CategoriesLoaded(
           categories,
-          runtimeMode: TaxonomyRuntimeMode.canonicalV1Runtime,
+          runtimeMode: taxonomyCapability.mode,
           canonicalNodes: orderedRoots,
         ),
       );

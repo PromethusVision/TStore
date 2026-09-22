@@ -2,7 +2,11 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-enum TaxonomyRuntimeMode { legacyRuntime, canonicalV1Runtime }
+enum TaxonomyRuntimeMode {
+  legacyRuntime,
+  canonicalV1Runtime,
+  productionPublicCanonical,
+}
 
 enum TaxonomyBackendFeature {
   roots,
@@ -28,6 +32,7 @@ enum TaxonomyBackendRuntimeReadiness {
   unsupported,
   supportedPreviewOff,
   supportedPreviewOn,
+  supportedProductionPublic,
 }
 
 class TaxonomyBackendContractProof extends Equatable {
@@ -130,7 +135,31 @@ class TaxonomyBackendContractProof extends Equatable {
       pilotActiveRootCount >= 0 &&
       previewRootCount >= 0;
 
+  /// A separate Production contract; does not relax the existing v2 proof.
+  bool get supportsProductionPublic =>
+      contractVersion == 'production-taxonomy-client-v1' &&
+      taxonomyVersion == supportedTaxonomyVersion &&
+      rpcContractVersion == 'production-taxonomy-rpc-v1' &&
+      rpcGeneration == 1 &&
+      supportedFeatures.containsAll(requiredCanonicalV1Features) &&
+      verifiedEvidence.containsAll(requiredCanonicalV1Evidence) &&
+      !previewSupported &&
+      !previewEnabled &&
+      lifecycleMetadata &&
+      policyMetadata &&
+      aliasStateMetadata &&
+      pathMetadata &&
+      productScopeContract == 'production-shadow-mapping-policy-eligible-v1' &&
+      productScopeRequiresAssignable &&
+      productScopePolicyFailClosed &&
+      publicActiveRootCount == 24 &&
+      pilotActiveRootCount == 0 &&
+      previewRootCount == 0;
+
   TaxonomyBackendRuntimeReadiness get runtimeReadiness {
+    if (supportsProductionPublic) {
+      return TaxonomyBackendRuntimeReadiness.supportedProductionPublic;
+    }
     if (!supportsCanonicalV1) {
       return TaxonomyBackendRuntimeReadiness.unsupported;
     }
@@ -207,13 +236,27 @@ class TaxonomyRuntimeCapability extends Equatable {
 
   const TaxonomyRuntimeCapability._({required this.mode, required this.proof});
 
+  factory TaxonomyRuntimeCapability.productionPublic({
+    required TaxonomyBackendContractProof proof,
+  }) {
+    if (!proof.supportsProductionPublic) {
+      throw ArgumentError('Exact Production public capability is required.');
+    }
+    return TaxonomyRuntimeCapability._(
+      mode: TaxonomyRuntimeMode.productionPublicCanonical,
+      proof: proof,
+    );
+  }
+
   static const currentDefault = TaxonomyRuntimeCapability.legacy();
 
   final TaxonomyRuntimeMode mode;
   final TaxonomyBackendContractProof? proof;
 
   bool get isLegacy => mode == TaxonomyRuntimeMode.legacyRuntime;
-  bool get isCanonicalV1 => mode == TaxonomyRuntimeMode.canonicalV1Runtime;
+  bool get isCanonicalV1 =>
+      mode == TaxonomyRuntimeMode.canonicalV1Runtime ||
+      mode == TaxonomyRuntimeMode.productionPublicCanonical;
   String? get taxonomyVersion => proof?.taxonomyVersion;
 
   void requireCanonicalVersion(String? value) {

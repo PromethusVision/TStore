@@ -1,0 +1,419 @@
+{
+  "format": "w52l-b-public-client-validation-v1",
+  "authoritative_main": "1e5d91c4cef330663301ea5cabf934e94ac238ee",
+  "branch": "astra-release/w52l-b-public-canonical-client",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "task_result": {
+    "W52L_B_PUBLIC_CANONICAL_CLIENT": "PASS",
+    "PRODUCTION_PUBLIC_RUNTIME_IMPLEMENTED": "PASS",
+    "PUBLIC_CAPABILITY_VERIFIER": "PASS",
+    "PUBLIC_TAXONOMY_ADAPTER": "PASS",
+    "PUBLIC_PRODUCT_CONTRACT": "PASS",
+    "ADDITIVE_BACKEND_FACADE_READY": "PASS",
+    "PRODUCT_LISTING_PUBLIC": "PASS",
+    "PRODUCT_DETAIL_PUBLIC": "PASS",
+    "SELLER_COMPARISON_PUBLIC": "PASS",
+    "SHOP_DETAILS_PUBLIC": "PASS",
+    "SEARCH_PUBLIC": "PASS",
+    "NO_LEGACY_FALLBACK": "PASS",
+    "NO_DEVELOPMENT_FALLBACK": "PASS",
+    "NO_PRIVATE_PREVIEW_REQUIREMENT": "PASS",
+    "PUBLIC_OFF_FAIL_CLOSED": "PASS",
+    "LEGACY_CLIENT_AFTER_LOCAL_ACTIVATION": "PASS",
+    "REAL_COPY_PUBLIC_ACTIVATED_INTEGRATION": "PASS",
+    "ANALYZER": "PASS",
+    "FINAL_PUBLIC_BUILD_RECIPE_READY": "PASS",
+    "ADDITIVE_BACKEND_FACADE_REQUIRED": "YES",
+    "ELIGIBLE_PRODUCTS": "14/14",
+    "GATED_PRODUCTS_EXCLUDED": "6/6",
+    "FULL_FLUTTER": "2177 PASS / 0 FAIL / 6 existing SKIP",
+    "PRODUCTION_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "READY_FOR_PUBLIC_FACADE_DEPLOY_DECISION": "YES",
+    "READY_FOR_FINAL_PUBLIC_BUILD": "YES",
+    "0012_CHANGED": "NO"
+  },
+  "scope": {
+    "production_accessed": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "release_build_performed": false,
+    "release_artifact_frozen": false,
+    "main_merged": false
+  },
+  "flutter": {
+    "full": {
+      "passed": 2177,
+      "failed": 0,
+      "skipped": 6,
+      "skip_names": [
+        "normal Auth clients enforce live development customer ownership and RLS",
+        "normal Auth clients verified lifecycle ve unverified rejection görür",
+        "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+        "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+        "anonymous Production client sees the complete Esenler demo customer flow",
+        "anonymous Production client initializes and sees canonical demo reads"
+      ]
+    },
+    "public_define_targeted": {
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0,
+      "skip_names": []
+    },
+    "analyzer": "PASS",
+    "existing_skip_identities_unchanged": true,
+    "existing_assertions_weakened": false,
+    "real_server": {
+      "exit_code": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "rpc_calls": {
+        "anon": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        },
+        "authenticated": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        }
+      },
+      "real_flutter_executed": true
+    }
+  },
+  "backend": {
+    "node_package_tests": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "real_copy_result": "PASS",
+    "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "private_rehearsal_evidence_sha256": "e10cc43626f494358804146e033b0bd0228eceeae23f69810198c6f1f80677ca",
+    "started_at_utc": "2026-09-22T01:05:36.614Z",
+    "completed_at_utc": "2026-09-22T01:09:52.552Z",
+    "postgres_version": "17.6",
+    "network": "none",
+    "published_container_ports": [],
+    "backup_mount": "read_only",
+    "source_archive_sections_preserved": 69,
+    "no_manual_acl_repair": true,
+    "unchanged_0012_0013_reconstructed": true,
+    "facade_installed_while_off": true,
+    "original_0014_applied_and_rolled_back": true,
+    "no_tester_allowlist": true,
+    "anonymous_and_normal_authenticated": "PASS",
+    "public_off_before": {
+      "anon": {
+        "production_public_read_capabilities_v1": 401,
+        "production_public_products_v1": 401,
+        "production_public_listings_v1": 401,
+        "production_public_shops_v1": 401
+      },
+      "authenticated": {
+        "production_public_read_capabilities_v1": 403,
+        "production_public_products_v1": 403,
+        "production_public_listings_v1": 403,
+        "production_public_shops_v1": 403
+      }
+    },
+    "public_off_after": {
+      "anon": {
+        "production_public_read_capabilities_v1": 401,
+        "production_public_products_v1": 401,
+        "production_public_listings_v1": 401,
+        "production_public_shops_v1": 401
+      },
+      "authenticated": {
+        "production_public_read_capabilities_v1": 403,
+        "production_public_products_v1": 403,
+        "production_public_listings_v1": 403,
+        "production_public_shops_v1": 403
+      }
+    },
+    "drift_rejections": {
+      "facade_grants": {
+        "result": "PASS",
+        "safe_error": "W52LB_FACADE_DEFINITION_OR_GRANT_DRIFT"
+      },
+      "facade_ledger": {
+        "result": "PASS",
+        "safe_error": "W52LB_EXACT_FACADE_LEDGER"
+      },
+      "unrelated_function": {
+        "result": "PASS",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT"
+      },
+      "canonical_write": {
+        "result": "PASS",
+        "safe_error": "W52JB_BX_0012_SCHEMA_DRIFT"
+      }
+    },
+    "legacy_response_hashes_before_active_rollback_equal": true,
+    "legacy_contracts": {
+      "anon": {
+        "home_categories": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "product_listing": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 20,
+          "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category_product_listing": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 5,
+          "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "product_details": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 1,
+          "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "seller_comparison": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 15,
+          "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop_details": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 1,
+          "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 5,
+          "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 2,
+          "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "authenticated": {
+        "home_categories": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "product_listing": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 20,
+          "result_sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category_product_listing": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 5,
+          "result_sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "product_details": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 1,
+          "result_sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "seller_comparison": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 15,
+          "result_sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop_details": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 1,
+          "result_sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 5,
+          "result_sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "transport": "PASS_CURL_EXIT_0_AND_EXPECTED_JSON",
+          "rows": 2,
+          "result_sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      }
+    },
+    "full_schema_and_data_rollback": "PASS",
+    "brand_filter_real_data": "NO_ASSIGNED_BRANDS; actual empty filter response verified; populated filter routing covered by unit test",
+    "task_containers_removed": true
+  },
+  "seals": {
+    "w52la_unchanged": "6ec54cc42daa4f8d166bc1fc0f56982d42e0c4050c214b8ce307a6f6fc45c584",
+    "w52lb": {
+      "result": "PASS",
+      "sha256": "ad0d1c6c51ac2d2bd064df78f099d2659fc4575949d529e10ffc4f4bdc595a69",
+      "inputs": 6,
+      "live_write_enabled": false
+    },
+    "0012_lf_sha256": "a72332213046505047e3e01d0d3795343b4e0d0eff8567388db464536ddc4834",
+    "0013_lf_sha256": "9b56e249a6e3054b8303742ca4bcc41d40e216de9c1a62a72193e4bae81091a4"
+  },
+  "future_readiness": {
+    "local_client_ready_for_signed_build": true,
+    "compile_requires_public_activation": false,
+    "runtime_requires_0015_and_public_on": true,
+    "live_executor_enabled": false,
+    "live_deploy_requires_separate_approved_package": true,
+    "physical_public_smoke_performed": false
+  },
+  "source_files": [
+    {
+      "path": "lib/core/common/widgets/production_public_gate.dart",
+      "sha256_lf": "67f172a0a2538dd43e921758d0d795d0894a487451277af49f7ee866ac2ec643"
+    },
+    {
+      "path": "lib/core/dependency_injection/production_public_bootstrap.dart",
+      "sha256_lf": "7a6223298066997b052b8c2ab90c48d634b1a756a67a4318c9180f265cd4dfe1"
+    },
+    {
+      "path": "lib/core/dependency_injection/service_locator.dart",
+      "sha256_lf": "9481bdaa9edf6ffee9a72e29c51976b446e184ff20d42f71fc60a4f4a8ae304f"
+    },
+    {
+      "path": "lib/core/dependency_injection/taxonomy_dependency_configuration.dart",
+      "sha256_lf": "e9fe0c63e446cf9617f244b8b1b8eea27d34531ec5b7afaba5ec5faf3641adfb"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/canonical_rpc_product_repository.dart",
+      "sha256_lf": "4f5c5ee2d25cef4448117ae07ed5a10ede5427fcccc0cb7d26788aa3bea9ff91"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/production_preview_product_repository.dart",
+      "sha256_lf": "5b86a1192e3ad09b3533e88b671ce87bbff561778cd6adee95b1c7652f6d0003"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/production_public_product_repository.dart",
+      "sha256_lf": "0e193445cea97f52bd271843d34de24e0c503745561ae62ab61f2cd5e03c9a3f"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/production_public_shop_repository.dart",
+      "sha256_lf": "a3fed0e2dc4dac284b6882d6a9e26ef6e1a1062ed842338e2c2a1ae3a60959d3"
+    },
+    {
+      "path": "lib/features/shop/data/services/production_public_taxonomy_adapter.dart",
+      "sha256_lf": "ea364ce969f2d92f02826894e0f8b6a408b49d4abe152779b921602e78f72058"
+    },
+    {
+      "path": "lib/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart",
+      "sha256_lf": "74262752d92f5fd1d0d1d9f00d0fdd164074df68d2f39e51e1fc1f2d37c04022"
+    },
+    {
+      "path": "lib/features/shop/presentation/cubit/categories_cubit.dart",
+      "sha256_lf": "75000fad7c4e7f50b5ad065570be3d4a72460e31da06c356728e67415247288c"
+    },
+    {
+      "path": "lib/main_production.dart",
+      "sha256_lf": "d4b39e1f112e7521ad6b656815b0a176840588dd6c1b789030648fbb7cf76907"
+    },
+    {
+      "path": "supabase/migrations/20260922001500_0015_production_public_customer_reads.sql",
+      "sha256_lf": "53559e2608fbbcdfedc22112db899340283a782239a6847930842961ba119aa6"
+    },
+    {
+      "path": "test/helpers/production_public_test_support.dart",
+      "sha256_lf": "0eafc358d9e54b6a33a18c07e96d130bf2963a2514dcfc0759a6fb17d4042e19"
+    },
+    {
+      "path": "test/unit/core/production_public_di_test.dart",
+      "sha256_lf": "c55a162a45f713b80a7e7e5808ffc5dbf335725c633143b7742795ad31819009"
+    },
+    {
+      "path": "test/unit/shop/production_public_adapter_test.dart",
+      "sha256_lf": "5d513ba0997e5f6e9ef305c1ba5b5fb771d06b70a0bb3e832beeb677191bb0bd"
+    },
+    {
+      "path": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "sha256_lf": "0bd6d5ecfe1ffd9b074010c8db0a2e9586498aeeb8a9f51cba0e37f8204288f3"
+    },
+    {
+      "path": "test/widget/shop/production_public_gate_test.dart",
+      "sha256_lf": "d9dc30ecd7ac3188ce6825873c855d621ae1842f544c8651ed775c23bdb04646"
+    },
+    {
+      "path": "tool/production_public_client/common.mjs",
+      "sha256_lf": "b6aae037829663dc43ebaec570e427532ba3a8a4cfb609888903f30ce2f64978"
+    },
+    {
+      "path": "tool/production_public_client/executor.mjs",
+      "sha256_lf": "7ce3a3c3f79b77cfcafbe00c757718d7269f1366962400be1e7601ff0e0f7a71"
+    },
+    {
+      "path": "tool/production_public_client/flutter_integration_test.dart",
+      "sha256_lf": "f504559a56ee100e3e28fa5054f87e2a80733fe9a7a085d7ae299ed63a91ba86"
+    },
+    {
+      "path": "tool/production_public_client/function-oracle.json",
+      "sha256_lf": "7732264f453056a6b88c84dc23017b76796312fb0fd06f88cd4843195d74c2cc"
+    },
+    {
+      "path": "tool/production_public_client/local-support.mjs",
+      "sha256_lf": "a4e9c723ea28dc2ffc16a778fc8d0780431bdfa8770250a37d68de4e7c55393f"
+    },
+    {
+      "path": "tool/production_public_client/package.test.mjs",
+      "sha256_lf": "de11d67837eb0ee3114234a47aec406c01f227ffd54832a9226abdd51705b822"
+    },
+    {
+      "path": "tool/production_public_client/prepare-local.mjs",
+      "sha256_lf": "6b1a0b1a16e72d21aef85bc57479bef90f55aeca5f9c247197b3a00f022e369d"
+    },
+    {
+      "path": "tool/production_public_client/rehearse.mjs",
+      "sha256_lf": "f7a74759dee8dccd923937583b1cad2c7dccd835725437c7ba263c8163a89004"
+    },
+    {
+      "path": "tool/production_public_client/rollback.sql",
+      "sha256_lf": "93dbd51d9dc8a6308bea8a7a0d877ac4fa395925cb0277dce97ef3ebb0180499"
+    },
+    {
+      "path": "tool/production_public_client/seal.json",
+      "sha256_lf": "5294bf4e7ebfa34b36adc75677525ae0b718d1a49d3d6f5de57e08a1c6c9d18d"
+    },
+    {
+      "path": "tool/production_public_client/seal.mjs",
+      "sha256_lf": "96e04dcfaa60b5f6413a0695b1b93dfb4d17982c272346b72068c5156fad9723"
+    }
+  ]
+}
