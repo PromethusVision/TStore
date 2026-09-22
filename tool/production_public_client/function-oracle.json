@@ -1,0 +1,28 @@
+{
+  "format": "w52lb-source-derived-function-oracle-v1",
+  "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+  "source_payload_sha256": "3b8d31ba0c37dd87dac8f04de8e108762bc8d106e5fe26b6b0d2ca835b3b3d5c",
+  "function_rows_sha256": "30fd8c2471c76882101e802d615a268cbb352de4a722b4d2bd62d3194cc7f57c",
+  "functions": [
+    {
+      "name": "production_public_listings_v1",
+      "arguments": "p_client_contract_version text, p_taxonomy_version text, p_product_id uuid, p_product_ids uuid[], p_shop_id uuid, p_limit integer, p_offset integer",
+      "sha256": "064b83d2a8bd957ce73619dba0baaef9ca6b3fbee8d251a9c15fd0421c3234f2"
+    },
+    {
+      "name": "production_public_products_v1",
+      "arguments": "p_client_contract_version text, p_taxonomy_version text, p_category_id uuid, p_product_id uuid, p_brand_id uuid, p_is_featured boolean, p_term text, p_exact_leaf boolean, p_sort_by text, p_ascending boolean, p_limit integer, p_offset integer",
+      "sha256": "a0341243aa0e6c11508fafb9eb9bc9d5041dcd253eb98236b19026665ee838da"
+    },
+    {
+      "name": "production_public_read_capabilities_v1",
+      "arguments": "p_client_contract_version text, p_taxonomy_version text",
+      "sha256": "44e5b9f00618eb9031079464e18872800819fd849a93126b047e33ec16534736"
+    },
+    {
+      "name": "production_public_shops_v1",
+      "arguments": "p_client_contract_version text, p_taxonomy_version text, p_shop_id uuid, p_owner_ids uuid[], p_limit integer, p_offset integer",
+      "sha256": "29cd180e77e2af6236f85347e75066d15a20e23b8a4b82c8ae609411480645ac"
+    }
+  ]
+}

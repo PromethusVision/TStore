@@ -2,6 +2,9 @@ import 'package:get_it/get_it.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/features/shop/data/repositories/production_preview_product_repository.dart';
 import 'package:t_store/features/shop/data/services/production_preview_taxonomy_adapter.dart';
+import 'package:t_store/features/shop/data/services/production_public_taxonomy_adapter.dart';
+import 'package:t_store/features/shop/data/repositories/production_public_product_repository.dart';
+import 'package:t_store/features/shop/data/repositories/production_public_shop_repository.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 
@@ -165,10 +168,21 @@ Future<void> setupServiceLocator({
   TaxonomyScopedProductRepository? verifiedTaxonomyScopedProductRepository,
   ProductionPreviewTaxonomyAdapter? productionPreviewAdapter,
   ProductionPreviewProductRepository? productionPreviewProducts,
+  ProductionPublicTaxonomyAdapter? productionPublicAdapter,
+  ProductionPublicProductRepository? productionPublicProducts,
+  ProductionPublicShopRepository? productionPublicShops,
 }) async {
   final taxonomyPlan = const TaxonomyDependencyPlanner().resolve(
     taxonomyConfiguration,
   );
+  if (!taxonomyPlan.registerProductionPublicAdapter &&
+      (productionPublicAdapter != null ||
+          productionPublicProducts != null ||
+          productionPublicShops != null)) {
+    throw const TaxonomyDependencyConfigurationException(
+      'Public bindings require explicit public mode.',
+    );
+  }
   if (taxonomyPlan.registerProductionPreviewAdapter &&
       (productionPreviewAdapter == null ||
           !productionPreviewAdapter.hasCurrentAuthorization ||
@@ -181,6 +195,23 @@ Future<void> setupServiceLocator({
     );
   }
   // ==================== Core ====================
+  if (taxonomyPlan.registerProductionPublicAdapter &&
+      (productionPublicAdapter == null ||
+          !productionPublicAdapter.isVerified ||
+          !identical(
+            productionPublicAdapter.authorization,
+            taxonomyConfiguration.productionPublicAuthorization,
+          ) ||
+          productionPublicProducts == null ||
+          productionPublicProducts.adapter != productionPublicAdapter ||
+          productionPublicShops == null ||
+          productionPublicShops.adapter != productionPublicAdapter ||
+          productionPreviewAdapter != null ||
+          productionPreviewProducts != null)) {
+    throw const TaxonomyDependencyConfigurationException(
+      'Production public bindings require the same verified public adapter.',
+    );
+  }
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
   sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
   sl.registerSingleton(taxonomyPlan.capability);
@@ -199,6 +230,7 @@ Future<void> setupServiceLocator({
     sl.registerLazySingleton<CanonicalTaxonomyRepository>(
       () => CanonicalTaxonomyRepositoryImpl(
         adapter:
+            productionPublicAdapter ??
             productionPreviewAdapter ??
             verifiedCanonicalTaxonomyAdapter ??
             sl<SupabaseCanonicalTaxonomyRpcAdapter>(),
@@ -206,6 +238,7 @@ Future<void> setupServiceLocator({
     );
     sl.registerLazySingleton<TaxonomyScopedProductRepository>(
       () =>
+          productionPublicProducts ??
           productionPreviewProducts ??
           verifiedTaxonomyScopedProductRepository ??
           CanonicalTaxonomyScopedProductRepositoryImpl(
@@ -249,7 +282,9 @@ Future<void> setupServiceLocator({
   // ==================== Products ====================
   // Repository
   sl.registerLazySingleton<ProductRepository>(
-    () => taxonomyPlan.registerProductionPreviewAdapter
+    () => taxonomyPlan.registerProductionPublicAdapter
+        ? productionPublicProducts!
+        : taxonomyPlan.registerProductionPreviewAdapter
         ? productionPreviewProducts!
         : ProductRepositoryImpl(supabaseService: sl()),
   );
@@ -286,7 +321,9 @@ Future<void> setupServiceLocator({
   // ==================== Shops ====================
   // Repository
   sl.registerLazySingleton<ShopRepository>(
-    () => ShopRepositoryImpl(supabaseService: sl()),
+    () => taxonomyPlan.registerProductionPublicAdapter
+        ? productionPublicShops!
+        : ShopRepositoryImpl(supabaseService: sl()),
   );
 
   // Use Cases
