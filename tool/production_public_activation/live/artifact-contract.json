@@ -1,0 +1,21 @@
+{
+  "format": "w52le-frozen-public-artifact-v1",
+  "package": "com.esnaftavar.app",
+  "version_name": "1.0.0",
+  "version_code": 3,
+  "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+  "public_define": true,
+  "preview_define": false,
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "source_main": "4cc2bcf4ce80198218e978c43eef9685aafaf504",
+  "reviewed_evidence_sha256": "3da1a9262f1a689be7b1fca92aeb159e495ea606f83b0036d438155493b7e17d",
+  "certificate_sha256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+  "apk": {
+    "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "size_bytes": 89596167
+  },
+  "aab": {
+    "sha256": "17e361684eab4aea6432bfa47a00af543777107c8bf7d0ccd472341b9e77cc79",
+    "size_bytes": 68935754
+  }
+}

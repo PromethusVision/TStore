@@ -1,0 +1,90 @@
+{
+  "format": "w52le-final-public-activation-live-v1",
+  "authority_main": "c75c17c6ebe8683b1d652a2fab05ed7700739453",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "database": "postgres",
+  "database_role": "postgres",
+  "postgres_version": "17.6",
+  "live_write_enabled": true,
+  "readiness_blocker": null,
+  "operations": [
+    "preflight",
+    "activate",
+    "postflight",
+    "rollback"
+  ],
+  "activation_ledger_version": "20260922001400",
+  "activation_ledger_name": "0014_public_canonical_activation",
+  "permitted_changes": {
+    "canonical_categories": [
+      "is_active",
+      "is_assignable",
+      "lifecycle_state"
+    ],
+    "production_taxonomy_config": [
+      "public_enabled"
+    ],
+    "taxonomy_aliases": [
+      "is_active"
+    ],
+    "supabase_migrations.schema_migrations": [
+      "exact 0014 row"
+    ]
+  },
+  "source_counts": {
+    "nodes": 1563,
+    "roots": 24,
+    "terminal_leaves": 1245,
+    "mappings": 20,
+    "products": 20,
+    "listings": 285,
+    "shops": 57
+  },
+  "public_counts": {
+    "nodes": 325,
+    "roots": 24,
+    "assignable_leaves": 247,
+    "staged_nodes": 1238,
+    "eligible_products": 14,
+    "gated_products": 6
+  },
+  "private_preview": {
+    "required_after_activation": false,
+    "active_leases_preflight": 0,
+    "rows_mutated": false,
+    "disposition": "REMOVE_AFTER_PUBLIC_SMOKE",
+    "retained_for_rollback": true
+  },
+  "public_contract": {
+    "client": "production-taxonomy-client-v1",
+    "taxonomy": "canonical-v1.0.0",
+    "rpc": "production-taxonomy-rpc-v1",
+    "generation": 1,
+    "preview": false,
+    "tester_required": false,
+    "legacy_fallback_allowed_in_future_client": false
+  },
+  "client_discovery": {
+    "production_public_runtime_exists": true,
+    "exact_public_build_recipe_ready": true,
+    "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+    "flutter_changes": false
+  },
+  "transactions": {
+    "read": "REPEATABLE READ READ ONLY",
+    "write": "READ COMMITTED; advisory lock plus SHARE ROW EXCLUSIVE core and tester locks; strict preflight repeated under locks; state and ledger commit together",
+    "statement_timeout_seconds": 120,
+    "lock_timeout_seconds": 3,
+    "commit_ack_lost": "STOP_UNKNOWN; reconcile independently; never assume rollback or retry automatically",
+    "rollback_precondition": "Exact active 0014 state; refuse drift, absent ledger, before activation or second rollback"
+  },
+  "live_execution_authorized_by_this_wave": false,
+  "explicit_owner_authorization_required": true,
+  "activation_sql_sha256": "719af6150d7d94f24a1378e982667ee8732678e6a18a6624c0fe2ac323be279e",
+  "rollback_sql_sha256": "54c8051b4623a1d22b08d877536ccb3fd03b13c6b28da5d512866a69ca5e1aa4",
+  "0015_required": true,
+  "0015_must_remain_intact": true,
+  "maximum_backup_age_seconds": 900,
+  "physical_public_off_required_for_live_activation": true,
+  "generic_db_push_allowed": false
+}
