@@ -1,0 +1,374 @@
+{
+  "format": "w52lc-live-0015-validation-v1",
+  "result": "PASS",
+  "authoritative_main": "2fd0686ecd966171f79c485607d0136c117b1519",
+  "task_branch": "astra-release/w52l-c-live-0015-deploy",
+  "target_project": "mefhfvrgkwciubeajjeb",
+  "updated_at_utc": "2026-09-24T21:41:13.217Z",
+  "owner_cleanup_at_utc": "2026-09-24T21:41:13.2439562Z",
+  "execution_package": {
+    "seal_sha256": "992d13ee5c891464cf7f443b22df83944dbdd4ce15176e5efa98a7f6b704b3fb",
+    "runtime_inputs": 52,
+    "sql_source_sha256": "53559e2608fbbcdfedc22112db899340283a782239a6847930842961ba119aa6",
+    "main_integrated": true,
+    "runtime_changed": false,
+    "resealed": false,
+    "only_reviewed_cli_used": true
+  },
+  "local_validation": {
+    "package_tests": 25,
+    "handoff_tests": 12,
+    "powershell_parse": "PASS",
+    "helper_sha256": {
+      "context.mjs": "5300a6f0be97b5e4ad15c9a7db1ae33772b14c39581dcb80f768ebfd78f5e8af",
+      "flow.mjs": "d9dba09153014c54b2d0ca48a24737f2dd293a9f2773f77bbd9f2fcd5a6adaad",
+      "http.mjs": "7668d109877f0bb21cd1bee8b2d7c6f0e4527c5dc7d55fc7601175b4d6aae8d0",
+      "observe.mjs": "bb3c53963be7554fe2342b74dc31c5a6c1c270728d4bee4b097a5785893aab86",
+      "run-live.mjs": "dfbb3d193d623d368aa0a8bf67286b773291f5bfeef3d3f7ed90acdcae4143a5",
+      "run-owner.ps1": "804777c4b51c090f335197a8b1e02e92e479b59695f4d5dcd7d0fa59b1343e99",
+      "offline-tests.mjs": "610fc731e729bcf5e88f88460e52010747b82055e0e68cbd18849ba5988401c5"
+    }
+  },
+  "preflight": {
+    "result": "PASS",
+    "state": {
+      "result": "PASS",
+      "installed": false,
+      "public_enabled": false,
+      "activation_0014_present": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "canonical_write_grants": 0,
+      "fingerprint": "6a8be79f4ff42ca52b19b4d8af00498a01c37a9367a53dc078f19db8cd229b3a",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "classification": {
+      "gated": 6,
+      "eligible": 14
+    },
+    "legacy_http": {
+      "result": "PASS",
+      "host": "mefhfvrgkwciubeajjeb.supabase.co",
+      "role": "anon",
+      "method": "GET_ONLY",
+      "legacy": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "facade_off": null
+    }
+  },
+  "fresh_prewrite_backup": {
+    "project_ref": "mefhfvrgkwciubeajjeb",
+    "database": "postgres",
+    "source_pg_version": "17.6",
+    "format": "CUSTOM",
+    "tool_version": "17.11",
+    "completed_at_utc": "2026-09-24T21:38:28.584Z",
+    "sha256": "d665277d9bdce8bad801f645b78691e151256f5feded95ca5cf48a0f046325e8",
+    "size_bytes": 1377936,
+    "result": "PASS",
+    "archive_name": "EsnaftaVar-Production-W52L-0015-20260924T213714433Z.dump",
+    "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52l-0015-live/EsnaftaVar-Production-W52L-0015-20260924T213714433Z.dump",
+    "table_data_entries": 79
+  },
+  "transaction": {
+    "result": "PASS",
+    "production_write_attempted": true,
+    "public_activation_performed": false,
+    "operation": "deploy",
+    "child_pgpassword_cleared": true
+  },
+  "postflight": {
+    "result": "PASS",
+    "state": {
+      "result": "PASS",
+      "installed": true,
+      "public_enabled": false,
+      "activation_0014_present": false,
+      "legacy": "PASS",
+      "schema_security": "PASS",
+      "canonical_write_grants": 0,
+      "facade": {
+        "result": "PASS",
+        "functions": 4,
+        "definition_and_grants_sha256": "30fd8c2471c76882101e802d615a268cbb352de4a722b4d2bd62d3194cc7f57c"
+      },
+      "security": {
+        "result": "PASS",
+        "functions": 4,
+        "public_execute": false,
+        "client_execute_roles": [
+          "anon",
+          "authenticated"
+        ],
+        "stable": 4,
+        "invoker": 3,
+        "definer_fixed_search_path": 1
+      },
+      "off": {
+        "result": "PASS",
+        "anonymous_calls_denied": 4,
+        "authenticated_calls_denied": 4,
+        "expected_sqlstate": "42501",
+        "public_enabled": false
+      },
+      "fingerprint": "cc4611578e7aabd6aa29a76b174caf0696905bf11a4fab2463f38062b4a6b3e6",
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "classification": {
+      "gated": 6,
+      "eligible": 14
+    },
+    "legacy_http": {
+      "result": "PASS",
+      "host": "mefhfvrgkwciubeajjeb.supabase.co",
+      "role": "anon",
+      "method": "GET_ONLY",
+      "legacy": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "facade_off": {
+        "production_public_read_capabilities_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_products_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_listings_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_shops_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        }
+      }
+    },
+    "ordinary_authenticated_off": {
+      "result": "PASS",
+      "method": "READ_ONLY_DATABASE_ROLE_AND_EXISTING_NON_AUTHORIZED_SUBJECT",
+      "functions_denied": 4,
+      "sqlstate": "42501",
+      "auth_session_changed": false,
+      "uid_recorded": false,
+      "transaction": "READ_ONLY_COMPLETED"
+    }
+  },
+  "preserved_data": {
+    "result": "PASS",
+    "tables": 68,
+    "groups": {
+      "public": {
+        "tables": 32,
+        "aggregate_sha256": "5d0fd241f0b1b7d6890e44bebaa2e5104f8d64eb5df5359199e8d16a786bad10",
+        "before_after": "IDENTICAL"
+      },
+      "auth": {
+        "tables": 27,
+        "aggregate_sha256": "b9eaa59164b891596b0816acc40580434808ca2064b5519962e091e95813fd8f",
+        "before_after": "IDENTICAL"
+      },
+      "storage": {
+        "tables": 8,
+        "aggregate_sha256": "539ffd91d3fbac942cbd82520343666cfcc247c33d1240702ff036a2d524af5d",
+        "before_after": "IDENTICAL"
+      },
+      "production_preview_private": {
+        "tables": 1,
+        "aggregate_sha256": "be7a3b2e171f2887ec2e5d92723783df6bef4543da62c246fef252540a161012",
+        "before_after": "IDENTICAL"
+      }
+    },
+    "auth_storage_metadata": {
+      "relations": "f2de7c350b5906eff139cd00ebf0d2542147e18042f86d944849f166da808a04",
+      "columns": "fe2e99d7ca2d740bd97b2f849c7f00a4b0191a59fb981c671060597aad8bb731",
+      "policies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "functions": "1796a1d5c321d96ff02144d221b40f35a2a13471198d4976d04d18c889019709"
+    },
+    "all_compared_before_after": true
+  },
+  "security": {
+    "result": "PASS",
+    "grants": {
+      "result": "PASS",
+      "functions": 4,
+      "public_execute": false,
+      "client_execute_roles": [
+        "anon",
+        "authenticated"
+      ],
+      "stable": 4,
+      "invoker": 3,
+      "definer_fixed_search_path": 1
+    },
+    "rls_policies_unchanged": true,
+    "no_table_write_grants_introduced": true,
+    "canonical_write_grants": 0,
+    "private_preview_bridge_changed": false,
+    "tester_allowlist_changed": false,
+    "auth_storage_changed": false
+  },
+  "rollback": {
+    "triggered": false,
+    "result": "NOT_REQUIRED"
+  },
+  "final_state": {
+    "migration_0012": "APPLIED_EXACT",
+    "migration_0013": "APPLIED_EXACT",
+    "migration_0014": "ABSENT",
+    "migration_0015": "APPLIED_EXACT",
+    "public_canonical_activation": "OFF",
+    "legacy_runtime": "OPERATIONAL",
+    "canonical_staged_backend": "OPERATIONAL",
+    "public_read_facade": "INSTALLED_FAIL_CLOSED_WHILE_OFF",
+    "private_preview_bridge": "UNCHANGED"
+  },
+  "boundaries": {
+    "production_write_authorized": true,
+    "production_write_performed": true,
+    "only_0015_and_exact_ledger_written": true,
+    "development_accessed": false,
+    "activation_0014_applied": false,
+    "migration_0012_changed": false,
+    "migration_0013_changed": false,
+    "generic_db_push_used": false,
+    "auth_mutation": false,
+    "storage_mutation": false,
+    "build_performed": false,
+    "tester_session_changed": false,
+    "child_pgpassword_cleared": true,
+    "owner_pgpassword_cleared": true
+  },
+  "ready_for_final_public_canonical_build": true,
+  "ready_for_0014_public_activation": false
+}
