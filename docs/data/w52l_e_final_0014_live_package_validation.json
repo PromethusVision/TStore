@@ -1,0 +1,470 @@
+{
+  "format": "w52le-final-0014-live-package-evidence-v1",
+  "result": "PASS",
+  "authority_main": "c75c17c6ebe8683b1d652a2fab05ed7700739453",
+  "branch": "astra-release/w52l-e-final-0014-live-package",
+  "project_ref": "mefhfvrgkwciubeajjeb",
+  "runtime_seal_sha256": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+  "runtime_input_count": 58,
+  "task_result": {
+    "W52L_E_FINAL_0014_LIVE_PACKAGE": "PASS",
+    "CURRENT_0015_STATE_SUPPORTED": "PASS",
+    "PUBLIC_ACTIVATION_EXECUTOR_READY": "PASS",
+    "PUBLIC_ACTIVATION_ROLLBACK_READY": "PASS",
+    "LEGACY_CLIENT_AFTER_ACTIVATION": "PASS",
+    "FINAL_PUBLIC_CLIENT_CONTRACT": "PASS",
+    "PRIVATE_PREVIEW_ACTIVE_LEASE_BLOCKED": "PASS",
+    "FROZEN_PUBLIC_APK_GATE": "PASS",
+    "PHYSICAL_PUBLIC_OFF_CHECK": "PASS",
+    "REAL_PRODUCTION_COPY_REHEARSAL": "PASS",
+    "ROLLBACK_REHEARSAL": "PASS",
+    "FAILURE_INJECTION_SUITE": "PASS",
+    "NEW_SEAL_READY": "PASS",
+    "ELIGIBLE_PRODUCTS": "14/14",
+    "GATED_PRODUCTS": "6/6",
+    "FAILURE_INJECTION_CASES": 31,
+    "0012_CHANGED": "NO",
+    "0013_CHANGED": "NO",
+    "0015_CHANGED": "NO",
+    "PRODUCTION_ACCESSED": "YES_PHONE_READ_ONLY",
+    "PRODUCTION_DATABASE_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "REBUILD_PERFORMED": "NO",
+    "READY_FOR_0014_PUBLIC_ACTIVATION_WRITE_DECISION": "YES"
+  },
+  "artifact": {
+    "format": "w52le-frozen-public-artifact-v1",
+    "package": "com.esnaftavar.app",
+    "version_name": "1.0.0",
+    "version_code": 3,
+    "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+    "public_define": true,
+    "preview_define": false,
+    "project_ref": "mefhfvrgkwciubeajjeb",
+    "source_main": "4cc2bcf4ce80198218e978c43eef9685aafaf504",
+    "reviewed_evidence_sha256": "3da1a9262f1a689be7b1fca92aeb159e495ea606f83b0036d438155493b7e17d",
+    "certificate_sha256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+    "apk": {
+      "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+      "size_bytes": 89596167
+    },
+    "aab": {
+      "sha256": "17e361684eab4aea6432bfa47a00af543777107c8bf7d0ccd472341b9e77cc79",
+      "size_bytes": 68935754
+    }
+  },
+  "physical_public_off": {
+    "format": "w52le-physical-public-off-v1",
+    "result": "PASS",
+    "observed_utc": "2026-09-24T22:49:11.494627+00:00",
+    "model": "POCO X7 Pro",
+    "apk_sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "version_code": 3,
+    "package": "com.esnaftavar.app",
+    "install_upgrade": "PASS",
+    "preserved_app_data": true,
+    "launch": "PASS",
+    "controlled_unavailable": "PASS",
+    "user_confirmed_message": true,
+    "no_fallback": "PASS",
+    "crash": false,
+    "anr": false,
+    "observation_scope": "Installed APK readback, foreground UI tree/screenshot, running process and app-UID logs during smoke; no credential capture",
+    "screenshot_sha256": "5bdd223183c0c7d4e89f5fdec8f1c51499fc3fbb42da04ea3e5803202a763861",
+    "serial_recorded": false,
+    "raw_logs_recorded": false,
+    "rebuild": false,
+    "production_database_accessed": false,
+    "physical_app_production_read_attempted": true,
+    "production_write_performed": false
+  },
+  "scope": {
+    "production_database_accessed": false,
+    "production_database_backup_started": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "physical_app_production_read_attempted": true,
+    "production_api_called_from_pc": false,
+    "rebuild_performed": false,
+    "live_activation_authorized_by_this_wave": false
+  },
+  "rehearsal": {
+    "result": "PASS",
+    "started_at_utc": "2026-09-24T23:24:21.148Z",
+    "completed_at_utc": "2026-09-24T23:40:40.170Z",
+    "postgres_version": "17.6",
+    "source_backup_sha256": "8d98258430fbb7eeccc8ead4e09efa59189aad84e961bb754fe223f07c3fcbc8",
+    "isolated_image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+    "network": "none",
+    "host_ports": [],
+    "archive_readonly": true,
+    "source_restore_objects": 958,
+    "current_state_reconstruction": [
+      "0012",
+      "0013",
+      "0015"
+    ],
+    "manual_sql_repair": false,
+    "preflight": "PASS",
+    "fresh_local_prewrite_backup": "PASS",
+    "activation_and_exact_0014_ledger": "PASS",
+    "postflight": "PASS",
+    "public_counts": {
+      "roots": 24,
+      "published_nodes": 325,
+      "assignable_leaves": 247,
+      "eligible_products": 14,
+      "gated_products_excluded": 6
+    },
+    "canonical_http": {
+      "anon": {
+        "result": "PASS",
+        "reads_200": 60,
+        "roots": 24,
+        "eligible_products": 14,
+        "gated_products": 6,
+        "levels": [
+          2,
+          3,
+          4
+        ],
+        "breadcrumb": "PASS",
+        "search_alias": "PASS",
+        "write_status": 401,
+        "preview_status": 401,
+        "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884",
+        "obsolete_preview_product_signature_status": 404,
+        "obsolete_preview_product_signature_code": "PGRST202"
+      },
+      "authenticated": {
+        "result": "PASS",
+        "reads_200": 60,
+        "roots": 24,
+        "eligible_products": 14,
+        "gated_products": 6,
+        "levels": [
+          2,
+          3,
+          4
+        ],
+        "breadcrumb": "PASS",
+        "search_alias": "PASS",
+        "write_status": 403,
+        "preview_status": 403,
+        "product_ids_sha256": "636f4b201c72b0b55df28db6bc4458c24d74b4e387579c4e996024c4d7294884",
+        "obsolete_preview_product_signature_status": 404,
+        "obsolete_preview_product_signature_code": "PGRST202"
+      }
+    },
+    "public_facade": {
+      "anon": {
+        "result": "PASS",
+        "eligible_products": 14,
+        "gated_excluded": 6,
+        "listing_rows": 198,
+        "shop_rows": 57,
+        "detail": "PASS",
+        "seller_comparison": "PASS",
+        "shop_detail": "PASS",
+        "search": "PASS",
+        "tester_required": false
+      },
+      "authenticated": {
+        "result": "PASS",
+        "eligible_products": 14,
+        "gated_excluded": 6,
+        "listing_rows": 198,
+        "shop_rows": 57,
+        "detail": "PASS",
+        "seller_comparison": "PASS",
+        "shop_detail": "PASS",
+        "search": "PASS",
+        "tester_required": false
+      }
+    },
+    "public_off_before": {
+      "anon": {
+        "production_public_read_capabilities_v1": 401,
+        "production_public_products_v1": 401,
+        "production_public_listings_v1": 401,
+        "production_public_shops_v1": 401
+      },
+      "authenticated": {
+        "production_public_read_capabilities_v1": 403,
+        "production_public_products_v1": 403,
+        "production_public_listings_v1": 403,
+        "production_public_shops_v1": 403
+      }
+    },
+    "public_off_after": {
+      "anon": {
+        "production_public_read_capabilities_v1": 401,
+        "production_public_products_v1": 401,
+        "production_public_listings_v1": 401,
+        "production_public_shops_v1": 401
+      },
+      "authenticated": {
+        "production_public_read_capabilities_v1": 403,
+        "production_public_products_v1": 403,
+        "production_public_listings_v1": 403,
+        "production_public_shops_v1": 403
+      }
+    },
+    "legacy_before_after_activation_and_rollback": "EXACT_MATCH",
+    "rollback": "PASS",
+    "final_fingerprint_matches_start": true,
+    "0015_retained_and_fail_closed": true,
+    "original_archive_data_sections_verified": 69,
+    "private_tester_and_unreviewed_fields_preserved": true,
+    "flutter": {
+      "exit_code": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "rpc_calls": {
+        "anon": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        },
+        "authenticated": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        }
+      },
+      "real_flutter_executed": true
+    }
+  },
+  "failure_injection": [
+    {
+      "case": "wrong_project",
+      "result": "PASS",
+      "safe_stop": "W52LC_TARGET_IDENTITY",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "missing_authorization",
+      "result": "PASS",
+      "safe_stop": "W52LE_EXPLICIT_ACTIVATION_AUTHORIZATION_REQUIRED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "wrong_sql_hash",
+      "result": "PASS",
+      "safe_stop": "W52LE_EXPECTED_SQL_HASH",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "wrong_seal",
+      "result": "PASS",
+      "safe_stop": "W52LE_PACKAGE_HASH",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "wrong_apk_hash_evidence",
+      "result": "PASS",
+      "safe_stop": "W52LE_FROZEN_APK_HASH",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "forged_backup",
+      "result": "PASS",
+      "safe_stop": "W52LC_VERIFIED_FRESH_BACKUP_REQUIRED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "expired_backup",
+      "result": "PASS",
+      "safe_stop": "W52LC_BACKUP_EXPIRED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0014_already_applied",
+      "result": "PASS",
+      "safe_stop": "W52LA_REAPPLY_PROTECTION",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0012_missing",
+      "result": "PASS",
+      "safe_stop": "W52JB_0012_LEDGER_ENTRY_MISMATCH",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0015_absent",
+      "result": "PASS",
+      "safe_stop": "W52LB_EXACT_FACADE_LEDGER",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0015_definition_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LB_FACADE_DEFINITION_OR_GRANT_DRIFT",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0015_grant_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LB_FACADE_DEFINITION_OR_GRANT_DRIFT",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "0015_ledger_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LB_EXACT_FACADE_LEDGER",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "public_already_on",
+      "result": "PASS",
+      "safe_stop": "W52LA_PUBLIC_ALREADY_ON",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "active_tester_lease",
+      "result": "PASS",
+      "safe_stop": "W52LE_ACTIVE_PREVIEW_LEASE_MUST_EXPIRE_FIRST",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "node_count_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LE_PRIVATE_ERROR_SUPPRESSED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "root_count_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LE_PRIVATE_ERROR_SUPPRESSED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "mapping_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LE_PRIVATE_ERROR_SUPPRESSED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "policy_gate_mismatch",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_QUALIFICATION_GATES",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "legacy_contract_failure",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_LEGACY_DATA",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "security_rls_drift",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_0012_SCHEMA_DRIFT",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "public_write_exposure",
+      "result": "PASS",
+      "safe_stop": "W52JB_BX_0012_SCHEMA_DRIFT",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "rollback_before_activation",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_ACTIVATION_LEDGER",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "activation_transaction_failure_after_publication",
+      "result": "PASS",
+      "safe_stop": "W52LE_INJECTED_TRANSACTION_FAILURE",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "activation_transaction_failure_after_ledger",
+      "result": "PASS",
+      "safe_stop": "W52LE_INJECTED_TRANSACTION_FAILURE",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "uncertain_commit_aborted",
+      "result": "PASS",
+      "safe_stop": "W52LE_UNCERTAIN_COMMIT_RECONCILED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "uncertain_commit_committed",
+      "result": "PASS",
+      "safe_stop": "W52LE_UNCERTAIN_COMMIT_RECONCILED",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "actual_reapply",
+      "result": "PASS",
+      "safe_stop": "W52LA_REAPPLY_PROTECTION",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "active_ledger_drift",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_ACTIVATION_LEDGER",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "partial_rollback_failure",
+      "result": "PASS",
+      "safe_stop": "W52LE_INJECTED_ROLLBACK_FAILURE",
+      "exact_state_preserved": true
+    },
+    {
+      "case": "rollback_twice",
+      "result": "PASS",
+      "safe_stop": "W52LA_EXACT_ACTIVATION_LEDGER",
+      "exact_state_preserved": true
+    }
+  ],
+  "quality": {
+    "package_tests": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0
+    },
+    "runtime_syntax_modules": 11,
+    "secret_pii_scan": "PASS",
+    "reviewed_sql_unchanged": 5,
+    "seal_validation": "PASS",
+    "git_diff_check": "PASS",
+    "flutter_source_changes": false,
+    "flutter_analyzer": "NOT_REQUIRED_NO_FLUTTER_SOURCE_CHANGE",
+    "frozen_client_code_assets_dependencies_match": true,
+    "source_to_main_pubspec_change": "version only: 1.0.0+2 to 1.0.0+3, matching frozen artifact"
+  },
+  "private_preview_cleanup": "REMOVE_AFTER_PUBLIC_SMOKE",
+  "limitations": [
+    "Readiness is for a separate activation decision; no live database preflight was run in this wave.",
+    "The supplied current Production baseline was reconstructed locally; future live preflight, fresh backup and exact fingerprint checks remain mandatory.",
+    "Phone OFF proof covers the installed artifact and observed UI/process/app logs, not post-activation physical behavior.",
+    "Production access is reported as phone read only rather than NO because the requested physical online check contacted the app backend."
+  ]
+}
