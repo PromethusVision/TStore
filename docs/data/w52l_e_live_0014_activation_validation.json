@@ -1,0 +1,354 @@
+{
+  "format": "w52le-live-0014-activation-evidence-v1",
+  "result": "ROLLED_BACK",
+  "task_result": {
+    "W52L_E_LIVE_0014_ACTIVATION": "FAIL",
+    "EXECUTION_OUTCOME": "ROLLED_BACK",
+    "PRODUCTION_WRITE_AUTHORIZED": "YES",
+    "AUTHORITATIVE_MAIN": "3e7d68bb5ee62c90d774053e00b238f4b61cdd73",
+    "TARGET_PROJECT": "mefhfvrgkwciubeajjeb",
+    "SEALED_LIVE_PREFLIGHT": "PASS",
+    "FRESH_PREWRITE_BACKUP": "PASS",
+    "FRESH_BACKUP_SHA256_RECORDED": "YES",
+    "0012_STATE": "PASS",
+    "0013_STATE": "PASS",
+    "0015_STATE": "PASS",
+    "0014_APPLIED": "NO",
+    "0014_LEDGER": "PASS",
+    "PUBLIC_CANONICAL_ACTIVATION": "OFF",
+    "PUBLIC_ROOTS": "0/24",
+    "PUBLISHED_NODES": "0/325",
+    "ASSIGNABLE_LEAVES": "0/247",
+    "ELIGIBLE_PRODUCTS": "14/14",
+    "GATED_PRODUCTS_EXCLUDED": "6/6",
+    "CURRENT_PUBLIC_ELIGIBLE_PRODUCTS_VISIBLE": "0/14",
+    "PUBLIC_READ_CAPABILITIES_RPC": "PASS",
+    "PUBLIC_PRODUCTS_RPC": "PASS",
+    "PUBLIC_LISTINGS_RPC": "PASS",
+    "PUBLIC_SHOPS_RPC": "PASS",
+    "PUBLIC_CUSTOMER_FLOW": "FAIL",
+    "PUBLIC_HTTP_CUSTOMER_FLOW": "NOT_RUN",
+    "LEGACY_SQL_CONTRACT": "PASS",
+    "LEGACY_HTTP_CONTRACT": "PASS",
+    "PUBLIC_WRITES_DENIED": "PASS",
+    "SECURITY_GRANTS_VALID": "PASS",
+    "RLS_POLICIES_VALID": "PASS",
+    "POST_ACTIVATION_PRODUCTS": "20/20",
+    "POST_ACTIVATION_LISTINGS": "285/285",
+    "POST_ACTIVATION_SHOPS": "57/57",
+    "CANONICAL_NODES": "1563/1563",
+    "OWNER_MAPPINGS": "20/20",
+    "PRIVATE_PREVIEW_BRIDGE_CHANGED": "NO",
+    "0012_CHANGED": "NO",
+    "0013_CHANGED": "NO",
+    "0015_CHANGED": "NO",
+    "ROLLBACK_TRIGGERED": "YES",
+    "ROLLBACK_RESULT": "PASS",
+    "PHYSICAL_PUBLIC_ON_SMOKE": "NOT_RUN",
+    "CRASH": "NOT_RUN",
+    "ANR": "NOT_RUN",
+    "PRODUCTION_WRITE_PERFORMED": "YES",
+    "PGPASSWORD_CLEARED": "YES",
+    "PRODUCTION_LEFT_PUBLIC_CANONICAL_ON": "NO",
+    "READY_FOR_PUBLIC_ACTIVATION_EVIDENCE_INTEGRATION": "YES",
+    "READY_FOR_PRIVATE_PREVIEW_CLEANUP": "NO",
+    "CUSTOMER_V1_PUBLIC_CANONICAL_GATE": "FAIL",
+    "SEALED_PACKAGE_CHANGED": "NO",
+    "LIVE_RETRY_PERFORMED": "NO",
+    "REBUILD_PERFORMED": "NO"
+  },
+  "authority_main": "3e7d68bb5ee62c90d774053e00b238f4b61cdd73",
+  "branch": "astra-release/w52l-e-live-0014-activation",
+  "target_project": "mefhfvrgkwciubeajjeb",
+  "runtime_seal_sha256": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+  "runtime_inputs": 58,
+  "activation_sql_sha256": "719af6150d7d94f24a1378e982667ee8732678e6a18a6624c0fe2ac323be279e",
+  "execution_completed_at_utc": "2026-09-25T00:38:31.959Z",
+  "recorded_at_utc": "2026-09-25T00:45:35.266481+00:00",
+  "phase_semantics": {
+    "0014_ledger_pass": "Exact activation ledger was applied; final exact rollback verification proves only its row was removed and 0012/0013/0015 preserved.",
+    "four_rpc_pass_flags": "The sealed activation CLI includes successful active-state public SQL validation. Final HTTP state is OFF with expected 42501 denials. These flags do not claim current public availability.",
+    "eligible_products": "Fourteen policy-eligible mappings preserved in staged state; zero are publicly reachable after rollback.",
+    "legacy_http": "Before activation and after rollback match; supplemental active-state HTTP was not reached.",
+    "evidence_integration_ready": "Sanitized failed-attempt/rollback evidence is reviewable. This is not a successful activation or a retry authorization."
+  },
+  "preflight": {
+    "result": "PASS",
+    "classification": {
+      "gated": 6,
+      "eligible": 14
+    },
+    "legacy_http_queries": 8,
+    "public_off_functions": 4
+  },
+  "backup": {
+    "result": "PASS",
+    "format": "CUSTOM",
+    "source_pg_version": "17.6",
+    "tool_version": "17.11",
+    "completed_at_utc": "2026-09-25T00:31:29.112Z",
+    "sha256": "ebbd10a9aa518ebacfb306bda6853647271e78ffa440a0baab0b2c1efabd3183",
+    "size_bytes": 1392016,
+    "archive_name": "EsnaftaVar-Production-W52L-0014-20260925T003013550Z.dump",
+    "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52l-0014-live/EsnaftaVar-Production-W52L-0014-20260925T003013550Z.dump",
+    "table_data_entries": 79
+  },
+  "activation": {
+    "result": "PASS",
+    "production_write_attempted": true,
+    "public_activation_performed": true,
+    "operation": "activate",
+    "child_pgpassword_cleared": true
+  },
+  "rollback": {
+    "result": "PASS",
+    "production_write_attempted": true,
+    "public_activation_performed": false,
+    "operation": "rollback",
+    "child_pgpassword_cleared": true
+  },
+  "root_cause": {
+    "class": "SUPPLEMENTAL_LOCAL_OBSERVER_RUNTIME_CONTRACT_MISMATCH",
+    "safe_error": "W52LE_W52LE_ELIGIBILITY_14_6",
+    "component": "<LOCAL_RUNTIME>/observe.mjs: coverage()",
+    "predicate_used": "public._w52kb_assignable(canonical_category_id)",
+    "dependency": "public._w52kb_visible_v2 requires every ancestor lifecycle_state to equal staged",
+    "error": "The supplemental observer reused the staged private-preview eligibility predicate after approved publication changed eligible nodes to active.",
+    "responsibility": "Assistant-created supplemental live observer; outside the unchanged 58-input runtime seal.",
+    "sealed_activation_sql_failed": false,
+    "sealed_active_state_validation_failed": false,
+    "schema_or_data_gap_evidence": false,
+    "failed_live_numeric_result_recorded": false,
+    "inferred_failed_live_counts": {
+      "eligible": 0,
+      "gated": 20
+    },
+    "inference_basis": "Attested unchanged function definitions and exact active-state validation; confirmed by isolated source-derived differential.",
+    "double_error_prefix": "The observer safe code was passed to a check helper which adds the same W52LE prefix again; this did not cause the classification failure.",
+    "test_gap": "The 24 offline handoff/package checks mocked the observer; they did not execute its coverage classification against a published database. The sealed package rehearsal did not include this later supplemental observer."
+  },
+  "isolated_differential": {
+    "result": "PASS",
+    "scope": "ISOLATED_SOURCE_DERIVED_FUNCTION_DIFFERENTIAL_NOT_A_LIVE_RETRY",
+    "production_accessed": false,
+    "production_write_performed": false,
+    "network": "none",
+    "host_mounts": false,
+    "postgres": "17.6",
+    "source_nodes": 1563,
+    "source_mappings": 20,
+    "reviewed_publication_nodes": 325,
+    "reviewed_assignable_leaves": 247,
+    "observations": [
+      {
+        "stage": "OFF_STAGED",
+        "preview_eligible": 14,
+        "public_visible": 0,
+        "mappings": 20
+      },
+      {
+        "stage": "ON_PUBLISHED",
+        "preview_eligible": 0,
+        "public_visible": 14,
+        "mappings": 20
+      },
+      {
+        "stage": "OFF_RESTORED",
+        "preview_eligible": 14,
+        "public_visible": 0,
+        "mappings": 20
+      }
+    ],
+    "root_cause": "SUPPLEMENTAL_OBSERVER_USES_STAGED_PREVIEW_PREDICATE_AFTER_PUBLIC_ACTIVATION",
+    "functions_unchanged_from_reviewed_source": true,
+    "function_definition_sha256": [
+      "1a3bad01182e8f3c6e8bdbfb1ca9f0aeee6ce708bc4fc7e43247b8d6a18906a9",
+      "5e8e4d0e1a8c9baa4ec4b56849440129e2d12ffee6dbe56aeeb89cd8af8cb86d",
+      "68f245215e48c166ec7bbf7420fffba6130657822cade8809114ba399e5f9462",
+      "b4f4fa2a1c79ff1ed51c0f0e8e1fb85dccaea43e3be472525e447a62e0bee983"
+    ],
+    "live_failed_query_values_recorded": false,
+    "live_0_20_is_inference_confirmed_by_local_reproduction": true
+  },
+  "rollback_validation": {
+    "result": "PASS",
+    "public_enabled": false,
+    "0014_ledger_absent": true,
+    "0012_0013_0015_preserved": true,
+    "before_fingerprint": "cc4611578e7aabd6aa29a76b174caf0696905bf11a4fab2463f38062b4a6b3e6",
+    "after_fingerprint": "cc4611578e7aabd6aa29a76b174caf0696905bf11a4fab2463f38062b4a6b3e6",
+    "full_fingerprint_exact_match": true,
+    "compared_tables": 68,
+    "coverage_exact_match": true,
+    "coverage_sha256": "f0fe79b6b211efa885b68efcdba9e440198b47b905898cde706944fe8c4ae550",
+    "public_auth_storage_private_tester_data_preserved": true,
+    "auth_storage_metadata_preserved": true,
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "policy": {
+      "result": "PASS",
+      "published_nodes": 0,
+      "assignable_leaves": 0,
+      "staged_nodes": 1563,
+      "roots": 0,
+      "publication_set_sha256": "572ccd8ddb69f56ccf773aa27b5ed7de7228f464ca1fc265d6dfcb1963f3c0dc"
+    },
+    "facade": {
+      "result": "PASS",
+      "functions": 4,
+      "definition_and_grants_sha256": "30fd8c2471c76882101e802d615a268cbb352de4a722b4d2bd62d3194cc7f57c"
+    },
+    "grants": {
+      "result": "PASS",
+      "functions": 4,
+      "public_execute": false,
+      "client_execute_roles": [
+        "anon",
+        "authenticated"
+      ],
+      "stable": 4,
+      "invoker": 3,
+      "definer_fixed_search_path": 1
+    },
+    "public_write_denial": {
+      "result": "PASS",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "probes": 6,
+      "sqlstate": "42501",
+      "method": "READ_ONLY_EXPLAIN_WITHOUT_ANALYZE_AUTHORIZATION_CHECK",
+      "dml_executed": false,
+      "transaction": "READ_ONLY_COMPLETED"
+    },
+    "legacy_http": {
+      "home": {
+        "status": 200,
+        "rows": 4,
+        "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+        "object_response": false
+      },
+      "listing": {
+        "status": 200,
+        "rows": 20,
+        "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+        "object_response": false
+      },
+      "category": {
+        "status": 200,
+        "rows": 5,
+        "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+        "object_response": false
+      },
+      "details": {
+        "status": 200,
+        "rows": 1,
+        "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+        "object_response": true
+      },
+      "sellers": {
+        "status": 200,
+        "rows": 15,
+        "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+        "object_response": false
+      },
+      "shop": {
+        "status": 200,
+        "rows": 1,
+        "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+        "object_response": true
+      },
+      "shop_listings": {
+        "status": 200,
+        "rows": 5,
+        "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+        "object_response": false
+      },
+      "search": {
+        "status": 200,
+        "rows": 2,
+        "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+        "object_response": false
+      }
+    },
+    "facade_off_http": {
+      "production_public_read_capabilities_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_products_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_listings_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_shops_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      }
+    }
+  },
+  "physical": {
+    "result": "NOT_RUN",
+    "reason": "Public activation was rolled back before public-ON physical smoke. No app launch or customer flows were performed in this attempt.",
+    "connected_device_precheck": "PASS",
+    "installed_frozen_apk_match": "PASS",
+    "version": "1.0.0+3",
+    "serial_recorded": false,
+    "crash": "NOT_RUN",
+    "anr": "NOT_RUN"
+  },
+  "artifact": {
+    "result": "PASS",
+    "package": "com.esnaftavar.app",
+    "version": "1.0.0+3",
+    "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+    "apk_sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "aab_sha256": "17e361684eab4aea6432bfa47a00af543777107c8bf7d0ccd472341b9e77cc79"
+  },
+  "cleanup": {
+    "child_pgpassword_cleared": true,
+    "owner_pgpassword_cleared": true,
+    "owner_cleanup_completed_at_utc": "2026-09-25T00:38:31.9913167Z"
+  },
+  "retry": {
+    "performed": false,
+    "current_owner_command_refuses_reentry_due_to_saved_attempt": true,
+    "required_fix": "Correct only the supplemental observer to use the state-appropriate public visibility contract after activation, with unchanged 14/6 expectations. Preserve strict validation and the sealed package.",
+    "required_validation": "Rehearse the complete actual observer/executor/postflight/rollback handoff against an isolated current-state real copy across OFF -> ON -> OFF, including both classification predicates and all supplemental checks.",
+    "production_repair_sql_required": false,
+    "sealed_sql_change_required": false
+  },
+  "private_preview_disposition": "REMOVE_AFTER_PUBLIC_SMOKE",
+  "private_preview_cleanup_ready": false,
+  "quality": {
+    "historical_preexecution_offline_checks_passed": 24,
+    "historical_tests_were_insufficient_for_observer_transition": true,
+    "isolated_differential": "PASS",
+    "seal": "PASS",
+    "secret_pii_scan": "PASS",
+    "diff_check": "PASS",
+    "sealed_source_changed": false,
+    "evidence_files_only": true
+  }
+}
