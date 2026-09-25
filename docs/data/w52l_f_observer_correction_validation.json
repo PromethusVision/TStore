@@ -1,0 +1,874 @@
+{
+  "format": "w52lf-observer-correction-validation-v1",
+  "result": "PASS",
+  "authoritative_main": "4368911347eb2755587d02b9d50c25ec2c1653c0",
+  "root_cause": "Supplemental observer reused staged/private-preview eligibility after public publication. The sealed activation SQL was not defective.",
+  "classifier_rule": "Read authoritative public_enabled first. OFF uses staged eligibility plus public denial; ON uses the reviewed public visibility and assignability contract. Compare immutable coverage separately from state-dependent metrics.",
+  "scope": {
+    "production_accessed": false,
+    "production_write_performed": false,
+    "development_accessed": false,
+    "apk_rebuilt": false,
+    "aab_rebuilt": false,
+    "flutter_source_changed": false,
+    "migrations_0012_0013_0014_0015_changed": false,
+    "manual_sql_repair": false,
+    "sealed_package_changed": false
+  },
+  "sealed_package": {
+    "result": "PASS",
+    "seal_sha256": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+    "inputs": 58,
+    "seal_file_checked_separately": true,
+    "raw_bytes_before_sha256": "47627097ad8388c89075f1fbbd0ab5d384accbef805cf22b4d0bdf0ddb653a7b",
+    "raw_bytes_after_sha256": "47627097ad8388c89075f1fbbd0ab5d384accbef805cf22b4d0bdf0ddb653a7b",
+    "all_inputs_match_authoritative_main": true,
+    "inventory": [
+      {
+        "path": "docs/TAXONOMY_W36_ACTIVATION_QUALIFICATION.csv",
+        "bytes": 903957,
+        "sha256": "bef6c2afef319c2b8776edaedb2def75d49786a58c2838c64d32f3ee64ab8b37"
+      },
+      {
+        "path": "docs/TAXONOMY_W36_CATEGORY_IMPORT.csv",
+        "bytes": 356688,
+        "sha256": "7f4476aefe52f7164b9480838821799c911ad0a9182318c6c54cb7084b7ea03a"
+      },
+      {
+        "path": "docs/data/production_20_product_canonical_mapping.csv",
+        "bytes": 7513,
+        "sha256": "93664f64b92cad29fdabcfdb62319182520ff5b00d2a7d0075c6ba9c8a49695b"
+      },
+      {
+        "path": "docs/data/production_20_product_canonical_mapping_validation.json",
+        "bytes": 26196,
+        "sha256": "95bfee80b7c2ab232598065a71a8610a21b9cc1117fe9071948ad395b18575c0"
+      },
+      {
+        "path": "docs/data/w52h_r_source_restore_metadata.json",
+        "bytes": 12445,
+        "sha256": "9f51613a0822e6d83f6c751673b477dbad4339a0020d411762709bc64cfee51b"
+      },
+      {
+        "path": "supabase/migrations/20260916001200_0012_production_canonical_side_by_side.sql",
+        "bytes": 1694947,
+        "sha256": "39f73f5f05d870ee18b14b1797b708e13d5c7cedc5d511c03abffc338bab8a7c"
+      },
+      {
+        "path": "supabase/migrations/20260919001300_0013_production_canonical_private_preview.sql",
+        "bytes": 28882,
+        "sha256": "e995abe1998d3e6318f312baded0e903b1b62c3b0c1315716a1f09587c05c92c"
+      },
+      {
+        "path": "supabase/migrations/20260922001500_0015_production_public_customer_reads.sql",
+        "bytes": 9099,
+        "sha256": "4cd5c08ef48d4c4378750e92486a632e331f11be4721fc16f6a0addca3100fe2"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/authorization.mjs",
+        "bytes": 2319,
+        "sha256": "65f753278dbca87d2235aa81f15ccb53bef92054af3cd5da86ec4c8a676f6df0"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/catalog.mjs",
+        "bytes": 4672,
+        "sha256": "d0a9ecab493b78e8ca5b99e415587e5fe002ac00525852da2fc9a9988a84fdc3"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/common.mjs",
+        "bytes": 1832,
+        "sha256": "f4c5a7e4bd134edcf866c8f48d0342c67f6f968c8880f7357c8f142840811dc3"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/contract.json",
+        "bytes": 4341,
+        "sha256": "e1aad19581f54f269559f0c7c43e5af50010ffed66d173bc5b45e332e816efe0"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/rpc-checks.mjs",
+        "bytes": 5781,
+        "sha256": "e814d4390ba11ce7c2f3614eba65b40a1476c7fd4b46c30dd91d75ec8085b2cc"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/security-baseline.json",
+        "bytes": 131636,
+        "sha256": "3f8a13a581b690eb845e817a4f0097e3d591d6e970fd1e9c3402ee3bdd4326cc"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/security-semantics.mjs",
+        "bytes": 5935,
+        "sha256": "0b94643aa9efe0df57f26df0412a84c0668c58e1d432452ae1f7ff344b6fe38b"
+      },
+      {
+        "path": "tool/production_preview_bridge/execution/validators.mjs",
+        "bytes": 4203,
+        "sha256": "1db813c5fab470a5e0b25794660742480fb10686774943818f8a816ce8789296"
+      },
+      {
+        "path": "tool/production_preview_bridge/live_v2/common.mjs",
+        "bytes": 908,
+        "sha256": "4e42955c162165637b3a14be1f143a1d9c82ba793312d76d915a84e594285f19"
+      },
+      {
+        "path": "tool/production_preview_bridge/live_v2/transaction.mjs",
+        "bytes": 1698,
+        "sha256": "de30cab36b103d32c2f608a9ed1d35162e1ea45845625599050183d48e1726e8"
+      },
+      {
+        "path": "tool/production_preview_bridge/rollback.sql",
+        "bytes": 1641,
+        "sha256": "153385525bd2fdf9a5c3465594f6b08ca6e69c9f6b4d6412469763ce8227dc43"
+      },
+      {
+        "path": "tool/production_public_activation/activate.sql",
+        "bytes": 2030,
+        "sha256": "914eb34b87029e269628caf429cac8034f454afad3054b987fb91b6105b05198"
+      },
+      {
+        "path": "tool/production_public_activation/common.mjs",
+        "bytes": 1092,
+        "sha256": "0cb879d8efe353dbe6e6f51c152c49a70f2ec425fe4ba714f76e14747f607ad2"
+      },
+      {
+        "path": "tool/production_public_activation/compatibility.mjs",
+        "bytes": 3111,
+        "sha256": "d0ab41e987dd362a37d71fe429e0f03ee2dc42868cd534c787cb97c551f710b6"
+      },
+      {
+        "path": "tool/production_public_activation/executor.mjs",
+        "bytes": 2570,
+        "sha256": "9718b1ca1fa079c793b751ac59518c810c5626d56e7020ffaaddf5f132a5225a"
+      },
+      {
+        "path": "tool/production_public_activation/live/artifact-contract.json",
+        "bytes": 823,
+        "sha256": "b13bc78dbcb02bd46890ee70a16eb1ca5512bf7b0a9791bc7247b98a7749e348"
+      },
+      {
+        "path": "tool/production_public_activation/live/artifact.mjs",
+        "bytes": 1608,
+        "sha256": "a4ddea5337d40134d32f2527a02b5debc43d4513ab3d12fca9a40c2415b351cf"
+      },
+      {
+        "path": "tool/production_public_activation/live/cli.mjs",
+        "bytes": 3161,
+        "sha256": "86cf869bf96a706c93d92860899786a97ea7090282cc3405bbbfd0ed7758449a"
+      },
+      {
+        "path": "tool/production_public_activation/live/common.mjs",
+        "bytes": 1270,
+        "sha256": "5fd22b478077cd0325942ac05a2e439dc5c28112ee83bf6efedd3e2c52d68cb7"
+      },
+      {
+        "path": "tool/production_public_activation/live/engine.mjs",
+        "bytes": 4096,
+        "sha256": "195c622932bb6057d2610b1a3e7818508b9fdb7785c2beebf5461b536e670fed"
+      },
+      {
+        "path": "tool/production_public_activation/live/physical-public-off.json",
+        "bytes": 969,
+        "sha256": "0b98768b9e42076b70ab8c7df82a6b783a0ab1090178ad2ec3d9875733cb4cd9"
+      },
+      {
+        "path": "tool/production_public_activation/live/production.mjs",
+        "bytes": 4543,
+        "sha256": "a32ec3cd25f9f0235a806edab81ac77c5b62c2cf39c80fef708384ced9922b55"
+      },
+      {
+        "path": "tool/production_public_activation/live/runtime-manifest.json",
+        "bytes": 2962,
+        "sha256": "44bef8213d5613ad5c6a6d20abe0c81076231a1504007f692a222a33b25cc7ef"
+      },
+      {
+        "path": "tool/production_public_activation/live/seal.mjs",
+        "bytes": 2756,
+        "sha256": "ffe54c6268bdcf5f1ed251346ed4e5211ce4ac05e7a56d26acd522ed4d6da8b1"
+      },
+      {
+        "path": "tool/production_public_activation/live/validators.mjs",
+        "bytes": 4805,
+        "sha256": "f31ce286eef8d27d6f2d1dff30a37fd92ad74512f082b7f1ab446792f1027411"
+      },
+      {
+        "path": "tool/production_public_activation/policy.mjs",
+        "bytes": 4032,
+        "sha256": "3111cc402131eacac97df9110c5b25b16bb8e8fcc9309afdfd0b2b4ba21554eb"
+      },
+      {
+        "path": "tool/production_public_activation/rollback.sql",
+        "bytes": 1087,
+        "sha256": "f9832fac78ed92bced6b2c1eeaf75fd743d0032eea1252aeed7ca67b3e862ca1"
+      },
+      {
+        "path": "tool/production_public_activation/runtime-manifest.json",
+        "bytes": 2404,
+        "sha256": "7bca136d2c2079590da786af8ad6591165f8517a5f6f43909b40364ec4a5b351"
+      },
+      {
+        "path": "tool/production_public_activation/seal.json",
+        "bytes": 6844,
+        "sha256": "eded9d59123adfe843b857c1b41194ae518f1eef33b86061e6df53369234cc03"
+      },
+      {
+        "path": "tool/production_public_activation/seal.mjs",
+        "bytes": 2780,
+        "sha256": "f6e8b9f8787f1081304bb7bbc953a8a69a719294aaa9c3729e5661e4ddb46733"
+      },
+      {
+        "path": "tool/production_public_activation/state-oracle.json",
+        "bytes": 2275,
+        "sha256": "236c781925ee1bd56ed86e989b195ea5405c75b2ac1df24bd9a32220f0f7f1d7"
+      },
+      {
+        "path": "tool/production_public_activation/validators.mjs",
+        "bytes": 4569,
+        "sha256": "ff1d34ec6b3737b32f6ae2dfbb19753e830ef01eefdce670c36fcd66444eb046"
+      },
+      {
+        "path": "tool/production_public_client/common.mjs",
+        "bytes": 1607,
+        "sha256": "aa8c11665a559a315607226a59e45aa897c37cdaaa535e8d6032fe0bde88b029"
+      },
+      {
+        "path": "tool/production_public_client/executor.mjs",
+        "bytes": 4436,
+        "sha256": "ca870ae078147549d99ecaf9058c6110f055b9a508796bd09914e4d493539b5f"
+      },
+      {
+        "path": "tool/production_public_client/function-oracle.json",
+        "bytes": 1629,
+        "sha256": "62c7129304bdfe6d18f49f670337d0213f5a9738c4414fb4455a2cb63be278c4"
+      },
+      {
+        "path": "tool/production_public_client/live/backup.mjs",
+        "bytes": 1217,
+        "sha256": "dc2f146f423f24d9f0491f2de4260cbad5804170198731f43cee73714dc53858"
+      },
+      {
+        "path": "tool/production_public_client/live/common.mjs",
+        "bytes": 1834,
+        "sha256": "01d1fb4a94aaba00d28d0a94662bde627fe8b952c7c10200f33f6eb775f7ff26"
+      },
+      {
+        "path": "tool/production_public_client/live/production.mjs",
+        "bytes": 4422,
+        "sha256": "9e8ecebe76b59722c2be116b8f1d4e3e9517ae2084c239778f1faaeb4f720cce"
+      },
+      {
+        "path": "tool/production_public_client/live/validators.mjs",
+        "bytes": 4363,
+        "sha256": "a162907cfa08398952ea759e1c26af7bf373aced4458dc7f1158458d09d328fd"
+      },
+      {
+        "path": "tool/production_public_client/rollback.sql",
+        "bytes": 846,
+        "sha256": "21775aeda8a0cb54c39f53bd7b552e882ba204645727c598525257847ceed088"
+      },
+      {
+        "path": "tool/production_public_client/seal.json",
+        "bytes": 1369,
+        "sha256": "47b2d63f1bf58ff57c69217687f16b3e086602ae0d191261da5fe36c7abf6234"
+      },
+      {
+        "path": "tool/production_public_client/seal.mjs",
+        "bytes": 1279,
+        "sha256": "7959e646bc4ab59675a6fa6ccf6e819b98cf9121288f28f9c7b32efa50efd8fa"
+      },
+      {
+        "path": "tool/production_taxonomy/execution/catalog.mjs",
+        "bytes": 3116,
+        "sha256": "1964d5a6e5c71ed810a39befe02ea071e55fc3ab37ba088cd4444112579f3069"
+      },
+      {
+        "path": "tool/production_taxonomy/execution/common.mjs",
+        "bytes": 4296,
+        "sha256": "8708c7b9335a85d47073912a7273652e6f4dda32e60df0b45865fecd22937498"
+      },
+      {
+        "path": "tool/production_taxonomy/execution/contract.json",
+        "bytes": 10514,
+        "sha256": "fd28509f2d6772cb69fc539e8e3196a3b1571fff55847d42a75e864beb118524"
+      },
+      {
+        "path": "tool/production_taxonomy/execution/session.mjs",
+        "bytes": 3075,
+        "sha256": "9eb0b27d3e0e066462c9eb29fcb3204001d8d5beb019a747ad943630992bb8b5"
+      },
+      {
+        "path": "tool/production_taxonomy/execution/validators.mjs",
+        "bytes": 6401,
+        "sha256": "627c981e912dcdf4ed46e7b28a9a27b181122d828ae7588e9cf8c5fca563fcb1"
+      },
+      {
+        "path": "tool/production_taxonomy/real_contract_checks.mjs",
+        "bytes": 10817,
+        "sha256": "b07aa68e9c36d5742f203b903680a5466b206c02440484f94e37e1a95bbec8cc"
+      },
+      {
+        "path": "tool/production_taxonomy/real_restore_lib.mjs",
+        "bytes": 6028,
+        "sha256": "67a8ac4f1892a53f2237fd6bc33fe941300250e23181e3264faaba3ec941b94c"
+      },
+      {
+        "path": "tool/taxonomy_migration/lib.mjs",
+        "bytes": 34817,
+        "sha256": "e910f24f9757b66394bf4349ff2b30784a0602f8b9ebf32af3c6a2bea628fe97"
+      },
+      {
+        "path": "tool/production_public_activation/live/seal.json",
+        "bytes": 11178,
+        "sha256": "56c6b6bbb646b9915c1d894b375a7642f488cf37824dd7debcae4902a010468a"
+      }
+    ]
+  },
+  "observer_identity": {
+    "format": "w52lf-supplemental-observer-v1",
+    "authority_main": "4368911347eb2755587d02b9d50c25ec2c1653c0",
+    "activation_seal": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+    "independent_sha256": "4f8711f877069b7e903a1be22e44550bb998bbdf85664e7fb9978c5ca04fc521",
+    "inventory": [
+      {
+        "path": "tool/production_public_activation/observer/classifier.mjs",
+        "bytes": 1162,
+        "sha256": "0dd1631e79c46bd6e8f6b24c92e968033a3e128e2e374e803544caffb384beb7"
+      },
+      {
+        "path": "tool/production_public_activation/observer/observe.mjs",
+        "bytes": 7666,
+        "sha256": "99f38e0740975bc6f74a63c917156cedcf56fc492a2a5164d3dd5fe636617f07"
+      },
+      {
+        "path": "tool/production_public_activation/observer/public-http.mjs",
+        "bytes": 5263,
+        "sha256": "3ebbf6c4f93a03977080c151ed1c87428a339ea727e00d94bde149ae0ed1c87c"
+      },
+      {
+        "path": "tool/production_public_activation/observer/legacy-http.mjs",
+        "bytes": 3104,
+        "sha256": "eedd5bbeefd0107ac9b0d7c4236b3ab85636fc538e31f47fb2f588bac2079bf8"
+      },
+      {
+        "path": "tool/production_public_activation/observer/handoff.mjs",
+        "bytes": 3100,
+        "sha256": "6d13e901ca48ec5b8f619c719a09fe5ead65f4f679ff8b89ba36b4986751152d"
+      },
+      {
+        "path": "tool/production_public_activation/observer/identity.mjs",
+        "bytes": 1486,
+        "sha256": "72042496a5b259cc0069b84a783aa23ecbdc28b712d4d916fb5c790920899423"
+      }
+    ]
+  },
+  "regression": [
+    {
+      "phase": "OFF_STAGED",
+      "public_enabled": false,
+      "public_visible": 0,
+      "preview_staged_eligible": 14,
+      "old_observer": "PASS",
+      "corrected_observer": "PASS"
+    },
+    {
+      "phase": "ON_PUBLISHED",
+      "public_enabled": true,
+      "public_visible": 14,
+      "preview_staged_eligible": 0,
+      "old_observer": "FAIL",
+      "corrected_observer": "PASS"
+    },
+    {
+      "phase": "OFF_RESTORED",
+      "public_enabled": false,
+      "public_visible": 0,
+      "preview_staged_eligible": 14,
+      "old_observer": "PASS",
+      "corrected_observer": "PASS"
+    }
+  ],
+  "rehearsal": {
+    "result": "PASS",
+    "transport": "Network-disabled container; PostgreSQL Unix socket and container-loopback PostgREST; Flutter relay binds host 127.0.0.1 only",
+    "source_backup_sha256": "ebbd10a9aa518ebacfb306bda6853647271e78ffa440a0baab0b2c1efabd3183",
+    "source_backup_table_data_sections": 79,
+    "server_version": "17.6",
+    "image_digest": "supabase/postgres@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00",
+    "toc_entries": 1110,
+    "omitted_toc_entries": 0,
+    "current_off_ledger": [
+      "20260916001200",
+      "20260919001300",
+      "20260922001500"
+    ],
+    "baseline_reconstructed_from_older_migrations": false,
+    "reviewed_platform_restore": {
+      "result": "PASS",
+      "scope": "ISOLATED_PLATFORM_METADATA_RECONSTRUCTION",
+      "properties": 6,
+      "extension_ownership_dependencies": 3,
+      "roles": [
+        {
+          "role": "supabase_admin",
+          "log_statement": "none",
+          "default_transaction_read_only": "off"
+        },
+        {
+          "role": "supabase_auth_admin",
+          "log_statement": "none",
+          "default_transaction_read_only": "off"
+        },
+        {
+          "role": "supabase_storage_admin",
+          "log_statement": "none",
+          "default_transaction_read_only": "off"
+        },
+        {
+          "role": "supabase_read_only_user",
+          "log_statement": "none",
+          "default_transaction_read_only": "on"
+        }
+      ]
+    },
+    "explicit_owner_acl_restore": {
+      "result": "PASS",
+      "scope": "LOCAL_RESTORE_EXPLICIT_DEFAULT_OWNER_ACL",
+      "tables": 3,
+      "effective_privileges_changed": false,
+      "effective_before_sha256": "e96c32a66da24db59476a36d6c94937c7abee78a8b077b3db017b178de77c1af",
+      "effective_after_sha256": "e96c32a66da24db59476a36d6c94937c7abee78a8b077b3db017b178de77c1af",
+      "client_grants_added": 0
+    },
+    "catalog_differences_after_restore": [],
+    "security_differences_after_restore": [],
+    "actual_handoff": {
+      "result": "PASS",
+      "activation_invoked": true,
+      "rollback_triggered": false,
+      "public_enabled_final": true
+    },
+    "fresh_local_backup_required": true,
+    "exact_sealed_activation_and_ledger": "PASS",
+    "exact_sealed_rollback": "PASS",
+    "off": {
+      "result": "PASS",
+      "classification": {
+        "result": "PASS",
+        "public_enabled": false,
+        "classifier": "STAGED_PRIVATE_PREVIEW_ELIGIBILITY",
+        "gated": 6,
+        "roots": 0,
+        "total": 20,
+        "leaves": 0,
+        "eligible": 14,
+        "published": 0,
+        "public_visible": 0,
+        "activation_entries": 0
+      },
+      "sealed_state": "PASS",
+      "sealed_fingerprint": "cc4611578e7aabd6aa29a76b174caf0696905bf11a4fab2463f38062b4a6b3e6",
+      "protected_table_count": 68,
+      "protected_coverage_sha256": "499520149525a8fab9e9fc300ad82e007e036a5ec39a0e5217c98a7066e89a11",
+      "auth_storage_metadata": {
+        "relations": "afe5d24afa342b6fb59b7dd797bd7ccedef1bfa6ffca5ecc39f7b69ec275072e",
+        "columns": "8a4359864ce7e1c2c751051511443b53f9508865dde23c7aec1f44ec53f51b3f",
+        "policies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "functions": "95898e89308b47a774b9d4def789a72fa230a2408e7012bfb43256af22a36302"
+      },
+      "writes_denied": {
+        "result": "PASS",
+        "roles": [
+          "anon",
+          "authenticated"
+        ],
+        "probes": 6,
+        "sqlstate": "42501",
+        "method": "READ_ONLY_EXPLAIN_WITHOUT_ANALYZE_AUTHORIZATION_CHECK",
+        "dml_executed": false
+      },
+      "legacy_http": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "facade_off": {
+        "production_public_read_capabilities_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_products_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_listings_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_shops_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        }
+      },
+      "public_http": null
+    },
+    "on": {
+      "result": "PASS",
+      "classification": {
+        "result": "PASS",
+        "public_enabled": true,
+        "classifier": "PUBLIC_VISIBILITY_AND_ASSIGNABILITY",
+        "gated": 6,
+        "roots": 24,
+        "total": 20,
+        "leaves": 247,
+        "eligible": 14,
+        "published": 325,
+        "public_visible": 14,
+        "activation_entries": 1
+      },
+      "sealed_state": "PASS",
+      "sealed_fingerprint": "3ddfacbbd485e4a744c672e50b4e4c77753f91e1a22d9ad1b2829392f3f18e3e",
+      "protected_table_count": 68,
+      "protected_coverage_sha256": "499520149525a8fab9e9fc300ad82e007e036a5ec39a0e5217c98a7066e89a11",
+      "auth_storage_metadata": {
+        "relations": "afe5d24afa342b6fb59b7dd797bd7ccedef1bfa6ffca5ecc39f7b69ec275072e",
+        "columns": "8a4359864ce7e1c2c751051511443b53f9508865dde23c7aec1f44ec53f51b3f",
+        "policies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "functions": "95898e89308b47a774b9d4def789a72fa230a2408e7012bfb43256af22a36302"
+      },
+      "writes_denied": {
+        "result": "PASS",
+        "roles": [
+          "anon",
+          "authenticated"
+        ],
+        "probes": 6,
+        "sqlstate": "42501",
+        "method": "READ_ONLY_EXPLAIN_WITHOUT_ANALYZE_AUTHORIZATION_CHECK",
+        "dml_executed": false
+      },
+      "legacy_http": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "facade_off": null,
+      "public_http": {
+        "result": "PASS",
+        "role": "anon",
+        "method": "GET_ONLY",
+        "tester_required": false,
+        "auth_session_used": false,
+        "roots": 24,
+        "recursive_levels": [
+          2,
+          3,
+          4
+        ],
+        "breadcrumb": "PASS",
+        "alias_search": "PASS",
+        "product_listing": "PASS",
+        "product_details": "PASS",
+        "seller_comparison": "PASS",
+        "shop_details": "PASS",
+        "search": "PASS",
+        "eligible_products": 14,
+        "gated_products_excluded": 6,
+        "listing_rows": 198,
+        "shop_rows": 57,
+        "four_facade_functions": "PASS",
+        "legacy_fallback": false,
+        "preview_fallback": false,
+        "development_fallback": false
+      }
+    },
+    "restored_off": {
+      "result": "PASS",
+      "classification": {
+        "result": "PASS",
+        "public_enabled": false,
+        "classifier": "STAGED_PRIVATE_PREVIEW_ELIGIBILITY",
+        "gated": 6,
+        "roots": 0,
+        "total": 20,
+        "leaves": 0,
+        "eligible": 14,
+        "published": 0,
+        "public_visible": 0,
+        "activation_entries": 0
+      },
+      "sealed_state": "PASS",
+      "sealed_fingerprint": "cc4611578e7aabd6aa29a76b174caf0696905bf11a4fab2463f38062b4a6b3e6",
+      "protected_table_count": 68,
+      "protected_coverage_sha256": "499520149525a8fab9e9fc300ad82e007e036a5ec39a0e5217c98a7066e89a11",
+      "auth_storage_metadata": {
+        "relations": "afe5d24afa342b6fb59b7dd797bd7ccedef1bfa6ffca5ecc39f7b69ec275072e",
+        "columns": "8a4359864ce7e1c2c751051511443b53f9508865dde23c7aec1f44ec53f51b3f",
+        "policies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "functions": "95898e89308b47a774b9d4def789a72fa230a2408e7012bfb43256af22a36302"
+      },
+      "writes_denied": {
+        "result": "PASS",
+        "roles": [
+          "anon",
+          "authenticated"
+        ],
+        "probes": 6,
+        "sqlstate": "42501",
+        "method": "READ_ONLY_EXPLAIN_WITHOUT_ANALYZE_AUTHORIZATION_CHECK",
+        "dml_executed": false
+      },
+      "legacy_http": {
+        "home": {
+          "status": 200,
+          "rows": 4,
+          "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+          "object_response": false
+        },
+        "listing": {
+          "status": 200,
+          "rows": 20,
+          "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+          "object_response": false
+        },
+        "category": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+          "object_response": false
+        },
+        "details": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+          "object_response": true
+        },
+        "sellers": {
+          "status": 200,
+          "rows": 15,
+          "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+          "object_response": false
+        },
+        "shop": {
+          "status": 200,
+          "rows": 1,
+          "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+          "object_response": true
+        },
+        "shop_listings": {
+          "status": 200,
+          "rows": 5,
+          "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+          "object_response": false
+        },
+        "search": {
+          "status": 200,
+          "rows": 2,
+          "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+          "object_response": false
+        }
+      },
+      "facade_off": {
+        "production_public_read_capabilities_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_products_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_listings_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        },
+        "production_public_shops_v1": {
+          "status": 401,
+          "sqlstate": "42501",
+          "result": "DENIED"
+        }
+      },
+      "public_http": null
+    },
+    "final_archive_fingerprint": {
+      "result": "PASS",
+      "tables": 79,
+      "before_sha256": "2e8e810d99f661be3e92dd87a506b28f095d8c5ab0b14325e7bae2580828ee4d",
+      "after_sha256": "2e8e810d99f661be3e92dd87a506b28f095d8c5ab0b14325e7bae2580828ee4d",
+      "sequence_sha256": "c9cecf6e8373096af6aef35e6309122e5d952594ee197c1723f01ecb59d63753"
+    },
+    "started_at_utc": "2026-09-25T21:31:50.584Z",
+    "completed_at_utc": "2026-09-25T21:38:17.415Z"
+  },
+  "tests": {
+    "observer_unit_and_handoff": 18,
+    "unchanged_activation_and_facade_regression": 29,
+    "total_node_tests": 47,
+    "node_failed": 0,
+    "node_skipped": 0,
+    "real_flutter": {
+      "exit_code": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "rpc_calls": {
+        "anon": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        },
+        "authenticated": {
+          "production_taxonomy_runtime_v1": 110,
+          "production_taxonomy_capabilities_v1": 108,
+          "production_public_read_capabilities_v1": 108,
+          "production_taxonomy_roots_v1": 1,
+          "production_taxonomy_children_v1": 3,
+          "production_taxonomy_breadcrumb_v1": 6,
+          "production_taxonomy_exact_leaf_v1": 1,
+          "production_taxonomy_descendants_v1": 1,
+          "production_taxonomy_resolve_alias_v1": 1,
+          "production_taxonomy_search_context_v1": 1,
+          "production_public_products_v1": 66,
+          "production_public_listings_v1": 25,
+          "production_public_shops_v1": 2
+        }
+      },
+      "real_flutter_executed": true
+    },
+    "flutter_full_suite_required": false
+  },
+  "frozen_apk": {
+    "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "version": "1.0.0+3",
+    "package": "com.esnaftavar.app",
+    "rebuilt": false
+  },
+  "readiness": {
+    "observer_correction_integration": true,
+    "0014_live_retry_decision": true,
+    "live_retry_performed": false,
+    "integration_required_before_live_retry": true
+  },
+  "test_source_identity": [
+    {
+      "path": "tool/production_public_activation/observer/local-support.mjs",
+      "sha256": "feef196f1e6144afd073ed07e7268be9037a4afd9d6facf7da8928c30acb60a4"
+    },
+    {
+      "path": "tool/production_public_activation/observer/restore-owner-acl.mjs",
+      "sha256": "7fb526436202e1d2758a45325372afdb684b87b271558db1d441575678d10fe5"
+    },
+    {
+      "path": "tool/production_public_activation/observer/rehearse.mjs",
+      "sha256": "7899dd5a59a972ae74ce427f1d9e47fea90a0b315a4dbcc0f7c1987f0eb4d87e"
+    },
+    {
+      "path": "tool/production_public_activation/observer/observer.test.mjs",
+      "sha256": "901452b004a189c3a07019349dc4746a921b3c88869dedab56120d8b269c7399"
+    }
+  ]
+}
