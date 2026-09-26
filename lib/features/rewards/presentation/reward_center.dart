@@ -50,13 +50,15 @@ class _HomeRewardCounterState extends State<HomeRewardCounter> {
         );
         if (!mounted ||
             signedIn != true ||
-            widget.currentUserIdProvider() == null)
+            widget.currentUserIdProvider() == null) {
           return;
+        }
       }
-      if (mounted)
+      if (mounted) {
         await Navigator.of(
           context,
         ).push<void>(MaterialPageRoute(builder: (_) => const RewardCenter()));
+      }
     } finally {
       _opening = false;
     }

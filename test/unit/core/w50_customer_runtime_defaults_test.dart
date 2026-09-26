@@ -3,6 +3,7 @@ import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/features/personalization/presentation/views/settings_view.dart';
+import 'package:t_store/features/rewards/domain/reward_progress.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
@@ -31,17 +32,29 @@ void main() {
     },
   );
 
-  test('Home experiment and Reward economics are disabled without inputs', () {
-    final content = CustomerHomeV1Content(
-      onSearchSubmitted: (_) {},
-      onLocationTap: () {},
-      onNearbyViewAll: () {},
-    );
-    expect(content.visualPrototype, isFalse);
-    expect(content.rewardFeatureEnabled, isFalse);
-    expect(content.rewardProgress, isNull);
-    expect(content.onRewardTap, isNull);
-  });
+  test(
+    'Home experiment stays off; public reward shell has no invented economics',
+    () async {
+      final content = CustomerHomeV1Content(
+        onSearchSubmitted: (_) {},
+        onLocationTap: () {},
+        onNearbyViewAll: () {},
+      );
+      expect(content.visualPrototype, isFalse);
+      expect(content.rewardFeatureEnabled, isTrue);
+      expect(content.rewardProgress, isNull);
+      expect(content.onRewardTap, isNull);
+      for (final identity in [null, 'fixture-customer']) {
+        final progress = await const PendingRewardRepository()
+            .watchProgress(identity)
+            .first;
+        expect(progress.completed, 0);
+        expect(progress.remaining, 5);
+        expect(progress.available, isFalse);
+        expect(progress.merchants, isEmpty);
+      }
+    },
+  );
 
   test(
     'Product Details experiment stays disabled at a real product handoff',

@@ -65,8 +65,9 @@ class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider>
         !_resumed ||
         _touching ||
         _focused ||
-        !TickerMode.of(context))
+        !TickerMode.valuesOf(context).enabled) {
       return;
+    }
     _timer = Timer(const Duration(seconds: 6), () {
       if (!mounted) return;
       setState(() {}); // Re-evaluate dates even when motion is disabled.

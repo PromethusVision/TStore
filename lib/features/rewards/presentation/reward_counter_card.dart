@@ -137,13 +137,14 @@ class _RewardCounterCardState extends State<RewardCounterCard>
         : Tween<double>(
             begin: before,
             end: widget.progress.fraction,
-          ).animate(CurvedAnimation(parent: _bar, curve: Curves.easeOutCubic));
+          ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(_bar);
     if (!_reduce) {
       _bar.forward(from: 0);
       if (_delta > 0) {
         _feedback.forward();
-        if (widget.progress.completed == RewardProgress.goal)
+        if (widget.progress.completed == RewardProgress.goal) {
           _celebration.forward();
+        }
       }
     }
   }
