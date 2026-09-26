@@ -52,15 +52,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('customer-onboarding-header')), findsOneWidget);
-    expect(find.byKey(const Key('onboarding-wordmark')), findsOneWidget);
+    expect(find.byKey(const Key('onboarding-logo')), findsOneWidget);
     expect(find.byKey(const Key('onboarding-page-view')), findsOneWidget);
     expect(find.byKey(const Key('customer-onboarding-footer')), findsOneWidget);
     expect(find.byKey(const Key('onboarding-dot-navigation')), findsOneWidget);
     expect(find.byKey(const Key('onboarding-next')), findsOneWidget);
     expect(find.byKey(const Key('onboarding-skip')), findsOneWidget);
-    expect(find.text('EsnaftaVar'), findsOneWidget);
+    expect(find.bySemanticsLabel('EsnaftaVar'), findsOneWidget);
     expect(find.text(TTexts.onBoardingTitle1), findsOneWidget);
-    expect(find.text('Geç'), findsOneWidget);
+    expect(find.byTooltip('Tanıtımı geç'), findsOneWidget);
     expect(find.text('Devam'), findsOneWidget);
     expect(find.text('Skip'), findsNothing);
     expect(tester.takeException(), isNull);

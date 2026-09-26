@@ -20,7 +20,10 @@ class OnBoardingDotNavigation extends StatelessWidget {
           child: IconButton(
             key: ValueKey('onboarding-step-$index'),
             tooltip: '${index + 1}. tanıtım adımı, toplam 3',
-            onPressed: () => cubit.dotNavigationClicked(index),
+            onPressed: () => cubit.dotNavigationClicked(
+              index,
+              reduceMotion: MediaQuery.disableAnimationsOf(context),
+            ),
             constraints: const BoxConstraints.tightFor(
               width: EsnaftaVarTouchTargets.minimum,
               height: EsnaftaVarTouchTargets.minimum,

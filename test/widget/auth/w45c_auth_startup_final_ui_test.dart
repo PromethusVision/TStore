@@ -116,6 +116,7 @@ void main() {
 
   Widget page(String name) => switch (name) {
     'launch' => CustomerLaunchGate(
+      startupWait: () async {},
       statusProvider: () => Completer<bool>().future,
     ),
     'onboarding' => const OnBoardingView(),
