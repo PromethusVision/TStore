@@ -1,5 +1,11 @@
 # Final Customer V1 signed branded build 1.0.0+4
 
+> Launcher correction: 1.0.0+4 still packaged the legacy T-Store **native launcher
+> icon**. The original no-active-T-Store audit covered Flutter AOT and splash only.
+> Its launcher coverage was incomplete. The signed **1.0.0+5** V-on-white release
+> fixes this and supersedes +4 for branded release use; +4 binaries are unchanged.
+> See [launcher correction and physical verification](RELEASE_CUSTOMER_LAUNCHER_ICON_1_0_0_PLUS_5.md).
+
 Signed Production public-canonical APK and AAB are frozen from authoritative main
 `f154c2a762065f2d117a2c1292adf5c8db707a40` with only `pubspec.yaml` changed from `1.0.0+3` to `1.0.0+4`.
 Package: `com.esnaftavar.app`; versionName: `1.0.0`; versionCode: `4`.
@@ -117,7 +123,7 @@ NO_LEGACY_FALLBACK: PASS
 NO_DEVELOPMENT_FALLBACK: PASS
 NO_PRIVATE_PREVIEW_REQUIREMENT: PASS
 OFFICIAL_BRANDING_PACKAGED: PASS
-OLD_TSTORE_ACTIVE_BRANDING: NO
+OLD_TSTORE_ACTIVE_BRANDING: YES
 FINAL_POLISH_ENGAGEMENT_PACKAGED: PASS
 PUSH_FOUNDATION_PACKAGED: PASS
 PUSH_PROVIDER_EXTERNAL_CONFIG: PENDING
@@ -144,5 +150,5 @@ PRODUCTION_WRITE_PERFORMED: NO
 QR_TWO_DEVICE_PHYSICAL_GATE: OPEN
 PRIVATE_PREVIEW_CLEANUP: NOT_PERFORMED
 BINARY_AFFECTING_DELTA: YES
-READY_FOR_FINAL_BUILD_EVIDENCE_INTEGRATION: YES
+READY_FOR_FINAL_BUILD_EVIDENCE_INTEGRATION: NO
 ```

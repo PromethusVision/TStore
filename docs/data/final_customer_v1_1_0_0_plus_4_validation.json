@@ -354,7 +354,7 @@
     "NO_DEVELOPMENT_FALLBACK": "PASS",
     "NO_PRIVATE_PREVIEW_REQUIREMENT": "PASS",
     "OFFICIAL_BRANDING_PACKAGED": "PASS",
-    "OLD_TSTORE_ACTIVE_BRANDING": "NO",
+    "OLD_TSTORE_ACTIVE_BRANDING": "YES",
     "FINAL_POLISH_ENGAGEMENT_PACKAGED": "PASS",
     "PUSH_FOUNDATION_PACKAGED": "PASS",
     "PUSH_PROVIDER_EXTERNAL_CONFIG": "PENDING",
@@ -381,6 +381,12 @@
     "QR_TWO_DEVICE_PHYSICAL_GATE": "OPEN",
     "PRIVATE_PREVIEW_CLEANUP": "NOT_PERFORMED",
     "BINARY_AFFECTING_DELTA": "YES",
-    "READY_FOR_FINAL_BUILD_EVIDENCE_INTEGRATION": "YES"
+    "READY_FOR_FINAL_BUILD_EVIDENCE_INTEGRATION": "NO"
+  },
+  "launcher_audit_correction": {
+    "native_launcher_was_legacy_tstore": true,
+    "prior_audit_covered_flutter_aot_and_splash_only": true,
+    "superseded_by": "1.0.0+5",
+    "frozen_binaries_unchanged": true
   }
 }
