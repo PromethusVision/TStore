@@ -1,4 +1,7 @@
 import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
+import 'package:t_store/core/navigation/engagement_destination.dart';
+import 'package:t_store/features/notifications/presentation/views/notification_preferences_view.dart';
+import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
@@ -20,6 +23,21 @@ typedef CustomerNotificationDestinationBuilder =
     Widget? Function(NotificationEntity notification);
 
 Widget? buildCustomerNotificationDestination(NotificationEntity notification) {
+  return buildNotificationDestination(notification);
+}
+
+/// Both roles reuse the same records and screens. Merchant purchase events stay
+/// readable in the inbox; they never open a customer's purchase-history screen.
+Widget? buildNotificationDestination(
+  NotificationEntity notification, {
+  NotificationAppRole appRole = NotificationAppRole.customer,
+}) {
+  if (appRole == NotificationAppRole.merchant &&
+      notification.type == NotificationType.order) {
+    return null;
+  }
+  final audience = notification.data?['app_role'];
+  if (audience != null && audience != appRole.name) return null;
   return switch (notification.type) {
     NotificationType.order => PurchasesView(
       initialPurchaseId: notification.actionType == 'order_detail'
@@ -33,7 +51,10 @@ Widget? buildCustomerNotificationDestination(NotificationEntity notification) {
               receiverName: notification.actionName ?? notification.title,
             )
           : const ConversationsView(),
-    NotificationType.promotion || NotificationType.system => null,
+    NotificationType.promotion || NotificationType.system =>
+      notification.engagementTarget == null
+          ? null
+          : EngagementDestination(target: notification.engagementTarget!),
   };
 }
 
@@ -42,10 +63,12 @@ class CustomerNotificationsView extends StatelessWidget {
     super.key,
     this.notificationsCubit,
     this.notificationDestinationBuilder,
+    this.appRole = NotificationAppRole.customer,
   });
 
   final NotificationsCubit? notificationsCubit;
   final CustomerNotificationDestinationBuilder? notificationDestinationBuilder;
+  final NotificationAppRole appRole;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +78,7 @@ class CustomerNotificationsView extends StatelessWidget {
             ..getNotifications(refresh: true),
       child: _CustomerNotificationsContent(
         notificationDestinationBuilder: notificationDestinationBuilder,
+        appRole: appRole,
       ),
     );
   }
@@ -63,9 +87,11 @@ class CustomerNotificationsView extends StatelessWidget {
 class _CustomerNotificationsContent extends StatefulWidget {
   const _CustomerNotificationsContent({
     required this.notificationDestinationBuilder,
+    required this.appRole,
   });
 
   final CustomerNotificationDestinationBuilder? notificationDestinationBuilder;
+  final NotificationAppRole appRole;
 
   @override
   State<_CustomerNotificationsContent> createState() =>
@@ -112,8 +138,11 @@ class _CustomerNotificationsContentState
       return destinationBuilder(notification) != null;
     }
 
-    return notification.type == NotificationType.order ||
-        notification.type == NotificationType.chat;
+    return buildNotificationDestination(
+          notification,
+          appRole: widget.appRole,
+        ) !=
+        null;
   }
 
   Widget? _buildDestination(NotificationEntity notification) {
@@ -122,7 +151,7 @@ class _CustomerNotificationsContentState
       return destinationBuilder(notification);
     }
 
-    return buildCustomerNotificationDestination(notification);
+    return buildNotificationDestination(notification, appRole: widget.appRole);
   }
 
   String? _interactionHint(
@@ -349,6 +378,16 @@ class _NotificationsHeader extends StatelessWidget {
                     subtitle: unreadCount > 0
                         ? '$unreadCount okunmamış bildirim'
                         : 'Alışveriş ve mesaj gelişmelerini takip et',
+                  ),
+                ),
+                IconButton(
+                  key: const Key('notification-preferences-open'),
+                  tooltip: 'Bildirim tercihleri',
+                  icon: const Icon(Icons.tune_rounded),
+                  onPressed: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute(
+                      builder: (_) => const NotificationPreferencesView(),
+                    ),
                   ),
                 ),
               ],

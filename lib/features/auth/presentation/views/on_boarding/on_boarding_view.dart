@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
+import 'package:t_store/core/common/widgets/customer_brand_logo.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
 import 'package:t_store/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
@@ -59,9 +59,8 @@ class OnBoardingView extends StatelessWidget {
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
-                              child: CustomerBrandWordmark(
-                                key: Key('onboarding-wordmark'),
-                                fontSize: 28,
+                              child: CustomerBrandLogo(
+                                key: Key('onboarding-logo'),
                               ),
                             ),
                           ),

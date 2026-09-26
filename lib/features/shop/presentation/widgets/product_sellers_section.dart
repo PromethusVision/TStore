@@ -259,6 +259,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
                       final rankedSeller = rankedSellers[index];
                       final shop = rankedSeller.shopProduct.shop;
                       return _SellerTile(
+                        surfaceIndex: index,
                         shopProduct: rankedSeller.shopProduct,
                         productName: widget.productName,
                         distanceMeters: rankedSeller.distanceMeters,
@@ -787,6 +788,7 @@ class _FinalSellersStateCard extends StatelessWidget {
 }
 
 class _SellerTile extends StatelessWidget {
+  final int surfaceIndex;
   final ShopProductEntity shopProduct;
   final String productName;
   final double? distanceMeters;
@@ -799,6 +801,7 @@ class _SellerTile extends StatelessWidget {
   final bool isLowestPrice;
 
   const _SellerTile({
+    required this.surfaceIndex,
     required this.shopProduct,
     required this.productName,
     required this.distanceMeters,
@@ -836,6 +839,7 @@ class _SellerTile extends StatelessWidget {
         hasAddress: hasAddress,
       );
       return SellerComparisonOfferCard(
+        surfaceIndex: surfaceIndex,
         key: ValueKey('product-seller-${shopProduct.id}'),
         listingId: shopProduct.id,
         shopName: shop?.name ?? 'Bilinmeyen esnaf',
@@ -854,8 +858,18 @@ class _SellerTile extends StatelessWidget {
 
     return Card(
       key: ValueKey('product-seller-${shopProduct.id}'),
+      color:
+          EsnaftaVarDiscoveryColors.sellerSurfaces[surfaceIndex %
+              EsnaftaVarDiscoveryColors.sellerSurfaces.length],
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
+        side: BorderSide(
+          color: isLowestPrice
+              ? EsnaftaVarColors.primary.withValues(alpha: 0.42)
+              : EsnaftaVarColors.borderDefault,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(TSizes.md),
         child: Column(

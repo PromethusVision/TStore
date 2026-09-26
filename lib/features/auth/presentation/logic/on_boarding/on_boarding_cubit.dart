@@ -28,26 +28,27 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
   int currentIndex = 0;
   bool _isCompleting = false;
 
-  void dotNavigationClicked(int index) {
+  void dotNavigationClicked(int index, {bool reduceMotion = false}) {
+    if (index < 0 || index > 2 || _isCompleting) return;
     currentIndex = index;
-    pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeOutCubic,
-    );
+    if (reduceMotion) {
+      pageController.jumpToPage(index);
+    } else {
+      pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+    }
     emit(OnBoardingUpdateIndicator(currentIndex));
   }
 
   Future<void> goToNextPage(BuildContext context) async {
     if (currentIndex != 2) {
-      currentIndex++;
-
-      pageController.animateToPage(
-        currentIndex,
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeOutCubic,
+      dotNavigationClicked(
+        currentIndex + 1,
+        reduceMotion: MediaQuery.disableAnimationsOf(context),
       );
-      emit(OnBoardingUpdateIndicator(currentIndex));
       return;
     }
 

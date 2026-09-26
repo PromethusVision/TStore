@@ -1,191 +1,157 @@
+import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/features/shop/domain/entities/banner_entity.dart';
+import 'package:t_store/features/shop/domain/services/home_campaign_catalog.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_state.dart';
 import 'package:t_store/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
 
-class MockHomeBannersCubit extends MockCubit<BannersState>
-    implements BannersCubit {}
+class _Banners extends MockCubit<BannersState> implements BannersCubit {}
 
 void main() {
-  late MockHomeBannersCubit bannersCubit;
-
+  late _Banners cubit;
   setUp(() {
-    bannersCubit = MockHomeBannersCubit();
-    when(() => bannersCubit.getBanners()).thenAnswer((_) async {});
+    cubit = _Banners();
+    when(() => cubit.getBanners()).thenAnswer((_) async {});
   });
-
-  Widget buildSubject(BannersState state, {VoidCallback? onDiscover}) {
-    whenListen(
-      bannersCubit,
-      const Stream<BannersState>.empty(),
-      initialState: state,
-    );
-    return BlocProvider<BannersCubit>.value(
-      value: bannersCubit,
-      child: MaterialApp(
-        home: Scaffold(body: PromoBannerCarouselSlider(onDiscover: onDiscover)),
+  Widget subject(
+    BannersState state, {
+    bool reduced = false,
+    FutureOr<void> Function()? tap,
+    double scale = 1,
+  }) {
+    whenListen(cubit, const Stream<BannersState>.empty(), initialState: state);
+    return MaterialApp(
+      home: MediaQuery(
+        data: MediaQueryData(
+          disableAnimations: reduced,
+          textScaler: TextScaler.linear(scale),
+        ),
+        child: BlocProvider<BannersCubit>.value(
+          value: cubit,
+          child: Scaffold(
+            body: SingleChildScrollView(
+              child: PromoBannerCarouselSlider(onDiscover: tap),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  testWidgets('yükleme durumunda markalı hero iskeletini gösterir', (
+  for (final state in [
+    BannersInitial(),
+    BannersLoading(),
+    BannersError('offline'),
+    const BannersLoaded([]),
+    const BannersLoaded([BannerEntity(id: 'stock', imageUrl: 'old-stock.png')]),
+  ]) {
+    testWidgets('safe five compositions for ${state.runtimeType} $state', (
+      tester,
+    ) async {
+      await tester.pumpWidget(subject(state));
+      expect(
+        find.text(HomeCampaignCatalog.fallback.first.title!),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<PageView>(find.byKey(const Key('campaign-pages')))
+            .childrenDelegate
+            .estimatedChildCount,
+        5,
+      );
+      expect(find.byType(Image), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+  for (final width in [320.0, 390.0, 430.0]) {
+    testWidgets('all five messages fit width $width and large text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = Size(width, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        subject(const BannersLoaded([]), reduced: true, scale: 1.3),
+      );
+      for (var i = 0; i < 5; i++) {
+        await tester.tap(find.byTooltip('${i + 1}. kampanya'));
+        await tester.pumpAndSettle();
+        expect(
+          find.text(HomeCampaignCatalog.fallback[i].title!),
+          findsOneWidget,
+        );
+        expect(
+          find.text(HomeCampaignCatalog.fallback[i].subtitle!),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      }
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+  testWidgets(
+    'remote campaign owns its copy; manual navigation restarts timer',
+    (tester) async {
+      const remote = BannerEntity(
+        id: 'remote',
+        sortOrder: -1,
+        imageUrl: '',
+        contentVersion: 2,
+        title: 'Yerel başlık',
+        subtitle: 'Kampanyaya özel açıklama',
+      );
+      await tester.pumpWidget(
+        subject(BannersLoaded([remote, HomeCampaignCatalog.fallback[1]])),
+      );
+      expect(find.text('Yerel başlık'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pumpAndSettle();
+      expect(find.text(HomeCampaignCatalog.fallback[1].title!), findsOneWidget);
+      await tester.drag(
+        find.byKey(const Key('campaign-pages')),
+        const Offset(500, 0),
+      );
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.text('Yerel başlık'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets('reduced motion stops auto advance and double taps open once', (
     tester,
   ) async {
-    await tester.pumpWidget(buildSubject(BannersLoading()));
-
-    expect(find.byKey(const Key('customer-home-hero-loading')), findsOneWidget);
-  });
-
-  testWidgets('gerçek banner adresini onaylı hero yapısında kullanır', (
-    tester,
-  ) async {
-    const banner = BannerEntity(
-      id: 'banner-1',
-      imageUrl: 'https://example.com/banner.png',
+    var count = 0;
+    final pending = Completer<void>();
+    await tester.pumpWidget(
+      subject(
+        const BannersLoaded([]),
+        reduced: true,
+        tap: () {
+          count++;
+          return pending.future;
+        },
+      ),
     );
-    await tester.pumpWidget(buildSubject(const BannersLoaded([banner])));
-
-    expect(find.byKey(const Key('customer-home-hero')), findsOneWidget);
+    await tester.pump(const Duration(seconds: 7));
     expect(
-      find.text('Mahallendeki\nesnafa destek ol,\nkazanan sen ol!'),
+      find.text(HomeCampaignCatalog.fallback.first.title!),
       findsOneWidget,
     );
-    expect(find.text('Aradığın ürün\nsana en yakın esnafta.'), findsOneWidget);
-    final image = tester.widget<CachedNetworkImage>(
-      find.byType(CachedNetworkImage),
-    );
-    expect(image.imageUrl, banner.imageUrl);
-  });
-
-  testWidgets('keşfet eylemi hızlı çift dokunmada yalnız bir kez çalışır', (
-    tester,
-  ) async {
-    var tapCount = 0;
-    await tester.pumpWidget(
-      buildSubject(const BannersLoaded([]), onDiscover: () => tapCount++),
-    );
-
     final button = tester.widget<FilledButton>(
-      find.byKey(const Key('customer-home-discover')),
+      find.byKey(const ValueKey('campaign-cta-local-discover')),
     );
-    button.onPressed?.call();
-    button.onPressed?.call();
-
-    expect(tapCount, 1);
-
+    button.onPressed!();
+    button.onPressed!();
+    expect(count, 1);
+    pending.complete();
     await tester.pump();
-    button.onPressed?.call();
-    await tester.pump();
-
-    expect(tapCount, 2);
-  });
-
-  testWidgets('uses approved local banners when the result is empty', (
-    tester,
-  ) async {
-    await tester.pumpWidget(buildSubject(const BannersLoaded([])));
-
-    final assetNames = tester
-        .widgetList<Image>(find.byType(Image))
-        .map((image) => image.image)
-        .whereType<AssetImage>()
-        .map((image) => image.assetName);
-    expect(assetNames, contains(TImages.promoBanner1));
-  });
-
-  testWidgets('uses approved local banners when loading fails', (tester) async {
-    await tester.pumpWidget(
-      buildSubject(const BannersError('temporary failure')),
-    );
-
-    final assetNames = tester
-        .widgetList<Image>(find.byType(Image))
-        .map((image) => image.image)
-        .whereType<AssetImage>()
-        .map((image) => image.assetName);
-    expect(assetNames, contains(TImages.promoBanner1));
-  });
-
-  testWidgets('does not display inactive or repeated banner images', (
-    tester,
-  ) async {
-    final now = DateTime.now();
-    final banners = [
-      const BannerEntity(
-        id: 'active',
-        imageUrl: 'https://example.com/active.png',
-      ),
-      const BannerEntity(
-        id: 'active',
-        imageUrl: 'https://example.com/repeated-id.png',
-      ),
-      const BannerEntity(
-        id: 'different-id',
-        imageUrl: 'https://example.com/active.png',
-      ),
-      BannerEntity(
-        id: 'future',
-        imageUrl: 'https://example.com/future.png',
-        startDate: now.add(const Duration(hours: 1)),
-      ),
-      BannerEntity(
-        id: 'expired',
-        imageUrl: 'https://example.com/expired.png',
-        endDate: now.subtract(const Duration(hours: 1)),
-      ),
-    ];
-
-    await tester.pumpWidget(buildSubject(BannersLoaded(banners)));
-
-    final images = tester.widgetList<CachedNetworkImage>(
-      find.byType(CachedNetworkImage),
-    );
-    expect(images.map((image) => image.imageUrl), [
-      'https://example.com/active.png',
-    ]);
-  });
-
-  testWidgets('uses branded artwork for a malformed image address', (
-    tester,
-  ) async {
-    const banner = BannerEntity(id: 'broken', imageUrl: 'https://');
-    await tester.pumpWidget(buildSubject(const BannersLoaded([banner])));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.byKey(const Key('customer-home-hero-image-fallback')),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('uses branded artwork when a network image fails', (
-    tester,
-  ) async {
-    const banner = BannerEntity(
-      id: 'network-failure',
-      imageUrl: 'https://example.com/missing.png',
-    );
-    await tester.pumpWidget(buildSubject(const BannersLoaded([banner])));
-
-    final finder = find.byType(CachedNetworkImage);
-    final image = tester.widget<CachedNetworkImage>(finder);
-    final fallback = image.errorWidget!(
-      tester.element(finder),
-      image.imageUrl,
-      Exception('network failure'),
-    );
-    await tester.pumpWidget(MaterialApp(home: fallback));
-
-    expect(
-      find.byKey(const Key('customer-home-hero-image-fallback')),
-      findsOneWidget,
-    );
+    await tester.pumpWidget(const SizedBox());
   });
 }

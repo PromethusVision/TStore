@@ -1,329 +1,366 @@
+import 'dart:async';
+import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
+import 'package:t_store/core/navigation/engagement_destination.dart';
+import 'package:t_store/core/navigation/engagement_target.dart';
+import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
+import 'package:t_store/features/shop/domain/entities/banner_entity.dart';
+import 'package:t_store/features/shop/domain/services/home_campaign_catalog.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/banners_state.dart';
-import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 
 class PromoBannerCarouselSlider extends StatefulWidget {
-  const PromoBannerCarouselSlider({super.key, this.onDiscover});
-
-  final VoidCallback? onDiscover;
-
+  const PromoBannerCarouselSlider({
+    super.key,
+    this.onDiscover,
+    this.autoAdvance = true,
+  });
+  final FutureOr<void> Function()? onDiscover;
+  final bool autoAdvance;
   @override
   State<PromoBannerCarouselSlider> createState() =>
       _PromoBannerCarouselSliderState();
 }
 
-class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider> {
-  int _selectedIndex = 0;
-  bool _isOpeningDiscovery = false;
-
+class _PromoBannerCarouselSliderState extends State<PromoBannerCarouselSlider>
+    with WidgetsBindingObserver {
+  final _pages = PageController();
+  Timer? _timer;
+  int _selected = 0, _count = 5;
+  bool _touching = false, _focused = false, _opening = false, _resumed = true;
+  bool get _reduceMotion =>
+      MediaQuery.disableAnimationsOf(context) ||
+      MediaQuery.accessibleNavigationOf(context);
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     context.read<BannersCubit>().getBanners();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<BannersCubit, BannersState>(
-      builder: (context, state) {
-        if (state is BannersLoading || state is BannersInitial) {
-          return const _BannerShimmer();
-        }
-
-        final images = _activeImages(state);
-        return _ApprovedHeroCarousel(
-          images: images,
-          selectedIndex: _selectedIndex.clamp(0, images.length - 1),
-          onPageChanged: (index) => setState(() => _selectedIndex = index),
-          onDiscover: () => _openDiscovery(context),
-        );
-      },
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _schedule();
   }
-
-  Future<void> _openDiscovery(BuildContext context) async {
-    if (_isOpeningDiscovery) return;
-
-    _isOpeningDiscovery = true;
-    try {
-      final onDiscover = widget.onDiscover;
-      if (onDiscover != null) {
-        await Future<void>.sync(onDiscover);
-        return;
-      }
-
-      await Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(builder: (_) => const AllProductsView()),
-      );
-    } finally {
-      _isOpeningDiscovery = false;
-    }
-  }
-
-  List<String> _activeImages(BannersState state) {
-    if (state is BannersLoaded) {
-      final instant = DateTime.now();
-      final activeImages = <String>[];
-      final seenIds = <String>{};
-      final seenUrls = <String>{};
-      for (final banner in state.banners) {
-        final id = banner.id.trim();
-        final imageUrl = banner.imageUrl.trim();
-        if (id.isEmpty ||
-            imageUrl.isEmpty ||
-            !banner.isActiveAt(instant) ||
-            !seenIds.add(id) ||
-            !seenUrls.add(imageUrl)) {
-          continue;
-        }
-        activeImages.add(imageUrl);
-      }
-      if (activeImages.isNotEmpty) return activeImages;
-    }
-
-    return TImages.promoBannerImages;
-  }
-}
-
-class _ApprovedHeroCarousel extends StatelessWidget {
-  const _ApprovedHeroCarousel({
-    required this.images,
-    required this.selectedIndex,
-    required this.onPageChanged,
-    required this.onDiscover,
-  });
-
-  final List<String> images;
-  final int selectedIndex;
-  final ValueChanged<int> onPageChanged;
-  final VoidCallback onDiscover;
 
   @override
-  Widget build(BuildContext context) {
-    final height = _homeHeroHeight(context);
-    return SizedBox(
-      key: const Key('customer-home-hero'),
-      height: height,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: CarouselSlider.builder(
-                itemCount: images.length,
-                itemBuilder: (_, index, _) =>
-                    _HeroImage(imagePath: images[index]),
-                options: CarouselOptions(
-                  height: height,
-                  viewportFraction: 1,
-                  enableInfiniteScroll: images.length > 1,
-                  autoPlay: images.length > 1,
-                  autoPlayInterval: const Duration(seconds: 5),
-                  onPageChanged: (index, _) => onPageChanged(index),
-                ),
-              ),
-            ),
-            const Positioned.fill(child: _HeroGradient()),
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 11, 14, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Mahallendeki\nesnafa destek ol,\nkazanan sen ol!',
-                      style: TextStyle(
-                        color: CustomerHomeV1Tokens.onPrimary,
-                        fontSize: 18,
-                        height: 1.05,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.35,
+  void didUpdateWidget(covariant PromoBannerCarouselSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _schedule();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _resumed = state == AppLifecycleState.resumed;
+    if (_resumed) setState(() {});
+    _schedule();
+  }
+
+  void _schedule() {
+    _timer?.cancel();
+    if (!mounted ||
+        !_resumed ||
+        _touching ||
+        _focused ||
+        !TickerMode.valuesOf(context).enabled) {
+      return;
+    }
+    _timer = Timer(const Duration(seconds: 6), () {
+      if (!mounted) return;
+      setState(() {}); // Re-evaluate dates even when motion is disabled.
+      if (widget.autoAdvance &&
+          !_reduceMotion &&
+          _count > 1 &&
+          _pages.hasClients) {
+        _pages.animateToPage(
+          (_selected + 1) % _count,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
+        );
+      }
+      _schedule();
+    });
+  }
+
+  void _go(int page) {
+    if (_reduceMotion) {
+      _pages.jumpToPage(page);
+    } else {
+      _pages.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+    _schedule();
+  }
+
+  Future<void> _open(BannerEntity banner) async {
+    if (_opening) return;
+    if (!banner.isActiveAt(DateTime.now())) {
+      setState(() {});
+      return;
+    }
+    final target = EngagementTarget.parse(banner.actionType, banner.actionUrl);
+    if (target == null) return;
+    _opening = true;
+    _timer?.cancel();
+    try {
+      if (widget.onDiscover != null) {
+        await Future<void>.sync(widget.onDiscover!);
+      } else {
+        await Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (_) => EngagementDestination(target: target),
+          ),
+        );
+      }
+    } finally {
+      _opening = false;
+      if (mounted) _schedule();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pages.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => BlocBuilder<BannersCubit, BannersState>(
+    builder: (context, state) {
+      final campaigns = HomeCampaignCatalog.select(
+        state is BannersLoaded ? state.banners : [],
+        DateTime.now(),
+      );
+      _count = campaigns.length;
+      if (_selected >= _count) {
+        _selected = 0;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _pages.hasClients) _pages.jumpToPage(0);
+        });
+      }
+      return Focus(
+        onFocusChange: (focused) {
+          _focused = focused;
+          _schedule();
+        },
+        child: Listener(
+          onPointerDown: (_) {
+            _touching = true;
+            _schedule();
+          },
+          onPointerUp: (_) {
+            _touching = false;
+            _schedule();
+          },
+          onPointerCancel: (_) {
+            _touching = false;
+            _schedule();
+          },
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final scaler = MediaQuery.textScalerOf(context);
+              double measure(String text, double width, TextStyle style) {
+                final p = TextPainter(
+                  text: TextSpan(text: text, style: style),
+                  textDirection: Directionality.of(context),
+                  textScaler: scaler,
+                )..layout(maxWidth: math.max(80, width));
+                final h = p.height;
+                p.dispose();
+                return h;
+              }
+
+              var height = 230.0;
+              for (final c in campaigns) {
+                height = math.max(
+                  height,
+                  math.max(
+                        56,
+                        measure(
+                          c.title!,
+                          constraints.maxWidth - 120,
+                          _titleStyle,
+                        ),
+                      ) +
+                      measure(
+                        c.subtitle!,
+                        constraints.maxWidth - 40,
+                        _bodyStyle,
+                      ) +
+                      112,
+                );
+              }
+              return Column(
+                key: const Key('customer-home-hero'),
+                children: [
+                  SizedBox(
+                    height: height,
+                    child: PageView.builder(
+                      key: const Key('campaign-pages'),
+                      controller: _pages,
+                      itemCount: campaigns.length,
+                      onPageChanged: (index) {
+                        setState(() => _selected = index);
+                        _schedule();
+                      },
+                      itemBuilder: (context, i) => Semantics(
+                        label: 'Kampanya ${i + 1} / ${campaigns.length}',
+                        container: true,
+                        child: ExcludeSemantics(
+                          excluding: i != _selected,
+                          child: _CampaignCard(
+                            campaign: campaigns[i],
+                            index: i,
+                            onTap: () => _open(campaigns[i]),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    const Text(
-                      'Aradığın ürün\nsana en yakın esnafta.',
-                      style: TextStyle(
-                        color: CustomerHomeV1Tokens.campaignSupportingText,
-                        fontSize: 10.5,
-                        height: 1.25,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const Spacer(),
+                  ),
+                  if (campaigns.length > 1)
                     SizedBox(
                       height: 44,
-                      child: FilledButton(
-                        key: const Key('customer-home-discover'),
-                        onPressed: onDiscover,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: CustomerHomeV1Tokens.yellow,
-                          foregroundColor: CustomerHomeV1Tokens.navy,
-                          minimumSize: const Size(88, 44),
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              CustomerHomeV1Tokens.radiusPill,
-                            ),
+                      child: Center(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              for (var i = 0; i < campaigns.length; i++)
+                                SizedBox(
+                                  width: 44,
+                                  height: 44,
+                                  child: Semantics(
+                                    selected: i == _selected,
+                                    child: IconButton(
+                                      tooltip: '${i + 1}. kampanya',
+                                      onPressed: () => _go(i),
+                                      icon: Icon(
+                                        i == _selected
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 14,
+                                        color: EsnaftaVarColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                          textStyle: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                              ),
                         ),
-                        child: const Text('Keşfet'),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            if (images.length > 1)
-              Positioned(
-                right: 14,
-                bottom: 10,
-                child: Row(
-                  children: [
-                    for (var index = 0; index < images.length; index++) ...[
-                      if (index > 0)
-                        const SizedBox(width: CustomerHomeV1Tokens.space4),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        width: index == selectedIndex ? 13 : 5,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: index == selectedIndex
-                              ? CustomerHomeV1Tokens.yellow
-                              : CustomerHomeV1Tokens.onPrimary.withValues(
-                                  alpha: 0.7,
-                                ),
-                          borderRadius: BorderRadius.circular(
-                            CustomerHomeV1Tokens.radiusPill,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HeroImage extends StatelessWidget {
-  const _HeroImage({required this.imagePath});
-
-  final String imagePath;
-
-  @override
-  Widget build(BuildContext context) {
-    final uri = Uri.tryParse(imagePath);
-    final isNetwork =
-        uri != null &&
-        uri.hasAuthority &&
-        uri.host.isNotEmpty &&
-        (uri.scheme == 'http' || uri.scheme == 'https');
-
-    if (!isNetwork) {
-      return Image.asset(
-        imagePath,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => const _BrandedHeroArtwork(),
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imagePath,
-      width: double.infinity,
-      height: double.infinity,
-      fit: BoxFit.cover,
-      placeholder: (_, _) => const _BrandedHeroArtwork(),
-      errorWidget: (_, _, _) => const _BrandedHeroArtwork(),
-    );
-  }
-}
-
-class _HeroGradient extends StatelessWidget {
-  const _HeroGradient();
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            CustomerHomeV1Tokens.campaignOverlay,
-            CustomerHomeV1Tokens.campaignOverlay.withValues(alpha: 0.92),
-            CustomerHomeV1Tokens.petrol.withValues(alpha: 0.14),
-          ],
-          stops: const [0, 0.48, 1],
-        ),
-      ),
-    );
-  }
-}
-
-class _BrandedHeroArtwork extends StatelessWidget {
-  const _BrandedHeroArtwork();
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      key: const Key('customer-home-hero-image-fallback'),
-      color: CustomerHomeV1Tokens.petrol,
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 26),
-          child: Icon(
-            Icons.storefront_rounded,
-            size: 92,
-            color: CustomerHomeV1Tokens.mint.withValues(alpha: 0.38),
+                ],
+              );
+            },
           ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
 }
 
-class _BannerShimmer extends StatelessWidget {
-  const _BannerShimmer();
+const _titleStyle = TextStyle(
+  fontSize: 18,
+  height: 1.2,
+  fontWeight: FontWeight.w700,
+  color: EsnaftaVarColors.textPrimary,
+);
+const _bodyStyle = TextStyle(
+  fontSize: 13,
+  height: 1.4,
+  color: EsnaftaVarColors.textSecondary,
+);
 
+class _CampaignCard extends StatelessWidget {
+  const _CampaignCard({
+    required this.campaign,
+    required this.index,
+    required this.onTap,
+  });
+  final BannerEntity campaign;
+  final int index;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
-    final height = _homeHeroHeight(context);
-    return Shimmer.fromColors(
-      baseColor: CustomerHomeV1Tokens.mint,
-      highlightColor: CustomerHomeV1Tokens.surface,
-      child: Container(
-        key: const Key('customer-home-hero-loading'),
-        height: height,
-        decoration: BoxDecoration(
-          color: CustomerHomeV1Tokens.mint,
-          borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius20),
+    const motifs = [
+      Icons.storefront_rounded,
+      Icons.compare_arrows_rounded,
+      Icons.shopping_bag_outlined,
+      Icons.route_rounded,
+      Icons.search_rounded,
+    ];
+    final motif = ExcludeSemantics(
+      child: Icon(
+        motifs[index % motifs.length],
+        size: 40,
+        color: EsnaftaVarColors.primary,
+      ),
+    );
+    return Container(
+      key: ValueKey('campaign-${campaign.id}'),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: EsnaftaVarColors.borderDefault),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            EsnaftaVarDiscoveryColors.categorySurfaces[index %
+                EsnaftaVarDiscoveryColors.categorySurfaces.length],
+            EsnaftaVarColors.surfaceElevated,
+          ],
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(campaign.title!, style: _titleStyle)),
+              const SizedBox(width: 16),
+              SizedBox(
+                width: 64,
+                height: 56,
+                child: campaign.imageUrl.isEmpty
+                    ? motif
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: campaign.imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, _) => motif,
+                          errorWidget: (_, _, _) => motif,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(campaign.subtitle!, style: _bodyStyle),
+          const Spacer(),
+          if (EngagementTarget.parse(campaign.actionType, campaign.actionUrl) !=
+                  null &&
+              campaign.ctaText?.isNotEmpty == true)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton(
+                key: ValueKey('campaign-cta-${campaign.id}'),
+                onPressed: onTap,
+                child: Text(campaign.ctaText!, textAlign: TextAlign.center),
+              ),
+            ),
+        ],
       ),
     );
   }
-}
-
-double _homeHeroHeight(BuildContext context) {
-  final scale = MediaQuery.textScalerOf(context).scale(1);
-  final additionalHeight = ((scale - 1) * 140).clamp(0, 70).toDouble();
-  return 190 + additionalHeight;
 }

@@ -155,6 +155,7 @@ void main() {
             child: MaterialApp(
               navigatorKey: navigatorKey,
               home: CustomerLaunchGate(
+                startupWait: () async {},
                 statusProvider: () => launchStatus.future,
                 onboardingBuilder: (_) =>
                     const Scaffold(key: Key('onboarding-destination')),
@@ -276,6 +277,7 @@ void main() {
             child: MaterialApp(
               navigatorKey: navigatorKey,
               home: CustomerLaunchGate(
+                startupWait: () async {},
                 statusProvider: () => launchStatus.future,
                 onboardingBuilder: (_) =>
                     const Scaffold(key: Key('onboarding-destination')),

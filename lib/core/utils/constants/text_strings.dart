@@ -19,16 +19,17 @@ class TTexts {
   static const String nearbyView = "Yakındakiler";
 
   // -- OnBoarding Texts
-  static const String onBoardingTitle1 = "Ürününüzü bulun";
-  static const String onBoardingTitle2 = "Yakındaki esnafı seçin";
-  static const String onBoardingTitle3 = "Mağazada satın alın";
+  static const String onBoardingTitle1 = "Aradığın ürünü yakındaki esnafta bul";
+  static const String onBoardingTitle2 = "Ara, karşılaştır, yol tarifi al";
+  static const String onBoardingTitle3 =
+      "Alışverişini doğrula, deneyimini paylaş";
 
   static const String onBoardingSubTitle1 =
-      "Aradığınız ürünü çevrenizdeki esnafta bulun.";
+      "EsnaftaVar, ihtiyacın olan ürünü sana en yakın fiziksel mağazalarda bulmana yardımcı olur.";
   static const String onBoardingSubTitle2 =
-      "Ürünün bulunduğu esnafları yakından uzağa görün.";
+      "Ürünü ara, hangi esnafta bulunduğunu gör, fiyatları karşılaştır ve mağazaya kolayca ulaş.";
   static const String onBoardingSubTitle3 =
-      "Yol tarifi alın, mağazaya gidin ve alışverişinizi QR ile doğrulayın.";
+      "Mağazaya git, ürünü sepete ekle, QR okut ve alışverişini doğrula. Doğrulanmış alışveriş kaydın gerektiğinde iade veya inceleme sürecinde referans olsun. Yorum yap, mahallene katkı sağla.";
 
   // -- Authentication Forms
   static const String firstName = "Ad";

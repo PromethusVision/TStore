@@ -37,6 +37,8 @@ void main() {
       dispatcher.platformBrightnessTestValue = brightness;
       await tester.pumpWidget(const TStore());
       await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
       final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(app.themeMode, ThemeMode.light);
       expect(app.darkTheme, isNull);
@@ -46,14 +48,18 @@ void main() {
       expect(theme.colorScheme.onSurface, EsnaftaVarColors.textPrimary);
       expect(theme.scaffoldBackgroundColor, EsnaftaVarColors.background);
       expect(MediaQuery.platformBrightnessOf(context), brightness);
+      expect(tester.takeException(), isNull);
     }
   });
 
   testWidgets('TStore app loads successfully', (WidgetTester tester) async {
     // Build the app and trigger a frame.
     await tester.pumpWidget(const TStore());
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
 
     // Verify that the app renders without errors.
     expect(find.byType(TStore), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

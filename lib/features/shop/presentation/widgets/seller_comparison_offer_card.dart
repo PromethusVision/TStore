@@ -16,9 +16,11 @@ class SellerComparisonOfferCard extends StatelessWidget {
     this.rating = 0,
     this.locationText,
     this.onMessage,
+    this.surfaceIndex = 0,
   });
 
   final String listingId;
+  final int surfaceIndex;
   final String shopName;
   final String? address;
   final double price;
@@ -36,7 +38,9 @@ class SellerComparisonOfferCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
       decoration: BoxDecoration(
-        color: EsnaftaVarColors.surface,
+        color:
+            EsnaftaVarDiscoveryColors.sellerSurfaces[surfaceIndex %
+                EsnaftaVarDiscoveryColors.sellerSurfaces.length],
         borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
         border: Border.all(
           color: isLowestPrice

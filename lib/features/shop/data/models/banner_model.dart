@@ -14,6 +14,12 @@ class BannerModel extends BannerEntity {
     super.startDate,
     super.endDate,
     super.createdAt,
+    super.contentVersion,
+    super.audience,
+    super.ctaText,
+    super.city,
+    super.district,
+    super.categoryScope,
   });
 
   factory BannerModel.fromJson(
@@ -41,7 +47,10 @@ class BannerModel extends BannerEntity {
     final sortOrder = _readInt(json['sort_order']);
     final isActive = _readBool(json['is_active']);
 
-    if (id.isEmpty || imageUrl.isEmpty) return null;
+    final contentVersion = json['content_version'] == null
+        ? 1
+        : (_readInt(json['content_version']) ?? -1);
+    if (id.isEmpty || (imageUrl.isEmpty && contentVersion != 2)) return null;
     if (sortOrder == null || isActive == null) return null;
     if (_hasInvalidDate(json['start_date'], startDate) ||
         _hasInvalidDate(json['end_date'], endDate)) {
@@ -63,6 +72,12 @@ class BannerModel extends BannerEntity {
       startDate: startDate,
       endDate: endDate,
       createdAt: _readDate(json['created_at']),
+      contentVersion: contentVersion,
+      audience: _readNullableString(json['audience']) ?? 'general',
+      ctaText: _readNullableString(json['cta_text']),
+      city: _readNullableString(json['city']),
+      district: _readNullableString(json['district']),
+      categoryScope: _readNullableString(json['category_scope']),
     );
   }
 
@@ -114,6 +129,12 @@ class BannerModel extends BannerEntity {
       'is_active': isActive,
       'start_date': startDate?.toIso8601String(),
       'end_date': endDate?.toIso8601String(),
+      'content_version': contentVersion,
+      'audience': audience,
+      'cta_text': ctaText,
+      'city': city,
+      'district': district,
+      'category_scope': categoryScope,
     };
   }
 
@@ -130,6 +151,12 @@ class BannerModel extends BannerEntity {
       startDate: entity.startDate,
       endDate: entity.endDate,
       createdAt: entity.createdAt,
+      contentVersion: entity.contentVersion,
+      audience: entity.audience,
+      ctaText: entity.ctaText,
+      city: entity.city,
+      district: entity.district,
+      categoryScope: entity.categoryScope,
     );
   }
 }

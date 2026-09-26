@@ -121,7 +121,7 @@ void main() {
       ),
       findsNothing,
     );
-    expect(find.text('Merhaba, Ayşe'), findsOneWidget);
+    expect(find.text('Kargo bekleme, EsnaftaVar'), findsOneWidget);
     expect(find.text('Ayşe Yılmaz'), findsNothing);
     expect(find.text('Eski Oturum Adı'), findsNothing);
   });
@@ -195,7 +195,7 @@ void main() {
     );
 
     expect(find.bySemanticsLabel(RegExp('Mehmet Demir')), findsOneWidget);
-    expect(find.text('Merhaba, Mehmet'), findsOneWidget);
+    expect(find.text('Kargo bekleme, EsnaftaVar'), findsOneWidget);
     semantics.dispose();
   });
 
@@ -212,7 +212,7 @@ void main() {
       find.bySemanticsLabel(RegExp(TTexts.homeAppbarSubTitle)),
       findsOneWidget,
     );
-    expect(find.text('Mahallendeki esnafı keşfet'), findsOneWidget);
+    expect(find.text('Kargo bekleme, EsnaftaVar'), findsOneWidget);
     semantics.dispose();
   });
 

@@ -12,6 +12,12 @@ class BannerEntity extends Equatable {
   final DateTime? startDate;
   final DateTime? endDate;
   final DateTime? createdAt;
+  final int contentVersion;
+  final String audience;
+  final String? ctaText;
+  final String? city;
+  final String? district;
+  final String? categoryScope;
 
   const BannerEntity({
     required this.id,
@@ -25,6 +31,12 @@ class BannerEntity extends Equatable {
     this.startDate,
     this.endDate,
     this.createdAt,
+    this.contentVersion = 1,
+    this.audience = 'general',
+    this.ctaText,
+    this.city,
+    this.district,
+    this.categoryScope,
   });
 
   bool isActiveAt(DateTime instant) {
@@ -49,6 +61,12 @@ class BannerEntity extends Equatable {
     startDate,
     endDate,
     createdAt,
+    contentVersion,
+    audience,
+    ctaText,
+    city,
+    district,
+    categoryScope,
   ];
 
   BannerEntity copyWith({
@@ -63,6 +81,12 @@ class BannerEntity extends Equatable {
     DateTime? startDate,
     DateTime? endDate,
     DateTime? createdAt,
+    int? contentVersion,
+    String? audience,
+    String? ctaText,
+    String? city,
+    String? district,
+    String? categoryScope,
   }) {
     return BannerEntity(
       id: id ?? this.id,
@@ -76,6 +100,12 @@ class BannerEntity extends Equatable {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       createdAt: createdAt ?? this.createdAt,
+      contentVersion: contentVersion ?? this.contentVersion,
+      audience: audience ?? this.audience,
+      ctaText: ctaText ?? this.ctaText,
+      city: city ?? this.city,
+      district: district ?? this.district,
+      categoryScope: categoryScope ?? this.categoryScope,
     );
   }
 }

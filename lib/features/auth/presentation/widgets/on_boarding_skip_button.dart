@@ -8,16 +8,17 @@ class OnBoardingSkipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       key: const Key('onboarding-skip'),
+      tooltip: 'Tanıtımı geç',
       onPressed: () async {
         await context.read<OnBoardingCubit>().skipPage(context);
       },
-      style: TextButton.styleFrom(
+      style: IconButton.styleFrom(
         foregroundColor: EsnaftaVarColors.primary,
         minimumSize: const Size(64, 44),
       ),
-      child: const Text('Geç', style: TextStyle(fontWeight: FontWeight.w600)),
+      icon: const Icon(Icons.close_rounded),
     );
   }
 }

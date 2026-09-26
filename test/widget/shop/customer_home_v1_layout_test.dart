@@ -1,8 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/core/common/widgets/customer_brand_logo.dart';
 import 'package:t_store/core/ui/components/reward_progress_card.dart';
 import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/theme/theme.dart';
@@ -47,6 +50,25 @@ class MockHomeLayoutNearbyCubit extends MockCubit<NearbyShopsState>
     implements NearbyShopsCubit {}
 
 void main() {
+  setUpAll(() async {
+    final font = FontLoader('Poppins')
+      ..addFont(rootBundle.load('assets/fonts/Poppins-Regular.ttf'))
+      ..addFont(rootBundle.load('assets/fonts/Poppins-Medium.ttf'))
+      ..addFont(rootBundle.load('assets/fonts/Poppins-SemiBold.ttf'))
+      ..addFont(rootBundle.load('assets/fonts/Poppins-Bold.ttf'));
+    final artifacts = File(Platform.resolvedExecutable).parent.parent.parent;
+    final icons = FontLoader('MaterialIcons')
+      ..addFont(
+        File(
+          '${artifacts.path}/material_fonts/MaterialIcons-Regular.otf',
+        ).readAsBytes().then(ByteData.sublistView),
+      );
+    final iconsax = FontLoader('packages/iconsax_flutter/FlutterIconsax')
+      ..addFont(
+        rootBundle.load('packages/iconsax_flutter/fonts/FlutterIconsax.ttf'),
+      );
+    await Future.wait([font.load(), icons.load(), iconsax.load()]);
+  });
   late MockHomeLayoutAuthCubit authCubit;
   late MockHomeLayoutBannersCubit bannersCubit;
   late MockHomeLayoutCategoriesCubit categoriesCubit;
@@ -140,6 +162,7 @@ void main() {
           BlocProvider<NearbyShopsCubit>.value(value: nearbyCubit),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: TAppTheme.lightTheme,
           home: MediaQuery(
             data: MediaQueryData(
@@ -161,10 +184,59 @@ void main() {
         ),
       ),
     );
+    // Asset decoding runs outside the fake clock. Await it before capturing
+    // the first Home golden so the official logo cannot be silently omitted.
+    await tester.runAsync(() async {
+      await precacheImage(
+        const AssetImage(CustomerBrandLogo.assetPath),
+        tester.element(find.byType(CustomerBrandLogo)),
+      );
+    });
     await tester.pump(const Duration(milliseconds: 100));
+    final logo = tester.widget<RawImage>(
+      find.descendant(
+        of: find.byType(CustomerBrandLogo),
+        matching: find.byType(RawImage),
+      ),
+    );
+    expect(logo.image, isNotNull, reason: 'Home must render the official logo');
   }
 
   for (final width in [320.0, 390.0, 430.0]) {
+    testWidgets('final Home default reward and hierarchy at $width / 130%', (
+      tester,
+    ) async {
+      await pumpLayout(
+        tester,
+        width,
+        rewardFeatureEnabled: true,
+        textScale: 1.3,
+      );
+      expect(find.text('0 / 5'), findsOneWidget);
+      expect(find.text('Ödül Sayacı'), findsOneWidget);
+      expect(find.text('100 TL'), findsNothing);
+      final ordered = [
+        'home-wordmark',
+        'home-search-bar',
+        'reward-progress-card',
+        'customer-home-hero',
+        'home-categories',
+        'home-location-bar',
+      ];
+      double previous = -1;
+      for (final key in ordered) {
+        final position = tester.getTopLeft(find.byKey(Key(key))).dy;
+        expect(position, greaterThan(previous), reason: key);
+        previous = position;
+      }
+      expect(tester.takeException(), isNull);
+      await expectLater(
+        find.byType(Scaffold),
+        matchesGoldenFile(
+          'goldens/final_engagement_home_${width.toInt()}_130.png',
+        ),
+      );
+    });
     testWidgets('$width piksel genişlikte ana sayfa taşma üretmez', (
       tester,
     ) async {
@@ -217,6 +289,11 @@ void main() {
     );
     expect(rewardTop.dy, greaterThan(searchTop.dy));
     expect(categoriesTop.dy, greaterThan(rewardTop.dy));
+    final campaignTop = tester.getTopLeft(
+      find.byKey(const Key('customer-home-hero')),
+    );
+    expect(campaignTop.dy, greaterThan(rewardTop.dy));
+    expect(categoriesTop.dy, greaterThan(campaignTop.dy));
     expect(tester.takeException(), isNull);
   });
 

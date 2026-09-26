@@ -169,10 +169,9 @@ class _HomeAppBarState extends State<HomeAppBar> {
                       const CustomerBrandLogo(key: Key('home-wordmark')),
                       const SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(
-                        greeting,
+                        'Kargo bekleme, EsnaftaVar',
                         key: const Key('home-greeting'),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                         style: const TextStyle(
                           color: EsnaftaVarColors.textSecondary,
                           fontSize: 12,

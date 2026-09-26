@@ -5,6 +5,7 @@ import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:t_store/core/ui/components/reward_progress_card.dart';
+import 'package:t_store/features/rewards/presentation/reward_center.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
@@ -178,7 +179,7 @@ class CustomerHomeV1Content extends StatelessWidget {
     this.categoryDestinationBuilder,
     this.productDestinationBuilder,
     this.shopDestinationBuilder,
-    this.rewardFeatureEnabled = false,
+    this.rewardFeatureEnabled = true,
     this.rewardProgress,
     this.onRewardTap,
     this.productFavoriteCurrentUserIdProvider,
@@ -280,30 +281,27 @@ class CustomerHomeV1Content extends StatelessWidget {
                     ? CustomerHomeV1Tokens.space4
                     : CustomerHomeV1Tokens.space8,
               ),
-              HomeLocationBar(
-                isAuthenticated: isAuthenticated,
-                onTap: onLocationTap,
-                visualPrototype: visualPrototype,
-              ),
-              SizedBox(
-                height: visualPrototype
-                    ? CustomerHomeV1Tokens.space12
-                    : CustomerHomeV1Tokens.space8,
-              ),
               searchBar,
               const SizedBox(height: CustomerHomeV1Tokens.space12),
-              RewardProgressSlot(
-                enabled: rewardFeatureEnabled,
-                data: rewardProgress,
-                onTap: onRewardTap,
-                compact: visualPrototype,
-              ),
-              if (rewardFeatureEnabled && rewardProgress != null)
+              if (rewardFeatureEnabled && rewardProgress == null)
+                HomeRewardCounter(onTap: onRewardTap)
+              else
+                RewardProgressSlot(
+                  enabled: rewardFeatureEnabled,
+                  data: rewardProgress,
+                  onTap: onRewardTap,
+                  compact: visualPrototype,
+                ),
+              if (rewardFeatureEnabled)
                 SizedBox(
                   height: visualPrototype
                       ? CustomerHomeV1Tokens.space16
                       : CustomerHomeV1Tokens.space12,
                 ),
+              if (!visualPrototype) ...[
+                const PromoBannerCarouselSlider(),
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+              ],
               HomeCategories(
                 destinationBuilder: categoryDestinationBuilder,
                 visualPrototype: visualPrototype,
@@ -313,10 +311,12 @@ class CustomerHomeV1Content extends StatelessWidget {
                     ? CustomerHomeV1Tokens.space16
                     : CustomerHomeV1Tokens.space12,
               ),
-              if (!visualPrototype) ...[
-                const PromoBannerCarouselSlider(),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
-              ],
+              HomeLocationBar(
+                isAuthenticated: isAuthenticated,
+                onTap: onLocationTap,
+                visualPrototype: visualPrototype,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
               HomeProductsSection(
                 destinationBuilder: productDestinationBuilder,
                 currentUserIdProvider: productFavoriteCurrentUserIdProvider,
