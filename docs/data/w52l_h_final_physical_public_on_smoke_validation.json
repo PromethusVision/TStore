@@ -1,0 +1,343 @@
+{
+  "format": "w52lh-final-physical-public-on-smoke-v1",
+  "result": "PASS",
+  "recordedUtc": "2026-09-26T01:10:48.729936+00:00",
+  "task_result": {
+    "W52L_H_FINAL_PHYSICAL_PUBLIC_ON_SMOKE": "PASS",
+    "AUTHORITATIVE_MAIN": "b9614de6342273067b14437cf0e34eca9141229c",
+    "APK_SHA256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "APK_IDENTITY": "PASS",
+    "DEVICE_CONNECTED": "YES",
+    "INSTALL_UPGRADE": "PASS",
+    "APP_LAUNCH": "PASS",
+    "PUBLIC_CANONICAL_ON": "PASS",
+    "OFF_UNAVAILABLE_GATE_ABSENT": "PASS",
+    "NO_TESTER_DEPENDENCY": "PASS",
+    "NO_PRIVATE_PREVIEW_DEPENDENCY": "PASS",
+    "HOME": "PASS",
+    "HOME_ROOT_LIMIT_8": "PASS",
+    "ALL_CATEGORIES": "PASS",
+    "ROOTS_24_24": "PASS",
+    "L2_NAVIGATION": "PASS",
+    "L3_NAVIGATION": "PASS",
+    "L4_NAVIGATION": "PASS",
+    "BREADCRUMB": "PASS",
+    "PRODUCT_LISTING": "PASS",
+    "PRODUCT_DETAILS": "PASS",
+    "SELLER_COMPARISON": "PASS",
+    "SHOP_DETAILS": "PASS",
+    "SEARCH": "PASS",
+    "BACK_NAVIGATION": "PASS",
+    "ELIGIBLE_PRODUCTS": "14/14",
+    "GATED_PRODUCTS_EXCLUDED": "6/6",
+    "LEGACY_FALLBACK_OBSERVED": "NO",
+    "DEVELOPMENT_FALLBACK_OBSERVED": "NO",
+    "PRIVATE_PREVIEW_FALLBACK_OBSERVED": "NO",
+    "ENDLESS_LOADING": "NO",
+    "CRASH": "NO",
+    "ANR": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "CUSTOMER_V1_PUBLIC_CANONICAL_GATE": "PASS",
+    "READY_FOR_PHYSICAL_SMOKE_EVIDENCE_INTEGRATION": "YES",
+    "READY_FOR_PRIVATE_PREVIEW_CLEANUP": "YES",
+    "READY_FOR_QR_TWO_DEVICE_GATE": "YES"
+  },
+  "branch": "astra-release/w52l-h-final-physical-public-on-smoke",
+  "productionProject": "mefhfvrgkwciubeajjeb",
+  "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+  "artifact": {
+    "observedUtc": "2026-09-26T01:02:42.747893+00:00",
+    "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "package": "com.esnaftavar.app",
+    "versionName": "1.0.0",
+    "versionCode": 3,
+    "certificateSha256": "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+    "signatureVerified": true,
+    "debuggable": false,
+    "exactFrozenArtifact": true,
+    "rebuilt": false,
+    "resigned": false
+  },
+  "device": {
+    "observedUtc": "2026-09-26T01:02:24.251838+00:00",
+    "model": "POCO X7 Pro",
+    "modelCode": "2412DPC0AG",
+    "android": "16",
+    "sdk": 36,
+    "physical": true,
+    "adbAuthorized": true,
+    "serialLogged": false
+  },
+  "install": {
+    "observedUtc": "2026-09-26T01:02:53.458441+00:00",
+    "status": "PASS",
+    "installSuccess": true,
+    "mode": "replace_preserve_data",
+    "installFlags": [
+      "--no-incremental",
+      "-r"
+    ],
+    "installed": {
+      "package": "com.esnaftavar.app",
+      "versionCode": 3,
+      "versionName": "1.0.0",
+      "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+      "debuggable": false,
+      "expectedCertificateMatch": true
+    },
+    "uninstall": false,
+    "clearData": false,
+    "downgrade": false,
+    "rebuild": false
+  },
+  "launch": {
+    "observedUtc": "2026-09-26T01:02:55.390352+00:00",
+    "result": "PASS",
+    "credentialsCapture": false,
+    "foreground": {
+      "appForeground": true,
+      "locked": false
+    }
+  },
+  "network": {
+    "observedUtc": "2026-09-26T01:02:53.604215+00:00",
+    "airplaneMode": false,
+    "activeDefaultNetwork": true,
+    "validatedNetworkPresent": true,
+    "networkSettingsChanged": false
+  },
+  "direct_home_observation": {
+    "observedUtc": "2026-09-26T01:03:21.229665+00:00",
+    "foreground": true,
+    "unlocked": true,
+    "rootCards": [
+      "Gıda & İçecek",
+      "Giyim & Moda",
+      "Ayakkabı",
+      "Çanta & Aksesuar",
+      "Elektronik",
+      "Bilgisayar & Tablet",
+      "Beyaz Eşya & Ev Aletleri",
+      "Ev & Yaşam"
+    ],
+    "rootCount": 8,
+    "allCategoriesLinkPresent": true,
+    "offGatePresent": false,
+    "personalGreetingOmitted": true,
+    "screenshotStored": false
+  },
+  "manual_physical_acceptance": {
+    "result": "PASS",
+    "source": "Product Owner physical inspection on the connected POCO X7 Pro after exact APK installation",
+    "reply": "tüm checklist başarılı",
+    "root_categories_24": "PASS",
+    "l2_navigation": "PASS",
+    "l3_navigation": "PASS",
+    "l4_navigation": "PASS",
+    "representative_path": [
+      "Gıda & İçecek",
+      "Bakliyat, Tahıl & Makarna",
+      "Bakliyat",
+      "Mercimek"
+    ],
+    "breadcrumb": "PASS",
+    "back_navigation": "PASS",
+    "search_term": "USB",
+    "search": "PASS",
+    "product_listing": "PASS",
+    "product_details": "PASS",
+    "seller_comparison": "PASS",
+    "shop_details": "PASS",
+    "login_or_preview_required": false,
+    "catalog_unavailable_message": false,
+    "endless_loading": false,
+    "crash": false,
+    "anr_or_freeze": false,
+    "read_only_checklist": true,
+    "image_placeholder_status": "NOT_SEPARATELY_REPORTED"
+  },
+  "post_smoke_logs": {
+    "observedUtc": "2026-09-26T01:07:17.909586+00:00",
+    "lines": 2116,
+    "errorClasses": {},
+    "databaseErrorCodes": [],
+    "hosts": [],
+    "processRunning": true,
+    "rawLogsStored": false
+  },
+  "post_smoke_foreground": {
+    "observedUtc": "2026-09-26T01:07:18.511534+00:00",
+    "appForeground": true,
+    "locked": false
+  },
+  "production_anonymous_precheck": {
+    "result": "PASS",
+    "observedUtc": "2026-09-26T01:05:25.148Z",
+    "host": "mefhfvrgkwciubeajjeb.supabase.co",
+    "method": "GET_ONLY",
+    "anonymous": true,
+    "authSessionUsed": false,
+    "publicCanonicalOn": true,
+    "publicRoots": 24,
+    "publishedNodes": 325,
+    "assignableLeaves": 247,
+    "eligibleProducts": 14,
+    "gatedProductsExcluded": 6,
+    "representativePath": [
+      "Gıda & İçecek",
+      "Bakliyat, Tahıl & Makarna",
+      "Bakliyat",
+      "Mercimek"
+    ],
+    "flow": {
+      "result": "PASS",
+      "role": "anon",
+      "method": "GET_ONLY",
+      "tester_required": false,
+      "auth_session_used": false,
+      "roots": 24,
+      "recursive_levels": [
+        2,
+        3,
+        4
+      ],
+      "breadcrumb": "PASS",
+      "alias_search": "PASS",
+      "product_listing": "PASS",
+      "product_details": "PASS",
+      "seller_comparison": "PASS",
+      "shop_details": "PASS",
+      "search": "PASS",
+      "eligible_products": 14,
+      "gated_products_excluded": 6,
+      "listing_rows": 198,
+      "shop_rows": 57,
+      "four_facade_functions": "PASS",
+      "legacy_fallback": false,
+      "preview_fallback": false,
+      "development_fallback": false
+    },
+    "httpRequests": 86,
+    "httpStatuses": {
+      "200": 86
+    },
+    "productionWritePerformed": false,
+    "developmentAccessed": false,
+    "credentialsRecorded": false
+  },
+  "production_anonymous_postcheck": {
+    "result": "PASS",
+    "observedUtc": "2026-09-26T01:07:26.710Z",
+    "host": "mefhfvrgkwciubeajjeb.supabase.co",
+    "method": "GET_ONLY",
+    "anonymous": true,
+    "authSessionUsed": false,
+    "publicCanonicalOn": true,
+    "publicRoots": 24,
+    "publishedNodes": 325,
+    "assignableLeaves": 247,
+    "eligibleProducts": 14,
+    "gatedProductsExcluded": 6,
+    "representativePath": [
+      "Gıda & İçecek",
+      "Bakliyat, Tahıl & Makarna",
+      "Bakliyat",
+      "Mercimek"
+    ],
+    "flow": {
+      "result": "PASS",
+      "role": "anon",
+      "method": "GET_ONLY",
+      "tester_required": false,
+      "auth_session_used": false,
+      "roots": 24,
+      "recursive_levels": [
+        2,
+        3,
+        4
+      ],
+      "breadcrumb": "PASS",
+      "alias_search": "PASS",
+      "product_listing": "PASS",
+      "product_details": "PASS",
+      "seller_comparison": "PASS",
+      "shop_details": "PASS",
+      "search": "PASS",
+      "eligible_products": 14,
+      "gated_products_excluded": 6,
+      "listing_rows": 198,
+      "shop_rows": 57,
+      "four_facade_functions": "PASS",
+      "legacy_fallback": false,
+      "preview_fallback": false,
+      "development_fallback": false
+    },
+    "httpRequests": 86,
+    "httpStatuses": {
+      "200": 86
+    },
+    "productionWritePerformed": false,
+    "developmentAccessed": false,
+    "credentialsRecorded": false
+  },
+  "frozen_source_proof": {
+    "result": "PASS",
+    "observedUtc": "2026-09-26T01:08:30.5225697Z",
+    "authorityMain": "b9614de6342273067b14437cf0e34eca9141229c",
+    "frozenSourceMain": "4cc2bcf4ce80198218e978c43eef9685aafaf504",
+    "frozenFlutterAndroidImplementationUnchanged": true,
+    "pubspecOnlyDifference": "Previously reviewed W52L-D version bump 1.0.0+2 to 1.0.0+3",
+    "publicRuntime": true,
+    "privatePreviewDefine": false,
+    "homeRootLimit": 8,
+    "productionProject": "mefhfvrgkwciubeajjeb",
+    "repositoryClean": true,
+    "rebuildPerformed": false
+  },
+  "evidence_scope": {
+    "automatically_verified": [
+      "Exact APK SHA-256, package/version, signing certificate",
+      "Expected physical device and data-preserving installation",
+      "Launch and eight visible Home root cards",
+      "App process and filtered error classes across the smoke window",
+      "Anonymous Production public API policy and category tree before/after"
+    ],
+    "owner_manually_verified": [
+      "All Categories 24 roots",
+      "Representative L2/L3/L4 and breadcrumb/back navigation",
+      "USB search and product listing/details/seller comparison/shop details",
+      "No login/private-preview gate, unavailable message, endless loading, crash or freeze"
+    ],
+    "phone_auth_session_state": "Not inspected or changed; existing app data preserved. No login/logout was requested. Public access independent of a tester was independently verified with anonymous HTTP and the frozen client contract.",
+    "phone_host_log_observation": "No hostname was emitted by filtered app logs; no packet capture claim. Production target is supported by the verified frozen build contract and target-checking public adapter.",
+    "current_database_ledger_and_total_table_counts": "Not separately queried in this wave. Prior W52L-G evidence remains the ledger/data-integrity baseline; current public API behavior and visible counts were rechecked.",
+    "crash_anr_basis": "Owner confirmed no crash/freeze; app remained foreground/running and app-UID-filtered logs contained no selected crash/ANR/runtime/backend error class.",
+    "image_placeholder_status": "Not separately reported in this wave."
+  },
+  "actions_not_performed": [
+    "Production mutation",
+    "Migration",
+    "Backup",
+    "Rollback",
+    "Policy or allowlist change",
+    "Preview bridge removal",
+    "Development access",
+    "APK/AAB rebuild",
+    "Uninstall/data clear",
+    "Purchase/order/review/QR/favorite/profile/shop/product mutation"
+  ],
+  "next_gate_scope": {
+    "privatePreviewCleanup": "Prerequisite physical smoke passed. Cleanup remains a separate task; 0013 was not removed.",
+    "qrTwoDevice": "Ready to begin a separately scoped two-device QR gate. No QR flow was run and no two-device PASS is claimed."
+  },
+  "quality": {
+    "sourceChanges": false,
+    "flutterAnalyzer": "NOT_RUN_EVIDENCE_ONLY",
+    "flutterBuild": "NOT_RUN_FROZEN_APK",
+    "secretPiiScan": "PASS",
+    "rawLogsCommitted": false,
+    "deviceSerialCommitted": false,
+    "apkAabCommitted": false,
+    "evidenceFilesOnly": true
+  }
+}
