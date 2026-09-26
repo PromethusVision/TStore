@@ -180,6 +180,8 @@ void main() {
     clearInteractions(savedLocationsCubit);
     clearInteractions(nearbyShopsCubit);
 
+    await tester.ensureVisible(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('home-location-bar')));
     await tester.pumpAndSettle();
 
@@ -212,6 +214,8 @@ void main() {
     clearInteractions(savedLocationsCubit);
     clearInteractions(nearbyShopsCubit);
 
+    await tester.ensureVisible(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('home-location-bar')));
     await tester.pumpAndSettle();
 
@@ -255,6 +259,8 @@ void main() {
     clearInteractions(savedLocationsCubit);
     clearInteractions(nearbyShopsCubit);
 
+    await tester.ensureVisible(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('home-location-bar')));
     await tester.pumpAndSettle();
 
@@ -287,6 +293,8 @@ void main() {
     clearInteractions(savedLocationsCubit);
     clearInteractions(nearbyShopsCubit);
 
+    await tester.ensureVisible(find.byKey(const Key('home-location-bar')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('home-location-bar')));
     await tester.pumpAndSettle();
     Navigator.of(

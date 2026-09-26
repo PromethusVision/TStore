@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:t_store/features/rewards/domain/reward_progress.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/features/shop/data/repositories/production_preview_product_repository.dart';
 import 'package:t_store/features/shop/data/services/production_preview_taxonomy_adapter.dart';
@@ -213,6 +214,9 @@ Future<void> setupServiceLocator({
     );
   }
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
+  sl.registerLazySingleton<RewardRepository>(
+    () => const PendingRewardRepository(),
+  );
   sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
   sl.registerSingleton(taxonomyPlan.capability);
   if (taxonomyPlan.registerDevelopmentRpcAdapter) {
