@@ -1,20 +1,13 @@
-dev_dependencies:
-  flutter_launcher_icons: "^0.13.1"
-
+# Regenerate with: pwsh -File tool/generate_customer_launcher.ps1
+# The owner-selected orange V comes from the unchanged official logo.
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logos/t-store-splash-logo-black.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  web:
-    generate: true
-    image_path: "assets/logos/t-store-splash-logo-black.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
-  windows:
-    generate: true
-    image_path: "assets/logos/t-store-splash-logo-black.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/logos/t-store-splash-logo-black.png"
+  image_path: "build/branding/esnaftavar-launcher.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "build/branding/esnaftavar-launcher-foreground.png"
+  adaptive_icon_foreground_inset: 0
+  adaptive_icon_monochrome: "build/branding/esnaftavar-launcher-monochrome.png"
+  min_sdk_android: 24
+  remove_alpha_ios: true
+  background_color_ios: "#FFFFFF"

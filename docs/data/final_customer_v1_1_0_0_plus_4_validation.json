@@ -1,0 +1,392 @@
+{
+  "result": "PASS",
+  "created_utc": "2026-09-26T19:41:45.949882+00:00",
+  "source_main": "f154c2a762065f2d117a2c1292adf5c8db707a40",
+  "branch": "astra-release/final-customer-v1-1.0.0+4",
+  "source_changes": [
+    "pubspec.yaml: 1.0.0+3 -> 1.0.0+4"
+  ],
+  "source_content_sha256": "3032ed8ed032bbecc3b06737aaab54a162fb585f206972be935d7de3f0ff5d82",
+  "runtime_mode": "PRODUCTION_PUBLIC_CANONICAL",
+  "production_project_ref": "mefhfvrgkwciubeajjeb",
+  "build_contract": {
+    "flavor": "production",
+    "entrypoint": "lib/main_production.dart",
+    "defines": {
+      "ESNAFTAVAR_PRODUCTION_CANONICAL_PUBLIC": "true",
+      "ESNAFTAVAR_PRODUCTION_CANONICAL_PREVIEW": "false",
+      "SUPABASE_PRODUCTION_URL": "https://mefhfvrgkwciubeajjeb.supabase.co",
+      "SUPABASE_PRODUCTION_ANON_KEY": "<EXTERNAL_PUBLISHABLE_KEY>"
+    },
+    "versionName": "1.0.0",
+    "versionCode": 4,
+    "sourceMain": "f154c2a762065f2d117a2c1292adf5c8db707a40",
+    "liveOptsEnabled": false
+  },
+  "frozen_utc": "2026-09-26T19:41:32.902618+00:00",
+  "artifacts": [
+    {
+      "kind": "apk",
+      "path": "<USER_HOME>/EsnaftavarReleases/final-customer-v1/1.0.0+4-main-f154c2a/EsnaftaVar-1.0.0+4-final-customer-v1-main-f154c2a-production-public.apk",
+      "size_bytes": 91042415,
+      "sha256": "b3485ab44ee1c21ad41c86be81c82b696a25623e5ce10a2001af7a5ece010f96",
+      "package": "com.esnaftavar.app",
+      "version_name": "1.0.0",
+      "version_code": 4,
+      "signing_certificate_sha256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+      "read_only": true,
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "signature_verified": true,
+      "debuggable": false,
+      "approved_inputs_and_public_markers_all_abis": true,
+      "native_64_bit_16k_aligned": true,
+      "apk_zip_16k_aligned": true,
+      "aab_jar_warning_classes": []
+    },
+    {
+      "kind": "aab",
+      "path": "<USER_HOME>/EsnaftavarReleases/final-customer-v1/1.0.0+4-main-f154c2a/EsnaftaVar-1.0.0+4-final-customer-v1-main-f154c2a-production-public.aab",
+      "size_bytes": 70114414,
+      "sha256": "559a1bbf040b003735e61700c2a56373ea411ceb97fa9b66de6d9f7280873a45",
+      "package": "com.esnaftavar.app",
+      "version_name": "1.0.0",
+      "version_code": 4,
+      "signing_certificate_sha256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+      "read_only": true,
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "signature_verified": true,
+      "debuggable": false,
+      "approved_inputs_and_public_markers_all_abis": true,
+      "native_64_bit_16k_aligned": true,
+      "apk_zip_16k_aligned": null,
+      "aab_jar_warning_classes": [
+        "self_signed_upload_certificate",
+        "untrusted_public_pkix_chain",
+        "no_timestamp",
+        "stream_and_jarfile_signing_view_discrepancy"
+      ]
+    }
+  ],
+  "tests": {
+    "full": {
+      "passed": 2243,
+      "failed": 0,
+      "skipped": 6,
+      "skip_names": [
+        "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+        "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+        "anonymous Production client initializes and sees canonical demo reads",
+        "anonymous Production client sees the complete Esenler demo customer flow",
+        "normal Auth clients enforce live development customer ownership and RLS",
+        "normal Auth clients verified lifecycle ve unverified rejection görür"
+      ],
+      "new_skips": 0
+    },
+    "targeted": {
+      "passed": 494,
+      "failed": 0,
+      "skipped": 0,
+      "files": [
+        "test/architecture/mobile_release_signing_contract_test.dart",
+        "test/architecture/production_platform_contract_test.dart",
+        "test/architecture/taxonomy_runtime_wiring_contract_test.dart",
+        "test/unit/auth/customer_onboarding_preferences_test.dart",
+        "test/unit/core/development_taxonomy_opt_in_test.dart",
+        "test/unit/core/production_preview_di_test.dart",
+        "test/unit/core/production_public_di_test.dart",
+        "test/unit/core/supabase_config_test.dart",
+        "test/unit/core/taxonomy_dependency_configuration_test.dart",
+        "test/unit/notifications/push_foundation_test.dart",
+        "test/unit/shop/canonical_taxonomy_contract_dto_test.dart",
+        "test/unit/shop/canonical_taxonomy_repository_impl_test.dart",
+        "test/unit/shop/home_campaign_catalog_test.dart",
+        "test/unit/shop/production_preview_adapter_test.dart",
+        "test/unit/shop/production_public_adapter_test.dart",
+        "test/unit/shop/supabase_canonical_taxonomy_rpc_adapter_test.dart",
+        "test/unit/shop/taxonomy_backend_capability_verifier_test.dart",
+        "test/unit/shop/taxonomy_categories_cubit_wiring_test.dart",
+        "test/unit/shop/taxonomy_category_hierarchy_test.dart",
+        "test/unit/shop/taxonomy_customer_search_wiring_test.dart",
+        "test/unit/shop/taxonomy_product_scope_cubit_wiring_test.dart",
+        "test/unit/supabase/public_media_source_resolver_test.dart",
+        "test/widget/auth/customer_launch_gate_test.dart",
+        "test/widget/auth/on_boarding_view_test.dart",
+        "test/widget/auth/w45c_auth_startup_final_ui_test.dart",
+        "test/widget/common/reward_counter_test.dart",
+        "test/widget/common/reward_progress_card_test.dart",
+        "test/widget/notifications/engagement_destination_test.dart",
+        "test/widget/notifications/notification_preferences_test.dart",
+        "test/widget/shop/customer_home_v1_layout_test.dart",
+        "test/widget/shop/home_app_bar_test.dart",
+        "test/widget/shop/home_categories_test.dart",
+        "test/widget/shop/home_location_bar_test.dart",
+        "test/widget/shop/home_nearby_shops_section_test.dart",
+        "test/widget/shop/home_products_section_test.dart",
+        "test/widget/shop/home_saved_locations_navigation_test.dart",
+        "test/widget/shop/home_search_bar_test.dart",
+        "test/widget/shop/product_seller_price_summary_test.dart",
+        "test/widget/shop/product_sellers_section_test.dart",
+        "test/widget/shop/production_preview_gate_test.dart",
+        "test/widget/shop/production_public_gate_test.dart",
+        "test/widget/shop/seller_card_separation_test.dart",
+        "test/widget/shop/taxonomy_browse_view_test.dart",
+        "test/widget/shop/w39a_home_visual_review_golden_test.dart",
+        "test/widget/shop/w43a_r2_seller_comparison_final_golden_test.dart",
+        "test/widget/shop/w43a_seller_comparison_visual_prototype_test.dart",
+        "test/widget/shop/w53a_semantic_contrast_test.dart",
+        "test/widget/shop/w53b_all_categories_flow_test.dart",
+        "test/widget/shop/w53c_category_icon_polish_test.dart"
+      ],
+      "public_define": true,
+      "preview_define": false
+    },
+    "branding_carousel_supplement": {
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "files": [
+        "test/unit/core/customer_logo_assets_test.dart",
+        "test/widget/shop/promo_banner_carousel_slider_test.dart"
+      ],
+      "public_define": true,
+      "preview_define": false
+    },
+    "analyzer": "PASS",
+    "assertions_weakened": false
+  },
+  "branding": {
+    "result": "PASS",
+    "artifacts": [
+      {
+        "kind": "apk",
+        "official_logo_exact_hash": true,
+        "native_splash_source_variants_matched": 20,
+        "native_comparison": "alpha plus rendered pixels over black and white",
+        "aot": [
+          {
+            "abi": "arm64-v8a",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          },
+          {
+            "abi": "armeabi-v7a",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          },
+          {
+            "abi": "x86_64",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          }
+        ],
+        "old_active_brand_text": false,
+        "old_logo_referenced_by_active_aot": false,
+        "privileged_config_or_sql_packaged": false
+      },
+      {
+        "kind": "aab",
+        "official_logo_exact_hash": true,
+        "native_splash_source_variants_matched": 20,
+        "native_comparison": "alpha plus rendered pixels over black and white",
+        "aot": [
+          {
+            "abi": "arm64-v8a",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          },
+          {
+            "abi": "armeabi-v7a",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          },
+          {
+            "abi": "x86_64",
+            "markers": {
+              "official_logo_path": true,
+              "slogan": true,
+              "reward_center": true,
+              "reward_truthful_empty": true,
+              "onboarding_flag": true,
+              "notification_preferences": true,
+              "push_external_pending": true,
+              "local-discover": true,
+              "local-compare": true,
+              "local-city": true,
+              "local-route": true,
+              "local-today": true
+            }
+          }
+        ],
+        "old_active_brand_text": false,
+        "old_logo_referenced_by_active_aot": false,
+        "privileged_config_or_sql_packaged": false
+      }
+    ],
+    "ios_splash_source_verified_by_flutter_test": true,
+    "ios_binary_built": false,
+    "push_provider_external_config": "PENDING",
+    "engagement_0016_proposal_only": true
+  },
+  "security": {
+    "local_structural_config_preflight": "PASS",
+    "signing_private_key_challenge": "PASS",
+    "signing_password_exclusion": "PASS",
+    "actual_cached_tester_identity_exclusion": "PASS",
+    "aab_payload_integrity": {
+      "signedPayloadEntries": 550,
+      "unsignedPayloadEntries": 0,
+      "duplicateNames": 0,
+      "allPayloadCertificatesMatch": true
+    },
+    "service_role_or_server_credentials_found": false,
+    "jwt_found": false,
+    "private_key_block_found": false,
+    "database_credentials_supplied": false,
+    "database_credential_assignments_found": false,
+    "config_values_printed": false,
+    "external_inputs_unchanged": true
+  },
+  "physical": {
+    "result": "NOT_RUN",
+    "reason": "No ADB-connected device available",
+    "ready_devices": 0,
+    "observed_utc": "2026-09-26T19:41:31.9771537Z",
+    "crash": "NOT_RUN",
+    "anr": "NOT_RUN",
+    "serial_recorded": false,
+    "installed": false,
+    "app_data_cleared": false
+  },
+  "production_accessed": false,
+  "development_accessed": false,
+  "production_write_performed": false,
+  "public_activation_performed": false,
+  "engagement_0016_applied": false,
+  "auth_login_or_refresh_performed": false,
+  "tester_allowlist_modified": false,
+  "private_preview_cleanup": false,
+  "store_uploaded": false,
+  "quality": {
+    "git_diff_check": "PASS",
+    "secret_and_PII_scan": "PASS",
+    "git_scope": [
+      "pubspec.yaml",
+      "docs/RELEASE_FINAL_CUSTOMER_V1_1_0_0_PLUS_4.md",
+      "docs/data/final_customer_v1_1_0_0_plus_4_validation.json"
+    ]
+  },
+  "task_result": {
+    "FINAL_CUSTOMER_V1_SIGNED_BUILD": "PASS",
+    "AUTHORITATIVE_MAIN": "f154c2a762065f2d117a2c1292adf5c8db707a40",
+    "VERSION_NAME": "1.0.0",
+    "VERSION_CODE": 4,
+    "PACKAGE": "com.esnaftavar.app",
+    "PRODUCTION_PUBLIC_RUNTIME": "PASS",
+    "NO_LEGACY_FALLBACK": "PASS",
+    "NO_DEVELOPMENT_FALLBACK": "PASS",
+    "NO_PRIVATE_PREVIEW_REQUIREMENT": "PASS",
+    "OFFICIAL_BRANDING_PACKAGED": "PASS",
+    "OLD_TSTORE_ACTIVE_BRANDING": "YES",
+    "FINAL_POLISH_ENGAGEMENT_PACKAGED": "PASS",
+    "PUSH_FOUNDATION_PACKAGED": "PASS",
+    "PUSH_PROVIDER_EXTERNAL_CONFIG": "PENDING",
+    "REAL_REWARD_ECONOMICS_IMPLEMENTED": "NO",
+    "ENGAGEMENT_0016_PROPOSAL_ONLY": "PASS",
+    "FLUTTER_ANALYZE": "PASS",
+    "FULL_FLUTTER": "2243 PASS / 0 FAIL / 6 SKIP",
+    "APK_PATH": "<USER_HOME>/EsnaftavarReleases/final-customer-v1/1.0.0+4-main-f154c2a/EsnaftaVar-1.0.0+4-final-customer-v1-main-f154c2a-production-public.apk",
+    "APK_SHA256": "b3485ab44ee1c21ad41c86be81c82b696a25623e5ce10a2001af7a5ece010f96",
+    "AAB_PATH": "<USER_HOME>/EsnaftavarReleases/final-customer-v1/1.0.0+4-main-f154c2a/EsnaftaVar-1.0.0+4-final-customer-v1-main-f154c2a-production-public.aab",
+    "AAB_SHA256": "559a1bbf040b003735e61700c2a56373ea411ceb97fa9b66de6d9f7280873a45",
+    "SIGNING_CERT_SHA256": "3B:83:D9:8A:B8:D3:2E:0F:3B:99:30:FA:83:76:36:E0:E9:E1:32:19:78:4F:FC:A3:9C:EF:8C:AE:82:A6:66:9B",
+    "SERVICE_ROLE_IN_ARTIFACT": "NO",
+    "DB_PASSWORD_IN_ARTIFACT": "NO",
+    "JWT_IN_ARTIFACT": "NO",
+    "TESTER_UID_IN_ARTIFACT": "NO",
+    "SIGNING_SECRET_IN_ARTIFACT": "NO",
+    "FIREBASE_SERVER_SECRET_IN_ARTIFACT": "NO",
+    "PHYSICAL_FINAL_UI_SMOKE": "NOT_RUN",
+    "CRASH": "NOT_RUN",
+    "ANR": "NOT_RUN",
+    "PRODUCTION_ACCESSED": "NO",
+    "PRODUCTION_WRITE_PERFORMED": "NO",
+    "QR_TWO_DEVICE_PHYSICAL_GATE": "OPEN",
+    "PRIVATE_PREVIEW_CLEANUP": "NOT_PERFORMED",
+    "BINARY_AFFECTING_DELTA": "YES",
+    "READY_FOR_FINAL_BUILD_EVIDENCE_INTEGRATION": "NO"
+  },
+  "launcher_audit_correction": {
+    "native_launcher_was_legacy_tstore": true,
+    "prior_audit_covered_flutter_aot_and_splash_only": true,
+    "superseded_by": "1.0.0+5",
+    "frozen_binaries_unchanged": true
+  }
+}
