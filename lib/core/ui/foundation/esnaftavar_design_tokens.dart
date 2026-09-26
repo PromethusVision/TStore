@@ -46,6 +46,11 @@ abstract final class EsnaftaVarColors {
 /// Restrained decorative colors for discovery content and image fallbacks.
 /// They are centralized so domain widgets never create a parallel palette.
 abstract final class EsnaftaVarDiscoveryColors {
+  static const sellerSurfaces = <Color>[
+    EsnaftaVarColors.surface,
+    Color(0xFFF0F8F5),
+    EsnaftaVarColors.surfaceElevated,
+  ];
   static const categorySurfaces = <Color>[
     EsnaftaVarColors.primarySoft,
     Color(0xFFE4F0E0),
