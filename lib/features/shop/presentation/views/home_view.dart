@@ -280,16 +280,6 @@ class CustomerHomeV1Content extends StatelessWidget {
                     ? CustomerHomeV1Tokens.space4
                     : CustomerHomeV1Tokens.space8,
               ),
-              HomeLocationBar(
-                isAuthenticated: isAuthenticated,
-                onTap: onLocationTap,
-                visualPrototype: visualPrototype,
-              ),
-              SizedBox(
-                height: visualPrototype
-                    ? CustomerHomeV1Tokens.space12
-                    : CustomerHomeV1Tokens.space8,
-              ),
               searchBar,
               const SizedBox(height: CustomerHomeV1Tokens.space12),
               RewardProgressSlot(
@@ -304,6 +294,10 @@ class CustomerHomeV1Content extends StatelessWidget {
                       ? CustomerHomeV1Tokens.space16
                       : CustomerHomeV1Tokens.space12,
                 ),
+              if (!visualPrototype) ...[
+                const PromoBannerCarouselSlider(),
+                const SizedBox(height: CustomerHomeV1Tokens.space12),
+              ],
               HomeCategories(
                 destinationBuilder: categoryDestinationBuilder,
                 visualPrototype: visualPrototype,
@@ -313,10 +307,12 @@ class CustomerHomeV1Content extends StatelessWidget {
                     ? CustomerHomeV1Tokens.space16
                     : CustomerHomeV1Tokens.space12,
               ),
-              if (!visualPrototype) ...[
-                const PromoBannerCarouselSlider(),
-                const SizedBox(height: CustomerHomeV1Tokens.space12),
-              ],
+              HomeLocationBar(
+                isAuthenticated: isAuthenticated,
+                onTap: onLocationTap,
+                visualPrototype: visualPrototype,
+              ),
+              const SizedBox(height: CustomerHomeV1Tokens.space12),
               HomeProductsSection(
                 destinationBuilder: productDestinationBuilder,
                 currentUserIdProvider: productFavoriteCurrentUserIdProvider,

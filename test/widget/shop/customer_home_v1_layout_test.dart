@@ -217,6 +217,11 @@ void main() {
     );
     expect(rewardTop.dy, greaterThan(searchTop.dy));
     expect(categoriesTop.dy, greaterThan(rewardTop.dy));
+    final campaignTop = tester.getTopLeft(
+      find.byKey(const Key('customer-home-hero')),
+    );
+    expect(campaignTop.dy, greaterThan(rewardTop.dy));
+    expect(categoriesTop.dy, greaterThan(campaignTop.dy));
     expect(tester.takeException(), isNull);
   });
 
