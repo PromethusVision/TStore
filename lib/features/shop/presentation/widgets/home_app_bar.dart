@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
-import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
+import 'package:t_store/core/common/widgets/customer_brand_logo.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
@@ -109,10 +109,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomerBrandWordmark(
-                          key: Key('home-wordmark'),
-                          fontSize: 26,
-                        ),
+                        const CustomerBrandLogo(key: Key('home-wordmark')),
                         const SizedBox(height: EsnaftaVarSpacing.xxs),
                         Row(
                           children: [
@@ -169,10 +166,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CustomerBrandWordmark(
-                        key: Key('home-wordmark'),
-                        fontSize: 24,
-                      ),
+                      const CustomerBrandLogo(key: Key('home-wordmark')),
                       const SizedBox(height: CustomerHomeV1Tokens.space4),
                       Text(
                         greeting,

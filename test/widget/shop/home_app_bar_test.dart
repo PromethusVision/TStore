@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/core/common/widgets/customer_brand_logo.dart';
+import 'package:t_store/core/common/widgets/customer_brand_wordmark.dart';
 import 'package:t_store/core/common/widgets/cart_counter_icon.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/utils/constants/text_strings.dart';
@@ -85,7 +87,7 @@ void main() {
     );
   }
 
-  testWidgets('wordmark ve gerçek kullanıcı karşılama bilgisini gösterir', (
+  testWidgets('resmi logo ve gerçek kullanıcı karşılama bilgisini gösterir', (
     tester,
   ) async {
     const user = UserEntity(
@@ -102,9 +104,85 @@ void main() {
     );
 
     expect(find.byKey(const Key('home-wordmark')), findsOneWidget);
+    final logo = tester.widget<Image>(
+      find.descendant(
+        of: find.byType(CustomerBrandLogo),
+        matching: find.byType(Image),
+      ),
+    );
+    expect((logo.image as AssetImage).assetName, CustomerBrandLogo.assetPath);
+    expect(find.byType(CustomerBrandWordmark), findsNothing);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName.contains('t-store'),
+      ),
+      findsNothing,
+    );
     expect(find.text('Merhaba, Ayşe'), findsOneWidget);
     expect(find.text('Ayşe Yılmaz'), findsNothing);
     expect(find.text('Eski Oturum Adı'), findsNothing);
+  });
+
+  for (final width in [320.0, 360.0, 390.0, 430.0]) {
+    for (final textScale in [1.0, 1.3, 2.0]) {
+      testWidgets('resmi logo $width px / $textScale metin ölçeğinde sığar', (
+        tester,
+      ) async {
+        tester.view.physicalSize = Size(width, 844);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = textScale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final semantics = tester.ensureSemantics();
+        try {
+          await tester.pumpWidget(
+            buildAppBar(authState: AuthUnauthenticated()),
+          );
+          await tester.pumpAndSettle();
+
+          final image = find.descendant(
+            of: find.byType(CustomerBrandLogo),
+            matching: find.byType(Image),
+          );
+          final rect = tester.getRect(image);
+          expect(rect.width / rect.height, closeTo(3, 0.001));
+          expect(rect.left, greaterThanOrEqualTo(0));
+          expect(rect.right, lessThanOrEqualTo(width));
+          expect(
+            rect.right,
+            lessThanOrEqualTo(
+              tester
+                  .getTopLeft(
+                    find.byKey(const Key('home-notifications-button')),
+                  )
+                  .dx,
+            ),
+          );
+          expect(find.bySemanticsLabel('EsnaftaVar'), findsOneWidget);
+          expect(find.text('EsnaftaVar', findRichText: true), findsNothing);
+          expect(tester.takeException(), isNull);
+        } finally {
+          semantics.dispose();
+        }
+      });
+    }
+  }
+
+  testWidgets('resmi logo dar bir alanda oranını koruyarak küçülür', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Center(child: SizedBox(width: 72, child: CustomerBrandLogo())),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(Image)), const Size(72, 24));
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('oturumdaki gerçek adı erişilebilir başlıkta korur', (
