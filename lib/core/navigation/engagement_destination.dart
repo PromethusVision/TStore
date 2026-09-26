@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:t_store/features/notifications/domain/push_contract.dart';
+import 'package:t_store/core/navigation/engagement_auth_gate.dart';
+import 'package:t_store/features/rewards/presentation/reward_center.dart';
+import 'package:t_store/features/chat/presentation/views/conversations_view.dart';
+import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
 import 'package:t_store/core/navigation/engagement_target.dart';
 import 'package:t_store/features/shop/domain/usecases/get_product_by_id_usecase.dart';
@@ -30,8 +38,10 @@ Future<Widget?> resolveEngagementDestination(EngagementTarget target) async {
         final breadcrumb = (await repository.getBreadcrumb(
           target.value,
         )).fold((_) => null, (b) => b);
-        if (breadcrumb == null || breadcrumb.current.categoryId != target.value)
+        if (breadcrumb == null ||
+            breadcrumb.current.categoryId != target.value) {
           return null;
+        }
         final nodes = breadcrumb.items.length == 1
             ? await repository.getRoots()
             : await repository.getChildren(
@@ -53,9 +63,23 @@ Future<Widget?> resolveEngagementDestination(EngagementTarget target) async {
         await cubit.close();
       }
     case EngagementTargetType.reward:
+      return EngagementAuthGate(
+        customerOnly: true,
+        builder: (_) => const RewardCenter(),
+      );
     case EngagementTargetType.messages:
+      return EngagementAuthGate(builder: (_) => const ConversationsView());
     case EngagementTargetType.notifications:
-      return null;
+      return EngagementAuthGate(
+        builder: (context) {
+          final state = context.read<AuthCubit>().state;
+          return CustomerNotificationsView(
+            appRole: state is AuthAuthenticated && state.user.isMerchant
+                ? NotificationAppRole.merchant
+                : NotificationAppRole.customer,
+          );
+        },
+      );
   }
 }
 
@@ -79,8 +103,10 @@ class _EngagementDestinationState extends State<EngagementDestination> {
   Widget build(BuildContext context) => FutureBuilder<Widget?>(
     future: _destination,
     builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.done && snapshot.hasData)
+      if (snapshot.connectionState == ConnectionState.done &&
+          snapshot.hasData) {
         return snapshot.data!;
+      }
       return Scaffold(
         appBar: AppBar(title: const Text('EsnaftaVar')),
         body: Center(

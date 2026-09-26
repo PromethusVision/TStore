@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/core/navigation/engagement_target.dart';
 
 enum NotificationType { order, promotion, system, chat }
 
@@ -26,6 +27,10 @@ class NotificationEntity extends Equatable {
   String? get actionId => _stringData('action_id');
   String? get actionType => _stringData('action_type');
   String? get actionName => _stringData('action_name');
+  EngagementTarget? get engagementTarget => EngagementTarget.parse(
+    _stringData('target_type'),
+    _stringData('target_value'),
+  );
 
   String? _stringData(String key) {
     final value = data?[key];
