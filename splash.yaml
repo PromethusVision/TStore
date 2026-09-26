@@ -1,14 +1,16 @@
+# Regenerate with: pwsh -File tool/generate_customer_splash.ps1
+# Inputs below are derived from the unchanged official repo logo.
 flutter_native_splash:
   color: "#FFFFFF"
-  color_dark: "#000000"
-  image: assets/logos/t-store-splash-logo-black.png
-  image_dark: assets/logos/t-store-splash-logo-white.png
+  color_dark: "#FFFFFF"
+  image: build/branding/esnaftavar-splash.png
+  image_dark: build/branding/esnaftavar-splash.png
 
   android_12:
     color: "#FFFFFF"
-    color_dark: "#000000"
-    image: assets/logos/t-store-splash-logo-black.png
-    image_dark: assets/logos/t-store-splash-logo-white.png
+    color_dark: "#FFFFFF"
+    image: build/branding/esnaftavar-android12.png
+    image_dark: build/branding/esnaftavar-android12.png
 
 
   web: false
