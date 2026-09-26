@@ -1,0 +1,557 @@
+{
+  "format": "w52lg-live-0014-retry-evidence-v1",
+  "result": "PASS",
+  "task_result": {
+    "W52L_G_LIVE_0014_RETRY": "PASS",
+    "PRODUCTION_WRITE_AUTHORIZED": "YES",
+    "AUTHORITATIVE_MAIN": "1202da02c63b4c84d35bfa795d1c48278925a9af",
+    "TARGET_PROJECT": "mefhfvrgkwciubeajjeb",
+    "SEALED_PACKAGE_HASH": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+    "CORRECTED_OBSERVER_IDENTITY": "4f8711f877069b7e903a1be22e44550bb998bbdf85664e7fb9978c5ca04fc521",
+    "LIVE_PREFLIGHT": "PASS",
+    "STATE_A_OFF_CLASSIFIER": "PASS",
+    "FRESH_PREWRITE_BACKUP": "PASS",
+    "FRESH_BACKUP_SHA256_RECORDED": "YES",
+    "0012_STATE": "PASS",
+    "0013_STATE": "PASS",
+    "0015_STATE": "PASS",
+    "0014_APPLIED": "YES",
+    "0014_LEDGER": "PASS",
+    "PUBLIC_CANONICAL_ACTIVATION": "ON",
+    "STATE_B_ON_CLASSIFIER": "PASS",
+    "PUBLIC_ROOTS": "24/24",
+    "PUBLISHED_NODES": "325/325",
+    "ASSIGNABLE_LEAVES": "247/247",
+    "ELIGIBLE_PRODUCTS_VISIBLE": "14/14",
+    "GATED_PRODUCTS_EXCLUDED": "6/6",
+    "PUBLIC_READ_CAPABILITIES_RPC": "PASS",
+    "PUBLIC_PRODUCTS_RPC": "PASS",
+    "PUBLIC_LISTINGS_RPC": "PASS",
+    "PUBLIC_SHOPS_RPC": "PASS",
+    "PUBLIC_CUSTOMER_FLOW": "PASS",
+    "LEGACY_SQL_CONTRACT": "PASS",
+    "LEGACY_HTTP_CONTRACT": "PASS",
+    "PUBLIC_WRITES_DENIED": "PASS",
+    "SECURITY_GRANTS_VALID": "PASS",
+    "RLS_POLICIES_VALID": "PASS",
+    "POST_ACTIVATION_PRODUCTS": "20/20",
+    "POST_ACTIVATION_LISTINGS": "285/285",
+    "POST_ACTIVATION_SHOPS": "57/57",
+    "CANONICAL_NODES": "1563/1563",
+    "OWNER_MAPPINGS": "20/20",
+    "0012_CHANGED": "NO",
+    "0013_CHANGED": "NO",
+    "0015_CHANGED": "NO",
+    "PRIVATE_PREVIEW_BRIDGE_CHANGED": "NO",
+    "ROLLBACK_TRIGGERED": "NO",
+    "ROLLBACK_RESULT": "NOT_REQUIRED",
+    "PHYSICAL_PUBLIC_ON_SMOKE": "NOT_RUN",
+    "CRASH": "NOT_RUN",
+    "ANR": "NOT_RUN",
+    "PRODUCTION_WRITE_PERFORMED": "YES",
+    "PGPASSWORD_CLEARED": "YES",
+    "PRODUCTION_LEFT_PUBLIC_CANONICAL_ON": "YES",
+    "CUSTOMER_V1_PUBLIC_CANONICAL_GATE": "PENDING_PHYSICAL",
+    "READY_FOR_LIVE_RETRY_EVIDENCE_INTEGRATION": "YES",
+    "READY_FOR_PRIVATE_PREVIEW_CLEANUP": "NO"
+  },
+  "authority_main": "1202da02c63b4c84d35bfa795d1c48278925a9af",
+  "branch": "astra-release/w52l-g-live-0014-retry",
+  "target_project": "mefhfvrgkwciubeajjeb",
+  "execution_completed_at_utc": "2026-09-26T00:38:15.157Z",
+  "recorded_at_utc": "2026-09-26T00:48:18.488118+00:00",
+  "authorized_scope": "Exact unchanged sealed 0014 activation plus exact ledger; sealed rollback only on critical failure. No rollback was needed.",
+  "package": {
+    "result": "PASS",
+    "seal_sha256": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+    "runtime_inputs": 58,
+    "activation_sql_sha256": "719af6150d7d94f24a1378e982667ee8732678e6a18a6624c0fe2ac323be279e",
+    "raw_bytes_before_sha256": "1aaa0ba168a6ca6a5f51610bbf6fe5cad9d539263f119b0688d432990d0f7dd7",
+    "raw_bytes_after_sha256": "1aaa0ba168a6ca6a5f51610bbf6fe5cad9d539263f119b0688d432990d0f7dd7",
+    "source_unchanged": true,
+    "resealed": false
+  },
+  "corrected_observer": {
+    "result": "PASS",
+    "source_sha256": "4f8711f877069b7e903a1be22e44550bb998bbdf85664e7fb9978c5ca04fc521",
+    "source_directory": "tool/production_public_activation/observer",
+    "integrated_by": "W52L-F",
+    "on_classifier": "PUBLIC_VISIBILITY_AND_ASSIGNABILITY",
+    "staged_predicate_used_as_on_rollback_criterion": false,
+    "helper_hashes_unchanged": true,
+    "helper_source_sha256": {
+      "context.mjs": "4f668280dd2392c330a3ffc6be1d5aea63a644b0ccc3a4295541e2bbe301724e",
+      "http-transport.mjs": "8474e03242f8ffa0f680b05ce76dc243a75ebefd53851e6c6400e06832528ad4",
+      "observe.mjs": "82fb397e1a7d2fde8cefef1e5f2a4bba9086749a4a3df06615d2b775e72819bf",
+      "run-live.mjs": "972cb2975daa6e06c2fa7657c4850eb800287b2c08f8e5b7267a4ac243c45d51",
+      "run-owner.ps1": "9005f3f194cb6abfbe0b12331d8456705f6d6a0664e9a86af0988af580fdc5d5",
+      "offline-tests.mjs": "510e85679393c5959f153d5344e2db286dd020f217c46974916244994d901f00"
+    }
+  },
+  "preflight": {
+    "result": "PASS",
+    "classification": {
+      "result": "PASS",
+      "public_enabled": false,
+      "classifier": "STAGED_PRIVATE_PREVIEW_ELIGIBILITY",
+      "gated": 6,
+      "roots": 0,
+      "total": 20,
+      "leaves": 0,
+      "eligible": 14,
+      "published": 0,
+      "public_visible": 0,
+      "activation_entries": 0
+    },
+    "public_off_functions": {
+      "production_public_read_capabilities_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_products_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_listings_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      },
+      "production_public_shops_v1": {
+        "status": 401,
+        "sqlstate": "42501",
+        "result": "DENIED"
+      }
+    },
+    "legacy_sql": "PASS",
+    "legacy_http_queries": 8,
+    "no_active_preview_lease": "PASS",
+    "exact_0012_0013_0015_and_absent_0014": "PASS",
+    "schema_rls_grants": "PASS"
+  },
+  "fresh_backup": {
+    "result": "PASS",
+    "format": "CUSTOM",
+    "source_pg_version": "17.6",
+    "tool_version": "17.11",
+    "completed_at_utc": "2026-09-26T00:33:59.664Z",
+    "sha256": "bb3aa7d659de92b443d76d660363611806d17b65e3908438d48acff6a6a87e54",
+    "size_bytes": 1386870,
+    "archive_name": "EsnaftaVar-Production-W52LG-0014-20260926T003228049Z.dump",
+    "sanitized_path": "<USER_HOME>/EsnaftavarBackups/w52lg-0014-live/EsnaftaVar-Production-W52LG-0014-20260926T003228049Z.dump",
+    "table_data_entries": 79
+  },
+  "activation": {
+    "result": "PASS",
+    "production_write_attempted": true,
+    "public_activation_performed": true,
+    "operation": "activate",
+    "child_pgpassword_cleared": true
+  },
+  "atomic_exact_sql_and_ledger": "PASS",
+  "postflight": {
+    "result": "PASS",
+    "classification": {
+      "result": "PASS",
+      "public_enabled": true,
+      "classifier": "PUBLIC_VISIBILITY_AND_ASSIGNABILITY",
+      "gated": 6,
+      "roots": 24,
+      "total": 20,
+      "leaves": 247,
+      "eligible": 14,
+      "published": 325,
+      "public_visible": 14,
+      "activation_entries": 1
+    },
+    "counts": {
+      "categories": 4,
+      "products": 20,
+      "shop_products": 285,
+      "shops": 57,
+      "canonical_nodes": 1563,
+      "canonical_roots": 24,
+      "terminal_leaves": 1245,
+      "exact_owner_mappings": 20,
+      "orphan_products": 0,
+      "orphan_listings": 0,
+      "broken_parent_chains": 0,
+      "duplicate_canonical_uuids": 0,
+      "invalid_product_targets": 0
+    },
+    "publication_policy": {
+      "result": "PASS",
+      "published_nodes": 325,
+      "assignable_leaves": 247,
+      "staged_nodes": 1238,
+      "roots": 24,
+      "publication_set_sha256": "572ccd8ddb69f56ccf773aa27b5ed7de7228f464ca1fc265d6dfcb1963f3c0dc"
+    },
+    "facade": {
+      "result": "PASS",
+      "functions": 4,
+      "definition_and_grants_sha256": "30fd8c2471c76882101e802d615a268cbb352de4a722b4d2bd62d3194cc7f57c"
+    },
+    "facade_security": {
+      "result": "PASS",
+      "functions": 4,
+      "public_execute": false,
+      "client_execute_roles": [
+        "anon",
+        "authenticated"
+      ],
+      "stable": 4,
+      "invoker": 3,
+      "definer_fixed_search_path": 1
+    },
+    "canonical_security": {
+      "result": "PASS",
+      "client_write_grants": 0,
+      "canonical_tables_with_rls": 9,
+      "catalog_unchanged": true
+    },
+    "public_sql": {
+      "anon": {
+        "result": "PASS",
+        "eligible_products": 14,
+        "gated_excluded": 6,
+        "listing_rows": 198,
+        "shop_rows": 57,
+        "detail": "PASS",
+        "seller_comparison": "PASS",
+        "shop_detail": "PASS",
+        "search": "PASS",
+        "tester_required": false
+      },
+      "authenticated": {
+        "result": "PASS",
+        "eligible_products": 14,
+        "gated_excluded": 6,
+        "listing_rows": 198,
+        "shop_rows": 57,
+        "detail": "PASS",
+        "seller_comparison": "PASS",
+        "shop_detail": "PASS",
+        "search": "PASS",
+        "tester_required": false
+      }
+    },
+    "taxonomy_sql": {
+      "result": "PASS",
+      "state": "PUBLIC",
+      "roles": {
+        "anon": {
+          "public_roots": 24,
+          "canonical_products_visible": 14,
+          "policy_gated_products_preserved": 6,
+          "alias_query_rows": 1,
+          "search_query_rows": 1,
+          "strict_rpc_contracts": "PASS",
+          "recursive_levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "wrong_contract": "DENIED",
+          "preview_request": "DENIED",
+          "preview_bridge": "DENIED",
+          "public_mapping_rows": 14
+        },
+        "authenticated": {
+          "public_roots": 24,
+          "canonical_products_visible": 14,
+          "policy_gated_products_preserved": 6,
+          "alias_query_rows": 1,
+          "search_query_rows": 1,
+          "strict_rpc_contracts": "PASS",
+          "recursive_levels": [
+            2,
+            3,
+            4
+          ],
+          "breadcrumb": "PASS",
+          "wrong_contract": "DENIED",
+          "preview_request": "DENIED",
+          "preview_bridge": "DENIED",
+          "public_mapping_rows": 14
+        }
+      },
+      "flutter_client_tested": false
+    },
+    "legacy_sql": {
+      "anon": {
+        "home_categories": {
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+        },
+        "product_listing": {
+          "rows": 4,
+          "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+        },
+        "product_details": {
+          "rows": 20,
+          "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+        },
+        "seller_comparison": {
+          "rows": 20,
+          "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+        },
+        "shop_details": {
+          "rows": 57,
+          "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+        },
+        "search": {
+          "rows": 2,
+          "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+        }
+      },
+      "authenticated": {
+        "home_categories": {
+          "rows": 4,
+          "result_sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27"
+        },
+        "product_listing": {
+          "rows": 4,
+          "result_sha256": "ce63a7741da73f1d37ded07ad40ee5d488c5b6daa3738f0111c668e3aaadc8a1"
+        },
+        "product_details": {
+          "rows": 20,
+          "result_sha256": "78ff449f4f75596b2108587d2ccc89d66eb0e041f75fa826cda3616e8fb872d8"
+        },
+        "seller_comparison": {
+          "rows": 20,
+          "result_sha256": "e90a4a6697cbacd200c4cbccd605256e93335f8d9ec0fa80d0cbd84543b8b32e"
+        },
+        "shop_details": {
+          "rows": 57,
+          "result_sha256": "319d3fda3a278e8a633f9f70b32d9930963aeea0faf8965a02c8813f3baa92ec"
+        },
+        "search": {
+          "rows": 2,
+          "result_sha256": "392b61e2b2c7cc4ddb1151a065b53d7760f50f9a5d101b9b33f4aa3b8dfd3d50"
+        }
+      }
+    },
+    "legacy_http": {
+      "home": {
+        "status": 200,
+        "rows": 4,
+        "sha256": "1186a9fc9ac57bf3a51faaaa7dbfa08f845e06f718636c2520a6fb9b15d12f27",
+        "object_response": false
+      },
+      "listing": {
+        "status": 200,
+        "rows": 20,
+        "sha256": "5a00cce2c4e06ec05cb5d7eb4df6461e267f4bde2b5d26f66bdb6ad26fe4820a",
+        "object_response": false
+      },
+      "category": {
+        "status": 200,
+        "rows": 5,
+        "sha256": "b0a8d02e2acd9a0782d233e616fda4d2050c27208fa4d44b4e9636f40000ebae",
+        "object_response": false
+      },
+      "details": {
+        "status": 200,
+        "rows": 1,
+        "sha256": "e28eac4361f463857626990b0c84cc572af21552b70e25e1af745f99b2fc3c66",
+        "object_response": true
+      },
+      "sellers": {
+        "status": 200,
+        "rows": 15,
+        "sha256": "0d9af20a8d98d75aa68a8c9beab3a8d78df392c43d22ea1bbf1c412b25bd262e",
+        "object_response": false
+      },
+      "shop": {
+        "status": 200,
+        "rows": 1,
+        "sha256": "89aa9fd4fd91f041e34a535b999c135ccf8116e62862fa9cd36944bc3dfe1fe9",
+        "object_response": true
+      },
+      "shop_listings": {
+        "status": 200,
+        "rows": 5,
+        "sha256": "56e7a91e4878e8460ef3dfe9c8087a00e0c3a308f586e93e74a09c5b3ffdebbf",
+        "object_response": false
+      },
+      "search": {
+        "status": 200,
+        "rows": 2,
+        "sha256": "ea029518a6e7ed452adb1a33d0c92f68718c91fb7b0d81002d153a295f2f29df",
+        "object_response": false
+      }
+    },
+    "public_http": {
+      "result": "PASS",
+      "role": "anon",
+      "method": "GET_ONLY",
+      "tester_required": false,
+      "auth_session_used": false,
+      "roots": 24,
+      "recursive_levels": [
+        2,
+        3,
+        4
+      ],
+      "breadcrumb": "PASS",
+      "alias_search": "PASS",
+      "product_listing": "PASS",
+      "product_details": "PASS",
+      "seller_comparison": "PASS",
+      "shop_details": "PASS",
+      "search": "PASS",
+      "eligible_products": 14,
+      "gated_products_excluded": 6,
+      "listing_rows": 198,
+      "shop_rows": 57,
+      "four_facade_functions": "PASS",
+      "legacy_fallback": false,
+      "preview_fallback": false,
+      "development_fallback": false
+    },
+    "writes_denied": {
+      "result": "PASS",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "probes": 6,
+      "sqlstate": "42501",
+      "method": "READ_ONLY_EXPLAIN_WITHOUT_ANALYZE_AUTHORIZATION_CHECK",
+      "dml_executed": false
+    },
+    "fingerprint": "3ddfacbbd485e4a744c672e50b4e4c77753f91e1a22d9ad1b2829392f3f18e3e"
+  },
+  "preservation": {
+    "result": "PASS",
+    "protected_tables": 68,
+    "coverage_exact_match": true,
+    "before_coverage_sha256": "13d4fd4b8e5eb093167f749c3c2c58868d6dfcc89f014b5a1b39c010f8bc09f6",
+    "after_coverage_sha256": "13d4fd4b8e5eb093167f749c3c2c58868d6dfcc89f014b5a1b39c010f8bc09f6",
+    "auth_storage_metadata_unchanged": true,
+    "legacy_http_exact_match": true,
+    "0012_0013_0015_unchanged": true,
+    "tester_allowlist_unchanged": true,
+    "preview_bridge_removed": false,
+    "taxonomy_remapping": false,
+    "product_listing_shop_edits": false,
+    "generic_db_push": false,
+    "manual_repair_sql": false
+  },
+  "completion_check": {
+    "result": "PASS",
+    "checked_at_utc": "2026-09-26T00:41:35.350Z",
+    "local_package": {
+      "result": "PASS",
+      "main": "1202da02c63b4c84d35bfa795d1c48278925a9af",
+      "seal": "86d9b475013ad534322678b35aef0624742b32efe24e1eb050fe9a4879b8245a",
+      "observer_sha256": "4f8711f877069b7e903a1be22e44550bb998bbdf85664e7fb9978c5ca04fc521",
+      "sealed_bytes_sha256": "1aaa0ba168a6ca6a5f51610bbf6fe5cad9d539263f119b0688d432990d0f7dd7",
+      "runtime_inputs": 58,
+      "sql_sha256": "719af6150d7d94f24a1378e982667ee8732678e6a18a6624c0fe2ac323be279e",
+      "pg_client_version": "17.11",
+      "artifact": {
+        "result": "PASS",
+        "package": "com.esnaftavar.app",
+        "version": "1.0.0+3",
+        "runtime": "PRODUCTION_PUBLIC_CANONICAL",
+        "apk_sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+        "aab_sha256": "17e361684eab4aea6432bfa47a00af543777107c8bf7d0ccd472341b9e77cc79"
+      },
+      "physical": {
+        "result": "PASS",
+        "apk_sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+        "observed_utc": "2026-09-24T22:49:11.494627+00:00",
+        "scope": "Previously recorded W52L-E public-OFF frozen-client acceptance, revalidated as a sealed preflight prerequisite. This is not W52L-G public-ON physical smoke."
+      }
+    },
+    "sealed_before_sha256": "1aaa0ba168a6ca6a5f51610bbf6fe5cad9d539263f119b0688d432990d0f7dd7",
+    "sealed_after_sha256": "1aaa0ba168a6ca6a5f51610bbf6fe5cad9d539263f119b0688d432990d0f7dd7",
+    "observer_sha256": "4f8711f877069b7e903a1be22e44550bb998bbdf85664e7fb9978c5ca04fc521",
+    "helper_hashes_unchanged": true,
+    "backup_bytes_rehashed": true,
+    "backup_sha256": "bb3aa7d659de92b443d76d660363611806d17b65e3908438d48acff6a6a87e54",
+    "backup_table_data_entries": 79,
+    "protected_table_count": 68,
+    "coverage_equal": true,
+    "legacy_http_equal": true,
+    "child_pgpassword_cleared": true,
+    "owner_pgpassword_cleared": true,
+    "public_http": {
+      "method": "GET_ONLY",
+      "anonymous": true,
+      "auth_session_used": false,
+      "host": "mefhfvrgkwciubeajjeb.supabase.co",
+      "runtime_status": 200,
+      "capability_status": 200,
+      "roots_status": 200,
+      "roots": 24,
+      "public_enabled": true,
+      "preview_required": false,
+      "tester_required": false
+    },
+    "additional_production_write": false
+  },
+  "physical": {
+    "result": "NOT_RUN",
+    "reason": "No ADB-connected device before or after activation. Backend remained healthy and ON; device absence did not cause rollback.",
+    "post_activation_availability": {
+      "observedUtc": "2026-09-26T00:40:37.736820+00:00",
+      "result": "PASS",
+      "connected": 0,
+      "unauthorized": 0,
+      "offline": 0,
+      "serialLogged": false,
+      "launchPerformed": false
+    },
+    "app_launched": false,
+    "apk_rebuilt": false,
+    "aab_rebuilt": false,
+    "uninstall_performed": false,
+    "data_clear_performed": false,
+    "home_max_8_roots": "NOT_RUN",
+    "all_24_roots_screen": "NOT_RUN",
+    "recursive_navigation": "NOT_RUN",
+    "back_navigation": "NOT_RUN",
+    "crash": "NOT_RUN",
+    "anr": "NOT_RUN",
+    "device_serial_recorded": false
+  },
+  "artifact": {
+    "observedUtc": "2026-09-26T00:17:31.408799+00:00",
+    "sha256": "04d71bfd25920c171fd25f27416ee22f74f851608bb3c79b1561dc4966827f64",
+    "package": "com.esnaftavar.app",
+    "versionName": "1.0.0",
+    "versionCode": 3,
+    "certificateSha256": "3B83D98AB8D32E0F3B9930FA837636E0E9E13219784FFCA39CEF8CAE82A6669B",
+    "signatureVerified": true,
+    "debuggable": false,
+    "exactFrozenArtifact": true,
+    "rebuilt": false,
+    "resigned": false
+  },
+  "frozen_aab_sha256": "17e361684eab4aea6432bfa47a00af543777107c8bf7d0ccd472341b9e77cc79",
+  "cleanup": {
+    "child_pgpassword_cleared": true,
+    "owner_pgpassword_cleared": true,
+    "owner_cleanup_completed_at_utc": "2026-09-26T00:38:15.1804816Z",
+    "password_written_to_repo_or_logs": false
+  },
+  "private_preview_disposition": "REMOVE_AFTER_PUBLIC_SMOKE",
+  "private_preview_cleanup_ready": false,
+  "production_left_public_canonical_on": true,
+  "development_accessed": false,
+  "quality": {
+    "preexecution_tests": 53,
+    "failed_tests": 0,
+    "source_changes": false,
+    "evidence_files_only": true,
+    "secret_pii_scan": "PASS",
+    "diff_check": "PASS",
+    "apk_aab_rebuilt": false
+  }
+}
