@@ -26,6 +26,26 @@ tasks.register("verifyReleaseSigning") {
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
+    // Separate development installation for Merchant. Customer artifacts keep
+    // their existing flavor, identity, signing and entrypoint contracts.
+    def merchantRequested = gradle.startParameter.taskNames.any {
+        it.tokenize(":").last().contains("MerchantDevelopment")
+    }
+    if (merchantRequested) {
+        if (gradle.startParameter.taskNames.any { it.contains("Release") }) {
+            throw new GradleException("Merchant release requires a separately authorized release configuration.")
+        }
+        def merchantTarget = new File((project.findProperty("target") ?: "").toString())
+        if (!merchantTarget.isAbsolute()) {
+            merchantTarget = new File(rootProject.projectDir.parentFile, merchantTarget.path)
+        }
+        def merchantTargets = ["lib/main_merchant_development.dart", "lib/main_merchant_preview.dart"].collect {
+            new File(rootProject.projectDir.parentFile, it).canonicalFile
+        }
+        if (!merchantTargets.contains(merchantTarget.canonicalFile)) {
+            throw new GradleException("Merchant development flavor requires a Merchant entrypoint.")
+        }
+    }
     // Android flavor and Dart entrypoint are independent Flutter CLI options.
     // Reject cross-environment release binaries before compilation/packaging.
     [production: "lib/main_production.dart", development: "lib/main_development.dart"].each { flavor, entrypoint ->
@@ -109,6 +129,13 @@ android {
     }
     flavorDimensions "default"
     productFlavors {
+        merchantDevelopment {
+            dimension "default"
+            applicationIdSuffix ".merchant.dev"
+            resValue "string", "app_name", "EsnaftaVar Esnaf Dev"
+            // Callback activation is pending; this never intercepts Customer links.
+            manifestPlaceholders = [authCallbackScheme: "com.esnaftavar.app.merchant.dev"]
+        }
         production {
             dimension "default"
             resValue "string", "app_name", "EsnaftaVar"
