@@ -80,6 +80,17 @@ void main() {
       httpClient: MockClient((request) async {
         requests.add(request);
         final table = request.url.pathSegments.last;
+        if (table == 'merchant_catalog_search_v1') {
+          return http.Response(
+            jsonEncode({
+              'code': 'PGRST202',
+              'message': 'Local pre-Slice-A fixture',
+            }),
+            404,
+            request: request,
+            headers: {'content-type': 'application/json'},
+          );
+        }
         if (request.method == 'GET' && table == 'profiles') {
           return http.Response(
             jsonEncode([

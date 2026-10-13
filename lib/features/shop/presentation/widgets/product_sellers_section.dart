@@ -17,6 +17,7 @@ import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/customer_location_service.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
+import 'package:t_store/features/shop/presentation/helpers/seller_ranking.dart';
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
@@ -44,6 +45,9 @@ class ProductSellersSection extends StatefulWidget {
   final ProductSellerShopDestinationBuilder? shopDestinationBuilder;
   final PendingProductChatStorage? pendingProductChatStorage;
   final bool visualPrototype;
+  final ValueChanged<List<RankedSeller>>? onRankingChanged;
+  final bool Function(ShopProductEntity)? sellerFilter;
+  final double? radiusMeters;
 
   const ProductSellersSection({
     super.key,
@@ -57,6 +61,9 @@ class ProductSellersSection extends StatefulWidget {
     this.shopDestinationBuilder,
     this.pendingProductChatStorage,
     this.visualPrototype = false,
+    this.onRankingChanged,
+    this.sellerFilter,
+    this.radiusMeters,
   });
 
   @override
@@ -67,10 +74,50 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   late Future<Either<String, List<ShopProductEntity>>> _future;
   late final CustomerLocationService _customerLocationService;
   CustomerPreferredLocation? _preferredLocation;
-  _SellerSortOption? _selectedSortOption;
+  SellerSortOption? _selectedSortOption;
   final Set<String> _openingShopIds = <String>{};
   bool _isRetryInProgress = false;
   static bool _isConflictDialogOpen = false;
+  int _requestEpoch = 0, _locationEpoch = 0, _rankingEmission = 0;
+  List<RankedSeller>? _lastRanking;
+  ProductSellerPriceSummary? _lastRankPriceSummary;
+  @override
+  void didUpdateWidget(covariant ProductSellersSection old) {
+    super.didUpdateWidget(old);
+    if (old.productId != widget.productId) {
+      _lastRanking = null;
+      _lastRankPriceSummary = null;
+      _future = _fetchSellers();
+      _isRetryInProgress = false;
+    }
+  }
+
+  void _publishRanking(List<RankedSeller> ranking, {bool notifyPrice = true}) {
+    final summary = notifyPrice
+        ? _priceSummaryFor(
+            ranking.map((s) => s.shopProduct).toList(growable: false),
+          )
+        : null;
+    final old = _lastRanking;
+    if (old != null &&
+        old.length == ranking.length &&
+        List.generate(
+          old.length,
+          (i) => old[i] == ranking[i],
+        ).every((v) => v) &&
+        summary == _lastRankPriceSummary) {
+      return;
+    }
+    _lastRanking = ranking;
+    _lastRankPriceSummary = summary;
+    final emission = ++_rankingEmission;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && emission == _rankingEmission) {
+        widget.onRankingChanged?.call(ranking);
+        if (summary != null) widget.onPriceSummaryChanged?.call(summary);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -107,6 +154,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            _publishRanking(const [], notifyPrice: false);
             if (widget.visualPrototype) {
               return const _SellersLoadingState();
             }
@@ -123,6 +171,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
           }
 
           if (snapshot.hasError || !snapshot.hasData) {
+            _publishRanking(const [], notifyPrice: false);
             return _SellersErrorState(
               onRetry: _retrySellers,
               isRetrying: _isRetryInProgress,
@@ -131,17 +180,21 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
           }
 
           return snapshot.data!.fold(
-            (_) => _SellersErrorState(
-              onRetry: _retrySellers,
-              isRetrying: _isRetryInProgress,
-              visualPrototype: widget.visualPrototype,
-            ),
+            (_) {
+              _publishRanking(const [], notifyPrice: false);
+              return _SellersErrorState(
+                onRetry: _retrySellers,
+                isRetrying: _isRetryInProgress,
+                visualPrototype: widget.visualPrototype,
+              );
+            },
             (shopProducts) {
               final customerVisibleShopProducts = _customerVisibleSellers(
                 shopProducts,
               );
 
               if (customerVisibleShopProducts.isEmpty) {
+                _publishRanking(const []);
                 return _SellersEmptyState(
                   onBrowseOtherProducts: widget.onBrowseOtherProducts,
                   visualPrototype: widget.visualPrototype,
@@ -155,15 +208,23 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
               final locationReady = coordinates?.isValid ?? false;
               final effectiveSort =
                   _selectedSortOption ??
-                  (locationReady ? _SellerSortOption.nearest : null);
-              final rankedSellers = _sortSellers(
+                  (locationReady ? SellerSortOption.nearest : null);
+              final rankedSellers = SellerRanking.rank(
                 customerVisibleShopProducts,
                 coordinates,
                 effectiveSort,
+                radiusMeters: widget.radiusMeters,
               );
+              _publishRanking(rankedSellers);
+              if (rankedSellers.isEmpty) {
+                return _SellersEmptyState(
+                  onBrowseOtherProducts: widget.onBrowseOtherProducts,
+                  visualPrototype: widget.visualPrototype,
+                );
+              }
               final lowestPrice = widget.visualPrototype
-                  ? customerVisibleShopProducts
-                        .map((seller) => seller.price)
+                  ? rankedSellers
+                        .map((seller) => seller.shopProduct.price)
                         .where((price) => price.isFinite && price >= 0)
                         .fold<double?>(
                           null,
@@ -287,14 +348,19 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   }
 
   Future<Either<String, List<ShopProductEntity>>> _fetchSellers() {
+    final epoch = ++_requestEpoch;
     final request = sl<GetShopProductsByProductUsecase>()(
       GetShopProductsByProductParams(productId: widget.productId),
     );
 
     unawaited(
       request.then<void>(
-        _notifyPriceSummary,
-        onError: (_, _) => _notifyPriceSummaryError(),
+        (result) {
+          if (epoch == _requestEpoch) _notifyPriceSummary(result);
+        },
+        onError: (_, _) {
+          if (epoch == _requestEpoch) _notifyPriceSummaryError();
+        },
       ),
     );
     return request;
@@ -353,7 +419,11 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     List<ShopProductEntity> shopProducts,
   ) {
     return shopProducts
-        .where((shopProduct) => shopProduct.isCustomerPurchasable)
+        .where(
+          (shopProduct) =>
+              shopProduct.isCustomerPurchasable &&
+              (widget.sellerFilter?.call(shopProduct) ?? true),
+        )
         .toList(growable: false);
   }
 
@@ -364,6 +434,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
       const ProductSellerPriceSummary.loading(),
     );
     final nextFuture = _fetchSellers();
+    final epoch = _requestEpoch;
     setState(() {
       _isRetryInProgress = true;
       _future = nextFuture;
@@ -371,8 +442,12 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
 
     unawaited(
       nextFuture.then<void>(
-        (_) => _finishRetry(),
-        onError: (_, _) => _finishRetry(),
+        (_) {
+          if (epoch == _requestEpoch) _finishRetry();
+        },
+        onError: (_, _) {
+          if (epoch == _requestEpoch) _finishRetry();
+        },
       ),
     );
   }
@@ -383,8 +458,9 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
   }
 
   Future<void> _loadPreferredLocation() async {
+    final epoch = ++_locationEpoch;
     final location = await _customerLocationService.getPreferredLocation();
-    if (!mounted) return;
+    if (!mounted || epoch != _locationEpoch) return;
 
     final nextLocation = location?.isValid == true ? location : null;
     final hasDeviceLocation =
@@ -392,7 +468,7 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
     final shouldClearNearest =
         nextLocation == null &&
         !hasDeviceLocation &&
-        _selectedSortOption == _SellerSortOption.nearest;
+        _selectedSortOption == SellerSortOption.nearest;
     if (_preferredLocation == nextLocation && !shouldClearNearest) return;
 
     setState(() {
@@ -417,85 +493,6 @@ class _ProductSellersSectionState extends State<ProductSellersSection> {
 
     if (!mounted) return;
     await _loadPreferredLocation();
-  }
-
-  List<_RankedSeller> _sortSellers(
-    List<ShopProductEntity> shopProducts,
-    CustomerCoordinates? coordinates,
-    _SellerSortOption? sortOption,
-  ) {
-    final rankedSellers = <_RankedSeller>[];
-
-    for (var index = 0; index < shopProducts.length; index++) {
-      final shopProduct = shopProducts[index];
-      final shop = shopProduct.shop;
-      final distance = coordinates == null || !coordinates.isValid
-          ? null
-          : CustomerProximityHelper.distanceInMeters(
-              from: coordinates,
-              latitude: shop?.latitude,
-              longitude: shop?.longitude,
-            );
-
-      rankedSellers.add(
-        _RankedSeller(
-          shopProduct: shopProduct,
-          originalIndex: index,
-          distanceMeters: distance,
-        ),
-      );
-    }
-
-    if (sortOption == null) {
-      return rankedSellers;
-    }
-
-    rankedSellers.sort((first, second) {
-      final comparison = switch (sortOption) {
-        _SellerSortOption.cheapest => _compareFiniteValues(
-          first.shopProduct.price,
-          second.shopProduct.price,
-          ascending: true,
-        ),
-        _SellerSortOption.mostExpensive => _compareFiniteValues(
-          first.shopProduct.price,
-          second.shopProduct.price,
-          ascending: false,
-        ),
-        _SellerSortOption.highestRated => _compareFiniteValues(
-          first.shopProduct.shop?.rating,
-          second.shopProduct.shop?.rating,
-          ascending: false,
-        ),
-        _SellerSortOption.nearest => _compareFiniteValues(
-          first.distanceMeters,
-          second.distanceMeters,
-          ascending: true,
-        ),
-      };
-
-      return comparison != 0
-          ? comparison
-          : first.originalIndex.compareTo(second.originalIndex);
-    });
-
-    return rankedSellers;
-  }
-
-  int _compareFiniteValues(
-    double? first,
-    double? second, {
-    required bool ascending,
-  }) {
-    final firstIsValid = first != null && first.isFinite;
-    final secondIsValid = second != null && second.isFinite;
-
-    if (!firstIsValid && !secondIsValid) return 0;
-    if (!firstIsValid) return 1;
-    if (!secondIsValid) return -1;
-
-    final comparison = first.compareTo(second);
-    return ascending ? comparison : -comparison;
   }
 
   Future<void> _showShopConflictDialog(
@@ -1461,46 +1458,44 @@ class _PreferredLocationNotice extends StatelessWidget {
   }
 }
 
-enum _SellerSortOption { cheapest, mostExpensive, highestRated, nearest }
-
-extension on _SellerSortOption {
+extension on SellerSortOption {
   String get label => switch (this) {
-    _SellerSortOption.cheapest => 'Fiyata göre en ucuz',
-    _SellerSortOption.mostExpensive => 'Fiyata göre en pahalı',
-    _SellerSortOption.highestRated => 'En yüksek puan',
-    _SellerSortOption.nearest => 'En yakın',
+    SellerSortOption.cheapest => 'Fiyata göre en ucuz',
+    SellerSortOption.mostExpensive => 'Fiyata göre en pahalı',
+    SellerSortOption.highestRated => 'En yüksek puan',
+    SellerSortOption.nearest => 'En yakın',
   };
 
   String get buttonLabel => switch (this) {
-    _SellerSortOption.cheapest => 'En ucuz',
-    _SellerSortOption.mostExpensive => 'En pahalı',
-    _SellerSortOption.highestRated => 'Puan',
-    _SellerSortOption.nearest => 'En yakın',
+    SellerSortOption.cheapest => 'En ucuz',
+    SellerSortOption.mostExpensive => 'En pahalı',
+    SellerSortOption.highestRated => 'Puan',
+    SellerSortOption.nearest => 'En yakın',
   };
 
   IconData get icon => switch (this) {
-    _SellerSortOption.cheapest => Icons.arrow_downward_outlined,
-    _SellerSortOption.mostExpensive => Icons.arrow_upward_outlined,
-    _SellerSortOption.highestRated => Icons.star_outline_rounded,
-    _SellerSortOption.nearest => Icons.near_me_outlined,
+    SellerSortOption.cheapest => Icons.arrow_downward_outlined,
+    SellerSortOption.mostExpensive => Icons.arrow_upward_outlined,
+    SellerSortOption.highestRated => Icons.star_outline_rounded,
+    SellerSortOption.nearest => Icons.near_me_outlined,
   };
 
   Key get menuKey => switch (this) {
-    _SellerSortOption.cheapest => const Key('product-seller-sort-cheapest'),
-    _SellerSortOption.mostExpensive => const Key(
+    SellerSortOption.cheapest => const Key('product-seller-sort-cheapest'),
+    SellerSortOption.mostExpensive => const Key(
       'product-seller-sort-most-expensive',
     ),
-    _SellerSortOption.highestRated => const Key(
+    SellerSortOption.highestRated => const Key(
       'product-seller-sort-highest-rated',
     ),
-    _SellerSortOption.nearest => const Key('product-seller-sort-nearest'),
+    SellerSortOption.nearest => const Key('product-seller-sort-nearest'),
   };
 }
 
 class _SellerSortMenu extends StatelessWidget {
-  final _SellerSortOption? selectedOption;
+  final SellerSortOption? selectedOption;
   final bool locationReady;
-  final ValueChanged<_SellerSortOption> onSelected;
+  final ValueChanged<SellerSortOption> onSelected;
 
   const _SellerSortMenu({
     required this.selectedOption,
@@ -1515,10 +1510,10 @@ class _SellerSortMenu extends StatelessWidget {
         : 'Satıcıları sırala: ${selectedOption!.label}';
 
     return MenuAnchor(
-      menuChildren: _SellerSortOption.values
+      menuChildren: SellerSortOption.values
           .map((option) {
             final locationUnavailable =
-                option == _SellerSortOption.nearest && !locationReady;
+                option == SellerSortOption.nearest && !locationReady;
 
             return MenuItemButton(
               key: option.menuKey,
@@ -1566,16 +1561,4 @@ class _SellerSortMenu extends StatelessWidget {
       },
     );
   }
-}
-
-class _RankedSeller {
-  final ShopProductEntity shopProduct;
-  final int originalIndex;
-  final double? distanceMeters;
-
-  const _RankedSeller({
-    required this.shopProduct,
-    required this.originalIndex,
-    required this.distanceMeters,
-  });
 }

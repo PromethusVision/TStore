@@ -1,0 +1,248 @@
+import 'dart:typed_data';
+import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
+import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/shop/data/models/product_model.dart';
+import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+
+class SupabaseCatalogMediaRepository implements CatalogMediaRepository {
+  SupabaseCatalogMediaRepository(
+    this.client, {
+    String? Function()? currentUserId,
+  }) : currentUserId = currentUserId ?? (() => client.auth.currentUser?.id);
+  final SupabaseClient client;
+  final String? Function() currentUserId;
+  void _check(MerchantAccess a) {
+    if (currentUserId() != a.user.id || !a.canManage) {
+      throw const _CatalogFailure(merchantSessionChanged);
+    }
+  }
+
+  Future<Either<String, T>> _run<T>(
+    MerchantAccess a,
+    Future<T> Function() fn,
+  ) async {
+    try {
+      _check(a);
+      final value = await fn();
+      _check(a);
+      return Right<String, T>(value);
+    } on _CatalogFailure catch (e) {
+      return Left<String, T>(e.message);
+    } on FormatException catch (e) {
+      return Left<String, T>(e.message);
+    } on PostgrestException catch (e) {
+      final message = switch (e.message) {
+        'CATALOG_INVALID_GTIN' => 'Barkod geçersiz.',
+        'MEDIA_LIMIT' => 'Fotoğraf sınırına ulaştın.',
+        'CATALOG_CATEGORY_UNAVAILABLE' =>
+          'Bu kategori şu anda ürün kabul etmiyor.',
+        'MEDIA_UPLOAD_INCOMPLETE' =>
+          'Fotoğraf yüklemesi tamamlanmadı. Yeniden dene.',
+        _ =>
+          e.code == '42501'
+              ? merchantAccessDenied
+              : 'İşlem tamamlanamadı. Yeniden dene.',
+      };
+      return Left<String, T>(message);
+    } catch (_) {
+      return Left<String, T>('Bağlantı kurulamadı. Yeniden dene.');
+    }
+  }
+
+  Map<String, dynamic> _row(dynamic j) => Map<String, dynamic>.from(j as Map);
+  @override
+  Future<Either<String, List<CatalogCategory>>> categories(MerchantAccess a) =>
+      _run(a, () async {
+        final rows = await client.rpc(
+          'merchant_catalog_categories_v1',
+          params: {'p_shop_id': a.shop!.id},
+        );
+        return [
+          for (final j in rows as List) CatalogCategory(j['id'], j['name']),
+        ];
+      });
+  @override
+  Future<Either<String, CatalogLookup>> lookup(
+    MerchantAccess a,
+    String name,
+    String gtin,
+  ) => _run(a, () async {
+    final j = await client.rpc(
+      'merchant_catalog_lookup_v1',
+      params: {
+        'p_shop_id': a.shop!.id,
+        'p_name': name,
+        'p_gtin': normalizeGtin(gtin),
+      },
+    );
+    return CatalogLookup([
+      for (final p in j['products'] as List) ProductModel.fromJson(_row(p)),
+    ], exact: j['exact'] == true);
+  });
+  @override
+  Future<Either<String, SubmissionResult>> submit(
+    MerchantAccess a,
+    String requestId,
+    ProductSubmissionDraft draft,
+  ) => _run(a, () async {
+    if (draft.error != null) throw _CatalogFailure(draft.error!);
+    final j = await client.rpc(
+      'merchant_submit_product_v1',
+      params: {
+        'p_shop_id': a.shop!.id,
+        'p_request_id': requestId,
+        'p_draft': draft.toJson(),
+      },
+    );
+    return SubmissionResult(
+      submission: j['submission'] == null
+          ? null
+          : ProductSubmission.fromJson(_row(j['submission'])),
+      existing: j['existing'] == null
+          ? null
+          : ProductModel.fromJson(_row(j['existing'])),
+    );
+  });
+  @override
+  Future<Either<String, List<ProductSubmission>>> submissions(
+    MerchantAccess a,
+  ) => _run(a, () async {
+    final rows = await client
+        .from('product_submissions')
+        .select()
+        .eq('shop_id', a.shop!.id)
+        .order('created_at', ascending: false)
+        .order('id')
+        .limit(100);
+    return rows.map(ProductSubmission.fromJson).toList(growable: false);
+  });
+  @override
+  Future<Either<String, ProductEntity?>> approvedProduct(
+    MerchantAccess a,
+    String id,
+  ) => _run(a, () async {
+    final j = await client
+        .from('products')
+        .select('*, brands(name)')
+        .eq('id', id)
+        .eq('is_active', true)
+        .maybeSingle();
+    return j == null ? null : ProductModel.fromJson(j);
+  });
+  @override
+  Future<Either<String, ListingMedia>> media(MerchantAccess a, String id) =>
+      _run(a, () async {
+        final j = await client.rpc(
+          'merchant_listing_media_v1',
+          params: {'p_listing_id': id},
+        );
+        _check(a);
+        final images = <ListingImage>[];
+        for (final row in j['images'] as List) {
+          String? url;
+          if (row['publication_state'] == 'published') {
+            try {
+              url = await client.storage
+                  .from('listing-media')
+                  .createSignedUrl(row['object_path'], 300);
+            } catch (_) {
+              /* metadata still allows retirement */
+            }
+            _check(a);
+          }
+          images.add(
+            ListingImage(
+              id: row['id'],
+              path: row['object_path'],
+              state: row['publication_state'],
+              primary: row['is_primary'],
+              order: row['sort_order'],
+              url: url,
+            ),
+          );
+        }
+        return ListingMedia(
+          images,
+          maxPhotos: j['max_photos'],
+          maxBytes: j['max_bytes'],
+        );
+      });
+  @override
+  Future<Either<String, void>> upload(
+    MerchantAccess a,
+    String id,
+    Uint8List bytes,
+  ) => _run(a, () async {
+    final mime = listingImageMime(bytes);
+    if (mime == null) {
+      throw const _CatalogFailure('JPEG, PNG veya WebP fotoğraf seçin.');
+    }
+    final prepared = await client.rpc(
+      'merchant_prepare_listing_image_v1',
+      params: {'p_listing_id': id, 'p_mime': mime, 'p_bytes': bytes.length},
+    );
+    _check(a);
+    final j = _row(prepared is List ? prepared.single : prepared);
+    try {
+      await client.storage
+          .from(j['bucket_id'])
+          .uploadBinary(
+            j['object_path'],
+            bytes,
+            fileOptions: FileOptions(contentType: mime, upsert: false),
+          );
+      _check(a);
+      await client.rpc(
+        'merchant_change_listing_images_v1',
+        params: {
+          'p_listing_id': id,
+          'p_action': 'publish',
+          'p_image_id': j['id'],
+        },
+      );
+    } catch (_) {
+      // Do not act as a new account after a logout. Intent remains visible and
+      // can be retired after reconnect; bytes are never deleted or overwritten.
+      if (currentUserId() == a.user.id) {
+        try {
+          await client.rpc(
+            'merchant_change_listing_images_v1',
+            params: {
+              'p_listing_id': id,
+              'p_action': 'retire',
+              'p_image_id': j['id'],
+            },
+          );
+        } catch (_) {
+          /* retryable owner cleanup */
+        }
+      }
+      rethrow;
+    }
+  });
+  @override
+  Future<Either<String, void>> changeMedia(
+    MerchantAccess a,
+    String id,
+    String action, {
+    String? imageId,
+    List<String>? order,
+  }) => _run(a, () async {
+    await client.rpc(
+      'merchant_change_listing_images_v1',
+      params: {
+        'p_listing_id': id,
+        'p_action': action,
+        'p_image_id': imageId,
+        'p_order': order,
+      },
+    );
+  });
+}
+
+class _CatalogFailure implements Exception {
+  const _CatalogFailure(this.message);
+  final String message;
+}

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
+import 'package:t_store/features/merchant/presentation/merchant_product_submission.dart';
+import 'package:t_store/features/merchant/presentation/merchant_listing_media.dart';
 import 'package:t_store/features/merchant/presentation/merchant_catalog_cubit.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -12,10 +15,12 @@ class MerchantProducts extends StatefulWidget {
     required this.repository,
     required this.access,
     this.onChanged,
+    this.catalogMedia,
   });
   final MerchantRepository repository;
   final MerchantAccess access;
   final VoidCallback? onChanged;
+  final CatalogMediaRepository? catalogMedia;
   @override
   State<MerchantProducts> createState() => _MerchantProductsState();
 }
@@ -42,10 +47,12 @@ class _MerchantProductsState extends State<MerchantProducts> {
         builder: (_) => listing == null
             ? MerchantCatalogPicker(
                 repository: widget.repository,
+                catalogMedia: widget.catalogMedia,
                 access: widget.access,
               )
             : MerchantListingForm(
                 repository: widget.repository,
+                catalogMedia: widget.catalogMedia,
                 access: widget.access,
                 product: listing.product,
                 existing: listing,
@@ -134,6 +141,25 @@ class _MerchantProductsState extends State<MerchantProducts> {
               icon: const Icon(Icons.add),
               label: const Text('Katalogdan ürün ekle'),
             ),
+            if (widget.catalogMedia != null)
+              OutlinedButton(
+                onPressed: () async {
+                  final saved = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (_) => MerchantSubmissions(
+                        catalog: widget.catalogMedia!,
+                        repository: widget.repository,
+                        access: widget.access,
+                      ),
+                    ),
+                  );
+                  if (saved == true && mounted) {
+                    _cubit.load(refresh: true);
+                    widget.onChanged?.call();
+                  }
+                },
+                child: const Text('Ürün başvurularım'),
+              ),
           ],
         ),
       );
@@ -144,9 +170,11 @@ class MerchantCatalogPicker extends StatefulWidget {
     super.key,
     required this.repository,
     required this.access,
+    this.catalogMedia,
   });
   final MerchantRepository repository;
   final MerchantAccess access;
+  final CatalogMediaRepository? catalogMedia;
   @override
   State<MerchantCatalogPicker> createState() => _MerchantCatalogPickerState();
 }
@@ -185,11 +213,18 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
       _error = null;
     });
     try {
-      final result = await widget.repository.searchCatalog(
-        widget.access,
-        query: _query,
-        page: _page,
-      );
+      final gtinSearch = RegExp(r'^[0-9]{8,14}$').hasMatch(_query.trim());
+      final result = gtinSearch && widget.catalogMedia != null
+          ? (await widget.catalogMedia!.lookup(
+              widget.access,
+              '',
+              _query.trim(),
+            )).map((v) => v.products)
+          : await widget.repository.searchCatalog(
+              widget.access,
+              query: _query,
+              page: _page,
+            );
       if (!mounted || epoch != _epoch) return;
       setState(() {
         _loading = false;
@@ -199,7 +234,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
             for (final p in items) p.id: p,
           }.values.toList();
           ++_page;
-          _more = items.length == merchantPageSize;
+          _more = !gtinSearch && items.length == merchantPageSize;
         });
       });
     } catch (_) {
@@ -219,6 +254,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
           repository: widget.repository,
           access: widget.access,
           product: product,
+          catalogMedia: widget.catalogMedia,
         ),
       ),
     );
@@ -237,7 +273,9 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
         controller: _search,
         maxLength: 100,
         decoration: InputDecoration(
-          labelText: 'Ürün adıyla ara',
+          labelText: widget.catalogMedia == null
+              ? 'Ürün adıyla ara'
+              : 'Ürün adı veya barkodla ara',
           suffixIcon: IconButton(
             tooltip: 'Ara',
             onPressed: () => _load(refresh: true),
@@ -258,9 +296,41 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
         ),
       if (_loading) const Center(child: CircularProgressIndicator()),
       if (!_loading && _error == null && _items.isEmpty)
-        const MerchantNotice(
-          'Ürün bulunamadı. Katalogda olmayan bir ürün için pilot ekibiyle iletişime geçin.',
+        const MerchantNotice('Aramana uygun ürün bulunamadı.'),
+      if (widget.catalogMedia != null) ...[
+        const Text('Ürünü bulamadın mı?'),
+        OutlinedButton(
+          onPressed: _loading
+              ? null
+              : () async {
+                  final saved = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (_) => MerchantProductSubmission(
+                        catalog: widget.catalogMedia!,
+                        repository: widget.repository,
+                        access: widget.access,
+                        initialName:
+                            RegExp(
+                              r'^[0-9]{8,14}$',
+                            ).hasMatch(_search.text.trim())
+                            ? ''
+                            : _search.text,
+                        initialGtin:
+                            RegExp(
+                              r'^[0-9]{8,14}$',
+                            ).hasMatch(_search.text.trim())
+                            ? _search.text.trim()
+                            : '',
+                      ),
+                    ),
+                  );
+                  if (context.mounted && saved == true) {
+                    Navigator.pop(context, true);
+                  }
+                },
+          child: const Text('Yeni ürün ekle'),
         ),
+      ],
       if (!_loading && _more && _items.isNotEmpty)
         OutlinedButton(onPressed: _load, child: const Text('Daha fazla sonuç')),
     ],
@@ -274,11 +344,13 @@ class MerchantListingForm extends StatefulWidget {
     required this.access,
     this.product,
     this.existing,
+    this.catalogMedia,
   });
   final MerchantRepository repository;
   final MerchantAccess access;
   final ProductEntity? product;
   final ShopProductEntity? existing;
+  final CatalogMediaRepository? catalogMedia;
   @override
   State<MerchantListingForm> createState() => _MerchantListingFormState();
 }
@@ -414,6 +486,26 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
           onPressed: _saving ? null : _save,
           child: Text(_saving ? 'Kaydediliyor…' : 'Ürünü kaydet'),
         ),
+        if (widget.existing != null && widget.catalogMedia != null)
+          OutlinedButton.icon(
+            onPressed: _saving
+                ? null
+                : () => Navigator.of(context).push<void>(
+                    MaterialPageRoute(
+                      builder: (_) => MerchantListingMedia(
+                        repository: widget.catalogMedia!,
+                        access: widget.access,
+                        listingId: widget.existing!.id,
+                      ),
+                    ),
+                  ),
+            icon: const Icon(Icons.photo_library_outlined),
+            label: const Text('Mağaza fotoğraflarını yönet'),
+          ),
+        if (widget.existing == null && widget.catalogMedia != null)
+          const Text(
+            'Ürünü kaydettikten sonra Ürünlerim ekranından fotoğraflarını ekleyebilirsin.',
+          ),
       ],
     ),
   );

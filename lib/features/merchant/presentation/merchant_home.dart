@@ -70,6 +70,7 @@ class _MerchantHomeState extends State<MerchantHome> {
                 ),
                 MerchantProducts(
                   repository: s.merchants,
+                  catalogMedia: s.catalogMedia,
                   access: access,
                   onChanged: () => setState(() => ++_overviewRevision),
                 ),

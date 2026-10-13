@@ -4,6 +4,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:t_store/features/cart/data/repositories/qr_session_repository_impl.dart';
 import 'package:t_store/features/merchant/data/supabase_merchant_repository.dart';
+import 'package:t_store/features/merchant/data/supabase_catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/merchant_app.dart';
 import 'package:t_store/features/merchant/merchant_services.dart';
@@ -42,6 +43,7 @@ Future<void> main() async {
     MerchantApp(
       services: MerchantServices(
         merchants: SupabaseMerchantRepository(client: service.client),
+        catalogMedia: SupabaseCatalogMediaRepository(service.client),
         credentials: SharedMerchantCredentials(
           AuthRepositoryImpl(supabaseService: service),
         ),

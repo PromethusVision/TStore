@@ -12,11 +12,15 @@ class ProductImageSlider extends StatelessWidget {
     required this.product,
     this.currentUserIdProvider,
     this.visualPrototype = false,
+    this.heroImage,
+    this.heroImages = const [],
   });
 
   final ProductEntity product;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final bool visualPrototype;
+  final Widget? heroImage;
+  final List<String> heroImages;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +43,14 @@ class ProductImageSlider extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: SelectedProductImage(
-              image: productImages.firstOrNull ?? '',
-              height: 340,
-              imageExtent: 245,
-              padding: const EdgeInsets.fromLTRB(30, 38, 30, 54),
-            ),
+            child:
+                heroImage ??
+                SelectedProductImage(
+                  image: productImages.firstOrNull ?? '',
+                  height: 340,
+                  imageExtent: 245,
+                  padding: const EdgeInsets.fromLTRB(30, 38, 30, 54),
+                ),
           ),
           if (productImages.length > 1)
             OtherSameProductsList(images: productImages),
@@ -97,12 +103,14 @@ class ProductImageSlider extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: SelectedProductImage(
-              image: productImages.firstOrNull ?? '',
-              height: 224,
-              imageExtent: 184,
-              padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
-            ),
+            child:
+                heroImage ??
+                SelectedProductImage(
+                  image: productImages.firstOrNull ?? '',
+                  height: 224,
+                  imageExtent: 184,
+                  padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
+                ),
           ),
           if (productImages.length > 1)
             Positioned(
@@ -135,6 +143,7 @@ class ProductImageSlider extends StatelessWidget {
   }
 
   List<String> get _productImages {
+    if (heroImage != null) return heroImages;
     final images = product.images
         .where((image) => image.trim().isNotEmpty)
         .toList(growable: false);

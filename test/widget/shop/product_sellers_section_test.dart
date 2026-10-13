@@ -21,6 +21,7 @@ import 'package:t_store/features/shop/domain/services/customer_location_service.
 import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_product_usecase.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
+import 'package:t_store/features/shop/presentation/helpers/seller_ranking.dart';
 
 class MockShopRepository extends Mock implements ShopRepository {}
 
@@ -145,6 +146,10 @@ void main() {
     ProductSellerCurrentUserIdProvider? currentUserIdProvider,
     ProductSellerChatDestinationBuilder? chatDestinationBuilder,
     ProductSellerShopDestinationBuilder? shopDestinationBuilder,
+    String productId = 'product-1',
+    ValueChanged<List<RankedSeller>>? onRankingChanged,
+    bool Function(ShopProductEntity)? sellerFilter,
+    double? radiusMeters,
   }) {
     return BlocProvider<CartV2Cubit>.value(
       value: cartV2Cubit,
@@ -158,7 +163,10 @@ void main() {
         home: Scaffold(
           body: SingleChildScrollView(
             child: ProductSellersSection(
-              productId: 'product-1',
+              productId: productId,
+              onRankingChanged: onRankingChanged,
+              sellerFilter: sellerFilter,
+              radiusMeters: radiusMeters,
               productName: 'Deneme Ürünü',
               onChangeLocationRequested: onChangeLocationRequested,
               onBrowseOtherProducts: onBrowseOtherProducts,
@@ -1339,4 +1347,104 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'hero ranking is exactly the displayed price/distance/filter/radius result',
+    (tester) async {
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer(
+        (_) async => Right([
+          seller(
+            id: 'near',
+            name: 'Near',
+            price: 20,
+            latitude: 41,
+            longitude: 29,
+          ),
+          seller(
+            id: 'cheap',
+            name: 'Cheap',
+            price: 10,
+            latitude: 42,
+            longitude: 29,
+          ),
+        ]),
+      );
+      cachedCoordinates = const CustomerCoordinates(
+        latitude: 41,
+        longitude: 29,
+      );
+      final results = <List<RankedSeller>>[];
+      await tester.pumpWidget(buildSubject(onRankingChanged: results.add));
+      await tester.pumpAndSettle();
+      expect(results.last.first.shopProduct.id, 'near');
+      await selectSort(tester, 'product-seller-sort-cheapest');
+      expect(results.last.first.shopProduct.id, 'cheap');
+      expect(
+        displayedSellerIds(tester),
+        results.last.map((s) => 'product-seller-${s.shopProduct.id}').toList(),
+      );
+      await tester.pumpWidget(
+        buildSubject(onRankingChanged: results.add, radiusMeters: 1000),
+      );
+      await tester.pumpAndSettle();
+      expect(results.last.single.shopProduct.id, 'near');
+      await tester.pumpWidget(
+        buildSubject(
+          onRankingChanged: results.add,
+          sellerFilter: (s) => s.id == 'cheap',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(results.last.single.shopProduct.id, 'cheap');
+      final summaries = <ProductSellerPriceSummary>[];
+      await tester.pumpWidget(
+        buildSubject(
+          onRankingChanged: results.add,
+          onPriceSummaryChanged: summaries.add,
+          radiusMeters: 0,
+          sellerFilter: (s) => s.id == 'cheap',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(results.last, isEmpty);
+      expect(summaries.last, const ProductSellerPriceSummary.empty());
+    },
+  );
+  testWidgets(
+    'older product response cannot overwrite current ranking or price summary',
+    (tester) async {
+      final old = Completer<Either<String, List<ShopProductEntity>>>();
+      when(
+        () => shopRepository.getShopProductsByProduct('product-1'),
+      ).thenAnswer((_) => old.future);
+      when(
+        () => shopRepository.getShopProductsByProduct('product-2'),
+      ).thenAnswer(
+        (_) async => Right([seller(id: 'new', name: 'New', price: 25)]),
+      );
+      final results = <List<RankedSeller>>[],
+          summaries = <ProductSellerPriceSummary>[];
+      await tester.pumpWidget(
+        buildSubject(
+          onRankingChanged: results.add,
+          onPriceSummaryChanged: summaries.add,
+        ),
+      );
+      await tester.pump();
+      await tester.pumpWidget(
+        buildSubject(
+          productId: 'product-2',
+          onRankingChanged: results.add,
+          onPriceSummaryChanged: summaries.add,
+        ),
+      );
+      await tester.pumpAndSettle();
+      old.complete(Right([seller(id: 'old', name: 'Old', price: 1)]));
+      await tester.pumpAndSettle();
+      expect(results.last.single.shopProduct.id, 'new');
+      expect(summaries.last.minimumPrice, 25);
+      expect(find.text('Old'), findsNothing);
+    },
+  );
 }
