@@ -10,7 +10,8 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 
-/// Uses existing owner RLS. No new grants, role updates, catalog writes or RPCs.
+/// Reuses owner RLS and the Slice A publication gate when installed. The
+/// pre-Slice-A catalog read remains compatible until the reviewed migration.
 class SupabaseMerchantRepository implements MerchantRepository {
   SupabaseMerchantRepository({
     required this.client,
@@ -213,6 +214,33 @@ class SupabaseMerchantRepository implements MerchantRepository {
   }) => _safe(() async {
     if (page < 0) throw const _MerchantFailure('Geçersiz sayfa.');
     final fresh = await _authorize(access);
+    // Only an absent capability uses legacy reads; auth/network errors remain
+    // fail closed. The server checks canonical publication and unique ownership.
+    _term(query);
+    try {
+      final rows = await _bound(
+        fresh.user.id,
+        client.rpc(
+          'merchant_catalog_search_v1',
+          params: {
+            'p_shop_id': fresh.shop!.id,
+            'p_query': query.trim(),
+            'p_limit': merchantPageSize,
+            'p_offset': page * merchantPageSize,
+          },
+        ),
+      );
+      return (rows as List)
+          .map(
+            (r) => ProductModel.fromJson(
+              Map<String, dynamic>.from(r as Map),
+              mediaResolver: media,
+            ),
+          )
+          .toList(growable: false);
+    } on PostgrestException catch (e) {
+      if (e.code != 'PGRST202' && e.code != '42883') rethrow;
+    }
     var q = client
         .from('products')
         .select('*, brands(name)')

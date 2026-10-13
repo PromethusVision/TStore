@@ -1,6 +1,7 @@
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
@@ -18,6 +19,7 @@ class MerchantServices {
     this.pushCoordinator,
     this.pushProvider = const UnconfiguredMobilePushProvider(),
     this.preview = false,
+    this.catalogMedia,
   });
   final MerchantRepository merchants;
   final MerchantCredentials credentials;
@@ -29,4 +31,5 @@ class MerchantServices {
   final MobilePushProvider pushProvider;
   final PushCoordinator? pushCoordinator;
   final bool preview;
+  final CatalogMediaRepository? catalogMedia;
 }

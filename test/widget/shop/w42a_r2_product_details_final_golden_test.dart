@@ -197,7 +197,19 @@ void main() {
       if (product.isActive) {
         when(
           () => shopRepository.getShopProductsByProduct(product.id),
-        ).thenAnswer((_) => sellerResponse);
+        ).thenAnswer(
+          (_) async => (await sellerResponse).map(
+            (rows) => rows
+                .map(
+                  (s) => s.copyWith(
+                    images: product.images,
+                    productId: product.id,
+                    product: product,
+                  ),
+                )
+                .toList(),
+          ),
+        );
       }
       when(() => locationService.cachedCoordinates).thenReturn(null);
       when(
@@ -264,6 +276,9 @@ void main() {
       });
       await tester.pump(const Duration(milliseconds: 100));
 
+      if (evidence.scenario != _GoldenScenario.loading) {
+        await tester.pumpAndSettle();
+      }
       final focusFinder = switch (evidence.focus) {
         _GoldenFocus.top => null,
         _GoldenFocus.information => find.byKey(
@@ -295,7 +310,9 @@ void main() {
       _expectScenario(evidence.scenario);
       await expectLater(
         evidenceFinder,
-        matchesGoldenFile('goldens/${evidence.name}.png'),
+        matchesGoldenFile(
+          'goldens/${evidence.focus == _GoldenFocus.top ? 'slice_a_' : ''}${evidence.name}.png',
+        ),
       );
     });
   }

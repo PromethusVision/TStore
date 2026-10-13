@@ -24,6 +24,9 @@ const _productionOnlyMigrationFiles = <String>[
   '20260919001300_0013_production_canonical_private_preview.sql',
   '20260922001500_0015_production_public_customer_reads.sql',
 ];
+const _sharedCommerceMigrationFiles = <String>[
+  '20261013001600_0016_catalog_listing_media.sql',
+];
 
 const _baselinePublicTables = <String>{
   'addresses',
@@ -65,6 +68,12 @@ const _expectedPublicTables = <String>{
   ..._baselinePublicTables,
   ..._taxonomyAdminTables,
   ..._taxonomyContractTables,
+  'catalog_media_config',
+  'product_identity',
+  'product_identifiers',
+  'product_submissions',
+  'product_submission_decisions',
+  'listing_images',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{
@@ -134,8 +143,12 @@ void main() {
       expect(allMigrationFiles.map(_basename).toList(), [
         ..._expectedMigrationFiles,
         ..._productionOnlyMigrationFiles,
+        ..._sharedCommerceMigrationFiles,
       ]);
-      expect(migrationFiles.map(_basename).toList(), _expectedMigrationFiles);
+      expect(migrationFiles.map(_basename).toList(), [
+        ..._expectedMigrationFiles,
+        ..._sharedCommerceMigrationFiles,
+      ]);
 
       for (final file in migrationFiles) {
         final sql = file.readAsStringSync();
@@ -184,7 +197,7 @@ void main() {
     },
   );
 
-  test('canonical chain creates exactly the expected 29 public tables', () {
+  test('canonical chain creates exactly the expected 35 public tables', () {
     final createdTables = _captures(
       canonicalSql,
       RegExp(

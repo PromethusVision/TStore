@@ -92,7 +92,13 @@ void main() {
 
       when(
         () => shopRepository.getShopProductsByProduct(_product.id),
-      ).thenAnswer((_) async => const Right(_shopProducts));
+      ).thenAnswer(
+        (_) async => Right(
+          _shopProducts
+              .map((s) => s.copyWith(images: const [_productImage]))
+              .toList(),
+        ),
+      );
       when(() => locationService.cachedCoordinates).thenReturn(null);
       when(
         () => locationService.getPreferredLocation(),
@@ -156,9 +162,7 @@ void main() {
       if (w53) expectCustomerTextContrast(tester);
       await expectLater(
         find.byKey(const Key('w42a-product-details-visual-evidence')),
-        matchesGoldenFile(
-          'goldens/${w53 ? 'w53a_product_details_system_dark_390' : evidence.name}.png',
-        ),
+        matchesGoldenFile('goldens/slice_a_${evidence.name}.png'),
       );
       if (w53) {
         await tester.drag(

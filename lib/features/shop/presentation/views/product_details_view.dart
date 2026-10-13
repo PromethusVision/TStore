@@ -6,9 +6,11 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/core/utils/constants/customer_home_v1_tokens.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/domain/services/recently_viewed_products_storage.dart';
 import 'package:t_store/features/shop/presentation/views/product_reviews_view.dart';
-import 'package:t_store/features/shop/presentation/widgets/product_image_slider.dart';
+import 'package:t_store/features/shop/presentation/widgets/listing_product_hero.dart';
+import 'package:t_store/features/shop/presentation/helpers/seller_ranking.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_metadata.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_seller_price_summary.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_sellers_section.dart';
@@ -25,6 +27,8 @@ class ProductDetailsView extends StatefulWidget {
   final ProductDetailsCurrentUserIdProvider? currentUserIdProvider;
   final ProductReviewsDestinationBuilder? reviewsDestinationBuilder;
   final bool visualPrototype;
+  final bool Function(ShopProductEntity)? sellerFilter;
+  final double? sellerRadiusMeters;
 
   const ProductDetailsView({
     super.key,
@@ -33,6 +37,8 @@ class ProductDetailsView extends StatefulWidget {
     this.currentUserIdProvider,
     this.reviewsDestinationBuilder,
     this.visualPrototype = false,
+    this.sellerFilter,
+    this.sellerRadiusMeters,
   });
 
   @override
@@ -45,6 +51,20 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _sellersSectionKey = GlobalKey();
   bool _isOpeningProductReviews = false;
+  List<RankedSeller> _ranking = const [];
+  void _updateRanking(List<RankedSeller> ranking) {
+    if (mounted) setState(() => _ranking = ranking);
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductDetailsView old) {
+    super.didUpdateWidget(old);
+    if (old.product.id != widget.product.id) {
+      _ranking = const [];
+      _sellerPriceSummary = const ProductSellerPriceSummary.loading();
+      _recordProductView();
+    }
+  }
 
   @override
   void initState() {
@@ -149,7 +169,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProductImageSlider(
+                  ListingProductHero(
+                    ranking: _ranking,
                     product: widget.product,
                     currentUserIdProvider: widget.currentUserIdProvider,
                   ),
@@ -180,6 +201,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             productName: widget.product.name,
                             currentUserIdProvider: widget.currentUserIdProvider,
                             onPriceSummaryChanged: _updateSellerPriceSummary,
+                            onRankingChanged: _updateRanking,
+                            sellerFilter: widget.sellerFilter,
+                            radiusMeters: widget.sellerRadiusMeters,
                             onBrowseOtherProducts: () {
                               Navigator.of(context).maybePop();
                             },
@@ -225,7 +249,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ProductImageSlider(
+                        ListingProductHero(
+                          ranking: _ranking,
                           product: widget.product,
                           currentUserIdProvider: widget.currentUserIdProvider,
                           visualPrototype: true,
@@ -259,6 +284,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     widget.currentUserIdProvider,
                                 onPriceSummaryChanged:
                                     _updateSellerPriceSummary,
+                                onRankingChanged: _updateRanking,
+                                sellerFilter: widget.sellerFilter,
+                                radiusMeters: widget.sellerRadiusMeters,
                                 onBrowseOtherProducts: () {
                                   Navigator.of(context).maybePop();
                                 },
