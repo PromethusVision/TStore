@@ -1,5 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
+import 'package:t_store/features/merchant/presentation/merchant_purchases_view.dart';
+import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
@@ -14,41 +18,70 @@ class MerchantQrView extends StatefulWidget {
     super.key,
     required this.repository,
     this.preview = false,
+    this.shopId,
+    this.purchaseEvidence,
+    this.userId,
   });
   final QrSessionRepository repository;
   final bool preview;
+  final String? shopId;
+  final PurchaseEvidenceRepository? purchaseEvidence;
+  final String? userId;
   @override
   State<MerchantQrView> createState() => _MerchantQrViewState();
 }
 
-class _MerchantQrViewState extends State<MerchantQrView> {
+class _MerchantQrViewState extends State<MerchantQrView>
+    with WidgetsBindingObserver {
   late final QrVerificationCubit _cubit;
   final _token = TextEditingController();
   Timer? _expiry;
+  bool _scanning = false;
+  bool get _claimsEnabled =>
+      widget.shopId != null &&
+      widget.repository is QrClaimRepository &&
+      (widget.repository as QrClaimRepository).claimsEnabled;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _cubit = QrVerificationCubit(
+      shopId: widget.shopId,
       getQrVerificationUsecase: GetQrVerificationUsecase(widget.repository),
       confirmQrVerificationUsecase: ConfirmQrVerificationUsecase(
         widget.repository,
       ),
     );
+    if (_claimsEnabled) _cubit.recoverClaim();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _claimsEnabled) {
+      _cubit.refreshClaim();
+    }
   }
 
   @override
   void dispose() {
     _expiry?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     _token.dispose();
     _cubit.close();
     super.dispose();
   }
 
   Future<void> _scan() async {
-    final token = await Navigator.of(
-      context,
-    ).push<String>(MaterialPageRoute(builder: (_) => const _MerchantCamera()));
-    if (mounted && token != null) _cubit.loadVerification(token);
+    if (_scanning) return;
+    _scanning = true;
+    try {
+      final token = await Navigator.of(context).push<String>(
+        MaterialPageRoute(builder: (_) => const _MerchantCamera()),
+      );
+      if (mounted && token != null) _cubit.loadVerification(token);
+    } finally {
+      _scanning = false;
+    }
   }
 
   @override
@@ -59,7 +92,9 @@ class _MerchantQrViewState extends State<MerchantQrView> {
     listener: (context, state) {
       _expiry?.cancel();
       if (state is QrVerificationLoaded) {
-        final delay = state.verification.expiresAt.difference(DateTime.now());
+        final delay = state.verification.confirmationDeadline.difference(
+          DateTime.now(),
+        );
         _expiry = Timer(delay.isNegative ? Duration.zero : delay, () {
           if (mounted) setState(() {});
         });
@@ -72,11 +107,30 @@ class _MerchantQrViewState extends State<MerchantQrView> {
         QrVerificationLoaded() => state.verification,
         QrVerificationConfirming() => state.verification,
         QrVerificationSuccess() => state.verification,
+        QrVerificationUncertain() => state.verification,
         _ => null,
       };
       return MerchantPage(
         title: 'QR doğrula',
         children: [
+          if (widget.purchaseEvidence != null &&
+              widget.shopId != null &&
+              widget.userId != null)
+            OutlinedButton.icon(
+              onPressed: busy
+                  ? null
+                  : () => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) => MerchantPurchasesView(
+                          repository: widget.purchaseEvidence!,
+                          shopId: widget.shopId!,
+                          userId: widget.userId!,
+                        ),
+                      ),
+                    ),
+              icon: const Icon(Icons.receipt_long_outlined),
+              label: const Text('Doğrulanmış alışverişler'),
+            ),
           const MerchantNotice(
             'Müşterinin mağazanız için oluşturduğu QR kodunu okutun. Ürünleri kontrol ettikten sonra onaylayın.',
           ),
@@ -86,6 +140,12 @@ class _MerchantQrViewState extends State<MerchantQrView> {
             ),
           if (state is QrVerificationFailure)
             MerchantNotice(state.message, error: true),
+          if (state is QrVerificationUncertain)
+            MerchantNotice(
+              'İşlemin sonucu henüz doğrulanamadı. ${state.message}',
+              error: true,
+              onRetry: _cubit.refreshClaim,
+            ),
           if (state is QrVerificationSuccess)
             const MerchantNotice('Sunucu işlem onayını doğruladı.'),
           if (busy) const Center(child: CircularProgressIndicator()),
@@ -111,6 +171,10 @@ class _MerchantQrViewState extends State<MerchantQrView> {
                   ),
                   if (state is QrVerificationLoaded) ...[
                     const SizedBox(height: 16),
+                    if (verification.protocolVersion == 2)
+                      Text(
+                        'Kod alındı. Tamamlama son saati: ${verification.confirmationDeadline.toLocal().hour.toString().padLeft(2, '0')}:${verification.confirmationDeadline.toLocal().minute.toString().padLeft(2, '0')}',
+                      ),
                     if (!verification.canBeConfirmed)
                       const MerchantNotice(
                         'QR süresi doldu. Müşteriden yeni kod isteyin.',
@@ -122,6 +186,17 @@ class _MerchantQrViewState extends State<MerchantQrView> {
                           : null,
                       child: const Text('İşlemi onayla'),
                     ),
+                    if (verification.protocolVersion == 2) ...[
+                      const SizedBox(height: 8),
+                      OutlinedButton(
+                        onPressed: _cubit.refreshClaim,
+                        child: const Text('İşlem durumunu kontrol et'),
+                      ),
+                      TextButton(
+                        onPressed: _cubit.cancelClaim,
+                        child: const Text('İşlemi iptal et'),
+                      ),
+                    ],
                   ],
                 ],
               ),
@@ -132,6 +207,28 @@ class _MerchantQrViewState extends State<MerchantQrView> {
               icon: const Icon(Icons.qr_code_scanner),
               label: const Text('Kamerayla okut'),
             ),
+            if (_claimsEnabled) ...[
+              TextField(
+                controller: _token,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Müşterinin 6 haneli kodu',
+                ),
+              ),
+              OutlinedButton(
+                onPressed: () =>
+                    _cubit.claimVerification(manualCode: _token.text.trim()),
+                child: const Text('Kodu kontrol et'),
+              ),
+              TextButton(
+                onPressed: _cubit.recoverClaim,
+                child: const Text('Son işlemi geri yükle'),
+              ),
+            ],
             if (widget.preview) ...[
               TextField(
                 controller: _token,
@@ -145,7 +242,11 @@ class _MerchantQrViewState extends State<MerchantQrView> {
               ),
             ],
           ],
-          if (!busy && state is! QrVerificationInitial)
+          if (!busy &&
+              state is! QrVerificationInitial &&
+              state is! QrVerificationUncertain &&
+              !(verification?.protocolVersion == 2 &&
+                  verification?.canBeConfirmed == true))
             TextButton(
               onPressed: _cubit.reset,
               child: const Text('Yeni QR okut'),

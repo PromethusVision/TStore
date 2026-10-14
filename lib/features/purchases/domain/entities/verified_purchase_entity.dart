@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 class VerifiedPurchaseItemEntity extends Equatable {
   final String id;
   final String shopProductId;
+  final String? productId;
   final String productName;
   final int quantity;
   final double unitPrice;
@@ -11,6 +12,7 @@ class VerifiedPurchaseItemEntity extends Equatable {
   const VerifiedPurchaseItemEntity({
     required this.id,
     required this.shopProductId,
+    this.productId,
     required this.productName,
     required this.quantity,
     required this.unitPrice,
@@ -21,6 +23,7 @@ class VerifiedPurchaseItemEntity extends Equatable {
   List<Object?> get props => [
     id,
     shopProductId,
+    productId,
     productName,
     quantity,
     unitPrice,

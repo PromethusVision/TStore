@@ -14,9 +14,40 @@ class QrSessionModel extends QrSessionEntity {
     required super.updatedAt,
     super.itemCount,
     super.totalAmount,
+    super.protocolVersion,
+    super.purchaseId,
+    super.manualCode,
+    super.completionExpiresAt,
   });
 
   factory QrSessionModel.fromJson(Map<String, dynamic> json) {
+    final protocol = json['protocol_version'] ?? 1;
+    if (protocol != 1 && protocol != 2) {
+      throw const FormatException('QR protokolü desteklenmiyor.');
+    }
+    final code = json['manual_code'] as String?;
+    final completion = _toNullableDateTime(json['completion_expires_at']);
+    final purchaseId = json['purchase_id'] as String?;
+    if (protocol == 2 &&
+        (!const {
+              'active',
+              'claimed',
+              'used',
+              'expired',
+              'cancelled',
+            }.contains(json['status']) ||
+            (json['status'] == 'used' &&
+                (_toNullableDateTime(json['used_at']) == null ||
+                    purchaseId == null ||
+                    purchaseId.isEmpty)) ||
+            (json['status'] != 'used' && json['used_at'] != null))) {
+      throw const FormatException('QR onay kanıtı eksik.');
+    }
+    if (protocol == 2 &&
+        (code != null && !RegExp(r'^\d{6}$').hasMatch(code) ||
+            json['status'] == 'claimed' && completion == null)) {
+      throw const FormatException('QR durum bilgisi geçersiz.');
+    }
     return QrSessionModel(
       id: json['id'] as String,
       sessionToken: json['session_token'] as String,
@@ -30,6 +61,10 @@ class QrSessionModel extends QrSessionEntity {
       updatedAt: _toDateTime(json['updated_at']),
       itemCount: _toNullableInt(json['item_count']),
       totalAmount: _toNullableDouble(json['total_amount']),
+      protocolVersion: protocol as int,
+      purchaseId: purchaseId,
+      manualCode: code,
+      completionExpiresAt: completion,
     );
   }
 
@@ -47,6 +82,12 @@ class QrSessionModel extends QrSessionEntity {
       'updated_at': updatedAt.toIso8601String(),
       'item_count': itemCount,
       'total_amount': totalAmount,
+      if (protocolVersion == 2) ...{
+        'protocol_version': protocolVersion,
+        'purchase_id': purchaseId,
+        'manual_code': manualCode,
+        'completion_expires_at': completionExpiresAt?.toIso8601String(),
+      },
     };
   }
 
@@ -64,6 +105,10 @@ class QrSessionModel extends QrSessionEntity {
       updatedAt: entity.updatedAt,
       itemCount: entity.itemCount,
       totalAmount: entity.totalAmount,
+      protocolVersion: entity.protocolVersion,
+      purchaseId: entity.purchaseId,
+      manualCode: entity.manualCode,
+      completionExpiresAt: entity.completionExpiresAt,
     );
   }
 

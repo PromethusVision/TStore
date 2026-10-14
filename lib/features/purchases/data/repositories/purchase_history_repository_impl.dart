@@ -25,7 +25,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
             'id, source_qr_session_id, shop_id, shop_name, item_count, '
             'total_amount, confirmed_at, '
             'verified_transaction_items('
-            'id, shop_product_id, product_name, quantity, unit_price, '
+            'id, shop_product_id, product_id, product_name, quantity, unit_price, '
             'line_total), shop_ratings(rating, created_at)',
           )
           .eq('customer_user_id', user.id)

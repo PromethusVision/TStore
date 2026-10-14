@@ -101,6 +101,15 @@ change the A–J dependency order or grant Production/remote migration authority
   flag and old-client compatibility plan; required session provenance; approved
   two-session enforcement mechanism and abuse limits. Physical QR acceptance is J.
 
+### B local implementation authorization — 2026-10-15
+
+The approved local B scope and engineering defaults are canonical §5.1. Delivery
+evidence is recorded in [Slice B delivery](SLICE_B_DELIVERY.md). Quote-only terms
+are an explicit boundary: economic discounts/coupon/hold/ledger activation remains
+later work. Client and server flags default OFF; this does not advance the J
+physical gate. Local Storage, managed Auth and multi-connection PostgreSQL
+acceptance must be distinguished from ephemeral SQL and mocked client tests.
+
 ## C — Review entitlements, three service criteria, audit and moderation
 
 - **DB:** purchase×distinct-product entitlement, service evaluation unique purchase,

@@ -4,6 +4,7 @@ class VerifiedPurchaseItemModel extends VerifiedPurchaseItemEntity {
   const VerifiedPurchaseItemModel({
     required super.id,
     required super.shopProductId,
+    super.productId,
     required super.productName,
     required super.quantity,
     required super.unitPrice,
@@ -26,6 +27,7 @@ class VerifiedPurchaseItemModel extends VerifiedPurchaseItemEntity {
     return VerifiedPurchaseItemModel(
       id: _requiredString(json, 'id'),
       shopProductId: _requiredString(json, 'shop_product_id'),
+      productId: json['product_id'] as String?,
       productName: _requiredString(json, 'product_name'),
       quantity: quantity,
       unitPrice: unitPrice,

@@ -18,6 +18,7 @@ void main() {
         {
           'id': 'item-1',
           'shop_product_id': 'shop-product-1',
+          'product_id': 'product-uuid',
           'product_name': 'Deneme Ürünü',
           'quantity': 2,
           'unit_price': 75.25,
@@ -30,6 +31,7 @@ void main() {
     expect(purchase.itemCount, 2);
     expect(purchase.totalAmount, 150.5);
     expect(purchase.items.single.productName, 'Deneme Ürünü');
+    expect(purchase.items.single.productId, 'product-uuid');
     expect(purchase.items.single.quantity, 2);
     expect(purchase.customerRating, 4);
     expect(purchase.customerRatedAt, DateTime.utc(2026, 7, 16, 9, 15));

@@ -13,6 +13,10 @@ class QrSessionEntity extends Equatable {
   final DateTime updatedAt;
   final int? itemCount;
   final double? totalAmount;
+  final int protocolVersion;
+  final String? purchaseId;
+  final String? manualCode;
+  final DateTime? completionExpiresAt;
 
   const QrSessionEntity({
     required this.id,
@@ -27,6 +31,10 @@ class QrSessionEntity extends Equatable {
     required this.updatedAt,
     this.itemCount,
     this.totalAmount,
+    this.protocolVersion = 1,
+    this.purchaseId,
+    this.manualCode,
+    this.completionExpiresAt,
   });
 
   bool get isActive => status == 'active' && expiresAt.isAfter(DateTime.now());
@@ -45,5 +53,9 @@ class QrSessionEntity extends Equatable {
     updatedAt,
     itemCount,
     totalAmount,
+    protocolVersion,
+    purchaseId,
+    manualCode,
+    completionExpiresAt,
   ];
 }

@@ -81,6 +81,10 @@ class QrVerificationModel extends QrVerificationEntity {
     required super.itemCount,
     required super.totalAmount,
     required super.items,
+    super.protocolVersion,
+    super.claimId,
+    super.purchaseId,
+    super.completionExpiresAt,
   });
 
   factory QrVerificationModel.fromJson(Map<String, dynamic> json) {
@@ -110,12 +114,29 @@ class QrVerificationModel extends QrVerificationEntity {
     final itemCount = _toInt(json['item_count']);
     final totalAmount = _toDouble(json['total_amount']);
     final status = _requiredString(json, 'status');
-    if (!const {'active', 'used', 'expired', 'cancelled'}.contains(status)) {
+    final protocol = json['protocol_version'] ?? 1;
+    if (protocol != 1 && protocol != 2) {
+      throw const FormatException('QR protokolü desteklenmiyor.');
+    }
+    if (!(protocol == 2
+            ? const {'claimed', 'used', 'expired', 'cancelled'}
+            : const {'active', 'used', 'expired', 'cancelled'})
+        .contains(status)) {
       throw const FormatException('QR durumu gecersiz.');
     }
 
     final expiresAt = _toDateTime(json['expires_at']);
     final usedAt = _toNullableDateTime(json['used_at']);
+    final completion = _toNullableDateTime(json['completion_expires_at']);
+    final claimId = json['claim_id'] as String?;
+    final purchaseId = json['purchase_id'] as String?;
+    if (protocol == 2 &&
+        (claimId == null ||
+            claimId.isEmpty ||
+            completion == null ||
+            (status == 'used' && (purchaseId == null || purchaseId.isEmpty)))) {
+      throw const FormatException('QR işlem kanıtı eksik.');
+    }
     if ((status == 'used' && usedAt == null) ||
         (status != 'used' && usedAt != null) ||
         !totalAmount.isFinite) {
@@ -146,6 +167,10 @@ class QrVerificationModel extends QrVerificationEntity {
       itemCount: itemCount,
       totalAmount: totalAmount,
       items: items,
+      protocolVersion: protocol as int,
+      claimId: claimId,
+      purchaseId: purchaseId,
+      completionExpiresAt: completion,
     );
   }
 
@@ -172,6 +197,12 @@ class QrVerificationModel extends QrVerificationEntity {
             ).toJson(),
           )
           .toList(growable: false),
+      if (protocolVersion == 2) ...{
+        'protocol_version': protocolVersion,
+        'claim_id': claimId,
+        'purchase_id': purchaseId,
+        'completion_expires_at': completionExpiresAt?.toIso8601String(),
+      },
     };
   }
 
