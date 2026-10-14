@@ -187,6 +187,40 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                 }
 
                 if (state is QrSessionCreated) {
+                  if (state.session.protocolVersion == 2 &&
+                      (state.session.status == 'claimed' ||
+                          !state.session.expiresAt.isAfter(_now))) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.fact_check_outlined, size: 48),
+                        const SizedBox(height: 16),
+                        Text(
+                          state.session.status == 'claimed'
+                              ? 'Esnaf işlemi kontrol ediyor'
+                              : 'QR durumu kontrol ediliyor',
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Alışveriş henüz tamamlanmadı. Sunucu onayı beklenecek.',
+                          textAlign: TextAlign.center,
+                        ),
+                        if (state.isStatusCheckDelayed)
+                          const Text(
+                            'Bağlantı gecikti. Sonuç henüz doğrulanamadı.',
+                            textAlign: TextAlign.center,
+                          ),
+                        TextButton(
+                          onPressed: () => context
+                              .read<QrSessionCubit>()
+                              .checkSessionStatus(),
+                          child: const Text('Durumu kontrol et'),
+                        ),
+                      ],
+                    );
+                  }
                   if (!state.session.expiresAt.isAfter(_now)) {
                     return _QrSessionExpiredView(
                       isRefreshing: _isRefreshingExpiredSession,
@@ -877,6 +911,14 @@ class _QrSessionContent extends StatelessWidget {
               ),
             ),
           ),
+          if (session.protocolVersion == 2 && session.manualCode != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              'Elle giriş kodu: ${session.manualCode}',
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+          ],
           const SizedBox(height: EsnaftaVarSpacing.md),
           Text(
             'QR kodunu esnafa okut. Onay verildiğinde bu ekran otomatik güncellenir. Rezervasyon veya stok garantisi sağlamaz.',

@@ -39,6 +39,10 @@ class QrVerificationEntity extends Equatable {
   final int itemCount;
   final double totalAmount;
   final List<QrVerificationItemEntity> items;
+  final int protocolVersion;
+  final String? claimId;
+  final String? purchaseId;
+  final DateTime? completionExpiresAt;
 
   const QrVerificationEntity({
     required this.sessionId,
@@ -51,10 +55,20 @@ class QrVerificationEntity extends Equatable {
     required this.itemCount,
     required this.totalAmount,
     required this.items,
+    this.protocolVersion = 1,
+    this.claimId,
+    this.purchaseId,
+    this.completionExpiresAt,
   });
 
-  bool get canBeConfirmed =>
-      status == 'active' && expiresAt.isAfter(DateTime.now());
+  DateTime get confirmationDeadline => completionExpiresAt ?? expiresAt;
+  bool canConfirmAt(DateTime now) => protocolVersion == 2
+      ? status == 'claimed' &&
+            claimId != null &&
+            completionExpiresAt != null &&
+            completionExpiresAt!.isAfter(now)
+      : status == 'active' && expiresAt.isAfter(now);
+  bool get canBeConfirmed => canConfirmAt(DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -68,5 +82,9 @@ class QrVerificationEntity extends Equatable {
     itemCount,
     totalAmount,
     items,
+    protocolVersion,
+    claimId,
+    purchaseId,
+    completionExpiresAt,
   ];
 }

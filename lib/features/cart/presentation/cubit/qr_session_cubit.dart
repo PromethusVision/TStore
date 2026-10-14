@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
 import 'package:t_store/features/cart/domain/usecases/create_qr_session_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/get_qr_session_status_usecase.dart';
@@ -43,8 +44,9 @@ class QrSessionCubit extends Cubit<QrSessionState> {
         _activeSession = session;
         emit(QrSessionCreated(session));
 
-        if (session.status == 'active' &&
-            session.expiresAt.isAfter(DateTime.now())) {
+        if (session.protocolVersion == 2 ||
+            session.status == 'active' &&
+                session.expiresAt.isAfter(DateTime.now())) {
           _startStatusPolling();
         }
       });
@@ -63,12 +65,58 @@ class QrSessionCubit extends Cubit<QrSessionState> {
     }
 
     _isCheckingStatus = true;
+    final operation = _operationId;
     try {
+      final repository = _activeSession?.protocolVersion == 2
+          ? getQrSessionStatusUsecase.repository
+          : null;
+      if (_activeSession?.protocolVersion == 2 &&
+          repository is QrClaimRepository) {
+        final result = await (repository as QrClaimRepository)
+            .readCustomerSession(targetSessionId);
+        if (isClosed ||
+            operation != _operationId ||
+            _activeSession?.id != targetSessionId) {
+          return;
+        }
+        result.fold(
+          (_) {
+            emit(QrSessionCreated(_activeSession!, isStatusCheckDelayed: true));
+          },
+          (session) {
+            if (session.id != targetSessionId) {
+              emit(
+                QrSessionCreated(_activeSession!, isStatusCheckDelayed: true),
+              );
+              return;
+            }
+            if (session.status == 'active' || session.status == 'claimed') {
+              _activeSession = session;
+              emit(QrSessionCreated(session));
+            } else {
+              _stopStatusPolling();
+              _activeSession = null;
+              if (session.status == 'used') {
+                emit(QrSessionCompleted(sessionId: session.id));
+              } else if (session.status == 'cancelled') {
+                emit(const QrSessionCancelled());
+              } else {
+                emit(const QrSessionExpired());
+              }
+            }
+          },
+        );
+        return;
+      }
       final result = await getQrSessionStatusUsecase(
         GetQrSessionStatusParams(sessionId: targetSessionId),
       );
 
-      if (isClosed || _activeSession?.id != targetSessionId) return;
+      if (isClosed ||
+          operation != _operationId ||
+          _activeSession?.id != targetSessionId) {
+        return;
+      }
 
       result.fold(
         (_) {
@@ -125,7 +173,8 @@ class QrSessionCubit extends Cubit<QrSessionState> {
         return;
       }
 
-      if (!activeSession.expiresAt.isAfter(DateTime.now())) {
+      if (activeSession.protocolVersion != 2 &&
+          !activeSession.expiresAt.isAfter(DateTime.now())) {
         _stopStatusPolling();
         unawaited(checkSessionStatus(activeSession.id));
         return;

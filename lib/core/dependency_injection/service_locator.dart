@@ -454,7 +454,10 @@ Future<void> setupServiceLocator({
   // ==================== QR Sessions ====================
   // Repository
   sl.registerLazySingleton<QrSessionRepository>(
-    () => QrSessionRepositoryImpl(supabaseService: sl()),
+    () => QrSessionRepositoryImpl(
+      supabaseService: sl(),
+      claimsEnabled: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED'),
+    ),
   );
 
   // Use Cases

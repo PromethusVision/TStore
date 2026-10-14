@@ -193,6 +193,9 @@ class _MerchantHomeState extends State<MerchantHome>
                 ),
                 MerchantQrView(
                   preview: s.preview,
+                  shopId: access.shop!.id,
+                  userId: access.user.id,
+                  purchaseEvidence: s.purchaseEvidence,
                   repository: MerchantQrRepository(
                     delegate: s.qr,
                     merchants: s.merchants,

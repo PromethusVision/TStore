@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/features/cart/data/models/qr_session_model.dart';
@@ -8,15 +10,54 @@ import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 
-class QrSessionRepositoryImpl implements QrSessionRepository {
+class QrSessionRepositoryImpl
+    implements QrSessionRepository, QrClaimRepository {
   final SupabaseService supabaseService;
 
-  QrSessionRepositoryImpl({required this.supabaseService});
+  QrSessionRepositoryImpl({
+    required this.supabaseService,
+    this.claimsEnabled = false,
+  });
+  @override
+  final bool claimsEnabled;
+  late final QrProtocolV2 _protocol = QrProtocolV2(supabaseService.client);
+
+  @override
+  Future<Either<String, QrVerificationEntity>> claimVerification({
+    required String shopId,
+    required String requestId,
+    String? sessionToken,
+    String? manualCode,
+  }) => claimsEnabled
+      ? _protocol.claim(
+          shopId: shopId,
+          requestId: requestId,
+          sessionToken: sessionToken,
+          manualCode: manualCode,
+        )
+      : Future.value(const Left('Yeni QR akışı henüz kullanıma açılmadı.'));
+  @override
+  Future<Either<String, QrVerificationEntity>> reconcileClaim(String claimId) =>
+      _protocol.operation('reconcile_claim_v2', claimId);
+  @override
+  Future<Either<String, QrVerificationEntity>> completeClaim(String claimId) =>
+      _protocol.operation('complete_existing_qr_v2', claimId);
+  @override
+  Future<Either<String, QrVerificationEntity>> cancelClaim(String claimId) =>
+      _protocol.operation('cancel_claim_v2', claimId);
+  @override
+  Future<Either<String, QrVerificationEntity?>> recoverClaim(String shopId) =>
+      _protocol.recover(shopId);
+  @override
+  Future<Either<String, QrSessionEntity>> readCustomerSession(
+    String sessionId,
+  ) => _protocol.read(sessionId);
 
   @override
   Future<Either<String, QrSessionEntity>> createQrSession({
     required String cartId,
   }) async {
+    if (claimsEnabled) return _protocol.create(cartId.trim());
     try {
       final user = supabaseService.currentUser;
       if (user == null) {
@@ -247,6 +288,10 @@ class QrSessionRepositoryImpl implements QrSessionRepository {
 
   static String _friendlyError(Object error, {required String fallback}) {
     final message = error.toString().toLowerCase();
+
+    if (message.contains('qr_v2_required')) {
+      return 'Bu işlem yeni QR sürümüyle açılmış. Desteklenen uygulama sürümüyle devam edin.';
+    }
 
     if (message.contains('authentication required') ||
         message.contains('not authenticated') ||

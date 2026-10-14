@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/auth/data/repositories/auth_repository_impl.dart';
@@ -46,11 +47,17 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
+        purchaseEvidence: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED')
+            ? SupabasePurchaseEvidenceRepository(service.client)
+            : null,
         credentials: SharedMerchantCredentials(
           AuthRepositoryImpl(supabaseService: service),
         ),
         notifications: NotificationRepositoryImpl(supabaseService: service),
-        qr: QrSessionRepositoryImpl(supabaseService: service),
+        qr: QrSessionRepositoryImpl(
+          supabaseService: service,
+          claimsEnabled: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED'),
+        ),
         preferences: LocalNotificationPreferencesRepository(),
         sessionChanges: service.authStateChanges.map((s) => s.session?.user.id),
         currentUserId: () => service.currentUser?.id,

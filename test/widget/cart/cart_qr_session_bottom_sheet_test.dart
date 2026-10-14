@@ -29,6 +29,10 @@ void main() {
     int? itemCount = 2,
     double? totalAmount = 249.90,
     DateTime? expiresAt,
+    int protocolVersion = 1,
+    String status = 'active',
+    String? manualCode,
+    DateTime? completionExpiresAt,
   }) {
     return QrSessionEntity(
       id: id,
@@ -36,7 +40,10 @@ void main() {
       userId: 'customer-1',
       cartId: 'cart-1',
       shopId: 'shop-1',
-      status: 'active',
+      status: status,
+      protocolVersion: protocolVersion,
+      manualCode: manualCode,
+      completionExpiresAt: completionExpiresAt,
       expiresAt: expiresAt ?? DateTime.utc(2099, 1, 1),
       createdAt: DateTime.utc(2098, 12, 1),
       updatedAt: DateTime.utc(2098, 12, 1),
@@ -97,6 +104,54 @@ void main() {
       ),
     );
   }
+
+  testWidgets(
+    'v2 shows the same-session manual code in the existing QR surface',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          QrSessionCreated(
+            buildSession(protocolVersion: 2, manualCode: '123456'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Elle giriş kodu: 123456'), findsOneWidget);
+      expect(
+        find.byKey(const Key('purchase-verification-qr-code')),
+        findsOneWidget,
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
+    'claimed v2 waits for server after scan expiry and hides consumed code',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          QrSessionCreated(
+            buildSession(
+              protocolVersion: 2,
+              status: 'claimed',
+              expiresAt: DateTime.utc(2000),
+              completionExpiresAt: DateTime.utc(2099),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Esnaf işlemi kontrol ediyor'), findsOneWidget);
+      expect(
+        find.byKey(const Key('purchase-verification-qr-code')),
+        findsNothing,
+      );
+      expect(
+        find.textContaining('Alışveriş henüz tamamlanmadı'),
+        findsOneWidget,
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   Widget buildModalSubject(
     QrSessionState initialState, {

@@ -301,6 +301,53 @@ An explicit fraud/admin-invalid purchase event may revoke entitlements and creat
 reward reversals. A normal genuine return does not mark experience as fraudulent
 or automatically remove reviews.
 
+### 5.1 Slice B local implementation — approved 2026-10-15
+
+The Product Owner approved the recommended B implementation and closure of the
+previous local acceptance gap. This permits local code/migration preparation and
+task-branch validation, not Production activation or main merge.
+
+**Implementation defaults resolving O3 locally:** retain the 120-second scan
+window and use a server-configured 600-second completion window from first claim.
+The deadline never renews on retry. The signed JWT session ID must match a live
+owned Auth session (including its expiry); one installation binds to that session.
+Registration serializes per merchant and admits at most two live registered
+sessions. Revocation is terminal for that registration. Client installation IDs
+and notification tokens cannot establish authority. Real Auth integration remains
+a rollout acceptance gate.
+
+Code aliases are shop-scoped HMACs under a server-only key. Both scan and manual
+entry claim the same existing QR; only the identical claimant can resume. Bound
+attempts to 5 per Auth session/minute and 30 per shop/hour, using server-time fixed
+windows. Rejected guesses commit their counters. No raw credential is logged.
+One pending claim per merchant Auth session prevents abandoning an uncertain
+operation to start another. After an uncertain result, recover that claim from
+the server; never mint a replacement purchase. Disabling the flag prevents new
+v2 creations/claims but permits existing claims to reconcile, complete or cancel.
+Legacy entrypoints reject v2 before expiry mutation even while the flag is off.
+
+**B evidence boundary:** this implementation verifies the unamended quoted sale,
+with exact integer minor units, final sale = quote and EV coupon = 0. Discounts,
+coupon authorization/spending and reward/capacity/ledger operations stay gated
+to their later slices. Do not claim that B already implements their atomic
+checkout. Missing historical terms are `legacy_unclassified`. A missing real shop
+return policy stays explicitly `unspecified` with unknown duration; no legal
+return window or monetary refund entitlement is invented.
+
+Merchant UI extends the existing QR tab with manual entry, claim recovery and a
+nested verified-purchase/return history. Five tabs and the accepted visual system
+remain. Return requests persist a bounded local pending request until server
+acknowledgement; retries reuse the same ID. A recorded return never claims a cash
+refund. Admin correction appends a full reversal of a specific return; fraud
+invalidation appends separate evidence. Neither edits the original purchase.
+Later review/reward consumers use these events under their own authorized slices.
+
+Customer changes are restricted to opt-in v2 manual-code/status compatibility in
+the existing QR surface and the already-stored product UUID in purchase DTOs.
+Both client opt-in and server enablement default OFF. Previous real Storage HTTP
+acceptance, real Auth/concurrent PostgreSQL validation and physical acceptance J
+must be reported independently of ephemeral SQL, mocked transport and widget tests.
+
 ## 6. Product review and merchant-service projections
 
 **FROZEN:**

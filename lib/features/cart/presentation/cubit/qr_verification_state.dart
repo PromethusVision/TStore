@@ -47,3 +47,11 @@ class QrVerificationFailure extends QrVerificationState {
   @override
   List<Object?> get props => [message];
 }
+
+class QrVerificationUncertain extends QrVerificationState {
+  const QrVerificationUncertain(this.verification, this.message);
+  final QrVerificationEntity verification;
+  final String message;
+  @override
+  List<Object?> get props => [verification, message];
+}
