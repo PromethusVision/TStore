@@ -61,6 +61,17 @@ permission to apply a proposal remotely.
   assignment/publish workflow; client/server capability compatibility; rollback
   to old read binding without deleting newly uploaded evidence.
 
+### A follow-through — Merchant daily operations (approved 2026-10-14)
+
+Bounded Merchant V1/A completion under canonical §4.1: actionable overview,
+submission status counts, unfinished photo recovery, existing inbox reuse and
+fresh reads after mutations/resume. Preserve the accepted UI direction and
+boolean availability; do not activate catalog approval or economic metrics.
+Validate catalog → listing → photo → fresh session → Customer image using the
+existing contracts. Distinguish local database tests, real Storage HTTP and device
+acceptance. Any new summary endpoint is owner-scoped and read-only. This does not
+change the A–J dependency order or grant Production/remote migration authority.
+
 ## B — Existing QR, immutable purchase terms, claim, returns and invalidation
 
 - **DB:** extend existing qr_sessions through claim/manual-code companions, device

@@ -145,8 +145,9 @@ abstract interface class CatalogMediaRepository {
     ProductSubmissionDraft draft,
   );
   Future<Either<String, List<ProductSubmission>>> submissions(
-    MerchantAccess access,
-  );
+    MerchantAccess access, {
+    int page = 0,
+  });
   Future<Either<String, ProductEntity?>> approvedProduct(
     MerchantAccess access,
     String productId,
