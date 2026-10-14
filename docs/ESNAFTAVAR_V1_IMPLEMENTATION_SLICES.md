@@ -110,6 +110,14 @@ later work. Client and server flags default OFF; this does not advance the J
 physical gate. Local Storage, managed Auth and multi-connection PostgreSQL
 acceptance must be distinguished from ephemeral SQL and mocked client tests.
 
+### A+B acceptance follow-through — authorized 2026-10-15
+
+Canonical §5.2 authorizes bounded local acceptance/hardening on the integrated
+A+B baseline. See [acceptance delivery](MERCHANT_AB_ACCEPTANCE_DELIVERY.md) for
+real native PostgreSQL evidence and the separately OPEN managed Auth/Storage
+gate. This is validation of A+B, not authorization to start C–J or activate
+Production. No new migration is required by the current acceptance findings.
+
 ## C — Review entitlements, three service criteria, audit and moderation
 
 - **DB:** purchase×distinct-product entitlement, service evaluation unique purchase,

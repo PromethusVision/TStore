@@ -1,0 +1,133 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-14T23:16:22.730Z",
+  "runtime": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit",
+  "evidence_class": "native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema",
+  "managed_auth": "OPEN",
+  "storage_http": "OPEN",
+  "physical_two_device": "OPEN",
+  "checks": [
+    {
+      "name": "real pgcrypto extension membership and standard SHA256/HMAC vectors",
+      "result": "PASS"
+    },
+    {
+      "name": "default OFF preserves legacy confirmation and unclassified history",
+      "result": "PASS"
+    },
+    {
+      "name": "simultaneous scan and manual code contend and produce one claim",
+      "result": "PASS"
+    },
+    {
+      "name": "double finalization blocks then returns one purchase and one event",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent excessive returns cannot exceed the original quantity",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent identical return retry writes exactly one additional return",
+      "result": "PASS"
+    },
+    {
+      "name": "independent sessions cannot steal a claim and cap serializes at two",
+      "result": "PASS"
+    },
+    {
+      "name": "current owner, active shop and merchant role are rechecked",
+      "result": "PASS"
+    },
+    {
+      "name": "listing update racing finalization rejects stale quote after waiting",
+      "result": "PASS"
+    },
+    {
+      "name": "customer quantity edit cannot commit through a locked finalization",
+      "result": "PASS"
+    },
+    {
+      "name": "customer deletion wins first and cancels the waiting finalization",
+      "result": "PASS"
+    },
+    {
+      "name": "completion deadline is rechecked after a real lock wait",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent invalid guesses commit a bounded attempt quota",
+      "result": "PASS"
+    },
+    {
+      "name": "owned image slots serialize at six; another merchant cannot reserve them",
+      "result": "PASS"
+    },
+    {
+      "name": "flag OFF drains existing claim without legacy endpoint bypass",
+      "result": "PASS"
+    },
+    {
+      "name": "revoked session fails even with previously valid claim identity",
+      "result": "PASS"
+    }
+  ],
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    },
+    {
+      "file": "20261015001800_0018_qr_claim_purchase_returns.sql",
+      "sha256": "f8a6a5e583b9f8d93a8b1eed8990c4b6af6cc7ad8bf2dafcb8d561697d1338da"
+    }
+  ]
+}
