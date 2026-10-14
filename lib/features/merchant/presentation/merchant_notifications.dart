@@ -13,10 +13,12 @@ class MerchantNotifications extends StatefulWidget {
     required this.repository,
     required this.identity,
     required this.currentUserId,
+    this.cubit,
   });
   final NotificationRepository repository;
   final PushIdentity identity;
   final String? Function() currentUserId;
+  final NotificationsCubit? cubit;
   @override
   State<MerchantNotifications> createState() => _MerchantNotificationsState();
 }
@@ -27,13 +29,14 @@ class _MerchantNotificationsState extends State<MerchantNotifications> {
   @override
   void initState() {
     super.initState();
-    _cubit = NotificationsCubit(repository: widget.repository)
-      ..getNotifications();
+    _cubit =
+        widget.cubit ??
+        (NotificationsCubit(repository: widget.repository)..getNotifications());
   }
 
   @override
   void dispose() {
-    _cubit.close();
+    if (widget.cubit == null) _cubit.close();
     super.dispose();
   }
 

@@ -107,15 +107,17 @@ class SupabaseCatalogMediaRepository implements CatalogMediaRepository {
   });
   @override
   Future<Either<String, List<ProductSubmission>>> submissions(
-    MerchantAccess a,
-  ) => _run(a, () async {
+    MerchantAccess a, {
+    int page = 0,
+  }) => _run(a, () async {
+    if (page < 0) throw const _CatalogFailure('Geçersiz sayfa.');
     final rows = await client
         .from('product_submissions')
         .select()
         .eq('shop_id', a.shop!.id)
         .order('created_at', ascending: false)
         .order('id')
-        .limit(100);
+        .range(page * 100, page * 100 + 99);
     return rows.map(ProductSubmission.fromJson).toList(growable: false);
   });
   @override

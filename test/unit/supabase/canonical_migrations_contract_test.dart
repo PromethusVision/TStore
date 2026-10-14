@@ -26,6 +26,7 @@ const _productionOnlyMigrationFiles = <String>[
 ];
 const _sharedCommerceMigrationFiles = <String>[
   '20261013001600_0016_catalog_listing_media.sql',
+  '20261014001700_0017_merchant_daily_operations.sql',
 ];
 
 const _baselinePublicTables = <String>{

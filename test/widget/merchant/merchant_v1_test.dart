@@ -265,7 +265,7 @@ void main() {
       expect(tester.takeException(), isNull);
       await expectLater(
         find.byKey(_boundary),
-        matchesGoldenFile('goldens/dashboard_${width.toInt()}_130.png'),
+        matchesGoldenFile('goldens/daily_dashboard_${width.toInt()}_130.png'),
       );
       for (final label in ['Ürünler', 'QR', 'Bildirim', 'Hesap']) {
         await tab(tester, label);

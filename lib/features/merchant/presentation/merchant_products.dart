@@ -16,11 +16,13 @@ class MerchantProducts extends StatefulWidget {
     required this.access,
     this.onChanged,
     this.catalogMedia,
+    this.revision = 0,
   });
   final MerchantRepository repository;
   final MerchantAccess access;
   final VoidCallback? onChanged;
   final CatalogMediaRepository? catalogMedia;
+  final int revision;
   @override
   State<MerchantProducts> createState() => _MerchantProductsState();
 }
@@ -35,6 +37,12 @@ class _MerchantProductsState extends State<MerchantProducts> {
   }
 
   @override
+  void didUpdateWidget(covariant MerchantProducts oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.revision != widget.revision) _cubit.load(refresh: true);
+  }
+
+  @override
   void dispose() {
     _search.dispose();
     _cubit.close();
@@ -42,6 +50,7 @@ class _MerchantProductsState extends State<MerchantProducts> {
   }
 
   Future<void> _edit({ShopProductEntity? listing}) async {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => listing == null

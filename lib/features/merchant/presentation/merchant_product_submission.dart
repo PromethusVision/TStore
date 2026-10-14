@@ -302,7 +302,8 @@ class MerchantSubmissions extends StatefulWidget {
 class _MerchantSubmissionsState extends State<MerchantSubmissions> {
   List<ProductSubmission> _items = [];
   String? _error;
-  bool _loading = false;
+  bool _loading = false, _more = false;
+  int _page = 0;
   int _epoch = 0;
   @override
   void initState() {
@@ -310,19 +311,41 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
     _load();
   }
 
-  Future<void> _load() async {
+  Future<void> _load({bool refresh = true}) async {
     if (_loading) return;
     final epoch = ++_epoch;
-    setState(() => _loading = true);
-    final r = await widget.catalog.submissions(widget.access);
-    if (!mounted || epoch != _epoch) return;
     setState(() {
-      _loading = false;
-      r.fold((e) => _error = e, (v) {
-        _items = v;
-        _error = null;
-      });
+      _loading = true;
+      _error = null;
+      if (refresh) {
+        _page = 0;
+        _items = [];
+      }
     });
+    try {
+      final r = _page == 0
+          ? await widget.catalog.submissions(widget.access)
+          : await widget.catalog.submissions(widget.access, page: _page);
+      if (!mounted || epoch != _epoch) return;
+      setState(() {
+        _loading = false;
+        r.fold((e) => _error = e, (v) {
+          _items = {
+            ...{for (final s in _items) s.id: s},
+            for (final s in v) s.id: s,
+          }.values.toList();
+          ++_page;
+          _more = v.length == 100;
+        });
+      });
+    } catch (_) {
+      if (mounted && epoch == _epoch) {
+        setState(() {
+          _loading = false;
+          _error = 'Başvurular yüklenemedi. Yeniden dene.';
+        });
+      }
+    }
   }
 
   Future<void> _add(ProductSubmission s) async {
@@ -358,7 +381,12 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
     onRefresh: _load,
     children: [
       if (_loading) const Center(child: CircularProgressIndicator()),
-      if (_error != null) MerchantNotice(_error!, error: true, onRetry: _load),
+      if (_error != null)
+        MerchantNotice(
+          _error!,
+          error: true,
+          onRetry: () => _load(refresh: _items.isEmpty),
+        ),
       if (!_loading && _items.isEmpty && _error == null)
         const MerchantNotice('Henüz ürün başvurun yok.'),
       for (final s in _items)
@@ -375,6 +403,11 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
                   )
                 : null,
           ),
+        ),
+      if (!_loading && _error == null && _more)
+        OutlinedButton(
+          onPressed: () => _load(refresh: false),
+          child: const Text('Daha fazla başvuru'),
         ),
     ],
   );

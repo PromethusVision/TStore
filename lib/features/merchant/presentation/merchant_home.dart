@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/data/merchant_qr_repository.dart';
@@ -10,6 +9,11 @@ import 'package:t_store/features/merchant/presentation/merchant_qr_view.dart';
 import 'package:t_store/features/merchant/presentation/merchant_session_cubit.dart';
 import 'package:t_store/features/merchant/presentation/merchant_shop_form.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
+import 'package:t_store/features/merchant/presentation/merchant_dashboard.dart';
+import 'package:t_store/features/merchant/presentation/merchant_product_submission.dart';
+import 'package:t_store/features/merchant/presentation/merchant_listing_media.dart';
+import 'package:t_store/features/merchant/presentation/merchant_pending_uploads.dart';
+import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/features/notifications/presentation/views/notification_preferences_view.dart';
 
@@ -21,20 +25,90 @@ class MerchantHome extends StatefulWidget {
   State<MerchantHome> createState() => _MerchantHomeState();
 }
 
-class _MerchantHomeState extends State<MerchantHome> {
-  int _index = 0, _overviewRevision = 0;
-  void _navigate(int index) => setState(() => _index = index);
+class _MerchantHomeState extends State<MerchantHome>
+    with WidgetsBindingObserver {
+  int _index = 0, _overviewRevision = 0, _productsRevision = 0;
+  bool _opening = false;
+  late final NotificationsCubit _notifications;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _notifications =
+        NotificationsCubit(repository: widget.services.notifications)
+          ..startListening()
+          ..getNotifications();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _notifications.close();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        widget.services.currentUserId() == widget.access.user.id) {
+      setState(() {
+        ++_overviewRevision;
+        ++_productsRevision;
+      });
+      _notifications.getNotifications(refresh: true);
+    }
+  }
+
+  void _navigate(int index) {
+    setState(() {
+      if (index == 0) ++_overviewRevision;
+      if (index == 1) ++_productsRevision;
+      _index = index;
+    });
+    if (index == 0 || index == 3) {
+      _notifications.getNotifications(refresh: true);
+    }
+  }
+
+  Future<void> _open(Widget page) async {
+    if (_opening) return;
+    _opening = true;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    try {
+      await Navigator.of(
+        context,
+      ).push<Object?>(MaterialPageRoute(builder: (_) => page));
+    } finally {
+      _opening = false;
+      if (mounted) {
+        setState(() {
+          ++_overviewRevision;
+          ++_productsRevision;
+        });
+      }
+    }
+  }
+
   Future<void> _profile() async {
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (pageContext) => MerchantShopForm(
-          repository: widget.services.merchants,
-          access: widget.access,
-          onSaved: () => Navigator.pop(pageContext, true),
+    if (_opening) return;
+    _opening = true;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    try {
+      final saved = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (pageContext) => MerchantShopForm(
+            repository: widget.services.merchants,
+            access: widget.access,
+            onSaved: () => Navigator.pop(pageContext, true),
+          ),
         ),
-      ),
-    );
-    if (mounted && saved == true) context.read<MerchantSessionCubit>().reload();
+      );
+      if (mounted && saved == true) {
+        context.read<MerchantSessionCubit>().reload();
+      }
+    } finally {
+      _opening = false;
+    }
   }
 
   @override
@@ -60,18 +134,61 @@ class _MerchantHomeState extends State<MerchantHome> {
             child: IndexedStack(
               index: _index,
               children: [
-                _MerchantDashboard(
+                MerchantDashboard(
                   key: ValueKey(_overviewRevision),
                   services: s,
                   access: access,
+                  notifications: _notifications,
                   onProducts: () => _navigate(1),
+                  onAddProduct: () => _open(
+                    MerchantCatalogPicker(
+                      repository: s.merchants,
+                      catalogMedia: s.catalogMedia,
+                      access: access,
+                    ),
+                  ),
                   onQr: () => _navigate(2),
                   onProfile: _profile,
+                  onSubmissions: () {
+                    if (s.catalogMedia != null) {
+                      _open(
+                        MerchantSubmissions(
+                          catalog: s.catalogMedia!,
+                          repository: s.merchants,
+                          access: access,
+                        ),
+                      );
+                    }
+                  },
+                  onPendingUploads: () {
+                    if (s.operations != null && s.catalogMedia != null) {
+                      _open(
+                        MerchantPendingUploads(
+                          operations: s.operations!,
+                          media: s.catalogMedia!,
+                          access: access,
+                        ),
+                      );
+                    }
+                  },
+                  onMedia: (id) {
+                    if (s.catalogMedia != null) {
+                      _open(
+                        MerchantListingMedia(
+                          repository: s.catalogMedia!,
+                          access: access,
+                          listingId: id,
+                        ),
+                      );
+                    }
+                  },
+                  onNotifications: () => _navigate(3),
                 ),
                 MerchantProducts(
                   repository: s.merchants,
                   catalogMedia: s.catalogMedia,
                   access: access,
+                  revision: _productsRevision,
                   onChanged: () => setState(() => ++_overviewRevision),
                 ),
                 MerchantQrView(
@@ -83,6 +200,7 @@ class _MerchantHomeState extends State<MerchantHome> {
                   ),
                 ),
                 MerchantNotifications(
+                  cubit: _notifications,
                   repository: s.notifications,
                   identity: identity,
                   currentUserId: s.currentUserId,
@@ -167,115 +285,4 @@ class _MerchantHomeState extends State<MerchantHome> {
       ),
     );
   }
-}
-
-class _MerchantDashboard extends StatefulWidget {
-  const _MerchantDashboard({
-    super.key,
-    required this.services,
-    required this.access,
-    required this.onProducts,
-    required this.onQr,
-    required this.onProfile,
-  });
-  final MerchantServices services;
-  final MerchantAccess access;
-  final VoidCallback onProducts, onQr, onProfile;
-  @override
-  State<_MerchantDashboard> createState() => _MerchantDashboardState();
-}
-
-class _MerchantDashboardState extends State<_MerchantDashboard> {
-  late Future<Either<String, MerchantOverview>> _summary;
-  @override
-  void initState() {
-    super.initState();
-    _summary = _load();
-  }
-
-  Future<Either<String, MerchantOverview>> _load() =>
-      widget.services.merchants.overview(widget.access);
-  Future<void> _refresh() async {
-    setState(() => _summary = _load());
-    await _summary;
-  }
-
-  @override
-  Widget build(BuildContext context) => MerchantPage(
-    title: 'Mağaza özeti',
-    onRefresh: _refresh,
-    children: [
-      Text(
-        widget.access.shop!.name,
-        style: Theme.of(context).textTheme.headlineMedium,
-      ),
-      const Text('Mağazanın güncel durumunu kontrol et.'),
-      FutureBuilder<Either<String, MerchantOverview>>(
-        future: _summary,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return MerchantNotice(
-              'Özet yüklenemedi.',
-              error: true,
-              onRetry: _refresh,
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return snapshot.data!.fold(
-            (e) => MerchantNotice(e, error: true, onRetry: _refresh),
-            (summary) => LayoutBuilder(
-              builder: (context, constraints) => Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  for (final entry in {
-                    'Toplam ürün': summary.total,
-                    'Stokta var': summary.available,
-                    'Stokta yok': summary.unavailable,
-                    'Pasif': summary.inactive,
-                  }.entries)
-                    SizedBox(
-                      width: (constraints.maxWidth - 12) / 2,
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${entry.value}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.headlineMedium,
-                              ),
-                              Text(entry.key),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      FilledButton.icon(
-        onPressed: widget.onProducts,
-        icon: const Icon(Icons.inventory_2_outlined),
-        label: const Text('Ürünleri ve fiyatları yönet'),
-      ),
-      OutlinedButton.icon(
-        onPressed: widget.onQr,
-        icon: const Icon(Icons.qr_code_scanner),
-        label: const Text('Müşteri QR kodunu doğrula'),
-      ),
-      TextButton(
-        onPressed: widget.onProfile,
-        child: const Text('Mağaza bilgilerini düzenle'),
-      ),
-    ],
-  );
 }

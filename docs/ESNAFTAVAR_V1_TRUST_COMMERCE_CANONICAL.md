@@ -192,6 +192,38 @@ never bypasses a hard radius filter. Price sort uses listing price. Ties become
 deterministic by shop/listing UUID after the intended stable user sort. Layout and
 image contain-fit are retained; later slice A wires data into the existing slots.
 
+### 4.1 Merchant daily operations — approved 2026-10-14
+
+**FROZEN scope addition:** the Product Owner approved the daily operations panel
+and local usage validation after Slice A. This is bounded completion of Merchant
+V1 and A, not authorization to implement B–J or activate Production.
+
+- Preserve the accepted Merchant visual direction, separate app and five tabs.
+  The overview shows owned product counts (available/unavailable/inactive), quick
+  access to catalog addition, price/availability editing, existing QR and profile.
+- Surface actual pending/approved/rejected submission counts and unfinished photo
+  uploads with direct access to the existing resolution screens. Counts represent
+  current state, not unread decisions or promised approval deadlines. Approval
+  remains separate from adding the approved product to the shop.
+- Notifications reuse the same inbox, repository and state controller. No second
+  notification store, provider activation or fabricated unread count.
+- Availability remains a boolean; counts are numbers of product listings, not
+  inventory quantities. No revenue/profit/Ads-return chart is authorized. Future
+  verified transaction totals must never be labeled total shop turnover.
+- New product submission is a request, not publication. Catalog operator approval
+  and new-product materialization remain gated; no self-service role escalation.
+- Refresh after edits, returning to the overview and app resume. Loading/errors
+  must not masquerade as zero tasks; old-account responses must not repopulate it.
+- Acceptance journey: existing catalog product → owned listing price/availability
+  → owned photo upload → fresh app/session read → Customer eligible image source.
+  Exercise on an isolated local backend where available. Report synthetic tests,
+  real Storage HTTP tests and physical-device acceptance separately. No Production
+  access, remote apply, release or final two-device QR acceptance is implied.
+
+The next new foundation remains B (QR/purchase terms/returns); H0 precedes monetary
+activation. Historical Phase 1 status at the top describes the original proposal,
+not the implementation status of subsequent deliveries.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
