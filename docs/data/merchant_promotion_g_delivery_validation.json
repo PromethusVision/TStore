@@ -1,0 +1,79 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-15T21:48:58.514Z",
+  "branch": "agent/merchant-promotion-g",
+  "baseline": "217ef0b7f0b80129e7fac17f435535010a02afe1",
+  "scope": "G preparation: owned structured promotion drafts only; full advertising/service purchase/push remain gated",
+  "full_flutter": {
+    "pass": 2539,
+    "fail": 0,
+    "existing_skips": 6
+  },
+  "focused_flutter": {
+    "pass": 42,
+    "fail": 0,
+    "new_tests": 42
+  },
+  "analyzer": "PASS",
+  "post_format_contract_recheck": {
+    "pass": 60,
+    "fail": 0
+  },
+  "harness_safety": {
+    "pass": 5,
+    "fail": 0
+  },
+  "native_postgresql_groups": 125,
+  "managed_local_service_groups": 130,
+  "validation_runtime": "Initial parallel build/test attempts interrupted under host memory pressure; one native connection reset. Final lower-concurrency validation completed separately.",
+  "new_database_groups": 12,
+  "new_http_groups": 3,
+  "historical_migrations_unchanged": 26,
+  "local_migration_count": 24,
+  "migration_sha256": {
+    "file": "20261015002800_0028_merchant_promotion_drafts.sql",
+    "sha256": "e27e582e25c8695098a8480e785f1ce8b0547e17bce4d9189424b400bad71d3b"
+  },
+  "builds": {
+    "merchant": {
+      "result": "PASS",
+      "file": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "sha256": "a4ac237a88b00d350038ef3f4d0435499bbb54912c740f9c3043f1cc9bd43d9b",
+      "executed_this_task": true,
+      "compiler_fallback": "not required"
+    },
+    "customer": {
+      "result": "PASS",
+      "file": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "sha256": "6b466258b9ec95993519e711f9c36e96a5f6bf6501df56328a327a1f162d1640",
+      "executed_this_task": true,
+      "compiler_fallback": "not required"
+    }
+  },
+  "renders": [
+    "center-320.png",
+    "center-390.png",
+    "center-430.png",
+    "disabled.png",
+    "empty.png",
+    "history.png",
+    "preview-320.png",
+    "preview-390.png",
+    "preview-430.png",
+    "stale.png",
+    "uncertain.png"
+  ],
+  "feature_default": "OFF in client and server",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "remote_migration_applied": false,
+  "main_merge": "NONE; Integration Agent only",
+  "secret_pii_scan": "PASS; synthetic fixtures only",
+  "remaining_gates": [
+    "Full G advertising purchase and delivery",
+    "O8/O9/O10",
+    "H1 settlement",
+    "I real provider",
+    "J physical two-device"
+  ]
+}

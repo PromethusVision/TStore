@@ -175,7 +175,7 @@ export async function statementChecks(db,config,f) {
   return checks;
 }
 
-export async function statementHttpChecks({db,request,rpc,session,f}) {
+export async function statementHttpChecks({db,request,rpc,session,f,capture=true}) {
   const checks=[],check=async(name,fn)=>{await fn();checks.push({name,result:'PASS'});console.log(`PASS ${name}`);};
   const args={p_shop_id:f.shop,p_limit:2};
   await check('H1 HTTP owner projection and revision-bound pagination use real Auth/PostgREST',async()=>{
@@ -185,7 +185,7 @@ export async function statementHttpChecks({db,request,rpc,session,f}) {
     assert.equal(next.revision,first.revision);assert.deepEqual(next.accounts,first.accounts);
     assert(!next.entries.some(e=>first.entries.some(old=>old.id===e.id)));
     // Only synthetic own-account projections, never Auth tokens or raw sources.
-    await writeFile(resolve(root,'docs/data/merchant_statement_h1_contract.json'),
+    if(capture) await writeFile(resolve(root,'docs/data/merchant_statement_h1_contract.json'),
       JSON.stringify({evidence_class:'synthetic-local-postgrest-read-projection',limit:2,first,next},null,2)+'\n');
     const bad=await request('/rest/v1/rpc/read_merchant_statement_v1',f.merchant,{...args,p_before:first.next_before,p_revision:'0'});
     assert.equal(bad.ok,false);assert.equal(bad.data.code,'40001');

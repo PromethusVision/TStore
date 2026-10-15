@@ -165,3 +165,22 @@ and the latest command result. No production migration or app runtime file is
 changed by this acceptance task. Native evidence's OPEN Auth/Storage labels mean
 that the native runner cannot assess those gates; the separately dated managed
 report supplies their actual result.
+## G promotion preparation
+
+`--promotion` includes the complete `--statement` chain plus0028. It validates
+owned structured previews/drafts, source freshness, concurrent edit/retry,
+immutable history, archive/restore, private grants, feature stop and absence of
+financial/notification effects. Managed acceptance also exercises actual existing
+Storage upload/sign/download/retire and stale-save rejection. No ad purchase,
+publication, ranking, targeting, provider send or Production access is exercised.
+
+Use the same fresh-fixture procedure with:
+
+```powershell
+node tool/merchant_acceptance/native.mjs <owned-postgresql-17-bin> --promotion
+node tool/merchant_acceptance/acceptance.mjs <new-owned-local-run> --promotion
+```
+
+Outputs use `merchant_promotion_g_*`. The previous statement contract fixture is
+preserved. Final scope/reproduction/rollback details are in
+`docs/MERCHANT_PROMOTION_G_HANDOFF.md`.

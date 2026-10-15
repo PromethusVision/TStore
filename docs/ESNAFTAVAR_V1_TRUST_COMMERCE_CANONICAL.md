@@ -954,6 +954,35 @@ server time, placement, package, context and retention policy. Attribution
 observed association, not proof that the ad caused the purchase. Fraud/duplicate
 events do not inflate reporting or fair rotation.
 
+### 11.1 G preparation boundary — Merchant promotion drafts
+
+The local G preparation increment implements the existing structured-creative
+decision only. Its four template families are store introduction, product,
+current campaign announcement and store invitation, with two fixed copy variants.
+Only current owned eligible catalog/campaign facts and existing published listing
+media may populate a preview. Campaign freeform copy is not treated as proof of
+advertising claims. Explicit campaign scope and dates remain visible.
+
+An owner may preview, save, revise, archive and restore a **draft**. A saved draft
+is neither a purchased package nor a published advertisement. Saving requires the
+server to revalidate the exact preview fingerprint; source drift requires a fresh
+preview. Reads label previously saved content as needing an update when current
+facts differ. Immutable revision history is historical content, not live price or
+publication evidence. Repeated uncertain writes reconcile the original immutable
+request; they must not create another draft.
+
+This increment uses independent default-OFF client/server capability gates.
+The 500-root-per-shop technical guard and 20-row read pages are abuse/resource
+bounds, not commercial entitlements. Historical roots/revisions are not removed
+by archiving. This does not choose a production retention policy.
+
+No advertising price, purchase/debit, paid interval, push entitlement, targeting,
+ranking/rotation, Home placement, measurement/attribution or provider delivery is
+enabled by draft preparation. No separate balance or notification foundation is
+created. Full G, O8/O9/O10 policy work, H1 settlement, I and physical J remain
+separate gates. The FROZEN seven-day product and thirty-day push entitlement
+rules above/below are unchanged.
+
 ## 12. Sponsored push entitlement and shared transport
 
 **FROZEN:** each 7-day package creates one push entitlement valid **30 days from

@@ -16,10 +16,12 @@ import { rewardHttpChecks } from './reward_http_checks.mjs';
 import { checkoutChecks } from './checkout_checks.mjs';
 import { checkoutHttpChecks } from './checkout_http_checks.mjs';
 import { statementChecks, statementHttpChecks } from './statement_checks.mjs';
+import { promotionChecks, promotionHttpChecks } from './promotion_checks.mjs';
 
 const reviews=process.argv.includes('--reviews');
 const trustCampaigns=process.argv.includes('--trust-campaigns');
-const statement=process.argv.includes('--statement');
+const promotion=process.argv.includes('--promotion');
+const statement=process.argv.includes('--statement')||promotion;
 const checkout=process.argv.includes('--checkout')||statement;
 const rewards=process.argv.includes('--rewards')||checkout;
 const ledger=process.argv.includes('--ledger')||rewards;
@@ -35,7 +37,7 @@ try {
     password: decodeURIComponent(url.password), ssl: false };
   db = await connect(config);
   environmentReady=true;
-  const manifest = await migrate(db,{reviews,trustCampaigns,ledger,rewards,checkout,statement});
+  const manifest = await migrate(db,{reviews,trustCampaigns,ledger,rewards,checkout,statement,promotion});
   const request = (path, actor, body, method) => requestJson(status.API_URL, path, actor?.token, status.ANON_KEY, body, method);
   const rpc = async (name, actor, args) => {
     const r = await request(`/rest/v1/rpc/${name}`, actor, args);
@@ -185,12 +187,17 @@ try {
   if(statement) {
     const fresh=await seed(db,await actor(),await actor(),await actor());fresh.session=id=>session(id);
     checks.push(...await statementChecks(db,config,fresh));
-    checks.push(...await statementHttpChecks({db,request,rpc,session,f:fresh}));
+    checks.push(...await statementHttpChecks({db,request,rpc,session,f:fresh,capture:!promotion}));
+  }
+  if(promotion) {
+    const fresh=await seed(db,await actor(),await actor(),await actor());fresh.session=id=>session(id);
+    checks.push(...await promotionChecks(db,config,fresh));
+    checks.push(...await promotionHttpChecks({db,request,rpc,session,f:fresh,status,localRequest}));
   }
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
     runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
-  await writeFile(resolve(root,`docs/data/merchant_${statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
+  await writeFile(resolve(root,`docs/data/merchant_${promotion?'promotion_g':statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);
 } catch(error) {
   console.error(`LOCAL_MANAGED_ACCEPTANCE_${environmentReady?'FAILED':'BLOCKED'}: ${error.code || error.name}; no remote fallback.`);
