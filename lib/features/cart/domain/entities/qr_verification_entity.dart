@@ -43,6 +43,8 @@ class QrVerificationEntity extends Equatable {
   final String? claimId;
   final String? purchaseId;
   final DateTime? completionExpiresAt;
+  final bool rewardConfirmationRequired;
+  final String? rewardSaleMinor;
 
   const QrVerificationEntity({
     required this.sessionId,
@@ -59,6 +61,8 @@ class QrVerificationEntity extends Equatable {
     this.claimId,
     this.purchaseId,
     this.completionExpiresAt,
+    this.rewardConfirmationRequired = false,
+    this.rewardSaleMinor,
   });
 
   DateTime get confirmationDeadline => completionExpiresAt ?? expiresAt;
@@ -86,5 +90,7 @@ class QrVerificationEntity extends Equatable {
     claimId,
     purchaseId,
     completionExpiresAt,
+    rewardConfirmationRequired,
+    rewardSaleMinor,
   ];
 }

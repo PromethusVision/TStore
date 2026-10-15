@@ -13,10 +13,12 @@ class QrProtocolV2 {
     this.client, {
     Future<String> Function()? installation,
     String? Function()? sessionIdentity,
+    this.rewardEarningEnabled = false,
   }) : installation = installation ?? QrInstallation.load,
        sessionIdentity =
            sessionIdentity ?? (() => authenticatedSessionIdentity(client));
   final SupabaseClient client;
+  final bool rewardEarningEnabled;
   final Future<String> Function() installation;
   final String? Function() sessionIdentity;
 
@@ -83,11 +85,25 @@ class QrProtocolV2 {
 
   Future<Either<String, QrSessionEntity>> create(String cartId) =>
       run(() async {
+        final identity = sessionIdentity();
+        var earning = false;
+        if (rewardEarningEnabled) {
+          final caps = row(await client.rpc('reward_capabilities_v1'));
+          if (caps['version'] != 1 ||
+              caps['enabled'] is! bool ||
+              caps['redemption_enabled'] != false) {
+            throw const FormatException('Unsupported reward protocol');
+          }
+          earning = caps['enabled'] as bool;
+        }
+        if (identity != sessionIdentity()) {
+          throw const QrProtocolFailure('SESSION_CHANGED');
+        }
         final value = QrSessionModel.fromJson(
           row(
             await client.rpc(
-              'create_qr_session_v2',
-              params: {'p_cart_id': cartId},
+              earning ? 'create_reward_qr_v1' : 'create_qr_session_v2',
+              params: {earning ? 'p_cart' : 'p_cart_id': cartId},
             ),
           ),
         );
@@ -168,13 +184,27 @@ class QrProtocolV2 {
     if (identity != sessionIdentity()) {
       throw const QrProtocolFailure('SESSION_CHANGED');
     }
+    var endpoint = rpc;
+    final parameters = <String, dynamic>{
+      'p_claim_id': claimId,
+      'p_installation_id': device,
+    };
+    if (rewardEarningEnabled && rpc == 'complete_existing_qr_v2') {
+      final current = QrVerificationModel.fromJson(
+        row(await client.rpc('reconcile_claim_v2', params: parameters)),
+      );
+      if (current.claimId != claimId ||
+          current.protocolVersion != 2 ||
+          identity != sessionIdentity()) {
+        throw const FormatException('Mismatched earning claim');
+      }
+      if (current.rewardConfirmationRequired) {
+        endpoint = 'complete_reward_qr_v1';
+        parameters['p_actual_sale_minor'] = current.rewardSaleMinor;
+      }
+    }
     final value = QrVerificationModel.fromJson(
-      row(
-        await client.rpc(
-          rpc,
-          params: {'p_claim_id': claimId, 'p_installation_id': device},
-        ),
-      ),
+      row(await client.rpc(endpoint, params: parameters)),
     );
     if (value.protocolVersion != 2 || value.claimId != claimId) {
       throw const FormatException('Foreign claim');

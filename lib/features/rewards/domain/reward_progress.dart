@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
 
 class RewardEligibleMerchant extends Equatable {
   const RewardEligibleMerchant({
@@ -18,16 +19,29 @@ class RewardProgress extends Equatable {
     this.steps = 0,
     this.merchants = const [],
     this.available = false,
+    this.program,
+    this.error,
+    this.loading = false,
   });
   static const goal = 5;
   final int steps;
   final List<RewardEligibleMerchant> merchants;
   final bool available;
+  final RewardProgramState? program;
+  final String? error;
+  final bool loading;
   int get completed => steps.clamp(0, goal);
   int get remaining => goal - completed;
   double get fraction => completed / goal;
   @override
-  List<Object?> get props => [steps, merchants, available];
+  List<Object?> get props => [
+    steps,
+    merchants,
+    available,
+    program,
+    error,
+    loading,
+  ];
 }
 
 class RewardProgressEvent {

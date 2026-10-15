@@ -6,6 +6,8 @@ import 'package:t_store/features/reviews/data/repositories/supabase_purchase_eva
 import 'package:t_store/features/shop/domain/repositories/listing_hero_media_repository.dart';
 import 'package:t_store/features/shop/data/repositories/supabase_listing_hero_media_repository.dart';
 import 'package:t_store/features/rewards/domain/reward_progress.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/features/shop/data/repositories/production_preview_product_repository.dart';
 import 'package:t_store/features/shop/data/services/production_preview_taxonomy_adapter.dart';
@@ -223,9 +225,18 @@ Future<void> setupServiceLocator({
   sl.registerLazySingleton<ListingHeroMediaRepository>(
     () => SupabaseListingHeroMediaRepository(sl<SupabaseService>().client),
   );
-  sl.registerLazySingleton<RewardRepository>(
-    () => const PendingRewardRepository(),
-  );
+  if (const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')) {
+    sl.registerLazySingleton<RewardProgramRepository>(
+      () => SupabaseRewardProgramRepository(sl<SupabaseService>().client),
+    );
+    sl.registerLazySingleton<RewardRepository>(
+      () => sl<RewardProgramRepository>(),
+    );
+  } else {
+    sl.registerLazySingleton<RewardRepository>(
+      () => const PendingRewardRepository(),
+    );
+  }
   sl.registerSingleton<TaxonomyDependencyPlan>(taxonomyPlan);
   sl.registerSingleton(taxonomyPlan.capability);
   if (taxonomyPlan.registerDevelopmentRpcAdapter) {
@@ -460,7 +471,12 @@ Future<void> setupServiceLocator({
   sl.registerLazySingleton<QrSessionRepository>(
     () => QrSessionRepositoryImpl(
       supabaseService: sl(),
-      claimsEnabled: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED'),
+      claimsEnabled:
+          const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
+          const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED'),
+      rewardEarningEnabled: const bool.fromEnvironment(
+        'REWARD_EARNING_V1_ENABLED',
+      ),
     ),
   );
 

@@ -156,6 +156,8 @@ Widget _buildCartLoadedPrototype(
       ),
       const SizedBox(height: EsnaftaVarSpacing.md),
       const Divider(height: 1),
+      if (sl.isRegistered<RewardProgramRepository>())
+        view._rewardReservation(cart),
       const SizedBox(height: EsnaftaVarSpacing.md),
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,

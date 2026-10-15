@@ -17,10 +17,15 @@ class QrSessionRepositoryImpl
   QrSessionRepositoryImpl({
     required this.supabaseService,
     this.claimsEnabled = false,
+    this.rewardEarningEnabled = false,
   });
   @override
   final bool claimsEnabled;
-  late final QrProtocolV2 _protocol = QrProtocolV2(supabaseService.client);
+  final bool rewardEarningEnabled;
+  late final QrProtocolV2 _protocol = QrProtocolV2(
+    supabaseService.client,
+    rewardEarningEnabled: rewardEarningEnabled,
+  );
 
   @override
   Future<Either<String, QrVerificationEntity>> claimVerification({

@@ -1,0 +1,224 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-15T17:23:23.627Z",
+  "branch": "agent/merchant-reward-e",
+  "baseline": "b022f5f3c446618fca2bc54a42da77700830d38a",
+  "scope": "E earning lifecycle only; redemption, provider funding, settlement and physical acceptance remain gated",
+  "flutter": {
+    "full_pass": 2451,
+    "fail": 0,
+    "existing_skip": 6,
+    "focused_pass": 81,
+    "analyzer": "PASS",
+    "harness_safety_pass": 5
+  },
+  "database": {
+    "native_groups": 75,
+    "managed_groups": 70,
+    "historical_migrations_unchanged": 19,
+    "tested_migrations": 20,
+    "local_only": true
+  },
+  "builds": {
+    "result": "PASS",
+    "compile_flags": [
+      "REWARD_EARNING_V1_ENABLED=true",
+      "QR_CLAIMS_V2_ENABLED=true",
+      "TRUST_COMMERCE_V1_ENABLED=true",
+      "REVIEWS_V2_ENABLED=true"
+    ],
+    "artifacts": [
+      {
+        "file": "build/app/outputs/flutter-apk/app-development-debug.apk",
+        "sha256": "826fceba762429e73faaedd1d4fd59d716aaa71f78a2b20a7819d77cc9c751e0",
+        "bytes": 224743244
+      },
+      {
+        "file": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+        "sha256": "3168909c57254df0fd4972c361d7d40f4f7da62deedd691cab9462564330e02e",
+        "bytes": 189213860
+      }
+    ]
+  },
+  "source_files": [
+    {
+      "file": "lib/core/dependency_injection/service_locator.dart",
+      "sha256": "d6a0dcf12805b900ad9fa08f1752f6a72b9067b9d1879d14e37f4bdadb7b7e08"
+    },
+    {
+      "file": "lib/features/cart/data/models/qr_verification_model.dart",
+      "sha256": "a5b8375f0a1bd73790fa1078b4306c20ad626c24b6fc5415787d5f2f9fb821be"
+    },
+    {
+      "file": "lib/features/cart/data/qr_protocol_v2.dart",
+      "sha256": "97be6c4e0106e89eb9a78988db3e1cbdab7797f605f6744bfd23b2abf8fa8cef"
+    },
+    {
+      "file": "lib/features/cart/data/repositories/qr_session_repository_impl.dart",
+      "sha256": "bb2d829e475e572f2d1ef2a573296490e81f07c5550726a4211557c64249fdd3"
+    },
+    {
+      "file": "lib/features/cart/domain/entities/qr_verification_entity.dart",
+      "sha256": "ed3ecfc3e13f0accaad18be539cf20b65ab37c4484cc9f98b1a7e114bcd65590"
+    },
+    {
+      "file": "lib/features/merchant/merchant_services.dart",
+      "sha256": "519890a2d100c27c6135588b4f19984f52acf6691b7b8033676375137c9d7747"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_dashboard.dart",
+      "sha256": "5216cf0381358b29d318ef2e43588c5898a981f9cf3d96eff5e8f3ebda9dd8a8"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_qr_view.dart",
+      "sha256": "22d3393494741357624252370279beedef2cdd4dd192771e240d0fdebc829284"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_rewards.dart",
+      "sha256": "4603bba6131a9f8bb42ac180ecb355515fdc57c33c3b910148445c0c6816cfde"
+    },
+    {
+      "file": "lib/features/rewards/data/supabase_reward_program_repository.dart",
+      "sha256": "0e9ac89e98d244418195afb5c269c3197a13c525241e33e758ec657a1c372ddb"
+    },
+    {
+      "file": "lib/features/rewards/domain/reward_program.dart",
+      "sha256": "7a1f2d60a0913c8f13160178d72261f3b1b6823509847f062a66158cdbd6b7b7"
+    },
+    {
+      "file": "lib/features/rewards/domain/reward_progress.dart",
+      "sha256": "017e8d2e527c7dd359366409a06c04bad1bc04cf165b0e324d3801d08853e808"
+    },
+    {
+      "file": "lib/features/rewards/presentation/reward_center.dart",
+      "sha256": "74d25c1acef49f033d6f34cb5d4f7b25ce5a70227d44b322e16e80ad9df86fb4"
+    },
+    {
+      "file": "lib/features/rewards/presentation/reward_counter_card.dart",
+      "sha256": "c501020fabc91b8c560f11f2636ff26b2b43f6c578e628854b180f1e6bb7fdf6"
+    },
+    {
+      "file": "lib/features/rewards/presentation/reward_reservation_card.dart",
+      "sha256": "3041016d8c590afb73eb9cbd20c70d8345cd90209b73cadf81794fb6272c1267"
+    },
+    {
+      "file": "lib/features/shop/presentation/views/cart_v2_view.dart",
+      "sha256": "a26475faa610e66f44445baa4e6d95ac4c56a3f6386bbc62506b00c8d8bb05a3"
+    },
+    {
+      "file": "lib/features/shop/presentation/views/cart_v2_visual_prototype.dart",
+      "sha256": "120034f9813484574bd4b14ab2396ec1b331fadee9228cfd526f7315a2b30366"
+    },
+    {
+      "file": "lib/main_merchant_development.dart",
+      "sha256": "469f8f8b04f21c3ea2d546ba64051ea5f30b50d3c13283a8cdf7db368a17f299"
+    },
+    {
+      "file": "supabase/migrations/20261015002400_0024_reward_earning_cycle.sql",
+      "sha256": "6d60cb9092791ffb93813afdc03b3812cac72c36cbf8cee447eff619ebbd202b"
+    },
+    {
+      "file": "test/support/reward_fixtures.dart",
+      "sha256": "81f0f30ec0549110c603f78cba0141aca294539b3d1f7b09e66884103baa1090"
+    },
+    {
+      "file": "test/unit/rewards/reward_program_repository_test.dart",
+      "sha256": "5d66a04fa93b3615511649b28a9083ca7b223b18f8e0df36302fa113a648b377"
+    },
+    {
+      "file": "test/unit/rewards/reward_qr_protocol_test.dart",
+      "sha256": "d410ddeb9969a46a5e2210cbee503d05f462be83cf4d17a949dd1b1331973233"
+    },
+    {
+      "file": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "sha256": "e345db0d096cf5ed7484d39ae8555064fa80164b261a62b95f74884b8ccfc124"
+    },
+    {
+      "file": "test/widget/cart/w45a_cart_prototype_test.dart",
+      "sha256": "af90e6ba103c38f594274f2a4ed74901b593992abf684030764de4522e4d2de4"
+    },
+    {
+      "file": "test/widget/merchant/merchant_reward_e_test.dart",
+      "sha256": "0a87500b4c5e7630cd443e912559094c5c83b1b47b7dab962f2cb3f6e7c71710"
+    },
+    {
+      "file": "tool/merchant_acceptance/acceptance.mjs",
+      "sha256": "43e54769adb6d242a75322f9688c1980022290de4fece1bb64580709ece7b878"
+    },
+    {
+      "file": "tool/merchant_acceptance/fixture.mjs",
+      "sha256": "eab26b65aff09f0aa100e37cb1ab9413c08c72246dce71987b65e54805be7654"
+    },
+    {
+      "file": "tool/merchant_acceptance/native.mjs",
+      "sha256": "500e49cabd180bbd21e5666c09c85dc0ce2fd87b207d2ef89df1bd07c0062c92"
+    },
+    {
+      "file": "tool/merchant_acceptance/reward_checks.mjs",
+      "sha256": "7025cb93ade80e2d3eef72ad071120ac389fe6190672d0c66248af1d582a1182"
+    },
+    {
+      "file": "tool/merchant_acceptance/reward_http_checks.mjs",
+      "sha256": "10d9281c750b3c93915c15d45c7a886cc40537521a616f74915ea6641184f306"
+    }
+  ],
+  "evidence_reports": [
+    {
+      "file": "docs/data/merchant_e_native_acceptance.json",
+      "sha256": "8ee6522870a1901fb30546fb494c7ae968e66dd9de43c9123806a21f65f3e2ce"
+    },
+    {
+      "file": "docs/data/merchant_e_managed_acceptance.json",
+      "sha256": "bc26b48015a5a7d85f3342cde31ba5afdafd37cf0576a12ed1041f83fef0bd2a"
+    }
+  ],
+  "checks": [
+    {
+      "name": "analyzer",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-analyze.log",
+      "sha256": "c0d580d4c5216fc13e35788388860c7ab29a7be771b9bef08183453dfd6a2092"
+    },
+    {
+      "name": "full_flutter",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-full-tests.log",
+      "sha256": "a3d0cef1c12cbaf7aec0bb92e30697e09c7f22db371c2d12114abea035a79897"
+    },
+    {
+      "name": "focused_flutter",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-targeted-final.log",
+      "sha256": "fb223534f4f0520be6d463997e831acd71a9dea982e4e6f8bd035e7486c658ce"
+    },
+    {
+      "name": "safety",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-harness.log",
+      "sha256": "2a335bab985bae6d7be9f04cd99dd17c3811925ad4afee8938dd7a4acbc37a72"
+    },
+    {
+      "name": "customer_build",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-customer-build.log",
+      "sha256": "1971b97a0bb727282ff0c12d6ca6bd1430a788dcf82613953763c45b6e00da83"
+    },
+    {
+      "name": "merchant_build",
+      "result": "PASS",
+      "ignored_local_log": ".buildlog-e-merchant-build.log",
+      "sha256": "9635cd0af2c31e05b9747c3add1ee7ee2f46d0c3b4612a5afea6653c3992db37"
+    }
+  ],
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "remote_migration_applied": false,
+  "main_merge": false,
+  "main_push": false,
+  "physical_two_device": "OPEN",
+  "provider_funding": "OPEN",
+  "coupon_redemption": "NOT_IMPLEMENTED",
+  "partially_spent_O7": "NOT_IMPLEMENTED",
+  "source_secret_scan": "PASS (changed text files; no secret files opened)",
+  "local_processes": "STOPPED; owned fixture data retained"
+}

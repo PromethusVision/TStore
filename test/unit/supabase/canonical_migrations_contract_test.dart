@@ -33,6 +33,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002100_0021_merchant_campaign_lite.sql',
   '20261015002200_0022_campaign_required_amount.sql',
   '20261015002300_0023_commerce_ledger_foundation.sql',
+  '20261015002400_0024_reward_earning_cycle.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -124,6 +125,20 @@ const _expectedPublicTables = <String>{
   'ledger_journals',
   'ledger_postings',
   'ledger_consumer_receipts',
+  'reward_program_config',
+  'reward_runtime_lock',
+  'reward_shop_preferences',
+  'reward_funding_attestations',
+  'referral_packages',
+  'reward_attempts',
+  'reward_reservations',
+  'reward_qr_contracts',
+  'reward_sale_attestations',
+  'reward_contributions',
+  'reward_coupons',
+  'reward_coupon_sources',
+  'reward_contribution_events',
+  'reward_capacity_events',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{

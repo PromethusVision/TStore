@@ -18,6 +18,9 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/presentation/reward_reservation_card.dart';
+import '../../support/reward_fixtures.dart' show RewardFake;
 
 class _Cart extends MockCubit<CartV2State> implements CartV2Cubit {}
 
@@ -162,6 +165,23 @@ void main() {
     );
     if (settle) await tester.pumpAndSettle();
   }
+
+  testWidgets(
+    'E binding adds one reservation to the existing cart without renewing on rebuild',
+    (tester) async {
+      final reward = RewardFake();
+      sl.registerSingleton<RewardProgramRepository>(reward);
+      addTearDown(reward.progress.close);
+      await pump(tester, width: 320, textScale: 1.3);
+      await tester.scrollUntilVisible(find.byType(RewardReservationCard), 300);
+      expect(reward.reservations, [false]);
+      expect(find.text('Ödül rezervasyonu'), findsOneWidget);
+      await tester.pump();
+      expect(reward.reservations, [false]);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets('390 px physical preparation owner evidence', (tester) async {
     await pump(tester);

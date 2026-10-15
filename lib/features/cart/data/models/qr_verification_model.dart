@@ -85,6 +85,8 @@ class QrVerificationModel extends QrVerificationEntity {
     super.claimId,
     super.purchaseId,
     super.completionExpiresAt,
+    super.rewardConfirmationRequired,
+    super.rewardSaleMinor,
   });
 
   factory QrVerificationModel.fromJson(Map<String, dynamic> json) {
@@ -130,6 +132,15 @@ class QrVerificationModel extends QrVerificationEntity {
     final completion = _toNullableDateTime(json['completion_expires_at']);
     final claimId = json['claim_id'] as String?;
     final purchaseId = json['purchase_id'] as String?;
+    final rewardRequired = json['reward_confirmation_required'] ?? false;
+    final rewardSale = json['reward_sale_minor'];
+    if (rewardRequired is! bool ||
+        (rewardRequired &&
+            (protocol != 2 ||
+                rewardSale is! String ||
+                !RegExp(r'^(0|[1-9][0-9]{0,18})$').hasMatch(rewardSale)))) {
+      throw const FormatException('Ödüllü satış onayı doğrulanamadı.');
+    }
     if (protocol == 2 &&
         (claimId == null ||
             claimId.isEmpty ||
@@ -155,6 +166,13 @@ class QrVerificationModel extends QrVerificationEntity {
         (totalAmount - calculatedTotal).abs() > 0.005) {
       throw const FormatException('QR toplam bilgisi gecersiz.');
     }
+    // Compatibility check against B's displayed quote only. Server minor-unit
+    // text remains the amount sent for attestation; no client calculation funds it.
+    if (rewardRequired &&
+        BigInt.parse(rewardSale as String) !=
+            BigInt.from((totalAmount * 100).round())) {
+      throw const FormatException('Ödüllü satış tutarı QR ile uyuşmuyor.');
+    }
 
     return QrVerificationModel(
       sessionId: _requiredString(json, 'session_id'),
@@ -171,6 +189,8 @@ class QrVerificationModel extends QrVerificationEntity {
       claimId: claimId,
       purchaseId: purchaseId,
       completionExpiresAt: completion,
+      rewardConfirmationRequired: rewardRequired,
+      rewardSaleMinor: rewardRequired ? rewardSale as String : null,
     );
   }
 
@@ -202,6 +222,10 @@ class QrVerificationModel extends QrVerificationEntity {
         'claim_id': claimId,
         'purchase_id': purchaseId,
         'completion_expires_at': completionExpiresAt?.toIso8601String(),
+        if (rewardConfirmationRequired) ...{
+          'reward_confirmation_required': true,
+          'reward_sale_minor': rewardSaleMinor,
+        },
       },
     };
   }
