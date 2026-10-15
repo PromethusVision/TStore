@@ -165,10 +165,16 @@ privacy/import approval and physical two-device acceptance remain separate gates
 
 ## D — Server badge projections and milestone history
 
+**Authorized locally with F on 2026-10-15**, from integrated `d013b761`, on
+`agent/merchant-trust-campaigns-df`. Canonical §7.1–7.2 records scope and gates.
+Local implementation and native/managed acceptance are complete. Delivery and
+release gates: `MERCHANT_DF_HANDOFF.md`; audit: `MERCHANT_DF_WORKLOG.md`.
+
 - **DB:** versioned local areas/assignments, badge rule config, durable award/
   correction events and rebuildable current eligibility projections. Uses valid
   verified purchase and C evaluation evidence rather than new economic events.
-- **RPC/server:** read_badges_v1, recompute_badge_subject_v1; scheduled rolling90-day
+- **RPC/server:** read_badges_v1, read_my_trust_v1, trusted process_badge_refresh_v1
+  and enqueue_badge_backfill_v1; scheduled rolling90-day
   expiry; local-area assignment review. Exact aggregate thresholds before rounding.
   No hysteresis/grace and no ranking/Reward side effect.
 - **Flutter:** small name-adjacent badge composition, highest milestone per family,
@@ -237,11 +243,16 @@ privacy/import approval and physical two-device acceptance remain separate gates
 
 ## F — Merchant Campaign / Offer Creator Lite
 
+**Authorized locally with D on 2026-10-15.** Price/percentage publication remains
+separately gated because B currently records quote-only sales; no cart-discount
+or financial authority is introduced. Local implementation and native/managed
+acceptance are complete. See canonical §7.1–7.2 and `MERCHANT_DF_HANDOFF.md`.
+
 - **DB:** offers, owned listing membership and immutable revision/selection evidence.
   Types discounted price, percent and announcement; scope listing/multiple/store.
 - **RPC/server:** owned create/update/deactivate/read and structured validation.
   Informational offer does not calculate or apply a platform cart discount.
-- **Flutter:** later “Kampanyalar → Yeni Kampanya Oluştur”, dates/copy/type fields
+- **Flutter:** “Kampanyalar → Yeni Kampanya Oluştur”, dates/copy/type fields
   and selection from existing owned imagery. Preserve existing navigation style.
 - **RLS:** exact merchant ownership; public current eligible copy; no another
   merchant listing or image reference.

@@ -7,10 +7,12 @@ import { inside } from './safety.mjs';
 import { connect, migrate, seed, nativeManagedSchema } from './fixture.mjs';
 import { databaseChecks } from './postgres_checks.mjs';
 import { reviewChecks } from './review_checks.mjs';
+import { trustCampaignChecks } from './trust_campaign_checks.mjs';
 
 // Native PostgreSQL proof is deliberately separate from managed Auth/Storage acceptance.
 const base = resolve(root, '.buildlog/merchant-native');
 const reviews = process.argv.includes('--reviews');
+const trustCampaigns = process.argv.includes('--trust-campaigns');
 let config, db, binary, directory, startAttempted=false, stage='binary';
 try {
   assert.equal(process.platform, 'win32', 'This portable launcher targets Windows');
@@ -32,7 +34,7 @@ try {
   stage='acceptance';
   assert.equal(await realpath((await db.query('SHOW data_directory')).rows[0].data_directory), await realpath(data));
   await nativeManagedSchema(db);
-  const manifest = await migrate(db, { reviews });
+  const manifest = await migrate(db, { reviews, trustCampaigns });
   async function actor(id = randomUUID()) {
     await db.query("INSERT INTO auth.users(id,email) VALUES($1,$2) ON CONFLICT DO NOTHING", [id, `${id}@example.invalid`]);
     const sid = randomUUID();
@@ -41,13 +43,20 @@ try {
   }
   const fixture = await seed(db, await actor(), await actor(), await actor());
   fixture.session = id => actor(id);
-  const checks = await (reviews ? reviewChecks : databaseChecks)(db, config, fixture);
+  const checks = [];
+  if(trustCampaigns) {
+    // C's real SQL flows must remain correct with D's event triggers installed.
+    checks.push(...await reviewChecks(db,config,fixture));
+    await db.query('UPDATE public.review_protocol_config SET enabled=false');
+    const fresh=await seed(db,await actor(),await actor(),await actor());fresh.session=id=>actor(id);
+    checks.push(...await trustCampaignChecks(db,config,fresh));
+  } else checks.push(...await (reviews ? reviewChecks : databaseChecks)(db, config, fixture));
   const evidence = { result: 'PASS', captured_at: new Date().toISOString(),
     runtime: (await db.query('SELECT version() AS version')).rows[0].version,
     evidence_class: 'native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema',
     managed_auth: 'OPEN', storage_http: 'OPEN', physical_two_device: 'OPEN', checks, migrations: manifest };
   await writeFile(resolve(directory, 'result.json'), JSON.stringify(evidence, null, 2)+'\n');
-  await writeFile(resolve(root, `docs/data/merchant_${reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
+  await writeFile(resolve(root, `docs/data/merchant_${trustCampaigns ? 'df' : reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
   console.log(`NATIVE_DATABASE_PROOF_PASS: ${checks.length} groups. Managed Auth/Storage are evidenced separately.`);
 } catch (error) {
   // Synthetic DB only, but still avoid dumping SQL parameters, passwords or tokens.

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
+import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/common/widgets/navigation_menu.dart';
 import 'package:t_store/core/cubits/navigation_menu_cubit/navigation_menu_cubit.dart';
@@ -154,6 +156,11 @@ class _ProfileViewState extends State<ProfileView> {
                   const _AccountHeader(),
                   const SizedBox(height: EsnaftaVarSpacing.sm),
                   _CustomerIdentityCard(fullName: fullName),
+                  if (sl.isRegistered<TrustCommerceRepository>())
+                    TrustSummary(
+                      repository: sl<TrustCommerceRepository>(),
+                      actor: _user.id,
+                    ),
                   const SizedBox(height: EsnaftaVarSpacing.md),
                   _ContactInformationCard(email: email, phone: phone),
                   const SizedBox(height: EsnaftaVarSpacing.sm),

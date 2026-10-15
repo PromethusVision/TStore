@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_campaigns.dart';
+import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 import 'package:t_store/features/merchant/presentation/merchant_reviews.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
@@ -86,6 +88,19 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const Text('Mağazanın güncel durumunu kontrol et.'),
+        if (widget.services.trustCommerce case final repository?) ...[
+          TrustSummary(
+            key: ValueKey('trust-$_reviewsRevision'),
+            repository: repository,
+            actor: widget.access.user.id,
+            shopId: widget.access.shop!.id,
+          ),
+          MerchantCampaignSummary(
+            key: ValueKey('campaigns-$_reviewsRevision'),
+            services: widget.services,
+            access: widget.access,
+          ),
+        ],
         if (widget.services.evaluations case final repository?)
           MerchantReviewSummary(
             key: ValueKey(_reviewsRevision),
