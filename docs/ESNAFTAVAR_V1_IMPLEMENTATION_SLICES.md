@@ -223,6 +223,17 @@ and both development debug APKs. Handoff: `MERCHANT_H0_HANDOFF.md`; audit:
 
 ## E — Reward Counter, Referral Package and coupon integration
 
+**E earning lifecycle authorized locally after H0 integration (`b022f5f3`).**
+The Product Owner requested the next large implementation package. Scope and
+limits are canonical §8.1 and `MERCHANT_REWARD_E_WORKLOG.md`. This is not approval
+for provider funding, remote activation, discounted/coupon-funded checkout,
+partially spent offsets, Ads or settlement. Those gates remain separate.
+
+**Local earning implementation delivered:** 0024 package/capacity/reservation,
+unchanged-sale attestation, contribution/maturity/unspent compensation and both
+app bindings. Evidence and release boundaries: `MERCHANT_REWARD_E_HANDOFF.md`.
+The complete E redemption/customer-approval/O7 work listed below remains open.
+
 - **DB:** package/terms snapshots, reservation/hold projections, chronological
   append-only contribution/reversal events, issued coupons + immutable five-source
   links, coupon redemption allocations, acceptance preference/forced-lock state.

@@ -162,6 +162,27 @@ class _RewardCounterCardState extends State<RewardCounterCard>
     animation: Listenable.merge([_bar, _feedback, _celebration]),
     builder: (context, _) {
       final progress = widget.progress;
+      if (progress.loading || progress.error != null) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Ödül Sayacı'),
+                if (progress.loading) const LinearProgressIndicator(),
+                Text(progress.error ?? 'Ödül bilgileri yükleniyor.'),
+                if (widget.onTap != null)
+                  TextButton(
+                    onPressed: widget.onTap,
+                    child: const Text('Detayları aç'),
+                  ),
+              ],
+            ),
+          ),
+        );
+      }
       final content = Container(
         key: const Key('reward-progress-card'),
         padding: const EdgeInsets.all(16),
@@ -230,7 +251,9 @@ class _RewardCounterCardState extends State<RewardCounterCard>
                 ),
                 Text(
                   progress.completed == RewardProgress.goal
-                      ? 'Sayaç tamamlandı'
+                      ? (progress.program == null
+                            ? 'Sayaç tamamlandı'
+                            : 'Olgunlaşma bekleniyor')
                       : 'Ödüle ${progress.remaining} adım kaldı',
                   style: const TextStyle(color: EsnaftaVarColors.textSecondary),
                 ),
@@ -254,9 +277,11 @@ class _RewardCounterCardState extends State<RewardCounterCard>
             ],
             if (!progress.available) ...[
               const SizedBox(height: 8),
-              const Text(
-                'Ödül programı yakında. Katılım koşulları burada paylaşılacak.',
-                style: TextStyle(
+              Text(
+                progress.program == null
+                    ? 'Ödül programı yakında. Katılım koşulları burada paylaşılacak.'
+                    : 'Yeni kazanımlar şu anda açık değil. Mevcut kayıtlar korunur.',
+                style: const TextStyle(
                   fontSize: 12,
                   color: EsnaftaVarColors.textSecondary,
                 ),

@@ -6,6 +6,7 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/rewards/domain/reward_progress.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/rewards/presentation/reward_counter_card.dart';
 
 RewardRepository activeRewardRepository() => sl.isRegistered<RewardRepository>()
@@ -94,40 +95,94 @@ class RewardCenter extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RewardCounterCard(progress: progress),
-            const SizedBox(height: 24),
-            Text(
-              'Hangi esnaflarda ilerleyebilirim?',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            if (progress.merchants.isEmpty)
-              const Text(
-                'Katılımcı esnaflar henüz açıklanmadı. Uygun mağazalar ve katılım koşulları hazır olduğunda burada görünecek.',
+            if (!progress.loading && progress.error == null) ...[
+              const SizedBox(height: 24),
+              Text(
+                'Hangi esnaflarda ilerleyebilirim?',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            for (final merchant in progress.merchants)
-              ListTile(
-                leading: MerchantLogoBubbles(merchants: [merchant]),
-                title: Text(merchant.name),
+              const SizedBox(height: 12),
+              if (progress.merchants.isEmpty)
+                Text(
+                  progress.program == null
+                      ? 'Katılımcı esnaflar henüz açıklanmadı. Uygun mağazalar ve katılım koşulları hazır olduğunda burada görünecek.'
+                      : 'Şu anda ödül kontenjanı uygun bir mağaza bulunamadı. Daha sonra yeniden kontrol edebilirsiniz.',
+                ),
+              for (final merchant in progress.merchants)
+                ListTile(
+                  leading: MerchantLogoBubbles(merchants: [merchant]),
+                  title: Text(merchant.name),
+                ),
+              const SizedBox(height: 24),
+              Text(
+                'Ödül detayları',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            const SizedBox(height: 24),
-            Text(
-              'Ödül detayları',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('Ödül türü ve kazanma koşulları henüz belirlenmedi.'),
-            const SizedBox(height: 24),
-            Text(
-              'Ödül geçmişi',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('Henüz bir ödül kaydı yok.'),
+              const SizedBox(height: 8),
+              if (progress.program == null)
+                const Text('Ödül türü ve kazanma koşulları henüz belirlenmedi.')
+              else ...[
+                const Text(
+                  'Beş uygun alışverişin bekleme süreleri tamamlandığında kupon oluşturulur. Bekleyen tutar henüz kupon değildir.',
+                ),
+                Text(
+                  'Bekleyen kazanım: ${rewardMoney(progress.program!.pending)}',
+                ),
+                Text(
+                  'Oluşturulan kupon değeri: ${rewardMoney(progress.program!.couponValue)}',
+                ),
+                const Text(
+                  'Kupon harcama henüz açılmadı. Kuponlar para çekme veya transfer için kullanılamaz.',
+                ),
+              ],
+              const SizedBox(height: 24),
+              Text(
+                'Ödül geçmişi',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              if (progress.program?.history.isNotEmpty != true)
+                const Text('Henüz bir ödül kaydı yok.'),
+              for (final earning
+                  in progress.program?.history ?? <RewardEarning>[])
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    !earning.valid
+                        ? 'Kazanım geri alındı'
+                        : earning.issued
+                        ? 'Kupona aktarıldı'
+                        : 'Olgunlaşma bekleniyor',
+                  ),
+                  subtitle: Text(
+                    'Alışveriş: ${_rewardDate(earning.earnedAt)}\nBekleme sonu: ${_rewardDate(earning.maturesAt)}',
+                  ),
+                ),
+              for (final coupon
+                  in progress.program?.coupons ?? <RewardCoupon>[])
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.confirmation_number_outlined),
+                  title: Text('Kupon: ${rewardMoney(coupon.remaining)}'),
+                  subtitle: Text(_rewardDate(coupon.issuedAt)),
+                ),
+            ],
+            if ((repository ?? activeRewardRepository())
+                case final RewardProgramRepository program)
+              TextButton(
+                onPressed: program.refresh,
+                child: const Text('Ödül bilgilerini yenile'),
+              ),
           ],
         ),
       ),
     ),
   );
+}
+
+String _rewardDate(DateTime value) {
+  final v = value.toLocal();
+  return '${v.day.toString().padLeft(2, '0')}.${v.month.toString().padLeft(2, '0')}.${v.year} ${v.hour.toString().padLeft(2, '0')}:${v.minute.toString().padLeft(2, '0')}';
 }
 
 class _RewardSubscription extends StatefulWidget {
@@ -145,15 +200,39 @@ class _RewardSubscription extends StatefulWidget {
 }
 
 class _RewardSubscriptionState extends State<_RewardSubscription> {
-  late final stream = (widget.repository ?? activeRewardRepository())
-      .watchProgress(widget.customerId);
+  late Stream<RewardProgress> stream;
+  int generation = 0;
+  bool get program =>
+      (widget.repository ?? activeRewardRepository())
+          is RewardProgramRepository;
+  @override
+  void initState() {
+    super.initState();
+    stream = (widget.repository ?? activeRewardRepository()).watchProgress(
+      widget.customerId,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_RewardSubscription oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.customerId != widget.customerId ||
+        oldWidget.repository != widget.repository) {
+      generation++;
+      stream = (widget.repository ?? activeRewardRepository()).watchProgress(
+        widget.customerId,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) => StreamBuilder<RewardProgress>(
+    key: ValueKey(generation),
     stream: stream,
     builder: (context, snapshot) => widget.builder(
       snapshot.hasError
-          ? const RewardProgress()
-          : snapshot.data ?? const RewardProgress(),
+          ? const RewardProgress(error: 'Ödül bilgileri yüklenemedi.')
+          : snapshot.data ?? RewardProgress(loading: program),
     ),
   );
 }

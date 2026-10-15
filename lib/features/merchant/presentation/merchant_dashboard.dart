@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_rewards.dart';
 import 'package:t_store/features/merchant/presentation/merchant_campaigns.dart';
 import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 import 'package:t_store/features/merchant/presentation/merchant_reviews.dart';
@@ -88,6 +89,8 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const Text('Mağazanın güncel durumunu kontrol et.'),
+        if (widget.services.rewardProgram != null)
+          MerchantRewardEntry(services: widget.services, access: widget.access),
         if (widget.services.trustCommerce case final repository?) ...[
           TrustSummary(
             key: ValueKey('trust-$_reviewsRevision'),

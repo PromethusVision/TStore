@@ -695,6 +695,43 @@ hold from that obligation. A client cannot turn it OFF while forced. Once those
 conditions end, normal merchant control returns; store preferred value separately
 from computed lock/effective state. Acceptance does not by itself grant earning.
 
+### 8.1 E earning lifecycle — local implementation boundary
+
+After H0 integration (`b022f5f3`), the Product Owner requested the next large
+implementation package. Implement package/capacity, reservations/checkout holds,
+earning, five-source maturity, unspent compensation and Merchant/Customer read
+surfaces locally. All FROZEN numerical rules above remain unchanged.
+
+E-enabled purchases use the existing QR identity with an earning companion. The
+merchant explicitly confirms that the unchanged quote is the actual final sale
+and EV coupon use is zero. Old clients cannot finalize that companion through a
+legacy completion endpoint; ordinary B-only purchases remain unchanged and never
+earn retroactively. Discount amendments and coupon use require a new complete
+quote/customer-approval transaction and remain disabled in this delivery.
+
+Real funding requires a separately approved provider/operations process. Local
+trusted activation accepts exact external funding and merchant-consent attestations
+and applies reserve first; no app button can assert payment success. Reserve,
+available receivables and external funding remain distinct accounting sources.
+
+One cart attempt has a fixed server deadline, including release/reacquisition;
+after expiry a new attempt requires explicit user action. Existing short checkout
+holds remain tied to their original package. Capacity and H0 journal changes commit
+with the purchase/return evidence or roll back together. A short serialization
+epoch orders local V1 reward writes; no provider call occurs inside that lock.
+
+Pending contributions rebuild chronologically; issued source links never move.
+Normal pre-maturity threshold loss restores the contribution's package capacity
+and fund (or its expired unused-fund receivable). Ordinary post-maturity returns
+retain rewards; audited invalidation reverses unspent value. Redemption remains
+disabled, and partially spent O7 recovery still belongs to the later complete
+redemption/return extension. No customer cash debt or external cash refund is
+inferred. Provider, legal, deployment and physical acceptance gates stay open.
+
+Local implementation and verification are recorded in
+`MERCHANT_REWARD_E_HANDOFF.md`; this does not mark the full E redemption slice or
+the physical QR acceptance complete.
+
 ## 9. Merchant balance and immutable accounting
 
 **FROZEN direction:** “Hesap Bakiyesi”, statement-like history with separate

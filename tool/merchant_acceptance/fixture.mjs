@@ -10,7 +10,8 @@ export async function connect(config) {
     query_timeout: 25000, application_name: 'ev-merchant-ab-acceptance' });
   await db.connect(); return db;
 }
-export async function migrate(db, { reviews = false, trustCampaigns = false, ledger = false } = {}) {
+export async function migrate(db, { reviews = false, trustCampaigns = false, ledger = false, rewards = false } = {}) {
+  ledger ||= rewards;
   assert.equal((await db.query("SELECT to_regclass('public.profiles') AS existing")).rows[0].existing, null, 'Fresh fixture required');
   assert.equal((await db.query('SELECT count(*)::int n FROM auth.users')).rows[0].n, 0, 'Existing Auth data forbidden');
   assert.equal((await db.query('SELECT count(*)::int n FROM storage.objects')).rows[0].n, 0, 'Existing Storage data forbidden');
@@ -22,7 +23,7 @@ export async function migrate(db, { reviews = false, trustCampaigns = false, led
   const selected = (await readdir(resolve(root, 'supabase/migrations'))).filter(f => {
     const ordinal = Number(f.match(/_(\d{4})_/)?.[1]);
     return ordinal <= 11 || [16,17,18].includes(ordinal) || ((reviews || trustCampaigns || ledger) && ordinal === 19)
-      || ((trustCampaigns || ledger) && [20,21,22].includes(ordinal)) || (ledger && ordinal===23);
+      || ((trustCampaigns || ledger) && [20,21,22].includes(ordinal)) || (ledger && ordinal===23) || (rewards && ordinal===24);
   }).sort();
   const manifest = [];
   for (const file of selected) {

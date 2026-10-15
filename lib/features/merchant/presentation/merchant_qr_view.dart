@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
+import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/merchant/presentation/merchant_purchases_view.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
@@ -81,6 +84,42 @@ class _MerchantQrViewState extends State<MerchantQrView>
       if (mounted && token != null) _cubit.loadVerification(token);
     } finally {
       _scanning = false;
+    }
+  }
+
+  bool _confirmingSale = false;
+  Future<void> _confirm(QrVerificationEntity verification) async {
+    if (_confirmingSale) return;
+    if (!verification.rewardConfirmationRequired) {
+      await _cubit.confirmVerification();
+      return;
+    }
+    _confirmingSale = true;
+    try {
+      final approved = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Gerçek satış tutarını doğrula'),
+          content: Text(
+            '${rewardMoney(LedgerMinorUnits.fromWire(verification.rewardSaleMinor))} tutarında fiziksel alışveriş tamamlandığını ve bu satışta EV kuponu kullanılmadığını onaylıyor musunuz?\n\nFarklı bir tutar veya mağaza indirimi varsa bu işlemi iptal edin. Yanlış tutarla ödül kazandırmayın.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Satışı doğrula'),
+            ),
+          ],
+        ),
+      );
+      if (mounted && approved == true && verification.canBeConfirmed) {
+        await _cubit.confirmVerification();
+      }
+    } finally {
+      _confirmingSale = false;
     }
   }
 
@@ -182,7 +221,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
                       ),
                     FilledButton(
                       onPressed: verification.canBeConfirmed
-                          ? _cubit.confirmVerification
+                          ? () => _confirm(verification)
                           : null,
                       child: const Text('İşlemi onayla'),
                     ),

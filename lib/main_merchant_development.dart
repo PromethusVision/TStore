@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
 import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
 import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
 import 'package:t_store/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart';
@@ -49,13 +50,18 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
+        rewardProgram: const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')
+            ? SupabaseRewardProgramRepository(service.client)
+            : null,
         trustCommerce: const bool.fromEnvironment('TRUST_COMMERCE_V1_ENABLED')
             ? SupabaseTrustCommerceRepository(service.client)
             : null,
         evaluations: const bool.fromEnvironment('REVIEWS_V2_ENABLED')
             ? SupabasePurchaseEvaluationRepository(service.client)
             : null,
-        purchaseEvidence: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED')
+        purchaseEvidence:
+            const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
+                const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')
             ? SupabasePurchaseEvidenceRepository(service.client)
             : null,
         credentials: SharedMerchantCredentials(
@@ -64,7 +70,12 @@ Future<void> main() async {
         notifications: NotificationRepositoryImpl(supabaseService: service),
         qr: QrSessionRepositoryImpl(
           supabaseService: service,
-          claimsEnabled: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED'),
+          claimsEnabled:
+              const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
+              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED'),
+          rewardEarningEnabled: const bool.fromEnvironment(
+            'REWARD_EARNING_V1_ENABLED',
+          ),
         ),
         preferences: LocalNotificationPreferencesRepository(),
         sessionChanges: service.authStateChanges.map((s) => s.session?.user.id),

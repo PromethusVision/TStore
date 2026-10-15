@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/presentation/reward_reservation_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
@@ -32,6 +35,27 @@ class CartV2View extends StatefulWidget {
 }
 
 class _CartV2ViewState extends State<CartV2View> {
+  Widget _rewardReservation(CartV2Loaded cart) {
+    final service = sl.isRegistered<SupabaseService>()
+        ? sl<SupabaseService>()
+        : null;
+    return RewardReservationCard(
+      key: ValueKey('reward-${cart.items.first.cartId}'),
+      repository: sl<RewardProgramRepository>(),
+      cartId: cart.items.first.cartId,
+      revision: cart.items
+          .map(
+            (item) =>
+                '${item.id}:${item.quantity}:${item.shopProduct?.price}:${item.isPurchaseVerifiable}',
+          )
+          .join('|'),
+      currentUserId: service == null ? null : () => service.currentUser?.id,
+      sessionChanges: service?.authStateChanges.map(
+        (event) => event.session?.user.id,
+      ),
+    );
+  }
+
   bool _isPreparingPurchaseVerification = false;
   bool _isRefreshingUnavailableItem = false;
   bool _isClearingCart = false;
@@ -159,6 +183,8 @@ class _CartV2ViewState extends State<CartV2View> {
                                 itemCount: state.items.length,
                               ),
                             ),
+                            if (sl.isRegistered<RewardProgramRepository>())
+                              _rewardReservation(state),
                             _CartV2VerificationPanel(
                               totalAmount: state.totalAmount,
                               requiresRefresh: state.items.any(
