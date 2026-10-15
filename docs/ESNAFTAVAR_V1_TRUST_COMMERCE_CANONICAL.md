@@ -745,6 +745,12 @@ earning-only delivery; the following supersedes its local redemption/O7 boundary
   classification fingerprint, live Auth session, request UUID and immutable QR.
   Old completion APIs reject coupon contracts before economic effects. Merchant
   confirmation attests all three amounts; no unilateral merchant coupon use.
+- The existing net-payment threshold also governs capacity at approval time.
+  Approval below the snapshotted threshold releases the reservation/checkout hold
+  and its earmarked fund in that same transaction, before merchant claim. Reopen,
+  replay or reservation refresh cannot reacquire capacity against the gross sale
+  while that consent is live. An eligible net amount retains its valid hold;
+  cancelling consent permits normal reassessment with the original attempt deadline.
 - Listed sale prices remain unchanged. Merchant discounts/price amendments still
   require a new quote and approval and are not an implemented discount engine.
   Unknown or cash-equivalent classification blocks coupon use for the whole cart.

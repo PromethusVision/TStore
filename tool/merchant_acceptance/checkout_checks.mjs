@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {rpc,sqlAs} from './fixture.mjs';
 import {contended} from './postgres_checks.mjs';
+import {checkoutReservationChecks} from './checkout_reservation_checks.mjs';
 
 export async function checkoutChecks(db,config,f) {
   const checks=[],check=async(name,fn)=>{await fn();checks.push({name,result:'PASS'});console.log(`PASS ${name}`);};
@@ -82,12 +83,14 @@ export async function checkoutChecks(db,config,f) {
     await assert.rejects(call(f.customer,'create_coupon_qr_v1',[id,randomUUID(),fresh.fingerprint,'25000']),/CHECKOUT_QUOTE_CHANGED/);
     assert.equal(await count('reward_checkout_approvals'),before);
   });
+  await checkoutReservationChecks({db,f,check,call,cart,claim});
   let checkout,claimed,purchase;
   await check('Checkout concurrent exact approval creates one immutable QR; request change and post-exposure retrofit fail',async()=>{
     const id=await cart(750),p=await call(f.customer,'preview_coupon_checkout_v1',[id]),args=[id,randomUUID(),p.fingerprint,'25000'];
     const results=await contended(db,o=>call(f.customer,'create_coupon_qr_v1',args,o),o=>call(f.customer,'create_coupon_qr_v1',args,o));
     assert(results.every(r=>r.status==='fulfilled'),JSON.stringify(results));checkout=results[0].value;
     assert.equal(checkout.id,results[1].value.id);assert.equal(checkout.coupon_checkout.payment_minor,'50000');
+    assert.equal(await scalar("SELECT count(*)::int FROM public.reward_reservations WHERE qr_ref=$1 AND state='checkout_hold'",[checkout.id]),1);
     const recovered=await call(f.customer,'preview_coupon_checkout_v1',[id]);assert.equal(recovered.existing_qr.id,checkout.id);
     assert.equal(recovered.maximum_coupon_minor,'0');
     await assert.rejects(call(f.customer,'create_coupon_qr_v1',[...args.slice(0,3),'24999']),/CHECKOUT_REPLAY_CONFLICT/);
@@ -172,7 +175,10 @@ export async function checkoutChecks(db,config,f) {
   const deep=await f.actor(),deepSources=[];
   for(let i=0;i<10;i++)deepSources.push(await earn(deep));await mature();assert.equal((await state(deep)).coupon_minor,'50000');
   await check('Checkout 500 minus 500 creates valid purchase with zero payment and no reward; reserve caps at 1000 TL',async()=>{
-    const {q}=await approve(50000,500,1,deep),done=await complete(await claim(q));
+    const {q}=await approve(50000,500,1,deep);
+    assert.equal(await scalar("SELECT count(*)::int FROM public.reward_reservations WHERE qr_ref=$1 AND state='checkout_hold'",[q.id]),0);
+    assert.equal((await call(deep,'ensure_reward_reservation_v1',[q.cart_id,false])).status,'below_threshold');
+    const done=await complete(await claim(q));
     assert.equal(done.status,'used');assert.equal((await state(deep)).pending_count,0);assert.equal((await state(deep)).coupon_minor,'0');
     assert.equal(await scalar('SELECT customer_payment_minor::text FROM public.purchase_terms WHERE purchase_id=$1',[done.purchase_id]),'0');
     const first=await call(f.customer,'read_customer_checkout_terms_v1',[[done.purchase_id]]);assert.deepEqual(first,[]);

@@ -5,6 +5,27 @@ Baseline: `af9d59652851c7fa3348bfc1564725411ad85aea` (integrated earning lifecyc
 Authority: Product Owner requested the next implementation after integration PASS.
 Canonical §§5, 8.2, 9 and O6/O7 govern. Main integration belongs to Integration Agent.
 
+## Integration correction to 00192eb6
+
+Integration correctly rejected the first delivery: the existing QR path reserved
+against the gross sale before coupon approval, then only released an ineligible
+hold at completion. The earlier terminal "no reward" tests missed that interval.
+The added pre-claim regression failed on 00192eb6 with `checkout_hold` instead of
+`released` for 500 TL sale − 250 TL coupon = 250 TL payment.
+
+Forward migration 0026 releases the slot and its 50 TL fund in the same approval
+transaction. Reservation refresh reads the immutable live consent and its policy,
+so reopen, simultaneous retries and explicit restart cannot reacquire on gross
+value or extend the original attempt. Exact 500 TL net retains a valid hold.
+Cancellation permits normal reassessment under the unchanged attempt deadline.
+The private repair also handles previously created bad holds without rewriting
+their approval/QR evidence; its migration pass requires no customer Auth context.
+
+Regression proof now includes pre-claim/post-claim slot and fund balances, one-cent
+boundaries, zero payment, exact replay, last-slot contention, atomic rollback,
+expired-package receivables and denial of the private gross-value bypass. A real
+local HTTP/Auth test independently verifies immediate release and refresh behavior.
+
 ## Delivered behavior
 
 Customer-selected EV coupon use now connects to the existing physical Merchant QR
@@ -40,9 +61,12 @@ it is not authorization to deploy funded economics or declare physical QR comple
 
 ## Migration, ownership and compatibility
 
-Only new migration `20261015002500_0025_coupon_checkout.sql` changes the database.
-It adds six private tables (gate, product classification, approval, redemption,
+Migration `20261015002500_0025_coupon_checkout.sql` adds six private tables
+(gate, product classification, approval, redemption,
 source use and future offset), private helpers/triggers and role-scoped RPCs.
+Forward migration `20261015002600_0026_coupon_reservation_net_threshold.sql` adds
+the approval-time release, guarded reservation wrapper and existing-hold repair.
+0025 and all earlier migrations are unchanged from the rejected delivery.
 RLS and revoked table/helper privileges are verified for anon/authenticated/
 service_role. The classification function is database-owner-only, not an admin
 screen or a provider attestation API. Classification policy must be approved
@@ -83,24 +107,27 @@ Passing reports: `data/merchant_checkout_e_native_acceptance.json`,
 Native proof uses PostgreSQL 17.11 with real crypto and independent connections;
 its Auth/Storage schemas are synthetic. Managed proof separately uses actual local
 Supabase Auth/PostgREST/Storage. Neither replaces physical-device acceptance.
-Both reports identify all 21 migration byte hashes; the 20 earlier hashes match E.
+Both reports identify all 22 migration byte hashes; the first 21 exactly match
+00192eb6. The correction changes no Flutter runtime, dependency or asset file.
 
 | Check | Result |
 | --- | --- |
 | Full Flutter suite | 2,465 PASS, 0 FAIL, 6 existing SKIP |
-| Focused Flutter regressions | 83 PASS |
+| Final migration contract tests | 18 PASS |
 | Analyzer | PASS, no issues |
-| Native PostgreSQL | 94 groups PASS |
-| Managed local services | 92 groups PASS |
+| Native PostgreSQL | 101 groups PASS |
+| Managed local services | 100 groups PASS |
 | Harness isolation/safety | 5 PASS |
-| Customer / Merchant debug APK | Both PASS |
-| Widget renders | 5 inspected, no clipping/overflow observed |
+| Customer / Merchant debug APK | Prior PASS reused; Flutter build inputs unchanged |
+| Widget renders | 5 prior inspected renders; UI unchanged |
 
 Native and managed groups overlap and must not be added as independent coverage.
-The final focused run includes the realistic two-minute QR render fixture update;
-the full suite preceded that test-only timestamp change. No product source changed
-between these runs. Customer compilation used Gradle's successful fallback after
-the known Kotlin incremental-cache daemon error; both final APKs were produced.
+The full Flutter suite and analyzer were rerun for this correction; final contract
+tests cover the last SQL edit. The prior 83 focused Flutter tests, both APKs and
+five inspected renders remain valid for the unchanged Flutter implementation;
+they are not reported as newly executed builds or physical acceptance. Prior
+Customer compilation used Gradle's successful fallback after the known Kotlin
+incremental-cache daemon error; both APK fingerprints are retained in the report.
 
 ```powershell
 flutter analyze --no-pub
@@ -133,9 +160,13 @@ attestation. They use synthetic data and the existing project fonts/theme.
 ## Rehearsal and rollback boundary
 
 Both fresh local fixtures applied the complete ordered migration chain and checked
-the new default-OFF state before enabling synthetic scenarios. Migration 0025 is
+the new default-OFF state before enabling synthetic scenarios. Migrations 0025–0026 are
 transactional with preflight checks, statement/lock timeouts and no historical
 rewrite. A failed application rolls back that migration transaction.
+The 0026 repair uses the existing ledger release, preserving history and routing
+expired-package funds through the existing expiry rule. If affected holds exist
+while H0 is stopped, the release fails closed and the whole migration rolls back;
+an operator must resolve that operational gate before an authorized deployment.
 
 For an approved future rollout, disabling the checkout gate stops new approvals;
 existing approved work retains frozen terms while H0 is enabled. This is deliberate

@@ -26,6 +26,26 @@ export async function checkoutHttpChecks({db,request,rpc,f}) {
     assert.equal((await request('/rest/v1/rpc/preview_coupon_checkout_v1',f.other,{p_cart:cart})).ok,false);
     assert.equal((await request('/rest/v1/rpc/attest_reward_product_classification_v1',f.merchant,{p_product:f.product,p_classification:'ordinary',p_policy_ref:'fake',p_reason:'fake'})).ok,false);
   });
+  await check('Checkout HTTP below-threshold approval releases capacity before claim and refresh cannot reacquire it',async()=>{
+    await db.query('DELETE FROM public.qr_attempt_limits');
+    await db.query('UPDATE public.shop_products SET price=500 WHERE id=$1',[f.listing]);
+    cart=randomUUID();
+    await db.query('INSERT INTO public.carts(id,user_id,shop_id) VALUES($1,$2,$3)',[cart,f.customer.id,f.shop]);
+    await db.query('INSERT INTO public.cart_items_v2(cart_id,shop_product_id,quantity) VALUES($1,$2,1)',[cart,f.listing]);
+    const reserved=await rpc('ensure_reward_reservation_v1',f.customer,{p_cart:cart,p_start_new:false});assert.equal(reserved.status,'reserved');
+    preview=await rpc('preview_coupon_checkout_v1',f.customer,{p_cart:cart});
+    qr=await rpc('create_coupon_qr_v1',f.customer,{p_cart:cart,p_request:randomUUID(),p_fingerprint:preview.fingerprint,p_coupon_minor:'1000'});
+    assert.equal(qr.coupon_checkout.payment_minor,'49000');
+    const reservation=async()=>(await db.query('SELECT state FROM public.reward_reservations WHERE attempt_id=$1',[reserved.attempt_id])).rows;
+    assert.deepEqual(await reservation(),[{state:'released'}]);
+    const refreshed=await rpc('ensure_reward_reservation_v1',f.customer,{p_cart:cart,p_start_new:true});
+    assert.equal(refreshed.status,'below_threshold');assert.equal(refreshed.expires_at,reserved.expires_at);
+    claim=await rpc('claim_existing_qr_v2',f.merchant,{p_shop_id:f.shop,p_installation_id:f.merchant.installation,p_request_id:randomUUID(),p_session_token:qr.session_token});
+    assert.deepEqual(await reservation(),[{state:'released'}]);
+    await rpc('cancel_claim_v2',f.merchant,{p_claim_id:claim.claim_id,p_installation_id:f.merchant.installation});
+    await db.query("UPDATE public.carts SET status='cancelled' WHERE id=$1",[cart]);
+    await db.query('UPDATE public.shop_products SET price=750 WHERE id=$1',[f.listing]);
+  });
   await check('Checkout HTTP real Auth logout revokes coupon consent despite still-signed customer JWT',async()=>{
     await db.query('DELETE FROM public.qr_attempt_limits');
     cart=randomUUID();

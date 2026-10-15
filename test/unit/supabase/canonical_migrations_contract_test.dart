@@ -35,6 +35,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002300_0023_commerce_ledger_foundation.sql',
   '20261015002400_0024_reward_earning_cycle.sql',
   '20261015002500_0025_coupon_checkout.sql',
+  '20261015002600_0026_coupon_reservation_net_threshold.sql',
 ];
 
 const _baselinePublicTables = <String>{

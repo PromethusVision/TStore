@@ -24,7 +24,7 @@ export async function migrate(db, { reviews = false, trustCampaigns = false, led
   const selected = (await readdir(resolve(root, 'supabase/migrations'))).filter(f => {
     const ordinal = Number(f.match(/_(\d{4})_/)?.[1]);
     return ordinal <= 11 || [16,17,18].includes(ordinal) || ((reviews || trustCampaigns || ledger) && ordinal === 19)
-      || ((trustCampaigns || ledger) && [20,21,22].includes(ordinal)) || (ledger && ordinal===23) || (rewards && ordinal===24) || (checkout && ordinal===25);
+      || ((trustCampaigns || ledger) && [20,21,22].includes(ordinal)) || (ledger && ordinal===23) || (rewards && ordinal===24) || (checkout && [25,26].includes(ordinal));
   }).sort();
   const manifest = [];
   for (const file of selected) {

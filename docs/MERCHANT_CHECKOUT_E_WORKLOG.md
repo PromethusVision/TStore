@@ -65,3 +65,26 @@ builds, inspected UI renders and migration-byte/scope audit before task push.
   suites rerun against the exact final bytes. Docker's default address pool was
   exhausted by retained networks; only two verified empty networks from this
   task's earlier stopped fixtures were removed. All fixture volumes were retained.
+
+## Integration correction — net eligibility before completion
+
+- Integration rejected 00192eb6 without merging. Confirmed the missing intermediate
+  invariant using a new native regression: 500−250 left `checkout_hold` before
+  claim although the final purchase correctly earned nothing.
+- Preserved migrations through 0025. Added forward 0026: release capacity/fund
+  atomically at approval, prevent gross-value reacquisition while consent is live,
+  preserve the fixed attempt deadline and repair earlier ineligible live holds.
+- Expanded acceptance with seven SQL groups and one real HTTP group, observing
+  approval, claim, retry, recovery, cancellation, last-slot competition, rollback,
+  policy boundary and expired-package fund destination before completion.
+- The synthetic prior-version repair check also caught an Auth-context assumption
+  in the first repair helper. The final helper reads private QR deadlines directly
+  and works for the migration owner without impersonating a customer.
+- No Flutter runtime or UI/dependency changes; prior builds/renders are reused only
+  after checking their inputs are unchanged. New final validation supersedes the
+  original delivery's incomplete capacity proof; external release gates stay open.
+- Final results: full Flutter 2,465 PASS / 0 FAIL / 6 existing SKIP; final migration
+  contracts 18 PASS; analyzer clean; native PostgreSQL 101 groups PASS; managed
+  local services 100 groups PASS; harness safety 5 PASS. All 21 prior migration
+  byte hashes and unchanged Flutter/build/render inputs verified. Owned local
+  validation processes stopped; no Production operation or main integration.

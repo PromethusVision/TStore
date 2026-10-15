@@ -244,6 +244,9 @@ authorize hosted activation, arbitrary merchant discounts, coupon-restoration
 policy, cash refunds, provider/settlement execution or physical acceptance.
 Local implementation and validation are delivered in
 `MERCHANT_CHECKOUT_E_HANDOFF.md`; this does not mark the external E/O8 gates closed.
+Integration correction 0026 enforces the already-frozen net threshold immediately
+at coupon approval and prevents live-consent retries from reacquiring on gross
+value. Acceptance now observes capacity/funds before completion; 0025 is preserved.
 
 - **DB:** package/terms snapshots, reservation/hold projections, chronological
   append-only contribution/reversal events, issued coupons + immutable five-source

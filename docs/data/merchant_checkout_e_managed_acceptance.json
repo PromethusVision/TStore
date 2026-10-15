@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "captured_at": "2026-10-15T18:47:33.665Z",
+  "captured_at": "2026-10-15T19:20:01.344Z",
   "evidence_class": "real-local-supabase-auth-postgrest-storage-postgresql",
   "runtime": "PostgreSQL 17.11 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit",
   "services": [
@@ -342,6 +342,34 @@
       "result": "PASS"
     },
     {
+      "name": "Checkout net threshold releases the existing reservation and its fund at customer approval",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout recovery and concurrent reservation retries cannot reacquire below-threshold consent or renew its deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout capacity uses exact net minor units before and after claim at the 500 TL boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout failed consent rolls slot release and fund movement back with its QR and approval",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout last-slot release is immediately available to an independent waiting customer",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout legacy bad holds repair once; private repair and gross reservation bypass remain inaccessible",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout below-threshold consent releases an expired package hold to unused-fund receivable",
+      "result": "PASS"
+    },
+    {
       "name": "Checkout concurrent exact approval creates one immutable QR; request change and post-exposure retrofit fail",
       "result": "PASS"
     },
@@ -411,6 +439,10 @@
     },
     {
       "name": "Checkout HTTP raw tables, private kernels, wrong principal and unauthenticated preview are denied",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout HTTP below-threshold approval releases capacity before claim and refresh cannot reacquire it",
       "result": "PASS"
     },
     {
@@ -502,6 +534,10 @@
     {
       "file": "20261015002500_0025_coupon_checkout.sql",
       "sha256": "4982893ea7ba28ca2cfaf1fe9499023749bf28d60d72be2056e20a75ec1291eb"
+    },
+    {
+      "file": "20261015002600_0026_coupon_reservation_net_threshold.sql",
+      "sha256": "3f99ab67f25787355be6ba9bc9b96e44f981376f14e9a78793aca5644c741702"
     }
   ]
 }

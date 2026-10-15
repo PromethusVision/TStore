@@ -141,7 +141,7 @@ hashes. The capability is enabled only in the synthetic local fixture.
 
 ## Evidence handling
 
-The additive `--checkout` mode includes B/C/D/F/H0/E and migration 0025. It runs
+The additive `--checkout` mode includes B/C/D/F/H0/E and migrations 0025–0026. It runs
 the unchanged-price customer coupon approval, redemption, return allocation and
 spent-source offset matrix. Use the same commands above with `--checkout` instead
 of `--reviews`, always with a fresh owned fixture. Reports are
@@ -150,6 +150,10 @@ of `--reviews`, always with a fresh owned fixture. Reports are
 the SQL checkout matrix plus actual HTTP/Auth tests; do not add report totals as
 distinct cases. Real product classification, funding, refunds, settlement and
 physical-device acceptance remain outside this synthetic proof.
+The capacity regression observes the reservation and ledger immediately after
+consent and after claim, before completion: net 499.99/500/500.01 TL, zero payment,
+replay/reopen, last-slot contention, rollback and expired-package release. Terminal
+"no reward" assertions alone cannot prove timely capacity release.
 
 A nonzero exit is not acceptance. The managed runner returns 2 when the local
 environment is unavailable and 1 for failures after database connection.

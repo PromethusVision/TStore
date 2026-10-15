@@ -1,38 +1,61 @@
 {
   "result": "PASS",
-  "captured_at": "2026-10-15T18:48:11.273Z",
+  "captured_at": "2026-10-15T19:21:30.040Z",
   "branch": "agent/merchant-checkout-e",
   "baseline": "af9d59652851c7fa3348bfc1564725411ad85aea",
+  "correction_base": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+  "regression_reproduction": {
+    "source_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+    "result": "EXPECTED_FAILURE_CONFIRMED",
+    "sale_minor": "50000",
+    "coupon_minor": "25000",
+    "payment_minor": "25000",
+    "phase": "after approval, before merchant claim",
+    "actual": "checkout_hold",
+    "expected": "released"
+  },
   "full_flutter": {
     "pass": 2465,
     "fail": 0,
     "existing_skips": 6
   },
+  "migration_contract_tests": {
+    "pass": 18,
+    "fail": 0
+  },
   "focused_flutter": {
     "pass": 83,
-    "fail": 0
+    "fail": 0,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+    "executed_this_correction": false
   },
   "analyzer": "PASS",
   "harness_safety": {
     "pass": 5,
     "fail": 0
   },
-  "native_postgresql_groups": 94,
-  "managed_local_service_groups": 92,
-  "historical_migrations_verified": 20,
+  "native_postgresql_groups": 101,
+  "managed_local_service_groups": 100,
+  "new_sql_regression_groups": 7,
+  "new_http_regression_groups": 1,
+  "historical_migrations_verified": 21,
   "migration_sha256": {
-    "file": "20261015002500_0025_coupon_checkout.sql",
-    "sha256": "4982893ea7ba28ca2cfaf1fe9499023749bf28d60d72be2056e20a75ec1291eb"
+    "file": "20261015002600_0026_coupon_reservation_net_threshold.sql",
+    "sha256": "3f99ab67f25787355be6ba9bc9b96e44f981376f14e9a78793aca5644c741702"
   },
   "customer_build": {
     "result": "PASS",
     "file": "build/app/outputs/flutter-apk/app-development-debug.apk",
-    "sha256": "5eb659886409dbeab5b93d6a9beef759f88a2efa112414dd1a30abef23f41df8"
+    "sha256": "5eb659886409dbeab5b93d6a9beef759f88a2efa112414dd1a30abef23f41df8",
+    "executed_this_correction": false,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063"
   },
   "merchant_build": {
     "result": "PASS",
     "file": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
-    "sha256": "d2df7625738423c2fcb68ee894bcdbcdb6d24ef0b963271f32d234289f3300af"
+    "sha256": "d2df7625738423c2fcb68ee894bcdbcdb6d24ef0b963271f32d234289f3300af",
+    "executed_this_correction": false,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063"
   },
   "build_defines": [
     "COUPON_CHECKOUT_V1_ENABLED=true",
@@ -147,6 +170,10 @@
       "sha256": "4982893ea7ba28ca2cfaf1fe9499023749bf28d60d72be2056e20a75ec1291eb"
     },
     {
+      "file": "supabase/migrations/20261015002600_0026_coupon_reservation_net_threshold.sql",
+      "sha256": "3f99ab67f25787355be6ba9bc9b96e44f981376f14e9a78793aca5644c741702"
+    },
+    {
       "file": "test/support/coupon_checkout_fixtures.dart",
       "sha256": "3d8aadfc09098ce0e310ce8cbd5acf659a1b3d7c7883d137a22136de8c5efbee"
     },
@@ -156,7 +183,7 @@
     },
     {
       "file": "test/unit/supabase/canonical_migrations_contract_test.dart",
-      "sha256": "2e40efffee7a26fabccc5439ed09624fe4c00d8fefdece767a3b612c243ce8f8"
+      "sha256": "f228e972825ba8fe00d0d4ab0c9e51d4938f9a6e86ae8e68d3201e1116f4de1f"
     },
     {
       "file": "test/widget/merchant/coupon_checkout_widget_test.dart",
@@ -164,7 +191,7 @@
     },
     {
       "file": "tool/merchant_acceptance/README.md",
-      "sha256": "157a79dec442ea08e9cf4a1963bde53a199418c8f701c046455c2f3f87935a54"
+      "sha256": "72beea22a12f619d75eecdfb0960c36cfe0d3850578bdc8698c35e933a00f6fd"
     },
     {
       "file": "tool/merchant_acceptance/acceptance.mjs",
@@ -172,15 +199,19 @@
     },
     {
       "file": "tool/merchant_acceptance/checkout_checks.mjs",
-      "sha256": "913d7ec20fd17589ff2162dbe69a9a7cd9095d6fdfe50836c947294eb1a46eb0"
+      "sha256": "ff66993562702669c51b8130aeda6c846565fe8bac3076b35c90cf709269481a"
     },
     {
       "file": "tool/merchant_acceptance/checkout_http_checks.mjs",
-      "sha256": "82d3525778635335aacc4ed2276d32092cc5a8d835e773a9fe45e72f6150ee49"
+      "sha256": "d002de9d439babbeea566ba76eff7c22094351df984602d2e99bef2108b642af"
+    },
+    {
+      "file": "tool/merchant_acceptance/checkout_reservation_checks.mjs",
+      "sha256": "e991dc5f7cfd7b570b586b4823c2e417b9c98538afaee4f60d89baf75ef70bdf"
     },
     {
       "file": "tool/merchant_acceptance/fixture.mjs",
-      "sha256": "f20d5e0e98df8aa6dfc5f336bb010392f8b2cf7660556aa5e818c2fb2906ab1c"
+      "sha256": "7db80fa90be294e30d1ee992b63b1da0aef233c8874e4ef18b0b4cb406d7c0a6"
     },
     {
       "file": "tool/merchant_acceptance/native.mjs",
@@ -209,6 +240,7 @@
       "sha256": "edb3f30bce998b3564a27556d94069469b701a3cdcc70640f003f9bb48a3a205"
     }
   ],
+  "runtime_and_ui_changes": "NONE; previous builds and renders reused after byte verification",
   "known_build_note": "Customer Kotlin incremental-cache daemon fallback occurred; Gradle fallback and both final debug builds succeeded.",
   "production_access": "NONE",
   "production_writes": "NONE",
