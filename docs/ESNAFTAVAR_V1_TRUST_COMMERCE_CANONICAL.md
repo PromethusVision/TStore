@@ -727,6 +727,51 @@ cash-equivalent perimeter, dispute/refund treatment and tax/legal wording remain
 external policy inputs. Missing policy disables the corresponding withdrawal/
 billing action; engineering does not invent a schedule or a legal conclusion.
 
+### 9.1 H0 local implementation boundary — 2026-10-15
+
+Following the Product Owner's instruction to start the next work after D/F
+integration (`6ef06be8`), H0 implements the dependency-ordered accounting substrate.
+It does not activate E/G/H1, deploy remotely or approve monetary/legal policy.
+The immutable V1 policy stores the already frozen §8 amounts/durations and §9
+reserve cap; policy metadata seeds no account balance or real funding.
+
+Trusted server modules/operators register typed, immutable source attestations.
+Their evidence reference is not payment-provider verification or proof of coupon
+consent/eligibility. E/G must validate those facts and call source/journal/consumer
+operations inside their complete transaction. Mobile users and service_role have
+no posting, source-registration, policy-write or raw-accounting permission.
+
+Account classes separate merchant coupon-pending/available, unused-fund-pending/
+available and mandatory reserve; customer pending/coupon value; package free/held
+fund; platform control/service accounts; and a separate noncash future-offset
+obligation. Signed integer postings sum to zero in TRY; protected accounts cannot
+overdraw. Balances are sums of immutable postings, never cached mutable authority.
+Integer JSON strings preserve exact money across browser/mobile runtimes.
+
+Only coupon-redemption sources replenish reserve, up to the snapshotted cap.
+Unused-package sources remain in their own pending pool. Trusted pending-release
+entries retain source class; they do not authorize a bank withdrawal. Platform
+service entries consume reserve first, then explicitly selected available claims.
+Exact compensating reversals preserve history and reject insufficient remaining
+value, repeated reversal or reserve overfill after a subsequent refill. H0 does
+not invent a partial reclassification to make a reversal succeed; E owns that
+later source-allocation workflow. Funding/redemption/settlement capabilities
+remain OFF.
+
+H0's future-offset primitive is conservative: it excludes all current unspent
+customer value before allowing a bounded obligation against an original reward
+source. Recovery simultaneously consumes future pending accrual and reduces that
+obligation, with original-source/accrual caps and no duplicate full reversal.
+E still owns per-coupon/source spent allocation and detailed O7 partial reversal;
+cases not safely representable by H0 fail closed. General return postings are
+reserved but disabled until that allocation policy/transaction is implemented.
+No customer cash debt, payout policy, provider success or eligibility is inferred.
+
+H0 adds only read contracts and an unbound read-only Dart adapter. Existing Reward
+screens and Merchant tabs do not become balance/financial surfaces; that remains
+H1. Deployment needs the reviewed account map, reconciliation owner and explicit
+Product Owner authority described in the slices. Local acceptance is separate.
+
 ## 10. Merchant Campaign Lite
 
 **FROZEN:** an informational, store-applied offer, distinct from Ads and Reward.

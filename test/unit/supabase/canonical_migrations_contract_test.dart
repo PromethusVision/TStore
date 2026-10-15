@@ -32,6 +32,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002000_0020_trust_badges.sql',
   '20261015002100_0021_merchant_campaign_lite.sql',
   '20261015002200_0022_campaign_required_amount.sql',
+  '20261015002300_0023_commerce_ledger_foundation.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -114,6 +115,15 @@ const _expectedPublicTables = <String>{
   'merchant_campaigns',
   'campaign_revisions',
   'campaign_requests',
+  'commerce_policy_versions',
+  'commerce_ledger_config',
+  'ledger_parties',
+  'ledger_accounts',
+  'ledger_account_locks',
+  'ledger_sources',
+  'ledger_journals',
+  'ledger_postings',
+  'ledger_consumer_receipts',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{
@@ -463,12 +473,12 @@ void main() {
   test('named canonical objects are not duplicated', () {
     final constraints = _captures(
       canonicalSql,
-      RegExp(r'\bCONSTRAINT\s+(\w+)', caseSensitive: false),
+      RegExp(r'\bCONSTRAINT\s+(?!TRIGGER\b)(\w+)', caseSensitive: false),
     );
     final triggers = _captures(
       canonicalSql,
       RegExp(
-        r'^\s*CREATE TRIGGER\s+(\w+)',
+        r'^\s*CREATE (?:CONSTRAINT )?TRIGGER\s+(\w+)',
         caseSensitive: false,
         multiLine: true,
       ),

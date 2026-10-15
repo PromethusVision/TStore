@@ -10,9 +10,11 @@ import { reviewChecks } from './review_checks.mjs';
 import { reviewHttpChecks } from './review_http_checks.mjs';
 import { trustCampaignChecks } from './trust_campaign_checks.mjs';
 import { trustCampaignHttpChecks } from './trust_campaign_http_checks.mjs';
+import { ledgerChecks, ledgerHttpChecks } from './ledger_checks.mjs';
 
 const reviews=process.argv.includes('--reviews');
 const trustCampaigns=process.argv.includes('--trust-campaigns');
+const ledger=process.argv.includes('--ledger');
 
 let db, run, environmentReady=false;
 try {
@@ -25,7 +27,7 @@ try {
     password: decodeURIComponent(url.password), ssl: false };
   db = await connect(config);
   environmentReady=true;
-  const manifest = await migrate(db,{reviews,trustCampaigns});
+  const manifest = await migrate(db,{reviews,trustCampaigns,ledger});
   const request = (path, actor, body, method) => requestJson(status.API_URL, path, actor?.token, status.ANON_KEY, body, method);
   const rpc = async (name, actor, args) => {
     const r = await request(`/rest/v1/rpc/${name}`, actor, args);
@@ -105,7 +107,13 @@ try {
     await rpc('merchant_change_listing_images_v1',f.merchant,{p_listing_id:f.listing,p_action:'retire',p_image_id:intent.id});
     assert.equal((await rpc('catalog_listing_media_read_v1',freshCustomer,{p_listing_ids:[f.listing]}))[0].images.length,0);
   });
-  if(trustCampaigns){
+  if(ledger) {
+    checks.push(...await trustCampaignChecks(db,config,f));
+    // D's account-erasure acceptance consumes its synthetic customer.
+    f.customer=await actor();
+    checks.push(...await ledgerChecks(db,config,f));
+  }
+  else if(trustCampaigns){
     checks.push(...await trustCampaignChecks(db,config,f));
     f.customer=await actor();
     await db.query('UPDATE public.qr_protocol_config SET enabled=true');
@@ -153,10 +161,11 @@ try {
   });
   if(reviews) checks.push(...await reviewHttpChecks({db,request,rpc,actor,session,f}));
   if(trustCampaigns) checks.push(...await trustCampaignHttpChecks({db,request,rpc,actor,session,f,status,localRequest}));
+  if(ledger) checks.push(...await ledgerHttpChecks({db,request,rpc,session,f}));
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
     runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
-  await writeFile(resolve(root,`docs/data/merchant_${trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
+  await writeFile(resolve(root,`docs/data/merchant_${ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);
 } catch(error) {
   console.error(`LOCAL_MANAGED_ACCEPTANCE_${environmentReady?'FAILED':'BLOCKED'}: ${error.code || error.name}; no remote fallback.`);
