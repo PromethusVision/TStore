@@ -9,6 +9,8 @@ import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
+import 'package:t_store/features/reviews/presentation/widgets/purchase_evaluation_sheet.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_state.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -26,11 +28,13 @@ class ProductReviewsView extends StatelessWidget {
     super.key,
     required this.product,
     this.reviewsCubit,
+    this.evaluationRepository,
     this.loginDestinationBuilder = _defaultLoginDestinationBuilder,
   });
 
   final ProductEntity product;
   final ReviewsCubit? reviewsCubit;
+  final PurchaseEvaluationRepository? evaluationRepository;
   final ProductReviewLoginDestinationBuilder loginDestinationBuilder;
 
   @override
@@ -38,6 +42,11 @@ class ProductReviewsView extends StatelessWidget {
     final content = _ProductReviewsScaffold(
       product: product,
       loginDestinationBuilder: loginDestinationBuilder,
+      evaluationRepository:
+          evaluationRepository ??
+          (sl.isRegistered<PurchaseEvaluationRepository>()
+              ? sl<PurchaseEvaluationRepository>()
+              : null),
     );
     final providedCubit = reviewsCubit;
     if (providedCubit != null) {
@@ -57,10 +66,12 @@ class _ProductReviewsScaffold extends StatefulWidget {
   const _ProductReviewsScaffold({
     required this.product,
     required this.loginDestinationBuilder,
+    required this.evaluationRepository,
   });
 
   final ProductEntity product;
   final ProductReviewLoginDestinationBuilder loginDestinationBuilder;
+  final PurchaseEvaluationRepository? evaluationRepository;
 
   @override
   State<_ProductReviewsScaffold> createState() =>
@@ -107,6 +118,31 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
     _isOpeningEditor = true;
     try {
       final cubit = context.read<ReviewsCubit>();
+      final state = cubit.state;
+      final eligibility = state is ReviewsLoaded ? state.eligibility : null;
+      if (review == null && eligibility?.reviewVersion == 2) {
+        final repository = widget.evaluationRepository,
+            purchaseId = eligibility?.verifiedTransactionId;
+        if (repository == null || purchaseId == null) {
+          _showMessage(
+            'Değerlendirme için güncel uygulamayı kullanın ve alışveriş kaydınızı açın.',
+            isError: true,
+          );
+          return;
+        }
+        final saved = await showPurchaseEvaluation(
+          context,
+          repository: repository,
+          purchaseId: purchaseId,
+          selectedProductId: widget.product.id,
+        );
+        if (!mounted) return;
+        await _refresh();
+        if (mounted && saved == true) {
+          _showMessage('Değerlendirmeniz kaydedildi.', isError: false);
+        }
+        return;
+      }
       final result = await showModalBottomSheet<ReviewMutationResult>(
         context: context,
         isScrollControlled: true,
@@ -148,7 +184,11 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
             Icons.delete_outline_rounded,
             color: EsnaftaVarColors.error,
           ),
-          title: const Text('Değerlendirme silinsin mi?'),
+          title: Text(
+            review.reviewVersion == 2
+                ? 'Değerlendirme yayından kaldırılsın mı?'
+                : 'Değerlendirme silinsin mi?',
+          ),
           scrollable: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(EsnaftaVarRadii.xxLarge),
@@ -164,8 +204,10 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
                 ),
                 const SizedBox(height: 12),
               ],
-              const Text(
-                'Değerlendirmeniz ürün puanından çıkarılır. Doğrulanmış alışveriş kaydınız korunur ve daha sonra yeniden değerlendirme yapabilirsiniz.',
+              Text(
+                review.reviewVersion == 2
+                    ? 'Değerlendirmeniz herkese açık listeden ve ürün puanından çıkarılır. Alışveriş ve değerlendirme geçmişi korunur. Yeniden yayımlamak için daha yeni bir doğrulanmış alışveriş gerekir.'
+                    : 'Değerlendirmeniz ürün puanından çıkarılır. Doğrulanmış alışveriş kaydınız korunur ve daha sonra yeniden değerlendirme yapabilirsiniz.',
               ),
             ],
           ),
@@ -181,7 +223,9 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
                 backgroundColor: EsnaftaVarColors.error,
               ),
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Sil'),
+              child: Text(
+                review.reviewVersion == 2 ? 'Yayından kaldır' : 'Sil',
+              ),
             ),
           ],
         ),
@@ -318,6 +362,18 @@ class _ReviewsList extends StatelessWidget {
             onCreate: onCreate,
           ),
           const SizedBox(height: EsnaftaVarSpacing.md),
+          if (state.eligibility?.ownReview case final own?)
+            if (!state.reviews.any((r) => r.id == own.id)) ...[
+              const Text('Size ait değerlendirme'),
+              const SizedBox(height: 8),
+              _ReviewCard(
+                review: own,
+                isMutating: state.isMutating,
+                onEdit: onEdit,
+                onDelete: onDelete,
+              ),
+              const SizedBox(height: 16),
+            ],
           Text(
             'Müşteri deneyimleri',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -447,6 +503,22 @@ class _EligibilityCard extends StatelessWidget {
           onAction: state.isMutating ? null : onCreate,
         );
       case ProductReviewEligibilityStatus.existingReview:
+        if (eligibility.reviewVersion == 2) {
+          return _ReviewActionCard(
+            key: const Key('product-review-eligibility-existing'),
+            icon: Icons.verified_outlined,
+            title: eligibility.ownReview?.withdrawn == true
+                ? 'Değerlendirmeniz yayından kaldırıldı'
+                : 'Bu ürün için değerlendirmeniz bulunuyor',
+            description: eligibility.canReopen
+                ? 'Daha yeni doğrulanmış alışverişinizle mevcut değerlendirmenizi güncelleyebilirsiniz. Gönderdikten sonra 24 saatlik düzenleme süresi açılır.'
+                : 'Düzenleme süresi sunucudaki kayıt tarihinden itibaren 24 saattir. Yayından kaldırma hakkınız süreden bağımsızdır.',
+            actionLabel: eligibility.canReopen
+                ? 'Yeni alışverişle güncelle'
+                : null,
+            onAction: state.isMutating ? null : onCreate,
+          );
+        }
         return const _ReviewActionCard(
           key: Key('product-review-eligibility-existing'),
           icon: Icons.verified_outlined,

@@ -123,6 +123,17 @@ Production. No new migration is required by the current acceptance findings.
 
 ## C — Review entitlements, three service criteria, audit and moderation
 
+**Authorized locally on 2026-10-15.** Execute as one complete engineering package
+from integrated baseline `cc2d4f7e`, on `agent/merchant-reviews-slice-c`. Canonical
+§6.1 records authority and rollout boundaries. Implementation and verification
+progress: `MERCHANT_SLICE_C_WORKLOG.md`.
+
+**Local delivery PASS (2026-10-15):** implementation, 2,385 Flutter tests,
+17 native database groups and 28 real local managed-service groups passed.
+Six existing opt-in live tests remain skipped. See `MERCHANT_SLICE_C_DELIVERY.md`
+for evidence and Integration Agent handoff. Main integration, remote application,
+privacy/import approval and physical two-device acceptance remain separate gates.
+
 - **DB:** purchase×distinct-product entitlement, service evaluation unique purchase,
   immutable product review revisions/visibility/reopening events, one root reply,
   moderation/report events. Reuse current reviews root and user×product uniqueness.

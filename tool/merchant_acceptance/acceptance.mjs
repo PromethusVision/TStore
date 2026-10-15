@@ -6,6 +6,10 @@ import { readRun, credentials, runtimeEvidence, root } from './local.mjs';
 import { localUrl, localRequest, requestJson } from './safety.mjs';
 import { connect, migrate, seed } from './fixture.mjs';
 import { databaseChecks } from './postgres_checks.mjs';
+import { reviewChecks } from './review_checks.mjs';
+import { reviewHttpChecks } from './review_http_checks.mjs';
+
+const reviews=process.argv.includes('--reviews');
 
 let db, run, environmentReady=false;
 try {
@@ -18,7 +22,7 @@ try {
     password: decodeURIComponent(url.password), ssl: false };
   db = await connect(config);
   environmentReady=true;
-  const manifest = await migrate(db);
+  const manifest = await migrate(db,{reviews});
   const request = (path, actor, body, method) => requestJson(status.API_URL, path, actor?.token, status.ANON_KEY, body, method);
   const rpc = async (name, actor, args) => {
     const r = await request(`/rest/v1/rpc/${name}`, actor, args);
@@ -42,7 +46,7 @@ try {
     assert.equal(created.ok,true); assert(created.data.id);
     identities.set(created.data.id,{email,password}); return session(created.data.id);
   }
-  const f = await seed(db, await actor(), await actor(), await actor()); f.session = session;
+  const f = await seed(db, await actor(), await actor(), await actor()); f.session = id=>id?session(id):actor();
   // PostgREST schema-cache reload is local only; retry a read while it catches up.
   await db.query("NOTIFY pgrst,'reload schema'");
   let ready = false;
@@ -98,7 +102,12 @@ try {
     await rpc('merchant_change_listing_images_v1',f.merchant,{p_listing_id:f.listing,p_action:'retire',p_image_id:intent.id});
     assert.equal((await rpc('catalog_listing_media_read_v1',freshCustomer,{p_listing_ids:[f.listing]}))[0].images.length,0);
   });
-  checks.push(...await databaseChecks(db,config,f));
+  if(reviews){
+    checks.push(...await reviewChecks(db,config,f));
+    // C's deletion proof consumed its synthetic customer. New HTTP journey actor.
+    f.customer=await actor();
+    await db.query('UPDATE public.qr_protocol_config SET enabled=true');
+  }else checks.push(...await databaseChecks(db,config,f));
   const fresh=await session(f.merchant.id), freshCustomer=await session(f.customer.id);
   async function httpQr(quantity) {
     await db.query("UPDATE public.carts SET status='cancelled' WHERE user_id=$1 AND status='active'",[f.customer.id]);
@@ -135,10 +144,11 @@ try {
     }
     assert.equal((await db.query('SELECT count(*)::int n FROM public.verified_transactions WHERE source_qr_session_id=$1',[q.id])).rows[0].n,0);
   });
+  if(reviews) checks.push(...await reviewHttpChecks({db,request,rpc,actor,session,f}));
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
     runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
-  await writeFile(resolve(root,'docs/data/merchant_ab_managed_acceptance.json'),JSON.stringify(evidence,null,2)+'\n');
+  await writeFile(resolve(root,`docs/data/merchant_${reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);
 } catch(error) {
   console.error(`LOCAL_MANAGED_ACCEPTANCE_${environmentReady?'FAILED':'BLOCKED'}: ${error.code || error.name}; no remote fallback.`);

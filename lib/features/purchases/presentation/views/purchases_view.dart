@@ -12,6 +12,8 @@ import 'package:t_store/features/purchases/presentation/cubit/purchase_history_c
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
+import 'package:t_store/features/reviews/presentation/widgets/purchase_evaluation_sheet.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/usecases/get_shop_by_id_usecase.dart';
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
@@ -555,6 +557,36 @@ class _PurchaseCard extends StatefulWidget {
 class _PurchaseCardState extends State<_PurchaseCard> {
   bool _isOpeningShop = false;
   bool _isOpeningRating = false;
+  bool _evaluationEnabled = false, _checkingEvaluation = false;
+  String? _evaluationError;
+  PurchaseEvaluationRepository? get _evaluations =>
+      sl.isRegistered<PurchaseEvaluationRepository>()
+      ? sl<PurchaseEvaluationRepository>()
+      : null;
+  @override
+  void initState() {
+    super.initState();
+    _checkEvaluation();
+  }
+
+  Future<void> _checkEvaluation() async {
+    final repository = _evaluations;
+    if (repository == null) return;
+    setState(() {
+      _checkingEvaluation = true;
+      _evaluationError = null;
+    });
+    final actor = repository.currentUserId;
+    final result = await repository.enabled();
+    if (!mounted || actor != repository.currentUserId) return;
+    setState(() {
+      _checkingEvaluation = false;
+      result.fold(
+        (e) => _evaluationError = e.message,
+        (v) => _evaluationEnabled = v,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) => _buildPurchaseFinalCard(this, context);
@@ -594,9 +626,26 @@ class _PurchaseCardState extends State<_PurchaseCard> {
 
   Future<void> _openShopRating(BuildContext context) async {
     if (_isOpeningRating) return;
+    if (_checkingEvaluation) return;
+    if (_evaluationError != null) {
+      _showMessage(_evaluationError!);
+      await _checkEvaluation();
+      return;
+    }
 
     setState(() => _isOpeningRating = true);
     try {
+      if (_evaluationEnabled && _evaluations != null) {
+        final saved = await showPurchaseEvaluation(
+          context,
+          repository: _evaluations!,
+          purchaseId: widget.purchase.id,
+        );
+        if (saved == true && context.mounted) {
+          await context.read<PurchaseHistoryCubit>().loadPurchases();
+        }
+        return;
+      }
       final didRate = await showModalBottomSheet<bool>(
         context: context,
         isScrollControlled: true,

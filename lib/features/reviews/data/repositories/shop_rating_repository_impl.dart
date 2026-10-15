@@ -81,6 +81,9 @@ class ShopRatingRepositoryImpl implements ShopRatingRepository {
 
   static String _friendlyError(Object error) {
     final message = error.toString().toLowerCase();
+    if (message.contains('review_use_purchase_evaluation')) {
+      return 'Alışverişlerim bölümündeki üç kriterli değerlendirmeyi kullanın.';
+    }
 
     if (message.contains('already rated') || message.contains('23505')) {
       return 'Bu alışveriş için daha önce puan verdiniz.';

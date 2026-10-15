@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_reviews.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -41,6 +42,7 @@ class MerchantDashboard extends StatefulWidget {
 class _MerchantDashboardState extends State<MerchantDashboard> {
   late Future<Either<String, MerchantOverview>> _overview;
   Future<Either<String, MerchantOperations>>? _operations;
+  int _reviewsRevision = 0;
   bool get _current => widget.services.currentUserId() == widget.access.user.id;
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
   }
 
   void _read() {
+    _reviewsRevision++;
     _overview = widget.services.merchants.overview(widget.access);
     _operations = widget.services.operations?.read(widget.access);
   }
@@ -83,6 +86,13 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const Text('Mağazanın güncel durumunu kontrol et.'),
+        if (widget.services.evaluations case final repository?)
+          MerchantReviewSummary(
+            key: ValueKey(_reviewsRevision),
+            repository: repository,
+            shopId: widget.access.shop!.id,
+            ownerId: widget.access.user.id,
+          ),
         FutureBuilder<Either<String, MerchantOverview>>(
           future: _overview,
           builder: (context, snapshot) {

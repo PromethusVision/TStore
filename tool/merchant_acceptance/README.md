@@ -1,4 +1,4 @@
-# Merchant A+B local acceptance
+# Merchant local acceptance — A+B and optional C
 
 This tool is a **synthetic, local-only test fixture**. It does not deploy anything,
 read `.env`, link a Supabase project, use hosted credentials, reset a database,
@@ -116,6 +116,28 @@ read is informational and is not used as the transaction authorization test.
 A passing run writes `docs/data/merchant_ab_managed_acceptance.json`, including
 service image identities and verified port bindings. **21 managed groups passed
 on 2026-10-15. Physical two-device acceptance remains OPEN.**
+
+## Slice C mode
+
+The default commands above preserve the A+B suite. Add `--reviews` to either
+acceptance runner to apply additive 0019 in the fresh local fixture and run C:
+
+```powershell
+node tool/merchant_acceptance/native.mjs <portable-pgsql-bin> --reviews
+node tool/merchant_acceptance/local.mjs prepare
+node tool/merchant_acceptance/local.mjs start <printed-run-directory>
+node tool/merchant_acceptance/acceptance.mjs <same-run-directory> --reviews
+node tool/merchant_acceptance/local.mjs stop <same-run-directory>
+```
+
+C mode preserves the A+B catalog/Storage and HTTP purchase/return/logout
+journeys, substitutes the C database matrix, and adds actual HTTP evaluation,
+history, reply, report, moderation, cross-shop reopening, withdrawal and Auth
+account-deletion checks. It records 17 native groups and 28 managed groups in
+`docs/data/merchant_c_native_acceptance.json` and
+`docs/data/merchant_c_managed_acceptance.json`. The managed 28 include those 17;
+do not add the totals as distinct coverage. Both reports include final migration
+hashes. The capability is enabled only in the synthetic local fixture.
 
 ## Evidence handling
 

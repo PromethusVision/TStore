@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
 import 'package:t_store/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
@@ -47,6 +48,9 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
+        evaluations: const bool.fromEnvironment('REVIEWS_V2_ENABLED')
+            ? SupabasePurchaseEvaluationRepository(service.client)
+            : null,
         purchaseEvidence: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED')
             ? SupabasePurchaseEvidenceRepository(service.client)
             : null,

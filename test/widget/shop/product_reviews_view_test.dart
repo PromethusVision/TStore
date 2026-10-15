@@ -10,6 +10,7 @@ import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_state.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/product_reviews_view.dart';
+import '../../helpers/fake_evaluation_repository.dart';
 
 class MockReviewsCubit extends MockCubit<ReviewsState>
     implements ReviewsCubit {}
@@ -442,4 +443,121 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'v2 expiry hides editing but keeps public withdrawal and merchant reply',
+    (tester) async {
+      final expired = ReviewEntity(
+        id: 'expired',
+        userId: 'customer-1',
+        productId: product.id,
+        rating: 4,
+        canEdit: false,
+        canWithdraw: true,
+        reviewVersion: 2,
+        editUntil: DateTime.utc(2026, 1, 1),
+        merchantReply: 'Teşekkür ederiz.',
+      );
+      await tester.pumpWidget(
+        buildSubject(
+          loaded(
+            reviews: [expired],
+            eligibility: ProductReviewEligibility(
+              productId: product.id,
+              eligible: true,
+              canSubmit: false,
+              existingReviewId: expired.id,
+              reviewVersion: 2,
+              ownReview: expired,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('product-review-delete-expired')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        find.byKey(const Key('product-review-edit-expired')),
+        findsNothing,
+      );
+      expect(find.text('Teşekkür ederiz.'), findsOneWidget);
+      expect(find.text('Yayından kaldır'), findsOneWidget);
+      await tester.ensureVisible(
+        find.byKey(const Key('product-review-delete-expired')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('product-review-delete-expired')));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Değerlendirme yayından kaldırılsın mı?'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('daha yeni bir doğrulanmış alışveriş gerekir'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'v2 newer purchase opens the shared form; hidden own review is not lost',
+    (tester) async {
+      final repository = FakeEvaluationRepository();
+      addTearDown(repository.dispose);
+      const own = ReviewEntity(
+        id: 'withdrawn',
+        userId: 'customer-1',
+        productId: 'product-1',
+        rating: 4,
+        withdrawn: true,
+        reviewVersion: 2,
+      );
+      final state = loaded(
+        reviews: [],
+        eligibility: const ProductReviewEligibility(
+          productId: 'product-1',
+          eligible: true,
+          canSubmit: true,
+          existingReviewId: 'withdrawn',
+          verifiedTransactionId: evaluationPurchase,
+          reviewVersion: 2,
+          canReopen: true,
+          ownReview: own,
+        ),
+      );
+      whenListen(
+        reviewsCubit,
+        const Stream<ReviewsState>.empty(),
+        initialState: state,
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ProductReviewsView(
+            product: product,
+            reviewsCubit: reviewsCubit,
+            evaluationRepository: repository,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Yeni alışverişle güncelle'), findsOneWidget);
+      expect(find.byKey(const Key('product-review-withdrawn')), findsOneWidget);
+      await tester.ensureVisible(find.text('Yeni alışverişle güncelle'));
+      await tester.tap(find.text('Yeni alışverişle güncelle'));
+      await tester.pumpAndSettle();
+      expect(find.text('Alışverişi değerlendir'), findsOneWidget);
+      expect(find.text('Mağaza hizmeti'), findsOneWidget);
+      verifyNever(
+        () => reviewsCubit.submitReview(
+          productId: any(named: 'productId'),
+          rating: any(named: 'rating'),
+          title: any(named: 'title'),
+          comment: any(named: 'comment'),
+        ),
+      );
+    },
+  );
 }

@@ -14,6 +14,7 @@ import 'package:t_store/features/cart/presentation/cubit/qr_session_cubit.dart';
 import 'package:t_store/features/cart/presentation/cubit/qr_session_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
 
 class CartQrSessionBottomSheet extends StatefulWidget {
   final String cartId;
@@ -520,6 +521,8 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
   ];
 
   bool _showRatingForm = false;
+  bool _checkingEvaluation = false;
+  String? _evaluationError;
   bool _isOpeningPurchases = false;
   bool _isClosing = false;
   int _selectedRating = 0;
@@ -529,8 +532,35 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
     setState(() => _selectedRating = rating);
   }
 
-  void _openRatingForm() {
-    if (_isClosing || _isOpeningPurchases) return;
+  Future<void> _openRatingForm() async {
+    if (_isClosing || _isOpeningPurchases || _checkingEvaluation) return;
+    if (sl.isRegistered<PurchaseEvaluationRepository>()) {
+      final repository = sl<PurchaseEvaluationRepository>(),
+          actor = sl<PurchaseEvaluationRepository>().currentUserId;
+      setState(() {
+        _checkingEvaluation = true;
+        _evaluationError = null;
+      });
+      final result = await repository.enabled();
+      if (!mounted) return;
+      if (actor != repository.currentUserId) {
+        setState(() {
+          _checkingEvaluation = false;
+          _evaluationError = 'Oturumunuz değişti. Bu pencereyi kapatın.';
+        });
+        return;
+      }
+      bool enabled = false;
+      result.fold((e) => _evaluationError = e.message, (v) => enabled = v);
+      setState(() => _checkingEvaluation = false);
+      if (_evaluationError != null) return;
+      // The existing purchase route resolves this confirmed session to durable
+      // purchase evidence; QR creation or a claim never opens an evaluation.
+      if (enabled) {
+        _openPurchases();
+        return;
+      }
+    }
     setState(() => _showRatingForm = true);
   }
 
@@ -629,12 +659,21 @@ class _QrSessionCompletedViewState extends State<_QrSessionCompletedView> {
               ] else
                 TextButton.icon(
                   key: const Key('shop-rating-open-action'),
-                  onPressed: _isClosing || _isOpeningPurchases
+                  onPressed:
+                      _isClosing || _isOpeningPurchases || _checkingEvaluation
                       ? null
                       : _openRatingForm,
                   icon: const Icon(Icons.star_outline_rounded),
-                  label: const Text('Esnafa puan ver'),
+                  label: Text(
+                    _checkingEvaluation
+                        ? 'Kontrol ediliyor…'
+                        : sl.isRegistered<PurchaseEvaluationRepository>()
+                        ? 'Alışverişi değerlendir'
+                        : 'Esnafa puan ver',
+                  ),
                 ),
+              if (_evaluationError != null)
+                Text(_evaluationError!, textAlign: TextAlign.center),
               const SizedBox(height: TSizes.spaceBtwItems),
               if (_showRatingForm && !isSuccess) ...[
                 SizedBox(

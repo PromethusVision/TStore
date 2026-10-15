@@ -13,6 +13,8 @@ import 'package:t_store/features/cart/presentation/widgets/cart_qr_session_botto
 import 'package:t_store/features/reviews/domain/entities/shop_rating_entity.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
+import '../../helpers/fake_evaluation_repository.dart';
 
 class MockQrSessionCubit extends MockCubit<QrSessionState>
     implements QrSessionCubit {}
@@ -104,6 +106,36 @@ void main() {
       ),
     );
   }
+
+  testWidgets(
+    'C enabled completion routes to its verified purchase instead of submitting a scalar score',
+    (tester) async {
+      final repo = FakeEvaluationRepository();
+      addTearDown(repo.dispose);
+      sl.registerSingleton<PurchaseEvaluationRepository>(repo);
+      String? opened;
+      await tester.pumpWidget(
+        buildSubject(
+          const QrSessionCompleted(sessionId: 'verified-session'),
+          onViewPurchases: (id) => opened = id,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('shop-rating-open-action')),
+      );
+      await tester.tap(find.byKey(const Key('shop-rating-open-action')));
+      await tester.pumpAndSettle();
+      expect(opened, 'verified-session');
+      expect(find.byKey(const Key('shop-rating-submit-action')), findsNothing);
+      verifyNever(
+        () => shopRatingCubit.submitRating(
+          qrSessionId: any(named: 'qrSessionId'),
+          rating: any(named: 'rating'),
+        ),
+      );
+    },
+  );
 
   testWidgets(
     'v2 shows the same-session manual code in the existing QR surface',

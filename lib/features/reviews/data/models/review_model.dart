@@ -14,6 +14,11 @@ class ReviewModel extends ReviewEntity {
     super.createdAt,
     super.updatedAt,
     super.canEdit,
+    super.canWithdraw,
+    super.withdrawn,
+    super.reviewVersion,
+    super.editUntil,
+    super.merchantReply,
     super.userName,
     super.userAvatar,
   });
@@ -38,6 +43,13 @@ class ReviewModel extends ReviewEntity {
           ? DateTime.parse(json['updated_at'] as String)
           : null,
       canEdit: json['can_edit'] as bool? ?? false,
+      canWithdraw: json['can_withdraw'] as bool? ?? false,
+      withdrawn: json['withdrawn'] as bool? ?? false,
+      reviewVersion: json['review_version'] as int? ?? 1,
+      editUntil: json['edit_until'] == null
+          ? null
+          : DateTime.parse(json['edit_until'] as String),
+      merchantReply: json['merchant_reply'] as String?,
       userName: json['profiles'] != null
           ? (json['profiles'] as Map<String, dynamic>)['full_name'] as String?
           : null,
