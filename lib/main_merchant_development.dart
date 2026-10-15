@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant_promotions/data/supabase_merchant_promotion_repository.dart';
 import 'package:t_store/features/commerce_ledger/data/supabase_commerce_ledger_repository.dart';
 import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
 import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
@@ -49,6 +50,9 @@ Future<void> main() async {
     MerchantApp(
       services: MerchantServices(
         merchants: SupabaseMerchantRepository(client: service.client),
+        promotions: const bool.fromEnvironment('MERCHANT_PROMOTION_V1_ENABLED')
+            ? SupabaseMerchantPromotionRepository(service.client)
+            : null,
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
         statement: const bool.fromEnvironment('MERCHANT_STATEMENT_V1_ENABLED')

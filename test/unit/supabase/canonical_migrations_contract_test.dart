@@ -37,6 +37,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002500_0025_coupon_checkout.sql',
   '20261015002600_0026_coupon_reservation_net_threshold.sql',
   '20261015002700_0027_merchant_statement_read.sql',
+  '20261015002800_0028_merchant_promotion_drafts.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -149,6 +150,10 @@ const _expectedPublicTables = <String>{
   'reward_source_uses',
   'reward_spent_offsets',
   'merchant_statement_config',
+  'merchant_promotion_config',
+  'merchant_promotion_drafts',
+  'merchant_promotion_revisions',
+  'merchant_promotion_requests',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{

@@ -1,0 +1,784 @@
+{
+  "evidence_class": "synthetic-local-postgrest",
+  "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+  "list": {
+    "items": [
+      {
+        "id": "9821a25e-7748-4d17-8ae7-1d8b51bdae6b",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 200,00 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "price_minor": "20000",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "selection": {
+          "family": "product",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.414963+00:00",
+        "revision_id": "3bcc8026-30d7-47a5-9c90-4ff8990e70b7"
+      },
+      {
+        "id": "35937a99-fe32-4e1c-b502-eadded496cce",
+        "status": "needs_update",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "%12,5 indirim. Seçili ürünlerde. Kampanya koşullarını inceleyin.",
+          "facts": {
+            "type": "percentage",
+            "scope": "single",
+            "ends_at": "2026-10-15T22:46:37.173+00:00",
+            "products": [
+              {
+                "id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+                "name": "Local acceptance kalem"
+              }
+            ],
+            "selection": {
+              "family": "offer",
+              "variant": 0,
+              "image_id": "a4a2f6be-f019-436b-9ace-94b7cecd1798",
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": "a0d57309-548c-4abf-bc24-c335e3715929"
+            },
+            "shop_name": "New local name",
+            "starts_at": "2026-10-15T21:45:37.173+00:00",
+            "price_minor": null,
+            "product_name": "Local acceptance kalem",
+            "template_version": 1,
+            "campaign_revision": "5ae165b9-b81a-42e4-ab60-b96dcb8cdb12",
+            "percentage_basis_points": 1250
+          },
+          "image": {
+            "id": "a4a2f6be-f019-436b-9ace-94b7cecd1798",
+            "bucket_id": "listing-media",
+            "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+            "object_path": "shops/a55661e0-c5a8-4e41-bd16-44ad8f047730/4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28/v20261015120000/a4a2f6be-f019-436b-9ace-94b7cecd1798.png"
+          },
+          "title": "New local name · Kampanya"
+        },
+        "selection": {
+          "family": "offer",
+          "variant": 0,
+          "image_id": "a4a2f6be-f019-436b-9ace-94b7cecd1798",
+          "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+          "campaign_id": "a0d57309-548c-4abf-bc24-c335e3715929"
+        },
+        "recorded_at": "2026-10-15T21:46:37.266548+00:00",
+        "revision_id": "71e4da64-b0d1-4daa-962d-5674db5931d8"
+      },
+      {
+        "id": "f4f105d9-b345-4f63-8260-1477b90c0c25",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.500357+00:00",
+        "revision_id": "3d49e5bb-8cac-46f6-a624-981cb9bb3a21"
+      },
+      {
+        "id": "8e82e650-e762-4c81-b871-5f5d20a9d7d3",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.520535+00:00",
+        "revision_id": "67feca21-4a9e-4da9-875e-04cfd49442c0"
+      },
+      {
+        "id": "05c0a686-e71c-41a5-988e-3fee4f8b39ca",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.540139+00:00",
+        "revision_id": "18dfa931-3242-41b7-9da3-c4c4acb5b593"
+      },
+      {
+        "id": "23f2bf75-6feb-4a9b-a90f-3ccaeabbc2ca",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.55816+00:00",
+        "revision_id": "238a21a8-7ffa-4160-99d5-e284a67e14fc"
+      },
+      {
+        "id": "ea6db815-e279-42ca-ab6e-c64c57a51e9d",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.576551+00:00",
+        "revision_id": "04d104e0-394e-40a6-8b11-3f91a3e2acb3"
+      },
+      {
+        "id": "8a0afe37-c7ae-4726-abe6-a6a1a5b40ee2",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.599521+00:00",
+        "revision_id": "e15c7c09-816d-4305-a23a-47ced54c052a"
+      },
+      {
+        "id": "ff44ac81-6097-42b9-a7ec-3b06f3051860",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.622569+00:00",
+        "revision_id": "44186aba-cbef-4421-8b77-c7c8120a41c9"
+      },
+      {
+        "id": "1d50ae2b-44bf-4b16-ae1a-1ef8576717ed",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.640809+00:00",
+        "revision_id": "917984f6-3cc8-4a1e-b379-9e22606a83ae"
+      },
+      {
+        "id": "bfcfcd86-bf19-4b52-840e-9672f9ad6ec4",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.658794+00:00",
+        "revision_id": "517ddf99-be56-44b0-8c39-197c5c569a3c"
+      },
+      {
+        "id": "a35265bb-4e56-4fdd-983f-2acc5dcbff2b",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.675108+00:00",
+        "revision_id": "b451d04c-5025-412c-8bf5-d42a41808f5a"
+      },
+      {
+        "id": "cc9fd544-ba88-44b6-92b7-e2e3c9020cd1",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.69143+00:00",
+        "revision_id": "9c33e733-4db9-46fa-958c-fce88c4a732e"
+      },
+      {
+        "id": "5c32e3a2-2047-4898-84c2-1d2b0fb557a8",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.707749+00:00",
+        "revision_id": "705baaac-01ca-47dd-ac02-9accea4bdc9f"
+      },
+      {
+        "id": "4e43f370-0293-45b7-82fe-d9db0138adfe",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.724645+00:00",
+        "revision_id": "335ca4f0-9d8c-4547-b945-390b64815cf0"
+      },
+      {
+        "id": "cc1a7b8e-49a5-4fea-9bed-3f3ad256f47a",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.741768+00:00",
+        "revision_id": "7d0bec9b-0983-49fa-bd3e-eeb6cdd343b3"
+      },
+      {
+        "id": "b3785dbd-d4a5-4805-aac7-07b9c9b36285",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.759485+00:00",
+        "revision_id": "4935cd53-aebc-4568-9f5a-e922ef79aef0"
+      },
+      {
+        "id": "2d4e692e-6498-4721-a6a5-86068b44880f",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.775879+00:00",
+        "revision_id": "4ccf72f3-58bf-47dc-9ffa-eafdd2f06131"
+      },
+      {
+        "id": "8dba55d6-f9ef-4013-a952-81c27a1bb498",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.792764+00:00",
+        "revision_id": "43bba9cd-5fbd-4588-86de-e46dcf2c944a"
+      },
+      {
+        "id": "44cd7040-8c01-40d2-b0ce-daf5e97e9e46",
+        "status": "draft",
+        "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+        "snapshot": {
+          "body": "Mağazamızı ve ürünlerimizi EsnaftaVar’da inceleyin.",
+          "facts": {
+            "selection": {
+              "family": "store",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": null,
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "New local name"
+        },
+        "selection": {
+          "family": "store",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": null,
+          "campaign_id": null
+        },
+        "recorded_at": "2026-10-15T21:46:37.808763+00:00",
+        "revision_id": "3e6a98f4-ff31-4a4c-8fdf-34451885c6d3"
+      }
+    ],
+    "limit": 500,
+    "enabled": true,
+    "shop_id": "a55661e0-c5a8-4e41-bd16-44ad8f047730",
+    "has_more": true
+  },
+  "preview": {
+    "ready": true,
+    "images": [
+      {
+        "id": "a4a2f6be-f019-436b-9ace-94b7cecd1798",
+        "bucket_id": "listing-media",
+        "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+        "object_path": "shops/a55661e0-c5a8-4e41-bd16-44ad8f047730/4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28/v20261015120000/a4a2f6be-f019-436b-9ace-94b7cecd1798.png"
+      }
+    ],
+    "enabled": true,
+    "snapshot": {
+      "body": "Güncel ürün fiyatı: 200,00 TL.",
+      "facts": {
+        "selection": {
+          "family": "product",
+          "variant": 0,
+          "image_id": null,
+          "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+          "campaign_id": null
+        },
+        "shop_name": "New local name",
+        "price_minor": "20000",
+        "product_name": "Local acceptance kalem",
+        "template_version": 1
+      },
+      "image": null,
+      "title": "Local acceptance kalem"
+    },
+    "fingerprint": "26d03c50663f7cf9f1b1e61e372a145d9c759f647bdc0b13d9f49ad4d42fc93b"
+  },
+  "history": {
+    "items": [
+      {
+        "action": "save",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 123,45 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "Local Esnaf A",
+            "price_minor": "12345",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "recorded_at": "2026-10-15T21:46:36.743099+00:00",
+        "revision_id": "bd179882-82c0-49f0-a562-8c7c672f5854"
+      },
+      {
+        "action": "save",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 200,00 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "Local Esnaf A",
+            "price_minor": "20000",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "recorded_at": "2026-10-15T21:46:36.938046+00:00",
+        "revision_id": "a8836f34-6989-40c4-979c-6ff6d4c8b0f4"
+      },
+      {
+        "action": "save",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 200,00 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "Local Esnaf A",
+            "price_minor": "20000",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "recorded_at": "2026-10-15T21:46:36.974931+00:00",
+        "revision_id": "2b0220c8-b5eb-45e5-b31c-452872247df2"
+      },
+      {
+        "action": "archive",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 200,00 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "Local Esnaf A",
+            "price_minor": "20000",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "recorded_at": "2026-10-15T21:46:37.361336+00:00",
+        "revision_id": "28cd7753-71b0-4566-b94c-4587e8607437"
+      },
+      {
+        "action": "save",
+        "snapshot": {
+          "body": "Güncel ürün fiyatı: 200,00 TL.",
+          "facts": {
+            "selection": {
+              "family": "product",
+              "variant": 0,
+              "image_id": null,
+              "listing_id": "4a9c40cf-3bd3-4ccd-829d-2fa0d336fc28",
+              "campaign_id": null
+            },
+            "shop_name": "New local name",
+            "price_minor": "20000",
+            "product_name": "Local acceptance kalem",
+            "template_version": 1
+          },
+          "image": null,
+          "title": "Local acceptance kalem"
+        },
+        "recorded_at": "2026-10-15T21:46:37.414963+00:00",
+        "revision_id": "3bcc8026-30d7-47a5-9c90-4ff8990e70b7"
+      }
+    ],
+    "enabled": true
+  }
+}

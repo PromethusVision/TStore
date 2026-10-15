@@ -306,6 +306,20 @@ integration target by itself.
 
 ## G — Ads visibility, structured copy and fair scheduling
 
+### G preparation increment: Merchant Tanıtım Merkezi
+
+The next bounded implementation follows canonical §11.1: default-OFF owned
+draft workspace, structured source selectors, server-generated preview, existing
+media selection, stale-source detection, revision history, archive/restore and
+exact-request retry. Forward migration0028 builds on current catalog/F/session
+contracts; it does not change prior migrations or Customer screens.
+
+This is **partial G**, not advertising delivery acceptance. Purchase/extension,
+reserve-first service debt, sponsored placements, fairness/measurement,
+audience/rolling quotas and shared push scheduling remain the scope below.
+No open commercial/retention/targeting decision is silently resolved. See
+`MERCHANT_PROMOTION_G_HANDOFF.md` for the exact local validation and remote gates.
+
 - **DB:** one visibility package per shop, immutable extension/purchase intervals,
   one push entitlement per purchased interval, serving/impression/click attribution,
   copy revisions and audience queue/rolling24h quota claims. Reference F or shop;

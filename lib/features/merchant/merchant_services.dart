@@ -1,4 +1,5 @@
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
+import 'package:t_store/features/merchant_promotions/domain/merchant_promotion.dart';
 import 'package:t_store/features/commerce_ledger/domain/merchant_statement.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
@@ -32,6 +33,7 @@ class MerchantServices {
     this.trustCommerce,
     this.rewardProgram,
     this.statement,
+    this.promotions,
   });
   final MerchantRepository merchants;
   final MerchantCredentials credentials;
@@ -50,4 +52,5 @@ class MerchantServices {
   final TrustCommerceRepository? trustCommerce;
   final RewardProgramRepository? rewardProgram;
   final MerchantStatementRepository? statement;
+  final MerchantPromotionRepository? promotions;
 }
