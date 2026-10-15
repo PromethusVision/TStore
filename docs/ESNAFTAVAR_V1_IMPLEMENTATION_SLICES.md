@@ -192,6 +192,14 @@ release gates: `MERCHANT_DF_HANDOFF.md`; audit: `MERCHANT_DF_WORKLOG.md`.
 
 ## H0 — Monetary authority, immutable ledger and versioned policy
 
+Local implementation is delivered from integrated D/F `6ef06be8` on
+`agent/merchant-ledger-h0`, following the Product Owner's next-work instruction.
+Canonical §9.1 records the bounded accounting scope, trusted-source assumptions
+and disabled economic actions. Local evidence: 53 native PostgreSQL groups,
+44 managed-service groups, 2407 Flutter tests (6 existing skips), clean analyzer
+and both development debug APKs. Handoff: `MERCHANT_H0_HANDOFF.md`; audit:
+`MERCHANT_H0_WORKLOG.md`. Integration and every remote/economic gate remain separate.
+
 - **DB:** immutable commerce policy versions, typed ledger accounts/journals/
   postings, monetary source references, offset obligations, event-consumer dedup.
   No seeded live balance, funding, payment provider or mutable cash field.
