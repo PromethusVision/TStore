@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
+import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';

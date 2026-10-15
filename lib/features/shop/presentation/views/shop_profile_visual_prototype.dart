@@ -105,6 +105,11 @@ Widget _buildShopVisualPrototype(
                 ),
               ],
             ),
+            if (sl.isRegistered<TrustCommerceRepository>())
+              ShopTrustOffers(
+                repository: sl<TrustCommerceRepository>(),
+                shopId: shop.id,
+              ),
             if (info._hasText(shop.description)) ...[
               const SizedBox(height: EsnaftaVarSpacing.sm),
               Text(

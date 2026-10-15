@@ -526,6 +526,55 @@ it does not erase audit events. Dynamic recalculation is event-driven plus a
 server scheduled time-window expiry refresh, so 90-day expiry works without a
 new purchase. Exact recalculation latency is an implementation SLO, not grace.
 
+### 7.1 D+F local implementation — approved 2026-10-15
+
+The Product Owner approved the combined Merchant trust and Campaign Lite package
+with “Uygulamaya geç”, after integration of C at `d013b761`. This authorizes
+isolated local implementation of D and F, bounded additions to accepted Customer
+surfaces, real local acceptance, and a task-branch delivery. It does not authorize
+remote writes, main integration, monetary H0/E/G/H1 activation or provider setup.
+
+Badge eligibility is computed from authoritative valid purchase/review evidence,
+with exact thresholds before rounding. Persist award/correction transitions and
+deduplicate replays; update public eligibility at read time so a delayed worker
+never grants a grace period. A bounded server worker records event-driven changes
+and scheduled 90-day expiries; its deployment remains a separate rollout gate.
+Use the proposed active-shop cohort, ceil(N*0.10) and UUID tie-break locally.
+Official area data, version and assignment review remain unapproved: no trusted
+assignment means pending. A coordinate change invalidates a prior assignment.
+
+Visibility-only withdrawal/hiding does not invalidate milestone evidence.
+Fraud-invalid purchases and abuse-flagged review roots are excluded. Shop product
+metrics use latest valid evidence per customer/product/source shop, including
+historic origins; never borrow global product averages or another shop's reviews.
+The first three purchase milestones use neutral numeric titles (10/50/100
+alışveriş); the frozen 250 title and review-family titles stay unchanged.
+
+Local implementation details consistent with those rules:
+- D is effectively enabled only while C's evaluation lifecycle is enabled. This
+  prevents legacy physical review deletion from being interpreted as a V1
+  visibility-only withdrawal. Legacy changes still enqueue refresh work.
+- A later account-role change does not erase a valid historical buyer's
+  contribution; account removal and fraud/abuse remain separate validity events.
+- Award/correction history retains the rule version and numeric qualification
+  snapshot. Account erasure removes the user mapping and pending user events.
+- Saving an edit makes the offer an unpublished draft; publishing it again is
+  explicit. This avoids silently changing a promise that is currently visible.
+- Public offers include the names of their selected products and server time.
+  An open Customer offer card expires from that server-derived deadline without
+  requiring another purchase or an app restart. Prices/cart terms stay unchanged.
+
+### 7.2 D+F rollout boundaries
+
+Campaign Lite reuses owned listings and published listing media. It never edits
+cart/listing prices, QR quote terms, Reward capacity or organic ranking. Existing
+B records quote-only sales; therefore price/percentage offers have a separate
+default-OFF publication gate until actual-sale/offer reconciliation is approved.
+Local synthetic tests may exercise this gate; they do not approve live discounts.
+Announcement offers and draft/preview flows can be verified independently.
+Official geography, privacy/retention and truthful offer wording remain reviewed
+deployment inputs, not fabricated engineering approvals.
+
 ## 8. Ödül Sayacı, packages, reservation and coupon
 
 **FROZEN numerical defaults, stored in versioned server configuration:**
@@ -692,6 +741,14 @@ Selected images must belong to eligible owned listings. Offer discounts describe
 the real physical-store offer; confirmed final sale records actual merchant-applied
 discount, not an invented client cart calculation. Ads may reference an offer but
 does not modify its business terms.
+
+Server invariant (D/F integration correction): price offers require a non-null
+integer minor-unit amount; percentage offers require a non-null integer
+basis-point amount. Missing keys and explicit JSON null are both invalid for the
+required field, including draft creation and editing. Announcement offers carry
+neither amount. The database must enforce this independently of client form
+validation; SQL CHECK must never accept UNKNOWN for this invariant. This corrects
+enforcement of the existing type-appropriate amount rule, not a new offer type.
 
 ## 11. Ads visibility, fair selection and attribution
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
 import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
 import 'package:t_store/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
@@ -48,6 +49,9 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
+        trustCommerce: const bool.fromEnvironment('TRUST_COMMERCE_V1_ENABLED')
+            ? SupabaseTrustCommerceRepository(service.client)
+            : null,
         evaluations: const bool.fromEnvironment('REVIEWS_V2_ENABLED')
             ? SupabasePurchaseEvaluationRepository(service.client)
             : null,
