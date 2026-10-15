@@ -31,6 +31,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015001900_0019_verified_evaluations.sql',
   '20261015002000_0020_trust_badges.sql',
   '20261015002100_0021_merchant_campaign_lite.sql',
+  '20261015002200_0022_campaign_required_amount.sql',
 ];
 
 const _baselinePublicTables = <String>{

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { rpc, sqlAs, connect } from './fixture.mjs';
 import { contended } from './postgres_checks.mjs';
+import { invalidCampaignAmounts, validCampaignAmounts } from './campaign_amount_cases.mjs';
 
 export async function trustCampaignChecks(db, config, f) {
   const checks=[];
@@ -274,6 +275,46 @@ export async function trustCampaignChecks(db, config, f) {
     await assert.rejects(db.query('DELETE FROM public.campaign_revisions WHERE campaign_id=$1',[offer.id]),/append-only/);
     const history=await call(f.merchant,'read_campaign_history_v1',[f.shop,offer.id,100,0]);assert(history.history.length>5);
     assert.equal(JSON.stringify(await publicOffers()).includes('actor_subject'),false);
+  });
+  await check('F required typed amounts reject missing/null on create and edit without partial writes; storage also rejects null amounts',async()=>{
+    let stable=await mutate(null,null,'save',draft());
+    const snapshot=async()=>(await db.query(`SELECT
+      (SELECT count(*)::int FROM public.merchant_campaigns) campaigns,
+      (SELECT count(*)::int FROM public.campaign_revisions) revisions,
+      (SELECT count(*)::int FROM public.campaign_requests) requests,
+      (SELECT current_revision_id FROM public.merchant_campaigns WHERE id=$1) current`,[stable.id])).rows[0];
+    const before=await snapshot();
+    for(const amount of invalidCampaignAmounts) {
+      for(const editing of [false,true]) {
+        await assert.rejects(mutate(editing?stable.id:null,editing?stable.revision_id:null,'save',draft(amount)),
+          e=>e.code==='22023' && /CAMPAIGN_INVALID_ARGUMENT/.test(e.message),JSON.stringify({editing,amount}));
+        assert.deepEqual(await snapshot(),before,'Rejected amount must not create a campaign, revision, receipt or change the current revision');
+      }
+    }
+    for(const type of ['price','percentage']) {
+      await assert.rejects(db.query(`INSERT INTO public.campaign_revisions
+        SELECT (jsonb_populate_record(NULL::public.campaign_revisions,to_jsonb(r)||$1::jsonb)).*
+        FROM public.campaign_revisions r WHERE id=$2`,[
+          JSON.stringify({id:randomUUID(),offer_type:type,price_minor:null,percentage_basis_points:null}),stable.revision_id]),
+        e=>e.code==='23514' && e.constraint==='campaign_revisions_required_amount',type);
+    }
+    assert.deepEqual(await snapshot(),before);
+    // A rejected request must not poison a corrected retry using that request ID.
+    const request=randomUUID();
+    await assert.rejects(mutate(stable.id,stable.revision_id,'save',draft({type:'price'}),request),/CAMPAIGN_INVALID_ARGUMENT/);
+    const corrected=draft({type:'price',price_minor:1000});
+    const expected=stable.revision_id;
+    stable=await mutate(stable.id,expected,'save',corrected,request);
+    assert.deepEqual(await mutate(stable.id,expected,'save',corrected,request),stable);
+    for(const amount of validCampaignAmounts) {
+      const created=await mutate(null,null,'save',draft(amount));
+      assert(created.revision_id);
+      stable=await mutate(stable.id,stable.revision_id,'save',draft(amount));
+      const row=(await db.query('SELECT offer_type,price_minor,percentage_basis_points FROM public.campaign_revisions WHERE id=$1',[stable.revision_id])).rows[0];
+      assert.equal(row.offer_type,amount.type);
+      assert.equal(row.price_minor,amount.price_minor==null?null:String(amount.price_minor));
+      assert.equal(row.percentage_basis_points,amount.percentage_basis_points??null);
+    }
   });
   return checks;
 }

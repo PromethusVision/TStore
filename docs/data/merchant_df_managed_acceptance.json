@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "captured_at": "2026-10-15T13:21:25.845Z",
+  "captured_at": "2026-10-15T13:54:51.536Z",
   "evidence_class": "real-local-supabase-auth-postgrest-storage-postgresql",
   "runtime": "PostgreSQL 17.11 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit",
   "services": [
@@ -122,6 +122,10 @@
       "result": "PASS"
     },
     {
+      "name": "F required typed amounts reject missing/null on create and edit without partial writes; storage also rejects null amounts",
+      "result": "PASS"
+    },
+    {
       "name": "HTTP manual claim, idempotent completion/return and fresh Customer purchase evidence",
       "result": "PASS"
     },
@@ -135,6 +139,10 @@
     },
     {
       "name": "HTTP F retry/ownership and actual Storage upload -> selection -> public signed bytes",
+      "result": "PASS"
+    },
+    {
+      "name": "HTTP F typed amount matrix rejects missing/null and invalid amounts atomically on create/edit",
       "result": "PASS"
     },
     {
@@ -210,6 +218,10 @@
     {
       "file": "20261015002100_0021_merchant_campaign_lite.sql",
       "sha256": "e5e41fd46d0f6165e2f96509569e387fde0758fd62c3612195ee18003edd6ddd"
+    },
+    {
+      "file": "20261015002200_0022_campaign_required_amount.sql",
+      "sha256": "423e64c64241a9c8167571720909fb1014c69f7567944b518b47f8476ed5de30"
     }
   ]
 }

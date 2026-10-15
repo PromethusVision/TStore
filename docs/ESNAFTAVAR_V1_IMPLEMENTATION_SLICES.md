@@ -247,6 +247,9 @@ release gates: `MERCHANT_DF_HANDOFF.md`; audit: `MERCHANT_DF_WORKLOG.md`.
 separately gated because B currently records quote-only sales; no cart-discount
 or financial authority is introduced. Local implementation and native/managed
 acceptance are complete. See canonical §7.1–7.2 and `MERCHANT_DF_HANDOFF.md`.
+The corrected delivery includes forward migration 0022 for required typed amounts
+and SQL/HTTP missing/null regression coverage; the initial `ea799206` is not the
+integration target by itself.
 
 - **DB:** offers, owned listing membership and immutable revision/selection evidence.
   Types discounted price, percent and announcement; scope listing/multiple/store.

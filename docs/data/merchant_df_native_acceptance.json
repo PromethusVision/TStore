@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "captured_at": "2026-10-15T13:21:34.900Z",
+  "captured_at": "2026-10-15T13:53:49.727Z",
   "runtime": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit",
   "evidence_class": "native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema",
   "managed_auth": "OPEN",
@@ -134,6 +134,10 @@
     {
       "name": "F selected image must be owned/published/in-scope; invalid storage metadata is omitted",
       "result": "PASS"
+    },
+    {
+      "name": "F required typed amounts reject missing/null on create and edit without partial writes; storage also rejects null amounts",
+      "result": "PASS"
     }
   ],
   "migrations": [
@@ -204,6 +208,10 @@
     {
       "file": "20261015002100_0021_merchant_campaign_lite.sql",
       "sha256": "e5e41fd46d0f6165e2f96509569e387fde0758fd62c3612195ee18003edd6ddd"
+    },
+    {
+      "file": "20261015002200_0022_campaign_required_amount.sql",
+      "sha256": "423e64c64241a9c8167571720909fb1014c69f7567944b518b47f8476ed5de30"
     }
   ]
 }

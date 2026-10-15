@@ -83,3 +83,22 @@ fail as a whole if a selected listing is no longer eligible. Retired/invalid ima
 are omitted without inventing replacement ownership.
 
 Release/run instructions and current evidence: [MERCHANT_DF_HANDOFF.md](MERCHANT_DF_HANDOFF.md).
+
+## Integration correction — required campaign amounts
+
+Integration's additional amount check exposed a real gap in 0021: PostgreSQL
+CHECK accepts UNKNOWN, allowing missing/NULL price or percentage values. The
+original negative-input tests covered invalid numeric types but missed required
+value absence. A new regression reproduced that rejection failure before repair.
+
+Forward migration 0022 enforces the existing type-specific amount invariant with
+explicit non-null checks and `IS TRUE`; it validates existing rows and leaves all
+earlier migration bytes and immutable history intact. No client or business-rule
+change is required. Invalid commands return the existing public error and roll
+back completely. A malformed existing history causes migration failure for review.
+
+Expanded native acceptance passes 33 groups; actual local managed acceptance
+passes 25. Both include create/edit amount matrices (26 invalid, six valid shapes),
+atomic rollback and retries; native/managed SQL also test direct storage rejection.
+All 18 migration hashes match the refreshed evidence. The owned test stack was
+stopped with its data retained; no Production or main write occurred.

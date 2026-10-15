@@ -18,7 +18,8 @@ system. B's quote-only purchase and cart/listing prices are unchanged.
 ## Schema and activation boundaries
 
 Apply only in dependency order after the appropriate existing environment chain:
-`0016 → 0017 → 0018 → 0019 → 0020_trust_badges → 0021_merchant_campaign_lite`.
+`0016 → 0017 → 0018 → 0019 → 0020_trust_badges → 0021_merchant_campaign_lite
+→ 0022_campaign_required_amount`.
 The shared migrations are additive. Historical migrations were not edited.
 The local harness's Development taxonomy fixture is not a Production migration
 sequence; never replay its 0010/0011 bootstrap over Production's 0012/0013/0015.
@@ -99,18 +100,46 @@ memory-only sample-data host; never treat that preview as backend/device proof.
   passes. Browser checks cover dashboard, trust details/explanations, campaigns,
   editor/preview and Customer offers; the final browser console has no warnings
   or errors. These checks do not replace physical mobile acceptance.
-- Native PostgreSQL: **32 passing scenario groups**, including C's 17 regression
-  groups and D/F's 15 groups. Real local managed services: **23 passing groups**,
+- Native PostgreSQL: **33 passing scenario groups**, including C's 17 regression
+  groups and D/F's 16 groups. Real local managed services: **25 passing groups**,
   including JWT authorization, Storage bytes and concurrent database sessions.
-- Both sanitized reports match all **17 migration SHA256s** in their tested
+- Both sanitized reports match all **18 migration SHA256s** in their tested
   dependency chain. Historical migration files remain unchanged.
-- The owned local badge worker's final once-run passed (seven targets processed,
+- The initial D/F owned local badge worker's once-run passed (seven targets processed,
   no additional transitions). All task-owned database stacks were stopped with
   their data retained; the temporary browser and preview server were closed.
 - Before commit, `origin/main` still resolves to baseline `d013b761`; no main
   merge or remote database operation was performed.
 
 ## Integration review focus
+
+Integration rejected `ea799206` because SQL CHECK treats UNKNOWN as accepted:
+0021's type-specific amount constraint admitted a missing or JSON-null required
+price/percentage. The prior 32/23 acceptance groups omitted this negative case;
+their passing result did not prove this invariant. Integrate the corrected branch
+tip, including 0022; `ea799206` alone remains unsuitable for integration.
+
+0022 adds a validated, named CHECK with explicit non-null requirements and an
+`IS TRUE` boundary. No previous migration bytes or immutable revisions changed.
+The existing mutation exception handler returns `CAMPAIGN_INVALID_ARGUMENT`
+and atomically rolls back campaign/revision/receipt writes. If an environment
+already contains a malformed revision, migration validation fails atomically;
+stop and review that history rather than inventing an amount or deleting it.
+
+The new regression was first run against 0021 and failed with “Missing expected
+rejection” for a price draft without `price_minor`. With 0022, both SQL and real
+HTTP paths reject all 26 malformed amount shapes on create and edit (52 rejected
+commands per path), preserve state, and accept six valid shapes/boundaries.
+Direct privileged inserts also reject NULL required amounts. Corrected retries
+and successful exact replays are covered. The sanitized reports above supersede
+the initial acceptance reports. No UI code changed for this correction.
+
+Correction verification also reran the full Flutter suite (**2,400 PASS / six
+existing SKIP**) and analyzer (**no issues**). Both real application entrypoints
+compile for web: `lib/main_development.dart` and
+`lib/main_merchant_development.dart`, with `TRUST_COMMERCE_V1_ENABLED=true` and
+`REVIEWS_V2_ENABLED=true`. These were compilation-only local outputs, with no
+remote credentials, execution, feature activation or deployment.
 
 Shared touchpoints: service locator registration behind an OFF flag, optional
 MerchantServices port, dashboard sections, Customer profile/shop extensions,

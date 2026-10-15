@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { invalidCampaignAmounts, validCampaignAmounts } from './campaign_amount_cases.mjs';
 
 export async function trustCampaignHttpChecks({db,request,rpc,session,f,status,localRequest}) {
   const checks=[];
@@ -39,6 +40,33 @@ export async function trustCampaignHttpChecks({db,request,rpc,session,f,status,l
     await rpc('merchant_change_listing_images_v1',merchant,{p_listing_id:f.listing,p_action:'retire',p_image_id:image.id});
     const after=await rpc('read_shop_campaigns_v1',null,{p_shop_id:f.shop});assert.equal(after.campaigns.find(c=>c.id===receipt.id).images.length,0);
     assert.equal((await request('/rest/v1/rpc/mutate_campaign_v1',merchant,{...args,p_campaign_id:receipt.id,p_expected_revision:receipt.revision_id,p_request_id:randomUUID()})).ok,false);
+  });
+  await check('HTTP F typed amount matrix rejects missing/null and invalid amounts atomically on create/edit',async()=>{
+    const data=amount=>({...draft,image_ids:[],...amount});
+    let stable=await rpc('mutate_campaign_v1',merchant,{...args,p_draft:data({type:'announcement'}),p_request_id:randomUUID()});
+    const snapshot=async()=>(await db.query(`SELECT
+      (SELECT count(*)::int FROM public.merchant_campaigns) campaigns,
+      (SELECT count(*)::int FROM public.campaign_revisions) revisions,
+      (SELECT count(*)::int FROM public.campaign_requests) requests,
+      (SELECT current_revision_id FROM public.merchant_campaigns WHERE id=$1) current`,[stable.id])).rows[0];
+    const before=await snapshot();
+    for(const amount of invalidCampaignAmounts) {
+      for(const editing of [false,true]) {
+        const result=await request('/rest/v1/rpc/mutate_campaign_v1',merchant,{...args,
+          p_campaign_id:editing?stable.id:null,p_expected_revision:editing?stable.revision_id:null,
+          p_request_id:randomUUID(),p_draft:data(amount)});
+        assert.equal(result.ok,false,JSON.stringify({editing,amount}));
+        assert.equal(result.data.code,'22023');assert.match(result.data.message,/CAMPAIGN_INVALID_ARGUMENT/);
+        assert.deepEqual(await snapshot(),before);
+      }
+    }
+    for(const amount of validCampaignAmounts) {
+      const created=await rpc('mutate_campaign_v1',merchant,{...args,p_request_id:randomUUID(),p_draft:data(amount)});
+      assert(created.revision_id);
+      const edit={...args,p_campaign_id:stable.id,p_expected_revision:stable.revision_id,p_request_id:randomUUID(),p_draft:data(amount)};
+      stable=await rpc('mutate_campaign_v1',merchant,edit);
+      assert.deepEqual(await rpc('mutate_campaign_v1',merchant,edit),stable);
+    }
   });
   await check('HTTP F monetary gate and revoked Auth sessions cannot publish/edit/read owner history',async()=>{
     const monetary=await rpc('mutate_campaign_v1',merchant,{...args,p_draft:{...draft,image_ids:[],type:'percentage',percentage_basis_points:1000},p_request_id:randomUUID()});

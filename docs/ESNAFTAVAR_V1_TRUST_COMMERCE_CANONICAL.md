@@ -742,6 +742,14 @@ the real physical-store offer; confirmed final sale records actual merchant-appl
 discount, not an invented client cart calculation. Ads may reference an offer but
 does not modify its business terms.
 
+Server invariant (D/F integration correction): price offers require a non-null
+integer minor-unit amount; percentage offers require a non-null integer
+basis-point amount. Missing keys and explicit JSON null are both invalid for the
+required field, including draft creation and editing. Announcement offers carry
+neither amount. The database must enforce this independently of client form
+validation; SQL CHECK must never accept UNKNOWN for this invariant. This corrects
+enforcement of the existing type-appropriate amount rule, not a new offer type.
+
 ## 11. Ads visibility, fair selection and attribution
 
 **FROZEN:** one backend-configurable visibility product, default 7 days:
