@@ -446,6 +446,43 @@ into versioned history, mark missing evidence ineligible, retain old read paths
 until capability-gated client/server cutover. There is no inferred 24-hour “now”
 window for every old row and no fabricated multi-criterion backfill.
 
+### 6.1 Slice C local implementation authorization — 2026-10-15
+
+The Product Owner approved the proposed complete Slice C package with
+“onaylıyorum başla”. This authorizes isolated task implementation, local schema
+and real-service acceptance, Merchant review center/dashboard, and necessary
+extensions to existing Customer review/purchase forms. It does not authorize
+Production deployment, main integration, D–J work or Customer UI redesign.
+
+The implementation accepts the §6 proposed three-criterion atomic submission,
+equal-weight service aggregate and one reply per durable root. Reopening is an
+explicit submission against a newer unused purchase entitlement, not a side
+effect of reading a screen. Retries retain the original server deadline.
+The source purchase of the current revision controls merchant reply visibility.
+An existing reply consumes the root's sole reply slot even after origin changes.
+
+Local compatibility policy: the capability starts OFF; proven legacy review
+provenance is adopted without resetting its original creation deadline. No
+scalar service score is backfilled into the three criteria. Old mutation RPCs
+must enforce C bounds for adopted roots and must not bypass the initial service
+evaluation requirement once C is enabled. Withdraw and moderation remain
+separate from fraud invalidation; genuine returns preserve experience evidence.
+
+Privacy implementation is a local technical proposal for rollout review:
+immutable revisions keep encrypted text with an independently erasable subject
+key; authorized account deletion removes its public projection and subject key,
+while commerce IDs, numeric evidence and non-readable audit chronology remain.
+No legal retention duration or production legacy-data conversion is approved by
+this implementation authorization. Production rollout remains gated on explicit
+evidence-import and privacy/moderation policy approval and client compatibility.
+
+Local implementation status: Slice C is implemented and locally verified; see
+[delivery and evidence](MERCHANT_SLICE_C_DELIVERY.md). This updates only C's
+execution status, not the original architecture baseline at this document's top.
+Customer history exposes actual three-criterion records separately from legacy
+scalar ratings; QR completion links to the verified purchase history. Bounded
+legacy import is operator-only and requires its separate rollout review.
+
 ## 7. Badges
 
 **FROZEN:** status/reputation only. No monetary, organic-rank or Reward advantage.

@@ -13,6 +13,10 @@ class ReviewEntity extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final bool canEdit;
+  final bool canWithdraw, withdrawn;
+  final int reviewVersion;
+  final DateTime? editUntil;
+  final String? merchantReply;
 
   // Joined data
   final String? userName;
@@ -31,6 +35,11 @@ class ReviewEntity extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.canEdit = false,
+    this.canWithdraw = false,
+    this.withdrawn = false,
+    this.reviewVersion = 1,
+    this.editUntil,
+    this.merchantReply,
     this.userName,
     this.userAvatar,
   });
@@ -49,6 +58,11 @@ class ReviewEntity extends Equatable {
     createdAt,
     updatedAt,
     canEdit,
+    canWithdraw,
+    withdrawn,
+    reviewVersion,
+    editUntil,
+    merchantReply,
     userName,
     userAvatar,
   ];
@@ -82,6 +96,11 @@ class ReviewEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       canEdit: canEdit ?? this.canEdit,
+      canWithdraw: canWithdraw,
+      withdrawn: withdrawn,
+      reviewVersion: reviewVersion,
+      editUntil: editUntil,
+      merchantReply: merchantReply,
       userName: userName ?? this.userName,
       userAvatar: userAvatar ?? this.userAvatar,
     );
@@ -119,6 +138,9 @@ class ProductReviewEligibility extends Equatable {
   final String? verifiedTransactionItemId;
   final String? verifiedTransactionId;
   final DateTime? verifiedAt;
+  final int reviewVersion;
+  final bool canReopen;
+  final ReviewEntity? ownReview;
 
   const ProductReviewEligibility({
     required this.productId,
@@ -129,6 +151,9 @@ class ProductReviewEligibility extends Equatable {
     this.verifiedTransactionItemId,
     this.verifiedTransactionId,
     this.verifiedAt,
+    this.reviewVersion = 1,
+    this.canReopen = false,
+    this.ownReview,
   });
 
   const ProductReviewEligibility.guest(this.productId)
@@ -138,7 +163,10 @@ class ProductReviewEligibility extends Equatable {
       existingReviewId = null,
       verifiedTransactionItemId = null,
       verifiedTransactionId = null,
-      verifiedAt = null;
+      verifiedAt = null,
+      reviewVersion = 1,
+      canReopen = false,
+      ownReview = null;
 
   ProductReviewEligibilityStatus get status {
     if (isGuest) return ProductReviewEligibilityStatus.guest;
@@ -161,6 +189,9 @@ class ProductReviewEligibility extends Equatable {
     verifiedTransactionItemId,
     verifiedTransactionId,
     verifiedAt,
+    reviewVersion,
+    canReopen,
+    ownReview,
   ];
 }
 
@@ -180,14 +211,16 @@ class SubmitProductReviewResult extends Equatable {
 class DeleteProductReviewResult extends Equatable {
   final String reviewId;
   final bool deleted;
+  final bool withdrawn;
 
   const DeleteProductReviewResult({
     required this.reviewId,
     required this.deleted,
+    this.withdrawn = false,
   });
 
   @override
-  List<Object?> get props => [reviewId, deleted];
+  List<Object?> get props => [reviewId, deleted, withdrawn];
 }
 
 class ProductReviewStats extends Equatable {

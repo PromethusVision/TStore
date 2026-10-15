@@ -199,7 +199,7 @@ Widget _buildReviewsFinalCard(_ReviewCard card, BuildContext context) {
         LayoutBuilder(
           builder: (context, constraints) {
             final title = Text(
-              review.canEdit
+              review.canEdit || review.canWithdraw
                   ? 'Sizin değerlendirmeniz'
                   : 'Esnafta Var kullanıcısı',
               style: Theme.of(context).textTheme.labelLarge,
@@ -262,37 +262,69 @@ Widget _buildReviewsFinalCard(_ReviewCard card, BuildContext context) {
             color: EsnaftaVarColors.textSecondary,
           ),
         ),
-        if (review.canEdit) ...[
+        if (review.merchantReply case final reply?) ...[
+          const SizedBox(height: 12),
+          Text('Mağaza yanıtı', style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 4),
+          Text(reply),
+        ],
+        if (review.reviewVersion == 2 &&
+            (review.canEdit || review.canWithdraw)) ...[
+          const SizedBox(height: 12),
+          Text(
+            review.canEdit && review.editUntil != null
+                ? 'Düzenleme sonu: ${_reviewDeadline(review.editUntil!)}'
+                : 'Düzenleme süresi sona erdi.',
+          ),
+        ],
+        if (review.withdrawn)
+          const Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text('Yayından kaldırıldı; yalnızca siz görüyorsunuz.'),
+          ),
+        if (review.canEdit || review.canWithdraw) ...[
           const SizedBox(height: 12),
           const Divider(height: 1),
           const SizedBox(height: 4),
           Row(
             children: [
-              Expanded(
-                child: TextButton.icon(
-                  key: Key('product-review-edit-${review.id}'),
-                  onPressed: card.isMutating ? null : () => card.onEdit(review),
-                  icon: const Icon(Icons.edit_outlined, size: 18),
-                  label: const Text('Düzenle'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  key: Key('product-review-delete-${review.id}'),
-                  onPressed: card.isMutating
-                      ? null
-                      : () => card.onDelete(review),
-                  style: TextButton.styleFrom(
-                    foregroundColor: EsnaftaVarColors.error,
+              if (review.canEdit)
+                Expanded(
+                  child: TextButton.icon(
+                    key: Key('product-review-edit-${review.id}'),
+                    onPressed: card.isMutating
+                        ? null
+                        : () => card.onEdit(review),
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    label: const Text('Düzenle'),
                   ),
-                  icon: const Icon(Icons.delete_outline_rounded, size: 18),
-                  label: const Text('Sil'),
                 ),
-              ),
+              if (review.canWithdraw || review.reviewVersion == 1)
+                Expanded(
+                  child: TextButton.icon(
+                    key: Key('product-review-delete-${review.id}'),
+                    onPressed: card.isMutating
+                        ? null
+                        : () => card.onDelete(review),
+                    style: TextButton.styleFrom(
+                      foregroundColor: EsnaftaVarColors.error,
+                    ),
+                    icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                    label: Text(
+                      review.reviewVersion == 2 ? 'Yayından kaldır' : 'Sil',
+                    ),
+                  ),
+                ),
             ],
           ),
         ],
       ],
     ),
   );
+}
+
+String _reviewDeadline(DateTime value) {
+  final t = value.toLocal();
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${two(t.day)}.${two(t.month)}.${t.year} ${two(t.hour)}:${two(t.minute)}';
 }

@@ -221,13 +221,25 @@ Widget _buildPurchaseFinalCard(_PurchaseCardState view, BuildContext context) {
               onPressed: view._isOpeningShop ? null : view._openShopProfile,
               child: Text(view._isOpeningShop ? 'Açılıyor…' : 'Mağazayı Gör'),
             );
-            final rating = purchase.customerRating == null
+            final rating =
+                purchase.customerRating == null ||
+                    view._evaluationEnabled ||
+                    view._checkingEvaluation ||
+                    view._evaluationError != null
                 ? FilledButton(
                     key: const Key('purchase-shop-rating-open-action'),
-                    onPressed: view._isOpeningRating
+                    onPressed: view._isOpeningRating || view._checkingEvaluation
                         ? null
                         : () => view._openShopRating(context),
-                    child: const Text('Esnafa Puan Ver'),
+                    child: Text(
+                      view._checkingEvaluation
+                          ? 'Kontrol ediliyor…'
+                          : view._evaluationError != null
+                          ? 'Tekrar dene'
+                          : view._evaluationEnabled
+                          ? 'Alışverişi değerlendir'
+                          : 'Esnafa Puan Ver',
+                    ),
                   )
                 : Semantics(
                     label:

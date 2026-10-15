@@ -6,6 +6,7 @@ import 'package:t_store/features/purchases/domain/entities/verified_purchase_ent
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/purchases/presentation/views/customer_ratings_view.dart';
+import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 
 class MockPurchaseHistoryCubit extends MockCubit<PurchaseHistoryState>
     implements PurchaseHistoryCubit {}
@@ -25,6 +26,7 @@ void main() {
     required DateTime confirmedAt,
     int? rating,
     DateTime? ratedAt,
+    PurchaseServiceEvaluation? serviceEvaluation,
   }) {
     return VerifiedPurchaseEntity(
       id: id,
@@ -37,6 +39,7 @@ void main() {
       items: const [],
       customerRating: rating,
       customerRatedAt: ratedAt,
+      serviceEvaluation: serviceEvaluation,
     );
   }
 
@@ -89,6 +92,43 @@ void main() {
       expect(
         tester.getTopLeft(find.text('Yeni Değerlendirme')).dy,
         lessThan(tester.getTopLeft(find.text('Eski Değerlendirme')).dy),
+      );
+    },
+  );
+
+  testWidgets(
+    'three criterion history appears without manufacturing a scalar legacy rating',
+    (tester) async {
+      final row = purchase(
+        id: 'criteria',
+        shopName: 'Üç kriterli mağaza',
+        confirmedAt: DateTime.utc(2026, 10, 15),
+        serviceEvaluation: PurchaseServiceEvaluation(
+          criteria: const ServiceCriteria(
+            friendliness: 5,
+            communication: 4,
+            cleanliness: 3,
+          ),
+          submittedAt: DateTime.utc(2026, 10, 15),
+          valid: false,
+        ),
+      );
+      whenListen(
+        cubit,
+        const Stream<PurchaseHistoryState>.empty(),
+        initialState: PurchaseHistoryLoaded([row]),
+      );
+      await tester.pumpWidget(
+        MaterialApp(home: CustomerRatingsView(purchaseHistoryCubit: cubit)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('4,00/5'), findsOneWidget);
+      expect(find.textContaining('Güleryüz 5/5'), findsOneWidget);
+      expect(
+        find.text(
+          'Bu alışverişin değerlendirmesi herkese açık puana dahil edilmez.',
+        ),
+        findsOneWidget,
       );
     },
   );

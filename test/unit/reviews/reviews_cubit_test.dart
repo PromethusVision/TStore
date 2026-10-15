@@ -393,6 +393,58 @@ void main() {
   });
 
   test(
+    'account reset ignores an earlier mutation and eligibility response',
+    () async {
+      await cubit.getProductReviews(productId);
+      final waiting = Completer<Either<ReviewFailure, ReviewEntity>>();
+      when(() => updateReview(any())).thenAnswer((_) => waiting.future);
+      final pending = cubit.updateReview(
+        productId: productId,
+        reviewId: review.id,
+        rating: 4,
+      );
+      cubit.resetReviews();
+      waiting.complete(Right(review));
+      expect((await pending).ignored, true);
+      expect(cubit.state, isA<ReviewsInitial>());
+      await cubit.getProductReviews(productId);
+      final eligibility =
+          Completer<Either<ReviewFailure, ProductReviewEligibility>>();
+      when(
+        () => getEligibility(productId),
+      ).thenAnswer((_) => eligibility.future);
+      final retry = cubit.retryEligibility(productId);
+      cubit.resetReviews();
+      eligibility.complete(const Right(existing));
+      await retry;
+      expect(cubit.state, isA<ReviewsInitial>());
+    },
+  );
+
+  test(
+    'v2 withdrawal copy does not promise unrestricted resubmission',
+    () async {
+      when(() => deleteReview(review.id)).thenAnswer(
+        (_) async => const Right(
+          DeleteProductReviewResult(
+            reviewId: 'review-1',
+            deleted: true,
+            withdrawn: true,
+          ),
+        ),
+      );
+      await cubit.getProductReviews(productId);
+      final result = await cubit.deleteReview(
+        productId: productId,
+        reviewId: review.id,
+      );
+      expect(result.succeeded, true);
+      expect(result.message, contains('yayından kaldırıldı'));
+      expect(result.message, isNot(contains('Dilerseniz yeniden')));
+    },
+  );
+
+  test(
     'quantity semantiği client API sinde entitlement parametresi üretmez',
     () {
       const params = SubmitProductReviewParams(productId: productId, rating: 5);

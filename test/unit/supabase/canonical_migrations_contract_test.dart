@@ -28,6 +28,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261013001600_0016_catalog_listing_media.sql',
   '20261014001700_0017_merchant_daily_operations.sql',
   '20261015001800_0018_qr_claim_purchase_returns.sql',
+  '20261015001900_0019_verified_evaluations.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -86,6 +87,15 @@ const _expectedPublicTables = <String>{
   'purchase_returns',
   'purchase_return_items',
   'purchase_invalidations',
+  'review_protocol_config',
+  'review_subject_keys',
+  'review_entitlements',
+  'review_lifecycle',
+  'review_revisions',
+  'service_evaluations',
+  'review_replies',
+  'review_events',
+  'review_requests',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{
@@ -209,7 +219,7 @@ void main() {
     },
   );
 
-  test('canonical chain creates exactly the expected 45 public tables', () {
+  test('canonical chain creates exactly the expected 54 public tables', () {
     final createdTables = _captures(
       canonicalSql,
       RegExp(

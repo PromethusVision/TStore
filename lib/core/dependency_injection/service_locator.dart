@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
+import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
 import 'package:t_store/features/shop/domain/repositories/listing_hero_media_repository.dart';
 import 'package:t_store/features/shop/data/repositories/supabase_listing_hero_media_repository.dart';
 import 'package:t_store/features/rewards/domain/reward_progress.dart';
@@ -541,6 +543,11 @@ Future<void> setupServiceLocator({
   );
 
   // ==================== Reviews ====================
+  if (const bool.fromEnvironment('REVIEWS_V2_ENABLED')) {
+    sl.registerLazySingleton<PurchaseEvaluationRepository>(
+      () => SupabasePurchaseEvaluationRepository(sl<SupabaseService>().client),
+    );
+  }
   // Repository
   sl.registerLazySingleton<ReviewRepository>(
     () => ReviewRepositoryImpl(supabaseService: sl()),

@@ -1,4 +1,5 @@
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
+import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 
 class VerifiedPurchaseItemModel extends VerifiedPurchaseItemEntity {
   const VerifiedPurchaseItemModel({
@@ -48,6 +49,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
     required super.items,
     super.customerRating,
     super.customerRatedAt,
+    super.serviceEvaluation,
   });
 
   factory VerifiedPurchaseModel.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
       items: items,
       customerRating: _toCustomerRating(ratingJson),
       customerRatedAt: _toCustomerRatedAt(ratingJson),
+      serviceEvaluation: _serviceEvaluation(json['service_evaluation']),
     );
   }
 }
@@ -110,6 +113,24 @@ String _requiredString(Map<String, dynamic> json, String key) {
   final value = json[key]?.toString().trim() ?? '';
   if (value.isEmpty) throw FormatException('$key alanı eksik.');
   return value;
+}
+
+PurchaseServiceEvaluation? _serviceEvaluation(dynamic value) {
+  if (value == null) return null;
+  if (value is! Map || value['valid'] is! bool) {
+    throw const FormatException('Hizmet değerlendirmesi okunamadı.');
+  }
+  final criteria = ServiceCriteria(
+    friendliness: _toInt(value['friendliness']),
+    communication: _toInt(value['communication']),
+    cleanliness: _toInt(value['cleanliness']),
+  );
+  if (!criteria.valid) throw const FormatException('Hizmet puanı geçersiz.');
+  return PurchaseServiceEvaluation(
+    criteria: criteria,
+    submittedAt: _toDateTime(value['submitted_at']),
+    valid: value['valid'] as bool,
+  );
 }
 
 int _toInt(dynamic value) {

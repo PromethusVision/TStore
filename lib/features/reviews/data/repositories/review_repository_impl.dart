@@ -104,6 +104,11 @@ class ReviewRepositoryImpl implements ReviewRepository {
             json['verified_transaction_id'],
           ),
           verifiedAt: _optionalDate(json['verified_at']),
+          reviewVersion: json['review_version'] as int? ?? 1,
+          canReopen: json['can_reopen'] as bool? ?? false,
+          ownReview: json['own_review'] == null
+              ? null
+              : ReviewModel.fromJson(_jsonObject(json['own_review'])),
         ),
       );
     } catch (error) {
@@ -199,6 +204,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
         DeleteProductReviewResult(
           reviewId: _requiredString(json, 'review_id'),
           deleted: _requiredBool(json, 'deleted'),
+          withdrawn: json['withdrawn'] as bool? ?? false,
         ),
       );
     } catch (error) {
@@ -282,6 +288,18 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
     if (rawMessage.contains('[REVIEW_AUTH_REQUIRED]') || code == '28000') {
       return _authFailure;
+    }
+    if (rawMessage.contains('[REVIEW_EDIT_CLOSED]')) {
+      return const ReviewFailure(
+        ReviewFailureKind.unauthorized,
+        'Düzenleme süresi doldu veya değerlendirme şu anda düzenlenemiyor.',
+      );
+    }
+    if (rawMessage.contains('[REVIEW_USE_PURCHASE_EVALUATION]')) {
+      return const ReviewFailure(
+        ReviewFailureKind.unavailable,
+        'Bu değerlendirmeyi alışveriş kaydınız üzerinden tamamlayın.',
+      );
     }
     if (rawMessage.contains('[REVIEW_INVALID_RATING]')) {
       return _invalidRatingFailure;

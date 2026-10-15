@@ -109,7 +109,9 @@ class _CustomerRatingsScaffoldState extends State<_CustomerRatingsScaffold> {
                       final ratings =
                           (state as PurchaseHistoryLoaded).purchases
                               .where(
-                                (purchase) => purchase.customerRating != null,
+                                (purchase) =>
+                                    purchase.customerRating != null ||
+                                    purchase.serviceEvaluation != null,
                               )
                               .toList(growable: false)
                             ..sort(
@@ -252,7 +254,11 @@ class _RatingCard extends StatelessWidget {
   final VerifiedPurchaseEntity purchase;
   @override
   Widget build(BuildContext context) {
-    final rating = purchase.customerRating!;
+    final evaluation = purchase.serviceEvaluation;
+    final rating = evaluation?.criteria.average ?? purchase.customerRating!;
+    final ratingLabel = evaluation == null
+        ? '$rating'
+        : rating.toStringAsFixed(2).replaceAll('.', ',');
     final text = Theme.of(context).textTheme;
     return Container(
       key: ValueKey('customer-rating-${purchase.id}'),
@@ -283,7 +289,7 @@ class _RatingCard extends StatelessWidget {
               Expanded(child: Text(purchase.shopName, style: text.titleMedium)),
               const SizedBox(width: EsnaftaVarSpacing.xs),
               Text(
-                '$rating/5',
+                '$ratingLabel/5',
                 style: text.titleMedium?.copyWith(
                   color: EsnaftaVarColors.primary,
                 ),
@@ -292,14 +298,16 @@ class _RatingCard extends StatelessWidget {
           ),
           const SizedBox(height: EsnaftaVarSpacing.sm),
           Semantics(
-            label: '5 üzerinden $rating yıldız',
+            label: '5 üzerinden $ratingLabel yıldız',
             child: ExcludeSemantics(
               child: Row(
                 children: List.generate(
                   5,
                   (index) => Icon(
-                    index < rating
+                    index + 1 <= rating
                         ? Icons.star_rounded
+                        : index < rating
+                        ? Icons.star_half_rounded
                         : Icons.star_border_rounded,
                     color: EsnaftaVarColors.highlight,
                     size: 24,
@@ -309,6 +317,16 @@ class _RatingCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: EsnaftaVarSpacing.xs),
+          if (evaluation != null) ...[
+            Text(
+              'Güleryüz ${evaluation.criteria.friendliness}/5 • İletişim ${evaluation.criteria.communication}/5 • Temizlik ${evaluation.criteria.cleanliness}/5',
+            ),
+            if (!evaluation.valid)
+              const Text(
+                'Bu alışverişin değerlendirmesi herkese açık puana dahil edilmez.',
+              ),
+            const SizedBox(height: 8),
+          ],
           Text(
             'Değerlendirme: ${_formatDate(_ratingDate(purchase))}',
             style: text.bodySmall?.copyWith(
@@ -395,7 +413,9 @@ class _RatingsStateView extends StatelessWidget {
 }
 
 DateTime _ratingDate(VerifiedPurchaseEntity purchase) {
-  return purchase.customerRatedAt ?? purchase.confirmedAt;
+  return purchase.serviceEvaluation?.submittedAt ??
+      purchase.customerRatedAt ??
+      purchase.confirmedAt;
 }
 
 String _formatMoney(double amount) {

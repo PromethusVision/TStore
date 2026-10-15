@@ -1,4 +1,5 @@
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
+import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -24,6 +25,7 @@ class MerchantServices {
     this.catalogMedia,
     this.operations,
     this.purchaseEvidence,
+    this.evaluations,
   });
   final MerchantRepository merchants;
   final MerchantCredentials credentials;
@@ -38,4 +40,5 @@ class MerchantServices {
   final CatalogMediaRepository? catalogMedia;
   final MerchantOperationsRepository? operations;
   final PurchaseEvidenceRepository? purchaseEvidence;
+  final PurchaseEvaluationRepository? evaluations;
 }

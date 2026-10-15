@@ -10,7 +10,7 @@ export async function connect(config) {
     query_timeout: 25000, application_name: 'ev-merchant-ab-acceptance' });
   await db.connect(); return db;
 }
-export async function migrate(db) {
+export async function migrate(db, { reviews = false } = {}) {
   assert.equal((await db.query("SELECT to_regclass('public.profiles') AS existing")).rows[0].existing, null, 'Fresh fixture required');
   assert.equal((await db.query('SELECT count(*)::int n FROM auth.users')).rows[0].n, 0, 'Existing Auth data forbidden');
   assert.equal((await db.query('SELECT count(*)::int n FROM storage.objects')).rows[0].n, 0, 'Existing Storage data forbidden');
@@ -21,7 +21,7 @@ export async function migrate(db) {
     '20260812013220','20260812013308','20260812013403','20260814000820','20260815000900'];
   const selected = (await readdir(resolve(root, 'supabase/migrations'))).filter(f => {
     const ordinal = Number(f.match(/_(\d{4})_/)?.[1]);
-    return ordinal <= 11 || [16,17,18].includes(ordinal);
+    return ordinal <= 11 || [16,17,18].includes(ordinal) || (reviews && ordinal === 19);
   }).sort();
   const manifest = [];
   for (const file of selected) {
