@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/commerce_ledger/data/supabase_commerce_ledger_repository.dart';
 import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
 import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
 import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
@@ -50,6 +51,9 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
+        statement: const bool.fromEnvironment('MERCHANT_STATEMENT_V1_ENABLED')
+            ? SupabaseCommerceLedgerRepository(service.client)
+            : null,
         rewardProgram:
             const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
                 const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')
