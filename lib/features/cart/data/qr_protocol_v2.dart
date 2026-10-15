@@ -14,11 +14,13 @@ class QrProtocolV2 {
     Future<String> Function()? installation,
     String? Function()? sessionIdentity,
     this.rewardEarningEnabled = false,
+    this.couponCheckoutEnabled = false,
   }) : installation = installation ?? QrInstallation.load,
        sessionIdentity =
            sessionIdentity ?? (() => authenticatedSessionIdentity(client));
   final SupabaseClient client;
   final bool rewardEarningEnabled;
+  final bool couponCheckoutEnabled;
   final Future<String> Function() installation;
   final String? Function() sessionIdentity;
 
@@ -189,7 +191,8 @@ class QrProtocolV2 {
       'p_claim_id': claimId,
       'p_installation_id': device,
     };
-    if (rewardEarningEnabled && rpc == 'complete_existing_qr_v2') {
+    if ((rewardEarningEnabled || couponCheckoutEnabled) &&
+        rpc == 'complete_existing_qr_v2') {
       final current = QrVerificationModel.fromJson(
         row(await client.rpc('reconcile_claim_v2', params: parameters)),
       );
@@ -198,7 +201,18 @@ class QrProtocolV2 {
           identity != sessionIdentity()) {
         throw const FormatException('Mismatched earning claim');
       }
-      if (current.rewardConfirmationRequired) {
+      if (current.couponCheckout != null) {
+        if (!couponCheckoutEnabled) {
+          throw const QrProtocolFailure('CHECKOUT_CLIENT_UPDATE_REQUIRED');
+        }
+        final terms = current.couponCheckout!;
+        endpoint = 'complete_coupon_qr_v1';
+        parameters.addAll({
+          'p_sale_minor': terms.sale.value.toString(),
+          'p_coupon_minor': terms.coupon.value.toString(),
+          'p_payment_minor': terms.payment.value.toString(),
+        });
+      } else if (current.rewardConfirmationRequired) {
         endpoint = 'complete_reward_qr_v1';
         parameters['p_actual_sale_minor'] = current.rewardSaleMinor;
       }
@@ -232,6 +246,12 @@ class QrProtocolV2 {
       });
 
   static String friendlyError(String code) {
+    if (code.contains('CHECKOUT_CLIENT_UPDATE_REQUIRED')) {
+      return 'Kuponlu işlemler için uygulamayı güncelleyin.';
+    }
+    if (code.contains('CHECKOUT_') || code.contains('LEDGER_OVERDRAFT')) {
+      return 'Kupon onayı veya bakiye değişti. İşlem tamamlanmadı; müşteriden güncel onayla yeni QR isteyin.';
+    }
     if (code.contains('QR_RATE_LIMITED')) {
       return 'Çok fazla deneme yapıldı. Bir süre sonra tekrar deneyin.';
     }

@@ -15,6 +15,9 @@ import 'package:t_store/features/cart/presentation/cubit/qr_session_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_state.dart';
 import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/presentation/coupon_checkout_approval.dart';
 
 class CartQrSessionBottomSheet extends StatefulWidget {
   final String cartId;
@@ -44,11 +47,15 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   bool _isRetryingInvalidSnapshot = false;
   bool _isClosingInvalidSnapshot = false;
   bool _isRefreshingExpiredSession = false;
+  bool _choosingCoupon = false;
 
   @override
   void initState() {
     super.initState();
-    context.read<QrSessionCubit>().createQrSession(widget.cartId);
+    _choosingCoupon = sl.isRegistered<CouponCheckoutRepository>();
+    if (!_choosingCoupon) {
+      context.read<QrSessionCubit>().createQrSession(widget.cartId);
+    }
   }
 
   @override
@@ -95,6 +102,12 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
   void _refreshExpiredSession() {
     if (_isRefreshingExpiredSession) return;
 
+    if (sl.isRegistered<CouponCheckoutRepository>()) {
+      _stopTimer();
+      setState(() => _choosingCoupon = true);
+      return;
+    }
+
     _stopTimer();
     setState(() => _isRefreshingExpiredSession = true);
     context.read<QrSessionCubit>().createQrSession(widget.cartId);
@@ -125,160 +138,192 @@ class _CartQrSessionBottomSheetState extends State<CartQrSessionBottomSheet> {
                   MediaQuery.of(context).viewInsets.bottom +
                   EsnaftaVarSpacing.xl,
             ),
-            child: BlocConsumer<QrSessionCubit, QrSessionState>(
-              listener: (context, state) {
-                if (state is QrSessionCreated) {
-                  _isRetryingInvalidSnapshot = false;
-                  _isRefreshingExpiredSession = false;
-                  if (_hasValidSnapshotSummary(state.session) &&
-                      state.session.expiresAt.isAfter(DateTime.now())) {
-                    _startTimer();
-                  } else {
-                    _stopTimer();
-                  }
-                }
-                if (state is QrSessionCompleted ||
-                    state is QrSessionCancelled ||
-                    state is QrSessionExpired ||
-                    state is QrSessionFailure) {
-                  _isRetryingInvalidSnapshot = false;
-                  _isRefreshingExpiredSession = false;
-                  _stopTimer();
-                }
-              },
-              builder: (context, state) {
-                if (state is QrSessionLoading || state is QrSessionInitial) {
-                  return const _QrSessionLoadingView();
-                }
-
-                if (state is QrSessionFailure) {
-                  return _QrSessionFailureView(
-                    message: state.message,
-                    onRetry: () {
+            child: _choosingCoupon
+                ? CouponCheckoutApproval(
+                    cartId: widget.cartId,
+                    repository: sl<CouponCheckoutRepository>(),
+                    onWithoutCoupon: () {
+                      if (!mounted) return;
+                      setState(() => _choosingCoupon = false);
                       context.read<QrSessionCubit>().createQrSession(
                         widget.cartId,
                       );
                     },
-                  );
-                }
+                    onApproved: (session) {
+                      if (!mounted) return;
+                      setState(() => _choosingCoupon = false);
+                      context.read<QrSessionCubit>().useApprovedSession(
+                        session,
+                      );
+                      if (session.status == 'active' ||
+                          session.status == 'claimed') {
+                        _startTimer();
+                      }
+                    },
+                  )
+                : BlocConsumer<QrSessionCubit, QrSessionState>(
+                    listener: (context, state) {
+                      if (state is QrSessionCreated) {
+                        _isRetryingInvalidSnapshot = false;
+                        _isRefreshingExpiredSession = false;
+                        if (_hasValidSnapshotSummary(state.session) &&
+                            state.session.expiresAt.isAfter(DateTime.now())) {
+                          _startTimer();
+                        } else {
+                          _stopTimer();
+                        }
+                      }
+                      if (state is QrSessionCompleted ||
+                          state is QrSessionCancelled ||
+                          state is QrSessionExpired ||
+                          state is QrSessionFailure) {
+                        _isRetryingInvalidSnapshot = false;
+                        _isRefreshingExpiredSession = false;
+                        _stopTimer();
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is QrSessionLoading ||
+                          state is QrSessionInitial) {
+                        return const _QrSessionLoadingView();
+                      }
 
-                if (state is QrSessionCancelled) {
-                  return _QrSessionCancelledView(
-                    onBackToCart: () => Navigator.of(context).pop(),
-                  );
-                }
-
-                if (state is QrSessionExpired) {
-                  return _QrSessionExpiredView(
-                    isRefreshing: _isRefreshingExpiredSession,
-                    onRefresh: _refreshExpiredSession,
-                  );
-                }
-
-                if (state is QrSessionCompleted) {
-                  return BlocProvider<ShopRatingCubit>(
-                    create: (_) => sl<ShopRatingCubit>(),
-                    child: _QrSessionCompletedView(
-                      sessionId: state.sessionId,
-                      shopName: widget.shopName,
-                      onClose: () => Navigator.of(context).pop(),
-                      onViewPurchases: widget.onViewPurchases,
-                    ),
-                  );
-                }
-
-                if (state is QrSessionCreated) {
-                  if (state.session.protocolVersion == 2 &&
-                      (state.session.status == 'claimed' ||
-                          !state.session.expiresAt.isAfter(_now))) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.fact_check_outlined, size: 48),
-                        const SizedBox(height: 16),
-                        Text(
-                          state.session.status == 'claimed'
-                              ? 'Esnaf işlemi kontrol ediyor'
-                              : 'QR durumu kontrol ediliyor',
-                          style: Theme.of(context).textTheme.titleLarge,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Alışveriş henüz tamamlanmadı. Sunucu onayı beklenecek.',
-                          textAlign: TextAlign.center,
-                        ),
-                        if (state.isStatusCheckDelayed)
-                          const Text(
-                            'Bağlantı gecikti. Sonuç henüz doğrulanamadı.',
-                            textAlign: TextAlign.center,
-                          ),
-                        TextButton(
-                          onPressed: () => context
-                              .read<QrSessionCubit>()
-                              .checkSessionStatus(),
-                          child: const Text('Durumu kontrol et'),
-                        ),
-                      ],
-                    );
-                  }
-                  if (!state.session.expiresAt.isAfter(_now)) {
-                    return _QrSessionExpiredView(
-                      isRefreshing: _isRefreshingExpiredSession,
-                      onRefresh: _refreshExpiredSession,
-                    );
-                  }
-
-                  if (!_hasValidSnapshotSummary(state.session)) {
-                    return _QrSessionInvalidSnapshotView(
-                      isRetrying:
-                          _isRetryingInvalidSnapshot ||
-                          _isClosingInvalidSnapshot,
-                      onRetry: _retryInvalidSnapshot,
-                      onBack: _closeInvalidSnapshot,
-                    );
-                  }
-
-                  final sessionItemCount = state.session.itemCount!;
-                  final sessionTotal = state.session.totalAmount!;
-                  final itemCountChanged = sessionItemCount != widget.itemCount;
-                  final totalChanged =
-                      (sessionTotal - widget.totalAmount).abs() > 0.005;
-                  final requiresUpdatedSummaryConfirmation =
-                      (itemCountChanged || totalChanged) &&
-                      _confirmedUpdatedSummarySessionId != state.session.id;
-
-                  if (requiresUpdatedSummaryConfirmation) {
-                    return _QrSessionSummaryChangeView(
-                      previousItemCount: widget.itemCount,
-                      currentItemCount: sessionItemCount,
-                      previousTotal: widget.totalAmount,
-                      currentTotal: sessionTotal,
-                      itemCountChanged: itemCountChanged,
-                      totalChanged: totalChanged,
-                      onCancel: () => Navigator.of(context).pop(),
-                      onContinue: () {
-                        setState(
-                          () => _confirmedUpdatedSummarySessionId =
-                              state.session.id,
+                      if (state is QrSessionFailure) {
+                        return _QrSessionFailureView(
+                          message: state.message,
+                          onRetry: () {
+                            context.read<QrSessionCubit>().createQrSession(
+                              widget.cartId,
+                            );
+                          },
                         );
-                      },
-                    );
-                  }
+                      }
 
-                  return _QrSessionContent(
-                    session: state.session,
-                    shopName: widget.shopName,
-                    itemCount: sessionItemCount,
-                    totalAmount: sessionTotal,
-                    remaining: state.session.expiresAt.difference(_now),
-                    isStatusCheckDelayed: state.isStatusCheckDelayed,
-                  );
-                }
+                      if (state is QrSessionCancelled) {
+                        return _QrSessionCancelledView(
+                          onBackToCart: () => Navigator.of(context).pop(),
+                        );
+                      }
 
-                return const SizedBox.shrink();
-              },
-            ),
+                      if (state is QrSessionExpired) {
+                        return _QrSessionExpiredView(
+                          isRefreshing: _isRefreshingExpiredSession,
+                          onRefresh: _refreshExpiredSession,
+                        );
+                      }
+
+                      if (state is QrSessionCompleted) {
+                        return BlocProvider<ShopRatingCubit>(
+                          create: (_) => sl<ShopRatingCubit>(),
+                          child: _QrSessionCompletedView(
+                            sessionId: state.sessionId,
+                            shopName: widget.shopName,
+                            onClose: () => Navigator.of(context).pop(),
+                            onViewPurchases: widget.onViewPurchases,
+                          ),
+                        );
+                      }
+
+                      if (state is QrSessionCreated) {
+                        final checkout = state.session.couponCheckout;
+                        if (state.session.protocolVersion == 2 &&
+                            (state.session.status == 'claimed' ||
+                                !state.session.expiresAt.isAfter(_now))) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.fact_check_outlined, size: 48),
+                              const SizedBox(height: 16),
+                              Text(
+                                state.session.status == 'claimed'
+                                    ? 'Esnaf işlemi kontrol ediyor'
+                                    : 'QR durumu kontrol ediliyor',
+                                style: Theme.of(context).textTheme.titleLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 12),
+                              if (checkout != null)
+                                Text(
+                                  'Satış: ${rewardMoney(checkout.sale)}\nOnaylanan kupon: ${rewardMoney(checkout.coupon)}\nMağazada ödenecek: ${rewardMoney(checkout.payment)}',
+                                  textAlign: TextAlign.center,
+                                ),
+                              const Text(
+                                'Alışveriş henüz tamamlanmadı. Sunucu onayı beklenecek.',
+                                textAlign: TextAlign.center,
+                              ),
+                              if (state.isStatusCheckDelayed)
+                                const Text(
+                                  'Bağlantı gecikti. Sonuç henüz doğrulanamadı.',
+                                  textAlign: TextAlign.center,
+                                ),
+                              TextButton(
+                                onPressed: () => context
+                                    .read<QrSessionCubit>()
+                                    .checkSessionStatus(),
+                                child: const Text('Durumu kontrol et'),
+                              ),
+                            ],
+                          );
+                        }
+                        if (!state.session.expiresAt.isAfter(_now)) {
+                          return _QrSessionExpiredView(
+                            isRefreshing: _isRefreshingExpiredSession,
+                            onRefresh: _refreshExpiredSession,
+                          );
+                        }
+
+                        if (!_hasValidSnapshotSummary(state.session)) {
+                          return _QrSessionInvalidSnapshotView(
+                            isRetrying:
+                                _isRetryingInvalidSnapshot ||
+                                _isClosingInvalidSnapshot,
+                            onRetry: _retryInvalidSnapshot,
+                            onBack: _closeInvalidSnapshot,
+                          );
+                        }
+
+                        final sessionItemCount = state.session.itemCount!;
+                        final sessionTotal = state.session.totalAmount!;
+                        final itemCountChanged =
+                            sessionItemCount != widget.itemCount;
+                        final totalChanged =
+                            (sessionTotal - widget.totalAmount).abs() > 0.005;
+                        final requiresUpdatedSummaryConfirmation =
+                            (itemCountChanged || totalChanged) &&
+                            _confirmedUpdatedSummarySessionId !=
+                                state.session.id;
+
+                        if (requiresUpdatedSummaryConfirmation) {
+                          return _QrSessionSummaryChangeView(
+                            previousItemCount: widget.itemCount,
+                            currentItemCount: sessionItemCount,
+                            previousTotal: widget.totalAmount,
+                            currentTotal: sessionTotal,
+                            itemCountChanged: itemCountChanged,
+                            totalChanged: totalChanged,
+                            onCancel: () => Navigator.of(context).pop(),
+                            onContinue: () {
+                              setState(
+                                () => _confirmedUpdatedSummarySessionId =
+                                    state.session.id,
+                              );
+                            },
+                          );
+                        }
+
+                        return _QrSessionContent(
+                          session: state.session,
+                          shopName: widget.shopName,
+                          itemCount: sessionItemCount,
+                          totalAmount: sessionTotal,
+                          remaining: state.session.expiresAt.difference(_now),
+                          isStatusCheckDelayed: state.isStatusCheckDelayed,
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
           ),
         ),
       ),
@@ -911,6 +956,16 @@ class _QrSessionContent extends StatelessWidget {
             value: 'TL ${totalAmount.toStringAsFixed(2)}',
           ),
           _QrInfoRow(label: 'Kalan süre', value: _formatRemaining(remaining)),
+          if (session.couponCheckout != null) ...[
+            _QrInfoRow(
+              label: 'Onaylanan EV kuponu',
+              value: rewardMoney(session.couponCheckout!.coupon),
+            ),
+            _QrInfoRow(
+              label: 'Mağazada ödenecek',
+              value: rewardMoney(session.couponCheckout!.payment),
+            ),
+          ],
           const SizedBox(height: EsnaftaVarSpacing.md),
           if (isStatusCheckDelayed) ...[
             Container(

@@ -18,13 +18,16 @@ class QrSessionRepositoryImpl
     required this.supabaseService,
     this.claimsEnabled = false,
     this.rewardEarningEnabled = false,
+    this.couponCheckoutEnabled = false,
   });
   @override
   final bool claimsEnabled;
   final bool rewardEarningEnabled;
+  final bool couponCheckoutEnabled;
   late final QrProtocolV2 _protocol = QrProtocolV2(
     supabaseService.client,
     rewardEarningEnabled: rewardEarningEnabled,
+    couponCheckoutEnabled: couponCheckoutEnabled,
   );
 
   @override

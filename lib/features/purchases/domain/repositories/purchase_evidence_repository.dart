@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
 
 class PurchaseEvidenceItem {
   const PurchaseEvidenceItem({
@@ -27,17 +28,24 @@ class PurchaseEvidence {
     required this.items,
     required this.returns,
     this.finalSaleMinor,
+    this.saleExact,
+    this.couponExact,
+    this.paymentExact,
     required this.classification,
     required this.invalidated,
   });
   final String id, shopId, classification;
   final DateTime confirmedAt;
   final int? finalSaleMinor;
+  final LedgerMinorUnits? saleExact, couponExact, paymentExact;
   final bool invalidated;
   final List<PurchaseEvidenceItem> items;
   final List<PurchaseReturnReference> returns;
   bool get canRecordReturn =>
-      classification == 'quote_only_b_v1' &&
+      const {
+        'quote_only_b_v1',
+        'coupon_checkout_e_v1',
+      }.contains(classification) &&
       !invalidated &&
       items.any((i) => i.remaining > 0);
 
@@ -61,10 +69,22 @@ class PurchaseEvidence {
     if (!const {
       'legacy_unclassified',
       'quote_only_b_v1',
+      'coupon_checkout_e_v1',
     }.contains(classification)) {
       throw const FormatException('Unknown purchase terms');
     }
     final finalSale = j['final_sale_minor'];
+    LedgerMinorUnits? saleExact, couponExact, paymentExact;
+    if (classification == 'coupon_checkout_e_v1') {
+      saleExact = LedgerMinorUnits.fromWire(finalSale);
+      couponExact = LedgerMinorUnits.fromWire(j['ev_coupon_minor']);
+      paymentExact = LedgerMinorUnits.fromWire(j['customer_payment_minor']);
+      if (couponExact.value <= BigInt.zero ||
+          saleExact.value != couponExact.value + paymentExact.value ||
+          j['coupon_restoration_executed'] != false) {
+        throw const FormatException('Invalid coupon purchase amounts');
+      }
+    }
     if (classification == 'quote_only_b_v1' &&
         (finalSale is! int ||
             finalSale < 0 ||
@@ -120,7 +140,12 @@ class PurchaseEvidence {
       confirmedAt: DateTime.parse(requiredString(j, 'confirmed_at')),
       items: List.unmodifiable(items),
       returns: List.unmodifiable(returns),
-      finalSaleMinor: finalSale as int?,
+      finalSaleMinor: classification == 'coupon_checkout_e_v1'
+          ? null
+          : finalSale as int?,
+      saleExact: saleExact,
+      couponExact: couponExact,
+      paymentExact: paymentExact,
       classification: classification,
       invalidated: j['invalidated'] as bool,
     );

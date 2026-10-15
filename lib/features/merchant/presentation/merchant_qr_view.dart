@@ -101,7 +101,9 @@ class _MerchantQrViewState extends State<MerchantQrView>
         builder: (context) => AlertDialog(
           title: const Text('Gerçek satış tutarını doğrula'),
           content: Text(
-            '${rewardMoney(LedgerMinorUnits.fromWire(verification.rewardSaleMinor))} tutarında fiziksel alışveriş tamamlandığını ve bu satışta EV kuponu kullanılmadığını onaylıyor musunuz?\n\nFarklı bir tutar veya mağaza indirimi varsa bu işlemi iptal edin. Yanlış tutarla ödül kazandırmayın.',
+            verification.couponCheckout == null
+                ? '${rewardMoney(LedgerMinorUnits.fromWire(verification.rewardSaleMinor))} tutarında fiziksel alışveriş tamamlandığını ve bu satışta EV kuponu kullanılmadığını onaylıyor musunuz?\n\nFarklı bir tutar veya mağaza indirimi varsa bu işlemi iptal edin. Yanlış tutarla ödül kazandırmayın.'
+                : 'Satış: ${rewardMoney(verification.couponCheckout!.sale)}\nMüşterinin onayladığı EV kuponu: ${rewardMoney(verification.couponCheckout!.coupon)}\nMüşteriden alınacak: ${rewardMoney(verification.couponCheckout!.payment)}\n\nFiziksel alışveriş ve kalan ödeme tamamlandı mı? Tutarlar farklıysa iptal edin ve müşteriden yeni onay isteyin.',
           ),
           actions: [
             TextButton(
@@ -115,7 +117,16 @@ class _MerchantQrViewState extends State<MerchantQrView>
           ],
         ),
       );
-      if (mounted && approved == true && verification.canBeConfirmed) {
+      final current = _cubit.state;
+      final currentVerification = switch (current) {
+        QrVerificationLoaded() => current.verification,
+        QrVerificationUncertain() => current.verification,
+        _ => null,
+      };
+      if (mounted &&
+          approved == true &&
+          verification.canBeConfirmed &&
+          currentVerification == verification) {
         await _cubit.confirmVerification();
       }
     } finally {

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 
 class QrVerificationItemEntity extends Equatable {
   final String id;
@@ -45,6 +46,7 @@ class QrVerificationEntity extends Equatable {
   final DateTime? completionExpiresAt;
   final bool rewardConfirmationRequired;
   final String? rewardSaleMinor;
+  final CouponCheckoutTerms? couponCheckout;
 
   const QrVerificationEntity({
     required this.sessionId,
@@ -63,6 +65,7 @@ class QrVerificationEntity extends Equatable {
     this.completionExpiresAt,
     this.rewardConfirmationRequired = false,
     this.rewardSaleMinor,
+    this.couponCheckout,
   });
 
   DateTime get confirmationDeadline => completionExpiresAt ?? expiresAt;
@@ -92,5 +95,6 @@ class QrVerificationEntity extends Equatable {
     completionExpiresAt,
     rewardConfirmationRequired,
     rewardSaleMinor,
+    couponCheckout,
   ];
 }

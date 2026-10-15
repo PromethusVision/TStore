@@ -1,4 +1,5 @@
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 
 class VerifiedPurchaseItemModel extends VerifiedPurchaseItemEntity {
@@ -50,6 +51,7 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
     super.customerRating,
     super.customerRatedAt,
     super.serviceEvaluation,
+    super.couponCheckout,
   });
 
   factory VerifiedPurchaseModel.fromJson(Map<String, dynamic> json) {
@@ -105,6 +107,9 @@ class VerifiedPurchaseModel extends VerifiedPurchaseEntity {
       customerRating: _toCustomerRating(ratingJson),
       customerRatedAt: _toCustomerRatedAt(ratingJson),
       serviceEvaluation: _serviceEvaluation(json['service_evaluation']),
+      couponCheckout: json['coupon_checkout'] == null
+          ? null
+          : CouponCheckoutTerms.fromJson(json['coupon_checkout']),
     );
   }
 }

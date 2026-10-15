@@ -211,6 +211,15 @@ Widget _buildPurchaseFinalCard(_PurchaseCardState view, BuildContext context) {
           ],
         ),
         const SizedBox(height: EsnaftaVarSpacing.sm),
+        if (purchase.couponCheckout != null) ...[
+          Text(
+            'Kullanılan EV kuponu: ${rewardMoney(purchase.couponCheckout!.coupon)}',
+          ),
+          Text(
+            'Mağazada ödenen: ${rewardMoney(purchase.couponCheckout!.payment)}',
+          ),
+          const SizedBox(height: EsnaftaVarSpacing.sm),
+        ],
         LayoutBuilder(
           builder: (context, constraints) {
             final stacked =

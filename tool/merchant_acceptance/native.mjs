@@ -10,12 +10,14 @@ import { reviewChecks } from './review_checks.mjs';
 import { trustCampaignChecks } from './trust_campaign_checks.mjs';
 import { ledgerChecks } from './ledger_checks.mjs';
 import { rewardChecks } from './reward_checks.mjs';
+import { checkoutChecks } from './checkout_checks.mjs';
 
 // Native PostgreSQL proof is deliberately separate from managed Auth/Storage acceptance.
 const base = resolve(root, '.buildlog/merchant-native');
 const reviews = process.argv.includes('--reviews');
 const trustCampaigns = process.argv.includes('--trust-campaigns');
-const rewards = process.argv.includes('--rewards');
+const checkout = process.argv.includes('--checkout');
+const rewards = process.argv.includes('--rewards') || checkout;
 const ledger = process.argv.includes('--ledger') || rewards;
 let config, db, binary, directory, startAttempted=false, stage='binary';
 try {
@@ -38,7 +40,7 @@ try {
   stage='acceptance';
   assert.equal(await realpath((await db.query('SHOW data_directory')).rows[0].data_directory), await realpath(data));
   await nativeManagedSchema(db);
-  const manifest = await migrate(db, { reviews, trustCampaigns, ledger, rewards });
+  const manifest = await migrate(db, { reviews, trustCampaigns, ledger, rewards, checkout });
   async function actor(id = randomUUID()) {
     await db.query("INSERT INTO auth.users(id,email) VALUES($1,$2) ON CONFLICT DO NOTHING", [id, `${id}@example.invalid`]);
     const sid = randomUUID();
@@ -59,6 +61,10 @@ try {
     if(rewards) {
       const earningFixture=await seed(db,await actor(),await actor(),await actor());earningFixture.session=id=>actor(id);earningFixture.actor=actor;
       checks.push(...await rewardChecks(db,config,earningFixture));
+      if(checkout) {
+        const checkoutFixture=await seed(db,await actor(),await actor(),await actor());checkoutFixture.session=id=>actor(id);checkoutFixture.actor=actor;
+        checks.push(...await checkoutChecks(db,config,checkoutFixture));
+      }
     }
   }
   else if(trustCampaigns) {
@@ -73,7 +79,7 @@ try {
     evidence_class: 'native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema',
     managed_auth: 'OPEN', storage_http: 'OPEN', physical_two_device: 'OPEN', checks, migrations: manifest };
   await writeFile(resolve(directory, 'result.json'), JSON.stringify(evidence, null, 2)+'\n');
-  await writeFile(resolve(root, `docs/data/merchant_${rewards ? 'e' : ledger ? 'h0' : trustCampaigns ? 'df' : reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
+  await writeFile(resolve(root, `docs/data/merchant_${checkout ? 'checkout_e' : rewards ? 'e' : ledger ? 'h0' : trustCampaigns ? 'df' : reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
   console.log(`NATIVE_DATABASE_PROOF_PASS: ${checks.length} groups. Managed Auth/Storage are evidenced separately.`);
 } catch (error) {
   // Synthetic DB only, but still avoid dumping SQL parameters, passwords or tokens.

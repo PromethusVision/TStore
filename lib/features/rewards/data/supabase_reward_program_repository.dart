@@ -294,6 +294,12 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
           coupons: coupons,
           history: history,
           merchants: merchants,
+          checkoutEnabled: r['checkout_enabled'] == null
+              ? false
+              : _bool(r['checkout_enabled']),
+          futureOffset: r['future_offset_minor'] == null
+              ? null
+              : _money(r['future_offset_minor']),
         );
       });
 

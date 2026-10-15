@@ -114,10 +114,14 @@ class RewardProgramState {
     required List<RewardCoupon> coupons,
     required List<RewardEarning> history,
     required List<RewardEligibleMerchant> merchants,
+    this.checkoutEnabled = false,
+    this.futureOffset,
   }) : coupons = List.unmodifiable(coupons),
        history = List.unmodifiable(history),
        merchants = List.unmodifiable(merchants);
   final bool enabled;
+  final bool checkoutEnabled;
+  final LedgerMinorUnits? futureOffset;
   final DateTime serverNow;
   final int pendingCount;
   final LedgerMinorUnits pending, couponValue;
@@ -125,7 +129,7 @@ class RewardProgramState {
   final List<RewardEarning> history;
   final List<RewardEligibleMerchant> merchants;
   int get progressSteps => pendingCount.clamp(0, 5);
-  bool get redemptionEnabled => false;
+  bool get redemptionEnabled => checkoutEnabled;
 }
 
 enum RewardReservationStatus {

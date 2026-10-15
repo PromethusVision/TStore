@@ -55,6 +55,32 @@ class QrSessionCubit extends Cubit<QrSessionState> {
     }
   }
 
+  /// A customer-approved checkout uses the same polling and terminal states.
+  void useApprovedSession(QrSessionEntity session) {
+    if (isClosed ||
+        _isCreatingSession ||
+        session.protocolVersion != 2 ||
+        session.couponCheckout == null) {
+      return;
+    }
+    _operationId++;
+    _stopStatusPolling();
+    _activeSession = session;
+    if (session.status == 'used') {
+      _activeSession = null;
+      emit(QrSessionCompleted(sessionId: session.id));
+    } else if (session.status == 'cancelled') {
+      _activeSession = null;
+      emit(const QrSessionCancelled());
+    } else if (session.status == 'expired') {
+      _activeSession = null;
+      emit(const QrSessionExpired());
+    } else {
+      emit(QrSessionCreated(session));
+      _startStatusPolling();
+    }
+  }
+
   Future<void> checkSessionStatus([String? sessionId]) async {
     final targetSessionId = sessionId ?? _activeSession?.id;
     if (targetSessionId == null ||
