@@ -1,0 +1,194 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-15T20:07:56.086Z",
+  "branch": "agent/merchant-statement-h1",
+  "baseline": "1374f82835244d34bfa56145dfeb36beedeb0268",
+  "scope": "H1 read-only balance and statement; full H1 settlement remains gated by G/O8",
+  "full_flutter": {
+    "pass": 2497,
+    "fail": 0,
+    "existing_skips": 6
+  },
+  "focused_flutter": {
+    "pass": 39,
+    "fail": 0,
+    "new_tests": 32
+  },
+  "analyzer": "PASS",
+  "harness_safety": {
+    "pass": 5,
+    "fail": 0
+  },
+  "native_postgresql_groups": 113,
+  "managed_local_service_groups": 115,
+  "new_statement_database_groups": 12,
+  "new_statement_http_groups": 3,
+  "historical_migration_files_unchanged": 25,
+  "historical_local_chain_canonical_hashes_verified": 22,
+  "checkout_line_ending_only_raw_hash_differences": [
+    "20261015002000_0020_trust_badges.sql",
+    "20261015002100_0021_merchant_campaign_lite.sql",
+    "20261015002200_0022_campaign_required_amount.sql",
+    "20261015002300_0023_commerce_ledger_foundation.sql",
+    "20261015002400_0024_reward_earning_cycle.sql",
+    "20261015002500_0025_coupon_checkout.sql",
+    "20261015002600_0026_coupon_reservation_net_threshold.sql"
+  ],
+  "local_migration_count": 23,
+  "migration_sha256": {
+    "file": "20261015002700_0027_merchant_statement_read.sql",
+    "sha256": "ae8632796b380106b3f33316752e1c57a8003bde19ad92187bfb14eb5aab5413"
+  },
+  "builds": {
+    "merchant": {
+      "result": "PASS",
+      "file": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "sha256": "1acb1dacffc5aeeed8109c85a834db347b77199e49273a0310464a292e5fb496",
+      "executed_this_task": true,
+      "compiler_fallback": "Kotlin incremental daemon failed; Gradle fallback succeeded"
+    },
+    "customer": {
+      "result": "PASS",
+      "file": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "sha256": "9e80f717cba2d5abbdfc5d7a63cd5ffbe2bf7da591c1bbfff9357bededf7bb30",
+      "executed_this_task": true,
+      "compiler_fallback": "not required"
+    }
+  },
+  "build_defines": [
+    "COUPON_CHECKOUT_V1_ENABLED=true",
+    "REWARD_EARNING_V1_ENABLED=true",
+    "QR_CLAIMS_V2_ENABLED=true",
+    "TRUST_COMMERCE_V1_ENABLED=true",
+    "REVIEWS_V2_ENABLED=true"
+  ],
+  "merchant_additional_define": "MERCHANT_STATEMENT_V1_ENABLED=true",
+  "client_and_statement_server_default": "OFF",
+  "source_hash_format": "SHA-256 canonical LF UTF-8",
+  "source_files": [
+    {
+      "file": "lib/features/commerce_ledger/data/merchant_statement_decoder.dart",
+      "sha256": "d7cf0845c2d74b7b42a3e5db022c222d12d1634ffb8b0557bfb9c677ac821704"
+    },
+    {
+      "file": "lib/features/commerce_ledger/data/supabase_commerce_ledger_repository.dart",
+      "sha256": "9b9594d46f7ffb2db35389cb3aeb8404f8daec75607d1ffe0e34e98eb5cb24dd"
+    },
+    {
+      "file": "lib/features/commerce_ledger/domain/commerce_ledger.dart",
+      "sha256": "d9508847e5e3ba38743f0b3495d2cded8f6540cf8c0b19053927364aeae1e2e6"
+    },
+    {
+      "file": "lib/features/commerce_ledger/domain/merchant_statement.dart",
+      "sha256": "9ab72703c04572b90c0ad371a70a9381ec203fffffd3c88c8775235eb4c15476"
+    },
+    {
+      "file": "lib/features/merchant/merchant_services.dart",
+      "sha256": "c60ffa7fddf17c3ef3e8ad916fdf406f2b628293e3bccd939d5c8db099984267"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_dashboard.dart",
+      "sha256": "d0d2bbb80354d34e88f6676cb22371236fe8c4089573ce79d5042a695a0867b1"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_statement.dart",
+      "sha256": "e871e09f6ab7532a60ad1f3b3d549b82e37051d5f3eb5f972526daf989d7fb3c"
+    },
+    {
+      "file": "lib/main_merchant_development.dart",
+      "sha256": "2048206e55883fcdb98bcec4d7c98523caf65676f18c089320c888d1ee233076"
+    },
+    {
+      "file": "supabase/migrations/20261015002700_0027_merchant_statement_read.sql",
+      "sha256": "ae8632796b380106b3f33316752e1c57a8003bde19ad92187bfb14eb5aab5413"
+    },
+    {
+      "file": "test/support/statement_fixtures.dart",
+      "sha256": "68f903c078f507720acbbe6f7e23587a3bbd2a8a84acfd651974af85827867cc"
+    },
+    {
+      "file": "test/unit/commerce_ledger/merchant_statement_test.dart",
+      "sha256": "de85336f31aae1e7702b727e7c43c9afe611bb1f8286e5a455401189112a6ce4"
+    },
+    {
+      "file": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "sha256": "0a3d456fca69b0285024b5ffa0c8d6e693b352f5729915cc2b9be3da719c600d"
+    },
+    {
+      "file": "test/widget/merchant/merchant_statement_test.dart",
+      "sha256": "749e816102f2f7dd4407a45b938bc4510f6fb41c7efe3cb3f2f9b0d9df926f58"
+    },
+    {
+      "file": "tool/merchant_acceptance/acceptance.mjs",
+      "sha256": "8639b5c3a382763a77a5a57bd618f65ec9cf758e2ed2c558e5349575cc1dee5b"
+    },
+    {
+      "file": "tool/merchant_acceptance/fixture.mjs",
+      "sha256": "f898a00fc740435c6e0af78fe06f46a5429bf12ec964195054f582072d4ae24f"
+    },
+    {
+      "file": "tool/merchant_acceptance/native.mjs",
+      "sha256": "be0e0c979d8ff505eff95720a31dcb0fee9101ab889dd81feef5f9a8f2c15a6e"
+    },
+    {
+      "file": "tool/merchant_acceptance/statement_checks.mjs",
+      "sha256": "95e8cc25b4cf4b7568b9982fec74b4d06c2c1a46a0cc66595d8880507a03dd37"
+    }
+  ],
+  "renders": [
+    {
+      "file": "docs/evidence/statement_h1/changed-history.png",
+      "sha256": "4b778f58430cb00bc08f4096b5982d0bcba3bdcf9192a19fd7a69de2ae4c7ee3",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/connection-error.png",
+      "sha256": "a12c896b57f4e803faa5360e2d18073ae5215b0c7f97d5ecf95aa6c6a5e89f19",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/disabled.png",
+      "sha256": "b031fcc44387b2c9b4f1ea71abb3005f427e520c226d8ca31766924ad2a95056",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/history-release.png",
+      "sha256": "9b06ee2ceb3945abba16792de17b7abefcaa936329698e8f0625b37d33c99a09",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/history-reversal-320.png",
+      "sha256": "4b9921f7fb7baa4185aa1eda47750977dde7521342fe686463ead3d5e907f2aa",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/summary-320.png",
+      "sha256": "fdf0c05fbb6acca076d506490313e13898777b87499370364ceb7ad90ac393b0",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/summary-390.png",
+      "sha256": "4878bc7509a237935aca0d12b1222f10f63a67846fd4e9bf6b8cad401c0ac3c1",
+      "inspected": true
+    },
+    {
+      "file": "docs/evidence/statement_h1/summary-430.png",
+      "sha256": "d739edf80f7a3d8483e5c6b9a01ee85696a8013bed372ddde0c0ed646bf07483",
+      "inspected": true
+    }
+  ],
+  "secret_scan": "PASS: no credential patterns in delivery text; captured API projection contains synthetic own-account records only",
+  "fixture_cleanup": "owned native PostgreSQL and managed services stopped; synthetic data retained; no active project containers/network",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "production_migration_applied": false,
+  "main_merge": false,
+  "main_push": false,
+  "open_gates": [
+    "full H1 and G",
+    "O8 settlement/withdrawal policy and providers",
+    "real Firebase/APNs",
+    "physical two-device QR acceptance",
+    "explicit remote deployment authorization"
+  ]
+}

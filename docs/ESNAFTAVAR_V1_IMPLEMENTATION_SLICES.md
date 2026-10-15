@@ -20,6 +20,12 @@ A catalog/listing/media ─→ F Campaign Lite ───────────
                              all integrated capabilities ─→ J physical/release
 ```
 
+H1 bounded read follow-through (2026-10-15): after integrated checkout E,
+canonical §9.2 permits the existing H0/E balance and statement read surface.
+This is a partial H1 delivery; G and approved O8 remain prerequisites for full
+statement/settlement closure. No settlement workflow or economic activation is
+advanced. See [local read-surface delivery](MERCHANT_STATEMENT_H1_HANDOFF.md).
+
 H0 is intentionally moved before real monetary activation. H1 is the later full
 Merchant balance presentation and policy-complete settlement. C/D do not require
 Reward or Ads to exist; a customer can review a valid purchase without them.

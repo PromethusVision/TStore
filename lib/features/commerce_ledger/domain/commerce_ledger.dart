@@ -66,6 +66,7 @@ class CommerceLedgerSnapshot {
 }
 
 enum CommerceLedgerFailure {
+  statementChanged,
   sessionChanged,
   unavailable,
   invalidResponse,

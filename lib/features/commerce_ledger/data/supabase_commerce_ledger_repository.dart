@@ -2,12 +2,15 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
+import 'package:t_store/features/commerce_ledger/domain/merchant_statement.dart';
+import 'package:t_store/features/commerce_ledger/data/merchant_statement_decoder.dart';
 
 typedef CommerceLedgerRpc =
     Future<dynamic> Function(String name, Map<String, dynamic> parameters);
 
-/// Read-only H0 adapter. H1 may inject it later; current app hosts do not bind it.
-class SupabaseCommerceLedgerRepository implements CommerceLedgerRepository {
+/// One read-only adapter for H0 accounts and the bounded H1 statement.
+class SupabaseCommerceLedgerRepository
+    implements CommerceLedgerRepository, MerchantStatementRepository {
   SupabaseCommerceLedgerRepository(
     SupabaseClient client, {
     CommerceLedgerRpc? rpc,
@@ -33,6 +36,7 @@ class SupabaseCommerceLedgerRepository implements CommerceLedgerRepository {
     Map<String, dynamic> args,
     T Function(Map<String, dynamic>) decode, {
     required bool private,
+    bool invalidateOnSessionEvent = false,
   }) async {
     final actor = _user();
     if (private && actor == null) {
@@ -42,7 +46,7 @@ class SupabaseCommerceLedgerRepository implements CommerceLedgerRepository {
     final subscription = private
         ? _sessions.listen(
             (id) {
-              if (id != actor) changed = true;
+              if (invalidateOnSessionEvent || id != actor) changed = true;
             },
             onError: (Object _) {
               changed = true;
@@ -61,6 +65,12 @@ class SupabaseCommerceLedgerRepository implements CommerceLedgerRepository {
     } on FormatException {
       return const Left(CommerceLedgerFailure.invalidResponse);
     } on PostgrestException catch (e) {
+      if (private && (changed || _user() != actor)) {
+        return const Left(CommerceLedgerFailure.sessionChanged);
+      }
+      if (e.code == '40001') {
+        return const Left(CommerceLedgerFailure.statementChanged);
+      }
       if (e.code == '28000' || e.code == '42501') {
         return const Left(CommerceLedgerFailure.sessionChanged);
       }
@@ -73,6 +83,37 @@ class SupabaseCommerceLedgerRepository implements CommerceLedgerRepository {
     } finally {
       await subscription?.cancel();
     }
+  }
+
+  @override
+  Future<Either<CommerceLedgerFailure, MerchantStatement>> readStatement({
+    required String shopId,
+    int limit = 20,
+    String? before,
+    String? revision,
+  }) async {
+    if (!_uuid.hasMatch(shopId) ||
+        limit < 1 ||
+        limit > 50 ||
+        (before == null) != (revision == null) ||
+        (before != null && !_uuid.hasMatch(before)) ||
+        (revision != null &&
+            (revision.length > 20 ||
+                !RegExp(r'^(0|[1-9][0-9]*)$').hasMatch(revision)))) {
+      return const Left(CommerceLedgerFailure.invalidRequest);
+    }
+    return _read(
+      'read_merchant_statement_v1',
+      {
+        'p_shop_id': shopId,
+        'p_limit': limit,
+        'p_before': before,
+        'p_revision': revision,
+      },
+      (r) => decodeMerchantStatement(r, shopId, limit, before, revision),
+      private: true,
+      invalidateOnSessionEvent: true,
+    );
   }
 
   @override

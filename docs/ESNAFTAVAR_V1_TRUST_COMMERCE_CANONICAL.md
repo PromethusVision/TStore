@@ -862,6 +862,39 @@ screens and Merchant tabs do not become balance/financial surfaces; that remains
 H1. Deployment needs the reviewed account map, reconciliation owner and explicit
 Product Owner authority described in the slices. Local acceptance is separate.
 
+### 9.2 H1 bounded local read surface — 2026-10-15
+
+After checkout E and the net-threshold repair integrated at `1374f828`, the next
+Merchant package exposes existing H0/E records as “Hesap Bakiyesi”. This advances
+only the read-only part of H1. Full H1 still depends on G and approved O8 policy;
+no FROZEN economic rule, payout schedule or provider decision changes.
+
+An independently default-OFF statement gate and local Merchant client flag bind
+the existing accounting adapter. One exact-owner, live-session RPC returns all
+five Merchant account buckets and bounded journal pages from the same database
+snapshot. Only the Merchant's postings are projected; customer identities,
+source/evidence references, operator reasons and platform/counterparty accounts
+remain private. No duplicate ledger, mutable balance, new inbox or Customer UI
+change is introduced.
+
+Pending coupon and unused-package funds remain separate. Internally released
+receivables are labelled “Beklemesi tamamlanan alacak”, never bank-withdrawable
+or paid. The reserve is separate and not cash-withdrawable. Missing settlement
+policy is explicit: no payout action, paid total, cash refund or settlement
+success is invented. Original and compensating entries remain visible.
+
+Each page includes a revision derived from the append-only owned journal count.
+If a new journal commits between pages, the server rejects the old revision and
+the client clears the partial statement and requests a fresh read. This avoids
+mixing balances with older pages, including transactions that started earlier but
+committed later. Role/ownership/session checks precede even disabled reads.
+Account changes, resume, missing capability and failures never retain another
+account's financial data or fabricate zero balances.
+
+All schema rehearsal and synthetic accounting writes are local/test only.
+Production, settlement, G, provider delivery and physical two-device acceptance
+remain separately gated. Delivery evidence: [H1 read surface](MERCHANT_STATEMENT_H1_HANDOFF.md).
+
 ## 10. Merchant Campaign Lite
 
 **FROZEN:** an informational, store-applied offer, distinct from Ads and Reward.

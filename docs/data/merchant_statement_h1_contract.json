@@ -1,0 +1,126 @@
+{
+  "evidence_class": "synthetic-local-postgrest-read-projection",
+  "limit": 2,
+  "first": {
+    "enabled": true,
+    "entries": [
+      {
+        "id": "9b73749e-74ba-4130-8e7c-5d03a850440d",
+        "kind": "unused_package_fund",
+        "reverses": null,
+        "movements": [
+          {
+            "code": "merchant_unused_pending",
+            "amount_minor": "1"
+          }
+        ],
+        "net_minor": "1",
+        "recorded_at": "2026-10-15T19:57:18.750722+00:00"
+      },
+      {
+        "id": "bc227b17-a216-4562-bbb9-1878905290f9",
+        "kind": "unused_package_fund",
+        "reverses": null,
+        "movements": [
+          {
+            "code": "merchant_unused_pending",
+            "amount_minor": "1"
+          }
+        ],
+        "net_minor": "1",
+        "recorded_at": "2026-10-15T19:57:18.748602+00:00"
+      }
+    ],
+    "shop_id": "aa4a041a-ec57-4b28-a2a5-744480a84798",
+    "version": 1,
+    "accounts": [
+      {
+        "code": "merchant_coupon_available",
+        "amount_minor": "0"
+      },
+      {
+        "code": "merchant_coupon_pending",
+        "amount_minor": "0"
+      },
+      {
+        "code": "merchant_reserve",
+        "amount_minor": "50000"
+      },
+      {
+        "code": "merchant_unused_available",
+        "amount_minor": "25000"
+      },
+      {
+        "code": "merchant_unused_pending",
+        "amount_minor": "25011"
+      }
+    ],
+    "currency": "TRY",
+    "revision": "21",
+    "next_before": "bc227b17-a216-4562-bbb9-1878905290f9",
+    "reserve_cap_minor": "100000",
+    "settlement_status": "policy_pending",
+    "settlement_enabled": false
+  },
+  "next": {
+    "enabled": true,
+    "entries": [
+      {
+        "id": "ba961b2e-fd72-4c25-a078-37c85f219762",
+        "kind": "unused_package_fund",
+        "reverses": null,
+        "movements": [
+          {
+            "code": "merchant_unused_pending",
+            "amount_minor": "1"
+          }
+        ],
+        "net_minor": "1",
+        "recorded_at": "2026-10-15T19:57:18.745891+00:00"
+      },
+      {
+        "id": "7db0ad0d-dbe7-40a0-8a5a-2ff5ac072829",
+        "kind": "unused_package_fund",
+        "reverses": null,
+        "movements": [
+          {
+            "code": "merchant_unused_pending",
+            "amount_minor": "1"
+          }
+        ],
+        "net_minor": "1",
+        "recorded_at": "2026-10-15T19:57:18.743408+00:00"
+      }
+    ],
+    "shop_id": "aa4a041a-ec57-4b28-a2a5-744480a84798",
+    "version": 1,
+    "accounts": [
+      {
+        "code": "merchant_coupon_available",
+        "amount_minor": "0"
+      },
+      {
+        "code": "merchant_coupon_pending",
+        "amount_minor": "0"
+      },
+      {
+        "code": "merchant_reserve",
+        "amount_minor": "50000"
+      },
+      {
+        "code": "merchant_unused_available",
+        "amount_minor": "25000"
+      },
+      {
+        "code": "merchant_unused_pending",
+        "amount_minor": "25011"
+      }
+    ],
+    "currency": "TRY",
+    "revision": "21",
+    "next_before": "7db0ad0d-dbe7-40a0-8a5a-2ff5ac072829",
+    "reserve_cap_minor": "100000",
+    "settlement_status": "policy_pending",
+    "settlement_enabled": false
+  }
+}
