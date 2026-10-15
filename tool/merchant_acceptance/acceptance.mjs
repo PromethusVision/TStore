@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { writeFile } from 'node:fs/promises';
-import { readRun, credentials, root } from './local.mjs';
+import { readRun, credentials, runtimeEvidence, root } from './local.mjs';
 import { localUrl, localRequest, requestJson } from './safety.mjs';
 import { connect, migrate, seed } from './fixture.mjs';
 import { databaseChecks } from './postgres_checks.mjs';
@@ -12,6 +12,7 @@ try {
   assert(process.argv[2], 'Prepared local run directory required');
   run = await readRun(process.argv[2]);
   const status = await credentials(run);
+  const services = await runtimeEvidence(run);
   const url = localUrl(status.DB_URL, 'db');
   const config = { host: '127.0.0.1', port: Number(url.port), database: 'postgres', user: 'postgres',
     password: decodeURIComponent(url.password), ssl: false };
@@ -98,15 +99,44 @@ try {
     assert.equal((await rpc('catalog_listing_media_read_v1',freshCustomer,{p_listing_ids:[f.listing]}))[0].images.length,0);
   });
   checks.push(...await databaseChecks(db,config,f));
-  await check('real Auth logout removes server session and rejects the still-signed access token',async()=>{
-    const fresh=await session(f.merchant.id);
-    assert.equal((await request('/rest/v1/rpc/qr_capabilities_v2',fresh,{})).ok,true);
+  const fresh=await session(f.merchant.id), freshCustomer=await session(f.customer.id);
+  async function httpQr(quantity) {
+    await db.query("UPDATE public.carts SET status='cancelled' WHERE user_id=$1 AND status='active'",[f.customer.id]);
+    const cart=randomUUID();
+    assert.equal((await request('/rest/v1/carts',freshCustomer,{id:cart,user_id:f.customer.id,shop_id:f.shop})).ok,true);
+    assert.equal((await request('/rest/v1/cart_items_v2',freshCustomer,{cart_id:cart,shop_product_id:f.listing,quantity})).ok,true);
+    return rpc('create_qr_session_v2',freshCustomer,{p_cart_id:cart});
+  }
+  const httpClaim=q=>rpc('claim_existing_qr_v2',fresh,{p_shop_id:f.shop,p_installation_id:fresh.installation,
+    p_request_id:randomUUID(),p_manual_code:q.manual_code});
+  const claimArgs=c=>({p_claim_id:c.claim_id,p_installation_id:fresh.installation});
+  await check('HTTP manual claim, idempotent completion/return and fresh Customer purchase evidence',async()=>{
+    const q=await httpQr(2), c=await httpClaim(q); assert.equal(c.status,'claimed');
+    const completed=await rpc('complete_existing_qr_v2',fresh,claimArgs(c)); assert.equal(completed.status,'used');
+    assert.equal((await rpc('complete_existing_qr_v2',fresh,claimArgs(c))).purchase_id,completed.purchase_id);
+    const purchase=await rpc('read_purchase_evidence_v2',freshCustomer,{p_purchase_id:completed.purchase_id});
+    assert.equal(purchase.final_sale_minor,2400); assert.equal(purchase.items[0].quantity,2);
+    const args={p_purchase_id:purchase.id,p_request_id:randomUUID(),p_installation_id:fresh.installation,
+      p_items:[{purchase_item_id:purchase.items[0].id,quantity:1}],p_reason:'Local HTTP return'};
+    await rpc('record_purchase_return_v2',fresh,args); await rpc('record_purchase_return_v2',fresh,args);
+    const updated=await rpc('read_purchase_evidence_v2',freshCustomer,{p_purchase_id:purchase.id});
+    assert.equal(updated.returns.length,1); assert.equal(updated.items[0].returned_quantity,1);
+    assert.equal(updated.items[0].quantity,2); assert.equal(updated.final_sale_minor,2400);
+  });
+  await check('real Auth logout removes server session and prevents claimed QR finalization/reconciliation',async()=>{
+    const q=await httpQr(1), c=await httpClaim(q); assert.equal(c.status,'claimed');
     assert.equal((await request('/auth/v1/logout?scope=local',fresh,undefined)).ok,true);
     assert.equal((await db.query('SELECT count(*)::int n FROM auth.sessions WHERE id=$1',[fresh.claims.session_id])).rows[0].n,0);
-    assert.equal((await request('/rest/v1/rpc/qr_capabilities_v2',fresh,{})).ok,false);
+    // Capability metadata intentionally needs only auth.uid(); the live-session
+    // boundary is on transaction operations, not this informational read.
+    for(const name of ['complete_existing_qr_v2','reconcile_claim_v2']) {
+      const denied=await request(`/rest/v1/rpc/${name}`,fresh,claimArgs(c));
+      assert.equal(denied.ok,false); assert.equal(denied.data.code,'28000');
+    }
+    assert.equal((await db.query('SELECT count(*)::int n FROM public.verified_transactions WHERE source_qr_session_id=$1',[q.id])).rows[0].n,0);
   });
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
-    runtime:(await db.query('SELECT version() version')).rows[0].version,physical_two_device:'OPEN',checks,migrations:manifest};
+    runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
   await writeFile(resolve(root,'docs/data/merchant_ab_managed_acceptance.json'),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);

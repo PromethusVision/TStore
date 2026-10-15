@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "captured_at": "2026-10-14T23:16:22.730Z",
+  "captured_at": "2026-10-15T09:23:01.571Z",
   "runtime": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit",
   "evidence_class": "native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema",
   "managed_auth": "OPEN",

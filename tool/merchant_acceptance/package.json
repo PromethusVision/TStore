@@ -4,7 +4,7 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
-    "test": "node --test safety.test.mjs",
+    "test": "node --test *.test.mjs",
     "local:prepare": "node local.mjs prepare",
     "acceptance": "node acceptance.mjs"
   },

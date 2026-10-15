@@ -83,25 +83,39 @@ stays disabled. The QR flag is enabled only inside this disposable test database
 
 The start command requires a local Docker engine, refuses existing matching
 containers/volumes and creates a bridge whose default host binding is loopback.
+Docker Desktop 29.8.2 on this Windows host did not honor that network default.
+A temporary, local socket proxy now explicitly sets **127.0.0.1** in the Docker
+create request before either DB/API starts. It accepts only this project's
+labeled services and its unexposed Auth/Storage bootstrap jobs, and never opens
+a TCP proxy or changes global Docker settings. Container inspection below still
+checks the real daemon directly. The proxy closes when startup ends.
 The acceptance command additionally verifies the running DB/API containers'
 project labels and **127.0.0.1:55432 / 127.0.0.1:55431** bindings, exact local
 configuration and an empty app/Auth/Storage/ledger baseline before writing.
-If the CLI ignores the loopback network option, the acceptance guard fails closed;
-do not weaken it. HTTP transport uses literal-loopback `node:http`, ignores proxy
+If explicit loopback binding fails, the acceptance guard fails closed and startup
+stops only this project, retaining its data. Do not weaken the guard.
+HTTP transport uses literal-loopback `node:http`, ignores proxy
 variables and never follows redirects. Keys and login credentials remain in
 memory; CLI key output is suppressed.
 
-Each fixture is single-use. If setup/test fails, inspect its `failure.txt`, stop
+Each fixture is single-use. If setup/test fails, inspect its `setup-failure.txt`
+or `failure.txt` privately (setup diagnostics may contain local secrets), stop
 that same stack preserving data, and prepare a new run. Never use `db reset`,
 `stop --no-backup`, `docker system prune` or a remote fallback for this suite.
 
 The managed journey covers catalog lookup → owned listing → price/availability
 edit → fresh session → photo intent → foreign upload denial → real upload →
 publish → fresh Customer signed-image download → retirement. It also checks
-Auth signature rejection, real logout, the default-off capability and the full
-independent-connection database matrix. A passing run writes
-`docs/data/merchant_ab_managed_acceptance.json`. **The current delivery has not
-executed that managed journey successfully because Docker does not start.**
+Auth signature rejection, the default-off capability and the full independent-
+connection database matrix. Another actual HTTP journey creates a cart/QR,
+claims by manual code, completes twice into one purchase, reads Customer evidence
+and retries an identical return into one append. Logout then deletes the Auth
+session and prevents both completion and reconciliation of an already claimed QR
+with the still-signed token; no purchase is created. The capability metadata
+read is informational and is not used as the transaction authorization test.
+A passing run writes `docs/data/merchant_ab_managed_acceptance.json`, including
+service image identities and verified port bindings. **21 managed groups passed
+on 2026-10-15. Physical two-device acceptance remains OPEN.**
 
 ## Evidence handling
 
@@ -112,4 +126,6 @@ device acceptance separate. Do not copy scratch credentials or server logs into
 commits. Only the sanitized passing report is a tracked artifact. A failed rerun
 does not erase an earlier dated report; always inspect its source hashes/time
 and the latest command result. No production migration or app runtime file is
-changed by this acceptance task.
+changed by this acceptance task. Native evidence's OPEN Auth/Storage labels mean
+that the native runner cannot assess those gates; the separately dated managed
+report supplies their actual result.

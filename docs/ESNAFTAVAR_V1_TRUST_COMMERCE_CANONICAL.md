@@ -363,6 +363,14 @@ synthetic Auth/Storage tables cannot close the managed-service gate. The
 and remaining gates. This authority does not include Production access, main
 merge, provider activation or new deferred capabilities.
 
+**Acceptance update — 2026-10-15:** after the Product Owner restored Docker,
+the isolated managed-service suite passed all 21 groups using actual Auth,
+PostgREST, Storage and PostgreSQL. This closes the local managed-service gate,
+including live-session rejection on QR finalization/reconciliation after logout.
+The informational capability read is not itself a transaction authorization
+check. Existing frozen rules, default-OFF flags and migration bytes are unchanged.
+Physical two-device acceptance J and Production authorization remain separate.
+
 ## 6. Product review and merchant-service projections
 
 **FROZEN:**

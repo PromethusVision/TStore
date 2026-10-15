@@ -9,7 +9,7 @@ import { databaseChecks } from './postgres_checks.mjs';
 
 // Native PostgreSQL proof is deliberately separate from managed Auth/Storage acceptance.
 const base = resolve(root, '.buildlog/merchant-native');
-let config, db, binary, directory;
+let config, db, binary, directory, startAttempted=false, stage='binary';
 try {
   assert.equal(process.platform, 'win32', 'This portable launcher targets Windows');
   binary = await realpath(resolve(process.argv[2]));
@@ -20,11 +20,14 @@ try {
   const data = resolve(directory, 'data'), password = randomBytes(32).toString('hex');
   await writeFile(resolve(directory, 'password.txt'), password, { flag: 'wx', mode: 0o600 });
   config = { host: '127.0.0.1', port: 55439, database: 'postgres', user: 'postgres', password, ssl: false };
+  stage='initialize';
   await command(resolve(binary, 'initdb.exe'), ['-D', data, '-U', 'postgres', '--encoding=UTF8', '--locale=C',
-    '--auth=scram-sha-256', '--pwfile', resolve(directory, 'password.txt')], directory);
+    '--auth=scram-sha-256', '--pwfile', resolve(directory, 'password.txt')], directory, 180000);
+  stage='start'; startAttempted=true;
   await command(resolve(binary, 'pg_ctl.exe'), ['-D', data, '-l', resolve(directory, 'server.log'),
     '-o', '-h 127.0.0.1 -p 55439 -c wal_level=logical', '-w', 'start'], directory, 60000, true);
   db = await connect(config);
+  stage='acceptance';
   assert.equal(await realpath((await db.query('SHOW data_directory')).rows[0].data_directory), await realpath(data));
   await nativeManagedSchema(db);
   const manifest = await migrate(db);
@@ -43,15 +46,15 @@ try {
     managed_auth: 'OPEN', storage_http: 'OPEN', physical_two_device: 'OPEN', checks, migrations: manifest };
   await writeFile(resolve(directory, 'result.json'), JSON.stringify(evidence, null, 2)+'\n');
   await writeFile(resolve(root, 'docs/data/merchant_ab_native_acceptance.json'), JSON.stringify(evidence, null, 2)+'\n');
-  console.log(`NATIVE_DATABASE_PROOF_PASS: ${checks.length} groups. Managed Auth/Storage remain OPEN.`);
+  console.log(`NATIVE_DATABASE_PROOF_PASS: ${checks.length} groups. Managed Auth/Storage are evidenced separately.`);
 } catch (error) {
   // Synthetic DB only, but still avoid dumping SQL parameters, passwords or tokens.
-  console.error(`NATIVE_DATABASE_PROOF_FAILED: ${error.code || error.name}`);
-  if (directory) await writeFile(resolve(directory, 'failure.txt'), `${error.stack}\n`, { mode: 0o600 });
+  console.error(`NATIVE_DATABASE_PROOF_FAILED: ${stage}: ${error.code || error.name}`);
+  if (directory) await writeFile(resolve(directory, 'failure.txt'), `${error.stack}\n${error.diagnostics || ''}`, { mode: 0o600 });
   process.exitCode = 1;
 } finally {
   if (db) await db.end();
-  if (directory && binary) {
+  if (startAttempted && directory && binary) {
     try { await command(resolve(binary, 'pg_ctl.exe'), ['-D', resolve(directory, 'data'), '-m', 'fast', '-w', 'stop'], directory); }
     catch { console.error('NATIVE_STOP_NOT_CONFIRMED: inspect the owned run directory.'); process.exitCode = 1; }
   }

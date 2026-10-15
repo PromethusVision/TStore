@@ -58,3 +58,31 @@ and Git history; only the task branch is eligible for push.
   Docker is unavailable. Complete HTTP journey is implemented but remains OPEN.
 - 3 isolation/transport checks and 227 relevant Flutter regressions passed;
   analyzer reports no issues. No runtime code or new migration needed.
+
+## Docker-restored continuation — 2026-10-15
+
+- Product Owner confirmed Docker repaired and explicitly authorized continuation.
+  Verified engine 29.8.2/Linux; remote main remains e51149ab, task branch b014b70a
+  has not been merged. Continued in the same clean isolated task worktree.
+- The initial CLI stack ignored the bridge's loopback binding option. Guard
+  refused acceptance before app migration/fixture writes; owned stack stopped.
+  A separate empty-container probe confirmed the host behavior. Added explicit
+  pre-creation loopback binding through a short-lived local Docker socket proxy.
+- Fixed the proxy's handling of project-labeled Auth/Storage bootstrap jobs and
+  Docker attach headers that must arrive before a container produces output.
+  Added real local-socket regression checks; no global Docker setting changed.
+- First managed acceptance passed 19 groups; its final assertion incorrectly
+  expected capability metadata to enforce live-session provenance. Replaced it
+  with an actual claimed QR logout/complete/reconcile denial test and added a
+  complete HTTP cart/manual-code/purchase/return journey. Product code unchanged.
+- 12:20 TRT: fresh managed run passed **21 groups**; sanitized evidence records
+  exact images, binding addresses and migration hashes. Actual Auth JWTs, real
+  Storage bytes and transaction HTTP endpoints were exercised. Physical J OPEN.
+- Native initialization failed once before server start during concurrent setup;
+  no server was left running. Added bounded initialization allowance and stage
+  diagnostics; fresh sequential run passed **16 groups** and stopped normally.
+- Final harness checks **5 PASS**, JavaScript syntax checks PASS, Flutter analyzer
+  clean. Prior b014b70a's 227 Flutter regressions remain applicable; no Flutter
+  source or dependency changes, no additional UI acceptance claim.
+- All task stacks stopped with data retained. No remote backend access, migration
+  apply, Production write, main merge or deferred feature activation.

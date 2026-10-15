@@ -114,8 +114,11 @@ acceptance must be distinguished from ephemeral SQL and mocked client tests.
 
 Canonical §5.2 authorizes bounded local acceptance/hardening on the integrated
 A+B baseline. See [acceptance delivery](MERCHANT_AB_ACCEPTANCE_DELIVERY.md) for
-real native PostgreSQL evidence and the separately OPEN managed Auth/Storage
-gate. This is validation of A+B, not authorization to start C–J or activate
+real native PostgreSQL evidence and the managed Auth/Storage acceptance, now
+**PASS locally** after the Product Owner restored Docker on 2026-10-15. The
+21-group managed run includes actual logout rejection on claimed QR operations
+and fresh-session signed-image download. Physical two-device J remains OPEN.
+This is validation of A+B, not authorization to start C–J or activate
 Production. No new migration is required by the current acceptance findings.
 
 ## C — Review entitlements, three service criteria, audit and moderation

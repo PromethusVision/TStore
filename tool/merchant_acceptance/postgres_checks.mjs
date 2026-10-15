@@ -125,6 +125,9 @@ export async function databaseChecks(db, config, f) {
     await db.query('UPDATE public.shops SET owner_user_id=$1 WHERE id=$2',[f.customer.id,f.shop]);
     await assert.rejects(complete(c));
     await db.query('UPDATE public.shops SET owner_user_id=$1 WHERE id=$2',[merchant.id,f.shop]);
+    await db.query('UPDATE public.shops SET is_active=false WHERE id=$1',[f.shop]);
+    await assert.rejects(complete(c));
+    await db.query('UPDATE public.shops SET is_active=true WHERE id=$1',[f.shop]);
     await db.query("UPDATE public.profiles SET role='customer' WHERE id=$1",[merchant.id]);
     await assert.rejects(complete(c));
     await db.query("UPDATE public.profiles SET role='merchant' WHERE id=$1",[merchant.id]);
