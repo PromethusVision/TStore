@@ -348,6 +348,29 @@ Both client opt-in and server enablement default OFF. Previous real Storage HTTP
 acceptance, real Auth/concurrent PostgreSQL validation and physical acceptance J
 must be reported independently of ephemeral SQL, mocked transport and widget tests.
 
+### 5.2 A+B acceptance and hardening — authorized 2026-10-15
+
+The Product Owner authorized an autonomous persistent task to validate the
+integrated A+B scope locally, fix evidenced defects and deliver a task-branch
+handoff. Existing FROZEN product rules remain unchanged. Bound environment
+diagnosis to approximately 45 minutes; preserve Docker data and complete
+independent verification if managed local services remain unavailable.
+
+Real native PostgreSQL/pgcrypto/connection contention, managed Auth/Storage HTTP
+and physical two-device acceptance are separate gates. Native PostgreSQL with
+synthetic Auth/Storage tables cannot close the managed-service gate. The
+[A+B acceptance report](MERCHANT_AB_ACCEPTANCE_DELIVERY.md) records the evidence
+and remaining gates. This authority does not include Production access, main
+merge, provider activation or new deferred capabilities.
+
+**Acceptance update — 2026-10-15:** after the Product Owner restored Docker,
+the isolated managed-service suite passed all 21 groups using actual Auth,
+PostgREST, Storage and PostgreSQL. This closes the local managed-service gate,
+including live-session rejection on QR finalization/reconciliation after logout.
+The informational capability read is not itself a transaction authorization
+check. Existing frozen rules, default-OFF flags and migration bytes are unchanged.
+Physical two-device acceptance J and Production authorization remain separate.
+
 ## 6. Product review and merchant-service projections
 
 **FROZEN:**
