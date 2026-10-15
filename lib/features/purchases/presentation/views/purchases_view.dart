@@ -8,6 +8,7 @@ import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
 import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
 import 'package:t_store/features/reviews/presentation/cubit/shop_rating_cubit.dart';

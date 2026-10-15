@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 
 class VerifiedPurchaseItemEntity extends Equatable {
@@ -44,6 +45,7 @@ class VerifiedPurchaseEntity extends Equatable {
   final int? customerRating;
   final DateTime? customerRatedAt;
   final PurchaseServiceEvaluation? serviceEvaluation;
+  final CouponCheckoutTerms? couponCheckout;
 
   const VerifiedPurchaseEntity({
     required this.id,
@@ -57,6 +59,7 @@ class VerifiedPurchaseEntity extends Equatable {
     this.customerRating,
     this.customerRatedAt,
     this.serviceEvaluation,
+    this.couponCheckout,
   });
 
   @override
@@ -72,5 +75,6 @@ class VerifiedPurchaseEntity extends Equatable {
     customerRating,
     customerRatedAt,
     serviceEvaluation,
+    couponCheckout,
   ];
 }

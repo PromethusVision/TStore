@@ -232,7 +232,21 @@ partially spent offsets, Ads or settlement. Those gates remain separate.
 **Local earning implementation delivered:** 0024 package/capacity/reservation,
 unchanged-sale attestation, contribution/maturity/unspent compensation and both
 app bindings. Evidence and release boundaries: `MERCHANT_REWARD_E_HANDOFF.md`.
-The complete E redemption/customer-approval/O7 work listed below remains open.
+At that earning-only delivery, redemption/customer approval/O7 remained open;
+the subsequent extension is recorded below.
+
+**Next local checkout package authorized after earning integration (`af9d5965`).**
+Canonical §8.2 and `MERCHANT_CHECKOUT_E_WORKLOG.md` define customer consent,
+unchanged-price physical coupon checkout, exact allocations, atomic receivable/
+earning and source-aware O7 compensation. Historical migration 0024 is preserved;
+0025 extends it with a separate default-OFF capability. This package does not
+authorize hosted activation, arbitrary merchant discounts, coupon-restoration
+policy, cash refunds, provider/settlement execution or physical acceptance.
+Local implementation and validation are delivered in
+`MERCHANT_CHECKOUT_E_HANDOFF.md`; this does not mark the external E/O8 gates closed.
+Integration correction 0026 enforces the already-frozen net threshold immediately
+at coupon approval and prevents live-consent retries from reacquiring on gross
+value. Acceptance now observes capacity/funds before completion; 0025 is preserved.
 
 - **DB:** package/terms snapshots, reservation/hold projections, chronological
   append-only contribution/reversal events, issued coupons + immutable five-source

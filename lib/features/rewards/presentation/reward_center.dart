@@ -131,9 +131,16 @@ class RewardCenter extends StatelessWidget {
                 Text(
                   'Oluşturulan kupon değeri: ${rewardMoney(progress.program!.couponValue)}',
                 ),
-                const Text(
-                  'Kupon harcama henüz açılmadı. Kuponlar para çekme veya transfer için kullanılamaz.',
+                Text(
+                  progress.program!.checkoutEnabled
+                      ? 'Kupon tutarını sepetinizde QR oluşturmadan önce onaylayabilirsiniz. Kuponlar para çekme veya transfer için kullanılamaz.'
+                      : 'Kupon harcama henüz açılmadı. Kuponlar para çekme veya transfer için kullanılamaz.',
                 ),
+                if ((progress.program!.futureOffset?.value ?? BigInt.zero) >
+                    BigInt.zero)
+                  Text(
+                    'Gelecek ödüllerden karşılanacak düzeltme: ${rewardMoney(progress.program!.futureOffset!)}. Bu bir nakit borcu değildir; olgunlaşan sonraki kupon tutarından karşılanır.',
+                  ),
               ],
               const SizedBox(height: 24),
               Text(

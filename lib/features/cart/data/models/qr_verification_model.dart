@@ -1,4 +1,5 @@
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 
 class QrVerificationItemModel extends QrVerificationItemEntity {
   const QrVerificationItemModel({
@@ -87,6 +88,7 @@ class QrVerificationModel extends QrVerificationEntity {
     super.completionExpiresAt,
     super.rewardConfirmationRequired,
     super.rewardSaleMinor,
+    super.couponCheckout,
   });
 
   factory QrVerificationModel.fromJson(Map<String, dynamic> json) {
@@ -174,6 +176,13 @@ class QrVerificationModel extends QrVerificationEntity {
       throw const FormatException('Ödüllü satış tutarı QR ile uyuşmuyor.');
     }
 
+    final checkout = json['coupon_checkout'] == null
+        ? null
+        : CouponCheckoutTerms.fromJson(json['coupon_checkout']);
+    if (checkout != null &&
+        (!rewardRequired || checkout.sale.value.toString() != rewardSale)) {
+      throw const FormatException('Checkout attestation mismatch');
+    }
     return QrVerificationModel(
       sessionId: _requiredString(json, 'session_id'),
       sessionToken: _requiredString(json, 'session_token'),
@@ -191,6 +200,7 @@ class QrVerificationModel extends QrVerificationEntity {
       completionExpiresAt: completion,
       rewardConfirmationRequired: rewardRequired,
       rewardSaleMinor: rewardRequired ? rewardSale as String : null,
+      couponCheckout: checkout,
     );
   }
 
@@ -205,6 +215,7 @@ class QrVerificationModel extends QrVerificationEntity {
       'shop_name': shopName,
       'item_count': itemCount,
       'total_amount': totalAmount,
+      if (couponCheckout != null) 'coupon_checkout': couponCheckout!.toJson(),
       'items': items
           .map(
             (item) => QrVerificationItemModel(

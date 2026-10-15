@@ -7,6 +7,8 @@ import 'package:t_store/features/shop/domain/repositories/listing_hero_media_rep
 import 'package:t_store/features/shop/data/repositories/supabase_listing_hero_media_repository.dart';
 import 'package:t_store/features/rewards/domain/reward_progress.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout.dart';
+import 'package:t_store/features/rewards/data/supabase_coupon_checkout_repository.dart';
 import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
 import 'package:t_store/core/dependency_injection/taxonomy_dependency_configuration.dart';
 import 'package:t_store/features/shop/data/repositories/production_preview_product_repository.dart';
@@ -225,7 +227,13 @@ Future<void> setupServiceLocator({
   sl.registerLazySingleton<ListingHeroMediaRepository>(
     () => SupabaseListingHeroMediaRepository(sl<SupabaseService>().client),
   );
-  if (const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')) {
+  if (const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')) {
+    sl.registerLazySingleton<CouponCheckoutRepository>(
+      () => SupabaseCouponCheckoutRepository(sl<SupabaseService>().client),
+    );
+  }
+  if (const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+      const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')) {
     sl.registerLazySingleton<RewardProgramRepository>(
       () => SupabaseRewardProgramRepository(sl<SupabaseService>().client),
     );
@@ -473,9 +481,13 @@ Future<void> setupServiceLocator({
       supabaseService: sl(),
       claimsEnabled:
           const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
-          const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED'),
-      rewardEarningEnabled: const bool.fromEnvironment(
-        'REWARD_EARNING_V1_ENABLED',
+          const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+          const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
+      rewardEarningEnabled:
+          const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+          const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
+      couponCheckoutEnabled: const bool.fromEnvironment(
+        'COUPON_CHECKOUT_V1_ENABLED',
       ),
     ),
   );

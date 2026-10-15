@@ -1,0 +1,261 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-15T19:21:30.040Z",
+  "branch": "agent/merchant-checkout-e",
+  "baseline": "af9d59652851c7fa3348bfc1564725411ad85aea",
+  "correction_base": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+  "regression_reproduction": {
+    "source_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+    "result": "EXPECTED_FAILURE_CONFIRMED",
+    "sale_minor": "50000",
+    "coupon_minor": "25000",
+    "payment_minor": "25000",
+    "phase": "after approval, before merchant claim",
+    "actual": "checkout_hold",
+    "expected": "released"
+  },
+  "full_flutter": {
+    "pass": 2465,
+    "fail": 0,
+    "existing_skips": 6
+  },
+  "migration_contract_tests": {
+    "pass": 18,
+    "fail": 0
+  },
+  "focused_flutter": {
+    "pass": 83,
+    "fail": 0,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063",
+    "executed_this_correction": false
+  },
+  "analyzer": "PASS",
+  "harness_safety": {
+    "pass": 5,
+    "fail": 0
+  },
+  "native_postgresql_groups": 101,
+  "managed_local_service_groups": 100,
+  "new_sql_regression_groups": 7,
+  "new_http_regression_groups": 1,
+  "historical_migrations_verified": 21,
+  "migration_sha256": {
+    "file": "20261015002600_0026_coupon_reservation_net_threshold.sql",
+    "sha256": "3f99ab67f25787355be6ba9bc9b96e44f981376f14e9a78793aca5644c741702"
+  },
+  "customer_build": {
+    "result": "PASS",
+    "file": "build/app/outputs/flutter-apk/app-development-debug.apk",
+    "sha256": "5eb659886409dbeab5b93d6a9beef759f88a2efa112414dd1a30abef23f41df8",
+    "executed_this_correction": false,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063"
+  },
+  "merchant_build": {
+    "result": "PASS",
+    "file": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+    "sha256": "d2df7625738423c2fcb68ee894bcdbcdb6d24ef0b963271f32d234289f3300af",
+    "executed_this_correction": false,
+    "reused_from_commit": "00192eb67d44e80834b843d0f3d18b13ce9dc063"
+  },
+  "build_defines": [
+    "COUPON_CHECKOUT_V1_ENABLED=true",
+    "REWARD_EARNING_V1_ENABLED=true",
+    "QR_CLAIMS_V2_ENABLED=true",
+    "TRUST_COMMERCE_V1_ENABLED=true",
+    "REVIEWS_V2_ENABLED=true"
+  ],
+  "source_files": [
+    {
+      "file": "lib/core/dependency_injection/service_locator.dart",
+      "sha256": "0d1cf7f90fef74ec909d509bc54e8743cb5ae5e100abc63121bac936d1a72f01"
+    },
+    {
+      "file": "lib/features/cart/data/models/qr_session_model.dart",
+      "sha256": "92212b4b1863378dbef268a6ddfb9a95b2b928ef1ce07adbeed5df5ff75295c5"
+    },
+    {
+      "file": "lib/features/cart/data/models/qr_verification_model.dart",
+      "sha256": "e9a656a6d06681507c1e276d64bf359e9357d040f624537f43efef6af59b8ba3"
+    },
+    {
+      "file": "lib/features/cart/data/qr_protocol_v2.dart",
+      "sha256": "6312f753360ecb466af1c391583629be508a7738be5fb8574b6354ffc2ad6021"
+    },
+    {
+      "file": "lib/features/cart/data/repositories/qr_session_repository_impl.dart",
+      "sha256": "2e965e8442199dc665828dc75c1ea44471e372b739699ef251e4fa2e5c19d549"
+    },
+    {
+      "file": "lib/features/cart/domain/entities/qr_session_entity.dart",
+      "sha256": "6daada56d0385a67425569bd047fa1d1e396ae2111e323a36dc04e6bd08c0d42"
+    },
+    {
+      "file": "lib/features/cart/domain/entities/qr_verification_entity.dart",
+      "sha256": "3402407963d683e8e8dbe7c0ca315d106389068f8f0daf60de2ebc064ac76065"
+    },
+    {
+      "file": "lib/features/cart/presentation/cubit/qr_session_cubit.dart",
+      "sha256": "43cefb9a78dd390e7d043bb1bef79bb087839a9d765b39804020dd1e61ec3271"
+    },
+    {
+      "file": "lib/features/cart/presentation/widgets/cart_qr_session_bottom_sheet.dart",
+      "sha256": "cf51b31b7adb8a6bdee4beea1bb587db0d96318a6e7d2d440ae19d8a20c48295"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_purchases_view.dart",
+      "sha256": "5ff5e123f8cdca82ad4f2a6d7b2258def4ad5624604436a94e75593333fa88a3"
+    },
+    {
+      "file": "lib/features/merchant/presentation/merchant_qr_view.dart",
+      "sha256": "ef54293564232d373fb672cdd3299255ae86dd9c336a6ba370f9da2049365e3c"
+    },
+    {
+      "file": "lib/features/purchases/data/models/verified_purchase_model.dart",
+      "sha256": "674c9213d6d704d228db399b3368b8c73f22a0468fe95ce30387c644221de1c5"
+    },
+    {
+      "file": "lib/features/purchases/data/repositories/purchase_history_repository_impl.dart",
+      "sha256": "a4ef7741c0dd727db648f7fc68c1f2b8e495e81f844edc0ace6cd5a7c41a3e55"
+    },
+    {
+      "file": "lib/features/purchases/domain/entities/verified_purchase_entity.dart",
+      "sha256": "a8aa3d20f924dfec5e50e7af760750b9553cb2b89bd827e09ab980442fc8044a"
+    },
+    {
+      "file": "lib/features/purchases/domain/repositories/purchase_evidence_repository.dart",
+      "sha256": "c3238c1e878de1b33568b22d704a547aa946ac9a737ba9c71854d423bb527733"
+    },
+    {
+      "file": "lib/features/purchases/presentation/views/purchases_final_ui.dart",
+      "sha256": "6cd73081c9abdfa9b4a914f912f2d415aeafabfcace1a158ba5275e5c12454b1"
+    },
+    {
+      "file": "lib/features/purchases/presentation/views/purchases_view.dart",
+      "sha256": "3cb09ecec4d116648493bc70182ffbd33a15a6d08af752c9d2fa1985666e66ea"
+    },
+    {
+      "file": "lib/features/rewards/data/supabase_coupon_checkout_repository.dart",
+      "sha256": "e1977ceb358c2494fa148ba18e03dbf97040b7d8b17bf2f6bd04d11ae32ca7cb"
+    },
+    {
+      "file": "lib/features/rewards/data/supabase_reward_program_repository.dart",
+      "sha256": "cc62160eebc3d59585459c76abd1af0682db66c60ff1e0fc53e87e7d2c63196f"
+    },
+    {
+      "file": "lib/features/rewards/domain/coupon_checkout.dart",
+      "sha256": "72facfa809e235f06d400c60cd0d6d543670d291c9b8c53211079539bc8bc77d"
+    },
+    {
+      "file": "lib/features/rewards/domain/coupon_checkout_terms.dart",
+      "sha256": "46f7795458a87f8b3574718fee02606156ebee224cdd4d33a96f249e01350afb"
+    },
+    {
+      "file": "lib/features/rewards/domain/reward_program.dart",
+      "sha256": "b79ec7bfb3cb0475cd3d3fe618a2e57e692d5cbe4cb936d233e04e4bfe633604"
+    },
+    {
+      "file": "lib/features/rewards/presentation/coupon_checkout_approval.dart",
+      "sha256": "186c78d721f6fcb8f17b8521377e36732279cde206d7ce9df9610f61506b55f9"
+    },
+    {
+      "file": "lib/features/rewards/presentation/reward_center.dart",
+      "sha256": "7b36551ea74baa1bc7b5ee8ec3184b588db011b4e5c6b6b204d14e47a57b8756"
+    },
+    {
+      "file": "lib/main_merchant_development.dart",
+      "sha256": "647e46e0972f547e734681339cee86c86c6ea872ff49384edef3efefb46b0d32"
+    },
+    {
+      "file": "supabase/migrations/20261015002500_0025_coupon_checkout.sql",
+      "sha256": "4982893ea7ba28ca2cfaf1fe9499023749bf28d60d72be2056e20a75ec1291eb"
+    },
+    {
+      "file": "supabase/migrations/20261015002600_0026_coupon_reservation_net_threshold.sql",
+      "sha256": "3f99ab67f25787355be6ba9bc9b96e44f981376f14e9a78793aca5644c741702"
+    },
+    {
+      "file": "test/support/coupon_checkout_fixtures.dart",
+      "sha256": "3d8aadfc09098ce0e310ce8cbd5acf659a1b3d7c7883d137a22136de8c5efbee"
+    },
+    {
+      "file": "test/unit/rewards/coupon_checkout_test.dart",
+      "sha256": "b17ff152d4f0cb07c3b4f4035b08d45fe0853e4adf278e71bb3efb3de2e8d65f"
+    },
+    {
+      "file": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "sha256": "f228e972825ba8fe00d0d4ab0c9e51d4938f9a6e86ae8e68d3201e1116f4de1f"
+    },
+    {
+      "file": "test/widget/merchant/coupon_checkout_widget_test.dart",
+      "sha256": "445ad7189a8c0133ce794633d04fd36aa671740083ab98dfe685ebb70df66ce3"
+    },
+    {
+      "file": "tool/merchant_acceptance/README.md",
+      "sha256": "72beea22a12f619d75eecdfb0960c36cfe0d3850578bdc8698c35e933a00f6fd"
+    },
+    {
+      "file": "tool/merchant_acceptance/acceptance.mjs",
+      "sha256": "f90144c84babb78c1699316791dc3df76a4e239720873b4eb07b86df787b1661"
+    },
+    {
+      "file": "tool/merchant_acceptance/checkout_checks.mjs",
+      "sha256": "ff66993562702669c51b8130aeda6c846565fe8bac3076b35c90cf709269481a"
+    },
+    {
+      "file": "tool/merchant_acceptance/checkout_http_checks.mjs",
+      "sha256": "d002de9d439babbeea566ba76eff7c22094351df984602d2e99bef2108b642af"
+    },
+    {
+      "file": "tool/merchant_acceptance/checkout_reservation_checks.mjs",
+      "sha256": "e991dc5f7cfd7b570b586b4823c2e417b9c98538afaee4f60d89baf75ef70bdf"
+    },
+    {
+      "file": "tool/merchant_acceptance/fixture.mjs",
+      "sha256": "7db80fa90be294e30d1ee992b63b1da0aef233c8874e4ef18b0b4cb406d7c0a6"
+    },
+    {
+      "file": "tool/merchant_acceptance/native.mjs",
+      "sha256": "a0219112c9949b6085a913d740869e85ad678ffe704e59b6353aaccb172a7ed4"
+    }
+  ],
+  "inspected_renders": [
+    {
+      "file": "docs/evidence/checkout_e/customer-approval-narrow.png",
+      "sha256": "2125fc43a1ebf0a9c4152021e9adc1cb0632f3733594d739a77a42cb8d536ae8"
+    },
+    {
+      "file": "docs/evidence/checkout_e/customer-approval-retry.png",
+      "sha256": "362e2123fc72084295869fa0baa7d61e5fcafec30277e215fb566a7bdecb3f4a"
+    },
+    {
+      "file": "docs/evidence/checkout_e/customer-existing-qr.png",
+      "sha256": "b27cffd9f7c1e6762d8423f7a0b879ef544e2a0f7fb3320cef5bb776202dc6f6"
+    },
+    {
+      "file": "docs/evidence/checkout_e/customer-ineligible.png",
+      "sha256": "be3f7d0e2af3c47c6715a46a82d4befd0420e5b92965fd0b9b0eb3c022e911e7"
+    },
+    {
+      "file": "docs/evidence/checkout_e/merchant-attestation.png",
+      "sha256": "edb3f30bce998b3564a27556d94069469b701a3cdcc70640f003f9bb48a3a205"
+    }
+  ],
+  "runtime_and_ui_changes": "NONE; previous builds and renders reused after byte verification",
+  "known_build_note": "Customer Kotlin incremental-cache daemon fallback occurred; Gradle fallback and both final debug builds succeeded.",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "remote_migration_applied": false,
+  "main_merge_or_push": false,
+  "local_processes": "STOPPED; synthetic data retained",
+  "default_client_and_server_checkout_gates": "OFF",
+  "physical_two_device": "OPEN",
+  "release_gates": [
+    "classification/legal policy",
+    "funding/provider proof",
+    "refund/coupon restoration and disputed receivable policy",
+    "settlement",
+    "operations/reconciliation SLO",
+    "authorized remote deployment",
+    "physical two-device acceptance"
+  ]
+}

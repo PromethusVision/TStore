@@ -732,6 +732,59 @@ Local implementation and verification are recorded in
 `MERCHANT_REWARD_E_HANDOFF.md`; this does not mark the full E redemption slice or
 the physical QR acceptance complete.
 
+### 8.2 Local customer-authorized coupon checkout extension
+
+After integration of the earning delivery at `af9d5965`, the Product Owner
+authorized the next implementation package. The local checkout extension uses
+the same QR, claim, purchase and H0 journal; it changes no FROZEN numerical rule.
+Its separate client/server capability defaults OFF. Earlier §8.1 describes the
+earning-only delivery; the following supersedes its local redemption/O7 boundary.
+
+- The Customer reviews the authoritative sale, selected coupon and physical
+  payment amounts before creating a coupon QR. Exact approval binds the cart and
+  classification fingerprint, live Auth session, request UUID and immutable QR.
+  Old completion APIs reject coupon contracts before economic effects. Merchant
+  confirmation attests all three amounts; no unilateral merchant coupon use.
+- The existing net-payment threshold also governs capacity at approval time.
+  Approval below the snapshotted threshold releases the reservation/checkout hold
+  and its earmarked fund in that same transaction, before merchant claim. Reopen,
+  replay or reservation refresh cannot reacquire capacity against the gross sale
+  while that consent is live. An eligible net amount retains its valid hold;
+  cancelling consent permits normal reassessment with the original attempt deadline.
+- Listed sale prices remain unchanged. Merchant discounts/price amendments still
+  require a new quote and approval and are not an implemented discount engine.
+  Unknown or cash-equivalent classification blocks coupon use for the whole cart.
+  Classification is private, append-only trusted-operator evidence with policy
+  reference/reason; approval of the actual legal perimeter remains an external gate.
+- Coupon lots consume oldest issuance first, then original source chronology.
+  Line coupon allocation uses proportional minor-unit arithmetic, largest
+  remainder and listing UUID ties. Final terms retain the original quote plus
+  exact allocated coupon/payment and return-policy snapshot. Purchase, debit,
+  source uses, merchant reserve/pending receivable and net-eligible earning commit
+  together. Only redemption fills the reserve; no settlement execution is added.
+- Audited invalidation splits each source into unspent reversal and spent future
+  reward offset. Restored original package fund/capacity and memo obligation are
+  journaled atomically, without customer cash debt. Recovery happens from the next
+  mature chronological group immediately before spendable coupon issuance, in the
+  same transaction. Pending contributions remain contingent until maturity; this
+  prevents a normal pre-maturity return from recovering the same offset twice.
+  Five immutable source links and 250 TL face remain; remaining value may be less
+  or zero after offset recovery. A later invalidation of an offset-funded source
+  creates only that source's invalid value, not a second recovery of the old obligation.
+- Genuine return evidence allocates each returned quantity from the remaining
+  item sale/coupon amounts, rounding down until the final remaining quantity.
+  An administrative correction reverses that exact recorded allocation. This
+  preserves totals even for out-of-order corrections. Neither cash refund nor
+  coupon restoration is executed or represented as successful; O8 stays open.
+- Exact retries reconcile existing receipts even after gate-off. New approval
+  requires both checkout and E/H0/B readiness. Live customer session and current
+  classification are rechecked at finalization; changed balance fails atomically.
+
+Implementation/acceptance records: `MERCHANT_CHECKOUT_E_WORKLOG.md` and
+`MERCHANT_CHECKOUT_E_HANDOFF.md`. Physical two-device acceptance, provider funding,
+classification policy, legal/settlement approval, reconciliation operations and
+explicit remote deployment authorization remain separate release gates.
+
 ## 9. Merchant balance and immutable accounting
 
 **FROZEN direction:** “Hesap Bakiyesi”, statement-like history with separate

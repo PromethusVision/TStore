@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
@@ -9,10 +10,14 @@ import 'package:t_store/features/purchases/domain/repositories/purchase_history_
 class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
   final SupabaseService supabaseService;
   final bool reviewsEnabled;
+  final bool checkoutEnabled;
 
   PurchaseHistoryRepositoryImpl({
     required this.supabaseService,
     this.reviewsEnabled = const bool.fromEnvironment('REVIEWS_V2_ENABLED'),
+    this.checkoutEnabled = const bool.fromEnvironment(
+      'COUPON_CHECKOUT_V1_ENABLED',
+    ),
   });
 
   @override
@@ -20,6 +25,9 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
   getVerifiedPurchases() async {
     try {
       final user = supabaseService.currentUser;
+      final identity = QrProtocolV2.authenticatedSessionIdentity(
+        supabaseService.client,
+      );
       if (user == null) {
         return const Left('Alışverişlerini görmek için giriş yapın.');
       }
@@ -39,6 +47,45 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
       final rows = (response as List)
           .map((r) => Map<String, dynamic>.from(r as Map))
           .toList();
+      if (checkoutEnabled) {
+        if (identity == null) {
+          return const Left('Oturum doğrulanamadı. Yeniden giriş yapın.');
+        }
+        for (var start = 0; start < rows.length; start += 100) {
+          if (identity !=
+              QrProtocolV2.authenticatedSessionIdentity(
+                supabaseService.client,
+              )) {
+            return const Left('Oturum değişti. Yeniden giriş yapın.');
+          }
+          final batch = rows.skip(start).take(100).toList();
+          final ids = batch.map((row) => row['id'] as String).toSet();
+          final result = await supabaseService.client
+              .rpc(
+                'read_customer_checkout_terms_v1',
+                params: {'p_purchase_ids': ids.toList()},
+              )
+              .timeout(const Duration(seconds: 20));
+          if (result is! List) throw const FormatException();
+          final byId = <String, dynamic>{};
+          for (final raw in result) {
+            if (raw is! Map ||
+                raw['purchase_id'] is! String ||
+                !ids.contains(raw['purchase_id']) ||
+                byId.containsKey(raw['purchase_id'])) {
+              throw const FormatException();
+            }
+            byId[raw['purchase_id'] as String] = raw['coupon_checkout'];
+          }
+          for (final row in batch) {
+            row['coupon_checkout'] = byId[row['id']];
+          }
+        }
+        if (identity !=
+            QrProtocolV2.authenticatedSessionIdentity(supabaseService.client)) {
+          return const Left('Oturum değişti. Yeniden giriş yapın.');
+        }
+      }
       if (reviewsEnabled && rows.isNotEmpty) {
         bool available = false;
         try {

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 
 class QrSessionEntity extends Equatable {
   final String id;
@@ -17,6 +18,7 @@ class QrSessionEntity extends Equatable {
   final String? purchaseId;
   final String? manualCode;
   final DateTime? completionExpiresAt;
+  final CouponCheckoutTerms? couponCheckout;
 
   const QrSessionEntity({
     required this.id,
@@ -35,6 +37,7 @@ class QrSessionEntity extends Equatable {
     this.purchaseId,
     this.manualCode,
     this.completionExpiresAt,
+    this.couponCheckout,
   });
 
   bool get isActive => status == 'active' && expiresAt.isAfter(DateTime.now());
@@ -57,5 +60,6 @@ class QrSessionEntity extends Equatable {
     purchaseId,
     manualCode,
     completionExpiresAt,
+    couponCheckout,
   ];
 }

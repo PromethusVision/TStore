@@ -50,7 +50,9 @@ Future<void> main() async {
         merchants: SupabaseMerchantRepository(client: service.client),
         catalogMedia: SupabaseCatalogMediaRepository(service.client),
         operations: SupabaseMerchantOperationsRepository(service.client),
-        rewardProgram: const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')
+        rewardProgram:
+            const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+                const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')
             ? SupabaseRewardProgramRepository(service.client)
             : null,
         trustCommerce: const bool.fromEnvironment('TRUST_COMMERCE_V1_ENABLED')
@@ -61,7 +63,8 @@ Future<void> main() async {
             : null,
         purchaseEvidence:
             const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
-                const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED')
+                const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+                const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')
             ? SupabasePurchaseEvidenceRepository(service.client)
             : null,
         credentials: SharedMerchantCredentials(
@@ -72,9 +75,13 @@ Future<void> main() async {
           supabaseService: service,
           claimsEnabled:
               const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
-              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED'),
-          rewardEarningEnabled: const bool.fromEnvironment(
-            'REWARD_EARNING_V1_ENABLED',
+              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+              const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
+          rewardEarningEnabled:
+              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
+              const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
+          couponCheckoutEnabled: const bool.fromEnvironment(
+            'COUPON_CHECKOUT_V1_ENABLED',
           ),
         ),
         preferences: LocalNotificationPreferencesRepository(),

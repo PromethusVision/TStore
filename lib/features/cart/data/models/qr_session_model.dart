@@ -1,4 +1,5 @@
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
+import 'package:t_store/features/rewards/domain/coupon_checkout_terms.dart';
 
 class QrSessionModel extends QrSessionEntity {
   const QrSessionModel({
@@ -18,10 +19,17 @@ class QrSessionModel extends QrSessionEntity {
     super.purchaseId,
     super.manualCode,
     super.completionExpiresAt,
+    super.couponCheckout,
   });
 
   factory QrSessionModel.fromJson(Map<String, dynamic> json) {
     final protocol = json['protocol_version'] ?? 1;
+    final checkout = json['coupon_checkout'] == null
+        ? null
+        : CouponCheckoutTerms.fromJson(json['coupon_checkout']);
+    if (checkout != null && protocol != 2) {
+      throw const FormatException('Checkout protocol');
+    }
     if (protocol != 1 && protocol != 2) {
       throw const FormatException('QR protokolü desteklenmiyor.');
     }
@@ -65,6 +73,7 @@ class QrSessionModel extends QrSessionEntity {
       purchaseId: purchaseId,
       manualCode: code,
       completionExpiresAt: completion,
+      couponCheckout: checkout,
     );
   }
 
@@ -82,6 +91,7 @@ class QrSessionModel extends QrSessionEntity {
       'updated_at': updatedAt.toIso8601String(),
       'item_count': itemCount,
       'total_amount': totalAmount,
+      if (couponCheckout != null) 'coupon_checkout': couponCheckout!.toJson(),
       if (protocolVersion == 2) ...{
         'protocol_version': protocolVersion,
         'purchase_id': purchaseId,
@@ -109,6 +119,7 @@ class QrSessionModel extends QrSessionEntity {
       purchaseId: entity.purchaseId,
       manualCode: entity.manualCode,
       completionExpiresAt: entity.completionExpiresAt,
+      couponCheckout: entity.couponCheckout,
     );
   }
 

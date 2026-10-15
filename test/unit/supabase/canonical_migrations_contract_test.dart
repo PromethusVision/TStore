@@ -34,6 +34,8 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002200_0022_campaign_required_amount.sql',
   '20261015002300_0023_commerce_ledger_foundation.sql',
   '20261015002400_0024_reward_earning_cycle.sql',
+  '20261015002500_0025_coupon_checkout.sql',
+  '20261015002600_0026_coupon_reservation_net_threshold.sql',
 ];
 
 const _baselinePublicTables = <String>{
@@ -139,6 +141,12 @@ const _expectedPublicTables = <String>{
   'reward_coupon_sources',
   'reward_contribution_events',
   'reward_capacity_events',
+  'reward_checkout_config',
+  'reward_product_classifications',
+  'reward_checkout_approvals',
+  'reward_coupon_redemptions',
+  'reward_source_uses',
+  'reward_spent_offsets',
 };
 
 const _forbiddenPlpgsqlLocalIdentifiers = <String>{

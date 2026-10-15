@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_store/features/cart/data/qr_installation.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
+import 'package:t_store/features/rewards/domain/reward_program.dart';
 
 class MerchantPurchasesView extends StatefulWidget {
   const MerchantPurchasesView({
@@ -81,7 +82,9 @@ class _MerchantPurchasesViewState extends State<MerchantPurchasesView> {
       for (final p in _rows)
         ListTile(
           title: Text(
-            p.finalSaleMinor == null
+            p.saleExact != null
+                ? rewardMoney(p.saleExact!)
+                : p.finalSaleMinor == null
                 ? 'Eski alışveriş kaydı'
                 : merchantPrice(p.finalSaleMinor! / 100),
           ),
@@ -168,6 +171,11 @@ class _PurchaseDetailState extends State<_PurchaseDetail> {
           SelectableText('İşlem no: ${p.id}'), Text(_date(p.confirmedAt)),
           if (p.finalSaleMinor != null)
             Text('Doğrulanan tutar: ${merchantPrice(p.finalSaleMinor! / 100)}'),
+          if (p.saleExact != null) ...[
+            Text('Satış: ${rewardMoney(p.saleExact!)}'),
+            Text('Kullanılan EV kuponu: ${rewardMoney(p.couponExact!)}'),
+            Text('Müşteriden alınan: ${rewardMoney(p.paymentExact!)}'),
+          ],
           if (p.classification == 'legacy_unclassified')
             const MerchantNotice(
               'Eski kaydın satış ve iade koşulları eksik. Yeni koşullar varsayılmıyor.',
@@ -185,8 +193,10 @@ class _PurchaseDetailState extends State<_PurchaseDetail> {
                 '${i.quantity} adet satın alındı • ${i.returnedQuantity} adet iade kaydı',
               ),
             ),
-          const MerchantNotice(
-            'İade kaydı para transferi veya kupon iadesi gerçekleştirmez. İade süresi bu kayıtta tanımlı değildir.',
+          MerchantNotice(
+            p.classification == 'coupon_checkout_e_v1'
+                ? 'İade kaydı satış ve kupon payını kaydeder. Para transferi veya kupon iadesi gerçekleştirmez.'
+                : 'İade kaydı para transferi veya kupon iadesi gerçekleştirmez. İade süresi bu kayıtta tanımlı değildir.',
           ),
           if (p.canRecordReturn && !_loading && _error == null)
             FilledButton(
@@ -195,7 +205,10 @@ class _PurchaseDetailState extends State<_PurchaseDetail> {
             ),
           // Keep recovery reachable even if a previous return consumed all units.
           if (!p.canRecordReturn &&
-              p.classification == 'quote_only_b_v1' &&
+              const {
+                'quote_only_b_v1',
+                'coupon_checkout_e_v1',
+              }.contains(p.classification) &&
               !_loading)
             OutlinedButton(
               onPressed: _return,
