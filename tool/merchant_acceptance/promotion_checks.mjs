@@ -151,7 +151,7 @@ export async function promotionChecks(db,config,f) {
  f.promotion={selection:s,listing,image,path};
  return checks;
 }
-export async function promotionHttpChecks({db,request,rpc,session,f,status,localRequest}) {
+export async function promotionHttpChecks({db,request,rpc,session,f,status,localRequest,capture=true}) {
  const checks=[],check=async(name,fn)=>{await fn();checks.push({name,result:'PASS'});console.log('PASS '+name);};
  const args={p_shop_id:f.shop};
  await check('G actual Storage bytes use existing upload/sign path; retired image cannot be saved',async()=>{
@@ -178,7 +178,7 @@ export async function promotionHttpChecks({db,request,rpc,session,f,status,local
    const preview=await rpc('preview_merchant_promotion_v1',f.merchant,{...args,p_selection:f.promotion.selection});
    assert.equal(list.items.length,20);assert(preview.ready);
    const history=await rpc('read_promotion_history_v1',f.merchant,{...args,p_draft_id:list.items[0].id});
-   await writeFile(resolve(root,'docs/data/merchant_promotion_g_contract.json'),JSON.stringify({evidence_class:'synthetic-local-postgrest',shop_id:f.shop,list,preview,history},null,2)+'\n');
+   if(capture) await writeFile(resolve(root,'docs/data/merchant_promotion_g_contract.json'),JSON.stringify({evidence_class:'synthetic-local-postgrest',shop_id:f.shop,list,preview,history},null,2)+'\n');
  });
  await check('G HTTP role boundaries, raw tables, logout and repeated mutation receipt',async()=>{
    for(const actor of [null,f.other,f.customer])assert.equal((await request('/rest/v1/rpc/read_merchant_promotions_v1',actor,args)).ok,false);

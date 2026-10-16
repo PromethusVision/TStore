@@ -60,7 +60,7 @@ table or this specification must not silently activate them.
 | RewardRepository / RewardProgress / PendingRewardRepository | Existing 0/5 guest shell, auth routing, truthful pending state and account-scoped stream seam | No economic authority; goal=5 is presentation-only and must later be checked against server version |
 | BannerRepository / BannerEntity / HomeCampaignCatalog | Editorial cards, active date/copy filtering, existing carousel and safe destinations | General-only client catalog rejects local scope; current take(12) is not a 3-sponsored-card rule or fair rotation |
 | NotificationRepository / NotificationsCubit / PushCoordinator | One inbox/Realtime pipeline, permission ports, authenticated lookup, revoke-before-logout | Provider pending; no marketing bucket quota, ad entitlement queue, campaign dedup or server account quota |
-| `0016_engagement_foundation.sql` and `tool/engagement/push_delivery.mjs` | Device/preference/claim contracts and existing notification record transport | Draft only; transport filters existing banner validity/window, so it cannot serve a 30-day sponsored entitlement after visibility expiry without extension |
+| `0016_engagement_foundation.sql` and `tool/engagement/push_delivery.mjs` | Device/preference/claim contracts and existing notification record transport | Unchanged foundation proposal plus local I0 extension: default-OFF service-only dispatch; all marketing deferred until G/O10, no real provider |
 | 0012/0013/0015 + dedicated 0014 activation package | Side-by-side canonical assignment, preview/public capability and publication gates | New products require governed canonical assignment; phase 1 must not bypass or rewrite these |
 
 Inspection anchors: migrations 0004 tables at lines 38–126; 0009 product snapshot
@@ -1059,6 +1059,52 @@ not OS display. Unknown provider acknowledgements retain a durable claim and
 require reconciliation, not blind resend or freeing the quota immediately.
 In-app notifications may describe entitlement status without adding another inbox.
 Firebase/APNs setup and physical acceptance remain a separate last integration.
+
+### 12.1 I0 preparation boundary — durable service transport
+
+The local I0 increment extends the existing notification foundation. It does not
+complete I or choose O10 audience/quota/retention policy. The unchanged
+`0016_engagement_foundation.sql` proposal is rehearsed first; the separate
+`0029_push_dispatch_i0.sql` proposal then adds a default-OFF server gate and
+service-only dispatch. Neither proposal is silently promoted into automatic
+migrations. No provider configuration, automatic runner or outbound real send
+is enabled.
+
+The concrete dispatcher rejects **all marketing and campaign-associated** rows,
+including opted-in general banners, until the canonical user-based caps and
+eligibility contract exist. This closes the old draft dispatcher's uncapped
+marketing path; the FROZEN 1+1 caps and thirty-day entitlement remain unchanged.
+Service messages retain their independent preference and generic lock-screen
+copy. Private content still requires authenticated existing-notification lookup.
+
+Device registration binds to an existing verified live Auth session and rotates
+an opaque revision on account, session, token, platform or enabled-state changes.
+Old unbound registrations require registration again. Claim and begin recheck
+the current recipient role, consent, gate and device/session. A late invalid-token
+response disables only the exact attempted revision, never a replacement owner
+or token. Client disable is bound to the current Auth session as well as owner.
+Logout invalidates selection even when client-side disable was missed. Dispatch
+requires read-committed transactions, so an older repeatable-read snapshot cannot
+miss a just-committed first opt-out.
+
+One existing (notification, installation, role) delivery key can reach the provider
+at most once. A planned claim transitions durably to **unknown before external
+I/O**. A crash, timeout or lost database acknowledgement preserves that claim.
+Only an explicit provider acceptance/rejection may resolve it; trusted later
+reconciliation requires provider evidence. Replaying dispatch never resends any
+existing key, including cancelled/unattempted keys. I0 has no automatic retry,
+claim expiry or operator override. This conservative preparation is not a
+guarantee of delivery. “Provider accepted” never means displayed by the OS.
+
+Validation and dispatch have a defined boundary: revocation committed before
+begin cancels the attempt; revocation after begin cannot recall an in-flight
+external message. Generic copy and authenticated destination lookup remain
+necessary even with these checks. A page contains at most100 installation IDs;
+the cursor continues fanout without adding a commercial entitlement or device
+allowance. No token or provider error body enters evidence/claim records.
+
+Real transport deployment, provider evidence binding, retention review,
+marketing G/O10 and physical-device acceptance remain separately gated.
 
 ## 13. RLS, privacy and migration safety
 

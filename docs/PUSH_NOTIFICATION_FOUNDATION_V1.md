@@ -1,5 +1,21 @@
 # Shared notification and push foundation V1
 
+## Current I0 preparation (2026-10-17)
+
+The original foundation below is historical context. Its unchanged0016 proposal
+is now rehearsed with the separate0029 local proposal; neither is deployed or in
+automatic migrations. The concrete `PostgresPushStore` and revised dispatcher
+use committed claim/begin/finish transactions, live Auth session/revision checks
+and a default-OFF service gate. All marketing/campaign dispatch is deferred until
+canonical G/O10 quotas exist. This replaces the old mock-only banner dispatch
+behavior described below.
+
+The same mobile ports and existing Merchant host remain unchanged and unwired
+to a real provider. No local preference is promoted to server consent. Queue
+scheduling, provider evidence reconciliation, external configuration, rollout
+and physical acceptance remain pending. Read canonical12.1 and
+[I0 handoff](MERCHANT_NOTIFICATION_I0_HANDOFF.md) for current boundaries and proof.
+
 ## Reused architecture
 
 `NotificationEntity`, `NotificationRepositoryImpl`, `NotificationsCubit`, the
@@ -80,7 +96,7 @@ For a separately authorized integration:
 5. Map cold-start/foreground taps to `PushOpenEvent`; fetch the existing record
    via the authenticated lookup, verify account/role again after awaits, then
    use the common destination builder. Integrate the same ports in the merchant
-   entry point; this repository does not contain a separate merchant app shell.
+   entry point, which now exists and reuses the same foundation.
 6. Physically verify Android/iOS foreground, background, terminated, logout,
    account-switch, token-expiry and opt-out behavior with non-production fixtures
    before authorizing rollout.
