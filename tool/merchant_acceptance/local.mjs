@@ -4,7 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
-import { inside, localUrl, localContainer, ports, projectPattern } from './safety.mjs';
+import { inside, localUrl, localContainer, localEmptyNetwork, ports, projectPattern } from './safety.mjs';
 import { withLoopbackDocker } from './docker-proxy.mjs';
 
 export const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -102,8 +102,14 @@ async function start(run) {
   const volumes = (await docker(['volume', 'ls', '--format', '{{.Name}}'])).split(/\r?\n/);
   assert(!volumes.some(n => n.endsWith(`_${run.project}`)), 'Existing data retained; prepare a fresh run');
   const network = `${run.project}-network`;
-  await docker(['network', 'create', '--driver', 'bridge', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1',
-    '--label', `esnaftavar.acceptance=${run.project}`, network]);
+  const networks = (await docker(['network','ls','--format','{{.Name}}'])).split(/\r?\n/);
+  if (!networks.includes(network)) {
+    await docker(['network', 'create', '--driver', 'bridge', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1',
+      '--label', `esnaftavar.acceptance=${run.project}`, network]);
+  }
+  // Allows an explicitly prepared, owned empty network when default address
+  // pools are exhausted. Never prune another task's network or resume its data.
+  localEmptyNetwork(JSON.parse(await docker(['network','inspect',network]))[0],run.project);
   try {
     await withLoopbackDocker(run, endpoint => cli(run.dir, ['start', '--network-id', network, '--exclude',
       'realtime,imgproxy,mailpit,postgres-meta,studio,edge-runtime,logflare,vector,supavisor'], 600000, { DOCKER_HOST: endpoint }));

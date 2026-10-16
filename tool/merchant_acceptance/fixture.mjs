@@ -10,7 +10,8 @@ export async function connect(config) {
     query_timeout: 25000, application_name: 'ev-merchant-ab-acceptance' });
   await db.connect(); return db;
 }
-export async function migrate(db, { reviews = false, trustCampaigns = false, ledger = false, rewards = false, checkout = false, statement = false, promotion = false } = {}) {
+export async function migrate(db, { reviews = false, trustCampaigns = false, ledger = false, rewards = false, checkout = false, statement = false, promotion = false, notifications = false } = {}) {
+  promotion ||= notifications;
   statement ||= promotion;
   checkout ||= statement;
   rewards ||= checkout;
@@ -37,6 +38,14 @@ export async function migrate(db, { reviews = false, trustCampaigns = false, led
     await db.query('INSERT INTO supabase_migrations.schema_migrations(version,name,statements) VALUES($1,$2,$3)',
       [historical[ordinal - 1] ?? file.split('_')[0], file.slice(15,-4), []]);
     manifest.push({ file, sha256: createHash('sha256').update(sql).digest('hex') });
+  }
+  if (notifications) {
+    // Explicit local rehearsal only: proposals stay outside automatic migration discovery.
+    for (const file of ['0016_engagement_foundation.sql','0029_push_dispatch_i0.sql']) {
+      const sql = await readFile(resolve(root,'supabase/proposals',file),'utf8');
+      await db.query(sql);
+      manifest.push({ file: 'proposals/'+file, sha256: createHash('sha256').update(sql).digest('hex') });
+    }
   }
   return manifest;
 }

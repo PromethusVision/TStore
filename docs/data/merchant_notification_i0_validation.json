@@ -1,0 +1,103 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-16T22:57:00.091Z",
+  "baseline": "bfebb2f136466cc9623c5e0b6205f0eb5e862076",
+  "branch": "agent/merchant-notification-i0",
+  "scope": "I0 local default-OFF service dispatch preparation; not full I",
+  "flutter": {
+    "passed": 2572,
+    "failed": 0,
+    "existing_skipped": 6,
+    "log_sha256": "2cf39513bd20d6ec9885087424bd5602b78970d20053915b8b9f352ef63340e2"
+  },
+  "node_dispatch": {
+    "passed": 29,
+    "failed": 0,
+    "log_sha256": "3462a64b551eef79f2e3805b96e6705bbfc6204fd9140b09e158d08a92793b70"
+  },
+  "local_harness_guards": {
+    "passed": 6,
+    "failed": 0
+  },
+  "unchanged_legacy_proposal_pglite": {
+    "passed": 28,
+    "failed": 0
+  },
+  "analyzer": "PASS; no issues found",
+  "native": {
+    "groups": 152,
+    "i0_groups": 27,
+    "captured_at": "2026-10-16T22:55:14.398Z"
+  },
+  "managed": {
+    "groups": 161,
+    "i0_groups": 31,
+    "captured_at": "2026-10-16T22:56:37.726Z"
+  },
+  "counts_overlap": "Managed includes the SQL matrix; totals are not distinct combined coverage.",
+  "customer_build": "NOT_RUN; runtime/dependencies unchanged",
+  "merchant_build": "NOT_RUN; runtime/dependencies unchanged",
+  "historical_migrations_and_engagement_0016": "UNCHANGED from baseline",
+  "customer_merchant_runtime": "UNCHANGED from baseline",
+  "provider_calls": "Synthetic in-process doubles only; no external provider",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "remote_migration_applied": false,
+  "full_I": "OPEN",
+  "marketing_G_O10": "OPEN",
+  "physical_J": "OPEN",
+  "sources": [
+    {
+      "file": "supabase/proposals/0016_engagement_foundation.sql",
+      "sha256": "7f4f32b5516787e6834d2467ca7c30e6933f95b6f94d93ba376bb6f7dd72e36f"
+    },
+    {
+      "file": "supabase/proposals/0029_push_dispatch_i0.sql",
+      "sha256": "4aeb04ecbd90959580c6e6ef5ae50560e093f42f3828a3d79301a16be65fbed7"
+    },
+    {
+      "file": "tool/engagement/push_delivery.mjs",
+      "sha256": "926809c9f35d11ab44aba4c30f8ee2c5b5518540ffe3a5528dc19d80d0e82920"
+    },
+    {
+      "file": "tool/engagement/postgres_push_store.mjs",
+      "sha256": "49dbbfa433de8c59944f820a39ab2a97ccf2a33eedfebb35c579e51304da2799"
+    },
+    {
+      "file": "tool/engagement/push_delivery.test.mjs",
+      "sha256": "3378a4174896aa8e066de2b02708dc528f11df219335a2aa68b57ad1745ca988"
+    },
+    {
+      "file": "tool/merchant_acceptance/fixture.mjs",
+      "sha256": "283fb684259f42ef028f8a944dd670332be5fe99c761eedcf317ea61a0f72c3e"
+    },
+    {
+      "file": "tool/merchant_acceptance/native.mjs",
+      "sha256": "9e0c7db4937df03d4a5fb99f56271c8e61c19bc5d19c5a9cc9900edff7ba4e12"
+    },
+    {
+      "file": "tool/merchant_acceptance/acceptance.mjs",
+      "sha256": "de5aee67869b51925d0fe583881770e56abfd0465f974f7bd26de2284695c056"
+    },
+    {
+      "file": "tool/merchant_acceptance/notification_checks.mjs",
+      "sha256": "2ab78e908374c3677f02a1988ce8f7f21cd036c7ba9506859bb1621a75616663"
+    },
+    {
+      "file": "tool/merchant_acceptance/promotion_checks.mjs",
+      "sha256": "555e6dd41159b34e1ab1c5eec02aabd8364f385da78164ece1bdc88c8cea54b8"
+    },
+    {
+      "file": "tool/merchant_acceptance/local.mjs",
+      "sha256": "39d48a2c8a27da93bd30b0a814d015a95e978bd09c648d43830e16ca095f8ff9"
+    },
+    {
+      "file": "tool/merchant_acceptance/safety.mjs",
+      "sha256": "1e74c3c07558ce8893b6d7b1dc15ad0c69a98ea87c28fca4837c59270cadba4f"
+    },
+    {
+      "file": "tool/merchant_acceptance/safety.test.mjs",
+      "sha256": "3ff5abb856009becab785cadd60b941d3460dd93c7eff3f0782e0dbae780a3f7"
+    }
+  ]
+}

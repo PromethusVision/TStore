@@ -400,6 +400,22 @@ No open commercial/retention/targeting decision is silently resolved. See
   approval, reviewed transport deployment, nonproduction physical evidence,
   explicit send/rollout authority. No OS delivery guarantee.
 
+### I0 preparation increment (before full I)
+
+- Rehearse unchanged engagement0016 plus separate0029 proposal explicitly in
+  fresh local fixtures, outside automatic migration discovery.
+- Use the same inbox/devices/preferences/delivery keys. No Customer/Merchant UI
+  redesign, dependency or provider SDK.
+- Default-OFF service-only worker/store with committed claim/begin boundaries,
+  live-session and revision checks, safe terminal acknowledgement and bounded
+  fanout. All marketing remains deferred pending G/O10.
+- Prove concurrent claims/begin, first opt-out, token rotation, account/session
+  change, unknown acknowledgement and stale-token disable using real PostgreSQL
+  and local Auth/PostgREST; retain adjacent commerce regressions.
+- This is local preparation only. Full I, O10 policy, real provider sends and
+  physical J remain OPEN. See canonical12.1 for the precise safety/availability
+  tradeoff and provider-call boundary.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

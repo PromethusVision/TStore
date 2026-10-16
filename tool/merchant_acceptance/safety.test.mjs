@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { localUrl, localContainer, localRequest, requestJson } from './safety.mjs';
+import { localUrl, localContainer, localEmptyNetwork, localRequest, requestJson } from './safety.mjs';
 
 test('rejects remote, alternate ports, query overrides and misleading loopback URLs', () => {
   for (const value of ['https://example.supabase.co', 'http://127.0.0.1:54321',
@@ -45,4 +45,15 @@ test('rejects unrelated, stopped, privileged or externally published containers'
     s => s.NetworkSettings.Ports['5432/tcp'][0].HostIp = '0.0.0.0']) {
     const invalid = structuredClone(state); change(invalid); assert.throws(() => localContainer(invalid, project));
   }
+});
+
+test('precreated network must be exact owned empty local loopback bridge',()=>{
+ const project='ev-merchant-ab-0123456789ab';
+ const state={Name:project+'-network',Labels:{'esnaftavar.acceptance':project},Driver:'bridge',Scope:'local',
+ Options:{'com.docker.network.bridge.host_binding_ipv4':'127.0.0.1'},EnableIPv6:false,Ingress:false,Containers:{}};
+ localEmptyNetwork(state,project);
+ for(const change of [s=>s.Name='foreign',s=>s.Labels={},s=>s.Driver='host',s=>s.Scope='swarm',
+ s=>s.Options={},s=>s.EnableIPv6=true,s=>s.Ingress=true,s=>s.Containers={foreign:{}}]) {
+  const invalid=structuredClone(state);change(invalid);assert.throws(()=>localEmptyNetwork(invalid,project));
+ }
 });

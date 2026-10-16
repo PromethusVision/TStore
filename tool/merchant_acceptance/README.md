@@ -184,3 +184,32 @@ node tool/merchant_acceptance/acceptance.mjs <new-owned-local-run> --promotion
 Outputs use `merchant_promotion_g_*`. The previous statement contract fixture is
 preserved. Final scope/reproduction/rollback details are in
 `docs/MERCHANT_PROMOTION_G_HANDOFF.md`.
+
+## I0 shared service notification preparation
+
+`--notifications` includes the complete `--promotion` regression chain, then
+explicitly rehearses unchanged `supabase/proposals/0016_engagement_foundation.sql`
+and `0029_push_dispatch_i0.sql`. The proposals are not automatic migrations.
+Always use a fresh owned local fixture with the same prepare/start/stop procedure.
+Reports use `merchant_notification_i0_*` and include both proposal hashes.
+
+The SQL matrix verifies live-session registration, account/role/token changes,
+concurrent claims/begin/opt-out, durable uncertainty, safe late-token rejection,
+bounded device pages and all private grants. Managed acceptance adds real
+Auth/PostgREST registration, logout, RLS and service-only acknowledgement RPCs.
+Provider calls use synthetic in-process doubles only; no real send, hosted
+database, provider credential or device acceptance is exercised. The old PGlite
+foundation test still validates the unchanged0016 proposal separately.
+
+If Docker's default network pools are exhausted, an operator can prepare a
+new private bridge after checking host routes and existing subnets. Start accepts
+it only when its exact run name/owner label match, it has no containers, and it
+uses local bridge/IPv4/loopback bindings. It never prunes another task's networks
+or reuses existing fixture data. The private subnet must not overlap host/VPN or
+Docker routes; this is a local test environment choice, not a product setting.
+
+```powershell
+node --test tool/engagement/push_delivery.test.mjs
+node tool/merchant_acceptance/native.mjs <owned-postgresql-17-bin> --notifications
+node tool/merchant_acceptance/acceptance.mjs <new-owned-local-run> --notifications
+```

@@ -32,6 +32,15 @@ export function localContainer(state, project) {
   assert(bindings?.length > 0, 'Dedicated database port required');
   assert(bindings.every(b => b.HostIp === '127.0.0.1' && b.HostPort === String(ports.db)), 'Loopback binding required');
 }
+export function localEmptyNetwork(state, project) {
+  assert(projectPattern.test(project));
+  assert.equal(state.Name, project+'-network');
+  assert.equal(state.Labels?.['esnaftavar.acceptance'], project);
+  assert.equal(state.Driver, 'bridge'); assert.equal(state.Scope, 'local');
+  assert.equal(state.Options?.['com.docker.network.bridge.host_binding_ipv4'], '127.0.0.1');
+  assert.equal(state.EnableIPv6, false); assert.equal(state.Ingress, false);
+  assert(state.Containers && Object.keys(state.Containers).length === 0, 'Network already in use');
+}
 export async function localRequest(base, path, { method='GET', headers={}, body }={}) {
   const root = localUrl(base, 'api');
   const url = new URL(path, root);
