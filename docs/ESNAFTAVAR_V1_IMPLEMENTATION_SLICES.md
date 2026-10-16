@@ -78,6 +78,18 @@ existing contracts. Distinguish local database tests, real Storage HTTP and devi
 acceptance. Any new summary endpoint is owner-scoped and read-only. This does not
 change the A–J dependency order or grant Production/remote migration authority.
 
+### Cross-slice Merchant session resilience — 2026-10-17
+
+After G preparation integration (`0c79dca1`), harden the existing Merchant host
+under canonical §4.2: replace private route/overlay/message scopes at authority
+boundaries, serialize Auth callbacks and logout, reject stale continuations, and
+bound access reads with explicit recovery. Preserve normal refresh and draft
+editing. This is a client-only lifecycle correction, requiring no migration or
+new product policy. Validate actual QR confirmation, nested editor, root overlay,
+late-write, same-account return, ownership and failure/retry scenarios alongside
+existing Merchant/Customer regressions. Full G/H1/I/J gates remain unchanged.
+See [handoff](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
+
 ## B — Existing QR, immutable purchase terms, claim, returns and invalidation
 
 - **DB:** extend existing qr_sessions through claim/manual-code companions, device

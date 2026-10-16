@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "task": "Merchant session and private navigation resilience",
+  "baseline": "0c79dca1504443ca47ee827def8e54f65657e685",
+  "branch": "agent/merchant-session-resilience",
+  "status": "PASS",
+  "authority": "Canonical section 4.2; no FROZEN product/economic rule changed",
+  "tests": {
+    "full": {
+      "passed": 2572,
+      "failed": 0,
+      "skipped": 6,
+      "log_sha256": "1a07dbdcc5da6b3d2130597a506667d6559cce12ef82a7f6ab58d42c4d3c76fe"
+    },
+    "focused": {
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "40e1d5ecab5fbddcd5ecfe3e24d848b64d6b0a77bdb6974c2befc7d1dafbd4be"
+    },
+    "baseline_reproductions": {
+      "failed": 5,
+      "passed": 0,
+      "expected": true,
+      "log_sha256": "e02fd3b27b82f88558214e9ef7d5b4d4fedd2617bf1c7ce5ffa6927b316bcd98"
+    }
+  },
+  "analyzer": {
+    "status": "PASS",
+    "log_sha256": "cbe68949c9bd242ad6d2dde94e99d4a2632a1d2ab1f945af4bd11c2b59bb3b7a"
+  },
+  "builds": {
+    "merchant": {
+      "status": "PASS",
+      "artifact": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "bytes": 189300328,
+      "sha256": "2d5a5ba7a6d197a7a2135db7c92f9ce8e1e67e6e4041385a1f9f8050a270b162",
+      "log_sha256": "96b0713a03b3f4862a767e8ed665b5c1a95db13d9eacdb42a61d59916f887da9"
+    },
+    "customer": {
+      "status": "PASS",
+      "artifact": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "bytes": 224768216,
+      "sha256": "2e517a9c1a124363d269a993af154c334af1b1de1621080c8643a1a98959df2f",
+      "log_sha256": "b558b22dd6f0e8c8ab73486759053b78f890abaa5bcb5d286d58df57cc0ac912"
+    }
+  },
+  "source_sha256": {
+    "lib/features/merchant/merchant_app.dart": "7337db01473517f5848ef3c42f0019e311b3b439762b222a45b19e71db282911",
+    "lib/features/merchant/presentation/merchant_session_cubit.dart": "85d234ed1b276a985cfb2e74fbb4bd2e019a225ffee99b804d28251daefcd1f4",
+    "test/unit/merchant/merchant_session_resilience_test.dart": "428d7501aeddfbe7ca6efbc0c318cc75b97e6ff7f6ffc94a2f3bf293e791c84a",
+    "test/widget/merchant/merchant_session_boundary_test.dart": "c26ff35c3560e4a9bc8fdd6b9e1001f50a983474477c8aea5ec3aeafb078ded2"
+  },
+  "renders": {
+    "widths": [
+      320,
+      390,
+      430
+    ],
+    "text_scale": 1.3,
+    "files": {
+      "docs/evidence/merchant_session/failure-320.png": "e2b37a552bec5064f2610ac17486c51fa7d2e6e3581a2af22053f8c8ddb993f1",
+      "docs/evidence/merchant_session/failure-390.png": "e7a946c4e7ba5953af16611a569ce63224052ce56a57d180d3b28125982f1f0f",
+      "docs/evidence/merchant_session/failure-430.png": "eb294264fb15143d53ade3d1b592fef13d8d9ce602a60cf8f3b60ca4d89584bd",
+      "docs/evidence/merchant_session/monitor-ended-320.png": "18c01b2a1972a54949027aceb039f80de4b0b729c7ebdd335c4b2406807b4273",
+      "docs/evidence/merchant_session/monitor-ended-390.png": "b3a17d4db18deaa7b20220565e976386a31225d6f8f03bb6bc505113d6b80d09",
+      "docs/evidence/merchant_session/monitor-ended-430.png": "07ed28f35bda052c038110c30947c4fcee74e50219e56d924b08094acf470880"
+    }
+  },
+  "scope": {
+    "runtime_files": 2,
+    "new_dependencies": 0,
+    "new_migrations": 0,
+    "server_sources_unchanged": true,
+    "customer_runtime_unchanged": true,
+    "shared_notification_sources_unchanged": true
+  },
+  "security_scan": {
+    "result": "PASS",
+    "scope": "changed text files; no credential-shaped material; synthetic example.invalid identities only"
+  },
+  "database_validation": "NOT_RUN: no database/server changes; historical evidence is not a new run",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "migration_applied": false,
+  "main_merge": false,
+  "physical_acceptance": "NOT_RUN; two-device QR and Firebase/APNs remain separate gates",
+  "remaining_gates": [
+    "Full G commercial/measurement/audience policies",
+    "O8/O9/O10",
+    "H1 settlement",
+    "I provider setup",
+    "J physical acceptance"
+  ],
+  "validation_note": "One initial render run was interrupted at test teardown after closing a stream twice under the widget fake clock. The test cleanup was corrected; final focused/full runs must independently PASS."
+}

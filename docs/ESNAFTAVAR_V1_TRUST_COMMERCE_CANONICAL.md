@@ -224,6 +224,36 @@ The next new foundation remains B (QR/purchase terms/returns); H0 precedes monet
 activation. Historical Phase 1 status at the top describes the original proposal,
 not the implementation status of subsequent deliveries.
 
+### 4.2 Merchant session and private navigation resilience — 2026-10-17
+
+After G preparation integrated at `0c79dca1`, the next authorized local package
+hardens existing Merchant access and navigation. This is an implementation of
+the existing exact-owner/privacy boundary; no FROZEN product or economic rule
+changes. Full G, O8/O9/O10, provider setup and physical acceptance remain gated.
+
+- A loss/change of account authority invalidates the entire private navigation
+  scope, including root dialogs, sheets, queued messages and nested editors.
+  Returning to the same account between frames must not revive its old scope.
+  A successful same-account/unchanged-shop refresh preserves navigation and
+  unsaved forms; changed shop revision follows the existing workspace reset.
+- Sign-in and sign-out serialize through the existing Auth port. Device binding
+  revocation still precedes logout. Refresh/resume cannot reopen the workspace
+  while an auth operation is pending. An old logout must not be dispatched after
+  account change during revocation; late outcomes reconcile the current identity.
+  Already dispatched network operations are not claimed to be cancelled.
+- Access reads have a 15-second local timeout and explicit retry. Failed checks
+  clear private access, and superseded responses cannot restore it. This timeout
+  does not apply to writes or authorize replacement purchases/credential requests.
+  Transient session-stream errors require fresh validation. A permanently closed
+  stream requires app restart before regaining private access.
+- These are local UI/lifecycle guards, not a replacement for server role, live
+  Auth session, exact shop ownership or transaction authorization. They do not
+  imply instantaneous remote revocation without an event/read, remove server
+  evidence, create a second Auth/notification system or activate any capability.
+
+Validation and Integration Agent handoff:
+[Merchant session resilience](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
