@@ -45,69 +45,93 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) => BlocProvider.value(
     value: _session,
-    child: MaterialApp(
-      title: 'EsnaftaVar Esnaf',
-      debugShowCheckedModeBanner: false,
-      theme: EsnaftaVarTheme.light,
-      themeMode: ThemeMode.light,
-      home: BlocBuilder<MerchantSessionCubit, MerchantSessionState>(
-        builder: (context, state) {
-          final access = state.access;
-          return switch (state.status) {
-            MerchantSessionStatus.checking => const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-            MerchantSessionStatus.signedOut => _MerchantLogin(
-              state: state,
-              preview: widget.services.preview,
-            ),
-            MerchantSessionStatus.failure => MerchantPage(
-              title: 'Hesabını doğrula',
-              children: [
-                MerchantNotice(
-                  state.message ?? 'İşlem tamamlanamadı.',
-                  error: true,
-                  onRetry: _session.reload,
+    child: BlocBuilder<MerchantSessionCubit, MerchantSessionState>(
+      builder: (context, state) => MaterialApp(
+        // Home alone does not own root dialogs or the ScaffoldMessenger queue.
+        // Replace the entire navigation scope when its authority is invalidated.
+        key: ValueKey(state.scopeRevision),
+        title: 'EsnaftaVar Esnaf',
+        debugShowCheckedModeBanner: false,
+        theme: EsnaftaVarTheme.light,
+        themeMode: ThemeMode.light,
+        home: Builder(
+          builder: (context) {
+            final access = state.access;
+            return switch (state.status) {
+              MerchantSessionStatus.checking => Scaffold(
+                body: SafeArea(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 24),
+                          Text(
+                            state.message ?? 'Esnaf erişimi doğrulanıyor…',
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                TextButton(
-                  onPressed: _session.signOut,
-                  child: const Text('Çıkış yap'),
-                ),
-              ],
-            ),
-            MerchantSessionStatus.denied => MerchantPage(
-              title: 'Esnaf erişimi',
-              children: [
-                MerchantNotice(
-                  access?.hasRole == true
-                      ? 'Mağazanız şu anda yönetim işlemlerine açık değil. Yetkili ekip ile iletişime geçin.'
-                      : 'Bu hesabın esnaf yetkisi henüz yok. Onaylı esnaf hesabınızla giriş yapın.',
-                ),
-                FilledButton(
-                  onPressed: _session.reload,
-                  child: const Text('Erişimi yeniden kontrol et'),
-                ),
-                TextButton(
-                  onPressed: _session.signOut,
-                  child: const Text('Başka hesapla giriş yap'),
-                ),
-              ],
-            ),
-            MerchantSessionStatus.onboarding => MerchantShopForm(
-              key: ValueKey('setup-${access!.user.id}'),
-              repository: widget.services.merchants,
-              access: access,
-              onSaved: _session.reload,
-              onSignOut: _session.signOut,
-            ),
-            MerchantSessionStatus.ready => _MerchantWorkspace(
-              key: ValueKey(
-                'workspace-${access!.user.id}-${access.shop!.id}-${access.shop!.updatedAt}',
               ),
-              home: MerchantHome(services: widget.services, access: access),
-            ),
-          };
-        },
+              MerchantSessionStatus.signedOut => _MerchantLogin(
+                state: state,
+                preview: widget.services.preview,
+              ),
+              MerchantSessionStatus.failure => MerchantPage(
+                title: 'Hesabını doğrula',
+                children: [
+                  MerchantNotice(
+                    state.message ?? 'İşlem tamamlanamadı.',
+                    error: true,
+                    onRetry: state.busy || !state.canRetry
+                        ? null
+                        : _session.reload,
+                  ),
+                  TextButton(
+                    onPressed: state.busy ? null : _session.signOut,
+                    child: const Text('Çıkış yap'),
+                  ),
+                ],
+              ),
+              MerchantSessionStatus.denied => MerchantPage(
+                title: 'Esnaf erişimi',
+                children: [
+                  MerchantNotice(
+                    access?.hasRole == true
+                        ? 'Mağazanız şu anda yönetim işlemlerine açık değil. Yetkili ekip ile iletişime geçin.'
+                        : 'Bu hesabın esnaf yetkisi henüz yok. Onaylı esnaf hesabınızla giriş yapın.',
+                  ),
+                  FilledButton(
+                    onPressed: _session.reload,
+                    child: const Text('Erişimi yeniden kontrol et'),
+                  ),
+                  TextButton(
+                    onPressed: _session.signOut,
+                    child: const Text('Başka hesapla giriş yap'),
+                  ),
+                ],
+              ),
+              MerchantSessionStatus.onboarding => MerchantShopForm(
+                key: ValueKey('setup-${access!.user.id}'),
+                repository: widget.services.merchants,
+                access: access,
+                onSaved: _session.reload,
+                onSignOut: _session.signOut,
+              ),
+              MerchantSessionStatus.ready => _MerchantWorkspace(
+                key: ValueKey(
+                  'workspace-${access!.user.id}-${access.shop!.id}-${access.shop!.updatedAt}',
+                ),
+                home: MerchantHome(services: widget.services, access: access),
+              ),
+            };
+          },
+        ),
       ),
     ),
   );
@@ -171,7 +195,7 @@ class _MerchantLoginState extends State<_MerchantLogin> {
         const MerchantNotice(
           'Yerel önizleme • Gerçek hesap veya veri kullanılmaz.',
         ),
-      if (widget.state.message != null)
+      if (widget.state.message != null && !widget.state.busy)
         MerchantNotice(widget.state.message!, error: true),
       Form(
         key: _form,

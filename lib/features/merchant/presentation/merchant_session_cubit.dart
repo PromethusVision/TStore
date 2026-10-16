@@ -18,11 +18,18 @@ class MerchantSessionState {
     this.access,
     this.message,
     this.busy = false,
+    this.scopeRevision = 0,
+    this.canRetry = true,
   });
   final MerchantSessionStatus status;
   final MerchantAccess? access;
   final String? message;
   final bool busy;
+
+  /// Invalidates all private routes, root overlays and transient messages, even
+  /// when an A -> signed-out -> A transition occurs between rendered frames.
+  final int scopeRevision;
+  final bool canRetry;
 }
 
 class MerchantSessionCubit extends Cubit<MerchantSessionState> {
@@ -32,19 +39,31 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
     required Stream<String?> sessionChanges,
     required this.currentUserId,
     this.beforeSignOut,
+    this.accessTimeout = const Duration(seconds: 15),
   }) : super(const MerchantSessionState(MerchantSessionStatus.checking)) {
+    _lastIdentity = currentUserId();
     _subscription = sessionChanges.listen(
-      (id) => reload(quiet: id != null && id == state.access?.user.id),
-      onError: (Object _) {
-        ++_epoch;
-        if (!isClosed) {
-          emit(
-            const MerchantSessionState(
-              MerchantSessionStatus.failure,
-              message: 'Oturum doğrulanamadı. Lütfen yeniden deneyin.',
-            ),
-          );
+      (id) {
+        _observeIdentity(signal: id, hasSignal: true);
+        // Auth callbacks can arrive while disabling a device or awaiting a
+        // credential request. Only its completion may reopen the workspace.
+        if (_authBusy) {
+          ++_epoch;
+          return;
         }
+        unawaited(
+          reload(
+            quiet:
+                id != null &&
+                id == currentUserId() &&
+                id == state.access?.user.id,
+          ),
+        );
+      },
+      onError: (Object _) => _sessionFailure(),
+      onDone: () {
+        _monitorEnded = true;
+        _sessionFailure();
       },
     );
   }
@@ -52,136 +71,192 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
   final MerchantCredentials credentials;
   final String? Function() currentUserId;
   final Future<void> Function()? beforeSignOut;
+  // Reads alone are bounded. Timing out an auth/write operation must never be
+  // interpreted as cancellation or as permission to send a replacement write.
+  final Duration accessTimeout;
   StreamSubscription<String?>? _subscription;
-  int _epoch = 0;
-  bool _authBusy = false;
+  int _epoch = 0, _scopeRevision = 0, _identityRevision = 0;
+  String? _lastIdentity;
+  bool _authBusy = false, _authInterrupted = false, _monitorEnded = false;
+  bool _closing = false;
+  bool get _unavailable => isClosed || _closing;
+
+  void _observeIdentity({String? signal, bool hasSignal = false}) {
+    final actual = currentUserId();
+    if (_lastIdentity != actual || (hasSignal && signal != actual)) {
+      ++_identityRevision;
+      ++_scopeRevision;
+    }
+    _lastIdentity = actual;
+  }
+
+  void _publish(
+    MerchantSessionStatus status, {
+    MerchantAccess? access,
+    String? message,
+  }) {
+    if (_unavailable) return;
+    emit(
+      MerchantSessionState(
+        status,
+        access: access,
+        message: message,
+        busy: _authBusy,
+        scopeRevision: _scopeRevision,
+        canRetry: !_monitorEnded,
+      ),
+    );
+  }
+
+  void _failure(String message) {
+    ++_scopeRevision;
+    _publish(MerchantSessionStatus.failure, message: message);
+  }
+
+  String get _sessionFailureMessage => _monitorEnded
+      ? 'Oturum takibi kesildi. Uygulamayı kapatıp yeniden açın.'
+      : 'Oturum doğrulanamadı. Lütfen yeniden deneyin.';
+
+  void _sessionFailure() {
+    ++_epoch;
+    if (_authBusy) _authInterrupted = true;
+    _failure(_sessionFailureMessage);
+  }
 
   Future<void> reload({bool quiet = false}) async {
-    final epoch = ++_epoch;
-    final id = currentUserId();
-    if (isClosed) return;
-    if (id == null) {
-      emit(const MerchantSessionState(MerchantSessionStatus.signedOut));
+    if (_unavailable || _authBusy) return;
+    if (_monitorEnded) {
+      _failure(_sessionFailureMessage);
       return;
     }
-    if (!quiet) {
-      emit(const MerchantSessionState(MerchantSessionStatus.checking));
+    _observeIdentity();
+    final epoch = ++_epoch;
+    final id = currentUserId();
+    final previous = state.access;
+    final preserve = quiet && id != null && previous?.user.id == id;
+    if (!preserve) ++_scopeRevision;
+    if (id == null) {
+      _publish(MerchantSessionStatus.signedOut);
+      return;
     }
+    if (!preserve) _publish(MerchantSessionStatus.checking);
     try {
-      final result = await repository.loadAccess();
-      if (isClosed || epoch != _epoch || currentUserId() != id) return;
-      result.fold(
-        (error) => emit(
-          MerchantSessionState(MerchantSessionStatus.failure, message: error),
-        ),
-        (access) {
-          if (access == null || access.user.id != id) {
-            emit(
-              const MerchantSessionState(
-                MerchantSessionStatus.failure,
-                message: merchantSessionChanged,
-              ),
-            );
-          } else if (!access.hasRole ||
-              (access.shop != null && !access.canManage)) {
-            emit(
-              MerchantSessionState(
-                MerchantSessionStatus.denied,
-                access: access,
-              ),
-            );
-          } else {
-            emit(
-              MerchantSessionState(
-                access.shop == null
-                    ? MerchantSessionStatus.onboarding
-                    : MerchantSessionStatus.ready,
-                access: access,
-              ),
-            );
+      final result = await repository.loadAccess().timeout(accessTimeout);
+      if (_unavailable || epoch != _epoch) return;
+      if (currentUserId() != id) {
+        _observeIdentity();
+        _failure(merchantSessionChanged);
+        return;
+      }
+      result.fold(_failure, (access) {
+        if (access == null || access.user.id != id) {
+          _failure(merchantSessionChanged);
+        } else if (!access.hasRole ||
+            (access.shop != null && !access.canManage)) {
+          ++_scopeRevision;
+          _publish(MerchantSessionStatus.denied, access: access);
+        } else {
+          if (previous != null &&
+              (previous.shop?.id != access.shop?.id ||
+                  previous.shop?.updatedAt != access.shop?.updatedAt)) {
+            ++_scopeRevision;
           }
-        },
-      );
+          _publish(
+            access.shop == null
+                ? MerchantSessionStatus.onboarding
+                : MerchantSessionStatus.ready,
+            access: access,
+          );
+        }
+      });
     } catch (_) {
-      if (!isClosed && epoch == _epoch) {
-        emit(
-          const MerchantSessionState(
-            MerchantSessionStatus.failure,
-            message: 'Bağlantı kurulamadı. Lütfen tekrar deneyin.',
-          ),
+      if (!_unavailable && epoch == _epoch) {
+        _observeIdentity();
+        _failure(
+          currentUserId() == id
+              ? 'Bağlantı kurulamadı. Lütfen tekrar deneyin.'
+              : merchantSessionChanged,
         );
       }
     }
   }
 
-  Future<void> signIn(String email, String password) async {
-    if (_authBusy || isClosed) return;
+  void _beginAuth(String message, MerchantSessionStatus status) {
+    _observeIdentity();
     _authBusy = true;
-    emit(
-      const MerchantSessionState(MerchantSessionStatus.signedOut, busy: true),
-    );
+    _authInterrupted = false;
+    ++_epoch;
+    if (status != MerchantSessionStatus.signedOut ||
+        state.status != MerchantSessionStatus.signedOut) {
+      ++_scopeRevision;
+    }
+    _publish(status, message: message);
+  }
+
+  Future<void> signIn(String email, String password) async {
+    if (_authBusy || _unavailable || _monitorEnded) return;
+    _beginAuth('Giriş yapılıyor…', MerchantSessionStatus.signedOut);
+    final identity = _identityRevision;
+    String? failure;
     try {
       final result = await credentials.signIn(email, password);
-      if (isClosed) return;
-      await result.fold((error) async {
-        // Auth may have succeeded while the profile lookup failed. Reload its
-        // authoritative access instead of treating it as an anonymous session.
-        if (currentUserId() != null) {
-          await reload();
-        } else {
-          emit(
-            MerchantSessionState(
-              MerchantSessionStatus.signedOut,
-              message: error,
-            ),
-          );
-        }
-      }, (_) => reload());
+      result.fold((error) => failure = error, (_) {});
     } catch (_) {
-      if (!isClosed) {
-        emit(
-          const MerchantSessionState(
-            MerchantSessionStatus.failure,
-            message: 'Giriş yapılamadı. Lütfen yeniden deneyin.',
-          ),
-        );
-      }
+      failure = 'Giriş yapılamadı. Lütfen yeniden deneyin.';
     } finally {
       _authBusy = false;
+    }
+    if (_unavailable) return;
+    _observeIdentity();
+    if (_authInterrupted || _monitorEnded) {
+      _failure(_sessionFailureMessage);
+    } else if (currentUserId() != null || identity != _identityRevision) {
+      // The live identity wins over the late credential response, including a
+      // successful login followed by a failed profile lookup or another logout.
+      await reload();
+    } else {
+      _publish(MerchantSessionStatus.signedOut, message: failure);
     }
   }
 
   Future<void> signOut() async {
-    if (_authBusy || isClosed) return;
-    _authBusy = true;
-    ++_epoch;
-    emit(const MerchantSessionState(MerchantSessionStatus.checking));
+    if (_authBusy || _unavailable) return;
+    _beginAuth('Güvenli çıkış yapılıyor…', MerchantSessionStatus.checking);
+    final id = currentUserId();
+    final identity = _identityRevision;
+    String? failure;
+    bool sameIdentity() =>
+        currentUserId() == id && identity == _identityRevision;
     try {
-      // Future provider integration must revoke the old binding before logout.
-      await beforeSignOut?.call();
-      final result = await credentials.signOut();
-      if (isClosed) return;
-      await result.fold((error) async {
-        emit(
-          MerchantSessionState(MerchantSessionStatus.failure, message: error),
-        );
-      }, (_) => reload());
-    } catch (_) {
-      if (!isClosed) {
-        emit(
-          const MerchantSessionState(
-            MerchantSessionStatus.failure,
-            message: 'Güvenli çıkış tamamlanamadı. Yeniden deneyin.',
-          ),
-        );
+      if (id != null) {
+        // Preserve the shared revoke-before-logout contract. An account change
+        // during revocation must not dispatch the old exit against the new user.
+        await beforeSignOut?.call();
+        _observeIdentity();
+        if (!_unavailable && !_authInterrupted && sameIdentity()) {
+          final result = await credentials.signOut();
+          result.fold((error) => failure = error, (_) {});
+        }
       }
+    } catch (_) {
+      failure = 'Güvenli çıkış tamamlanamadı. Yeniden deneyin.';
     } finally {
       _authBusy = false;
+    }
+    if (_unavailable) return;
+    _observeIdentity();
+    if (_authInterrupted || _monitorEnded) {
+      _failure(_sessionFailureMessage);
+    } else if (failure != null && sameIdentity()) {
+      _failure(failure!);
+    } else {
+      await reload();
     }
   }
 
   @override
   Future<void> close() async {
+    _closing = true;
     ++_epoch;
     await _subscription?.cancel();
     return super.close();
