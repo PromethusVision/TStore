@@ -254,6 +254,36 @@ changes. Full G, O8/O9/O10, provider setup and physical acceptance remain gated.
 Validation and Integration Agent handoff:
 [Merchant session resilience](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
 
+### 4.3 Merchant daily edit and photo recovery — 2026-10-17
+
+Following I1 integration at `116557fd`, the next authorized local package
+completes reliability of existing Merchant profile/onboarding, listing edits,
+catalog submissions and owned photography. No FROZEN product rule changes.
+
+- Fence every multi-step continuation by account and stable Auth session, including
+  same-account replacement sessions. Reject stale errors before fallback or
+  cleanup. This client guard does not replace live server authorization.
+- Bound reads to 15 seconds with explicit retry. Never apply that deadline to
+  writes or interpret missing acknowledgement as cancellation. Old read results
+  cannot replace a newer attempt or start another request after their deadline.
+- On an uncertain photo upload/publication, preserve the existing upload intent
+  and stored object. Never automatically retire a potentially published photo.
+  Refresh authoritative metadata; only an explicit owner action completes or
+  retires the existing intent. A failed refresh disables stale media actions.
+- After an uncertain profile/listing save, preserve the in-memory draft and
+  require a fresh exact-owner read before another write. Matching values prove
+  current state, not an operation receipt. Different values are shown for explicit
+  use-current or keep-draft review; the next write still uses optimistic revision
+  checks. No automatic overwrite, duplicate onboarding or offline write queue.
+- Existing submission retries retain their exact request/payload. Back navigation
+  protects edited in-memory forms; authority loss still removes them immediately.
+  No private draft, credentials or photo bytes are persisted by this increment.
+
+Existing five tabs, Customer layouts, boolean availability, shared catalog/media
+contracts and default-OFF capabilities remain. No migration, provider, financial
+activation, Production access or physical J acceptance is introduced.
+Delivery and validation: [Merchant catalog recovery](MERCHANT_CATALOG_RECOVERY_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -42,7 +43,9 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
       _error = null;
     });
     try {
-      final r = await widget.operations.read(widget.access, page: _page);
+      final r = await merchantRead(
+        () => widget.operations.read(widget.access, page: _page),
+      );
       if (!mounted || epoch != _epoch) return;
       setState(() {
         _loading = false;

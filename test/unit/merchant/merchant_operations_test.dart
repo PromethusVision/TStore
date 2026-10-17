@@ -34,6 +34,7 @@ void main() {
       final repo = SupabaseMerchantOperationsRepository(
         client,
         currentUserId: () => 'user',
+        currentSessionKey: () => 'synthetic-session',
       );
       final result = await repo.read(access, page: 2);
       final value = result.getOrElse(() => throw StateError('expected result'));
@@ -69,6 +70,7 @@ void main() {
       final repo = SupabaseMerchantOperationsRepository(
         client,
         currentUserId: () => current,
+        currentSessionKey: () => 'synthetic-session',
       );
       expect((await repo.read(access, page: -1)).isLeft(), true);
       final read = repo.read(access);
@@ -108,6 +110,7 @@ void main() {
         final result = await SupabaseMerchantOperationsRepository(
           client,
           currentUserId: () => 'user',
+          currentSessionKey: () => 'synthetic-session',
         ).read(access);
         expect(result.isLeft(), true);
         expect(
@@ -135,6 +138,7 @@ void main() {
       final repo = SupabaseCatalogMediaRepository(
         client,
         currentUserId: () => 'user',
+        currentSessionKey: () => 'synthetic-session',
       );
       expect((await repo.submissions(access, page: 1)).isRight(), true);
       expect(requests.single.url.queryParameters['shop_id'], 'eq.shop');

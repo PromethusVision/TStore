@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
+import 'package:t_store/features/merchant/data/merchant_request_scope.dart';
 import 'package:t_store/core/supabase/public_media_source_resolver.dart';
 import 'package:t_store/features/auth/data/models/user_model.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -12,14 +15,21 @@ import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 
 /// Reuses owner RLS and the Slice A publication gate when installed. The
 /// pre-Slice-A catalog read remains compatible until the reviewed migration.
-class SupabaseMerchantRepository implements MerchantRepository {
+class SupabaseMerchantRepository
+    implements MerchantRepository, MerchantRecoveryRepository {
   SupabaseMerchantRepository({
     required this.client,
     String? Function()? currentUserId,
+    String? Function()? currentSessionKey,
+    this.readTimeout = const Duration(seconds: 15),
   }) : currentUserId = currentUserId ?? (() => client.auth.currentUser?.id),
+       currentSessionKey =
+           currentSessionKey ?? (() => authenticatedSessionKey(client)),
        media = PublicMediaSourceResolver.fromSupabaseClient(client);
   final SupabaseClient client;
   final String? Function() currentUserId;
+  final String? Function() currentSessionKey;
+  final Duration readTimeout;
   final PublicMediaSourceResolver media;
 
   // Keep owned listings visible even when the shared catalog product is hidden.
@@ -29,21 +39,26 @@ class SupabaseMerchantRepository implements MerchantRepository {
   static const _conflict =
       'Kayıt değişmiş olabilir. Güncel bilgileri yükleyip yeniden deneyin.';
 
-  void _sameUser(String id) {
-    if (currentUserId() != id) {
-      throw const _MerchantFailure(merchantSessionChanged);
-    }
-  }
-
-  Future<T> _bound<T>(String id, Future<T> request) async {
-    final value = await request;
-    _sameUser(id);
-    return value;
-  }
-
-  Future<Either<String, T>> _safe<T>(Future<T> Function() action) async {
+  Future<Either<String, T>> _safe<T>(
+    Future<T> Function(MerchantRequestScope scope) action, {
+    bool read = true,
+  }) async {
+    final scope = MerchantRequestScope(
+      userId: currentUserId(),
+      sessionKey: currentSessionKey(),
+      currentUserId: currentUserId,
+      currentSessionKey: currentSessionKey,
+    );
     try {
-      return Right<String, T>(await action());
+      scope.check();
+      final request = action(scope);
+      return Right<String, T>(
+        await (read ? request.timeout(readTimeout) : request),
+      );
+    } on MerchantRequestChanged {
+      return Left<String, T>(merchantSessionChanged);
+    } on TimeoutException {
+      return Left<String, T>(merchantReadTimeout);
     } on _MerchantFailure catch (e) {
       return Left<String, T>(e.message);
     } on PostgrestException catch (e) {
@@ -58,15 +73,15 @@ class SupabaseMerchantRepository implements MerchantRepository {
       );
     } catch (_) {
       return Left<String, T>('Bağlantı kurulamadı. Lütfen tekrar deneyin.');
+    } finally {
+      scope.close();
     }
   }
 
-  Future<MerchantAccess?> _access() async {
-    final id = currentUserId();
-    if (id == null) return null;
-    final profile = await _bound(
-      id,
-      client.from('profiles').select().eq('id', id).maybeSingle(),
+  Future<MerchantAccess> _access(MerchantRequestScope scope) async {
+    final id = scope.userId!;
+    final profile = await scope.run(
+      () => client.from('profiles').select().eq('id', id).maybeSingle(),
     );
     if (profile == null || profile['id'] != id) {
       throw const _MerchantFailure(
@@ -75,9 +90,8 @@ class SupabaseMerchantRepository implements MerchantRepository {
     }
     final user = UserModel.fromJson(profile);
     if (!user.isMerchant) return MerchantAccess(user: user);
-    final shops = await _bound(
-      id,
-      client.from('shops').select().eq('owner_user_id', id).limit(2),
+    final shops = await scope.run(
+      () => client.from('shops').select().eq('owner_user_id', id).limit(2),
     );
     if (shops.length > 1) throw const _MerchantFailure(merchantAccessDenied);
     return MerchantAccess(
@@ -87,12 +101,13 @@ class SupabaseMerchantRepository implements MerchantRepository {
   }
 
   Future<MerchantAccess> _authorize(
+    MerchantRequestScope scope,
     MerchantAccess expected, {
     bool allowOnboarding = false,
   }) async {
-    _sameUser(expected.user.id);
-    final fresh = await _access();
-    if (fresh == null || fresh.user.id != expected.user.id || !fresh.hasRole) {
+    scope.expect(expected.user.id);
+    final fresh = await _access(scope).timeout(readTimeout);
+    if (fresh.user.id != expected.user.id || !fresh.hasRole) {
       throw const _MerchantFailure(merchantAccessDenied);
     }
     if (allowOnboarding && expected.shop == null && fresh.shop == null) {
@@ -105,21 +120,23 @@ class SupabaseMerchantRepository implements MerchantRepository {
   }
 
   @override
-  Future<Either<String, MerchantAccess?>> loadAccess() => _safe(_access);
+  Future<Either<String, MerchantAccess?>> loadAccess() =>
+      currentUserId() == null
+      ? Future.value(const Right(null))
+      : _safe(_access);
 
   @override
   Future<Either<String, ShopEntity>> saveShop(
     MerchantAccess access,
     MerchantShopDraft draft,
-  ) => _safe(() async {
+  ) => _safe((scope) async {
     if (draft.error != null) throw _MerchantFailure(draft.error!);
-    final fresh = await _authorize(access, allowOnboarding: true);
+    final fresh = await _authorize(scope, access, allowOnboarding: true);
     final id = fresh.user.id;
     Map<String, dynamic>? row;
     if (fresh.shop == null) {
-      row = await _bound(
-        id,
-        client
+      row = await scope.run(
+        () => client
             .from('shops')
             .insert({...draft.toPayload(), 'owner_user_id': id})
             .select()
@@ -128,9 +145,8 @@ class SupabaseMerchantRepository implements MerchantRepository {
     } else {
       final original = access.shop!;
       if (original.updatedAt == null) throw const _MerchantFailure(_conflict);
-      row = await _bound(
-        id,
-        client
+      row = await scope.run(
+        () => client
             .from('shops')
             .update(draft.toPayload())
             .eq('id', original.id)
@@ -146,12 +162,12 @@ class SupabaseMerchantRepository implements MerchantRepository {
       throw const _MerchantFailure(merchantAccessDenied);
     }
     return shop;
-  });
+  }, read: false);
 
   @override
   Future<Either<String, MerchantOverview>> overview(MerchantAccess access) =>
-      _safe(() async {
-        final fresh = await _authorize(access);
+      _safe((scope) async {
+        final fresh = await _authorize(scope, access);
         final shopId = fresh.shop!.id;
         Future<int> count({bool? active, bool? available}) {
           var q = client
@@ -163,9 +179,8 @@ class SupabaseMerchantRepository implements MerchantRepository {
           return q;
         }
 
-        final values = await _bound(
-          fresh.user.id,
-          Future.wait([
+        final values = await scope.run(
+          () => Future.wait([
             count(),
             count(active: true, available: true),
             count(active: true, available: false),
@@ -185,18 +200,17 @@ class SupabaseMerchantRepository implements MerchantRepository {
     MerchantAccess access, {
     int page = 0,
     String query = '',
-  }) => _safe(() async {
+  }) => _safe((scope) async {
     if (page < 0) throw const _MerchantFailure('Geçersiz sayfa.');
-    final fresh = await _authorize(access);
+    final fresh = await _authorize(scope, access);
     final term = _term(query);
     var q = client
         .from('shop_products')
         .select(term.isEmpty ? _listingSelect : _listingSearchSelect)
         .eq('shop_id', fresh.shop!.id);
     if (term.isNotEmpty) q = q.ilike('products.name', '%$term%');
-    final rows = await _bound(
-      fresh.user.id,
-      q
+    final rows = await scope.run(
+      () => q
           .order('created_at', ascending: false)
           .order('id')
           .range(page * merchantPageSize, (page + 1) * merchantPageSize - 1),
@@ -211,16 +225,15 @@ class SupabaseMerchantRepository implements MerchantRepository {
     MerchantAccess access, {
     required String query,
     int page = 0,
-  }) => _safe(() async {
+  }) => _safe((scope) async {
     if (page < 0) throw const _MerchantFailure('Geçersiz sayfa.');
-    final fresh = await _authorize(access);
+    final fresh = await _authorize(scope, access);
     // Only an absent capability uses legacy reads; auth/network errors remain
     // fail closed. The server checks canonical publication and unique ownership.
     _term(query);
     try {
-      final rows = await _bound(
-        fresh.user.id,
-        client.rpc(
+      final rows = await scope.run(
+        () => client.rpc(
           'merchant_catalog_search_v1',
           params: {
             'p_shop_id': fresh.shop!.id,
@@ -247,9 +260,8 @@ class SupabaseMerchantRepository implements MerchantRepository {
         .eq('is_active', true);
     final term = _term(query);
     if (term.isNotEmpty) q = q.ilike('name', '%$term%');
-    final rows = await _bound(
-      fresh.user.id,
-      q
+    final rows = await scope.run(
+      () => q
           .order('name')
           .order('id')
           .range(page * merchantPageSize, (page + 1) * merchantPageSize - 1),
@@ -264,9 +276,9 @@ class SupabaseMerchantRepository implements MerchantRepository {
     MerchantAccess access,
     MerchantListingDraft draft, {
     ShopProductEntity? existing,
-  }) => _safe(() async {
+  }) => _safe((scope) async {
     if (draft.error != null) throw _MerchantFailure(draft.error!);
-    final fresh = await _authorize(access);
+    final fresh = await _authorize(scope, access);
     final shopId = fresh.shop!.id;
     if (existing != null &&
         (existing.shopId != shopId || existing.productId != draft.productId)) {
@@ -275,21 +287,21 @@ class SupabaseMerchantRepository implements MerchantRepository {
     Map<String, dynamic>? row;
     if (existing == null) {
       // Never upsert: re-adding a product must not overwrite an existing listing.
-      final product = await _bound(
-        fresh.user.id,
-        client
-            .from('products')
-            .select('id')
-            .eq('id', draft.productId)
-            .eq('is_active', true)
-            .maybeSingle(),
-      );
+      final product = await scope
+          .run(
+            () => client
+                .from('products')
+                .select('id')
+                .eq('id', draft.productId)
+                .eq('is_active', true)
+                .maybeSingle(),
+          )
+          .timeout(readTimeout);
       if (product == null) {
         throw const _MerchantFailure('Bu ürün artık katalogda yok.');
       }
-      row = await _bound(
-        fresh.user.id,
-        client
+      row = await scope.run(
+        () => client
             .from('shop_products')
             .insert({
               ...draft.toPayload(),
@@ -301,9 +313,8 @@ class SupabaseMerchantRepository implements MerchantRepository {
       );
     } else {
       if (existing.updatedAt == null) throw const _MerchantFailure(_conflict);
-      row = await _bound(
-        fresh.user.id,
-        client
+      row = await scope.run(
+        () => client
             .from('shop_products')
             .update(draft.toPayload())
             .eq('id', existing.id)
@@ -317,6 +328,28 @@ class SupabaseMerchantRepository implements MerchantRepository {
     if (row == null) throw const _MerchantFailure(_conflict);
     final listing = ShopProductModel.fromJson(row, mediaResolver: media);
     if (listing.shopId != shopId || listing.productId != draft.productId) {
+      throw const _MerchantFailure(merchantAccessDenied);
+    }
+    return listing;
+  }, read: false);
+
+  @override
+  Future<Either<String, ShopProductEntity?>> readListing(
+    MerchantAccess access,
+    String productId,
+  ) => _safe((scope) async {
+    final fresh = await _authorize(scope, access);
+    final row = await scope.run(
+      () => client
+          .from('shop_products')
+          .select(_listingSelect)
+          .eq('shop_id', fresh.shop!.id)
+          .eq('product_id', productId)
+          .maybeSingle(),
+    );
+    if (row == null) return null;
+    final listing = ShopProductModel.fromJson(row, mediaResolver: media);
+    if (listing.shopId != fresh.shop!.id || listing.productId != productId) {
       throw const _MerchantFailure(merchantAccessDenied);
     }
     return listing;

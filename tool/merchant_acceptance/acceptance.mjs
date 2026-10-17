@@ -18,10 +18,12 @@ import { checkoutHttpChecks } from './checkout_http_checks.mjs';
 import { statementChecks, statementHttpChecks } from './statement_checks.mjs';
 import { promotionChecks, promotionHttpChecks } from './promotion_checks.mjs';
 import { notificationChecks, notificationHttpChecks } from './notification_checks.mjs';
+import { catalogRecoveryChecks } from './catalog_recovery_checks.mjs';
 
 const reviews=process.argv.includes('--reviews');
 const trustCampaigns=process.argv.includes('--trust-campaigns');
 const notifications=process.argv.includes('--notifications');
+const catalogRecovery=process.argv.includes('--catalog-recovery');
 const promotion=process.argv.includes('--promotion')||notifications;
 const statement=process.argv.includes('--statement')||promotion;
 const checkout=process.argv.includes('--checkout')||statement;
@@ -119,6 +121,7 @@ try {
     await rpc('merchant_change_listing_images_v1',f.merchant,{p_listing_id:f.listing,p_action:'retire',p_image_id:intent.id});
     assert.equal((await rpc('catalog_listing_media_read_v1',freshCustomer,{p_listing_ids:[f.listing]}))[0].images.length,0);
   });
+  if(catalogRecovery) checks.push(...await catalogRecoveryChecks({db,request,rpc,session,f,status,localRequest}));
   if(ledger) {
     checks.push(...await trustCampaignChecks(db,config,f));
     // D's account-erasure acceptance consumes its synthetic customer.
@@ -204,7 +207,7 @@ try {
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
     runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
-  await writeFile(resolve(root,`docs/data/merchant_${notifications?'notification_i0':promotion?'promotion_g':statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
+  await writeFile(resolve(root,`docs/data/merchant_${catalogRecovery?'catalog_recovery':notifications?'notification_i0':promotion?'promotion_g':statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);
 } catch(error) {
   console.error(`LOCAL_MANAGED_ACCEPTANCE_${environmentReady?'FAILED':'BLOCKED'}: ${error.code || error.name}; no remote fallback.`);

@@ -298,7 +298,7 @@ void main() {
       verify(() => repo.upload(access, 'l', any())).called(1);
       gate.complete(const Left('Yüklenemedi'));
       await tester.pumpAndSettle();
-      expect(find.text('Yüklenemedi'), findsOneWidget);
+      expect(find.textContaining('Yüklenemedi'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -310,6 +310,10 @@ void main() {
       ).thenAnswer((_) async => const Left('Kategori yüklenemedi'));
       await host(tester, submission());
       expect(find.text('Kategori yüklenemedi'), findsOneWidget);
+      expect(
+        find.text('Şu anda başvuruya açık kategori bulunmuyor.'),
+        findsNothing,
+      );
       when(
         () => repo.categories(access),
       ).thenAnswer((_) async => const Right([]));

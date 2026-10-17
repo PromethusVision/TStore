@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:t_store/features/merchant_promotions/presentation/merchant_promotion_center.dart';
 import 'package:t_store/features/merchant/presentation/merchant_statement.dart';
 import 'package:t_store/features/merchant/presentation/merchant_rewards.dart';
@@ -57,8 +58,13 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
 
   void _read() {
     _reviewsRevision++;
-    _overview = widget.services.merchants.overview(widget.access);
-    _operations = widget.services.operations?.read(widget.access);
+    _overview = merchantRead(
+      () => widget.services.merchants.overview(widget.access),
+    );
+    final operations = widget.services.operations;
+    _operations = operations == null
+        ? null
+        : merchantRead(() => operations.read(widget.access));
   }
 
   Future<void> _refresh() async {
