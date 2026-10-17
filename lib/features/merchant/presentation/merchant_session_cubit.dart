@@ -47,7 +47,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
         _observeIdentity(signal: id, hasSignal: true);
         // Auth callbacks can arrive while disabling a device or awaiting a
         // credential request. Only its completion may reopen the workspace.
-        if (_authBusy) {
+        if (_authBusy || _recoveryActive) {
           ++_epoch;
           return;
         }
@@ -79,6 +79,16 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
   String? _lastIdentity;
   bool _authBusy = false, _authInterrupted = false, _monitorEnded = false;
   bool _closing = false;
+  bool _recoveryActive = false;
+  void setRecoveryActive(bool active) {
+    if (_unavailable || active == _recoveryActive) return;
+    _recoveryActive = active;
+    ++_epoch;
+    ++_scopeRevision;
+    _publish(MerchantSessionStatus.checking);
+    if (!active) unawaited(reload());
+  }
+
   bool get _unavailable => isClosed || _closing;
 
   void _observeIdentity({String? signal, bool hasSignal = false}) {
@@ -101,7 +111,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
         status,
         access: access,
         message: message,
-        busy: _authBusy,
+        busy: _authBusy || _recoveryActive,
         scopeRevision: _scopeRevision,
         canRetry: !_monitorEnded,
       ),
@@ -124,7 +134,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
   }
 
   Future<void> reload({bool quiet = false}) async {
-    if (_unavailable || _authBusy) return;
+    if (_unavailable || _authBusy || _recoveryActive) return;
     if (_monitorEnded) {
       _failure(_sessionFailureMessage);
       return;
@@ -194,7 +204,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
   }
 
   Future<void> signIn(String email, String password) async {
-    if (_authBusy || _unavailable || _monitorEnded) return;
+    if (_authBusy || _unavailable || _monitorEnded || _recoveryActive) return;
     _beginAuth('Giriş yapılıyor…', MerchantSessionStatus.signedOut);
     final identity = _identityRevision;
     String? failure;
@@ -220,7 +230,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
   }
 
   Future<void> signOut() async {
-    if (_authBusy || _unavailable) return;
+    if (_authBusy || _unavailable || _recoveryActive) return;
     _beginAuth('Güvenli çıkış yapılıyor…', MerchantSessionStatus.checking);
     final id = currentUserId();
     final identity = _identityRevision;

@@ -1,5 +1,10 @@
 # Merchant V1 yerel geliştirme ve entegrasyon sınırı
 
+2026-10-17: Bu rehber `merchantDevelopment` ve yerel önizlemeyi anlatır.
+Ayrı `merchantPilot` test kimliği, hesap kurtarma ve çevrimdışı yayın hazırlığı
+[pilot teslim belgesindedir](MERCHANT_PILOT_RUNTIME_HANDOFF.md). Aşağıdaki yerel
+bağlantı ve release kısıtları korunur; yeni hazırlık canlı dağıtım yetkisi değildir.
+
 ## Sentetik önizleme
 
 Backend, hesap veya ağ bağlantısı gerektirmez. Bütün değişiklikler bellektedir,

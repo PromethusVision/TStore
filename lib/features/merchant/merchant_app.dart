@@ -9,6 +9,7 @@ import 'package:t_store/features/merchant/presentation/merchant_home.dart';
 import 'package:t_store/features/merchant/presentation/merchant_session_cubit.dart';
 import 'package:t_store/features/merchant/presentation/merchant_shop_form.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
+import 'presentation/merchant_account_recovery_view.dart';
 
 class MerchantApp extends StatefulWidget {
   const MerchantApp({super.key, required this.services});
@@ -43,7 +44,17 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
         _push?.invalidate();
       }
     });
+    widget.services.recovery?.addListener(_recoveryChanged);
+    _session.setRecoveryActive(
+      widget.services.recovery?.blocksWorkspace ?? false,
+    );
     _session.reload();
+  }
+
+  void _recoveryChanged() {
+    if (!mounted) return;
+    _session.setRecoveryActive(widget.services.recovery!.blocksWorkspace);
+    setState(() {});
   }
 
   void _openNotification(NotificationEntity notification) {
@@ -65,6 +76,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.services.recovery?.removeListener(_recoveryChanged);
     _scopeChanges?.cancel();
     _push?.invalidate();
     if (widget.services.pushFactory != null) _push?.dispose();
@@ -80,13 +92,19 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
       builder: (context, state) => MaterialApp(
         // Home alone does not own root dialogs or the ScaffoldMessenger queue.
         // Replace the entire navigation scope when its authority is invalidated.
-        key: ValueKey(state.scopeRevision),
+        key: ValueKey(
+          '${state.scopeRevision}:${widget.services.recovery?.revision ?? 0}',
+        ),
         title: 'EsnaftaVar Esnaf',
         debugShowCheckedModeBanner: false,
         theme: EsnaftaVarTheme.light,
         themeMode: ThemeMode.light,
         home: Builder(
           builder: (context) {
+            final recovery = widget.services.recovery;
+            if (recovery != null && recovery.blocksWorkspace) {
+              return MerchantAccountRecoveryView(recovery: recovery);
+            }
             final access = state.access;
             return switch (state.status) {
               MerchantSessionStatus.checking => Scaffold(
@@ -112,6 +130,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
               MerchantSessionStatus.signedOut => _MerchantLogin(
                 state: state,
                 preview: widget.services.preview,
+                onRecovery: recovery?.request,
               ),
               MerchantSessionStatus.failure => MerchantPage(
                 title: 'Hesabını doğrula',
@@ -194,9 +213,14 @@ class _MerchantWorkspaceState extends State<_MerchantWorkspace> {
 }
 
 class _MerchantLogin extends StatefulWidget {
-  const _MerchantLogin({required this.state, required this.preview});
+  const _MerchantLogin({
+    required this.state,
+    required this.preview,
+    this.onRecovery,
+  });
   final MerchantSessionState state;
   final bool preview;
+  final VoidCallback? onRecovery;
   @override
   State<_MerchantLogin> createState() => _MerchantLoginState();
 }
@@ -274,6 +298,11 @@ class _MerchantLoginState extends State<_MerchantLogin> {
                 onFieldSubmitted: (_) => _submit(),
               ),
               const SizedBox(height: 24),
+              if (widget.onRecovery != null)
+                TextButton(
+                  onPressed: widget.state.busy ? null : widget.onRecovery,
+                  child: const Text('Şifremi unuttum'),
+                ),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(

@@ -47,12 +47,20 @@ class SupabaseService {
   }
 
   /// Initialize Supabase - Call this in main()
-  static Future<void> initialize({required SupabaseConfig config}) async {
+  static Future<void> initialize({
+    required SupabaseConfig config,
+    AuthCallbackContract? callbackContract,
+    bool observeAuthCallbacks = true,
+  }) async {
+    if (callbackContract != null &&
+        callbackContract.environment != config.environment) {
+      throw StateError('Auth callback environment does not match the backend.');
+    }
     await _authCallbackSubscription?.cancel();
     _authCallbackSubscription = null;
-    _authCallbackContract = AuthCallbackContract.forEnvironment(
-      config.environment,
-    );
+    _authCallbackContract =
+        callbackContract ??
+        AuthCallbackContract.forEnvironment(config.environment);
     _initialPasswordRecoveryStatus = PasswordRecoveryLaunchStatus.none;
     _latestEmailConfirmationCallback = null;
     _lastEmailConfirmationCallbackUri = null;
@@ -73,6 +81,9 @@ class SupabaseService {
       ),
     );
     _client = Supabase.instance.client;
+
+    // Merchant owns its serialized recovery gate. Never install two observers.
+    if (!observeAuthCallbacks) return;
 
     if (kIsWeb) {
       await _handleAuthCallbackUri(
@@ -385,11 +396,12 @@ class SupabaseService {
     );
   }
 
-  String get _emailConfirmationRedirect => emailConfirmationRedirectFor(
-    appUri: Uri.base,
-    isWeb: kIsWeb,
-    environment: _requiredAuthCallbackContract.environment,
-  );
+  String get _emailConfirmationRedirect =>
+      _requiredAuthCallbackContract.emailRedirectFor(
+        appUri: Uri.base,
+        isWeb: kIsWeb,
+        action: AuthEmailRedirectAction.confirmation,
+      );
 
   // ============== AUTH METHODS ==============
 
@@ -460,10 +472,10 @@ class SupabaseService {
 
   /// Reset password
   Future<void> resetPassword(String email) async {
-    final redirectTo = passwordRecoveryRedirectFor(
+    final redirectTo = _requiredAuthCallbackContract.emailRedirectFor(
       appUri: Uri.base,
       isWeb: kIsWeb,
-      environment: _requiredAuthCallbackContract.environment,
+      action: AuthEmailRedirectAction.passwordRecovery,
     );
 
     await client.auth.resetPasswordForEmail(email, redirectTo: redirectTo);

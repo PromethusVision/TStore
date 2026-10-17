@@ -492,6 +492,23 @@ remain unchanged. See `MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md` for evidence.
   reviewed signed artifacts/legal surfaces/runbooks and final owner acceptance.
   Phase 1 and Merchant local-core tests cannot declare this gate PASS.
 
+### J0 — Merchant Android pilot runtime preparation (2026-10-17)
+
+After `6b79a4e9`, canonical §4.4 bounds a preparatory delivery: isolated Android
+pilot flavor/entrypoint, nonproduction configuration validation, shared Merchant
+composition, separate callback and serialized password recovery with restart
+protection. Existing Customer and local Merchant entrypoints retain their behavior.
+No new dependency, migration or backend permission is introduced.
+
+Validate configuration/credential rejection, cross-app callbacks, PKCE proof,
+late/session-replacement and uncertain-write recovery, root-overlay removal,
+small-screen forms, Gradle flavor/config/signing guards and adjacent regressions.
+This does not close J: remote configuration/apply, real email, exact signed artifact,
+physical two-device evidence and Product Owner release acceptance remain OPEN.
+An unconfigured debug artifact is not distributable. The initial base-core pilot
+composition is not a waiver of any later business feature or FROZEN rule.
+See [delivery](MERCHANT_PILOT_RUNTIME_HANDOFF.md).
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

@@ -1,0 +1,40 @@
+import groovy.json.JsonSlurper
+
+// Offline counterpart to MerchantPilotConfig. Values are never included in errors.
+ext.validateMerchantPilotDefines = { String encoded ->
+    def reject = { throw new GradleException('Merchant pilot configuration is invalid; run the offline preflight.') }
+    def values = [:]
+    try {
+        if (!encoded) reject()
+        encoded.split(',', -1).each { entry ->
+            def decoded = new String(Base64.decoder.decode(entry), 'UTF-8')
+            def split = decoded.indexOf('=')
+            if (split < 1) reject()
+            def key = decoded.substring(0, split)
+            if (values.containsKey(key)) reject()
+            values[key] = decoded.substring(split + 1)
+        }
+        def capabilities = ['QR_CLAIMS_V2_ENABLED', 'REWARD_EARNING_V1_ENABLED',
+            'COUPON_CHECKOUT_V1_ENABLED', 'TRUST_COMMERCE_V1_ENABLED', 'REVIEWS_V2_ENABLED',
+            'MERCHANT_STATEMENT_V1_ENABLED', 'MERCHANT_PROMOTION_V1_ENABLED',
+            'MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED']
+        def allowed = ['MERCHANT_PILOT_ENABLED', 'MERCHANT_PILOT_URL', 'MERCHANT_PILOT_ANON_KEY'] + capabilities
+        if (values.any { k, v -> !allowed.contains(k) && !k.startsWith('FLUTTER_') }) reject()
+        if (values.MERCHANT_PILOT_ENABLED != 'true' ||
+            values.MERCHANT_PILOT_URL != 'https://tnipyxnvhgelwdpykyez.supabase.co') reject()
+        if (capabilities.any { values.containsKey(it) && values[it] != 'false' }) reject()
+        def key = values.MERCHANT_PILOT_ANON_KEY ?: ''
+        def lowered = key.toLowerCase(Locale.ROOT)
+        if (lowered.startsWith('sb_secret_') || lowered.contains('service_role')) reject()
+        if (['placeholder','example','dummy','change_me','changeme','replace_me','your_','your-','<','>'].any { lowered.contains(it) }) reject()
+        if (!(key ==~ /sb_publishable_[A-Za-z0-9_-]{12,}/)) {
+            def parts = key.split('\\.', -1)
+            if (parts.length != 3) reject()
+            def payload = new JsonSlurper().parseText(new String(Base64.urlDecoder.decode(parts[1]), 'UTF-8'))
+            if (payload.role != 'anon' || payload.ref != 'tnipyxnvhgelwdpykyez') reject()
+        }
+        return true
+    } catch (Exception ignored) {
+        reject()
+    }
+}

@@ -6,6 +6,7 @@ import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
 import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
+import 'domain/merchant_account_recovery.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
@@ -36,6 +37,7 @@ class MerchantServices {
     this.rewardProgram,
     this.statement,
     this.promotions,
+    this.recovery,
   });
   final MerchantRepository merchants;
   final MerchantCredentials credentials;
@@ -57,4 +59,5 @@ class MerchantServices {
   final RewardProgramRepository? rewardProgram;
   final MerchantStatementRepository? statement;
   final MerchantPromotionRepository? promotions;
+  final MerchantAccountRecovery? recovery;
 }
