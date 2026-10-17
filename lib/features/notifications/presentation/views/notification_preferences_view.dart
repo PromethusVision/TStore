@@ -4,6 +4,8 @@ import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/notifications/data/repositories/notification_preferences_repository.dart';
 import 'package:t_store/features/notifications/domain/push_contract.dart';
+import 'package:t_store/features/notifications/domain/push_coordinator.dart';
+import 'package:t_store/features/notifications/presentation/views/push_device_controls.dart';
 
 class NotificationPreferencesView extends StatelessWidget {
   const NotificationPreferencesView({super.key, this.repository});
@@ -36,9 +38,13 @@ class NotificationPreferenceControls extends StatefulWidget {
     super.key,
     required this.identity,
     required this.repository,
+    this.push,
+    this.readTimeout = const Duration(seconds: 15),
   });
   final PushIdentity identity;
   final NotificationPreferencesRepository repository;
+  final PushCoordinator? push;
+  final Duration readTimeout;
   @override
   State<NotificationPreferenceControls> createState() =>
       _NotificationPreferenceControlsState();
@@ -49,23 +55,44 @@ class _NotificationPreferenceControlsState
   NotificationPreferences? _preferences;
   bool _saving = false;
   String? _error;
+  int _revision = 0, _authority = 0;
   @override
   void initState() {
     super.initState();
     _load();
   }
 
+  @override
+  void didUpdateWidget(covariant NotificationPreferenceControls oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final identityChanged = !oldWidget.identity.matches(widget.identity);
+    if (identityChanged || oldWidget.repository != widget.repository) {
+      ++_revision;
+      _preferences = null;
+      if (identityChanged) {
+        ++_authority;
+        _saving = false;
+      }
+      _error = null;
+      _load();
+    }
+  }
+
   Future<void> _load() async {
+    final revision = ++_revision;
+    setState(() => _error = null);
     try {
-      final result = await widget.repository.read(widget.identity);
-      if (mounted) {
+      final result = await widget.repository
+          .read(widget.identity)
+          .timeout(widget.readTimeout);
+      if (mounted && revision == _revision) {
         setState(() {
           _preferences = result;
           _error = null;
         });
       }
     } catch (_) {
-      if (mounted) {
+      if (mounted && revision == _revision) {
         setState(() => _error = 'Tercihler yüklenemedi. Tekrar deneyin.');
       }
     }
@@ -73,19 +100,26 @@ class _NotificationPreferenceControlsState
 
   Future<void> _save(NotificationPreferences next) async {
     if (_saving) return;
+    final revision = _revision;
+    final authority = _authority;
     setState(() {
       _saving = true;
       _error = null;
     });
     try {
       await widget.repository.save(widget.identity, next);
-      if (mounted) setState(() => _preferences = next);
+      if (mounted && revision == _revision) setState(() => _preferences = next);
     } catch (_) {
-      if (mounted) {
+      if (mounted && revision == _revision) {
         setState(() => _error = 'Tercihler kaydedilemedi. Tekrar deneyin.');
       }
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted && authority == _authority) {
+        setState(() => _saving = false);
+        // A replacement adapter for the same account cannot cancel an ongoing
+        // save. Keep controls disabled until it settles, then read the new one.
+        if (revision != _revision) _load();
+      }
     }
   }
 
@@ -95,9 +129,15 @@ class _NotificationPreferenceControlsState
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        if (widget.push != null) ...[
+          PushDeviceControls(coordinator: widget.push!),
+          const SizedBox(height: 24),
+        ],
         if (!widget.repository.serverBacked)
-          const Text(
-            'Mobil bildirimler henüz etkin değil. Tercihlerin bu cihazda saklanır; sunucuya henüz aktarılmaz.',
+          Text(
+            widget.push == null
+                ? 'Mobil bildirimler henüz etkin değil. Tercihlerin bu cihazda saklanır; sunucuya henüz aktarılmaz.'
+                : 'Tercihlerin bu cihazda saklanır; sunucuya henüz aktarılmaz.',
           ),
         const SizedBox(height: 16),
         if (preferences == null && _error == null)

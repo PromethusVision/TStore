@@ -12,6 +12,7 @@ import 'package:t_store/features/merchant/domain/merchant_operations_repository.
 import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
+import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 
 /// Explicit composition: no Customer locator registration or navigation.
 class MerchantServices {
@@ -24,6 +25,7 @@ class MerchantServices {
     required this.sessionChanges,
     required this.currentUserId,
     this.pushCoordinator,
+    this.pushFactory,
     this.pushProvider = const UnconfiguredMobilePushProvider(),
     this.preview = false,
     this.catalogMedia,
@@ -44,6 +46,8 @@ class MerchantServices {
   final String? Function() currentUserId;
   final MobilePushProvider pushProvider;
   final PushCoordinator? pushCoordinator;
+  final PushCoordinator Function(void Function(NotificationEntity) onOpen)?
+  pushFactory;
   final bool preview;
   final CatalogMediaRepository? catalogMedia;
   final MerchantOperationsRepository? operations;

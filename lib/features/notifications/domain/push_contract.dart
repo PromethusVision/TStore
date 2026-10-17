@@ -53,6 +53,9 @@ abstract interface class MobilePushProvider {
   Future<String?> getToken();
   Stream<String> get tokenChanges;
   Stream<PushOpenEvent> get opened;
+
+  /// Must complete only after invalidating the previous installation token.
+  /// Failure/uncertainty must throw. A configured adapter may not silently no-op.
   Future<void> deleteToken();
 }
 

@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:t_store/features/notifications/domain/push_coordinator.dart';
+import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_theme.dart';
 import 'package:t_store/features/merchant/merchant_services.dart';
@@ -16,17 +19,41 @@ class MerchantApp extends StatefulWidget {
 
 class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
   late final MerchantSessionCubit _session;
+  late final PushCoordinator? _push;
+  StreamSubscription<MerchantSessionState>? _scopeChanges;
+  final _inboxRequests = ValueNotifier<int>(0);
+  int _lastScope = 0;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _push =
+        widget.services.pushFactory?.call(_openNotification) ??
+        widget.services.pushCoordinator;
     _session = MerchantSessionCubit(
       repository: widget.services.merchants,
       credentials: widget.services.credentials,
       sessionChanges: widget.services.sessionChanges,
       currentUserId: widget.services.currentUserId,
-      beforeSignOut: widget.services.pushCoordinator?.disable,
-    )..reload();
+      beforeSignOut: _push?.disable,
+    );
+    _scopeChanges = _session.stream.listen((state) {
+      if (_lastScope != state.scopeRevision) {
+        _lastScope = state.scopeRevision;
+        _push?.invalidate();
+      }
+    });
+    _session.reload();
+  }
+
+  void _openNotification(NotificationEntity notification) {
+    if (!mounted ||
+        _session.state.status != MerchantSessionStatus.ready ||
+        notification.userId != widget.services.currentUserId() ||
+        notification.userId != _session.state.access?.user.id) {
+      return;
+    }
+    _inboxRequests.value++;
   }
 
   @override
@@ -38,6 +65,10 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scopeChanges?.cancel();
+    _push?.invalidate();
+    if (widget.services.pushFactory != null) _push?.dispose();
+    _inboxRequests.dispose();
     _session.close();
     super.dispose();
   }
@@ -127,7 +158,12 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
                 key: ValueKey(
                   'workspace-${access!.user.id}-${access.shop!.id}-${access.shop!.updatedAt}',
                 ),
-                home: MerchantHome(services: widget.services, access: access),
+                home: MerchantHome(
+                  services: widget.services,
+                  access: access,
+                  push: _push,
+                  inboxRequests: _inboxRequests,
+                ),
               ),
             };
           },

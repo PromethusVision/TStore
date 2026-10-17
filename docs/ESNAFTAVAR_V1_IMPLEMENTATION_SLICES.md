@@ -416,6 +416,23 @@ No open commercial/retention/targeting decision is silently resolved. See
   physical J remain OPEN. See canonical12.1 for the precise safety/availability
   tradeoff and provider-call boundary.
 
+### I1 local client preparation (before full I)
+
+- Reuse the shared coordinator, device/preference RPCs and authenticated inbox.
+  Prepare only the loopback Merchant composition with schema switch OFF and
+  provider unconfigured. Preserve Customer hosts/layout and existing consent.
+- Serialize initial enrollment, early token rotation, uncertain writes and
+  revoke-before-logout. Fence same-user replacement Auth sessions as well as
+  account/role/authority changes; make errors recoverable and truthful.
+- Persist only role-scoped installation UUID/cleanup marker. Interrupted-process
+  recovery invalidates the old provider token before a new installation is used.
+  A configured provider must prove token deletion; no silent deletion success.
+- Test lifecycle races, restart/cleanup failures, stale HTTP responses, tap
+  validation/dedup, Merchant settings/inbox/logout and narrow-screen rendering.
+  This increment does not supply real provider or physical acceptance evidence.
+- Canonical12.2 defines recovery limitations. Full I and J remain OPEN; no remote
+  apply, SDK setup, marketing scheduling or automatic re-enrollment is authorized.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and
