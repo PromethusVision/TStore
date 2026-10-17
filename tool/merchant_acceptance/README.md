@@ -1,5 +1,47 @@
 # Merchant local acceptance — A+B and optional C
 
+## Base-core pilot profile (J1)
+
+`pilot.mjs` supplements the extended suites with the exact J0 default composition.
+It uses only the Development track0001–0011 + catalog-media0016 + operations0017,
+keeps candidate decisions OFF and omits downstream claims/rewards/provider schemas.
+It never accepts a hosted URL or remote credentials and is not an apply tool.
+
+After `npm ci` and the safety tests below, prepare/start a **new owned** stack:
+
+```powershell
+node tool/merchant_acceptance/local.mjs prepare
+node tool/merchant_acceptance/local.mjs start <printed-run-directory>
+node tool/merchant_acceptance/pilot.mjs <same-run-directory> <Flutter-SDK-directory>
+node tool/merchant_acceptance/local.mjs stop <same-run-directory>
+```
+
+Flutter dependencies must already be resolved (`flutter pub get --offline` when
+available). The runner calls the existing SDK's Flutter test snapshot with
+`--no-pub`; the Dart journey lives outside `test/` so ordinary tests never connect.
+All SDK HTTP requests use a literal-loopback, no-proxy, no-redirect transport.
+Transient synthetic client credentials are confined to the owned ignored run and
+removed in `finally`. The credential file contains no service-role key. Passing
+client evidence is bound to the current run nonce; a failed runner never reports
+acceptance. Diagnostic logs stay ignored and must not be published.
+
+The read-only inspector snapshots schema/ACL/policies/triggers/constraints/Storage,
+then rollback-only mutation tests prove drift rejection. The real SDK journey
+covers onboarding through Customer image bytes, pending submissions, inbox CRUD
+and legacy QR confirmation/replay rejection. It does not simulate claims-v2,
+Realtime delivery, provider delivery, recovery mail or physical devices.
+
+Passing sanitized evidence goes to
+`docs/data/merchant_pilot_backend_acceptance.json` and
+`docs/data/merchant_pilot_backend_contract.json`. The latter is the exact local
+Development fixture fingerprint, not proof of a hosted server. An authorized
+operator must review actual remote history, the special0014 executor and chosen
+feature manifest separately. Never run generic `db push` from this list.
+
+If this runner fails, retain its data, stop that exact stack and prepare a fresh
+run. Do not reuse populated fixtures or import old passing evidence. The owned
+network fallback described below applies when Docker's default pools are full.
+
 This tool is a **synthetic, local-only test fixture**. It does not deploy anything,
 read `.env`, link a Supabase project, use hosted credentials, reset a database,
 delete Docker volumes, or implement deferred product capabilities.

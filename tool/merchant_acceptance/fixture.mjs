@@ -10,7 +10,8 @@ export async function connect(config) {
     query_timeout: 25000, application_name: 'ev-merchant-ab-acceptance' });
   await db.connect(); return db;
 }
-export async function migrate(db, { reviews = false, trustCampaigns = false, ledger = false, rewards = false, checkout = false, statement = false, promotion = false, notifications = false, managementDetails = true, purchasePrivacy = true } = {}) {
+export async function migrate(db, { coreOnly = false, reviews = false, trustCampaigns = false, ledger = false, rewards = false, checkout = false, statement = false, promotion = false, notifications = false, managementDetails = true, purchasePrivacy = true } = {}) {
+  assert(!coreOnly || ![reviews, trustCampaigns, ledger, rewards, checkout, statement, promotion, notifications].some(Boolean), 'Base core cannot enable downstream capabilities');
   promotion ||= notifications;
   statement ||= promotion;
   checkout ||= statement;
@@ -26,7 +27,7 @@ export async function migrate(db, { reviews = false, trustCampaigns = false, led
     '20260812013220','20260812013308','20260812013403','20260814000820','20260815000900'];
   const selected = (await readdir(resolve(root, 'supabase/migrations'))).filter(f => {
     const ordinal = Number(f.match(/_(\d{4})_/)?.[1]);
-    return ordinal <= 11 || [16,17,18].includes(ordinal) || ((reviews || trustCampaigns || ledger) && ordinal === 19)
+    return ordinal <= 11 || [16,17].includes(ordinal) || (!coreOnly && ordinal === 18) || ((reviews || trustCampaigns || ledger) && ordinal === 19)
       || ((trustCampaigns || ledger) && [20,21,22].includes(ordinal)) || (ledger && ordinal===23) || (rewards && ordinal===24) || (checkout && [25,26].includes(ordinal)) || (checkout && purchasePrivacy && ordinal===30) || (statement && ordinal===27) || (promotion && ordinal===28) || (promotion && managementDetails && ordinal===31);
   }).sort();
   const manifest = [];

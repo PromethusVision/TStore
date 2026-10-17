@@ -334,6 +334,36 @@ See [pilot runtime preparation](MERCHANT_PILOT_RUNTIME_HANDOFF.md). Real provide
 physical two-device acceptance, final signing/distribution and remote deployment
 remain separate gates. No store or live-pilot readiness claim follows from this work.
 
+### 4.5 Base-core pilot backend rehearsal — 2026-10-17
+
+After the J0 security correction was integrated at `c801292b`, the Product Owner
+authorized the next readiness package. This is local verification of the existing
+§4.4 base-core composition, not final pilot feature selection or a new product rule.
+
+- Use the existing owned, literal-loopback Supabase acceptance stack and actual
+  Flutter repositories. Exercise real Auth, PostgREST and private Storage through
+  onboarding, profile, listing price/availability/deactivation, catalog requests,
+  media publication/retirement, dashboard and the shared notification inbox.
+- The minimal **Development-track local fixture** uses unchanged migrations
+  0001–0011 plus catalog-media0016 and operations0017. Production0012/0013,
+  publication executor0014, public-read0015, claims0018+ and the separate
+  engagement0016/dispatch0029 proposals are not implied dependencies of this
+  fixture. This list is not an authorized remote migration/apply plan.
+- Keep catalog decisions OFF; all later runtime capabilities retain the existing
+  OFF defaults. Validate matching Customer listing/image DTOs and legacy QR
+  compatibility. Legacy repeat confirmation is rejected as already used; this
+  does not adopt claims-v2 idempotency or close physical QR acceptance.
+- Capture exact migration/source hashes and schema, grant, policy, trigger,
+  constraint and Storage fingerprints. Read-only inspection does not itself
+  prove behavioral acceptance. Changed fingerprints require review; a local
+  PASS cannot certify an uninspected hosted backend or extended feature set.
+- Real inbox CRUD is separate from Realtime delivery and device push. The local
+  stack does not accept physical hardware, real recovery mail, provider delivery,
+  signing/distribution, operational account provisioning or any remote writes.
+
+See [base-core backend handoff](MERCHANT_PILOT_BACKEND_HANDOFF.md). Existing FROZEN
+rules and Customer screens remain unchanged; no migration or dependency is added.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
