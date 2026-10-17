@@ -364,6 +364,55 @@ authorized the next readiness package. This is local verification of the existin
 See [base-core backend handoff](MERCHANT_PILOT_BACKEND_HANDOFF.md). Existing FROZEN
 rules and Customer screens remain unchanged; no migration or dependency is added.
 
+### 4.6 Pilot preparation and Esenler intake — 2026-10-17
+
+After J1 integration (`55cee012`), the Product Owner authorized a comprehensive
+local preparation package. Production remains excluded. Every test-server write,
+including Auth settings, taxonomy activation, provisioning and SQL repair, must
+be presented concretely for separate approval before execution. Prior permission
+to read the named Development project and resume it is not write authorization.
+
+- The confirmed pilot location is **Istanbul / Esenler**. The owner wants broad
+  merchant participation, including market/bakkal, stationery, clothing and
+  potentially barber/salon businesses. Participants and their number are not yet
+  selected. This is a recorded product objective, not approval of every category
+  or a change to FROZEN capability, policy or professional-review decisions.
+- Preserve the distinction in [taxonomy §12](ESNAFTAVAR_CANONICAL_CATEGORY_TAXONOMY.md#12-confirmed-merchantsector-scope-decisions):
+  merchant sector is not a product category. Barber/salon sector intent already
+  exists; booking, service prices, employees, slots and service availability remain
+  TBD. Physical goods sold by a service business use their own eligible product
+  leaves. No hair-cut/service listing or new sector runtime is implied here.
+- Local preparation separates schema, explicit category leaves/ancestors, shared
+  Auth callbacks and private cohort provisioning into independent review scopes.
+  A schema approval cannot activate categories, approve submissions or grant roles.
+  The existing two catalog/operations migrations remain unchanged; historical
+  ledger timestamps are preserved, including their differences from filenames.
+- Rehearse atomic upgrade on a populated owned local baseline; preserve existing
+  rows, reject drift/replay/concurrent preparation and prove late-error rollback.
+  Include table-wide privileges and future-object defaults, not only column RLS.
+  The generated review token is an accidental-execution guard; it proves neither
+  human authorization nor the identity of the executing database.
+- Category preparation requires explicit leaf UUIDs and preserves every policy,
+  professional-review, parent and identity field. This bounded automatic helper
+  accepts only fully staged NORMAL/not_required paths; it is intentionally narrower
+  than the complete taxonomy governance process. Other leaves require their own
+  review, not a silent override. No real leaves are selected by this delivery.
+- Real test-server inspection is metadata-only. A local PASS does not supersede
+  a mismatching hosted fingerprint. Read-only inspection found narrower hosted
+  service-role privileges, different infrastructure defaults and two notification
+  functions containing corrupted Turkish literals. Do not repair these, relax the
+  fingerprint or widen hosted permissions under local implementation authority.
+  J2 reproduced the pinned observed profile in the owned local stack, preserving
+  its narrower grants and managed RLS trigger; all captured metadata then matched
+  exactly and the18-group upgrade/repository rehearsal passed. This permits an
+  exact schema candidate to be presented for approval; no remote write follows
+  automatically. Existing corrupted text remains a separate repair/release gate.
+
+See [preparation handoff](MERCHANT_PILOT_PREPARATION_HANDOFF.md) and
+[Product Owner review packet](MERCHANT_PILOT_APPROVAL_PACKET.md). This package
+does not close remote compatibility, physical two-device QR, provider/mail,
+catalog population, signing/distribution or final pilot feature-selection gates.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

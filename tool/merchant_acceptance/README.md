@@ -1,5 +1,29 @@
 # Merchant local acceptance — A+B and optional C
 
+## Guarded pilot preparation (J2)
+
+`pilot_preparation.mjs <new-owned-run> <Flutter-SDK>` rehearses a populated
+Development0001–0011 baseline upgrade, atomic unchanged0016/0017, independent
+explicit category activation and the actual18-checkpoint repository journey.
+It preserves policy/review metadata and tests failure, replay, drift and competing
+preparation. Existing runner defaults are unchanged. Only literal owned loopback
+is accepted. Start a fresh stack; stop it afterward while retaining its data.
+
+`prepare_pilot.mjs new-review-name [explicit-leaf-uuid ...]` is offline-only and
+creates a new ignored review bundle with source-bound proof and file hashes.
+Without explicit UUIDs, no category SQL is generated. There is no remote executor,
+credential option or approval flag. Tokens prevent accidental SQL execution but
+do not prove authorization or target identity. Do not run the candidate on a
+hosted server with a mismatching baseline; never substitute its hash to bypass
+review. The pinned Development observation is reproduced locally, including its
+narrower privileges and managed RLS trigger, before an exact-match rehearsal.
+This is a local mirror, not remote behavioral acceptance or apply permission.
+
+Run `node --test tool/merchant_acceptance/*.test.mjs` before starting a stack;
+the socket safety test binds the same API port. See
+[J2 handoff](../../docs/MERCHANT_PILOT_PREPARATION_HANDOFF.md) and
+[owner review packet](../../docs/MERCHANT_PILOT_APPROVAL_PACKET.md).
+
 ## Base-core pilot profile (J1)
 
 `pilot.mjs` supplements the extended suites with the exact J0 default composition.

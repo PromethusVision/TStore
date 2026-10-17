@@ -1,0 +1,391 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T19:03:46.796Z",
+  "baseline_commit": "55cee012db9c068e177fad4396ee22c91afcf8d6",
+  "services": [
+    {
+      "service": "db",
+      "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+      "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+      "bindings": [
+        {
+          "container_port": "5432/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55432"
+        }
+      ]
+    },
+    {
+      "service": "kong",
+      "image": "public.ecr.aws/supabase/kong:2.8.1",
+      "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+      "bindings": [
+        {
+          "container_port": "8000/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55431"
+        }
+      ]
+    },
+    {
+      "service": "auth",
+      "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+      "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+      "bindings": []
+    },
+    {
+      "service": "rest",
+      "image": "public.ecr.aws/supabase/postgrest:v16.4",
+      "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+      "bindings": []
+    },
+    {
+      "service": "storage",
+      "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+      "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+      "bindings": []
+    }
+  ],
+  "baseline_migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    }
+  ],
+  "sources": [
+    {
+      "path": "tool/merchant_acceptance/pilot_preparation_contract.mjs",
+      "sha256_lf": "e14ba255ebec778e589738f6d4a45eb1f6709b74d7d849fd3edb7c994c663ee4"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_preparation.mjs",
+      "sha256_lf": "634e6c475a49164a8fcde805168fe70b33711d2a91f5d849f11d063e0e7eb7b0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_hosted_profile.mjs",
+      "sha256_lf": "e88ed64b695cd64d68b48b18a1570760109ce393c6e264c851c63f7f7f5ef732"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_repository_test.dart",
+      "sha256_lf": "31df6557c9d28ecb35cee35bcfe40d3e2e031508b5705eece3dcd77c4ebce3fb"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "sha256_lf": "ddb5f52165b12c79afc36a2613c0886c78c1bfb9c900d295d058a9072a7992cd"
+    }
+  ],
+  "checks": [
+    {
+      "name": "populated historical Development baseline matches reviewed schema",
+      "result": "PASS"
+    },
+    {
+      "name": "missing or wrong per-stage review token rejects all writes",
+      "result": "PASS"
+    },
+    {
+      "name": "unexpected ledger blocks apply without history repair",
+      "result": "PASS"
+    },
+    {
+      "name": "RLS and function permission drift block apply",
+      "result": "PASS"
+    },
+    {
+      "name": "table-wide and future-object permission drift block apply",
+      "result": "PASS"
+    },
+    {
+      "name": "competing preparation transaction refuses a second writer",
+      "result": "PASS"
+    },
+    {
+      "name": "late failure rolls back both migrations, bucket and ledger entries",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed two-migration upgrade commits atomically on populated baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "replay is rejected rather than silently applying or repairing",
+      "result": "PASS"
+    },
+    {
+      "name": "schema upgrade alone neither activates taxonomy nor publishes a catalog",
+      "result": "PASS"
+    },
+    {
+      "name": "schema approval does not authorize category activation",
+      "result": "PASS"
+    },
+    {
+      "name": "stale category metadata is rejected before activation",
+      "result": "PASS"
+    },
+    {
+      "name": "category failure rolls back the entire selected ancestry",
+      "result": "PASS"
+    },
+    {
+      "name": "bounded activation preserves every unselected node and policy field",
+      "result": "PASS"
+    },
+    {
+      "name": "category replay refuses stale preconditions without broadening scope",
+      "result": "PASS"
+    },
+    {
+      "name": "real Auth cannot self-grant roles and foreign owners cannot read operations",
+      "result": "PASS"
+    },
+    {
+      "name": "actual Flutter repositories work after reviewed upgrade and bounded category activation",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime journey preserves reviewed schema and default-OFF gates",
+      "result": "PASS"
+    }
+  ],
+  "client_checks": [
+    {
+      "name": "shared runtime keeps downstream business and provider capabilities OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "authoritative role and shop onboarding through real application repository",
+      "result": "PASS"
+    },
+    {
+      "name": "profile edits survive fresh read and stale revision cannot overwrite",
+      "result": "PASS"
+    },
+    {
+      "name": "catalog search, categories and existing identity are usable with core only",
+      "result": "PASS"
+    },
+    {
+      "name": "listing create and duplicate submission preserve exact listing price",
+      "result": "PASS"
+    },
+    {
+      "name": "price, boolean stock and stale revision are enforced by actual server",
+      "result": "PASS"
+    },
+    {
+      "name": "deactivation hides Customer purchase eligibility and remains owner-editable",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh login reads the committed listing through nested production DTOs",
+      "result": "PASS"
+    },
+    {
+      "name": "real SDK Storage upload, publish, signed Customer hero and byte download",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign merchant cannot read private media metadata or change owner photo",
+      "result": "PASS"
+    },
+    {
+      "name": "pending photo appears on dashboard and explicit retirement clears task",
+      "result": "PASS"
+    },
+    {
+      "name": "retired photo is removed from fresh Customer hero projection",
+      "result": "PASS"
+    },
+    {
+      "name": "new product request retries once, stays pending and appears on dashboard",
+      "result": "PASS"
+    },
+    {
+      "name": "existing notification inbox scopes reads, count and marking to current account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer legacy QR creation and merchant preview preserve base-core contract",
+      "result": "PASS"
+    },
+    {
+      "name": "notification delete does not affect foreign account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer has no merchant management authority",
+      "result": "PASS"
+    },
+    {
+      "name": "logout removes local access and rejects further application edits",
+      "result": "PASS"
+    }
+  ],
+  "schema_plan": {
+    "contract": "merchant-pilot-schema-review-v1",
+    "target": {
+      "project_ref": "tnipyxnvhgelwdpykyez",
+      "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+    },
+    "baseline_md5": "d4cb86def9cc856135f09ab83588b83c",
+    "baseline_sha256": "e0c6dd5886d2d70ac76779adc8e61f7c2b8780b59f5f2fb2201536480477b5f0",
+    "migrations": [
+      {
+        "file": "20261013001600_0016_catalog_listing_media.sql",
+        "sha256_lf": "e4eb68ffb47594f411a263361b43d026483fe45c76fb95f0421edaf78c3786cb",
+        "sha256_bytes": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c",
+        "version": "20261013001600",
+        "name": "0016_catalog_listing_media"
+      },
+      {
+        "file": "20261014001700_0017_merchant_daily_operations.sql",
+        "sha256_lf": "c677c9cd696292e278a5bc6754e1e7f0cbccb62f9854932614ae860c37d40e3d",
+        "sha256_bytes": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1",
+        "version": "20261014001700",
+        "name": "0017_merchant_daily_operations"
+      }
+    ],
+    "remote_authorized": false,
+    "capabilities": "base-core-only; catalog decisions and downstream features remain OFF",
+    "effect": "Two new migration ledger entries, catalog identity backfill, six tables, private media bucket and existing versioned RPCs; no taxonomy or Auth setting changes",
+    "rollback": "Transaction failure rolls back both migrations and ledger entries. After commit preserve evidence; stop distribution and prepare a separately reviewed forward correction. Never auto-drop or delete.",
+    "sha256": "8bf0303b5c3c2ea48663b73eb15c83e922617474ce9e83362ad82dff54a0348a"
+  },
+  "synthetic_category_plan": {
+    "contract": "merchant-pilot-category-review-v1",
+    "target": {
+      "project_ref": "tnipyxnvhgelwdpykyez",
+      "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+    },
+    "remote_authorized": false,
+    "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+    "leaves": [
+      "00084e98-e0ba-494a-8c19-8fa57272abd3"
+    ],
+    "changes": [
+      {
+        "id": "00084e98-e0ba-494a-8c19-8fa57272abd3",
+        "name": "Klavye, Mouse & Çevre Birimleri",
+        "from": {
+          "is_active": false,
+          "lifecycle_state": "staged",
+          "is_assignable": false
+        },
+        "to": {
+          "is_active": true,
+          "lifecycle_state": "active",
+          "is_assignable": true
+        }
+      },
+      {
+        "id": "7d59f4a3-8828-4231-9502-ac91b7b0baa0",
+        "name": "Bilgisayar & Tablet",
+        "from": {
+          "is_active": false,
+          "lifecycle_state": "staged",
+          "is_assignable": false
+        },
+        "to": {
+          "is_active": true,
+          "lifecycle_state": "active",
+          "is_assignable": false
+        }
+      }
+    ],
+    "invariant": "No policy, professional review, identity, parent, price or unrelated-category changes",
+    "sha256": "936331e8041a5bd221365a67ff8af8bc73e6520c8021697eda701ccf643e8dcd"
+  },
+  "category_scope": "LOCAL SYNTHETIC ONLY; not a Product Owner cohort/category decision",
+  "auth_plan": {
+    "contract": "merchant-pilot-auth-review-v1",
+    "target": {
+      "project_ref": "tnipyxnvhgelwdpykyez",
+      "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+    },
+    "remote_authorized": false,
+    "before": {
+      "site_url": "http://localhost:3000",
+      "redirect_urls": [],
+      "confirm_email": false,
+      "smtp_enabled": false
+    },
+    "proposed": {
+      "site_url": "http://localhost:3000",
+      "redirect_urls": [
+        "com.esnaftavar.app.merchant.pilot://login-callback/",
+        "com.esnaftavar.app.merchant.pilot://login-callback/?auth_action=password_recovery",
+        "io.supabase.tstore://login-callback/",
+        "io.supabase.tstore://login-callback/?auth_action=password_recovery"
+      ],
+      "confirm_email": false,
+      "smtp_enabled": false
+    },
+    "additions": [
+      "com.esnaftavar.app.merchant.pilot://login-callback/",
+      "com.esnaftavar.app.merchant.pilot://login-callback/?auth_action=password_recovery",
+      "io.supabase.tstore://login-callback/",
+      "io.supabase.tstore://login-callback/?auth_action=password_recovery"
+    ],
+    "separate_gates": [
+      "Site URL choice affects Customer and Merchant",
+      "Confirm email change requires shared Auth review",
+      "SMTP provider/secrets and real mail acceptance",
+      "Physical cold/warm callback and account isolation"
+    ],
+    "rollback": "Restore the exact previous redirect list only after reviewing concurrent additions. Do not replace settings from a stale snapshot.",
+    "sha256": "70aa95a39563af8cc4951643e84dc74c886fdd49eabf31b1906a39b4036fcd35"
+  },
+  "hosted_profile": {
+    "sha256_lf": "57ac9101d04a10cfbfdf3014377b0e8ed5fc6ef3eb4ca6cb3efae094c8fe1735",
+    "schema_md5": "d4cb86def9cc856135f09ab83588b83c",
+    "scope": "LOCAL mirror of read-only Development metadata; no hosted execution"
+  },
+  "production_access": "NONE",
+  "remote_apply": "NOT_AUTHORIZED",
+  "remote_baseline_match": "MATCHES_CAPTURED_METADATA_ONLY",
+  "real_provisioning": "NOT_AUTHORIZED",
+  "real_email": "NOT_SENT",
+  "physical_two_device": "OPEN",
+  "distribution": "NOT_AUTHORIZED"
+}

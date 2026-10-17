@@ -1,0 +1,83 @@
+{
+  "kind": "merchant-pilot-readonly-remote-observation-v1",
+  "project_ref": "tnipyxnvhgelwdpykyez",
+  "captured_at": "2026-10-17T18:54:58.003Z",
+  "access": "READ_ONLY",
+  "writes": "NONE",
+  "schema_md5": "d4cb86def9cc856135f09ab83588b83c",
+  "component_hashes": {
+    "grants": "f1bd2bb6f5e97fdcc318a76e51bdd083",
+    "ledger": "943b080544862da02055f4f91543285e",
+    "tables": "e2f1d04f76af186b37e27b67c02e5e55",
+    "buckets": "10c01c198d3a0417ba49633c91582fdc",
+    "columns": "e7748b9f9fd24493b8573d9232102306",
+    "indexes": "d32a332612621569b243e09733089242",
+    "policies": "75ef7dd3c0e2da55ed10d843fce1e0c5",
+    "triggers": "5aaa36797326e926581975808c630e54",
+    "functions": "b2f9cee43523766267b68c4d6b08ee47",
+    "constraints": "03a50ec5fe4c893288b53d8709dd481b",
+    "table_privileges": "dc36971acabe47ad5d6af89a03a5f6c9",
+    "public_event_triggers": "55fa697a8f90fbe5904bd2a2e67bb335",
+    "postgres_public_defaults": "ca9247605a5bcb925451823b6e72b40b"
+  },
+  "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+  "identity_backfill_rows": 0,
+  "identity_count_source": "Earlier read-only preflight in the same session",
+  "auth": {
+    "site_url": "http://localhost:3000",
+    "redirect_urls": [],
+    "confirm_email": false,
+    "smtp_enabled": false
+  },
+  "auth_source": "Authorized earlier dashboard audit; must re-read before changing",
+  "notification_definition_hashes": {
+    "create_chat_message_notification()": "2c5c102cb8a2f0caa1e87563fa704602",
+    "create_verified_purchase_notification()": "6f4d7f9a1ff3a53fe30e2fb925df2192"
+  },
+  "notification_issue": "Six Turkish string literals are mojibake; current repository text is correct",
+  "apply_ready": false,
+  "local_schema_md5": "d4cb86def9cc856135f09ab83588b83c",
+  "findings": [
+    "Historical ledger, tables, columns, indexes, policies, constraints, triggers and buckets match the local baseline projection",
+    "All 1563 taxonomy nodes match the selected canonical fields; no leaf was activated",
+    "Hosted baseline lacks 810 column privilege rows granted only to service_role in the local stack; no hosted-only column grant was observed",
+    "Of 49 application functions, 47 match after CRLF/LF normalization; the remaining two differ only in six corrupted Turkish string literals",
+    "Hosted managed rls_auto_enable function and ensure_rls event trigger are additional infrastructure",
+    "Raw function hashes deliberately retain newline differences; never substitute a hosted fingerprint without a reviewed matching rehearsal"
+  ],
+  "initial_local_schema_md5": "f948c16d7e2e6be571bca130dd7ec49c",
+  "initial_local_comparison": {
+    "schema_match": false,
+    "taxonomy_match": true,
+    "matching_components": [
+      "ledger",
+      "tables",
+      "buckets",
+      "columns",
+      "indexes",
+      "policies",
+      "triggers",
+      "constraints"
+    ],
+    "different_components": [
+      "grants",
+      "functions",
+      "table_privileges",
+      "public_event_triggers",
+      "postgres_public_defaults"
+    ]
+  },
+  "rehearsed_mirror_comparison": {
+    "schema_match": true,
+    "taxonomy_match": true,
+    "source": "Pinned read-only hosted observation mirrored locally; full captured JSON equality asserted before rehearsal"
+  },
+  "final_readonly_preflight": {
+    "checked_at": "2026-10-17T19:06:13.076Z",
+    "baseline_matches": true,
+    "observed_md5": "d4cb86def9cc856135f09ab83588b83c",
+    "identity_backfill_rows": 0
+  },
+  "schema_candidate_ready_for_approval": true,
+  "schema_plan_sha256": "8bf0303b5c3c2ea48663b73eb15c83e922617474ce9e83362ad82dff54a0348a"
+}

@@ -531,6 +531,34 @@ Use [handoff and reproduction](MERCHANT_PILOT_BACKEND_HANDOFF.md) and the dated
 `merchant_pilot_backend_{contract,acceptance}.json` artifacts. Missing real backend,
 callback/mail, physical/release and operational evidence still leaves J OPEN.
 
+### J2 — Guarded pilot preparation and read-only hosted comparison (2026-10-17)
+
+After J1 integration (`55cee012`), canonical §4.6 authorizes local preparation.
+Use the unchanged Development ledger0001–0011 as a populated upgrade baseline,
+then rehearse the atomic catalog-media0016 + operations0017 candidate. Separate
+explicit taxonomy activation from schema, shared Auth callback proposals and
+cohort identities. Preserve category policy/review metadata; do not use the
+extended synthetic fixture's policy overrides as a real activation plan.
+
+Deliver an offline bundle generator, per-file hashes, strict target/source/proof
+checks, independent review scopes, rollback/replay/drift/concurrency tests and
+an actual Flutter-repository journey after the candidate upgrade. Existing
+extended runners and Customer runtime remain unchanged.
+
+Read-only hosted comparison initially rejected the generic local baseline:
+narrower service-role grants, infrastructure defaults/managed RLS trigger and
+corrupted notification text differ. Reproduce the pinned observed profile locally
+and require exact metadata equality before rehearsing the candidate. This mirror
+and18-group rehearsal passed. A matching captured baseline permits an approval
+proposal, not remote execution, notification repair or permission expansion.
+The owner confirmed Esenler and broad-sector intent; exact participants, category
+leaves, service capabilities and catalog preparation remain explicit open items.
+
+Use [handoff](MERCHANT_PILOT_PREPARATION_HANDOFF.md),
+[approval packet](MERCHANT_PILOT_APPROVAL_PACKET.md) and the dated
+`merchant_pilot_preparation_*` / `merchant_pilot_remote_observation.json` evidence.
+J2 supplies local preparation, not remote apply or final J readiness.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required
