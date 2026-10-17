@@ -1,0 +1,390 @@
+{
+  "kind": "merchant-pilot-approved-test-ce-installation-v1",
+  "result": "PASS",
+  "observed_at": "2026-10-17T20:32:11.114Z",
+  "target": {
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+  },
+  "integrated_main": "e7efc4d64a18fab7ec2e88fc57dc05a33b3669f0",
+  "integrated_source": "11c3a651a717d966ea321aa507aaa30372797fc3",
+  "branch": "agent/merchant-pilot-test-ce",
+  "authorization": {
+    "source": "Explicit Product Owner message after Integration PASS",
+    "items": [
+      "C: exactly four additive callback URLs",
+      "E: guarded six-literal repair in two existing notification functions plus one new ledger entry"
+    ],
+    "environment": "Development only"
+  },
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "other_remote_writes": "NONE",
+  "callbacks": {
+    "plan_sha256": "70aa95a39563af8cc4951643e84dc74c886fdd49eabf31b1906a39b4036fcd35",
+    "apply_count": 1,
+    "before": {
+      "site_url": "http://localhost:3000",
+      "redirect_urls": []
+    },
+    "after": {
+      "site_url": "http://localhost:3000",
+      "redirect_urls": [
+        "com.esnaftavar.app.merchant.pilot://login-callback/",
+        "com.esnaftavar.app.merchant.pilot://login-callback/?auth_action=password_recovery",
+        "io.supabase.tstore://login-callback/",
+        "io.supabase.tstore://login-callback/?auth_action=password_recovery"
+      ]
+    },
+    "source": "Supabase Development URL Configuration UI; after verified following page reload",
+    "outside_scope_not_edited": [
+      "Site URL",
+      "confirm_email",
+      "SMTP",
+      "email templates"
+    ],
+    "other_auth_settings_freshly_read": false,
+    "configuration_only": true,
+    "real_mail_sent": false,
+    "physical_callback_accepted": false
+  },
+  "notification_repair": {
+    "plan_sha256": "9545ccd2900ca25e01546ff5068e57e4d3e84c23110fb235c65fabf541df5890",
+    "source": "supabase/proposals/pilot_notification_text_repair_v1.sql",
+    "source_sha256_lf": "529836466b799df8c59ecbfa688e7f54f8d495c271c20663213be08bff0b3f96",
+    "candidate_sha256_lf": "458ad3e7da553308bd6151cb93406d0ab002142acf68cad46ed1bf87d5021860",
+    "submitted_sha256_lf": "0bd7b2f7bb2646a28b730069feb69ff9a0925d5a1116435a8ab2067403c6b996",
+    "apply_count": 1,
+    "editor_round_trip": "EXACT_LF",
+    "ui_result": "Success. No rows returned.",
+    "before": {
+      "ledger": [
+        {
+          "name": "0001_core_auth_catalog",
+          "version": "20260812010907",
+          "statement_count": 1,
+          "source_sha256_lf": "a61fa7e3b112717a330d6d23898d8a5cad7d30bb3c9782344ca5e51b850713f5"
+        },
+        {
+          "name": "0002_shops",
+          "version": "20260812011047",
+          "statement_count": 1,
+          "source_sha256_lf": "3d783791cb52dbe53d7716770923fec8c0983c242406b113f4087aea30b9245f"
+        },
+        {
+          "name": "0003_carts_v2",
+          "version": "20260812011128",
+          "statement_count": 1,
+          "source_sha256_lf": "1813861dba7af28ec416e031de58867d5bc9a49436ca280703d0c18fd2fbc041"
+        },
+        {
+          "name": "0004_qr_verified_purchases",
+          "version": "20260812013109",
+          "statement_count": 1,
+          "source_sha256_lf": "f8e7eb140520d483044f61c54111fc6636d285541f17f468f0284a722929aa41"
+        },
+        {
+          "name": "0005_verified_shop_ratings",
+          "version": "20260812013220",
+          "statement_count": 1,
+          "source_sha256_lf": "1b06bc1558f5bcebd3db0f5cabbcfa577b6707371219e3b7eafce93b23ed3e39"
+        },
+        {
+          "name": "0006_chat_notifications_account",
+          "version": "20260812013308",
+          "statement_count": 1,
+          "source_sha256_lf": "2dc1c5e185f919c6e9dee8d972f44b37c48bb52996fded8bd470ce5511c963a7"
+        },
+        {
+          "name": "0007_storage_realtime",
+          "version": "20260812013403",
+          "statement_count": 1,
+          "source_sha256_lf": "a6aa01bd732d8c257a224685b9ba4a20a225e1ce0d05befad3d6757c913f1866"
+        },
+        {
+          "name": "0008_fix_profile_role_guard",
+          "version": "20260814000820",
+          "statement_count": 1,
+          "source_sha256_lf": "e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170"
+        },
+        {
+          "name": "0009_verified_product_reviews_storage",
+          "version": "20260815000900",
+          "statement_count": 58,
+          "source_sha256_lf": "8dd264fbab8adaa12f7952a0ea6df34558d1eeeb2e343a3d8ec44bcbbd9ac36f"
+        },
+        {
+          "name": "0010_canonical_taxonomy_v1_staged_bootstrap",
+          "version": "20260829001000",
+          "statement_count": 67,
+          "source_sha256_lf": "214a47613f1ab5830d4d87ab4e0fb4197fef5d47275b5deb4024cd0bd03ccefb"
+        },
+        {
+          "name": "0011_canonical_taxonomy_contract_v2",
+          "version": "20260830001100",
+          "statement_count": 45,
+          "source_sha256_lf": "bdf0aabe7a9e52586af36db63925fce411a703ef5d28dbfc99db0f540c9375ab"
+        },
+        {
+          "name": "0016_catalog_listing_media",
+          "version": "20261013001600",
+          "statement_count": 1,
+          "source_sha256_lf": "e4eb68ffb47594f411a263361b43d026483fe45c76fb95f0421edaf78c3786cb"
+        },
+        {
+          "name": "0017_merchant_daily_operations",
+          "version": "20261014001700",
+          "statement_count": 1,
+          "source_sha256_lf": "c677c9cd696292e278a5bc6754e1e7f0cbccb62f9854932614ae860c37d40e3d"
+        }
+      ],
+      "products": 0,
+      "identities": 0,
+      "schema_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+      "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+      "function_hashes": [
+        {
+          "md5": "2c5c102cb8a2f0caa1e87563fa704602",
+          "signature": "create_chat_message_notification()"
+        },
+        {
+          "md5": "6f4d7f9a1ff3a53fe30e2fb925df2192",
+          "signature": "create_verified_purchase_notification()"
+        }
+      ],
+      "other_active_ddl": 0,
+      "function_authority": [
+        {
+          "acl": "{postgres=X/postgres}",
+          "oid": "18246",
+          "cost": 100,
+          "rows": 0,
+          "owner": "postgres",
+          "strict": false,
+          "definer": true,
+          "support": "-",
+          "language": "13619",
+          "parallel": "u",
+          "settings": [
+            "search_path=pg_catalog, public, extensions, auth"
+          ],
+          "volatile": "v",
+          "leakproof": false,
+          "signature": "create_chat_message_notification()",
+          "return_type": "2279"
+        },
+        {
+          "acl": "{postgres=X/postgres}",
+          "oid": "18247",
+          "cost": 100,
+          "rows": 0,
+          "owner": "postgres",
+          "strict": false,
+          "definer": true,
+          "support": "-",
+          "language": "13619",
+          "parallel": "u",
+          "settings": [
+            "search_path=pg_catalog, public, extensions, auth"
+          ],
+          "volatile": "v",
+          "leakproof": false,
+          "signature": "create_verified_purchase_notification()",
+          "return_type": "2279"
+        }
+      ],
+      "notification_count": 0,
+      "public_table_count": 35,
+      "other_advisory_locks": 0,
+      "notification_rows_md5": "d751713988987e9331980363e24189ce",
+      "catalog_decisions_enabled": false,
+      "public_tables_without_rls": 0
+    },
+    "after": {
+      "ledger": [
+        {
+          "name": "0001_core_auth_catalog",
+          "version": "20260812010907",
+          "statement_count": 1,
+          "source_sha256_lf": "a61fa7e3b112717a330d6d23898d8a5cad7d30bb3c9782344ca5e51b850713f5"
+        },
+        {
+          "name": "0002_shops",
+          "version": "20260812011047",
+          "statement_count": 1,
+          "source_sha256_lf": "3d783791cb52dbe53d7716770923fec8c0983c242406b113f4087aea30b9245f"
+        },
+        {
+          "name": "0003_carts_v2",
+          "version": "20260812011128",
+          "statement_count": 1,
+          "source_sha256_lf": "1813861dba7af28ec416e031de58867d5bc9a49436ca280703d0c18fd2fbc041"
+        },
+        {
+          "name": "0004_qr_verified_purchases",
+          "version": "20260812013109",
+          "statement_count": 1,
+          "source_sha256_lf": "f8e7eb140520d483044f61c54111fc6636d285541f17f468f0284a722929aa41"
+        },
+        {
+          "name": "0005_verified_shop_ratings",
+          "version": "20260812013220",
+          "statement_count": 1,
+          "source_sha256_lf": "1b06bc1558f5bcebd3db0f5cabbcfa577b6707371219e3b7eafce93b23ed3e39"
+        },
+        {
+          "name": "0006_chat_notifications_account",
+          "version": "20260812013308",
+          "statement_count": 1,
+          "source_sha256_lf": "2dc1c5e185f919c6e9dee8d972f44b37c48bb52996fded8bd470ce5511c963a7"
+        },
+        {
+          "name": "0007_storage_realtime",
+          "version": "20260812013403",
+          "statement_count": 1,
+          "source_sha256_lf": "a6aa01bd732d8c257a224685b9ba4a20a225e1ce0d05befad3d6757c913f1866"
+        },
+        {
+          "name": "0008_fix_profile_role_guard",
+          "version": "20260814000820",
+          "statement_count": 1,
+          "source_sha256_lf": "e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170"
+        },
+        {
+          "name": "0009_verified_product_reviews_storage",
+          "version": "20260815000900",
+          "statement_count": 58,
+          "source_sha256_lf": "8dd264fbab8adaa12f7952a0ea6df34558d1eeeb2e343a3d8ec44bcbbd9ac36f"
+        },
+        {
+          "name": "0010_canonical_taxonomy_v1_staged_bootstrap",
+          "version": "20260829001000",
+          "statement_count": 67,
+          "source_sha256_lf": "214a47613f1ab5830d4d87ab4e0fb4197fef5d47275b5deb4024cd0bd03ccefb"
+        },
+        {
+          "name": "0011_canonical_taxonomy_contract_v2",
+          "version": "20260830001100",
+          "statement_count": 45,
+          "source_sha256_lf": "bdf0aabe7a9e52586af36db63925fce411a703ef5d28dbfc99db0f540c9375ab"
+        },
+        {
+          "name": "0016_catalog_listing_media",
+          "version": "20261013001600",
+          "statement_count": 1,
+          "source_sha256_lf": "e4eb68ffb47594f411a263361b43d026483fe45c76fb95f0421edaf78c3786cb"
+        },
+        {
+          "name": "0017_merchant_daily_operations",
+          "version": "20261014001700",
+          "statement_count": 1,
+          "source_sha256_lf": "c677c9cd696292e278a5bc6754e1e7f0cbccb62f9854932614ae860c37d40e3d"
+        },
+        {
+          "name": "0032_pilot_notification_text_repair",
+          "version": "20261017003200",
+          "statement_count": 1,
+          "source_sha256_lf": "529836466b799df8c59ecbfa688e7f54f8d495c271c20663213be08bff0b3f96"
+        }
+      ],
+      "products": 0,
+      "identities": 0,
+      "schema_md5": "78f248b24aa67f7befcc7ccdb9ec97bd",
+      "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+      "function_hashes": [
+        {
+          "md5": "99dd8841f5092b10634f25109e99f3b3",
+          "signature": "create_chat_message_notification()"
+        },
+        {
+          "md5": "c1f3e83146c67dc68b74d34dd692e311",
+          "signature": "create_verified_purchase_notification()"
+        }
+      ],
+      "other_active_ddl": 0,
+      "function_authority": [
+        {
+          "acl": "{postgres=X/postgres}",
+          "oid": "18246",
+          "cost": 100,
+          "rows": 0,
+          "owner": "postgres",
+          "strict": false,
+          "definer": true,
+          "support": "-",
+          "language": "13619",
+          "parallel": "u",
+          "settings": [
+            "search_path=pg_catalog, public, extensions, auth"
+          ],
+          "volatile": "v",
+          "leakproof": false,
+          "signature": "create_chat_message_notification()",
+          "return_type": "2279"
+        },
+        {
+          "acl": "{postgres=X/postgres}",
+          "oid": "18247",
+          "cost": 100,
+          "rows": 0,
+          "owner": "postgres",
+          "strict": false,
+          "definer": true,
+          "support": "-",
+          "language": "13619",
+          "parallel": "u",
+          "settings": [
+            "search_path=pg_catalog, public, extensions, auth"
+          ],
+          "volatile": "v",
+          "leakproof": false,
+          "signature": "create_verified_purchase_notification()",
+          "return_type": "2279"
+        }
+      ],
+      "notification_count": 0,
+      "public_table_count": 35,
+      "other_advisory_locks": 0,
+      "notification_rows_md5": "d751713988987e9331980363e24189ce",
+      "catalog_decisions_enabled": false,
+      "public_tables_without_rls": 0
+    }
+  },
+  "verification_sql": {
+    "path": "docs/data/merchant_pilot_test_ce.readonly.sql",
+    "sha256_lf": "ca2b35527d4cd95f85a2a84e06b7abfd9a34207bdf9dbc3c22d88d11794de8d2"
+  },
+  "checks": [
+    "Fresh Development project identity and integrated source verified",
+    "C fresh empty redirect list; exact four saved and read after reload; Site URL preserved",
+    "E exact baseline and zero observed competing DDL/advisory locks",
+    "Only review-token line added; submitted editor text matches reviewed candidate",
+    "E exact local-proved schema/function/source-ledger hashes",
+    "Function OIDs/owners/ACL/settings and captured authority metadata preserved",
+    "Original thirteen ledger entries and source hashes preserved; exactly one approved addition",
+    "Taxonomy, RLS, product/identity counts and catalog decisions unchanged",
+    "Notification row fingerprint and count unchanged (zero rows before and after)"
+  ],
+  "validation": {
+    "node_distinct_tests": 46,
+    "result": "PASS",
+    "initial_run": "45 PASS; loopback HTTP test blocked by sandbox EACCES",
+    "targeted_retest": "4 safety tests PASS outside sandbox; no test source changes",
+    "prior_integrated_local_groups": 18,
+    "prior_integrated_flutter_tests": 144,
+    "flutter_analyzer": "NOT_RERUN: documentation/evidence only; J4 integrated analyzer PASS",
+    "builds": "NOT_RUN: no runtime changes"
+  },
+  "remaining": [
+    "B category leaves not selected/approved",
+    "D accounts/catalog provisioning not approved",
+    "Real recovery email, PKCE and physical callback acceptance not exercised",
+    "Physical two-device QR, push provider, signed distribution and owner pilot-launch acceptance remain open"
+  ],
+  "limitations": [
+    "Remote verification is structural/configuration acceptance, not a hosted user journey",
+    "SMTP/confirm-email settings were not edited or freshly re-read in this task",
+    "No hosted notification history existed; non-empty preservation behavior comes from prior local rehearsal",
+    "Applying or merging this receipt must never replay A or E"
+  ]
+}

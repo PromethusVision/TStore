@@ -599,6 +599,21 @@ or service-business capability changes. This package does not itself authorize
 any hosted repair or Auth save. Use [handoff](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md)
 and [intake guide](MERCHANT_PILOT_INTAKE_GUIDE.md). J remains OPEN.
 
+### J5 — Approved C/E Development application (2026-10-17)
+
+Following J4 integration (`e7efc4d6`), canonical §4.9 records explicit owner
+authorization and completed C/E application on `tnipyxnvhgelwdpykyez` only.
+Fresh URL read, exact additive save and reload verification passed. E used the
+unchanged source-bound J4 wrapper after exact baseline/concurrency checks; it
+committed once, with independent read-only postchecks matching local-proved schema,
+function and ledger hashes. Function authority, original 13 ledger/source hashes,
+taxonomy, RLS, catalog decisions and notification row fingerprints were preserved.
+
+Git changes contain documentation and sanitized evidence only. Main integration
+must not replay A/E. See [handoff](MERCHANT_PILOT_TEST_CE_HANDOFF.md). B/D, real mail
+and device callbacks, provider configuration, physical QR, signed distribution,
+Production and final pilot acceptance retain separate gates. J remains OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

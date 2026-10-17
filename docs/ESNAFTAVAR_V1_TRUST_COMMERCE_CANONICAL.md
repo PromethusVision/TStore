@@ -474,6 +474,30 @@ See [J4 handoff](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md) and
 [pilot intake guide](MERCHANT_PILOT_INTAKE_GUIDE.md). B–E remote actions, Production,
 provider/mail, physical two-device QR and final pilot opening retain their gates.
 
+### 4.9 Approved Development C/E application — 2026-10-17
+
+After J4 integration PASS (`e7efc4d6`), the Product Owner explicitly authorized
+only C's four exact additive callbacks and E's guarded notification text repair
+on Development `tnipyxnvhgelwdpykyez`. Both were applied once and verified. This
+supersedes their earlier pending-approval status, not any FROZEN product rule.
+
+- C: a fresh empty list received the four previously reviewed exact URLs; a page
+  reload verified persistence. Site URL remained unchanged. No SMTP, confirmation,
+  template or provider setting was edited. This is not real mail/device evidence.
+- E: the exact post-A baseline matched; the reviewed atomic wrapper corrected
+  six literals in the two existing notification functions and appended one new
+  ledger entry. The full resulting fingerprint matches the local proof. Function
+  authority, all 13 prior ledger records/source hashes, taxonomy, RLS and catalog
+  gates were preserved. No historical notification rewrite or test send occurred.
+- A and E are already installed. Do not replay either candidate when integrating
+  this receipt. Future corrections require new review, not history removal.
+- B/D category, account and catalog changes remain separately gated. Production,
+  real mail/PKCE/device acceptance, provider setup, physical QR, signed distribution
+  and final pilot opening are outside this authorization. J remains OPEN.
+
+See [J5 test application receipt](MERCHANT_PILOT_TEST_CE_HANDOFF.md). No application
+runtime, dependency, service-business scope or economic rule changed.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
