@@ -64,12 +64,13 @@ kategoriler ve uygun mevcut hesap rolleri için ayrı öneri üretilebilir. Bu �
 onay veya uygulama değildir; uygulamadan önce güncel durum tekrar karşılaştırılır.
 `distribution_ready` daima false kalır; gerçek cihaz ve açılış kabulü ayrıca gerekir.
 
-**Katalogdaki kritik eksik:** yeni ürün yayımlama yolu henüz hazır değil. Eski ürün
-tablosu zorunlu bir fiyat alanı taşıyor; buraya uydurma fiyat yazmak yanlış bilgi
-gösterebilir. Ürün başvurusu kapısını açmak da bu sorunu çözmez. Bu nedenle sonraki
-teknik çalışma kontrollü ürün yayını ve fiyat/veri uyumu olmalı. Bu çalışma için
-gerçek ürünleri şimdi uydurmamız gerekmiyor; katılımcılar seçildiğinde ayrı içerik
-onayı alınacak. [Teknik sınır ve teslim](MERCHANT_PILOT_COHORT_HANDOFF.md).
+**Katalog yayını — J7 güncellemesi:** kontrollü yeni ürün yayını ve eski fiyat
+uyumu yerelde uygulandı ve doğrulandı; test sunucusuna kurulmadı. İlk kurulum ve
+sonrasında gerçek ürünlerin tam listesi ayrı onay gerektirir. Esnaf satış fiyatını
+kendi ürün kaydında belirler. Uyumsuz eski uygulama sürümleriyle ilk yayın açılmaz.
+Gerçek ürünleri şimdi uydurmamız gerekmiyor; katılımcılar seçilince başvuruları ve
+fiziksel ürün bilgilerini birlikte inceleriz.
+[Yöntem ve onay kapsamı](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
 
 ## Açılış için üç somut kabul
 

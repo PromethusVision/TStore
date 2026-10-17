@@ -139,7 +139,9 @@ class HorizontalProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          child: priceLabel == null
+                          child:
+                              priceLabel == null &&
+                                  product.hasLegacyCatalogPrice
                               ? ProductPriceText(
                                   productPriceTextModel: ProductPriceTextModel(
                                     price: product.price.toStringAsFixed(2),
@@ -147,7 +149,8 @@ class HorizontalProductCard extends StatelessWidget {
                                   ),
                                 )
                               : Text(
-                                  priceLabel!,
+                                  priceLabel ??
+                                      ProductEntity.listingPricePrompt,
                                   key: Key(
                                     'horizontal-product-price-${product.id}',
                                   ),

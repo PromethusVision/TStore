@@ -527,6 +527,54 @@ approval. No FROZEN rule changes or new service/economic features are approved.
 
 See [J6 handoff and remaining catalog contract](MERCHANT_PILOT_COHORT_HANDOFF.md).
 
+### 4.11 Controlled pilot catalog publication and legacy-price compatibility — 2026-10-18
+
+After J6 integration (`465d8842`), the owner authorized this local implementation
+package. This resolves the open §4 materialization/read contract; it does not
+change a FROZEN rule or authorize a hosted write. Production remains excluded.
+Real participants/products are still unknown. The historical J6 no-materializer
+statement describes that package; J7 adds the following separately gated path.
+
+- Publish only explicitly reviewed existing merchant submissions for physical
+  goods. Recheck exact active category, current verified merchant/shop ownership,
+  normalized identity and GTIN. Services/appointments remain out of scope; a
+  service-sector merchant may still sell eligible physical products.
+- Keep `products.price NOT NULL`. Newly materialized identities carry reserved
+  `attributes._catalog_price_contract = listing_only_v1`, storage price `0`, null
+  sale price and stock `0`. These values are compatibility sentinels, never a
+  free offer, quoted price or inventory. A server guard prevents repricing or
+  removing/changing the tag. Existing untagged rows are not backfilled/repriced.
+- Current readers preserve the tag through the existing ProductModel JSON paths.
+  For tagged/unknown contracts, legacy price/discount fallback is suppressed in
+  horizontal/vertical cards, wishlist and recently viewed. Existing seller-price
+  labels retain precedence; absent a seller label, show “Esnaf fiyatını gör”.
+  Preserve screen structure, navigation and untagged historical behavior.
+- Older clients that ignore the tag are **not compatible with first publication**.
+  A reviewed compatible Customer/Merchant build pair is a separate data-publication
+  gate. Installing private schema alone does not authorize publishing rows.
+- Use an operator-only helper and append-only batch receipt. Revoke all client
+  and service-role access to this helper/receipt; keep the existing broad decision
+  switch OFF. No admin UI, direct client catalog write or second catalog exists.
+  The Development candidate explicitly refuses the Production canonical schema;
+  it cannot substitute for governed Production assignment/publication.
+- Each bounded batch pins target, exact submissions/targets/brand choices, review
+  references, schema, catalog and taxonomy observations. Recheck under transaction
+  locks, including selected Auth authority. Identity, identifiers, decisions and
+  receipt commit together; any failure rolls back the entire batch. Shared
+  identity reuse needs explicit selection; unique-origin ownership is preserved.
+  Similarity does not auto-merge. Brand creation cannot bypass an existing name.
+- No listing is created or activated by approval. Merchant listing prices,
+  availability, media and purchase snapshots retain their existing authority.
+  Lost acknowledgements use a read-only receipt; replay never creates new rows.
+  After commit, corrections require a separately reviewed forward action, not
+  deletion of catalog, decision or purchase history.
+- J6 category/existing-account checks remain usable through a source-bound adapter
+  for the exact rehearsed J7 schema, with fresh observations and separate tokens.
+  Do not relax old baseline checks or replay A/C/E. Schema and each real catalog
+  batch require distinct owner approvals. Local proof is not remote acceptance.
+
+See [J7 handoff and concrete test-only approval scope](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

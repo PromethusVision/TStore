@@ -633,6 +633,32 @@ SQL. Real B/D approval awaits selected facts and fresh observations; controlled
 new-product materialization and the legacy-price/read contract remain a distinct
 implementation gate before catalog population. Production and full J stay OPEN.
 
+### J7 — Controlled catalog publication and legacy-price compatibility (2026-10-18)
+
+Following integrated J6 (`465d8842`), implement canonical §4.11 locally: private
+operator publication of exact pending physical-product submissions, append-only
+batch receipts, atomic identity/GTIN/decision materialization and explicit shared
+target selection. Existing `decide_catalog_submission_v1` remains OFF. The schema
+candidate is Development-only; Production canonical assignment is never bypassed.
+
+Tagged zero is a storage compatibility sentinel, not an offer. Preserve legacy
+DTO numeric parsing while current Customer price fallbacks suppress tagged central
+price/discount and retain listing-price precedence. No layout redesign, dependency
+change, global config change, economic activation or historical migration rewrite.
+Compatible clients must be reviewed before first real publication; old clients
+that ignore the marker remain a deployment gate.
+
+Rehearse exact post-C/E schema → proposed installation → selected publication →
+actual Merchant listing/media/fresh-session/Customer/purchase repositories. Cover
+permission and state drift, Auth races, whole-batch rollback, GTIN/similarity/brand
+conflicts, unique ownership, replay/lost acknowledgement and immutable evidence.
+Keep prior cohort category/role preparation available on the exact new schema.
+
+Use [J7 handoff](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md). The default bundle
+contains a **schema review candidate**, but no product publication SQL when real
+inputs are missing. Integration merges code/evidence only. Hosted schema apply
+and each real row batch need separate approval; Production and full J stay OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

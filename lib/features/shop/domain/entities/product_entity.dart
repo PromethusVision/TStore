@@ -45,12 +45,21 @@ class ProductEntity extends Equatable {
     this.brandName,
   });
 
+  // Reserved publication metadata survives every existing JSON projection.
+  // Any tagged/unknown contract fails closed; zero alone is not a sentinel.
+  bool get hasLegacyCatalogPrice =>
+      !(attributes?.containsKey('_catalog_price_contract') ?? false);
+
+  static const listingPricePrompt = 'Esnaf fiyatını gör';
+
   double get discountPercentage {
+    if (!hasLegacyCatalogPrice) return 0;
     if (salePrice == null || salePrice! >= price) return 0;
     return ((price - salePrice!) / price) * 100;
   }
 
-  bool get hasDiscount => salePrice != null && salePrice! < price;
+  bool get hasDiscount =>
+      hasLegacyCatalogPrice && salePrice != null && salePrice! < price;
 
   double get effectivePrice => salePrice ?? price;
 
