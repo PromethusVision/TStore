@@ -8,7 +8,11 @@ class RecoveryBackendFake implements MerchantRecoveryBackend {
   String? sessionKey;
   final changes = StreamController<void>.broadcast(sync: true);
   @override
-  Stream<void> get sessionChanges => changes.stream;
+  Stream<String?> get sessionChanges => changes.stream.map((_) => sessionKey);
+  @override
+  bool sessionConsistent = true;
+  @override
+  void dispose() {}
   int sends = 0, verifies = 0, updates = 0, clears = 0;
   bool pending = false,
       failClear = false,
@@ -332,4 +336,26 @@ void main() {
       expect(backend.pending, isFalse);
     },
   );
+  for (final back in [false, true]) {
+    test(
+      'identity changes during marker write cannot start exchange (ABA=$back)',
+      () async {
+        backend.sessionKey = 'merchant-a:original';
+        backend.changes.add(null);
+        backend.markerWait = Completer<void>();
+        final operation = recovery.receive(pilotCallback);
+        backend.sessionKey = 'merchant-b:replacement';
+        backend.changes.add(null);
+        if (back) {
+          backend.sessionKey = 'merchant-a:original';
+          backend.changes.add(null);
+        }
+        backend.markerWait!.complete();
+        await operation;
+        expect(backend.verifies, 0);
+        expect(recovery.stage, MerchantRecoveryStage.invalid);
+        expect(backend.pending, isTrue);
+      },
+    );
+  }
 }

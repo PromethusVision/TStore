@@ -51,6 +51,7 @@ class SupabaseService {
     required SupabaseConfig config,
     AuthCallbackContract? callbackContract,
     bool observeAuthCallbacks = true,
+    GotrueAsyncStorage? pkceAsyncStorage,
   }) async {
     if (callbackContract != null &&
         callbackContract.environment != config.environment) {
@@ -69,7 +70,8 @@ class SupabaseService {
     await Supabase.initialize(
       url: config.supabaseUrl,
       anonKey: config.supabaseAnonKey,
-      authOptions: const FlutterAuthClientOptions(
+      authOptions: FlutterAuthClientOptions(
+        pkceAsyncStorage: pkceAsyncStorage,
         authFlowType: AuthFlowType.pkce,
         // Supabase Flutter accepts any URI containing `code` by default. The
         // app-owned observer below validates exact environment scheme/host/path

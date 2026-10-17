@@ -315,6 +315,17 @@ physical J and distribution still need their existing explicit authorization.
 - Persist only a role-specific boolean recovery-pending marker before exchange.
   Interrupted recovery blocks workspace on restart until safe cleanup. No password,
   email, callback token or private draft is written by this marker mechanism.
+- Integration correction to the implementation boundary: GoTrue can mutate its
+  session before returning a verification/update response. Run those requests in
+  disposable, non-refreshing SDK response buffers against the same Auth provider
+  and existing PKCE store. They have no persistent session or application services;
+  the shared client remains the sole application session. Publish a verified,
+  internally consistent, unexpired recovery session only while its captured
+  shared identity is still valid. Never copy a password-update response into the
+  shared session. Observe event snapshots throughout the operation so changing
+  away and back cannot revive a grant. Also fence the preceding pending-marker
+  write. Mixed JWT/user identity cannot silently clear the pending gate. This
+  corrects the existing account-isolation rule; it adds no product permission.
 - Pilot release tasks require the exact target, validated configuration and the
   existing external pinned-certificate signing proof. Debug keys cannot produce
   signed release output. An unconfigured debug build shows a safe setup surface.

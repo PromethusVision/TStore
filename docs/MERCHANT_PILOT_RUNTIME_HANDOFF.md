@@ -77,12 +77,55 @@ signed artifact. Final store identifier and signing ownership remain release wor
 
 ## Verification
 
+### Integration correction after `ef216b3a`
+
+Integration rejected the first delivery: GoTrue 2.18.0 applies verification and
+password-update responses to its own current session before returning to the
+adapter. The original 2,929 passing tests did not cover this SDK mutation boundary.
+Both supplied independent scenarios were reproduced unchanged: **0 PASS / 2 FAIL**.
+Their assertions are retained in the committed SDK regression suite (fixture
+wiring now supplies the same response-staging factory as the production entrypoint;
+diagnostic prints became additional assertions).
+
+- Verification and password update now use disposable GoTrue response buffers
+  against the **same** provider and PKCE storage, with no refresh, persisted session,
+  navigation or application services. No second Auth provider/store is introduced.
+- A monotonic lease observes event snapshot identities, including same-account
+  replacement and change-away-and-back. A verified, consistent, unexpired response
+  may reach the shared client only while that lease remains valid. The public SDK
+  `setInitialSession` import applies synchronously and cannot trigger a refresh.
+  The shared client continues to own session persistence/events and Realtime Auth.
+- Password responses never update shared user metadata. A stale or lost response
+  leaves the newer session intact; no automatic password retry or old-account
+  restoration occurs. Existing server-side effects are not claimed to be cancelled.
+- The pending-marker write is fenced before dispatch as well. Mixed JWT subject /
+  user identities cannot clear the recovery gate. Backend leases and UI state both
+  reject revived grants. Customer initialization keeps its default PKCE storage;
+  the explicit shared PKCE instance is supplied only by the Merchant pilot host.
+- A second link without recovery proof does not discard an earlier verified
+  recovery identity: explicit dismissal still closes that session before lifting
+  the gate. The added SDK regression failed before this correction and passes now.
+
+The regression matrix uses the actual Supabase/Gotrue client with delayed synthetic
+HTTP/storage: both reported races, hash and PKCE exchange, another account, the same
+account's new session, logout, change-away-and-back, missing exchange/update/cleanup
+acknowledgements, malformed identity, expired response, disposal, PKCE cleanup and
+valid same-session refresh. Tests are local; no live backend or real mail is used.
+
+```powershell
+flutter test --no-pub test/unit/merchant/merchant_recovery_sdk_race_test.dart --reporter expanded
+```
+
+### Current measured validation
+
 Final measured results, source fingerprints and artifact hashes are recorded in
 [the validation manifest](data/merchant_pilot_runtime_validation.json).
 
-- Full suite: **2,929 PASS / 0 FAIL / 6 existing conditional SKIP**; baseline
-  2,853 passes, **76 new tests**. Final analyzer: **PASS, no issues**.
-- Targeted recovery: **45 PASS**. Capture suite: **9 PASS**, six renders at
+- Full suite: **2,961 PASS / 0 FAIL / 6 existing conditional SKIP**; baseline
+  2,853 passes, **108 new tests** across the delivery, including **32 added by
+  this correction**. Final analyzer: **PASS, no issues**.
+- Targeted recovery: **77 PASS**, including **30 real-SDK race cases** and the
+  original two Integration failures. Widget suite: **9 PASS**, six existing renders at
   320/390/430 logical pixels and 130% text scale, visually inspected.
 - Offline preflight: **8 PASS**; Gradle configuration policy: **34 PASS**;
   actual Gradle packaging rejection boundaries: **8 PASS**, including Customer
@@ -93,7 +136,7 @@ Final measured results, source fingerprints and artifact hashes are recorded in
 - Merchant pilot ARM64 release compilation: **PASS**, with synthetic offline
   client data and explicit pilot flavor. This creates compile output only;
   no owner signing material, signed APK/AAB or remote backend is involved.
-- Windows cross-drive Kotlin incremental cache failure was resolved with
+- The original Windows cross-drive Kotlin incremental cache failure was resolved with
   process-only compiler/cache/worker settings; no dependency or tracked Gradle
   property change. An initial direct Gradle argument-quoting issue was corrected;
   the final compile and all eight packaging cases passed. No unresolved failure.

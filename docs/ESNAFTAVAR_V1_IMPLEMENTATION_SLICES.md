@@ -509,6 +509,13 @@ An unconfigured debug artifact is not distributable. The initial base-core pilot
 composition is not a waiver of any later business feature or FROZEN rule.
 See [delivery](MERCHANT_PILOT_RUNTIME_HANDOFF.md).
 
+J0 integration rejected `ef216b3a` after two real-SDK response races. Corrective
+validation must delay actual GoTrue HTTP/PKCE-storage completions across account
+replacement, same-account new sessions, logout, away-and-back and missing
+acknowledgements; assert both JWT subject and stored user remain consistent.
+Response staging must protect shared Auth before mutation, not only detect the
+problem afterwards. The prior delivery's test counts do not supersede that FAIL.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

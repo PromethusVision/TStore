@@ -24,7 +24,10 @@ class MerchantRecoveryGrant {
 /// Auth stays in the shared provider. This port contains no role/shop authority.
 abstract interface class MerchantRecoveryBackend {
   String? get sessionKey;
-  Stream<void> get sessionChanges;
+  bool get sessionConsistent;
+
+  /// Snapshot identity at the event, not the possibly newer current getter.
+  Stream<String?> get sessionChanges;
   Future<void> sendReset(String email);
 
   /// True only for a verified recovery exchange, never a query-marker alone.
@@ -32,14 +35,23 @@ abstract interface class MerchantRecoveryBackend {
   Future<void> updatePassword(String password);
   Future<void> clearLocalSession();
   Future<void> setPending(bool pending);
+  void dispose();
 }
 
 /// Owns one recovery operation and blocks private navigation until it is settled.
 /// No passwords, callback tokens or email addresses enter notifier state.
 class MerchantAccountRecovery extends ChangeNotifier {
   MerchantAccountRecovery({required this.backend, required this.contract}) {
+    _observedIdentity = backend.sessionKey;
     _sessions = backend.sessionChanges.listen(
-      (_) {
+      (key) {
+        if (key != _observedIdentity) {
+          _observedIdentity = key;
+          _identityRevision++;
+        }
+        if (_recoverySession != null && key != _recoverySession) {
+          _grantInterrupted = true;
+        }
         if (stage == MerchantRecoveryStage.password && !_sameSession) {
           _invalid();
         }
@@ -56,16 +68,20 @@ class MerchantAccountRecovery extends ChangeNotifier {
   }
   final MerchantRecoveryBackend backend;
   final AuthCallbackContract contract;
-  late final StreamSubscription<void> _sessions;
+  late final StreamSubscription<String?> _sessions;
   MerchantRecoveryStage stage = MerchantRecoveryStage.idle;
   String? message;
   String? _recoverySession;
   bool _disposed = false, _monitorBroken = false, _ambiguousSession = false;
+  bool _grantInterrupted = false;
+  String? _observedIdentity;
+  int _identityRevision = 0;
   int revision = 0;
   // Only retained in memory to coalesce app_links initial/stream duplicates.
   final _seen = <String>{};
   bool get blocksWorkspace => stage != MerchantRecoveryStage.idle;
-  bool get canDismiss => !busy && !_ambiguousSession;
+  bool get canDismiss =>
+      !busy && !_ambiguousSession && backend.sessionConsistent;
   bool get busy => [
     MerchantRecoveryStage.sending,
     MerchantRecoveryStage.verifying,
@@ -73,6 +89,8 @@ class MerchantAccountRecovery extends ChangeNotifier {
   ].contains(stage);
   bool get _sameSession =>
       !_monitorBroken &&
+      !_grantInterrupted &&
+      backend.sessionConsistent &&
       _recoverySession != null &&
       backend.sessionKey == _recoverySession;
   void restorePending() {
@@ -96,7 +114,7 @@ class MerchantAccountRecovery extends ChangeNotifier {
     revision++;
     _set(
       MerchantRecoveryStage.invalid,
-      _ambiguousSession || _monitorBroken
+      _ambiguousSession || _monitorBroken || !backend.sessionConsistent
           ? 'Oturum güvenle doğrulanamadı. Uygulamayı kapatıp yeniden açın.'
           : 'Bağlantı veya oturum doğrulanamadı. Yeni bir şifre yenileme bağlantısı isteyin.',
     );
@@ -165,17 +183,37 @@ class MerchantAccountRecovery extends ChangeNotifier {
     }
     final priorGrant = _recoverySession;
     final beforeExchange = backend.sessionKey;
+    // The SDK changes its live value before its asynchronous event arrives.
+    // Synchronize the baseline so that already-completed normal login is not
+    // mistaken for a change during the following pending-marker write.
+    if (_observedIdentity != beforeExchange) {
+      _observedIdentity = beforeExchange;
+      _identityRevision++;
+    }
+    final beforeRevision = _identityRevision;
     var dispatched = false;
     _recoverySession = null;
+    _grantInterrupted = false;
     _ambiguousSession = false;
     _set(MerchantRecoveryStage.verifying);
     try {
       await backend.setPending(true);
       if (_disposed) return;
+      // A login can settle while the durable marker is being written, before
+      // the SDK adapter gets a chance to capture its own session lease.
+      if (_identityRevision != beforeRevision ||
+          backend.sessionKey != beforeExchange ||
+          !backend.sessionConsistent) {
+        throw StateError('Session changed before recovery dispatch');
+      }
       dispatched = true;
       final grant = await backend.verifyRecovery(uri);
       if (_disposed) return;
-      _recoverySession = grant.sessionKey;
+      // A rejected staged link may intentionally leave shared Auth untouched.
+      // Retain the previous verified recovery identity for explicit cleanup.
+      _recoverySession = grant.recovery
+          ? grant.sessionKey
+          : (grant.sessionKey ?? priorGrant);
       if (!grant.recovery || !_sameSession) {
         _invalid();
         return;
@@ -238,7 +276,7 @@ class MerchantAccountRecovery extends ChangeNotifier {
 
   Future<void> dismiss() async {
     if (_disposed || busy) return;
-    if (_ambiguousSession) {
+    if (_ambiguousSession || !backend.sessionConsistent) {
       _invalid();
       return;
     }
@@ -275,6 +313,7 @@ class MerchantAccountRecovery extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     unawaited(_sessions.cancel());
+    backend.dispose();
     _seen.clear();
     super.dispose();
   }

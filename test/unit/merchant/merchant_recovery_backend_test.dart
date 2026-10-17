@@ -45,6 +45,14 @@ void main() {
   late List<http.Request> calls;
   late String updateId;
   late int updateStatus;
+  late http.Client transport;
+  GoTrueClient recoveryClient() => GoTrueClient(
+    url: 'https://merchant-recovery.invalid/auth/v1',
+    headers: {'apikey': 'synthetic-client'},
+    httpClient: transport,
+    autoRefreshToken: false,
+    asyncStorage: pkce,
+  );
   setUp(() async {
     calls = [];
     pkce = _Storage();
@@ -58,7 +66,7 @@ void main() {
         autoRefreshToken: false,
         pkceAsyncStorage: pkce,
       ),
-      httpClient: MockClient((r) async {
+      httpClient: transport = MockClient((r) async {
         calls.add(r);
         final path = r.url.pathSegments.last;
         Object body = {};
@@ -79,9 +87,11 @@ void main() {
       client,
       AuthCallbackContract.merchantPilot(),
       await SharedPreferences.getInstance(),
+      createRecoveryClient: recoveryClient,
     );
   });
   tearDown(() async {
+    backend.dispose();
     await client.dispose();
   });
   test(
@@ -127,6 +137,7 @@ void main() {
       ),
     );
     expect(grant.recovery, isFalse);
+    expect(client.auth.currentSession, isNull);
   });
   test('missing PKCE verifier sends no exchange request', () async {
     await expectLater(
@@ -185,6 +196,9 @@ void main() {
       backend.updatePassword('synthetic-password'),
       throwsStateError,
     );
+    expect(client.auth.currentUser!.id, 'merchant-a');
+    expect(backend.sessionKey, 'merchant-a:session-a');
+    expect(backend.sessionConsistent, isTrue);
   });
   test(
     'durable marker stores only a boolean and survives adapter reconstruction',
@@ -196,6 +210,7 @@ void main() {
         client,
         AuthCallbackContract.merchantPilot(),
         storage,
+        createRecoveryClient: recoveryClient,
       );
       expect(restored.hasPending, isTrue);
       await restored.setPending(false);

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show appFlavor;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/supabase/auth_callback_contract.dart';
 import 'core/supabase/supabase_service.dart';
 import 'core/ui/foundation/esnaftavar_theme.dart';
@@ -65,16 +66,27 @@ Future<void> main() async {
       ),
     });
     final contract = AuthCallbackContract.merchantPilot();
+    final pkce = SharedPreferencesGotrueAsyncStorage();
     await SupabaseService.initialize(
       config: config.backend,
       callbackContract: contract,
       observeAuthCallbacks: false,
+      pkceAsyncStorage: pkce,
     );
     final service = SupabaseService.instance;
     final backend = SupabaseMerchantRecoveryBackend(
       service.client,
       contract,
       await SharedPreferences.getInstance(),
+      createRecoveryClient: () => GoTrueClient(
+        url: '${config.backend.supabaseUrl}/auth/v1',
+        headers: {
+          'apikey': config.backend.supabaseAnonKey,
+          'Authorization': 'Bearer ${config.backend.supabaseAnonKey}',
+        },
+        autoRefreshToken: false,
+        asyncStorage: pkce,
+      ),
     );
     final controller = MerchantAccountRecovery(
       backend: backend,

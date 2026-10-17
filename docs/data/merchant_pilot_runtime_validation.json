@@ -8,21 +8,22 @@
   "flutter_version": "3.41.9",
   "validation": {
     "full_suite": {
-      "log": ".pilot-full-tests-final.log",
+      "log": ".pilot-race-full-final.log",
       "failed": 0,
       "existing_skipped": 6,
       "baseline_passed": 2853,
-      "new_tests": 76,
-      "passed": 2929
+      "new_tests": 108,
+      "passed": 2961,
+      "new_tests_in_correction": 32
     },
     "analyzer": {
       "result": "PASS",
       "issues": 0,
-      "log": ".pilot-analyze-final.log"
+      "log": ".pilot-race-analyze-final.log"
     },
     "targeted_recovery": {
-      "log": ".pilot-fence-tests.log",
-      "passed": 45,
+      "log": ".pilot-race-targeted-final.log",
+      "passed": 77,
       "failed": 0
     },
     "widget_render_capture": {
@@ -60,10 +61,12 @@
         430
       ],
       "log": ".pilot-render-final.log",
-      "passed": 9
+      "passed": 9,
+      "current_widget_suite_log": ".pilot-race-targeted-final.log",
+      "render_evidence": "Existing six PNGs unchanged; rendering/layout unchanged by correction; nine widget cases rerun."
     },
     "gradle_config_policy": {
-      "log": ".pilot-release-compile-final.log",
+      "log": ".pilot-race-release-compile.log",
       "passed": 34,
       "failed": 0
     },
@@ -111,7 +114,8 @@
         }
       ],
       "passed": 8,
-      "failed": 0
+      "failed": 0,
+      "log": ".pilot-race-preflight.log"
     },
     "gradle_packaging_boundaries": {
       "expected_nonzero_means_rejected": true,
@@ -166,41 +170,45 @@
         }
       ],
       "passed": 8,
-      "failed": 0
+      "failed": 0,
+      "log": ".pilot-race-packaging.log"
     },
     "debug_builds": [
       {
         "path": "build/app/outputs/flutter-apk/app-development-debug.apk",
         "bytes": 224796756,
-        "sha256": "3aa473db2ca1381d580b7574ab17e2efce39aafe8b4cbddae4ffbfacc1f328c1",
+        "sha256": "e6ddbf8ed46645b0e2ac289426777cbe31dc840a29c76902118a9d4e46d574d6",
         "package_id": "com.esnaftavar.app.dev",
         "callback_scheme": "io.supabase.tstore",
         "callback_host": "login-callback",
         "inspection": "aapt2 APK badging and compiled AndroidManifest",
         "kind": "debug",
-        "distributed": false
+        "distributed": false,
+        "log": ".pilot-race-build-customer.log"
       },
       {
         "path": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
         "bytes": 189404064,
-        "sha256": "17cc73d21458e8327e9642e4641ec804cfd7c65d485c4cc0b8c37a1a4ce9f2e3",
+        "sha256": "bf5d7d77cdfbf8296a5e46dab68f73f1358bb3651d2871e84537edf600776214",
         "package_id": "com.esnaftavar.app.merchant.dev",
         "callback_scheme": "com.esnaftavar.app.merchant.dev",
         "callback_host": "login-callback",
         "inspection": "aapt2 APK badging and compiled AndroidManifest",
         "kind": "debug",
-        "distributed": false
+        "distributed": false,
+        "log": ".pilot-race-build-merchant.log"
       },
       {
         "path": "build/app/outputs/flutter-apk/app-merchantpilot-debug.apk",
         "bytes": 189410976,
-        "sha256": "97534eb6838e2eec822cf3764bf5ae2cd4931ed2071d0b0eacefa6055a248c4e",
+        "sha256": "1f0b7e96ad94167360ef7edd629abe865cefb5a5ebeaa3cba913eed31b046651",
         "package_id": "com.esnaftavar.app.merchant.pilot",
         "callback_scheme": "com.esnaftavar.app.merchant.pilot",
         "callback_host": "login-callback",
         "inspection": "aapt2 APK badging and compiled AndroidManifest",
         "kind": "debug",
-        "distributed": false
+        "distributed": false,
+        "log": ".pilot-race-build-pilot.log"
       }
     ],
     "release_compile_only": {
@@ -208,12 +216,12 @@
       "abi": "arm64-v8a",
       "path": "build/app/intermediates/flutter/merchantPilotRelease/arm64-v8a/app.so",
       "bytes": 6947760,
-      "sha256": "5653f1b9fc07434ddef6736056033f47e7166e4b40aa0ea2a6235935aa87b434",
+      "sha256": "e869837ae87f87d5bf344869eead9fb5975198f0c0812e60c79201217c38cbab",
       "config": "synthetic offline nonproduction client key; FLUTTER_APP_FLAVOR=merchantPilot",
       "packaged": false,
       "signed": false,
       "executed_on_device": false,
-      "log": ".pilot-release-compile-final.log"
+      "log": ".pilot-race-release-compile.log"
     },
     "source_hash_format": "UTF-8 text, CR stripped for Git LF normalization; paths sorted; excludes documentation/evidence",
     "source_files": [
@@ -235,15 +243,15 @@
       },
       {
         "path": "lib/core/supabase/supabase_service.dart",
-        "sha256_lf": "cce4dcd0e7301f8cdffd09062abeeb2ca4ca76b744872eff065683c4d9aa464e"
+        "sha256_lf": "12bdf0daf0e590071b8a44ed6ea787852c88cdd67215a401477603962ae5ec59"
       },
       {
         "path": "lib/features/merchant/data/supabase_merchant_recovery_backend.dart",
-        "sha256_lf": "0b5d1673bda6461efe31459aa18840b130523cc5430438ade79de8ac4ead81a2"
+        "sha256_lf": "14a94b0cc00d771dcc2fa2bff2235bc1073cb0d3eeb9c42c9b858a9bfa6bc1c4"
       },
       {
         "path": "lib/features/merchant/domain/merchant_account_recovery.dart",
-        "sha256_lf": "a674b532a16248ba00829bb25c103a49bc449f4fb8da263b2a6190794cb32021"
+        "sha256_lf": "3601b65c268753cf89274dfc8546bd8305d4cc229a6b61a7df79c53134bb2e1d"
       },
       {
         "path": "lib/features/merchant/merchant_app.dart",
@@ -275,11 +283,11 @@
       },
       {
         "path": "lib/main_merchant_pilot.dart",
-        "sha256_lf": "842cae14e94f7241b16ed24e1488a006bf69a9e34298a63909477f4287ea4dd6"
+        "sha256_lf": "e272250403d7cb73cbdb0f4f9d205b937e4e8cc0f8b861583536a97117412ff6"
       },
       {
         "path": "test/unit/merchant/merchant_account_recovery_test.dart",
-        "sha256_lf": "42179887c2fa18fa03a6ac181d9d24669ae8881c32ae693184a7962e16f60929"
+        "sha256_lf": "27118d609a1638c39e53c25a753948eb3d059c138828cea0fea24fbc9a56f7f0"
       },
       {
         "path": "test/unit/merchant/merchant_pilot_config_test.dart",
@@ -287,7 +295,11 @@
       },
       {
         "path": "test/unit/merchant/merchant_recovery_backend_test.dart",
-        "sha256_lf": "8295da006b70670fb82538380cccc3ba74e3a204c875f7ab44ead2bc1f16224a"
+        "sha256_lf": "8a691510f55f9965f8fe9c81f50e66db14a8788a40087a7d862284cbadac8219"
+      },
+      {
+        "path": "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "sha256_lf": "29fbfa7b4d503aa8ba3df4cde75981230effd79766eeeeb6219efb8d7bb308ce"
       },
       {
         "path": "test/widget/merchant/merchant_pilot_auth_test.dart",
@@ -343,5 +355,38 @@
     "main_push": "NONE",
     "production_writes": "NONE",
     "production_access": "NONE"
+  },
+  "correction_of": "ef216b3a4b1ddd73db1a3cbd62cf42c708cb8026",
+  "integration_reproductions": {
+    "rejected_source_commit": "ef216b3a4b1ddd73db1a3cbd62cf42c708cb8026",
+    "original_supplied_tests_before": {
+      "log": ".pilot-race-before.log",
+      "failed": 2,
+      "test_sha256": "7414797c1a4990161b5831fa7c45febcc45bb063a42ab527e0cd9841140f1efe",
+      "passed": 0
+    },
+    "reported_scenarios_after": {
+      "log": ".pilot-race-reported-after.log",
+      "failed": 0,
+      "fixture_change": "Same real SDK and HTTP ordering; required staging factory added, original assertions retained, diagnostic prints replaced by extra assertions.",
+      "included_in_final_suite": true,
+      "passed": 2
+    },
+    "additional_second_link_reproduction_before": {
+      "log": ".pilot-race-second-link-before.log",
+      "failed": 1,
+      "included_in_final_passing_sdk_suite": true,
+      "passed": 0
+    },
+    "real_sdk_races": {
+      "new_domain_marker_races": 2,
+      "failed": 0,
+      "path": "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+      "passed": 30,
+      "provider": "Supabase SDK with GoTrue 2.18.0, delayed synthetic HTTP and PKCE storage"
+    },
+    "second_provider": false,
+    "second_persisted_auth_store": false,
+    "server_writes_cancelled_claim": false
   }
 }
