@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:image_picker/image_picker.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
@@ -24,7 +25,8 @@ class MerchantListingMedia extends StatefulWidget {
 class _MerchantListingMediaState extends State<MerchantListingMedia> {
   ListingMedia? _media;
   String? _error;
-  bool _busy = false;
+  bool _loading = false, _writing = false, _picking = false;
+  bool get _busy => _loading || _writing || _picking;
   int _epoch = 0;
   @override
   void initState() {
@@ -35,22 +37,31 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
   Future<void> _load({bool afterMutation = false}) async {
     if (_busy && !afterMutation) return;
     final epoch = ++_epoch;
-    setState(() => _busy = true);
-    final r = await widget.repository.media(widget.access, widget.listingId);
+    setState(() => _loading = true);
+    final r = await merchantRead(
+      () => widget.repository.media(widget.access, widget.listingId),
+    );
     if (!mounted || epoch != _epoch) return;
     setState(() {
-      _busy = false;
-      r.fold((e) => _error = e, (v) {
-        _media = v;
-        _error = null;
-      });
+      _loading = false;
+      r.fold(
+        (e) {
+          _error = e;
+          // A failed refresh cannot authorize another action on stale metadata.
+          _media = null;
+        },
+        (v) {
+          _media = v;
+          _error = null;
+        },
+      );
     });
   }
 
   Future<void> _mutate(Future<Either<String, void>> Function() fn) async {
     if (_busy) return;
     setState(() {
-      _busy = true;
+      _writing = true;
       _error = null;
     });
     try {
@@ -59,33 +70,44 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
       String? error;
       r.fold((e) => error = e, (_) => null);
       await _load(afterMutation: true);
-      if (mounted && error != null) setState(() => _error = error);
+      if (mounted && error != null) {
+        setState(
+          () => _error =
+              '$error\nSonuç belirsiz olabilir. Güncel fotoğraf durumunu kontrol et; aynı fotoğrafı yeniden yükleme.',
+        );
+      }
     } catch (_) {
       if (mounted) {
-        setState(() {
-          _busy = false;
-          _error = 'Fotoğraf işlemi tamamlanamadı. Yeniden dene.';
-        });
+        await _load(afterMutation: true);
+        if (mounted) {
+          setState(
+            () => _error =
+                'İşlem sonucu doğrulanamadı. Güncel fotoğraf durumunu kontrol et; aynı fotoğrafı yeniden yükleme.',
+          );
+        }
       }
+    } finally {
+      if (mounted) setState(() => _writing = false);
     }
   }
 
   Future<void> _upload() async {
     if (_busy || _media == null) return;
-    setState(() => _busy = true);
+    setState(() => _picking = true);
     try {
       final image =
           await (widget.pickImage?.call() ??
               ImagePicker().pickImage(source: ImageSource.gallery));
       if (!mounted) return;
       if (image == null) {
-        setState(() => _busy = false);
+        setState(() => _picking = false);
         return;
       }
       final size = await image.length();
+      if (!mounted) return;
       if (size > _media!.maxBytes) {
         setState(() {
-          _busy = false;
+          _picking = false;
           _error =
               'Fotoğraf en fazla ${(_media!.maxBytes / 1048576).ceil()} MB olabilir.';
         });
@@ -93,17 +115,23 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
       }
       final bytes = await image.readAsBytes();
       if (!mounted) return;
-      setState(() => _busy = false);
+      if (bytes.length > _media!.maxBytes) {
+        setState(() => _error = 'Fotoğraf izin verilen boyuttan büyük.');
+        return;
+      }
+      setState(() => _picking = false);
       await _mutate(
         () => widget.repository.upload(widget.access, widget.listingId, bytes),
       );
     } catch (_) {
       if (mounted) {
         setState(() {
-          _busy = false;
+          _picking = false;
           _error = 'Fotoğraf seçilemedi. Yeniden dene.';
         });
       }
+    } finally {
+      if (mounted) setState(() => _picking = false);
     }
   }
 
@@ -131,7 +159,7 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
 
   @override
   Widget build(BuildContext context) => PopScope(
-    canPop: !_busy,
+    canPop: !_writing && !_picking,
     child: MerchantPage(
       title: 'Mağaza fotoğrafları',
       onRefresh: _load,

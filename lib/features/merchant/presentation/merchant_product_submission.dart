@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
+import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
 import 'dart:math';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -38,7 +40,11 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
   CatalogLookup? _suggestions;
   String? _category, _error;
   bool _unique = false, _busy = false, _categoriesLoading = true;
+  bool _categoriesFailed = false;
   ProductSubmissionDraft? _sentDraft;
+  ProductEntity? _resolvedProduct;
+  bool _opening = false;
+  int _readEpoch = 0;
   static String _newRequestId() {
     final random = Random.secure();
     final bytes = List.generate(16, (_) => random.nextInt(256));
@@ -55,7 +61,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
     _gtin.text = widget.initialGtin;
     for (final c in [_name, _brand, _model, _variant, _gtin]) {
       c.addListener(() {
-        if (mounted && _suggestions != null) {
+        if (mounted) {
           setState(() => _suggestions = null);
         }
       });
@@ -72,15 +78,25 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
   }
 
   Future<void> _load() async {
+    final epoch = ++_readEpoch;
     setState(() => _categoriesLoading = true);
-    final result = await widget.catalog.categories(widget.access);
-    if (!mounted) return;
+    final result = await merchantRead(
+      () => widget.catalog.categories(widget.access),
+    );
+    if (!mounted || epoch != _readEpoch) return;
     setState(() {
       _categoriesLoading = false;
-      result.fold((e) => _error = e, (v) {
-        _categories = v;
-        _error = null;
-      });
+      result.fold(
+        (e) {
+          _categoriesFailed = true;
+          _error = e;
+        },
+        (v) {
+          _categoriesFailed = false;
+          _categories = v;
+          _error = null;
+        },
+      );
     });
   }
 
@@ -94,6 +110,8 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
     uniqueToShop: _unique,
   );
   Future<void> _existing(ProductEntity product) async {
+    if (_opening) return;
+    _opening = true;
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => MerchantListingForm(
@@ -104,6 +122,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
         ),
       ),
     );
+    _opening = false;
     if (mounted && saved == true) Navigator.pop(context, true);
   }
 
@@ -118,12 +137,11 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
       _busy = true;
       _error = null;
     });
+    FocusScope.of(context).unfocus();
     try {
       if (!continueNew && _sentDraft == null) {
-        final lookup = await widget.catalog.lookup(
-          widget.access,
-          draft.name,
-          draft.gtin,
+        final lookup = await merchantRead(
+          () => widget.catalog.lookup(widget.access, draft.name, draft.gtin),
         );
         if (!mounted) return;
         final value = lookup.fold((e) {
@@ -148,6 +166,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
         return null;
       }, (v) => v);
       if (saved?.existing != null) {
+        setState(() => _resolvedProduct = saved!.existing);
         await _existing(saved!.existing!);
       } else if (saved?.submission != null) {
         merchantSaved(context, 'Ürün başvurun alındı. İnceleniyor.');
@@ -163,18 +182,46 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !_busy,
+  Widget build(BuildContext context) => MerchantDraftGuard(
+    uncertain: _sentDraft != null && _resolvedProduct == null,
+    busy: _busy,
+    dirty:
+        _sentDraft != null ||
+        _category != null ||
+        _unique ||
+        _name.text != widget.initialName ||
+        _gtin.text != widget.initialGtin ||
+        [_brand, _model, _variant].any((c) => c.text.isNotEmpty),
     child: MerchantPage(
       title: 'Yeni ürün ekle',
       children: [
         const Text(
           'Ürün bilgilerini incelemeye gönder. Onaylandığında mağaza fiyatını ve fotoğraflarını ekleyebilirsin.',
         ),
-        if (_error != null) MerchantNotice(_error!, error: true),
+        if (_error != null)
+          MerchantNotice(
+            _error!,
+            error: true,
+            onRetry: _categoriesFailed && !_categoriesLoading ? _load : null,
+          ),
+        if (_sentDraft != null && _resolvedProduct == null && !_busy)
+          const MerchantNotice(
+            'Başvuru sonucu doğrulanamadı. Yeniden gönderim aynı başvuruyu kontrol eder; yeni başvuru oluşturmaz.',
+          ),
+        if (_resolvedProduct != null) ...[
+          const MerchantNotice(
+            'Bu ürün katalogda bulunuyor. Mevcut ürünü mağazana ekleyebilirsin.',
+          ),
+          OutlinedButton(
+            onPressed: _busy || _opening
+                ? null
+                : () => _existing(_resolvedProduct!),
+            child: const Text('Mevcut ürünü mağazama ekle'),
+          ),
+        ],
         if (_categoriesLoading)
           const Center(child: CircularProgressIndicator()),
-        if (!_categoriesLoading && _categories.isEmpty)
+        if (!_categoriesLoading && !_categoriesFailed && _categories.isEmpty)
           MerchantNotice(
             'Şu anda başvuruya açık kategori bulunmuyor.',
             onRetry: _load,
@@ -276,10 +323,24 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
               child: const Text('Farklı bir ürün; başvuruyla devam et'),
             ),
         ],
-        FilledButton(
-          onPressed: _busy || _categories.isEmpty ? null : () => _send(),
-          child: Text(_busy ? 'Gönderiliyor…' : 'İncelemeye gönder'),
-        ),
+        if (_resolvedProduct == null)
+          FilledButton(
+            onPressed:
+                _busy ||
+                    (_sentDraft == null &&
+                        (_categoriesLoading ||
+                            _categoriesFailed ||
+                            _categories.isEmpty))
+                ? null
+                : () => _send(),
+            child: Text(
+              _busy
+                  ? 'Gönderiliyor…'
+                  : _sentDraft != null
+                  ? 'Aynı başvuruyu tekrar kontrol et'
+                  : 'İncelemeye gönder',
+            ),
+          ),
       ],
     ),
   );
@@ -323,9 +384,11 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
       }
     });
     try {
-      final r = _page == 0
-          ? await widget.catalog.submissions(widget.access)
-          : await widget.catalog.submissions(widget.access, page: _page);
+      final r = await merchantRead(
+        () => _page == 0
+            ? widget.catalog.submissions(widget.access)
+            : widget.catalog.submissions(widget.access, page: _page),
+      );
       if (!mounted || epoch != _epoch) return;
       setState(() {
         _loading = false;
@@ -351,7 +414,9 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
   Future<void> _add(ProductSubmission s) async {
     if (_loading || s.productId == null) return;
     setState(() => _loading = true);
-    final r = await widget.catalog.approvedProduct(widget.access, s.productId!);
+    final r = await merchantRead(
+      () => widget.catalog.approvedProduct(widget.access, s.productId!),
+    );
     if (!mounted) return;
     setState(() => _loading = false);
     final p = r.fold((e) {

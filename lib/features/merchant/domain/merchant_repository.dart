@@ -123,6 +123,17 @@ abstract interface class MerchantRepository {
   });
 }
 
+/// Optional exact-owner read for resolving an uncertain listing save.
+/// Reading the intended values proves current state, not who committed it.
+abstract interface class MerchantRecoveryRepository {
+  Future<Either<String, ShopProductEntity?>> readListing(
+    MerchantAccess access,
+    String productId,
+  );
+}
+
 const merchantPageSize = 30;
 const merchantSessionChanged = 'Oturumunuz değişti. Yeniden giriş yapın.';
 const merchantAccessDenied = 'Bu mağazayı yönetme yetkiniz yok.';
+const merchantReadTimeout =
+    'Bilgiler zamanında alınamadı. Bağlantını kontrol edip yeniden dene.';

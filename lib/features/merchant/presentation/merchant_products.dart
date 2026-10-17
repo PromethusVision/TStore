@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
+import 'package:flutter/foundation.dart';
+import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/presentation/merchant_product_submission.dart';
@@ -30,6 +33,7 @@ class MerchantProducts extends StatefulWidget {
 class _MerchantProductsState extends State<MerchantProducts> {
   late final MerchantCatalogCubit _cubit;
   final _search = TextEditingController();
+  bool _opening = false;
   @override
   void initState() {
     super.initState();
@@ -50,6 +54,8 @@ class _MerchantProductsState extends State<MerchantProducts> {
   }
 
   Future<void> _edit({ShopProductEntity? listing}) async {
+    if (_opening) return;
+    _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
@@ -68,6 +74,7 @@ class _MerchantProductsState extends State<MerchantProducts> {
               ),
       ),
     );
+    _opening = false;
     if (saved == true && mounted) {
       _cubit.load(refresh: true);
       widget.onChanged?.call();
@@ -194,6 +201,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
   String? _error;
   String _query = '';
   bool _loading = false, _more = true;
+  bool _opening = false;
   int _page = 0, _epoch = 0;
   @override
   void initState() {
@@ -224,15 +232,16 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
     try {
       final gtinSearch = RegExp(r'^[0-9]{8,14}$').hasMatch(_query.trim());
       final result = gtinSearch && widget.catalogMedia != null
-          ? (await widget.catalogMedia!.lookup(
-              widget.access,
-              '',
-              _query.trim(),
+          ? (await merchantRead(
+              () =>
+                  widget.catalogMedia!.lookup(widget.access, '', _query.trim()),
             )).map((v) => v.products)
-          : await widget.repository.searchCatalog(
-              widget.access,
-              query: _query,
-              page: _page,
+          : await merchantRead(
+              () => widget.repository.searchCatalog(
+                widget.access,
+                query: _query,
+                page: _page,
+              ),
             );
       if (!mounted || epoch != _epoch) return;
       setState(() {
@@ -257,6 +266,8 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
   }
 
   Future<void> _select(ProductEntity product) async {
+    if (_opening) return;
+    _opening = true;
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => MerchantListingForm(
@@ -267,6 +278,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
         ),
       ),
     );
+    _opening = false;
     if (mounted && saved == true) Navigator.pop(context, true);
   }
 
@@ -368,29 +380,88 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
   final _form = GlobalKey<FormState>();
   late final TextEditingController _price, _description;
   late bool _available, _active;
-  bool _saving = false;
+  late final MerchantEditRecovery<ShopProductEntity> _recovery;
+  ShopProductEntity? _existing;
+  late Map<String, dynamic> _baseline;
+  MerchantListingDraft? _submitted;
+  bool get _saving => _recovery.busy;
+  bool get _locked => _saving || _recovery.needsReview;
   String? _error;
   @override
   void initState() {
     super.initState();
     final old = widget.existing;
+    _existing = old;
     _price = TextEditingController(
       text: old?.price.toStringAsFixed(2).replaceAll('.', ','),
     );
     _description = TextEditingController(text: old?.description);
     _available = old?.isAvailable ?? true;
     _active = old?.isActive ?? true;
+    _baseline = _values;
+    _recovery = MerchantEditRecovery(
+      read: widget.repository is MerchantRecoveryRepository
+          ? () => (widget.repository as MerchantRecoveryRepository).readListing(
+              widget.access,
+              widget.existing?.productId ?? widget.product!.id,
+            )
+          : null,
+    )..addListener(_changed);
+    _price.addListener(_changed);
+    _description.addListener(_changed);
+  }
+
+  void _changed() {
+    if (mounted) setState(() {});
+  }
+
+  Map<String, dynamic> get _values => {
+    'price': MerchantListingDraft.parsePrice(_price.text),
+    'description': _description.text.trim(),
+    'available': _available,
+    'active': _active,
+  };
+
+  bool _matches(ShopProductEntity current) =>
+      _submitted != null &&
+      MerchantListingDraft.parsePrice(current.price.toStringAsFixed(2)) ==
+          _submitted!.priceMinor &&
+      (current.description ?? '').trim() == _submitted!.description.trim() &&
+      current.isAvailable == _submitted!.available &&
+      current.isActive == _submitted!.active;
+
+  void _review(ShopProductEntity? current, {required bool keepDraft}) {
+    if (current == null && _existing != null) return;
+    _existing = current;
+    _baseline = {
+      'price': current == null
+          ? null
+          : MerchantListingDraft.parsePrice(current.price.toStringAsFixed(2)),
+      'description': (current?.description ?? '').trim(),
+      'available': current?.isAvailable ?? true,
+      'active': current?.isActive ?? true,
+    };
+    if (!keepDraft) {
+      _price.text =
+          current?.price.toStringAsFixed(2).replaceAll('.', ',') ?? '';
+      _description.text = current?.description ?? '';
+      _available = current?.isAvailable ?? true;
+      _active = current?.isActive ?? true;
+    }
+    _error = null;
+    _recovery.reviewed();
   }
 
   @override
   void dispose() {
+    _recovery.dispose();
     _price.dispose();
     _description.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
-    if (_saving || !_form.currentState!.validate()) return;
+    if (_locked || !_form.currentState!.validate()) return;
     final draft = MerchantListingDraft(
       productId: widget.existing?.productId ?? widget.product?.id ?? '',
       priceMinor: MerchantListingDraft.parsePrice(_price.text)!,
@@ -402,35 +473,28 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
       setState(() => _error = draft.error);
       return;
     }
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
-    try {
-      final result = await widget.repository.saveListing(
+    _error = null;
+    _submitted = draft;
+    FocusScope.of(context).unfocus();
+    final saved = await _recovery.save(
+      () => widget.repository.saveListing(
         widget.access,
         draft,
-        existing: widget.existing,
-      );
-      if (!mounted) return;
-      setState(() => _saving = false);
-      result.fold((e) => setState(() => _error = e), (_) {
-        merchantSaved(context, 'Ürün bilgileri kaydedildi.');
-        Navigator.pop(context, true);
-      });
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _saving = false;
-          _error = 'Ürün kaydedilemedi. Tekrar deneyin.';
-        });
-      }
+        existing: _existing,
+      ),
+    );
+    if (!mounted) return;
+    if (saved != null) {
+      merchantSaved(context, 'Ürün bilgileri kaydedildi.');
+      Navigator.pop(context, true);
     }
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !_saving,
+  Widget build(BuildContext context) => MerchantDraftGuard(
+    dirty: _recovery.needsReview || !mapEquals(_baseline, _values),
+    uncertain: _recovery.needsReview,
+    busy: _saving,
     child: MerchantPage(
       title: widget.existing == null ? 'Ürün ekle' : 'Ürünü düzenle',
       children: [
@@ -442,13 +506,42 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
         ),
         if (widget.product?.brandName != null) Text(widget.product!.brandName!),
         if (_error != null) MerchantNotice(_error!, error: true),
+        if (_recovery.error != null)
+          MerchantNotice(_recovery.error!, error: true),
+        if (_recovery.needsReview)
+          MerchantRecoveryPanel(
+            busy: _saving,
+            loaded: _recovery.loaded,
+            matches: _recovery.current != null && _matches(_recovery.current!),
+            summary: _recovery.current == null
+                ? (_existing == null
+                      ? 'Mağazanda bu ürün için kayıt bulunamadı.'
+                      : 'Bu ürün kaydına artık ulaşılamıyor. Ürünler listesine dön.')
+                : '${merchantPrice(_recovery.current!.price)} • '
+                      '${_recovery.current!.isActive ? 'Aktif' : 'Pasif'} • '
+                      '${_recovery.current!.isAvailable ? 'Stokta var' : 'Stokta yok'}\n'
+                      '${_recovery.current!.description ?? 'Açıklama yok'}',
+            onReload: _recovery.reload,
+            onUseCurrent: _recovery.current == null
+                ? null
+                : () {
+                    if (_matches(_recovery.current!)) {
+                      Navigator.pop(context, true);
+                    } else {
+                      _review(_recovery.current, keepDraft: false);
+                    }
+                  },
+            onKeepDraft: _recovery.current == null && _existing != null
+                ? null
+                : () => _review(_recovery.current, keepDraft: true),
+          ),
         Form(
           key: _form,
           child: Column(
             children: [
               TextFormField(
                 controller: _price,
-                enabled: !_saving,
+                enabled: !_locked,
                 decoration: const InputDecoration(
                   labelText: 'Mağaza fiyatı (TL)',
                   hintText: '0,00',
@@ -464,7 +557,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _description,
-                enabled: !_saving,
+                enabled: !_locked,
                 maxLength: 2000,
                 maxLines: 4,
                 decoration: const InputDecoration(
@@ -479,9 +572,9 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
           title: const Text('Stokta var'),
           subtitle: const Text('Müşterilere güncel bulunabilirliği göster.'),
           value: _available,
-          onChanged: _saving ? null : (v) => setState(() => _available = v),
+          onChanged: _locked ? null : (v) => setState(() => _available = v),
         ),
-        if (widget.existing != null)
+        if (_existing != null)
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             title: const Text('Ürün aktif'),
@@ -489,22 +582,22 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
               'Pasife alınan ürün müşterilerden gizlenir; kaydı korunur.',
             ),
             value: _active,
-            onChanged: _saving ? null : (v) => setState(() => _active = v),
+            onChanged: _locked ? null : (v) => setState(() => _active = v),
           ),
         FilledButton(
-          onPressed: _saving ? null : _save,
+          onPressed: _locked ? null : _save,
           child: Text(_saving ? 'Kaydediliyor…' : 'Ürünü kaydet'),
         ),
-        if (widget.existing != null && widget.catalogMedia != null)
+        if (_existing != null && widget.catalogMedia != null)
           OutlinedButton.icon(
-            onPressed: _saving
+            onPressed: _locked
                 ? null
                 : () => Navigator.of(context).push<void>(
                     MaterialPageRoute(
                       builder: (_) => MerchantListingMedia(
                         repository: widget.catalogMedia!,
                         access: widget.access,
-                        listingId: widget.existing!.id,
+                        listingId: _existing!.id,
                       ),
                     ),
                   ),

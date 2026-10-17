@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 
@@ -36,10 +37,8 @@ class MerchantCatalogCubit extends Cubit<MerchantCatalogState> {
     final previous = refresh ? <ShopProductEntity>[] : state.items;
     emit(MerchantCatalogState(items: previous, loading: true, query: search));
     try {
-      final result = await repository.listings(
-        access,
-        page: _nextPage,
-        query: search,
+      final result = await merchantRead(
+        () => repository.listings(access, page: _nextPage, query: search),
       );
       if (isClosed || epoch != _epoch) return;
       result.fold(

@@ -124,6 +124,7 @@ void main() {
     repository = SupabaseMerchantRepository(
       client: client,
       currentUserId: () => currentId,
+      currentSessionKey: () => 'synthetic-session',
     );
   });
   test('price uses decimal kuruş without float/locale ambiguity', () {

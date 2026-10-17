@@ -60,7 +60,8 @@ class MerchantPreview {
   }
 }
 
-class PreviewMerchantRepository implements MerchantRepository {
+class PreviewMerchantRepository
+    implements MerchantRepository, MerchantRecoveryRepository {
   PreviewMerchantRepository(
     this.host, {
     required bool hasShop,
@@ -98,6 +99,16 @@ class PreviewMerchantRepository implements MerchantRepository {
   List<ShopProductEntity> items = [];
   String? failure;
   int saveCount = 0;
+  @override
+  Future<Either<String, ShopProductEntity?>> readListing(
+    MerchantAccess access,
+    String productId,
+  ) async {
+    if (!_allowed(access)) return const Left(merchantAccessDenied);
+    if (failure != null) return Left(failure!);
+    return Right(items.where((i) => i.productId == productId).firstOrNull);
+  }
+
   static final catalog = [
     for (final entry in [
       'Tam yağlı süt 1 L',

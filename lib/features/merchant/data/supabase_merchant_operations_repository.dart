@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
+import 'package:t_store/features/merchant/data/merchant_request_scope.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 
@@ -8,9 +11,15 @@ class SupabaseMerchantOperationsRepository
   SupabaseMerchantOperationsRepository(
     this.client, {
     String? Function()? currentUserId,
-  }) : currentUserId = currentUserId ?? (() => client.auth.currentUser?.id);
+    String? Function()? currentSessionKey,
+    this.readTimeout = const Duration(seconds: 15),
+  }) : currentUserId = currentUserId ?? (() => client.auth.currentUser?.id),
+       currentSessionKey =
+           currentSessionKey ?? (() => authenticatedSessionKey(client));
   final SupabaseClient client;
   final String? Function() currentUserId;
+  final String? Function() currentSessionKey;
+  final Duration readTimeout;
 
   @override
   Future<Either<String, MerchantOperations>> read(
@@ -21,18 +30,25 @@ class SupabaseMerchantOperationsRepository
       return const Left(merchantSessionChanged);
     }
     if (page < 0) return const Left('Geçersiz sayfa.');
+    final scope = MerchantRequestScope(
+      userId: currentUserId(),
+      sessionKey: currentSessionKey(),
+      currentUserId: currentUserId,
+      currentSessionKey: currentSessionKey,
+    );
     try {
-      final j = await client.rpc(
-        'merchant_operations_read_v1',
-        params: {
-          'p_shop_id': access.shop!.id,
-          'p_offset': page * merchantOperationsPageSize,
-          'p_limit': merchantOperationsPageSize,
-        },
-      );
-      if (currentUserId() != access.user.id) {
-        return const Left(merchantSessionChanged);
-      }
+      final j = await scope
+          .run(
+            () => client.rpc(
+              'merchant_operations_read_v1',
+              params: {
+                'p_shop_id': access.shop!.id,
+                'p_offset': page * merchantOperationsPageSize,
+                'p_limit': merchantOperationsPageSize,
+              },
+            ),
+          )
+          .timeout(readTimeout);
       return Right(
         MerchantOperations(
           pendingSubmissions: j['pending_submissions'] as int,
@@ -49,6 +65,10 @@ class SupabaseMerchantOperationsRepository
           ],
         ),
       );
+    } on MerchantRequestChanged {
+      return const Left(merchantSessionChanged);
+    } on TimeoutException {
+      return const Left(merchantReadTimeout);
     } on PostgrestException catch (e) {
       return Left(
         e.code == '42501'
@@ -61,6 +81,8 @@ class SupabaseMerchantOperationsRepository
       return const Left(
         'İşlem özeti yüklenemedi. Bağlantını kontrol edip yeniden dene.',
       );
+    } finally {
+      scope.close();
     }
   }
 }

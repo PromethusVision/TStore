@@ -15,6 +15,17 @@ Two evidence classes are deliberately separate:
 
 Neither class demonstrates physical two-device QR acceptance or Production safety.
 
+### Daily catalog recovery contract
+
+`node tool/merchant_acceptance/acceptance.mjs <owned-run-directory> --catalog-recovery`
+adds seven real Auth/PostgREST/Storage groups to A+B: exact-owner recovery reads,
+stale optimistic revisions, duplicate listing/onboarding denial, pending upload
+recovery, repeat publication, explicit retirement with object retention and exact
+submission retry. Evidence is saved separately as
+`docs/data/merchant_catalog_recovery_managed_acceptance.json`; previous delivery
+evidence is not overwritten. Transport faults and same-account session races are
+tested in Dart; this HTTP suite proves the server contracts they rely on.
+
 ## Install and self-check
 
 Node 22+ and Docker Desktop are needed for the managed run. The native run needs

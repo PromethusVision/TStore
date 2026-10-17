@@ -90,6 +90,18 @@ late-write, same-account return, ownership and failure/retry scenarios alongside
 existing Merchant/Customer regressions. Full G/H1/I/J gates remain unchanged.
 See [handoff](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
 
+### A daily-operation recovery follow-through — 2026-10-17
+
+After I1 integration (`116557fd`), canonical §4.3 authorizes one coherent local
+reliability package: session-fenced catalog/profile/media continuations, safe
+photo acknowledgement recovery, preserved edits with explicit conflict review,
+bounded reads and unchanged exact-request submission retry. Reuse current
+optimistic writes, upload intents and owner reads; no new migration or product
+policy. Validate adapter transport races, UI recovery/navigation, real local
+Auth/Storage contracts, full Flutter regressions and both debug artifacts.
+Full G/H1/I/J and remote rollout gates stay open.
+See [delivery and verification](MERCHANT_CATALOG_RECOVERY_HANDOFF.md).
+
 ## B — Existing QR, immutable purchase terms, claim, returns and invalidation
 
 - **DB:** extend existing qr_sessions through claim/manual-code companions, device

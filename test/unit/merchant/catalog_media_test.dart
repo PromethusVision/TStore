@@ -85,6 +85,7 @@ void main() {
         final result = await SupabaseMerchantRepository(
           client: client,
           currentUserId: () => 'user',
+          currentSessionKey: () => 'synthetic-session',
         ).searchCatalog(access, query: 'P', page: 2);
         expect(result.isLeft(), denied);
         expect(requests.last.url.path, endsWith('merchant_catalog_search_v1'));
@@ -176,6 +177,7 @@ void main() {
     final repo = SupabaseCatalogMediaRepository(
       client,
       currentUserId: () => 'other',
+      currentSessionKey: () => 'synthetic-session',
     );
     expect((await repo.categories(access)).isLeft(), true);
     expect(calls, 0);
@@ -194,6 +196,7 @@ void main() {
     final repo = SupabaseCatalogMediaRepository(
       client,
       currentUserId: () => id,
+      currentSessionKey: () => 'synthetic-session',
     );
     expect(
       await repo.lookup(access, 'name', ''),
@@ -218,6 +221,7 @@ void main() {
       final repo = SupabaseCatalogMediaRepository(
         client,
         currentUserId: () => 'user',
+        currentSessionKey: () => 'synthetic-session',
       );
       final result = await repo.submit(
         access,

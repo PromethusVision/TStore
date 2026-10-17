@@ -141,6 +141,7 @@ void main() {
       var repo = SupabaseMerchantRepository(
         client: client,
         currentUserId: () => merchant,
+        currentSessionKey: () => 'synthetic-session',
       );
       final access = value(await repo.loadAccess())!;
       final catalog = value(await repo.searchCatalog(access, query: 'Örnek'));
@@ -166,6 +167,7 @@ void main() {
         await SupabaseCatalogMediaRepository(
           client,
           currentUserId: () => merchant,
+          currentSessionKey: () => 'synthetic-session',
         ).upload(access, listing, png),
       );
       expect(published, true);
@@ -176,6 +178,7 @@ void main() {
       repo = SupabaseMerchantRepository(
         client: client,
         currentUserId: () => merchant,
+        currentSessionKey: () => 'synthetic-session',
       );
       final reloaded = value(
         await repo.listings(value(await repo.loadAccess())!),
@@ -200,6 +203,7 @@ void main() {
         await SupabaseCatalogMediaRepository(
           client,
           currentUserId: () => merchant,
+          currentSessionKey: () => 'synthetic-session',
         ).changeMedia(access, listing, 'retire', imageId: 'image'),
       );
       expect(await media.photos(reloaded), isEmpty);
