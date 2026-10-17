@@ -1,0 +1,884 @@
+{
+  "kind": "merchant-pilot-approved-test-installation-v1",
+  "result": "PASS",
+  "date": "2026-10-17",
+  "target": {
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+  },
+  "source_main": "e839a25a365efb2709c3c10d12bc973b18360e5c",
+  "integrated_source": "3e145b2da10b64808b50c4751713c0f732d698cf",
+  "authorization": {
+    "source": "Product Owner message in this task after Integration PASS",
+    "scope": "A only: unchanged catalog-media0016 + operations0017 on named Development project",
+    "other_items": "B-E NOT AUTHORIZED",
+    "production": "EXCLUDED"
+  },
+  "plan_sha256": "8bf0303b5c3c2ea48663b73eb15c83e922617474ce9e83362ad82dff54a0348a",
+  "candidate_sha256": "f78649db633330708fdc4732fda6431c7f615291a8e17884e27730a46a1a5087",
+  "executed_sha256": "33a9447253f802b0c488f2e1c5f8053423e683f054541d635757f2f6c59ebf96",
+  "execution_wrapper": "Exact candidate plus one SET LOCAL esnaftavar.pilot_review_token statement after outer BEGIN; migration bodies unchanged",
+  "ui_success_observed_at": "2026-10-17T19:22:22.566Z",
+  "preflight": {
+    "baseline_matches": true,
+    "baseline_md5": "d4cb86def9cc856135f09ab83588b83c",
+    "identity_backfill_rows": 0,
+    "database": "postgres",
+    "observed_at": "2026-10-17T22:21:32.107984+03:00",
+    "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+    "competing_active_ddl": 0,
+    "competing_advisory_lock": false
+  },
+  "postcheck_sql_sha256": "c7a8f8e594a4f5be3f1d9d2020564a53989fc5476aee0a0ec6acc286941dc0cf",
+  "postcheck": {
+    "core": {
+      "config": [
+        {
+          "singleton": true,
+          "max_photo_bytes": 8388608,
+          "decisions_enabled": false,
+          "max_listing_photos": 6
+        }
+      ],
+      "grants": [
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "bucket_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "bucket_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "byte_size",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "byte_size",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "created_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "created_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "is_primary",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "is_primary",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "listing_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "listing_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "mime_type",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "mime_type",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "object_path",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "object_path",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "publication_state",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "publication_state",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "published_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "published_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "sort_order",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "sort_order",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "updated_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "updated_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "anon",
+          "table_name": "listing_images",
+          "column_name": "uploaded_by",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "listing_images",
+          "column_name": "uploaded_by",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "actor_role",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "created_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "product_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "reason",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "status",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submission_decisions",
+          "column_name": "submission_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "approved_product_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "brand",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "canonical_category_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "created_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "decided_at",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "decision_reason",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "gtin",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "model",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "name",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "normalization_version",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "normalized_brand",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "normalized_name",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "product_type",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "request_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "shop_id",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "status",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "submitted_by",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        },
+        {
+          "grantee": "authenticated",
+          "table_name": "product_submissions",
+          "column_name": "variant",
+          "is_grantable": "NO",
+          "privilege_type": "SELECT"
+        }
+      ],
+      "ledger": [
+        {
+          "name": "0001_core_auth_catalog",
+          "version": "20260812010907"
+        },
+        {
+          "name": "0002_shops",
+          "version": "20260812011047"
+        },
+        {
+          "name": "0003_carts_v2",
+          "version": "20260812011128"
+        },
+        {
+          "name": "0004_qr_verified_purchases",
+          "version": "20260812013109"
+        },
+        {
+          "name": "0005_verified_shop_ratings",
+          "version": "20260812013220"
+        },
+        {
+          "name": "0006_chat_notifications_account",
+          "version": "20260812013308"
+        },
+        {
+          "name": "0007_storage_realtime",
+          "version": "20260812013403"
+        },
+        {
+          "name": "0008_fix_profile_role_guard",
+          "version": "20260814000820"
+        },
+        {
+          "name": "0009_verified_product_reviews_storage",
+          "version": "20260815000900"
+        },
+        {
+          "name": "0010_canonical_taxonomy_v1_staged_bootstrap",
+          "version": "20260829001000"
+        },
+        {
+          "name": "0011_canonical_taxonomy_contract_v2",
+          "version": "20260830001100"
+        },
+        {
+          "name": "0016_catalog_listing_media",
+          "version": "20261013001600"
+        },
+        {
+          "name": "0017_merchant_daily_operations",
+          "version": "20261014001700"
+        }
+      ],
+      "tables": [
+        {
+          "rls": true,
+          "name": "addresses",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "banners",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "brands",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "cart_items_v2",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "carts",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "catalog_media_config",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "categories",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "chat_messages",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "customer_saved_locations",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "legal_consents",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "listing_images",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "notifications",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "order_items",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "orders",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "product_identifiers",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "product_identity",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "product_submission_decisions",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "product_submissions",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "products",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "profiles",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "qr_session_items",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "qr_sessions",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "reviews",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "shop_products",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "shop_ratings",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "shops",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "storage.objects",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_alias_targets",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_aliases",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_contract_config",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_id_allocations",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_import_runs",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "taxonomy_node_relationships",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "verified_transaction_items",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "verified_transactions",
+          "force_rls": false
+        },
+        {
+          "rls": true,
+          "name": "wishlist",
+          "force_rls": false
+        }
+      ],
+      "buckets": [
+        {
+          "id": "listing-media",
+          "public": false,
+          "file_size_limit": 8388608,
+          "allowed_mime_types": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        }
+      ],
+      "columns": [],
+      "indexes": [
+        {
+          "indexdef": "CREATE UNIQUE INDEX shops_owner_user_id_unique_idx ON public.shops USING btree (owner_user_id) WHERE (owner_user_id IS NOT NULL)",
+          "indexname": "shops_owner_user_id_unique_idx",
+          "tablename": "shops"
+        }
+      ],
+      "policies": [
+        {
+          "cmd": "SELECT",
+          "qual": "(_listing_own_v1(listing_id) OR ((publication_state = 'published'::text) AND _listing_storage_read_v1(bucket_id, object_path)))",
+          "roles": [
+            "anon",
+            "authenticated"
+          ],
+          "tablename": "listing_images",
+          "permissive": "PERMISSIVE",
+          "policyname": "listing_images_owned_or_published",
+          "schemaname": "public",
+          "with_check": null
+        },
+        {
+          "cmd": "SELECT",
+          "qual": "(EXISTS ( SELECT 1\n   FROM product_submissions s\n  WHERE ((s.id = product_submission_decisions.submission_id) AND _catalog_own_shop_v1(s.shop_id))))",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "product_submission_decisions",
+          "permissive": "PERMISSIVE",
+          "policyname": "catalog_decisions_owned",
+          "schemaname": "public",
+          "with_check": null
+        },
+        {
+          "cmd": "SELECT",
+          "qual": "_catalog_own_shop_v1(shop_id)",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "product_submissions",
+          "permissive": "PERMISSIVE",
+          "policyname": "catalog_submissions_owned",
+          "schemaname": "public",
+          "with_check": null
+        },
+        {
+          "cmd": "INSERT",
+          "qual": null,
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "objects",
+          "permissive": "PERMISSIVE",
+          "policyname": "listing_media_owned_upload",
+          "schemaname": "storage",
+          "with_check": "_listing_storage_insert_v1(bucket_id, name, metadata)"
+        },
+        {
+          "cmd": "SELECT",
+          "qual": "((bucket_id = 'listing-media'::text) AND _listing_storage_read_v1(bucket_id, name))",
+          "roles": [
+            "anon",
+            "authenticated"
+          ],
+          "tablename": "objects",
+          "permissive": "PERMISSIVE",
+          "policyname": "listing_media_safe_read",
+          "schemaname": "storage",
+          "with_check": null
+        }
+      ],
+      "triggers": [
+        {
+          "name": "catalog_listing_identity_guard",
+          "enabled": "O",
+          "relation": "shop_products",
+          "definition": "CREATE TRIGGER catalog_listing_identity_guard BEFORE INSERT OR UPDATE OF shop_id, product_id ON public.shop_products FOR EACH ROW EXECUTE FUNCTION _catalog_listing_identity_guard_v1()"
+        }
+      ],
+      "functions": [
+        {
+          "anon": true,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "catalog_listing_media_read_v1(uuid[])",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_catalog_categories_v1(uuid)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_catalog_lookup_v1(uuid,text,text)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_catalog_search_v1(uuid,text,integer,integer)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_change_listing_images_v1(uuid,text,uuid,uuid[])",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_listing_media_v1(uuid)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_operations_read_v1(uuid,integer,integer)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_prepare_listing_image_v1(uuid,text,integer)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        },
+        {
+          "anon": false,
+          "settings": [
+            "search_path=pg_catalog, public"
+          ],
+          "signature": "merchant_submit_product_v1(uuid,uuid,jsonb)",
+          "service_role": false,
+          "authenticated": true,
+          "security_definer": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "shop_products_shop_product_key",
+          "relation": "shop_products",
+          "definition": "UNIQUE (shop_id, product_id)"
+        }
+      ]
+    },
+    "products": 0,
+    "identities": 0,
+    "schema_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+    "observed_at": "2026-10-17T22:25:12.546229+03:00",
+    "taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+    "ledger_source_hashes": [
+      {
+        "version": "20261013001600",
+        "sha256_lf": "e4eb68ffb47594f411a263361b43d026483fe45c76fb95f0421edaf78c3786cb",
+        "statement_count": 1
+      },
+      {
+        "version": "20261014001700",
+        "sha256_lf": "c677c9cd696292e278a5bc6754e1e7f0cbccb62f9854932614ae860c37d40e3d",
+        "statement_count": 1
+      }
+    ],
+    "preserved_baseline_md5": "d4cb86def9cc856135f09ab83588b83c"
+  },
+  "contract_validation": {
+    "result": "PASS",
+    "validator": "Existing pilot_contract.mjs validateCore on compact observed hosted metadata; its LOCAL result label is not remote behavioral acceptance",
+    "schema_projection": "Core query fields retained for validator; omitted unused columns/function bodies and unrelated rows. Separate full original-schema projection hash proves captured original objects unchanged."
+  },
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "remote_migrations_applied": [
+    "20261013001600_0016_catalog_listing_media.sql",
+    "20261014001700_0017_merchant_daily_operations.sql"
+  ],
+  "other_remote_changes": "NONE",
+  "remote_behavioral_acceptance": "NOT_RUN; accounts/catalog/real devices require separate preparation",
+  "diagnostics": [
+    "Initial oversized read-only postcheck result stalled browser observation; page reloaded, no write retried.",
+    "First compact read-only query used reserved CTE name current_schema and was rejected with SQL 42601; renamed pilot_snapshot, then passed.",
+    "Remote apply executed once and reported Success. No rows returned.; subsequent read-only ledger/source/RLS checks confirmed commit."
+  ],
+  "postcheck_sql_hash_normalization": "LF",
+  "local_validation": {
+    "node_distinct_checks": 29,
+    "node_final": "PASS",
+    "initial": "28 PASS, 1 loopback sandbox EACCES",
+    "targeted_rerun": "safety.test.mjs 4 PASS outside network restriction",
+    "receipt_source_and_wrapper": "PASS",
+    "flutter_analyzer": "NOT_RUN: docs/evidence only",
+    "flutter_builds": "NOT_RUN: docs/evidence only"
+  }
+}

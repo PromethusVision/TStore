@@ -413,6 +413,33 @@ See [preparation handoff](MERCHANT_PILOT_PREPARATION_HANDOFF.md) and
 does not close remote compatibility, physical two-device QR, provider/mail,
 catalog population, signing/distribution or final pilot feature-selection gates.
 
+### 4.7 Approved Development installation and sector intake — 2026-10-17
+
+After J2 integration PASS (`e839a25a`), the Product Owner explicitly authorized
+only review-packet item A on Development project `tnipyxnvhgelwdpykyez`. This is
+the scoped exception to §4.6's pending write gate, not a general deployment grant.
+The approved plan SHA-256 is
+`8bf0303b5c3c2ea48663b73eb15c83e922617474ce9e83362ad82dff54a0348a`:
+unchanged catalog-media0016 and operations0017, their two new ledger records and
+the reviewed atomic wrapper. Fresh target, source, baseline and concurrency
+checks remain mandatory. Production is excluded. Items B–E (category activation,
+Auth callbacks, accounts/catalog provisioning and notification text repair)
+still require separate approval; no downstream capability is enabled by A.
+
+The owner also accepted broad-sector applications with gradual onboarding in
+small groups, including barber/salon candidates. Physical goods use their own
+eligible product categories and existing policy/review rules. Haircuts, treatments,
+booking, service pricing, staff and slots remain TBD; do not represent services
+as stock products or promise that functionality. The first cohort and its size
+remain undecided. This acceptance preserves taxonomy §12 and all FROZEN rules.
+
+Item A was applied once and independently checked through read-only hosted SQL:
+13 ledger entries, 35 public tables with RLS, the required nine client RPCs and
+private listing-media Storage configuration. Original captured schema/privilege
+metadata and taxonomy fingerprints are preserved; decisions remain OFF. See the
+[installation receipt](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md). This is hosted
+schema acceptance only; remote user journeys and final pilot opening remain OPEN.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
