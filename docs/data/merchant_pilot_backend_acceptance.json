@@ -1,0 +1,348 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T17:02:56.632Z",
+  "profile": "base-core-development-track-local-only",
+  "baseline": "c801292bf1c22dac25982f95e4c58becb99b9835",
+  "contract": {
+    "result": "BASE_CORE_LOCAL_CONTRACT_PASS",
+    "schema_sha256": "00d090bf8a7e63b5bd58d4a94d5352ed715b579e16412f8df36f64fe9a83a1d1",
+    "required_owner_rpcs": [
+      "merchant_catalog_categories_v1(uuid)",
+      "merchant_catalog_lookup_v1(uuid,text,text)",
+      "merchant_catalog_search_v1(uuid,text,integer,integer)",
+      "merchant_submit_product_v1(uuid,uuid,jsonb)",
+      "merchant_listing_media_v1(uuid)",
+      "merchant_prepare_listing_image_v1(uuid,text,integer)",
+      "merchant_change_listing_images_v1(uuid,text,uuid,uuid[])",
+      "merchant_operations_read_v1(uuid,integer,integer)"
+    ],
+    "remote_authorized": false,
+    "distribution_ready": false
+  },
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    }
+  ],
+  "sources": [
+    {
+      "path": "lib/features/merchant/runtime/merchant_runtime.dart",
+      "sha256_lf": "7b8658314b80dd46c6e6538deb491eb380bf06e4cc2d087cedcbf347c0e3e260"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_merchant_repository.dart",
+      "sha256_lf": "e8f60a418d93d72b56709b5ba63a9ac6a56f59ee6969b99a8248a7e404fb6984"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_catalog_media_repository.dart",
+      "sha256_lf": "2be269419716283911399910b1f28f8dede038d01fd7b9f5405a1bf0e20efcb9"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_merchant_operations_repository.dart",
+      "sha256_lf": "95473d0378d66600e5df66b52be36d96557bc615bf81a9188dd09b1e9c584bef"
+    },
+    {
+      "path": "lib/features/notifications/data/repositories/notification_repository_impl.dart",
+      "sha256_lf": "546df40eeb7fdf2c3e5ebb480cfb349cf0cf0f7011ea1366ae702c1cb77b5fb7"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/shop_repository_impl.dart",
+      "sha256_lf": "0b8b71ad6e9c423792523c8f15074a13e08b105eb02e1ff52127f67ea6c8c0a8"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/supabase_listing_hero_media_repository.dart",
+      "sha256_lf": "c08e33a51eaa23eaea888d8748ea900a23628d46b32bf43f97b921826ab8889a"
+    },
+    {
+      "path": "lib/features/cart/data/repositories/qr_session_repository_impl.dart",
+      "sha256_lf": "8f1ce2bab87ac93dc2cdee3783b41b216cb9401f98ef06078712f04844f04d6c"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot.mjs",
+      "sha256_lf": "f692d93058fb96edbbf910bd08776582494c005f4bdde38518e3cd9d41b4a3bb"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_contract.mjs",
+      "sha256_lf": "8f4ce3139bf7ba05829ed2ebfc91d574944a244913085f0331e13c8b44f5f60c"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_repository_test.dart",
+      "sha256_lf": "31df6557c9d28ecb35cee35bcfe40d3e2e031508b5705eece3dcd77c4ebce3fb"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "sha256_lf": "d09e307ef345feff23e785cabb4c26c48d44876234453c5adba7ffbdb20041f1"
+    },
+    {
+      "path": "tool/merchant_acceptance/local.mjs",
+      "sha256_lf": "a69436c3168155d43b6b7a9574519645607a6bf0acd370cadc4c3ace87a98bf2"
+    },
+    {
+      "path": "tool/merchant_acceptance/safety.mjs",
+      "sha256_lf": "3d90cfad3dcff09bf93fdce4a2d01e1a87c8001a43744ecf8539398a80d2ad94"
+    },
+    {
+      "path": "tool/merchant_acceptance/docker-proxy.mjs",
+      "sha256_lf": "5c56fe21ea877b2d7b5109b5102110db9e60ae3c8a3f3279a37adcd314991bb0"
+    },
+    {
+      "path": "tool/merchant_acceptance/package-lock.json",
+      "sha256_lf": "9fb68b72c04c3799acc75e8cd916a314dcacf01f6671ca6209022d9c4277ccc8"
+    }
+  ],
+  "services": [
+    {
+      "service": "db",
+      "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+      "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+      "bindings": [
+        {
+          "container_port": "5432/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55432"
+        }
+      ]
+    },
+    {
+      "service": "kong",
+      "image": "public.ecr.aws/supabase/kong:2.8.1",
+      "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+      "bindings": [
+        {
+          "container_port": "8000/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55431"
+        }
+      ]
+    },
+    {
+      "service": "auth",
+      "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+      "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+      "bindings": []
+    },
+    {
+      "service": "rest",
+      "image": "public.ecr.aws/supabase/postgrest:v16.4",
+      "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+      "bindings": []
+    },
+    {
+      "service": "storage",
+      "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+      "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+      "bindings": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact base-core schema, owner grants, private Storage and approval OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: missing dashboard RPC",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: anonymous owner RPC",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: disabled submission RLS",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: public media bucket",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: missing upload policy",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: broadened upload policy",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: enabled catalog decisions",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: missing single-owner uniqueness",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: client submission writes",
+      "result": "PASS"
+    },
+    {
+      "name": "drift rejected: disabled listing identity trigger",
+      "result": "PASS"
+    },
+    {
+      "name": "disabled Storage RLS rejected in snapshot (managed table ownership preserved)",
+      "result": "PASS"
+    },
+    {
+      "name": "real Auth forged signature rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "customer cannot self-grant merchant role or create shop",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign owner RPC denied, catalog decisions remain gated",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign direct shop edit and role revocation cannot bypass owner policies",
+      "result": "PASS"
+    },
+    {
+      "name": "real Storage rejects foreign token, forged object path and unsupported upload intent",
+      "result": "PASS"
+    },
+    {
+      "name": "production Flutter repositories against real local Auth/PostgREST/Storage",
+      "result": "PASS"
+    },
+    {
+      "name": "repository journey leaves schema and all default-OFF gates unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "synthetic legacy purchase recorded once; submitted product remains unpublished",
+      "result": "PASS"
+    }
+  ],
+  "client_checks": [
+    {
+      "name": "shared runtime keeps downstream business and provider capabilities OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "authoritative role and shop onboarding through real application repository",
+      "result": "PASS"
+    },
+    {
+      "name": "profile edits survive fresh read and stale revision cannot overwrite",
+      "result": "PASS"
+    },
+    {
+      "name": "catalog search, categories and existing identity are usable with core only",
+      "result": "PASS"
+    },
+    {
+      "name": "listing create and duplicate submission preserve exact listing price",
+      "result": "PASS"
+    },
+    {
+      "name": "price, boolean stock and stale revision are enforced by actual server",
+      "result": "PASS"
+    },
+    {
+      "name": "deactivation hides Customer purchase eligibility and remains owner-editable",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh login reads the committed listing through nested production DTOs",
+      "result": "PASS"
+    },
+    {
+      "name": "real SDK Storage upload, publish, signed Customer hero and byte download",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign merchant cannot read private media metadata or change owner photo",
+      "result": "PASS"
+    },
+    {
+      "name": "pending photo appears on dashboard and explicit retirement clears task",
+      "result": "PASS"
+    },
+    {
+      "name": "retired photo is removed from fresh Customer hero projection",
+      "result": "PASS"
+    },
+    {
+      "name": "new product request retries once, stays pending and appears on dashboard",
+      "result": "PASS"
+    },
+    {
+      "name": "existing notification inbox scopes reads, count and marking to current account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer legacy QR creation and merchant preview preserve base-core contract",
+      "result": "PASS"
+    },
+    {
+      "name": "notification delete does not affect foreign account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer has no merchant management authority",
+      "result": "PASS"
+    },
+    {
+      "name": "logout removes local access and rejects further application edits",
+      "result": "PASS"
+    }
+  ],
+  "remote_access": "NONE",
+  "production_writes": "NONE",
+  "provider": "NOT_CONFIGURED",
+  "realtime_delivery": "NOT_EXERCISED",
+  "physical_two_device": "OPEN",
+  "distribution": "NOT_AUTHORIZED"
+}

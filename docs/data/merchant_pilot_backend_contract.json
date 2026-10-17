@@ -1,0 +1,1591 @@
+{
+  "profile": "base-core-development-track-local-only",
+  "schema_sha256": "00d090bf8a7e63b5bd58d4a94d5352ed715b579e16412f8df36f64fe9a83a1d1",
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    }
+  ],
+  "functions": [
+    {
+      "signature": "_catalog_append_only_v1()",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "553527c97314e57bfd89d62058a104c9205b12e5665d41173192a13b7308d6c7"
+    },
+    {
+      "signature": "_catalog_category_allowed_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "b4f41b3fcfe4f30f2aef3273d5329c06b87fecb79ac5487f338037b741086e0e"
+    },
+    {
+      "signature": "_catalog_listing_identity_guard_v1()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "0e25f7f49ec750936a1c7c906d293f306c932342b7e20d0519817be742e104ce"
+    },
+    {
+      "signature": "_catalog_own_shop_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "762f39d0f78f9233112147930477b0939cba32dc7946cf71624fea75150af9ea"
+    },
+    {
+      "signature": "_catalog_photo_metadata_v1(jsonb,text,integer)",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "d7c34942d56a71b99fb89773e2af0fbcacc84f8946cb9741a1698e0ea86a3b3c"
+    },
+    {
+      "signature": "_catalog_product_public_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "cf9b852c03c9cbadde5991025e8f4f7b6cfc9ef0411cc8ac5cc1b655e511b087"
+    },
+    {
+      "signature": "_listing_own_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "0adb60d71d9912b3a75b5bf6666ac87ca5a6a798710f09edb0f4bf2652ac8561"
+    },
+    {
+      "signature": "_listing_public_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "2d23359cc018500497e5e9b3c95bf4699e672eb99f03cc564c4dc3267f07b92a"
+    },
+    {
+      "signature": "_listing_storage_insert_v1(text,text,jsonb)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "32ddc4af52caa8d9577f788fbc16ccb4cba1991b66f145ffd3fa1c230ad682a8"
+    },
+    {
+      "signature": "_listing_storage_read_v1(text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "e99c82373364087fd22e86f763ae213d4e944df48edce1175df4360c307c1a5f"
+    },
+    {
+      "signature": "_taxonomy_assert_contract_v2(text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "d6bc157b2d104d3685dd3e640c45689336a0ef10c430c48f82a2e50748aa9fb1"
+    },
+    {
+      "signature": "_taxonomy_node_json_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "dbe87eec6c404067b2fe556e916f0c33fdb11f4761419094e04127974f08d960"
+    },
+    {
+      "signature": "_taxonomy_path_json_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "1b3af9d1029e9fc4c6fc17447ba932e6e7dcf824d7e27ebc633d3ddd687c7764"
+    },
+    {
+      "signature": "_taxonomy_visible_v2(uuid,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "97fcad09a8e1970b8f4478282e753ce0290d2f7b6f7b33dd8bad54bbc91a1efc"
+    },
+    {
+      "signature": "cancel_active_qr_after_cart_change()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "c1eba23a5fa0d19407e78baca08ca0f9527f272ff30a9ef3ce988fdbd6e887c3"
+    },
+    {
+      "signature": "cancel_active_qr_after_cart_item_change()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "5fcad6b0d85706c009137117235927e9de3ae9732f67483546a231917ba5ba95"
+    },
+    {
+      "signature": "catalog_gtin_v1(text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "83be389a8608f49ad335e851f82a4043d78285a1e1486ece8e5315f07d53ce6b"
+    },
+    {
+      "signature": "catalog_listing_media_read_v1(uuid[])",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "61b705038a4309bf401a17fdb4a44eeb54b41f34a24936564fb0113d07633863"
+    },
+    {
+      "signature": "catalog_normalize_v1(text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "definition_sha256": "a29d53b4ebcfd365b8ecf8ca4e81307c13ea8da4ae0870e580869310759893d0"
+    },
+    {
+      "signature": "confirm_qr_session(text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "6692ec12f54320ca999f20af8e7db36b2b49df1c6d5db448b42c90dddb5d72ed"
+    },
+    {
+      "signature": "create_chat_message_notification()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "90d8b0338ee7e4674f371fa5e004bf8bb213ef51e3e133764dafbf4f3c1a2b42"
+    },
+    {
+      "signature": "create_qr_session(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "43c6bcf691e2b16cc104d60ee942163ee8d05b22b7315150148c0fa974e17b36"
+    },
+    {
+      "signature": "create_verified_purchase_notification()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "ebaca732fc281199fc689366c6036dbc362111c84acdf1d0e17d0f4659efb96c"
+    },
+    {
+      "signature": "decide_catalog_submission_v1(uuid,text,uuid,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "c62d4464c86c2dad4110dc75f11398455b78da3ba6d631a1db0a4440cb0d7a88"
+    },
+    {
+      "signature": "delete_current_customer_account()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "4af953584f17ce9f3c8d15ee5e35b0292d6ececdac67b61356b3961c4815475e"
+    },
+    {
+      "signature": "delete_customer_saved_location(uuid)",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "3ef65023c9300ab59f851011c2ab93ecda15a648a1a9a17c9c3614333a809c05"
+    },
+    {
+      "signature": "delete_product_review(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "3561809302ee8f3501572150db07d375b5ce7646fa82be8365d3e90e421fe9ab"
+    },
+    {
+      "signature": "enforce_active_media_storage_contract()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "20434d06828682a54a5b30d51b237032c64a8b9e09bb9d0afc8dc480f01b9c92"
+    },
+    {
+      "signature": "enforce_product_review_evidence()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "d5d758c19248975329ef2fb83fa1b5ed6f8d5c95b808973a3b1fd73903731e45"
+    },
+    {
+      "signature": "enforce_qr_product_snapshot()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "fa40428702f75348108a8b6b794925fbed1828845cca85a301910ffdcf24adca"
+    },
+    {
+      "signature": "enforce_verified_transaction_item_snapshot()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "a9c04a5f755fa3a140a296b70c9e964518295f2b09245ec744be16d0cbfcbe1b"
+    },
+    {
+      "signature": "get_customer_conversations()",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "05e0cbdcfdf33ff139e2bc828e57b829852ee82fe581a85d9fb600e43477a8ca"
+    },
+    {
+      "signature": "get_customer_unread_chat_count()",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "d75db1bde2c4abf5a8132bdbfcbc477a30a4cfd19320182803ce697ba6dce0cd"
+    },
+    {
+      "signature": "get_product_review_eligibility(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "b072ec2185fa3ae4ef49f1199d618cd9a406fa40005b7d9de847c078373b777c"
+    },
+    {
+      "signature": "get_product_reviews(uuid,integer,integer)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "299532c9d9844aa3aa8ed0762733c3ddc237deb59b427992daa0036c8e92a059"
+    },
+    {
+      "signature": "get_qr_session_for_verification(text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "18b5ef2397b47ce52cef4ffe91366ce23a038fb549cf7091b3cbdf170e86d7d0"
+    },
+    {
+      "signature": "handle_new_user()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "b1474fe5a77676127536a469c715dbf3031d7d9fd673eda6d70eec95685e7e36"
+    },
+    {
+      "signature": "handle_verified_shop_rating_change()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "9ba2d67830a24d60bd4300b05474d231c92f7d1cdcf67f594f58a865fb06830b"
+    },
+    {
+      "signature": "merchant_catalog_categories_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "16a6e101e52cd8f90f2bdc3b6c44e3e89c127c3df1e8f5cf37ee28f5be85cf3f"
+    },
+    {
+      "signature": "merchant_catalog_lookup_v1(uuid,text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "771362b22d73c09b2bdd4a8b534c112378444ed1198f0b017b2a73cd19eb8b7c"
+    },
+    {
+      "signature": "merchant_catalog_search_v1(uuid,text,integer,integer)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "4119834df4eadf8265ce161acf8d8445f02e32e2ce70287d9acac03caa93af4f"
+    },
+    {
+      "signature": "merchant_change_listing_images_v1(uuid,text,uuid,uuid[])",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "ff4b8cfe95169042c51f86d8c3bc8874c5556049c3a351072ade8afe6bd65e9c"
+    },
+    {
+      "signature": "merchant_listing_media_v1(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "44be179f5791114f2820a18176ba7d7d6054e3117e364d6b9417e9b49debc112"
+    },
+    {
+      "signature": "merchant_operations_read_v1(uuid,integer,integer)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "8c4133c5ce21045d724730cef732ebab458273ae6b50fb0fd45bfb0715b8a08c"
+    },
+    {
+      "signature": "merchant_prepare_listing_image_v1(uuid,text,integer)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "3806b0e77167d36dad850592198d83d2a8738f93ade66f4e99b229ca3be3da59"
+    },
+    {
+      "signature": "merchant_submit_product_v1(uuid,uuid,jsonb)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "definition_sha256": "7d37752573009d6f08f270a1606c3ce589f65413c44bc79a044c0f838c8c2c3c"
+    },
+    {
+      "signature": "prevent_profile_role_client_escalation()",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "8671800fb14c4aa7b45b8aabe6a0916ef3f31dfa2e28b746568e757556c6dd04"
+    },
+    {
+      "signature": "refresh_product_rating_after_review()",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "42ce86cdc7bd142f827f99595c6591d69edd771f90ca15240c36882018b492c9"
+    },
+    {
+      "signature": "refresh_verified_shop_rating(uuid)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "85256176e88aa281ab0cf2500281cae495a7ef5714e51a34a5f2d9d00df818b7"
+    },
+    {
+      "signature": "set_default_customer_saved_location(uuid)",
+      "security_definer": false,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "e397fa8195cfe9b162cc418ac98850a22429bc9cf370335dd6453d00d08e1ee4"
+    },
+    {
+      "signature": "set_updated_at()",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "5c176e1501b36aa53e1ec08c006fc19faf0e76bdda92bae721165678b07e3f92"
+    },
+    {
+      "signature": "submit_product_review(uuid,integer,text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "0fb3a0617a4b8780e7fad086fe9cf2f82bee61b6032c611f3b051d3d5304db54"
+    },
+    {
+      "signature": "submit_verified_shop_rating(uuid,integer)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "85b1ea84769574dfe95700edae3675e086289244e7b2809ddc9556b70252c441"
+    },
+    {
+      "signature": "taxonomy_breadcrumb_v1(uuid,text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "da78b5373d087f1eeaee7812127a7cb666c0cd748489e51462964937c71452bb"
+    },
+    {
+      "signature": "taxonomy_breadcrumb_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "ae91b134751687c1ae8224b3f50ebf1108f2be8124468269a5d00d9f199e7fac"
+    },
+    {
+      "signature": "taxonomy_capabilities_v2(text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "4f7501c2fa8132a91b7fd5f0362569f7656c6c2f83e1368bcf42e2c80d1b75d2"
+    },
+    {
+      "signature": "taxonomy_children_v1(uuid,text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "1223f57616a59aee0a3599bc81b75b5095c8132a46fa753bc8375e83ebda87c8"
+    },
+    {
+      "signature": "taxonomy_children_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "1b7cc879b485e25b73de98e66669523185b6948423d976fafcb9b0a3dd1e1f49"
+    },
+    {
+      "signature": "taxonomy_descendants_v1(uuid,text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "cf7bfbf23fa77fb7b1c4b67eadf8434b390d88bbec063a2adb48f281e237786e"
+    },
+    {
+      "signature": "taxonomy_descendants_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "9f8b65acc2dc4b3884aa60b47c36bf1d8d89bc90a981a8e09ff382e0b0148240"
+    },
+    {
+      "signature": "taxonomy_exact_leaf_v1(uuid,text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "77276a4f1d0c2c537682a22ad9fca9e66c9b4a333d8b42f0c3b4d58375bb8ab7"
+    },
+    {
+      "signature": "taxonomy_exact_leaf_v2(uuid,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "c2c667c7138bd330dec3e644009c672468391d42e6b9ef31786464b837fcfa5e"
+    },
+    {
+      "signature": "taxonomy_resolve_alias_v1(text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "7c52c67e74030dbfc742a10ea68e6c647bcdaa9e4f3919ea3cedc4e3cfeda893"
+    },
+    {
+      "signature": "taxonomy_resolve_alias_v2(text,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "6275979ba224e4afd4063ef6d118f396b73ad373963b022cbbdf011682725baa"
+    },
+    {
+      "signature": "taxonomy_roots_v1(text)",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "98055db78d6604ceee542304314f4d35b1eb6919e1a8c90aa5d9122b76eeca57"
+    },
+    {
+      "signature": "taxonomy_roots_v2(text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "10ca793cd23e74dcc06997f85b8df2a30253f6654852b451d97097d07d1e3fa6"
+    },
+    {
+      "signature": "taxonomy_search_context_v1(text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "b096f0ff5d856a86452edb350957bb9e35ed1ff915e93e0486951abeb41267ff"
+    },
+    {
+      "signature": "taxonomy_search_context_v2(text,text,text,boolean)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "8bec932c3b641bac880c0a56425176c4e47d2e697225b677c1f8045e5c0e88e1"
+    },
+    {
+      "signature": "taxonomy_set_preview_v2(boolean,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "anon": false,
+      "authenticated": false,
+      "service_role": true,
+      "definition_sha256": "611092c556a118986b580d93ebc02e9dfbbcae26332e565486d83d42e04b0b14"
+    },
+    {
+      "signature": "update_product_review(uuid,integer,text,text)",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "anon": false,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "b08f1be61d9527d8835bdb706c2291d8b68c543ad5b77d4f856387d18bf77aa2"
+    },
+    {
+      "signature": "validate_taxonomy_category_hierarchy()",
+      "security_definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "anon": true,
+      "authenticated": true,
+      "service_role": true,
+      "definition_sha256": "90d645829bd82ecd1740d62e2ee1d7c033b119265487d26236ea685227454ae7"
+    }
+  ],
+  "tables": [
+    {
+      "name": "addresses",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "banners",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "brands",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "cart_items_v2",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "carts",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "catalog_media_config",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "categories",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "chat_messages",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "customer_saved_locations",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "legal_consents",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "listing_images",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "notifications",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "order_items",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "orders",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "product_identifiers",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "product_identity",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "product_submission_decisions",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "product_submissions",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "products",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "profiles",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "qr_session_items",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "qr_sessions",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "reviews",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "shop_products",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "shop_ratings",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "shops",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "storage.objects",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_alias_targets",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_aliases",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_contract_config",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_id_allocations",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_import_runs",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "taxonomy_node_relationships",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "verified_transaction_items",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "verified_transactions",
+      "rls": true,
+      "force_rls": false
+    },
+    {
+      "name": "wishlist",
+      "rls": true,
+      "force_rls": false
+    }
+  ],
+  "policies": [
+    {
+      "schemaname": "public",
+      "tablename": "addresses",
+      "policyname": "addresses_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "addresses",
+      "policyname": "addresses_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "fc64567e52ae445914f43f41cf8d0b4c81a93676c16d513c2c019c3b0fdd3596"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "addresses",
+      "policyname": "addresses_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "addresses",
+      "policyname": "addresses_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "9d82ff203e53539216f1a73bf19694e0ccd513d58bdedd28d812f263cbc32c14"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "banners",
+      "policyname": "banners_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "b5faac0ad69504126bac1cc15bec47c3de575d3db9dde4c3f534586dbc3efe3d"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "brands",
+      "policyname": "brands_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "e42cb0dfdf2246821b67d75beee34ca534bdcb154db6c6d35b3f67dc577b8193"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cart_items_v2",
+      "policyname": "cart_items_v2_delete_own_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "6debf9dcb0a6c6d90557f7cd9c2e65a279e527e2a2a24e303b942a379cc780d8"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cart_items_v2",
+      "policyname": "cart_items_v2_insert_own_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "eb86a7f1b1d4852c806074a21f591aa3692b189e5bcb3dd1945eaf0db946f5d3"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cart_items_v2",
+      "policyname": "cart_items_v2_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "98c8efda66045cd895b01e158d02e3943ce39df7deb350ae458371b4badd03e8"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cart_items_v2",
+      "policyname": "cart_items_v2_update_own_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "6565e9d9974a02b0c0cf86e6c8605952459713268fd329eb7f25351d6eb3b4d8"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "carts",
+      "policyname": "carts_delete_own_unverified",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "337ee424281bac1eb757e9868e3eaf153ed1960099cba9cb1b733533ed8d1bbc"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "carts",
+      "policyname": "carts_insert_own_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "5a2358f06045bcdda69fb886496ec332dc8292b48922f239ee36af95cd931908"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "carts",
+      "policyname": "carts_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "carts",
+      "policyname": "carts_update_own_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "b5f097c97324c8fa3e3139dcf3f0a37cf88a13b09d7087a3afa04b2e392ac149"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "categories",
+      "policyname": "categories_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "e42cb0dfdf2246821b67d75beee34ca534bdcb154db6c6d35b3f67dc577b8193"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "chat_messages",
+      "policyname": "chat_messages_insert_sender",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "08f9d1758fe465ef8d02959708d21f303ca3836a0c70fdab901fba697f5372b0"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "chat_messages",
+      "policyname": "chat_messages_select_participant",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "0625336ddd0ee6bf9a49530032992ff0954c68bbf272d0515a6fbe44167bb52a"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "chat_messages",
+      "policyname": "chat_messages_update_receiver",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "a49bcc0d428a3fdc217720f6d91dba13f6833110f07eee801ca4c75e05e65365"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "customer_saved_locations",
+      "policyname": "customer_saved_locations_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "customer_saved_locations",
+      "policyname": "customer_saved_locations_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "fc64567e52ae445914f43f41cf8d0b4c81a93676c16d513c2c019c3b0fdd3596"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "customer_saved_locations",
+      "policyname": "customer_saved_locations_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "customer_saved_locations",
+      "policyname": "customer_saved_locations_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "9d82ff203e53539216f1a73bf19694e0ccd513d58bdedd28d812f263cbc32c14"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "legal_consents",
+      "policyname": "legal_consents_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "listing_images",
+      "policyname": "listing_images_owned_or_published",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "b395d19a2f67950940c2c9c2b0d57a828a6433901803e45c21b2eccfd6700b7c"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notifications",
+      "policyname": "notifications_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notifications",
+      "policyname": "notifications_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notifications",
+      "policyname": "notifications_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "9d82ff203e53539216f1a73bf19694e0ccd513d58bdedd28d812f263cbc32c14"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "order_items",
+      "policyname": "legacy_order_items_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "dfac5fe4368fb7616bfbf22b961fe8f596408f92c54b85ff4f39990ee934242e"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "order_items",
+      "policyname": "legacy_order_items_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "cc695ecb3a4033e1a6bfb1b4d7a8ae13cedd5554d76bbaef7b7fcaf8b5180378"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "orders",
+      "policyname": "legacy_orders_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "fc64567e52ae445914f43f41cf8d0b4c81a93676c16d513c2c019c3b0fdd3596"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "orders",
+      "policyname": "legacy_orders_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_identifiers",
+      "policyname": "catalog_identifiers_public",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "cef5f09fd472e8e66e8298a544c9d1e8c95c5f4f10923d029a7da6b3a3b29624"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_identity",
+      "policyname": "catalog_identity_public",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "cef5f09fd472e8e66e8298a544c9d1e8c95c5f4f10923d029a7da6b3a3b29624"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_submission_decisions",
+      "policyname": "catalog_decisions_owned",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "06157e00501d4addc0d7e08ec2766f05a9d296f997fd6620f64761addc6773c7"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_submissions",
+      "policyname": "catalog_submissions_owned",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "db15366f27357ceecf42abf81c039dad5042c8517b3ed85ba38df8cc4959f3b3"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "products",
+      "policyname": "products_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "e42cb0dfdf2246821b67d75beee34ca534bdcb154db6c6d35b3f67dc577b8193"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "profiles",
+      "policyname": "profiles_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "73606a7e2ac5fb3be062cbab27b88af3a4a8b515bb30b854df548f6f4d563ec6"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "profiles",
+      "policyname": "profiles_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "2b31c9fe7d30132055cc51e494bc9937f2c4f53923e2b7ce5b4ad746d36fcdf6"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "profiles",
+      "policyname": "profiles_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "8823b059b542805283c94117f500cc8052bbe25c206a72ee2c05ed31b0b6b8f4"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "qr_session_items",
+      "policyname": "qr_session_items_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "a819653a90fa4cc0539a32645414b11148deb0f317400017054d6fabe88284b6"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "qr_sessions",
+      "policyname": "qr_sessions_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "reviews",
+      "policyname": "reviews_read_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "ccafcf896cc728d9d19350f7a23fc89cca034cda8c5c92ebdb23a7d3bb435b38"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_products",
+      "policyname": "shop_products_owner_create_role_gated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "78a40b6bde23cc127fe791c4dfc17ad8e785663ec0238c35f4d7b19bc54fd73c"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_products",
+      "policyname": "shop_products_owner_delete_role_gated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "207fe7686662a17592e592134813bf076755512b719df7cc2fb3268c7456b422"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_products",
+      "policyname": "shop_products_owner_read_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "e912d11c19abb96e77ce9bb0db5c8a104228d098eafe6c4b37b72abeb78f8950"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_products",
+      "policyname": "shop_products_owner_update_role_gated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "c192db8e649469490fd843ca67da2226c99c6cd42f24ce2e2833312988b1f602"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_products",
+      "policyname": "shop_products_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "2aa6b3e844655a7f78168e81520133ea24311f26a6e61cfe8c275c343e310b67"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shop_ratings",
+      "policyname": "shop_ratings_select_participant",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "957f4f018edb358e97f695d1468d72e2fe53ba0187a763f8a7966893262995c7"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shops",
+      "policyname": "shops_owner_create_role_gated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "80996dadfccc4bab65b03b5fde8265ba33ff4e240c7e5043e17b8961ca884a90"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shops",
+      "policyname": "shops_owner_read_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "6f8afdddae5f988847dc12522bead9e58e73e71eaf3e705e920eecbc1616cfa1"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shops",
+      "policyname": "shops_owner_update_role_gated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "expression_sha256": "e073554c3fb48f96a4e1188c075dc3585e22177a575a0050cc06831852e7f792"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shops",
+      "policyname": "shops_read_active",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "e42cb0dfdf2246821b67d75beee34ca534bdcb154db6c6d35b3f67dc577b8193"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "verified_transaction_items",
+      "policyname": "verified_transaction_items_select_participant",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "2eb420d0c62bdcc31f217ea9f32f9396cd80386a332993dd387890682170648d"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "verified_transactions",
+      "policyname": "verified_transactions_select_participant",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "fc1108082e32e09104c5b26d50228b38f85f0465f3d48d1db32592caceb2ef5c"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "wishlist",
+      "policyname": "wishlist_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "wishlist",
+      "policyname": "wishlist_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "fc64567e52ae445914f43f41cf8d0b4c81a93676c16d513c2c019c3b0fdd3596"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "wishlist",
+      "policyname": "wishlist_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "682d5793c0485d0a428ba17533ca7475df755abaf9f1185f4a4816b5d5047f81"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "policyname": "listing_media_owned_upload",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "expression_sha256": "f763ad0042c311a79fecd80853ef3a3701df6e0474af04907f580789140fe0d7"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "policyname": "listing_media_safe_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon,authenticated}",
+      "cmd": "SELECT",
+      "expression_sha256": "c722cd71e4949c9979a933a20c1024fc61932e5251f9cf26c1ffacdc8fa6caf3"
+    }
+  ],
+  "buckets": [
+    {
+      "id": "listing-media",
+      "public": false,
+      "file_size_limit": "8388608",
+      "allowed_mime_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ]
+    }
+  ],
+  "config": [
+    {
+      "singleton": true,
+      "max_listing_photos": 6,
+      "max_photo_bytes": 8388608,
+      "decisions_enabled": false
+    }
+  ],
+  "component_sha256": {
+    "functions": "61c2fea7b365febd4245f5f90b04727787f72a1b4cfe51d1e67439de743da66e",
+    "tables": "eb52c2868a5f20eabea57a2baa7babb6783eef15ae902b48a925bb3c0a28c724",
+    "columns": "d91361f896d48badb64cbb9101889abac1ce6ddf88d6605b59479509e42b8a18",
+    "policies": "eab2241bc778e9142b2dc9e583dd69d6ca9f46a351a6ddc926d92dbe7d011661",
+    "indexes": "6ce8b4f6d300865653917d48d88066e68f58aacbb21896100dfa1904712ec9db",
+    "constraints": "76feed4012573760126f30298aba2041082eb68f8d9dd0f6f5b4572e5863f25f",
+    "triggers": "6b22d1a5f237606f5cc8068fab7d6739167eaa44436c441751f167328fa66fe3",
+    "grants": "ffd2d5c390bb13bd8986486efaf81a2193a52435e6d6d10f901f52165203718d",
+    "buckets": "0a65d744a9fcb68f12257525eed717fc7b324db68bec11742de119d2c715b00b",
+    "config": "0242f4fc511dd9a4eefa0e9c204880808c7e24ebeeb5227e1d687f8405261620",
+    "ledger": "c07534dfadf38e6f937365e6b26198a6b934c5d93038412216b5a489906538e9"
+  },
+  "remote_authorized": false,
+  "physical_two_device": "OPEN"
+}

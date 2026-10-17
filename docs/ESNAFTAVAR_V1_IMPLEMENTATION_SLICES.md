@@ -516,6 +516,21 @@ acknowledgements; assert both JWT subject and stored user remain consistent.
 Response staging must protect shared Auth before mutation, not only detect the
 problem afterwards. The prior delivery's test counts do not supersede that FAIL.
 
+### J1 — Base-core backend and real-repository local rehearsal (2026-10-17)
+
+After integrated J0 (`c801292b`), canonical §4.5 defines a bounded local package.
+Audit the existing core runtime contracts, install only the explicit unchanged
+Development base + A/operations chain into a fresh owned local stack, and execute
+actual Merchant and matching Customer repositories against Auth/PostgREST/Storage.
+Include deliberately broken schema/grant/policy/Storage variants, role/owner
+denials, default-OFF assertions and exact source/schema fingerprints. Preserve the
+existing extended A–I acceptance runners; this narrower profile supplements them.
+
+No runtime feature, new migration, provider or remote apply is authorized by J1.
+Use [handoff and reproduction](MERCHANT_PILOT_BACKEND_HANDOFF.md) and the dated
+`merchant_pilot_backend_{contract,acceptance}.json` artifacts. Missing real backend,
+callback/mail, physical/release and operational evidence still leaves J OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required
