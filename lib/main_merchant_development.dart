@@ -1,28 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:t_store/core/supabase/authenticated_session_key.dart';
-import 'package:t_store/features/notifications/data/repositories/push_backend_adapter.dart';
-import 'package:t_store/features/notifications/data/repositories/push_installation_store.dart';
-import 'package:t_store/features/notifications/domain/push_contract.dart';
-import 'package:t_store/features/notifications/domain/push_coordinator.dart';
-import 'package:t_store/features/merchant_promotions/data/supabase_merchant_promotion_repository.dart';
-import 'package:t_store/features/commerce_ledger/data/supabase_commerce_ledger_repository.dart';
-import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
-import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
-import 'package:t_store/features/reviews/data/repositories/supabase_purchase_evaluation_repository.dart';
-import 'package:t_store/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart';
 import 'package:t_store/core/supabase/supabase_config.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
-import 'package:t_store/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:t_store/features/cart/data/repositories/qr_session_repository_impl.dart';
-import 'package:t_store/features/merchant/data/supabase_merchant_repository.dart';
-import 'package:t_store/features/merchant/data/supabase_catalog_media_repository.dart';
-import 'package:t_store/features/merchant/data/supabase_merchant_operations_repository.dart';
-import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/merchant_app.dart';
-import 'package:t_store/features/merchant/merchant_services.dart';
-import 'package:t_store/features/notifications/data/repositories/notification_preferences_repository.dart';
-import 'package:t_store/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:t_store/features/merchant/runtime/merchant_runtime.dart';
 
 /// Explicit local host. It cannot connect to Production or Development cloud.
 /// Remote enablement and mobile callback/provider setup require separate review.
@@ -49,86 +29,23 @@ SupabaseConfig createMerchantLocalConfig({
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final config = createMerchantLocalConfig();
-  await SupabaseService.initialize(config: config);
-  final service = SupabaseService.instance;
-  // Local composition only; the real provider is still deliberately absent.
-  final pushBackend = SupabasePushBackend(
-    service.client,
-    deployed: const bool.fromEnvironment('MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED'),
-  );
-  const pushProvider = UnconfiguredMobilePushProvider();
+  await SupabaseService.initialize(config: createMerchantLocalConfig());
   runApp(
     MerchantApp(
-      services: MerchantServices(
-        merchants: SupabaseMerchantRepository(client: service.client),
-        promotions: const bool.fromEnvironment('MERCHANT_PROMOTION_V1_ENABLED')
-            ? SupabaseMerchantPromotionRepository(service.client)
-            : null,
-        catalogMedia: SupabaseCatalogMediaRepository(service.client),
-        operations: SupabaseMerchantOperationsRepository(service.client),
-        statement: const bool.fromEnvironment('MERCHANT_STATEMENT_V1_ENABLED')
-            ? SupabaseCommerceLedgerRepository(service.client)
-            : null,
-        rewardProgram:
-            const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
-                const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')
-            ? SupabaseRewardProgramRepository(service.client)
-            : null,
-        trustCommerce: const bool.fromEnvironment('TRUST_COMMERCE_V1_ENABLED')
-            ? SupabaseTrustCommerceRepository(service.client)
-            : null,
-        evaluations: const bool.fromEnvironment('REVIEWS_V2_ENABLED')
-            ? SupabasePurchaseEvaluationRepository(service.client)
-            : null,
-        purchaseEvidence:
-            const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
-                const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
-                const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')
-            ? SupabasePurchaseEvidenceRepository(service.client)
-            : null,
-        credentials: SharedMerchantCredentials(
-          AuthRepositoryImpl(supabaseService: service),
+      services: createMerchantServices(
+        SupabaseService.instance,
+        qrClaims: const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED'),
+        rewardEarning: const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED'),
+        couponCheckout: const bool.fromEnvironment(
+          'COUPON_CHECKOUT_V1_ENABLED',
         ),
-        notifications: NotificationRepositoryImpl(supabaseService: service),
-        qr: QrSessionRepositoryImpl(
-          supabaseService: service,
-          claimsEnabled:
-              const bool.fromEnvironment('QR_CLAIMS_V2_ENABLED') ||
-              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
-              const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
-          rewardEarningEnabled:
-              const bool.fromEnvironment('REWARD_EARNING_V1_ENABLED') ||
-              const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED'),
-          couponCheckoutEnabled: const bool.fromEnvironment(
-            'COUPON_CHECKOUT_V1_ENABLED',
-          ),
+        statement: const bool.fromEnvironment('MERCHANT_STATEMENT_V1_ENABLED'),
+        trust: const bool.fromEnvironment('TRUST_COMMERCE_V1_ENABLED'),
+        reviews: const bool.fromEnvironment('REVIEWS_V2_ENABLED'),
+        promotions: const bool.fromEnvironment('MERCHANT_PROMOTION_V1_ENABLED'),
+        pushSchema: const bool.fromEnvironment(
+          'MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED',
         ),
-        preferences: pushBackend.deployed
-            ? pushBackend
-            : LocalNotificationPreferencesRepository(),
-        pushFactory: (onOpen) => PushCoordinator(
-          provider: pushProvider,
-          registry: pushBackend,
-          currentIdentity: () => service.currentUser == null
-              ? null
-              : PushIdentity(
-                  service.currentUser!.id,
-                  NotificationAppRole.merchant,
-                ),
-          currentSessionKey: () => authenticatedSessionKey(service.client),
-          lookup: pushBackend.lookup,
-          onOpen: onOpen,
-          installationId: 'not-loaded',
-          installations: LocalPushInstallationStore(
-            NotificationAppRole.merchant,
-          ),
-          platform: defaultTargetPlatform == TargetPlatform.iOS
-              ? PushPlatform.ios
-              : PushPlatform.android,
-        ),
-        sessionChanges: service.authStateChanges.map((s) => s.session?.user.id),
-        currentUserId: () => service.currentUser?.id,
       ),
     ),
   );

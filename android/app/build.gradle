@@ -8,6 +8,7 @@ plugins {
 // Only a path is supplied through the environment. Passwords and the keystore
 // stay outside the checkout, including ignored files inside the checkout.
 apply from: rootProject.file("release-signing.gradle")
+apply from: rootProject.file("merchant-pilot.gradle")
 def releaseInputs = resolveExternalReleaseSigning(System.getenv("ESNAFTAVAR_SIGNING_PROPERTIES"))
 def keystoreProperties = releaseInputs.properties
 def releaseStoreFile = releaseInputs.storeFile
@@ -26,6 +27,27 @@ tasks.register("verifyReleaseSigning") {
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
+    def pilotRequested = gradle.startParameter.taskNames.any {
+        it.tokenize(":").last().contains("MerchantPilot")
+    }
+    def pilotPackaging = taskGraph.allTasks.any {
+        it.project == project && it.name.matches("(assemble|bundle|package|install)MerchantPilot.*")
+    }
+    if (pilotPackaging && !pilotRequested) {
+        throw new GradleException("Merchant pilot packaging requires an explicit pilot flavor and target.")
+    }
+    if (pilotRequested) {
+        def target = new File((project.findProperty("target") ?: "").toString())
+        if (!target.isAbsolute()) target = new File(rootProject.projectDir.parentFile, target.path)
+        if (target.canonicalFile != new File(rootProject.projectDir.parentFile, "lib/main_merchant_pilot.dart").canonicalFile) {
+            throw new GradleException("Merchant pilot flavor requires its isolated pilot entrypoint.")
+        }
+        // An unconfigured debug artifact can only show the safe setup screen.
+        // Every release task validates configuration before compiling/signing.
+        if (gradle.startParameter.taskNames.any { it.contains("Release") }) {
+            validateMerchantPilotDefines((project.findProperty("dart-defines") ?: "").toString())
+        }
+    }
     // Separate development installation for Merchant. Customer artifacts keep
     // their existing flavor, identity, signing and entrypoint contracts.
     def merchantRequested = gradle.startParameter.taskNames.any {
@@ -75,7 +97,7 @@ gradle.taskGraph.whenReady { taskGraph ->
             task.name.toLowerCase().matches("(assemble|bundle|package).*release")
     }
     def explicitReleaseFlavor = gradle.startParameter.taskNames.any { taskName ->
-        taskName.contains("ProductionRelease") || taskName.contains("DevelopmentRelease")
+        taskName.contains("ProductionRelease") || taskName.contains("DevelopmentRelease") || taskName.contains("MerchantPilotRelease")
     }
     if (releasePackagingRequested && !explicitReleaseFlavor) {
         throw new GradleException("Customer release packaging requires an explicit Android flavor.")
@@ -129,6 +151,12 @@ android {
     }
     flavorDimensions "default"
     productFlavors {
+        merchantPilot {
+            dimension "default"
+            applicationIdSuffix ".merchant.pilot"
+            resValue "string", "app_name", "EsnaftaVar Esnaf Pilot"
+            manifestPlaceholders = [authCallbackScheme: "com.esnaftavar.app.merchant.pilot"]
+        }
         merchantDevelopment {
             dimension "default"
             applicationIdSuffix ".merchant.dev"

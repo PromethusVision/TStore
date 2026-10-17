@@ -1,0 +1,51 @@
+// Offline Gradle execution, no signing material or network requests:
+// --init-script ../tool/test_merchant_pilot_build.gradle :app:testPilotDefines
+gradle.projectsEvaluated {
+    def app = gradle.rootProject.findProject(':app')
+    if (app == null) return
+    app.tasks.register('testPilotDefines') {
+        doLast {
+            def validate = app.ext.validateMerchantPilotDefines
+            def encode = { Map values -> values.collect { k, v ->
+                Base64.encoder.encodeToString("${k}=${v}".getBytes('UTF-8'))
+            }.join(',') }
+            def valid = [MERCHANT_PILOT_ENABLED:'true',
+                MERCHANT_PILOT_URL:'https://tnipyxnvhgelwdpykyez.supabase.co',
+                MERCHANT_PILOT_ANON_KEY:'sb_publishable_syntheticPilotOnly12345']
+            int passed = 0
+            def accepted = { String input -> assert validate(input); passed++ }
+            def denied = { String input ->
+                boolean failed = false
+                try { validate(input) } catch (GradleException error) {
+                    assert !error.message.contains('syntheticPilotOnly')
+                    failed = true
+                }
+                assert failed; passed++
+            }
+            accepted(encode(valid))
+            accepted(encode(valid + [FLUTTER_VERSION:'test']))
+            denied(''); denied('not-base64'); denied(encode(valid) + ',' + encode([MERCHANT_PILOT_ENABLED:'true']))
+            valid.keySet().each { key -> def copy = valid.clone(); copy.remove(key); denied(encode(copy)) }
+            ['https://mefhfvrgkwciubeajjeb.supabase.co','http://localhost:54321',
+             'https://tnipyxnvhgelwdpykyez.supabase.co.evil.invalid'].each {
+                denied(encode(valid + [MERCHANT_PILOT_URL:it]))
+            }
+            ['sb_secret_syntheticPilotOnly12345', 'REPLACE_WITH_KEY'].each {
+                denied(encode(valid + [MERCHANT_PILOT_ANON_KEY:it]))
+            }
+            ['QR_CLAIMS_V2_ENABLED','REWARD_EARNING_V1_ENABLED','COUPON_CHECKOUT_V1_ENABLED',
+             'TRUST_COMMERCE_V1_ENABLED','REVIEWS_V2_ENABLED','MERCHANT_STATEMENT_V1_ENABLED',
+             'MERCHANT_PROMOTION_V1_ENABLED','MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED'].each {
+                denied(encode(valid + [(it):'true'])); accepted(encode(valid + [(it):'false']))
+            }
+            denied(encode(valid + [SUPABASE_PRODUCTION_URL:'forbidden']))
+            denied(encode(valid + [UNREVIEWED_FEATURE:'true']))
+            def jwt = { Map payload -> 'e30.' + Base64.urlEncoder.withoutPadding().encodeToString(
+                groovy.json.JsonOutput.toJson(payload).getBytes('UTF-8')) + '.signature' }
+            accepted(encode(valid + [MERCHANT_PILOT_ANON_KEY:jwt([role:'anon',ref:'tnipyxnvhgelwdpykyez'])]))
+            denied(encode(valid + [MERCHANT_PILOT_ANON_KEY:jwt([role:'service_role',ref:'tnipyxnvhgelwdpykyez'])]))
+            denied(encode(valid + [MERCHANT_PILOT_ANON_KEY:jwt([role:'anon',ref:'another-project'])]))
+            println("Merchant pilot build policy: ${passed} PASS")
+        }
+    }
+}

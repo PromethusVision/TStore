@@ -1,0 +1,5 @@
+{
+  "MERCHANT_PILOT_ENABLED": "false",
+  "MERCHANT_PILOT_URL": "https://tnipyxnvhgelwdpykyez.supabase.co",
+  "MERCHANT_PILOT_ANON_KEY": "REPLACE_WITH_APPROVED_NONPRODUCTION_CLIENT_KEY"
+}

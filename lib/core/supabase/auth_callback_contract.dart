@@ -20,6 +20,13 @@ final class AuthCallbackContract {
   final AppEnvironment environment;
   final Uri mobileCallbackUri;
 
+  /// Isolated nonproduction Merchant installation. Customer contracts retain
+  /// their defaults; this identity is not the final store application ID.
+  factory AuthCallbackContract.merchantPilot() => AuthCallbackContract._(
+    AppEnvironment.development,
+    Uri.parse('com.esnaftavar.app.merchant.pilot://login-callback/'),
+  );
+
   factory AuthCallbackContract.forEnvironment(AppEnvironment environment) {
     return switch (environment) {
       AppEnvironment.production => AuthCallbackContract._(

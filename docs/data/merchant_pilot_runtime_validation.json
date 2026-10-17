@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "task": "Merchant Android pilot runtime and account recovery preparation",
+  "baseline_commit": "6b79a4e919b1993528d71bac7c654592109956ad",
+  "branch": "agent/merchant-pilot-runtime",
+  "result": "PASS_LOCAL_PREPARATION_ONLY",
+  "flutter_version": "3.41.9",
+  "validation": {
+    "full_suite": {
+      "log": ".pilot-race-full-final.log",
+      "failed": 0,
+      "existing_skipped": 6,
+      "baseline_passed": 2853,
+      "new_tests": 108,
+      "passed": 2961,
+      "new_tests_in_correction": 32
+    },
+    "analyzer": {
+      "result": "PASS",
+      "issues": 0,
+      "log": ".pilot-race-analyze-final.log"
+    },
+    "targeted_recovery": {
+      "log": ".pilot-race-targeted-final.log",
+      "passed": 77,
+      "failed": 0
+    },
+    "widget_render_capture": {
+      "images": [
+        {
+          "path": "docs/evidence/merchant_pilot/invalid_320.png",
+          "sha256": "87bbba6b96b392f8f00cc305d9e531129d616c4fc404f9b4920556cb44f1447a"
+        },
+        {
+          "path": "docs/evidence/merchant_pilot/invalid_390.png",
+          "sha256": "d9c03c48a82dece2675e247aabe2079951fee4a543decc6075d332bd4439d684"
+        },
+        {
+          "path": "docs/evidence/merchant_pilot/invalid_430.png",
+          "sha256": "a8902a4e782b90525a66e588a02e80fe77936d5ca9c710b2044d24e65b721e44"
+        },
+        {
+          "path": "docs/evidence/merchant_pilot/password_320.png",
+          "sha256": "38eb96aa39636286f13896d1bb38ccc4fa7491ffc7a1c960d37578e05bc25998"
+        },
+        {
+          "path": "docs/evidence/merchant_pilot/password_390.png",
+          "sha256": "b977eeab3dc57fc303f8f112e1f1fd8877f35e123e640a2053aafb5c81a2c35c"
+        },
+        {
+          "path": "docs/evidence/merchant_pilot/password_430.png",
+          "sha256": "2beaf48c37cf60a49f2a8f3cc0c40e7f2704b7fb59ccf022257f08695c84092f"
+        }
+      ],
+      "text_scale": 1.3,
+      "failed": 0,
+      "screen_widths": [
+        320,
+        390,
+        430
+      ],
+      "log": ".pilot-render-final.log",
+      "passed": 9,
+      "current_widget_suite_log": ".pilot-race-targeted-final.log",
+      "render_evidence": "Existing six PNGs unchanged; rendering/layout unchanged by correction; nine widget cases rerun."
+    },
+    "gradle_config_policy": {
+      "log": ".pilot-race-release-compile.log",
+      "passed": 34,
+      "failed": 0
+    },
+    "offline_preflight": {
+      "cases": [
+        {
+          "name": "valid-offline-only",
+          "pass": true,
+          "exit_code": 0
+        },
+        {
+          "name": "disabled",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "production",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "server-key",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "mixed-config",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "economic-activation",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "wrong-target",
+          "pass": true,
+          "exit_code": 2
+        },
+        {
+          "name": "wrong-flavor",
+          "pass": true,
+          "exit_code": 2
+        }
+      ],
+      "passed": 8,
+      "failed": 0,
+      "log": ".pilot-race-preflight.log"
+    },
+    "gradle_packaging_boundaries": {
+      "expected_nonzero_means_rejected": true,
+      "cases": [
+        {
+          "expected_rejection": "requires its isolated pilot entrypoint",
+          "pass": true,
+          "exit_code": 1,
+          "name": "pilot-wrong-target"
+        },
+        {
+          "expected_rejection": "pilot configuration is invalid",
+          "pass": true,
+          "exit_code": 1,
+          "name": "pilot-release-no-config"
+        },
+        {
+          "expected_rejection": "release signing is not configured",
+          "pass": true,
+          "exit_code": 1,
+          "name": "pilot-release-no-signing"
+        },
+        {
+          "expected_rejection": "Merchant release requires a separately authorized release configuration",
+          "pass": true,
+          "exit_code": 1,
+          "name": "local-merchant-release-denied"
+        },
+        {
+          "expected_rejection": "Customer release target must match",
+          "pass": true,
+          "exit_code": 1,
+          "name": "customer-production-wrong-target"
+        },
+        {
+          "expected_rejection": "release signing is not configured",
+          "pass": true,
+          "exit_code": 1,
+          "name": "customer-bundle-signing-preserved"
+        },
+        {
+          "expected_rejection": "release signing is not configured",
+          "pass": true,
+          "exit_code": 1,
+          "name": "pilot-bundle-no-signing"
+        },
+        {
+          "expected_rejection": "Merchant pilot packaging requires an explicit pilot flavor",
+          "pass": true,
+          "exit_code": 1,
+          "name": "aggregate-debug-denied"
+        }
+      ],
+      "passed": 8,
+      "failed": 0,
+      "log": ".pilot-race-packaging.log"
+    },
+    "debug_builds": [
+      {
+        "path": "build/app/outputs/flutter-apk/app-development-debug.apk",
+        "bytes": 224796756,
+        "sha256": "e6ddbf8ed46645b0e2ac289426777cbe31dc840a29c76902118a9d4e46d574d6",
+        "package_id": "com.esnaftavar.app.dev",
+        "callback_scheme": "io.supabase.tstore",
+        "callback_host": "login-callback",
+        "inspection": "aapt2 APK badging and compiled AndroidManifest",
+        "kind": "debug",
+        "distributed": false,
+        "log": ".pilot-race-build-customer.log"
+      },
+      {
+        "path": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+        "bytes": 189404064,
+        "sha256": "bf5d7d77cdfbf8296a5e46dab68f73f1358bb3651d2871e84537edf600776214",
+        "package_id": "com.esnaftavar.app.merchant.dev",
+        "callback_scheme": "com.esnaftavar.app.merchant.dev",
+        "callback_host": "login-callback",
+        "inspection": "aapt2 APK badging and compiled AndroidManifest",
+        "kind": "debug",
+        "distributed": false,
+        "log": ".pilot-race-build-merchant.log"
+      },
+      {
+        "path": "build/app/outputs/flutter-apk/app-merchantpilot-debug.apk",
+        "bytes": 189410976,
+        "sha256": "1f0b7e96ad94167360ef7edd629abe865cefb5a5ebeaa3cba913eed31b046651",
+        "package_id": "com.esnaftavar.app.merchant.pilot",
+        "callback_scheme": "com.esnaftavar.app.merchant.pilot",
+        "callback_host": "login-callback",
+        "inspection": "aapt2 APK badging and compiled AndroidManifest",
+        "kind": "debug",
+        "distributed": false,
+        "log": ".pilot-race-build-pilot.log"
+      }
+    ],
+    "release_compile_only": {
+      "result": "PASS",
+      "abi": "arm64-v8a",
+      "path": "build/app/intermediates/flutter/merchantPilotRelease/arm64-v8a/app.so",
+      "bytes": 6947760,
+      "sha256": "e869837ae87f87d5bf344869eead9fb5975198f0c0812e60c79201217c38cbab",
+      "config": "synthetic offline nonproduction client key; FLUTTER_APP_FLAVOR=merchantPilot",
+      "packaged": false,
+      "signed": false,
+      "executed_on_device": false,
+      "log": ".pilot-race-release-compile.log"
+    },
+    "source_hash_format": "UTF-8 text, CR stripped for Git LF normalization; paths sorted; excludes documentation/evidence",
+    "source_files": [
+      {
+        "path": ".gitignore",
+        "sha256_lf": "7632011fcd6bb7d25a4e0e75a62cde0db5d0362ceb628ba32e89327a89e12e57"
+      },
+      {
+        "path": "android/app/build.gradle",
+        "sha256_lf": "9fa90daf74fbfc2a90905d9ad33039ecd10213ca3e4f1956a1f8a16bc8c99a51"
+      },
+      {
+        "path": "android/merchant-pilot.gradle",
+        "sha256_lf": "cb0efb1f00d6efb0a91e685c232f6a0d19618886c92bd15cebea4bd4c102b28a"
+      },
+      {
+        "path": "lib/core/supabase/auth_callback_contract.dart",
+        "sha256_lf": "f2b4c67dbf8b03b0a6757ba4166d1e925c2c91ff9b98f45a83fc1ebcc1eeccec"
+      },
+      {
+        "path": "lib/core/supabase/supabase_service.dart",
+        "sha256_lf": "12bdf0daf0e590071b8a44ed6ea787852c88cdd67215a401477603962ae5ec59"
+      },
+      {
+        "path": "lib/features/merchant/data/supabase_merchant_recovery_backend.dart",
+        "sha256_lf": "14a94b0cc00d771dcc2fa2bff2235bc1073cb0d3eeb9c42c9b858a9bfa6bc1c4"
+      },
+      {
+        "path": "lib/features/merchant/domain/merchant_account_recovery.dart",
+        "sha256_lf": "3601b65c268753cf89274dfc8546bd8305d4cc229a6b61a7df79c53134bb2e1d"
+      },
+      {
+        "path": "lib/features/merchant/merchant_app.dart",
+        "sha256_lf": "683cad7d2e286260db1366fdb8587bfb86e176c766d48ac32ad3178ba78a9c35"
+      },
+      {
+        "path": "lib/features/merchant/merchant_services.dart",
+        "sha256_lf": "bee7ad41bd747a6a17cfdb0a1a4bc52bc92186fb80b28f4c390d731701384b0b"
+      },
+      {
+        "path": "lib/features/merchant/presentation/merchant_account_recovery_view.dart",
+        "sha256_lf": "91e94c77b300c6668ce90cbee4bd983f286164dbee435d32f0548cb9b028ca9f"
+      },
+      {
+        "path": "lib/features/merchant/presentation/merchant_session_cubit.dart",
+        "sha256_lf": "1bc5d79f5d8866aea1996582d67acbf869e48fd0aa41ee82a9cfa68255678485"
+      },
+      {
+        "path": "lib/features/merchant/runtime/merchant_pilot_config.dart",
+        "sha256_lf": "b281d631fd4cd1bf5b7aaf589aa1db9f3c7251635043b5a1ced619cd6ff7ccc0"
+      },
+      {
+        "path": "lib/features/merchant/runtime/merchant_runtime.dart",
+        "sha256_lf": "7b8658314b80dd46c6e6538deb491eb380bf06e4cc2d087cedcbf347c0e3e260"
+      },
+      {
+        "path": "lib/main_merchant_development.dart",
+        "sha256_lf": "0f1b64511e8a227cd773422c207ffcda6a5987cdf28df648257be97787f2eece"
+      },
+      {
+        "path": "lib/main_merchant_pilot.dart",
+        "sha256_lf": "e272250403d7cb73cbdb0f4f9d205b937e4e8cc0f8b861583536a97117412ff6"
+      },
+      {
+        "path": "test/unit/merchant/merchant_account_recovery_test.dart",
+        "sha256_lf": "27118d609a1638c39e53c25a753948eb3d059c138828cea0fea24fbc9a56f7f0"
+      },
+      {
+        "path": "test/unit/merchant/merchant_pilot_config_test.dart",
+        "sha256_lf": "a0e45caa10ffae191bdae1d87abc02a368a851048fc9b9f0dc005f03629d6e5f"
+      },
+      {
+        "path": "test/unit/merchant/merchant_recovery_backend_test.dart",
+        "sha256_lf": "8a691510f55f9965f8fe9c81f50e66db14a8788a40087a7d862284cbadac8219"
+      },
+      {
+        "path": "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "sha256_lf": "29fbfa7b4d503aa8ba3df4cde75981230effd79766eeeeb6219efb8d7bb308ce"
+      },
+      {
+        "path": "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "sha256_lf": "b8ed39e51648eb8e30498d663f7af73e77594b22c49bf1ecd53c7271a41577d3"
+      },
+      {
+        "path": "tool/merchant_pilot_config.example.json",
+        "sha256_lf": "27d5b72e9faa3c76374b0ed9e386ab683f1506f52ef8b760f25888a9057f73ea"
+      },
+      {
+        "path": "tool/merchant_pilot_preflight.dart",
+        "sha256_lf": "49618372f1fd2b2012ccc0043274e68adb50c9b47e038e1cae897e3c5e4cae20"
+      },
+      {
+        "path": "tool/test_merchant_pilot_build.gradle",
+        "sha256_lf": "e0c809f1601d813a0a4af12f54fb61184415f3e0f112d41da1be60d27157bc41"
+      },
+      {
+        "path": "tool/test_merchant_pilot_packaging.ps1",
+        "sha256_lf": "355ebb96b1d5c4eb7482727bde77c61bd5664cf79b6d29af57562c68e9d14cd4"
+      },
+      {
+        "path": "tool/test_merchant_pilot_preflight.ps1",
+        "sha256_lf": "4d6be8e857693f331d2ce88c854fc8b89fe23f95349f0d3184d332a602cb78b6"
+      }
+    ]
+  },
+  "limitations": [
+    "Pilot debug artifact has no backend configuration and only renders setup-required; do not distribute to merchants.",
+    "Domain/SDK HTTP tests use fakes; no actual remote Auth, SMTP, phone, camera, provider or two-device acceptance.",
+    "Release compile-only uses synthetic client data and produces no signed installable distribution.",
+    "Offline client-key checks are format/project checks, not proof of backend capabilities or remote authorization.",
+    "Existing six conditional test skips are retained; they are not counted as passes.",
+    "APK/build/log files are ignored local evidence; tracked screenshots and this source manifest travel with the branch."
+  ],
+  "recovered_environment_issues": [
+    "Windows cross-drive Kotlin incremental cache error resolved through process-only incremental=false, in-process compiler and worker/memory limits; no tracked Gradle property or dependency change.",
+    "Initial direct Gradle release-compile invocation split an unquoted target argument; corrected quoted argument array passed.",
+    "Expected rejection scripts now explicitly exit zero after all negative cases pass."
+  ],
+  "boundaries": {
+    "push_provider_configured": false,
+    "main_merge": "NONE",
+    "remote_migration_applied": false,
+    "signed_release_created": false,
+    "new_dependency": false,
+    "distribution_ready": false,
+    "new_migration": false,
+    "remote_backend_connection": "NONE",
+    "physical_qr_acceptance": "OPEN",
+    "owner_signing_secret_access": "NONE",
+    "real_email_sent": false,
+    "main_push": "NONE",
+    "production_writes": "NONE",
+    "production_access": "NONE"
+  },
+  "correction_of": "ef216b3a4b1ddd73db1a3cbd62cf42c708cb8026",
+  "integration_reproductions": {
+    "rejected_source_commit": "ef216b3a4b1ddd73db1a3cbd62cf42c708cb8026",
+    "original_supplied_tests_before": {
+      "log": ".pilot-race-before.log",
+      "failed": 2,
+      "test_sha256": "7414797c1a4990161b5831fa7c45febcc45bb063a42ab527e0cd9841140f1efe",
+      "passed": 0
+    },
+    "reported_scenarios_after": {
+      "log": ".pilot-race-reported-after.log",
+      "failed": 0,
+      "fixture_change": "Same real SDK and HTTP ordering; required staging factory added, original assertions retained, diagnostic prints replaced by extra assertions.",
+      "included_in_final_suite": true,
+      "passed": 2
+    },
+    "additional_second_link_reproduction_before": {
+      "log": ".pilot-race-second-link-before.log",
+      "failed": 1,
+      "included_in_final_passing_sdk_suite": true,
+      "passed": 0
+    },
+    "real_sdk_races": {
+      "new_domain_marker_races": 2,
+      "failed": 0,
+      "path": "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+      "passed": 30,
+      "provider": "Supabase SDK with GoTrue 2.18.0, delayed synthetic HTTP and PKCE storage"
+    },
+    "second_provider": false,
+    "second_persisted_auth_store": false,
+    "server_writes_cancelled_claim": false
+  }
+}

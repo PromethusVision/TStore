@@ -284,6 +284,56 @@ contracts and default-OFF capabilities remain. No migration, provider, financial
 activation, Production access or physical J acceptance is introduced.
 Delivery and validation: [Merchant catalog recovery](MERCHANT_CATALOG_RECOVERY_HANDOFF.md).
 
+### 4.4 Merchant Android pilot runtime preparation — 2026-10-17
+
+Following management recovery integration at `6b79a4e9`, the Product Owner
+approved proceeding toward pilot readiness. This increment prepares a bounded,
+nonproduction Android runtime and Merchant account recovery. Existing FROZEN
+product rules remain unchanged; remote access, apply, provision, real email/push,
+physical J and distribution still need their existing explicit authorization.
+
+- Separate `merchantPilot` installation and callback use the temporary technical
+  identifier `com.esnaftavar.app.merchant.pilot`. This is a test identity, not a
+  final store-ID decision. Customer identifiers, entrypoints and routing stay fixed.
+- Dedicated pilot configuration accepts only the existing nonproduction project
+  `tnipyxnvhgelwdpykyez`, HTTPS and client-safe keys. No Customer/local fallback,
+  Production URL, server credential or unreviewed capability activation. A valid
+  offline manifest does not prove a deployed backend or authorize a connection.
+- The common Merchant composition preserves current local opt-ins. The pilot
+  preparation composes the base Merchant surfaces with downstream economic,
+  claims-v2, review, promotion and provider capabilities OFF. This is an initial
+  compatibility/release fixture, not the final pilot feature-selection decision.
+  Final pilot enablement requires reviewed server and matching Customer evidence.
+- Recovery uses the shared Supabase Auth provider and a Merchant-owned serialized
+  navigation gate. Exact pilot callbacks only; a recovery query marker alone is
+  not a verified grant. No self-signup, role grant, owner bypass or new Auth store.
+- Verification hides private routes and overlays; only the captured stable Auth
+  session can update a password. Missing acknowledgement never claims success or
+  repeats a write automatically. On completion, clear the local recovery session
+  and require fresh login/normal merchant authority checks. Account replacement
+  invalidates the grant; same-session token refresh preserves it.
+- Persist only a role-specific boolean recovery-pending marker before exchange.
+  Interrupted recovery blocks workspace on restart until safe cleanup. No password,
+  email, callback token or private draft is written by this marker mechanism.
+- Integration correction to the implementation boundary: GoTrue can mutate its
+  session before returning a verification/update response. Run those requests in
+  disposable, non-refreshing SDK response buffers against the same Auth provider
+  and existing PKCE store. They have no persistent session or application services;
+  the shared client remains the sole application session. Publish a verified,
+  internally consistent, unexpired recovery session only while its captured
+  shared identity is still valid. Never copy a password-update response into the
+  shared session. Observe event snapshots throughout the operation so changing
+  away and back cannot revive a grant. Also fence the preceding pending-marker
+  write. Mixed JWT/user identity cannot silently clear the pending gate. This
+  corrects the existing account-isolation rule; it adds no product permission.
+- Pilot release tasks require the exact target, validated configuration and the
+  existing external pinned-certificate signing proof. Debug keys cannot produce
+  signed release output. An unconfigured debug build shows a safe setup surface.
+
+See [pilot runtime preparation](MERCHANT_PILOT_RUNTIME_HANDOFF.md). Real provider,
+physical two-device acceptance, final signing/distribution and remote deployment
+remain separate gates. No store or live-pilot readiness claim follows from this work.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
