@@ -1106,6 +1106,46 @@ allowance. No token or provider error body enters evidence/claim records.
 Real transport deployment, provider evidence binding, retention review,
 marketing G/O10 and physical-device acceptance remain separately gated.
 
+### 12.2 I1 local client preparation — 2026-10-17
+
+After I0 integrated at `4613988b`, the next authorized local package prepares
+the existing shared mobile transport and Merchant host. No FROZEN rule changes.
+The provider remains unconfigured; the local schema switch defaults OFF, and
+the existing loopback-only Merchant bootstrap remains enforced. Customer layout,
+host binding, provider SDK/configuration and actual delivery are not activated.
+
+- Permission remains an explicit user action. Device enrollment is independent
+  of service/marketing consent; local preferences never become server opt-in.
+  Token rotations subscribe before initial token retrieval and serialize with
+  registration. Logout waits for pending SDK/registration work before revocation.
+  An uncertain write is not cancelled by a timeout or duplicated by another tap.
+- The shared coordinator fences operations with authority revision and stable
+  Auth session identity, including same-user replacement sessions. A refresh of
+  the same Auth session is not replacement. The backend adapter discards stale
+  responses; the server remains the sole live-session/role/ownership authority.
+- Per-app-role local storage contains only an installation UUID and a cleanup
+  marker, persisted before token acquisition. No account, session, token or
+  credential is stored there. An interrupted process requires explicit reconnect:
+  invalidate the previous provider token, persist a fresh installation, then
+  request registration. Never disable an old binding with a new session's rights.
+  A normal same-session exit disables the server binding before deleting the
+  provider token. Failure to revoke, delete or persist cleanup prevents reuse.
+- Recovery does not claim an abandoned server row was disabled or an in-flight
+  message recalled. Generic I0 copy and authenticated record lookup still apply.
+  Provider deletion must positively invalidate the old token or report failure;
+  proving this with a real SDK and reviewing retired-row retention are rollout
+  gates. This conservative local increment does not implement automatic
+  re-enrollment or promise cold-start/background OS delivery.
+- Merchant settings expose pending, permission, connected and recoverable-error
+  states through the shared controls. A validated tap opens the existing inbox,
+  never a payload-supplied privileged route. Account authority loss invalidates
+  listeners and pending lookup; duplicate taps are bounded and deduplicated.
+  Preference/notification reads have a 15-second timeout with retry; writes keep
+  their pending outcome and do not infer success or cancellation.
+
+Full I, G/O10 marketing, Customer host/provider binding, physical-device J and
+Production remain separately gated. No migration or second inbox is introduced.
+
 ## 13. RLS, privacy and migration safety
 
 Server entrypoints derive auth.uid/profile role and exact shop owner; client-supplied

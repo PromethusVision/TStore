@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
+import 'package:t_store/features/notifications/data/repositories/push_backend_adapter.dart';
+import 'package:t_store/features/notifications/data/repositories/push_installation_store.dart';
+import 'package:t_store/features/notifications/domain/push_contract.dart';
+import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:t_store/features/merchant_promotions/data/supabase_merchant_promotion_repository.dart';
 import 'package:t_store/features/commerce_ledger/data/supabase_commerce_ledger_repository.dart';
 import 'package:t_store/features/rewards/data/supabase_reward_program_repository.dart';
@@ -46,6 +52,12 @@ Future<void> main() async {
   final config = createMerchantLocalConfig();
   await SupabaseService.initialize(config: config);
   final service = SupabaseService.instance;
+  // Local composition only; the real provider is still deliberately absent.
+  final pushBackend = SupabasePushBackend(
+    service.client,
+    deployed: const bool.fromEnvironment('MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED'),
+  );
+  const pushProvider = UnconfiguredMobilePushProvider();
   runApp(
     MerchantApp(
       services: MerchantServices(
@@ -92,7 +104,29 @@ Future<void> main() async {
             'COUPON_CHECKOUT_V1_ENABLED',
           ),
         ),
-        preferences: LocalNotificationPreferencesRepository(),
+        preferences: pushBackend.deployed
+            ? pushBackend
+            : LocalNotificationPreferencesRepository(),
+        pushFactory: (onOpen) => PushCoordinator(
+          provider: pushProvider,
+          registry: pushBackend,
+          currentIdentity: () => service.currentUser == null
+              ? null
+              : PushIdentity(
+                  service.currentUser!.id,
+                  NotificationAppRole.merchant,
+                ),
+          currentSessionKey: () => authenticatedSessionKey(service.client),
+          lookup: pushBackend.lookup,
+          onOpen: onOpen,
+          installationId: 'not-loaded',
+          installations: LocalPushInstallationStore(
+            NotificationAppRole.merchant,
+          ),
+          platform: defaultTargetPlatform == TargetPlatform.iOS
+              ? PushPlatform.ios
+              : PushPlatform.android,
+        ),
         sessionChanges: service.authStateChanges.map((s) => s.session?.user.id),
         currentUserId: () => service.currentUser?.id,
       ),

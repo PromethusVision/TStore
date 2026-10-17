@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/notifications/data/models/notification_model.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/domain/push_contract.dart';
@@ -7,21 +8,31 @@ import 'package:t_store/features/notifications/domain/push_contract.dart';
 /// RLS and RPCs derive ownership from auth.uid(); a caller cannot select a user.
 class SupabasePushBackend
     implements PushDeviceRegistry, NotificationPreferencesRepository {
-  SupabasePushBackend(this.client, {this.deployed = false});
+  SupabasePushBackend(
+    this.client, {
+    this.deployed = false,
+    String? Function()? sessionKey,
+  }) : sessionKey = sessionKey ?? (() => authenticatedSessionKey(client));
   final SupabaseClient client;
+  final String? Function() sessionKey;
   @override
   final bool deployed;
   @override
   bool get serverBacked => deployed;
-  void _check(PushIdentity identity) {
-    if (!deployed || client.auth.currentUser?.id != identity.userId) {
+  String _check(PushIdentity identity, [String? expected]) {
+    final key = sessionKey();
+    if (!deployed ||
+        client.auth.currentUser?.id != identity.userId ||
+        key == null ||
+        (expected != null && key != expected)) {
       throw StateError('push_backend_unavailable');
     }
+    return key;
   }
 
   @override
   Future<void> register(PushDeviceRegistration registration) async {
-    _check(registration.identity);
+    final key = _check(registration.identity);
     await client.rpc(
       'register_push_device_v1',
       params: {
@@ -31,12 +42,12 @@ class SupabasePushBackend
         'p_platform': registration.platform.name,
       },
     );
-    _check(registration.identity);
+    _check(registration.identity, key);
   }
 
   @override
   Future<void> disable(PushIdentity identity, String installationId) async {
-    _check(identity);
+    final key = _check(identity);
     await client.rpc(
       'disable_push_device_v1',
       params: {
@@ -44,19 +55,19 @@ class SupabasePushBackend
         'p_app_role': identity.role.name,
       },
     );
-    _check(identity);
+    _check(identity, key);
   }
 
   @override
   Future<NotificationPreferences> read(PushIdentity identity) async {
-    _check(identity);
+    final key = _check(identity);
     final row = await client
         .from('notification_preferences')
         .select('service_enabled,marketing_enabled')
         .eq('user_id', identity.userId)
         .eq('app_role', identity.role.name)
         .maybeSingle();
-    _check(identity);
+    _check(identity, key);
     return NotificationPreferences(
       service: row?['service_enabled'] as bool? ?? true,
       marketing: row?['marketing_enabled'] as bool? ?? false,
@@ -68,7 +79,7 @@ class SupabasePushBackend
     PushIdentity identity,
     NotificationPreferences preferences,
   ) async {
-    _check(identity);
+    final key = _check(identity);
     await client.rpc(
       'set_notification_preferences_v1',
       params: {
@@ -77,19 +88,24 @@ class SupabasePushBackend
         'p_marketing': preferences.marketing,
       },
     );
-    _check(identity);
+    _check(identity, key);
   }
 
   Future<NotificationEntity?> lookup(String id) async {
     final userId = client.auth.currentUser?.id;
-    if (!deployed || userId == null) return null;
+    final key = sessionKey();
+    if (!deployed || userId == null || key == null) return null;
     final row = await client
         .from('notifications')
         .select()
         .eq('id', id)
         .eq('user_id', userId)
         .maybeSingle();
-    if (row == null || userId != client.auth.currentUser?.id) return null;
+    if (row == null ||
+        userId != client.auth.currentUser?.id ||
+        key != sessionKey()) {
+      return null;
+    }
     return NotificationModel.fromJson(row);
   }
 }

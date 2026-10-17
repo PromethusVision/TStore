@@ -1,0 +1,203 @@
+{
+  "status": "PASS",
+  "scope": "I1 local Merchant/shared notification client preparation",
+  "baseline": "4613988bf75564f66e3ebd2b7fffcac13dbca67e",
+  "branch": "agent/merchant-notification-client",
+  "validated_at_utc": "2026-10-17T00:05:49.9376864Z",
+  "tests": {
+    "passed": 2635,
+    "failed": 0,
+    "skipped_existing": 6,
+    "new_regressions": 63,
+    "lifecycle_storage": 33,
+    "adapter_http": 18,
+    "device_preferences_widgets": 9,
+    "merchant_host_widgets": 3,
+    "fake_providers_only": true
+  },
+  "analyzer": "PASS",
+  "merchant_debug_build": "PASS",
+  "customer_debug_build": "PASS",
+  "apk_artifacts": [
+    {
+      "path": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "bytes": 189319796,
+      "sha256": "39c4a86f5f3043a446b8bbd7229194d3a65c25263067fb32925c890f95209172"
+    },
+    {
+      "path": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "bytes": 224784176,
+      "sha256": "6c23ef1042bfafcad297c0ec2aef4ef347fddfb56850071a6c9a9f5226245365"
+    }
+  ],
+  "visual": {
+    "status": "PASS",
+    "widths": [
+      320,
+      390,
+      430
+    ],
+    "text_scale": 1.3,
+    "states": [
+      "pending",
+      "registered"
+    ],
+    "images": [
+      {
+        "path": "docs/evidence/merchant_push_client/pending-320.png",
+        "sha256": "1ee675d4cda4ae31a122728e2153c77ee1f3e6774cc9b2c73649742b0eece6fe"
+      },
+      {
+        "path": "docs/evidence/merchant_push_client/pending-390.png",
+        "sha256": "a516d2570eb8db3f38f500cd2e26109374b59397838a8b018fd366c92cafc6d3"
+      },
+      {
+        "path": "docs/evidence/merchant_push_client/pending-430.png",
+        "sha256": "c584bb0b0fca160b2134459632d9dfb36477980f75ba602a79b8914c525323a8"
+      },
+      {
+        "path": "docs/evidence/merchant_push_client/registered-320.png",
+        "sha256": "30a6d1e72e27e99398f03426538e630c35f7502d4335b9e133de49a736741d14"
+      },
+      {
+        "path": "docs/evidence/merchant_push_client/registered-390.png",
+        "sha256": "250c57114457a6318979de7ee2f70596b48616277375cdbbef2be53944306096"
+      },
+      {
+        "path": "docs/evidence/merchant_push_client/registered-430.png",
+        "sha256": "afae209f08d7660cc7458fceb74327a0af33e756ea0eda316cd57a986f61bed0"
+      }
+    ]
+  },
+  "database_validation": "NOT_RUN: SQL and server implementation unchanged from integrated I0",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "migration_applied": false,
+  "real_provider_sends": 0,
+  "main_merge": "NONE",
+  "defaults": {
+    "merchant_schema_switch": "MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED=false",
+    "provider": "UnconfiguredMobilePushProvider",
+    "host": "loopback only",
+    "automatic_enrollment": false
+  },
+  "preserved": [
+    "Customer entrypoints/layout",
+    "pubspec and lockfile",
+    "all SQL proposals and historical migrations",
+    "server dispatcher",
+    "frozen economic and QR rules"
+  ],
+  "remaining_gates": [
+    "Real provider configuration and token deletion evidence",
+    "Customer host/provider binding",
+    "Cold-start/background and physical devices",
+    "Retired registration retention/backup restore review",
+    "G/O10 marketing and full I",
+    "H1 settlement",
+    "J physical QR acceptance"
+  ],
+  "fingerprint_note": "SHA256 hashes are tested workspace bytes (checkout EOL sensitive); Git blob SHA1 is normalized repository content. This report excludes itself. Final commit is reported in TASK_RESULT.",
+  "source_files": [
+    {
+      "path": "docs/ESNAFTAVAR_V1_IMPLEMENTATION_SLICES.md",
+      "sha256": "94bb01a551fd6a968ac618248cc89caf2afb0cae1847ae6ff80267be5deaf075",
+      "git_blob_sha1": "b5982cd564f3326f96e65778a7c6dc88f6bb12f6"
+    },
+    {
+      "path": "docs/ESNAFTAVAR_V1_TRUST_COMMERCE_CANONICAL.md",
+      "sha256": "10872dc20b4474e1030cdce0c39f4e2dc4cc7473193472f2e3642e628996abf6",
+      "git_blob_sha1": "4b7af7b14935c25705233e840f8124489ea3b509"
+    },
+    {
+      "path": "docs/MERCHANT_NOTIFICATION_CLIENT_I1_HANDOFF.md",
+      "sha256": "19267f8feaf618d5d8e3d40d71dc7607b322cca0b14913d0df11f4fd9f53dd8f",
+      "git_blob_sha1": "03d10708421710d91bebe7f2f47fd964a37271ca"
+    },
+    {
+      "path": "lib/core/supabase/authenticated_session_key.dart",
+      "sha256": "aeec33c0876162e3df0ec6fffc83138c6e1edb21f1ff5021e21ee0a0a72f7954",
+      "git_blob_sha1": "e6476c8e43a7e29a6b30fbd0a1a28aa6b91ecabb"
+    },
+    {
+      "path": "lib/features/merchant/merchant_app.dart",
+      "sha256": "5c30ff4a545aeba1a98e2964d94f52d2e78881ff4392f694c3947c5c3e61ee15",
+      "git_blob_sha1": "b4afa59c0bf3d7e5b8048c2cc260686078a45f63"
+    },
+    {
+      "path": "lib/features/merchant/merchant_services.dart",
+      "sha256": "bed0d11ecfb00a289945efb32bf4f05881b7adc6ac21edccb3b421f61f0c1157",
+      "git_blob_sha1": "d5719e2df937832692c45f2a5c30f62614b74210"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_home.dart",
+      "sha256": "4eecead63c2636d1524ce0620674a6c655b166100cfe929d90736201268833fa",
+      "git_blob_sha1": "a1930a8f68fa4d23f06a72e4bcf2e5a9fa5797c0"
+    },
+    {
+      "path": "lib/features/notifications/data/repositories/push_backend_adapter.dart",
+      "sha256": "3ba663e74b7000a4fe60e534aee6207052f7c5513fba0d085a0efeca02b8600e",
+      "git_blob_sha1": "3f5027e983fb8755cb148d9c2384557a5c2dffd3"
+    },
+    {
+      "path": "lib/features/notifications/data/repositories/push_installation_store.dart",
+      "sha256": "f4b92910d1b588ad0c6675588777561d71c252ca2d9abda3d0d329ea89f65756",
+      "git_blob_sha1": "196c2504d538849aa39940ecd1211da9f3262fe2"
+    },
+    {
+      "path": "lib/features/notifications/domain/push_contract.dart",
+      "sha256": "d9e70b87bbcef33318cf69eb509c18a152384a0cc5b9b50f940196d999ca6782",
+      "git_blob_sha1": "3b10fbf3a071ec8ee1cd20b82cd656f16c955d82"
+    },
+    {
+      "path": "lib/features/notifications/domain/push_coordinator.dart",
+      "sha256": "070b77ad5d102e4ab737a1575c9026f8bb483b8e8be3c3e054c3f060546ee286",
+      "git_blob_sha1": "76cc4c434489fd3ba3a41fec9011a49ffc3b9d6f"
+    },
+    {
+      "path": "lib/features/notifications/domain/push_installation.dart",
+      "sha256": "2a632dfcc18cc6c560f09f03178a29ef716139775e0e76546343397cfbea089d",
+      "git_blob_sha1": "687bc8319fd7d5888f05bff820fbc52d3149067f"
+    },
+    {
+      "path": "lib/features/notifications/presentation/views/notification_preferences_view.dart",
+      "sha256": "12f5544e7742bb3307733d1353b123fc6b1a50e54304aa2a184277261967cdc7",
+      "git_blob_sha1": "6e19a07a94dbf9f6ec0329c99cf720a28571b1b7"
+    },
+    {
+      "path": "lib/features/notifications/presentation/views/push_device_controls.dart",
+      "sha256": "feaf2b22d6e29d19369e724134bac36428273278cc48833dfe7658b0b2b83f5d",
+      "git_blob_sha1": "a8d1133ef7eb854e93582d51f209cfa66e6280d2"
+    },
+    {
+      "path": "lib/main_merchant_development.dart",
+      "sha256": "9da7f967720ed3c84fbbcfb2cacf3ccece80eb8da37a8f9cf773f112667eda16",
+      "git_blob_sha1": "188eaad5cd5e8ef7893bbf138dfe123ee7fcafca"
+    },
+    {
+      "path": "test/support/push_client_fakes.dart",
+      "sha256": "a5eecc94fd5cfa0b0b09a8124564647366371f655cf37983093f45a546c5f0f0",
+      "git_blob_sha1": "8e07318d401f3fc7dac2378573b9bc98b438bda6"
+    },
+    {
+      "path": "test/unit/notifications/push_backend_session_test.dart",
+      "sha256": "0d122e387f878b5f1e0794cf1bd13d2b4922cffd51d4cfca2499279461bbd40a",
+      "git_blob_sha1": "aa397d19b0ab3f3aa0a4ea7d0d59d9c785c1e385"
+    },
+    {
+      "path": "test/unit/notifications/push_client_lifecycle_test.dart",
+      "sha256": "bd582b543bbaf432a49d14e598a9b3ac05f9e654ff6872aee81864d6aa6b39b8",
+      "git_blob_sha1": "96ae5facc859d3365c74b9f53e760a10a7a9c40f"
+    },
+    {
+      "path": "test/widget/merchant/merchant_push_client_test.dart",
+      "sha256": "0467e1c105fbb171751b87af3694a7e1cf9ca39c3b0e61af2a426ae332bddef9",
+      "git_blob_sha1": "a479cad842d8f9f3d77add23a2e1a5e82b2d4f06"
+    },
+    {
+      "path": "test/widget/notifications/push_device_controls_test.dart",
+      "sha256": "a718b21b46690d3c98c025b25237b65300bb140124b4d1e7cacbf740255386e6",
+      "git_blob_sha1": "c8bc5212a06a16cc14f1787b399b96dafbe850be"
+    }
+  ]
+}

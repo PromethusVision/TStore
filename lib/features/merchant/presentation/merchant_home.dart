@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/data/merchant_qr_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -18,9 +20,17 @@ import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/features/notifications/presentation/views/notification_preferences_view.dart';
 
 class MerchantHome extends StatefulWidget {
-  const MerchantHome({super.key, required this.services, required this.access});
+  const MerchantHome({
+    super.key,
+    required this.services,
+    required this.access,
+    this.push,
+    this.inboxRequests,
+  });
   final MerchantServices services;
   final MerchantAccess access;
+  final PushCoordinator? push;
+  final ValueListenable<int>? inboxRequests;
   @override
   State<MerchantHome> createState() => _MerchantHomeState();
 }
@@ -34,6 +44,7 @@ class _MerchantHomeState extends State<MerchantHome>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.inboxRequests?.addListener(_openInbox);
     _notifications =
         NotificationsCubit(repository: widget.services.notifications)
           ..startListening()
@@ -41,10 +52,28 @@ class _MerchantHomeState extends State<MerchantHome>
   }
 
   @override
+  void didUpdateWidget(covariant MerchantHome oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.inboxRequests != widget.inboxRequests) {
+      oldWidget.inboxRequests?.removeListener(_openInbox);
+      widget.inboxRequests?.addListener(_openInbox);
+    }
+  }
+
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.inboxRequests?.removeListener(_openInbox);
     _notifications.close();
     super.dispose();
+  }
+
+  void _openInbox() {
+    if (!mounted || widget.services.currentUserId() != widget.access.user.id) {
+      return;
+    }
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    _navigate(3);
   }
 
   @override
@@ -241,6 +270,7 @@ class _MerchantHomeState extends State<MerchantHome>
                                 key: ValueKey(identity.userId),
                                 identity: identity,
                                 repository: s.preferences,
+                                push: widget.push,
                               ),
                             ),
                           ),
