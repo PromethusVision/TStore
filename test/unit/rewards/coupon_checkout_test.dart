@@ -17,6 +17,17 @@ import '../../support/coupon_checkout_fixtures.dart';
 import '../cart/qr_claim_protocol_test.dart' show claimJson;
 
 void main() {
+  test('physical coupon terms cannot imply negative remaining payment', () {
+    expect(
+      () => CouponCheckoutTerms.fromJson({
+        ...checkoutTerms(),
+        'sale_minor': '100',
+        'coupon_minor': '200',
+        'payment_minor': '-100',
+      }),
+      throwsFormatException,
+    );
+  });
   test(
     'recovery reads an owned existing approval without generating another authorization',
     () async {

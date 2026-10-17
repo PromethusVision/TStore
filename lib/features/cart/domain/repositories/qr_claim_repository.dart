@@ -17,3 +17,9 @@ abstract interface class QrClaimRepository {
   Future<Either<String, QrVerificationEntity?>> recoverClaim(String shopId);
   Future<Either<String, QrSessionEntity>> readCustomerSession(String sessionId);
 }
+
+/// Optional local continuation identity, never a substitute for server authority.
+/// Stable across token refresh; changes on logout or replacement Auth session.
+abstract interface class QrSessionIdentity {
+  String? get currentQrSessionIdentity;
+}

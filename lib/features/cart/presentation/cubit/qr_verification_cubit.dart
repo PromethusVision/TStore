@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:t_store/features/cart/data/qr_installation.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
@@ -71,6 +72,11 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
   }
 
   Future<void> confirmVerification() async {
+    if (isClosed ||
+        state is QrClaimRecoveryRequired ||
+        state is QrVerificationLoading) {
+      return;
+    }
     final verification = _verification;
     if (verification == null) {
       _operationId++;
@@ -175,13 +181,15 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
         state is QrVerificationLoading ||
         state is QrVerificationConfirming ||
         state is QrVerificationUncertain ||
+        state is QrClaimRecoveryRequired ||
         _verification?.canConfirmAt(currentTime()) == true) {
       return;
     }
     final input = sessionToken == null
         ? 'manual:$manualCode'
         : 'scan:$sessionToken';
-    if (manualCode != null && !RegExp(r'^\d{6}$').hasMatch(manualCode) ||
+    if ((manualCode == null) == (sessionToken == null) ||
+        manualCode != null && !RegExp(r'^\d{6}$').hasMatch(manualCode) ||
         sessionToken != null && sessionToken.isEmpty) {
       emit(const QrVerificationFailure('Altı haneli kodu eksiksiz girin.'));
       return;
@@ -191,23 +199,31 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
       _claimRequestId = newQrRequestId();
     }
     final operation = ++_operationId;
+    _verification = null;
     emit(QrVerificationLoading());
-    final result = await claims!.claimVerification(
-      shopId: shopId!,
-      requestId: _claimRequestId!,
-      sessionToken: sessionToken,
-      manualCode: manualCode,
+    final result = await _claimCall(
+      () => claims!.claimVerification(
+        shopId: shopId!,
+        requestId: _claimRequestId!,
+        sessionToken: sessionToken,
+        manualCode: manualCode,
+      ),
     );
     if (isClosed || operation != _operationId) return;
-    result.fold((e) => emit(QrVerificationFailure(e)), _acceptClaim);
+    result.fold((e) => emit(QrClaimRecoveryRequired(e)), _acceptClaim);
   }
 
   void _acceptClaim(QrVerificationEntity value) {
-    _verification = value;
-    if (value.protocolVersion != 2) {
-      emit(const QrVerificationFailure('QR işlem bilgisi doğrulanamadı.'));
+    if (value.protocolVersion != 2 ||
+        value.shopId != shopId ||
+        value.claimId == null ||
+        value.completionExpiresAt == null ||
+        value.status == 'used' &&
+            (value.purchaseId == null || value.usedAt == null)) {
+      emit(const QrClaimRecoveryRequired('QR işlem bilgisi doğrulanamadı.'));
       return;
     }
+    _verification = value;
     if (value.status == 'used' &&
         value.purchaseId != null &&
         value.usedAt != null) {
@@ -234,11 +250,13 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
         state is QrVerificationLoading) {
       return;
     }
+    // Never replace a known uncertain attempt with "latest claim" or null.
+    if (_verification?.claimId != null) return _claimOperation();
     final operation = ++_operationId;
     emit(QrVerificationLoading());
-    final result = await claims!.recoverClaim(shopId!);
+    final result = await _claimCall(() => claims!.recoverClaim(shopId!));
     if (isClosed || operation != _operationId) return;
-    result.fold((e) => emit(QrVerificationFailure(e)), (v) {
+    result.fold((e) => emit(QrClaimRecoveryRequired(e)), (v) {
       if (v == null) {
         _verification = null;
         emit(QrVerificationInitial());
@@ -248,7 +266,8 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
     });
   }
 
-  Future<void> refreshClaim() => _claimOperation();
+  Future<void> refreshClaim() =>
+      _verification?.claimId == null ? recoverClaim() : _claimOperation();
   Future<void> cancelClaim() => _claimOperation(cancel: true);
   Future<void> _claimOperation({
     bool complete = false,
@@ -258,20 +277,29 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
     if (isClosed ||
         claims == null ||
         previous?.claimId == null ||
-        state is QrVerificationConfirming) {
+        state is QrVerificationConfirming ||
+        state is QrVerificationLoading ||
+        (complete || cancel) && state is QrVerificationUncertain) {
       return;
+    }
+    if (complete && !_canBeConfirmed(previous!)) {
+      return _claimOperation();
     }
     final operation = ++_operationId;
     emit(QrVerificationConfirming(previous!));
-    final result = complete
-        ? await claims!.completeClaim(previous.claimId!)
-        : cancel
-        ? await claims!.cancelClaim(previous.claimId!)
-        : await claims!.reconcileClaim(previous.claimId!);
+    final result = await _claimCall(
+      () => complete
+          ? claims!.completeClaim(previous.claimId!)
+          : cancel
+          ? claims!.cancelClaim(previous.claimId!)
+          : claims!.reconcileClaim(previous.claimId!),
+    );
     if (isClosed || operation != _operationId) return;
     await result.fold((error) async {
       if (complete || cancel) {
-        final reconciled = await claims!.reconcileClaim(previous.claimId!);
+        final reconciled = await _claimCall(
+          () => claims!.reconcileClaim(previous.claimId!),
+        );
         if (isClosed || operation != _operationId) return;
         reconciled.fold(
           (_) => emit(QrVerificationUncertain(previous, error)),
@@ -290,7 +318,23 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
     if (value.sessionId != previous.sessionId ||
         value.claimId != previous.claimId ||
         value.shopId != previous.shopId ||
-        value.sessionToken != previous.sessionToken) {
+        value.sessionToken != previous.sessionToken ||
+        value.protocolVersion != previous.protocolVersion ||
+        value.expiresAt != previous.expiresAt ||
+        value.completionExpiresAt != previous.completionExpiresAt ||
+        (previous.purchaseId != null &&
+            value.purchaseId != previous.purchaseId) ||
+        value.totalAmount != previous.totalAmount ||
+        value.itemCount != previous.itemCount ||
+        value.rewardConfirmationRequired !=
+            previous.rewardConfirmationRequired ||
+        value.rewardSaleMinor != previous.rewardSaleMinor ||
+        value.couponCheckout != previous.couponCheckout ||
+        value.items.length != previous.items.length ||
+        !List.generate(
+          value.items.length,
+          (i) => value.items[i] == previous.items[i],
+        ).every((v) => v)) {
       emit(
         QrVerificationUncertain(
           previous,
@@ -303,6 +347,11 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
   }
 
   void reset() {
+    if (isClosed ||
+        state is QrClaimRecoveryRequired ||
+        (shopId != null && state is QrVerificationLoading && claims != null)) {
+      return;
+    }
     if (_verification?.protocolVersion == 2 &&
         (state is QrVerificationUncertain ||
             state is QrVerificationConfirming ||
@@ -314,6 +363,18 @@ class QrVerificationCubit extends Cubit<QrVerificationState> {
     _claimInput = null;
     _claimRequestId = null;
     emit(QrVerificationInitial());
+  }
+
+  Future<Either<String, T>> _claimCall<T>(
+    Future<Either<String, T>> Function() request,
+  ) async {
+    try {
+      return await request();
+    } catch (_) {
+      return const Left(
+        'İşlem sonucu doğrulanamadı. Aynı işlemi geri yükleyin.',
+      );
+    }
   }
 
   static String _inactiveQrMessage(String status) {

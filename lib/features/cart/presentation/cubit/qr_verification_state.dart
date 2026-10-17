@@ -55,3 +55,11 @@ class QrVerificationUncertain extends QrVerificationState {
   @override
   List<Object?> get props => [verification, message];
 }
+
+/// No trustworthy claim identifier yet. Only server recovery may reopen input.
+class QrClaimRecoveryRequired extends QrVerificationState {
+  const QrClaimRecoveryRequired(this.message);
+  final String message;
+  @override
+  List<Object?> get props => [message];
+}

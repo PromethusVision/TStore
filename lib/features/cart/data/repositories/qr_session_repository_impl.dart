@@ -11,8 +11,10 @@ import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dar
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 
 class QrSessionRepositoryImpl
-    implements QrSessionRepository, QrClaimRepository {
+    implements QrSessionRepository, QrClaimRepository, QrSessionIdentity {
   final SupabaseService supabaseService;
+  @override
+  String? get currentQrSessionIdentity => _protocol.sessionIdentity();
 
   QrSessionRepositoryImpl({
     required this.supabaseService,

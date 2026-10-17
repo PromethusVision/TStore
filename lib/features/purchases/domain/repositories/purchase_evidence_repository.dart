@@ -79,7 +79,9 @@ class PurchaseEvidence {
       saleExact = LedgerMinorUnits.fromWire(finalSale);
       couponExact = LedgerMinorUnits.fromWire(j['ev_coupon_minor']);
       paymentExact = LedgerMinorUnits.fromWire(j['customer_payment_minor']);
-      if (couponExact.value <= BigInt.zero ||
+      if (saleExact.value < BigInt.zero ||
+          paymentExact.value < BigInt.zero ||
+          couponExact.value <= BigInt.zero ||
           saleExact.value != couponExact.value + paymentExact.value ||
           j['coupon_restoration_executed'] != false) {
         throw const FormatException('Invalid coupon purchase amounts');
@@ -133,6 +135,9 @@ class PurchaseEvidence {
     }
     if (j['invalidated'] is! bool) {
       throw const FormatException('Missing purchase validity');
+    }
+    if (returns.map((r) => r.id).toSet().length != returns.length) {
+      throw const FormatException('Duplicate return evidence');
     }
     return PurchaseEvidence(
       id: requiredString(j, 'id'),

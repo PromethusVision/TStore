@@ -34,6 +34,30 @@ Map<String, dynamic> evidence() => {
   ],
 };
 void main() {
+  test(
+    'coupon evidence rejects negative physical payment and duplicate return references',
+    () {
+      expect(
+        () => PurchaseEvidence.fromJson({
+          ...evidence(),
+          'terms_classification': 'coupon_checkout_e_v1',
+          'final_sale_minor': '100',
+          'ev_coupon_minor': '200',
+          'customer_payment_minor': '-100',
+          'coupon_restoration_executed': false,
+        }),
+        throwsFormatException,
+      );
+      final row = evidence();
+      expect(
+        () => PurchaseEvidence.fromJson({
+          ...row,
+          'returns': [...row['returns'] as List, ...row['returns'] as List],
+        }),
+        throwsFormatException,
+      );
+    },
+  );
   test('evidence uses exact minor units and truthful return references', () {
     final p = PurchaseEvidence.fromJson(evidence());
     expect(p.finalSaleMinor, 3600);

@@ -151,6 +151,21 @@ and fresh-session signed-image download. Physical two-device J remains OPEN.
 This is validation of A+B, not authorization to start C–J or activate
 Production. No new migration is required by the current acceptance findings.
 
+### B/E Merchant transaction recovery follow-through — 2026-10-17
+
+After `aca7e985`, canonical §5.3 bounds one coherent local package: recover
+uncertain first QR claims, preserve known claim identity/terms, fence stale Auth
+errors, and complete durable exact-return retry, local acknowledgement cleanup,
+fresh purchase history and protected navigation. Reuse current B/E RPCs, immutable
+purchase evidence and the existing account/purchase local retry key. Additive0030
+corrects an evidenced actor-identifier projection leak without changing historical
+migrations, grants, stored evidence or economics. No refund/provider action is
+introduced. Verify a populated local upgrade and transport faults,
+controller/storage races, widget/render states, full Flutter regressions, both
+debug artifacts and real local Auth/PostgREST/PostgreSQL including checkout
+regressions. Physical J and remote rollout remain OPEN.
+See [handoff](MERCHANT_COMMERCE_RECOVERY_HANDOFF.md).
+
 ## C — Review entitlements, three service criteria, audit and moderation
 
 **Authorized locally on 2026-10-15.** Execute as one complete engineering package

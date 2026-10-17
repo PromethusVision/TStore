@@ -38,6 +38,8 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002600_0026_coupon_reservation_net_threshold.sql',
   '20261015002700_0027_merchant_statement_read.sql',
   '20261015002800_0028_merchant_promotion_drafts.sql',
+  // 0029 remains a separately rehearsed notification proposal, not a migration.
+  '20261017003000_0030_purchase_evidence_privacy.sql',
 ];
 
 const _baselinePublicTables = <String>{

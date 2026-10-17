@@ -431,6 +431,53 @@ The informational capability read is not itself a transaction authorization
 check. Existing frozen rules, default-OFF flags and migration bytes are unchanged.
 Physical two-device acceptance J and Production authorization remain separate.
 
+### 5.3 Merchant transaction recovery — 2026-10-17
+
+After daily catalog recovery integrated at `aca7e985`, the next local package
+hardens existing B/E Merchant QR, purchase history and return evidence. No FROZEN
+economic rule, refund policy, claim deadline or ownership permission changes.
+
+- An unacknowledged first claim or failed startup recovery keeps new QR input
+  closed until existing server recovery succeeds. A known uncertain claim always
+  reconciles that exact claim, never replaces it with a nullable latest-record
+  read. Reconciliation cannot substitute different immutable claim terms.
+  Exceptions remain recoverable; no write is timed out, cancelled or automatically
+  resubmitted. Device-registering QR recovery RPCs are also left serialized.
+- Capture stable Auth session identity before workspace preflight and reject
+  stale errors as well as successes. An old-session rejection cannot authorize
+  clearing a durable return intent. These are local continuation fences; live
+  server authorization remains mandatory.
+- The existing account/purchase-scoped B retry record remains the only locally
+  persisted return intent. Validate its bounded request/reason/item quantities
+  against original purchase evidence, including already-returned units for exact
+  retry. Corrupt records fail closed and are retained. Within one process, local
+  editors serialize and preserve the existing intent; acknowledgement clears only
+  the matching request/payload. This is not a cross-process database lock or an
+  offline mutation queue.
+- A known server success and a failed local cleanup are separate states. Retry
+  cleanup without sending another return. Unknown acknowledgement retries only
+  the original request. A definite server rejection permits editing only after
+  fresh purchase evidence; it never invents a refund or restores a coupon.
+- Purchase reads have a 15-second presentation deadline and explicit retry.
+  Refresh replaces stale detail/actions; pagination deduplicates display rows
+  while retaining server offsets, without claiming snapshot pagination. Navigation
+  coalesces duplicate opens, protects unsaved in-memory forms and blocks back
+  during submission. Host authority loss still disposes all private routes.
+
+Local real-database acceptance reproduced an existing projection defect:
+PostgreSQL subtraction bound to the right JSON operand and failed to remove
+`customer_user_id` and `confirmed_by_user_id` from the merged purchase payload.
+Additive migration0030 subtracts them from the header before composition.
+It preserves every other payload field, private helper grants, immutable rows,
+return allocation and ledger amounts. Historical0018/0025 bytes remain intact;
+remote application still requires explicit Product Owner authorization.
+Client purchase/checkout parsers also reject impossible negative physical payment.
+
+No second QR system, Customer layout redesign or provider activation is introduced.
+Local contract and client-fault evidence remain
+separate from physical two-device J. Delivery:
+[Merchant transaction recovery](MERCHANT_COMMERCE_RECOVERY_HANDOFF.md).
+
 ## 6. Product review and merchant-service projections
 
 **FROZEN:**

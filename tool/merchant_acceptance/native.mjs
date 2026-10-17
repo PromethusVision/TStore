@@ -14,15 +14,17 @@ import { checkoutChecks } from './checkout_checks.mjs';
 import { statementChecks } from './statement_checks.mjs';
 import { promotionChecks } from './promotion_checks.mjs';
 import { notificationChecks } from './notification_checks.mjs';
+import { purchaseProjectionChecks } from './purchase_projection_checks.mjs';
 
 // Native PostgreSQL proof is deliberately separate from managed Auth/Storage acceptance.
 const base = resolve(root, '.buildlog/merchant-native');
 const reviews = process.argv.includes('--reviews');
 const trustCampaigns = process.argv.includes('--trust-campaigns');
 const notifications = process.argv.includes('--notifications');
+const commerceRecovery = process.argv.includes('--commerce-recovery');
 const promotion = process.argv.includes('--promotion') || notifications;
 const statement = process.argv.includes('--statement') || promotion;
-const checkout = process.argv.includes('--checkout') || statement;
+const checkout = process.argv.includes('--checkout') || statement || commerceRecovery;
 const rewards = process.argv.includes('--rewards') || checkout;
 const ledger = process.argv.includes('--ledger') || rewards;
 let config, db, binary, directory, startAttempted=false, stage='binary';
@@ -92,12 +94,13 @@ try {
     const fresh=await seed(db,await actor(),await actor(),await actor());fresh.session=id=>actor(id);
     checks.push(...await notificationChecks(db,config,fresh));
   }
+  if(commerceRecovery) checks.push(...await purchaseProjectionChecks(db));
   const evidence = { result: 'PASS', captured_at: new Date().toISOString(),
     runtime: (await db.query('SELECT version() AS version')).rows[0].version,
     evidence_class: 'native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema',
     managed_auth: 'OPEN', storage_http: 'OPEN', physical_two_device: 'OPEN', checks, migrations: manifest };
   await writeFile(resolve(directory, 'result.json'), JSON.stringify(evidence, null, 2)+'\n');
-  await writeFile(resolve(root, `docs/data/merchant_${notifications ? 'notification_i0' : promotion ? 'promotion_g' : statement ? 'statement_h1' : checkout ? 'checkout_e' : rewards ? 'e' : ledger ? 'h0' : trustCampaigns ? 'df' : reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
+  await writeFile(resolve(root, `docs/data/merchant_${commerceRecovery ? 'commerce_recovery' : notifications ? 'notification_i0' : promotion ? 'promotion_g' : statement ? 'statement_h1' : checkout ? 'checkout_e' : rewards ? 'e' : ledger ? 'h0' : trustCampaigns ? 'df' : reviews ? 'c' : 'ab'}_native_acceptance.json`), JSON.stringify(evidence, null, 2)+'\n');
   console.log(`NATIVE_DATABASE_PROOF_PASS: ${checks.length} groups. Managed Auth/Storage are evidenced separately.`);
 } catch (error) {
   // Synthetic DB only, but still avoid dumping SQL parameters, passwords or tokens.
