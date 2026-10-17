@@ -345,3 +345,22 @@ with the migration chain. `--notifications` rehearses the existing notification
 proposals locally only; it never configures or contacts a provider. No remote
 deployment, paid operation, actual refund/payout or two-device QR acceptance is
 part of these checks.
+
+## J4 pilot launch review preparation
+
+After the approved Development A installation, use the separate new-run flow:
+`local.mjs prepare`, `local.mjs start <run>`, `pilot_launch.mjs <run>`, then
+`local.mjs stop <run>`. It recreates the exact post-A hosted metadata locally,
+including observed body line endings, and exercises the two-function Turkish
+notification text repair on populated synthetic data. It never contacts hosted
+Auth/DB, sends mail or configures a push provider. Source remains a proposal;
+automatic migration discovery and existing fixture defaults are unchanged.
+
+Run `pilot_launch.test.mjs` and `prepare_pilot_launch.test.mjs` with the existing
+safety/core/preparation tests while the API port is free. A current passing proof
+allows `node tool/merchant_acceptance/prepare_pilot_launch.mjs <new-name>` to emit
+an offline E/C/intake review bundle. No A replay or account/catalog write script
+is generated. Optional intake input is a plain local file name under
+`.buildlog/pilot-intake/`; it never carries private contacts or credentials.
+Exact sources, review hashes, local validation and independent remote approval
+gates are documented in `docs/MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md`.

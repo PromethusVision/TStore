@@ -582,6 +582,23 @@ excluded and only Integration Agent may merge the documentation task branch.
 J remains OPEN pending catalog/cohort, Auth/mail/provider, physical QR and release
 acceptance. Do not replay the already-applied A candidate.
 
+### J4 — Notification repair and first-cohort readiness preparation (2026-10-17)
+
+Canonical §4.8 bounds the next local package after J3 integration (`ad42c92d`).
+Prepare a separate E review source and atomic wrapper for the two existing
+notification functions, exact baseline/token/source checks and one forward ledger
+entry. Rehearse on an owned post-A mirror with populated notification/history
+rows; prove drift/replay/concurrency rejection, late-error rollback, function
+authority preservation, canonical Turkish output and real Auth inbox isolation.
+Keep C callback matching, B category proposals and D private provisioning gates
+independent. Produce an offline, source-bound review bundle with incomplete intake
+explicitly identified; no automatic A replay or account/catalog SQL is generated.
+
+No Customer/app runtime, dependency, historical migration, notification provider
+or service-business capability changes. This package does not itself authorize
+any hosted repair or Auth save. Use [handoff](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md)
+and [intake guide](MERCHANT_PILOT_INTAKE_GUIDE.md). J remains OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

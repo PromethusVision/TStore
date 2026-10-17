@@ -1,0 +1,1182 @@
+{
+  "kind": "merchant-pilot-post-a-observation-v1",
+  "observed_at": "2026-10-17T19:58:38.601Z",
+  "target": {
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+  },
+  "schema_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+  "component_hashes": {
+    "grants": "759e7963366b7e3e15858ddb58fe3d99",
+    "ledger": "9701933a0b251641a2e5d33269b8d012",
+    "tables": "ad380a5bd3ad49aafc6043a6e9f00616",
+    "buckets": "64915b225d82cbdeab6f5a66197c4a78",
+    "columns": "c32ed0230ca527bc71b88be10a65c2cb",
+    "indexes": "77d410b4ca604f240a776277a4c3b038",
+    "policies": "2bf166e46dc6dd762b33a9348b7cd548",
+    "triggers": "22845456202ad904516d9ac8de09117a",
+    "functions": "a9ad770d6661214d159293d0459d0a4e",
+    "constraints": "701db8f201621ffab39ab28ee0f93145",
+    "table_privileges": "c988e496d3103e481ff1d870a03926d1",
+    "public_event_triggers": "55fa697a8f90fbe5904bd2a2e67bb335",
+    "postgres_public_defaults": "ca9247605a5bcb925451823b6e72b40b"
+  },
+  "functions": [
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "signature": "_catalog_append_only_v1()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "7d7e04ee3e323a483dc6983d04a90dde"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_catalog_category_allowed_v1(uuid)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "6b76c5e814a0005ed35240afdf643585"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_catalog_listing_identity_guard_v1()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "a3a0e1e8cc699f1d69d37392ec1a3580"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_catalog_own_shop_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "c7bb1f219f7992f894e8a8c07897d90d"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "signature": "_catalog_photo_metadata_v1(jsonb,text,integer)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "b383cf37fb0900f49b65c6a3d665cd89"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_catalog_product_public_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "17f3537e1faa2e2a786821e913dad0a0"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_listing_own_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "44e0bf923094800e218cd34cbb000993"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_listing_public_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "ef83022ff6e2305767d96ca3c5f6919a"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_listing_storage_insert_v1(text,text,jsonb)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "1c91d094d86d6e7f7b944be4cee086a1"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_listing_storage_read_v1(text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "36a3e780e39f7296d8ebdff1e2a8e153"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_taxonomy_assert_contract_v2(text,text,boolean)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "59624347e7048dfcaf1db10e85823316"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_taxonomy_node_json_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "3f22de1fb6a5877555c7cbb11a99a7c2"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_taxonomy_path_json_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "992c88c263ac305827df11dcc82fef76"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "_taxonomy_visible_v2(uuid,text,boolean)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "b7615a60506e1d4d7ee639d0b280b38e"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "cancel_active_qr_after_cart_change()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "a4f1993ddc03eddbfec26e9126f6e522"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "cancel_active_qr_after_cart_item_change()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "9db24f4dc1ccf81d3a83e2cd9eb35f9a"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "signature": "catalog_gtin_v1(text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "1784ac505edd8e1ea33bd03b9458567a"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "catalog_listing_media_read_v1(uuid[])",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "7ed4b9f9e06280ea8009d0ad65ba306b"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "signature": "catalog_normalize_v1(text)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "31dd4b401180155b72bdcaa617179834"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "confirm_qr_session(text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "f89a5997b08757abd99ce9c09a603d48"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "create_chat_message_notification()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "2c5c102cb8a2f0caa1e87563fa704602"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "create_qr_session(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "02095cfde6a74465571071b9037aadfe"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "create_verified_purchase_notification()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "6f4d7f9a1ff3a53fe30e2fb925df2192"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "decide_catalog_submission_v1(uuid,text,uuid,text)",
+      "service_role": true,
+      "authenticated": false,
+      "definition_md5": "cf080d0a8a78a4d67250f0a5e3d936a3"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "delete_current_customer_account()",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "d4424c9155db710b2ed9064fe259f5bf"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "delete_customer_saved_location(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "de92fc2a875b61f13e436251c78592e7"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "delete_product_review(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "658d427f828c82fd50e1aa062109596a"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "enforce_active_media_storage_contract()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "bbcda70223320d4e827b0f0626fe336e"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "enforce_product_review_evidence()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "0c498a6c4f95c28302355ceacc9c8a36"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "enforce_qr_product_snapshot()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "382cceaa6f1f914a587d97910fdaddc1"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "enforce_verified_transaction_item_snapshot()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "586203267e1f8fec0b31cc5a67a0d9d6"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "get_customer_conversations()",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "9acae018d6cd31fcad703750f8735942"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "get_customer_unread_chat_count()",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "19f98d363adcfc68d415eddf8063fac1"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "get_product_review_eligibility(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "3e7340e77cfd692ceacae7c5fd91e2b5"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "get_product_reviews(uuid,integer,integer)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "98784655730b7d7f749b18ed77dc9ae2"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, extensions, auth"
+      ],
+      "signature": "get_qr_session_for_verification(text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "2bc5d4b1a31fa14498d8e2a488ba9ebc"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "handle_new_user()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "d05c7494e546a05d96d345da5699345f"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "handle_verified_shop_rating_change()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "ca36a7de577bcca46217bdc2fdb66ba5"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_catalog_categories_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "1497def0a14804163c992adb58596c32"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_catalog_lookup_v1(uuid,text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "118a1a2db496c3c2869195459bfc6cce"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_catalog_search_v1(uuid,text,integer,integer)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "255ab497434238db4caeee35bb114d2e"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_change_listing_images_v1(uuid,text,uuid,uuid[])",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "636009e0786baf6efc52db3786fb33b6"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_listing_media_v1(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "c12f3aeed51cf1a3a132f941c1c4ae1c"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_operations_read_v1(uuid,integer,integer)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "e6d3f635f8167c5bfdf08d4779527953"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_prepare_listing_image_v1(uuid,text,integer)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "f31b5adeaafa92c82328faacfc8ec892"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "merchant_submit_product_v1(uuid,uuid,jsonb)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "eb88cef65715f5285c86d32ff785e1d5"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "prevent_profile_role_client_escalation()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "5805db35fb0c77c7e46a3a4cc7e53acb"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "refresh_product_rating_after_review()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "df246b4ad8dcdce911bb78509e5a1371"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "refresh_verified_shop_rating(uuid)",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "422a65bb8602aaf674e3ef8bc4b1c4ef"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "signature": "rls_auto_enable()",
+      "service_role": true,
+      "authenticated": true,
+      "definition_md5": "6998ea6b4c2480f5d2e34b5dcf3f8d36"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "set_default_customer_saved_location(uuid)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "cca9a0bddb944ff27dab9ca0dcfc96d5"
+    },
+    {
+      "anon": false,
+      "definer": false,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "set_updated_at()",
+      "service_role": false,
+      "authenticated": false,
+      "definition_md5": "c72d0c438e5013b7d009f7c1d726873c"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "submit_product_review(uuid,integer,text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "90d60e4a302cfd096503efda076f04ad"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "submit_verified_shop_rating(uuid,integer)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "7a9ccdd001976e09adfadf333a23c9a4"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_breadcrumb_v1(uuid,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "237db99003f1bdc6fd18922b1b0063bb"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_breadcrumb_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "de3b54a7f54d30ed228f14af38e184f7"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_capabilities_v2(text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "eacac068ee072c406beb73df5574e26e"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_children_v1(uuid,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "e81f99a159f382bc2413e3bafaa9b34c"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_children_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "d55053c7ac16f1843bdf0004f859d5f3"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_descendants_v1(uuid,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "cd7a37c46627d4149fd6193721527bb6"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_descendants_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "ca20b773d9f812443eb697ebac191e4e"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_exact_leaf_v1(uuid,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "a1aebc47b34944e043bf3c9a17c0d5b9"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_exact_leaf_v2(uuid,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "dc3457459b375ac218cbd8dc937c9260"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_resolve_alias_v1(text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "44557a7b3477f0d69a2b0890c79495bf"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_resolve_alias_v2(text,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "8973a6eecc2e649f3decbf4c77fe2cb8"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_roots_v1(text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "5d3fcb7f455339be039fe1f340be254e"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_roots_v2(text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "6ccd6c850571863d2b43cd6535e48b7b"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "taxonomy_search_context_v1(text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "1cd2c464740c00d514a255058cdf5fd2"
+    },
+    {
+      "anon": true,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_search_context_v2(text,text,text,boolean)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "6ab0cecdb02bba0f2fb7acfd3cdcbe4e"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public"
+      ],
+      "signature": "taxonomy_set_preview_v2(boolean,text)",
+      "service_role": true,
+      "authenticated": false,
+      "definition_md5": "fa366510d4164f2ce2b786abba67037e"
+    },
+    {
+      "anon": false,
+      "definer": true,
+      "settings": [
+        "search_path=pg_catalog, public, auth"
+      ],
+      "signature": "update_product_review(uuid,integer,text,text)",
+      "service_role": false,
+      "authenticated": true,
+      "definition_md5": "dbe0ec597e24af7fa08dd877cb82589d"
+    },
+    {
+      "anon": true,
+      "definer": false,
+      "settings": [
+        "search_path=public"
+      ],
+      "signature": "validate_taxonomy_category_hierarchy()",
+      "service_role": true,
+      "authenticated": true,
+      "definition_md5": "0d21fa083510fca9af9db5a48e5532db"
+    }
+  ],
+  "normalized_functions": [
+    {
+      "md5": "7d7e04ee3e323a483dc6983d04a90dde",
+      "lf_md5": "0cf92faaec4a92cf5d89eeb7697a142f",
+      "signature": "_catalog_append_only_v1()"
+    },
+    {
+      "md5": "6b76c5e814a0005ed35240afdf643585",
+      "lf_md5": "933b84b13bc8351e277d6bf45810eb72",
+      "signature": "_catalog_category_allowed_v1(uuid)"
+    },
+    {
+      "md5": "a3a0e1e8cc699f1d69d37392ec1a3580",
+      "lf_md5": "2fc793aa1e43d8c20aaa2280f66b4afb",
+      "signature": "_catalog_listing_identity_guard_v1()"
+    },
+    {
+      "md5": "c7bb1f219f7992f894e8a8c07897d90d",
+      "lf_md5": "06313c436008c33d29290c9eb32ca977",
+      "signature": "_catalog_own_shop_v1(uuid)"
+    },
+    {
+      "md5": "b383cf37fb0900f49b65c6a3d665cd89",
+      "lf_md5": "065bee6095853f76ac67f19fb00a9d73",
+      "signature": "_catalog_photo_metadata_v1(jsonb,text,integer)"
+    },
+    {
+      "md5": "17f3537e1faa2e2a786821e913dad0a0",
+      "lf_md5": "0a039c2ef9c130664f5b92d61d3ccfd1",
+      "signature": "_catalog_product_public_v1(uuid)"
+    },
+    {
+      "md5": "44e0bf923094800e218cd34cbb000993",
+      "lf_md5": "4acaadb020c7fb19dfb70ab688cb1464",
+      "signature": "_listing_own_v1(uuid)"
+    },
+    {
+      "md5": "ef83022ff6e2305767d96ca3c5f6919a",
+      "lf_md5": "b6081338186cd1388ea92401291b819d",
+      "signature": "_listing_public_v1(uuid)"
+    },
+    {
+      "md5": "1c91d094d86d6e7f7b944be4cee086a1",
+      "lf_md5": "3b561f99ad064c3da5cfd9e1709495d5",
+      "signature": "_listing_storage_insert_v1(text,text,jsonb)"
+    },
+    {
+      "md5": "36a3e780e39f7296d8ebdff1e2a8e153",
+      "lf_md5": "7b72c6ad326f845ba84c201d7b653235",
+      "signature": "_listing_storage_read_v1(text,text)"
+    },
+    {
+      "md5": "59624347e7048dfcaf1db10e85823316",
+      "lf_md5": "59624347e7048dfcaf1db10e85823316",
+      "signature": "_taxonomy_assert_contract_v2(text,text,boolean)"
+    },
+    {
+      "md5": "3f22de1fb6a5877555c7cbb11a99a7c2",
+      "lf_md5": "3f22de1fb6a5877555c7cbb11a99a7c2",
+      "signature": "_taxonomy_node_json_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "992c88c263ac305827df11dcc82fef76",
+      "lf_md5": "992c88c263ac305827df11dcc82fef76",
+      "signature": "_taxonomy_path_json_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "b7615a60506e1d4d7ee639d0b280b38e",
+      "lf_md5": "b7615a60506e1d4d7ee639d0b280b38e",
+      "signature": "_taxonomy_visible_v2(uuid,text,boolean)"
+    },
+    {
+      "md5": "a4f1993ddc03eddbfec26e9126f6e522",
+      "lf_md5": "b1d1c21a095fd4b9214da5df6dac9d60",
+      "signature": "cancel_active_qr_after_cart_change()"
+    },
+    {
+      "md5": "9db24f4dc1ccf81d3a83e2cd9eb35f9a",
+      "lf_md5": "6e2d74c0206f1298b8584c97e9ffd06e",
+      "signature": "cancel_active_qr_after_cart_item_change()"
+    },
+    {
+      "md5": "1784ac505edd8e1ea33bd03b9458567a",
+      "lf_md5": "1227bc1373131e5e2a43c8a6c815af56",
+      "signature": "catalog_gtin_v1(text)"
+    },
+    {
+      "md5": "7ed4b9f9e06280ea8009d0ad65ba306b",
+      "lf_md5": "c632e2a8f719bed554216fa330c48503",
+      "signature": "catalog_listing_media_read_v1(uuid[])"
+    },
+    {
+      "md5": "31dd4b401180155b72bdcaa617179834",
+      "lf_md5": "98dd4c2ce7878cb78ea621fcd78c4f70",
+      "signature": "catalog_normalize_v1(text)"
+    },
+    {
+      "md5": "f89a5997b08757abd99ce9c09a603d48",
+      "lf_md5": "f89a5997b08757abd99ce9c09a603d48",
+      "signature": "confirm_qr_session(text)"
+    },
+    {
+      "md5": "2c5c102cb8a2f0caa1e87563fa704602",
+      "lf_md5": "a71e6f0eb7183a3aea53018aac2f394d",
+      "signature": "create_chat_message_notification()"
+    },
+    {
+      "md5": "02095cfde6a74465571071b9037aadfe",
+      "lf_md5": "02095cfde6a74465571071b9037aadfe",
+      "signature": "create_qr_session(uuid)"
+    },
+    {
+      "md5": "6f4d7f9a1ff3a53fe30e2fb925df2192",
+      "lf_md5": "af5025369ab5a251d8d964571eca3c87",
+      "signature": "create_verified_purchase_notification()"
+    },
+    {
+      "md5": "cf080d0a8a78a4d67250f0a5e3d936a3",
+      "lf_md5": "f68e6f01e35d4365cac396498de05775",
+      "signature": "decide_catalog_submission_v1(uuid,text,uuid,text)"
+    },
+    {
+      "md5": "d4424c9155db710b2ed9064fe259f5bf",
+      "lf_md5": "325bc19b096b1c50d9800b662b9b8109",
+      "signature": "delete_current_customer_account()"
+    },
+    {
+      "md5": "de92fc2a875b61f13e436251c78592e7",
+      "lf_md5": "23b5ba421e86d430e2c8a6b480ee4a36",
+      "signature": "delete_customer_saved_location(uuid)"
+    },
+    {
+      "md5": "658d427f828c82fd50e1aa062109596a",
+      "lf_md5": "658d427f828c82fd50e1aa062109596a",
+      "signature": "delete_product_review(uuid)"
+    },
+    {
+      "md5": "bbcda70223320d4e827b0f0626fe336e",
+      "lf_md5": "bbcda70223320d4e827b0f0626fe336e",
+      "signature": "enforce_active_media_storage_contract()"
+    },
+    {
+      "md5": "0c498a6c4f95c28302355ceacc9c8a36",
+      "lf_md5": "0c498a6c4f95c28302355ceacc9c8a36",
+      "signature": "enforce_product_review_evidence()"
+    },
+    {
+      "md5": "382cceaa6f1f914a587d97910fdaddc1",
+      "lf_md5": "382cceaa6f1f914a587d97910fdaddc1",
+      "signature": "enforce_qr_product_snapshot()"
+    },
+    {
+      "md5": "586203267e1f8fec0b31cc5a67a0d9d6",
+      "lf_md5": "586203267e1f8fec0b31cc5a67a0d9d6",
+      "signature": "enforce_verified_transaction_item_snapshot()"
+    },
+    {
+      "md5": "9acae018d6cd31fcad703750f8735942",
+      "lf_md5": "7b12201a166130550a474a48e3d8018f",
+      "signature": "get_customer_conversations()"
+    },
+    {
+      "md5": "19f98d363adcfc68d415eddf8063fac1",
+      "lf_md5": "d4403fa6549660433656ee4ff381093b",
+      "signature": "get_customer_unread_chat_count()"
+    },
+    {
+      "md5": "3e7340e77cfd692ceacae7c5fd91e2b5",
+      "lf_md5": "3e7340e77cfd692ceacae7c5fd91e2b5",
+      "signature": "get_product_review_eligibility(uuid)"
+    },
+    {
+      "md5": "98784655730b7d7f749b18ed77dc9ae2",
+      "lf_md5": "98784655730b7d7f749b18ed77dc9ae2",
+      "signature": "get_product_reviews(uuid,integer,integer)"
+    },
+    {
+      "md5": "2bc5d4b1a31fa14498d8e2a488ba9ebc",
+      "lf_md5": "2bc5d4b1a31fa14498d8e2a488ba9ebc",
+      "signature": "get_qr_session_for_verification(text)"
+    },
+    {
+      "md5": "d05c7494e546a05d96d345da5699345f",
+      "lf_md5": "1086dce7857f0ee6152d21d3a9410430",
+      "signature": "handle_new_user()"
+    },
+    {
+      "md5": "ca36a7de577bcca46217bdc2fdb66ba5",
+      "lf_md5": "a009584bbed1aa58feee762ba8b53427",
+      "signature": "handle_verified_shop_rating_change()"
+    },
+    {
+      "md5": "1497def0a14804163c992adb58596c32",
+      "lf_md5": "7933037e849140cfdc9c3e7961d8e34b",
+      "signature": "merchant_catalog_categories_v1(uuid)"
+    },
+    {
+      "md5": "118a1a2db496c3c2869195459bfc6cce",
+      "lf_md5": "6552d1503baa4caefc7b846ac2484a01",
+      "signature": "merchant_catalog_lookup_v1(uuid,text,text)"
+    },
+    {
+      "md5": "255ab497434238db4caeee35bb114d2e",
+      "lf_md5": "a004b9f756a5681d95a13e8a7eb73169",
+      "signature": "merchant_catalog_search_v1(uuid,text,integer,integer)"
+    },
+    {
+      "md5": "636009e0786baf6efc52db3786fb33b6",
+      "lf_md5": "5fe211b994994dc0dcc2691bcf364d87",
+      "signature": "merchant_change_listing_images_v1(uuid,text,uuid,uuid[])"
+    },
+    {
+      "md5": "c12f3aeed51cf1a3a132f941c1c4ae1c",
+      "lf_md5": "92702819ffdab120d094fdd0192492a2",
+      "signature": "merchant_listing_media_v1(uuid)"
+    },
+    {
+      "md5": "e6d3f635f8167c5bfdf08d4779527953",
+      "lf_md5": "5b170d7b576323c4e5ddd1ec3aff6949",
+      "signature": "merchant_operations_read_v1(uuid,integer,integer)"
+    },
+    {
+      "md5": "f31b5adeaafa92c82328faacfc8ec892",
+      "lf_md5": "62e6a9871fe7c16204bc8b3846bac56d",
+      "signature": "merchant_prepare_listing_image_v1(uuid,text,integer)"
+    },
+    {
+      "md5": "eb88cef65715f5285c86d32ff785e1d5",
+      "lf_md5": "f74318c75ad7d3914ab7fe2edcd38c9e",
+      "signature": "merchant_submit_product_v1(uuid,uuid,jsonb)"
+    },
+    {
+      "md5": "5805db35fb0c77c7e46a3a4cc7e53acb",
+      "lf_md5": "5805db35fb0c77c7e46a3a4cc7e53acb",
+      "signature": "prevent_profile_role_client_escalation()"
+    },
+    {
+      "md5": "df246b4ad8dcdce911bb78509e5a1371",
+      "lf_md5": "df246b4ad8dcdce911bb78509e5a1371",
+      "signature": "refresh_product_rating_after_review()"
+    },
+    {
+      "md5": "422a65bb8602aaf674e3ef8bc4b1c4ef",
+      "lf_md5": "e743311a6f79cabb219c792746e17446",
+      "signature": "refresh_verified_shop_rating(uuid)"
+    },
+    {
+      "md5": "6998ea6b4c2480f5d2e34b5dcf3f8d36",
+      "lf_md5": "6998ea6b4c2480f5d2e34b5dcf3f8d36",
+      "signature": "rls_auto_enable()"
+    },
+    {
+      "md5": "cca9a0bddb944ff27dab9ca0dcfc96d5",
+      "lf_md5": "21174c421ecd6d719e78a41872b71ec3",
+      "signature": "set_default_customer_saved_location(uuid)"
+    },
+    {
+      "md5": "c72d0c438e5013b7d009f7c1d726873c",
+      "lf_md5": "3ef15a65c8a02d7ff4f80c15867efa36",
+      "signature": "set_updated_at()"
+    },
+    {
+      "md5": "90d60e4a302cfd096503efda076f04ad",
+      "lf_md5": "90d60e4a302cfd096503efda076f04ad",
+      "signature": "submit_product_review(uuid,integer,text,text)"
+    },
+    {
+      "md5": "7a9ccdd001976e09adfadf333a23c9a4",
+      "lf_md5": "4dddce7fdf998ebd0b27af546d9a16f9",
+      "signature": "submit_verified_shop_rating(uuid,integer)"
+    },
+    {
+      "md5": "237db99003f1bdc6fd18922b1b0063bb",
+      "lf_md5": "237db99003f1bdc6fd18922b1b0063bb",
+      "signature": "taxonomy_breadcrumb_v1(uuid,text)"
+    },
+    {
+      "md5": "de3b54a7f54d30ed228f14af38e184f7",
+      "lf_md5": "de3b54a7f54d30ed228f14af38e184f7",
+      "signature": "taxonomy_breadcrumb_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "eacac068ee072c406beb73df5574e26e",
+      "lf_md5": "eacac068ee072c406beb73df5574e26e",
+      "signature": "taxonomy_capabilities_v2(text,text)"
+    },
+    {
+      "md5": "e81f99a159f382bc2413e3bafaa9b34c",
+      "lf_md5": "e81f99a159f382bc2413e3bafaa9b34c",
+      "signature": "taxonomy_children_v1(uuid,text)"
+    },
+    {
+      "md5": "d55053c7ac16f1843bdf0004f859d5f3",
+      "lf_md5": "d55053c7ac16f1843bdf0004f859d5f3",
+      "signature": "taxonomy_children_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "cd7a37c46627d4149fd6193721527bb6",
+      "lf_md5": "cd7a37c46627d4149fd6193721527bb6",
+      "signature": "taxonomy_descendants_v1(uuid,text)"
+    },
+    {
+      "md5": "ca20b773d9f812443eb697ebac191e4e",
+      "lf_md5": "ca20b773d9f812443eb697ebac191e4e",
+      "signature": "taxonomy_descendants_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "a1aebc47b34944e043bf3c9a17c0d5b9",
+      "lf_md5": "a1aebc47b34944e043bf3c9a17c0d5b9",
+      "signature": "taxonomy_exact_leaf_v1(uuid,text)"
+    },
+    {
+      "md5": "dc3457459b375ac218cbd8dc937c9260",
+      "lf_md5": "dc3457459b375ac218cbd8dc937c9260",
+      "signature": "taxonomy_exact_leaf_v2(uuid,text,text,boolean)"
+    },
+    {
+      "md5": "44557a7b3477f0d69a2b0890c79495bf",
+      "lf_md5": "44557a7b3477f0d69a2b0890c79495bf",
+      "signature": "taxonomy_resolve_alias_v1(text,text)"
+    },
+    {
+      "md5": "8973a6eecc2e649f3decbf4c77fe2cb8",
+      "lf_md5": "8973a6eecc2e649f3decbf4c77fe2cb8",
+      "signature": "taxonomy_resolve_alias_v2(text,text,text,boolean)"
+    },
+    {
+      "md5": "5d3fcb7f455339be039fe1f340be254e",
+      "lf_md5": "5d3fcb7f455339be039fe1f340be254e",
+      "signature": "taxonomy_roots_v1(text)"
+    },
+    {
+      "md5": "6ccd6c850571863d2b43cd6535e48b7b",
+      "lf_md5": "6ccd6c850571863d2b43cd6535e48b7b",
+      "signature": "taxonomy_roots_v2(text,text,boolean)"
+    },
+    {
+      "md5": "1cd2c464740c00d514a255058cdf5fd2",
+      "lf_md5": "1cd2c464740c00d514a255058cdf5fd2",
+      "signature": "taxonomy_search_context_v1(text,text)"
+    },
+    {
+      "md5": "6ab0cecdb02bba0f2fb7acfd3cdcbe4e",
+      "lf_md5": "6ab0cecdb02bba0f2fb7acfd3cdcbe4e",
+      "signature": "taxonomy_search_context_v2(text,text,text,boolean)"
+    },
+    {
+      "md5": "fa366510d4164f2ce2b786abba67037e",
+      "lf_md5": "fa366510d4164f2ce2b786abba67037e",
+      "signature": "taxonomy_set_preview_v2(boolean,text)"
+    },
+    {
+      "md5": "dbe0ec597e24af7fa08dd877cb82589d",
+      "lf_md5": "dbe0ec597e24af7fa08dd877cb82589d",
+      "signature": "update_product_review(uuid,integer,text,text)"
+    },
+    {
+      "md5": "0d21fa083510fca9af9db5a48e5532db",
+      "lf_md5": "0d21fa083510fca9af9db5a48e5532db",
+      "signature": "validate_taxonomy_category_hierarchy()"
+    }
+  ],
+  "remote_writes": "NONE",
+  "scope": "Read-only metadata; existing post-A source line endings must be reproduced locally, never changed remotely"
+}
