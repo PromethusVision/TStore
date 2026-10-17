@@ -364,3 +364,21 @@ is generated. Optional intake input is a plain local file name under
 `.buildlog/pilot-intake/`; it never carries private contacts or credentials.
 Exact sources, review hashes, local validation and independent remote approval
 gates are documented in `docs/MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md`.
+
+## J6 first-cohort preparation after installed A/C/E
+
+Use `local.mjs prepare`, `local.mjs start <new-run>`,
+`pilot_cohort.mjs <same-run> <Flutter-SDK-directory>`, then `local.mjs stop <run>`.
+The owned loopback stack mirrors the installed post-C/E schema and tests separate
+category/role candidates with real Auth and the existing Flutter repository
+journey. Its existing products/accounts are synthetic fixtures, never a suggested
+hosted provisioning method. No policy override or new-product materializer exists.
+
+Run `pilot_cohort.test.mjs` and `prepare_pilot_cohort.test.mjs` beside the existing
+pilot/safety tests. After current proof passes, `prepare_pilot_cohort.mjs <new-name>`
+generates a default no-write review bundle. Optional private input is a plain name
+under `.buildlog/pilot-cohort-input`; selected account IDs must never be committed.
+Missing facts stay missing. A/C/E are not replayed. Exact B and role-D proposals
+require matching observations and separate owner approval before hosted use.
+See `docs/MERCHANT_PILOT_COHORT_HANDOFF.md` for source/target guards, reproduction,
+the unresolved catalog publication/legacy-price contract and remaining pilot gates.

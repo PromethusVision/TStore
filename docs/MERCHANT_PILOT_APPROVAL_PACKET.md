@@ -9,6 +9,13 @@ korumalı düzeltmesi uygulandı; bağımsız son kontroller PASS.
 B/D hâlâ ayrı onay gerektirir. Hizmet esnafı için geniş başvuru / kademeli katılım
 yaklaşımı korunur; canonical §4.7 ve §4.9 geçerlidir. Production'a erişilmedi.
 
+**Sonraki paket (J6):** kategori, mevcut hesap/rol ve ürün eşleştirme hazırlığı
+yerelde doğrulandı. Katılımcılar ve gerçek ürünler henüz belli olmadığı için
+varsayılan dosyada yazma işlemi yoktur. Yeni ürünü güvenli biçimde ortak kataloğa
+yayımlama ve eski fiyat alanıyla uyum sözleşmesi ayrıca tamamlanmalıdır; sahte
+ürün/fiyat oluşturulmadı. [Hazırlık teslimi](MERCHANT_PILOT_COHORT_HANDOFF.md).
+Bu paket test sunucusunu okumadı veya değiştirmedi; B/D onayı verilmiş sayılmaz.
+
 **Önceki hazırlık (J4):** E için altı metin düzeltmesi eşleşen yerel ortamda
 doğrulandı; C'nin dört bağlantısı ve ilk katılım hazırlık dosyası paketlendi.
 [Yeni teslim ve somut onay kapsamı](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md).

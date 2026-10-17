@@ -614,6 +614,25 @@ must not replay A/E. See [handoff](MERCHANT_PILOT_TEST_CE_HANDOFF.md). B/D, real
 and device callbacks, provider configuration, physical QR, signed distribution,
 Production and final pilot acceptance retain separate gates. J remains OPEN.
 
+### J6 — First-cohort category/catalog/account preparation (2026-10-17)
+
+Following integrated J5 (`8031bad3`), canonical §4.10 authorizes local preparation
+with actual participants/products still unknown. Add source-bound offline intake,
+minimized observation, separate guarded B and existing-account role-D candidates,
+and explicit existing-catalog identity/GTIN matching. No Auth creation, catalog
+materialization, price invention, submission-decision activation or A/C/E replay.
+
+Rehearse only on a new owned stack matching the installed post-C/E structure:
+state/token/authority/concurrency/replay/rollback guards, exact category/role
+changes, preserved shared product identity, real Auth owner isolation and the
+existing complete Flutter repository journey. Synthetic fixture products are
+not a remote publication method. No app/dependency/historical migration changes.
+
+Use [J6 handoff](MERCHANT_PILOT_COHORT_HANDOFF.md). Default output contains no write
+SQL. Real B/D approval awaits selected facts and fresh observations; controlled
+new-product materialization and the legacy-price/read contract remain a distinct
+implementation gate before catalog population. Production and full J stay OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

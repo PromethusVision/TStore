@@ -1,7 +1,8 @@
 # Esenler pilotu — ilk katılım grubu hazırlığı
 
 17 Ekim 2026. Bu rehber hazırlık içindir; kategori açma, hesap oluşturma, rol verme,
-ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.8 geçerlidir.
+ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.10 geçerlidir.
+C/E test ayarları tamamlandı; aşağıdaki J6 aracı bunları tekrar uygulamaz.
 
 ## Önce kapatılacak boşluk
 
@@ -40,20 +41,35 @@ ihtiyacı mevcut sözleşmeye uymuyorsa ayrı ürün kararı gerekir.
 
 ## Teknik hazırlık dosyasını kullanma
 
-`prepare_pilot_launch.mjs <yeni-paket-adı>` yeni bir offline inceleme klasörü üretir.
-İçinde kategori envanteri, eksik hazırlık raporu, anonim rol yuvaları, C giriş
-bağlantıları ve E bildirim düzeltmesi bulunur. A tekrar kurulum dosyası yoktur.
-Varsayılan durumda hiçbir kategori seçilmez ve bütün hazırlık bayrakları false'tur.
+Güncel komut `node tool/merchant_acceptance/prepare_pilot_cohort.mjs <yeni-ad>`.
+Kategori envanteri, eksik hazırlık raporu, anonim hesap yuvaları ve salt okunur
+gözlem dosyası üretir. A/C/E tekrar uygulanmaz. Varsayılan dosyada hesap kimliği,
+ürün veya kategori seçimi ve hiçbir yazma SQL'i yoktur.
 
-İleride gerçek hazırlık tamamlandığında `intake.template.json` dosyasının özel
-yerel kopyası `.buildlog/pilot-intake/<ad>.json` altında tutulabilir. İkinci CLI
-argümanı yalnız bu yerel adı kabul eder. Dosyaya isim, e-posta, telefon, parola,
-token veya ek alan koymayın. `product_leaf_ids` yalnız önerilen ürün dalı UUID'lerini
-taşır; bu kimlikler otomatik yetki oluşturmaz. Seçim varsa ayrı B planı üretilir.
+Gerçek bilgiler belli olduğunda şablonun özel kopyası
+`.buildlog/pilot-cohort-input/<ad>.json` altında tutulur. Hesap yuvalarına güvenli
+ekranda doğrulanan mevcut hesabın sistem kimliği ve özel inceleme kaydının referansı
+eklenir. Kişisel isim, e-posta, telefon, parola veya token bu dosyaya konmaz; gerçek
+hesap kimlikleri içeren dosya da Git'e eklenmez. Hesap henüz yoksa kişi güvenli
+kayıt ekranını kullanır; araç hesap oluşturmaz veya e-posta göndermez.
 
-Rapordaki işaretler beyanı temsil eder. Hepsi true olsa bile sonuç
-`CLAIMED_COMPLETE_REQUIRES_INDEPENDENT_EVIDENCE` olur; `distribution_ready` daima
-false kalır. Gerçek sunucu/cihaz kanıtı ve Product Owner açılış kabulü ayrıca gerekir.
+Ürün için gerçek ad/marka/model/çeşit, varsa barkod, kategori, kanıt referansı ve
+var olan katalogdan açık ürün seçimi gerekir. Bir ortak ürün farklı esnaflarca
+seçilebilir. Çelişen barkodlar, aynı esnafta tekrar eden ürünler, hizmet kaydı ve
+eksik incelemeler raporda ayrılır. Benzer isim, otomatik eşleştirme yetkisi vermez.
+
+Salt okunur gözlemin sonucu aynı klasörde `<ad>.observation.json` olarak tutulur.
+İkinci komut argümanı yalnız bu özel dosya adıdır. Eksiksiz gözlem varsa seçilen
+kategoriler ve uygun mevcut hesap rolleri için ayrı öneri üretilebilir. Bu öneriler
+onay veya uygulama değildir; uygulamadan önce güncel durum tekrar karşılaştırılır.
+`distribution_ready` daima false kalır; gerçek cihaz ve açılış kabulü ayrıca gerekir.
+
+**Katalogdaki kritik eksik:** yeni ürün yayımlama yolu henüz hazır değil. Eski ürün
+tablosu zorunlu bir fiyat alanı taşıyor; buraya uydurma fiyat yazmak yanlış bilgi
+gösterebilir. Ürün başvurusu kapısını açmak da bu sorunu çözmez. Bu nedenle sonraki
+teknik çalışma kontrollü ürün yayını ve fiyat/veri uyumu olmalı. Bu çalışma için
+gerçek ürünleri şimdi uydurmamız gerekmiyor; katılımcılar seçildiğinde ayrı içerik
+onayı alınacak. [Teknik sınır ve teslim](MERCHANT_PILOT_COHORT_HANDOFF.md).
 
 ## Açılış için üç somut kabul
 
@@ -67,8 +83,8 @@ false kalır. Gerçek sunucu/cihaz kanıtı ve Product Owner açılış kabulü 
 ## Bağımsız onaylar
 
 - **B:** kesin ürün dalları; policy ve profesyonel inceleme alanları korunur.
-- **C:** yalnız dört tam giriş dönüş bağlantısının eklenmesi; diğer Auth ayarları aynı.
+- **C:** Development'ta tamamlandı; bu paket tekrar uygulamaz.
 - **D:** açık hesap/rol kapsamı ve ayrıca kanıtlanmış katalog hazırlık yöntemi.
-- **E:** iki mevcut bildirim işlevinde altı metin düzeltmesi; eski bildirimler aynı.
+- **E:** Development'ta tamamlandı; bu paket tekrar uygulamaz.
 
 Bir kalemin onayı diğerine izin vermez. Production bu paketin tamamen dışındadır.

@@ -498,6 +498,35 @@ supersedes their earlier pending-approval status, not any FROZEN product rule.
 See [J5 test application receipt](MERCHANT_PILOT_TEST_CE_HANDOFF.md). No application
 runtime, dependency, service-business scope or economic rule changed.
 
+### 4.10 First-cohort category/catalog/account preparation — 2026-10-17
+
+After J5 integration (`8031bad3`), the owner authorized a comprehensive local
+preparation package and confirmed that real participants/products are not yet
+selected. No real identities, products or category selection may be invented.
+Production is excluded; any Development mutation requires a concrete separate
+approval. No FROZEN rule changes or new service/economic features are approved.
+
+- B proposals bind exact selected eligible leaves/ancestors and the observed
+  catalog as well as taxonomy/schema; disclose products activation could expose.
+  Preserve policy/review metadata and reject drift, concurrent writes and replay.
+- D preparation distinguishes existing identity verification from creating Auth
+  accounts. No password, private contact, invitation or confirmation override is
+  generated. A proposed customer → merchant role change needs exact reviewed
+  accounts and live status/ownership rechecks; no admin, demotion or shop transfer.
+- Catalog matching preserves shared identities, GTIN uniqueness and exact owner
+  restrictions. One shared product may serve multiple merchants. Similarity or
+  an exact barcode cannot silently authorize a new product or choose a listing.
+- The empty catalog and legacy required price remain a publication/compatibility
+  gate. Do not invent a price, seed real products, turn on decisions or bypass
+  canonical assignment. The next materialization contract needs separate review;
+  synthetic pre-existing products are permissible only in isolated local proofs.
+- Missing inputs emit a read-only observation template and incomplete readiness,
+  never a fake completed cohort. A/C/E installation must not be replayed. Real
+  mail, physical QR, provider, signed distribution and final pilot acceptance stay
+  open. J remains OPEN.
+
+See [J6 handoff and remaining catalog contract](MERCHANT_PILOT_COHORT_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
