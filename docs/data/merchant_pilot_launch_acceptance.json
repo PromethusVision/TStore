@@ -1,0 +1,220 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T20:09:00.254Z",
+  "baseline_commit": "ad42c92d558624d693f0b831a5b4ed8d7a7a5d22",
+  "scope": "OWNED LOCAL mirrored post-A fixture; not hosted acceptance",
+  "services": [
+    {
+      "service": "db",
+      "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+      "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+      "bindings": [
+        {
+          "container_port": "5432/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55432"
+        }
+      ]
+    },
+    {
+      "service": "kong",
+      "image": "public.ecr.aws/supabase/kong:2.8.1",
+      "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+      "bindings": [
+        {
+          "container_port": "8000/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55431"
+        }
+      ]
+    },
+    {
+      "service": "auth",
+      "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+      "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+      "bindings": []
+    },
+    {
+      "service": "rest",
+      "image": "public.ecr.aws/supabase/postgrest:v16.4",
+      "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+      "bindings": []
+    },
+    {
+      "service": "storage",
+      "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+      "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+      "bindings": []
+    }
+  ],
+  "sources": [
+    {
+      "path": "tool/merchant_acceptance/pilot_launch_contract.mjs",
+      "sha256_lf": "6e0745f31f9f04168a842a8b2c9ea5c75a03fd17ea10235b0f3894c88cb2eba0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_launch.mjs",
+      "sha256_lf": "6db0660882a1b88162b1e581de14aa605be38afe7dfb0c3b7c6a090f97bd00ef"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_pilot_launch.mjs",
+      "sha256_lf": "aebed1b9ddbdceff4544ba33092f30c6632e9f60c5debc4e7c71f36c7edcd9fb"
+    },
+    {
+      "path": "supabase/proposals/pilot_notification_text_repair_v1.sql",
+      "sha256_lf": "529836466b799df8c59ecbfa688e7f54f8d495c271c20663213be08bff0b3f96"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_hosted_profile.mjs",
+      "sha256_lf": "e88ed64b695cd64d68b48b18a1570760109ce393c6e264c851c63f7f7f5ef732"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_preparation_contract.mjs",
+      "sha256_lf": "e14ba255ebec778e589738f6d4a45eb1f6709b74d7d849fd3edb7c994c663ee4"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "sha256_lf": "ddb5f52165b12c79afc36a2613c0886c78c1bfb9c900d295d058a9072a7992cd"
+    },
+    {
+      "path": "tool/merchant_acceptance/local.mjs",
+      "sha256_lf": "a69436c3168155d43b6b7a9574519645607a6bf0acd370cadc4c3ace87a98bf2"
+    },
+    {
+      "path": "tool/merchant_acceptance/safety.mjs",
+      "sha256_lf": "3d90cfad3dcff09bf93fdce4a2d01e1a87c8001a43744ecf8539398a80d2ad94"
+    },
+    {
+      "path": "tool/merchant_acceptance/docker-proxy.mjs",
+      "sha256_lf": "5c56fe21ea877b2d7b5109b5102110db9e60ae3c8a3f3279a37adcd314991bb0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_launch_profile.mjs",
+      "sha256_lf": "6da6ff569b223faba0259b936c0ad787ca1ac422316df157da66c5b5ae930fdd"
+    },
+    {
+      "path": "docs/data/merchant_pilot_post_a_observation.json",
+      "sha256_lf": "7aa7e8448787987f0ee22511da41b12e055fdc326516d03e5ef91332b058e5a3"
+    }
+  ],
+  "checks": [
+    {
+      "name": "local post-A mirror matches actual J3 installed fingerprint",
+      "result": "PASS"
+    },
+    {
+      "name": "pre-fix real chat and synthetic purchase triggers reproduce both corrupt notification types",
+      "result": "PASS"
+    },
+    {
+      "name": "missing, wrong and old A tokens reject E without changes",
+      "result": "PASS"
+    },
+    {
+      "name": "drift in RLS, functions, grants, defaults or ledger blocks repair",
+      "result": "PASS"
+    },
+    {
+      "name": "competing repair is refused before any function replacement",
+      "result": "PASS"
+    },
+    {
+      "name": "late failure rolls back both functions and the new ledger row",
+      "result": "PASS"
+    },
+    {
+      "name": "Windows editor CRLF input preserves exact corrected bodies and ledger text",
+      "result": "PASS"
+    },
+    {
+      "name": "unrelated trigger mutation is detected and rolled back",
+      "result": "PASS"
+    },
+    {
+      "name": "function-owner mutation is detected and rolled back",
+      "result": "PASS"
+    },
+    {
+      "name": "exact forward repair preserves existing rows, OIDs, owners and ACLs",
+      "result": "PASS"
+    },
+    {
+      "name": "replay refuses an already corrected schema and preserves history",
+      "result": "PASS"
+    },
+    {
+      "name": "merchant chat prefers shop name and delivers canonical UTF-8 content",
+      "result": "PASS"
+    },
+    {
+      "name": "profile and empty-name fallbacks preserve recipients and action metadata",
+      "result": "PASS"
+    },
+    {
+      "name": "self-chat does not create a duplicate notification",
+      "result": "PASS"
+    },
+    {
+      "name": "purchase notifications preserve snapshot shop names and blank fallback",
+      "result": "PASS"
+    },
+    {
+      "name": "actual Auth inbox denies foreign reads and client-generated notifications",
+      "result": "PASS"
+    },
+    {
+      "name": "inbox mark-read and delete remain owner scoped with immutable content",
+      "result": "PASS"
+    },
+    {
+      "name": "no taxonomy, catalog, downstream feature or second notification system is enabled",
+      "result": "PASS"
+    }
+  ],
+  "postProfile": {
+    "sha256_lf": "7aa7e8448787987f0ee22511da41b12e055fdc326516d03e5ef91332b058e5a3",
+    "schema_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+    "newline_only_functions": 22
+  },
+  "repair_plan": {
+    "contract": "merchant-pilot-notification-repair-review-v1",
+    "target": {
+      "project_ref": "tnipyxnvhgelwdpykyez",
+      "project_url": "https://tnipyxnvhgelwdpykyez.supabase.co"
+    },
+    "baseline_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+    "source_file": "supabase/proposals/pilot_notification_text_repair_v1.sql",
+    "source_sha256_lf": "529836466b799df8c59ecbfa688e7f54f8d495c271c20663213be08bff0b3f96",
+    "ledger": {
+      "version": "20261017003200",
+      "name": "0032_pilot_notification_text_repair"
+    },
+    "functions": [
+      {
+        "signature": "create_chat_message_notification()",
+        "before_md5": "2c5c102cb8a2f0caa1e87563fa704602",
+        "after_md5": "99dd8841f5092b10634f25109e99f3b3"
+      },
+      {
+        "signature": "create_verified_purchase_notification()",
+        "before_md5": "6f4d7f9a1ff3a53fe30e2fb925df2192",
+        "after_md5": "c1f3e83146c67dc68b74d34dd692e311"
+      }
+    ],
+    "remote_authorized": false,
+    "effect": "Six future notification literals only; preserve all existing rows, function owners/ACL/OIDs and trigger wiring; add one new ledger entry",
+    "excluded": "No categories, Auth, accounts, historical row repair, push provider or feature activation",
+    "after_commit": "Preserve evidence and prepare a separately reviewed forward correction; never replay old migrations or delete historical notifications",
+    "sha256": "9545ccd2900ca25e01546ff5068e57e4d3e84c23110fb235c65fabf541df5890"
+  },
+  "before_schema_md5": "6b26d924c04ad9aa568f15bfcf3279bf",
+  "after_schema_md5": "78f248b24aa67f7befcc7ccdb9ec97bd",
+  "before_taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+  "after_taxonomy_md5": "d53b64debde1b8c79909acf7997472d0",
+  "old_rows_preserved_at_upgrade": true,
+  "remote_writes": "NONE",
+  "production_access": "NONE",
+  "email_sent": "NONE",
+  "provider_configured": false,
+  "physical_acceptance": "OPEN"
+}

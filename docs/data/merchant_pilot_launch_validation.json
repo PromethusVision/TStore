@@ -1,0 +1,61 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T20:13:20.286Z",
+  "source_main": "ad42c92d558624d693f0b831a5b4ed8d7a7a5d22",
+  "node": {
+    "passed": 46,
+    "failed": 0,
+    "skipped": 0
+  },
+  "managed_local": {
+    "passed_groups": 18,
+    "failed": 0,
+    "evidence": "merchant_pilot_launch_acceptance.json"
+  },
+  "flutter": {
+    "passed": 144,
+    "failed": 0,
+    "scope": "Targeted existing pilot configuration/recovery and notification regression suites",
+    "sources": [
+      {
+        "path": "test/unit/merchant/merchant_pilot_config_test.dart",
+        "sha256_lf": "a0e45caa10ffae191bdae1d87abc02a368a851048fc9b9f0dc005f03629d6e5f"
+      },
+      {
+        "path": "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "sha256_lf": "29fbfa7b4d503aa8ba3df4cde75981230effd79766eeeeb6219efb8d7bb308ce"
+      },
+      {
+        "path": "test/unit/merchant/merchant_account_recovery_test.dart",
+        "sha256_lf": "27118d609a1638c39e53c25a753948eb3d059c138828cea0fea24fbc9a56f7f0"
+      },
+      {
+        "path": "test/unit/merchant/merchant_recovery_backend_test.dart",
+        "sha256_lf": "8a691510f55f9965f8fe9c81f50e66db14a8788a40087a7d862284cbadac8219"
+      },
+      {
+        "path": "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "sha256_lf": "b8ed39e51648eb8e30498d663f7af73e77594b22c49bf1ecd53c7271a41577d3"
+      },
+      {
+        "path": "test/unit/notifications/notification_repository_impl_test.dart",
+        "sha256_lf": "653d0b4f459e68a103a7f95dccdca4c454a70bc5b95c1f7aa82d563e6cabc599"
+      },
+      {
+        "path": "test/unit/notifications/notifications_cubit_test.dart",
+        "sha256_lf": "dad04daf1a02e7a43f5b741cbc9eec2bc45eb07cfd2234cc01b0a9e623c547ad"
+      }
+    ]
+  },
+  "analyzer": {
+    "result": "PASS",
+    "command": "flutter analyze --no-pub"
+  },
+  "app_changes": false,
+  "build": "NOT_RUN; no app or dependency change",
+  "remote_reads": "Development metadata only; Auth-page reread incomplete, no fresh settings claim",
+  "remote_writes": "NONE",
+  "production_access": "NONE",
+  "physical_acceptance": "OPEN",
+  "remote_approval": "C/E pending; B/D not selected"
+}

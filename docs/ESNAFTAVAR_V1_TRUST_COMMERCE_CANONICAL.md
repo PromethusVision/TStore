@@ -440,6 +440,40 @@ metadata and taxonomy fingerprints are preserved; decisions remain OFF. See the
 [installation receipt](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md). This is hosted
 schema acceptance only; remote user journeys and final pilot opening remain OPEN.
 
+### 4.8 Next pilot preparation: notifications, callbacks and intake — 2026-10-17
+
+After J3 integration PASS (`ad42c92d`), the owner requested the next pilot package.
+This authorizes local implementation/rehearsal and review artifacts, while §4.7's
+separate remote-write gates remain in force. No new business feature is approved.
+
+- Item E prepares a forward-only correction of the six known Turkish literals in
+  the existing chat and verified-purchase notification functions. Preserve old
+  notification rows, recipients/action metadata, function owners/OIDs/ACLs, RLS,
+  triggers and the shared notification architecture. A separate new ledger entry
+  belongs to the proposed atomic operation; never replay or edit historical0006.
+  The proposal stays outside automatic migration discovery and requires exact
+  Development identity, current post-A baseline and separate owner approval.
+- The local post-A fixture must match the full observed hosted schema. The 22
+  newly installed A function bodies were observed with CRLF line endings; local
+  reproduction may change only those line endings after exact normalized-body
+  verification, then must pass the original full hosted fingerprint. Do not
+  rewrite hosted functions or substitute a relaxed expected fingerprint.
+- Item C remains the exact four additive callbacks already proposed. Preserve
+  existing callbacks and all other shared Auth settings; reread settings before
+  application. Configuration matching is not real email or physical-device proof.
+- Intake preparation records missing participants, explicit eligible product
+  leaves, verified catalog/account/ownership, paired Customer, recovery, device,
+  distribution and support evidence. No template or self-reported boolean can
+  authorize provisioning or certify pilot readiness. No participant identity,
+  private contact or credential is collected in committed artifacts.
+- Decisions remain OFF and catalog population remains a separate unresolved
+  operational gate. Do not seed products, grant merchant roles, approve product
+  submissions or represent services as products under preparation authority.
+
+See [J4 handoff](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md) and
+[pilot intake guide](MERCHANT_PILOT_INTAKE_GUIDE.md). B–E remote actions, Production,
+provider/mail, physical two-device QR and final pilot opening retain their gates.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

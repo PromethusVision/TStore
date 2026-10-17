@@ -6,6 +6,11 @@ salt okunur son kontrolleri geçti. [Kurulum kaydı](MERCHANT_PILOT_TEST_INSTALL
 onayı, kapsamı ve kanıtı içerir. B–E için izin verilmedi. Hizmet esnafı için aşağıdaki
 geniş başvuru / kademeli katılım yaklaşımı kabul edildi; canonical §4.7'ye işlendi.
 
+**Sonraki hazırlık (J4):** E için altı metin düzeltmesi eşleşen yerel ortamda
+doğrulandı; C'nin dört bağlantısı ve ilk katılım hazırlık dosyası paketlendi.
+[Yeni teslim ve somut onay kapsamı](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md).
+Bu hazırlık B–E için sunucuya yazma izni değildir.
+
 Aşağıdaki hazırlık değerlendirmesi kurulumdan önceki incelemenin kaydıdır.
 Yerel hazırlık tamamlandı. İlk karşılaştırmada bulunan sunucu farkları ayrı yerel
 provada korunarak yeniden üretildi; kurulum adayı bu eşdeğer ortamda geçti ve
@@ -75,7 +80,7 @@ kanıtlanmadan kullanıcıya otomatik yayın sözü verilmemeli.
 | B — Kategoriler | Açıkça listelenmiş son dallar ve gerekli üst dallar; policy/inceleme alanlarına dokunulmaz | Kesin liste seçilmedi, uygulanamaz |
 | C — Giriş dönüş bağlantıları | Aşağıdaki4 tam bağlantıyı mevcut listeye eklemek | İncelenebilir öneri; uygulanmadı |
 | D — Hesaplar/katalog | Seçilmiş gerçek kimlikler, merchant/customer rolleri ve sınırlı ürün hazırlığı | Esnaflar belli değil; hesap/rol/veri oluşturulmaz |
-| E — Bildirim metni düzeltmesi | İki mevcut işlevdeki6 bozuk Türkçe sabitin doğru kaynakla ileri düzeltmesi | Bulgu doğrulandı; ayrı yerel prova ve değişiklik adayı gerekiyor |
+| E — Bildirim metni düzeltmesi | İki mevcut işlevdeki6 bozuk Türkçe sabitin doğru kaynakla ileri düzeltmesi; tek yeni geçmiş kaydı | J4 yerel prova PASS; somut paket hazır, ayrı sunucu onayı bekliyor |
 
 A için daha dar sunucu izinlerini ve yönetilen RLS davranışını koruyan yerel
 uyum provası tamamlandı. Uygulamadan hemen önce salt okunur kontrol tekrar geçmeli;
