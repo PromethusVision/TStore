@@ -33,7 +33,9 @@ class CouponCheckoutTerms extends Equatable {
     final sale = LedgerMinorUnits.fromWire(value['sale_minor']);
     final coupon = LedgerMinorUnits.fromWire(value['coupon_minor']);
     final payment = LedgerMinorUnits.fromWire(value['payment_minor']);
-    if (coupon.value <= BigInt.zero ||
+    if (sale.value < BigInt.zero ||
+        payment.value < BigInt.zero ||
+        coupon.value <= BigInt.zero ||
         sale.value != coupon.value + payment.value) {
       throw const FormatException('Checkout amounts');
     }

@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:t_store/features/cart/data/qr_installation.dart';
+import 'package:t_store/features/merchant/presentation/merchant_purchase_scope.dart';
+import 'package:t_store/features/merchant/presentation/merchant_read.dart';
+import 'package:t_store/features/merchant/presentation/merchant_return_form.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
@@ -20,86 +19,153 @@ class MerchantPurchasesView extends StatefulWidget {
   State<MerchantPurchasesView> createState() => _MerchantPurchasesViewState();
 }
 
-class _MerchantPurchasesViewState extends State<MerchantPurchasesView> {
+class _MerchantPurchasesViewState extends State<MerchantPurchasesView>
+    with WidgetsBindingObserver {
   final _rows = <PurchaseEvidence>[];
   bool _loading = false, _more = true;
   String? _error;
+  late MerchantPurchaseScope _scope;
+  int _epoch = 0, _offset = 0;
+  bool _opening = false, _pageFailed = false;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _scope = MerchantPurchaseScope(widget.repository);
     _load();
   }
 
+  @override
+  void didUpdateWidget(covariant MerchantPurchasesView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.repository != widget.repository ||
+        oldWidget.userId != widget.userId ||
+        oldWidget.shopId != widget.shopId) {
+      _scope.close();
+      _scope = MerchantPurchaseScope(widget.repository);
+      _load(refresh: true);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_opening) _load(refresh: true);
+  }
+
+  @override
+  void dispose() {
+    _scope.close();
+    _epoch++;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   Future<void> _load({bool refresh = false}) async {
-    if (_loading) return;
+    if (!_scope.current || _loading && !refresh) return;
+    final scope = _scope;
+    final epoch = ++_epoch;
     setState(() {
       _loading = true;
       _error = null;
+      _pageFailed = false;
+      if (refresh) {
+        _rows.clear();
+        _offset = 0;
+        _more = true;
+      }
     });
-    final result = await widget.repository.list(
-      widget.shopId,
-      offset: refresh ? 0 : _rows.length,
+    final result = await merchantRead(
+      () => widget.repository.list(widget.shopId, offset: _offset),
     );
-    if (!mounted) return;
+    if (!mounted || !scope.current || epoch != _epoch) return;
     setState(() {
       _loading = false;
-      result.fold((e) => _error = e, (rows) {
-        if (refresh) _rows.clear();
-        _rows.addAll(rows);
-        _more = rows.length == 20;
-      });
+      result.fold(
+        (e) {
+          _error = e;
+          _pageFailed = _rows.isNotEmpty;
+        },
+        (rows) {
+          if (rows.any((p) => p.shopId != widget.shopId) || rows.length > 20) {
+            _rows.clear();
+            _offset = 0;
+            _more = false;
+            _error = 'Alışveriş listesi doğrulanamadı.';
+            return;
+          }
+          _offset += rows.length;
+          final merged = {
+            for (final p in _rows) p.id: p,
+            for (final p in rows) p.id: p,
+          };
+          _rows
+            ..clear()
+            ..addAll(merged.values);
+          _more = rows.length == 20;
+        },
+      );
     });
   }
 
   Future<void> _open(PurchaseEvidence value) async {
+    if (_opening || !_scope.current || _loading) return;
+    _opening = true;
+    final scope = _scope;
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => _PurchaseDetail(
           repository: widget.repository,
           purchaseId: value.id,
           userId: widget.userId,
+          shopId: widget.shopId,
         ),
       ),
     );
-    if (mounted) await _load(refresh: true);
+    _opening = false;
+    if (mounted && scope.current) await _load(refresh: true);
   }
 
   @override
   Widget build(BuildContext context) => MerchantPage(
     title: 'Doğrulanmış alışverişler',
+    onRefresh: () => _load(refresh: true),
     children: [
-      const MerchantNotice(
-        'Burada yalnız EsnaftaVar ile doğrulanan alışverişler görünür.',
-      ),
-      if (_error != null)
-        MerchantNotice(
-          _error!,
-          error: true,
-          onRetry: () => _load(refresh: true),
+      if (!_scope.current)
+        const MerchantNotice('Oturum değişti. Bu ekranı kapatın.')
+      else ...[
+        const MerchantNotice(
+          'Burada yalnız EsnaftaVar ile doğrulanan alışverişler görünür.',
         ),
-      if (_rows.isEmpty && !_loading && _error == null)
-        const MerchantNotice('Henüz doğrulanmış alışveriş yok.'),
-      for (final p in _rows)
-        ListTile(
-          title: Text(
-            p.saleExact != null
-                ? rewardMoney(p.saleExact!)
-                : p.finalSaleMinor == null
-                ? 'Eski alışveriş kaydı'
-                : merchantPrice(p.finalSaleMinor! / 100),
+        if (_error != null)
+          MerchantNotice(
+            _error!,
+            error: true,
+            onRetry: () => _load(refresh: !_pageFailed),
           ),
-          subtitle: Text(
-            '${_date(p.confirmedAt)} • ${p.items.length} ürün türü${p.invalidated ? ' • Geçersiz kayıt' : ''}',
+        if (_rows.isEmpty && !_loading && _error == null)
+          const MerchantNotice('Henüz doğrulanmış alışveriş yok.'),
+        for (final p in _rows)
+          ListTile(
+            title: Text(
+              p.saleExact != null
+                  ? rewardMoney(p.saleExact!)
+                  : p.finalSaleMinor == null
+                  ? 'Eski alışveriş kaydı'
+                  : merchantPrice(p.finalSaleMinor! / 100),
+            ),
+            subtitle: Text(
+              '${_date(p.confirmedAt)} • ${p.items.length} ürün türü${p.invalidated ? ' • Geçersiz kayıt' : ''}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _loading || _opening ? null : () => _open(p),
           ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () => _open(p),
-        ),
-      if (_loading) const Center(child: CircularProgressIndicator()),
-      if (!_loading && _more && _rows.isNotEmpty)
-        OutlinedButton(
-          onPressed: _load,
-          child: const Text('Daha fazla göster'),
-        ),
+        if (_loading) const Center(child: CircularProgressIndicator()),
+        if (!_loading && _error == null && _more && _rows.isNotEmpty)
+          OutlinedButton(
+            onPressed: _load,
+            child: const Text('Daha fazla göster'),
+          ),
+      ],
     ],
   );
 }
@@ -114,57 +180,99 @@ class _PurchaseDetail extends StatefulWidget {
     required this.repository,
     required this.purchaseId,
     required this.userId,
+    required this.shopId,
   });
   final PurchaseEvidenceRepository repository;
-  final String purchaseId, userId;
+  final String purchaseId, userId, shopId;
   @override
   State<_PurchaseDetail> createState() => _PurchaseDetailState();
 }
 
-class _PurchaseDetailState extends State<_PurchaseDetail> {
+class _PurchaseDetailState extends State<_PurchaseDetail>
+    with WidgetsBindingObserver {
   PurchaseEvidence? _purchase;
   String? _error;
   bool _loading = false;
+  bool _opening = false;
+  int _epoch = 0;
+  late final _scope = MerchantPurchaseScope(widget.repository);
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
   }
 
   Future<void> _load() async {
-    if (_loading) return;
+    if (!_scope.current) return;
+    final epoch = ++_epoch;
     setState(() {
       _loading = true;
       _error = null;
+      _purchase = null;
     });
-    final result = await widget.repository.read(widget.purchaseId);
-    if (!mounted) return;
+    final result = await merchantRead(
+      () => widget.repository.read(widget.purchaseId),
+    );
+    if (!mounted || !_scope.current || epoch != _epoch) return;
     setState(() {
       _loading = false;
-      result.fold((e) => _error = e, (p) => _purchase = p);
+      result.fold((e) => _error = e, (p) {
+        if (p.id != widget.purchaseId || p.shopId != widget.shopId) {
+          _error = 'Alışveriş bilgisi doğrulanamadı.';
+        } else {
+          _purchase = p;
+        }
+      });
     });
   }
 
   Future<void> _return() async {
+    if (_opening ||
+        !_scope.current ||
+        _loading ||
+        _purchase == null ||
+        _error != null) {
+      return;
+    }
+    _opening = true;
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (_) => _ReturnForm(
+        builder: (_) => MerchantReturnForm(
           repository: widget.repository,
           purchase: _purchase!,
           userId: widget.userId,
         ),
       ),
     );
-    if (mounted) await _load();
+    _opening = false;
+    if (mounted && _scope.current) await _load();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_opening) _load();
+  }
+
+  @override
+  void dispose() {
+    _scope.close();
+    _epoch++;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final p = _purchase;
+    final p = _scope.current ? _purchase : null;
     return MerchantPage(
       title: 'Alışveriş kaydı',
+      onRefresh: _load,
       children: [
-        if (_loading) const Center(child: CircularProgressIndicator()),
+        if (!_scope.current)
+          const MerchantNotice('Oturum değişti. Bu ekranı kapatın.')
+        else if (_loading)
+          const Center(child: CircularProgressIndicator()),
         if (_error != null)
           MerchantNotice(_error!, error: true, onRetry: _load),
         if (p != null) ...[
@@ -209,7 +317,8 @@ class _PurchaseDetailState extends State<_PurchaseDetail> {
                 'quote_only_b_v1',
                 'coupon_checkout_e_v1',
               }.contains(p.classification) &&
-              !_loading)
+              !_loading &&
+              _error == null)
             OutlinedButton(
               onPressed: _return,
               child: const Text('Bekleyen iade isteğini kontrol et'),
@@ -230,204 +339,4 @@ class _PurchaseDetailState extends State<_PurchaseDetail> {
       ],
     );
   }
-}
-
-class _ReturnForm extends StatefulWidget {
-  const _ReturnForm({
-    required this.repository,
-    required this.purchase,
-    required this.userId,
-  });
-  final PurchaseEvidenceRepository repository;
-  final PurchaseEvidence purchase;
-  final String userId;
-  @override
-  State<_ReturnForm> createState() => _ReturnFormState();
-}
-
-class _ReturnFormState extends State<_ReturnForm> {
-  final _reason = TextEditingController();
-  late final _quantities = {
-    for (final i in widget.purchase.items)
-      i.id: TextEditingController(text: '0'),
-  };
-  bool _loading = true, _sending = false, _success = false;
-  String? _error;
-  Map<String, dynamic>? _pending;
-  String get _key => 'pending_return_b:${widget.userId}:${widget.purchase.id}';
-  @override
-  void initState() {
-    super.initState();
-    _restore();
-  }
-
-  Future<void> _restore() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getString(_key);
-      if (!mounted) return;
-      if (raw != null) {
-        final p = Map<String, dynamic>.from(jsonDecode(raw) as Map);
-        if (p['request_id'] is! String ||
-            p['reason'] is! String ||
-            p['quantities'] is! Map) {
-          throw const FormatException('Invalid draft');
-        }
-        _pending = p;
-        _reason.text = p['reason'] as String;
-        for (final entry in (p['quantities'] as Map).entries) {
-          _quantities[entry.key]?.text = entry.value.toString();
-        }
-      }
-      setState(() => _loading = false);
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _error =
-              'Bekleyen istek okunamadı. Yeni kayıt göndermeden önce yeniden deneyin.';
-        });
-      }
-    }
-  }
-
-  Future<void> _submit() async {
-    if (_sending || _loading || _success) return;
-    setState(() {
-      _sending = true;
-      _error = null;
-    });
-    try {
-      if (_pending == null) {
-        final quantities = <String, int>{};
-        for (final i in widget.purchase.items) {
-          final value = int.tryParse(_quantities[i.id]!.text);
-          if (value == null || value < 0 || value > i.remaining) {
-            throw const FormatException('İade adedini kontrol edin.');
-          }
-          if (value > 0) quantities[i.id] = value;
-        }
-        if (quantities.isEmpty || _reason.text.trim().isEmpty) {
-          throw const FormatException('En az bir ürün ve iade nedeni girin.');
-        }
-        final draft = <String, dynamic>{
-          'request_id': newQrRequestId(),
-          'reason': _reason.text.trim(),
-          'quantities': quantities,
-        };
-        final prefs = await SharedPreferences.getInstance();
-        if (!await prefs.setString(_key, jsonEncode(draft))) {
-          throw StateError('Draft could not persist');
-        }
-        if (!mounted) return;
-        _pending = draft;
-      }
-      final result = await widget.repository.recordReturn(
-        purchaseId: widget.purchase.id,
-        requestId: _pending!['request_id'] as String,
-        reason: _pending!['reason'] as String,
-        quantities: Map<String, int>.from(_pending!['quantities'] as Map),
-      );
-      if (!mounted) return;
-      await result.fold(
-        (e) async {
-          if (e.definitelyRejected) {
-            final prefs = await SharedPreferences.getInstance();
-            if (!await prefs.remove(_key)) {
-              throw StateError('Rejected draft could not clear');
-            }
-            if (!mounted) return;
-            _pending = null;
-          }
-          if (mounted) setState(() => _error = e.message);
-        },
-        (_) async {
-          final prefs = await SharedPreferences.getInstance();
-          // A failed clear retains the same idempotent request across reopen/restart.
-          if (!await prefs.remove(_key)) {
-            throw StateError('Acknowledgement could not persist');
-          }
-          if (mounted) setState(() => _success = true);
-        },
-      );
-    } on FormatException catch (e) {
-      if (mounted) setState(() => _error = e.message);
-    } catch (_) {
-      if (mounted) {
-        setState(
-          () => _error =
-              'İşlem sonucu kesinleşmedi. Aynı isteği yeniden kontrol edin.',
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _sending = false);
-    }
-  }
-
-  @override
-  void dispose() {
-    _reason.dispose();
-    for (final c in _quantities.values) {
-      c.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => MerchantPage(
-    title: 'İade kaydı',
-    children: [
-      const MerchantNotice(
-        'Bu işlem yalnız iade kanıtı kaydeder. Para iadesi yapmaz.',
-      ),
-      if (_success) const MerchantNotice('İade kaydı sunucuda doğrulandı.'),
-      if (_pending != null && !_success)
-        const MerchantNotice(
-          'Kaydedilmiş istek aynı işlem numarasıyla kontrol edilecek. Sonuç kesinleşene kadar bilgiler değiştirilemez.',
-        ),
-      if (_error != null)
-        MerchantNotice(
-          _error!,
-          error: true,
-          onRetry: _loading ? _restore : null,
-        ),
-      if (_loading || _sending)
-        const Center(child: CircularProgressIndicator()),
-      if (!_loading && !_success) ...[
-        for (final i in widget.purchase.items)
-          TextField(
-            controller: _quantities[i.id],
-            enabled: !_sending && _pending == null,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(9),
-            ],
-            decoration: InputDecoration(
-              labelText: i.name,
-              helperText: 'İade kaydı açılabilecek adet: ${i.remaining}',
-            ),
-          ),
-        TextField(
-          controller: _reason,
-          enabled: !_sending && _pending == null,
-          maxLength: 500,
-          maxLines: 3,
-          decoration: const InputDecoration(labelText: 'İade nedeni'),
-        ),
-        FilledButton(
-          onPressed: _sending ? null : _submit,
-          child: Text(
-            _pending == null
-                ? 'İade kaydını onayla'
-                : 'Aynı isteğin sonucunu kontrol et',
-          ),
-        ),
-      ],
-      if (_success)
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Alışveriş kaydına dön'),
-        ),
-    ],
-  );
 }

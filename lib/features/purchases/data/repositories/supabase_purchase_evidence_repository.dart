@@ -1,14 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 
-class SupabasePurchaseEvidenceRepository implements PurchaseEvidenceRepository {
+class SupabasePurchaseEvidenceRepository
+    implements PurchaseEvidenceRepository, QrSessionIdentity {
   SupabasePurchaseEvidenceRepository(
     SupabaseClient client, {
     QrProtocolV2? transport,
   }) : _transport = transport ?? QrProtocolV2(client);
   final QrProtocolV2 _transport;
+  @override
+  String? get currentQrSessionIdentity => _transport.sessionIdentity();
   @override
   Future<Either<String, List<PurchaseEvidence>>> list(
     String shopId, {

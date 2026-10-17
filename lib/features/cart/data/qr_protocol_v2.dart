@@ -61,15 +61,27 @@ class QrProtocolV2 {
       }
       return Right(result);
     } on PostgrestException catch (e) {
+      if (sessionIdentity() != identity) {
+        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
+      }
       onServerError?.call(e);
       return Left(friendlyError(e.message));
     } on FormatException catch (_) {
+      if (sessionIdentity() != identity) {
+        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
+      }
       return const Left(
         'Sunucunun işlem bilgisi doğrulanamadı. Durumu yeniden kontrol edin.',
       );
     } on QrProtocolFailure catch (e) {
+      if (sessionIdentity() != identity) {
+        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
+      }
       return Left(friendlyError(e.code));
     } catch (_) {
+      if (sessionIdentity() != identity) {
+        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
+      }
       return const Left(
         'Bağlantı kurulamadı. İşlemin sonucunu yeniden kontrol edin.',
       );

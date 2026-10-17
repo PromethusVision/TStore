@@ -40,6 +40,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
   final _token = TextEditingController();
   Timer? _expiry;
   bool _scanning = false;
+  bool _openingHistory = false;
   bool get _claimsEnabled =>
       widget.shopId != null &&
       widget.repository is QrClaimRepository &&
@@ -88,6 +89,29 @@ class _MerchantQrViewState extends State<MerchantQrView>
   }
 
   bool _confirmingSale = false;
+  Future<void> _history() async {
+    if (_openingHistory ||
+        widget.purchaseEvidence == null ||
+        widget.shopId == null ||
+        widget.userId == null) {
+      return;
+    }
+    _openingHistory = true;
+    try {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => MerchantPurchasesView(
+            repository: widget.purchaseEvidence!,
+            shopId: widget.shopId!,
+            userId: widget.userId!,
+          ),
+        ),
+      );
+    } finally {
+      _openingHistory = false;
+    }
+  }
+
   Future<void> _confirm(QrVerificationEntity verification) async {
     if (_confirmingSale) return;
     if (!verification.rewardConfirmationRequired) {
@@ -99,6 +123,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
       final approved = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
+          scrollable: true,
           title: const Text('Gerçek satış tutarını doğrula'),
           content: Text(
             verification.couponCheckout == null
@@ -167,17 +192,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
               widget.shopId != null &&
               widget.userId != null)
             OutlinedButton.icon(
-              onPressed: busy
-                  ? null
-                  : () => Navigator.of(context).push<void>(
-                      MaterialPageRoute(
-                        builder: (_) => MerchantPurchasesView(
-                          repository: widget.purchaseEvidence!,
-                          shopId: widget.shopId!,
-                          userId: widget.userId!,
-                        ),
-                      ),
-                    ),
+              onPressed: busy ? null : _history,
               icon: const Icon(Icons.receipt_long_outlined),
               label: const Text('Doğrulanmış alışverişler'),
             ),
@@ -190,6 +205,12 @@ class _MerchantQrViewState extends State<MerchantQrView>
             ),
           if (state is QrVerificationFailure)
             MerchantNotice(state.message, error: true),
+          if (state is QrClaimRecoveryRequired)
+            MerchantNotice(
+              'Son işlem durumu doğrulanamadı. Yeni kod almadan önce son işlemi geri yükleyin. ${state.message}',
+              error: true,
+              onRetry: _cubit.recoverClaim,
+            ),
           if (state is QrVerificationUncertain)
             MerchantNotice(
               'İşlemin sonucu henüz doğrulanamadı. ${state.message}',
@@ -198,7 +219,16 @@ class _MerchantQrViewState extends State<MerchantQrView>
             ),
           if (state is QrVerificationSuccess)
             const MerchantNotice('Sunucu işlem onayını doğruladı.'),
+          if (state is QrVerificationSuccess &&
+              state.verification.purchaseId != null)
+            SelectableText(
+              'Doğrulanan işlem no: ${state.verification.purchaseId}',
+            ),
           if (busy) const Center(child: CircularProgressIndicator()),
+          if (state is QrVerificationConfirming)
+            const Text(
+              'Sunucu yanıtı bekleniyor. Bu sırada yeni bir işlem başlatılmaz.',
+            ),
           if (verification != null)
             MerchantSection(
               title: verification.shopName,
@@ -251,7 +281,9 @@ class _MerchantQrViewState extends State<MerchantQrView>
                 ],
               ),
             ),
-          if (!busy && verification == null) ...[
+          if (!busy &&
+              verification == null &&
+              state is! QrClaimRecoveryRequired) ...[
             FilledButton.icon(
               onPressed: widget.preview ? null : _scan,
               icon: const Icon(Icons.qr_code_scanner),
@@ -295,6 +327,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
           if (!busy &&
               state is! QrVerificationInitial &&
               state is! QrVerificationUncertain &&
+              state is! QrClaimRecoveryRequired &&
               !(verification?.protocolVersion == 2 &&
                   verification?.canBeConfirmed == true))
             TextButton(

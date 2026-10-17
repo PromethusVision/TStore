@@ -183,7 +183,7 @@ void main() {
     expect(c.state, isA<QrVerificationSuccess>());
   });
   test(
-    'claim timeout retry retains key; invalid manual input never sent',
+    'claim failure requires recovery before an exact retry; invalid input never sent',
     () async {
       final r = ClaimTestRepository()
         ..claimAction = () async => const Left('network');
@@ -193,7 +193,12 @@ void main() {
       expect(r.claims, 0);
       await c.claimVerification(manualCode: '123456');
       await c.claimVerification(manualCode: '123456');
+      expect(r.requests.length, 1);
+      expect(c.state, isA<QrClaimRecoveryRequired>());
+      await c.recoverClaim();
+      await c.claimVerification(manualCode: '123456');
       expect(r.requests[0], r.requests[1]);
+      await c.recoverClaim();
       await c.claimVerification(manualCode: '654321');
       expect(r.requests[2], isNot(r.requests[0]));
     },

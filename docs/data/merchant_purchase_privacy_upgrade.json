@@ -1,0 +1,61 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T12:55:52.893Z",
+  "evidence_class": "owned-local-populated-postgresql-upgrade",
+  "baseline_identifiers_reproduced": true,
+  "purchase_payloads_compared": 98,
+  "only_removed_fields": [
+    "customer_user_id",
+    "confirmed_by_user_id"
+  ],
+  "immutable_tables_unchanged": {
+    "verified_transactions": {
+      "rows": 98,
+      "sha256": "d3281f95c959a8ece304637b37d91bb9531c273e3cc26a21c58d028ffc487533"
+    },
+    "verified_transaction_items": {
+      "rows": 98,
+      "sha256": "dc55e556e249c8e5c843836298b9c5abe63b7ea4f3976732afd0a62727240353"
+    },
+    "purchase_terms": {
+      "rows": 62,
+      "sha256": "8b638f6e5bc1dc25224302c775906bd567b89cb3338406277124afa3f7c1ed3b"
+    },
+    "purchase_returns": {
+      "rows": 11,
+      "sha256": "7d750339e4d7c9f73c277191a2a43ec64d629c8d95bd2c4ae5456a809659146e"
+    },
+    "purchase_return_items": {
+      "rows": 11,
+      "sha256": "62d120c5899253a4576ee9b0a566e2035f8406daf944659b68ae6fb8d5953de2"
+    },
+    "ledger_journals": {
+      "rows": 609,
+      "sha256": "018980ba353556247f7ee98f437cb8ecb6fc00ddd9656aa94ca629a105074fdc"
+    },
+    "ledger_postings": {
+      "rows": 1284,
+      "sha256": "1f0e48d1c6f98ea3e97177547c221eeb3fca0ed7605451123afa60b642c33683"
+    }
+  },
+  "migration": {
+    "file": "20261017003000_0030_purchase_evidence_privacy.sql",
+    "sha256": "397b54124f079b03c9c2f04a80c4d8c09488ebed3fac30ac540bfbe31dfeb50c"
+  },
+  "checks": [
+    {
+      "name": "purchase projection helper remains private to server modules",
+      "result": "PASS"
+    },
+    {
+      "name": "all existing purchase classifications omit customer and confirmer identifiers",
+      "result": "PASS"
+    },
+    {
+      "name": "minimized projection preserves original header, quantities and exact coupon arithmetic",
+      "result": "PASS"
+    }
+  ],
+  "remote_access": "NONE",
+  "physical_two_device": "OPEN"
+}

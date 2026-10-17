@@ -224,3 +224,28 @@ node --test tool/engagement/push_delivery.test.mjs
 node tool/merchant_acceptance/native.mjs <owned-postgresql-17-bin> --notifications
 node tool/merchant_acceptance/acceptance.mjs <new-owned-local-run> --notifications
 ```
+
+## Merchant transaction recovery
+
+`--commerce-recovery` includes the existing checkout/H0/E regression chain and
+ten additional real Auth/PostgREST/PostgreSQL groups for B claim recovery,
+completion, return replay after exhausted quantities, replacement/live sessions,
+concurrent returns, foreign ownership and minimized history. A fresh owned local
+fixture is mandatory. Use `node tool/merchant_acceptance/acceptance.mjs <run>
+--commerce-recovery` after the normal prepare/start procedure, then stop that
+exact run. Output uses `merchant_commerce_recovery_managed_acceptance.json`.
+Checkout fixtures now include additive0030 and three projection/privacy groups.
+Historical migration bytes remain unchanged. Native PostgreSQL accepts
+`--commerce-recovery` for the checkout regression chain plus those three groups.
+To reproduce the upgrade from this branch on a fresh owned run, use
+`acceptance.mjs <run> --commerce-recovery --privacy-upgrade`. It first rehearses
+the exact pre-0030 checkout chain, compares the populated upgrade, then executes
+the new recovery/privacy checks. Native `--commerce-recovery` instead installs
+0030 before the entire regression chain. Neither path modifies remote databases.
+For a populated owned pre-0030 fixture only, `purchase_privacy_upgrade.mjs <run>`
+reproduces the old identifiers, applies0030 locally, compares every purchase
+payload and fingerprints seven immutable tables. It refuses an already-corrected
+or unrelated baseline. The final fresh managed run remains separate evidence.
+No remote apply or physical-device/provider evidence is implied. HTTP
+tests intentionally ignore acknowledgements; Dart transport fault injection
+and widget navigation evidence are recorded separately in the task handoff.

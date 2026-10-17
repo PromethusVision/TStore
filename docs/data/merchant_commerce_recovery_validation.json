@@ -1,0 +1,391 @@
+{
+  "status": "PASS",
+  "completed_at": "2026-10-17T13:11:26.519Z",
+  "baseline_commit": "aca7e985040308adb82d162198811a39030f6262",
+  "branch": "agent/merchant-commerce-resilience",
+  "canonical": "ESNAFTAVAR_V1_TRUST_COMMERCE_CANONICAL.md §5.3",
+  "scope": "Merchant QR, purchase history, durable return recovery and minimized purchase API projection",
+  "runtime": {
+    "flutter": "3.41.9",
+    "dart": "3.11.5",
+    "node": "v24.19.0",
+    "postgresql": "17.11"
+  },
+  "flutter": {
+    "passed": 2790,
+    "failed": 0,
+    "existing_opt_in_skipped": 6,
+    "baseline_passed": 2719,
+    "new_regressions": 71,
+    "log": ".buildlog/full-tests-final.log",
+    "historical_targeted_passed": 104
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/analyze-final.log"
+  },
+  "database": {
+    "native_groups": 104,
+    "managed_groups": 114,
+    "populated_purchase_payloads_compared": 98,
+    "immutable_tables_unchanged": 7,
+    "migration": "0030: applied to owned local fixtures only; remote apply NONE",
+    "managed_stack": "STOPPED",
+    "owned_empty_network": "REMOVED",
+    "test_volumes": "RETAINED",
+    "native_runtime": "STOPPED_BY_FINALLY"
+  },
+  "tooling_safety_tests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "artifacts": [
+    {
+      "role": "merchantDevelopment",
+      "path": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "bytes": 189363436,
+      "sha256": "c0db4ce9b9c09d942c89657ae1e4f9aac7de2b59b1e327cb0e9f8941590e756a",
+      "log": ".buildlog/build-merchant-final.log"
+    },
+    {
+      "role": "development",
+      "path": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "bytes": 224786196,
+      "sha256": "71a9fe284c112846b86094280326101daeecde26d9b3859b5e8e6824978b1dc8",
+      "log": ".buildlog/build-customer-final.log"
+    }
+  ],
+  "render_review": {
+    "widths": [
+      320,
+      390,
+      430
+    ],
+    "text_scale": 1.3,
+    "states": [
+      "unknown QR claim recovery",
+      "durable return recovery"
+    ],
+    "images": [
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-320.png",
+        "bytes": 29880,
+        "sha256": "7a74a1be317577c280fc003f853e762d0498470f57d512e13ebf9e71a37ab638",
+        "git_blob": "3ed2443184b78622ee50252152bd28eba0fc8a74"
+      },
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-390.png",
+        "bytes": 30236,
+        "sha256": "d9888defae51fafbd93b1e26fed1476df3f9235ba615a7cd588343b1891343e6",
+        "git_blob": "579451c69925421c5c802f6d92f2e654ddc9ee29"
+      },
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-430.png",
+        "bytes": 29637,
+        "sha256": "4c392c90aa91d3b03b54a8fa8877cf0a75b2cbac7f633687bad3817b8c43dedd",
+        "git_blob": "05a9bfc0401f1867576e74dccdc312adf481516a"
+      },
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/return-recovery-320.png",
+        "bytes": 38793,
+        "sha256": "fae46b108022409346ba7b4eb4a09b33d4ec7769a8d429e063d877f5e1410801",
+        "git_blob": "f2f5f186312c65cbdec0b95e5d5c871b0d4a2fcc"
+      },
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/return-recovery-390.png",
+        "bytes": 38180,
+        "sha256": "a93f1502446b645429c907c5094f70fbd5eab78094d6bf7ded3264e5da805945",
+        "git_blob": "680033afe361ec70a032baebc408c0537b8270e3"
+      },
+      {
+        "path": "docs/evidence/merchant_commerce_recovery/return-recovery-430.png",
+        "bytes": 38477,
+        "sha256": "0f570614ffe901e53822ed0fcffae5dbff9ab5c5ed5416529ffd551d6d8fecf1",
+        "git_blob": "8fbbfe3078e0b3b2513b76b3629f570be79cede5"
+      }
+    ],
+    "review": "All six renders inspected; narrow return helper wraps and pending values remain readable."
+  },
+  "initial_findings_resolved": [
+    "Lost/stale acknowledgement and duplicate-action regression failures corrected before final pass",
+    "Real HTTP privacy assertion reproduced two actor identifiers; additive0030 corrected projection",
+    "New migration added to the exact dependency inventory and protected by preflight/timeouts",
+    "Safety-test port collision while owned local stack was running; rerun after stopping the stack passed"
+  ],
+  "known_nonblocking_warnings": [
+    "Existing pinned pg8 test harness emits a concurrent Client.query deprecation; no dependency update in this package.",
+    "Unchanged Customer home_categories rapid-tap test emits one hit-test warning and passes; no warnings from new Merchant tests.",
+    "Existing Android plugin Java 8 source/target deprecation warnings; both debug builds pass."
+  ],
+  "secret_scan": {
+    "result": "PASS",
+    "scope": "All owned text files; synthetic fixture identities only"
+  },
+  "boundaries": {
+    "production_access": "NONE",
+    "production_writes": "NONE",
+    "remote_migration_apply": "NO",
+    "main_merge": "NO",
+    "main_push": "NO",
+    "customer_layout": "UNCHANGED",
+    "historical_migrations": "UNCHANGED",
+    "physical_two_device": "OPEN",
+    "firebase_apns_provider": "OPEN",
+    "refund_payout_coupon_restoration": "NOT_EXECUTED"
+  },
+  "source_fingerprints": [
+    {
+      "path": "docs/ESNAFTAVAR_V1_IMPLEMENTATION_SLICES.md",
+      "bytes": 33397,
+      "sha256": "aa3d2858527e452618558f2821c129af86ca3daf15b911bf847e9387c03a7094",
+      "git_blob": "92ee54b938960c18fc3530c1e9d3e0a23caf223f"
+    },
+    {
+      "path": "docs/ESNAFTAVAR_V1_TRUST_COMMERCE_CANONICAL.md",
+      "bytes": 86827,
+      "sha256": "ad889906a4bd45e3a846bb54618cb98d585f8b265a3ea3b1f0e092fb5f273df8",
+      "git_blob": "6110f5220d609644eff34236650aea26118db496"
+    },
+    {
+      "path": "docs/MERCHANT_COMMERCE_RECOVERY_HANDOFF.md",
+      "bytes": 9170,
+      "sha256": "a328de326f96ae24e2772a477ed17edff784bdd3bb013bf4201727737b5b8176",
+      "git_blob": "80ae0f36c242ed18d172c6d7ca937e770016d856"
+    },
+    {
+      "path": "docs/data/merchant_commerce_recovery_managed_acceptance.json",
+      "bytes": 21638,
+      "sha256": "4dc297d66dde55b611e67b6e950c62b54ebd7b58310466f533fa8f08140b8d42",
+      "git_blob": "1a1bff06faffcfbd312312a100be56ea098e3951"
+    },
+    {
+      "path": "docs/data/merchant_commerce_recovery_native_acceptance.json",
+      "bytes": 18839,
+      "sha256": "cc551afecb9389c8cb60e107d6af91dd18c9f7d46eec2be50497ae20213f3e32",
+      "git_blob": "7066edd4c369fe66d4c3565b7b5831d9c9492615"
+    },
+    {
+      "path": "docs/data/merchant_purchase_privacy_upgrade.json",
+      "bytes": 1920,
+      "sha256": "508e94aaa699eded83bff669d3d308c8b32964d2cdb615562bb4cde1a60f8f61",
+      "git_blob": "96b49a2063ee1f30012d6a60e194694bdc181754"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-320.png",
+      "bytes": 29880,
+      "sha256": "7a74a1be317577c280fc003f853e762d0498470f57d512e13ebf9e71a37ab638",
+      "git_blob": "3ed2443184b78622ee50252152bd28eba0fc8a74"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-390.png",
+      "bytes": 30236,
+      "sha256": "d9888defae51fafbd93b1e26fed1476df3f9235ba615a7cd588343b1891343e6",
+      "git_blob": "579451c69925421c5c802f6d92f2e654ddc9ee29"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/qr-recovery-430.png",
+      "bytes": 29637,
+      "sha256": "4c392c90aa91d3b03b54a8fa8877cf0a75b2cbac7f633687bad3817b8c43dedd",
+      "git_blob": "05a9bfc0401f1867576e74dccdc312adf481516a"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/return-recovery-320.png",
+      "bytes": 38793,
+      "sha256": "fae46b108022409346ba7b4eb4a09b33d4ec7769a8d429e063d877f5e1410801",
+      "git_blob": "f2f5f186312c65cbdec0b95e5d5c871b0d4a2fcc"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/return-recovery-390.png",
+      "bytes": 38180,
+      "sha256": "a93f1502446b645429c907c5094f70fbd5eab78094d6bf7ded3264e5da805945",
+      "git_blob": "680033afe361ec70a032baebc408c0537b8270e3"
+    },
+    {
+      "path": "docs/evidence/merchant_commerce_recovery/return-recovery-430.png",
+      "bytes": 38477,
+      "sha256": "0f570614ffe901e53822ed0fcffae5dbff9ab5c5ed5416529ffd551d6d8fecf1",
+      "git_blob": "8fbbfe3078e0b3b2513b76b3629f570be79cede5"
+    },
+    {
+      "path": "lib/features/cart/data/qr_protocol_v2.dart",
+      "bytes": 12004,
+      "sha256": "e7904a7e6fd3dd288d3a11d05b3750db944e86735f7a6a45e27788ccb4e3171a",
+      "git_blob": "fd8f45d1dc1fa8fdc5bb46614a98a09355d48867"
+    },
+    {
+      "path": "lib/features/cart/data/repositories/qr_session_repository_impl.dart",
+      "bytes": 12566,
+      "sha256": "6115a9b9406cee74857a1dabefa64367bf713213a87775ae99904f25072c805f",
+      "git_blob": "6f20f67898fa18ae0519dbfa735af565b4245098"
+    },
+    {
+      "path": "lib/features/cart/domain/repositories/qr_claim_repository.dart",
+      "bytes": 1205,
+      "sha256": "499460c2f01e1ef7420baeed0950730c891dd934de98b37ead054dfd446fdccb",
+      "git_blob": "fafb9471ab840b8a8e81fdefb4c94ae784f498b1"
+    },
+    {
+      "path": "lib/features/cart/presentation/cubit/qr_verification_cubit.dart",
+      "bytes": 13184,
+      "sha256": "9fee1cf5da1bba5d0f7e04390dbf6c1b478eb938613bb01a8a1e76fbbf0314d8",
+      "git_blob": "4b3b2d65c96456f8550ce9fdfe377333c775e2f9"
+    },
+    {
+      "path": "lib/features/cart/presentation/cubit/qr_verification_state.dart",
+      "bytes": 1802,
+      "sha256": "84d29c8cf6a995e1a65224455f68f850024709d6cf399586e26cd9d4d88cd68e",
+      "git_blob": "fd40f9ff1fa348942309589a21e66537c7a61483"
+    },
+    {
+      "path": "lib/features/merchant/data/merchant_qr_repository.dart",
+      "bytes": 5511,
+      "sha256": "90114e8a8c9af7d28a378f4611531377a1227b4d23c8596253c7fa58a0d0bcce",
+      "git_blob": "4f997aaf33ca7412b45ddedb0465d5591feca04d"
+    },
+    {
+      "path": "lib/features/merchant/data/pending_purchase_return_store.dart",
+      "bytes": 5515,
+      "sha256": "ab9074ae4331301cb64e8de69754b0196c69d5c3fe57f9dfad103afb30cf543f",
+      "git_blob": "7924c2d0eaba8fca53bbb0b20f96449e95038892"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_purchase_scope.dart",
+      "bytes": 695,
+      "sha256": "8980ee3ee51579d3a7c7e793d0c1f48cea9e2d72ea4854637361e60652537bcc",
+      "git_blob": "1520aacdee52931df290acbe04e3fc55a618bfd7"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_purchases_view.dart",
+      "bytes": 11412,
+      "sha256": "c65a72be35b6d31f68695c87470ab92a9735a82700113deb2d9707c9a2e07053",
+      "git_blob": "1ea040ab40d0538eaf6c71d3ce2065f80b822e35"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_qr_view.dart",
+      "bytes": 16536,
+      "sha256": "31db61b221b0bafae23990a3b4285bb1249c401f3f5f7fc27261727e9115d975",
+      "git_blob": "f9c117ec3d039781c031fac18c95d599f0e0b7cf"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_return_controller.dart",
+      "bytes": 6650,
+      "sha256": "1c72bc6e39f9935a36770c293b316a1aac5d4621fdb522493a52595473a7bb3f",
+      "git_blob": "c97888117496daec9c4347f86fa09ad8c5f6b9ae"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_return_form.dart",
+      "bytes": 6651,
+      "sha256": "777a7af6cf1730ce675015106691e9d2d388467be9ab1b06b4d1c7855015bc6c",
+      "git_blob": "aa50f19b559c41d7f1f912448eb39ce5e4c62975"
+    },
+    {
+      "path": "lib/features/purchases/data/repositories/supabase_purchase_evidence_repository.dart",
+      "bytes": 3777,
+      "sha256": "fc04391a5ff8cfef9a059f136650d566e7a61d0e278c82c4160e37a784bcbad8",
+      "git_blob": "d08f91263e1ca310b83c2d2cb9dc8c633321454e"
+    },
+    {
+      "path": "lib/features/purchases/domain/repositories/purchase_evidence_repository.dart",
+      "bytes": 6190,
+      "sha256": "dee1b1138fe5fd485990434ad37fa3be94a0871ae55ece2e5efd7db35f84ffa8",
+      "git_blob": "ccfae15c1874d8e410623452b07eb4e329033b81"
+    },
+    {
+      "path": "lib/features/rewards/domain/coupon_checkout_terms.dart",
+      "bytes": 1995,
+      "sha256": "1da45260dec54da1080cd5ab4952e44a1a9162274bc68768b1984e5a0fe10b35",
+      "git_blob": "23f7865be8c8a5f0af0386553f8c4092fcb2af49"
+    },
+    {
+      "path": "supabase/migrations/20261017003000_0030_purchase_evidence_privacy.sql",
+      "bytes": 3376,
+      "sha256": "397b54124f079b03c9c2f04a80c4d8c09488ebed3fac30ac540bfbe31dfeb50c",
+      "git_blob": "4dc233e4f9e0158d014d09dbfbe320f8ce55b076"
+    },
+    {
+      "path": "test/unit/cart/qr_claim_protocol_test.dart",
+      "bytes": 14523,
+      "sha256": "a3e4613984331a757752a0ab490810a7200e9780182e487c02285d3f04b39799",
+      "git_blob": "b466f6d7735ebfdaaa473105ba1bcb548f45df82"
+    },
+    {
+      "path": "test/unit/merchant/merchant_qr_recovery_test.dart",
+      "bytes": 12341,
+      "sha256": "19e4333817f6c54d258349491c8743d0223d0942a9eb4b6155585ed2401eedb4",
+      "git_blob": "e012ed46747a141d359688c720ca16721b5ee2ea"
+    },
+    {
+      "path": "test/unit/merchant/merchant_return_recovery_test.dart",
+      "bytes": 12850,
+      "sha256": "d3a895a05f0a773001582a8bf64cd6ab2b58d15453cfa36ddc79d897d88df4ff",
+      "git_blob": "b779d9c291f942b1a9b932443ee52bcfe904cd61"
+    },
+    {
+      "path": "test/unit/purchases/purchase_evidence_test.dart",
+      "bytes": 7056,
+      "sha256": "731f918428ceb0a3c92430b0d8fb7914c292b8a85d1cfac4064dbb3cf9a61aef",
+      "git_blob": "9b8d114cc1ec333df824789f3d35d3b9d0c56bd5"
+    },
+    {
+      "path": "test/unit/rewards/coupon_checkout_test.dart",
+      "bytes": 10675,
+      "sha256": "0084f443d7ff20e874d941d279d08e66602bb5b30c3dcd9d827f7b165437566e",
+      "git_blob": "c02cd112ad08011d63500d8c2c8ceb335877b425"
+    },
+    {
+      "path": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "bytes": 29511,
+      "sha256": "0e64484f16f92384ada15fa02ac6a167318c3f7748d9980587e18f0dde3c60f0",
+      "git_blob": "03cb72fc5998ac45b7f3cac691cc881a37c776ea"
+    },
+    {
+      "path": "test/widget/merchant/merchant_commerce_recovery_test.dart",
+      "bytes": 12849,
+      "sha256": "2f320d3900e5f8ff867cfddc1e6b25728d8443e018c1464589f38d5a045813e3",
+      "git_blob": "c28c2419d7402b0946b3ab4271c78178a7bb309a"
+    },
+    {
+      "path": "tool/merchant_acceptance/README.md",
+      "bytes": 14653,
+      "sha256": "129b2127d4fa72ca8a3fe1e1483218f3f47bd4c80c8842076ed32a3c9532f651",
+      "git_blob": "24fa8f77e57cddccd3e74a279ef7373b6a013640"
+    },
+    {
+      "path": "tool/merchant_acceptance/acceptance.mjs",
+      "bytes": 16663,
+      "sha256": "67eca7eb58f0951968c28f8126a24c3ad9544084394a2dee17f5ff023f99775c",
+      "git_blob": "d3e78a014615b6125f5ff1a4247fceaefbea56ed"
+    },
+    {
+      "path": "tool/merchant_acceptance/commerce_recovery_checks.mjs",
+      "bytes": 8445,
+      "sha256": "afc0c6fdd8b1f086a0cb536a7dbcfd88467b09307361fa81f18df2154169b721",
+      "git_blob": "d741d46115690e0f1423134a47c76aae8e189c8a"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "bytes": 7724,
+      "sha256": "9b08a10e6c51fce70422a5704f38328695b70b9063f183210d8140c1b553aae1",
+      "git_blob": "3d11c7461447fb4555afb459e97c3733cccc0d13"
+    },
+    {
+      "path": "tool/merchant_acceptance/native.mjs",
+      "bytes": 7775,
+      "sha256": "21831bd29d965dbc73ff9d799f23b8f78f6973bc71166b73cc739990b00883d5",
+      "git_blob": "4222400b98e21420a44e14d831af8f500a969a55"
+    },
+    {
+      "path": "tool/merchant_acceptance/purchase_privacy_upgrade.mjs",
+      "bytes": 3875,
+      "sha256": "ee2118ed61eb46618307ff2104a188cb3861ad66133cf2abe9959d5bcd017766",
+      "git_blob": "c91cfb36e97edd297df044d27c898624430a2b0c"
+    },
+    {
+      "path": "tool/merchant_acceptance/purchase_projection_checks.mjs",
+      "bytes": 2407,
+      "sha256": "4b9ed217727189e4b960584503c9e97ad15cfdbb5af1d37a60138009591fb530",
+      "git_blob": "a0e119df7fe04131259ed8dd9e887d0f98b4094b"
+    }
+  ]
+}

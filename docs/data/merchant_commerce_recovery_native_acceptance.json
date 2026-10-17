@@ -1,0 +1,521 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-17T13:01:26.571Z",
+  "runtime": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit",
+  "evidence_class": "native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema",
+  "managed_auth": "OPEN",
+  "storage_http": "OPEN",
+  "physical_two_device": "OPEN",
+  "checks": [
+    {
+      "name": "default OFF keeps legacy service and review APIs usable",
+      "result": "PASS"
+    },
+    {
+      "name": "unsupported legacy content stays private and withdrawal does not fabricate evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "quantity three gives one entitlement; a claim alone gives none",
+      "result": "PASS"
+    },
+    {
+      "name": "initial service requires exactly three bounded criteria and is atomic with products",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent identical submissions yield one root, revision, service and fixed deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "server ownership, direct-table privacy and immutable evidence are enforced",
+      "result": "PASS"
+    },
+    {
+      "name": "edits append revisions without extending the deadline; identical edit retries are no-ops",
+      "result": "PASS"
+    },
+    {
+      "name": "current revision and own source shop govern one merchant reply and report",
+      "result": "PASS"
+    },
+    {
+      "name": "24-hour boundary is checked after contended locks; withdrawal remains available",
+      "result": "PASS"
+    },
+    {
+      "name": "newer purchase reopens the same root; legacy evidence FK and single public count survive",
+      "result": "PASS"
+    },
+    {
+      "name": "three distinct products allow three roots and one immutable service evaluation",
+      "result": "PASS"
+    },
+    {
+      "name": "reasoned admin moderation hides and restores projections without rewriting history",
+      "result": "PASS"
+    },
+    {
+      "name": "fraud invalidation removes current evidence and falls back to earlier valid service evaluation",
+      "result": "PASS"
+    },
+    {
+      "name": "a genuine full return preserves service and product experience evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "independent customers contend safely and each contributes once to cached public scores",
+      "result": "PASS"
+    },
+    {
+      "name": "legacy adoption preserves old deadline and never invents three service criteria",
+      "result": "PASS"
+    },
+    {
+      "name": "authorized self-delete erases public text and subject key without losing immutable commerce facts",
+      "result": "PASS"
+    },
+    {
+      "name": "D default OFF and private evidence/worker grants",
+      "result": "PASS"
+    },
+    {
+      "name": "D twenty DISTINCT customers and exact unrounded thresholds",
+      "result": "PASS"
+    },
+    {
+      "name": "D visibility-only withdrawal preserves milestones; abuse invalidates evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "D invalidation revokes immediately and correction history is append-only",
+      "result": "PASS"
+    },
+    {
+      "name": "D geometry fails closed, holes and boundary semantics; reviewed assignment only",
+      "result": "PASS"
+    },
+    {
+      "name": "D rolling expiry revokes without a new purchase; dataset withdrawal is queued",
+      "result": "PASS"
+    },
+    {
+      "name": "D purchase milestones count IDs once and survive repeated reads; self-delete unlinks history",
+      "result": "PASS"
+    },
+    {
+      "name": "D first worker projection racing Auth deletion has no queue/Auth deadlock or orphan identity",
+      "result": "PASS"
+    },
+    {
+      "name": "D small-cohort tie uses stable shop UUID and repeat purchases count one customer",
+      "result": "PASS"
+    },
+    {
+      "name": "D depends on C lifecycle readiness and retains legacy compatibility refresh events",
+      "result": "PASS"
+    },
+    {
+      "name": "F default OFF, owned writes, strict draft validation and no direct history access",
+      "result": "PASS"
+    },
+    {
+      "name": "F concurrent exact retry creates one draft; changed payload and stale revision rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "F current public projection respects pause, dates, listing eligibility and source ownership",
+      "result": "PASS"
+    },
+    {
+      "name": "F amount/percentage publication has separate gate; price changes never rewrite cart or QR terms",
+      "result": "PASS"
+    },
+    {
+      "name": "F selected image must be owned/published/in-scope; invalid storage metadata is omitted",
+      "result": "PASS"
+    },
+    {
+      "name": "F required typed amounts reject missing/null on create and edit without partial writes; storage also rejects null amounts",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 default OFF, frozen V1 policy and no preloaded funds or activation",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 mobile, anonymous and service roles cannot post, inspect raw accounting or mutate policy",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 immutable policy and exact account identity/currency constraints",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 typed sources reject missing/null/zero/negative amounts and changed evidence replays",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 journal validation rejects nulls, numeric JSON, duplicate accounts, overflow and unbalanced entries atomically",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 real concurrent source replay posts once; changed posting replay fails",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 unused package funds cannot refill reserve or bypass pending source segregation",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 release retains source pool; service debt uses reserve before other available funds",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 competing service debits cannot overdraw the same available balance",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 omitted reserve still locks against a concurrent coupon refill",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 repeatable-read stale balance snapshots serialize or fail safely",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 exact compensating reversals preserve history and reject double reversal",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 future offsets are bounded non-cash obligations; recovery consumes future pending accrual once",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 immutable rows, sealed posting sets and unbalanced direct inserts cannot commit",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 owner read minimizes identity and account erasure unlinks retained accounting",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 a service reversal cannot overfill reserve after intervening coupon replenishment",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 funding separates frozen package fund and fee; reward sources cannot mint merchant accounts",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 source plus failed journal rolls back as one caller transaction",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 one consumer/event records one effect; wrong evidence and changed replay roll back",
+      "result": "PASS"
+    },
+    {
+      "name": "H0 disabled gate retains exact prior receipts but cannot append new financial effects",
+      "result": "PASS"
+    },
+    {
+      "name": "E default OFF retains canonical policy and exposes no payment/redemption authority",
+      "result": "PASS"
+    },
+    {
+      "name": "E trusted funding validates exact amount, one active package and immutable 90-day terms",
+      "result": "PASS"
+    },
+    {
+      "name": "E contended reservation replay keeps one slot, one attempt and the original deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "E QR uses one identity; legacy completion and altered actual sale cannot bypass consent",
+      "result": "PASS"
+    },
+    {
+      "name": "E five same-shop purchases lock 250 TL until all five mature; issuance is replay-safe",
+      "result": "PASS"
+    },
+    {
+      "name": "E genuine pre-maturity threshold loss restores one slot/fund without moving issued sources",
+      "result": "PASS"
+    },
+    {
+      "name": "E audited invalidation removes only unspent source value; immutable coupon allocation remains",
+      "result": "PASS"
+    },
+    {
+      "name": "E raw business records and operator functions deny anon, authenticated and service-role access",
+      "result": "PASS"
+    },
+    {
+      "name": "E below-threshold release and same-attempt reacquisition never reset thirty minutes",
+      "result": "PASS"
+    },
+    {
+      "name": "E finalization rolls purchase, attestation, contribution and capacity back together on ledger failure",
+      "result": "PASS"
+    },
+    {
+      "name": "E an ordinary post-maturity return keeps its earned contribution even before coupon materialization",
+      "result": "PASS"
+    },
+    {
+      "name": "E administrative correction restores original chronology and never awards a duplicate contribution",
+      "result": "PASS"
+    },
+    {
+      "name": "E chronological issuance waits for the earliest five-source group and snapshots longer return policy",
+      "result": "PASS"
+    },
+    {
+      "name": "E last-slot contention never oversells the hundred-slot package across independent customers",
+      "result": "PASS"
+    },
+    {
+      "name": "E expired package refunds only unused fund; an existing checkout hold may finish on the old package",
+      "result": "PASS"
+    },
+    {
+      "name": "E reserve-first funding consumes existing source pools before accepting the exact external remainder",
+      "result": "PASS"
+    },
+    {
+      "name": "E stale repeatable-read reward epoch aborts instead of accepting an obsolete projection",
+      "result": "PASS"
+    },
+    {
+      "name": "E lowered checkout cart releases its hold and stale QR cannot create a contribution",
+      "result": "PASS"
+    },
+    {
+      "name": "E gate-off blocks new enrollment while honoring already-attested in-flight purchase terms",
+      "result": "PASS"
+    },
+    {
+      "name": "E generic H0 posting cannot redeem or rewrite tracked reward value outside its business kernel",
+      "result": "PASS"
+    },
+    {
+      "name": "E account erasure unlinks retained monetary history and releases outstanding reservation",
+      "result": "PASS"
+    },
+    {
+      "name": "E expired checkout release refunds its additional fifty TL exactly once, never the service fee",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout default OFF, unknown classification and all private data/functions deny client access",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout eligibility is explicit, unknown/cash-equivalent fails closed and gate-off cannot authorize",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout stale price/quantity/classification fingerprint and malformed/over-limit approvals leave no QR consent",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout net threshold releases the existing reservation and its fund at customer approval",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout recovery and concurrent reservation retries cannot reacquire below-threshold consent or renew its deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout capacity uses exact net minor units before and after claim at the 500 TL boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout failed consent rolls slot release and fund movement back with its QR and approval",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout last-slot release is immediately available to an independent waiting customer",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout legacy bad holds repair once; private repair and gross reservation bypass remain inaccessible",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout below-threshold consent releases an expired package hold to unused-fund receivable",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout concurrent exact approval creates one immutable QR; request change and post-exposure retrofit fail",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout requires all three exact merchant attestations and rejects old completion endpoints",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout ledger failure rolls back purchase, coupon debit, receivable and earning; 750 minus 250 earns atomically",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout spent-source fraud creates one non-cash future offset, restores original fund and retains five source links",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout next mature cycle recovers offset once before issuance; original chronology stays immutable",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout 500 minus 25 is below threshold; partial-source fraud splits unspent reversal and spent offset",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout return evidence allocates coupon precisely and never executes or fabricates refund/restoration",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout gate-off blocks new approvals while exact completed receipts remain readable without another debit",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout revoked classification rejects finalization without half purchase or balance mutation",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout customer logout after approval invalidates spending authority even with valid merchant claim",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout proportional integer allocation uses largest remainder with stable UUID ties",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout 500 minus 500 creates valid purchase with zero payment and no reward; reserve caps at 1000 TL",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout fully offset mature cycles issue immutable zero-remaining coupons without zero or unbalanced journals",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout 500 minus 250 does not earn; only the overflow above the reserve cap becomes pending receivable",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout return rounding survives out-of-order correction without restoring or over-allocating coupon value",
+      "result": "PASS"
+    },
+    {
+      "name": "Checkout balance changed after consent rejects the entire completion without silently lowering customer authorization",
+      "result": "PASS"
+    },
+    {
+      "name": "purchase projection helper remains private to server modules",
+      "result": "PASS"
+    },
+    {
+      "name": "all existing purchase classifications omit customer and confirmer identifiers",
+      "result": "PASS"
+    },
+    {
+      "name": "minimized projection preserves original header, quantities and exact coupon arithmetic",
+      "result": "PASS"
+    }
+  ],
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    },
+    {
+      "file": "20261015001800_0018_qr_claim_purchase_returns.sql",
+      "sha256": "f8a6a5e583b9f8d93a8b1eed8990c4b6af6cc7ad8bf2dafcb8d561697d1338da"
+    },
+    {
+      "file": "20261015001900_0019_verified_evaluations.sql",
+      "sha256": "43b0aee9428e60491f346ec93832d6480421a45ba44c1a6c7f1a48f04a60ba4c"
+    },
+    {
+      "file": "20261015002000_0020_trust_badges.sql",
+      "sha256": "dbb49104736f3fdb593598df44659ed98fbe96e55e4adac3a4a3e743f8d08875"
+    },
+    {
+      "file": "20261015002100_0021_merchant_campaign_lite.sql",
+      "sha256": "fc3bf977e112b4f6947a8a2a5037514afbd0b62def175451a14cc150d42f7c78"
+    },
+    {
+      "file": "20261015002200_0022_campaign_required_amount.sql",
+      "sha256": "75b76e87410e3237f70ab0e6fab29374fd433b3c2a9a77e9ded9d9940ebfee37"
+    },
+    {
+      "file": "20261015002300_0023_commerce_ledger_foundation.sql",
+      "sha256": "6ab98d0c59e074853c3a33e2ecaab8b2c7295d5f322b072f98a487e7b53b6be9"
+    },
+    {
+      "file": "20261015002400_0024_reward_earning_cycle.sql",
+      "sha256": "2adbd36dbf4cf2f671d7ef14aac1c9c6d62c9379704efbff236a82c8ae4135dd"
+    },
+    {
+      "file": "20261015002500_0025_coupon_checkout.sql",
+      "sha256": "0f6f6e53762db558517bd5e56fdd1700ccd948e9cecc78c107d8db7f5b6573fa"
+    },
+    {
+      "file": "20261015002600_0026_coupon_reservation_net_threshold.sql",
+      "sha256": "d97d0d154d2855cf5466f9436b5057b5191539ff3282869c919fed673b9f75ef"
+    },
+    {
+      "file": "20261017003000_0030_purchase_evidence_privacy.sql",
+      "sha256": "397b54124f079b03c9c2f04a80c4d8c09488ebed3fac30ac540bfbe31dfeb50c"
+    }
+  ]
+}

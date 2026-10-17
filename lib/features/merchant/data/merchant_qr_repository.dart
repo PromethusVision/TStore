@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
@@ -7,14 +8,24 @@ import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 
 /// Adds an exact-workspace boundary around the existing server-authoritative QR.
 class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
-  const MerchantQrRepository({
+  MerchantQrRepository({
     required this.delegate,
     required this.merchants,
     required this.access,
-  });
+  }) : _identity = delegate is QrSessionIdentity
+           ? delegate as QrSessionIdentity
+           : null,
+       _session = delegate is QrSessionIdentity
+           ? (delegate as QrSessionIdentity).currentQrSessionIdentity
+           : null;
   final QrSessionRepository delegate;
   final MerchantRepository merchants;
   final MerchantAccess access;
+  final QrSessionIdentity? _identity;
+  final String? _session;
+  bool get _current =>
+      _identity == null ||
+      (_session != null && _identity.currentQrSessionIdentity == _session);
   QrClaimRepository? get _claims =>
       delegate is QrClaimRepository ? delegate as QrClaimRepository : null;
   @override
@@ -81,7 +92,16 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
   ) async => const Left(merchantAccessDenied);
 
   Future<bool> _authorized() async {
-    final result = await merchants.loadAccess();
+    if (!_current) return false;
+    final Either<String, MerchantAccess?> result;
+    try {
+      result = await merchants.loadAccess().timeout(
+        const Duration(seconds: 15),
+      );
+    } catch (_) {
+      return false;
+    }
+    if (!_current) return false;
     return result.fold(
       (_) => false,
       (fresh) =>
