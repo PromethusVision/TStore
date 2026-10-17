@@ -104,9 +104,11 @@ class MerchantRecoveryPanel extends StatelessWidget {
     required this.onReload,
     this.onUseCurrent,
     this.onKeepDraft,
+    this.message =
+        'Yanıt alınamasa da işlem kaydedilmiş olabilir. Yeniden kaydetmeden önce güncel bilgileri kontrol et.',
   });
   final bool busy, loaded, matches;
-  final String summary;
+  final String summary, message;
   final VoidCallback onReload;
   final VoidCallback? onUseCurrent, onKeepDraft;
 
@@ -116,9 +118,7 @@ class MerchantRecoveryPanel extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'Yanıt alınamasa da işlem kaydedilmiş olabilir. Yeniden kaydetmeden önce güncel bilgileri kontrol et.',
-        ),
+        Text(message),
         if (loaded) ...[
           const SizedBox(height: 12),
           Text(summary),

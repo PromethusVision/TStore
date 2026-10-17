@@ -3,20 +3,31 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
 
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+
 typedef TrustRpc =
     Future<dynamic> Function(String name, Map<String, dynamic> parameters);
 typedef TrustImageSigner = Future<String?> Function(String path);
 
-class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
+class SupabaseTrustCommerceRepository
+    implements
+        TrustCommerceRepository,
+        CampaignRecoveryRepository,
+        AuthenticatedSessionSource {
   SupabaseTrustCommerceRepository(
     SupabaseClient client, {
     TrustRpc? rpc,
     String? Function()? currentUserId,
+    String? Function()? currentSessionKey,
+    this.readTimeout = const Duration(seconds: 15),
     Stream<String?>? sessionChanges,
     TrustImageSigner? imageSigner,
   }) : _rpc =
            rpc ?? ((name, parameters) => client.rpc(name, params: parameters)),
        _user = currentUserId ?? (() => client.auth.currentUser?.id),
+       _sessionKey =
+           currentSessionKey ?? (() => authenticatedSessionKey(client)),
        sessionChanges =
            sessionChanges ??
            client.auth.onAuthStateChange.map((e) => e.session?.user.id),
@@ -27,6 +38,10 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
   final TrustRpc _rpc;
   final String? Function() _user;
   final TrustImageSigner _sign;
+  final Duration readTimeout;
+  final String? Function() _sessionKey;
+  @override
+  String? get currentSessionKey => _sessionKey();
   @override
   String? get currentUserId => _user();
   @override
@@ -46,29 +61,31 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
   Future<Either<TrustFailure, T>> _call<T>(
     String name,
     Map<String, dynamic> args,
-    FutureOr<T> Function(Map<String, dynamic>) decode, {
+    FutureOr<T> Function(Map<String, dynamic>, AuthenticatedRequestScope)
+    decode, {
     bool private = true,
     bool valid = true,
     bool write = false,
   }) async {
     if (!valid) return const Left(_invalid);
-    final actor = currentUserId;
-    if (private && actor == null) return const Left(_auth);
-    var changed = false;
-    final subscription = sessionChanges.listen((id) {
-      if (id != actor) changed = true;
-    });
+    final scope = AuthenticatedRequestScope(
+      user: currentUserId,
+      session: currentSessionKey,
+      currentUser: () => currentUserId,
+      currentSession: () => currentSessionKey,
+      changes: sessionChanges,
+      allowGuest: !private,
+    );
     try {
-      final response = await _rpc(
-        name,
-        args,
-      ).timeout(const Duration(seconds: 20));
-      if (changed || currentUserId != actor) return const Left(_auth);
-      final result = await decode(_map(response));
-      if (changed || currentUserId != actor) return const Left(_auth);
-      return Right(result);
+      Future<T> request() => scope.run(() async {
+        final response = await _rpc(name, args);
+        scope.check();
+        return await decode(_map(response), scope);
+      });
+      final value = await (write ? request() : request().timeout(readTimeout));
+      return Right(value);
     } catch (e) {
-      if (changed || currentUserId != actor) return const Left(_auth);
+      if (!scope.current) return const Left(_auth);
       if (e is PostgrestException) {
         final code = e.message;
         if (e.code == '28000' || e.code == '42501') return const Left(_auth);
@@ -107,7 +124,7 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
         ),
       );
     } finally {
-      await subscription.cancel();
+      await scope.close();
     }
   }
 
@@ -118,7 +135,7 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
   }) => _call(
     'read_my_trust_v1',
     {'p_shop_id': shopId, 'p_limit': 30, 'p_before': before},
-    (j) => TrustSnapshot(
+    (j, scope) => TrustSnapshot(
       enabled: _bool(j, 'enabled'),
       badges: List.unmodifiable(_list(j['badges']).map(_badge)),
       history: List.unmodifiable(
@@ -146,7 +163,7 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
         {
           'p_shop_ids': [shopId],
         },
-        (j) {
+        (j, scope) {
           if (!_bool(j, 'enabled')) return <TrustBadge>[];
           final rows = _list(j['shops']);
           if (rows.length != 1 || _str(rows.single, 'shop_id') != shopId) {
@@ -167,13 +184,33 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
   }) => _call(
     'read_merchant_campaigns_v1',
     {'p_shop_id': shopId, 'p_limit': 30, 'p_offset': offset},
-    (j) async => CampaignPage(
+    (j, scope) async => CampaignPage(
       enabled: _bool(j, 'enabled'),
       pricePublicationEnabled: _bool(j, 'price_publication_enabled'),
       total: _int(j, 'total'),
-      campaigns: await _campaigns(j['campaigns'], shopId),
+      campaigns: await _campaigns(j['campaigns'], shopId, scope),
     ),
     valid: _uuid.hasMatch(shopId) && offset >= 0 && offset <= 500,
+  );
+
+  @override
+  Future<Either<TrustFailure, Campaign?>> readCampaign(
+    String shopId,
+    String campaignId,
+  ) => _call(
+    'read_merchant_campaign_detail_v1',
+    {'p_shop_id': shopId, 'p_campaign_id': campaignId},
+    (j, scope) async {
+      if (_id(j, 'shop_id') != shopId) throw const FormatException();
+      if (!_bool(j, 'enabled')) {
+        throw const PostgrestException(message: 'disabled', code: '55000');
+      }
+      if (j['campaign'] == null) return null;
+      final rows = await _campaigns([j['campaign']], shopId, scope);
+      if (rows.single.id != campaignId) throw const FormatException();
+      return rows.single;
+    },
+    valid: _uuid.hasMatch(shopId) && _uuid.hasMatch(campaignId),
   );
 
   @override
@@ -181,11 +218,12 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
       _call(
         'read_shop_campaigns_v1',
         {'p_shop_id': shopId, 'p_listing_id': null},
-        (j) async {
+        (j, scope) async {
           if (!_bool(j, 'enabled')) return <Campaign>[];
           final rows = await _campaigns(
             j['campaigns'],
             shopId,
+            scope,
             serverTime: _date(j, 'server_time'),
           );
           if (rows.any((c) => c.status != 'active')) {
@@ -210,7 +248,7 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
       'p_action': command.action,
       'p_draft': command.draft?.toJson(),
     },
-    (j) {
+    (j, scope) {
       final result = CampaignReceipt(
         _id(j, 'id'),
         _id(j, 'shop_id'),
@@ -241,9 +279,11 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
 
   Future<List<Campaign>> _campaigns(
     dynamic value,
-    String shopId, {
+    String shopId,
+    AuthenticatedRequestScope requestScope, {
     DateTime? serverTime,
   }) async {
+    requestScope.check();
     final receivedAt = DateTime.now();
     final result = <Campaign>[];
     for (final j in _list(value)) {
@@ -320,18 +360,21 @@ class SupabaseTrustCommerceRepository implements TrustCommerceRepository {
     var next = 0;
     Future<void> signBatch() async {
       while (next < images.length && watch.elapsedMilliseconds < 5000) {
+        requestScope.check();
         final image = images[next++];
         try {
           urls[image.id] = await _sign(
             image.path,
           ).timeout(Duration(milliseconds: 5000 - watch.elapsedMilliseconds));
         } catch (_) {
+          requestScope.check();
           /* Preserve readable offer text with an image fallback. */
         }
       }
     }
 
     await Future.wait(List.generate(4, (_) => signBatch()));
+    requestScope.check();
     return List.unmodifiable(
       result.map(
         (c) => Campaign(

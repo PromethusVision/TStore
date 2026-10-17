@@ -28,10 +28,24 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
   final _productNames = <String, String>{};
   final _images = <String, CampaignImage>{};
   final _imageIds = <String>{};
-  bool _busy = false, _selecting = false;
+  bool _busy = false, _selecting = false, _mediaLoading = false;
   TrustFailure? _failure;
   String? _validation;
   CampaignCommand? _pending;
+  Campaign? _currentCampaign, _fresh;
+  bool _needsReview = false, _recoveryLoaded = false, _saved = false;
+  late Map<String, dynamic> _baseline;
+  Map<String, dynamic> _formValues() => {
+    ..._draft().toJson(),
+    'raw_amount': _amount.text,
+  };
+  bool get _dirty =>
+      !_saved &&
+      (_needsReview || !merchantValuesEqual(_baseline, _formValues()));
+  void _textChanged() {
+    if (mounted) setState(() {});
+  }
+
   @override
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
@@ -46,12 +60,29 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
     _images.clear();
     _imageIds.clear();
     _pending = null;
+    _currentCampaign = null;
+    _fresh = null;
+    _baseline = {};
   }
 
   @override
   void initState() {
     super.initState();
-    final old = widget.existing?.draft;
+    _currentCampaign = widget.existing;
+    _useCampaign(widget.existing);
+    _baseline = _formValues();
+    for (final c in [_title, _description, _amount]) {
+      c.addListener(_textChanged);
+    }
+  }
+
+  void _useCampaign(Campaign? value) {
+    final old = value?.draft;
+    _listings.clear();
+    _productNames.clear();
+    _imageIds.clear();
+    _images.clear();
+    _amount.clear();
     _title.text = old?.title ?? '';
     _description.text = old?.description ?? '';
     _type = old?.type ?? CampaignType.announcement;
@@ -60,11 +91,11 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
     _ends =
         old?.endsAt.toLocal() ?? DateTime.now().add(const Duration(days: 7));
     _listings.addAll(old?.listingIds ?? []);
-    for (final product in widget.existing?.products ?? <CampaignProduct>[]) {
+    for (final product in value?.products ?? <CampaignProduct>[]) {
       _productNames[product.listingId] = product.name;
     }
     _imageIds.addAll(old?.imageIds ?? []);
-    for (final image in widget.existing?.images ?? <CampaignImage>[]) {
+    for (final image in value?.images ?? <CampaignImage>[]) {
       _images[image.id] = image;
     }
     final amount = old?.priceMinor ?? old?.percentageBasisPoints;
@@ -100,33 +131,38 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
   bool get _locked => _busy || _pending != null || _selecting;
   Future<void> _date(bool start) async {
     if (_locked || !sessionCurrent) return;
-    final old = start ? _starts : _ends;
-    final day = await showDatePicker(
-      context: context,
-      initialDate: old,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-    );
-    if (day == null || !mounted || !sessionCurrent) return;
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(old),
-    );
-    if (time == null || !mounted || !sessionCurrent) return;
-    setState(() {
-      final value = DateTime(
-        day.year,
-        day.month,
-        day.day,
-        time.hour,
-        time.minute,
+    setState(() => _selecting = true);
+    try {
+      final old = start ? _starts : _ends;
+      final day = await showDatePicker(
+        context: context,
+        initialDate: old,
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2100),
       );
-      if (start) {
-        _starts = value;
-      } else {
-        _ends = value;
-      }
-    });
+      if (day == null || !mounted || !sessionCurrent) return;
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(old),
+      );
+      if (time == null || !mounted || !sessionCurrent) return;
+      setState(() {
+        final value = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          time.hour,
+          time.minute,
+        );
+        if (start) {
+          _starts = value;
+        } else {
+          _ends = value;
+        }
+      });
+    } finally {
+      if (mounted) setState(() => _selecting = false);
+    }
   }
 
   Future<void> _pickProducts({bool photo = false}) async {
@@ -144,7 +180,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
         ),
       ),
     );
-    if (!mounted || !sessionCurrent) return;
+    if (!checkTrustContinuation()) return;
     setState(() => _selecting = false);
     if (selected == null) return;
     if (photo) {
@@ -171,24 +207,32 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
     if (media == null || !sessionCurrent) return;
     setState(() {
       _selecting = true;
+      _mediaLoading = true;
       _validation = null;
     });
-    final result = await media.media(widget.access, listing.id);
-    if (!mounted || !sessionCurrent) return;
+    final result = await merchantRead(
+      () => media.media(widget.access, listing.id),
+    );
+    if (!checkTrustContinuation()) return;
     List<ListingImage>? images;
+    setState(() => _mediaLoading = false);
     result.fold(
       (e) => _validation = e,
       (v) => images = v.images.where((i) => i.state == 'published').toList(),
     );
-    setState(() => _selecting = false);
-    if (images == null) return;
+    if (images == null) {
+      setState(() => _selecting = false);
+      return;
+    }
     if (images!.isEmpty) {
+      _selecting = false;
       setState(
         () => _validation =
             'Bu ürünün yayınlanmış fotoğrafı yok. Ürün yönetiminden fotoğraf ekleyebilirsin.',
       );
       return;
     }
+    if (!mounted) return;
     final choice = await showDialog<ListingImage>(
       context: context,
       builder: (context) => PrivateTrustOverlay(
@@ -224,7 +268,9 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
         ),
       ),
     );
-    if (choice == null || !mounted || !sessionCurrent) return;
+    if (!checkTrustContinuation()) return;
+    setState(() => _selecting = false);
+    if (choice == null) return;
     setState(() {
       _imageIds.add(choice.id);
       _images[choice.id] = CampaignImage(
@@ -236,13 +282,15 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
     });
   }
 
-  void _preview() {
+  Future<void> _preview() async {
+    if (_locked || !sessionCurrent) return;
     final draft = _draft();
     if (draft.error != null) {
       setState(() => _validation = draft.error);
       return;
     }
-    showModalBottomSheet<void>(
+    setState(() => _selecting = true);
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (context) => PrivateTrustOverlay(
@@ -276,10 +324,11 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
         ),
       ),
     );
+    if (mounted) setState(() => _selecting = false);
   }
 
   Future<void> _save() async {
-    if (_busy || !sessionCurrent) return;
+    if (_busy || _selecting || _needsReview || !sessionCurrent) return;
     if (_pending == null) {
       final draft = _draft();
       if (draft.error != null) {
@@ -290,8 +339,8 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
         shopId: widget.access.shop!.id,
         requestId: newCampaignRequestId(),
         action: 'save',
-        campaignId: widget.existing?.id,
-        expectedRevision: widget.existing?.revisionId,
+        campaignId: _currentCampaign?.id,
+        expectedRevision: _currentCampaign?.revisionId,
         draft: draft,
       );
     }
@@ -300,8 +349,16 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
       _failure = null;
       _validation = null;
     });
-    final result = await trustRepository.mutate(_pending!);
-    if (!mounted || !sessionCurrent) return;
+    final result = await managementRequest(
+      () => trustRepository.mutate(_pending!),
+      failure: _writeFailure,
+      write: true,
+    );
+    if (!checkTrustContinuation()) return;
+    if (result.fold((e) => e.kind == TrustFailureKind.auth, (_) => false)) {
+      expireTrustSession();
+      return;
+    }
     bool saved = false;
     setState(() {
       _busy = false;
@@ -309,21 +366,95 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
         (e) {
           _failure = e;
           if (!e.retrySameRequest) _pending = null;
+          if (e.kind == TrustFailureKind.changed) _needsReview = true;
         },
         (_) {
           _pending = null;
           saved = true;
+          _saved = true;
         },
       );
     });
-    if (saved) Navigator.pop(context, true);
+    if (saved) {
+      await WidgetsBinding.instance.endOfFrame;
+      if (mounted && sessionCurrent) Navigator.pop(context, true);
+    }
+  }
+
+  Future<void> _recover() async {
+    if (_locked || !sessionCurrent || _currentCampaign == null) return;
+    setState(() {
+      _busy = true;
+      _fresh = null;
+      _recoveryLoaded = false;
+      _failure = null;
+    });
+    final repo = trustRepository;
+    if (repo is! CampaignRecoveryRepository) {
+      setState(() {
+        _busy = false;
+        _failure = _readFailure;
+      });
+      return;
+    }
+    final result = await managementRequest(
+      () => (repo as CampaignRecoveryRepository).readCampaign(
+        widget.access.shop!.id,
+        _currentCampaign!.id,
+      ),
+      failure: _readFailure,
+    );
+    if (!checkTrustContinuation()) return;
+    if (result.fold((e) => e.kind == TrustFailureKind.auth, (_) => false)) {
+      expireTrustSession();
+      return;
+    }
+    setState(() {
+      _busy = false;
+      result.fold((e) => _failure = e, (v) {
+        if (v != null &&
+            (v.id != _currentCampaign!.id ||
+                v.shopId != widget.access.shop!.id)) {
+          _failure = _readFailure;
+          return;
+        }
+        _fresh = v;
+        _recoveryLoaded = true;
+      });
+    });
+  }
+
+  void _review(bool useCurrent) {
+    if (_locked || !sessionCurrent || !_recoveryLoaded || _fresh == null) {
+      return;
+    }
+    setState(() {
+      _currentCampaign = _fresh;
+      if (useCurrent) {
+        _useCampaign(_fresh);
+        _baseline = _formValues();
+      } else {
+        final draft = _fresh!.draft;
+        final amount = draft.priceMinor ?? draft.percentageBasisPoints;
+        _baseline = {
+          ...draft.toJson(),
+          'raw_amount': amount == null
+              ? ''
+              : (amount / 100).toStringAsFixed(2).replaceAll('.', ','),
+        };
+      }
+      _needsReview = false;
+      _failure = null;
+      _validation = null;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (!sessionCurrent) return const TrustSessionExpired();
-    return PopScope(
-      canPop: !_busy && _pending == null,
+    return MerchantDraftGuard(
+      dirty: _dirty,
+      busy: _busy || _selecting || _pending != null,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -336,7 +467,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
             const Text(
               'Önce taslağını kaydet, ardından kampanya listesinden yayınla.',
             ),
-            if (widget.existing?.active == true)
+            if (_currentCampaign?.active == true)
               const Text(
                 'Düzenlemeyi kaydettiğinde mevcut yayın durur. Yeniden yayınlamadan değişiklikler müşteriye gösterilmez.',
               ),
@@ -356,6 +487,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
               decoration: const InputDecoration(labelText: 'Kısa açıklama'),
             ),
             DropdownButtonFormField<CampaignType>(
+              key: ValueKey("type-$_type"),
               initialValue: _type,
               isExpanded: true,
               decoration: const InputDecoration(labelText: 'Kampanya türü'),
@@ -403,6 +535,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
             ],
             const SizedBox(height: 16),
             DropdownButtonFormField<CampaignScope>(
+              key: ValueKey("scope-$_scope"),
               initialValue: _scope,
               isExpanded: true,
               decoration: const InputDecoration(labelText: 'Geçerli ürünler'),
@@ -500,7 +633,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
               trailing: const Icon(Icons.calendar_month),
               onTap: _locked ? null : () => _date(false),
             ),
-            if (_busy || _selecting) const LinearProgressIndicator(),
+            if (_busy || _mediaLoading) const LinearProgressIndicator(),
             if (_validation != null)
               Text(
                 _validation!,
@@ -511,22 +644,26 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
                 _failure!.message,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
-            if (_failure?.kind == TrustFailureKind.changed)
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Güncel kayda dön'),
+            if (_needsReview)
+              MerchantRecoveryPanel(
+                message:
+                    'Kayıt başka bir işlemle değişmiş. Hazırladığın taslak bu ekranda korunuyor. Güncel bilgileri kontrol edip nasıl devam edeceğini seç.',
+                busy: _locked,
+                loaded: _recoveryLoaded,
+                matches: false,
+                summary: _fresh == null
+                    ? 'Kayıt artık bulunamıyor. Düzenlemelerin bu ekranda korunuyor.'
+                    : 'Güncel kayıt: ${_fresh!.draft.title} · ${_fresh!.statusLabel}\n${_fresh!.draft.description}\n${_fresh!.draft.offerLabel}',
+                onReload: _recover,
+                onUseCurrent: _fresh == null ? null : () => _review(true),
+                onKeepDraft: _fresh == null ? null : () => _review(false),
               ),
             OutlinedButton(
               onPressed: _locked ? null : _preview,
               child: const Text('Müşteri görünümünü önizle'),
             ),
             FilledButton(
-              onPressed:
-                  _busy ||
-                      _selecting ||
-                      _failure?.kind == TrustFailureKind.changed
-                  ? null
-                  : _save,
+              onPressed: _busy || _selecting || _needsReview ? null : _save,
               child: Text(
                 _pending == null
                     ? 'Taslak olarak kaydet'
@@ -564,6 +701,8 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
   final _selected = <String, ShopProductEntity>{};
   final _rows = <ShopProductEntity>[];
   int _page = 0;
+  bool _retryMore = false;
+  String _activeQuery = '';
   bool _loading = false, _more = true;
   String? _error;
   @override
@@ -598,7 +737,9 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
 
   Future<void> _load({bool more = false}) async {
     if (_loading || !sessionCurrent) return;
+    _retryMore = more;
     if (!more) {
+      _activeQuery = _query.text.trim();
       _page = 0;
       _rows.clear();
     }
@@ -606,21 +747,29 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
       _loading = true;
       _error = null;
     });
-    final result = await widget.services.merchants.listings(
-      widget.access,
-      page: _page,
-      query: _query.text.trim(),
+    final result = await merchantRead(
+      () => widget.services.merchants.listings(
+        widget.access,
+        page: _page,
+        query: _activeQuery,
+      ),
     );
-    if (!mounted || !sessionCurrent) return;
+    if (!checkTrustContinuation()) return;
     setState(() {
       _loading = false;
       result.fold((e) => _error = e, (v) {
+        if (v.any((r) => r.shopId != widget.access.shop!.id)) {
+          _error = 'Ürün bilgileri doğrulanamadı. Yeniden dene.';
+          return;
+        }
         _more = v.length == merchantPageSize;
         _page++;
         _rows.addAll(
           v.where(
             (r) =>
-                widget.allowedIds == null || widget.allowedIds!.contains(r.id),
+                !_rows.any((old) => old.id == r.id) &&
+                (widget.allowedIds == null ||
+                    widget.allowedIds!.contains(r.id)),
           ),
         );
         for (final row in v.where((r) => _selected.containsKey(r.id))) {
@@ -654,11 +803,15 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
             ),
           ),
           if (_loading) const LinearProgressIndicator(),
-          if (_error != null) TrustRetry(message: _error!, onRetry: _load),
+          if (_error != null)
+            TrustRetry(
+              message: _error!,
+              onRetry: () => _load(more: _retryMore),
+            ),
           Expanded(
             child: ListView(
               children: [
-                if (_rows.isEmpty && !_loading)
+                if (_rows.isEmpty && !_loading && _error == null)
                   const Padding(
                     padding: EdgeInsets.all(24),
                     child: Text('Uygun ürün bulunamadı.'),
@@ -670,7 +823,7 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
                     subtitle: Text(
                       '${row.price.toStringAsFixed(2).replaceAll('.', ',')} TL${!row.isActive || !row.isAvailable ? ' · Satışa kapalı' : ''}',
                     ),
-                    onChanged: _loading
+                    onChanged: _loading || _error != null
                         ? null
                         : (value) => setState(() {
                             if (value == true) {
@@ -695,7 +848,7 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: FilledButton(
-                onPressed: _loading
+                onPressed: _loading || _error != null
                     ? null
                     : () => Navigator.pop(context, _selected.values.toList()),
                 child: Text('Seçimi kullan (${_selected.length})'),

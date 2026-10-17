@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
+import 'package:t_store/features/merchant/presentation/merchant_management_request.dart';
 import 'package:flutter/material.dart';
 import '../domain/merchant_promotion.dart';
 
@@ -33,10 +36,40 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _listingLabel = '',
       _campaignLabel = '';
   bool _busy = false, _enabled = false, _more = false, _broken = false;
-  int _generation = 0;
+  int _generation = 0, _draftOffset = 0, _sourceOffset = 0, _historyOffset = 0;
+  String _sourceQuery = '';
+  String? _sessionKey;
+  bool _writing = false,
+      _asking = false,
+      _needsReview = false,
+      _recoveryLoaded = false;
+  PromotionDraft? _fresh;
+  PromotionSelection _baseline = const PromotionSelection();
+  Future<void> Function()? _retryRead;
+  bool get _dirty =>
+      !merchantValuesEqual(_baseline.toJson(), _selection.toJson()) ||
+      (_draft == null && _preview != null);
+  bool get _sameSession =>
+      widget.repository is! AuthenticatedSessionSource ||
+      (_sessionKey != null &&
+          (widget.repository as AuthenticatedSessionSource).currentSessionKey ==
+              _sessionKey);
+
   bool get _current =>
-      !_broken && widget.repository.currentUserId == widget.ownerId;
-  bool get _locked => _busy || _pending != null;
+      !_broken &&
+      _sameSession &&
+      widget.repository.currentUserId == widget.ownerId;
+  bool get _locked => _busy || _writing || _asking || _pending != null;
+  bool _continue(int generation) {
+    if (!mounted || generation != _generation) return false;
+    if (!_current) {
+      _broken = true;
+      _invalidate();
+      return false;
+    }
+    return true;
+  }
+
   void _fail(PromotionFailure error) {
     _error = error;
     if (error == PromotionFailure.session) {
@@ -47,10 +80,13 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _preview = null;
       _draft = null;
       _pending = null;
-    }
-    if (error == PromotionFailure.unavailable) {
-      _sources.clear();
-      _history.clear();
+      _selection = const PromotionSelection();
+      _baseline = const PromotionSelection();
+      _retryRead = null;
+      _search.clear();
+      _listingLabel = '';
+      _campaignLabel = '';
+      _fresh = null;
     }
   }
 
@@ -63,11 +99,21 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   }
 
   void _listen() {
+    if (widget.repository case AuthenticatedSessionSource source) {
+      _sessionKey = source.currentSessionKey;
+    }
     _session = widget.repository.sessionChanges.listen(
-      (_) {
-        _invalidate();
+      (actor) {
+        if (actor != widget.ownerId || !_current) {
+          _broken = true;
+          _invalidate();
+        }
       },
       onError: (Object _) {
+        _broken = true;
+        _invalidate();
+      },
+      onDone: () {
         _broken = true;
         _invalidate();
       },
@@ -76,6 +122,8 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
 
   void _invalidate() {
     if (!mounted) return;
+    // Resume and token refresh cannot cancel a running mutation or unlock retry.
+    if (_current && (_writing || _pending != null)) return;
     _generation++;
     setState(() {
       _drafts.clear();
@@ -84,19 +132,33 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _preview = null;
       _busy = false;
       _error = null;
+      _retryRead = null;
+      _more = false;
       if (!_current) {
+        _broken = true;
+        _writing = false;
+        _fresh = null;
         _pending = null;
         _draft = null;
         _selection = const PromotionSelection();
+        _baseline = const PromotionSelection();
+        _search.clear();
         _listingLabel = '';
         _campaignLabel = '';
         _page = 'list';
-      } else if (_pending != null) {
-        _page = 'editor';
-        _error = PromotionFailure.uncertain;
       }
     });
-    if (_current && _page == 'list') _load();
+    if (!_current) return;
+    switch (_page) {
+      case 'list':
+        _load();
+      case 'sources':
+        _pickSource(_sourceKind);
+      case 'history':
+        if (_draft != null) _readHistory(_draft!);
+      case 'editor':
+        break;
+    }
   }
 
   @override
@@ -111,6 +173,10 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _selection = const PromotionSelection();
       _page = 'list';
       _broken = false;
+      _writing = false;
+      _needsReview = false;
+      _fresh = null;
+      _recoveryLoaded = false;
       _listen();
       _invalidate();
     }
@@ -131,15 +197,19 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   }
 
   Future<void> _load({bool more = false}) async {
-    if (!_current || _busy) return;
-    final generation = ++_generation, offset = more ? _drafts.length : 0;
+    if (!_current || _locked) return;
+    final generation = ++_generation, offset = more ? _draftOffset : 0;
+    _retryRead = () => _load(more: more);
     setState(() {
       _busy = true;
       _error = null;
       if (!more) _drafts.clear();
     });
-    final result = await widget.repository.read(widget.shopId, offset: offset);
-    if (!mounted || !_current || generation != _generation) return;
+    final result = await managementRequest(
+      () => widget.repository.read(widget.shopId, offset: offset),
+      failure: PromotionFailure.unavailable,
+    );
+    if (!_continue(generation)) return;
     setState(() {
       _busy = false;
       result.fold(
@@ -149,20 +219,32 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
         (v) {
           _enabled = v.enabled;
           if (!v.enabled) _drafts.clear();
-          _more = v.hasMore;
+          _more = v.hasMore && offset + v.items.length <= 500;
+          _draftOffset = offset + v.items.length;
           final known = _drafts.map((e) => e.id).toSet();
-          _drafts.addAll(v.items.where((e) => !known.contains(e.id)));
+          if (v.items.any((e) => e.shopId != widget.shopId)) {
+            _fail(PromotionFailure.unavailable);
+            _drafts.clear();
+            return;
+          }
+          _drafts.addAll(v.items.where((e) => known.add(e.id)));
         },
       );
     });
   }
 
   void _edit([PromotionDraft? draft]) {
+    if (!_current || _locked || _error != null || !_enabled) return;
     setState(() {
       _generation++;
       _page = 'editor';
       _draft = draft;
       _selection = draft?.selection ?? const PromotionSelection();
+      _baseline = _selection;
+      _needsReview = false;
+      _fresh = null;
+      _recoveryLoaded = false;
+      _retryRead = null;
       _preview = null;
       _error = null;
       _pending = null;
@@ -172,6 +254,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   }
 
   void _select(PromotionSelection selection) {
+    if (!_current || _locked) return;
     setState(() {
       _generation++;
       _selection = selection;
@@ -188,8 +271,12 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _error = null;
       _preview = null;
     });
-    final result = await widget.repository.preview(widget.shopId, _selection);
-    if (!mounted || !_current || generation != _generation) return;
+    _retryRead = _previewNow;
+    final result = await managementRequest(
+      () => widget.repository.preview(widget.shopId, _selection),
+      failure: PromotionFailure.unavailable,
+    );
+    if (!_continue(generation)) return;
     setState(() {
       _busy = false;
       result.fold(_fail, (v) => _preview = v);
@@ -197,8 +284,10 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   }
 
   Future<void> _submit(String action) async {
-    if (!_current || _busy) return;
+    if (!_current || _busy || _writing || _asking || _needsReview) return;
     if (_pending == null) {
+      if (action == 'archive' && _dirty && !await _confirmDiscard()) return;
+      if (!mounted || !_current) return;
       if (action == 'save' && _preview?.ready != true) return;
       _pending = PromotionCommand(
         shopId: widget.shopId,
@@ -210,18 +299,28 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       );
     }
     final command = _pending!, generation = ++_generation;
+    _writing = true;
+    _retryRead = null;
     setState(() {
       _busy = true;
       _error = null;
     });
-    final result = await widget.repository.mutate(command);
-    if (!mounted || !_current || generation != _generation) return;
+    final result = await managementRequest(
+      () => widget.repository.mutate(command),
+      failure: PromotionFailure.uncertain,
+      write: true,
+    );
+    if (!_continue(generation)) return;
+    _writing = false;
     var success = false;
     setState(() {
       _busy = false;
       result.fold(
         (e) {
           _fail(e);
+          if (e == PromotionFailure.changed && _draft != null) {
+            _needsReview = true;
+          }
           if (e != PromotionFailure.uncertain) {
             _pending = null;
             _preview = null;
@@ -246,24 +345,30 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _sourceKind = kind;
       _search.clear();
     }
-    final generation = ++_generation, offset = more ? _sources.length : 0;
+    final generation = ++_generation, offset = more ? _sourceOffset : 0;
+    if (!more) _sourceQuery = _search.text.trim();
+    _retryRead = () => _pickSource(kind, more: more);
     setState(() {
       _page = 'sources';
       _busy = true;
       _error = null;
       if (!more) _sources.clear();
     });
-    final result = await widget.repository.sources(
-      widget.shopId,
-      _sourceKind,
-      query: _search.text.trim(),
-      offset: offset,
+    final result = await managementRequest(
+      () => widget.repository.sources(
+        widget.shopId,
+        _sourceKind,
+        query: _sourceQuery,
+        offset: offset,
+      ),
+      failure: PromotionFailure.unavailable,
     );
-    if (!mounted || !_current || generation != _generation) return;
+    if (!_continue(generation)) return;
     setState(() {
       _busy = false;
       result.fold(_fail, (v) {
-        _more = v.length == 20;
+        _more = v.length == 20 && offset + v.length <= 10000;
+        _sourceOffset = offset + v.length;
         _sources.addAll(v.where((e) => !_sources.any((old) => old.id == e.id)));
       });
     });
@@ -271,7 +376,8 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
 
   Future<void> _readHistory(PromotionDraft draft, {bool more = false}) async {
     if (!_current || _locked) return;
-    final generation = ++_generation, offset = more ? _history.length : 0;
+    final generation = ++_generation, offset = more ? _historyOffset : 0;
+    _retryRead = () => _readHistory(draft, more: more);
     setState(() {
       _page = 'history';
       _draft = draft;
@@ -279,29 +385,117 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _error = null;
       if (!more) _history.clear();
     });
-    final result = await widget.repository.history(
-      widget.shopId,
-      draft.id,
-      offset: offset,
+    final result = await managementRequest(
+      () => widget.repository.history(widget.shopId, draft.id, offset: offset),
+      failure: PromotionFailure.unavailable,
     );
-    if (!mounted || !_current || generation != _generation) return;
+    if (!_continue(generation)) return;
     setState(() {
       _busy = false;
       result.fold(_fail, (v) {
-        _more = v.length == 20;
-        _history.addAll(v);
+        _more = v.length == 20 && offset + v.length <= 10000;
+        _historyOffset = offset + v.length;
+        final known = _history.map((e) => e.revisionId).toSet();
+        _history.addAll(v.where((e) => known.add(e.revisionId)));
       });
     });
   }
 
-  void _back() {
-    if (_locked) return;
+  Future<bool> _confirmDiscard() async {
+    if (_asking || !_current) return false;
+    setState(() => _asking = true);
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Değişikliklerden vazgeçilsin mi?'),
+        content: const Text(
+          'Bu ekrandaki kaydedilmemiş seçimlerin kaybolacak.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Düzenlemeye dön'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Vazgeç ve devam et'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return false;
+    setState(() => _asking = false);
+    return discard == true && _current;
+  }
+
+  Future<void> _back() async {
+    if (_locked || !_current) return;
+    if (_page == 'editor' && _dirty && !await _confirmDiscard()) return;
+    if (!mounted || !_current) return;
     setState(() {
       _generation++;
       _error = null;
+      _retryRead = null;
       _page = _page == 'sources' ? 'editor' : 'list';
     });
-    if (_page == 'list') _load();
+    if (_page == 'list') await _load();
+  }
+
+  Future<void> _recover() async {
+    if (_locked || !_current || _draft == null) return;
+    final generation = ++_generation;
+    setState(() {
+      _busy = true;
+      _fresh = null;
+      _recoveryLoaded = false;
+      _error = null;
+      _preview = null;
+      _retryRead = _recover;
+    });
+    final repository = widget.repository;
+    if (repository is! PromotionRecoveryRepository) {
+      setState(() {
+        _busy = false;
+        _error = PromotionFailure.unavailable;
+      });
+      return;
+    }
+    final result = await managementRequest(
+      () => (repository as PromotionRecoveryRepository).readPromotion(
+        widget.shopId,
+        _draft!.id,
+      ),
+      failure: PromotionFailure.unavailable,
+    );
+    if (!_continue(generation)) return;
+    setState(() {
+      _busy = false;
+      result.fold(_fail, (v) {
+        if (v != null && (v.id != _draft!.id || v.shopId != widget.shopId)) {
+          _fail(PromotionFailure.unavailable);
+          return;
+        }
+        _fresh = v;
+        _recoveryLoaded = true;
+      });
+    });
+  }
+
+  void _review(bool useCurrent) {
+    if (_locked || !_current || !_recoveryLoaded || _fresh == null) return;
+    setState(() {
+      _draft = _fresh;
+      _baseline = _fresh!.selection;
+      if (useCurrent) {
+        _selection = _baseline;
+        _listingLabel = _fresh!.copy.title;
+        _campaignLabel = _fresh!.copy.title;
+      }
+      _needsReview = false;
+      _error = null;
+      _retryRead = null;
+      _preview = null;
+    });
   }
 
   @override
@@ -362,6 +556,13 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
                             child: const Text('Aynı işlemi kontrol et'),
                           ),
                       ],
+                      if (_error != null &&
+                          _pending == null &&
+                          _retryRead != null)
+                        TextButton(
+                          onPressed: _locked ? null : _retryRead,
+                          child: const Text('Tekrar dene'),
+                        ),
                       if (_busy) const LinearProgressIndicator(),
                       ...switch (_page) {
                         'editor' => _editor(),
@@ -392,7 +593,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       const Text('Tanıtım hazırlama bu ortamda henüz açılmadı.'),
     if (_enabled)
       FilledButton.icon(
-        onPressed: _busy ? null : () => _edit(),
+        onPressed: _locked || _error != null ? null : () => _edit(),
         icon: const Icon(Icons.add),
         label: const Text('Yeni tanıtım taslağı'),
       ),
@@ -419,7 +620,9 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
                 spacing: 8,
                 children: [
                   TextButton(
-                    onPressed: _busy ? null : () => _edit(d),
+                    onPressed: _locked || _error != null
+                        ? null
+                        : () => _edit(d),
                     child: Text(
                       d.status == 'archived'
                           ? 'Taslak olarak geri al'
@@ -427,7 +630,9 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
                     ),
                   ),
                   TextButton(
-                    onPressed: _busy ? null : () => _readHistory(d),
+                    onPressed: _locked || _error != null
+                        ? null
+                        : () => _readHistory(d),
                     child: const Text('Geçmiş'),
                   ),
                 ],
@@ -453,6 +658,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
     return [
       if (_draft != null) Text('Kaydedilmiş sürüm · ${_draft!.statusLabel}'),
       DropdownButtonFormField<PromotionFamily>(
+        key: ValueKey("family-${_selection.family}"),
         initialValue: _selection.family,
         isExpanded: true,
         decoration: const InputDecoration(labelText: 'Tanıtım türü'),
@@ -480,7 +686,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
               },
       ),
       DropdownButtonFormField<int>(
-        key: ValueKey('variant-${_selection.family}'),
+        key: ValueKey('variant-${_selection.family}-${_selection.variant}'),
         initialValue: _selection.variant,
         decoration: const InputDecoration(labelText: 'Metin seçeneği'),
         items: const [
@@ -599,20 +805,29 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
         ],
       ],
       FilledButton(
-        onPressed: _locked || _preview?.ready != true
+        onPressed: _locked || _needsReview || _preview?.ready != true
             ? null
             : () => _submit('save'),
         child: const Text('Taslağı kaydet'),
       ),
       if (_draft != null && _draft!.status != 'archived')
         OutlinedButton(
-          onPressed: _locked ? null : () => _submit('archive'),
+          onPressed: _locked || _needsReview ? null : () => _submit('archive'),
           child: const Text('Arşivle'),
         ),
-      if (_error == PromotionFailure.changed && _draft != null)
-        TextButton(
-          onPressed: _locked ? null : _back,
-          child: const Text('Güncel taslak listesine dön'),
+      if (_needsReview)
+        MerchantRecoveryPanel(
+          message:
+              'Kayıt veya kaynak bilgileri değişmiş. Seçimlerin bu ekranda korunuyor. Güncel kaydı kontrol et; devam etmeden önce yeni bir önizleme hazırlayacaksın.',
+          busy: _locked,
+          loaded: _recoveryLoaded,
+          matches: false,
+          summary: _fresh == null
+              ? 'Kayıt artık bulunamıyor. Seçimlerin bu ekranda korunuyor.'
+              : 'Güncel kayıt: ${_fresh!.copy.title} · ${_fresh!.statusLabel}\n${_fresh!.copy.body}',
+          onReload: _recover,
+          onUseCurrent: _fresh == null ? null : () => _review(true),
+          onKeepDraft: _fresh == null ? null : () => _review(false),
         ),
     ];
   }
@@ -651,7 +866,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       ListTile(
         title: Text(source.label),
         trailing: const Icon(Icons.chevron_right),
-        onTap: _busy
+        onTap: _locked || _error != null
             ? null
             : () {
                 if (_sourceKind == 'listing') {

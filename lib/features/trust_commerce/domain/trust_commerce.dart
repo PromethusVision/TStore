@@ -260,3 +260,11 @@ abstract interface class TrustCommerceRepository {
   Future<Either<TrustFailure, List<Campaign>>> shopCampaigns(String shopId);
   Future<Either<TrustFailure, CampaignReceipt>> mutate(CampaignCommand command);
 }
+
+/// Optional exact-owner recovery, unavailable until forward migration 0031.
+abstract interface class CampaignRecoveryRepository {
+  Future<Either<TrustFailure, Campaign?>> readCampaign(
+    String shopId,
+    String campaignId,
+  );
+}

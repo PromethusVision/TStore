@@ -1090,6 +1090,41 @@ created. Full G, O8/O9/O10 policy work, H1 settlement, I and physical J remain
 separate gates. The FROZEN seven-day product and thirty-day push entitlement
 rules above/below are unchanged.
 
+### 11.2 F/G Merchant management recovery — 2026-10-17
+
+After transaction recovery integrated at `298290d8`, the next authorized local
+package completes existing Campaign Lite and promotion-draft recovery. It changes
+no FROZEN offer, paid-placement, accounting or notification rule.
+
+- Capture stable Auth session identity for private routes and every adapter
+  continuation, including image signing and error classification. Same-session
+  token refresh preserves work; replacement sessions and broken authority streams
+  invalidate it. Existing server owner/session checks remain authoritative.
+- Bound reads with explicit retry and suppress late continuations. Writes keep
+  their pending state until transport resolves; neither an artificial timeout nor
+  app resume may open a second submission. Uncertain responses retry only the
+  original immutable command. No automatic write retry or offline queue is added.
+- Protect unsaved in-memory campaign/creative selections on back navigation.
+  A revision conflict preserves the draft, reads the exact owned current record,
+  then requires explicit use-current or keep-draft review. The next save uses that
+  current revision and can conflict again. A fresh read is not a write receipt;
+  a missing/disabled record cannot become an implicit new campaign or draft.
+- Add bounded exact-owner detail reads for those existing records in forward
+  migration0031, reusing current projections, authority checks and default-OFF
+  gates. No tables, historical migration edits, grants to public/service roles,
+  paid operation or new persistence store. Missing new RPCs fail closed during
+  recovery until the separately authorized deployment is available.
+- Refresh/resume and failed reads cannot leave stale action controls active.
+  List/source/history offsets advance by raw server page size, independently of
+  display deduplication. Page retry stays on the failed page; no snapshot-pagination
+  guarantee is introduced. Product/photo selectors retain truthful errors and
+  bounded loading; duplicate dialogs and route opens coalesce.
+
+Preserve five Merchant tabs, existing Customer layouts and shared notifications.
+Local transport, widget, real database/API and build evidence remain separate
+from physical-device J and Production rollout. Full G, settlement and provider
+activation remain gated. See [delivery](MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md).
+
 ## 12. Sponsored push entitlement and shared transport
 
 **FROZEN:** each 7-day package creates one push entitlement valid **30 days from

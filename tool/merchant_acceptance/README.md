@@ -249,3 +249,33 @@ or unrelated baseline. The final fresh managed run remains separate evidence.
 No remote apply or physical-device/provider evidence is implied. HTTP
 tests intentionally ignore acknowledgements; Dart transport fault injection
 and widget navigation evidence are recorded separately in the task handoff.
+
+## Merchant campaign and promotion recovery
+
+`--management-recovery` includes the existing G/F and dependent commerce checks,
+then rehearses additive0031 on that populated, newly owned local fixture. Eight
+campaign/promotion tables are fingerprinted before and after; the new functions
+must leave every row unchanged. Five database groups cover exact current revision,
+explicit rebase, missing/foreign IDs, live-session/role/shop checks, gates, grants
+and zero read side effects. Five additional managed HTTP groups cover actual Auth,
+lost acknowledgement replay, archive/restore with fresh revision and fingerprint,
+immutable history and actual logout. Dart tests separately cover transport and UI
+continuation failures; the HTTP suite does not pretend to simulate device hardware.
+
+For the complete recorded matrix, use these commands with the normal fresh
+prepare/start/stop process above. Run the safety tests before starting the stack.
+
+```powershell
+node --test tool/merchant_acceptance/safety.test.mjs tool/merchant_acceptance/docker-proxy.test.mjs
+node tool/merchant_acceptance/native.mjs <owned-postgresql-17-bin> --management-recovery --notifications --commerce-recovery
+node tool/merchant_acceptance/acceptance.mjs <fresh-owned-local-run> --management-recovery --notifications --commerce-recovery
+node tool/merchant_acceptance/local.mjs stop <that-exact-owned-local-run>
+```
+
+Evidence uses `merchant_management_recovery_{native,managed}_acceptance.json` and
+`merchant_management_{native,managed}_upgrade.json`, leaving earlier handoff
+evidence intact. Without `--management-recovery`, G fixtures install0031 normally
+with the migration chain. `--notifications` rehearses the existing notification
+proposals locally only; it never configures or contacts a provider. No remote
+deployment, paid operation, actual refund/payout or two-device QR acceptance is
+part of these checks.

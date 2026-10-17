@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'merchant_edit_recovery.dart';
+import 'merchant_management_request.dart';
+import 'merchant_read.dart';
 import 'package:intl/intl.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
@@ -9,6 +12,15 @@ import 'package:t_store/features/trust_commerce/presentation/trust_session_guard
 import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 
 part 'merchant_campaign_editor.dart';
+
+const _readFailure = TrustFailure(
+  TrustFailureKind.unavailable,
+  'Bilgiler yüklenemedi. Bağlantını kontrol edip yeniden dene.',
+);
+const _writeFailure = TrustFailure(
+  TrustFailureKind.uncertain,
+  'İşlem sonucu doğrulanamadı. Aynı işlemi tekrar dene.',
+);
 
 class MerchantCampaignSummary extends StatefulWidget {
   const MerchantCampaignSummary({
@@ -24,10 +36,11 @@ class MerchantCampaignSummary extends StatefulWidget {
 }
 
 class _MerchantCampaignSummaryState extends State<MerchantCampaignSummary>
-    with TrustSessionGuard<MerchantCampaignSummary> {
+    with TrustSessionGuard<MerchantCampaignSummary>, WidgetsBindingObserver {
   CampaignPage? _data;
   String? _error;
   bool _loading = true, _opening = false;
+  int _epoch = 0;
   @override
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
@@ -40,17 +53,33 @@ class _MerchantCampaignSummaryState extends State<MerchantCampaignSummary>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_opening) _load();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _load() async {
     if (!sessionCurrent) return;
+    final epoch = ++_epoch;
     setState(() {
       _loading = true;
       _error = null;
     });
-    final result = await trustRepository.campaigns(widget.access.shop!.id);
-    if (!mounted || !sessionCurrent) return;
+    final result = await managementRequest(
+      () => trustRepository.campaigns(widget.access.shop!.id),
+      failure: _readFailure,
+    );
+    if (!checkTrustContinuation() || epoch != _epoch) return;
     setState(() {
       _loading = false;
       result.fold((e) => _error = e.message, (v) => _data = v);
@@ -122,12 +151,14 @@ class MerchantCampaignsView extends StatefulWidget {
 }
 
 class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
-    with TrustSessionGuard<MerchantCampaignsView> {
+    with TrustSessionGuard<MerchantCampaignsView>, WidgetsBindingObserver {
   CampaignPage? _page;
   final _rows = <Campaign>[];
   TrustFailure? _failure;
   bool _loading = false, _busy = false, _opening = false;
   CampaignCommand? _pending;
+  int _offset = 0;
+  bool _retryMore = false, _confirming = false;
   @override
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
@@ -142,20 +173,45 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _load();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   Future<void> _load({bool more = false}) async {
-    if (_loading || _busy || _pending != null || !sessionCurrent) return;
+    if (_loading ||
+        _busy ||
+        _opening ||
+        _confirming ||
+        _pending != null ||
+        !sessionCurrent) {
+      return;
+    }
+    _retryMore = more;
+    final offset = more ? _offset : 0;
     setState(() {
       _loading = true;
       _failure = null;
     });
-    final result = await trustRepository.campaigns(
-      widget.access.shop!.id,
-      offset: more ? _rows.length : 0,
+    final result = await managementRequest(
+      () => trustRepository.campaigns(widget.access.shop!.id, offset: offset),
+      failure: _readFailure,
     );
-    if (!mounted || !sessionCurrent) return;
+    if (!checkTrustContinuation()) return;
+    if (result.fold((e) => e.kind == TrustFailureKind.auth, (_) => false)) {
+      expireTrustSession();
+      return;
+    }
     setState(() {
       _loading = false;
       result.fold((e) => _failure = e, (p) {
@@ -165,13 +221,23 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
             p.campaigns.where((c) => !_rows.any((old) => old.id == c.id)),
           );
         }
+        _offset = offset + p.campaigns.length;
         _page = p;
       });
     });
   }
 
   Future<void> _edit([Campaign? campaign]) async {
-    if (_opening || _busy || _pending != null || !sessionCurrent) return;
+    if (_opening ||
+        _busy ||
+        _loading ||
+        _confirming ||
+        _failure != null ||
+        _pending != null ||
+        !sessionCurrent ||
+        _page?.enabled != true) {
+      return;
+    }
     _opening = true;
     await Navigator.push<void>(
       context,
@@ -189,8 +255,17 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
   }
 
   Future<void> _change(Campaign campaign, bool activate) async {
-    if (_busy || _pending != null || !sessionCurrent) return;
+    if (_busy ||
+        _loading ||
+        _opening ||
+        _confirming ||
+        _failure != null ||
+        _pending != null ||
+        !sessionCurrent) {
+      return;
+    }
     if (activate) {
+      setState(() => _confirming = true);
       final yes = await showDialog<bool>(
         context: context,
         builder: (context) => PrivateTrustOverlay(
@@ -216,7 +291,9 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
           ),
         ),
       );
-      if (yes != true || !mounted || !sessionCurrent) return;
+      if (!checkTrustContinuation()) return;
+      setState(() => _confirming = false);
+      if (yes != true) return;
     }
     _pending = CampaignCommand(
       shopId: widget.access.shop!.id,
@@ -234,8 +311,16 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
       _busy = true;
       _failure = null;
     });
-    final result = await trustRepository.mutate(_pending!);
-    if (!mounted || !sessionCurrent) return;
+    final result = await managementRequest(
+      () => trustRepository.mutate(_pending!),
+      failure: _writeFailure,
+      write: true,
+    );
+    if (!checkTrustContinuation()) return;
+    if (result.fold((e) => e.kind == TrustFailureKind.auth, (_) => false)) {
+      expireTrustSession();
+      return;
+    }
     bool success = false;
     setState(() {
       _busy = false;
@@ -256,9 +341,11 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
   @override
   Widget build(BuildContext context) {
     if (!sessionCurrent) return const TrustSessionExpired();
-    final locked = _busy || _loading || _pending != null || _opening;
+    final locked =
+        _busy || _loading || _pending != null || _opening || _confirming;
+    final stale = locked || _failure != null;
     return PopScope(
-      canPop: !_busy && _pending == null,
+      canPop: !_busy && !_confirming && _pending == null,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Kampanyalar'),
@@ -282,7 +369,7 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: FilledButton.icon(
-                    onPressed: locked ? null : _edit,
+                    onPressed: stale ? null : _edit,
                     icon: const Icon(Icons.add),
                     label: const Text('Kampanya oluştur'),
                   ),
@@ -295,7 +382,7 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
                       ? () {}
                       : _pending != null
                       ? _submit
-                      : _load,
+                      : () => _load(more: _retryMore),
                 ),
               if (_page?.enabled == false)
                 const Text('Kampanyalar henüz kullanıma açılmadı.'),
@@ -303,7 +390,10 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
                 const Text(
                   'Fiyatlı ve yüzdeli kampanyaları taslak olarak hazırlayabilirsin. Yayınları henüz açılmadı.',
                 ),
-              if (_page?.enabled == true && _rows.isEmpty && !_loading)
+              if (_page?.enabled == true &&
+                  _rows.isEmpty &&
+                  !_loading &&
+                  _failure == null)
                 const Padding(
                   padding: EdgeInsets.all(24),
                   child: Text('Henüz kampanyan yok. İlk duyurunu oluştur.'),
@@ -322,18 +412,18 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
                       campaign: c,
                       actions: [
                         TextButton(
-                          onPressed: locked ? null : () => _edit(c),
+                          onPressed: stale ? null : () => _edit(c),
                           child: const Text('Düzenle'),
                         ),
                         if (c.active)
                           TextButton(
-                            onPressed: locked ? null : () => _change(c, false),
+                            onPressed: stale ? null : () => _change(c, false),
                             child: const Text('Yayından kaldır'),
                           )
                         else
                           FilledButton(
                             onPressed:
-                                locked ||
+                                stale ||
                                     (c.draft.type !=
                                             CampaignType.announcement &&
                                         !_page!.pricePublicationEnabled)
@@ -345,7 +435,7 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
                     ),
                   ],
                 ),
-              if (_rows.length < (_page?.total ?? 0))
+              if (_offset < (_page?.total ?? 0) && _offset <= 500)
                 TextButton(
                   onPressed: locked ? null : () => _load(more: true),
                   child: const Text('Daha fazla kampanya'),

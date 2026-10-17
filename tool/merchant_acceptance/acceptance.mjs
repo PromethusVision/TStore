@@ -1,3 +1,4 @@
+import {managementUpgrade, managementRecoveryChecks, managementRecoveryHttpChecks} from './management_recovery_checks.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
@@ -29,7 +30,8 @@ const notifications=process.argv.includes('--notifications');
 const catalogRecovery=process.argv.includes('--catalog-recovery');
 const commerceRecovery=process.argv.includes('--commerce-recovery');
 const privacyUpgrade=process.argv.includes('--privacy-upgrade');
-const promotion=process.argv.includes('--promotion')||notifications;
+const managementRecovery=process.argv.includes('--management-recovery');
+const promotion=process.argv.includes('--promotion')||notifications||managementRecovery;
 const statement=process.argv.includes('--statement')||promotion;
 const checkout=process.argv.includes('--checkout')||statement||commerceRecovery;
 const rewards=process.argv.includes('--rewards')||checkout;
@@ -47,7 +49,7 @@ try {
     password: decodeURIComponent(url.password), ssl: false };
   db = await connect(config);
   environmentReady=true;
-  const manifest = await migrate(db,{reviews,trustCampaigns,ledger,rewards,checkout,statement,promotion,notifications,purchasePrivacy:!privacyUpgrade});
+  const manifest = await migrate(db,{reviews,trustCampaigns,ledger,rewards,checkout,statement,promotion,notifications,managementDetails:!managementRecovery,purchasePrivacy:!privacyUpgrade});
   const request = (path, actor, body, method) => requestJson(status.API_URL, path, actor?.token, status.ANON_KEY, body, method);
   const rpc = async (name, actor, args) => {
     const r = await request(`/rest/v1/rpc/${name}`, actor, args);
@@ -220,10 +222,18 @@ try {
     checks.push(...await commerceRecoveryChecks({db,request,rpc,session,f:fresh}));
     checks.push(...await purchaseProjectionChecks(db));
   }
+  if(managementRecovery) {
+    manifest.push(await managementUpgrade(db,'managed'));
+    checks.push({name:'populated 0031 upgrade preserves eight F/G tables exactly',result:'PASS'});
+    await db.query("NOTIFY pgrst, 'reload schema'");
+    const fresh=await seed(db,await actor(),await actor(),await actor());fresh.session=id=>session(id);
+    checks.push(...await managementRecoveryChecks(db,config,fresh));
+    checks.push(...await managementRecoveryHttpChecks({db,request,rpc,session,f:fresh}));
+  }
   const evidence={result:'PASS',captured_at:new Date().toISOString(),evidence_class:'real-local-supabase-auth-postgrest-storage-postgresql',
     runtime:(await db.query('SELECT version() version')).rows[0].version,services,physical_two_device:'OPEN',checks,migrations:manifest};
   await writeFile(resolve(run.dir,'result.json'),JSON.stringify(evidence,null,2)+'\n');
-  await writeFile(resolve(root,`docs/data/merchant_${commerceRecovery?'commerce_recovery':catalogRecovery?'catalog_recovery':notifications?'notification_i0':promotion?'promotion_g':statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
+  await writeFile(resolve(root,`docs/data/merchant_${managementRecovery?'management_recovery':commerceRecovery?'commerce_recovery':catalogRecovery?'catalog_recovery':notifications?'notification_i0':promotion?'promotion_g':statement?'statement_h1':checkout?'checkout_e':rewards?'e':ledger?'h0':trustCampaigns?'df':reviews?'c':'ab'}_managed_acceptance.json`),JSON.stringify(evidence,null,2)+'\n');
   console.log(`LOCAL_MANAGED_ACCEPTANCE_PASS: ${checks.length} groups; physical-device gate remains OPEN.`);
 } catch(error) {
   console.error(`LOCAL_MANAGED_ACCEPTANCE_${environmentReady?'FAILED':'BLOCKED'}: ${error.code || error.name}; no remote fallback.`);

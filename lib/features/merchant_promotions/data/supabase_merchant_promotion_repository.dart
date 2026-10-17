@@ -3,17 +3,24 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../domain/merchant_promotion.dart';
 
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+
 typedef PromotionRpc =
     Future<dynamic> Function(String name, Map<String, dynamic> args);
 typedef PromotionSign = Future<String> Function(String path);
 
 class SupabaseMerchantPromotionRepository
-    implements MerchantPromotionRepository {
+    implements
+        MerchantPromotionRepository,
+        PromotionRecoveryRepository,
+        AuthenticatedSessionSource {
   SupabaseMerchantPromotionRepository(
     SupabaseClient client, {
     PromotionRpc? rpc,
     PromotionSign? sign,
     String? Function()? currentUserId,
+    String? Function()? currentSessionKey,
     Stream<String?>? sessionChanges,
     this.timeout = const Duration(seconds: 15),
   }) : _rpc = rpc ?? ((name, args) => client.rpc(name, params: args)),
@@ -22,6 +29,8 @@ class SupabaseMerchantPromotionRepository
            ((path) =>
                client.storage.from('listing-media').createSignedUrl(path, 120)),
        _user = currentUserId ?? (() => client.auth.currentUser?.id),
+       _sessionKey =
+           currentSessionKey ?? (() => authenticatedSessionKey(client)),
        _sessions =
            sessionChanges ??
            client.auth.onAuthStateChange.map((e) => e.session?.user.id);
@@ -30,6 +39,9 @@ class SupabaseMerchantPromotionRepository
   final String? Function() _user;
   final Stream<String?> _sessions;
   final Duration timeout;
+  final String? Function() _sessionKey;
+  @override
+  String? get currentSessionKey => _sessionKey();
   List<dynamic> _enabledItems(Map<String, dynamic> value) {
     if (!boolean(value['enabled'])) {
       throw const PostgrestException(
@@ -49,33 +61,27 @@ class SupabaseMerchantPromotionRepository
   Future<Either<PromotionFailure, T>> _call<T>(
     String name,
     Map<String, dynamic> args,
-    FutureOr<T> Function(Map<String, dynamic>) decode, {
+    FutureOr<T> Function(Map<String, dynamic>, AuthenticatedRequestScope)
+    decode, {
     bool write = false,
   }) async {
-    final actor = _user();
-    if (actor == null) return const Left(PromotionFailure.session);
-    var invalidated = false;
-    final sub = _sessions.listen(
-      (_) {
-        invalidated = true;
-      },
-      onError: (Object _) {
-        invalidated = true;
-      },
+    final scope = AuthenticatedRequestScope(
+      user: currentUserId,
+      session: currentSessionKey,
+      currentUser: () => currentUserId,
+      currentSession: () => currentSessionKey,
+      changes: sessionChanges,
     );
-    bool stale() => invalidated || actor != _user();
-    PromotionFailure invalidatedFailure() => write && actor == _user()
-        ? PromotionFailure.uncertain
-        : PromotionFailure.session;
     try {
-      final raw = await _rpc(name, args).timeout(timeout);
-      if (stale()) return Left(invalidatedFailure());
-      final result = await Future.sync(
-        () => decode(object(raw)),
-      ).timeout(timeout);
-      return stale() ? Left(invalidatedFailure()) : Right(result);
+      Future<T> request() => scope.run(() async {
+        final raw = await _rpc(name, args);
+        scope.check();
+        return await decode(object(raw), scope);
+      });
+      final result = await (write ? request() : request().timeout(timeout));
+      return Right(result);
     } on PostgrestException catch (e) {
-      if (stale()) return Left(invalidatedFailure());
+      if (!scope.current) return const Left(PromotionFailure.session);
       if (['42501', '28000'].contains(e.code)) {
         return const Left(PromotionFailure.session);
       }
@@ -88,12 +94,12 @@ class SupabaseMerchantPromotionRepository
         write ? PromotionFailure.uncertain : PromotionFailure.unavailable,
       );
     } catch (_) {
-      if (stale()) return Left(invalidatedFailure());
+      if (!scope.current) return const Left(PromotionFailure.session);
       return Left(
         write ? PromotionFailure.uncertain : PromotionFailure.unavailable,
       );
     } finally {
-      await sub.cancel();
+      await scope.close();
     }
   }
 
@@ -104,7 +110,7 @@ class SupabaseMerchantPromotionRepository
   }) => _call(
     'read_merchant_promotions_v1',
     {'p_shop_id': shopId, 'p_offset': offset},
-    (j) {
+    (j, scope) {
       if (promotionId(j['shop_id']) != shopId) throw const FormatException();
       final enabled = boolean(j['enabled']), more = boolean(j['has_more']);
       final items = array(
@@ -123,6 +129,27 @@ class SupabaseMerchantPromotionRepository
     },
   );
   @override
+  Future<Either<PromotionFailure, PromotionDraft?>> readPromotion(
+    String shopId,
+    String draftId,
+  ) => _call(
+    'read_merchant_promotion_detail_v1',
+    {'p_shop_id': shopId, 'p_draft_id': draftId},
+    (j, scope) {
+      if (promotionId(j['shop_id']) != shopId) throw const FormatException();
+      if (!boolean(j['enabled'])) {
+        throw const PostgrestException(message: 'disabled', code: '55000');
+      }
+      if (j['draft'] == null) return null;
+      final draft = PromotionDraft.fromJson(object(j['draft']));
+      if (draft.id != draftId || draft.shopId != shopId) {
+        throw const FormatException();
+      }
+      return draft;
+    },
+  );
+
+  @override
   Future<Either<PromotionFailure, List<PromotionSource>>> sources(
     String shopId,
     String kind, {
@@ -131,7 +158,7 @@ class SupabaseMerchantPromotionRepository
   }) => _call(
     'read_promotion_sources_v1',
     {'p_shop_id': shopId, 'p_kind': kind, 'p_query': query, 'p_offset': offset},
-    (j) => List.unmodifiable(
+    (j, scope) => List.unmodifiable(
       _enabledItems(j).map((x) {
         final row = object(x);
         return PromotionSource(promotionId(row['id']), string(row['label']));
@@ -145,7 +172,7 @@ class SupabaseMerchantPromotionRepository
   ) => _call(
     'preview_merchant_promotion_v1',
     {'p_shop_id': shopId, 'p_selection': selection.toJson()},
-    (j) async {
+    (j, scope) async {
       final enabled = boolean(j['enabled']), ready = boolean(j['ready']);
       if (!enabled || !ready) {
         return PromotionPreview(enabled: enabled, ready: false);
@@ -155,7 +182,10 @@ class SupabaseMerchantPromotionRepository
         throw const FormatException();
       }
       final photos = <PromotionPhoto>[];
+      if (array(j['images']).length > 5) throw const FormatException();
+      final signing = Stopwatch()..start();
       for (final raw in array(j['images'])) {
+        scope.check();
         final row = object(raw),
             photoId = promotionId(row['id']),
             listingId = promotionId(row['listing_id']),
@@ -170,8 +200,13 @@ class SupabaseMerchantPromotionRepository
         }
         String? url;
         try {
-          url = await _sign(path).timeout(timeout);
+          final remaining = const Duration(seconds: 5) - signing.elapsed;
+          if (remaining > Duration.zero) {
+            url = await _sign(path).timeout(remaining);
+          }
+          scope.check();
         } catch (_) {
+          scope.check();
           /* text preview remains usable */
         }
         if (url != null &&
@@ -203,7 +238,7 @@ class SupabaseMerchantPromotionRepository
   @override
   Future<Either<PromotionFailure, PromotionReceipt>> mutate(
     PromotionCommand command,
-  ) => _call('mutate_merchant_promotion_v1', command.toJson(), (j) {
+  ) => _call('mutate_merchant_promotion_v1', command.toJson(), (j, scope) {
     final receipt = PromotionReceipt(
       promotionId(j['id']),
       promotionId(j['revision_id']),
@@ -223,7 +258,7 @@ class SupabaseMerchantPromotionRepository
   }) => _call(
     'read_promotion_history_v1',
     {'p_shop_id': shopId, 'p_draft_id': draftId, 'p_offset': offset},
-    (j) => List.unmodifiable(
+    (j, scope) => List.unmodifiable(
       _enabledItems(j).map((x) {
         final row = object(x), action = string(row['action']);
         if (!['save', 'archive'].contains(action)) {

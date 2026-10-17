@@ -40,6 +40,7 @@ const _sharedCommerceMigrationFiles = <String>[
   '20261015002800_0028_merchant_promotion_drafts.sql',
   // 0029 remains a separately rehearsed notification proposal, not a migration.
   '20261017003000_0030_purchase_evidence_privacy.sql',
+  '20261017003100_0031_merchant_management_detail_reads.sql',
 ];
 
 const _baselinePublicTables = <String>{

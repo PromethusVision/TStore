@@ -384,6 +384,18 @@ No open commercial/retention/targeting decision is silently resolved. See
   price/config; finance/legal policy; target/consent/retention review; fairness
   observability and exact service-purchase reconciliation. Sending is gated by I.
 
+### F/G management recovery follow-through — 2026-10-17
+
+After `298290d8`, canonical §11.2 bounds one complete local package across
+Campaign Lite and Tanıtım Merkezi: stable-session continuation checks, serialized
+uncertain writes, preserved edits with explicit conflict review, exact owned
+detail reads, bounded selectors/pages and protected navigation. Additive0031
+reuses existing F/G projections and authority; no economic or provider activation.
+Validate stale session/error/signing races, resume while writing, exact retries,
+concurrent revisions, source drift, ownership/grants, narrow renders, full Flutter
+regressions and both debug artifacts. Historical migrations and Customer layouts
+remain unchanged. See `MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md` for evidence.
+
 ## H1 — Merchant statement, reserve and settlement
 
 - **DB:** H0-ledger projections for blocked/pending/reserve/withdrawable/paid/

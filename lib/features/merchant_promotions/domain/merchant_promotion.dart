@@ -257,3 +257,11 @@ bool boolean(dynamic value) {
   if (value is! bool) throw const FormatException();
   return value;
 }
+
+/// Optional exact-owner recovery, unavailable until forward migration 0031.
+abstract interface class PromotionRecoveryRepository {
+  Future<Either<PromotionFailure, PromotionDraft?>> readPromotion(
+    String shopId,
+    String draftId,
+  );
+}
