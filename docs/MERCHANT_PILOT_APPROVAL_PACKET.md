@@ -125,7 +125,28 @@ teslimatını veya fiziksel cihazda güvenli hesap kurtarmayı kanıtlamaz.
 
 Teknik kanıt ve yeniden üretim: [J2 teslimi](MERCHANT_PILOT_PREPARATION_HANDOFF.md).
 
-## A kaleminin teknik onay kimliği
+## J7 — Kontrollü katalog yayını: yeni ve ayrı onay kapsamı
+
+Yerel çalışma tamamlandı; **bu kalem uzakta uygulanmadı**. A/C/E'nin önceki
+onayları bu yeni kaleme izin vermez ve bu kurulumda tekrar uygulanmaz.
+
+- **Kurulum için önerilen kapsam:** yalnız Development
+  `tnipyxnvhgelwdpykyez` üzerinde bir özel yayın kayıt tablosu, üç kapalı yardımcı
+  işlev, iki koruma tetikleyicisi ve bir kurulum kaydı. Ürün/fiyat, hesap, kategori,
+  bildirim, Storage veya Auth ayarları değiştirilmez. Genel ürün onay anahtarı
+  kapalı kalır. Integration PASS ardından ayrıca açık onay ve taze ön kontrol
+  gerekir. Üretim ortamı tamamen dışarıdadır.
+- **Gerçek katalog içeriği için ayrı kapsam:** henüz seçilmiş ürün/esnaf yok.
+  Uyumluluğu incelenmiş Customer/Merchant sürümleri, uygun gerçek başvurular ve
+  güncel gözlem hazır olduğunda her yayın paketinin tam listesi ayrıca sunulacak.
+  Kurulum onayı ürün yayımlama veya esnafın satış listesini açma izni değildir.
+
+Somut kaynak, etkiler, doğrulama ve geri dönüş sınırları:
+[J7 teslim/onay dosyası](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
+Varsayılan inceleme paketi ürün yayını SQL'i üretmez; yalnız kurulum adayı ve
+salt okunur gözlem/doğrulama içerir. Onay gelene kadar uzakta uygulanmaz.
+
+## A kaleminin teknik onay kimliği (tarihsel; tekrar uygulama)
 
 Son salt okunur sunucu ön kontrolü: **PASS**, eşleşme `true`, katalog ürün sayısı0.
 Bu sonuç sunucuda kurulum veya kullanım testi yapıldığı anlamına gelmez.

@@ -184,7 +184,8 @@ class VerticalProductCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: priceLabel == null
+                        child:
+                            priceLabel == null && product.hasLegacyCatalogPrice
                             ? ProductPriceText(
                                 productPriceTextModel: ProductPriceTextModel(
                                   price: product.effectivePrice.toStringAsFixed(
@@ -195,7 +196,7 @@ class VerticalProductCard extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                priceLabel!,
+                                priceLabel ?? ProductEntity.listingPricePrompt,
                                 key: Key(
                                   'vertical-product-price-${product.id}',
                                 ),

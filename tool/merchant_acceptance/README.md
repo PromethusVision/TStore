@@ -381,4 +381,33 @@ under `.buildlog/pilot-cohort-input`; selected account IDs must never be committ
 Missing facts stay missing. A/C/E are not replayed. Exact B and role-D proposals
 require matching observations and separate owner approval before hosted use.
 See `docs/MERCHANT_PILOT_COHORT_HANDOFF.md` for source/target guards, reproduction,
-the unresolved catalog publication/legacy-price contract and remaining pilot gates.
+the historical J6 catalog publication gate and remaining pilot gates.
+
+## J7 controlled publication and legacy-price compatibility
+
+Use `local.mjs prepare`, `local.mjs start <new-run>`,
+`pilot_publication.mjs <same-run> <Flutter-SDK-directory>`, then stop the owned run.
+This reproduces the installed post-C/E baseline, rehearses the Development-only
+schema candidate, publishes synthetic pending physical-product submissions and
+runs the real Flutter listing/media/purchase repository journey. It never connects
+to the hosted project. Run all `*.test.mjs` tests with the local API port free.
+
+After a current passing proof, `prepare_pilot_publication.mjs <new-name>` emits a
+schema review candidate, a read-only installation check and empty publication
+intake/observation files. Real publication SQL requires exact reviewed input and
+a fresh observation of the installed, rehearsed schema. Optional private input
+uses a plain name under `.buildlog/pilot-publication-input` with `.json` and
+`.observation.json` files. The CLI has no apply, URL, credential or remote option.
+
+After schema installation, use `prepare_pilot_publication_cohort.mjs <new-name>`
+for J6 category/role preparation on the exact new schema. Optional private input
+is a plain name under `.buildlog/pilot-publication-cohort-input`, with `.json`,
+`.observation.json` and `.taxonomy.json`. Old J6 source/proof remains unchanged;
+the adapter checks the new schema, retains all old row checks and generates fresh
+approval tokens. Missing facts cannot create role-change SQL.
+
+Neither schema review nor local PASS authorizes hosted installation or content
+publication. The general decision switch remains OFF; the private helper has no
+client/service-role execute grants. Before first real publication, review the
+compatible Customer/Merchant builds: tagged central zero is not safe for clients
+that ignore its contract. See `docs/MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md`.

@@ -602,6 +602,7 @@ class _RecentlyViewedProductCard extends StatelessWidget {
   }
 
   String get _priceLabel {
+    if (!product.hasLegacyCatalogPrice) return ProductEntity.listingPricePrompt;
     final parts = product.effectivePrice.toStringAsFixed(2).split('.');
     final integerDigits = parts.first;
     final buffer = StringBuffer();

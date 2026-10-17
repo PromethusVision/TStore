@@ -392,6 +392,7 @@ class _WishlistProductCard extends StatelessWidget {
   }
 
   String get _priceLabel {
+    if (!product.hasLegacyCatalogPrice) return ProductEntity.listingPricePrompt;
     final parts = product.effectivePrice.toStringAsFixed(2).split('.');
     return '${parts.first},${parts.last} TL';
   }
