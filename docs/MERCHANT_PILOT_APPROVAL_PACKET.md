@@ -1,15 +1,19 @@
 # Esenler pilotu — karar ve sunucu değişikliği dosyası
 
-17 Ekim 2026 — **Güncel durum:** Integration PASS sonrasında Product Owner yalnız
-A kalemini açıkça onayladı. A, belirtilen Development test projesine kuruldu ve
-salt okunur son kontrolleri geçti. [Kurulum kaydı](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md)
-onayı, kapsamı ve kanıtı içerir. B–E için izin verilmedi. Hizmet esnafı için aşağıdaki
-geniş başvuru / kademeli katılım yaklaşımı kabul edildi; canonical §4.7'ye işlendi.
+17 Ekim 2026 — **Güncel durum:** A kurulumu tamamlandı. J4 Integration PASS
+sonrasında Product Owner C ve E'yi de yalnız Development için açıkça onayladı.
+Dört giriş dönüş bağlantısı kaydedildi ve bildirimlerdeki altı Türkçe metnin
+korumalı düzeltmesi uygulandı; bağımsız son kontroller PASS.
+[A kaydı](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md) ve
+[C/E uygulama kaydı](MERCHANT_PILOT_TEST_CE_HANDOFF.md) kapsam ve kanıtı içerir.
+B/D hâlâ ayrı onay gerektirir. Hizmet esnafı için geniş başvuru / kademeli katılım
+yaklaşımı korunur; canonical §4.7 ve §4.9 geçerlidir. Production'a erişilmedi.
 
-**Sonraki hazırlık (J4):** E için altı metin düzeltmesi eşleşen yerel ortamda
+**Önceki hazırlık (J4):** E için altı metin düzeltmesi eşleşen yerel ortamda
 doğrulandı; C'nin dört bağlantısı ve ilk katılım hazırlık dosyası paketlendi.
 [Yeni teslim ve somut onay kapsamı](MERCHANT_PILOT_LAUNCH_PREPARATION_HANDOFF.md).
-Bu hazırlık B–E için sunucuya yazma izni değildir.
+J4 hazırlığı kendi başına yazma izni değildi; sonraki açık C/E onayı ve uygulaması
+J5 kaydındadır. A/E tekrar uygulanmamalıdır.
 
 Aşağıdaki hazırlık değerlendirmesi kurulumdan önceki incelemenin kaydıdır.
 Yerel hazırlık tamamlandı. İlk karşılaştırmada bulunan sunucu farkları ayrı yerel
@@ -78,9 +82,9 @@ kanıtlanmadan kullanıcıya otomatik yayın sözü verilmemeli.
 |---|---|---|
 | A — Veritabanı | Değişmemiş catalog-media0016 + operations0017, iki yeni geçmiş kaydı,6 tablo, özel fotoğraf alanı ve ilgili işlemler | Açık onayla yalnız Development'a kuruldu; son kontroller PASS |
 | B — Kategoriler | Açıkça listelenmiş son dallar ve gerekli üst dallar; policy/inceleme alanlarına dokunulmaz | Kesin liste seçilmedi, uygulanamaz |
-| C — Giriş dönüş bağlantıları | Aşağıdaki4 tam bağlantıyı mevcut listeye eklemek | İncelenebilir öneri; uygulanmadı |
+| C — Giriş dönüş bağlantıları | Aşağıdaki4 tam bağlantıyı mevcut listeye eklemek | Açık onayla Development'a kaydedildi; yeniden yüklemede doğrulandı |
 | D — Hesaplar/katalog | Seçilmiş gerçek kimlikler, merchant/customer rolleri ve sınırlı ürün hazırlığı | Esnaflar belli değil; hesap/rol/veri oluşturulmaz |
-| E — Bildirim metni düzeltmesi | İki mevcut işlevdeki6 bozuk Türkçe sabitin doğru kaynakla ileri düzeltmesi; tek yeni geçmiş kaydı | J4 yerel prova PASS; somut paket hazır, ayrı sunucu onayı bekliyor |
+| E — Bildirim metni düzeltmesi | İki mevcut işlevdeki6 bozuk Türkçe sabitin doğru kaynakla ileri düzeltmesi; tek yeni geçmiş kaydı | Açık onayla yalnız Development'a uygulandı; bağımsız son kontrol PASS |
 
 A için daha dar sunucu izinlerini ve yönetilen RLS davranışını koruyan yerel
 uyum provası tamamlandı. Uygulamadan hemen önce salt okunur kontrol tekrar geçmeli;
