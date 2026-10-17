@@ -1,0 +1,44 @@
+{
+  "result": "PASS",
+  "evidence_class": "managed-owned-local-populated-postgresql-upgrade",
+  "captured_at": "2026-10-17T13:48:23.408Z",
+  "tables_unchanged": {
+    "merchant_campaigns": {
+      "rows": 9,
+      "sha256": "e4c87f7eb5ebed3f16e559615e2a65d3e37297b22ceec5f4ca01cae71e24a890"
+    },
+    "campaign_revisions": {
+      "rows": 31,
+      "sha256": "4827cd2cb62fcbfef0a354226bbe6be08432465bfa2b20095561a96c5f56259c"
+    },
+    "campaign_requests": {
+      "rows": 31,
+      "sha256": "5b0c76903903d1c92e27ed144f89768f1422efbf7d87fb7f4418657e155d2230"
+    },
+    "merchant_promotion_drafts": {
+      "rows": 26,
+      "sha256": "8126d4dc34507edf12ed005b660cee54de9b1afcc5090988f41ef7891b828444"
+    },
+    "merchant_promotion_revisions": {
+      "rows": 30,
+      "sha256": "2df4ef0763ed43eaeba0ad9fc754264ac6ddc05fc4ec1955390dea4afa2f3520"
+    },
+    "merchant_promotion_requests": {
+      "rows": 30,
+      "sha256": "60c185c566b2bc50de4e824266b5a149401ff8606801b11a666405c3ac5acbf8"
+    },
+    "campaign_protocol_config": {
+      "rows": 1,
+      "sha256": "a948942b2e829a5ea4143649cb18b32857dfea750fbebcb0fbe40db7f916df41"
+    },
+    "merchant_promotion_config": {
+      "rows": 1,
+      "sha256": "f4ec235f1848d2782f3335d07711aa1e3fd3530c1afe769ac92a8742dba21710"
+    }
+  },
+  "migration": {
+    "file": "20261017003100_0031_merchant_management_detail_reads.sql",
+    "sha256": "9dcca0d2eb727818fb85a9e6551c80ed28ccd408edc666e054114a4145d9e8dc"
+  },
+  "remote_access": "NONE"
+}

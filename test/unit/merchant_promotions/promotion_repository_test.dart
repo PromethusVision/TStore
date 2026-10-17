@@ -55,7 +55,7 @@ Map<String, dynamic> image() => {
 void main() {
   late SupabaseClient client;
   late StreamController<String?> sessions;
-  String? user;
+  String? user, sessionKey;
   late Future<dynamic> Function(String, Map<String, dynamic>) rpc;
   late Future<String> Function(String) sign;
   SupabaseMerchantPromotionRepository repository({Duration? timeout}) =>
@@ -64,6 +64,7 @@ void main() {
         rpc: (n, p) => rpc(n, p),
         sign: (p) => sign(p),
         currentUserId: () => user,
+        currentSessionKey: () => sessionKey,
         sessionChanges: sessions.stream,
         timeout: timeout ?? const Duration(seconds: 1),
       );
@@ -75,6 +76,7 @@ void main() {
     );
     sessions = StreamController<String?>.broadcast(sync: true);
     user = 'owner';
+    sessionKey = 'first';
     rpc = (_, _) async => page();
     sign = (_) async =>
         'http://127.0.0.1:55431/storage/v1/object/sign/test?token=local';
@@ -155,6 +157,7 @@ void main() {
       final future = repository().read(shop);
       switch (mode) {
         case 'same_actor':
+          sessionKey = 'replacement';
           sessions.add(user);
         case 'account_switch':
           user = 'other';
@@ -183,6 +186,7 @@ void main() {
     };
     final future = repository().preview(shop, selection);
     await started.future;
+    sessionKey = 'replacement';
     sessions.add('owner');
     signing.complete('https://local.invalid/photo');
     expect((await future).isLeft(), true);
@@ -255,7 +259,7 @@ void main() {
     expect(command.selection, selection);
   });
   test(
-    'same actor refresh during write is uncertain, not an invitation to create again',
+    'same-session token refresh preserves the original write result',
     () async {
       final pending = Completer<dynamic>();
       rpc = (_, _) => pending.future;
@@ -273,10 +277,7 @@ void main() {
         'revision_id': revision,
         'action': 'save',
       });
-      expect(
-        (await future).swap().getOrElse(() => throw StateError('failure')),
-        PromotionFailure.uncertain,
-      );
+      expect((await future).isRight(), true);
     },
   );
   for (final code in ['40001', '42501', '28000', '22023', '55000']) {

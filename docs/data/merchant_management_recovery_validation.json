@@ -1,0 +1,289 @@
+{
+  "status": "PASS",
+  "completed_at": "2026-10-17T14:03:56.826958+00:00",
+  "baseline_commit": "298290d84540fb8fce023225b348a01d9e3ac305",
+  "branch": "agent/merchant-management-recovery",
+  "canonical": "ESNAFTAVAR_V1_TRUST_COMMERCE_CANONICAL.md §11.2",
+  "scope": "Existing Campaign Lite and promotion preparation continuation, conflict and selection recovery",
+  "runtime": {
+    "flutter": "3.41.9",
+    "dart": "3.11.5",
+    "node": "v24.19.0",
+    "native_postgresql": "17.11"
+  },
+  "flutter": {
+    "passed": 2853,
+    "failed": 0,
+    "existing_opt_in_skipped": 6,
+    "baseline_passed": 2790,
+    "new_regressions": 63,
+    "new_transport_tests": 30,
+    "new_widget_tests": 33,
+    "log": ".buildlog-full-tests.log"
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog-analyze-complete.log"
+  },
+  "database": {
+    "native_groups": 161,
+    "managed_groups": 185,
+    "unchanged_upgrade_tables_per_runtime": 8,
+    "migration": "0031: owned local fixtures only",
+    "remote_apply": "NONE",
+    "managed_stack": "STOPPED",
+    "owned_empty_network": "REMOVED",
+    "test_volumes": "RETAINED",
+    "native_runtime": "STOPPED_BY_FINALLY"
+  },
+  "tooling_safety_tests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "artifacts": [
+    {
+      "role": "merchantDevelopment",
+      "path": "build/app/outputs/flutter-apk/app-merchantdevelopment-debug.apk",
+      "bytes": 189386776,
+      "sha256": "553d0a7483a3b2d38e527dd617d5103c3bde4f0a9706e1ad69de5f2f3bf63481",
+      "log": ".buildlog-build-merchant.log"
+    },
+    {
+      "role": "development",
+      "path": "build/app/outputs/flutter-apk/app-development-debug.apk",
+      "bytes": 224795732,
+      "sha256": "d120d3f6f6fc23e7dd585d78a25391601e24cb3311f08fbf8324321cb5878309",
+      "log": ".buildlog-build-customer.log"
+    }
+  ],
+  "render_review": {
+    "widths": [
+      320,
+      390,
+      430
+    ],
+    "text_scale": 1.3,
+    "states": [
+      "campaign conflict recovery",
+      "promotion conflict recovery"
+    ],
+    "inspected": true,
+    "images": [
+      {
+        "path": "docs/evidence/merchant_management/campaign_conflict_320.png",
+        "bytes": 55975,
+        "sha256": "9397b07a3a40ea30f55a584175a85c8c6ba56dc592af8b42faa16c9cd8e94fb6",
+        "git_blob": "0116a2355dd0617c02af0e6c5a21d3334594075e"
+      },
+      {
+        "path": "docs/evidence/merchant_management/campaign_conflict_390.png",
+        "bytes": 63321,
+        "sha256": "1053259c491e0810258cd422b21d28f1a5e8e666fe194fc6e6e5022c7316694a",
+        "git_blob": "fc8055c91180efeba5c0bdabbe175adfb1ad9278"
+      },
+      {
+        "path": "docs/evidence/merchant_management/campaign_conflict_430.png",
+        "bytes": 63785,
+        "sha256": "d21f9d869b00821730a9921e44513495258fc131ddcca9f55af1998d2c891379",
+        "git_blob": "5298c4fa1b457fc9efb0f121521944aaf50ddb4d"
+      },
+      {
+        "path": "docs/evidence/merchant_management/promotion_conflict_320.png",
+        "bytes": 53621,
+        "sha256": "4c2c018205a00e6152b538ac15e1dfd9fda3bf6c427946946d62147a5dae86f7",
+        "git_blob": "091ff61f1afd305e57daf277ce498f417549f519"
+      },
+      {
+        "path": "docs/evidence/merchant_management/promotion_conflict_390.png",
+        "bytes": 62700,
+        "sha256": "8f9eb497cda30feffe1858f2f145f3e3f60ffd0096308641aa9bf8703bc445d6",
+        "git_blob": "54ca8dad5a4bf705cb5b378d4d4a77eb457cacd6"
+      },
+      {
+        "path": "docs/evidence/merchant_management/promotion_conflict_430.png",
+        "bytes": 63575,
+        "sha256": "d02ee1557971005d1bc62ab06c4fa5dd1c8f8bdd24bf59b7b2736f19cf3a150f",
+        "git_blob": "2b5c5d2768ef2090c7b2ba4a923a8539373b77fe"
+      }
+    ]
+  },
+  "authority": {
+    "production_access": "NONE",
+    "production_writes": "NONE",
+    "main_merge": "NONE",
+    "main_push": "NONE",
+    "provider_sends": "NONE"
+  },
+  "open_gates": [
+    "physical two-device QR J",
+    "real Firebase/APNs provider configuration",
+    "paid G/Ads",
+    "remote migration rollout",
+    "financial execution"
+  ],
+  "known_nonblocking_warnings": [
+    "existing pg8 harness concurrent-query deprecation",
+    "existing Customer category rapid-tap hit-test warning",
+    "existing Android plugin Java8 source/target warnings"
+  ],
+  "source_files": [
+    {
+      "path": "docs/ESNAFTAVAR_V1_IMPLEMENTATION_SLICES.md",
+      "bytes": 34189,
+      "sha256": "e745e96bde3f520a49ee34d0254ba940804871736d0dff9615488720c81bf4f6",
+      "git_blob": "929e8300279b86f454ab5feac5fa9402acfb0a79"
+    },
+    {
+      "path": "docs/ESNAFTAVAR_V1_TRUST_COMMERCE_CANONICAL.md",
+      "bytes": 89268,
+      "sha256": "92a147161def000ec927225a00ea799e9a5eb1ae3944922385609e256a48d4b8",
+      "git_blob": "bc1d34c3aa1ee17e5712e3a195be58bfab43a71e"
+    },
+    {
+      "path": "docs/MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md",
+      "bytes": 7613,
+      "sha256": "25117933df921e9e222a4b1952cb85298c45d420756a21a9179f2b3c3adac6da",
+      "git_blob": "4e55b7928aab92479177f768dd8c62fc09a09cec"
+    },
+    {
+      "path": "lib/core/supabase/authenticated_request_scope.dart",
+      "bytes": 1663,
+      "sha256": "245858706fb49d63d5fdd11d3a2757efe1082f370ca743598d014ace9fd8ef25",
+      "git_blob": "afe81107c9a4f0f78086992faa0c33e988941d5f"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_campaign_editor.dart",
+      "bytes": 27908,
+      "sha256": "3a66cd7c653081b564adaed52c161224c6ca2d5dcd629fed2bd1c4ce5031ba91",
+      "git_blob": "f236dbe148d29c81121b67fbda729da5710fdf0a"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_campaigns.dart",
+      "bytes": 13886,
+      "sha256": "f37908ac3c19a3a16c5f08298293d860ad7322a9a81247a086c83bfa37e9b782",
+      "git_blob": "bd8c35ee351c7c44044c0917b08671512086fb6f"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_edit_recovery.dart",
+      "bytes": 6518,
+      "sha256": "c6172372108da6813127cadb3b70e0e9ede90a55c3cc70f4d4379325491a9ca2",
+      "git_blob": "f87453f1e4de91ce8cc25f864ef27c3222e175a1"
+    },
+    {
+      "path": "lib/features/merchant/presentation/merchant_management_request.dart",
+      "bytes": 527,
+      "sha256": "c9a8df7f553777b921ac31a873d0c0caddb4152112aa42dd490d4ed4ac08c2dc",
+      "git_blob": "eb74624e57397734cb9d5b47badcc31f3041fdaf"
+    },
+    {
+      "path": "lib/features/merchant_promotions/data/supabase_merchant_promotion_repository.dart",
+      "bytes": 9347,
+      "sha256": "b5c1480c2de6afe3950400f18dcbe465a5073910cae59187bd86a9636a68dc96",
+      "git_blob": "41e0dc2b72f79ff5248af93fda30352e69ef7c8d"
+    },
+    {
+      "path": "lib/features/merchant_promotions/domain/merchant_promotion.dart",
+      "bytes": 7248,
+      "sha256": "62903178ff76b7a05d232a103d8f949cd24773f942fd85f2dd52d622fc5e6f4e",
+      "git_blob": "138d63c5c6156e29adf834162cda2b30a19e9938"
+    },
+    {
+      "path": "lib/features/merchant_promotions/presentation/merchant_promotion_center.dart",
+      "bytes": 30683,
+      "sha256": "50adc2156926be48757f07da650144c21046e17146795c5bc54367cc647680e7",
+      "git_blob": "897fa1a8cc8c586ee9ad22f1a4f39fb03d0dc403"
+    },
+    {
+      "path": "lib/features/trust_commerce/data/supabase_trust_commerce_repository.dart",
+      "bytes": 15236,
+      "sha256": "8b1d50a3e365b47cb7d20d13c3d5e4dd40bd4179d7bea4d22a9bf1a39d42543f",
+      "git_blob": "4a129dd1a167e565c6de6d7fed73868c03073111"
+    },
+    {
+      "path": "lib/features/trust_commerce/domain/trust_commerce.dart",
+      "bytes": 8374,
+      "sha256": "076397168bde9367499652bd75bb99a2f538d3795f006e581fba0827b014b346",
+      "git_blob": "4f14c95cf3c22abf6931b41fcf65a71e3a70ec1a"
+    },
+    {
+      "path": "lib/features/trust_commerce/presentation/trust_session_guard.dart",
+      "bytes": 3555,
+      "sha256": "febcde7e85240ced0276915e1c5a85fbfa8a4f96497c4471923c780d440a93c8",
+      "git_blob": "a2c6313c5abf28b90660332604f2bcd5027bac03"
+    },
+    {
+      "path": "supabase/migrations/20261017003100_0031_merchant_management_detail_reads.sql",
+      "bytes": 2466,
+      "sha256": "9dcca0d2eb727818fb85a9e6551c80ed28ccd408edc666e054114a4145d9e8dc",
+      "git_blob": "cbfe656194bc197f0df01a89d7253f2ff07f0101"
+    },
+    {
+      "path": "test/unit/merchant/management_recovery_transport_test.dart",
+      "bytes": 9879,
+      "sha256": "77660212d211644d7a190f3f54ca15ceb9619fc5883888e1c59886ac1016aa2c",
+      "git_blob": "d432ba90b6deb6406620cbd7fa47d1fd52d3ec2a"
+    },
+    {
+      "path": "test/unit/merchant_promotions/promotion_repository_test.dart",
+      "bytes": 10983,
+      "sha256": "26987e86adf6b59ba11062e8f7d80c02d287c50e1762a6369a4d0c08ebd7e1f5",
+      "git_blob": "4eed035d58fd6341ca7d7bf98e920dbbea58273f"
+    },
+    {
+      "path": "test/unit/supabase/canonical_migrations_contract_test.dart",
+      "bytes": 28572,
+      "sha256": "044088ffcc4246d3347e0baeb16f898f81db79d2ee67af1956930e4342e3b0d3",
+      "git_blob": "056879d98e9f75d8089d0d8ffd0a35dea3df663f"
+    },
+    {
+      "path": "test/unit/trust_commerce/trust_commerce_repository_test.dart",
+      "bytes": 7550,
+      "sha256": "5ae6df4223d4b2b77710cb2c7bc43b0923533e59a5d64e4b27d191c42f7efea8",
+      "git_blob": "306300cb8aac633d27dba0d3a48b478e25d5c283"
+    },
+    {
+      "path": "test/widget/merchant/merchant_management_recovery_test.dart",
+      "bytes": 33289,
+      "sha256": "43716388ae77a0c5364d165a7b23e1a61a3a73f13e49e565ebfd8f15e60ada66",
+      "git_blob": "c651f56367105af5bd862bf28158b055a7f86208"
+    },
+    {
+      "path": "test/widget/merchant/merchant_promotion_test.dart",
+      "bytes": 14842,
+      "sha256": "848a745f108fc62fcf9592a790b57fe7ea17733ea60a4a75caf7f29ab697f895",
+      "git_blob": "e29b20407e97834ebbcf2e8d13be518cdc97c4be"
+    },
+    {
+      "path": "tool/merchant_acceptance/README.md",
+      "bytes": 16572,
+      "sha256": "5119417889584cb26e37a61f37f0df83f4daaf33addc64790205fdedce169cd0",
+      "git_blob": "cf1e7192bd80d7e1e7503aaec72ee6709ea68352"
+    },
+    {
+      "path": "tool/merchant_acceptance/acceptance.mjs",
+      "bytes": 17231,
+      "sha256": "8ecedf1ee432900985f941284c7100a255c392280dda00e806bd462b8f37d779",
+      "git_blob": "3fec9874055d8519f7b70d28ff2ee13809f5446a"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "bytes": 7695,
+      "sha256": "e9e42d659042640e3aac5846b013b51cdceb6d55d79df0eb1bc1aafe46fb9b90",
+      "git_blob": "36a9045931a861c6c3566b6ab3dfac5c40471e25"
+    },
+    {
+      "path": "tool/merchant_acceptance/management_recovery_checks.mjs",
+      "bytes": 14065,
+      "sha256": "36f3302fd98800a80acf32b18b9466716acf0faef00c424f2d1dd4e18ebccab6",
+      "git_blob": "fc4eed084bb7af4e678d2ea66a6a68cffc63adba"
+    },
+    {
+      "path": "tool/merchant_acceptance/native.mjs",
+      "bytes": 8323,
+      "sha256": "deb52cc26f17f39f2078b739512fde200181ae0770597ad2d49228c021074c90",
+      "git_blob": "933a84c58ae09f87cad52fea3d53b830f62ac081"
+    }
+  ],
+  "source_fingerprint_note": "Raw SHA-256 records local bytes; git_blob records Git-normalized source for checkout-independent review. Manifest excludes its own digest."
+}

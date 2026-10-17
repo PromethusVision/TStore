@@ -416,10 +416,9 @@ void main() {
         const Right(PromotionReceipt(draftId, rev, 'save')),
       );
       await t.pumpAndSettle();
-      expect(find.text('Aynı işlemi kontrol et'), findsOneWidget);
-      repo.writeWait = null;
-      await tap(t, 'Aynı işlemi kontrol et');
-      expect(identical(repo.writes[0], repo.writes[1]), true);
+      expect(find.text('Aynı işlemi kontrol et'), findsNothing);
+      expect(repo.writes.length, 1);
+      expect(find.text('Yeni tanıtım taslağı'), findsOneWidget);
     },
   );
   testWidgets(

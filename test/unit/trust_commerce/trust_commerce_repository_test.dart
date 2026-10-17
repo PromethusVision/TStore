@@ -21,6 +21,7 @@ void main() {
     repo = SupabaseTrustCommerceRepository(
       client,
       currentUserId: () => actor,
+      currentSessionKey: () => actor == null ? null : "test-session",
       sessionChanges: sessions.stream,
       rpc: (name, args) async {
         calls.add({'name': name, ...args});
