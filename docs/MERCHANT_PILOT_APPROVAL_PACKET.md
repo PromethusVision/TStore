@@ -1,6 +1,12 @@
 # Esenler pilotu — karar ve sunucu değişikliği dosyası
 
-17 Ekim 2026. **Bu dosya onay kaydı değildir; hiçbir sunucu değişikliği uygulanmadı.**
+17 Ekim 2026 — **Güncel durum:** Integration PASS sonrasında Product Owner yalnız
+A kalemini açıkça onayladı. A, belirtilen Development test projesine kuruldu ve
+salt okunur son kontrolleri geçti. [Kurulum kaydı](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md)
+onayı, kapsamı ve kanıtı içerir. B–E için izin verilmedi. Hizmet esnafı için aşağıdaki
+geniş başvuru / kademeli katılım yaklaşımı kabul edildi; canonical §4.7'ye işlendi.
+
+Aşağıdaki hazırlık değerlendirmesi kurulumdan önceki incelemenin kaydıdır.
 Yerel hazırlık tamamlandı. İlk karşılaştırmada bulunan sunucu farkları ayrı yerel
 provada korunarak yeniden üretildi; kurulum adayı bu eşdeğer ortamda geçti ve
 gözlenen sunucu yapısıyla eşleşti. A kalemi onaya sunulabilir. Production kapsam
@@ -65,7 +71,7 @@ kanıtlanmadan kullanıcıya otomatik yayın sözü verilmemeli.
 
 | Kalem | Somut kapsam | Şimdiki durum |
 |---|---|---|
-| A — Veritabanı | Değişmemiş catalog-media0016 + operations0017, iki yeni geçmiş kaydı,6 tablo, özel fotoğraf alanı ve ilgili işlemler | Gözlenen sunucuyla eşleşen yerel provada geçti; açık onay bekliyor |
+| A — Veritabanı | Değişmemiş catalog-media0016 + operations0017, iki yeni geçmiş kaydı,6 tablo, özel fotoğraf alanı ve ilgili işlemler | Açık onayla yalnız Development'a kuruldu; son kontroller PASS |
 | B — Kategoriler | Açıkça listelenmiş son dallar ve gerekli üst dallar; policy/inceleme alanlarına dokunulmaz | Kesin liste seçilmedi, uygulanamaz |
 | C — Giriş dönüş bağlantıları | Aşağıdaki4 tam bağlantıyı mevcut listeye eklemek | İncelenebilir öneri; uygulanmadı |
 | D — Hesaplar/katalog | Seçilmiş gerçek kimlikler, merchant/customer rolleri ve sınırlı ürün hazırlığı | Esnaflar belli değil; hesap/rol/veri oluşturulmaz |

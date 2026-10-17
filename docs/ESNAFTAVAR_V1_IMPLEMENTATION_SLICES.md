@@ -559,6 +559,29 @@ Use [handoff](MERCHANT_PILOT_PREPARATION_HANDOFF.md),
 `merchant_pilot_preparation_*` / `merchant_pilot_remote_observation.json` evidence.
 J2 supplies local preparation, not remote apply or final J readiness.
 
+### J3 — Approved A-only Development installation (2026-10-17)
+
+After J2 integration PASS (`e839a25a`), canonical §4.7 records explicit owner
+authorization for review-packet item A on `tnipyxnvhgelwdpykyez`, plus acceptance
+of broad-sector intake with gradual cohorts and the existing service boundaries.
+Only the reviewed, unchanged catalog-media0016 + operations0017 pair was applied.
+Its approved plan, source hashes, fresh baseline and absence of a competing
+installation were checked first; the single atomic operation committed once.
+
+Hosted read-only postchecks PASS: 13 ledger entries, original eleven preserved,
+both new stored SQL hashes match approved sources, 35 public tables with RLS,
+required owner/Customer RPC permissions, private media bucket, decisions OFF,
+zero products/identities and unchanged captured original schema/taxonomy hashes.
+These are actual hosted structural observations; local J2 behavioral tests remain
+separate evidence. No hosted account journey or physical device test was run.
+
+See [installation handoff](MERCHANT_PILOT_TEST_INSTALLATION_HANDOFF.md), its
+sanitized JSON receipt and reproducible read-only SQL. No app, dependency,
+migration-source or feature-default change. B–E remain unapproved, Production is
+excluded and only Integration Agent may merge the documentation task branch.
+J remains OPEN pending catalog/cohort, Auth/mail/provider, physical QR and release
+acceptance. Do not replay the already-applied A candidate.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required
