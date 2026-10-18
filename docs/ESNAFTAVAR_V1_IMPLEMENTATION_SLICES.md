@@ -722,6 +722,28 @@ checks observation completeness/binding; it cannot certify human evidence or
 turn reported PASS into pilot-opening authority. See [J10 handoff](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md).
 No remote access/write, actual user accounts, distribution or physical QR; J stays OPEN.
 
+### J11 — Auth/mail local acceptance and existing-provider audit (2026-10-18)
+
+After integrated J10 (`3da793c6`), implement canonical §4.15 with actual local
+GoTrue, SMTP capture, the exact installed public schema and the unchanged Flutter
+Merchant recovery classes. Cover the email-to-PKCE-to-password-to-fresh-login chain,
+Customer callback compatibility, confirmation versus recovery provenance, invalid
+and repeated links, wrong storage, late real responses, lost acknowledgement,
+pending recovery state and unchanged roles/shop ownership. Keep physical lifecycle
+and external delivery claims separate from this loopback proof.
+
+Prepare shared Turkish HTML with the provider's ConfirmationURL, no tracking or
+merchant-only redirect. Source-bind the rehearsal and verify no historical J7/J9
+source, app runtime, migration, dependency or common notification change.
+
+Owner correction: existing Resend and `auth.esnaftavar.com` must be reused; no new
+service/account. Audit existing Resend metadata/public DNS and Development settings
+read-only. Historical Production SMTP acceptance is not this test project's
+configuration. Record the missing Development binding and review-only changes;
+no credential extraction/copy/rotation, SMTP/DNS/template write or real email send.
+Use [J11 handoff](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) and
+[provider audit](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md). Full J stays OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

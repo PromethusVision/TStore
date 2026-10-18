@@ -672,6 +672,45 @@ distribution, physical QR and owner acceptance remain OPEN. See
 [paired device package](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md) and
 [field acceptance runbook](MERCHANT_PILOT_FIELD_ACCEPTANCE.md).
 
+### 4.15 Auth/mail rehearsal and existing-provider audit — 2026-10-18
+
+Following integrated J10 (`3da793c6`), the next authorized local package exercises
+the existing shared Auth provider, Merchant recovery backend/controller and exact
+Customer/Merchant callback contracts against actual local GoTrue, SMTP capture
+and the installed public schema. This adds no app Auth store, screen, dependency,
+permission, migration, economic rule or Customer redesign.
+
+- Local mail never leaves the owned synthetic fixture. Real server responses
+  verify confirmation, PKCE recovery, password persistence/fresh login, replay,
+  wrong-app/device, account-switch races, lost acknowledgement and preserved
+  role/ownership. In-memory preference/storage fixtures are not physical Android
+  lifecycle evidence. Local confirmation/rate settings are explicitly NOT a
+  mirror of hosted Development Auth policy.
+- Shared Turkish confirmation/recovery HTML retains `{{ .ConfirmationURL }}` and
+  the initiating application's redirect. It is a review candidate only; no hosted
+  template is replaced. No Resend key, SMTP password, real recipient, token or
+  credential enters Flutter, tracked files or evidence.
+- **Corrected provider fact:** the owner confirmed an existing Resend account,
+  `auth.esnaftavar.com` and sender `noreply@auth.esnaftavar.com`. This supersedes the
+  earlier domain-registration-only answer. Do not provision another service or
+  account. Historical Production delivery is recorded in
+  `PRODUCTION_AUTH_EMAIL_PRECHECK.md`; it is not Development acceptance.
+- Fresh read-only audit found Resend domain/sending/DKIM/SPF verified and a
+  sending-only key named for Production. Development `tnipyxnvhgelwdpykyez` has
+  custom SMTP OFF, confirmation OFF, no Auth hooks, the four reviewed callbacks
+  present and `http://localhost:3000` fallback unchanged. No Production project
+  was accessed; no key value was read. Existing key visibility/age is not a new
+  authenticated send or proof of credential validity.
+- Any Development SMTP/credential binding, confirmation-policy/template/fallback
+  change or real send needs separate exact approval. Never copy or rotate the
+  Production-named credential automatically. Shared Resend domain/TLS/tracking/DNS
+  changes can affect Production and are outside a test-project-only approval.
+
+See [J11 delivery](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) and
+[existing-provider audit](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md). J remains OPEN:
+hosted mail acceptance, approved cohort/catalog, signed distribution, physical
+app-link/QR acceptance and Product Owner opening decision remain separate gates.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
