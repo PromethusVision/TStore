@@ -3,8 +3,11 @@
 18 Ekim 2026 — **Güncel durum:** J7 Integration PASS ve ayrı Product Owner onayı
 sonrası özel katalog altyapısı yalnız Development'ta kuruldu; gerçek ürün yayını
 yapılmadı. [J8 kurulum kaydı](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md)
-ve canonical §4.12 güncel kanıtı, gözlenen satır sonu farkını ve sonraki yerel
-hazırlık uyarlamasını tanımlar. Yeni kategori/hesap/yayın paketleri ayrıca onaylanır.
+ve canonical §4.12 kurulum kanıtını ve gözlenen satır sonu farkını tanımlar.
+**J9 yerel hazırlık uyarlaması tamamlandı:**
+[kurulu yapıya bağlı hazırlık](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md)
+ve canonical §4.13 geçerlidir. Yeni kategori/hesap/yayın paketleri ayrıca onaylanır;
+J9 uzak ortamı okumadı veya değiştirmedi.
 
 **Önceki tamamlanmış işler:** A kurulumu tamamlandı. J4 Integration PASS
 sonrasında Product Owner C ve E'yi de yalnız Development için açıkça onayladı.
@@ -153,9 +156,11 @@ Somut kaynak, etkiler, doğrulama ve geri dönüş sınırları:
 [J7 teslim/onay dosyası](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
 Varsayılan inceleme paketi ürün yayını SQL'i üretmez; yalnız kurulum adayı ve
 salt okunur gözlem/doğrulama içerir. Tarihsel kurulum adayı tekrar çalıştırılmaz.
-Yeni sunucuda gözlenen üç işlevin CRLF biçimi için yerel hazırlık uyarlaması
-gereklidir; eski LF-only kanıt/korumalar elle değiştirilmez. Gerçek veri paketleri
-bu uyarlama, taze gözlem ve yeni tam liste onayı olmadan uygulanmaz.
+Yeni sunucuda gözlenen üç işlevin CRLF biçimi için J9 yerel hazırlık uyarlaması
+tamamlandı; eski LF-only kanıt/korumalar değiştirilmedi. Kurulu yapıda yeni J9
+giriş noktası kullanılır. Gerçek veri paketleri taze gözlem, gerçek kimlik/ürün
+seçimi ve yeni tam liste onayı olmadan uygulanmaz. Varsayılan J9 dosyalarında
+yazma veya kurulum SQL'i yoktur.
 
 ## A kaleminin teknik onay kimliği (tarihsel; tekrar uygulama)
 

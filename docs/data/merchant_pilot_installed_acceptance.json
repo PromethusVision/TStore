@@ -1,0 +1,549 @@
+{
+  "kind": "merchant-pilot-installed-local-only-v1",
+  "result": "PASS",
+  "captured_at": "2026-10-18T18:23:52.431Z",
+  "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+  "lf_rehearsal_schema_md5": "590f31a8d4e3485d6b23434e17bd9d40",
+  "receipt_sha256_lf": "e0521cb54ba2cfe4895ba6ad31b89e151a033061ef11b521f920bfc1a0bfdefc",
+  "input_scope": "Synthetic local physical-product submissions and existing-account identities only",
+  "remote_access": "NONE",
+  "production_writes": "NONE",
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    }
+  ],
+  "sources": [
+    {
+      "path": "tool/merchant_acceptance/pilot_cohort_contract.mjs",
+      "sha256_lf": "6c18f0c3663b5aea6ceae7a6292f3ab826cd42260f95ea4e4fcb86579bef29c0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_cohort.mjs",
+      "sha256_lf": "cfd7459a8d354693df722a10bb3e2e691ec48a7c63fd58dffd7b327403253f74"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_pilot_cohort.mjs",
+      "sha256_lf": "f88faf06f6dd537e8ae2d7cbb570c7302229c64466acc3f7388b71cd45f9cc68"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_preparation_contract.mjs",
+      "sha256_lf": "e14ba255ebec778e589738f6d4a45eb1f6709b74d7d849fd3edb7c994c663ee4"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_launch_contract.mjs",
+      "sha256_lf": "6e0745f31f9f04168a842a8b2c9ea5c75a03fd17ea10235b0f3894c88cb2eba0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_hosted_profile.mjs",
+      "sha256_lf": "e88ed64b695cd64d68b48b18a1570760109ce393c6e264c851c63f7f7f5ef732"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_launch_profile.mjs",
+      "sha256_lf": "6da6ff569b223faba0259b936c0ad787ca1ac422316df157da66c5b5ae930fdd"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_contract.mjs",
+      "sha256_lf": "8f4ce3139bf7ba05829ed2ebfc91d574944a244913085f0331e13c8b44f5f60c"
+    },
+    {
+      "path": "tool/merchant_acceptance/fixture.mjs",
+      "sha256_lf": "ddb5f52165b12c79afc36a2613c0886c78c1bfb9c900d295d058a9072a7992cd"
+    },
+    {
+      "path": "tool/merchant_acceptance/local.mjs",
+      "sha256_lf": "a69436c3168155d43b6b7a9574519645607a6bf0acd370cadc4c3ace87a98bf2"
+    },
+    {
+      "path": "tool/merchant_acceptance/safety.mjs",
+      "sha256_lf": "3d90cfad3dcff09bf93fdce4a2d01e1a87c8001a43744ecf8539398a80d2ad94"
+    },
+    {
+      "path": "tool/merchant_acceptance/docker-proxy.mjs",
+      "sha256_lf": "5c56fe21ea877b2d7b5109b5102110db9e60ae3c8a3f3279a37adcd314991bb0"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_repository_test.dart",
+      "sha256_lf": "31df6557c9d28ecb35cee35bcfe40d3e2e031508b5705eece3dcd77c4ebce3fb"
+    },
+    {
+      "path": "docs/data/merchant_pilot_test_ce_installation.json",
+      "sha256_lf": "4cc3ed8b1b50e323a86164fd7d5cc79115b1be1a94558aadcff63f6fb8e85b4f"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_pilot.mjs",
+      "sha256_lf": "a6b980fa92df16a66b8d67576d3bacd86ccb74b1fb077ceb110854a116536244"
+    },
+    {
+      "path": "tool/merchant_acceptance/package-lock.json",
+      "sha256_lf": "9fb68b72c04c3799acc75e8cd916a314dcacf01f6671ca6209022d9c4277ccc8"
+    },
+    {
+      "path": "supabase/proposals/pilot_notification_text_repair_v1.sql",
+      "sha256_lf": "529836466b799df8c59ecbfa688e7f54f8d495c271c20663213be08bff0b3f96"
+    },
+    {
+      "path": "supabase/migrations/20260812000100_0001_core_auth_catalog.sql",
+      "sha256_lf": "783991b4942f3be5cdfa41b3a62285f421383b051812d46d0acfc09f9cecef33"
+    },
+    {
+      "path": "supabase/migrations/20260812000200_0002_shops.sql",
+      "sha256_lf": "acab9a5831a1eee600140310e0033375de3f0757df6e869160d9bed8ebb4ce15"
+    },
+    {
+      "path": "supabase/migrations/20260812000300_0003_carts_v2.sql",
+      "sha256_lf": "6408d429842eae9a0948b082fdc517c5616b76348afeb9b6ce648ff670cd4e5b"
+    },
+    {
+      "path": "supabase/migrations/20260812000400_0004_qr_verified_purchases.sql",
+      "sha256_lf": "93ace2a8ef8783755f4286a0c6cf7d342e436e5c1953f71820baf8ee39e84e67"
+    },
+    {
+      "path": "supabase/migrations/20260812000500_0005_verified_shop_ratings.sql",
+      "sha256_lf": "29d721a1326623ea06d960791e3972bc874d4fc182acacd69390a8f498252c85"
+    },
+    {
+      "path": "supabase/migrations/20260812000600_0006_chat_notifications_account.sql",
+      "sha256_lf": "29703c4331187a9d37e1a1caa3346aa5508974e53110814d51fc23065dcb36cb"
+    },
+    {
+      "path": "supabase/migrations/20260812000700_0007_storage_realtime.sql",
+      "sha256_lf": "b035c05dcfc16836595b195888f208e51fbbd58d32c5f0fc25493aeed2cc702d"
+    },
+    {
+      "path": "supabase/migrations/20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256_lf": "e5422f3b43c50421c35e15956d163934f676039a76f2e76f9804d801380c4170"
+    },
+    {
+      "path": "supabase/migrations/20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256_lf": "47df35090bbcfacd305b6a79fecdac88929d67edc4aaa6932f10ae21f45795fa"
+    },
+    {
+      "path": "supabase/migrations/20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256_lf": "40fade490cde5f31b5c649ada301852b2abb40c0979a4f2e45bcd735b4f876b8"
+    },
+    {
+      "path": "supabase/migrations/20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256_lf": "63552485c8b86cbc6bab3fe24dcd3b0783063464020c4ece00241c42f10f2bb5"
+    },
+    {
+      "path": "supabase/migrations/20261013001600_0016_catalog_listing_media.sql",
+      "sha256_lf": "e4eb68ffb47594f411a263361b43d026483fe45c76fb95f0421edaf78c3786cb"
+    },
+    {
+      "path": "supabase/migrations/20261014001700_0017_merchant_daily_operations.sql",
+      "sha256_lf": "c677c9cd696292e278a5bc6754e1e7f0cbccb62f9854932614ae860c37d40e3d"
+    },
+    {
+      "path": "lib/features/merchant/runtime/merchant_runtime.dart",
+      "sha256_lf": "7b8658314b80dd46c6e6538deb491eb380bf06e4cc2d087cedcbf347c0e3e260"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_merchant_repository.dart",
+      "sha256_lf": "e8f60a418d93d72b56709b5ba63a9ac6a56f59ee6969b99a8248a7e404fb6984"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_catalog_media_repository.dart",
+      "sha256_lf": "2be269419716283911399910b1f28f8dede038d01fd7b9f5405a1bf0e20efcb9"
+    },
+    {
+      "path": "lib/features/merchant/data/supabase_merchant_operations_repository.dart",
+      "sha256_lf": "95473d0378d66600e5df66b52be36d96557bc615bf81a9188dd09b1e9c584bef"
+    },
+    {
+      "path": "lib/features/notifications/data/repositories/notification_repository_impl.dart",
+      "sha256_lf": "546df40eeb7fdf2c3e5ebb480cfb349cf0cf0f7011ea1366ae702c1cb77b5fb7"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/shop_repository_impl.dart",
+      "sha256_lf": "0b8b71ad6e9c423792523c8f15074a13e08b105eb02e1ff52127f67ea6c8c0a8"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/supabase_listing_hero_media_repository.dart",
+      "sha256_lf": "c08e33a51eaa23eaea888d8748ea900a23628d46b32bf43f97b921826ab8889a"
+    },
+    {
+      "path": "lib/features/cart/data/repositories/qr_session_repository_impl.dart",
+      "sha256_lf": "8f1ce2bab87ac93dc2cdee3783b41b216cb9401f98ef06078712f04844f04d6c"
+    },
+    {
+      "path": "supabase/proposals/pilot_catalog_publication_v1.sql",
+      "sha256_lf": "f3f2ed01ee2222c6835bfc296a41eb090972372cd3d30e2837c5e0cd8dded182"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_publication_contract.mjs",
+      "sha256_lf": "d16e09b5bb647d1fc195d741cd432ec87d031c81e7c188a7c43e7c737b305263"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_publication.mjs",
+      "sha256_lf": "b48021d45065b67a1211184aa8b89f2184fe01d6a13f6d4974f6c81992294d7b"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_pilot_publication.mjs",
+      "sha256_lf": "ddf47d3f42faf3dcb8b6d6839a13b24e918478f25f6dc6c56a76cfe028843cae"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_pilot_publication_cohort.mjs",
+      "sha256_lf": "f3021f9e4907be58d5cb725b02a086e81b7560d97c6a23cd20cfa96582844b61"
+    },
+    {
+      "path": "lib/features/shop/domain/entities/product_entity.dart",
+      "sha256_lf": "56d01eff7c344311efb2d3624437f66a653198b55ea4bcebf399cb53a0236a19"
+    },
+    {
+      "path": "lib/features/shop/data/models/product_model.dart",
+      "sha256_lf": "550d5b2ddaf4c01b261e5cd1a1aa0ad4ca476e319742d94abb0a034d0673bea0"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/product_repository_impl.dart",
+      "sha256_lf": "06ae82a8f11d0838e8b418315d31514d6c7f6b9ae6cf7d8673910acf3a81eb03"
+    },
+    {
+      "path": "lib/features/shop/data/repositories/canonical_rpc_product_repository.dart",
+      "sha256_lf": "4f5c5ee2d25cef4448117ae07ed5a10ede5427fcccc0cb7d26788aa3bea9ff91"
+    },
+    {
+      "path": "lib/features/wishlist/data/repositories/wishlist_repository_impl.dart",
+      "sha256_lf": "dcf10e9fb7b7f686c771bceaeb0c6f19cf43f4ba5e69ec39eb317896f79ef3de"
+    },
+    {
+      "path": "lib/features/wishlist/data/models/wishlist_item_model.dart",
+      "sha256_lf": "cd8d55bc0cecfb14ee8a2daff7ca8cf2071d555e073893f968e8d1f415c9b0a1"
+    },
+    {
+      "path": "lib/core/common/widgets/horizontal_product_card.dart",
+      "sha256_lf": "25fe1dce7ab31ae99ee6b4b47f7f6480f3f200c162a8c2ccaa5183c635b7f54c"
+    },
+    {
+      "path": "lib/core/common/widgets/vertical_product_card.dart",
+      "sha256_lf": "17311b716b972731c6a45dd39a6c54da835b3159430c4a1116b24e743476c01d"
+    },
+    {
+      "path": "lib/features/shop/presentation/views/wishlist_view.dart",
+      "sha256_lf": "a3e40e07a4ea4017179531a2f22db7c29c6e223e1c6c2a83e63f3110c4d5b62a"
+    },
+    {
+      "path": "lib/features/shop/presentation/views/recently_viewed_products_view.dart",
+      "sha256_lf": "cd7c034899339940e00fd1666b29ddc6417f7fe4eef89e441e3cfea0aace9f58"
+    },
+    {
+      "path": "docs/data/merchant_pilot_test_catalog_installation.json",
+      "sha256_lf": "e0521cb54ba2cfe4895ba6ad31b89e151a033061ef11b521f920bfc1a0bfdefc"
+    },
+    {
+      "path": "docs/data/merchant_pilot_publication_acceptance.json",
+      "sha256_lf": "0226515c862eb9f368e3ddfea0ceb1546b368960e659cac41cafc22404bc5997"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_installed_profile.mjs",
+      "sha256_lf": "6ebb97dd80fce8b3eeb8c43d080b943c052f1b9c70e4f69911f025176ebecece"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_installed_contract.mjs",
+      "sha256_lf": "cad6fd0df54d5d53853c50b3c59aa1fa78492bc3d4014a51ff2ecb29a0c05ed7"
+    },
+    {
+      "path": "tool/merchant_acceptance/prepare_installed_pilot.mjs",
+      "sha256_lf": "2dcd1dc50a64963dcec6cc5a60aff8f044d729cf5b1bf18f0fff6342e10556f6"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_installed.mjs",
+      "sha256_lf": "c8fce5b2b63cb86d02b835b78fb4b1c609ee0a4c301c7093c815531e6a719de5"
+    },
+    {
+      "path": "tool/merchant_acceptance/pilot_installed.test.mjs",
+      "sha256_lf": "7481071c68a3701dd71f6203ae7a62d581bcdf7a741cae2c6e983b2a539c8ed8"
+    }
+  ],
+  "services": [
+    {
+      "service": "db",
+      "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+      "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+      "bindings": [
+        {
+          "container_port": "5432/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55432"
+        }
+      ]
+    },
+    {
+      "service": "kong",
+      "image": "public.ecr.aws/supabase/kong:2.8.1",
+      "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+      "bindings": [
+        {
+          "container_port": "8000/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55431"
+        }
+      ]
+    },
+    {
+      "service": "auth",
+      "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+      "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+      "bindings": []
+    },
+    {
+      "service": "rest",
+      "image": "public.ecr.aws/supabase/postgrest:v16.4",
+      "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+      "bindings": []
+    },
+    {
+      "service": "storage",
+      "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+      "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+      "bindings": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "unchanged J7 installation reproduces exact LF rehearsal before any adaptation",
+      "result": "PASS"
+    },
+    {
+      "name": "executable change or unobserved function cannot be disguised as line endings",
+      "result": "PASS"
+    },
+    {
+      "name": "profile mirror rejects any permission drift before changing functions",
+      "result": "PASS"
+    },
+    {
+      "name": "only three exact observed CRLF bodies reproduce entire raw hosted schema",
+      "result": "PASS"
+    },
+    {
+      "name": "all other schema fields and empty business tables survive the local mirror",
+      "result": "PASS"
+    },
+    {
+      "name": "mirror replay and original schema installer fail closed on the installed profile",
+      "result": "PASS"
+    },
+    {
+      "name": "empty cohort and publication preparation produces no mutation or installer SQL",
+      "result": "PASS"
+    },
+    {
+      "name": "old LF preparation rejects real raw observation while new plans bind exact schema",
+      "result": "PASS"
+    },
+    {
+      "name": "category and role review require distinct tokens, not the completed installation approval",
+      "result": "PASS"
+    },
+    {
+      "name": "permission drift blocks both cohort proposals without broad normalization",
+      "result": "PASS"
+    },
+    {
+      "name": "category state drift prevents partially applied category activation",
+      "result": "PASS"
+    },
+    {
+      "name": "identity confirmation drift prevents role promotion and preserves profiles",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent Auth change cannot race account promotion",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed role and category proposals execute with existing postchecks intact",
+      "result": "PASS"
+    },
+    {
+      "name": "cohort replay fails on changed exact state rather than applying again",
+      "result": "PASS"
+    },
+    {
+      "name": "old LF publication plan rejects installed observation and no source hash is rewritten",
+      "result": "PASS"
+    },
+    {
+      "name": "client and service roles cannot call private publication or read batch receipts",
+      "result": "PASS"
+    },
+    {
+      "name": "publication rejects installation or role token and missing current batch approval",
+      "result": "PASS"
+    },
+    {
+      "name": "publication still rejects exact permission and function-body drift",
+      "result": "PASS"
+    },
+    {
+      "name": "submission or owner authority drift aborts publication atomically",
+      "result": "PASS"
+    },
+    {
+      "name": "competing publication leaves the reviewed batch untouched",
+      "result": "PASS"
+    },
+    {
+      "name": "wrong second GTIN target rolls back the first identity and decision",
+      "result": "PASS"
+    },
+    {
+      "name": "two merchant submissions publish one tagged identity without listing or invented offer",
+      "result": "PASS"
+    },
+    {
+      "name": "lost acknowledgement uses existing read-only receipt and rejects replay",
+      "result": "PASS"
+    },
+    {
+      "name": "immutable receipt and tagged central price remain protected",
+      "result": "PASS"
+    },
+    {
+      "name": "both real local merchant sessions resolve the same published GTIN identity",
+      "result": "PASS"
+    },
+    {
+      "name": "installed raw profile supports actual Flutter onboarding/listing/media/session/customer/QR repositories",
+      "result": "PASS"
+    },
+    {
+      "name": "listing and purchase prices stay independent of zero storage sentinel",
+      "result": "PASS"
+    },
+    {
+      "name": "final raw schema remains exact, decisions disabled and no remote activation claimed",
+      "result": "PASS"
+    },
+    {
+      "name": "changed preparation source invalidates its proof before any review directory is created",
+      "result": "PASS"
+    },
+    {
+      "name": "source-bound offline CLI emits no write SQL by default and refuses overwrite",
+      "result": "PASS"
+    },
+    {
+      "name": "private CLI intake prepares original exact candidates without using installation snapshots as row facts",
+      "result": "PASS"
+    }
+  ],
+  "client_checks": [
+    {
+      "name": "shared runtime keeps downstream business and provider capabilities OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "authoritative role and shop onboarding through real application repository",
+      "result": "PASS"
+    },
+    {
+      "name": "profile edits survive fresh read and stale revision cannot overwrite",
+      "result": "PASS"
+    },
+    {
+      "name": "catalog search, categories and existing identity are usable with core only",
+      "result": "PASS"
+    },
+    {
+      "name": "listing create and duplicate submission preserve exact listing price",
+      "result": "PASS"
+    },
+    {
+      "name": "price, boolean stock and stale revision are enforced by actual server",
+      "result": "PASS"
+    },
+    {
+      "name": "deactivation hides Customer purchase eligibility and remains owner-editable",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh login reads the committed listing through nested production DTOs",
+      "result": "PASS"
+    },
+    {
+      "name": "real SDK Storage upload, publish, signed Customer hero and byte download",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign merchant cannot read private media metadata or change owner photo",
+      "result": "PASS"
+    },
+    {
+      "name": "pending photo appears on dashboard and explicit retirement clears task",
+      "result": "PASS"
+    },
+    {
+      "name": "retired photo is removed from fresh Customer hero projection",
+      "result": "PASS"
+    },
+    {
+      "name": "new product request retries once, stays pending and appears on dashboard",
+      "result": "PASS"
+    },
+    {
+      "name": "existing notification inbox scopes reads, count and marking to current account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer legacy QR creation and merchant preview preserve base-core contract",
+      "result": "PASS"
+    },
+    {
+      "name": "notification delete does not affect foreign account",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer has no merchant management authority",
+      "result": "PASS"
+    },
+    {
+      "name": "logout removes local access and rejects further application edits",
+      "result": "PASS"
+    }
+  ],
+  "physical_two_device": "OPEN",
+  "distribution_ready": false
+}

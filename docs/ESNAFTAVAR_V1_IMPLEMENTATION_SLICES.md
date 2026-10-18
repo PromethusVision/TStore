@@ -679,6 +679,27 @@ Git changes are documentation, sanitized observations and read-only verification
 SQL only. This is structural hosted acceptance, not a real cohort, compatible-build
 distribution, email/provider, physical QR or final pilot acceptance. J remains OPEN.
 
+### J9 — Installed-profile cohort/publication preparation (2026-10-18)
+
+Following J8 integration (`62e7ba4a`), canonical §4.13 authorizes local preparation
+against the observed raw hosted structure. Mirror ONLY the three observed CRLF
+function bodies on an owned loopback fixture, verifying all LF/raw hashes and the
+entire structure. Preserve J7/J8 sources and proof; never install or normalize
+anything remotely as part of this package.
+
+Add a source-bound offline entrypoint for separate cohort/publication review.
+Reuse existing transactional contracts, exact data/authority locks and distinct
+approval tokens. Default bundles have no mutation or installer SQL. Full inputs
+still need fresh exact observations, private paths, compatible clients and separate
+Product Owner approval; installation receipt is not participant evidence.
+
+Rehearse actual category/role preparation, two merchant submissions to one shared
+identity, malformed/different state, permission drift, concurrent Auth changes,
+whole-batch rollback, repeat/lost-acknowledgement handling and the existing Flutter
+repository journey. Verify empty defaults, stale-source refusal and protected file
+output. See [J9 handoff](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md). No app,
+dependency, historic migration, remote write or Production access; full J is OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

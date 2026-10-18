@@ -1,8 +1,9 @@
 # Esenler pilotu — ilk katılım grubu hazırlığı
 
-17 Ekim 2026. Bu rehber hazırlık içindir; kategori açma, hesap oluşturma, rol verme,
-ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.10 geçerlidir.
-C/E test ayarları tamamlandı; aşağıdaki J6 aracı bunları tekrar uygulamaz.
+18 Ekim 2026. Bu rehber hazırlık içindir; kategori açma, hesap oluşturma, rol verme,
+ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.13 geçerlidir.
+A/C/E ve J8 katalog altyapısı testte tamamlandı; aşağıdaki J9 aracı hiçbir kurulumu
+tekrar uygulamaz. Bu pakette uzak ortam yeniden okunmadı veya değiştirilmedi.
 
 ## Önce kapatılacak boşluk
 
@@ -41,13 +42,15 @@ ihtiyacı mevcut sözleşmeye uymuyorsa ayrı ürün kararı gerekir.
 
 ## Teknik hazırlık dosyasını kullanma
 
-Güncel komut `node tool/merchant_acceptance/prepare_pilot_cohort.mjs <yeni-ad>`.
-Kategori envanteri, eksik hazırlık raporu, anonim hesap yuvaları ve salt okunur
-gözlem dosyası üretir. A/C/E tekrar uygulanmaz. Varsayılan dosyada hesap kimliği,
-ürün veya kategori seçimi ve hiçbir yazma SQL'i yoktur.
+Kurulu test yapısı için güncel giriş noktası
+`node tool/merchant_acceptance/prepare_installed_pilot.mjs cohort <yeni-ad>`.
+Eksik hazırlık raporu, anonim hesap yuvaları ve salt okunur yapı/kategori/veri
+gözlem sorguları üretir. Varsayılan dosyada hesap kimliği, ürün veya kategori
+seçimi ve hiçbir yazma SQL'i yoktur. Eski J6/J7 komutlarının farklı başlangıç
+kontrolleri değiştirilmez; kurulu sunucu için J9 kullanılır.
 
 Gerçek bilgiler belli olduğunda şablonun özel kopyası
-`.buildlog/pilot-cohort-input/<ad>.json` altında tutulur. Hesap yuvalarına güvenli
+`.buildlog/pilot-installed-input/cohort/<ad>.json` altında tutulur. Hesap yuvalarına güvenli
 ekranda doğrulanan mevcut hesabın sistem kimliği ve özel inceleme kaydının referansı
 eklenir. Kişisel isim, e-posta, telefon, parola veya token bu dosyaya konmaz; gerçek
 hesap kimlikleri içeren dosya da Git'e eklenmez. Hesap henüz yoksa kişi güvenli
@@ -58,19 +61,24 @@ var olan katalogdan açık ürün seçimi gerekir. Bir ortak ürün farklı esna
 seçilebilir. Çelişen barkodlar, aynı esnafta tekrar eden ürünler, hizmet kaydı ve
 eksik incelemeler raporda ayrılır. Benzer isim, otomatik eşleştirme yetkisi vermez.
 
-Salt okunur gözlemin sonucu aynı klasörde `<ad>.observation.json` olarak tutulur.
-İkinci komut argümanı yalnız bu özel dosya adıdır. Eksiksiz gözlem varsa seçilen
+Salt okunur gözlemin sonucu aynı klasörde `<ad>.observation.json`, taksonomi sorgusu
+metni `<ad>.taxonomy.json` olarak tutulur. Komuta `cohort <yeni-çıktı-adı> <ad>`
+verilir; son argüman yalnız bu özel dosya adıdır. Eksiksiz gözlem varsa seçilen
 kategoriler ve uygun mevcut hesap rolleri için ayrı öneri üretilebilir. Bu öneriler
 onay veya uygulama değildir; uygulamadan önce güncel durum tekrar karşılaştırılır.
 `distribution_ready` daima false kalır; gerçek cihaz ve açılış kabulü ayrıca gerekir.
 
-**Katalog yayını — J7 güncellemesi:** kontrollü yeni ürün yayını ve eski fiyat
-uyumu yerelde uygulandı ve doğrulandı; test sunucusuna kurulmadı. İlk kurulum ve
-sonrasında gerçek ürünlerin tam listesi ayrı onay gerektirir. Esnaf satış fiyatını
-kendi ürün kaydında belirler. Uyumsuz eski uygulama sürümleriyle ilk yayın açılmaz.
+**Katalog yayını — J9 güncellemesi:** kontrollü yeni ürün yayını ve eski fiyat
+uyumu J7'de doğrulandı; J8'de yalnız altyapısı onayla test sunucusuna kuruldu.
+Gerçek ürün yayımlanmadı. J9 hazırlık aracı kurulan tam yapıya bağlı çalışır.
+Yayın için `node tool/merchant_acceptance/prepare_installed_pilot.mjs publication <yeni-ad>`
+ayrı bir boş form üretir. Gerçek bekleyen başvurular ve uyumlu uygulama incelemesi
+seçilince özel `.json`/`.observation.json` dosyaları `pilot-installed-input/publication`
+altında tutulur; tam liste ayrıca onaylanır. Esnaf satış fiyatını kendi ürün kaydında
+belirler. Uyumsuz eski uygulama sürümleriyle ilk yayın açılmaz.
 Gerçek ürünleri şimdi uydurmamız gerekmiyor; katılımcılar seçilince başvuruları ve
 fiziksel ürün bilgilerini birlikte inceleriz.
-[Yöntem ve onay kapsamı](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
+[Güncel hazırlık yöntemi ve onay sınırları](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md).
 
 ## Açılış için üç somut kabul
 
