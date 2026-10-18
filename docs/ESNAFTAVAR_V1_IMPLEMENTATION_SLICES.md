@@ -700,6 +700,28 @@ repository journey. Verify empty defaults, stale-source refusal and protected fi
 output. See [J9 handoff](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md). No app,
 dependency, historic migration, remote write or Production access; full J is OPEN.
 
+### J10 — Paired Android artifact and field-acceptance preparation (2026-10-18)
+
+After integrated J9 (`3a2d0361`), canonical §4.14 bounds an offline paired build
+and verification package. Reuse existing Customer Development / Merchant pilot
+entrypoints, all base-profile OFF flags, callback identities, actual configuration
+validators and external release-signing policy. Preserve Customer UI/runtime,
+historical source-bound J7/J9 proofs, migrations and shared notification foundation.
+
+Produce both APKs from one source/config profile after focused compatibility and
+Auth-race regressions. Verify packaged identity/callback/signature/permissions,
+version and payload, fingerprint source/config/artifacts and reject drift or
+overwritten output. Synthetic debug output is a compilation rehearsal only; an
+approved real client input and clean reviewed source are required for a later
+candidate. Existing pinned signing remains mandatory for release; no signing
+material is created/read during the synthetic rehearsal.
+
+Prepare three field sessions with exact paired-artifact evidence, explicit OPEN
+gates, failure handling and support/withdrawal boundaries. The machine review
+checks observation completeness/binding; it cannot certify human evidence or
+turn reported PASS into pilot-opening authority. See [J10 handoff](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md).
+No remote access/write, actual user accounts, distribution or physical QR; J stays OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

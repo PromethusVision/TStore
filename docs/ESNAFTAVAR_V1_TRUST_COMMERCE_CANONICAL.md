@@ -635,6 +635,43 @@ provider/mail, signed distribution, physical QR and full J acceptance remain ope
 No service/appointment capability, new product rule or FROZEN exception is added.
 See [J9 installed-profile preparation](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md).
 
+### 4.14 Paired Android artifact and field-acceptance preparation — 2026-10-18
+
+Following J9 integration (`3a2d0361`), the owner authorized the next comprehensive
+local package. This prepares an auditable Customer/Merchant pair using existing
+Development / merchantPilot flavors and entrypoints. No FROZEN rule, Customer
+screen, identity, server permission, feature default or final pilot scope changes.
+
+- One validated Development client input generates both applications' build
+  settings. The existing Merchant configuration and shared Supabase contracts are
+  cross-checked offline. All later economic/claims/review/promotion/push-schema
+  capabilities and Development canonical-taxonomy opt-in stay OFF in this base
+  profile. This profile is a compatibility fixture, not final feature selection.
+- Run the catalog-price, callback, Merchant recovery/race and pair-configuration
+  regressions before building. Bind the two artifacts to the same source snapshot,
+  configuration hashes, version and toolchain. Inspect actual APK package names,
+  callbacks, permissions, backup/debug settings, signature and executable payload;
+  source manifests or build exit codes alone do not prove the packaged identity.
+- A synthetic-key debug rehearsal proves compilation/packaging only. It must be
+  explicitly non-distributable and must never be installed/launched as a real
+  server test. A later candidate uses an exact clean reviewed commit and separate
+  approved client input. Release uses the existing external pinned signing path;
+  no key generation, signature fallback, credential discovery or distribution.
+- Preserve independent per-file and source hashes; changed inputs, overwritten
+  artifacts, mismatched pair or stale source require rebuilding/review. Local
+  hashes detect drift, not malicious forgery or Product Owner authorization.
+- Physical observations bind exact pair hashes and pseudonymous device aliases.
+  Keep access/recovery, catalog/media and two-device purchase scenarios distinct.
+  Empty evidence stays OPEN; reported observations cannot automatically authorize
+  real data writes, provider delivery, legal/support policy or pilot opening.
+
+No remote access, setup, mail/send, account provision, schema change or physical
+acceptance is implied. Old Production Customer acceptance does not accept this
+Development pair. Real cohort/catalog approval, email/provider, reviewed signed
+distribution, physical QR and owner acceptance remain OPEN. See
+[paired device package](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md) and
+[field acceptance runbook](MERCHANT_PILOT_FIELD_ACCEPTANCE.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
