@@ -1,6 +1,12 @@
 # Esenler pilotu — karar ve sunucu değişikliği dosyası
 
-17 Ekim 2026 — **Güncel durum:** A kurulumu tamamlandı. J4 Integration PASS
+18 Ekim 2026 — **Güncel durum:** J7 Integration PASS ve ayrı Product Owner onayı
+sonrası özel katalog altyapısı yalnız Development'ta kuruldu; gerçek ürün yayını
+yapılmadı. [J8 kurulum kaydı](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md)
+ve canonical §4.12 güncel kanıtı, gözlenen satır sonu farkını ve sonraki yerel
+hazırlık uyarlamasını tanımlar. Yeni kategori/hesap/yayın paketleri ayrıca onaylanır.
+
+**Önceki tamamlanmış işler:** A kurulumu tamamlandı. J4 Integration PASS
 sonrasında Product Owner C ve E'yi de yalnız Development için açıkça onayladı.
 Dört giriş dönüş bağlantısı kaydedildi ve bildirimlerdeki altı Türkçe metnin
 korumalı düzeltmesi uygulandı; bağımsız son kontroller PASS.
@@ -9,11 +15,11 @@ korumalı düzeltmesi uygulandı; bağımsız son kontroller PASS.
 B/D hâlâ ayrı onay gerektirir. Hizmet esnafı için geniş başvuru / kademeli katılım
 yaklaşımı korunur; canonical §4.7 ve §4.9 geçerlidir. Production'a erişilmedi.
 
-**Sonraki paket (J6):** kategori, mevcut hesap/rol ve ürün eşleştirme hazırlığı
+**Önceki hazırlık (J6):** kategori, mevcut hesap/rol ve ürün eşleştirme hazırlığı
 yerelde doğrulandı. Katılımcılar ve gerçek ürünler henüz belli olmadığı için
-varsayılan dosyada yazma işlemi yoktur. Yeni ürünü güvenli biçimde ortak kataloğa
-yayımlama ve eski fiyat alanıyla uyum sözleşmesi ayrıca tamamlanmalıdır; sahte
-ürün/fiyat oluşturulmadı. [Hazırlık teslimi](MERCHANT_PILOT_COHORT_HANDOFF.md).
+varsayılan dosyada yazma işlemi yoktur. Yeni ürünü ortak kataloğa yayımlama ve eski
+fiyat alanıyla uyum sözleşmesi sonraki J7'de yerelde tamamlandı; gerçek içerik
+yayımlanmadı. [Hazırlık teslimi](MERCHANT_PILOT_COHORT_HANDOFF.md).
 Bu paket test sunucusunu okumadı veya değiştirmedi; B/D onayı verilmiş sayılmaz.
 
 **Önceki hazırlık (J4):** E için altı metin düzeltmesi eşleşen yerel ortamda
@@ -127,15 +133,17 @@ Teknik kanıt ve yeniden üretim: [J2 teslimi](MERCHANT_PILOT_PREPARATION_HANDOF
 
 ## J7 — Kontrollü katalog yayını: yeni ve ayrı onay kapsamı
 
-Yerel çalışma tamamlandı; **bu kalem uzakta uygulanmadı**. A/C/E'nin önceki
-onayları bu yeni kaleme izin vermez ve bu kurulumda tekrar uygulanmaz.
+**Güncel durum — J8:** Integration PASS ve Product Owner'ın ayrı “onaylıyorum”
+mesajından sonra aşağıdaki **altyapı kapsamı yalnız Development'ta uygulandı**.
+[Kurulum kaydı](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md): PASS; gerçek
+ürün yayını yok. A/C/E tekrarlanmadı. Kurulum yeniden uygulanmamalıdır.
 
-- **Kurulum için önerilen kapsam:** yalnız Development
+- **Onaylanıp tamamlanan kurulum kapsamı:** yalnız Development
   `tnipyxnvhgelwdpykyez` üzerinde bir özel yayın kayıt tablosu, üç kapalı yardımcı
   işlev, iki koruma tetikleyicisi ve bir kurulum kaydı. Ürün/fiyat, hesap, kategori,
   bildirim, Storage veya Auth ayarları değiştirilmez. Genel ürün onay anahtarı
-  kapalı kalır. Integration PASS ardından ayrıca açık onay ve taze ön kontrol
-  gerekir. Üretim ortamı tamamen dışarıdadır.
+  kapalı kaldı. Integration PASS, açık onay ve taze ön kontrol doğrulandı.
+  Üretim ortamı tamamen dışarıdadır.
 - **Gerçek katalog içeriği için ayrı kapsam:** henüz seçilmiş ürün/esnaf yok.
   Uyumluluğu incelenmiş Customer/Merchant sürümleri, uygun gerçek başvurular ve
   güncel gözlem hazır olduğunda her yayın paketinin tam listesi ayrıca sunulacak.
@@ -144,7 +152,10 @@ onayları bu yeni kaleme izin vermez ve bu kurulumda tekrar uygulanmaz.
 Somut kaynak, etkiler, doğrulama ve geri dönüş sınırları:
 [J7 teslim/onay dosyası](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
 Varsayılan inceleme paketi ürün yayını SQL'i üretmez; yalnız kurulum adayı ve
-salt okunur gözlem/doğrulama içerir. Onay gelene kadar uzakta uygulanmaz.
+salt okunur gözlem/doğrulama içerir. Tarihsel kurulum adayı tekrar çalıştırılmaz.
+Yeni sunucuda gözlenen üç işlevin CRLF biçimi için yerel hazırlık uyarlaması
+gereklidir; eski LF-only kanıt/korumalar elle değiştirilmez. Gerçek veri paketleri
+bu uyarlama, taze gözlem ve yeni tam liste onayı olmadan uygulanmaz.
 
 ## A kaleminin teknik onay kimliği (tarihsel; tekrar uygulama)
 

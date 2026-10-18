@@ -575,6 +575,37 @@ statement describes that package; J7 adds the following separately gated path.
 
 See [J7 handoff and concrete test-only approval scope](MERCHANT_PILOT_CATALOG_PUBLICATION_HANDOFF.md).
 
+### 4.12 Approved Development catalog infrastructure installation — 2026-10-18
+
+After independently verified J7 Integration PASS (`50c1b16c`), the owner's explicit
+approval was applied only to Development `tnipyxnvhgelwdpykyez`: one private batch
+receipt table, three private SECURITY INVOKER helpers, two protective triggers and
+ledger `20261018003300 / 0033_pilot_catalog_publication`. The unchanged source-bound
+transaction committed once. No product publication, category/account changes,
+Auth/Storage/notification changes, A/C/E replay or Production access occurred.
+
+Fresh read-only checks preserved the fourteen historical ledger/source hashes,
+twelve observed business-table row hashes and taxonomy/catalog hashes. The new
+stored source matches the approved LF SHA-256. All 36 public tables have RLS,
+the three helpers/receipt deny client and service-role access, publication receipts
+and products remain empty, and the broad decision switch remains OFF.
+
+Raw hosted schema is `d9607df877e9115eb811d984e561b4e7`, not the local rehearsal's
+`590f31a8d4e3485d6b23434e17bd9d40`. A separate read-only diagnostic proves the entire
+structure matches that rehearsal when ONLY the three newly installed function
+definition hashes use CRLF-to-LF normalization. All other schema components remain
+unchanged in this comparison. Preserve both observations; do not rewrite remote
+definitions, old proof, or schema guards to force a match. This is a storage-format
+observation, not a FROZEN product-rule change or permission exception.
+
+J7 preparation still requires its exact LF rehearsal fingerprint and must fail
+closed on this raw hosted profile. Before any actual row plan, locally reproduce
+and validate the three observed bodies and exact full hosted structure, then bind
+preparation to that proven profile. Installation acceptance does not imply that
+this subsequent preparation adapter or any actual merchant journey is complete.
+Compatible clients, exact separate category/account/publication approvals and full
+J device/provider/distribution gates remain open. See [J8 installation receipt](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

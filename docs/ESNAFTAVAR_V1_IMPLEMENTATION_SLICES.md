@@ -659,6 +659,26 @@ contains a **schema review candidate**, but no product publication SQL when real
 inputs are missing. Integration merges code/evidence only. Hosted schema apply
 and each real row batch need separate approval; Production and full J stay OPEN.
 
+### J8 — Approved Development catalog infrastructure application (2026-10-18)
+
+Following J7 integration (`50c1b16c`), explicit owner approval authorized only the
+private schema installation on `tnipyxnvhgelwdpykyez`. Canonical §4.12 and the
+[J8 handoff](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md) record one committed
+transaction, exact stored source, preserved historical ledger/data, 36 RLS tables,
+closed client privileges, empty publications and decisions OFF. Production and
+all actual category/account/catalog changes remain excluded.
+
+Hosted raw fingerprint differs from the local proof solely in CRLF storage of the
+three new function bodies; a limited read-only normalization reproduces the entire
+local schema hash exactly. Preserve raw evidence and old local proof. Do not replay
+installation during integration. The next local preparation package must reproduce
+this exact hosted profile and bind the existing source/state/permission guards to
+it before real row proposals; old LF-only preparation is intentionally fail-closed.
+
+Git changes are documentation, sanitized observations and read-only verification
+SQL only. This is structural hosted acceptance, not a real cohort, compatible-build
+distribution, email/provider, physical QR or final pilot acceptance. J remains OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

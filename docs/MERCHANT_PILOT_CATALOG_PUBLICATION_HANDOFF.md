@@ -4,6 +4,11 @@ Başlangıç: `origin/main@465d88422025dda652bef1e1341cb1632c391630` (J6 entegre
 Görev dalı: `agent/merchant-pilot-catalog-publication`.
 Durum: yerel uygulama ve prova; **uzak kurulum/yayın yapılmadı**.
 
+**Sonraki durum (J8, 2026-10-18):** Integration PASS ve ayrı Product Owner onayı
+sonrasında yalnız altyapı test projesine kuruldu. Gerçek ürün yayımlanmadı.
+[Kurulum kanıtı ve sunucu satır sonu uyarlaması sınırı](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md)
+güncel durumdur. Aşağıdaki J7 metni yerel teslim anını anlatır; kurulumu tekrarlama.
+
 ## Kullanıcıya etkisi
 
 Yeni ürünün kimliği, barkodu ve kategorisi kontrollü olarak onaylanabilir. Esnaf
