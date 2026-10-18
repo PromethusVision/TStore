@@ -125,6 +125,16 @@ teslimatını veya fiziksel cihazda güvenli hesap kurtarmayı kanıtlamaz.
 
 ## Pilot açılışı için kalan kanıt
 
+**J11 güncel e-posta durumu:** mevcut Resend hesabı ve `auth.esnaftavar.com`
+doğrulandı; yeni sağlayıcı/hesap oluşturulmaz. Development custom SMTP ve Confirm
+email kapalıdır. Production'ın tarihsel e-posta kabulü bu test projesini kapsamaz.
+[Salt okunur inceleme](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md) ve
+[gerçek yerel Auth/e-posta provası](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) hazırdır.
+SMTP/credential bağlama, confirmation/fallback/şablon değişimi ve gerçek gönderim
+ayrı açık onay kalemleridir. Anahtar dosyaya/Flutter'a/Git'e yazılmaz; mevcut
+Production adlı anahtar otomatik kopyalanmaz/yenilenmez. Paylaşılan Resend/DNS/TLS
+değişiklikleri yalnız Development onayına dahil değildir.
+
 J10 bu kapılar için [eşleşen Android dosyası hazırlığı](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md)
 ve [üç oturumlu saha kabul yönergesini](MERCHANT_PILOT_FIELD_ACCEPTANCE.md) ekler.
 Sentetik debug derleme provası gerçek cihaz adayı/dağıtım değildir; hiçbir onay
