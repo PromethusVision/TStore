@@ -606,6 +606,35 @@ this subsequent preparation adapter or any actual merchant journey is complete.
 Compatible clients, exact separate category/account/publication approvals and full
 J device/provider/distribution gates remain open. See [J8 installation receipt](MERCHANT_PILOT_TEST_CATALOG_INSTALLATION_HANDOFF.md).
 
+### 4.13 Installed-profile pilot preparation — 2026-10-18
+
+After J8 integration (`62e7ba4a`), the owner authorized the next local preparation
+package. Reproduce the observed three function bodies on an owned loopback fixture
+and require the exact raw J8 schema `d9607df877e9115eb811d984e561b4e7`. The adapter
+must verify the immutable J8 receipt, unchanged J7 source/proof and each observed
+function's LF/raw hashes before a local mirror. It must reject unknown executable
+text, changed permissions, different baseline, wrong host/port and mirror replay.
+This does not authorize modifying hosted functions or relaxing schema comparison.
+
+Use separate installed-profile preparation for cohort and publication. Reuse the
+existing category/account/submission/GTIN/ownership/price/atomic receipt contracts
+without rewriting historical sources, proofs or migrations. Bind new local proof
+to all preparation/runtime sources. Real observations must carry the exact raw
+schema; old LF, unknown fingerprints and changed sources fail closed. Do not use
+the dated installation receipt as fresh account, category or product evidence.
+
+Default output contains incomplete intake and read-only observation/structure
+queries, never installation, account creation or mutation SQL. Complete selected
+inputs may produce distinct review-only category, role or publication candidates;
+these remain separately authorized operations and contain no automatic approval
+token or connection/apply option. Private inputs stay outside Git, plain names
+cannot escape their directories, and existing bundles cannot be overwritten.
+
+Actual cohort selection, compatible client review, exact remote row approval,
+provider/mail, signed distribution, physical QR and full J acceptance remain open.
+No service/appointment capability, new product rule or FROZEN exception is added.
+See [J9 installed-profile preparation](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

@@ -4,6 +4,10 @@ Durum: **PASS — yalnız Development altyapısı kuruldu; ürün yayımlanmadı
 Tarih: 2026-10-18. Hedef: **EsnaftaVar Development — `tnipyxnvhgelwdpykyez`**.
 Görev dalı: `agent/merchant-pilot-catalog-installation`.
 
+**Sonraki yerel paket:** [J9 kurulu profil hazırlığı](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md)
+aşağıda belirtilen hazırlık uyarlamasını tamamlar. J8'in ham gözlemi, tarihsel
+kanıtı ve uzak onay sınırı değişmez; kurulum tekrarlanmaz.
+
 ## Yetki ve başlangıç
 
 Product Owner'ın “onaylıyorum” mesajı, J7 sonunda sunulan **altyapı kurulumu**
