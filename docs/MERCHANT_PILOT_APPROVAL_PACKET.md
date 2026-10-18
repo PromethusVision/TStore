@@ -125,6 +125,12 @@ teslimatını veya fiziksel cihazda güvenli hesap kurtarmayı kanıtlamaz.
 
 ## Pilot açılışı için kalan kanıt
 
+J10 bu kapılar için [eşleşen Android dosyası hazırlığı](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md)
+ve [üç oturumlu saha kabul yönergesini](MERCHANT_PILOT_FIELD_ACCEPTANCE.md) ekler.
+Sentetik debug derleme provası gerçek cihaz adayı/dağıtım değildir; hiçbir onay
+kalemini otomatik tamamlamaz. Gerçek cihaz akışlarının sunucuda oluşturacağı kayıt
+ve e-posta işlemleri de ayrı, somut saha denemesi onayına dahil edilmelidir.
+
 1. Onaylanmış test sunucusu değişiklikleri, gerçek hesap/ürün hazırlığı ve aynı
    özelliklere sahip Customer–Merchant bağlantısının sunucuda doğrulanması.
 2. Gerçek e-posta/kurtarma bağlantısı ve gerekli bildirim sağlayıcısı hazırlığı;

@@ -1,0 +1,169 @@
+{
+  "kind": "merchant-pilot-device-package-validation-v1",
+  "result": "PASS",
+  "captured_at": "2026-10-18T19:05:05.526Z",
+  "pair": {
+    "kind": "esnaftavar-pilot-device-pair-v1",
+    "created_at": "2026-10-18T19:04:35.241Z",
+    "purpose": "compile-rehearsal",
+    "mode": "debug",
+    "status": "COMPILE_REHEARSAL_PASS_NOT_DISTRIBUTABLE",
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "source_commit": "3a2d0361bc7765a0919cbdf37ae9bcd1a5b43388",
+    "uncommitted_sources": true,
+    "source_sha256": "9bb49af6b52fa76ec071d47eee9073f061cc7f3a5c0672458ecd37ad330f3cae",
+    "config_sha256": {
+      "customer": "0fc81951a7c3e28ee64e53e303a3defe5688dee30acee4a0e09198433023ee46",
+      "merchant": "cf0245b4ece1d14cbbe7a8a8b6fb5061c538257bb034e33aff8920e4dbbea83a"
+    },
+    "capabilities": {
+      "QR_CLAIMS_V2_ENABLED": false,
+      "REWARD_EARNING_V1_ENABLED": false,
+      "COUPON_CHECKOUT_V1_ENABLED": false,
+      "TRUST_COMMERCE_V1_ENABLED": false,
+      "REVIEWS_V2_ENABLED": false,
+      "MERCHANT_STATEMENT_V1_ENABLED": false,
+      "MERCHANT_PROMOTION_V1_ENABLED": false,
+      "MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED": false
+    },
+    "canonical_taxonomy": false,
+    "catalog_price_contract": "listing_only_v1",
+    "tests": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "artifacts": [
+      {
+        "role": "customer",
+        "application_id": "com.esnaftavar.app.dev",
+        "label": "EsnaftaVar Dev",
+        "callback": "io.supabase.tstore://login-callback/",
+        "version_code": 5,
+        "version_name": "1.0.0",
+        "debuggable": true,
+        "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+        "mode": "debug",
+        "abi": "arm64-v8a",
+        "sha256": "1cc79128e34c5c81416cb656a72ecf5726ffd102b2b95a9e52505b920a6d80eb",
+        "bytes": 224797879,
+        "payload_scan": {
+          "backend_url_present": true,
+          "supplied_client_key_present": true,
+          "catalog_price_marker_present": true,
+          "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+          "payload": "assets/flutter_assets/kernel_blob.bin"
+        },
+        "file": "customer.apk",
+        "flavor": "development",
+        "target": "lib/main_development.dart"
+      },
+      {
+        "role": "merchant",
+        "application_id": "com.esnaftavar.app.merchant.pilot",
+        "label": "EsnaftaVar Esnaf Pilot",
+        "callback": "com.esnaftavar.app.merchant.pilot://login-callback/",
+        "version_code": 5,
+        "version_name": "1.0.0",
+        "debuggable": true,
+        "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+        "mode": "debug",
+        "abi": "arm64-v8a",
+        "sha256": "029b934a542eecf73726afc25c415390bc83505fc5b0d4e0fc324fc7ca85a74d",
+        "bytes": 119412579,
+        "payload_scan": {
+          "backend_url_present": true,
+          "supplied_client_key_present": true,
+          "catalog_price_marker_present": true,
+          "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+          "payload": "assets/flutter_assets/kernel_blob.bin"
+        },
+        "file": "merchant.apk",
+        "flavor": "merchantPilot",
+        "target": "lib/main_merchant_pilot.dart"
+      }
+    ],
+    "toolchain": {
+      "flutter": "3.41.9",
+      "framework_revision": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+      "dart": "3.11.5",
+      "android_build_tools": "35.0.0"
+    },
+    "production_access": "NONE",
+    "remote_access": "NONE",
+    "remote_authorized": false,
+    "physical_two_device": "OPEN",
+    "provider_delivery": "OPEN",
+    "pilot_ready": false,
+    "bundle_id": "98e2ead71c496c0b74d13ffbe7bad315a092c9aea75bdafd7e81f035ef1ab04f"
+  },
+  "source_files": 781,
+  "node_tests": {
+    "new_pass": 28,
+    "existing_pass": 107,
+    "failed": 0,
+    "skipped": 0
+  },
+  "flutter_analyzer": "PASS",
+  "signed_release": "NOT_RUN",
+  "physical_acceptance": "OPEN",
+  "database_rehearsal": "NOT_RERUN_NO_DATABASE_CHANGES",
+  "checks": [
+    {
+      "name": "current source and both real APK hashes",
+      "result": "PASS"
+    },
+    {
+      "name": "unchanged J7/J8/J9 source-bound proof",
+      "result": "PASS"
+    },
+    {
+      "name": "added source rejects stale pair",
+      "result": "PASS"
+    },
+    {
+      "name": "exact source restored and pair accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "actual APK byte corruption rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "actual CLI empty field report stays OPEN",
+      "result": "PASS"
+    },
+    {
+      "name": "CLI refuses report overwrite",
+      "result": "PASS"
+    },
+    {
+      "name": "CLI refuses output traversal",
+      "result": "PASS"
+    },
+    {
+      "name": "builder refuses existing completed output",
+      "result": "PASS"
+    },
+    {
+      "name": "candidate refuses uncommitted source before credentials/build",
+      "result": "PASS"
+    }
+  ],
+  "gradle": {
+    "configuration_checks_pass": 34,
+    "packaging_rejections_pass": 8,
+    "fail": 0,
+    "real_release_signed": false
+  }
+}
