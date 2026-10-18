@@ -744,6 +744,17 @@ no credential extraction/copy/rotation, SMTP/DNS/template write or real email se
 Use [J11 handoff](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) and
 [provider audit](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md). Full J stays OPEN.
 
+**Authorized hosted follow-up, 2026-10-18:** after J11 integration (`f13791e4`),
+separate owner approvals covered Development SMTP, the automatic 30-email/hour
+limit, one confirmed test account without merchant authority and the recovery
+exercise. Saved settings were read back; 135 compatibility tests and real candidate
+artifact checks passed. The Development-key-filtered provider list shows Delivered;
+the owner reports the Android email/reset/login-to-role-gate path PASS. Scope and
+evidence limits are in [the acceptance record](MERCHANT_PILOT_DEVELOPMENT_MAIL_ACCEPTANCE.md).
+This closes only that single-account Merchant recovery path, not all J acceptance,
+Customer registration, merchant provisioning or pilot opening. No code/migration,
+Production access or further remote write is part of recording this result.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

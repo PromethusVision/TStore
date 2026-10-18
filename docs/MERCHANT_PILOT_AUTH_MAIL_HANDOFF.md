@@ -95,3 +95,13 @@ gönderim açık onay bekler. Tam pilot kabulü hâlâ **OPEN**.
 Integration Agent yalnız bu dalın yerel kaynak/kanıt/dokümantasyonunu inceler ve
 birleştirir; hiçbir hosted SQL, SMTP, DNS, mail/send veya anahtar işlemi yapmaz.
 Ortak dosyalar yalnız canonical, implementation slices ve pilot approval packet'tir.
+
+## Sonraki onaylı Development işlemi — 18 Ekim 2026
+
+Yukarıdaki sonuçlar ilk yerel J11 tesliminin tarihsel kaydıdır. Integration PASS
+sonrasında Product Owner'ın ayrı SMTP, limit, tek test hesabı ve gerçek kurtarma
+denemesi onayları uygulandı. [Development kabul kaydı](MERCHANT_PILOT_DEVELOPMENT_MAIL_ACCEPTANCE.md)
+güncel durumu, kullanılan Android adayını ve sağlayıcı/kullanıcı kanıtlarının
+ayrımını içerir. Tek Merchant kurtarma yolu PASS; tam pilot kabulü OPEN'dır.
+Bu belge güncellemesi sunucu işlemlerini tekrarlama veya rol/dükkân atama yetkisi
+vermez. Integration Agent yalnız belge değişikliklerini birleştirir.
