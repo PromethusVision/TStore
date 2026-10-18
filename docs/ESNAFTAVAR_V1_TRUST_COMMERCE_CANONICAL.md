@@ -707,9 +707,32 @@ permission, migration, economic rule or Customer redesign.
   changes can affect Production and are outside a test-project-only approval.
 
 See [J11 delivery](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) and
-[existing-provider audit](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md). J remains OPEN:
-hosted mail acceptance, approved cohort/catalog, signed distribution, physical
-app-link/QR acceptance and Product Owner opening decision remain separate gates.
+[existing-provider audit](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md) for the original
+local package and pre-authorization audit. The later authorized operation is below.
+
+#### Authorized Development mail follow-up — 2026-10-18
+
+The owner separately approved Development SMTP binding, its automatic 30-email/hour
+limit, one owner-controlled email-confirmed test account without merchant authority,
+and delivery/password-recovery testing. Only `tnipyxnvhgelwdpykyez` was targeted.
+The owner created/entered the dedicated domain-restricted sending credential and
+account passwords in the official UI; no Resend secret entered files, Flutter or Git.
+Saved SMTP settings and the existing 60-second per-user interval were read back.
+Confirmation policy remains OFF; templates, fallback, callbacks, shared DNS/TLS/
+tracking and Production settings were not changed.
+
+The supplied Merchant Android debug candidate passed 135 compatibility tests and
+artifact/source checks. Resend's Development-key-filtered list reports the recovery
+email **Delivered**. The owner reports installation, inbox receipt, link-driven
+password reset and arrival at the expected no-merchant-authority screen. Record
+this as **PASS for this single-account Merchant recovery path**, with provider and
+owner observations distinguished; it is not independent observation of the phone.
+See [acceptance and exact artifact](MERCHANT_PILOT_DEVELOPMENT_MAIL_ACCEPTANCE.md).
+
+J remains OPEN: Customer/registration mail acceptance, broader physical failure
+cases, real merchant/shop/catalog preparation, signed distribution, two-device QR
+and the Product Owner's pilot-opening decision remain separate. This test does not
+authorize merchant-role/shop assignment or further hosted mutations.
 
 ## 5. Existing purchase evidence, QR claim and returns
 

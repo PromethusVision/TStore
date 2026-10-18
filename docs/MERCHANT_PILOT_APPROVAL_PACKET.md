@@ -125,15 +125,22 @@ teslimatını veya fiziksel cihazda güvenli hesap kurtarmayı kanıtlamaz.
 
 ## Pilot açılışı için kalan kanıt
 
-**J11 güncel e-posta durumu:** mevcut Resend hesabı ve `auth.esnaftavar.com`
-doğrulandı; yeni sağlayıcı/hesap oluşturulmaz. Development custom SMTP ve Confirm
-email kapalıdır. Production'ın tarihsel e-posta kabulü bu test projesini kapsamaz.
-[Salt okunur inceleme](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md) ve
-[gerçek yerel Auth/e-posta provası](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) hazırdır.
-SMTP/credential bağlama, confirmation/fallback/şablon değişimi ve gerçek gönderim
-ayrı açık onay kalemleridir. Anahtar dosyaya/Flutter'a/Git'e yazılmaz; mevcut
-Production adlı anahtar otomatik kopyalanmaz/yenilenmez. Paylaşılan Resend/DNS/TLS
-değişiklikleri yalnız Development onayına dahil değildir.
+**J11 güncel e-posta durumu — 18 Ekim 2026:** ayrı Product Owner onaylarıyla mevcut
+Resend hizmeti yalnız Development'a bağlandı; bu ortama özel, alan adıyla sınırlı
+gönderim anahtarını ve tek test hesabının parolasını kullanıcı resmi ekranlarda
+oluşturdu/girdi. SMTP ON, otomatik saatlik sınır 30, kullanıcı başına aralık 60
+saniye olarak doğrulandı. Confirm email OFF; şablon/fallback/callback ve ortak
+DNS/TLS/takip ayarları değişmedi. Anahtar dosyaya/Flutter'a/Git'e alınmadı;
+Production adlı anahtar kopyalanmadı/yenilenmedi.
+
+[Development kabul kaydı](MERCHANT_PILOT_DEVELOPMENT_MAIL_ACCEPTANCE.md): Resend'de
+Development anahtarı filtresi altında kurtarma e-postası Delivered; Product Owner
+Android'de teslimat, bağlantıdan parola yenileme ve beklenen esnaf-yetkisi-yok
+ekranına ulaşmayı başarılı bildirdi. Bu tek Merchant test akışı PASS'tir; Customer,
+kayıt doğrulama, diğer cihaz/olumsuz senaryolar ve pilot açılışı kabulü değildir.
+Esnaf rolü/dükkân/ürün eklenmedi; yeni sunucu değişiklikleri ayrıca onaylanmalıdır.
+[İlk salt okunur inceleme](MERCHANT_PILOT_EXISTING_EMAIL_AUDIT.md) ve
+[yerel prova](MERCHANT_PILOT_AUTH_MAIL_HANDOFF.md) tarihsel kanıt olarak korunur.
 
 J10 bu kapılar için [eşleşen Android dosyası hazırlığı](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md)
 ve [üç oturumlu saha kabul yönergesini](MERCHANT_PILOT_FIELD_ACCEPTANCE.md) ekler.
@@ -143,8 +150,8 @@ ve e-posta işlemleri de ayrı, somut saha denemesi onayına dahil edilmelidir.
 
 1. Onaylanmış test sunucusu değişiklikleri, gerçek hesap/ürün hazırlığı ve aynı
    özelliklere sahip Customer–Merchant bağlantısının sunucuda doğrulanması.
-2. Gerçek e-posta/kurtarma bağlantısı ve gerekli bildirim sağlayıcısı hazırlığı;
-   gerçek iki cihazda QR/kamera kabulü ayrı kalır.
+2. Tek Merchant kurtarma akışı dışındaki e-posta/cihaz kabulü ve gerekli bildirim
+   sağlayıcısı hazırlığı; gerçek iki cihazda QR/kamera kabulü ayrı kalır.
 3. Seçilmiş özellikler, imzalı dağıtım paketi, destek/geri dönüş planı ve Product
    Owner pilot açılış kabulü. Yerel PASS bu açılış kararının yerine geçmez.
 
