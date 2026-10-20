@@ -257,6 +257,25 @@ release gates: `MERCHANT_DF_HANDOFF.md`; audit: `MERCHANT_DF_WORKLOG.md`.
 - **Production requirements:** reviewed area definition/dataset and metric
   provenance; server scheduled jobs enabled with reconciled event cursor.
 
+### D read recovery and shared F continuity — 2026-10-20
+
+Local package `agent/merchant-trust-recovery`, starting at integrated `88fa667b`.
+Canonical §7.3 bounds existing badge summaries/history, private dialogs and
+shared trust/campaign continuations. Preserve badge qualification, exact
+thresholds, public projections, campaign economics and default-OFF gates.
+
+Reproduce captured replacement-session races, broken observation, late replies,
+failed-page retry, cursor contradictions, resume and narrow-screen states.
+Validate connected Customer badge surfaces and existing Merchant campaign flows.
+No new reputation feature, schema, hosted call, provider or device-candidate
+replacement. The first delivery `8df49adb` was rejected for a pre-mount private
+dialog session race. The correction binds child navigation to its originating
+guard, covers shared campaign overlays/routes and retains normal renewal.
+H0/H1 statement recovery is now integrated at `4ed927f0`; that main commit is
+included in the task branch for combined validation. Main integration of this
+corrected trust package remains Integration Agent's responsibility.
+See [handoff](MERCHANT_TRUST_RECOVERY_HANDOFF.md).
+
 ## H0 — Monetary authority, immutable ledger and versioned policy
 
 Local implementation is delivered from integrated D/F `6ef06be8` on

@@ -1,0 +1,122 @@
+{
+  "kind": "esnaftavar-trust-recovery-verification-v2",
+  "date": "2026-10-20",
+  "status": "CORRECTED_LOCAL_PASS_INTEGRATION_PENDING",
+  "branch": "agent/merchant-trust-recovery",
+  "original_base_commit": "88fa667b982608338044219f06897da5007c9eda",
+  "integrated_main": "4ed927f05923ec5fdaae05eb4981c7a62d78a174",
+  "build_parent_commit": "8e1d224c0a2f709f1e17c92f7866c5c4e156d8c0",
+  "uncommitted_build_sources": true,
+  "source_sha256": "417a9a0041dd3fc62fe9b70efa363b47c5be500bc366e01f32064e8489db2914",
+  "source_fingerprint_matches_built_pair": true,
+  "previous_delivery": {
+    "commit": "8df49adbb37a8f93c06230a06d753c8005f24016",
+    "integration": "REJECTED_PRE_MOUNT_DIALOG_SESSION_RACE",
+    "local_full_passed": 3174,
+    "local_targeted_passed": 127,
+    "prior_builds_preserved": true
+  },
+  "independent_regression": {
+    "before": {
+      "passed": 2,
+      "failed": 2,
+      "log": ".buildlog/overlay-independent-red.log"
+    },
+    "after": {
+      "passed": 4,
+      "failed": 0,
+      "log": ".buildlog/overlay-combined-final.log"
+    },
+    "fixture": ".buildlog/overlay-independent_test.dart"
+  },
+  "original_source_expanded_red": {
+    "passed": 30,
+    "failed": 56,
+    "log": ".buildlog/overlay-confirmed-red.log"
+  },
+  "targeted": {
+    "passed": 320,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/overlay-combined-final.log"
+  },
+  "full_flutter": {
+    "passed": 3309,
+    "failed": 0,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "existing_conditional_skips": 6,
+    "skip_identities_unchanged": true,
+    "integrated_main_baseline": 3178,
+    "original_trust_tests": 49,
+    "correction_tests": 82,
+    "log": ".buildlog/overlay-full.jsonl"
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/overlay-analyze-final.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
+      "callback_verified": true,
+      "file": ".buildlog/pilot-device/trust-overlay-recovery-20261020/merchant-development.apk",
+      "sha256": "1be4004a18d001d43cb3546e658d7204dfaff296ff3e9fd3b331475d3c256786",
+      "bytes": 119443383,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/overlay-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_trust_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      ".buildlog/pilot-device/trust-overlay-recovery-20261020/customer.build.log"
+    ]
+  },
+  "delivered_apks_unchanged": {
+    "bundle": "EsnaftaVar-Development-a0dfbdfd",
+    "verified": true,
+    "sha256": [
+      "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+    ]
+  },
+  "previous_statement_compile_artifacts_unchanged": true,
+  "database_validation": "N/A_NO_SQL_CHANGE",
+  "badge_economic_or_qualification_rule_changes": "NONE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}
