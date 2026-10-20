@@ -832,6 +832,23 @@ old APKs as rebuilt/current candidates. Preserve runtime, migrations, signing,
 historical J7–J13 evidence and real participant-selection gates.
 See [J14 handoff](MERCHANT_PILOT_FIELD_REVIEW_HANDOFF.md).
 
+### J15 — Current Development device candidates (2026-10-20)
+
+After J14 integration (`a0dfbdfd`), execute the existing paired-build path with
+the existing Development public client input and clean integrated sources.
+Deliver actual Customer Development and Merchant Pilot ARM64 debug APKs,
+source/config/artifact evidence, a verified local delivery copy and empty field
+observations. Run the 135 compatibility tests, analyzer and actual package
+inspection; compare the Merchant identity/certificate with the prior recovery
+candidate. Preserve all runtime and historical evidence.
+
+This is an artifact delivery, not a new application feature, release signing,
+device installation, account/role provision, product publication or pilot opening.
+Owner reconfirms real merchants/products are still unknown. Hosted access is
+limited to the existing Development client UI and one read-only Auth settings
+request. No mutation or Production access. See
+[J15 candidate delivery](MERCHANT_PILOT_DEVELOPMENT_CANDIDATES_HANDOFF.md).
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required
