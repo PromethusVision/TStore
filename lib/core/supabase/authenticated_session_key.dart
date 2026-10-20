@@ -4,8 +4,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Local stale-response fence only. The server verifies JWT/session authority.
 /// Token refresh in the same Auth session does not change this key.
 String? authenticatedSessionKey(SupabaseClient client) {
+  return authenticatedSessionKeyFromSession(client.auth.currentSession);
+}
+
+/// Keeps a queued Auth event's identity even if the live session has changed.
+String? authenticatedSessionKeyFromSession(Session? session) {
   try {
-    final session = client.auth.currentSession;
     if (session == null) return null;
     final payload =
         jsonDecode(

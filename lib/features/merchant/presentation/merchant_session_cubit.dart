@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/merchant/domain/merchant_session_identity.dart';
 
 enum MerchantSessionStatus {
   checking,
@@ -38,45 +39,62 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
     required this.credentials,
     required Stream<String?> sessionChanges,
     required this.currentUserId,
+    this.currentSessionKey,
+    Stream<MerchantSessionIdentity>? sessionIdentities,
     this.beforeSignOut,
     this.accessTimeout = const Duration(seconds: 15),
   }) : super(const MerchantSessionState(MerchantSessionStatus.checking)) {
     _lastIdentity = currentUserId();
-    _subscription = sessionChanges.listen(
-      (id) {
-        _observeIdentity(signal: id, hasSignal: true);
-        // Auth callbacks can arrive while disabling a device or awaiting a
-        // credential request. Only its completion may reopen the workspace.
-        if (_authBusy || _recoveryActive) {
-          ++_epoch;
-          return;
-        }
-        unawaited(
-          reload(
-            quiet:
-                id != null &&
-                id == currentUserId() &&
-                id == state.access?.user.id,
-          ),
-        );
-      },
-      onError: (Object _) => _sessionFailure(),
-      onDone: () {
-        _monitorEnded = true;
-        _sessionFailure();
-      },
-    );
+    _lastSessionKey = currentSessionKey?.call();
+    _subscription =
+        (sessionIdentities ??
+                sessionChanges.map(
+                  (id) => MerchantSessionIdentity(
+                    userId: id,
+                    sessionKey: currentSessionKey?.call(),
+                  ),
+                ))
+            .listen(
+              (signal) {
+                final changed = _observeIdentity(signal: signal);
+                final id = signal.userId;
+                // Auth callbacks can arrive while disabling a device or awaiting a
+                // credential request. Only its completion may reopen the workspace.
+                if (_authBusy || _recoveryActive) {
+                  ++_epoch;
+                  return;
+                }
+                unawaited(
+                  reload(
+                    quiet:
+                        !changed &&
+                        id != null &&
+                        id == currentUserId() &&
+                        id == state.access?.user.id,
+                  ),
+                );
+              },
+              onError: (Object _) => _sessionFailure(),
+              onDone: () {
+                _monitorEnded = true;
+                _sessionFailure();
+              },
+            );
   }
   final MerchantRepository repository;
   final MerchantCredentials credentials;
   final String? Function() currentUserId;
+
+  /// Stable Auth session identity; local preview hosts may omit it.
+  final String? Function()? currentSessionKey;
   final Future<void> Function()? beforeSignOut;
   // Reads alone are bounded. Timing out an auth/write operation must never be
   // interpreted as cancellation or as permission to send a replacement write.
   final Duration accessTimeout;
-  StreamSubscription<String?>? _subscription;
+  StreamSubscription<MerchantSessionIdentity>? _subscription;
   int _epoch = 0, _scopeRevision = 0, _identityRevision = 0;
   String? _lastIdentity;
+  String? _lastSessionKey;
   bool _authBusy = false, _authInterrupted = false, _monitorEnded = false;
   bool _closing = false;
   bool _recoveryActive = false;
@@ -91,13 +109,22 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
 
   bool get _unavailable => isClosed || _closing;
 
-  void _observeIdentity({String? signal, bool hasSignal = false}) {
+  bool _observeIdentity({MerchantSessionIdentity? signal}) {
     final actual = currentUserId();
-    if (_lastIdentity != actual || (hasSignal && signal != actual)) {
+    final key = currentSessionKey?.call();
+    final changed =
+        _lastIdentity != actual ||
+        _lastSessionKey != key ||
+        (signal != null &&
+            (signal.userId != actual ||
+                (currentSessionKey != null && signal.sessionKey != key)));
+    if (changed) {
       ++_identityRevision;
       ++_scopeRevision;
     }
     _lastIdentity = actual;
+    _lastSessionKey = key;
+    return changed;
   }
 
   void _publish(
@@ -139,22 +166,32 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
       _failure(_sessionFailureMessage);
       return;
     }
-    _observeIdentity();
+    final changed = _observeIdentity();
     final epoch = ++_epoch;
     final id = currentUserId();
+    final sessionKey = currentSessionKey?.call();
+    final identity = _identityRevision;
     final previous = state.access;
-    final preserve = quiet && id != null && previous?.user.id == id;
+    final preserve = quiet && !changed && id != null && previous?.user.id == id;
     if (!preserve) ++_scopeRevision;
     if (id == null) {
       _publish(MerchantSessionStatus.signedOut);
       return;
     }
+    if (currentSessionKey != null && sessionKey == null) {
+      _failure(merchantSessionChanged);
+      return;
+    }
+    bool sameIdentity() =>
+        currentUserId() == id &&
+        currentSessionKey?.call() == sessionKey &&
+        identity == _identityRevision;
     if (!preserve) _publish(MerchantSessionStatus.checking);
     try {
       final result = await repository.loadAccess().timeout(accessTimeout);
       if (_unavailable || epoch != _epoch) return;
-      if (currentUserId() != id) {
-        _observeIdentity();
+      _observeIdentity();
+      if (!sameIdentity()) {
         _failure(merchantSessionChanged);
         return;
       }
@@ -183,7 +220,7 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
       if (!_unavailable && epoch == _epoch) {
         _observeIdentity();
         _failure(
-          currentUserId() == id
+          sameIdentity()
               ? 'Bağlantı kurulamadı. Lütfen tekrar deneyin.'
               : merchantSessionChanged,
         );
@@ -234,13 +271,18 @@ class MerchantSessionCubit extends Cubit<MerchantSessionState> {
     _beginAuth('Güvenli çıkış yapılıyor…', MerchantSessionStatus.checking);
     final id = currentUserId();
     final identity = _identityRevision;
+    final sessionKey = currentSessionKey?.call();
     String? failure;
     bool sameIdentity() =>
-        currentUserId() == id && identity == _identityRevision;
+        currentUserId() == id &&
+        identity == _identityRevision &&
+        currentSessionKey?.call() == sessionKey;
     try {
       if (id != null) {
         // Preserve the shared revoke-before-logout contract. An account change
         // during revocation must not dispatch the old exit against the new user.
+        // The same user may also have a replacement Auth session; ordinary token
+        // refresh retains the stable session key and may complete this exit.
         await beforeSignOut?.call();
         _observeIdentity();
         if (!_unavailable && !_authInterrupted && sameIdentity()) {

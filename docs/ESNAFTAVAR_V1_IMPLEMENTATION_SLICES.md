@@ -90,6 +90,13 @@ late-write, same-account return, ownership and failure/retry scenarios alongside
 existing Merchant/Customer regressions. Full G/H1/I/J gates remain unchanged.
 See [handoff](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
 
+2026-10-20 local follow-through: extend that same boundary to replacement Auth
+sessions for one account, including queued S1 → S2 → S1 events and access-read
+completion races. Ordinary token refresh remains draft-preserving. No migration,
+new capability or FROZEN policy change. This work is locally verified and awaits
+Integration review; it does not close dashboard/device/pilot acceptance.
+See [replacement-session handoff](MERCHANT_SESSION_REPLACEMENT_HANDOFF.md).
+
 ### A daily-operation recovery follow-through — 2026-10-17
 
 After I1 integration (`116557fd`), canonical §4.3 authorizes one coherent local

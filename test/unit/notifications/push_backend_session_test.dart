@@ -102,6 +102,14 @@ void main() {
       expect(authenticatedSessionKey(client), isNull);
     },
   );
+  test('captured session keeps its identity after live replacement', () async {
+    final captured = client.auth.currentSession;
+    await authenticate(session: 's2');
+
+    expect(authenticatedSessionKeyFromSession(captured), 'fixture-user:s1');
+    expect(authenticatedSessionKey(client), 'fixture-user:s2');
+    expect(authenticatedSessionKeyFromSession(null), isNull);
+  });
   for (final name in ['register', 'disable', 'read', 'save', 'lookup']) {
     test(
       '$name rejects a new Auth session arriving during HTTP response',

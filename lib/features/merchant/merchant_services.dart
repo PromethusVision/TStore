@@ -7,6 +7,7 @@ import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'domain/merchant_account_recovery.dart';
+import 'domain/merchant_session_identity.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
@@ -25,6 +26,8 @@ class MerchantServices {
     required this.preferences,
     required this.sessionChanges,
     required this.currentUserId,
+    this.currentSessionKey,
+    this.sessionIdentities,
     this.pushCoordinator,
     this.pushFactory,
     this.pushProvider = const UnconfiguredMobilePushProvider(),
@@ -46,6 +49,8 @@ class MerchantServices {
   final NotificationPreferencesRepository preferences;
   final Stream<String?> sessionChanges;
   final String? Function() currentUserId;
+  final String? Function()? currentSessionKey;
+  final Stream<MerchantSessionIdentity>? sessionIdentities;
   final MobilePushProvider pushProvider;
   final PushCoordinator? pushCoordinator;
   final PushCoordinator Function(void Function(NotificationEntity) onOpen)?
