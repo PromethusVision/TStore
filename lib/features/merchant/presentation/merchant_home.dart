@@ -123,7 +123,7 @@ class _MerchantHomeState extends State<MerchantHome>
     _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     try {
-      final saved = await Navigator.of(context).push<bool>(
+      await Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (pageContext) => MerchantShopForm(
             repository: widget.services.merchants,
@@ -132,11 +132,13 @@ class _MerchantHomeState extends State<MerchantHome>
           ),
         ),
       );
-      if (mounted && saved == true) {
-        context.read<MerchantSessionCubit>().reload();
-      }
     } finally {
       _opening = false;
+      if (mounted) {
+        // Returning after an uncertain save also needs the authoritative shop.
+        // An unchanged shop retains the current navigation/drafts.
+        context.read<MerchantSessionCubit>().reload(quiet: true);
+      }
     }
   }
 
