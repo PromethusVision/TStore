@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../domain/merchant_promotion.dart';
@@ -14,7 +15,8 @@ class SupabaseMerchantPromotionRepository
     implements
         MerchantPromotionRepository,
         PromotionRecoveryRepository,
-        AuthenticatedSessionSource {
+        PromotionPendingRepository,
+        AuthenticatedSessionEvents {
   SupabaseMerchantPromotionRepository(
     SupabaseClient client, {
     PromotionRpc? rpc,
@@ -22,6 +24,7 @@ class SupabaseMerchantPromotionRepository
     String? Function()? currentUserId,
     String? Function()? currentSessionKey,
     Stream<String?>? sessionChanges,
+    Stream<String?>? sessionKeyChanges,
     this.timeout = const Duration(seconds: 15),
   }) : _rpc = rpc ?? ((name, args) => client.rpc(name, params: args)),
        _sign =
@@ -33,11 +36,20 @@ class SupabaseMerchantPromotionRepository
            currentSessionKey ?? (() => authenticatedSessionKey(client)),
        _sessions =
            sessionChanges ??
-           client.auth.onAuthStateChange.map((e) => e.session?.user.id);
+           client.auth.onAuthStateChange.map((e) => e.session?.user.id),
+       _keys =
+           sessionKeyChanges ??
+           client.auth.onAuthStateChange.map(
+             (e) => authenticatedSessionKeyFromSession(e.session),
+           );
   final PromotionRpc _rpc;
   final PromotionSign _sign;
   final String? Function() _user;
   final Stream<String?> _sessions;
+  final Stream<String?> _keys;
+  final _attempts = <String, _PromotionAttempt>{};
+  @override
+  Stream<String?> get sessionKeyChanges => _keys;
   final Duration timeout;
   final String? Function() _sessionKey;
   @override
@@ -58,20 +70,37 @@ class SupabaseMerchantPromotionRepository
   String? get currentUserId => _user();
   @override
   Stream<String?> get sessionChanges => _sessions;
+  AuthenticatedRequestScope _scope() => AuthenticatedRequestScope(
+    user: currentUserId,
+    session: currentSessionKey,
+    currentUser: () => currentUserId,
+    currentSession: () => currentSessionKey,
+    changes: sessionChanges,
+    sessionKeys: sessionKeyChanges,
+  );
+
+  @override
+  PromotionCommand? pendingCommand(String shopId) {
+    final attempt = _attempts[shopId];
+    if (attempt == null) return null;
+    if (attempt.scope.current) return attempt.command;
+    // A dispatched request is not cancelled by losing its view/session.
+    if (attempt.inFlight == null) {
+      _attempts.remove(shopId);
+      unawaited(attempt.scope.close());
+    }
+    return null;
+  }
+
   Future<Either<PromotionFailure, T>> _call<T>(
     String name,
     Map<String, dynamic> args,
     FutureOr<T> Function(Map<String, dynamic>, AuthenticatedRequestScope)
     decode, {
     bool write = false,
+    AuthenticatedRequestScope? attemptScope,
   }) async {
-    final scope = AuthenticatedRequestScope(
-      user: currentUserId,
-      session: currentSessionKey,
-      currentUser: () => currentUserId,
-      currentSession: () => currentSessionKey,
-      changes: sessionChanges,
-    );
+    final scope = attemptScope ?? _scope();
     try {
       Future<T> request() => scope.run(() async {
         final raw = await _rpc(name, args);
@@ -99,7 +128,7 @@ class SupabaseMerchantPromotionRepository
         write ? PromotionFailure.uncertain : PromotionFailure.unavailable,
       );
     } finally {
-      await scope.close();
+      if (attemptScope == null) await scope.close();
     }
   }
 
@@ -238,18 +267,59 @@ class SupabaseMerchantPromotionRepository
   @override
   Future<Either<PromotionFailure, PromotionReceipt>> mutate(
     PromotionCommand command,
-  ) => _call('mutate_merchant_promotion_v1', command.toJson(), (j, scope) {
-    final receipt = PromotionReceipt(
-      promotionId(j['id']),
-      promotionId(j['revision_id']),
-      string(j['action']),
-    );
-    if (receipt.action != command.action ||
-        (command.draftId != null && receipt.id != command.draftId)) {
-      throw const FormatException();
+  ) {
+    pendingCommand(command.shopId); // Retire an obsolete, settled attempt.
+    final previous = _attempts[command.shopId];
+    if (previous != null) {
+      if (!previous.scope.current) {
+        return Future.value(const Left(PromotionFailure.unavailable));
+      }
+      if (jsonEncode(previous.command.toJson()) !=
+          jsonEncode(command.toJson())) {
+        return Future.value(const Left(PromotionFailure.unavailable));
+      }
+      if (previous.inFlight case final pending?) return pending;
     }
-    return receipt;
-  }, write: true);
+    final attempt = previous ?? _PromotionAttempt(command, _scope());
+    _attempts[command.shopId] = attempt;
+    final result = _mutate(attempt);
+    attempt.inFlight = result;
+    return result;
+  }
+
+  Future<Either<PromotionFailure, PromotionReceipt>> _mutate(
+    _PromotionAttempt attempt,
+  ) async {
+    final command = attempt.command;
+    final result = await _call(
+      'mutate_merchant_promotion_v1',
+      command.toJson(),
+      (j, scope) {
+        final receipt = PromotionReceipt(
+          promotionId(j['id']),
+          promotionId(j['revision_id']),
+          string(j['action']),
+        );
+        if (receipt.action != command.action ||
+            (command.draftId != null && receipt.id != command.draftId)) {
+          throw const FormatException();
+        }
+        return receipt;
+      },
+      write: true,
+      attemptScope: attempt.scope,
+    );
+    attempt.inFlight = null;
+    if (!attempt.scope.current ||
+        !result.fold((e) => e == PromotionFailure.uncertain, (_) => false)) {
+      if (identical(_attempts[command.shopId], attempt)) {
+        _attempts.remove(command.shopId);
+      }
+      await attempt.scope.close();
+    }
+    return result;
+  }
+
   @override
   Future<Either<PromotionFailure, List<PromotionHistoryEntry>>> history(
     String shopId,
@@ -273,4 +343,13 @@ class SupabaseMerchantPromotionRepository
       }),
     ),
   );
+}
+
+/// One original command, retained in memory until an explicit reconciliation or
+/// authority loss. It is never replayed automatically or persisted to disk.
+class _PromotionAttempt {
+  _PromotionAttempt(this.command, this.scope);
+  final PromotionCommand command;
+  final AuthenticatedRequestScope scope;
+  Future<Either<PromotionFailure, PromotionReceipt>>? inFlight;
 }

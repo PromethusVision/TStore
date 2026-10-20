@@ -447,6 +447,22 @@ concurrent revisions, source drift, ownership/grants, narrow renders, full Flutt
 regressions and both debug artifacts. Historical migrations and Customer layouts
 remain unchanged. See `MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md` for evidence.
 
+### G draft session and command continuity follow-through — 2026-10-21
+
+Following integrated E recovery (`d1805677`), canonical §11.3 extends existing
+Tanıtım Merkezi reliability: event-captured session fencing across all private
+RPCs/signing, opener-bound navigation/dialogs, same-command in-flight joining,
+and app-lifetime explicit recovery of an uncertain immutable command after view
+reopening. Ordinary renewal, current pagination/conflict behavior, screen layout
+and server idempotency remain. Existing Campaign Lite already uses the captured
+session guard; verify its regressions without rewriting it.
+
+No new persistence, Auth service, SQL or remote operation. Cover real SDK event
+ordering, malformed/late responses, observer failure, concurrent commands, reopen,
+normal renewal, narrow/large-text recovery, full Flutter and both client builds.
+Full G/H1/I/J and actual participant/device/provider gates stay OPEN. Integration
+reviews the source branch only; see [handoff](MERCHANT_PROMOTION_SESSION_RECOVERY_HANDOFF.md).
+
 ## H1 — Merchant statement, reserve and settlement
 
 - **DB:** H0-ledger projections for blocked/pending/reserve/withdrawable/paid/

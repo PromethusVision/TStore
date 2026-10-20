@@ -1,0 +1,117 @@
+{
+  "kind": "esnaftavar-promotion-session-recovery-verification-v1",
+  "date": "2026-10-21",
+  "status": "LOCAL_PASS_INTEGRATION_PENDING",
+  "branch": "agent/merchant-promotion-session-recovery",
+  "base_commit": "d1805677a9987c692b713d4826fa7c7ae239b010",
+  "build_parent_commit": "d1805677a9987c692b713d4826fa7c7ae239b010",
+  "uncommitted_build_sources": true,
+  "source_sha256": "c3cff4c8fff7c834b7e4e0877f8588bff0b8b69d520396984e7e65efd3855aad",
+  "source_fingerprint_matches_built_pair": true,
+  "reproduced": {
+    "success": false,
+    "passed": 7,
+    "failed": 25,
+    "skip_names": [],
+    "log": ".buildlog/promotion-red.jsonl"
+  },
+  "targeted": {
+    "success": true,
+    "passed": 180,
+    "failed": 0,
+    "skip_names": [],
+    "log": ".buildlog/promotion-targeted-complete.jsonl"
+  },
+  "fixture_corrections": "Expanded harness initially used .last before a lazy item existed and awaited root-zone stream close in FakeAsync. Corrected without changing runtime assertions; interrupted harness runs are not product-failure evidence.",
+  "full_flutter": {
+    "success": true,
+    "passed": 3417,
+    "failed": 0,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "log": ".buildlog/promotion-full.jsonl",
+    "existing_conditional_skips": 6,
+    "skip_identities_unchanged": true,
+    "integrated_main_baseline": 3360,
+    "new_tests": 57,
+    "concurrency": 2
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/promotion-analyze-final.log"
+  },
+  "artifact_rehearsal_retry": {
+    "first_attempt": "FAILED_INSPECT_MERCHANT_AFTER_BOTH_COMPILES_PASSED; underlying copy/inspection error not captured, disk exhaustion suspected but not proven",
+    "first_logs": ".buildlog/pilot-device/promotion-session-recovery-20261021",
+    "second_attempt": "CUSTOMER_APK_INDEPENDENTLY_VERIFIED; legacy Windows PowerShell refused cleanup script, no execution policy changed",
+    "second_logs": ".buildlog/pilot-device/promotion-session-recovery-20261021-retry",
+    "retry": "Current pwsh host; guarded own build-cache cleanup after each fully copied and verified artifact; fresh output folder.",
+    "original_runner_sha256": "19505b66a856678475d13011690b0f80a6eb537ecf1db002df8e8573a3f32bc2",
+    "task_local_runner_sha256": "af50f8053f6572d4e84c262f4ec901faee180bb85913bfabf0e2d92906a72492",
+    "runner_diff_only_import_root_cleanup_hook_and_command_diagnostics": true,
+    "previous_deliveries_deleted_or_overwritten": false
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
+      "callback_verified": true,
+      "file": ".buildlog/pilot-device/promotion-session-recovery-20261021-final/merchant-development.apk",
+      "sha256": "5bd90e4c9bd1de6169596f61e994ac0ffbf191b88cbd139f50fdd30bf3cd9c8e",
+      "bytes": 119463003,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/promotion-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_promotion_session_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      ".buildlog/pilot-device/promotion-session-recovery-20261021-final/customer.build.log",
+      ".buildlog/pilot-device/promotion-session-recovery-20261021-final/merchant.build.log",
+      ".buildlog/promotion-merchant-development-build.log"
+    ]
+  },
+  "delivered_apks_unchanged": {
+    "sha256": [
+      "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+    ]
+  },
+  "previous_reward_trust_statement_artifacts_unchanged": true,
+  "database_validation": "N/A_NO_SQL_CHANGE",
+  "economic_rule_changes": "NONE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}

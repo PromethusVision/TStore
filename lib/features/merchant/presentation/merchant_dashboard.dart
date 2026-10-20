@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:t_store/features/merchant/presentation/merchant_read.dart';
-import 'package:t_store/features/merchant_promotions/presentation/merchant_promotion_center.dart';
+import 'package:t_store/features/merchant_promotions/presentation/merchant_promotion_entry.dart';
 import 'package:t_store/features/merchant/presentation/merchant_statement.dart';
 import 'package:t_store/features/merchant/presentation/merchant_rewards.dart';
 import 'package:t_store/features/merchant/presentation/merchant_campaigns.dart';
@@ -98,24 +98,10 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
         ),
         const Text('Mağazanın güncel durumunu kontrol et.'),
         if (widget.services.promotions case final promotions?)
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.campaign_outlined),
-              title: const Text('Tanıtım Merkezi'),
-              subtitle: const Text(
-                'İçerik hazırla, önizle ve taslaklarını yönet',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (_) => MerchantPromotionCenter(
-                    repository: promotions,
-                    shopId: widget.access.shop!.id,
-                    ownerId: widget.access.user.id,
-                  ),
-                ),
-              ),
-            ),
+          MerchantPromotionEntry(
+            repository: promotions,
+            shopId: widget.access.shop!.id,
+            ownerId: widget.access.user.id,
           ),
         if (widget.services.statement != null)
           MerchantStatementEntryPoint(

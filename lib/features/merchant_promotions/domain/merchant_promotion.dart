@@ -265,3 +265,9 @@ abstract interface class PromotionRecoveryRepository {
     String draftId,
   );
 }
+
+/// Optional app-lifetime recovery of the original uncertain/in-flight command.
+/// Reading this port must not dispatch a write or imply success.
+abstract interface class PromotionPendingRepository {
+  PromotionCommand? pendingCommand(String shopId);
+}

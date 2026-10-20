@@ -1,5 +1,4 @@
-import 'dart:async';
-import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'promotion_view_session.dart';
 import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
 import 'package:t_store/features/merchant/presentation/merchant_management_request.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +10,11 @@ class MerchantPromotionCenter extends StatefulWidget {
     required this.repository,
     required this.shopId,
     required this.ownerId,
+    this.originIsCurrent,
   });
   final MerchantPromotionRepository repository;
   final String shopId, ownerId;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantPromotionCenter> createState() =>
       _MerchantPromotionCenterState();
@@ -21,7 +22,7 @@ class MerchantPromotionCenter extends StatefulWidget {
 
 class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
     with WidgetsBindingObserver {
-  StreamSubscription<String?>? _session;
+  late PromotionViewSession _session;
   final _drafts = <PromotionDraft>[],
       _history = <PromotionHistoryEntry>[],
       _sources = <PromotionSource>[];
@@ -38,7 +39,6 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   bool _busy = false, _enabled = false, _more = false, _broken = false;
   int _generation = 0, _draftOffset = 0, _sourceOffset = 0, _historyOffset = 0;
   String _sourceQuery = '';
-  String? _sessionKey;
   bool _writing = false,
       _asking = false,
       _needsReview = false,
@@ -49,15 +49,9 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   bool get _dirty =>
       !merchantValuesEqual(_baseline.toJson(), _selection.toJson()) ||
       (_draft == null && _preview != null);
-  bool get _sameSession =>
-      widget.repository is! AuthenticatedSessionSource ||
-      (_sessionKey != null &&
-          (widget.repository as AuthenticatedSessionSource).currentSessionKey ==
-              _sessionKey);
-
   bool get _current =>
       !_broken &&
-      _sameSession &&
+      _session.current &&
       widget.repository.currentUserId == widget.ownerId;
   bool get _locked => _busy || _writing || _asking || _pending != null;
   bool _continue(int generation) {
@@ -99,21 +93,11 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   }
 
   void _listen() {
-    if (widget.repository case AuthenticatedSessionSource source) {
-      _sessionKey = source.currentSessionKey;
-    }
-    _session = widget.repository.sessionChanges.listen(
-      (actor) {
-        if (actor != widget.ownerId || !_current) {
-          _broken = true;
-          _invalidate();
-        }
-      },
-      onError: (Object _) {
-        _broken = true;
-        _invalidate();
-      },
-      onDone: () {
+    _session = PromotionViewSession(
+      repository: widget.repository,
+      owner: widget.ownerId,
+      originIsCurrent: widget.originIsCurrent,
+      onLost: () {
         _broken = true;
         _invalidate();
       },
@@ -123,7 +107,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   void _invalidate() {
     if (!mounted) return;
     // Resume and token refresh cannot cancel a running mutation or unlock retry.
-    if (_current && (_writing || _pending != null)) return;
+    if (_current && (_writing || _pending != null || _asking)) return;
     _generation++;
     setState(() {
       _drafts.clear();
@@ -167,7 +151,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
     if (old.repository != widget.repository ||
         old.shopId != widget.shopId ||
         old.ownerId != widget.ownerId) {
-      _session?.cancel();
+      _session.close();
       _pending = null;
       _draft = null;
       _selection = const PromotionSelection();
@@ -175,9 +159,17 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
       _broken = false;
       _writing = false;
       _needsReview = false;
+      _asking = false;
+      _baseline = const PromotionSelection();
+      _search.clear();
+      _listingLabel = '';
+      _campaignLabel = '';
       _fresh = null;
       _recoveryLoaded = false;
       _listen();
+      _invalidate();
+    } else if (!_current) {
+      _broken = true;
       _invalidate();
     }
   }
@@ -190,7 +182,7 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
   @override
   void dispose() {
     _generation++;
-    _session?.cancel();
+    _session.close();
     _search.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -198,6 +190,18 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
 
   Future<void> _load({bool more = false}) async {
     if (!_current || _locked) return;
+    if (widget.repository case PromotionPendingRepository recovery) {
+      final command = recovery.pendingCommand(widget.shopId);
+      if (command != null) {
+        setState(() {
+          _pending = command;
+          _drafts.clear();
+          _error = PromotionFailure.uncertain;
+          _retryRead = null;
+        });
+        return;
+      }
+    }
     final generation = ++_generation, offset = more ? _draftOffset : 0;
     _retryRead = () => _load(more: more);
     setState(() {
@@ -403,27 +407,40 @@ class _MerchantPromotionCenterState extends State<MerchantPromotionCenter>
 
   Future<bool> _confirmDiscard() async {
     if (_asking || !_current) return false;
+    final origin = _session;
+    final generation = _generation;
+    bool current() =>
+        mounted &&
+        identical(_session, origin) &&
+        generation == _generation &&
+        origin.current &&
+        _current;
     setState(() => _asking = true);
     final discard = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Değişikliklerden vazgeçilsin mi?'),
-        content: const Text(
-          'Bu ekrandaki kaydedilmemiş seçimlerin kaybolacak.',
+      builder: (context) => PromotionPrivateOverlay(
+        repository: origin.repository,
+        owner: origin.owner,
+        originIsCurrent: current,
+        child: AlertDialog(
+          title: const Text('Değişikliklerden vazgeçilsin mi?'),
+          content: const Text(
+            'Bu ekrandaki kaydedilmemiş seçimlerin kaybolacak.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Düzenlemeye dön'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Vazgeç ve devam et'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Düzenlemeye dön'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Vazgeç ve devam et'),
-          ),
-        ],
       ),
     );
-    if (!mounted) return false;
+    if (!current()) return false;
     setState(() => _asking = false);
     return discard == true && _current;
   }
