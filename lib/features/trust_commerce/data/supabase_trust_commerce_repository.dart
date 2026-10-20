@@ -14,7 +14,7 @@ class SupabaseTrustCommerceRepository
     implements
         TrustCommerceRepository,
         CampaignRecoveryRepository,
-        AuthenticatedSessionSource {
+        AuthenticatedSessionEvents {
   SupabaseTrustCommerceRepository(
     SupabaseClient client, {
     TrustRpc? rpc,
@@ -22,6 +22,7 @@ class SupabaseTrustCommerceRepository
     String? Function()? currentSessionKey,
     this.readTimeout = const Duration(seconds: 15),
     Stream<String?>? sessionChanges,
+    Stream<String?>? sessionKeyChanges,
     TrustImageSigner? imageSigner,
   }) : _rpc =
            rpc ?? ((name, parameters) => client.rpc(name, params: parameters)),
@@ -31,6 +32,11 @@ class SupabaseTrustCommerceRepository
        sessionChanges =
            sessionChanges ??
            client.auth.onAuthStateChange.map((e) => e.session?.user.id),
+       sessionKeyChanges =
+           sessionKeyChanges ??
+           client.auth.onAuthStateChange.map(
+             (e) => authenticatedSessionKeyFromSession(e.session),
+           ),
        _sign =
            imageSigner ??
            ((path) =>
@@ -46,6 +52,8 @@ class SupabaseTrustCommerceRepository
   String? get currentUserId => _user();
   @override
   final Stream<String?> sessionChanges;
+  @override
+  final Stream<String?> sessionKeyChanges;
   static final _uuid = RegExp(
     r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
   );
@@ -74,6 +82,7 @@ class SupabaseTrustCommerceRepository
       currentUser: () => currentUserId,
       currentSession: () => currentSessionKey,
       changes: sessionChanges,
+      sessionKeys: sessionKeyChanges,
       allowGuest: !private,
     );
     try {
@@ -135,22 +144,49 @@ class SupabaseTrustCommerceRepository
   }) => _call(
     'read_my_trust_v1',
     {'p_shop_id': shopId, 'p_limit': 30, 'p_before': before},
-    (j, scope) => TrustSnapshot(
-      enabled: _bool(j, 'enabled'),
-      badges: List.unmodifiable(_list(j['badges']).map(_badge)),
-      history: List.unmodifiable(
-        _list(j['history']).map(
-          (e) => TrustEvent(
-            _int(e, 'id'),
-            _str(e, 'code'),
-            _str(e, 'event'),
-            _str(e, 'reason'),
-            _date(e, 'recorded_at'),
+    (j, scope) {
+      final enabled = _bool(j, 'enabled'),
+          badges = List<TrustBadge>.unmodifiable(
+            _list(j['badges']).map(_badge),
           ),
-        ),
-      ),
-      nextBefore: j['next_before'] == null ? null : _int(j, 'next_before'),
-    ),
+          rows = _list(j['history']);
+      if (enabled && j['kind'] != (shopId == null ? 'customer' : 'merchant')) {
+        throw const FormatException();
+      }
+      final history = <TrustEvent>[];
+      var previous = before;
+      for (final row in rows) {
+        final id = _int(row, 'id'), event = _str(row, 'event');
+        if (id <= 0 ||
+            (previous != null && id >= previous) ||
+            !const {'awarded', 'revoked'}.contains(event)) {
+          throw const FormatException();
+        }
+        history.add(
+          TrustEvent(
+            id,
+            _str(row, 'code'),
+            event,
+            _str(row, 'reason'),
+            _date(row, 'recorded_at'),
+          ),
+        );
+        previous = id;
+      }
+      final next = j['next_before'] == null ? null : _int(j, 'next_before');
+      if (history.length > 30 ||
+          next != (history.length == 30 ? history.last.id : null) ||
+          (!enabled &&
+              (badges.isNotEmpty || history.isNotEmpty || next != null))) {
+        throw const FormatException();
+      }
+      return TrustSnapshot(
+        enabled: enabled,
+        badges: badges,
+        history: List.unmodifiable(history),
+        nextBefore: next,
+      );
+    },
     valid:
         (shopId == null || _uuid.hasMatch(shopId)) &&
         (before == null || before > 0),

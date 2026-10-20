@@ -1257,6 +1257,38 @@ Announcement offers and draft/preview flows can be verified independently.
 Official geography, privacy/retention and truthful offer wording remain reviewed
 deployment inputs, not fabricated engineering approvals.
 
+### 7.3 Existing badge surfaces and shared trust recovery — 2026-10-20
+
+The next authorized local reliability package starts at integrated `88fa667b`.
+It hardens existing D read surfaces and their shared F transport; it introduces
+no badge, threshold, eligibility algorithm, economic benefit or rollout change.
+All FROZEN D/F rules and default-OFF gates remain unchanged.
+
+- Private trust/campaign continuations and private badge dialogs observe the
+  existing captured stable-session stream as well as account identity. An
+  intervening S1→S2→S1 sequence, logout, replacement or broken observation
+  permanently expires the old route. Ordinary token renewal preserves it.
+  A repository/actor replacement does not grant authority to an existing route.
+- Private badge summaries and history reads have bounded, retryable loading.
+  Changing the shop clears old values; resume starts a fresh first-page
+  generation. Retired reads, late failures and timeouts cannot restore older
+  state. Timeout is not proof that server work stopped.
+- History preserves the server's descending positive event-ID cursor contract.
+  Retry after a failed subsequent page uses that same cursor and retains
+  confirmed rows. Duplicate, out-of-order or contradictory pages require a fresh
+  first page. Disabled responses clear old history. No atomic snapshot across
+  pages, offline projection or local badge qualification is invented.
+- Public shop badges/offers retain their existing layout and server facts.
+  Shop/repository changes, resume, parallel read failure and timeout cannot
+  leave old results or indefinite loading. Private explanation dialogs reuse
+  the existing session guard; public badge explanations remain public.
+
+No SQL, Auth implementation, dependency, provider, hosted operation, price or
+ranking rule changes. The existing server trust read may refresh its projections;
+no new write API or client award authority is introduced. Physical J, official
+geography and pilot-opening acceptance remain OPEN.
+See [trust recovery handoff](MERCHANT_TRUST_RECOVERY_HANDOFF.md).
+
 ## 8. Ödül Sayacı, packages, reservation and coupon
 
 **FROZEN numerical defaults, stored in versioned server configuration:**

@@ -7,7 +7,7 @@ import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
 mixin TrustSessionGuard<T extends StatefulWidget> on State<T> {
   TrustCommerceRepository get trustRepository;
   String get trustActor;
-  StreamSubscription<String?>? _subscription;
+  StreamSubscription<String?>? _subscription, _keys;
   bool _invalid = false;
   late final TrustCommerceRepository _repository;
   late final String _actor;
@@ -59,11 +59,27 @@ mixin TrustSessionGuard<T extends StatefulWidget> on State<T> {
       onError: (Object _) => _invalidate(),
       onDone: _invalidate,
     );
+    if (_repository case AuthenticatedSessionEvents source) {
+      _keys = source.sessionKeyChanges.listen(
+        (key) {
+          if (key != _sessionKey || !sessionCurrent) _invalidate();
+        },
+        onError: (Object _) => _invalidate(),
+        onDone: _invalidate,
+      );
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!sessionCurrent) _invalidate();
   }
 
   @override
   void dispose() {
     _subscription?.cancel();
+    _keys?.cancel();
     super.dispose();
   }
 }

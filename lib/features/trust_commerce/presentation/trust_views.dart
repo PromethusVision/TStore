@@ -6,29 +6,34 @@ import 'package:t_store/features/trust_commerce/presentation/trust_session_guard
 
 Future<void> showTrustExplanation(
   BuildContext context,
-  TrustBadge badge,
-) => showDialog<void>(
+  TrustBadge badge, {
+  Widget Function(Widget)? protect,
+}) => showDialog<void>(
   context: context,
   barrierDismissible: true,
-  builder: (context) => AlertDialog(
-    title: Text(badge.title),
-    content: SingleChildScrollView(
-      child: Text(
-        '${badge.explanation}\n\nRozetler para, indirim veya arama sırası ayrıcalığı sağlamaz.',
+  builder: (context) {
+    final dialog = AlertDialog(
+      title: Text(badge.title),
+      content: SingleChildScrollView(
+        child: Text(
+          '${badge.explanation}\n\nRozetler para, indirim veya arama sırası ayrıcalığı sağlamaz.',
+        ),
       ),
-    ),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: const Text('Kapat'),
-      ),
-    ],
-  ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Kapat'),
+        ),
+      ],
+    );
+    return protect?.call(dialog) ?? dialog;
+  },
 );
 
 class TrustBadgeStrip extends StatelessWidget {
-  const TrustBadgeStrip({super.key, required this.badges});
+  const TrustBadgeStrip({super.key, required this.badges, this.protect});
   final List<TrustBadge> badges;
+  final Widget Function(Widget)? protect;
   @override
   Widget build(BuildContext context) {
     final visible = highestTrustBadges(badges);
@@ -44,35 +49,39 @@ class TrustBadgeStrip extends StatelessWidget {
               ActionChip(
                 avatar: const Icon(Icons.verified_outlined, size: 18),
                 label: Text(badge.title),
-                onPressed: () => showTrustExplanation(context, badge),
+                onPressed: () =>
+                    showTrustExplanation(context, badge, protect: protect),
               ),
             if (visible.length > count)
               ActionChip(
                 label: Text('+${visible.length - count}'),
                 onPressed: () => showDialog<void>(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Rozetler'),
-                    content: SizedBox(
-                      width: 360,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          for (final badge in visible)
-                            ListTile(
-                              title: Text(badge.title),
-                              subtitle: Text(badge.explanation),
-                            ),
-                        ],
+                  builder: (context) {
+                    final dialog = AlertDialog(
+                      title: const Text('Rozetler'),
+                      content: SizedBox(
+                        width: 360,
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            for (final badge in visible)
+                              ListTile(
+                                title: Text(badge.title),
+                                subtitle: Text(badge.explanation),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Kapat'),
-                      ),
-                    ],
-                  ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Kapat'),
+                        ),
+                      ],
+                    );
+                    return protect?.call(dialog) ?? dialog;
+                  },
                 ),
               ),
           ],
@@ -88,19 +97,22 @@ class TrustSummary extends StatefulWidget {
     required this.repository,
     required this.actor,
     this.shopId,
+    this.readTimeout = const Duration(seconds: 15),
   });
   final TrustCommerceRepository repository;
   final String actor;
   final String? shopId;
+  final Duration readTimeout;
   @override
   State<TrustSummary> createState() => _TrustSummaryState();
 }
 
 class _TrustSummaryState extends State<TrustSummary>
-    with TrustSessionGuard<TrustSummary> {
+    with WidgetsBindingObserver, TrustSessionGuard<TrustSummary> {
   TrustSnapshot? _data;
   String? _error;
   bool _loading = true, _opening = false;
+  int _epoch = 0;
   @override
   TrustCommerceRepository get trustRepository => widget.repository;
   @override
@@ -108,26 +120,71 @@ class _TrustSummaryState extends State<TrustSummary>
   @override
   void clearTrustSession() {
     _data = null;
+    _epoch++;
   }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
   }
 
+  @override
+  void didUpdateWidget(TrustSummary oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shopId != widget.shopId) _load();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _load();
+  }
+
+  @override
+  void dispose() {
+    _epoch++;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   Future<void> _load() async {
-    if (!sessionCurrent) return;
+    if (!checkTrustContinuation()) return;
+    final epoch = ++_epoch;
     setState(() {
       _loading = true;
       _error = null;
+      _data = null;
     });
-    final result = await widget.repository.trust(shopId: widget.shopId);
-    if (!mounted || !sessionCurrent) return;
-    setState(() {
-      _loading = false;
-      result.fold((e) => _error = e.message, (v) => _data = v);
-    });
+    try {
+      final result = await widget.repository
+          .trust(shopId: widget.shopId)
+          .timeout(widget.readTimeout);
+      if (!mounted || epoch != _epoch || !checkTrustContinuation()) return;
+      result.fold(
+        (e) {
+          if (e.kind == TrustFailureKind.auth) {
+            expireTrustSession();
+          } else {
+            setState(() {
+              _loading = false;
+              _error = e.message;
+            });
+          }
+        },
+        (v) => setState(() {
+          _loading = false;
+          _data = v;
+        }),
+      );
+    } catch (_) {
+      if (!mounted || epoch != _epoch || !checkTrustContinuation()) return;
+      setState(() {
+        _loading = false;
+        _error =
+            'Bilgiler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.';
+      });
+    }
   }
 
   Future<void> _open() async {
@@ -168,7 +225,14 @@ class _TrustSummaryState extends State<TrustSummary>
             else if (_error != null)
               TrustRetry(message: _error!, onRetry: _load)
             else ...[
-              TrustBadgeStrip(badges: _data!.badges),
+              TrustBadgeStrip(
+                badges: _data!.badges,
+                protect: (child) => PrivateTrustOverlay(
+                  repository: widget.repository,
+                  actor: widget.actor,
+                  child: child,
+                ),
+              ),
               if (!_data!.badges.any((b) => b.eligible))
                 const Text('İlk rozetine doğru ilerlemeni takip et.'),
               TextButton(
@@ -189,20 +253,22 @@ class TrustDetailView extends StatefulWidget {
     required this.repository,
     required this.actor,
     this.shopId,
+    this.readTimeout = const Duration(seconds: 15),
   });
   final TrustCommerceRepository repository;
   final String actor;
   final String? shopId;
+  final Duration readTimeout;
   @override
   State<TrustDetailView> createState() => _TrustDetailViewState();
 }
 
 class _TrustDetailViewState extends State<TrustDetailView>
-    with TrustSessionGuard<TrustDetailView> {
+    with WidgetsBindingObserver, TrustSessionGuard<TrustDetailView> {
   TrustSnapshot? _data;
   final _history = <TrustEvent>[];
   String? _error;
-  bool _loading = false;
+  bool _loading = false, _retryMore = false;
   int _epoch = 0;
   @override
   TrustCommerceRepository get trustRepository => widget.repository;
@@ -218,31 +284,98 @@ class _TrustDetailViewState extends State<TrustDetailView>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
   }
 
-  Future<void> _load({bool more = false}) async {
-    if (_loading || !sessionCurrent) return;
+  @override
+  void didUpdateWidget(TrustDetailView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shopId != widget.shopId) _load(force: true);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _load(force: true);
+  }
+
+  @override
+  void dispose() {
+    _epoch++;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _load({bool more = false, bool force = false}) async {
+    if (!checkTrustContinuation() || (_loading && !force)) return;
+    final before = more ? _data?.nextBefore : null;
+    if (more && before == null) return;
     final epoch = ++_epoch;
     setState(() {
       _loading = true;
       _error = null;
+      _retryMore = more;
+      if (!more) {
+        _data = null;
+        _history.clear();
+      }
     });
-    final result = await widget.repository.trust(
-      shopId: widget.shopId,
-      before: more ? _data?.nextBefore : null,
-    );
-    if (!mounted || !sessionCurrent || epoch != _epoch) return;
-    setState(() {
-      _loading = false;
-      result.fold((e) => _error = e.message, (v) {
-        if (!more) _history.clear();
-        _history.addAll(
-          v.history.where((e) => !_history.any((old) => old.id == e.id)),
-        );
-        _data = v;
+    try {
+      final result = await widget.repository
+          .trust(shopId: widget.shopId, before: before)
+          .timeout(widget.readTimeout);
+      if (!mounted || epoch != _epoch || !checkTrustContinuation()) return;
+      result.fold(
+        (e) {
+          if (e.kind == TrustFailureKind.auth) {
+            expireTrustSession();
+          } else {
+            setState(() {
+              _loading = false;
+              _error = e.message;
+            });
+          }
+        },
+        (v) => setState(() {
+          _loading = false;
+          if (!v.enabled) {
+            _history.clear();
+            _data = const TrustSnapshot(enabled: false);
+            _retryMore = false;
+          } else if (!_validPage(v, before)) {
+            _data = null;
+            _history.clear();
+            _retryMore = false;
+            _error =
+                'Bilgiler değişti. Güncel durumu görmek için yeniden deneyin.';
+          } else {
+            _history.addAll(v.history);
+            _data = v;
+          }
+        }),
+      );
+    } catch (_) {
+      if (!mounted || epoch != _epoch || !checkTrustContinuation()) return;
+      setState(() {
+        _loading = false;
+        _error =
+            'Bilgiler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.';
       });
-    });
+    }
+  }
+
+  bool _validPage(TrustSnapshot value, int? before) {
+    var previous = before;
+    for (final event in value.history) {
+      if (event.id <= 0 ||
+          (previous != null && event.id >= previous) ||
+          _history.any((old) => old.id == event.id)) {
+        return false;
+      }
+      previous = event.id;
+    }
+    return value.nextBefore == null ||
+        (value.history.isNotEmpty && value.nextBefore == value.history.last.id);
   }
 
   @override
@@ -260,7 +393,7 @@ class _TrustDetailViewState extends State<TrustDetailView>
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: _load,
+        onRefresh: () => _load(force: true),
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -268,7 +401,11 @@ class _TrustDetailViewState extends State<TrustDetailView>
               'Doğrulanmış alışveriş ve değerlendirmelerden hesaplanır. Para veya sıralama ayrıcalığı sağlamaz.',
             ),
             if (_loading) const LinearProgressIndicator(),
-            if (_error != null) TrustRetry(message: _error!, onRetry: _load),
+            if (_error != null)
+              TrustRetry(
+                message: _error!,
+                onRetry: () => _load(more: _retryMore),
+              ),
             if (_data?.enabled == false)
               const Padding(
                 padding: EdgeInsets.all(16),
@@ -301,7 +438,15 @@ class _TrustDetailViewState extends State<TrustDetailView>
                             ),
                             IconButton(
                               tooltip: '${b.title} koşulları',
-                              onPressed: () => showTrustExplanation(context, b),
+                              onPressed: () => showTrustExplanation(
+                                context,
+                                b,
+                                protect: (child) => PrivateTrustOverlay(
+                                  repository: widget.repository,
+                                  actor: widget.actor,
+                                  child: child,
+                                ),
+                              ),
                               icon: const Icon(Icons.info_outline),
                             ),
                           ],
@@ -398,14 +543,17 @@ class ShopTrustOffers extends StatefulWidget {
     super.key,
     required this.repository,
     required this.shopId,
+    this.readTimeout = const Duration(seconds: 15),
   });
   final TrustCommerceRepository repository;
   final String shopId;
+  final Duration readTimeout;
   @override
   State<ShopTrustOffers> createState() => _ShopTrustOffersState();
 }
 
-class _ShopTrustOffersState extends State<ShopTrustOffers> {
+class _ShopTrustOffersState extends State<ShopTrustOffers>
+    with WidgetsBindingObserver {
   List<TrustBadge> _badges = const [];
   List<Campaign> _offers = const [];
   String? _error;
@@ -414,17 +562,31 @@ class _ShopTrustOffersState extends State<ShopTrustOffers> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
   }
 
   @override
   void didUpdateWidget(ShopTrustOffers oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.shopId != widget.shopId) {
+    if (oldWidget.shopId != widget.shopId ||
+        !identical(oldWidget.repository, widget.repository)) {
       _badges = [];
       _offers = [];
       _load();
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _load();
+  }
+
+  @override
+  void dispose() {
+    _epoch++;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -432,16 +594,37 @@ class _ShopTrustOffersState extends State<ShopTrustOffers> {
     setState(() {
       _loading = true;
       _error = null;
+      _badges = [];
+      _offers = [];
     });
-    final badgesFuture = widget.repository.shopBadges(widget.shopId);
-    final offersFuture = widget.repository.shopCampaigns(widget.shopId);
-    final badges = await badgesFuture, offers = await offersFuture;
+    // Subscribe to both failures immediately; one failed read must not leave
+    // another future's error unhandled or keep the visible section loading.
+    final repository = widget.repository, shop = widget.shopId;
+    Future<void> badges() async {
+      final value = await repository
+          .shopBadges(shop)
+          .timeout(widget.readTimeout);
+      if (!mounted || epoch != _epoch) return;
+      value.fold((e) => _error = e.message, (v) => _badges = v);
+    }
+
+    Future<void> offers() async {
+      final value = await repository
+          .shopCampaigns(shop)
+          .timeout(widget.readTimeout);
+      if (!mounted || epoch != _epoch) return;
+      value.fold((e) => _error = e.message, (v) => _offers = v);
+    }
+
+    try {
+      await Future.wait([badges(), offers()]);
+    } catch (_) {
+      if (!mounted || epoch != _epoch) return;
+      _error =
+          'Bilgiler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.';
+    }
     if (!mounted || epoch != _epoch) return;
-    setState(() {
-      _loading = false;
-      badges.fold((e) => _error = e.message, (v) => _badges = v);
-      offers.fold((e) => _error = e.message, (v) => _offers = v);
-    });
+    setState(() => _loading = false);
   }
 
   @override

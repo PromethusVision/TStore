@@ -23,6 +23,9 @@ void main() {
       currentUserId: () => actor,
       currentSessionKey: () => actor == null ? null : "test-session",
       sessionChanges: sessions.stream,
+      sessionKeyChanges: sessions.stream.map(
+        (actor) => actor == null ? null : 'test-session',
+      ),
       rpc: (name, args) async {
         calls.add({'name': name, ...args});
         if (response is Exception) throw response as Exception;

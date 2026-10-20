@@ -15,6 +15,7 @@ class Transport {
       currentUserId: () => user,
       currentSessionKey: () => key,
       sessionChanges: sessions.stream,
+      sessionKeyChanges: sessions.stream.map((_) => key),
       readTimeout: const Duration(milliseconds: 25),
       rpc: (n, a) {
         calls.add(n);
