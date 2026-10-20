@@ -778,6 +778,35 @@ cases, real merchant/shop/catalog preparation, signed distribution, two-device Q
 and the Product Owner's pilot-opening decision remain separate. This test does not
 authorize merchant-role/shop assignment or further hosted mutations.
 
+### 4.16 Native Android local operational acceptance — 2026-10-20
+
+After J12 integration (`0c1ad8d5`), the owner authorized the next comprehensive
+pilot package. Exercise the unchanged local Merchant entrypoint on an owned
+Android emulator against the exact installed-profile local Auth/REST/Storage
+fixture. This records implementation evidence under §§4.1–4.5; it introduces no
+FROZEN decision, business activation, hosted write or release authority.
+
+- Use a fresh named task emulator, generated `example.invalid` identities and
+  the existing `merchantDevelopment` package. Its network remains offline;
+  a verified ADB reverse exposes only the owned loopback API. Never substitute
+  a physical phone, shared AVD, cloud endpoint or real account.
+- Observe native login/onboarding, process restart and disk session/preferences,
+  connection failure/recovery, in-memory draft preservation, the actual Android
+  gallery picker, native photo rendering, availability/deactivation and account
+  isolation. Independently check DB rows and Customer API/media downloads.
+- Keep source, APK, signature, screen/XML and server evidence distinct. Local
+  anonymous configuration may enter this disposable APK; server keys, account
+  passwords and real credentials may not. Private synthetic inputs stay outside
+  Git and are removed after the owned processes stop.
+- This local entrypoint does not exercise the hosted pilot recovery bootstrap,
+  physical camera/QR, vendor-specific phone behavior, external push/mail, signed
+  distribution or final cohort admission. Existing J12/current preparation and
+  historical proofs retain their own fingerprints and scope.
+
+Eleven native checkpoints and seven independent server observations passed.
+The runtime required no change. See [native operational handoff](MERCHANT_PILOT_NATIVE_OPERATIONS_HANDOFF.md).
+Full J and real pilot opening remain OPEN.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means
