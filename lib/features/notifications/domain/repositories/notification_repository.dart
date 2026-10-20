@@ -1,5 +1,12 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
+
+/// Optional session capability of the existing authenticated inbox adapter.
+abstract interface class NotificationSessionSource
+    implements AuthenticatedSessionEvents {
+  String? get currentUserId;
+}
 
 abstract class NotificationRepository {
   Future<Either<String, List<NotificationEntity>>> getNotifications({

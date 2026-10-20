@@ -25,7 +25,8 @@ class MerchantNotifications extends StatefulWidget {
 
 class _MerchantNotificationsState extends State<MerchantNotifications> {
   late final NotificationsCubit _cubit;
-  bool get _current => widget.currentUserId() == widget.identity.userId;
+  bool get _current =>
+      _cubit.sessionCurrent && widget.currentUserId() == widget.identity.userId;
   @override
   void initState() {
     super.initState();
@@ -65,53 +66,66 @@ class _MerchantNotificationsState extends State<MerchantNotifications> {
           if (_current) await _cubit.getNotifications(refresh: true);
         },
         children: [
-          if (state is NotificationsLoading || state is NotificationsInitial)
-            const Center(child: CircularProgressIndicator()),
-          if (state is NotificationsError)
-            MerchantNotice(
-              state.message,
-              error: true,
-              onRetry: () {
-                if (_current) _cubit.getNotifications(refresh: true);
-              },
-            ),
-          if (loaded?.actionError != null)
-            MerchantNotice(loaded!.actionError!, error: true),
-          if (loaded != null && items.isEmpty)
-            const MerchantNotice('Henüz bildirimin yok.'),
-          for (final item in items)
-            Card(
-              child: ListTile(
-                leading: Icon(
-                  item.isRead
-                      ? Icons.notifications_none
-                      : Icons.notifications_active_outlined,
+          if (!_current)
+            const MerchantNotice(
+              'Oturumunuz değişti. Bu ekranı kapatıp yeniden açın.',
+            )
+          else ...[
+            if (state is NotificationsLoading || state is NotificationsInitial)
+              const Center(child: CircularProgressIndicator()),
+            if (state is NotificationsError)
+              MerchantNotice(
+                state.message,
+                error: true,
+                onRetry: () {
+                  if (_current) _cubit.getNotifications(refresh: true);
+                },
+              ),
+            if (loaded?.actionError != null)
+              MerchantNotice(loaded!.actionError!, error: true),
+            if (loaded?.realtimeError != null)
+              MerchantNotice(
+                loaded!.realtimeError!,
+                error: true,
+                onRetry: () => _cubit.getNotifications(refresh: true),
+              ),
+            if (loaded != null && items.isEmpty)
+              const MerchantNotice('Henüz bildirimin yok.'),
+            for (final item in items)
+              Card(
+                child: ListTile(
+                  leading: Icon(
+                    item.isRead
+                        ? Icons.notifications_none
+                        : Icons.notifications_active_outlined,
+                  ),
+                  title: Text(item.title),
+                  subtitle: Text(item.body),
+                  trailing: item.isRead
+                      ? null
+                      : const Icon(Icons.circle, size: 10),
+                  onTap:
+                      item.isRead || loaded!.markingAsReadIds.contains(item.id)
+                      ? null
+                      : () {
+                          if (_current) _cubit.markAsRead(item.id);
+                        },
                 ),
-                title: Text(item.title),
-                subtitle: Text(item.body),
-                trailing: item.isRead
-                    ? null
-                    : const Icon(Icons.circle, size: 10),
-                onTap: item.isRead || loaded!.markingAsReadIds.contains(item.id)
+              ),
+            if (loaded?.loadMoreError != null)
+              MerchantNotice(loaded!.loadMoreError!, error: true),
+            if (loaded != null && !loaded.hasReachedMax)
+              OutlinedButton(
+                onPressed: loaded.isLoadingMore
                     ? null
                     : () {
-                        if (_current) _cubit.markAsRead(item.id);
+                        if (_current) _cubit.getNotifications();
                       },
+                child: Text(
+                  loaded.isLoadingMore ? 'Yükleniyor…' : 'Daha fazla bildirim',
+                ),
               ),
-            ),
-          if (loaded?.loadMoreError != null)
-            MerchantNotice(loaded!.loadMoreError!, error: true),
-          if (loaded != null && !loaded.hasReachedMax)
-            OutlinedButton(
-              onPressed: loaded.isLoadingMore
-                  ? null
-                  : () {
-                      if (_current) _cubit.getNotifications();
-                    },
-              child: Text(
-                loaded.isLoadingMore ? 'Yükleniyor…' : 'Daha fazla bildirim',
-              ),
-            ),
+          ],
         ],
       );
     },

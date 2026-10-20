@@ -494,6 +494,19 @@ remain unchanged. See `MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md` for evidence.
 - Canonical12.2 defines recovery limitations. Full I and J remain OPEN; no remote
   apply, SDK setup, marketing scheduling or automatic re-enrollment is authorized.
 
+### I shared inbox recovery follow-through — 2026-10-20
+
+Local package on `agent/merchant-inbox-recovery`, based on integrated `8e1fb702`.
+Canonical §12.3 keeps the existing inbox, Auth and Realtime contracts, default-OFF
+push capabilities and manual rollout gates.
+
+The shared adapter/state and Merchant/Customer inboxes fence replacement
+sessions, stale reads and retired listeners, preserve newer live arrivals during
+bulk actions, and surface recoverable transport errors. No remote change,
+provider enrollment, actual send, schema change or delivered-APK replacement.
+See [handoff](MERCHANT_INBOX_RECOVERY_HANDOFF.md) for regressions and evidence.
+Full I/provider delivery and physical J remain OPEN.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

@@ -1,0 +1,70 @@
+{
+  "kind": "esnaftavar-merchant-inbox-recovery-verification-v1",
+  "date": "2026-10-20",
+  "status": "LOCAL_PASS_INDEPENDENT_INTEGRATION_PENDING",
+  "branch": "agent/merchant-inbox-recovery",
+  "base_commit": "8e1fb70297f787e29d8b6952ae4c0cb9f89be57a",
+  "source_sha256": "16f6da86800e6ae41de7532f17cb2a7577768b149c3f424c1ba7a33b4f73d8de",
+  "source_fingerprint_matches_built_pair": true,
+  "before_fix_regressions": {
+    "passed": 6,
+    "failed": 16,
+    "log": ".buildlog/inbox-red.log"
+  },
+  "full_flutter": {
+    "passed": 3073,
+    "failed": 0,
+    "existing_conditional_skips": 6,
+    "new_tests": 43,
+    "log": ".buildlog/flutter-full.jsonl"
+  },
+  "targeted_flutter": {
+    "passed": 430,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/inbox-targeted-final.log"
+  },
+  "pair_compatibility": {
+    "passed": 135,
+    "failed": 0,
+    "skipped": 0
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/analyze-final.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "file": ".buildlog/pilot-device/inbox-recovery-20261020/merchant-development.apk",
+      "sha256": "c3f86460b31bb04c7115457f72f7d5a3e77ec7e4eaf7af67182d8507a380f010",
+      "bytes": 119420439,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/merchant-development-build.log"
+    },
+    "pair_evidence": "merchant_inbox_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_LOCAL_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_cache_diagnostics": true
+  },
+  "delivered_apks_unchanged": {
+    "bundle": "EsnaftaVar-Development-a0dfbdfd",
+    "merchant_sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5",
+    "customer_sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+    "verified": true
+  },
+  "database_validation": "N/A_CLIENT_ONLY_NO_SQL_CHANGE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}

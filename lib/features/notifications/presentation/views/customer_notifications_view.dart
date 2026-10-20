@@ -172,13 +172,14 @@ class _CustomerNotificationsContentState
 
   Future<void> _handleNotificationTap(NotificationEntity notification) async {
     if (_openingNotificationIds.contains(notification.id)) return;
+    final cubit = context.read<NotificationsCubit>();
+    if (!cubit.sessionCurrent) return;
 
     final destination = _buildDestination(notification);
     if (notification.isRead && destination == null) return;
 
     setState(() => _openingNotificationIds.add(notification.id));
 
-    final cubit = context.read<NotificationsCubit>();
     final markAsReadFuture = notification.isRead
         ? Future<void>.value()
         : cubit.markAsRead(notification.id);
@@ -645,7 +646,7 @@ class _NotificationsListFooter extends StatelessWidget {
       );
     }
 
-    if (state.loadMoreError != null) {
+    if (state.loadMoreError != null || state.realtimeError != null) {
       return Container(
         padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
         decoration: BoxDecoration(
@@ -656,7 +657,7 @@ class _NotificationsListFooter extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              state.loadMoreError!,
+              state.loadMoreError ?? state.realtimeError!,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: EsnaftaVarColors.textSecondary,
@@ -664,8 +665,15 @@ class _NotificationsListFooter extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  context.read<NotificationsCubit>().loadMoreNotifications(),
+              onPressed: state.hasActionInProgress
+                  ? null
+                  : () => state.loadMoreError != null
+                        ? context
+                              .read<NotificationsCubit>()
+                              .loadMoreNotifications()
+                        : context.read<NotificationsCubit>().getNotifications(
+                            refresh: true,
+                          ),
               child: const Text('Tekrar Dene'),
             ),
           ],

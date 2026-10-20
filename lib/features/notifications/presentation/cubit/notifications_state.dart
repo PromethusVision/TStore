@@ -23,6 +23,7 @@ class NotificationsLoaded extends NotificationsState {
   final Set<String> deletingIds;
   final bool isDeletingAll;
   final String? actionError;
+  final String? realtimeError;
 
   const NotificationsLoaded({
     required this.notifications,
@@ -35,6 +36,7 @@ class NotificationsLoaded extends NotificationsState {
     this.deletingIds = const {},
     this.isDeletingAll = false,
     this.actionError,
+    this.realtimeError,
   });
 
   bool get hasActionInProgress =>
@@ -55,6 +57,7 @@ class NotificationsLoaded extends NotificationsState {
     deletingIds,
     isDeletingAll,
     actionError,
+    realtimeError,
   ];
 
   NotificationsLoaded copyWith({
@@ -70,6 +73,8 @@ class NotificationsLoaded extends NotificationsState {
     bool? isDeletingAll,
     String? actionError,
     bool clearActionError = false,
+    String? realtimeError,
+    bool clearRealtimeError = false,
   }) {
     return NotificationsLoaded(
       notifications: notifications ?? this.notifications,
@@ -84,6 +89,9 @@ class NotificationsLoaded extends NotificationsState {
       deletingIds: deletingIds ?? this.deletingIds,
       isDeletingAll: isDeletingAll ?? this.isDeletingAll,
       actionError: clearActionError ? null : actionError ?? this.actionError,
+      realtimeError: clearRealtimeError
+          ? null
+          : realtimeError ?? this.realtimeError,
     );
   }
 }

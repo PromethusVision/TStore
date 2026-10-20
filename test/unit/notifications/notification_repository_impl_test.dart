@@ -9,6 +9,7 @@ import 'package:t_store/core/supabase/supabase_tables.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
+import '../../helpers/evaluation_auth_fixture.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
@@ -20,6 +21,7 @@ class MockSupabaseClient extends Mock implements SupabaseClient {}
 
 void main() {
   late MockSupabaseService supabaseService;
+  late SupabaseClient authClient;
 
   setUpAll(() {
     registerFallbackValue(PostgresChangeEvent.insert);
@@ -34,9 +36,18 @@ void main() {
     registerFallbackValue((RealtimeSubscribeStatus _, Object? _) {});
   });
 
-  setUp(() {
+  setUp(() async {
     supabaseService = MockSupabaseService();
+    authClient = SupabaseClient(
+      'http://127.0.0.1:55431',
+      'synthetic-anon',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+    );
+    when(() => supabaseService.client).thenReturn(authClient);
+    await installEvaluationSession(authClient, 'S1', actor: 'customer-1');
+    await pumpEventQueue();
   });
+  tearDown(() => authClient.dispose());
 
   test('oturum yokken yazma işlemleri başarılıymış gibi davranmaz', () async {
     when(() => supabaseService.currentUser).thenReturn(null);
@@ -105,6 +116,7 @@ void main() {
       final user = MockUser();
       final channel = MockRealtimeChannel();
       final client = MockSupabaseClient();
+      when(() => client.auth).thenReturn(authClient.auth);
       final callbacks =
           <
             ({

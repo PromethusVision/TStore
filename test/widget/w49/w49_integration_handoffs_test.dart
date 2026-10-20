@@ -41,6 +41,7 @@ void main() {
         sl.registerFactory<PurchaseHistoryCubit>(() => f.purchases);
         sl.registerFactory<ChatConversationsCubit>(() => f.inbox);
         final notifications = _Notifications();
+        when(() => notifications.sessionCurrent).thenReturn(true);
         final item = NotificationEntity(
           id: 'w49-integration-$target',
           userId: 'w49-customer',
