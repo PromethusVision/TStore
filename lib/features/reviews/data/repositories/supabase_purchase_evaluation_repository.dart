@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/reviews/data/models/review_model.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
@@ -15,15 +17,31 @@ class SupabasePurchaseEvaluationRepository
     SupabaseClient client, {
     EvaluationRpc? rpc,
     String? Function()? currentUserId,
+    String? Function()? currentSessionKey,
     Stream<String?>? sessionChanges,
+    Stream<String?>? sessionKeyChanges,
+    this.requestTimeout = const Duration(seconds: 20),
   }) : _rpc =
            rpc ?? ((name, parameters) => client.rpc(name, params: parameters)),
        sessionChanges =
            sessionChanges ??
            client.auth.onAuthStateChange.map((event) => event.session?.user.id),
+       sessionKeyChanges =
+           sessionKeyChanges ??
+           client.auth.onAuthStateChange.map(
+             (event) => authenticatedSessionKeyFromSession(event.session),
+           ),
+       _currentSessionKey =
+           currentSessionKey ?? (() => authenticatedSessionKey(client)),
        _currentUserId = currentUserId ?? (() => client.auth.currentUser?.id);
   final EvaluationRpc _rpc;
   final String? Function() _currentUserId;
+  final String? Function() _currentSessionKey;
+  final Duration requestTimeout;
+  @override
+  String? get currentSessionKey => _currentSessionKey();
+  @override
+  final Stream<String?> sessionKeyChanges;
   @override
   String? get currentUserId => _currentUserId();
   @override
@@ -47,18 +65,26 @@ class SupabasePurchaseEvaluationRepository
     bool valid = true,
   }) async {
     if (!valid) return const Left(_invalid);
-    final actor = currentUserId;
-    if (actor == null) return const Left(_auth);
+    final scope = AuthenticatedRequestScope(
+      user: currentUserId,
+      session: currentSessionKey,
+      currentUser: () => currentUserId,
+      currentSession: () => currentSessionKey,
+      changes: sessionChanges,
+      sessionKeys: sessionKeyChanges,
+    );
     try {
-      final value = await _rpc(
-        name,
-        parameters,
-      ).timeout(const Duration(seconds: 20));
-      if (currentUserId != actor) return const Left(_auth);
-      return Right(decode(_object(value)));
+      final value = await scope.run(() async {
+        final response = await _rpc(name, parameters).timeout(requestTimeout);
+        scope.check();
+        return decode(_object(response));
+      });
+      return Right(value);
     } catch (error) {
-      if (currentUserId != actor) return const Left(_auth);
+      if (!scope.current) return const Left(_auth);
       return Left(evaluationFailure(error));
+    } finally {
+      await scope.close();
     }
   }
 

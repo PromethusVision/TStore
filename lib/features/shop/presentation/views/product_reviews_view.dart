@@ -118,6 +118,7 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
     _isOpeningEditor = true;
     try {
       final cubit = context.read<ReviewsCubit>();
+      final epoch = cubit.sessionEpoch;
       final state = cubit.state;
       final eligibility = state is ReviewsLoaded ? state.eligibility : null;
       if (review == null && eligibility?.reviewVersion == 2) {
@@ -136,9 +137,14 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
           purchaseId: purchaseId,
           selectedProductId: widget.product.id,
         );
-        if (!mounted) return;
+        if (!mounted || !cubit.sessionCurrent || epoch != cubit.sessionEpoch) {
+          return;
+        }
         await _refresh();
-        if (mounted && saved == true) {
+        if (mounted &&
+            cubit.sessionCurrent &&
+            epoch == cubit.sessionEpoch &&
+            saved == true) {
           _showMessage('Değerlendirmeniz kaydedildi.', isError: false);
         }
         return;
@@ -156,14 +162,24 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
         clipBehavior: Clip.antiAlias,
         builder: (_) => BlocProvider<ReviewsCubit>.value(
           value: cubit,
-          child: _ReviewEditorSheet(
-            productId: widget.product.id,
-            productName: widget.product.name,
-            review: review,
+          child: _ReviewSessionBoundary(
+            cubit: cubit,
+            epoch: epoch,
+            child: _ReviewEditorSheet(
+              productId: widget.product.id,
+              productName: widget.product.name,
+              review: review,
+            ),
           ),
         ),
       );
-      if (!mounted || result == null || result.ignored) return;
+      if (!mounted ||
+          !cubit.sessionCurrent ||
+          epoch != cubit.sessionEpoch ||
+          result == null ||
+          result.ignored) {
+        return;
+      }
       _showMessage(result.message, isError: !result.succeeded);
     } finally {
       _isOpeningEditor = false;
@@ -173,69 +189,85 @@ class _ProductReviewsScaffoldState extends State<_ProductReviewsScaffold> {
   Future<void> _confirmDelete(ReviewEntity review) async {
     if (_isConfirmingDelete) return;
     _isConfirmingDelete = true;
+    final cubit = context.read<ReviewsCubit>();
+    final epoch = cubit.sessionEpoch;
     try {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (dialogContext) => AlertDialog(
-          key: const Key('product-review-delete-dialog'),
-          backgroundColor: EsnaftaVarColors.surface,
-          surfaceTintColor: Colors.transparent,
-          icon: const Icon(
-            Icons.delete_outline_rounded,
-            color: EsnaftaVarColors.error,
-          ),
-          title: Text(
-            review.reviewVersion == 2
-                ? 'Değerlendirme yayından kaldırılsın mı?'
-                : 'Değerlendirme silinsin mi?',
-          ),
-          scrollable: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(EsnaftaVarRadii.xxLarge),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (review.title?.trim().isNotEmpty ?? false) ...[
+        builder: (dialogContext) => _ReviewSessionBoundary(
+          cubit: cubit,
+          epoch: epoch,
+          child: AlertDialog(
+            key: const Key('product-review-delete-dialog'),
+            backgroundColor: EsnaftaVarColors.surface,
+            surfaceTintColor: Colors.transparent,
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: EsnaftaVarColors.error,
+            ),
+            title: Text(
+              review.reviewVersion == 2
+                  ? 'Değerlendirme yayından kaldırılsın mı?'
+                  : 'Değerlendirme silinsin mi?',
+            ),
+            scrollable: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(EsnaftaVarRadii.xxLarge),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (review.title?.trim().isNotEmpty ?? false) ...[
+                  Text(
+                    review.title!.trim(),
+                    style: Theme.of(dialogContext).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Text(
-                  review.title!.trim(),
-                  style: Theme.of(dialogContext).textTheme.titleSmall,
+                  review.reviewVersion == 2
+                      ? 'Değerlendirmeniz herkese açık listeden ve ürün puanından çıkarılır. Alışveriş ve değerlendirme geçmişi korunur. Yeniden yayımlamak için daha yeni bir doğrulanmış alışveriş gerekir.'
+                      : 'Değerlendirmeniz ürün puanından çıkarılır. Doğrulanmış alışveriş kaydınız korunur ve daha sonra yeniden değerlendirme yapabilirsiniz.',
                 ),
-                const SizedBox(height: 12),
               ],
-              Text(
-                review.reviewVersion == 2
-                    ? 'Değerlendirmeniz herkese açık listeden ve ürün puanından çıkarılır. Alışveriş ve değerlendirme geçmişi korunur. Yeniden yayımlamak için daha yeni bir doğrulanmış alışveriş gerekir.'
-                    : 'Değerlendirmeniz ürün puanından çıkarılır. Doğrulanmış alışveriş kaydınız korunur ve daha sonra yeniden değerlendirme yapabilirsiniz.',
+            ),
+            actions: [
+              TextButton(
+                key: const Key('product-review-delete-cancel'),
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Vazgeç'),
+              ),
+              FilledButton(
+                key: const Key('product-review-delete-confirm'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: EsnaftaVarColors.error,
+                ),
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(
+                  review.reviewVersion == 2 ? 'Yayından kaldır' : 'Sil',
+                ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              key: const Key('product-review-delete-cancel'),
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Vazgeç'),
-            ),
-            FilledButton(
-              key: const Key('product-review-delete-confirm'),
-              style: FilledButton.styleFrom(
-                backgroundColor: EsnaftaVarColors.error,
-              ),
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(
-                review.reviewVersion == 2 ? 'Yayından kaldır' : 'Sil',
-              ),
-            ),
-          ],
         ),
       );
-      if (!mounted || confirmed != true) return;
+      if (!mounted ||
+          !cubit.sessionCurrent ||
+          epoch != cubit.sessionEpoch ||
+          confirmed != true) {
+        return;
+      }
       final result = await context.read<ReviewsCubit>().deleteReview(
         productId: widget.product.id,
         reviewId: review.id,
       );
-      if (!mounted || result.ignored) return;
+      if (!mounted ||
+          !cubit.sessionCurrent ||
+          epoch != cubit.sessionEpoch ||
+          result.ignored) {
+        return;
+      }
       _showMessage(result.message, isError: !result.succeeded);
     } finally {
       _isConfirmingDelete = false;
@@ -568,6 +600,35 @@ class _ReviewCard extends StatelessWidget {
   Widget build(BuildContext context) => _buildReviewsFinalCard(this, context);
 }
 
+class _ReviewSessionBoundary extends StatelessWidget {
+  const _ReviewSessionBoundary({
+    required this.cubit,
+    required this.epoch,
+    required this.child,
+  });
+  final ReviewsCubit cubit;
+  final int epoch;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => BlocBuilder<ReviewsCubit, ReviewsState>(
+    bloc: cubit,
+    builder: (context, _) => cubit.sessionCurrent && epoch == cubit.sessionEpoch
+        ? child
+        : AlertDialog(
+            title: const Text('Oturum değişti'),
+            content: const Text(
+              'Bu pencereyi kapatıp değerlendirmeyi yeniden açın.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Kapat'),
+              ),
+            ],
+          ),
+  );
+}
+
 class _ReviewEditorSheet extends StatefulWidget {
   const _ReviewEditorSheet({
     required this.productId,
@@ -588,6 +649,7 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
   late final TextEditingController _commentController;
   late int _rating;
   bool _isSaving = false;
+  late final int _sessionEpoch;
   String? _errorMessage;
 
   bool get _isEditing => widget.review != null;
@@ -595,6 +657,7 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
   @override
   void initState() {
     super.initState();
+    _sessionEpoch = context.read<ReviewsCubit>().sessionEpoch;
     _rating = widget.review?.rating ?? 0;
     _titleController = TextEditingController(text: widget.review?.title ?? '');
     _commentController = TextEditingController(
@@ -611,6 +674,8 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
 
   Future<void> _save() async {
     if (_isSaving) return;
+    final cubit = context.read<ReviewsCubit>();
+    if (!cubit.sessionCurrent || cubit.sessionEpoch != _sessionEpoch) return;
     if (_rating < 1 || _rating > 5) {
       setState(() => _errorMessage = 'Lütfen 1 ile 5 arasında bir puan seçin.');
       return;
@@ -620,7 +685,6 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
       _errorMessage = null;
     });
 
-    final cubit = context.read<ReviewsCubit>();
     final result = _isEditing
         ? await cubit.updateReview(
             productId: widget.productId,
@@ -635,7 +699,11 @@ class _ReviewEditorSheetState extends State<_ReviewEditorSheet> {
             title: _titleController.text,
             comment: _commentController.text,
           );
-    if (!mounted) return;
+    if (!mounted ||
+        !cubit.sessionCurrent ||
+        cubit.sessionEpoch != _sessionEpoch) {
+      return;
+    }
     if (result.succeeded) {
       Navigator.of(context).pop(result);
       return;

@@ -88,6 +88,8 @@ void main() {
 
   setUp(() {
     reviewsCubit = MockReviewsCubit();
+    when(() => reviewsCubit.sessionEpoch).thenReturn(0);
+    when(() => reviewsCubit.sessionCurrent).thenReturn(true);
     when(
       () => reviewsCubit.getProductReviews(product.id),
     ).thenAnswer((_) async {});
@@ -146,6 +148,33 @@ void main() {
     verify(
       () => reviewsCubit.getProductReviews(product.id, refresh: true),
     ).called(1);
+  });
+
+  testWidgets('new session clears an already open legacy editor', (
+    tester,
+  ) async {
+    final events = StreamController<ReviewsState>.broadcast();
+    addTearDown(events.close);
+    final subject = buildSubject(loaded(eligibility: canSubmit));
+    whenListen(
+      reviewsCubit,
+      events.stream,
+      initialState: loaded(eligibility: canSubmit),
+    );
+    await tester.pumpWidget(subject);
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('product-review-eligibility-action')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('product-review-editor')), findsOneWidget);
+    when(() => reviewsCubit.sessionEpoch).thenReturn(1);
+    events.add(ReviewsInitial());
+    await tester.pump();
+    await tester.pump();
+    expect(find.byKey(const Key('product-review-editor')), findsNothing);
+    expect(find.text('Oturum değişti'), findsOneWidget);
+    expect(tester.takeException(), null);
   });
 
   testWidgets('guest canonical login akışından sonra eligibility yeniler', (

@@ -9,6 +9,7 @@ import 'package:t_store/features/purchases/domain/entities/verified_purchase_ent
 import 'package:t_store/features/purchases/domain/usecases/get_verified_purchases_usecase.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_cubit.dart';
 import 'package:t_store/features/purchases/presentation/cubit/purchase_history_state.dart';
+import '../../helpers/fake_evaluation_repository.dart';
 
 class MockGetVerifiedPurchasesUsecase extends Mock
     implements GetVerifiedPurchasesUsecase {}
@@ -30,6 +31,38 @@ void main() {
   setUp(() {
     usecase = MockGetVerifiedPurchasesUsecase();
   });
+
+  test(
+    'same-account replacement clears loaded history and ignores delayed refresh',
+    () async {
+      final sessions = FakeEvaluationRepository();
+      final cubit = PurchaseHistoryCubit(
+        getVerifiedPurchasesUsecase: usecase,
+        sessionSource: sessions,
+      );
+      addTearDown(() async {
+        await cubit.close();
+        await sessions.dispose();
+      });
+      when(
+        () => usecase(const NoParams()),
+      ).thenAnswer((_) async => Right([purchase]));
+      await cubit.loadPurchases();
+      sessions.replaceSession('$evaluationActor:S1');
+      expect(cubit.state, isA<PurchaseHistoryLoaded>());
+      final waiting = Completer<Either<String, List<VerifiedPurchaseEntity>>>();
+      when(() => usecase(const NoParams())).thenAnswer((_) => waiting.future);
+      final pending = cubit.refreshPurchasesSilently();
+      sessions.replaceSession('$evaluationActor:S2');
+      sessions.replaceSession('$evaluationActor:S1');
+      expect(cubit.state, isA<PurchaseHistoryError>());
+      waiting.complete(Right([purchase]));
+      await pending;
+      await cubit.loadPurchases();
+      expect(cubit.state, isA<PurchaseHistoryError>());
+      verify(() => usecase(const NoParams())).called(2);
+    },
+  );
 
   blocTest<PurchaseHistoryCubit, PurchaseHistoryState>(
     'doğrulanmış alışverişleri yükler',

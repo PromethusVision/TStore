@@ -1135,6 +1135,36 @@ Customer history exposes actual three-criterion records separately from legacy
 scalar ratings; QR completion links to the verified purchase history. Bounded
 legacy import is operator-only and requires its separate rollout review.
 
+### 6.2 Review session and response recovery — 2026-10-20
+
+The Product Owner authorized the Merchant review-center reliability package from
+integrated main `86ac4e97`, including the connected shared Customer form/history.
+This is local implementation hardening of §6/6.1, with no change to FROZEN rules.
+Production and hosted Development access/writes, remote migration application,
+main integration and replacement of the delivered device pair are out of scope.
+
+- Private continuations bind to the existing stable Auth session identity,
+  repository and resource, not just user ID. Same-user replacement, logout,
+  account switching and broken session observation discard old private state.
+  Ordinary token renewal within the same session preserves valid drafts.
+- Merchant summary, filters and pagination use request generations. Detail
+  refresh checks the selected root on its original page/filter through the
+  existing bounded read RPC. If the row moved or cannot be read, actions remain
+  unavailable until the center is refreshed; no stale row authorizes a write.
+- An uncertain v2 submission/reply/report retains its original immutable request
+  and payload in memory across route closure. Explicit retries use the existing
+  server receipt contract; simultaneous retries share one request. A read refresh
+  is not proof that that pending command succeeded. Only a validated mutation
+  receipt produces its success result.
+- Recovery is session-local and in memory, with no disk queue, background replay
+  or new Auth/notification/review system. Process restart loses the retry payload;
+  reopening reads authoritative server state without claiming a recovered receipt.
+- Verified purchase, server edit deadline, one reply per root, exact shop
+  ownership and default-OFF capability are unchanged. No SQL change is required.
+  Physical two-device acceptance and rollout/privacy approvals remain separate.
+
+Implementation and local evidence: [review recovery handoff](MERCHANT_REVIEW_RECOVERY_HANDOFF.md).
+
 ## 7. Badges
 
 **FROZEN:** status/reputation only. No monetary, organic-rank or Reward advantage.

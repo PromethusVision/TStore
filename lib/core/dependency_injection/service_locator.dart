@@ -168,6 +168,8 @@ import 'package:t_store/features/notifications/data/repositories/notification_re
 import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator({
@@ -538,7 +540,11 @@ Future<void> setupServiceLocator({
   );
   sl.registerLazySingleton(() => GetVerifiedPurchasesUsecase(sl()));
   sl.registerFactory(
-    () => PurchaseHistoryCubit(getVerifiedPurchasesUsecase: sl()),
+    () => PurchaseHistoryCubit(
+      getVerifiedPurchasesUsecase: sl(),
+      sessionSource:
+          sl<PurchaseHistoryRepository>() as AuthenticatedSessionEvents,
+    ),
   );
 
   // ==================== Addresses ====================
@@ -602,6 +608,7 @@ Future<void> setupServiceLocator({
   // Cubit
   sl.registerFactory(
     () => ReviewsCubit(
+      sessionSource: sl<ReviewRepository>() as AuthenticatedSessionEvents,
       getProductReviewsUsecase: sl(),
       getEligibilityUsecase: sl(),
       submitReviewUsecase: sl(),

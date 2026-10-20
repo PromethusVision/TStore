@@ -63,6 +63,80 @@ void main() {
   }
 
   testWidgets(
+    'refresh after an uncertain submit retains the exact pending command',
+    (tester) async {
+      await open(tester, selected: true);
+      await criteria(tester);
+      await tapVisible(tester, find.byTooltip('Ürün puanı: 5 yıldız'));
+      repository.mutationFailure = const ReviewFailure(
+        ReviewFailureKind.network,
+        'Yanıt kayboldu',
+      );
+      await tapVisible(tester, find.byKey(const Key('evaluation-submit')));
+      final sent = repository.submissions.single;
+      await tapVisible(tester, find.text('Güncel durumu kontrol et'));
+      expect(find.text('Aynı işlemi tekrar dene'), findsOneWidget);
+      repository.mutationFailure = null;
+      await tapVisible(tester, find.byKey(const Key('evaluation-submit')));
+      expect(identical(repository.submissions.last, sent), true);
+    },
+  );
+  testWidgets(
+    'closing and reopening an uncertain purchase restores the immutable request',
+    (tester) async {
+      await open(tester, selected: true);
+      await criteria(tester);
+      await tapVisible(tester, find.byTooltip('Ürün puanı: 5 yıldız'));
+      repository.mutationFailure = const ReviewFailure(
+        ReviewFailureKind.network,
+        'Yanıt kayboldu',
+      );
+      await tapVisible(tester, find.byKey(const Key('evaluation-submit')));
+      final sent = repository.submissions.single;
+      await tapVisible(tester, find.byTooltip('Kapat'));
+      await tester.tap(find.text('Aç'));
+      await tester.pumpAndSettle();
+      expect(find.text('Aynı işlemi tekrar dene'), findsOneWidget);
+      repository.mutationFailure = null;
+      await tapVisible(tester, find.byKey(const Key('evaluation-submit')));
+      expect(identical(repository.submissions.last, sent), true);
+    },
+  );
+  testWidgets(
+    'normal refresh preserves drafts and same-account new session permanently clears them',
+    (tester) async {
+      await open(tester, selected: true);
+      await criteria(tester);
+      await tester.ensureVisible(find.byType(TextField).first);
+      await tester.enterText(
+        find.byType(TextField).first,
+        'Özel müşteri taslağı',
+      );
+      repository.replaceSession('$evaluationActor:S1');
+      await tester.pump();
+      expect(find.text('Özel müşteri taslağı'), findsOneWidget);
+      repository.replaceSession('$evaluationActor:S2');
+      repository.replaceSession('$evaluationActor:S1');
+      await tester.pump();
+      expect(find.text('Özel müşteri taslağı'), findsNothing);
+      expect(find.textContaining('Oturumunuz değişti.'), findsOneWidget);
+      expect(find.byKey(const Key('evaluation-submit')), findsNothing);
+      expect(tester.takeException(), null);
+    },
+  );
+  testWidgets(
+    'session stream failure clears an open draft and permits closing',
+    (tester) async {
+      await open(tester, selected: true);
+      repository.sessionKeys.addError(StateError('synthetic'));
+      await tester.pump();
+      expect(find.text('Mahalle Market'), findsNothing);
+      await tapVisible(tester, find.byTooltip('Kapat'));
+      expect(find.byType(PurchaseEvaluationSheet), findsNothing);
+      expect(tester.takeException(), null);
+    },
+  );
+  testWidgets(
     'all criteria are required, products optional and a successful service-only submission closes',
     (tester) async {
       await open(tester);

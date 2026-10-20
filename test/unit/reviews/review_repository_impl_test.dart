@@ -6,6 +6,7 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/reviews/data/repositories/review_repository_impl.dart';
 import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
 import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
+import '../../helpers/evaluation_auth_fixture.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
@@ -35,12 +36,21 @@ void main() {
   late List<({String name, Map<String, dynamic> params})> calls;
   late Future<dynamic> Function(String, Map<String, dynamic>) handler;
   late ReviewRepositoryImpl repository;
+  late SupabaseClient client;
 
-  setUp(() {
+  setUp(() async {
     service = MockSupabaseService();
     user = MockUser();
     when(() => user.id).thenReturn(customerId);
     when(() => service.currentUser).thenReturn(user);
+    client = SupabaseClient(
+      'http://127.0.0.1:55431',
+      'synthetic-anon',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+    );
+    when(() => service.client).thenReturn(client);
+    await installEvaluationSession(client, 'S1', actor: customerId);
+    await pumpEventQueue();
     calls = [];
     handler = (_, _) async => throw UnimplementedError();
     repository = ReviewRepositoryImpl(
@@ -51,6 +61,7 @@ void main() {
       },
     );
   });
+  tearDown(() => client.dispose());
 
   test(
     'canonical read RPC authoritative aggregate ve pagination döndürür',

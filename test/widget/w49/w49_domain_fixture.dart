@@ -179,6 +179,8 @@ class W49Fixture {
     when(
       () => reviews.getProductReviews(any(), refresh: any(named: 'refresh')),
     ).thenAnswer((_) async {});
+    when(() => reviews.sessionEpoch).thenReturn(0);
+    when(() => reviews.sessionCurrent).thenReturn(true);
     when(() => reviews.loadMoreReviews(any())).thenAnswer((_) async {});
     when(() => reviews.retryEligibility(any())).thenAnswer((_) async {});
     when(() => reviews.close()).thenAnswer((_) async {});

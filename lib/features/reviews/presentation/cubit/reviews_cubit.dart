@@ -7,6 +7,8 @@ import 'package:t_store/features/reviews/domain/usecases/get_product_reviews_use
 import 'package:t_store/features/reviews/domain/usecases/submit_product_review_usecase.dart';
 import 'package:t_store/features/reviews/domain/usecases/update_product_review_usecase.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_state.dart';
+import 'dart:async';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 
 class ReviewsCubit extends Cubit<ReviewsState> {
   final GetProductReviewsUsecase getProductReviewsUsecase;
@@ -14,6 +16,15 @@ class ReviewsCubit extends Cubit<ReviewsState> {
   final SubmitProductReviewUsecase submitReviewUsecase;
   final UpdateProductReviewUsecase updateReviewUsecase;
   final DeleteProductReviewUsecase deleteReviewUsecase;
+  final AuthenticatedSessionEvents? sessionSource;
+  StreamSubscription<String?>? _sessionSubscription;
+  String? _sessionKey;
+  bool _sessionBroken = false;
+  int get sessionEpoch => _sessionEpoch;
+  bool get sessionCurrent =>
+      !_sessionBroken &&
+      (sessionSource == null ||
+          sessionSource!.currentSessionKey == _sessionKey);
 
   ReviewsCubit({
     required this.getProductReviewsUsecase,
@@ -21,7 +32,44 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     required this.submitReviewUsecase,
     required this.updateReviewUsecase,
     required this.deleteReviewUsecase,
-  }) : super(ReviewsInitial());
+    this.sessionSource,
+  }) : super(ReviewsInitial()) {
+    _sessionKey = sessionSource?.currentSessionKey;
+    _sessionSubscription = sessionSource?.sessionKeyChanges.listen(
+      (key) {
+        if (key == _sessionKey && sessionCurrent) return;
+        final product = _productId;
+        _sessionKey = key;
+        resetReviews();
+        if (product != null && sessionCurrent) {
+          unawaited(getProductReviews(product, refresh: true));
+        }
+      },
+      onError: (Object _) => _breakSession(),
+      onDone: _breakSession,
+    );
+  }
+  void _breakSession() {
+    if (isClosed) return;
+    _sessionBroken = true;
+    resetReviews();
+    emit(
+      const ReviewsError(
+        ReviewFailure(
+          ReviewFailureKind.authRequired,
+          'Oturum doğrulanamadı. Bu ekranı kapatın.',
+        ),
+      ),
+    );
+  }
+
+  bool _continuation(int epoch) =>
+      !isClosed && sessionCurrent && epoch == _sessionEpoch;
+  @override
+  Future<void> close() async {
+    await _sessionSubscription?.cancel();
+    return super.close();
+  }
 
   static const int _limit = 20;
   List<ReviewEntity> _allReviews = [];
@@ -33,6 +81,7 @@ class ReviewsCubit extends Cubit<ReviewsState> {
   bool _mutationInFlight = false;
 
   Future<void> getProductReviews(String productId, {bool refresh = false}) {
+    if (isClosed || !sessionCurrent) return Future.value();
     final normalizedProductId = productId.trim();
     final productChanged = _productId != normalizedProductId;
     if (_isLoading && !refresh && !productChanged) return Future.value();
@@ -68,6 +117,9 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     String? title,
     String? comment,
   }) async {
+    if (isClosed || !sessionCurrent) {
+      return const ReviewMutationResult.ignored();
+    }
     if (_mutationInFlight) return const ReviewMutationResult.ignored();
     if (rating < 1 || rating > 5) {
       return const ReviewMutationResult.failure(
@@ -87,17 +139,23 @@ class ReviewsCubit extends Cubit<ReviewsState> {
       ),
     );
 
-    if (isClosed || sessionEpoch != _sessionEpoch) {
+    if (!_continuation(sessionEpoch)) {
       return const ReviewMutationResult.ignored();
     }
     return result.fold(
       (failure) async {
         await _finishFailedMutation(normalizedProductId, failure);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         return ReviewMutationResult.failure(failure.message);
       },
       (submission) async {
         _mutationInFlight = false;
         await getProductReviews(normalizedProductId, refresh: true);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         if (submission.created) {
           return const ReviewMutationResult.success(
             'Değerlendirmeniz kaydedildi.',
@@ -118,6 +176,9 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     String? title,
     String? comment,
   }) async {
+    if (isClosed || !sessionCurrent) {
+      return const ReviewMutationResult.ignored();
+    }
     if (_mutationInFlight) return const ReviewMutationResult.ignored();
     if (rating < 1 || rating > 5) {
       return const ReviewMutationResult.failure(
@@ -137,17 +198,23 @@ class ReviewsCubit extends Cubit<ReviewsState> {
       ),
     );
 
-    if (isClosed || sessionEpoch != _sessionEpoch) {
+    if (!_continuation(sessionEpoch)) {
       return const ReviewMutationResult.ignored();
     }
     return result.fold(
       (failure) async {
         await _finishFailedMutation(normalizedProductId, failure);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         return ReviewMutationResult.failure(failure.message);
       },
       (_) async {
         _mutationInFlight = false;
         await getProductReviews(normalizedProductId, refresh: true);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         return const ReviewMutationResult.success(
           'Değerlendirmeniz güncellendi.',
         );
@@ -159,6 +226,9 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     required String productId,
     required String reviewId,
   }) async {
+    if (isClosed || !sessionCurrent) {
+      return const ReviewMutationResult.ignored();
+    }
     if (_mutationInFlight) return const ReviewMutationResult.ignored();
 
     final normalizedProductId = productId.trim();
@@ -166,12 +236,15 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     final sessionEpoch = _sessionEpoch;
     final result = await deleteReviewUsecase(reviewId);
 
-    if (isClosed || sessionEpoch != _sessionEpoch) {
+    if (!_continuation(sessionEpoch)) {
       return const ReviewMutationResult.ignored();
     }
     return result.fold(
       (failure) async {
         await _finishFailedMutation(normalizedProductId, failure);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         return ReviewMutationResult.failure(failure.message);
       },
       (deletion) async {
@@ -181,10 +254,16 @@ class ReviewsCubit extends Cubit<ReviewsState> {
             'Değerlendirme bulunamadı veya bu işlem tamamlanamadı.',
           );
           await _finishFailedMutation(normalizedProductId, failure);
+          if (!_continuation(sessionEpoch)) {
+            return const ReviewMutationResult.ignored();
+          }
           return ReviewMutationResult.failure(failure.message);
         }
         _mutationInFlight = false;
         await getProductReviews(normalizedProductId, refresh: true);
+        if (!_continuation(sessionEpoch)) {
+          return const ReviewMutationResult.ignored();
+        }
         return ReviewMutationResult.success(
           deletion.withdrawn
               ? 'Değerlendirmeniz yayından kaldırıldı. Alışveriş ve değerlendirme geçmişi korunur.'
@@ -195,11 +274,17 @@ class ReviewsCubit extends Cubit<ReviewsState> {
   }
 
   Future<void> retryEligibility(String productId) async {
+    if (isClosed || !sessionCurrent) return;
     final currentState = state;
     if (currentState is! ReviewsLoaded) return;
     final epoch = _requestEpoch;
     final result = await getEligibilityUsecase(productId.trim());
-    if (isClosed || epoch != _requestEpoch || state is! ReviewsLoaded) return;
+    if (isClosed ||
+        !sessionCurrent ||
+        epoch != _requestEpoch ||
+        state is! ReviewsLoaded) {
+      return;
+    }
     result.fold(
       (failure) => emit(
         (state as ReviewsLoaded).copyWith(
@@ -231,6 +316,7 @@ class ReviewsCubit extends Cubit<ReviewsState> {
   }
 
   Future<void> _loadPage(String productId, {required bool replace}) async {
+    if (isClosed || !sessionCurrent) return;
     final requestEpoch = ++_requestEpoch;
     _isLoading = true;
     final page = replace ? 0 : _currentPage;
@@ -245,7 +331,10 @@ class ReviewsCubit extends Cubit<ReviewsState> {
     final eligibilityResult = eligibilityFuture == null
         ? null
         : await eligibilityFuture;
-    if (isClosed || requestEpoch != _requestEpoch || _productId != productId) {
+    if (isClosed ||
+        !sessionCurrent ||
+        requestEpoch != _requestEpoch ||
+        _productId != productId) {
       return;
     }
     _isLoading = false;

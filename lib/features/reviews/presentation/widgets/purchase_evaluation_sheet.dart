@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:t_store/core/common/widgets/customer_light_input_theme.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
-import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
 import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
 import 'package:t_store/features/reviews/presentation/widgets/evaluation_session_guard.dart';
+import 'package:t_store/features/reviews/presentation/evaluation_recovery.dart';
 
 Future<bool?> showPurchaseEvaluation(
   BuildContext context, {
@@ -64,6 +64,8 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
   late final String? _actor = widget.repository.currentUserId;
   PurchaseEvaluation? _purchase;
   PurchaseEvaluationCommand? _pending;
+  late final EvaluationRecovery _recovery;
+  int _loadEpoch = 0;
   final _drafts = <String, _ProductDraft>{};
   int _friendliness = 0, _communication = 0, _cleanliness = 0;
   bool _loading = true, _busy = false;
@@ -71,10 +73,13 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
   @override
   PurchaseEvaluationRepository get evaluationRepository => widget.repository;
   @override
+  Object get evaluationResource => widget.purchaseId;
+  @override
   String? get evaluationActor => _actor;
   bool get _current => evaluationSessionCurrent;
   @override
   void clearEvaluationSession() {
+    _loadEpoch++;
     _busy = false;
     _loading = false;
     _pending = null;
@@ -88,6 +93,8 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
   @override
   void initState() {
     super.initState();
+    _recovery = EvaluationRecovery.of(widget.repository);
+    _pending = _recovery.purchase(widget.purchaseId);
     _load();
   }
 
@@ -100,13 +107,14 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
   }
 
   Future<void> _load() async {
-    if (_busy || !_current) return;
+    if (_busy || !checkEvaluationContinuation()) return;
+    final epoch = ++_loadEpoch;
     setState(() {
       _loading = true;
       _error = null;
     });
     final result = await widget.repository.purchase(widget.purchaseId);
-    if (!mounted || !_current) return;
+    if (!checkEvaluationContinuation() || epoch != _loadEpoch) return;
     result.fold(
       (failure) => setState(() {
         _loading = false;
@@ -119,15 +127,30 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
         _drafts.clear();
         _purchase = value;
         _loading = false;
-        _pending = null;
-        _friendliness = value.service?.friendliness ?? 0;
-        _communication = value.service?.communication ?? 0;
-        _cleanliness = value.service?.cleanliness ?? 0;
-        for (final p in value.products.where((p) => p.canSubmit)) {
-          _drafts[p.productId] = _ProductDraft(
+        _pending = _recovery.purchase(widget.purchaseId);
+        final service = _pending?.service ?? value.service;
+        _friendliness = service?.friendliness ?? 0;
+        _communication = service?.communication ?? 0;
+        _cleanliness = service?.cleanliness ?? 0;
+        final pendingProducts = {
+          for (final p in _pending?.products ?? <ProductEvaluationInput>[])
+            p.productId: p,
+        };
+        for (final p in value.products.where(
+          (p) => p.canSubmit || pendingProducts.containsKey(p.productId),
+        )) {
+          final submitted = pendingProducts[p.productId];
+          final draft = _drafts[p.productId] = _ProductDraft(
             p,
-            p.productId == widget.selectedProductId,
+            _pending == null
+                ? p.productId == widget.selectedProductId
+                : submitted != null,
           );
+          if (submitted != null) {
+            draft.rating = submitted.rating;
+            draft.title.text = submitted.title ?? '';
+            draft.comment.text = submitted.comment ?? '';
+          }
         }
       }),
     );
@@ -136,10 +159,9 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
   Future<void> _submit() async {
     final purchase = _purchase;
     if (_busy ||
-        !_current ||
+        !checkEvaluationContinuation() ||
         purchase == null ||
-        !purchase.enabled ||
-        !purchase.valid) {
+        (_pending == null && (!purchase.enabled || !purchase.valid))) {
       return;
     }
     if (_pending == null) {
@@ -188,16 +210,13 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
       _busy = true;
       _error = null;
     });
-    final result = await widget.repository.submit(_pending!);
-    if (!mounted || !_current) return;
+    final result = await _recovery.submit(_pending!);
+    if (!checkEvaluationContinuation()) return;
     result.fold(
       (failure) => setState(() {
         _busy = false;
         _error = failure.message;
-        if (failure.kind != ReviewFailureKind.network &&
-            failure.kind != ReviewFailureKind.invalidResponse) {
-          _pending = null;
-        }
+        _pending = _recovery.purchase(widget.purchaseId);
       }),
       (_) => Navigator.of(context).pop(true),
     );
@@ -376,32 +395,38 @@ class _PurchaseEvaluationSheetState extends State<PurchaseEvaluationSheet>
                             ),
                         ],
                         const SizedBox(height: 16),
-                        if (_pending != null && !_busy)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 12),
-                            child: Text(
-                              'Yanıt doğrulanana kadar gönderilen bilgiler korunur. Tekrar denemek ikinci bir değerlendirme oluşturmaz.',
-                            ),
-                          ),
-                        if (purchase.service == null ||
-                            _drafts.isNotEmpty ||
-                            _pending != null)
-                          FilledButton(
-                            key: const Key('evaluation-submit'),
-                            onPressed: _busy ? null : _submit,
-                            child: Text(
-                              _busy
-                                  ? 'Kaydediliyor…'
-                                  : _pending == null
-                                  ? 'Değerlendirmeyi kaydet'
-                                  : 'Aynı işlemi tekrar dene',
-                            ),
-                          ),
-                        if (purchase.service != null && _drafts.isEmpty)
-                          const Text(
-                            'Bu alışverişin değerlendirmeleri tamamlandı.',
-                          ),
                       ],
+                      if (_pending != null && !_busy)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            'Yanıt doğrulanana kadar gönderilen bilgiler korunur. Tekrar denemek ikinci bir değerlendirme oluşturmaz.',
+                          ),
+                        ),
+                      if ((purchase.enabled &&
+                              purchase.valid &&
+                              (purchase.service == null ||
+                                  _drafts.isNotEmpty)) ||
+                          _pending != null)
+                        FilledButton(
+                          key: const Key('evaluation-submit'),
+                          onPressed: _busy ? null : _submit,
+                          child: Text(
+                            _busy
+                                ? 'Kaydediliyor…'
+                                : _pending == null
+                                ? 'Değerlendirmeyi kaydet'
+                                : 'Aynı işlemi tekrar dene',
+                          ),
+                        ),
+                      if (_pending == null &&
+                          purchase.enabled &&
+                          purchase.valid &&
+                          purchase.service != null &&
+                          _drafts.isEmpty)
+                        const Text(
+                          'Bu alışverişin değerlendirmeleri tamamlandı.',
+                        ),
                     ],
                   ],
                 ],

@@ -12,6 +12,7 @@ import 'package:t_store/features/reviews/domain/usecases/submit_product_review_u
 import 'package:t_store/features/reviews/domain/usecases/update_product_review_usecase.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_cubit.dart';
 import 'package:t_store/features/reviews/presentation/cubit/reviews_state.dart';
+import '../../helpers/fake_evaluation_repository.dart';
 
 class MockGetProductReviewsUsecase extends Mock
     implements GetProductReviewsUsecase {}
@@ -88,6 +89,7 @@ void main() {
   late MockUpdateProductReviewUsecase updateReview;
   late MockDeleteProductReviewUsecase deleteReview;
   late ReviewsCubit cubit;
+  late FakeEvaluationRepository sessions;
 
   setUpAll(() {
     registerFallbackValue(FakeGetProductReviewsParams());
@@ -101,11 +103,13 @@ void main() {
     submitReview = MockSubmitProductReviewUsecase();
     updateReview = MockUpdateProductReviewUsecase();
     deleteReview = MockDeleteProductReviewUsecase();
+    sessions = FakeEvaluationRepository();
     when(() => getReviews(any())).thenAnswer((_) async => Right(page));
     when(
       () => getEligibility(productId),
     ).thenAnswer((_) async => const Right(guest));
     cubit = ReviewsCubit(
+      sessionSource: sessions,
       getProductReviewsUsecase: getReviews,
       getEligibilityUsecase: getEligibility,
       submitReviewUsecase: submitReview,
@@ -114,7 +118,59 @@ void main() {
     );
   });
 
-  tearDown(() => cubit.close());
+  tearDown(() async {
+    await cubit.close();
+    await sessions.dispose();
+  });
+
+  test(
+    'new same-account session drops stale eligibility while refresh keeps state',
+    () async {
+      await cubit.getProductReviews(productId);
+      final original = cubit.state;
+      sessions.replaceSession('$evaluationActor:S1');
+      expect(cubit.state, original);
+      final waiting =
+          Completer<Either<ReviewFailure, ProductReviewEligibility>>();
+      when(() => getEligibility(productId)).thenAnswer((_) => waiting.future);
+      final old = cubit.retryEligibility(productId);
+      when(
+        () => getEligibility(productId),
+      ).thenAnswer((_) async => const Right(guest));
+      sessions.replaceSession('$evaluationActor:S2');
+      await pumpEventQueue();
+      waiting.complete(const Right(canSubmit));
+      await old;
+      expect((cubit.state as ReviewsLoaded).eligibility, guest);
+      expect(cubit.sessionEpoch, 1);
+    },
+  );
+
+  test(
+    'replacement during post-mutation refresh suppresses old success',
+    () async {
+      await cubit.getProductReviews(productId);
+      when(() => updateReview(any())).thenAnswer((_) async => Right(review));
+      final waiting = Completer<Either<ReviewFailure, ProductReviewsPage>>();
+      when(() => getReviews(any())).thenAnswer((_) => waiting.future);
+      final action = cubit.updateReview(
+        productId: productId,
+        reviewId: review.id,
+        rating: 4,
+      );
+      await pumpEventQueue();
+      sessions.replaceSession('$evaluationActor:S2');
+      waiting.complete(Right(page));
+      expect((await action).ignored, true);
+    },
+  );
+
+  test('closed session stream clears private loaded state', () async {
+    await cubit.getProductReviews(productId);
+    await sessions.sessionKeys.close();
+    expect(cubit.state, isA<ReviewsError>());
+    expect(cubit.sessionCurrent, false);
+  });
 
   test('review listesi ve guest eligibility birlikte yüklenir', () async {
     await cubit.getProductReviews(productId);
