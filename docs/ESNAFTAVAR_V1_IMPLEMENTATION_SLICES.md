@@ -817,6 +817,21 @@ This closes the observed emulator/disk/gallery gap in J12, not physical-device o
 hosted pilot acceptance. See [J13 handoff](MERCHANT_PILOT_NATIVE_OPERATIONS_HANDOFF.md).
 Main integration remains Integration Agent's responsibility; full J stays OPEN.
 
+### J14 — Field review integrity and current intake instructions (2026-10-20)
+
+After J13 integration (`7db5afd4`), correct the existing §4.14 offline acceptance
+path. A reproduced baseline accepted twelve reported device successes on a
+synthetic pair with identical aliases. Reject synthetic observations, ambiguous
+roles, invalid dates and inconsistent package/source metadata. Distinguish
+blocked, incomplete and manually reported complete outcomes in reports and CLI
+exit codes; none grants hosted execution, distribution or pilot-opening authority.
+
+Update the intake guide to J12's current-source preparation entrypoint. Exercise
+negative regressions and actual historical artifact integrity without presenting
+old APKs as rebuilt/current candidates. Preserve runtime, migrations, signing,
+historical J7–J13 evidence and real participant-selection gates.
+See [J14 handoff](MERCHANT_PILOT_FIELD_REVIEW_HANDOFF.md).
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

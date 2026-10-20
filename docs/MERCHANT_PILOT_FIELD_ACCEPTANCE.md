@@ -12,7 +12,8 @@ paketlerinin PASS olması pilotun açılmasına eşit değildir. Mevcut kapsam f
    özeti birlikte incelenir. Sentetik anahtarlı `COMPILE_REHEARSAL` dosyaları
    kurulmaz, esnafa verilmez. Debug imzası dağıtım/release kabulü sayılmaz.
 2. Product Owner gerçek katılımcıları, fiziksel ürünleri ve kategori/rol/yayın
-   listelerini belirler. J9 araçlarıyla taze gözleme bağlı **ayrı** teklifler
+   listelerini belirler. [Güncel hazırlık aracıyla](MERCHANT_PILOT_INTAKE_GUIDE.md)
+   taze gözleme bağlı **ayrı** teklifler
    hazırlanır. Her sunucu yazımı tam kapsamıyla onaylanmadan uygulanmaz.
 3. Cihaz denemesindeki giriş, kurtarma e-postası, dükkân/listing/fiyat/medya ve
    satın alma adımları da test sunucusunda veri/mesaj oluşturabilir. Ayrı bir
@@ -79,6 +80,10 @@ Sağlayıcı ve nihai pilot özellik seçimi ayrı karar/kurulum/kabul gerektiri
   senaryo üç oturum altında ayrı izlenir. Sonuç `OPEN`, `PASS` veya `FAIL` olur;
   cihaz takma adları, UTC gözlem zamanı ve özel kanıt dosyasının SHA-256 özeti
   kullanılır. Dosya adları/içeriği ve kişisel bilgiler kamuya açık rapora taşınmaz.
+- Sentetik derleme çiftinin formu yalnız OPEN kalabilir; fiziksel PASS/FAIL
+  kaydı kabul edilmez. Customer takma adı `customer-device-1`, Merchant takma
+  adı `merchant-device-1` biçiminde rolüne uygun olmalıdır. İki farklı takma ad
+  tek başına iki farklı telefonun kullanıldığını kanıtlamaz; bu insan gözlemidir.
 - Oturum sonucunu farklı APK'ya kopyalama. Aday dosyası, kodu veya kaynak özeti
   değişirse çift tekrar hazırlanır; etkilenen cihaz adımları yeniden kabul edilir.
   Otomatik inceleme eşleşmeyi kontrol eder, insanın gözlemini bağımsız doğrulamaz.
@@ -86,6 +91,21 @@ Sağlayıcı ve nihai pilot özellik seçimi ayrı karar/kurulum/kabul gerektiri
   veya güvensiz kurtarma **durdurma nedenidir**. Yeni esnaf kurulumu/yayın/test
   işlemi durdurulur, özel kayıt korunur ve Merchant Agent'a bulgu aktarılır.
   Yetkisiz veritabanı silme, toplu rol değiştirme, migration geri alma yapılmaz.
+
+`review_pair.mjs <paket-adı> <gözlem-adı>` sonucunu şöyle değerlendirin:
+
+| Sonuç | Çıkış kodu | Anlamı |
+|---|---|---|
+| `PAIR_REVIEW_REFUSED` | 1 | Bozuk, eski veya uyuşmayan dosya; rapor kabul edilmedi |
+| `FIELD_BLOCKED` | 2 | En az bir FAIL var; denemeyi durdurup bulguyu inceleyin |
+| `FIELD_INCOMPLETE` | 3 | FAIL yok; tamamlanmamış senaryolar var |
+| `FIELD_REPORTED_COMPLETE_REQUIRES_OWNER_REVIEW` | 0 | 12 insan gözlemi bildirilmiş; bağımsız kabul veya pilot açılışı değil |
+
+Gözlem verilmeden yapılan dosya kontrolü yalnız `PAIR_ARTIFACTS_VERIFIED` döndürür.
+Her rapor giriş gözleminin dosya özetine bağlıdır; eski raporun üzerine yazılmaz.
+Geçersiz takvim tarihi, paketten önceki/gelecekteki zaman ve yinelenen JSON
+alanları reddedilir. Tüm satırlar PASS olsa bile dağıtım, sağlayıcı ve açılış
+kararları kendi onaylarını gerektirir.
 
 ## Destek, katılımdan ayrılma ve açılış kararı
 

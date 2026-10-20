@@ -716,6 +716,17 @@ distribution, physical QR and owner acceptance remain OPEN. See
 [paired device package](MERCHANT_PILOT_DEVICE_PACKAGE_HANDOFF.md) and
 [field acceptance runbook](MERCHANT_PILOT_FIELD_ACCEPTANCE.md).
 
+Implementation correction — 2026-10-20: J14 enforces the existing distinction
+between compilation rehearsal and physical evidence. Synthetic pairs may retain
+an empty OPEN template but cannot receive PASS/FAIL device observations. Require
+role-specific device aliases, valid exact UTC instants and internally consistent
+artifact metadata, defaults and source evidence. A reported FAIL blocks the field
+review; incomplete observations remain OPEN. Even a complete manual report is
+not independent verification, distribution authority or pilot-opening approval.
+Keep historical proofs unchanged; tool-source drift requires a new pair rather
+than relabeling old artifacts. This corrects local review tooling, not a FROZEN
+rule, application behavior, signing policy or hosted permission.
+
 ### 4.15 Auth/mail rehearsal and existing-provider audit — 2026-10-18
 
 Following integrated J10 (`3da793c6`), the next authorized local package exercises
