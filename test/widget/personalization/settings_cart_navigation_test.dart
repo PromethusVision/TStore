@@ -90,6 +90,7 @@ void main() {
     purchaseHistoryCubit = MockPurchaseHistoryCubit();
     recentlyViewedProductsCubit = MockRecentlyViewedProductsCubit();
     notificationsCubit = MockNotificationsCubit();
+    when(() => notificationsCubit.sessionCurrent).thenReturn(true);
     customerSavedLocationsCubit = MockCustomerSavedLocationsCubit();
 
     whenListen(

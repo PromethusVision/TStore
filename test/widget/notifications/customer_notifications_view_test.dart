@@ -86,6 +86,7 @@ void main() {
 
   setUp(() {
     notificationsCubit = MockNotificationsCubit();
+    when(() => notificationsCubit.sessionCurrent).thenReturn(true);
     when(
       () => notificationsCubit.getNotifications(refresh: any(named: 'refresh')),
     ).thenAnswer((_) async {});

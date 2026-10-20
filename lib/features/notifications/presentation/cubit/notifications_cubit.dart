@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
@@ -9,10 +10,69 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   NotificationsCubit({
     required this.repository,
     this.readTimeout = const Duration(seconds: 15),
+    NotificationSessionSource? sessionSource,
   }) : assert(readTimeout > Duration.zero),
-       super(NotificationsInitial());
+       _sessionSource =
+           sessionSource ??
+           (repository is NotificationSessionSource
+               ? repository as NotificationSessionSource
+               : null),
+       super(NotificationsInitial()) {
+    _actor = _sessionSource?.currentUserId;
+    _session = _sessionSource?.currentSessionKey;
+    _sessionSubscription = _sessionSource?.sessionKeyChanges.listen(
+      (key) {
+        if (key != _session || !sessionCurrent) _expire();
+      },
+      onError: (Object _) => _expire(),
+      onDone: _expire,
+    );
+  }
 
   final NotificationRepository repository;
+  final NotificationSessionSource? _sessionSource;
+
+  /// Long-lived hosts may replace this cubit; an expired instance never revives.
+  NotificationSessionSource? get sessionSource => _sessionSource;
+  late final String? _actor, _session;
+  StreamSubscription<String?>? _sessionSubscription;
+  bool _expired = false;
+  bool get sessionCurrent =>
+      !_expired &&
+      (_sessionSource == null ||
+          (_actor != null &&
+              _session != null &&
+              _sessionSource.currentUserId == _actor &&
+              _sessionSource.currentSessionKey == _session));
+  bool _ensureSession() {
+    if (isClosed) return false;
+    if (!sessionCurrent) {
+      _expire();
+      return false;
+    }
+    return true;
+  }
+
+  void _expire() {
+    if (isClosed || _expired) return;
+    _expired = true;
+    ++_requestGeneration;
+    ++_subscriptionGeneration;
+    _activeRequestGeneration = null;
+    _activeRequestPage = null;
+    _notifications = [];
+    _unreadCount = 0;
+    _realtimeRevisions.clear();
+    _deletedIds.clear();
+    final subscription = _notificationsSubscription;
+    _notificationsSubscription = null;
+    unawaited(subscription?.cancel());
+    emit(
+      const NotificationsError(
+        'Oturumunuz değişti. Bu ekranı kapatıp yeniden açın.',
+      ),
+    );
+  }
 
   /// Bounds reads only. A deadline never cancels or retries a mutation.
   final Duration readTimeout;
@@ -26,20 +86,39 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   int _realtimeRevision = 0;
   int? _activeRequestGeneration;
   int? _activeRequestPage;
+  int _subscriptionGeneration = 0;
+  final Set<String> _deletedIds = {};
+  String? _realtimeError;
+  static const _connectionError =
+      'Canlı bildirim bağlantısı kesildi. Listeyi yenileyerek tekrar deneyin.';
 
   static const int _limit = 20;
 
   void startListening() {
-    if (isClosed || _notificationsSubscription != null) return;
+    if (!_ensureSession() || _notificationsSubscription != null) return;
+    final generation = ++_subscriptionGeneration;
 
     try {
       late final StreamSubscription<NotificationEntity> subscription;
       subscription = repository.notificationsStream.listen(
-        _handleRealtimeNotification,
-        onError: (Object _, StackTrace _) {},
+        (event) {
+          if (generation == _subscriptionGeneration && _ensureSession()) {
+            _handleRealtimeNotification(event);
+          }
+        },
+        onError: (Object _, StackTrace _) {
+          if (generation == _subscriptionGeneration && _ensureSession()) {
+            _realtimeError = _connectionError;
+            final current = state;
+            if (current is NotificationsLoaded) {
+              emit(current.copyWith(realtimeError: _realtimeError));
+            }
+          }
+        },
         onDone: () {
           if (identical(_notificationsSubscription, subscription)) {
             _notificationsSubscription = null;
+            ++_subscriptionGeneration;
           }
         },
       );
@@ -50,7 +129,16 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   void _handleRealtimeNotification(NotificationEntity notification) {
-    if (isClosed) return;
+    if (!_ensureSession() ||
+        _deletedIds.contains(notification.id) ||
+        (_actor != null && notification.userId != _actor)) {
+      return;
+    }
+    _realtimeError = null;
+    if (state case final NotificationsLoaded loaded
+        when loaded.realtimeError != null) {
+      emit(loaded.copyWith(clearRealtimeError: true));
+    }
 
     final notificationIndex = _notifications.indexWhere(
       (item) => item.id == notification.id,
@@ -110,7 +198,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> getNotifications({bool refresh = false}) async {
-    if (isClosed || _hasMutationInProgress(state)) return;
+    if (!_ensureSession() || _hasMutationInProgress(state)) return;
 
     if (_activeRequestGeneration != null) {
       final isInitialPageLoading = _activeRequestPage == 0;
@@ -122,6 +210,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         : null;
 
     if (refresh) {
+      ++_subscriptionGeneration;
+      _realtimeError = null;
       final subscription = _notificationsSubscription;
       _notificationsSubscription = null;
       if (subscription != null) {
@@ -184,6 +274,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           // The secondary count must not strand an otherwise available inbox.
           // Keep the existing visible-item fallback on count errors/deadlines.
           int? unreadCount;
+          final countRevision = _realtimeRevision;
           try {
             final unreadResult = await repository.getUnreadCount().timeout(
               readTimeout,
@@ -199,6 +290,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           };
 
           for (final notification in notifications) {
+            if (_deletedIds.contains(notification.id) ||
+                (_actor != null && notification.userId != _actor)) {
+              continue;
+            }
             final existingIndex = notificationIndexes[notification.id];
             if (existingIndex == null) {
               notificationIndexes[notification.id] = mergedNotifications.length;
@@ -214,15 +309,20 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
           _notifications = mergedNotifications;
           _currentPage = requestedPage + 1;
+          final visibleUnread = _notifications
+              .where((item) => !item.isRead)
+              .length;
           _unreadCount =
-              unreadCount ??
-              _notifications.where((item) => !item.isRead).length;
+              unreadCount == null || countRevision != _realtimeRevision
+              ? visibleUnread
+              : (unreadCount < visibleUnread ? visibleUnread : unreadCount);
 
           emit(
             NotificationsLoaded(
               notifications: _notifications,
               unreadCount: _unreadCount,
               hasReachedMax: notifications.length < _limit,
+              realtimeError: _realtimeError,
             ),
           );
           startListening();
@@ -240,7 +340,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   bool _isCurrentRequest(int generation, int page) {
-    return !isClosed &&
+    return _ensureSession() &&
         _activeRequestGeneration == generation &&
         _activeRequestPage == page;
   }
@@ -262,6 +362,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> markAsRead(String notificationId) async {
+    if (!_ensureSession()) return;
     final currentState = state;
     if (currentState is! NotificationsLoaded ||
         currentState.isLoadingMore ||
@@ -286,8 +387,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       ),
     );
 
-    final result = await repository.markAsRead(notificationId);
-    if (isClosed) return;
+    final result = await _write(() => repository.markAsRead(notificationId));
+    if (!_ensureSession()) return;
 
     result.fold(
       (_) {
@@ -331,6 +432,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> markAllAsRead() async {
+    if (!_ensureSession()) return;
     final currentState = state;
     if (currentState is! NotificationsLoaded ||
         currentState.isLoadingMore ||
@@ -339,12 +441,14 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       return;
     }
 
+    final affected = _notifications.map((n) => n.id).toSet();
+    final initialUnread = _unreadCount;
     emit(
       currentState.copyWith(isMarkingAllAsRead: true, clearActionError: true),
     );
 
-    final result = await repository.markAllAsRead();
-    if (isClosed) return;
+    final result = await _write(repository.markAllAsRead);
+    if (!_ensureSession()) return;
 
     result.fold(
       (_) {
@@ -360,16 +464,20 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       },
       (_) {
         _notifications = _notifications
-            .map((notification) => notification.copyWith(isRead: true))
+            .map(
+              (notification) => affected.contains(notification.id)
+                  ? notification.copyWith(isRead: true)
+                  : notification,
+            )
             .toList();
-        _unreadCount = 0;
+        _unreadCount = _remainingUnread(initialUnread);
 
         final latestState = state;
         if (latestState is NotificationsLoaded) {
           emit(
             latestState.copyWith(
               notifications: _notifications,
-              unreadCount: 0,
+              unreadCount: _unreadCount,
               isMarkingAllAsRead: false,
               clearActionError: true,
             ),
@@ -380,6 +488,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> deleteNotification(String notificationId) async {
+    if (!_ensureSession()) return;
     final currentState = state;
     if (currentState is! NotificationsLoaded ||
         currentState.isLoadingMore ||
@@ -400,8 +509,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       ),
     );
 
-    final result = await repository.deleteNotification(notificationId);
-    if (isClosed) return;
+    final result = await _write(
+      () => repository.deleteNotification(notificationId),
+    );
+    if (!_ensureSession()) return;
 
     result.fold(
       (_) {
@@ -416,6 +527,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         }
       },
       (_) {
+        _deletedIds.add(notificationId);
         final notificationIndex = _notifications.indexWhere(
           (notification) => notification.id == notificationId,
         );
@@ -446,6 +558,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> deleteAllNotifications() async {
+    if (!_ensureSession()) return;
     final currentState = state;
     if (currentState is! NotificationsLoaded ||
         currentState.notifications.isEmpty ||
@@ -454,10 +567,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       return;
     }
 
+    final affected = _notifications.map((n) => n.id).toSet();
+    final initialUnread = _unreadCount;
     emit(currentState.copyWith(isDeletingAll: true, clearActionError: true));
 
-    final result = await repository.deleteAllNotifications();
-    if (isClosed) return;
+    final result = await _write(repository.deleteAllNotifications);
+    if (!_ensureSession()) return;
 
     result.fold(
       (_) {
@@ -472,17 +587,20 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         }
       },
       (_) {
-        _notifications = [];
-        _realtimeRevisions.clear();
+        _deletedIds.addAll(affected);
+        _notifications = _notifications
+            .where((n) => !affected.contains(n.id))
+            .toList();
+        _realtimeRevisions.removeWhere((id, _) => affected.contains(id));
         _currentPage = 0;
-        _unreadCount = 0;
+        _unreadCount = _remainingUnread(initialUnread);
 
         final latestState = state;
         if (latestState is NotificationsLoaded) {
           emit(
             latestState.copyWith(
-              notifications: const [],
-              unreadCount: 0,
+              notifications: _notifications,
+              unreadCount: _unreadCount,
               hasReachedMax: true,
               isDeletingAll: false,
               clearActionError: true,
@@ -495,15 +613,42 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   int get unreadCount => _unreadCount;
 
+  int _remainingUnread(int initialUnread) {
+    final delta = _unreadCount - initialUnread;
+    final visible = _notifications.where((n) => !n.isRead).length;
+    return delta > visible ? delta : visible;
+  }
+
+  Future<Either<String, void>> _write(
+    Future<Either<String, void>> Function() action,
+  ) async {
+    try {
+      return await action();
+    } catch (_) {
+      return const Left(
+        'İşlem sonucu doğrulanamadı. Listeyi yenileyip tekrar deneyin.',
+      );
+    }
+  }
+
   @override
   Future<void> close() async {
+    _expired = true;
+    ++_subscriptionGeneration;
     _requestGeneration++;
     _activeRequestGeneration = null;
     _activeRequestPage = null;
 
+    final sessions = _sessionSubscription;
+    _sessionSubscription = null;
     final subscription = _notificationsSubscription;
     _notificationsSubscription = null;
-    await subscription?.cancel();
-    await super.close();
+    // Invalidate synchronously and start all cleanup before awaiting an adapter.
+    // A delayed Auth cancellation must not keep the retired state/listener alive.
+    await Future.wait([
+      if (sessions != null) sessions.cancel(),
+      if (subscription != null) subscription.cancel(),
+      super.close(),
+    ]);
   }
 }

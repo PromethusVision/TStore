@@ -15,6 +15,7 @@ import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
 import 'package:t_store/features/auth/presentation/views/login/login_view.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
+import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
 import 'package:t_store/features/notifications/presentation/views/customer_notifications_view.dart';
 
 class HomeAppBar extends StatefulWidget {
@@ -148,7 +149,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                 const SizedBox(width: EsnaftaVarSpacing.sm),
                 _buildNotificationAction(
                   context,
-                  isAuthenticated: isAuthenticated,
+                  userId: state is AuthAuthenticated ? state.user.id : null,
                 ),
               ],
             ),
@@ -184,7 +185,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
               ),
               _buildNotificationAction(
                 context,
-                isAuthenticated: isAuthenticated,
+                userId: state is AuthAuthenticated ? state.user.id : null,
               ),
             ],
           ),
@@ -203,13 +204,13 @@ class _HomeAppBarState extends State<HomeAppBar> {
 
   Widget _buildNotificationAction(
     BuildContext context, {
-    required bool isAuthenticated,
+    required String? userId,
   }) {
     void openNotifications() {
-      unawaited(_openNotifications(isAuthenticated: isAuthenticated));
+      unawaited(_openNotifications(isAuthenticated: userId != null));
     }
 
-    if (!isAuthenticated) {
+    if (userId == null) {
       return _NotificationIconButton(
         unreadCount: 0,
         onPressed: openNotifications,
@@ -231,9 +232,106 @@ class _HomeAppBarState extends State<HomeAppBar> {
       );
     }
 
-    return BlocProvider<NotificationsCubit>(
-      create: (_) => sl<NotificationsCubit>()..getNotifications(refresh: true),
-      child: _NotificationAction(onPressed: openNotifications),
+    return _HomeNotificationSession(
+      key: ValueKey(userId),
+      userId: userId,
+      onPressed: openNotifications,
+    );
+  }
+}
+
+/// The home header outlives same-account Auth replacement. It owns fresh inbox
+/// state for each valid session, without reviving the retired cubit's work.
+class _HomeNotificationSession extends StatefulWidget {
+  const _HomeNotificationSession({
+    super.key,
+    required this.userId,
+    required this.onPressed,
+  });
+  final String userId;
+  final VoidCallback onPressed;
+  @override
+  State<_HomeNotificationSession> createState() =>
+      _HomeNotificationSessionState();
+}
+
+class _HomeNotificationSessionState extends State<_HomeNotificationSession> {
+  NotificationsCubit? _cubit;
+  NotificationSessionSource? _source;
+  StreamSubscription<String?>? _sessions;
+  bool _observationEnded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final cubit = sl<NotificationsCubit>();
+    _cubit = cubit;
+    _source = cubit.sessionSource;
+    _sessions = _source?.sessionKeyChanges.listen(
+      _sessionChanged,
+      onError: (Object _) => _stopObserving(),
+      onDone: _stopObserving,
+    );
+    if (_source == null || _validSession(_source!.currentSessionKey)) {
+      unawaited(cubit.getNotifications(refresh: true));
+    } else {
+      _retire();
+    }
+  }
+
+  bool _validSession(String? key) =>
+      key != null &&
+      key == _source?.currentSessionKey &&
+      _source?.currentUserId == widget.userId;
+
+  void _sessionChanged(String? key) {
+    if (!mounted || _observationEnded) return;
+    if (!_validSession(key)) {
+      _retire();
+      return;
+    }
+    // A token renewal retains this instance and any pending read.
+    if (_cubit?.sessionCurrent ?? false) return;
+    _retire();
+    final cubit = sl<NotificationsCubit>();
+    setState(() => _cubit = cubit);
+    unawaited(cubit.getNotifications(refresh: true));
+  }
+
+  void _retire() {
+    if (!mounted) return;
+    final previous = _cubit;
+    if (previous == null) return;
+    setState(() => _cubit = null);
+    unawaited(previous.close());
+  }
+
+  void _stopObserving() {
+    _observationEnded = true;
+    unawaited(_sessions?.cancel());
+    _retire();
+  }
+
+  @override
+  void dispose() {
+    unawaited(_sessions?.cancel());
+    unawaited(_cubit?.close());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = _cubit;
+    if (cubit == null) {
+      return _NotificationIconButton(
+        unreadCount: 0,
+        onPressed: widget.onPressed,
+      );
+    }
+    return BlocProvider<NotificationsCubit>.value(
+      key: ObjectKey(cubit),
+      value: cubit,
+      child: _NotificationAction(onPressed: widget.onPressed),
     );
   }
 }

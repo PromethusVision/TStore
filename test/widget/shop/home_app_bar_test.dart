@@ -34,6 +34,8 @@ void main() {
     loginAuthCubit = MockAuthCubit();
     notificationsCubit = MockNotificationsCubit();
     destinationNotificationsCubit = MockNotificationsCubit();
+    when(() => notificationsCubit.sessionCurrent).thenReturn(true);
+    when(() => destinationNotificationsCubit.sessionCurrent).thenReturn(true);
 
     whenListen(
       notificationsCubit,

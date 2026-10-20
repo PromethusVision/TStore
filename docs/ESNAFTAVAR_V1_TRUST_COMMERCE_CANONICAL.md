@@ -1833,6 +1833,45 @@ host binding, provider SDK/configuration and actual delivery are not activated.
 Full I, G/O10 marketing, Customer host/provider binding, physical-device J and
 Production remain separately gated. No migration or second inbox is introduced.
 
+### 12.3 Shared inbox session and operation recovery — 2026-10-20
+
+Following integrated review recovery `8e1fb702`, the Product Owner authorized
+the next local reliability package. It hardens the existing Merchant inbox and
+connected Customer inbox/badge state; it does not activate full I or J.
+FROZEN commerce, consent, marketing quota and provider rules are unchanged.
+
+- Inbox reads, writes and Realtime belong to the existing stable Auth session.
+  Same-user replacement, account switch, logout or broken Auth observation
+  clears private state and expires that screen instance. Normal token renewal
+  within the same session preserves valid work. Reopening creates fresh state.
+  A persistent host such as the Customer home badge must instead retire its
+  expired inbox instance and bind a fresh instance when the observed session
+  matches the live session and that host's authenticated user. This restores
+  the count and live subscription without navigation; it never revives old
+  requests. Same-session renewal retains the existing instance. Broken Auth
+  observation clears the badge and stops that host until it is recreated.
+- Retired live subscriptions and delayed page/count responses cannot restore
+  old rows. Explicit refresh replaces the read generation. Transient Realtime
+  failures preserve the visible list and offer refresh while retaining the
+  SDK's existing reconnection behavior; no background retry system is added.
+- A late bulk acknowledgement does not blindly mark/delete newer live arrivals
+  in the local view. It updates the known rows from the action's starting state.
+  Confirmed visible deletions remain suppressed for that screen lifetime.
+  Server mutation semantics and ownership filters stay unchanged; refresh
+  reconciles the server's actual state.
+- Reads remain bounded. Pending writes retain their action locks until their
+  transport settles; timeout is not cancellation. Unknown/failed outcomes do
+  not optimistically mark or remove rows. Explicit refresh or retry uses the
+  existing inbox API; no offline queue or automatic mutation replay is added.
+- When count and live events race, use the existing loaded-unread fallback,
+  rather than letting a stale count contradict visible unread records. This
+  fallback is not a transactionally exact global counter.
+
+No schema, provider, push enrollment, consent, notification storage, dependency
+or Customer layout replacement is introduced. Hosted Development and Production
+are untouched; the delivered APK pair and physical acceptance remain separate.
+See [inbox recovery handoff](MERCHANT_INBOX_RECOVERY_HANDOFF.md).
+
 ## 13. RLS, privacy and migration safety
 
 Server entrypoints derive auth.uid/profile role and exact shop owner; client-supplied

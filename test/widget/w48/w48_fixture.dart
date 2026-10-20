@@ -83,6 +83,7 @@ class W48Fixture {
     NotificationsState? activity,
     QrSessionState? session,
   }) {
+    when(() => notifications.sessionCurrent).thenReturn(true);
     whenListen(
       wishlist,
       const Stream<WishlistState>.empty(),
