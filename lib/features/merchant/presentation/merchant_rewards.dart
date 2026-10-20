@@ -4,8 +4,9 @@ import 'package:t_store/features/merchant/merchant_services.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'package:t_store/features/rewards/presentation/reward_view_session.dart';
 
-class MerchantRewardEntry extends StatelessWidget {
+class MerchantRewardEntry extends StatefulWidget {
   const MerchantRewardEntry({
     super.key,
     required this.services,
@@ -14,25 +15,80 @@ class MerchantRewardEntry extends StatelessWidget {
   final MerchantServices services;
   final MerchantAccess access;
   @override
-  Widget build(BuildContext context) => Card(
-    child: ListTile(
-      leading: const Icon(Icons.card_giftcard_outlined),
-      title: const Text('Yönlendirme paketi'),
-      subtitle: const Text('Kazanım kontenjanı ve kupon kabul tercihi'),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => Navigator.of(context).push<void>(
-        MaterialPageRoute(
-          builder: (_) => MerchantRewardsView(
-            repository: services.rewardProgram!,
-            shopId: access.shop!.id,
-            ownerId: access.user.id,
-            currentUserId: services.currentUserId,
-            sessionChanges: services.sessionChanges,
+  State<MerchantRewardEntry> createState() => _MerchantRewardEntryState();
+}
+
+class _MerchantRewardEntryState extends State<MerchantRewardEntry> {
+  late RewardViewSession _session;
+  bool _opening = false;
+  @override
+  void initState() {
+    super.initState();
+    _bind();
+  }
+
+  void _bind() {
+    _session = RewardViewSession(
+      repository: widget.services.rewardProgram!,
+      owner: widget.access.user.id,
+      currentUser: widget.services.currentUserId,
+      changes: widget.services.sessionChanges,
+      onLost: () {
+        if (mounted) setState(() {});
+      },
+    );
+  }
+
+  @override
+  void didUpdateWidget(MerchantRewardEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.services.rewardProgram != widget.services.rewardProgram ||
+        oldWidget.access.shop?.id != widget.access.shop?.id ||
+        oldWidget.access.user.id != widget.access.user.id ||
+        widget.services.currentUserId() != widget.access.user.id) {
+      _session.retire();
+    }
+  }
+
+  @override
+  void dispose() {
+    _session.close();
+    super.dispose();
+  }
+
+  Future<void> _open() async {
+    if (_opening || !_session.check()) return;
+    _opening = true;
+    final origin = _session;
+    final page = MerchantRewardsView(
+      repository: widget.services.rewardProgram!,
+      shopId: widget.access.shop!.id,
+      ownerId: widget.access.user.id,
+      currentUserId: widget.services.currentUserId,
+      sessionChanges: widget.services.sessionChanges,
+      originIsCurrent: () => mounted && origin.current,
+    );
+    try {
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute(builder: (_) => page));
+    } finally {
+      _opening = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => !_session.current
+      ? const SizedBox.shrink()
+      : Card(
+          child: ListTile(
+            leading: const Icon(Icons.card_giftcard_outlined),
+            title: const Text('Yönlendirme paketi'),
+            subtitle: const Text('Kazanım kontenjanı ve kupon kabul tercihi'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _open,
           ),
-        ),
-      ),
-    ),
-  );
+        );
 }
 
 class MerchantRewardsView extends StatefulWidget {
@@ -43,11 +99,13 @@ class MerchantRewardsView extends StatefulWidget {
     required this.ownerId,
     required this.currentUserId,
     required this.sessionChanges,
+    this.originIsCurrent,
   });
   final RewardProgramRepository repository;
   final String shopId, ownerId;
   final String? Function() currentUserId;
   final Stream<String?> sessionChanges;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantRewardsView> createState() => _MerchantRewardsViewState();
 }
@@ -59,30 +117,66 @@ class _MerchantRewardsViewState extends State<MerchantRewardsView>
   String? _error;
   bool _busy = false;
   int _generation = 0;
-  StreamSubscription<String?>? _auth;
-  bool get _current => widget.currentUserId() == widget.ownerId;
+  late RewardViewSession _session;
+  bool get _current => _session.current;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _auth = widget.sessionChanges.listen((_) {
-      if (!mounted) return;
-      _generation++;
-      setState(() {
-        _value = null;
-        _caps = null;
-        _busy = false;
-        _error = null;
-      });
-      if (_current) _read();
-    });
+    _bind();
     _read();
+  }
+
+  void _bind() {
+    _session = RewardViewSession(
+      repository: widget.repository,
+      owner: widget.ownerId,
+      currentUser: widget.currentUserId,
+      changes: widget.sessionChanges,
+      originIsCurrent: widget.originIsCurrent,
+      onLost: () {
+        if (!mounted) return;
+        _generation++;
+        setState(() {
+          _value = null;
+          _caps = null;
+          _busy = false;
+          _error = null;
+        });
+      },
+    );
+  }
+
+  @override
+  void didUpdateWidget(MerchantRewardsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentUserId() != widget.ownerId) {
+      _session.retire();
+      return;
+    }
+    if (oldWidget.repository != widget.repository ||
+        oldWidget.shopId != widget.shopId ||
+        oldWidget.ownerId != widget.ownerId) {
+      final mayRebind = _session.current && oldWidget.ownerId == widget.ownerId;
+      _session.close();
+      _generation++;
+      _busy = false;
+      _value = null;
+      _caps = null;
+      _error = null;
+      if (mayRebind) {
+        _bind();
+        _read();
+      }
+    } else {
+      _session.check();
+    }
   }
 
   @override
   void dispose() {
     _generation++;
-    _auth?.cancel();
+    _session.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -93,36 +187,55 @@ class _MerchantRewardsViewState extends State<MerchantRewardsView>
   }
 
   Future<void> _read() async {
-    if (!_current || _busy) return;
+    if (!_session.check() || _busy) return;
     final generation = ++_generation;
     setState(() {
       _busy = true;
       _error = null;
+      _value = null;
+      _caps = null;
     });
-    final caps = await widget.repository.capabilities();
-    if (!mounted || generation != _generation || !_current) return;
-    final value = await widget.repository.readMerchant(widget.shopId);
-    if (!mounted || generation != _generation || !_current) return;
-    setState(() {
-      _busy = false;
-      caps.fold((error) {
-        _caps = null;
-        _error = error;
-      }, (c) => _caps = c);
-      value.fold((error) {
-        _value = null;
-        _error = error;
-      }, (v) => _value = v);
-    });
+    bool live() => mounted && generation == _generation && _session.check();
+    try {
+      final repository = widget.repository, shop = widget.shopId;
+      final result = await (() async {
+        final caps = await repository.capabilities();
+        if (!live()) return null;
+        if (caps.isLeft()) {
+          return (caps, null);
+        }
+        final value = await repository.readMerchant(shop);
+        return (caps, value);
+      })().timeout(const Duration(seconds: 15));
+      if (!live() || result == null) return;
+      setState(() {
+        result.$1.fold((error) => _error = error, (c) => _caps = c);
+        result.$2?.fold((error) => _error = error, (v) => _value = v);
+      });
+    } catch (_) {
+      if (live()) {
+        setState(() {
+          _error = 'Bilgiler yüklenemedi. Güncel durumu yeniden kontrol edin.';
+        });
+      }
+    } finally {
+      if (live()) {
+        setState(() {
+          _busy = false;
+          _generation++;
+        });
+      }
+    }
   }
 
   Future<void> _set(bool preferred) async {
     final current = _value;
-    if (!_current ||
+    if (!_session.check() ||
         _busy ||
         current == null ||
         current.forced ||
-        !current.enabled) {
+        !current.enabled ||
+        _caps?.enabled != true) {
       return;
     }
     final generation = ++_generation;
@@ -130,19 +243,30 @@ class _MerchantRewardsViewState extends State<MerchantRewardsView>
       _busy = true;
       _error = null;
     });
-    final result = await widget.repository.setAcceptance(
-      widget.shopId,
-      preferred,
-      current.revision,
-    );
-    if (!mounted || generation != _generation || !_current) return;
-    setState(() {
-      _busy = false;
-      result.fold((error) {
-        _error = error;
-        _value = null;
-      }, (value) => _value = value);
-    });
+    try {
+      final result = await widget.repository.setAcceptance(
+        widget.shopId,
+        preferred,
+        current.revision,
+      );
+      if (!mounted || generation != _generation || !_session.check()) return;
+      setState(() {
+        _busy = false;
+        result.fold((error) {
+          _error = error;
+          _value = null;
+        }, (value) => _value = value);
+      });
+    } catch (_) {
+      if (mounted && generation == _generation && _session.check()) {
+        setState(() {
+          _busy = false;
+          _value = null;
+          _error =
+              'İşlem sonucu doğrulanamadı. Güncel durumu yeniden kontrol edin.';
+        });
+      }
+    }
   }
 
   static String _date(DateTime value) {
@@ -207,7 +331,11 @@ class _MerchantRewardsViewState extends State<MerchantRewardsView>
                   contentPadding: EdgeInsets.zero,
                   title: const Text('Kupon kabul tercihi'),
                   value: value.effective,
-                  onChanged: _busy || !value.enabled || value.forced
+                  onChanged:
+                      _busy ||
+                          !value.enabled ||
+                          caps?.enabled != true ||
+                          value.forced
                       ? null
                       : _set,
                 ),

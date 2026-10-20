@@ -27,6 +27,7 @@ void main() {
       currentUserId: () => user,
       sessionIdentity: () => identity,
       sessionChanges: sessions.stream,
+      sessionKeyChanges: sessions.stream.map((_) => identity),
       timeout: const Duration(milliseconds: 30),
       pollInterval: const Duration(hours: 1),
       rpc: (name, args) async {

@@ -1505,6 +1505,32 @@ Implementation/acceptance records: `MERCHANT_CHECKOUT_E_WORKLOG.md` and
 classification policy, legal/settlement approval, reconciliation operations and
 explicit remote deployment authorization remain separate release gates.
 
+### 8.3 E client session and recovery follow-through — 2026-10-21
+
+After the statement and trust recovery integration (`42dd8f5a`), the next local
+reliability package covers Merchant package/acceptance management and the shared
+Customer reward subscription/reservation clients. This implements the existing
+session boundary; no FROZEN economic rule, server authority or default-OFF gate
+changes.
+
+- Private reads, receipts and errors belong to the originating Auth session,
+  including queued same-account replacement/return events. Ordinary token renewal
+  preserves pending work. Retired routes do not revive; the home reward subscription
+  may rebind to fresh state for the currently authenticated customer.
+- Preference changes retain the existing server revision check. Pending transport
+  cannot be treated as cancelled by a client deadline, screen close or token renewal.
+  A missing/unverifiable receipt requires a fresh owner read before another choice;
+  no optimistic success, new idempotency contract or offline mutation queue is added.
+- Cart edits coalesce a fresh reservation check after any in-flight check settles.
+  They never implicitly start a new attempt or reset the original server deadline.
+  The displayed remaining time conservatively includes transport delay; it cannot
+  extend the authoritative reservation or claim a fresh attempt.
+  Reservation/merchant read RPCs may reconcile server state: local timeout is not
+  evidence that the server stopped processing.
+- Existing layouts, ownership, forced coupon acceptance, net eligibility and
+  package-capacity arithmetic remain unchanged. No SQL or hosted changes are part
+  of this client package. Physical QR, provider and pilot-release gates stay open.
+
 ## 9. Merchant balance and immutable accounting
 
 **FROZEN direction:** “Hesap Bakiyesi”, statement-like history with separate

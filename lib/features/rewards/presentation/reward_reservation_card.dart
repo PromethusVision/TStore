@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
+import 'reward_view_session.dart';
 
 class RewardReservationCard extends StatefulWidget {
   const RewardReservationCard({
@@ -24,49 +25,71 @@ class _RewardReservationCardState extends State<RewardReservationCard>
   RewardReservation? _value;
   String? _error;
   bool _busy = false;
+  bool _inFlight = false, _queued = false;
   int _generation = 0;
   final _elapsed = Stopwatch();
   Timer? _timer;
-  StreamSubscription<String?>? _auth;
-  String? _owner;
-  bool get _current =>
-      widget.currentUserId == null || widget.currentUserId!() == _owner;
+  late RewardViewSession _session;
+  bool get _current => _session.current;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _owner = widget.currentUserId?.call();
-    _auth = widget.sessionChanges?.listen((_) {
-      if (!mounted) return;
-      _generation++;
-      _timer?.cancel();
-      setState(() {
-        _value = null;
-        _error = null;
-        _busy = false;
-      });
-      if (_current) _read();
-    });
+    _bind();
     _read();
+  }
+
+  void _bind() {
+    _session = RewardViewSession(
+      repository: widget.repository,
+      owner: widget.currentUserId?.call(),
+      currentUser: widget.currentUserId,
+      changes: widget.sessionChanges,
+      onLost: () {
+        if (!mounted) return;
+        _generation++;
+        _timer?.cancel();
+        setState(() {
+          _value = null;
+          _error = null;
+          _busy = false;
+          _queued = false;
+        });
+      },
+    );
   }
 
   @override
   void didUpdateWidget(RewardReservationCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.currentUserId != null &&
+        widget.currentUserId!() != _session.owner) {
+      _session.retire();
+    }
+    if (!_session.check()) return;
+    if (oldWidget.repository != widget.repository) {
+      _session.close();
+      _bind();
+    }
     if (oldWidget.cartId != widget.cartId ||
         oldWidget.revision != widget.revision ||
         oldWidget.repository != widget.repository) {
       _generation++;
-      _busy = false;
       _value = null;
-      _read();
+      _error = null;
+      _timer?.cancel();
+      if (_inFlight) {
+        _queued = true;
+      } else {
+        _read();
+      }
     }
   }
 
   @override
   void dispose() {
     _generation++;
-    _auth?.cancel();
+    _session.close();
     _timer?.cancel();
     _elapsed.stop();
     WidgetsBinding.instance.removeObserver(this);
@@ -79,39 +102,66 @@ class _RewardReservationCardState extends State<RewardReservationCard>
   }
 
   Future<void> _read({bool startNew = false}) async {
-    if (_busy || !_current) return;
+    if (_inFlight || !_session.check()) return;
+    _inFlight = true;
     final ticket = ++_generation;
     _timer?.cancel();
+    // Conservatively include transport time; the server's deadline never moves.
+    _elapsed
+      ..reset()
+      ..start();
     setState(() {
       _busy = true;
       _error = null;
+      _value = null;
     });
-    final result = await widget.repository.reserve(
-      widget.cartId,
-      startNew: startNew,
-    );
-    if (!mounted || ticket != _generation || !_current) return;
-    setState(() {
-      _busy = false;
-      result.fold(
-        (error) {
-          _error = error;
-          _value = null;
-        },
-        (value) {
-          _value = value;
-          _elapsed
-            ..reset()
-            ..start();
-        },
+    try {
+      final result = await widget.repository.reserve(
+        widget.cartId,
+        startNew: startNew,
       );
-    });
-    if (_value?.holdsCapacity == true) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (!mounted) return;
-        setState(() {});
-        if (_remaining.inSeconds <= 0) _timer?.cancel();
+      if (!mounted || ticket != _generation || !_session.check()) return;
+      setState(() {
+        _busy = false;
+        result.fold(
+          (error) {
+            _error = error;
+            _value = null;
+          },
+          (value) {
+            _value = value;
+          },
+        );
       });
+      if (_value?.holdsCapacity == true) {
+        _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+          if (!mounted || !_session.check()) {
+            _timer?.cancel();
+            return;
+          }
+          setState(() {});
+          if (_remaining.inSeconds <= 0) _timer?.cancel();
+        });
+      }
+    } catch (_) {
+      if (mounted && ticket == _generation && _session.check()) {
+        setState(() {
+          _value = null;
+          _error =
+              'Rezervasyon sonucu doğrulanamadı. Güncel durumu kontrol edin.';
+        });
+      }
+    } finally {
+      _inFlight = false;
+      if (mounted && _session.check()) {
+        setState(() {
+          _busy = false;
+        });
+        if (_queued) {
+          _queued = false;
+          _read();
+        }
+      }
     }
   }
 
