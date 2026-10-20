@@ -792,6 +792,12 @@ observed runtime-composition delta. Preserve original review SQL and default
 no-mutation output. Old proof entrypoints retain their stale-source refusal;
 the new path never accepts incomplete evidence as remote execution authority.
 
+Native follow-through also verifies the existing Android bootstrap and callback
+separation on an owned offline emulator, using a separate x64 synthetic APK from
+the same sources. Nine observed checkpoints are recorded separately from the
+real-service screen rehearsal and the ARM64 pair. No real login/mail/provider or
+physical-device gate is closed by this emulator observation.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

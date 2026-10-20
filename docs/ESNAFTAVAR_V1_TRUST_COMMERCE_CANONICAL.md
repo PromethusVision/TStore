@@ -311,6 +311,11 @@ The screen-level loopback rehearsal is separate from historical J7/J9 repository
 proofs and physical-device acceptance. Original proof hashes are not rewritten to
 accept changed runtime sources. See [daily pilot journey handoff](MERCHANT_PILOT_DAILY_JOURNEY_HANDOFF.md).
 
+The same package also observes a separate offline Android emulator smoke using
+synthetic configuration and identical app sources. Native startup, local form
+validation and cold/warm rejected callback routing do not replace real-account,
+camera/push or physical two-device acceptance; those gates remain OPEN.
+
 ### 4.4 Merchant Android pilot runtime preparation — 2026-10-17
 
 Following management recovery integration at `6b79a4e9`, the Product Owner

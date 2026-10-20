@@ -1,6 +1,6 @@
 # Merchant daily pilot journey — 2026-10-20
 
-Status: **LOCAL ACCEPTANCE PASS — final Android source refresh pending**.
+Status: **PASS — local implementation and rehearsal; main integration pending**.
 Branch: `agent/merchant-pilot-nightly`.
 Baseline: `be34fcae6a2f3152ae31f56e6c766d069cd6faf0`.
 Authority: canonical §§4.1–4.3 and §4.13; J12 implementation. No FROZEN exception.
@@ -52,18 +52,23 @@ run. All five passed after the fix.
   UI source manifest. This executes the unchanged original repository suite on the
   current client, including ownership, optimistic revision, media, submissions,
   notification isolation and synthetic legacy QR purchase/replay.
-- **Customer Development + Merchant Pilot ARM64 debug APK: PASS before the last
-  live-event correction; final artifact refresh pending.** The existing
+- **Customer Development + Merchant Pilot ARM64 debug APK: PASS**, rebuilt from
+  committed final sources. The existing
   pair tool also ran 135 compatibility tests and verified package/callback identity,
   signature, version, required permissions, payload markers and artifact bytes.
+- **Native Android offline smoke: 9 observed checkpoints PASS** on a new owned
+  Android 15 emulator, including cold/warm invalid callbacks and 130% system text.
+  This uses a separate x64 Merchant artifact, not a physical-phone acceptance.
 
 Full test log: `.buildlog/nightly-full-tests-delivery.log`. Pair receipt/artifacts:
-`.buildlog/pilot-device/nightly-daily-journey/`. These are **synthetic compilation
+`.buildlog/pilot-device/nightly-daily-journey-delivery/`. These are **synthetic compilation
 rehearsals, not distributable candidates**. Both are version `1.0.0 (5)` with
 business flags OFF. Pair source fingerprint:
-`483346b7c14dc3bf1139ac1c08e6bc92e96ca35a51187bc4669ddffb21f4aa1f`.
-The receipt honestly records baseline `be34fcae` plus uncommitted sources; its
-actual source manifest, not the baseline commit alone, identifies compiled code.
+`9d95c7757b5adf2f818e6bffa69ffff77eeb8a3ef0072404e5b5534ff46029ba`.
+The receipt records `5b518dc2061fa24dcb2bd8f826f4a8e3aa21cd2a` and
+`uncommitted_sources: false`. Its manifest identifies the actual compiled files;
+the final documentation-only checkpoint does not change them. Both APK bytes and
+current sources were independently rechecked by `review_pair.mjs`.
 
 ## Current screen rehearsal
 
@@ -147,13 +152,66 @@ the other. Existing populated fixtures are intentionally rejected, never reset.
 ```text
 node tool/merchant_acceptance/pilot_ui.mjs <new-local-run> <flutter-sdk>
 node tool/merchant_acceptance/pilot_ui.mjs <another-new-local-run> <flutter-sdk> repositories
-node tool/pilot_device/review_pair.mjs nightly-daily-journey
+node tool/pilot_device/review_pair.mjs nightly-daily-journey-delivery
 ```
 
 The local runner needs Git history for immutable installation commit `62e7ba4a`.
 Docker default address pools were exhausted on this machine; task-labelled empty
 networks used distinct explicit private subnets. Only this task's stacks are
-stopped; prior projects/networks/data were not pruned.
+stopped; all eleven task-owned empty networks were removed after checking their
+exact labels and empty container lists. Test volumes and prior projects/networks
+were retained. No global Docker cleanup was used.
+
+## Native Android offline follow-through
+
+The installed SDK contained Android 15's Google Play x86_64 image and usable WHPX.
+A new Pixel 5 AVD was created under `.buildlog/android-offline/`, using private
+`ANDROID_USER_HOME`/`ANDROID_AVD_HOME`, a hidden headless process and disabled
+cameras/audio. Before installing either app, airplane mode, disabled Wi-Fi/data,
+no active default network and an empty current-network list were verified. No
+real account or credential was entered. Network isolation was rechecked at exit.
+
+The ARM64 phone APK installed but could not load Flutter on this x64 emulator
+(`EM_AARCH64 instead of EM_X86_64`). This was an environment mismatch, retained
+as a failed attempt, not concealed or labelled a phone runtime failure. A separate
+Merchant APK was built with `--target-platform android-x64` from the same committed
+sources and byte-equivalent synthetic configuration. No application/Gradle change
+or new dependency was needed. The original ARM64 pair remained byte-identical.
+
+Observed through Android's package resolver, UIAutomator, actual screenshots and
+the final running process log:
+
+- Cold launch reaches the real login screen; blank fields show local validation.
+- Invalid recovery text is rejected; background/resume retains the draft.
+- Both installed callback schemes resolve to exactly their own application.
+- Token-free `?error=access_denied` callbacks are rejected in warm and cold starts,
+  without exposing a private workspace or password-update form.
+- Normal cold relaunch remains usable at system font scale 1.3; screenshots were
+  visually inspected. The final x64 process had no critical Flutter/runtime log
+  errors. Earlier ARM64 loader errors are explicitly outside that log assertion.
+
+The Customer app was installed for resolver checks only; its native runtime was
+not exercised. This does not certify real login, mail, hardware, external push,
+disk persistence of an authenticated session or physical two-device QR. The owner
+previously accepted the real Merchant mail/reset path; this run does not repeat it.
+
+[Android offline evidence](data/merchant_pilot_android_offline_acceptance.json)
+binds the source, signature, separate APK and nine observed checkpoint files.
+Screenshots/XML remain under `.buildlog/android-offline/`; their hashes are in the
+record. This is an observed local smoke record, not a signed/automated field
+certificate. The exact named emulator was stopped afterward; its data/evidence
+were retained and no user's phone or existing AVD was modified.
+
+## Delivery checkpoints
+
+- `1030ac0c415806b634fe3e4b5fc2be5d1875a834`: runtime fixes and 13 regressions.
+- `5b518dc2061fa24dcb2bd8f826f4a8e3aa21cd2a`: current screen/repository evidence,
+  preparation entrypoint and contracts. Both checkpoints pushed to the task branch.
+- Final documentation-only checkpoint closes Android/evidence reporting. Use the
+  task branch's final HEAD for integration, not either intermediate checkpoint.
+
+The final scope is 19 files. Secret/private-email scan and diff checks passed;
+there are no historical migration, dependency or centralized coordination edits.
 
 ## Boundaries
 
