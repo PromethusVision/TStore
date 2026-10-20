@@ -268,9 +268,13 @@ Reproduce captured replacement-session races, broken observation, late replies,
 failed-page retry, cursor contradictions, resume and narrow-screen states.
 Validate connected Customer badge surfaces and existing Merchant campaign flows.
 No new reputation feature, schema, hosted call, provider or device-candidate
-replacement. This package is independent of the separately delivered H0/H1
-statement recovery; Integration Agent must verify both source commits and the
-combined baseline. See [handoff](MERCHANT_TRUST_RECOVERY_HANDOFF.md).
+replacement. The first delivery `8df49adb` was rejected for a pre-mount private
+dialog session race. The correction binds child navigation to its originating
+guard, covers shared campaign overlays/routes and retains normal renewal.
+H0/H1 statement recovery is now integrated at `4ed927f0`; that main commit is
+included in the task branch for combined validation. Main integration of this
+corrected trust package remains Integration Agent's responsibility.
+See [handoff](MERCHANT_TRUST_RECOVERY_HANDOFF.md).
 
 ## H0 — Monetary authority, immutable ledger and versioned policy
 

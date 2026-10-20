@@ -7,11 +7,13 @@ class MerchantCampaignEditor extends StatefulWidget {
     required this.access,
     this.existing,
     this.pricePublicationEnabled = false,
+    this.originIsCurrent,
   });
   final MerchantServices services;
   final MerchantAccess access;
   final Campaign? existing;
   final bool pricePublicationEnabled;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantCampaignEditor> createState() => _MerchantCampaignEditorState();
 }
@@ -50,6 +52,8 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
   String get trustActor => widget.access.user.id;
+  @override
+  bool Function()? get trustOriginIsCurrent => widget.originIsCurrent;
   @override
   void clearTrustSession() {
     _title.clear();
@@ -168,17 +172,19 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
   Future<void> _pickProducts({bool photo = false}) async {
     if (_locked || !sessionCurrent) return;
     setState(() => _selecting = true);
+    final picker = _CampaignProductPicker(
+      services: widget.services,
+      access: widget.access,
+      selected: photo ? const {} : Set.of(_listings),
+      single: photo || _scope == CampaignScope.single,
+      allowedIds: photo && _scope != CampaignScope.all
+          ? Set.of(_listings)
+          : null,
+      originIsCurrent: trustContinuationIsCurrent,
+    );
     final selected = await Navigator.push<List<ShopProductEntity>>(
       context,
-      MaterialPageRoute(
-        builder: (_) => _CampaignProductPicker(
-          services: widget.services,
-          access: widget.access,
-          selected: photo ? const {} : _listings,
-          single: photo || _scope == CampaignScope.single,
-          allowedIds: photo && _scope != CampaignScope.all ? _listings : null,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => picker),
     );
     if (!checkTrustContinuation()) return;
     setState(() => _selecting = false);
@@ -238,6 +244,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
       builder: (context) => PrivateTrustOverlay(
         repository: trustRepository,
         actor: trustActor,
+        originIsCurrent: trustContinuationIsCurrent,
         child: SimpleDialog(
           title: const Text('Mevcut fotoğrafı seç'),
           children: [
@@ -296,6 +303,7 @@ class _MerchantCampaignEditorState extends State<MerchantCampaignEditor>
       builder: (context) => PrivateTrustOverlay(
         repository: trustRepository,
         actor: trustActor,
+        originIsCurrent: trustContinuationIsCurrent,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -684,6 +692,7 @@ class _CampaignProductPicker extends StatefulWidget {
     required this.access,
     required this.selected,
     required this.single,
+    required this.originIsCurrent,
     this.allowedIds,
   });
   final MerchantServices services;
@@ -691,6 +700,7 @@ class _CampaignProductPicker extends StatefulWidget {
   final Set<String> selected;
   final Set<String>? allowedIds;
   final bool single;
+  final bool Function() originIsCurrent;
   @override
   State<_CampaignProductPicker> createState() => _CampaignProductPickerState();
 }
@@ -709,6 +719,8 @@ class _CampaignProductPickerState extends State<_CampaignProductPicker>
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
   String get trustActor => widget.access.user.id;
+  @override
+  bool Function() get trustOriginIsCurrent => widget.originIsCurrent;
   @override
   void clearTrustSession() {
     _rows.clear();

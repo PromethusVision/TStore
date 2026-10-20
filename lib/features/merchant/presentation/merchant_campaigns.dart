@@ -89,14 +89,14 @@ class _MerchantCampaignSummaryState extends State<MerchantCampaignSummary>
   Future<void> _open() async {
     if (_opening || !sessionCurrent) return;
     _opening = true;
+    final page = MerchantCampaignsView(
+      services: widget.services,
+      access: widget.access,
+      originIsCurrent: trustContinuationIsCurrent,
+    );
     await Navigator.push<void>(
       context,
-      MaterialPageRoute(
-        builder: (_) => MerchantCampaignsView(
-          services: widget.services,
-          access: widget.access,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => page),
     );
     _opening = false;
     if (mounted && sessionCurrent) await _load();
@@ -143,9 +143,11 @@ class MerchantCampaignsView extends StatefulWidget {
     super.key,
     required this.services,
     required this.access,
+    this.originIsCurrent,
   });
   final MerchantServices services;
   final MerchantAccess access;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantCampaignsView> createState() => _MerchantCampaignsViewState();
 }
@@ -163,6 +165,8 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
   TrustCommerceRepository get trustRepository => widget.services.trustCommerce!;
   @override
   String get trustActor => widget.access.user.id;
+  @override
+  bool Function()? get trustOriginIsCurrent => widget.originIsCurrent;
   @override
   void clearTrustSession() {
     _rows.clear();
@@ -239,16 +243,16 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
       return;
     }
     _opening = true;
+    final editor = MerchantCampaignEditor(
+      services: widget.services,
+      access: widget.access,
+      existing: campaign,
+      pricePublicationEnabled: _page!.pricePublicationEnabled,
+      originIsCurrent: trustContinuationIsCurrent,
+    );
     await Navigator.push<void>(
       context,
-      MaterialPageRoute(
-        builder: (_) => MerchantCampaignEditor(
-          services: widget.services,
-          access: widget.access,
-          existing: campaign,
-          pricePublicationEnabled: _page!.pricePublicationEnabled,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => editor),
     );
     _opening = false;
     if (mounted && sessionCurrent) await _load();
@@ -271,6 +275,7 @@ class _MerchantCampaignsViewState extends State<MerchantCampaignsView>
         builder: (context) => PrivateTrustOverlay(
           repository: trustRepository,
           actor: trustActor,
+          originIsCurrent: trustContinuationIsCurrent,
           child: AlertDialog(
             title: const Text('Kampanyayı yayınla'),
             content: SingleChildScrollView(

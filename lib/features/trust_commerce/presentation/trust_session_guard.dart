@@ -7,6 +7,11 @@ import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
 mixin TrustSessionGuard<T extends StatefulWidget> on State<T> {
   TrustCommerceRepository get trustRepository;
   String get trustActor;
+
+  /// A child route also belongs to the guard that initiated its navigation.
+  /// That guard already observed events before this route's first mount.
+  bool Function()? get trustOriginIsCurrent => null;
+  bool trustContinuationIsCurrent() => mounted && sessionCurrent;
   StreamSubscription<String?>? _subscription, _keys;
   bool _invalid = false;
   late final TrustCommerceRepository _repository;
@@ -19,6 +24,7 @@ mixin TrustSessionGuard<T extends StatefulWidget> on State<T> {
               _sessionKey);
   bool get sessionCurrent =>
       !_invalid &&
+      (trustOriginIsCurrent?.call() ?? true) &&
       identical(trustRepository, _repository) &&
       trustActor == _actor &&
       _repository.currentUserId == _actor &&
@@ -52,6 +58,8 @@ mixin TrustSessionGuard<T extends StatefulWidget> on State<T> {
     if (_repository case AuthenticatedSessionSource source) {
       _sessionKey = source.currentSessionKey;
     }
+    // A late mount cannot acquire a new lease for old route content.
+    _invalid = !sessionCurrent;
     _subscription = _repository.sessionChanges.listen(
       (actor) {
         if (actor != _actor || !sessionCurrent) _invalidate();
@@ -103,10 +111,12 @@ class PrivateTrustOverlay extends StatefulWidget {
     super.key,
     required this.repository,
     required this.actor,
+    required this.originIsCurrent,
     required this.child,
   });
   final TrustCommerceRepository repository;
   final String actor;
+  final bool Function() originIsCurrent;
   final Widget child;
   @override
   State<PrivateTrustOverlay> createState() => _PrivateTrustOverlayState();
@@ -118,6 +128,8 @@ class _PrivateTrustOverlayState extends State<PrivateTrustOverlay>
   TrustCommerceRepository get trustRepository => widget.repository;
   @override
   String get trustActor => widget.actor;
+  @override
+  bool Function() get trustOriginIsCurrent => widget.originIsCurrent;
   @override
   Widget build(BuildContext context) => sessionCurrent
       ? widget.child

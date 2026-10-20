@@ -1,13 +1,13 @@
 {
   "kind": "esnaftavar-pilot-device-pair-v1",
-  "created_at": "2026-10-20T19:22:23.732Z",
+  "created_at": "2026-10-20T20:02:45.976Z",
   "purpose": "compile-rehearsal",
   "mode": "debug",
   "status": "COMPILE_REHEARSAL_PASS_NOT_DISTRIBUTABLE",
   "project_ref": "tnipyxnvhgelwdpykyez",
-  "source_commit": "88fa667b982608338044219f06897da5007c9eda",
+  "source_commit": "8e1d224c0a2f709f1e17c92f7866c5c4e156d8c0",
   "uncommitted_sources": true,
-  "source_sha256": "9aa9205e2d4024f9ca72db2335230942b98dba8f4465ebe79655aaf7b37420f3",
+  "source_sha256": "417a9a0041dd3fc62fe9b70efa363b47c5be500bc366e01f32064e8489db2914",
   "config_sha256": {
     "customer": "0fc81951a7c3e28ee64e53e303a3defe5688dee30acee4a0e09198433023ee46",
     "merchant": "cf0245b4ece1d14cbbe7a8a8b6fb5061c538257bb034e33aff8920e4dbbea83a"
@@ -51,8 +51,8 @@
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
       "mode": "debug",
       "abi": "arm64-v8a",
-      "sha256": "218acea7e3d44db7adbe43c4e22d11edf255fa41ab4715d274792bfd043dca14",
-      "bytes": 154839007,
+      "sha256": "ddf28e1c10c6099819f35b1e22455a840e413874ec88287f5dd3e12c39d1a5e4",
+      "bytes": 154833075,
       "payload_scan": {
         "backend_url_present": true,
         "supplied_client_key_present": true,
@@ -75,8 +75,8 @@
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
       "mode": "debug",
       "abi": "arm64-v8a",
-      "sha256": "8488693d9c60438870f5f419a799ba32bfb199318eb5262e43750d08098fdc02",
-      "bytes": 119453923,
+      "sha256": "d5ced60fcab21f5a7fdd7c247bd0005984d7e226d1b1285cda5020e1cad1a321",
+      "bytes": 119451755,
       "payload_scan": {
         "backend_url_present": true,
         "supplied_client_key_present": true,
@@ -101,5 +101,5 @@
   "physical_two_device": "OPEN",
   "provider_delivery": "OPEN",
   "pilot_ready": false,
-  "bundle_id": "071279fd44884286aafe6b94a4e2a8abe0ffabde926f966c15ab3e29438bd98b"
+  "bundle_id": "74a6877c56f69b21b285ce7ef256c22233acc9136a781ef0df71b818aa8b8a0e"
 }

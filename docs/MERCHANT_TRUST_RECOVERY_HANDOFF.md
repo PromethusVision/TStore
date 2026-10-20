@@ -1,114 +1,108 @@
-# Existing Merchant/Customer badge and trust read recovery
+# Trust recovery correction — pre-mount session continuity
 
 Task branch: `agent/merchant-trust-recovery`.
-Base: `88fa667b982608338044219f06897da5007c9eda`.
-Product authority: canonical §7.3, existing FROZEN D/F rules.
+Product authority: canonical §7.3 and existing FROZEN D/F rules.
+Integration of this corrected branch remains pending.
 
 ## Integration context
 
-At the start of this task, a fresh fetch and remote-ref read confirmed main at
-`88fa667b`. The latest visible Integration Agent completion concerned notification
-preferences. Statement recovery `3b7f3df8c78aecf9bf29bdfc7c98aaf820c26f1c`
-was delivered on its task branch but was not an ancestor of main. This task
-therefore starts independently from confirmed main; it does not silently
-incorporate or certify the statement delivery. Integration Agent owns review
-and merge order, including full validation of the combined result.
+The original trust delivery `8df49adbb37a8f93c06230a06d753c8005f24016`
+started independently from `88fa667b`. Integration rejected it after finding
+that a badge dialog first mounted in a replacement session could still show
+content captured in the old session. Previous local test/build passes did not
+cover that interval and must not be interpreted as acceptance of the delivery.
 
-## Reproduced defects and changes
+The independent statement package was integrated at
+`4ed927f05923ec5fdaae05eb4981c7a62d78a174`. That main commit is now merged
+into this task branch (`8e1d224c`) without changing main. All correction validation
+below uses the combined statement + trust tree, rather than certifying two
+independent trees as a combined result.
 
-Before runtime edits, `.buildlog/trust-red.log` recorded **10 PASS / 22 FAIL**.
-Actual Supabase SDK/Auth/HTTP fixtures reproduced queued S1→S2→S1 acceptance
-in Merchant trust, Customer trust and the shared campaign adapter, including
-malformed late responses. Captured session events now use the existing
-`AuthenticatedSessionEvents` and `AuthenticatedRequestScope`; no second Auth
-system is introduced. Normal renewal remains valid, and missing session
-provenance refuses private requests before HTTP.
+## Reproduction and correction
 
-Private summaries/history now clear on authority or shop changes, bound reads
-and catch unexpected transport failures. Resume replaces a pending pagination
-generation with fresh state. Failed later pages retry their original cursor.
-The existing descending event-ID SQL contract is validated at the adapter and
-view boundary; disabled or contradictory responses cannot retain stale history.
-No client qualifies badges or changes thresholds. This does not make separately
-read pages an atomic snapshot.
+The Integration Agent's independent fixture was copied without edits into this
+worktree. Before correction it reproduced **2 PASS / 2 FAIL**; after correction
+all **4 PASS**. No integration checkout/source was modified.
 
-Private badge explanations and all-badge dialogs reuse the existing overlay
-guard. Shared public shop badges/offers reload on repository/shop replacement
-and resume, contain both parallel read failures, and permit bounded retry.
-Layout, eligibility, exact server thresholds and offer facts are preserved.
+The two new permanent suites cover 64 Merchant/Customer badge navigation cases
+and 18 adjacent campaign cases. Re-running those exact suites plus the four
+independent checks against the original four presentation files produced
+**30 PASS / 56 FAIL** (`.buildlog/overlay-confirmed-red.log`). Corrected files
+were restored byte-for-byte afterwards. Earlier exploratory runs also remain
+in `.buildlog`; the confirmed run uses the final test fixtures.
 
-Existing campaign transport tests explicitly supply synthetic session-key
-streams; real-SDK tests independently exercise the actual default Auth streams.
-Existing campaign mutation/recovery behavior is covered because it shares this
-adapter and guard. No new mutation, request queue or automatic replay was added.
+The existing `TrustSessionGuard` now checks the initiating screen's continuation
+in addition to the destination's own actor and stable-session observation.
+That originating guard already observed changes before the destination mounts,
+including S1→S2→S1 events. A destination initially lacking authority remains
+expired. Normal token renewal preserves valid content and drafts. No second Auth
+implementation or global session state was added.
 
-## Validation boundaries
+Covered destinations:
 
-- Targeted repository, trust surfaces and adjacent campaign/promotion recovery:
-  **127 PASS / 0 FAIL**. Log: `.buildlog/trust-targeted.log`.
-- Full Flutter regression: **3174 PASS / 0 FAIL / 6 existing conditional SKIP**.
-  Log: `.buildlog/trust-full.jsonl`. This branch adds **49 tests** to confirmed
-  main's 3125 baseline. The separate statement delivery's 53 tests are not in
-  this independent branch; the lower count relative to that delivery is not
-  deletion or weakening of tests.
-- `flutter analyze --no-pub`: **PASS, no issues**.
-  Log: `.buildlog/trust-analyze.log`.
-- Coverage includes actual SDK initial replay/renewal/replacement events,
-  captured intermediate identities, mutation acknowledgements, observer failure/
-  closure, disposed listeners, bounded and thrown reads, retained pagination
-  cursors, malformed history, shop/repository replacement, resume and late
-  completions, protected dialogs and 320px / 140% text states.
-- Existing golden/layout tests passed without updating golden images.
+- Summary badge explanation, detail explanation, all-badge dialog and trust
+  history in both Merchant and Customer scopes.
+- Shared campaign preview, publish confirmation and published-photo selection.
+- Campaign summary → list, list → editor and editor → product selection.
+  These route arguments are captured before navigation, avoiding both unintended
+  adoption of a new session and dereferencing a page cleared before first mount.
 
-The initial Customer Android compilation failed because the E: drive was full.
-Its log is preserved at
-`.buildlog/pilot-device/trust-recovery-20261020/customer.build.log`.
-Recovery removed only verified untracked `build/` caches in this task and the
-previous statement task. Copied APK bundles and all verification logs were
-outside those directories and retained. No dependency or platform settings
-were changed to work around the failure.
+Private reads and actions remain fenced by the existing repository and view
+checks. Existing observer failure/closure, logout, replacement, late response,
+retry, cursor and cleanup tests remain. Server badge qualification, verified
+purchase requirements, ownership, offers, prices, economics and default-OFF
+flags are unchanged. Public badge explanations stay public.
 
-The retry completed successfully:
+## Validation
 
-- Pair compatibility/preflight: **135 PASS / 0 FAIL / 0 SKIP**.
-- Customer Development, Merchant Pilot and Merchant Development ARM64 debug:
-  **PASS**. Packaged identities, callbacks, signatures and SHA-256 verified.
-- Evidence:
-  [verification](data/merchant_trust_recovery_verification.json) and
-  [paired builds](data/merchant_trust_recovery_build_pair.json).
-- Isolated artifacts:
-  `.buildlog/pilot-device/trust-recovery-20261020-retry/`.
-- Customer retry reported nonfatal Kotlin incremental-cache diagnostics; Gradle
-  completed successfully. Its full diagnostic log is preserved.
+- Independent original reproduction: **2 PASS / 2 FAIL**;
+  `.buildlog/overlay-independent-red.log`.
+- Independent recheck plus related repository, session, widget, campaign and
+  statement suites: **320 PASS / 0 FAIL**;
+  `.buildlog/overlay-combined-final.log` (includes all four independent checks).
+- Full Flutter suite: **3309 PASS / 0 FAIL / 6 existing conditional SKIP**;
+  `.buildlog/overlay-full.jsonl`.
+  This is integrated main's 3178 + original trust's 49 + this correction's 82.
+  Skip names are checked against the previous evidence; none added or weakened.
+- `flutter analyze --no-pub`: **PASS, no issues**;
+  `.buildlog/overlay-analyze-final.log`.
+- Existing layout/golden tests pass without changing goldens. New badge cases
+  exercise 320px layouts; existing shared management checks cover 320/390/430px
+  at 130% text and trust recovery includes 140% text.
 
-Builds precede the delivery commit, so the pair records base `88fa667b` and
-`uncommitted_sources: true`. Their verified source fingerprint is
-`9aa9205e2d4024f9ca72db2335230942b98dba8f4465ebe79655aaf7b37420f3`.
-This identifies the built changes without pretending they were in the base.
-The six conditional skip identities match the integrated preference baseline.
-No new skip or weakened test was introduced.
+Customer Development, Merchant Development and Merchant Pilot ARM64 debug
+compilations all **PASS**. Pair compatibility/preflight is **135 PASS**. APK
+identities, callbacks, signatures and hashes are verified. Evidence:
+[verification](data/merchant_trust_recovery_verification.json) and
+[paired builds](data/merchant_trust_recovery_build_pair.json).
 
-Original delivered `EsnaftaVar-Development-a0dfbdfd` APKs and all three copied
-statement-recovery compile artifacts were rehashed and remain unchanged.
-After preserving the new APKs in the isolated evidence directory, this task's
-reproducible `build/` cache was removed again, leaving approximately 5.1 GB free
-on E: for subsequent work. Source, logs and APK evidence remain available.
+The isolated artifacts are in
+`.buildlog/pilot-device/trust-overlay-recovery-20261020/`.
+The builds precede the correction commit and honestly record parent `8e1d224c`
+with `uncommitted_sources: true`. Their source fingerprint is
+`417a9a0041dd3fc62fe9b70efa363b47c5be500bc366e01f32064e8489db2914`.
+These are synthetic compile rehearsals, not distributable pilot candidates.
+Customer compilation includes nonfatal Kotlin incremental-cache diagnostics;
+Gradle completed successfully and its full log is retained.
 
-All tests are local; HTTP fixtures use `.invalid` mock transport, synthetic
-sessions and no real credentials. Existing SQL was read to check the cursor
-contract, not changed or applied. The server's trust read already refreshes badge
-projections; this package adds no write authority.
+Original delivered `EsnaftaVar-Development-a0dfbdfd` APKs, the prior trust build
+trio and the statement build trio were rehashed unchanged. After copying and
+verifying all new APKs, only this task's untracked `build/` cache was removed,
+leaving approximately 4.25 GiB free on E:. Copied APKs and logs remain outside
+that cache. Final diff, source-fingerprint and added-content/new-file secret/PII
+checks pass.
 
-Production/hosted Development access and writes: **NONE**. Migration apply:
-**NONE**. Provider configuration/sends: **NONE**. Flags remain default OFF.
-New APKs are synthetic compile rehearsals, not distributable pilot candidates.
-Physical QR, real provider acceptance, selected pilot merchants/products,
-official geography and pilot opening remain separate OPEN gates.
+## Scope and remaining gates
 
-Shared review areas: trust/campaign adapter, trust session/overlay guard,
-Merchant and Customer badge views, canonical and slices documents.
-Final scope is 12 authored files; `git diff --check`, added-content/new-file
-secret/PII scanning and built-source fingerprint verification pass. No generated
-metadata, dependency, SQL, global Auth implementation or unrelated checkout
-changes are included.
-No user phone action is required to complete this local package.
+Shared review areas: trust/campaign adapter from the original delivery,
+`TrustSessionGuard`, trust views, campaign views/editor, canonical and slices.
+The correction changes four presentation files, two new permanent test suites
+and five delivery/canonical documents. The whole branch changes 16 authored files
+relative to integrated main. No statement implementation file is edited by this
+correction; its exact integrated content is retained.
+
+Production/hosted Development access or writes: **NONE**. SQL changes, migration
+apply, provider configuration/sends and dependency changes: **NONE**.
+Physical two-device QR, real provider acceptance and pilot-opening decisions
+remain OPEN. This local regression correction needs no user phone action.
+Integration Agent owns independent final review and main merge/push.

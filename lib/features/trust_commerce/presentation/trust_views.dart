@@ -190,15 +190,15 @@ class _TrustSummaryState extends State<TrustSummary>
   Future<void> _open() async {
     if (_opening || !sessionCurrent) return;
     _opening = true;
+    final detail = TrustDetailView(
+      repository: widget.repository,
+      actor: widget.actor,
+      shopId: widget.shopId,
+      originIsCurrent: trustContinuationIsCurrent,
+    );
     await Navigator.push<void>(
       context,
-      MaterialPageRoute(
-        builder: (_) => TrustDetailView(
-          repository: widget.repository,
-          actor: widget.actor,
-          shopId: widget.shopId,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => detail),
     );
     _opening = false;
     if (mounted && sessionCurrent) await _load();
@@ -230,6 +230,7 @@ class _TrustSummaryState extends State<TrustSummary>
                 protect: (child) => PrivateTrustOverlay(
                   repository: widget.repository,
                   actor: widget.actor,
+                  originIsCurrent: trustContinuationIsCurrent,
                   child: child,
                 ),
               ),
@@ -253,11 +254,13 @@ class TrustDetailView extends StatefulWidget {
     required this.repository,
     required this.actor,
     this.shopId,
+    this.originIsCurrent,
     this.readTimeout = const Duration(seconds: 15),
   });
   final TrustCommerceRepository repository;
   final String actor;
   final String? shopId;
+  final bool Function()? originIsCurrent;
   final Duration readTimeout;
   @override
   State<TrustDetailView> createState() => _TrustDetailViewState();
@@ -274,6 +277,8 @@ class _TrustDetailViewState extends State<TrustDetailView>
   TrustCommerceRepository get trustRepository => widget.repository;
   @override
   String get trustActor => widget.actor;
+  @override
+  bool Function()? get trustOriginIsCurrent => widget.originIsCurrent;
   @override
   void clearTrustSession() {
     _data = null;
@@ -444,6 +449,7 @@ class _TrustDetailViewState extends State<TrustDetailView>
                                 protect: (child) => PrivateTrustOverlay(
                                   repository: widget.repository,
                                   actor: widget.actor,
+                                  originIsCurrent: trustContinuationIsCurrent,
                                   child: child,
                                 ),
                               ),

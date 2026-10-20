@@ -1,26 +1,47 @@
 {
-  "kind": "esnaftavar-trust-recovery-verification-v1",
+  "kind": "esnaftavar-trust-recovery-verification-v2",
   "date": "2026-10-20",
-  "status": "LOCAL_PASS_INDEPENDENT_INTEGRATION_PENDING",
+  "status": "CORRECTED_LOCAL_PASS_INTEGRATION_PENDING",
   "branch": "agent/merchant-trust-recovery",
-  "base_commit": "88fa667b982608338044219f06897da5007c9eda",
-  "source_sha256": "9aa9205e2d4024f9ca72db2335230942b98dba8f4465ebe79655aaf7b37420f3",
+  "original_base_commit": "88fa667b982608338044219f06897da5007c9eda",
+  "integrated_main": "4ed927f05923ec5fdaae05eb4981c7a62d78a174",
+  "build_parent_commit": "8e1d224c0a2f709f1e17c92f7866c5c4e156d8c0",
+  "uncommitted_build_sources": true,
+  "source_sha256": "417a9a0041dd3fc62fe9b70efa363b47c5be500bc366e01f32064e8489db2914",
   "source_fingerprint_matches_built_pair": true,
-  "statement_delivery_not_in_base": "3b7f3df8c78aecf9bf29bdfc7c98aaf820c26f1c",
-  "baseline_full_passed": 3125,
-  "initial_red": {
-    "passed": 10,
-    "failed": 22,
-    "log": ".buildlog/trust-red.log"
+  "previous_delivery": {
+    "commit": "8df49adbb37a8f93c06230a06d753c8005f24016",
+    "integration": "REJECTED_PRE_MOUNT_DIALOG_SESSION_RACE",
+    "local_full_passed": 3174,
+    "local_targeted_passed": 127,
+    "prior_builds_preserved": true
+  },
+  "independent_regression": {
+    "before": {
+      "passed": 2,
+      "failed": 2,
+      "log": ".buildlog/overlay-independent-red.log"
+    },
+    "after": {
+      "passed": 4,
+      "failed": 0,
+      "log": ".buildlog/overlay-combined-final.log"
+    },
+    "fixture": ".buildlog/overlay-independent_test.dart"
+  },
+  "original_source_expanded_red": {
+    "passed": 30,
+    "failed": 56,
+    "log": ".buildlog/overlay-confirmed-red.log"
   },
   "targeted": {
-    "passed": 127,
+    "passed": 320,
     "failed": 0,
     "skipped": 0,
-    "log": ".buildlog/trust-targeted.log"
+    "log": ".buildlog/overlay-combined-final.log"
   },
   "full_flutter": {
-    "passed": 3174,
+    "passed": 3309,
     "failed": 0,
     "skip_names": [
       "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
@@ -31,21 +52,18 @@
       "normal Auth clients verified lifecycle ve unverified rejection görür"
     ],
     "existing_conditional_skips": 6,
-    "new_tests": 49,
     "skip_identities_unchanged": true,
-    "log": ".buildlog/trust-full.jsonl"
+    "integrated_main_baseline": 3178,
+    "original_trust_tests": 49,
+    "correction_tests": 82,
+    "log": ".buildlog/overlay-full.jsonl"
   },
   "analyzer": {
     "result": "PASS",
     "issues": 0,
-    "log": ".buildlog/trust-analyze.log"
+    "log": ".buildlog/overlay-analyze-final.log"
   },
   "builds": {
-    "initial_attempt": {
-      "result": "FAILED_DISK_FULL",
-      "log": ".buildlog/pilot-device/trust-recovery-20261020/customer.build.log",
-      "recovery": "Removed only verified untracked build caches in this task and prior statement task; copied APK evidence retained."
-    },
     "customer_development_debug": "PASS",
     "merchant_pilot_debug": "PASS",
     "merchant_development_debug": {
@@ -53,12 +71,12 @@
       "application_id": "com.esnaftavar.app.merchant.dev",
       "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
       "callback_verified": true,
-      "file": ".buildlog/pilot-device/trust-recovery-20261020-retry/merchant-development.apk",
-      "sha256": "e6ff29ad2201ade9219d9dcb5ddca4f5f6d4843207e663e7788a210c09785b77",
-      "bytes": 119439919,
+      "file": ".buildlog/pilot-device/trust-overlay-recovery-20261020/merchant-development.apk",
+      "sha256": "1be4004a18d001d43cb3546e658d7204dfaff296ff3e9fd3b331475d3c256786",
+      "bytes": 119443383,
       "signature_verified": true,
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
-      "log": ".buildlog/trust-merchant-development-build.log"
+      "log": ".buildlog/overlay-merchant-development-build.log"
     },
     "pair_compatibility": {
       "result": "PASS",
@@ -78,7 +96,7 @@
     "pair_evidence": "merchant_trust_recovery_build_pair.json",
     "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
     "nonfatal_kotlin_incremental_cache_diagnostics": [
-      ".buildlog/pilot-device/trust-recovery-20261020-retry/customer.build.log"
+      ".buildlog/pilot-device/trust-overlay-recovery-20261020/customer.build.log"
     ]
   },
   "delivered_apks_unchanged": {
@@ -90,7 +108,7 @@
     ]
   },
   "previous_statement_compile_artifacts_unchanged": true,
-  "database_validation": "N/A_NO_SQL_CHANGE_EXISTING_CONTRACT_INSPECTED",
+  "database_validation": "N/A_NO_SQL_CHANGE",
   "badge_economic_or_qualification_rule_changes": "NONE",
   "production_access": "NONE",
   "hosted_development_access": "NONE",

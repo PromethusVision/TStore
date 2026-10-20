@@ -1269,6 +1269,12 @@ All FROZEN D/F rules and default-OFF gates remain unchanged.
   intervening S1→S2→S1 sequence, logout, replacement or broken observation
   permanently expires the old route. Ordinary token renewal preserves it.
   A repository/actor replacement does not grant authority to an existing route.
+- Private dialogs and child routes inherit the initiating screen's session
+  continuity, including the interval between navigation dispatch and first mount.
+  A late mount must not adopt a replacement session for old content or start a
+  private read in that session. Apply the same rule to the shared campaign
+  preview, confirmation, photo picker and nested management routes. Initial
+  expired authority stays expired; ordinary renewal still preserves valid work.
 - Private badge summaries and history reads have bounded, retryable loading.
   Changing the shop clears old values; resume starts a fresh first-page
   generation. Retired reads, late failures and timeouts cannot restore older
