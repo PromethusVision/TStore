@@ -294,6 +294,23 @@ contracts and default-OFF capabilities remain. No migration, provider, financial
 activation, Production access or physical J acceptance is introduced.
 Delivery and validation: [Merchant catalog recovery](MERCHANT_CATALOG_RECOVERY_HANDOFF.md).
 
+Implementation follow-through — 2026-10-20 (nightly pilot journey): returning from
+a listing/catalog/submission route refreshes the owned product list and dashboard,
+including explicit exit after an uncertain save. Returning from shop profile
+refreshes access quietly: unchanged identity preserves the workspace, while the
+existing changed-shop revision rule still applies. Exit is never proof of rollback
+and does not dispatch another save. The shared notification controller bounds each
+list/count read to 15 seconds, releases loading on exceptions/deadlines, preserves
+loaded rows after pagination failure, and rejects obsolete results. The secondary
+count keeps its existing visible-item fallback; list plus count can take up to
+30 seconds. Live events received during the initial list/count read are buffered
+until it settles; they cannot expose a partial actionable inbox or let a pending
+read erase write guards. Mutation timing/semantics and Customer layout are unchanged.
+
+The screen-level loopback rehearsal is separate from historical J7/J9 repository
+proofs and physical-device acceptance. Original proof hashes are not rewritten to
+accept changed runtime sources. See [daily pilot journey handoff](MERCHANT_PILOT_DAILY_JOURNEY_HANDOFF.md).
+
 ### 4.4 Merchant Android pilot runtime preparation — 2026-10-17
 
 Following management recovery integration at `6b79a4e9`, the Product Owner
@@ -644,6 +661,18 @@ Actual cohort selection, compatible client review, exact remote row approval,
 provider/mail, signed distribution, physical QR and full J acceptance remain open.
 No service/appointment capability, new product rule or FROZEN exception is added.
 See [J9 installed-profile preparation](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md).
+
+Implementation follow-through — 2026-10-20: J12 adds a current-source offline
+preparer without changing J7/J9 evidence or their fail-closed entrypoints. Pin the
+original J9 record and require every bound server/preparation/repository source
+to remain unchanged. Only the exact hash of the already integrated Merchant
+runtime-composition delta may be renewed, using both the complete original 18 repository checkpoints on current
+code and the new 15 screen checkpoints against separate owned local fixtures.
+Both records must match the same current source manifest; changed/missing/added
+runtime sources invalidate preparation. Reuse existing review SQL byte-for-byte,
+retain exact state/token/owner guards, private inputs and empty no-mutation
+defaults. This renews local preparation evidence only, not hosted authorization,
+physical QR, release approval or selection of real participants/products.
 
 ### 4.14 Paired Android artifact and field-acceptance preparation — 2026-10-18
 
