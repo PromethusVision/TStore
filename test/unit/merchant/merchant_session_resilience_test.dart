@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/merchant/domain/merchant_session_identity.dart';
 import 'package:t_store/features/merchant/presentation/merchant_session_cubit.dart';
 import 'package:t_store/features/merchant/preview/merchant_preview.dart';
 
@@ -28,16 +29,168 @@ void main() {
     MerchantRepository? repository,
     Future<void> Function()? revoke,
     Duration timeout = const Duration(seconds: 15),
+    String? Function()? currentSessionKey,
+    Stream<MerchantSessionIdentity>? sessionIdentities,
   }) => active = MerchantSessionCubit(
     repository: repository ?? host.repository,
     credentials: credentials,
     sessionChanges: host.changes.stream,
     currentUserId: () => host.currentId,
+    currentSessionKey: currentSessionKey,
+    sessionIdentities: sessionIdentities,
     beforeSignOut: revoke,
     accessTimeout: timeout,
   );
   MerchantAccess access() =>
       MerchantAccess(user: host.user, shop: host.repository.shop);
+
+  test(
+    'replacement session hides private access before the new read ends',
+    () async {
+      var key = 'S1';
+      final repo = _Repository();
+      when(repo.loadAccess).thenAnswer((_) async => Right(access()));
+      final cubit = make(repository: repo, currentSessionKey: () => key);
+      await cubit.reload();
+      final scope = cubit.state.scopeRevision;
+      final pending = Completer<Either<String, MerchantAccess?>>();
+      when(repo.loadAccess).thenAnswer((_) => pending.future);
+      key = 'S2';
+      host.changes.add(host.currentId);
+      await pumpEventQueue();
+      final duringRead = cubit.state;
+      pending.complete(Right(access()));
+      await pumpEventQueue();
+      expect(duringRead.status, MerchantSessionStatus.checking);
+      expect(duringRead.access, isNull);
+      expect(cubit.state.scopeRevision, greaterThan(scope));
+      expect(cubit.state.status, MerchantSessionStatus.ready);
+    },
+  );
+
+  for (final throws in [false, true]) {
+    test(
+      'same-user read without callback rejects replacement, throws=$throws',
+      () async {
+        var key = 'S1';
+        final repo = _Repository();
+        when(repo.loadAccess).thenAnswer((_) async => Right(access()));
+        final cubit = make(repository: repo, currentSessionKey: () => key);
+        await cubit.reload();
+        final pending = Completer<Either<String, MerchantAccess?>>();
+        when(repo.loadAccess).thenAnswer((_) => pending.future);
+        final read = cubit.reload(quiet: true);
+        key = 'S2';
+        if (throws) {
+          pending.completeError(StateError('old session transport failure'));
+        } else {
+          pending.complete(Right(access()));
+        }
+        await read;
+        expect(cubit.state.status, MerchantSessionStatus.failure);
+        expect(cubit.state.access, isNull);
+        expect(cubit.state.message, merchantSessionChanged);
+      },
+    );
+  }
+
+  for (final outcome in ['success', 'failure', 'throw']) {
+    test('replacement access wins over late old read $outcome', () async {
+      var key = 'S1';
+      final repo = _Repository();
+      when(repo.loadAccess).thenAnswer((_) async => Right(access()));
+      final cubit = make(repository: repo, currentSessionKey: () => key);
+      await cubit.reload();
+      final old = Completer<Either<String, MerchantAccess?>>();
+      when(repo.loadAccess).thenAnswer((_) => old.future);
+      final read = cubit.reload(quiet: true);
+      final fresh = MerchantAccess(
+        user: host.user.copyWith(fullName: 'S2'),
+        shop: host.repository.shop,
+      );
+      when(repo.loadAccess).thenAnswer((_) async => Right(fresh));
+      key = 'S2';
+      host.changes.add(host.currentId);
+      await pumpEventQueue();
+      expect(cubit.state.access, same(fresh));
+      if (outcome == 'throw') {
+        old.completeError(StateError('S1 error'));
+      } else if (outcome == 'failure') {
+        old.complete(const Left('S1 denial'));
+      } else {
+        old.complete(Right(access()));
+      }
+      await read;
+      expect(cubit.state.status, MerchantSessionStatus.ready);
+      expect(cubit.state.access, same(fresh));
+      expect(cubit.state.message, isNull);
+    });
+  }
+
+  test(
+    'missing live session key closes access until explicit valid retry',
+    () async {
+      String? key;
+      final repo = _Repository();
+      when(repo.loadAccess).thenAnswer((_) async => Right(access()));
+      final cubit = make(repository: repo, currentSessionKey: () => key);
+      await cubit.reload();
+      expect(cubit.state.status, MerchantSessionStatus.failure);
+      expect(cubit.state.access, isNull);
+      verifyNever(repo.loadAccess);
+      key = 'S2';
+      await cubit.reload();
+      expect(cubit.state.status, MerchantSessionStatus.ready);
+    },
+  );
+
+  test('queued S1 S2 S1 identities invalidate the old private scope', () async {
+    final signals = StreamController<MerchantSessionIdentity>();
+    addTearDown(signals.close);
+    final cubit = make(
+      currentSessionKey: () => 'S1',
+      sessionIdentities: signals.stream,
+    );
+    await cubit.reload();
+    final scope = cubit.state.scopeRevision;
+    signals.add(
+      MerchantSessionIdentity(userId: host.currentId, sessionKey: 'S2'),
+    );
+    signals.add(
+      MerchantSessionIdentity(userId: host.currentId, sessionKey: 'S1'),
+    );
+    await pumpEventQueue();
+    expect(cubit.state.status, MerchantSessionStatus.ready);
+    expect(cubit.state.scopeRevision, greaterThan(scope));
+  });
+
+  test(
+    'queued S1 S2 S1 identities prevent the old logout continuation',
+    () async {
+      final signals = StreamController<MerchantSessionIdentity>();
+      addTearDown(signals.close);
+      final pending = Completer<void>();
+      when(credentials.signOut).thenAnswer((_) async => const Right(null));
+      final cubit = make(
+        currentSessionKey: () => 'S1',
+        sessionIdentities: signals.stream,
+        revoke: () => pending.future,
+      );
+      await cubit.reload();
+      final exit = cubit.signOut();
+      signals.add(
+        MerchantSessionIdentity(userId: host.currentId, sessionKey: 'S2'),
+      );
+      signals.add(
+        MerchantSessionIdentity(userId: host.currentId, sessionKey: 'S1'),
+      );
+      await pumpEventQueue();
+      pending.complete();
+      await exit;
+      verifyNever(credentials.signOut);
+      expect(cubit.state.status, MerchantSessionStatus.ready);
+    },
+  );
 
   test(
     'quiet refresh retains scope, explicit logout/login creates fresh scope',

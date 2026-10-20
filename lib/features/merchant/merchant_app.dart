@@ -36,6 +36,8 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
       credentials: widget.services.credentials,
       sessionChanges: widget.services.sessionChanges,
       currentUserId: widget.services.currentUserId,
+      currentSessionKey: widget.services.currentSessionKey,
+      sessionIdentities: widget.services.sessionIdentities,
       beforeSignOut: _push?.disable,
     );
     _scopeChanges = _session.stream.listen((state) {

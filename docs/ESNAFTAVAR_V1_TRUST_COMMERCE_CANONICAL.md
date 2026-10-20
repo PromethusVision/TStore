@@ -254,6 +254,16 @@ changes. Full G, O8/O9/O10, provider setup and physical acceptance remain gated.
 Validation and Integration Agent handoff:
 [Merchant session resilience](MERCHANT_SESSION_RESILIENCE_HANDOFF.md).
 
+Implementation follow-through — 2026-10-20: the Merchant host also observes the
+stable Auth session identity for the same account. Event identity is captured
+from that event's session, so queued S1 → S2 → S1 transitions invalidate private
+navigation and old logout continuations. Unchanged-session token refresh still
+preserves drafts. Access reads reject both stale success and stale failure;
+missing live session provenance fails closed. This implements §§4.2–4.3 without
+changing a FROZEN rule or completing any device/remote acceptance gate.
+Local validation and review scope:
+[same-account session replacement](MERCHANT_SESSION_REPLACEMENT_HANDOFF.md).
+
 ### 4.3 Merchant daily edit and photo recovery — 2026-10-17
 
 Following I1 integration at `116557fd`, the next authorized local package

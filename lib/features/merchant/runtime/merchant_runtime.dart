@@ -20,6 +20,7 @@ import '../data/supabase_merchant_operations_repository.dart';
 import '../data/supabase_merchant_repository.dart';
 import '../domain/merchant_account_recovery.dart';
 import '../domain/merchant_credentials.dart';
+import '../domain/merchant_session_identity.dart';
 import '../merchant_services.dart';
 
 /// Shared composition, isolated from Customer's locator. Defaults do not activate
@@ -84,5 +85,12 @@ MerchantServices createMerchantServices(
     ),
     sessionChanges: service.authStateChanges.map((s) => s.session?.user.id),
     currentUserId: () => service.currentUser?.id,
+    currentSessionKey: () => authenticatedSessionKey(client),
+    sessionIdentities: service.authStateChanges.map(
+      (event) => MerchantSessionIdentity(
+        userId: event.session?.user.id,
+        sessionKey: authenticatedSessionKeyFromSession(event.session),
+      ),
+    ),
   );
 }

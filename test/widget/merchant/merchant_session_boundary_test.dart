@@ -11,6 +11,7 @@ import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dar
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_credentials.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
+import 'package:t_store/features/merchant/domain/merchant_session_identity.dart';
 import 'package:t_store/features/merchant/merchant_app.dart';
 import 'package:t_store/features/merchant/merchant_services.dart';
 import 'package:t_store/features/merchant/presentation/merchant_products.dart';
@@ -38,6 +39,8 @@ MerchantServices _services(
   MerchantRepository? merchants,
   MerchantCredentials? credentials,
   QrSessionRepository? qr,
+  String? Function()? currentSessionKey,
+  Stream<MerchantSessionIdentity>? sessionIdentities,
 }) => MerchantServices(
   merchants: merchants ?? preview.services.merchants,
   credentials: credentials ?? preview.services.credentials,
@@ -46,6 +49,8 @@ MerchantServices _services(
   preferences: preview.services.preferences,
   sessionChanges: preview.changes.stream,
   currentUserId: () => preview.currentId,
+  currentSessionKey: currentSessionKey,
+  sessionIdentities: sessionIdentities,
   preview: true,
 );
 
@@ -182,6 +187,98 @@ void main() {
       expect(find.text('79,25'), findsNothing);
     },
   );
+
+  testWidgets(
+    'stable refresh preserves editor; replacement removes root overlay and draft',
+    (tester) async {
+      final preview = MerchantPreview();
+      var key = 'S1';
+      await host(
+        tester,
+        data: preview,
+        services: _services(preview, currentSessionKey: () => key),
+      );
+      await editor(tester);
+      final context = tester.element(find.byType(MerchantListingForm));
+      showDialog<void>(
+        context: context,
+        builder: (_) => const AlertDialog(title: Text('S1 private dialog')),
+      );
+      await tester.pumpAndSettle();
+      preview.changes.add(preview.currentId);
+      await tester.pumpAndSettle();
+      expect(find.text('S1 private dialog'), findsOneWidget);
+      expect(find.text('79,25', skipOffstage: false), findsOneWidget);
+      key = 'S2';
+      preview.changes.add(preview.currentId);
+      await tester.pumpAndSettle();
+      expect(find.text('S1 private dialog'), findsNothing);
+      expect(find.text('79,25', skipOffstage: false), findsNothing);
+      expect(find.text('Mağaza özeti'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('79,25', skipOffstage: false), findsNothing);
+    },
+  );
+
+  testWidgets('same-user replacement ignores the old listing completion', (
+    tester,
+  ) async {
+    final preview = MerchantPreview();
+    final repo = _DelayedMerchant(preview);
+    var key = 'S1';
+    await host(
+      tester,
+      data: preview,
+      services: _services(
+        preview,
+        merchants: repo,
+        currentSessionKey: () => key,
+      ),
+    );
+    await editor(tester);
+    await tester.ensureVisible(find.text('Ürünü kaydet'));
+    await tester.tap(find.text('Ürünü kaydet'));
+    await tester.pump();
+    key = 'S2';
+    preview.changes.add(preview.currentId);
+    await tester.pumpAndSettle();
+    repo.pending.complete(Right(repo.items.first));
+    await tester.pumpAndSettle();
+    expect(find.text('Mağaza özeti'), findsOneWidget);
+    expect(find.text('Ürün bilgileri kaydedildi.'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('queued S1 S2 S1 events cannot revive an old editor', (
+    tester,
+  ) async {
+    final preview = MerchantPreview();
+    final signals = StreamController<MerchantSessionIdentity>();
+    addTearDown(() => tester.runAsync(signals.close));
+    await host(
+      tester,
+      data: preview,
+      services: _services(
+        preview,
+        currentSessionKey: () => 'S1',
+        sessionIdentities: signals.stream,
+      ),
+    );
+    await editor(tester);
+    signals.add(
+      MerchantSessionIdentity(userId: preview.currentId, sessionKey: 'S2'),
+    );
+    signals.add(
+      MerchantSessionIdentity(userId: preview.currentId, sessionKey: 'S1'),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('79,25', skipOffstage: false), findsNothing);
+    expect(find.text('Mağaza özeti'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('79,25', skipOffstage: false), findsNothing);
+  });
 
   testWidgets(
     'a late listing result cannot navigate or notify the replacement session',
