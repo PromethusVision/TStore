@@ -5,6 +5,12 @@ abstract interface class AuthenticatedSessionSource {
   String? get currentSessionKey;
 }
 
+/// Keys captured from each event, rather than from mutable live Auth state.
+abstract interface class AuthenticatedSessionEvents
+    implements AuthenticatedSessionSource {
+  Stream<String?> get sessionKeyChanges;
+}
+
 class AuthenticatedRequestChanged implements Exception {
   const AuthenticatedRequestChanged();
 }
@@ -18,6 +24,7 @@ class AuthenticatedRequestScope {
     required this.currentUser,
     required this.currentSession,
     required Stream<String?> changes,
+    Stream<String?>? sessionKeys,
     this.allowGuest = false,
   }) {
     _subscription = changes.listen(
@@ -27,11 +34,19 @@ class AuthenticatedRequestScope {
       onError: (Object _) => _closed = true,
       onDone: () => _closed = true,
     );
+    _keySubscription = sessionKeys?.listen(
+      (key) {
+        if (key != session || !current) _closed = true;
+      },
+      onError: (Object _) => _closed = true,
+      onDone: () => _closed = true,
+    );
   }
   final String? user, session;
   final String? Function() currentUser, currentSession;
   final bool allowGuest;
   late final StreamSubscription<String?> _subscription;
+  StreamSubscription<String?>? _keySubscription;
   bool _closed = false;
   bool get current =>
       !_closed &&
@@ -57,5 +72,6 @@ class AuthenticatedRequestScope {
   Future<void> close() async {
     _closed = true;
     await _subscription.cancel();
+    await _keySubscription?.cancel();
   }
 }

@@ -1,0 +1,141 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-20T13:52:55.350Z",
+  "runtime": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit",
+  "evidence_class": "native-postgresql-real-pgcrypto-independent-connections-synthetic-auth-storage-schema",
+  "managed_auth": "OPEN",
+  "storage_http": "OPEN",
+  "physical_two_device": "OPEN",
+  "checks": [
+    {
+      "name": "default OFF keeps legacy service and review APIs usable",
+      "result": "PASS"
+    },
+    {
+      "name": "unsupported legacy content stays private and withdrawal does not fabricate evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "quantity three gives one entitlement; a claim alone gives none",
+      "result": "PASS"
+    },
+    {
+      "name": "initial service requires exactly three bounded criteria and is atomic with products",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent identical submissions yield one root, revision, service and fixed deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "server ownership, direct-table privacy and immutable evidence are enforced",
+      "result": "PASS"
+    },
+    {
+      "name": "edits append revisions without extending the deadline; identical edit retries are no-ops",
+      "result": "PASS"
+    },
+    {
+      "name": "current revision and own source shop govern one merchant reply and report",
+      "result": "PASS"
+    },
+    {
+      "name": "24-hour boundary is checked after contended locks; withdrawal remains available",
+      "result": "PASS"
+    },
+    {
+      "name": "newer purchase reopens the same root; legacy evidence FK and single public count survive",
+      "result": "PASS"
+    },
+    {
+      "name": "three distinct products allow three roots and one immutable service evaluation",
+      "result": "PASS"
+    },
+    {
+      "name": "reasoned admin moderation hides and restores projections without rewriting history",
+      "result": "PASS"
+    },
+    {
+      "name": "fraud invalidation removes current evidence and falls back to earlier valid service evaluation",
+      "result": "PASS"
+    },
+    {
+      "name": "a genuine full return preserves service and product experience evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "independent customers contend safely and each contributes once to cached public scores",
+      "result": "PASS"
+    },
+    {
+      "name": "legacy adoption preserves old deadline and never invents three service criteria",
+      "result": "PASS"
+    },
+    {
+      "name": "authorized self-delete erases public text and subject key without losing immutable commerce facts",
+      "result": "PASS"
+    }
+  ],
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    },
+    {
+      "file": "20261015001800_0018_qr_claim_purchase_returns.sql",
+      "sha256": "f8a6a5e583b9f8d93a8b1eed8990c4b6af6cc7ad8bf2dafcb8d561697d1338da"
+    },
+    {
+      "file": "20261015001900_0019_verified_evaluations.sql",
+      "sha256": "43b0aee9428e60491f346ec93832d6480421a45ba44c1a6c7f1a48f04a60ba4c"
+    }
+  ]
+}

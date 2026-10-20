@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
 import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
 
-abstract class PurchaseEvaluationRepository {
+abstract class PurchaseEvaluationRepository
+    implements AuthenticatedSessionEvents {
   String? get currentUserId;
   Stream<String?> get sessionChanges;
   Future<Either<ReviewFailure, bool>> enabled();

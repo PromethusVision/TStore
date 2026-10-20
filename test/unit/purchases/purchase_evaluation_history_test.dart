@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/purchases/data/repositories/purchase_history_repository_impl.dart';
+import '../../helpers/evaluation_auth_fixture.dart';
 
 class _Service extends Mock implements SupabaseService {}
 
@@ -40,7 +41,7 @@ void main() {
       },
     ],
   };
-  setUp(() {
+  setUp(() async {
     service = _Service();
     user = _User();
     when(() => user.id).thenReturn('customer');
@@ -92,6 +93,8 @@ void main() {
       }),
     );
     when(() => service.client).thenReturn(client);
+    await installEvaluationSession(client, 'S1', actor: 'customer');
+    await pumpEventQueue();
   });
   tearDown(() async {
     await client.dispose();

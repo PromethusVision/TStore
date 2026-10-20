@@ -1,0 +1,40 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-20T14:11:04.5395462Z",
+  "branch": "agent/merchant-review-recovery",
+  "base_commit": "86ac4e970ab9f36e8ca77696da12549127f61596",
+  "source_sha256": "f244761f3bfefbd13d794411653066a1b62572da530b5e89f2b689ffb4b4dce6",
+  "full_flutter": {
+    "skipped": 6,
+    "failed": 0,
+    "new_skips": 0,
+    "passed": 3030,
+    "new_tests": 32,
+    "log": ".buildlog/flutter-full.jsonl"
+  },
+  "analyzer": "PASS",
+  "native_postgresql_groups": 17,
+  "managed_local_groups": 28,
+  "runner_safety_tests": 4,
+  "artifact_compatibility_tests": 135,
+  "customer_development_debug": "PASS",
+  "merchant_pilot_debug": "PASS",
+  "merchant_development_debug": {
+    "target": "lib/main_merchant_development.dart",
+    "flavor": "merchantDevelopment",
+    "signature_verified": true,
+    "distributable": false,
+    "result": "PASS",
+    "configuration": "loopback-synthetic-only",
+    "sha256": "0a8f861462309ad3bad4543e8bfa52277eb57747dc7fbc5dc886cf22f1624ede",
+    "bytes": 119414519,
+    "package": "com.esnaftavar.app.merchant.dev"
+  },
+  "prior_device_pair_hashes_unchanged": true,
+  "migration_changes": 0,
+  "hosted_development_access": "NONE",
+  "production_access": "NONE",
+  "physical_two_device": "OPEN",
+  "pilot_ready": false,
+  "build_diagnostics": "Customer build emitted non-fatal Kotlin incremental-cache diagnostics; Gradle completed successfully and APK inspection/signature checks passed."
+}

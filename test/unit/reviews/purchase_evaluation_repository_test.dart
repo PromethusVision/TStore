@@ -9,16 +9,21 @@ import '../../helpers/fake_evaluation_repository.dart';
 void main() {
   late SupabaseClient client;
   late SupabasePurchaseEvaluationRepository repository;
+  late StreamController<String?> sessions;
   String? actor;
   dynamic response;
   final calls = <({String name, Map<String, dynamic> params})>[];
   setUp(() {
     client = SupabaseClient('http://127.0.0.1:55431', 'synthetic-anon');
     actor = evaluationActor;
+    sessions = StreamController<String?>.broadcast();
     calls.clear();
     repository = SupabasePurchaseEvaluationRepository(
       client,
       currentUserId: () => actor,
+      currentSessionKey: () => actor == null ? null : '$actor:test',
+      sessionChanges: sessions.stream,
+      sessionKeyChanges: sessions.stream.map((actor) => '$actor:test'),
       rpc: (name, params) async {
         calls.add((name: name, params: params));
         if (response is Exception) throw response as Exception;
@@ -29,6 +34,7 @@ void main() {
   });
   tearDown(() async {
     await client.dispose();
+    await sessions.close();
   });
   Map<String, dynamic> purchase() => {
     'purchase_id': evaluationPurchase,

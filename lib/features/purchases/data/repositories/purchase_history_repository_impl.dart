@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/supabase/supabase_tables.dart';
@@ -7,10 +9,20 @@ import 'package:t_store/features/purchases/data/models/verified_purchase_model.d
 import 'package:t_store/features/purchases/domain/entities/verified_purchase_entity.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_history_repository.dart';
 
-class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
+class PurchaseHistoryRepositoryImpl
+    implements PurchaseHistoryRepository, AuthenticatedSessionEvents {
   final SupabaseService supabaseService;
   final bool reviewsEnabled;
   final bool checkoutEnabled;
+  @override
+  String? get currentSessionKey =>
+      authenticatedSessionKey(supabaseService.client);
+  @override
+  Stream<String?> get sessionKeyChanges => supabaseService
+      .client
+      .auth
+      .onAuthStateChange
+      .map((event) => authenticatedSessionKeyFromSession(event.session));
 
   PurchaseHistoryRepositoryImpl({
     required this.supabaseService,
@@ -23,6 +35,16 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
   @override
   Future<Either<String, List<VerifiedPurchaseEntity>>>
   getVerifiedPurchases() async {
+    final scope = AuthenticatedRequestScope(
+      user: supabaseService.currentUser?.id,
+      session: currentSessionKey,
+      currentUser: () => supabaseService.currentUser?.id,
+      currentSession: () => currentSessionKey,
+      changes: supabaseService.client.auth.onAuthStateChange.map(
+        (event) => event.session?.user.id,
+      ),
+      sessionKeys: sessionKeyChanges,
+    );
     try {
       final user = supabaseService.currentUser;
       final identity = QrProtocolV2.authenticatedSessionIdentity(
@@ -31,6 +53,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
       if (user == null) {
         return const Left('Alışverişlerini görmek için giriş yapın.');
       }
+      scope.check();
 
       final response = await supabaseService.client
           .from(SupabaseTables.verifiedTransactions)
@@ -42,7 +65,9 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
             'line_total), shop_ratings(rating, created_at)',
           )
           .eq('customer_user_id', user.id)
-          .order('confirmed_at', ascending: false);
+          .order('confirmed_at', ascending: false)
+          .timeout(const Duration(seconds: 20));
+      scope.check();
 
       final rows = (response as List)
           .map((r) => Map<String, dynamic>.from(r as Map))
@@ -66,6 +91,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
                 params: {'p_purchase_ids': ids.toList()},
               )
               .timeout(const Duration(seconds: 20));
+          scope.check();
           if (result is! List) throw const FormatException();
           final byId = <String, dynamic>{};
           for (final raw in result) {
@@ -92,6 +118,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
           final capability = await supabaseService.client
               .rpc('review_capabilities_v2')
               .timeout(const Duration(seconds: 20));
+          scope.check();
           if (capability is! Map || capability['version'] != 2) {
             throw const FormatException();
           }
@@ -101,6 +128,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
         }
         if (available) {
           for (var start = 0; start < rows.length; start += 100) {
+            scope.check();
             if (supabaseService.currentUser?.id != user.id) {
               return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
             }
@@ -116,6 +144,7 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
                   params: {'p_purchase_ids': ids.toList()},
                 )
                 .timeout(const Duration(seconds: 20));
+            scope.check();
             if (serviceRows is! List) throw const FormatException();
             final byId = <String, Map<String, dynamic>>{};
             for (final raw in serviceRows) {
@@ -147,9 +176,15 @@ class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository {
           )
           .toList(growable: false);
 
+      scope.check();
       return Right(purchases);
     } catch (error) {
+      if (!scope.current) {
+        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
+      }
       return Left(_friendlyError(error));
+    } finally {
+      await scope.close();
     }
   }
 

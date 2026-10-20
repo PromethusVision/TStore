@@ -40,11 +40,22 @@ const exampleMerchantReview = MerchantReview(
 class FakeEvaluationRepository implements PurchaseEvaluationRepository {
   @override
   String? currentUserId = evaluationActor;
+  @override
+  String? currentSessionKey = '$evaluationActor:S1';
+  final sessionKeys = StreamController<String?>.broadcast(sync: true);
+  @override
+  Stream<String?> get sessionKeyChanges => sessionKeys.stream;
+  void replaceSession(String? key) {
+    currentSessionKey = key;
+    sessionKeys.add(key);
+  }
+
   final sessions = StreamController<String?>.broadcast(sync: true);
   @override
   Stream<String?> get sessionChanges => sessions.stream;
   void switchAccount(String? id) {
     currentUserId = id;
+    replaceSession(id == null ? null : '$id:S1');
     sessions.add(id);
   }
 
@@ -74,6 +85,8 @@ class FakeEvaluationRepository implements PurchaseEvaluationRepository {
   final submissions = <PurchaseEvaluationCommand>[];
   final responses = <({String request, String text, bool report})>[];
   Future<Either<ReviewFailure, Unit>> Function()? submitWait;
+  Future<Either<ReviewFailure, Unit>> Function()? responseWait;
+  Future<Either<ReviewFailure, PurchaseEvaluation>> Function()? purchaseRead;
   Future<Either<ReviewFailure, MerchantReviewsPage>> Function(
     MerchantReviewFilter,
     int,
@@ -85,7 +98,11 @@ class FakeEvaluationRepository implements PurchaseEvaluationRepository {
   @override
   Future<Either<ReviewFailure, PurchaseEvaluation>> purchase(
     String purchaseId,
-  ) async => readFailure == null ? Right(value) : Left(readFailure!);
+  ) async => purchaseRead != null
+      ? purchaseRead!()
+      : readFailure == null
+      ? Right(value)
+      : Left(readFailure!);
   @override
   Future<Either<ReviewFailure, Unit>> submit(
     PurchaseEvaluationCommand command,
@@ -113,6 +130,7 @@ class FakeEvaluationRepository implements PurchaseEvaluationRepository {
     required String text,
   }) async {
     responses.add((request: requestId, text: text, report: false));
+    if (responseWait != null) return responseWait!();
     return mutationFailure == null ? const Right(unit) : Left(mutationFailure!);
   }
 
@@ -124,8 +142,12 @@ class FakeEvaluationRepository implements PurchaseEvaluationRepository {
     required String reason,
   }) async {
     responses.add((request: requestId, text: reason, report: true));
+    if (responseWait != null) return responseWait!();
     return mutationFailure == null ? const Right(unit) : Left(mutationFailure!);
   }
 
-  Future<void> dispose() => sessions.close();
+  Future<void> dispose() async {
+    await sessions.close();
+    await sessionKeys.close();
+  }
 }

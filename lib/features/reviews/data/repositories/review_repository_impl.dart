@@ -1,16 +1,20 @@
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/core/utils/helpers/customer_error_message.dart';
 import 'package:t_store/features/reviews/data/models/review_model.dart';
 import 'package:t_store/features/reviews/domain/entities/review_entity.dart';
 import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
 import 'package:t_store/features/reviews/domain/repositories/review_repository.dart';
+import 'dart:async';
 
 typedef ReviewRpcCaller =
     Future<dynamic> Function(String functionName, Map<String, dynamic> params);
 
-class ReviewRepositoryImpl implements ReviewRepository {
+class ReviewRepositoryImpl
+    implements ReviewRepository, AuthenticatedSessionEvents {
   static const String getReviewsRpc = 'get_product_reviews';
   static const String getEligibilityRpc = 'get_product_review_eligibility';
   static const String submitReviewRpc = 'submit_product_review';
@@ -29,6 +33,39 @@ class ReviewRepositoryImpl implements ReviewRepository {
                supabaseService.client.rpc(functionName, params: params));
 
   bool get _isAuthenticated => supabaseService.currentUser != null;
+  @override
+  String? get currentSessionKey =>
+      authenticatedSessionKey(supabaseService.client);
+  @override
+  Stream<String?> get sessionKeyChanges => supabaseService
+      .client
+      .auth
+      .onAuthStateChange
+      .map((event) => authenticatedSessionKeyFromSession(event.session));
+
+  Future<dynamic> _sessionRpc(String name, Map<String, dynamic> args) async {
+    final scope = AuthenticatedRequestScope(
+      user: supabaseService.currentUser?.id,
+      session: currentSessionKey,
+      currentUser: () => supabaseService.currentUser?.id,
+      currentSession: () => currentSessionKey,
+      changes: supabaseService.client.auth.onAuthStateChange.map(
+        (event) => event.session?.user.id,
+      ),
+      sessionKeys: sessionKeyChanges,
+      allowGuest: name == getReviewsRpc,
+    );
+    try {
+      return await scope.run(() {
+        final request = _rpcCaller(name, args);
+        return name == getReviewsRpc || name == getEligibilityRpc
+            ? request.timeout(const Duration(seconds: 20))
+            : request;
+      });
+    } finally {
+      await scope.close();
+    }
+  }
 
   @override
   Future<Either<ReviewFailure, ProductReviewsPage>> getProductReviews(
@@ -42,7 +79,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     try {
-      final response = await _rpcCaller(getReviewsRpc, {
+      final response = await _sessionRpc(getReviewsRpc, {
         'p_product_id': normalizedProductId,
         'p_limit': limit,
         'p_offset': page * limit,
@@ -87,7 +124,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     try {
-      final response = await _rpcCaller(getEligibilityRpc, {
+      final response = await _sessionRpc(getEligibilityRpc, {
         'p_product_id': normalizedProductId,
       });
       final json = _jsonObject(response);
@@ -134,7 +171,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     try {
-      final response = await _rpcCaller(submitReviewRpc, {
+      final response = await _sessionRpc(submitReviewRpc, {
         'p_product_id': normalizedProductId,
         'p_rating': rating,
         'p_title': _optionalInput(title),
@@ -172,7 +209,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     try {
-      final response = await _rpcCaller(updateReviewRpc, {
+      final response = await _sessionRpc(updateReviewRpc, {
         'p_review_id': normalizedReviewId,
         'p_rating': rating,
         'p_title': _optionalInput(title),
@@ -196,7 +233,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     try {
-      final response = await _rpcCaller(deleteReviewRpc, {
+      final response = await _sessionRpc(deleteReviewRpc, {
         'p_review_id': normalizedReviewId,
       });
       final json = _jsonObject(response);
@@ -280,6 +317,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     Object error, {
     required ReviewFailure fallback,
   }) {
+    if (error is AuthenticatedRequestChanged) return _authFailure;
     final rawMessage = error.toString();
     final normalized = rawMessage.toLowerCase();
     final code = error is PostgrestException

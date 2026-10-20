@@ -53,6 +53,177 @@ void main() {
   }
 
   testWidgets(
+    'closing an uncertain response dialog preserves its exact retry',
+    (tester) async {
+      await open(tester);
+      await tap(
+        tester,
+        find.byKey(const Key('merchant-review-$evaluationRoot')),
+      );
+      await tap(tester, find.text('Yanıt yaz'));
+      await tester.enterText(
+        find.byKey(const Key('merchant-review-response')),
+        'Özgün yanıt',
+      );
+      repository.mutationFailure = const ReviewFailure(
+        ReviewFailureKind.network,
+        'Yanıt kayboldu',
+      );
+      await tap(tester, find.text('Gönder'));
+      final sent = repository.responses.single;
+      await tap(tester, find.text('Kapat'));
+      await tap(tester, find.text('Yanıt yaz'));
+      expect(
+        tester
+            .widget<TextField>(
+              find.byKey(const Key('merchant-review-response')),
+            )
+            .controller!
+            .text,
+        sent.text,
+      );
+      expect(find.text('Tekrar dene'), findsOneWidget);
+      repository.mutationFailure = null;
+      await tap(tester, find.text('Tekrar dene'));
+      expect(repository.responses.last, sent);
+    },
+  );
+  testWidgets(
+    'session renewal preserves response draft; replacement removes it and late success',
+    (tester) async {
+      await open(tester);
+      await tap(
+        tester,
+        find.byKey(const Key('merchant-review-$evaluationRoot')),
+      );
+      await tap(tester, find.text('Yanıt yaz'));
+      await tester.enterText(
+        find.byKey(const Key('merchant-review-response')),
+        'Özel taslak',
+      );
+      repository.replaceSession('$evaluationActor:S1');
+      await tester.pump();
+      expect(find.text('Özel taslak'), findsOneWidget);
+      final waiting = Completer<Either<ReviewFailure, Unit>>();
+      repository.responseWait = () => waiting.future;
+      await tester.ensureVisible(find.text('Gönder'));
+      await tester.tap(find.text('Gönder'));
+      await tester.pump();
+      await tester.tap(find.text('Gönderiliyor…'));
+      expect(repository.responses, hasLength(1));
+      repository.replaceSession('$evaluationActor:S2');
+      repository.replaceSession('$evaluationActor:S1');
+      await tester.pump();
+      expect(find.text('Özel taslak'), findsNothing);
+      expect(find.textContaining('Oturum değişti.'), findsWidgets);
+      waiting.complete(const Right(unit));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Yanıtınız kaydedildi.'), findsNothing);
+      await tap(tester, find.text('Kapat'));
+      expect(tester.takeException(), null);
+    },
+  );
+  testWidgets(
+    'detail reload failure hides stale actions and retries fresh authority',
+    (tester) async {
+      await open(tester);
+      repository.readFailure = const ReviewFailure(
+        ReviewFailureKind.network,
+        'Ayrıntı alınamadı',
+      );
+      await tap(
+        tester,
+        find.byKey(const Key('merchant-review-$evaluationRoot')),
+      );
+      expect(find.text('Ayrıntı alınamadı'), findsOneWidget);
+      expect(find.text('Yanıt yaz'), findsNothing);
+      expect(find.text(exampleMerchantReview.comment!), findsNothing);
+      repository.readFailure = null;
+      await tap(tester, find.text('Tekrar dene'));
+      expect(find.text('Yanıt yaz'), findsOneWidget);
+      expect(tester.takeException(), null);
+    },
+  );
+  testWidgets(
+    'pagination retry keeps offset and stale page failure cannot replace a new filter',
+    (tester) async {
+      repository.page = MerchantReviewsPage(
+        shopId: evaluationShop,
+        scores: exampleScores,
+        awaitingReplyCount: 1,
+        total: 2,
+        reviews: [exampleMerchantReview],
+      );
+      await open(tester);
+      final offsets = <int>[];
+      var fail = true;
+      Completer<Either<ReviewFailure, MerchantReviewsPage>>? late;
+      repository.merchantRead = (filter, offset) async {
+        offsets.add(offset);
+        if (filter == MerchantReviewFilter.reported) {
+          return const Right(
+            MerchantReviewsPage(
+              shopId: evaluationShop,
+              scores: exampleScores,
+              awaitingReplyCount: 0,
+              total: 0,
+              reviews: [],
+            ),
+          );
+        }
+        if (fail) {
+          return const Left(
+            ReviewFailure(ReviewFailureKind.network, 'Sayfa alınamadı'),
+          );
+        }
+        return late!.future;
+      };
+      await tester.scrollUntilVisible(
+        find.text('Daha fazla göster'),
+        180,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tap(tester, find.text('Daha fazla göster'));
+      expect(find.text('Mahalle ürünü'), findsOneWidget);
+      fail = false;
+      late = Completer<Either<ReviewFailure, MerchantReviewsPage>>();
+      await tester.ensureVisible(find.text('Tekrar dene'));
+      await tester.tap(find.text('Tekrar dene'));
+      await tester.pump();
+      await tester.ensureVisible(find.text('Bildirilen'));
+      await tester.tap(find.text('Bildirilen'));
+      await tester.pumpAndSettle();
+      late.complete(
+        const Left(ReviewFailure(ReviewFailureKind.network, 'Eski hata')),
+      );
+      await tester.pumpAndSettle();
+      expect(offsets, [1, 1, 0]);
+      expect(find.text('Eski hata'), findsNothing);
+      expect(find.text('Mahalle ürünü'), findsNothing);
+      expect(
+        find.text('Bu filtrede değerlendirme bulunmuyor.'),
+        findsOneWidget,
+      );
+    },
+  );
+  testWidgets(
+    'summary late refresh is discarded after same-account replacement',
+    (tester) async {
+      await open(tester, summary: true);
+      await tap(tester, find.byKey(const Key('merchant-reviews-open')));
+      final waiting = Completer<Either<ReviewFailure, MerchantReviewsPage>>();
+      repository.merchantRead = (_, _) => waiting.future;
+      Navigator.of(tester.element(find.text('Değerlendirme merkezi'))).pop();
+      await tester.pump();
+      repository.replaceSession('$evaluationActor:S2');
+      waiting.complete(Right(repository.page));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('merchant-reviews-open')), findsNothing);
+      expect(find.text('Güleryüz'), findsNothing);
+    },
+  );
+  testWidgets(
     'dashboard shows criteria, sample count and center navigation without overflow',
     (tester) async {
       await open(tester, summary: true);

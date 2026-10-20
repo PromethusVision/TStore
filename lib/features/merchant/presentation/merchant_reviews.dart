@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/reviews/domain/entities/purchase_evaluation.dart';
-import 'package:t_store/features/reviews/domain/entities/review_failure.dart';
 import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
 import 'package:t_store/features/reviews/presentation/widgets/evaluation_session_guard.dart';
+import 'package:t_store/features/reviews/presentation/evaluation_recovery.dart';
 
 class MerchantReviewSummary extends StatefulWidget {
   const MerchantReviewSummary({
@@ -27,6 +27,8 @@ class _MerchantReviewSummaryState extends State<MerchantReviewSummary>
   @override
   PurchaseEvaluationRepository get evaluationRepository => widget.repository;
   @override
+  Object get evaluationResource => widget.shopId;
+  @override
   String get evaluationActor => widget.ownerId;
   bool get _current => evaluationSessionCurrent;
   @override
@@ -49,7 +51,7 @@ class _MerchantReviewSummaryState extends State<MerchantReviewSummary>
       _error = null;
     });
     final capability = await widget.repository.enabled();
-    if (!mounted || !_current || epoch != _epoch) return;
+    if (!checkEvaluationContinuation() || epoch != _epoch) return;
     bool enabled = false;
     String? failure;
     capability.fold((e) => failure = e.message, (v) => enabled = v);
@@ -62,7 +64,7 @@ class _MerchantReviewSummaryState extends State<MerchantReviewSummary>
       return;
     }
     final result = await widget.repository.merchant(widget.shopId);
-    if (!mounted || !_current || epoch != _epoch) return;
+    if (!checkEvaluationContinuation() || epoch != _epoch) return;
     setState(() {
       _enabled = true;
       _loading = false;
@@ -83,7 +85,7 @@ class _MerchantReviewSummaryState extends State<MerchantReviewSummary>
       ),
     );
     _opening = false;
-    if (mounted && _current) await _load();
+    if (checkEvaluationContinuation()) await _load();
   }
 
   @override
@@ -169,11 +171,14 @@ class _MerchantReviewsViewState extends State<MerchantReviewsView>
   MerchantReviewFilter _filter = MerchantReviewFilter.all;
   MerchantReviewsPage? _page;
   List<MerchantReview> _reviews = [];
+  final _reviewOffsets = <String, int>{};
   int _epoch = 0, _offset = 0;
   bool _loading = true, _more = false, _opening = false;
   String? _error;
   @override
   PurchaseEvaluationRepository get evaluationRepository => widget.repository;
+  @override
+  Object get evaluationResource => widget.shopId;
   @override
   String get evaluationActor => widget.ownerId;
   bool get _current => evaluationSessionCurrent;
@@ -181,6 +186,7 @@ class _MerchantReviewsViewState extends State<MerchantReviewsView>
   void clearEvaluationSession() {
     _page = null;
     _reviews = [];
+    _reviewOffsets.clear();
     _epoch++;
   }
 
@@ -193,6 +199,7 @@ class _MerchantReviewsViewState extends State<MerchantReviewsView>
   Future<void> _load({bool more = false}) async {
     if (!_current || (more && (_loading || _more))) return;
     final epoch = ++_epoch;
+    final requestedOffset = more ? _offset : 0;
     setState(() {
       _error = null;
       if (more) {
@@ -202,20 +209,25 @@ class _MerchantReviewsViewState extends State<MerchantReviewsView>
         _more = false;
         _offset = 0;
         _reviews = [];
+        _reviewOffsets.clear();
+        _page = null;
       }
     });
     final result = await widget.repository.merchant(
       widget.shopId,
       filter: _filter,
-      offset: more ? _offset : 0,
+      offset: requestedOffset,
     );
-    if (!mounted || !_current || epoch != _epoch) return;
+    if (!checkEvaluationContinuation() || epoch != _epoch) return;
     setState(() {
       _loading = false;
       _more = false;
       result.fold((e) => _error = e.message, (page) {
         _page = page;
         _offset += page.reviews.length;
+        for (final review in page.reviews) {
+          _reviewOffsets[review.id] = requestedOffset;
+        }
         _reviews = {
           for (final r in _reviews) r.id: r,
           for (final r in page.reviews) r.id: r,
@@ -234,11 +246,13 @@ class _MerchantReviewsViewState extends State<MerchantReviewsView>
           shopId: widget.shopId,
           ownerId: widget.ownerId,
           review: review,
+          filter: _filter,
+          offset: _reviewOffsets[review.id] ?? 0,
         ),
       ),
     );
     _opening = false;
-    if (mounted && _current) await _load();
+    if (checkEvaluationContinuation()) await _load();
   }
 
   @override
@@ -326,10 +340,14 @@ class _MerchantReviewDetail extends StatefulWidget {
     required this.shopId,
     required this.ownerId,
     required this.review,
+    required this.filter,
+    required this.offset,
   });
   final PurchaseEvaluationRepository repository;
   final String shopId, ownerId;
   final MerchantReview review;
+  final MerchantReviewFilter filter;
+  final int offset;
   @override
   State<_MerchantReviewDetail> createState() => _MerchantReviewDetailState();
 }
@@ -337,27 +355,74 @@ class _MerchantReviewDetail extends StatefulWidget {
 class _MerchantReviewDetailState extends State<_MerchantReviewDetail>
     with EvaluationSessionGuard<_MerchantReviewDetail> {
   bool _opening = false, _replied = false, _reported = false;
+  bool _loading = true;
+  int _epoch = 0;
+  String? _error;
+  MerchantReview? _review;
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  @override
+  void clearEvaluationSession() {
+    _epoch++;
+    _review = null;
+    _error = null;
+    _loading = false;
+  }
+
+  Future<void> _load() async {
+    if (_opening || !checkEvaluationContinuation()) return;
+    final epoch = ++_epoch;
+    setState(() {
+      _loading = true;
+      _error = null;
+      _review = null;
+    });
+    final result = await readMerchantReview(
+      widget.repository,
+      widget.shopId,
+      widget.review.id,
+      filter: widget.filter,
+      offset: widget.offset,
+    );
+    if (!checkEvaluationContinuation() || epoch != _epoch) return;
+    setState(() {
+      _loading = false;
+      result.fold((e) => _error = e.message, (review) {
+        _review = review;
+        _replied = false;
+        _reported = false;
+      });
+    });
+  }
+
   @override
   PurchaseEvaluationRepository get evaluationRepository => widget.repository;
+  @override
+  Object get evaluationResource => (widget.shopId, widget.review.id);
   @override
   String get evaluationActor => widget.ownerId;
   bool get _current => evaluationSessionCurrent;
   Future<void> _action(bool report) async {
-    if (_opening || !_current) return;
+    final review = _review;
+    if (_opening || !checkEvaluationContinuation() || review == null) return;
     _opening = true;
-    final done = await showDialog<bool>(
+    final done = await showDialog<ReviewResponseCommand>(
       context: context,
       barrierDismissible: false,
       builder: (_) => _ReviewResponseDialog(
         repository: widget.repository,
         shopId: widget.shopId,
         ownerId: widget.ownerId,
-        review: widget.review,
+        review: review,
         report: report,
       ),
     );
     _opening = false;
-    if (!mounted || !_current || done != true) return;
+    if (!mounted || !checkEvaluationContinuation() || done == null) return;
     setState(() {
       if (report) {
         _reported = true;
@@ -375,13 +440,23 @@ class _MerchantReviewDetailState extends State<_MerchantReviewDetail>
 
   @override
   Widget build(BuildContext context) {
-    final r = widget.review;
+    final r = _review;
+    final pendingReply = r == null
+        ? null
+        : EvaluationRecovery.of(
+            widget.repository,
+          ).response(widget.shopId, r, false);
     return MerchantPage(
       title: 'Değerlendirme ayrıntısı',
+      onRefresh: _load,
       children: [
         if (!_current)
           const MerchantNotice('Oturum değişti. Bu ekranı kapatın.')
-        else ...[
+        else if (_loading)
+          const Center(child: CircularProgressIndicator())
+        else if (_error != null)
+          MerchantNotice(_error!, error: true, onRetry: _load)
+        else if (r != null) ...[
           Text(r.productName, style: Theme.of(context).textTheme.titleLarge),
           Text(_visibility(r.visibility)),
           if (r.visible) ...[
@@ -402,7 +477,7 @@ class _MerchantReviewDetailState extends State<_MerchantReviewDetail>
             const MerchantNotice(
               'Yanıt kaydedildi. Güncel metni görmek için değerlendirme merkezine dönün.',
             ),
-          if (r.canReply && !_replied) ...[
+          if ((r.canReply || pendingReply != null) && !_replied) ...[
             const Text(
               'Her ürün değerlendirmesine yalnızca bir kez yanıt verebilirsiniz. Göndermeden önce metninizi kontrol edin.',
             ),
@@ -449,18 +524,30 @@ class _ReviewResponseDialog extends StatefulWidget {
 class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
     with EvaluationSessionGuard<_ReviewResponseDialog> {
   final _text = TextEditingController();
-  final _request = newEvaluationRequestId();
-  String? _sent, _error;
+  late final EvaluationRecovery _recovery;
+  ReviewResponseCommand? _pending;
+  String? _error;
   bool _busy = false;
   @override
+  void initState() {
+    super.initState();
+    _recovery = EvaluationRecovery.of(widget.repository);
+    _pending = _recovery.response(widget.shopId, widget.review, widget.report);
+    _text.text = _pending?.text ?? '';
+  }
+
+  @override
   PurchaseEvaluationRepository get evaluationRepository => widget.repository;
+  @override
+  Object get evaluationResource =>
+      (widget.shopId, widget.review.id, widget.report);
   @override
   String get evaluationActor => widget.ownerId;
   bool get _current => evaluationSessionCurrent;
   @override
   void clearEvaluationSession() {
     _busy = false;
-    _sent = null;
+    _pending = null;
     _text.clear();
   }
 
@@ -471,8 +558,8 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
   }
 
   Future<void> _submit() async {
-    if (_busy || !_current) return;
-    final text = _sent ?? _text.text.trim();
+    if (_busy || !checkEvaluationContinuation()) return;
+    final text = _pending?.text ?? _text.text.trim();
     if (text.isEmpty) {
       setState(
         () => _error = widget.report
@@ -481,35 +568,30 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
       );
       return;
     }
-    _sent = text;
+    _pending ??= ReviewResponseCommand(
+      shopId: widget.shopId,
+      review: widget.review,
+      report: widget.report,
+      text: text,
+    );
+    final sent = _pending!;
     setState(() {
       _busy = true;
       _error = null;
     });
-    final result = widget.report
-        ? await widget.repository.report(
-            shopId: widget.shopId,
-            review: widget.review,
-            requestId: _request,
-            reason: text,
-          )
-        : await widget.repository.reply(
-            shopId: widget.shopId,
-            review: widget.review,
-            requestId: _request,
-            text: text,
-          );
-    if (!mounted || !_current) return;
+    final result = await _recovery.respond(sent);
+    if (!checkEvaluationContinuation()) return;
     result.fold(
       (e) => setState(() {
         _busy = false;
         _error = e.message;
-        if (e.kind != ReviewFailureKind.network &&
-            e.kind != ReviewFailureKind.invalidResponse) {
-          _sent = null;
-        }
+        _pending = _recovery.response(
+          widget.shopId,
+          widget.review,
+          widget.report,
+        );
       }),
-      (_) => Navigator.of(context).pop(true),
+      (_) => Navigator.of(context).pop(sent),
     );
   }
 
@@ -529,7 +611,7 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
             TextField(
               key: const Key('merchant-review-response'),
               controller: _text,
-              readOnly: _busy || _sent != null,
+              readOnly: _busy || _pending != null,
               maxLength: widget.report ? 500 : 2000,
               minLines: 3,
               maxLines: 6,
@@ -538,7 +620,7 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
               ),
             ),
             if (_error != null) Text(_error!),
-            if (_sent != null && !_busy)
+            if (_pending != null && !_busy)
               const Text(
                 'Gönderim sonucu doğrulanamadı. Aynı metni güvenle tekrar deneyebilirsiniz.',
               ),
@@ -547,7 +629,7 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
       ),
       actions: [
         TextButton(
-          onPressed: _busy ? null : () => Navigator.of(context).pop(false),
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
           child: const Text('Kapat'),
         ),
         FilledButton(
@@ -555,7 +637,7 @@ class _ReviewResponseDialogState extends State<_ReviewResponseDialog>
           child: Text(
             _busy
                 ? 'Gönderiliyor…'
-                : _sent != null
+                : _pending != null
                 ? 'Tekrar dene'
                 : 'Gönder',
           ),

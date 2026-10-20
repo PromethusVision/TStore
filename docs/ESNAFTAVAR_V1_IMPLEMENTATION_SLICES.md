@@ -215,6 +215,21 @@ privacy/import approval and physical two-device acceptance remain separate gates
 - **Production requirements:** approved evidence import and privacy/moderation
   process; authorized migrations/RPCs; joint client compatibility acceptance.
 
+### C session and response recovery follow-through — 2026-10-20
+
+Authorized on `agent/merchant-review-recovery`, based on integrated `86ac4e97`.
+Canonical §6.2 records local-only scope and unchanged frozen/rollout boundaries.
+The package hardens same-user session replacement, delayed responses, Merchant
+summary/filter/paging/detail reads, and exact-request reply/report recovery.
+Connected Customer evaluation form/history and existing review editor share
+the session guards; normal token renewal preserves drafts.
+
+Recovery stays in memory and uses the existing server request receipts. No
+background replay, new SQL, hosted operation or device-pair replacement.
+See [handoff and evidence](MERCHANT_REVIEW_RECOVERY_HANDOFF.md) for reproduced
+regressions, tests/builds and remaining manual gates. Physical QR and pilot
+readiness are not certified by this code package.
+
 ## D — Server badge projections and milestone history
 
 **Authorized locally with F on 2026-10-15**, from integrated `d013b761`, on
