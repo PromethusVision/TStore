@@ -6,10 +6,16 @@ import 'package:t_store/features/notifications/domain/repositories/notification_
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {
-  NotificationsCubit({required this.repository})
-    : super(NotificationsInitial());
+  NotificationsCubit({
+    required this.repository,
+    this.readTimeout = const Duration(seconds: 15),
+  }) : assert(readTimeout > Duration.zero),
+       super(NotificationsInitial());
 
   final NotificationRepository repository;
+
+  /// Bounds reads only. A deadline never cancels or retries a mutation.
+  final Duration readTimeout;
 
   StreamSubscription<NotificationEntity>? _notificationsSubscription;
   List<NotificationEntity> _notifications = [];
@@ -74,6 +80,11 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       _notifications = [..._notifications]..[notificationIndex] = notification;
     }
 
+    // Buffer live revisions until the initial snapshot settles. Exposing a
+    // partial Loaded state here allows writes whose action flags the pending
+    // snapshot would then overwrite, permitting duplicate submissions.
+    if (_activeRequestGeneration != null && _activeRequestPage == 0) return;
+
     final previousState = state;
     if (isNewNotification) {
       emit(NewNotificationReceived(notification));
@@ -137,39 +148,48 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       );
     }
 
-    try {
-      final result = await repository.getNotifications(
-        page: requestedPage,
-        limit: _limit,
+    void readFailed() {
+      if (!_isCurrentRequest(requestGeneration, requestedPage)) return;
+      if (requestedPage == 0 || previousState == null) {
+        emit(
+          const NotificationsError(
+            'Bildirimlerin şu anda yüklenemiyor. Lütfen tekrar dene.',
+          ),
+        );
+        return;
+      }
+      final latestState = state;
+      final preserved = latestState is NotificationsLoaded
+          ? latestState
+          : previousState;
+      emit(
+        preserved.copyWith(
+          isLoadingMore: false,
+          loadMoreError: 'Diğer bildirimler yüklenemedi.',
+        ),
       );
+    }
+
+    try {
+      final result = await repository
+          .getNotifications(page: requestedPage, limit: _limit)
+          .timeout(readTimeout);
       if (!_isCurrentRequest(requestGeneration, requestedPage)) return;
 
       await result.fold(
         (_) async {
-          if (!_isCurrentRequest(requestGeneration, requestedPage)) return;
-
-          if (requestedPage == 0 || previousState == null) {
-            emit(
-              const NotificationsError(
-                'Bildirimlerin şu anda yüklenemiyor. Lütfen tekrar dene.',
-              ),
-            );
-            return;
-          }
-
-          final latestState = state;
-          final stateToPreserve = latestState is NotificationsLoaded
-              ? latestState
-              : previousState;
-          emit(
-            stateToPreserve.copyWith(
-              isLoadingMore: false,
-              loadMoreError: 'Diğer bildirimler yüklenemedi.',
-            ),
-          );
+          readFailed();
         },
         (notifications) async {
-          final unreadResult = await repository.getUnreadCount();
+          // The secondary count must not strand an otherwise available inbox.
+          // Keep the existing visible-item fallback on count errors/deadlines.
+          int? unreadCount;
+          try {
+            final unreadResult = await repository.getUnreadCount().timeout(
+              readTimeout,
+            );
+            unreadCount = unreadResult.fold((_) => null, (count) => count);
+          } catch (_) {}
           if (!_isCurrentRequest(requestGeneration, requestedPage)) return;
 
           final mergedNotifications = [..._notifications];
@@ -194,10 +214,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
           _notifications = mergedNotifications;
           _currentPage = requestedPage + 1;
-          _unreadCount = unreadResult.fold(
-            (_) => _notifications.where((item) => !item.isRead).length,
-            (count) => count,
-          );
+          _unreadCount =
+              unreadCount ??
+              _notifications.where((item) => !item.isRead).length;
 
           emit(
             NotificationsLoaded(
@@ -209,6 +228,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           startListening();
         },
       );
+    } catch (_) {
+      readFailed();
     } finally {
       if (_activeRequestGeneration == requestGeneration &&
           _activeRequestPage == requestedPage) {

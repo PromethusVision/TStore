@@ -762,6 +762,42 @@ This closes only that single-account Merchant recovery path, not all J acceptanc
 Customer registration, merchant provisioning or pilot opening. No code/migration,
 Production access or further remote write is part of recording this result.
 
+### J12 — Daily Merchant screen acceptance and read recovery (2026-10-20)
+
+After integration of same-account session protection (`be34fcae`), the owner
+authorized a comprehensive overnight package. Implement canonical §§4.1–4.3:
+retryable shared inbox reads with initial-read/live-event isolation, authoritative
+refresh after editor return, and
+actual Merchant screens against owned local Auth/REST/Storage with independent
+Customer reads. Keep the existing five tabs, shared notification architecture,
+boolean stock, catalog ownership and default-OFF business capabilities.
+
+The owner temporarily lifted the prior hosted approval boundaries for this task.
+This is not a permanent change to release policy or a new business rule. Real
+participants/products are still unknown; local synthetic fixtures do not authorize
+invented real accounts, public catalog entries, financial activation or pilot
+opening. The work selected here requires no hosted change. Main integration is
+still owned by Integration Agent.
+
+Preserve historical J7/J9 evidence. Reconstruct the installed database fixture
+from its independently verified historical sources, then execute current client
+screens and record a separate current-source proof. Gallery selection is an
+explicit test seam, not a camera/device assertion. Full J, physical QR and release
+gates stay OPEN. Delivery: [J12 handoff](MERCHANT_PILOT_DAILY_JOURNEY_HANDOFF.md).
+
+Also renew the offline review-preparation path under §4.13: require matching
+current UI and original 18-checkpoint repository rehearsals, pin historical J9
+evidence and every unchanged server/preparation contract, and admit only the
+observed runtime-composition delta. Preserve original review SQL and default
+no-mutation output. Old proof entrypoints retain their stale-source refusal;
+the new path never accepts incomplete evidence as remote execution authority.
+
+Native follow-through also verifies the existing Android bootstrap and callback
+separation on an owned offline emulator, using a separate x64 synthetic APK from
+the same sources. Nine observed checkpoints are recorded separately from the
+real-service screen rehearsal and the ARM64 pair. No real login/mail/provider or
+physical-device gate is closed by this emulator observation.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

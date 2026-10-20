@@ -54,30 +54,39 @@ class _MerchantProductsState extends State<MerchantProducts> {
   }
 
   Future<void> _edit({ShopProductEntity? listing}) async {
+    await _openPage(
+      listing == null
+          ? MerchantCatalogPicker(
+              repository: widget.repository,
+              catalogMedia: widget.catalogMedia,
+              access: widget.access,
+            )
+          : MerchantListingForm(
+              repository: widget.repository,
+              catalogMedia: widget.catalogMedia,
+              access: widget.access,
+              product: listing.product,
+              existing: listing,
+            ),
+    );
+  }
+
+  Future<void> _openPage(Widget page) async {
     if (_opening) return;
     _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => listing == null
-            ? MerchantCatalogPicker(
-                repository: widget.repository,
-                catalogMedia: widget.catalogMedia,
-                access: widget.access,
-              )
-            : MerchantListingForm(
-                repository: widget.repository,
-                catalogMedia: widget.catalogMedia,
-                access: widget.access,
-                product: listing.product,
-                existing: listing,
-              ),
-      ),
-    );
-    _opening = false;
-    if (saved == true && mounted) {
-      _cubit.load(refresh: true);
-      widget.onChanged?.call();
+    try {
+      await Navigator.of(
+        context,
+      ).push<bool>(MaterialPageRoute(builder: (_) => page));
+    } finally {
+      _opening = false;
+      // A dismissed editor may have committed despite losing its response.
+      // Re-read on return; never infer cancellation or repeat the write.
+      if (mounted) {
+        _cubit.load(refresh: true);
+        widget.onChanged?.call();
+      }
     }
   }
 
@@ -159,21 +168,13 @@ class _MerchantProductsState extends State<MerchantProducts> {
             ),
             if (widget.catalogMedia != null)
               OutlinedButton(
-                onPressed: () async {
-                  final saved = await Navigator.of(context).push<bool>(
-                    MaterialPageRoute(
-                      builder: (_) => MerchantSubmissions(
-                        catalog: widget.catalogMedia!,
-                        repository: widget.repository,
-                        access: widget.access,
-                      ),
-                    ),
-                  );
-                  if (saved == true && mounted) {
-                    _cubit.load(refresh: true);
-                    widget.onChanged?.call();
-                  }
-                },
+                onPressed: () => _openPage(
+                  MerchantSubmissions(
+                    catalog: widget.catalogMedia!,
+                    repository: widget.repository,
+                    access: widget.access,
+                  ),
+                ),
                 child: const Text('Ürün başvurularım'),
               ),
           ],

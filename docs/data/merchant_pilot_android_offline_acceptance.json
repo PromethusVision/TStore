@@ -1,0 +1,124 @@
+{
+  "kind": "merchant-android-offline-emulator-smoke-v1",
+  "status": "PASS_OFFLINE_ONLY",
+  "captured_at": "2026-10-20T01:54:42.1398058Z",
+  "source_commit": "5b518dc2061fa24dcb2bd8f826f4a8e3aa21cd2a",
+  "source_sha256": "9d95c7757b5adf2f818e6bffa69ffff77eeb8a3ef0072404e5b5534ff46029ba",
+  "arm64_pair_bundle_id": "c7b089126ff9e3f5a5591178d1ebdb3950be9cb919a47d380c202071a4fdcecf",
+  "artifact": {
+    "file": "merchant-x64.apk",
+    "sha256": "3a74ba77e959a1269126d9e768cdf430653e32548ac089364c8895a648628795",
+    "bytes": 143007177,
+    "build_target": "android-x64",
+    "version": "1.0.0 (5)",
+    "application_id": "com.esnaftavar.app.merchant.pilot",
+    "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+    "synthetic_config_sha256": "cf0245b4ece1d14cbbe7a8a8b6fb5061c538257bb034e33aff8920e4dbbea83a",
+    "distributable": false
+  },
+  "device": {
+    "kind": "new task-owned headless emulator",
+    "profile": "Pixel 5",
+    "system_image": "system-images;android-35;google_apis_playstore;x86_64",
+    "api": 35,
+    "screen": "1080x2340, 440 dpi",
+    "font_scales": [
+      1,
+      1.3
+    ],
+    "airplane_mode": true,
+    "current_networks_empty": true
+  },
+  "method": "ADB launch, Android package resolver and UIAutomator observations; screenshots visually inspected. Not an automated field certificate.",
+  "checks": [
+    {
+      "name": "native cold start reaches Merchant login",
+      "result": "PASS",
+      "evidence": "login.xml",
+      "sha256": "19513c337bf00d25bb1aa98b73c1dbd304ded160cafef046072c9245b408ad32"
+    },
+    {
+      "name": "blank login rejected by local validators",
+      "result": "PASS",
+      "evidence": "login-validation.xml",
+      "sha256": "b2d6e551dd4b94979b6ba05da36b15735f7199346f1bcac37a9b27a53fbfc3d1"
+    },
+    {
+      "name": "invalid recovery address rejected before request",
+      "result": "PASS",
+      "evidence": "recovery-validation.xml",
+      "sha256": "d09a25ce80fc07885a2cf8e2784275d62869ab3ddcefa1c5563d4fc3cc104799"
+    },
+    {
+      "name": "background resume retains recovery draft",
+      "result": "PASS",
+      "evidence": "resume.xml",
+      "sha256": "d09a25ce80fc07885a2cf8e2784275d62869ab3ddcefa1c5563d4fc3cc104799"
+    },
+    {
+      "name": "merchant callback resolves only to its own installed app",
+      "result": "PASS",
+      "evidence": "merchant-resolver.txt",
+      "sha256": "db8c3088169b6c0b1b9b47834b03f4c318cd6f280a4a5abfbefe5fd57f1c4101"
+    },
+    {
+      "name": "customer callback resolves only to its own installed app",
+      "result": "PASS",
+      "evidence": "customer-resolver.txt",
+      "sha256": "15057715ec5163816b667d8da05b2fd7dbcc0bc179c50c1993f4448f1f62afed"
+    },
+    {
+      "name": "warm invalid callback is rejected without workspace",
+      "result": "PASS",
+      "evidence": "callback.xml",
+      "sha256": "13b856e14573b6c6a85675865ea0463a2810ffac58a065f458efbf47a50d7e14"
+    },
+    {
+      "name": "cold invalid callback is rejected without workspace",
+      "result": "PASS",
+      "evidence": "cold-callback.xml",
+      "sha256": "776c3ae3eaa0ba2daf5ebe8f3f003270ad45cd94f97d73b0a390c7198a792ce2"
+    },
+    {
+      "name": "native login remains usable at 130 percent system font scale",
+      "result": "PASS",
+      "evidence": "login-130.xml",
+      "sha256": "281d70279c7e0d21a08f926ef36688056955c614c552340fc1702ccc082763c4"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "login.png",
+      "sha256": "828d458d07fdefcfb32d8c2c1c7223bff8bc325ab4335028d4a5c3b522e81379"
+    },
+    {
+      "file": "recovery-validation.png",
+      "sha256": "0ff2afb5448f5b4bb8dc11d155487a91459f1877c4d12da38a4ef66ccf91693b"
+    },
+    {
+      "file": "cold-callback.png",
+      "sha256": "020ee480d1c238256479e48cc1581a1a1384030f2ee7231ddd002125f09678d7"
+    },
+    {
+      "file": "login-130.png",
+      "sha256": "cc646a5b5eb4faada005a0d87dbd8419c63c493d6cb1171fa862e2bbd5d8e2a7"
+    }
+  ],
+  "evidence_directory": ".buildlog/android-offline",
+  "current_process_log": {
+    "critical_matches": 0,
+    "scope": "Final x64 Merchant process only; the earlier ARM64-on-x64 loader failure is retained as an environment mismatch."
+  },
+  "prior_attempt": "ARM64 phone APK installed but Flutter failed with EM_AARCH64 instead of EM_X86_64. A separate android-x64 artifact from identical sources/configuration passed. No app code was changed for the emulator.",
+  "customer_scope": "Installed for Android callback-resolution checks only; Customer native runtime was not exercised.",
+  "network_scope": "Airplane mode and empty current network list verified before app installation and after checks. No real account, credentials, email send or server write.",
+  "remote_access": "NONE",
+  "production_access": "NONE",
+  "production_writes": "NONE",
+  "hosted_development_writes": "NONE",
+  "physical_two_device": "OPEN",
+  "real_login": "NOT_RUN",
+  "camera_gallery_permissions": "NOT_RUN",
+  "push_provider": "NOT_RUN",
+  "pilot_ready": false
+}
