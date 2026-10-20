@@ -798,6 +798,25 @@ the same sources. Nine observed checkpoints are recorded separately from the
 real-service screen rehearsal and the ARM64 pair. No real login/mail/provider or
 physical-device gate is closed by this emulator observation.
 
+### J13 — Native Android operational acceptance (2026-10-20)
+
+After J12 integration (`0c1ad8d5`), canonical §4.16 supplies the next bounded local
+package. Combine the unchanged local Merchant application with a fresh exact-schema
+Auth/REST/Storage fixture and an owned Android emulator. Verify actual process/disk
+lifecycle, network loss, native gallery/media, authoritative listing state and
+account/role isolation. Preserve every app/Customer source, migration, dependency,
+flag, shared Auth/notification contract and historical preparation proof.
+
+Deliver guarded setup/device/observation tools, negative safety tests, an observed
+11-checkpoint record, seven independent DB/Customer observations, source/APK evidence
+and reproduction instructions. Task-local synthetic credentials are never committed;
+only the local anonymous key is packaged. No hosted Development/Production access,
+physical QR, provider delivery, release distribution or invented real cohort.
+
+This closes the observed emulator/disk/gallery gap in J12, not physical-device or
+hosted pilot acceptance. See [J13 handoff](MERCHANT_PILOT_NATIVE_OPERATIONS_HANDOFF.md).
+Main integration remains Integration Agent's responsibility; full J stays OPEN.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

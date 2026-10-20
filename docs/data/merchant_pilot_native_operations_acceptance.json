@@ -1,0 +1,438 @@
+{
+  "kind": "merchant-native-operations-local-v1",
+  "result": "PASS",
+  "captured_at": "2026-10-20T11:16:43.087Z",
+  "runtime_commit": "0c1ad8d5",
+  "runtime_sources": {
+    "sha256": "9d95c7757b5adf2f818e6bffa69ffff77eeb8a3ef0072404e5b5534ff46029ba",
+    "file_count": 782
+  },
+  "tool_sources": [
+    {
+      "path": "tool/merchant_acceptance/native_contract.mjs",
+      "sha256_lf": "20db3146ead4a3f2a2967af8c8938cc9cbb6d43d637a651598f91ad1a4dbcaa1"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_contract.test.mjs",
+      "sha256_lf": "2a90672e5f5e98c239f8d060949204d4e71ff0bda6a45d68b87750d5f1a583a2"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_device.mjs",
+      "sha256_lf": "45c7afd0b1015101940be98ba25b100adbb18f195c43ea590c6a51cb3cfbf439"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_evidence.mjs",
+      "sha256_lf": "2952c618054c4f5bb8740278a86f6a83ca46e9ebf741db6cc7d62c36a128848e"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_fixture.mjs",
+      "sha256_lf": "3b4617e6f2957689977a9079fed6e52957680745ed1db3d5110bcc606fc29ee7"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_observe.mjs",
+      "sha256_lf": "c611c43a77c9b825525d99bb5e6ad64a2c0f354da5f6f647f5fae46382307cef"
+    },
+    {
+      "path": "tool/merchant_acceptance/native_prepare_android.ps1",
+      "sha256_lf": "05a3082e73d178f4f52e1109e26c6fa613eee3f9cb5aa0f69bea39af4add9b38"
+    }
+  ],
+  "artifact": {
+    "package": "com.esnaftavar.app.merchant.dev",
+    "version": "1.0.0+5",
+    "mode": "debug",
+    "target": "android-x64",
+    "entrypoint": "lib/main_merchant_development.dart",
+    "bytes": 105323156,
+    "sha256": "bd853b81160189ff088d85c5530f78d8364be63f43bb187fe8a02077d06d4012",
+    "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+    "configured_backend": "owned loopback 127.0.0.1:55431",
+    "client_key_scope": "local anonymous role only",
+    "server_credentials_in_payload": false,
+    "fixture_accounts_in_payload": false
+  },
+  "checks": [
+    {
+      "name": "native login and owned onboarding",
+      "result": "PASS",
+      "screen_sha256": "d94193682fcdf7f4f2e97fc6d6b1712b93692714396e15f5f771f145c217c0d1",
+      "xml_sha256": "1dde0e301ef65b95c7a0928ad30c19c906d01cc68be65f72ede449a52a6cce89"
+    },
+    {
+      "name": "listing price persists through process restart",
+      "result": "PASS",
+      "screen_sha256": "e893174667a2ced2da8560d0479a8f029af81031271ade02bd767c3f8c02f3d2",
+      "xml_sha256": "965304e1e6c3d2db561c9f4d830fa13756b42435f8c2e563d652d78e346950b2"
+    },
+    {
+      "name": "local notification preferences persist through restart",
+      "result": "PASS",
+      "screen_sha256": "024e5be8878ea2e2b96a504e130eb7bfadcdd3c48d1440e7390b19a185ae8ab7",
+      "xml_sha256": "2bb8263cb20a3b5644a81965e4c702893eeae193e2a530c0234fe63412b67390"
+    },
+    {
+      "name": "connection loss denies stale workspace and retry recovers",
+      "result": "PASS",
+      "screen_sha256": "2c4fe20428d553b9bcbb49f5d63f44ddb459b2f2ed6ba4b2604d27d6109fa16d",
+      "xml_sha256": "38e4edd530374f482024abdfefbe7d6a70d65cc167fae973bd33e9ca8571eebf"
+    },
+    {
+      "name": "in-memory draft survives background and resume",
+      "result": "PASS",
+      "screen_sha256": "97a029688702e1e0badba39f5b8e12ffb200d661fb7977c1a2763f3b4b7265a2",
+      "xml_sha256": "43e74d4637448bac4d179198c301782eb094439127c5e99b07098195c0e4ec31"
+    },
+    {
+      "name": "native gallery publishes owned bytes and renders photo",
+      "result": "PASS",
+      "screen_sha256": "4ac26bfaac4961885e7d9fd0541d8ca6aab411e7044fd8de4fab31f9b3acd3df",
+      "xml_sha256": "c5761894494c445fa42097f73242e7c856e53c2b48b4bb02971df50f856d5536"
+    },
+    {
+      "name": "photo persists through process restart and Customer download",
+      "result": "PASS",
+      "screen_sha256": "4ac26bfaac4961885e7d9fd0541d8ca6aab411e7044fd8de4fab31f9b3acd3df",
+      "xml_sha256": "291ef59cc0673779d198a24be2b16758ae0831beb5a470e7f786d5dbbea28f1d"
+    },
+    {
+      "name": "availability and deactivation agree with Customer reads",
+      "result": "PASS",
+      "screen_sha256": "6e4a250a002e6a2e5dea02cdc04919a3b4c585d4c9fba677fc1651641666d047",
+      "xml_sha256": "685a78e1b30b5e7e647a2cac8608ef077090c39ce832b4a00f5b3bca6c163f8f"
+    },
+    {
+      "name": "logout persists through restart and Customer role is denied",
+      "result": "PASS",
+      "screen_sha256": "815dd57170bf34071905829c0fc03a7c0a0236126bf6d6e070f7ac47af138839",
+      "xml_sha256": "09408bb7fbd7813732704860468af3aca2960ba8a952a4fe599091e393e206b4"
+    },
+    {
+      "name": "other merchant sees only own workspace and preferences",
+      "result": "PASS",
+      "screen_sha256": "10e03ca7fc1faf2bc135099229021347db0df1be074e9e6978028e3a1ffa18ff",
+      "xml_sha256": "fda2d8c1198072819b403bddef25b9060a505cc0f25d164cfcf3404ac4feeaae"
+    },
+    {
+      "name": "original merchant returns to persisted listing and inbox",
+      "result": "PASS",
+      "screen_sha256": "8513fa9fb13b563ae474911f2f270efb6b1359f0c2559cda7afaac08028ef646",
+      "xml_sha256": "c4729236fb20d2a673ea749f39b4f565fbd05642e176c9d9d08b47fef6c9f650"
+    }
+  ],
+  "database_observations": {
+    "observe-price": {
+      "captured_at": "2026-10-20T11:03:02.288Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "123.45",
+          "is_active": true,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [
+        {
+          "price": 123.45,
+          "is_active": true,
+          "is_available": true,
+          "legacy_image_count": 0
+        }
+      ],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-unsaved-draft": {
+      "captured_at": "2026-10-20T11:04:30.973Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "123.45",
+          "is_active": true,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [
+        {
+          "price": 123.45,
+          "is_active": true,
+          "is_available": true,
+          "legacy_image_count": 0
+        }
+      ],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-photo": {
+      "captured_at": "2026-10-20T11:07:33.019Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "234.56",
+          "is_active": true,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [
+        {
+          "price": 234.56,
+          "is_active": true,
+          "is_available": true,
+          "legacy_image_count": 0
+        }
+      ],
+      "customer_media_count": 1,
+      "customer_downloads": [
+        {
+          "bytes": 437090,
+          "sha256": "a87dc38bcd50dd2650c71257e664c744ad28982f8eddd452f50029c6fe25fb30"
+        }
+      ],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-unavailable": {
+      "captured_at": "2026-10-20T11:07:55.639Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "234.56",
+          "is_active": true,
+          "is_available": false
+        }
+      ],
+      "customer_offers": [],
+      "customer_media_count": 0,
+      "customer_downloads": [],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-inactive": {
+      "captured_at": "2026-10-20T11:08:10.853Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "234.56",
+          "is_active": false,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [],
+      "customer_media_count": 0,
+      "customer_downloads": [],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-reactivated": {
+      "captured_at": "2026-10-20T11:08:51.131Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "234.56",
+          "is_active": true,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [
+        {
+          "price": 234.56,
+          "is_active": true,
+          "is_available": true,
+          "legacy_image_count": 0
+        }
+      ],
+      "customer_media_count": 1,
+      "customer_downloads": [
+        {
+          "bytes": 437090,
+          "sha256": "a87dc38bcd50dd2650c71257e664c744ad28982f8eddd452f50029c6fe25fb30"
+        }
+      ],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    },
+    "observe-final": {
+      "captured_at": "2026-10-20T11:12:49.853Z",
+      "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+      "merchant_shop_count": 1,
+      "merchant_shop_name": "Native Pilot Magaza",
+      "listing_count": 1,
+      "listings": [
+        {
+          "price": "234.56",
+          "is_active": true,
+          "is_available": true
+        }
+      ],
+      "customer_offers": [
+        {
+          "price": 234.56,
+          "is_active": true,
+          "is_available": true,
+          "legacy_image_count": 0
+        }
+      ],
+      "customer_media_count": 1,
+      "customer_downloads": [
+        {
+          "bytes": 437090,
+          "sha256": "a87dc38bcd50dd2650c71257e664c744ad28982f8eddd452f50029c6fe25fb30"
+        }
+      ],
+      "central_price_sentinel": 0,
+      "central_price_contract": "listing_only_v1",
+      "verified_purchases": 0,
+      "decisions_enabled": false,
+      "foreign_shop_and_notice_unchanged": true
+    }
+  },
+  "services": {
+    "services": [
+      {
+        "service": "db",
+        "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+        "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+        "bindings": [
+          {
+            "container_port": "5432/tcp",
+            "host_ip": "127.0.0.1",
+            "host_port": "55432"
+          }
+        ]
+      },
+      {
+        "service": "kong",
+        "image": "public.ecr.aws/supabase/kong:2.8.1",
+        "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+        "bindings": [
+          {
+            "container_port": "8000/tcp",
+            "host_ip": "127.0.0.1",
+            "host_port": "55431"
+          }
+        ]
+      },
+      {
+        "service": "auth",
+        "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+        "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+        "bindings": []
+      },
+      {
+        "service": "rest",
+        "image": "public.ecr.aws/supabase/postgrest:v16.4",
+        "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+        "bindings": []
+      },
+      {
+        "service": "storage",
+        "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+        "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+        "bindings": []
+      }
+    ],
+    "migrations": [
+      {
+        "file": "20260812000100_0001_core_auth_catalog.sql",
+        "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+      },
+      {
+        "file": "20260812000200_0002_shops.sql",
+        "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+      },
+      {
+        "file": "20260812000300_0003_carts_v2.sql",
+        "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+      },
+      {
+        "file": "20260812000400_0004_qr_verified_purchases.sql",
+        "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+      },
+      {
+        "file": "20260812000500_0005_verified_shop_ratings.sql",
+        "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+      },
+      {
+        "file": "20260812000600_0006_chat_notifications_account.sql",
+        "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+      },
+      {
+        "file": "20260812000700_0007_storage_realtime.sql",
+        "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+      },
+      {
+        "file": "20260814000800_0008_fix_profile_role_guard.sql",
+        "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+      },
+      {
+        "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+        "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+      },
+      {
+        "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+        "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+      },
+      {
+        "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+        "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+      }
+    ],
+    "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+    "input_scope": "Four synthetic accounts and one physical product; owned loopback only"
+  },
+  "emulator": {
+    "api": 35,
+    "profile": "Pixel 5 x86_64",
+    "airplane_mode": true,
+    "wifi_and_cellular": false,
+    "transport": "ADB reverse tcp:55431 only",
+    "camera": "disabled",
+    "process_log_errors": 0
+  },
+  "remote_access": "NONE",
+  "production_writes": "NONE",
+  "development_hosted_writes": "NONE",
+  "physical_two_device": "OPEN",
+  "distribution_ready": false,
+  "limits": [
+    "Local Merchant development entrypoint, not the hosted merchantPilot recovery bootstrap",
+    "Android emulator gallery and disk persistence, not physical vendor hardware or camera",
+    "No external email, push provider, real cohort, QR purchase or release acceptance",
+    "Observed screenshots plus DB/HTTP checks; not a signed attestation"
+  ]
+}
