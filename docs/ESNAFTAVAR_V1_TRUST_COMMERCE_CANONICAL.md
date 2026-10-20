@@ -1872,6 +1872,39 @@ or Customer layout replacement is introduced. Hosted Development and Production
 are untouched; the delivered APK pair and physical acceptance remain separate.
 See [inbox recovery handoff](MERCHANT_INBOX_RECOVERY_HANDOFF.md).
 
+### 12.4 Shared notification preference recovery — 2026-10-20
+
+Following integrated inbox recovery `4aceba65`, the next authorized local
+reliability package covers existing Merchant/Customer preference controls and
+the existing push backend adapter. FROZEN consent, default-OFF marketing,
+provider, notification quota and commerce rules remain unchanged.
+
+- A lost save acknowledgement does not prove failure or success. Keep the last
+  confirmed values visible but disable edits until an explicit current-state
+  read succeeds. A failed reread stays locked and offers another read; it never
+  automatically repeats the write. Pending writes have no cancellation timeout.
+- Reopened views sharing the same storage/client wait for that owner/role's
+  in-flight write to settle before reading. Overlapping writes are rejected,
+  not queued. This is an in-memory guard, not a durable transaction receipt or
+  cross-device lock. A transport failure cannot prove the server has stopped;
+  rereading establishes only the state observed by that read.
+- Local preferences reload the native store rather than trust the SDK's
+  optimistic setter cache after a failed device write. They remain device-local
+  preferences, never synchronized server consent. Existing account/role keys
+  and missing-record defaults remain unchanged.
+- Server preference reads/writes and push register/disable/lookup continuations
+  use the existing stable Auth scope, including captured intervening session
+  events. Same-account replacement, account change, logout or broken observation
+  expires server-backed editing state; reopening binds the new session. Normal
+  token renewal preserves it. Expired responses cannot restore old state.
+- An existing server preference row with incomplete boolean fields is an error,
+  not default consent. Notification lookup also verifies the returned recipient.
+  The existing role-bound RPC and server ownership rules are unchanged.
+
+No new provider, Auth/notification store, SQL, dependency, remote access or
+Customer layout replacement. Full I, physical J and pilot-opening gates remain
+OPEN. See [preference recovery handoff](MERCHANT_PREFERENCE_RECOVERY_HANDOFF.md).
+
 ## 13. RLS, privacy and migration safety
 
 Server entrypoints derive auth.uid/profile role and exact shop owner; client-supplied

@@ -513,6 +513,21 @@ now replaces its session-scoped inbox instance while preserving the old
 instance's stale-response fence. The independent reproduction is retained in
 the normal widget suite, alongside account/renewal/cleanup regressions.
 
+### I shared preference recovery follow-through — 2026-10-20
+
+Local package on `agent/merchant-preference-recovery`, based on integrated
+`4aceba65`. Canonical §12.4 preserves existing account/role preference storage,
+consent defaults, versioned RPCs and stable Auth scopes. Harden lost save
+acknowledgements, explicit reread, reopened-screen pending-write protection,
+native cache/persistence divergence and delayed push backend continuations.
+
+The same controls cover Merchant and Customer. Reuse the existing optional
+notification session source; preserve normal renewal, UI layout, default-OFF
+capabilities and delivered device candidates. No provider setup, notification
+send, hosted access, SQL or remote migration. Synthetic HTTP, method-channel
+and widget evidence does not close physical-device/provider gates.
+See [handoff](MERCHANT_PREFERENCE_RECOVERY_HANDOFF.md). Full I and J remain OPEN.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and
