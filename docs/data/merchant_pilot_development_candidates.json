@@ -1,0 +1,135 @@
+{
+  "kind": "merchant-development-device-candidates-v1",
+  "result": "ARTIFACTS_VERIFIED_FIELD_OPEN",
+  "created_at": "2026-10-20T12:41:42.121Z",
+  "source_commit": "a0dfbdfdc9e4534a702865b4fdd1cec7e6da7053",
+  "source_sha256": "bf4babc17956a5166e3ceb5a363742e395dcd4f3c46481c7314eaeed3a4a8756",
+  "uncommitted_sources": false,
+  "bundle_id": "0494b23da3307969c1c76a8634aacfd870de829ae1e59e8c3a22390c663eae6e",
+  "project_ref": "tnipyxnvhgelwdpykyez",
+  "purpose": "device-candidate",
+  "mode": "debug",
+  "config_sha256": {
+    "customer": "9641f94f535dab9e0519833801ef3c415c9ddcb6754f5275b06f78a9b1503ff8",
+    "merchant": "f3981f1e226e1477a5797210b509ef2c74e8151c055bcb685adc42e9216e4a48"
+  },
+  "capabilities": {
+    "QR_CLAIMS_V2_ENABLED": false,
+    "REWARD_EARNING_V1_ENABLED": false,
+    "COUPON_CHECKOUT_V1_ENABLED": false,
+    "TRUST_COMMERCE_V1_ENABLED": false,
+    "REVIEWS_V2_ENABLED": false,
+    "MERCHANT_STATEMENT_V1_ENABLED": false,
+    "MERCHANT_PROMOTION_V1_ENABLED": false,
+    "MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED": false
+  },
+  "canonical_taxonomy": false,
+  "catalog_price_contract": "listing_only_v1",
+  "tests": {
+    "result": "PASS",
+    "passed": 135,
+    "failed": 0,
+    "skipped": 0,
+    "paths": [
+      "test/widget/shop/catalog_price_compatibility_test.dart",
+      "test/unit/merchant/merchant_pilot_config_test.dart",
+      "test/unit/auth/auth_callback_contract_test.dart",
+      "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+      "test/unit/merchant/merchant_account_recovery_test.dart",
+      "test/widget/merchant/merchant_pilot_auth_test.dart",
+      "tool/pilot_device/preflight_test.dart"
+    ]
+  },
+  "analyzer": {
+    "result": "PASS",
+    "elapsed_seconds": 43.3,
+    "log_sha256": "f37bd9b956c6366a9ea61afce5beca91ca93864c36a56c939fba6ec60c8727cd"
+  },
+  "artifacts": [
+    {
+      "role": "customer",
+      "application_id": "com.esnaftavar.app.dev",
+      "label": "EsnaftaVar Dev",
+      "callback": "io.supabase.tstore://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "bytes": 154790175,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "customer.apk",
+      "flavor": "development",
+      "target": "lib/main_development.dart"
+    },
+    {
+      "role": "merchant",
+      "application_id": "com.esnaftavar.app.merchant.pilot",
+      "label": "EsnaftaVar Esnaf Pilot",
+      "callback": "com.esnaftavar.app.merchant.pilot://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5",
+      "bytes": 119415007,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "merchant.apk",
+      "flavor": "merchantPilot",
+      "target": "lib/main_merchant_pilot.dart"
+    }
+  ],
+  "toolchain": {
+    "flutter": "3.41.9",
+    "framework_revision": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "dart": "3.11.5",
+    "android_build_tools": "35.0.0"
+  },
+  "client_readonly_probe": {
+    "project_ref": "tnipyxnvhgelwdpykyez",
+    "method": "GET",
+    "path": "/auth/v1/settings",
+    "http_status": 200,
+    "client_key_source": "Official Development Connect UI; publishable key only",
+    "checked_at": "2026-10-20T12:38:38.222Z",
+    "auth_session_created": false,
+    "email_sent": false,
+    "server_writes": false,
+    "production_access": false
+  },
+  "delivery_copy": {
+    "result": "BYTE_IDENTICAL_AND_SOURCE_VERIFIED",
+    "folder_name": "EsnaftaVar-Development-a0dfbdfd"
+  },
+  "previous_merchant_identity_and_certificate": "MATCH_TO_OWNER_REPORTED_RECOVERY_CANDIDATE",
+  "physical_upgrade": "NOT_RUN",
+  "physical_two_device": "OPEN",
+  "field_cases": {
+    "pass": 0,
+    "fail": 0,
+    "open": 12
+  },
+  "provider_delivery": "NOT_TESTED_IN_THIS_TASK",
+  "real_participants": "NOT_SELECTED_OWNER_CONFIRMED",
+  "server_mutations": "NONE",
+  "production_access": "NONE",
+  "migration_applied": false,
+  "distribution_authorized": false,
+  "pilot_ready": false
+}

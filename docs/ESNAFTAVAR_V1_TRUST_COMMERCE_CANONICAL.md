@@ -727,6 +727,17 @@ Keep historical proofs unchanged; tool-source drift requires a new pair rather
 than relabeling old artifacts. This corrects local review tooling, not a FROZEN
 rule, application behavior, signing policy or hosted permission.
 
+Artifact follow-through — 2026-10-20: after J14 integration (`a0dfbdfd`),
+produce an actual Development Customer/Merchant debug candidate pair from that
+clean reviewed source using the existing project's public client configuration.
+The exact-project Auth settings GET succeeds without login, send or mutation;
+135 compatibility tests, analyzer and actual APK inspection pass. The new
+Merchant identity/certificate matches the previously owner-tested recovery APK,
+but physical upgrade and all twelve paired field scenarios remain unobserved.
+The owner reconfirms that real participants/products are not selected. No signing
+policy, application source, hosted setting, role or catalog data changes.
+See [current Development candidates](MERCHANT_PILOT_DEVELOPMENT_CANDIDATES_HANDOFF.md).
+
 ### 4.15 Auth/mail rehearsal and existing-provider audit — 2026-10-18
 
 Following integrated J10 (`3da793c6`), the next authorized local package exercises
