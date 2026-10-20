@@ -1,0 +1,104 @@
+{
+  "kind": "esnaftavar-merchant-preference-recovery-verification-v1",
+  "date": "2026-10-20",
+  "status": "LOCAL_PASS_INDEPENDENT_INTEGRATION_PENDING",
+  "branch": "agent/merchant-preference-recovery",
+  "base_commit": "4aceba6542d38c2c1ab49d2c6b4456920708c0b0",
+  "source_sha256": "cf9b1fccc594f4d8989cdfe58676eee3b0314f45ecc5cd8f5a76c17c40fdaf82",
+  "source_fingerprint_matches_built_pair": true,
+  "before_fix_regressions": {
+    "initial": {
+      "passed": 20,
+      "failed": 14,
+      "log": ".buildlog/preference-red.log"
+    },
+    "event_emitting_backend_fixture_against_base": {
+      "passed": 0,
+      "failed": 8,
+      "log": ".buildlog/backend-event-red.log"
+    },
+    "fixture_note": "Initial recoverSession helper did not emit same-account events; corrected setInitialSession fixture independently reproduced all eight backend failures on base code."
+  },
+  "focused_regressions": {
+    "passed": 67,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/preference-expanded.log"
+  },
+  "targeted_flutter": {
+    "passed": 427,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/preference-targeted.log"
+  },
+  "full_flutter": {
+    "passed": 3125,
+    "failed": 0,
+    "existing_conditional_skips": 6,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "skip_identities_unchanged": true,
+    "new_tests": 39,
+    "log": ".buildlog/preference-full.jsonl"
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/preference-analyze.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "file": ".buildlog/pilot-device/preference-recovery-20261020/merchant-development.apk",
+      "sha256": "6ab9d6fa45ac81fb2f0a4bd3fc276e238507c40a9b482f7e2d76cee97dba2601",
+      "bytes": 119431435,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/preference-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_preference_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_customer_kotlin_incremental_cache_diagnostics": true,
+    "diagnostics": ".buildlog/pilot-device/preference-recovery-20261020/customer.build.log"
+  },
+  "delivered_apks_unchanged": {
+    "bundle": "EsnaftaVar-Development-a0dfbdfd",
+    "verified": true,
+    "customer_sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+    "merchant_sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+  },
+  "database_validation": "N/A_CLIENT_ONLY_NO_SQL_CHANGE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}

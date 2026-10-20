@@ -250,7 +250,9 @@ void main() {
       save.completeError(StateError('fixture'));
       await tester.pumpAndSettle();
       expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
-      expect(find.textContaining('Tercihler kaydedilemedi'), findsOneWidget);
+      expect(find.textContaining('Kayıt sonucu doğrulanamadı'), findsOneWidget);
+      expect(tester.widget<SwitchListTile>(toggle).onChanged, isNull);
+      expect(find.text('Kaydı kontrol et'), findsOneWidget);
       await cleanup(tester);
     },
   );

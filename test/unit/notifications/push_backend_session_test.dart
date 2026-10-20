@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +21,9 @@ void main() {
     String? session = 's1',
     int refresh = 0,
   }) => client.auth
-      .recoverSession(
+      // Same-account recoverSession does not publish an Auth event in this SDK.
+      // The app's recovery adapter uses this event-emitting import as well.
+      .setInitialSession(
         jsonEncode({
           'access_token':
               '${segment({'alg': 'none', 'typ': 'JWT'})}.${segment({'sub': user, if (session != null) 'session_id': session, 'nonce': refresh, 'exp': DateTime.now().add(const Duration(days: 1)).millisecondsSinceEpoch ~/ 1000})}.synthetic',
@@ -138,6 +141,22 @@ void main() {
       await operation(name);
       expect(requests, hasLength(1));
     });
+    test('$name rejects an intervening S1-S2-S1 session replacement', () async {
+      final normal = response;
+      response = (request) async {
+        final result = await normal(request);
+        await authenticate(session: 's2');
+        await authenticate(session: 's1', refresh: 3);
+        await pumpEventQueue();
+        return result;
+      };
+      if (name == 'lookup') {
+        expect(await operation(name), isNull);
+      } else {
+        await expectLater(operation(name), throwsStateError);
+      }
+      expect(requests, hasLength(1));
+    });
     test('$name pending schema performs no HTTP', () async {
       backend = SupabasePushBackend(client);
       if (name == 'lookup') {
@@ -148,6 +167,111 @@ void main() {
       expect(requests, isEmpty);
     });
   }
+  for (final field in ['service_enabled', 'marketing_enabled']) {
+    test('existing preference row with missing $field is rejected', () async {
+      response = (_) async => json({
+        if (field != 'service_enabled') 'service_enabled': true,
+        if (field != 'marketing_enabled') 'marketing_enabled': false,
+      });
+      await expectLater(backend.read(owner), throwsFormatException);
+    });
+  }
+  test(
+    'absent preference row retains service on and marketing off defaults',
+    () async {
+      response = (_) async => json(null);
+      final preferences = await backend.read(owner);
+      expect(preferences.service, isTrue);
+      expect(preferences.marketing, isFalse);
+    },
+  );
+  for (final failure in [false, true]) {
+    test(
+      'reopened backend waits for pending write, then reads after ${failure ? 'lost acknowledgement' : 'success'}',
+      () async {
+        final gate = Completer<http.Response>();
+        response = (request) => request.method == 'POST'
+            ? gate.future
+            : Future.value(
+                json({'service_enabled': true, 'marketing_enabled': true}),
+              );
+        final saving = backend.save(
+          owner,
+          const NotificationPreferences(marketing: true),
+        );
+        final saved = failure
+            ? expectLater(saving, throwsA(isA<PostgrestException>()))
+            : saving;
+        await pumpEventQueue();
+        final reopened = SupabasePushBackend(client, deployed: true);
+        final reading = reopened.read(owner);
+        await expectLater(
+          reopened.save(owner, const NotificationPreferences()),
+          throwsStateError,
+        );
+        await pumpEventQueue();
+        expect(requests, hasLength(1));
+        gate.complete(
+          failure
+              ? http.Response(
+                  '{"message":"synthetic lost acknowledgement"}',
+                  503,
+                )
+              : json(null),
+        );
+        await saved;
+        expect((await reading).marketing, isTrue);
+        expect(requests.map((r) => r.method), ['POST', 'GET']);
+      },
+    );
+  }
+  test(
+    'session change while read waits for old write prevents a new HTTP read',
+    () async {
+      final gate = Completer<http.Response>();
+      response = (_) => gate.future;
+      final saved = expectLater(
+        backend.save(owner, const NotificationPreferences()),
+        throwsStateError,
+      );
+      await pumpEventQueue();
+      final read = expectLater(backend.read(owner), throwsStateError);
+      await authenticate(session: 's2');
+      await pumpEventQueue();
+      gate.complete(json(null));
+      await saved;
+      await read;
+      expect(requests, hasLength(1));
+    },
+  );
+  test(
+    'queued session events fence a late transport failure as well',
+    () async {
+      response = (_) async {
+        await authenticate(session: 's2');
+        await authenticate(session: 's1');
+        await pumpEventQueue();
+        return http.Response('{"message":"synthetic"}', 503);
+      };
+      await expectLater(
+        backend.save(owner, const NotificationPreferences()),
+        throwsStateError,
+      );
+    },
+  );
+  test(
+    'lookup rejects a foreign recipient even if transport returns a row',
+    () async {
+      response = (_) async => json({
+        'id': 'notice',
+        'user_id': 'other',
+        'title': 'Fixture',
+        'body': 'Fixture',
+        'type': 'system',
+      });
+      expect(await backend.lookup('notice'), isNull);
+    },
+  );
   test(
     'adapter sends existing role-bound RPC contract, not arbitrary account selection',
     () async {
