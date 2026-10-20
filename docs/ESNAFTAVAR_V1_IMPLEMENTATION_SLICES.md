@@ -455,6 +455,22 @@ remain unchanged. See `MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md` for evidence.
   settlement operations owner and explicit payout/write authorization. No schedule
   or payment-provider behavior is selected by this plan.
 
+### H0/H1 read recovery follow-through — 2026-10-20
+
+Local package on `agent/merchant-statement-recovery`, based on integrated
+`88fa667b`. Canonical §9.3 bounds stable-session private reads, Merchant statement
+route lifetime, bounded refresh/resume, and coherent pagination. Reuse the
+existing request scope and read-only H0/H1 RPCs. Preserve precise money/source
+rules, historical migrations, default-OFF gates and pending O8 policy.
+
+Exercise actual SDK Auth/HTTP continuations with synthetic fixtures, broken
+observation, normal renewal, stale responses, owner/shop/repository changes,
+timeouts, cross-page contradictions and narrow rendering. Preserve the existing
+native/managed database evidence without presenting it as a newly executed proof.
+No accounting mutation, payout activation, Customer redesign, hosted access or
+device-candidate replacement. See
+[handoff](MERCHANT_STATEMENT_RECOVERY_HANDOFF.md). Full H1 and J remain OPEN.
+
 ## I — Shared notification/provider integration
 
 - **DB:** separately review/deploy unchanged0016 foundation, then approved additive

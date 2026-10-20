@@ -293,9 +293,16 @@ void main() {
     old.complete(Right(statementValue()));
     await t.pump();
     expect(find.text('Bekleyen alacak'), findsNothing);
-    repo.wait!.complete(Right(statementValue(enabled: false)));
+    expect(find.textContaining('Oturumunuz değişti'), findsOneWidget);
+    expect(repo.requests.length, 1);
+    // A new route may bind the new session; the expired route never revives.
+    await t.pumpWidget(const SizedBox());
+    repo.wait = null;
+    repo.value = statementValue(enabled: false);
+    await host(t);
     await t.pumpAndSettle();
     expect(find.textContaining('kullanıma açık değil'), findsOneWidget);
+    expect(repo.requests.length, 2);
   });
   testWidgets('session stream failure clears loaded money', (t) async {
     await host(t);
