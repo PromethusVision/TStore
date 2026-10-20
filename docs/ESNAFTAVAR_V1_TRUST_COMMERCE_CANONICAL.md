@@ -1577,6 +1577,38 @@ All schema rehearsal and synthetic accounting writes are local/test only.
 Production, settlement, G, provider delivery and physical two-device acceptance
 remain separately gated. Delivery evidence: [H1 read surface](MERCHANT_STATEMENT_H1_HANDOFF.md).
 
+### 9.3 H0/H1 private-read and statement recovery — 2026-10-20
+
+After preference recovery integrated at `88fa667b`, the next authorized local
+reliability package hardens existing accounting reads and the Merchant statement
+screen. This is read-only client work. FROZEN amounts, source allocation, reserve
+cap, accounting postings and external O8 settlement policy remain unchanged.
+
+- H0 private account reads and H1 statement reads use the existing stable Auth
+  request scope. Missing session identity refuses a private request. Captured
+  account/session replacement and broken observation fence late successes and
+  errors, including an intervening S1→S2→S1 transition. Replayed initial-session
+  events and token renewal within the same session remain valid. Public H0
+  capabilities remain independent of private session access.
+- The statement route binds that stable session. Replacement, logout or broken
+  observation clears private state and expires the route; reopening binds fresh
+  state. A normal renewal or new stream wrapper preserves loaded pages and
+  pending reads. Replacing the owner, shop or repository creates a new read
+  generation; abandoned responses cannot update it.
+- Reads are bounded and retryable. Resume revalidates ownership with a fresh
+  first-page read. Timeout never proves server cancellation; late completions
+  cannot restore older totals. No persistence, write/retry queue or new ledger.
+- Pages with the same revision must retain the same account summary and reserve
+  cap, and continue the existing descending time/ID order. Contradictory pages
+  clear the partial statement and require a fresh first-page read rather than
+  display mixed snapshots. The SQL contract, exact integer amounts and existing
+  revision-change/transient-error behavior are preserved.
+
+Feature flags remain OFF. No Customer layout, financial operation, SQL,
+dependency, provider, hosted access or delivered APK change. Full H1, physical J
+and pilot-opening acceptance remain OPEN. See
+[statement recovery handoff](MERCHANT_STATEMENT_RECOVERY_HANDOFF.md).
+
 ## 10. Merchant Campaign Lite
 
 **FROZEN:** an informational, store-applied offer, distinct from Ads and Reward.
