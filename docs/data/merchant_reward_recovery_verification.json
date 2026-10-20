@@ -1,0 +1,116 @@
+{
+  "kind": "esnaftavar-reward-client-recovery-verification-v1",
+  "date": "2026-10-21",
+  "status": "LOCAL_PASS_INTEGRATION_PENDING",
+  "branch": "agent/merchant-reward-recovery",
+  "base_commit": "42dd8f5a5b08e737aa1dacbf32291cda4d102ca6",
+  "build_parent_commit": "42dd8f5a5b08e737aa1dacbf32291cda4d102ca6",
+  "uncommitted_build_sources": true,
+  "source_sha256": "b0f22caf23fdcccaac88cb99a3da2d111e22838eeed507bb79fb1e8d14277a2a",
+  "source_fingerprint_matches_built_pair": true,
+  "reproduced": {
+    "sdk_and_repository": {
+      "passed": 1,
+      "failed": 15,
+      "log": ".buildlog/reward-unit-red.log"
+    },
+    "widget_failures": 18,
+    "widget_log": ".buildlog/reward-red.log",
+    "fixture_note": "Initial SDK fixture lacked token_type; its setup failures are excluded. Corrected SDK red run is separate."
+  },
+  "targeted": {
+    "passed": 120,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/reward-targeted-final.log"
+  },
+  "full_flutter": {
+    "passed": 3360,
+    "failed": 0,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "existing_conditional_skips": 6,
+    "skip_identities_unchanged": true,
+    "integrated_main_baseline": 3309,
+    "new_tests": 51,
+    "log": ".buildlog/reward-full.jsonl"
+  },
+  "initial_full_run": {
+    "result": "FAIL",
+    "failures": [
+      "public offer disappears at server-derived expiry without a screen reload"
+    ],
+    "log": ".buildlog/reward-full-first.jsonl",
+    "cause": "Unchanged existing two-second real-clock fixture expired before its initial visibility assertion under default parallel load.",
+    "isolated_recheck": "PASS",
+    "recheck_log": ".buildlog/reward-existing-expiry-recheck.log",
+    "final_full_concurrency": 2,
+    "test_or_runtime_weakened": false
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/reward-analyze-final.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
+      "callback_verified": true,
+      "file": ".buildlog/pilot-device/reward-recovery-20261021/merchant-development.apk",
+      "sha256": "b8fd53566b8fd91e8d553263758b4b008b027c125773c8f45bf264fdb068dfe4",
+      "bytes": 119454547,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/reward-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_reward_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      ".buildlog/pilot-device/reward-recovery-20261021/customer.build.log",
+      ".buildlog/reward-merchant-development-build.log"
+    ]
+  },
+  "delivered_apks_unchanged": {
+    "sha256": [
+      "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+    ]
+  },
+  "previous_trust_and_statement_compile_artifacts_unchanged": true,
+  "database_validation": "N/A_NO_SQL_CHANGE",
+  "economic_or_qualification_rule_changes": "NONE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}

@@ -360,6 +360,16 @@ value. Acceptance now observes capacity/funds before completion; 0025 is preserv
   external finance/legal handling, monitored reconciliation/capacity runbook,
   H0+B deployed safely; real provider billing not inferred from local success.
 
+### E client recovery follow-through — 2026-10-21
+
+From integrated main `42dd8f5a`, harden the existing package/acceptance UI, reward
+RPC adapter, Customer home progress and cart reservation continuations under
+canonical §8.3. Reproduce session/transport races before correction; verify queued
+Auth replacement, normal renewal, uncertain writes, reopening and coalesced cart
+changes. Reuse existing revision/owner contracts and Auth interfaces. No economic
+policy change, migration, hosted access, feature activation or physical acceptance.
+Delivery evidence: `MERCHANT_REWARD_RECOVERY_HANDOFF.md`.
+
 ## F — Merchant Campaign / Offer Creator Lite
 
 **Authorized locally with D on 2026-10-15.** Price/percentage publication remains

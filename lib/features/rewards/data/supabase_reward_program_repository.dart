@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/rewards/domain/reward_progress.dart';
@@ -9,28 +10,39 @@ import 'package:t_store/features/rewards/domain/reward_progress.dart';
 typedef RewardRpc =
     Future<dynamic> Function(String name, Map<String, dynamic> arguments);
 
-class SupabaseRewardProgramRepository implements RewardProgramRepository {
+class SupabaseRewardProgramRepository
+    implements RewardProgramRepository, AuthenticatedSessionEvents {
   SupabaseRewardProgramRepository(
     SupabaseClient client, {
     RewardRpc? rpc,
     String? Function()? currentUserId,
     String? Function()? sessionIdentity,
     Stream<String?>? sessionChanges,
+    Stream<String?>? sessionKeyChanges,
     Duration timeout = const Duration(seconds: 15),
     Duration pollInterval = const Duration(seconds: 30),
   }) : _rpc = rpc ?? ((name, args) => client.rpc(name, params: args)),
        _user = currentUserId ?? (() => client.auth.currentUser?.id),
-       _identity =
-           sessionIdentity ??
-           (() => QrProtocolV2.authenticatedSessionIdentity(client)),
+       _identity = sessionIdentity ?? (() => authenticatedSessionKey(client)),
        _sessions =
            sessionChanges ??
            client.auth.onAuthStateChange.map((event) => event.session?.user.id),
+       _keys =
+           sessionKeyChanges ??
+           client.auth.onAuthStateChange.map(
+             (event) => authenticatedSessionKeyFromSession(event.session),
+           ),
        _timeout = timeout,
        _poll = pollInterval;
   final RewardRpc _rpc;
   final String? Function() _user, _identity;
-  final Stream<String?> _sessions;
+  final Stream<String?> _sessions, _keys;
+  @override
+  String? get currentSessionKey => _identity();
+  @override
+  Stream<String?> get sessionKeyChanges => _keys;
+  final _acceptance = <String, Completer<void>>{};
+  final _reservations = <String>{};
   final Duration _timeout, _poll;
   final _refresh = StreamController<void>.broadcast();
   static final _uuid = RegExp(
@@ -44,57 +56,63 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
     Map<String, dynamic> args,
     T Function(Map<String, dynamic>) parse, {
     bool private = true,
+    bool mutation = false,
+    Future<void> Function()? before,
   }) async {
-    final identity = _identity();
-    if (private && (identity == null || _user() == null)) {
-      return const Left(_sessionError);
-    }
-    var changed = false;
-    final subscription = private
-        ? _sessions.listen(
-            (_) {
-              if (_identity() != identity) changed = true;
-            },
-            onError: (Object _) {
-              changed = true;
-            },
+    final scope = private
+        ? AuthenticatedRequestScope(
+            user: _user(),
+            session: _identity(),
+            currentUser: _user,
+            currentSession: _identity,
+            changes: _sessions,
+            sessionKeys: _keys,
           )
         : null;
     try {
-      final raw = await _rpc(name, args).timeout(_timeout);
-      if (private && (changed || _identity() != identity)) {
-        return const Left(_sessionError);
+      Future<dynamic> request() async {
+        scope?.check();
+        await before?.call();
+        // A read abandoned while waiting for a write must never dispatch later.
+        scope?.check();
+        return _rpc(name, args);
       }
+
+      final pending = scope == null ? request() : scope.run(request);
+      // Local deadlines do not cancel a server mutation or release its lock.
+      final raw = await (mutation ? pending : pending.timeout(_timeout));
+      scope?.check();
       if (raw is! Map<String, dynamic>) throw const FormatException();
       return Right(parse(raw));
-    } on FormatException {
-      return const Left('Ödül bilgileri doğrulanamadı. Yeniden yükleyin.');
-    } on PostgrestException catch (error) {
-      if (error.code == '28000' || error.code == '42501') {
-        return const Left(_sessionError);
+    } catch (error) {
+      if (scope != null && !scope.current) return const Left(_sessionError);
+      if (error is FormatException) {
+        return const Left('Ödül bilgileri doğrulanamadı. Yeniden yükleyin.');
       }
-      if (error.message.contains('REWARD_ACCEPTANCE_LOCKED')) {
-        return const Left(
-          'Paket veya açık rezervasyon varken kupon kabulü kapatılamaz.',
-        );
+      if (error is PostgrestException) {
+        if (error.code == '28000' || error.code == '42501') {
+          return const Left(_sessionError);
+        }
+        if (error.message.contains('REWARD_ACCEPTANCE_LOCKED')) {
+          return const Left(
+            'Paket veya açık rezervasyon varken kupon kabulü kapatılamaz.',
+          );
+        }
+        if (error.code == '40001') {
+          return const Left(
+            'Bilgiler değişti. Güncel durumu yükleyip tekrar deneyin.',
+          );
+        }
+        if (error.message.contains('REWARD_DISABLED')) {
+          return const Left('Ödül programı henüz kullanıma açılmadı.');
+        }
+        return const Left('İşlem tamamlanamadı. Güncel durumu kontrol edin.');
       }
-      if (error.code == '40001') {
-        return const Left(
-          'Bilgiler değişti. Güncel durumu yükleyip tekrar deneyin.',
-        );
-      }
-      if (error.message.contains('REWARD_DISABLED')) {
-        return const Left('Ödül programı henüz kullanıma açılmadı.');
-      }
-      return const Left('İşlem tamamlanamadı. Güncel durumu kontrol edin.');
-    } catch (_) {
-      return Left(
-        private && (changed || _identity() != identity)
-            ? _sessionError
-            : 'Bağlantı kurulamadı. Güncel durumu yeniden kontrol edin.',
+      return const Left(
+        'Bağlantı kurulamadı. Güncel durumu yeniden kontrol edin.',
       );
     } finally {
-      await subscription?.cancel();
+      await scope?.close();
     }
   }
 
@@ -169,9 +187,16 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
     if (!_uuid.hasMatch(shopId)) {
       return Future.value(const Left('Mağaza bilgisi geçersiz.'));
     }
-    return _run('read_merchant_reward_v1', {
-      'p_shop': shopId,
-    }, (r) => _merchant(r, shopId));
+    return _run(
+      'read_merchant_reward_v1',
+      {'p_shop': shopId},
+      (r) => _merchant(r, shopId),
+      before: () async {
+        while (_acceptance.containsKey(shopId)) {
+          await _acceptance[shopId]!.future;
+        }
+      },
+    );
   }
 
   @override
@@ -179,15 +204,39 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
     String shopId,
     bool preferred,
     int expectedRevision,
-  ) {
+  ) async {
     if (!_uuid.hasMatch(shopId) || expectedRevision < 0) {
-      return Future.value(const Left('Mağaza bilgisi geçersiz.'));
+      return const Left('Mağaza bilgisi geçersiz.');
     }
-    return _run('set_merchant_reward_preference_v1', {
-      'p_shop': shopId,
-      'p_preferred': preferred,
-      'p_expected_revision': expectedRevision,
-    }, (r) => _merchant(r, shopId));
+    if (_acceptance.containsKey(shopId)) {
+      return const Left(
+        'Önceki işlem sürüyor. Güncel durumu tekrar kontrol edin.',
+      );
+    }
+    final pending = Completer<void>();
+    _acceptance[shopId] = pending;
+    try {
+      return await _run(
+        'set_merchant_reward_preference_v1',
+        {
+          'p_shop': shopId,
+          'p_preferred': preferred,
+          'p_expected_revision': expectedRevision,
+        },
+        (r) {
+          final value = _merchant(r, shopId);
+          if (value.preferred != preferred ||
+              value.revision != expectedRevision + 1) {
+            throw const FormatException();
+          }
+          return value;
+        },
+        mutation: true,
+      );
+    } finally {
+      _acceptance.remove(shopId);
+      pending.complete();
+    }
   }
 
   static MerchantRewardState _merchant(Map<String, dynamic> r, String shopId) {
@@ -307,38 +356,50 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
   Future<Either<String, RewardReservation>> reserve(
     String cartId, {
     bool startNew = false,
-  }) {
+  }) async {
     if (!_uuid.hasMatch(cartId)) {
-      return Future.value(const Left('Sepet bilgisi geçersiz.'));
+      return const Left('Sepet bilgisi geçersiz.');
     }
-    return _run(
-      'ensure_reward_reservation_v1',
-      {'p_cart': cartId, 'p_start_new': startNew},
-      (r) {
-        const statuses = {
-          'disabled': RewardReservationStatus.disabled,
-          'below_threshold': RewardReservationStatus.belowThreshold,
-          'no_capacity': RewardReservationStatus.noCapacity,
-          'reserved': RewardReservationStatus.reserved,
-          'checkout_hold': RewardReservationStatus.checkoutHold,
-          'attempt_expired': RewardReservationStatus.attemptExpired,
-        };
-        final status = statuses[r['status']];
-        if (status == null) throw const FormatException();
-        final result = RewardReservation(
-          status: status,
-          serverNow: _date(r['server_now']),
-          attemptId: r['attempt_id'] == null ? null : _id(r['attempt_id']),
-          expiresAt: r['expires_at'] == null ? null : _date(r['expires_at']),
-        );
-        if ((result.holdsCapacity ||
-                status == RewardReservationStatus.attemptExpired) &&
-            (result.expiresAt == null || result.attemptId == null)) {
-          throw const FormatException();
-        }
-        return result;
-      },
-    );
+    final actor = _user();
+    if (actor == null) return const Left(_sessionError);
+    if (!_reservations.add(actor)) {
+      return const Left(
+        'Önceki rezervasyon kontrolü sürüyor. Durumu yeniden kontrol edin.',
+      );
+    }
+    try {
+      return await _run(
+        'ensure_reward_reservation_v1',
+        {'p_cart': cartId, 'p_start_new': startNew},
+        (r) {
+          const statuses = {
+            'disabled': RewardReservationStatus.disabled,
+            'below_threshold': RewardReservationStatus.belowThreshold,
+            'no_capacity': RewardReservationStatus.noCapacity,
+            'reserved': RewardReservationStatus.reserved,
+            'checkout_hold': RewardReservationStatus.checkoutHold,
+            'attempt_expired': RewardReservationStatus.attemptExpired,
+          };
+          final status = statuses[r['status']];
+          if (status == null) throw const FormatException();
+          final result = RewardReservation(
+            status: status,
+            serverNow: _date(r['server_now']),
+            attemptId: r['attempt_id'] == null ? null : _id(r['attempt_id']),
+            expiresAt: r['expires_at'] == null ? null : _date(r['expires_at']),
+          );
+          if ((result.holdsCapacity ||
+                  status == RewardReservationStatus.attemptExpired) &&
+              (result.expiresAt == null || result.attemptId == null)) {
+            throw const FormatException();
+          }
+          return result;
+        },
+        mutation: true,
+      );
+    } finally {
+      _reservations.remove(actor);
+    }
   }
 
   @override
@@ -348,13 +409,16 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
   Stream<RewardProgress> watchProgress(String? customerId) {
     if (customerId == null) return Stream.value(const RewardProgress());
     late StreamController<RewardProgress> controller;
-    StreamSubscription<String?>? auth;
+    StreamSubscription<String?>? auth, keys;
     StreamSubscription<void>? refresh;
     Timer? timer;
-    var stopped = false, busy = false, generation = 0;
+    var stopped = false,
+        observationClosed = false,
+        busy = false,
+        generation = 0;
     var identity = _identity();
     Future<void> read() async {
-      if (stopped || busy) return;
+      if (stopped || observationClosed || busy) return;
       if (_user() != customerId || _identity() != identity) {
         controller.add(const RewardProgress(error: _sessionError));
         return;
@@ -362,7 +426,7 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
       busy = true;
       final ticket = generation;
       final result = await readCustomer();
-      if (stopped || ticket != generation) return;
+      if (stopped || observationClosed || ticket != generation) return;
       busy = false;
       if (_user() != customerId || _identity() != identity) {
         controller.add(const RewardProgress(error: _sessionError));
@@ -381,34 +445,50 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
       );
     }
 
+    void invalidate({bool closed = false, bool recover = false}) {
+      if (stopped || observationClosed) return;
+      generation++;
+      busy = false;
+      observationClosed = closed;
+      identity = _identity();
+      controller.add(const RewardProgress(error: _sessionError));
+      if (closed) timer?.cancel();
+      if (recover) {
+        // Coalesce captured transitions before rebinding the home subscription.
+        scheduleMicrotask(() {
+          if (!stopped &&
+              !observationClosed &&
+              _user() == customerId &&
+              _identity() != null) {
+            identity = _identity();
+            read();
+          }
+        });
+      }
+    }
+
     controller = StreamController<RewardProgress>(
       onListen: () {
         controller.add(const RewardProgress(loading: true));
         auth = _sessions.listen(
-          (_) {
-            final nextIdentity = _identity();
-            if (_user() != customerId || nextIdentity != identity) {
-              generation++;
-              busy = false;
-              identity = nextIdentity;
-              final current = _user() == customerId && identity != null;
-              controller.add(
-                current
-                    ? const RewardProgress(loading: true)
-                    : const RewardProgress(error: _sessionError),
-              );
-              if (current) {
-                read();
-              }
-            } else {
-              read();
+          (actor) {
+            if (actor != customerId ||
+                _user() != customerId ||
+                _identity() != identity) {
+              invalidate(recover: true);
             }
           },
-          onError: (Object _) {
-            generation++;
-            busy = false;
-            controller.add(const RewardProgress(error: _sessionError));
+          onError: (Object _) => invalidate(),
+          onDone: () => invalidate(closed: true),
+        );
+        keys = _keys.listen(
+          (key) {
+            if (key != identity || _identity() != identity) {
+              invalidate(recover: true);
+            }
           },
+          onError: (Object _) => invalidate(),
+          onDone: () => invalidate(closed: true),
         );
         refresh = _refresh.stream.listen((_) => read());
         timer = Timer.periodic(_poll, (_) => read());
@@ -419,6 +499,7 @@ class SupabaseRewardProgramRepository implements RewardProgramRepository {
         generation++;
         timer?.cancel();
         await auth?.cancel();
+        await keys?.cancel();
         await refresh?.cancel();
       },
     );
