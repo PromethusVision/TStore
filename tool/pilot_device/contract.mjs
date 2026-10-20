@@ -19,6 +19,35 @@ export const json = value => JSON.stringify(value, null, 2)+'\n';
 export const slug = value => typeof value === 'string' && /^[a-z][a-z0-9-]{2,60}$/.test(value);
 export const digestPattern = /^[a-f0-9]{64}$/;
 
+export function utcInstant(value) {
+  assert.equal(typeof value,'string');
+  assert(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value));
+  const time=Date.parse(value);
+  assert(Number.isFinite(time));
+  assert.equal(new Date(time).toISOString(),value,'Invalid calendar date');
+  return time;
+}
+
+// JSON.parse silently replaces duplicate keys. Evidence must have one meaning,
+// including when a key is written using JSON Unicode escapes.
+export function parseRecord(text) {
+  assert.equal(typeof text,'string');assert(text.length<=2_000_000);
+  const value=JSON.parse(text);
+  const tokens=text.match(/"(?:\\.|[^"\\])*"|[{}\[\]:,]|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null/g);
+  const stack=[];
+  tokens.forEach((token,i)=>{
+    if(token==='{')stack.push(new Set());
+    else if(token==='[')stack.push(null);
+    else if(token==='}'||token===']')stack.pop();
+    else if(token.startsWith('"')&&tokens[i+1]===':'){
+      const keys=stack.at(-1),key=JSON.parse(token);
+      assert(keys&&!keys.has(key),'Duplicate evidence key');keys.add(key);
+    }
+  });
+  assert(value&&typeof value==='object'&&!Array.isArray(value));
+  return value;
+}
+
 export function scanPayload(bytes,key) {
   assert(Buffer.isBuffer(bytes)&&bytes.length>0&&typeof key==='string'&&key.length>10);
   return {backend_url_present:bytes.includes(Buffer.from(endpoint)),
@@ -136,26 +165,37 @@ export function fieldTemplate(bundle) {
     real_mail:'OPEN',provider_delivery:'OPEN',support_owner:'OPEN',withdrawal_runbook:'OPEN',owner_opening:'OPEN'};
 }
 export function assessField(bundle,observation) {
+  assert(['compile-rehearsal','device-candidate'].includes(bundle.purpose));
+  assert(['debug','release'].includes(bundle.mode));
+  const created=utcInstant(bundle.created_at),now=Date.now();assert(created<=now);
   const template=fieldTemplate(bundle);
   assert.deepEqual(Object.keys(observation).sort(),Object.keys(template).sort());
   assert.equal(observation.kind,template.kind); assert.equal(observation.bundle_id,bundle.bundle_id);
   assert.equal(observation.project_ref,project); assert.deepEqual(observation.artifacts,template.artifacts);
   assert.deepEqual(Object.keys(observation.device_aliases).sort(),['customer','merchant']);
-  for(const value of Object.values(observation.device_aliases)) assert(value===null||/^(customer|merchant)-device-[1-9][0-9]?$/.test(value));
+  for(const [role,value] of Object.entries(observation.device_aliases))
+    assert(value===null||(typeof value==='string'&&new RegExp(`^${role}-device-[1-9][0-9]?$`).test(value)));
   assert.equal(observation.cases.length,fieldCases.length);
   observation.cases.forEach((c,i)=>{
     assert.deepEqual(Object.keys(c).sort(),Object.keys(template.cases[i]).sort());
     assert.equal(c.id,fieldCases[i][1]);assert.equal(c.group,fieldCases[i][0]);
     assert(['OPEN','PASS','FAIL'].includes(c.result));
     if(c.result==='OPEN'){assert.equal(c.observed_at,null);assert.equal(c.evidence_sha256,null);}
-    else {assert(digestPattern.test(c.evidence_sha256));assert(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(c.observed_at));
-      assert(Number.isFinite(Date.parse(c.observed_at)));assert(Date.parse(c.observed_at)>=Date.parse(bundle.created_at));
-      assert(Date.parse(c.observed_at)<=Date.now());assert(Object.values(observation.device_aliases).every(Boolean));}
+    else {
+      assert.equal(bundle.purpose,'device-candidate','Synthetic rehearsal cannot receive device observations');
+      assert(digestPattern.test(c.evidence_sha256));
+      const observed=utcInstant(c.observed_at);assert(observed>=created&&observed<=now);
+      assert(Object.values(observation.device_aliases).every(Boolean));
+    }
   });
   for(const key of ['real_mail','provider_delivery','support_owner','withdrawal_runbook','owner_opening']) assert.equal(observation[key],'OPEN');
   // Human observations are review material. They cannot certify provider, legal,
   // owner authorization, or final release, even with twelve supplied PASS rows.
+  const failed=observation.cases.filter(c=>c.result==='FAIL').map(c=>c.id);
+  const pending=observation.cases.filter(c=>c.result==='OPEN').map(c=>c.id);
   return {kind:'esnaftavar-pilot-field-review-v1',bundle_id:bundle.bundle_id,
+    status:failed.length?'FIELD_BLOCKED':pending.length?'FIELD_INCOMPLETE':'FIELD_REPORTED_COMPLETE_REQUIRES_OWNER_REVIEW',
+    stop_required:failed.length>0,failed_cases:failed,pending_cases:pending,
     observed_pass:observation.cases.filter(c=>c.result==='PASS').length,
     observed_fail:observation.cases.filter(c=>c.result==='FAIL').length,
     observed_open:observation.cases.filter(c=>c.result==='OPEN').length,
