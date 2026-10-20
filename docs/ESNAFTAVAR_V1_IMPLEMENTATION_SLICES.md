@@ -507,6 +507,12 @@ provider enrollment, actual send, schema change or delivered-APK replacement.
 See [handoff](MERCHANT_INBOX_RECOVERY_HANDOFF.md) for regressions and evidence.
 Full I/provider delivery and physical J remain OPEN.
 
+Integration follow-up: `c41ea688` was rejected for a persistent Customer home
+badge that stayed expired after same-user session replacement. The home owner
+now replaces its session-scoped inbox instance while preserving the old
+instance's stale-response fence. The independent reproduction is retained in
+the normal widget suite, alongside account/renewal/cleanup regressions.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

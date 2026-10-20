@@ -31,6 +31,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   final NotificationRepository repository;
   final NotificationSessionSource? _sessionSource;
+
+  /// Long-lived hosts may replace this cubit; an expired instance never revives.
+  NotificationSessionSource? get sessionSource => _sessionSource;
   late final String? _actor, _session;
   StreamSubscription<String?>? _sessionSubscription;
   bool _expired = false;
@@ -632,14 +635,20 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   Future<void> close() async {
     _expired = true;
     ++_subscriptionGeneration;
-    await _sessionSubscription?.cancel();
     _requestGeneration++;
     _activeRequestGeneration = null;
     _activeRequestPage = null;
 
+    final sessions = _sessionSubscription;
+    _sessionSubscription = null;
     final subscription = _notificationsSubscription;
     _notificationsSubscription = null;
-    await subscription?.cancel();
-    await super.close();
+    // Invalidate synchronously and start all cleanup before awaiting an adapter.
+    // A delayed Auth cancellation must not keep the retired state/listener alive.
+    await Future.wait([
+      if (sessions != null) sessions.cancel(),
+      if (subscription != null) subscription.cancel(),
+      super.close(),
+    ]);
   }
 }

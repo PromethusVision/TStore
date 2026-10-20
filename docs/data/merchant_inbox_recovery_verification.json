@@ -4,7 +4,7 @@
   "status": "LOCAL_PASS_INDEPENDENT_INTEGRATION_PENDING",
   "branch": "agent/merchant-inbox-recovery",
   "base_commit": "8e1fb70297f787e29d8b6952ae4c0cb9f89be57a",
-  "source_sha256": "16f6da86800e6ae41de7532f17cb2a7577768b149c3f424c1ba7a33b4f73d8de",
+  "source_sha256": "d9e3e2f007476700520abef4205b5b0db95c4db97c62eb328fb397e33d42c6cf",
   "source_fingerprint_matches_built_pair": true,
   "before_fix_regressions": {
     "passed": 6,
@@ -12,17 +12,18 @@
     "log": ".buildlog/inbox-red.log"
   },
   "full_flutter": {
-    "passed": 3073,
+    "passed": 3086,
     "failed": 0,
     "existing_conditional_skips": 6,
-    "new_tests": 43,
-    "log": ".buildlog/flutter-full.jsonl"
+    "new_tests": 56,
+    "skip_identities_unchanged": true,
+    "log": ".buildlog/home-session-full.jsonl"
   },
   "targeted_flutter": {
-    "passed": 430,
+    "passed": 443,
     "failed": 0,
     "skipped": 0,
-    "log": ".buildlog/inbox-targeted-final.log"
+    "log": ".buildlog/home-session-targeted-final.log"
   },
   "pair_compatibility": {
     "passed": 135,
@@ -32,7 +33,7 @@
   "analyzer": {
     "result": "PASS",
     "issues": 0,
-    "log": ".buildlog/analyze-final.log"
+    "log": ".buildlog/home-session-analyze.log"
   },
   "builds": {
     "customer_development_debug": "PASS",
@@ -40,16 +41,34 @@
     "merchant_development_debug": {
       "result": "PASS",
       "application_id": "com.esnaftavar.app.merchant.dev",
-      "file": ".buildlog/pilot-device/inbox-recovery-20261020/merchant-development.apk",
-      "sha256": "c3f86460b31bb04c7115457f72f7d5a3e77ec7e4eaf7af67182d8507a380f010",
+      "file": ".buildlog/pilot-device/inbox-home-recovery-20261020/merchant-development.apk",
+      "sha256": "f03259362fd4f20c6117411a269494861cfccc6fe0dcc53fd36617beb0095004",
       "bytes": 119420439,
       "signature_verified": true,
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
-      "log": ".buildlog/merchant-development-build.log"
+      "log": ".buildlog/home-session-merchant-development-build.log"
     },
     "pair_evidence": "merchant_inbox_recovery_build_pair.json",
     "configuration": "SYNTHETIC_LOCAL_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
-    "nonfatal_kotlin_cache_diagnostics": true
+    "nonfatal_kotlin_cache_diagnostics": false,
+    "customer_payload_contains_updated_home_owner": true
+  },
+  "integration_correction": {
+    "rejected_commit": "c41ea6888118cdb973bf7da83acabaadcc11d444",
+    "reason": "CUSTOMER_HOME_BADGE_STAYS_EXPIRED_AFTER_SAME_USER_SESSION_REPLACEMENT",
+    "independent_reproduction_before": {
+      "passed": 1,
+      "failed": 1,
+      "log": ".buildlog/home-session-red.log"
+    },
+    "independent_reproduction_after": {
+      "passed": 2,
+      "failed": 0
+    },
+    "additional_correction_tests": 13,
+    "old_session_fence_preserved": true,
+    "normal_renewal_preserves_existing_owner": true,
+    "same_user_replacement_restores_badge_and_realtime_without_navigation": true
   },
   "delivered_apks_unchanged": {
     "bundle": "EsnaftaVar-Development-a0dfbdfd",

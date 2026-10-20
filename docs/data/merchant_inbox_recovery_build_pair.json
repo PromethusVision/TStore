@@ -1,13 +1,13 @@
 {
   "kind": "esnaftavar-pilot-device-pair-v1",
-  "created_at": "2026-10-20T14:59:47.338Z",
+  "created_at": "2026-10-20T15:55:34.063Z",
   "purpose": "compile-rehearsal",
   "mode": "debug",
   "status": "COMPILE_REHEARSAL_PASS_NOT_DISTRIBUTABLE",
   "project_ref": "tnipyxnvhgelwdpykyez",
-  "source_commit": "8e1fb70297f787e29d8b6952ae4c0cb9f89be57a",
+  "source_commit": "c41ea6888118cdb973bf7da83acabaadcc11d444",
   "uncommitted_sources": true,
-  "source_sha256": "16f6da86800e6ae41de7532f17cb2a7577768b149c3f424c1ba7a33b4f73d8de",
+  "source_sha256": "d9e3e2f007476700520abef4205b5b0db95c4db97c62eb328fb397e33d42c6cf",
   "config_sha256": {
     "customer": "0fc81951a7c3e28ee64e53e303a3defe5688dee30acee4a0e09198433023ee46",
     "merchant": "cf0245b4ece1d14cbbe7a8a8b6fb5061c538257bb034e33aff8920e4dbbea83a"
@@ -51,7 +51,7 @@
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
       "mode": "debug",
       "abi": "arm64-v8a",
-      "sha256": "7886cbe1332d698dcfb2a7c941e1e2e6b274a9931c53748c511743a76bfe9639",
+      "sha256": "f111bc6f94d3c59a69c4071daf428f605a3f5c4b5d4bc67931e6c16aa61ef3e2",
       "bytes": 154819531,
       "payload_scan": {
         "backend_url_present": true,
@@ -75,7 +75,7 @@
       "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
       "mode": "debug",
       "abi": "arm64-v8a",
-      "sha256": "a00fdc0d48b7627721a395a8073232b9d1fd18eb16302926e528359dc2dfa8fa",
+      "sha256": "a85b89562b8c842c12f5699bf42e0d0c9b0794b0d8739e886408431135f28ce6",
       "bytes": 119438231,
       "payload_scan": {
         "backend_url_present": true,
@@ -101,5 +101,5 @@
   "physical_two_device": "OPEN",
   "provider_delivery": "OPEN",
   "pilot_ready": false,
-  "bundle_id": "5c568f4962f4e7619e1d65936996ec6a306d9cda7a78f06f770cf8ce080444eb"
+  "bundle_id": "24ba345113d4be0c75def687421f56463b2833250961bd43509677d4a5523a59"
 }

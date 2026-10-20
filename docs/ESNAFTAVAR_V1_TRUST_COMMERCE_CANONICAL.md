@@ -1844,6 +1844,12 @@ FROZEN commerce, consent, marketing quota and provider rules are unchanged.
   Same-user replacement, account switch, logout or broken Auth observation
   clears private state and expires that screen instance. Normal token renewal
   within the same session preserves valid work. Reopening creates fresh state.
+  A persistent host such as the Customer home badge must instead retire its
+  expired inbox instance and bind a fresh instance when the observed session
+  matches the live session and that host's authenticated user. This restores
+  the count and live subscription without navigation; it never revives old
+  requests. Same-session renewal retains the existing instance. Broken Auth
+  observation clears the badge and stops that host until it is recreated.
 - Retired live subscriptions and delayed page/count responses cannot restore
   old rows. Explicit refresh replaces the read generation. Transient Realtime
   failures preserve the visible list and offer refresh while retaining the

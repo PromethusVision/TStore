@@ -2,9 +2,23 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
+import 'package:t_store/features/notifications/domain/repositories/notification_repository.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:t_store/features/notifications/presentation/cubit/notifications_state.dart';
 import '../../helpers/inbox_recovery_fixture.dart';
+
+class _SlowSessionCancellation implements NotificationSessionSource {
+  final cancelled = Completer<void>();
+  late final changes = StreamController<String?>(
+    onCancel: () => cancelled.future,
+  );
+  @override
+  String get currentUserId => 'owner';
+  @override
+  String get currentSessionKey => 'S1';
+  @override
+  Stream<String?> get sessionKeyChanges => changes.stream;
+}
 
 void main() {
   late FakeInboxRepository repository;
@@ -17,6 +31,26 @@ void main() {
     await cubit.close();
     await repository.dispose();
   });
+
+  test(
+    'close fences state and live events before slow Auth cleanup settles',
+    () async {
+      await cubit.close();
+      final source = _SlowSessionCancellation();
+      cubit = NotificationsCubit(repository: repository, sessionSource: source);
+      await cubit.getNotifications();
+      expect(repository.live.hasListener, isTrue);
+      var settled = false;
+      final closing = cubit.close().then((_) => settled = true);
+      expect(cubit.isClosed, isTrue);
+      expect(cubit.sessionCurrent, isFalse);
+      expect(repository.live.hasListener, isFalse);
+      expect(settled, isFalse);
+      source.cancelled.complete();
+      await closing;
+      await source.changes.close();
+    },
+  );
 
   for (final actor in <String?>['owner', 'other', null]) {
     test(

@@ -6,6 +6,37 @@ Authority: Product Owner's next implementation request after review integration.
 Canonical §12.3; no FROZEN product change.
 Status: **LOCAL PASS — independent main integration pending**.
 
+## Integration correction
+
+Integration rejected `c41ea6888118cdb973bf7da83acabaadcc11d444` before merge:
+the Customer home badge retained a permanently expired cubit after same-user
+session replacement. Reopening the inbox created a working separate cubit but
+did not repair the home's count or live tracking.
+
+The Integration Agent's two-case reproduction was copied into
+`test/widget/shop/home_notification_session_regression_test.dart` (only its
+helper import and formatting changed). Before the correction it reproduced
+**1 PASS / 1 FAIL** in `.buildlog/home-session-red.log`.
+
+The Customer home now owns a fresh NotificationsCubit for each valid Auth
+session matching its authenticated user. It listens to the same adapter's
+session capability, retires the old instance, and reloads/resubscribes without
+requiring navigation. Ordinary token renewal retains the existing instance and
+pending reads. Another account is not loaded until the Customer Auth identity
+matches; logout and broken observation remove the badge/listener. The Merchant
+root already replaces its navigation scope by session revision and is unchanged.
+
+Retired cubits remain permanently invalid. Closing starts Auth cancellation,
+Realtime cancellation and state closure before awaiting any adapter's cleanup;
+a delayed Auth cancellation cannot keep the old state or listener active.
+The optional read-only session-source getter supports this existing host.
+
+In addition to the imported two cases, ten new home widget cases cover automatic
+recovery, ordinary renewal, stale page/count/live results, account replacement,
+logout/relogin, queued session events, observer error/closure and disposal.
+One unit test holds Auth cancellation pending and verifies immediate state and
+Realtime retirement. These are 13 additional tests beyond the initial package.
+
 ## Audit and reproduced failures
 
 The current PushCoordinator already protects provider enrollment/session/taps.
@@ -52,28 +83,29 @@ session replacement. Merchant's existing app-role filter remains unchanged.
 
 ## Verification
 
-- Full Flutter regression: **3,073 PASS / 0 FAIL / 6 existing conditional SKIP**,
-  up from 3,030 PASS (**43 additional tests**, no new skip).
+- Full Flutter regression after correction: **3,086 PASS / 0 FAIL /
+  6 existing conditional SKIP**, up from 3,030 PASS (**56 additional tests**:
+  43 initial plus 13 correction tests). All six skip identities are unchanged.
 - Targeted notification, Merchant boundary, Customer handoff, badge and adjacent
-  visual coverage: **430 PASS**. Existing W48/W49 goldens were not regenerated.
+  visual coverage: **443 PASS**. Existing W48/W49 goldens were not regenerated.
 - `flutter analyze --no-pub`: **PASS, no issues**.
 - New regressions use the real Supabase/Dart adapter with synthetic HTTP/Auth
   fixtures, state-level races and both inboxes at 320 px / 130% text.
   No live credential, real user data, purchase or notification evidence is created.
-- Final test logs: `.buildlog/flutter-full.jsonl`,
-  `.buildlog/inbox-targeted-final.log`, `.buildlog/analyze-final.log`.
+- Final test logs: `.buildlog/home-session-full.jsonl`,
+  `.buildlog/home-session-targeted-final.log`, `.buildlog/home-session-analyze.log`.
 - Customer `development`, Merchant `merchantPilot` and
   `merchantDevelopment` debug APK builds: **PASS**. The pair tool's
   compatibility suite also passed **135 tests**. APK package identities and
   signatures were verified; all builds used synthetic local configuration.
 - Source fingerprint after all builds:
-  `16f6da86800e6ae41de7532f17cb2a7577768b149c3f424c1ba7a33b4f73d8de`.
-  It matches the built pair. The evidence records the base commit plus
-  uncommitted sources because compilation preceded the delivery commit.
-- Customer compilation emitted nonfatal Kotlin incremental-cache diagnostics;
-  the build and APK verification completed successfully. Diagnostics are kept
-  under `.buildlog/kotlin-build-diagnostics`. Generated platform files had
-  no content changes and were restored.
+  `d9e3e2f007476700520abef4205b5b0db95c4db97c62eb328fb397e33d42c6cf`.
+  It matches the rebuilt pair. The evidence records rejected parent `c41ea688`
+  plus uncommitted correction sources because compilation preceded the delivery
+  commit. The rebuilt Customer APK also contains the new home session owner.
+- All three correction builds completed without Kotlin cache diagnostics.
+  The initial package's nonfatal diagnostics remain preserved under
+  `.buildlog/kotlin-build-diagnostics`.
 - The previously delivered `EsnaftaVar-Development-a0dfbdfd` APK pair is unchanged
   by SHA-256. No new APK was uploaded or copied over those files.
 - Evidence: [verification](data/merchant_inbox_recovery_verification.json) and
@@ -95,8 +127,9 @@ loaded-count fallback is not an exact global counter. Reopening is required afte
 session expiration; new screen instances bind to the new session.
 
 Shared conflict areas: notification repository/domain session capability,
-NotificationsCubit/state and Customer/Merchant inbox widgets. Existing Customer
-visual fixtures only gain the session getter required by the new interaction guard.
+NotificationsCubit/state, Customer/Merchant inbox widgets and the Customer home
+badge owner. Existing Customer visual fixtures only gain the session getter
+required by the new interaction guard; no golden is regenerated.
 No theme/navigation framework, dependency, financial or permission policy changes.
 
 Main integration belongs to Integration Agent. Production and hosted Development
