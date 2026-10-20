@@ -1,0 +1,101 @@
+{
+  "kind": "esnaftavar-merchant-statement-recovery-verification-v1",
+  "date": "2026-10-20",
+  "status": "LOCAL_PASS_INDEPENDENT_INTEGRATION_PENDING",
+  "branch": "agent/merchant-statement-recovery",
+  "base_commit": "88fa667b982608338044219f06897da5007c9eda",
+  "source_sha256": "0d2dd545017cc96c889b0ec66bed35bcb51151c47301aaaf50e7a9083e524443",
+  "source_fingerprint_matches_built_pair": true,
+  "before_fix_regressions": {
+    "passed": 9,
+    "failed": 18,
+    "log": ".buildlog/statement-red.log"
+  },
+  "focused_regressions": {
+    "passed": 92,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/statement-expanded.log"
+  },
+  "targeted_flutter": {
+    "passed": 603,
+    "failed": 0,
+    "skipped": 0,
+    "log": ".buildlog/statement-targeted.log"
+  },
+  "full_flutter": {
+    "passed": 3178,
+    "failed": 0,
+    "existing_conditional_skips": 6,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "skip_identities_unchanged": true,
+    "new_tests": 53,
+    "log": ".buildlog/statement-full.jsonl"
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/statement-analyze.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "file": ".buildlog/pilot-device/statement-recovery-20261020/merchant-development.apk",
+      "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
+      "callback_verified": true,
+      "sha256": "561a88545bbc099fd06c7e57a5a76f8bcef90fbdd70a9ff6acd4d126336df553",
+      "bytes": 119434799,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/statement-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_statement_recovery_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      ".buildlog/pilot-device/statement-recovery-20261020/customer.build.log"
+    ]
+  },
+  "delivered_apks_unchanged": {
+    "bundle": "EsnaftaVar-Development-a0dfbdfd",
+    "verified": true,
+    "customer_sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+    "merchant_sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+  },
+  "database_validation": "N/A_CLIENT_ONLY_NO_SQL_CHANGE",
+  "accounting_mutations_or_rule_changes": "NONE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "settlement_activation": false,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false
+}

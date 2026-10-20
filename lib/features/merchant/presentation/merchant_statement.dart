@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
 import 'package:t_store/features/commerce_ledger/domain/merchant_statement.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
@@ -44,11 +46,13 @@ class MerchantStatementView extends StatefulWidget {
     required this.ownerId,
     required this.currentUserId,
     required this.sessionChanges,
+    this.readTimeout = const Duration(seconds: 15),
   });
   final MerchantStatementRepository repository;
   final String shopId, ownerId;
   final String? Function() currentUserId;
   final Stream<String?> sessionChanges;
+  final Duration readTimeout;
   @override
   State<MerchantStatementView> createState() => _MerchantStatementViewState();
 }
@@ -57,33 +61,80 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
     with WidgetsBindingObserver {
   MerchantStatement? _value;
   final _entries = <MerchantStatementEntry>[];
-  StreamSubscription<String?>? _auth;
+  StreamSubscription<String?>? _auth, _keys;
+  AuthenticatedSessionEvents? _sessionSource;
+  String? _sessionKey;
   CommerceLedgerFailure? _error;
   bool _busy = false, _sessionBroken = false;
   int _generation = 0;
+  int _binding = 0;
   bool get _current =>
-      !_sessionBroken && widget.currentUserId() == widget.ownerId;
+      !_sessionBroken &&
+      widget.currentUserId() == widget.ownerId &&
+      (_sessionSource == null ||
+          (_sessionKey != null &&
+              _sessionSource!.currentSessionKey == _sessionKey));
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _listen();
+    _bind();
     _read();
   }
 
+  void _bind() {
+    final repository = widget.repository;
+    _sessionSource = repository is AuthenticatedSessionEvents
+        ? repository as AuthenticatedSessionEvents
+        : null;
+    _sessionKey = _sessionSource?.currentSessionKey;
+    _listen();
+  }
+
   void _listen() {
+    final binding = ++_binding;
+    unawaited(_auth?.cancel());
+    unawaited(_keys?.cancel());
     _auth = widget.sessionChanges.listen(
-      (_) {
-        _sessionBroken = false;
-        _reset();
-        if (_current) _read();
+      (actor) {
+        if (binding == _binding && (actor != widget.ownerId || !_current)) {
+          _expire();
+        }
       },
       onError: (Object _) {
-        _sessionBroken = true;
-        _reset();
+        if (binding == _binding) _expire();
+      },
+      onDone: () {
+        if (binding == _binding) _expire();
       },
     );
+    _keys = _sessionSource?.sessionKeyChanges.listen(
+      (key) {
+        if (binding == _binding && (key != _sessionKey || !_current)) _expire();
+      },
+      onError: (Object _) {
+        if (binding == _binding) _expire();
+      },
+      onDone: () {
+        if (binding == _binding) _expire();
+      },
+    );
+  }
+
+  void _expire() {
+    if (!mounted || _sessionBroken) return;
+    _sessionBroken = true;
+    _reset();
+  }
+
+  bool _accept(int generation) {
+    if (!mounted || generation != _generation) return false;
+    if (!_current) {
+      _expire();
+      return false;
+    }
+    return true;
   }
 
   void _reset() {
@@ -102,13 +153,15 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.repository != widget.repository ||
         oldWidget.shopId != widget.shopId ||
-        oldWidget.ownerId != widget.ownerId ||
-        oldWidget.sessionChanges != widget.sessionChanges) {
-      _auth?.cancel();
+        oldWidget.ownerId != widget.ownerId) {
       _sessionBroken = false;
       _reset();
-      _listen();
+      _bind();
       _read();
+    } else if (oldWidget.sessionChanges != widget.sessionChanges) {
+      // A new stream wrapper does not grant a new session to this route.
+      _listen();
+      if (!_current) _expire();
     }
   }
 
@@ -123,13 +176,19 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
   @override
   void dispose() {
     _generation++;
-    _auth?.cancel();
+    _binding++;
+    unawaited(_auth?.cancel());
+    unawaited(_keys?.cancel());
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   Future<void> _read({bool more = false}) async {
-    if (!_current || _busy || (more && _value?.nextBefore == null)) return;
+    if (!_current) {
+      _expire();
+      return;
+    }
+    if (_busy || (more && _value?.nextBefore == null)) return;
     final generation = ++_generation, previous = _value;
     setState(() {
       _busy = true;
@@ -140,12 +199,14 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
       }
     });
     try {
-      final response = await widget.repository.readStatement(
-        shopId: widget.shopId,
-        before: more ? previous!.nextBefore : null,
-        revision: more ? previous!.revision : null,
-      );
-      if (!mounted || generation != _generation || !_current) return;
+      final response = await widget.repository
+          .readStatement(
+            shopId: widget.shopId,
+            before: more ? previous!.nextBefore : null,
+            revision: more ? previous!.revision : null,
+          )
+          .timeout(widget.readTimeout);
+      if (!_accept(generation)) return;
       setState(() {
         _busy = false;
         response.fold(
@@ -162,7 +223,10 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
             if (value.shopId != widget.shopId ||
                 (more &&
                     value.enabled &&
-                    value.revision != previous!.revision) ||
+                    (value.revision != previous!.revision ||
+                        value.reserveCap != previous.reserveCap ||
+                        !mapEquals(value.accounts, previous.accounts) ||
+                        !_olderPage(value.entries))) ||
                 value.entries.any(
                   (e) => _entries.any((old) => old.id == e.id),
                 )) {
@@ -178,12 +242,20 @@ class _MerchantStatementViewState extends State<MerchantStatementView>
         );
       });
     } catch (_) {
-      if (!mounted || generation != _generation || !_current) return;
+      if (!_accept(generation)) return;
       setState(() {
         _busy = false;
         _error = CommerceLedgerFailure.unavailable;
       });
     }
+  }
+
+  bool _olderPage(List<MerchantStatementEntry> next) {
+    if (_entries.isEmpty || next.isEmpty) return true;
+    final last = _entries.last, first = next.first;
+    return first.recordedAt.isBefore(last.recordedAt) ||
+        (first.recordedAt == last.recordedAt &&
+            first.id.compareTo(last.id) < 0);
   }
 
   String _message(CommerceLedgerFailure error) => switch (error) {

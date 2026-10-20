@@ -37,6 +37,10 @@ void main() {
       client,
       currentUserId: () => actor,
       sessionChanges: sessions.stream,
+      currentSessionKey: () => actor == null ? null : '$actor:fixture',
+      sessionKeyChanges: sessions.stream.map(
+        (id) => id == null ? null : '$id:fixture',
+      ),
       timeout: const Duration(milliseconds: 100),
       rpc: (name, args) async {
         calls.add(name);

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
 import 'package:t_store/features/commerce_ledger/domain/merchant_statement.dart';
 import 'package:t_store/features/commerce_ledger/data/merchant_statement_decoder.dart';
@@ -10,22 +12,39 @@ typedef CommerceLedgerRpc =
 
 /// One read-only adapter for H0 accounts and the bounded H1 statement.
 class SupabaseCommerceLedgerRepository
-    implements CommerceLedgerRepository, MerchantStatementRepository {
+    implements
+        CommerceLedgerRepository,
+        MerchantStatementRepository,
+        AuthenticatedSessionEvents {
   SupabaseCommerceLedgerRepository(
     SupabaseClient client, {
     CommerceLedgerRpc? rpc,
     String? Function()? currentUserId,
     Stream<String?>? sessionChanges,
+    String? Function()? currentSessionKey,
+    Stream<String?>? sessionKeyChanges,
     Duration timeout = const Duration(seconds: 15),
   }) : _rpc = rpc ?? ((name, args) => client.rpc(name, params: args)),
        _user = currentUserId ?? (() => client.auth.currentUser?.id),
        _sessions =
            sessionChanges ??
            client.auth.onAuthStateChange.map((e) => e.session?.user.id),
+       _key = currentSessionKey ?? (() => authenticatedSessionKey(client)),
+       _keys =
+           sessionKeyChanges ??
+           client.auth.onAuthStateChange.map(
+             (e) => authenticatedSessionKeyFromSession(e.session),
+           ),
        _timeout = timeout;
   final CommerceLedgerRpc _rpc;
   final String? Function() _user;
   final Stream<String?> _sessions;
+  final String? Function() _key;
+  final Stream<String?> _keys;
+  @override
+  String? get currentSessionKey => _key();
+  @override
+  Stream<String?> get sessionKeyChanges => _keys;
   final Duration _timeout;
   static final _uuid = RegExp(
     r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
@@ -36,36 +55,37 @@ class SupabaseCommerceLedgerRepository
     Map<String, dynamic> args,
     T Function(Map<String, dynamic>) decode, {
     required bool private,
-    bool invalidateOnSessionEvent = false,
   }) async {
     final actor = _user();
-    if (private && actor == null) {
+    final session = currentSessionKey;
+    if (private && (actor == null || session == null)) {
       return const Left(CommerceLedgerFailure.sessionChanged);
     }
-    var changed = false;
-    final subscription = private
-        ? _sessions.listen(
-            (id) {
-              if (invalidateOnSessionEvent || id != actor) changed = true;
-            },
-            onError: (Object _) {
-              changed = true;
-            },
+    final scope = private
+        ? AuthenticatedRequestScope(
+            user: actor,
+            session: session,
+            currentUser: _user,
+            currentSession: _key,
+            changes: _sessions,
+            sessionKeys: _keys,
           )
         : null;
     try {
+      scope?.check();
       final raw = await _rpc(name, args).timeout(_timeout);
-      if (private && (changed || _user() != actor)) {
-        return const Left(CommerceLedgerFailure.sessionChanged);
-      }
+      scope?.check();
       if (raw is! Map<String, dynamic>) {
         return const Left(CommerceLedgerFailure.invalidResponse);
       }
       return Right(decode(raw));
     } on FormatException {
+      if (scope != null && !scope.current) {
+        return const Left(CommerceLedgerFailure.sessionChanged);
+      }
       return const Left(CommerceLedgerFailure.invalidResponse);
     } on PostgrestException catch (e) {
-      if (private && (changed || _user() != actor)) {
+      if (scope != null && !scope.current) {
         return const Left(CommerceLedgerFailure.sessionChanged);
       }
       if (e.code == '40001') {
@@ -76,12 +96,12 @@ class SupabaseCommerceLedgerRepository
       }
       return const Left(CommerceLedgerFailure.unavailable);
     } catch (_) {
-      if (private && (changed || _user() != actor)) {
+      if (scope != null && !scope.current) {
         return const Left(CommerceLedgerFailure.sessionChanged);
       }
       return const Left(CommerceLedgerFailure.unavailable);
     } finally {
-      await subscription?.cancel();
+      await scope?.close();
     }
   }
 
@@ -112,7 +132,6 @@ class SupabaseCommerceLedgerRepository
       },
       (r) => decodeMerchantStatement(r, shopId, limit, before, revision),
       private: true,
-      invalidateOnSessionEvent: true,
     );
   }
 

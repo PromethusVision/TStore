@@ -290,18 +290,24 @@ void main() {
     late SupabaseCommerceLedgerRepository repo;
     late StreamController<String?> sessions;
     String? actor;
+    String? sessionKey;
     dynamic response;
     final calls = <Map<String, dynamic>>[];
     setUp(() {
       client = SupabaseClient('http://127.0.0.1:55431', 'synthetic-anon');
       sessions = StreamController<String?>.broadcast(sync: true);
       actor = statementUser;
+      sessionKey = 'S1';
       calls.clear();
       response = statementWire();
       repo = SupabaseCommerceLedgerRepository(
         client,
         currentUserId: () => actor,
         sessionChanges: sessions.stream,
+        currentSessionKey: () => actor == null ? null : sessionKey,
+        sessionKeyChanges: sessions.stream.map(
+          (id) => id == null ? null : sessionKey,
+        ),
         timeout: const Duration(milliseconds: 30),
         rpc: (name, args) async {
           expect(name, 'read_merchant_statement_v1');
@@ -434,6 +440,7 @@ void main() {
         if (transition == 'stream-error') {
           sessions.addError(StateError('session unavailable'));
         } else if (transition == 'same-user-session') {
+          sessionKey = 'S2';
           sessions.add(statementUser);
         } else {
           actor = null;
