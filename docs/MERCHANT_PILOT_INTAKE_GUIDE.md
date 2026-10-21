@@ -1,14 +1,15 @@
 # Esenler pilotu — ilk katılım grubu hazırlığı
 
-20 Ekim 2026 güncellemesi. Bu rehber hazırlık içindir; kategori açma, hesap oluşturma, rol verme,
-ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.13 geçerlidir.
+21 Ekim 2026 güncellemesi. Bu rehber hazırlık içindir; kategori açma, hesap oluşturma, rol verme,
+ürün yayımlama veya pilotu başlatma izni değildir. Canonical §4.7–4.13 ve §4.18 geçerlidir.
 A/C/E ve J8 katalog altyapısı testte tamamlandı; aşağıdaki güncel araç hiçbir kurulumu
 tekrar uygulamaz. Bu pakette uzak ortam yeniden okunmadı veya değiştirilmedi.
 
 ## Önce kapatılacak boşluk
 
-Test sunucusunda teknik A kurulumu tamamlandı; ürün kataloğu boş ve kategoriler
-kapalı. Bir esnaf uygulamaya giriş yapabilse bile bu durum satışa hazır ürünlerini
+Son yetkili sunucu gözleminde teknik A kurulumu tamamlanmış, ürün kataloğu boş ve
+kategoriler kapalıydı. Bu paket sunucudaki güncel durumu yeniden okumadı.
+Bir esnaf uygulamaya giriş yapabilse bile bu durum satışa hazır ürünlerini
 görebileceği anlamına gelmiyor. Kategori açmak tek başına ürün oluşturmaz. İlk
 grubun kimlerden oluşacağı ve hangi gerçek ürünlerle başlayacağı birlikte seçilmeli.
 
@@ -43,15 +44,18 @@ ihtiyacı mevcut sözleşmeye uymuyorsa ayrı ürün kararı gerekir.
 ## Teknik hazırlık dosyasını kullanma
 
 Kurulu test yapısı için güncel giriş noktası
-`node tool/merchant_acceptance/prepare_current_pilot.mjs cohort <yeni-ad>`.
+`node tool/merchant_acceptance/prepare_integrated_pilot.mjs cohort <yeni-ad>`.
 Eksik hazırlık raporu, anonim hesap yuvaları ve salt okunur yapı/kategori/veri
 gözlem sorguları üretir. Varsayılan dosyada hesap kimliği, ürün veya kategori
 seçimi ve hiçbir yazma SQL'i yoktur. Eski J6/J7 komutlarının farklı başlangıç
-kontrolleri değiştirilmez. J12'nin bu giriş noktası güncel ekran ve repository
-kanıtlarını, J9'un değişmemiş kurulu sunucu sözleşmesiyle birlikte kontrol eder.
+kontrolleri değiştirilmez. J16'nın ayrı giriş noktası eşleşen güncel ekran ve
+repository kanıtlarını, J9'un değişmemiş kurulu sunucu sözleşmesi ve açıkça
+incelenmiş istemci farklarıyla birlikte kontrol eder. J12'nin
+`prepare_current_pilot.mjs` komutu kendi eski kaynak kapsamını korur; son oturum
+düzeltmelerini kapsamaz. Ret sonucu atlanmaz veya eski kanıt güncellenmez.
 Eski `prepare_installed_pilot.mjs` tarihsel J9 kaynaklarına bağlıdır; güncel
 kaynakta verdiği ret atlanmaz veya eski kanıt değiştirilerek giderilmez.
-Çıktı `.buildlog/pilot-current-review/<yeni-ad>/` altında oluşur; aynı adla
+Çıktı `.buildlog/pilot-integrated-review/<yeni-ad>/` altında oluşur; aynı adla
 tekrar çalıştırılıp önceki teklifin üzerine yazılmaz.
 
 Gerçek bilgiler belli olduğunda şablonun özel kopyası
@@ -76,7 +80,7 @@ onay veya uygulama değildir; uygulamadan önce güncel durum tekrar karşılaş
 **Katalog yayını — güncel hazırlık:** kontrollü yeni ürün yayını ve eski fiyat
 uyumu J7'de doğrulandı; J8'de yalnız altyapısı onayla test sunucusuna kuruldu.
 Gerçek ürün yayımlanmadı. Güncel araç J9'un kurulu tam yapı kontrolünü korur.
-Yayın için `node tool/merchant_acceptance/prepare_current_pilot.mjs publication <yeni-ad>`
+Yayın için `node tool/merchant_acceptance/prepare_integrated_pilot.mjs publication <yeni-ad>`
 ayrı bir boş form üretir. Gerçek bekleyen başvurular ve uyumlu uygulama incelemesi
 seçilince özel `.json`/`.observation.json` dosyaları `pilot-installed-input/publication`
 altında tutulur; tam liste ayrıca onaylanır. Esnaf satış fiyatını kendi ürün kaydında
@@ -84,8 +88,8 @@ belirler. Uyumsuz eski uygulama sürümleriyle ilk yayın açılmaz.
 Gerçek ürünleri şimdi uydurmamız gerekmiyor; katılımcılar seçilince başvuruları ve
 fiziksel ürün bilgilerini birlikte inceleriz.
 [Güncel hazırlık yöntemi ve onay sınırları](MERCHANT_PILOT_INSTALLED_READINESS_HANDOFF.md).
-J12 kaynak yenilemesinin kapsamı
-[günlük kullanım tesliminde](MERCHANT_PILOT_DAILY_JOURNEY_HANDOFF.md) açıklanır.
+J16 güncel yerel kabulün kapsamı ve kalan kapılar
+[birleşik pilot kabul tesliminde](MERCHANT_PILOT_INTEGRATED_ACCEPTANCE_HANDOFF.md) açıklanır.
 
 ## Açılış için üç somut kabul
 

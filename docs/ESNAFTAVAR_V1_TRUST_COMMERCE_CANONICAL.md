@@ -860,6 +860,38 @@ APKs remain protected. Compilation rehearsals and automated tests do not close
 physical QR, participant selection, provider/distribution or final pilot gates.
 See [catalog continuity handoff](MERCHANT_CATALOG_SESSION_CONTINUITY_HANDOFF.md).
 
+### 4.18 Integrated pilot local qualification — 2026-10-21
+
+After integrated `50f750f2`, qualify the current base-core Merchant and shared
+Customer reads against separate fresh, owned loopback Auth/REST/Storage fixtures.
+This is a new bounded implementation profile, not a FROZEN product-rule change.
+J7/J9/J12 records and their original fail-closed preparers remain unchanged; their
+old source restrictions are not widened. Current sources correctly fail J12.
+
+The separate integrated profile pins J9 evidence, its exact installed schema and
+the six already integrated client deltas listed in its contract. A seventh exact
+delta only corrects a historical test's fixture setup; its assertions remain.
+Every other J9-bound server/preparation source stays byte-equivalent. Historical
+positive tests use matching immutable Git inputs, never refreshed proof hashes.
+Current-source rejection remains independently tested.
+
+Require the original 18 repository checkpoints and all 15 screen checkpoints plus
+real Auth token-renewal/draft-retention, same-account new-session retirement and
+authoritative listing reload. Bind both records to the same complete current lib,
+local acceptance tools/tests/dependency locks and SQL-source manifest. Run IDs and
+nonces must differ. Partial, skipped, stale or mixed records cannot unlock review.
+Keep historical evidence separate and refuse overwriting integrated output.
+
+The integrated offline preparer reuses the existing category/account/publication
+review SQL byte-for-byte, including exact schema/state/owner/token checks. Empty
+intakes remain incomplete and emit no mutation SQL. It contains no remote apply,
+credentials, installation, account creation or automatic authorization channel.
+
+All accounts/products are synthetic and confined to owned loopback services.
+Real cohort/product selection, hosted observations/approvals, compatible device
+distribution, physical two-device QR, provider and pilot opening remain open.
+No app feature, Customer layout, migration or delivered APK changes in this package.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

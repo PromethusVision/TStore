@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/merchant/merchant_app.dart';
 import 'package:t_store/features/merchant/presentation/merchant_listing_media.dart';
 import 'package:t_store/features/merchant/runtime/merchant_runtime.dart';
@@ -521,11 +522,12 @@ void main() {
               await visible('Giriş yap');
             },
           );
+          late SupabaseClient fresh;
           await check(
             'new client session reloads persisted merchant workspace',
             () async {
               await tester.pumpWidget(const SizedBox());
-              final fresh = client();
+              fresh = client();
               await tester.pumpWidget(
                 MerchantApp(services: createMerchantServices(_Service(fresh))),
               );
@@ -543,6 +545,62 @@ void main() {
               expect(rows.single.isCustomerPurchasable, isTrue);
             },
           );
+          if (f['integrated'] == true) {
+            await check(
+              'ordinary token renewal preserves the open listing draft',
+              () async {
+                await edit();
+                await text('Mağaza fiyatı (TL)', '999,01');
+                final key = authenticatedSessionKeyFromSession(
+                  fresh.auth.currentSession,
+                );
+                await fresh.auth.refreshSession();
+                await tester.pump(const Duration(milliseconds: 400));
+                expect(
+                  authenticatedSessionKeyFromSession(fresh.auth.currentSession),
+                  key,
+                );
+                expect(find.text('Ürünü düzenle'), findsOneWidget);
+                expect(find.text('999,01'), findsOneWidget);
+                expect((await offers()).single.price, 234.56);
+              },
+            );
+            await check(
+              'same-account new session retires the open listing draft',
+              () async {
+                final key = authenticatedSessionKeyFromSession(
+                  fresh.auth.currentSession,
+                );
+                final account = f['merchant'] as Map<String, dynamic>;
+                await fresh.auth.signInWithPassword(
+                  email: account['email'],
+                  password: account['password'],
+                );
+                expect(
+                  authenticatedSessionKeyFromSession(fresh.auth.currentSession),
+                  isNot(key),
+                );
+                await waitFor(
+                  () =>
+                      find.byType(NavigationBar).evaluate().isNotEmpty &&
+                      find.text('Ürünü düzenle').evaluate().isEmpty,
+                  'new session retires private editor',
+                );
+                expect(find.text('999,01'), findsNothing);
+              },
+            );
+            await check(
+              'new session reloads persisted listing instead of the old draft',
+              () async {
+                await tab('Ürünler');
+                await edit();
+                expect(find.text('234,56'), findsOneWidget);
+                expect(find.text('999,01'), findsNothing);
+                expect((await offers()).single.price, 234.56);
+                await back();
+              },
+            );
+          }
           await File(
             '$parent${Platform.pathSeparator}pilot-ui-result.json',
           ).writeAsString(
