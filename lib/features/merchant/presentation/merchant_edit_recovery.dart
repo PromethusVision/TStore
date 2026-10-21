@@ -22,19 +22,21 @@ bool merchantValuesEqual(Object? a, Object? b) {
 /// A failed write is not evidence that nothing was saved. Re-read before another
 /// edit; never time out a write, auto-retry it, or infer an operation receipt.
 class MerchantEditRecovery<T> extends ChangeNotifier {
-  MerchantEditRecovery({this.read});
+  MerchantEditRecovery({this.read, this.isCurrent});
   final Future<Either<String, T?>> Function()? read;
+  final bool Function()? isCurrent;
   bool busy = false, needsReview = false, loaded = false;
   T? current;
   String? error;
   bool _disposed = false;
+  bool get _current => !_disposed && (isCurrent?.call() ?? true);
 
   void _changed() {
-    if (!_disposed) notifyListeners();
+    if (_current) notifyListeners();
   }
 
   Future<T?> save(Future<Either<String, T>> Function() write) async {
-    if (busy || needsReview || _disposed) return null;
+    if (busy || needsReview || !_current) return null;
     busy = true;
     error = null;
     loaded = false;
@@ -43,14 +45,16 @@ class MerchantEditRecovery<T> extends ChangeNotifier {
     T? saved;
     try {
       final result = await write();
-      if (_disposed) return null;
+      if (!_current) return null;
       result.fold((e) => error = e, (value) => saved = value);
     } catch (_) {
-      error = 'Kayıt sonucu doğrulanamadı. Bilgilerin bu ekranda korunuyor.';
+      if (_current) {
+        error = 'Kayıt sonucu doğrulanamadı. Bilgilerin bu ekranda korunuyor.';
+      }
     } finally {
       busy = false;
     }
-    if (_disposed) return null;
+    if (!_current) return null;
     if (saved == null && read != null) {
       needsReview = true;
     }
@@ -59,7 +63,7 @@ class MerchantEditRecovery<T> extends ChangeNotifier {
   }
 
   Future<void> reload() async {
-    if (busy || read == null || _disposed) return;
+    if (busy || read == null || !_current) return;
     busy = true;
     loaded = false;
     current = null;
@@ -67,13 +71,13 @@ class MerchantEditRecovery<T> extends ChangeNotifier {
     _changed();
     try {
       final result = await read!().timeout(const Duration(seconds: 15));
-      if (_disposed) return;
+      if (!_current) return;
       result.fold((e) => error = e, (v) {
         current = v;
         loaded = true;
       });
     } catch (_) {
-      error = merchantReadTimeout;
+      if (_current) error = merchantReadTimeout;
     } finally {
       busy = false;
       _changed();
@@ -81,7 +85,7 @@ class MerchantEditRecovery<T> extends ChangeNotifier {
   }
 
   void reviewed() {
-    if (busy || !loaded) return;
+    if (busy || !loaded || !_current) return;
     needsReview = false;
     error = null;
     _changed();

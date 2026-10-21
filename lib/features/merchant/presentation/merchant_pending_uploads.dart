@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/merchant/presentation/merchant_workspace_continuation.dart';
 import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:t_store/features/merchant/domain/catalog_media_repository.dart';
 import 'package:t_store/features/merchant/domain/merchant_operations_repository.dart';
@@ -20,7 +21,8 @@ class MerchantPendingUploads extends StatefulWidget {
   State<MerchantPendingUploads> createState() => _MerchantPendingUploadsState();
 }
 
-class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
+class _MerchantPendingUploadsState extends State<MerchantPendingUploads>
+    with MerchantWorkspaceContinuation<MerchantPendingUploads> {
   List<PendingListingUpload> _items = [];
   bool _loading = false, _more = false, _opening = false;
   int _page = 0, _epoch = 0;
@@ -32,7 +34,7 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
   }
 
   Future<void> _load({bool refresh = false}) async {
-    if (_loading && !refresh) return;
+    if (!workspaceCurrent || (_loading && !refresh)) return;
     final epoch = ++_epoch;
     if (refresh) {
       _page = 0;
@@ -46,7 +48,7 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
       final r = await merchantRead(
         () => widget.operations.read(widget.access, page: _page),
       );
-      if (!mounted || epoch != _epoch) return;
+      if (!workspaceCurrent || epoch != _epoch) return;
       setState(() {
         _loading = false;
         r.fold((e) => _error = e, (v) {
@@ -59,7 +61,7 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
         });
       });
     } catch (_) {
-      if (mounted && epoch == _epoch) {
+      if (workspaceCurrent && epoch == _epoch) {
         setState(() {
           _loading = false;
           _error = 'Yarım kalan yüklemeler alınamadı.';
@@ -69,7 +71,7 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
   }
 
   Future<void> _open(PendingListingUpload upload) async {
-    if (_opening) return;
+    if (!workspaceCurrent || _opening) return;
     _opening = true;
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
@@ -81,7 +83,7 @@ class _MerchantPendingUploadsState extends State<MerchantPendingUploads> {
       ),
     );
     _opening = false;
-    if (mounted) await _load(refresh: true);
+    if (workspaceCurrent) await _load(refresh: true);
   }
 
   @override

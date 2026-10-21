@@ -33,12 +33,20 @@ class SupabaseCatalogMediaRepository implements CatalogMediaRepository {
       sessionKey: currentSessionKey(),
       currentUserId: currentUserId,
       currentSessionKey: currentSessionKey,
+      changes: client.auth.onAuthStateChange.map(
+        (event) => event.session?.user.id,
+      ),
+      sessionKeys: client.auth.onAuthStateChange.map(
+        (event) => authenticatedSessionKeyFromSession(event.session),
+      ),
     );
     try {
       scope.expect(a.user.id);
       if (!a.canManage) throw const _CatalogFailure(merchantAccessDenied);
       final request = fn(scope);
-      final value = await (read ? request.timeout(readTimeout) : request);
+      final value = await scope.run(
+        () => read ? request.timeout(readTimeout) : request,
+      );
       scope.check();
       return Right<String, T>(value);
     } on MerchantRequestChanged {
@@ -66,7 +74,7 @@ class SupabaseCatalogMediaRepository implements CatalogMediaRepository {
     } catch (_) {
       return Left<String, T>('Bağlantı kurulamadı. Yeniden dene.');
     } finally {
-      scope.close();
+      await scope.close();
     }
   }
 

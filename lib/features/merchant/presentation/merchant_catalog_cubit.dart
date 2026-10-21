@@ -18,15 +18,17 @@ class MerchantCatalogState {
 }
 
 class MerchantCatalogCubit extends Cubit<MerchantCatalogState> {
-  MerchantCatalogCubit(this.repository, this.access)
+  MerchantCatalogCubit(this.repository, this.access, {this.isCurrent})
     : super(const MerchantCatalogState());
   final MerchantRepository repository;
   final MerchantAccess access;
+  final bool Function()? isCurrent;
+  bool get _available => !isClosed && (isCurrent?.call() ?? true);
   int _epoch = 0;
   int _nextPage = 0;
 
   Future<void> load({bool refresh = false, String? query}) async {
-    if (isClosed || (state.loading && !refresh)) return;
+    if (!_available || (state.loading && !refresh)) return;
     if (!refresh && !state.hasMore) return;
     if (refresh) {
       ++_epoch;
@@ -40,7 +42,7 @@ class MerchantCatalogCubit extends Cubit<MerchantCatalogState> {
       final result = await merchantRead(
         () => repository.listings(access, page: _nextPage, query: search),
       );
-      if (isClosed || epoch != _epoch) return;
+      if (!_available || epoch != _epoch) return;
       result.fold(
         (error) {
           emit(
@@ -63,7 +65,7 @@ class MerchantCatalogCubit extends Cubit<MerchantCatalogState> {
         },
       );
     } catch (_) {
-      if (!isClosed && epoch == _epoch) {
+      if (_available && epoch == _epoch) {
         emit(
           MerchantCatalogState(
             items: previous,

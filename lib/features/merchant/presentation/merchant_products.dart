@@ -1,3 +1,4 @@
+import 'package:t_store/features/merchant/presentation/merchant_workspace_continuation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/presentation/merchant_read.dart';
@@ -30,14 +31,19 @@ class MerchantProducts extends StatefulWidget {
   State<MerchantProducts> createState() => _MerchantProductsState();
 }
 
-class _MerchantProductsState extends State<MerchantProducts> {
+class _MerchantProductsState extends State<MerchantProducts>
+    with MerchantWorkspaceContinuation<MerchantProducts> {
   late final MerchantCatalogCubit _cubit;
   final _search = TextEditingController();
   bool _opening = false;
   @override
   void initState() {
     super.initState();
-    _cubit = MerchantCatalogCubit(widget.repository, widget.access)..load();
+    _cubit = MerchantCatalogCubit(
+      widget.repository,
+      widget.access,
+      isCurrent: () => workspaceCurrent,
+    )..load();
   }
 
   @override
@@ -72,7 +78,7 @@ class _MerchantProductsState extends State<MerchantProducts> {
   }
 
   Future<void> _openPage(Widget page) async {
-    if (_opening) return;
+    if (!workspaceCurrent || _opening) return;
     _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     try {
@@ -83,7 +89,7 @@ class _MerchantProductsState extends State<MerchantProducts> {
       _opening = false;
       // A dismissed editor may have committed despite losing its response.
       // Re-read on return; never infer cancellation or repeat the write.
-      if (mounted) {
+      if (workspaceCurrent) {
         _cubit.load(refresh: true);
         widget.onChanged?.call();
       }
@@ -196,7 +202,8 @@ class MerchantCatalogPicker extends StatefulWidget {
   State<MerchantCatalogPicker> createState() => _MerchantCatalogPickerState();
 }
 
-class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
+class _MerchantCatalogPickerState extends State<MerchantCatalogPicker>
+    with MerchantWorkspaceContinuation<MerchantCatalogPicker> {
   final _search = TextEditingController();
   List<ProductEntity> _items = [];
   String? _error;
@@ -218,7 +225,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
   }
 
   Future<void> _load({bool refresh = false}) async {
-    if (_loading && !refresh) return;
+    if (!workspaceCurrent || (_loading && !refresh)) return;
     if (refresh) {
       ++_epoch;
       _page = 0;
@@ -244,7 +251,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
                 page: _page,
               ),
             );
-      if (!mounted || epoch != _epoch) return;
+      if (!workspaceCurrent || epoch != _epoch) return;
       setState(() {
         _loading = false;
         result.fold((e) => _error = e, (items) {
@@ -257,7 +264,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
         });
       });
     } catch (_) {
-      if (mounted && epoch == _epoch) {
+      if (workspaceCurrent && epoch == _epoch) {
         setState(() {
           _loading = false;
           _error = 'Katalog yüklenemedi. Tekrar deneyin.';
@@ -267,7 +274,7 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
   }
 
   Future<void> _select(ProductEntity product) async {
-    if (_opening) return;
+    if (!workspaceCurrent || _opening) return;
     _opening = true;
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
@@ -280,7 +287,9 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
       ),
     );
     _opening = false;
-    if (mounted && saved == true) Navigator.pop(context, true);
+    if (mounted && workspaceCurrent && saved == true) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override
@@ -325,6 +334,8 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
           onPressed: _loading
               ? null
               : () async {
+                  if (!workspaceCurrent || _opening) return;
+                  _opening = true;
                   final saved = await Navigator.of(context).push<bool>(
                     MaterialPageRoute(
                       builder: (_) => MerchantProductSubmission(
@@ -346,7 +357,8 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker> {
                       ),
                     ),
                   );
-                  if (context.mounted && saved == true) {
+                  _opening = false;
+                  if (context.mounted && workspaceCurrent && saved == true) {
                     Navigator.pop(context, true);
                   }
                 },
@@ -377,7 +389,8 @@ class MerchantListingForm extends StatefulWidget {
   State<MerchantListingForm> createState() => _MerchantListingFormState();
 }
 
-class _MerchantListingFormState extends State<MerchantListingForm> {
+class _MerchantListingFormState extends State<MerchantListingForm>
+    with MerchantWorkspaceContinuation<MerchantListingForm> {
   final _form = GlobalKey<FormState>();
   late final TextEditingController _price, _description;
   late bool _available, _active;
@@ -401,6 +414,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
     _active = old?.isActive ?? true;
     _baseline = _values;
     _recovery = MerchantEditRecovery(
+      isCurrent: () => workspaceCurrent,
       read: widget.repository is MerchantRecoveryRepository
           ? () => (widget.repository as MerchantRecoveryRepository).readListing(
               widget.access,
@@ -413,7 +427,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
   }
 
   void _changed() {
-    if (mounted) setState(() {});
+    if (workspaceCurrent) setState(() {});
   }
 
   Map<String, dynamic> get _values => {
@@ -432,6 +446,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
       current.isActive == _submitted!.active;
 
   void _review(ShopProductEntity? current, {required bool keepDraft}) {
+    if (!mounted || !workspaceCurrent) return;
     if (current == null && _existing != null) return;
     _existing = current;
     _baseline = {
@@ -462,7 +477,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
   }
 
   Future<void> _save() async {
-    if (_locked || !_form.currentState!.validate()) return;
+    if (!workspaceCurrent || _locked || !_form.currentState!.validate()) return;
     final draft = MerchantListingDraft(
       productId: widget.existing?.productId ?? widget.product?.id ?? '',
       priceMinor: MerchantListingDraft.parsePrice(_price.text)!,
@@ -484,7 +499,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
         existing: _existing,
       ),
     );
-    if (!mounted) return;
+    if (!mounted || !workspaceCurrent) return;
     if (saved != null) {
       merchantSaved(context, 'Ürün bilgileri kaydedildi.');
       Navigator.pop(context, true);
@@ -526,6 +541,7 @@ class _MerchantListingFormState extends State<MerchantListingForm> {
             onUseCurrent: _recovery.current == null
                 ? null
                 : () {
+                    if (!mounted || !workspaceCurrent) return;
                     if (_matches(_recovery.current!)) {
                       Navigator.pop(context, true);
                     } else {

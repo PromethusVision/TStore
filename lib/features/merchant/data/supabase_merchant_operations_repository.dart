@@ -35,20 +35,26 @@ class SupabaseMerchantOperationsRepository
       sessionKey: currentSessionKey(),
       currentUserId: currentUserId,
       currentSessionKey: currentSessionKey,
+      changes: client.auth.onAuthStateChange.map(
+        (event) => event.session?.user.id,
+      ),
+      sessionKeys: client.auth.onAuthStateChange.map(
+        (event) => authenticatedSessionKeyFromSession(event.session),
+      ),
     );
     try {
-      final j = await scope
-          .run(
-            () => client.rpc(
+      final j = await scope.run(
+        () => client
+            .rpc(
               'merchant_operations_read_v1',
               params: {
                 'p_shop_id': access.shop!.id,
                 'p_offset': page * merchantOperationsPageSize,
                 'p_limit': merchantOperationsPageSize,
               },
-            ),
-          )
-          .timeout(readTimeout);
+            )
+            .timeout(readTimeout),
+      );
       return Right(
         MerchantOperations(
           pendingSubmissions: j['pending_submissions'] as int,
@@ -82,7 +88,7 @@ class SupabaseMerchantOperationsRepository
         'İşlem özeti yüklenemedi. Bağlantını kontrol edip yeniden dene.',
       );
     } finally {
-      scope.close();
+      await scope.close();
     }
   }
 }

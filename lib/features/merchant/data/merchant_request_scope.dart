@@ -1,3 +1,4 @@
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 
 /// Local continuation fence. Server authorization remains mandatory.
@@ -7,18 +8,23 @@ class MerchantRequestScope {
     required this.sessionKey,
     required this.currentUserId,
     required this.currentSessionKey,
-  });
+    required Stream<String?> changes,
+    required Stream<String?> sessionKeys,
+  }) : _scope = AuthenticatedRequestScope(
+         user: userId,
+         session: sessionKey,
+         currentUser: currentUserId,
+         currentSession: currentSessionKey,
+         changes: changes,
+         sessionKeys: sessionKeys,
+       );
 
   final String? userId, sessionKey;
   final String? Function() currentUserId, currentSessionKey;
-  bool _closed = false;
+  final AuthenticatedRequestScope _scope;
 
   void check() {
-    if (_closed ||
-        userId == null ||
-        sessionKey == null ||
-        currentUserId() != userId ||
-        currentSessionKey() != sessionKey) {
+    if (!_scope.current) {
       throw const MerchantRequestChanged();
     }
   }
@@ -29,19 +35,14 @@ class MerchantRequestScope {
   }
 
   Future<T> run<T>(Future<T> Function() request) async {
-    check();
     try {
-      final value = await request();
-      check();
-      return value;
-    } catch (_) {
-      // An old error must not start a fallback with replacement credentials.
-      check();
-      rethrow;
+      return await _scope.run(request);
+    } on AuthenticatedRequestChanged {
+      throw const MerchantRequestChanged();
     }
   }
 
-  void close() => _closed = true;
+  Future<void> close() => _scope.close();
 }
 
 class MerchantRequestChanged implements Exception {
