@@ -1023,6 +1023,38 @@ Local contract and client-fault evidence remain
 separate from physical two-device J. Delivery:
 [Merchant transaction recovery](MERCHANT_COMMERCE_RECOVERY_HANDOFF.md).
 
+### 5.4 B/E transaction session continuity — 2026-10-21
+
+Following integrated promotion recovery (`a886dfdd`), the next authorized local
+package completes the existing §5.3 continuation boundary. No FROZEN monetary,
+ownership, return, claim-deadline or purchase-evidence rule changes.
+
+- Legacy QR and v2 claim/recovery/completion, purchase reads/returns and Customer
+  coupon approval capture each Auth event's stable session key. An observed
+  S1 → S2 → S1 transition permanently retires the original request/view. Success,
+  malformed data and late errors cannot regain authority from a matching live
+  getter. Ordinary token renewal in the same session preserves valid work.
+- Check the same request scope after installation storage, ownership preflight,
+  reward capability lookup and completion reconciliation, before dispatching the
+  next RPC. Previously sent writes are not cancelled or declared rolled back.
+  A stale return rejection cannot authorize clearing the existing durable intent.
+- QR controllers stop old polling/actions and discard private display state.
+  Purchase list/detail, return forms and sale-confirmation dialogs retire their
+  private contents; navigation carries its opener's lifetime across first mount.
+  A newly opened Customer QR view may use a fresh valid session.
+- Coupon approval has no artificial mutation timeout. Identical concurrent
+  approvals share the dispatched result; a different request for the same
+  session/cart cannot overlap it. Reopened preview waits for that in-flight
+  command, then reads the existing server QR. This is app-memory serialization,
+  not durable offline replay, cross-device locking or a new economic authority.
+  Existing explicit same-request retry and server idempotency remain authoritative.
+
+Reuse shared Auth scopes/events and existing B/E endpoints, flags, schemas and
+account/purchase retry storage. Customer layouts and shared notification transport
+remain unchanged. Validation is local; no hosted access, migration, provider send,
+APK distribution or physical two-device acceptance is authorized by this package.
+See [transaction session delivery](MERCHANT_TRANSACTION_SESSION_RECOVERY_HANDOFF.md).
+
 ## 6. Product review and merchant-service projections
 
 **FROZEN:**

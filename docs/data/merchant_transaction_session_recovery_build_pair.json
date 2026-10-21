@@ -1,0 +1,105 @@
+{
+  "kind": "esnaftavar-pilot-device-pair-v1",
+  "created_at": "2026-10-21T17:51:30.037Z",
+  "purpose": "compile-rehearsal",
+  "mode": "debug",
+  "status": "COMPILE_REHEARSAL_PASS_NOT_DISTRIBUTABLE",
+  "project_ref": "tnipyxnvhgelwdpykyez",
+  "source_commit": "a886dfdd58e63f3ee83c27479b141ccc9db9f98c",
+  "uncommitted_sources": true,
+  "source_sha256": "f7bc0ed25e79e0f9c905843336c83b556ed137ad556128f26e3224685a73e8d5",
+  "config_sha256": {
+    "customer": "0fc81951a7c3e28ee64e53e303a3defe5688dee30acee4a0e09198433023ee46",
+    "merchant": "cf0245b4ece1d14cbbe7a8a8b6fb5061c538257bb034e33aff8920e4dbbea83a"
+  },
+  "capabilities": {
+    "QR_CLAIMS_V2_ENABLED": false,
+    "REWARD_EARNING_V1_ENABLED": false,
+    "COUPON_CHECKOUT_V1_ENABLED": false,
+    "TRUST_COMMERCE_V1_ENABLED": false,
+    "REVIEWS_V2_ENABLED": false,
+    "MERCHANT_STATEMENT_V1_ENABLED": false,
+    "MERCHANT_PROMOTION_V1_ENABLED": false,
+    "MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED": false
+  },
+  "canonical_taxonomy": false,
+  "catalog_price_contract": "listing_only_v1",
+  "tests": {
+    "result": "PASS",
+    "passed": 135,
+    "failed": 0,
+    "skipped": 0,
+    "paths": [
+      "test/widget/shop/catalog_price_compatibility_test.dart",
+      "test/unit/merchant/merchant_pilot_config_test.dart",
+      "test/unit/auth/auth_callback_contract_test.dart",
+      "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+      "test/unit/merchant/merchant_account_recovery_test.dart",
+      "test/widget/merchant/merchant_pilot_auth_test.dart",
+      "tool/pilot_device/preflight_test.dart"
+    ]
+  },
+  "artifacts": [
+    {
+      "role": "customer",
+      "application_id": "com.esnaftavar.app.dev",
+      "label": "EsnaftaVar Dev",
+      "callback": "io.supabase.tstore://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "8af443bf514cb1be8f28a5694130901aac2df66558c65f5e1263c76b322907d4",
+      "bytes": 154847663,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "customer.apk",
+      "flavor": "development",
+      "target": "lib/main_development.dart"
+    },
+    {
+      "role": "merchant",
+      "application_id": "com.esnaftavar.app.merchant.pilot",
+      "label": "EsnaftaVar Esnaf Pilot",
+      "callback": "com.esnaftavar.app.merchant.pilot://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "09532f55a36e6a56af5bbcb49f606978e5500dd88348f127b56b9ac4ed23c665",
+      "bytes": 119483367,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "merchant.apk",
+      "flavor": "merchantPilot",
+      "target": "lib/main_merchant_pilot.dart"
+    }
+  ],
+  "toolchain": {
+    "flutter": "3.41.9",
+    "framework_revision": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "dart": "3.11.5",
+    "android_build_tools": "35.0.0"
+  },
+  "production_access": "NONE",
+  "remote_access": "NONE",
+  "remote_authorized": false,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false,
+  "bundle_id": "f0c9d89dab1d431694e635e61d2a57c9d9bf89264cb034a438e367ea1929490a"
+}

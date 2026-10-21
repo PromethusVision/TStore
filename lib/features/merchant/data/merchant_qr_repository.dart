@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/features/cart/domain/qr_session_guard.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
@@ -7,7 +9,11 @@ import 'package:t_store/features/cart/domain/repositories/qr_session_repository.
 import 'package:t_store/features/merchant/domain/merchant_repository.dart';
 
 /// Adds an exact-workspace boundary around the existing server-authoritative QR.
-class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
+class MerchantQrRepository
+    implements
+        QrSessionRepository,
+        QrClaimRepository,
+        AuthenticatedSessionEvents {
   MerchantQrRepository({
     required this.delegate,
     required this.merchants,
@@ -15,7 +21,9 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
   }) : _identity = delegate is QrSessionIdentity
            ? delegate as QrSessionIdentity
            : null,
-       _session = delegate is QrSessionIdentity
+       _session = delegate is AuthenticatedSessionSource
+           ? (delegate as AuthenticatedSessionSource).currentSessionKey
+           : delegate is QrSessionIdentity
            ? (delegate as QrSessionIdentity).currentQrSessionIdentity
            : null;
   final QrSessionRepository delegate;
@@ -23,9 +31,38 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
   final MerchantAccess access;
   final QrSessionIdentity? _identity;
   final String? _session;
+  @override
+  String? get currentSessionKey => delegate is AuthenticatedSessionSource
+      ? (delegate as AuthenticatedSessionSource).currentSessionKey
+      : _identity == null
+      ? access.user.id
+      : _identity.currentQrSessionIdentity;
+  @override
+  Stream<String?> get sessionKeyChanges =>
+      delegate is AuthenticatedSessionEvents
+      ? (delegate as AuthenticatedSessionEvents).sessionKeyChanges
+      : Stream<String?>.multi((_) {}, isBroadcast: true);
+  Future<Either<String, T>> _scoped<T>(
+    Future<Either<String, T>> Function() action,
+  ) async {
+    final scope = QrSessionGuard(this);
+    try {
+      if (!scope.current || !await _authorized() || !scope.current) {
+        return const Left(merchantAccessDenied);
+      }
+      final result = await action();
+      if (!scope.current || !await _authorized() || !scope.current) {
+        return const Left(merchantSessionChanged);
+      }
+      return result;
+    } finally {
+      scope.close();
+    }
+  }
+
   bool get _current =>
-      _identity == null ||
-      (_session != null && _identity.currentQrSessionIdentity == _session);
+      (_identity == null && delegate is! AuthenticatedSessionSource) ||
+      (_session != null && currentSessionKey == _session);
   QrClaimRepository? get _claims =>
       delegate is QrClaimRepository ? delegate as QrClaimRepository : null;
   @override
@@ -33,11 +70,10 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
   Future<Either<String, QrVerificationEntity>> _claimRun(
     Future<Either<String, QrVerificationEntity>> Function(QrClaimRepository) fn,
   ) async {
-    if (_claims == null || !await _authorized()) {
+    if (_claims == null) {
       return const Left(merchantAccessDenied);
     }
-    final result = await fn(_claims!);
-    if (!await _authorized()) return const Left(merchantSessionChanged);
+    final result = await _scoped(() => fn(_claims!));
     return result.flatMap(
       (v) => v.shopId == access.shop?.id
           ? Right(v)
@@ -74,11 +110,10 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
   Future<Either<String, QrVerificationEntity?>> recoverClaim(
     String shopId,
   ) async {
-    if (_claims == null || shopId != access.shop?.id || !await _authorized()) {
+    if (_claims == null || shopId != access.shop?.id) {
       return const Left(merchantAccessDenied);
     }
-    final result = await _claims!.recoverClaim(shopId);
-    if (!await _authorized()) return const Left(merchantSessionChanged);
+    final result = await _scoped(() => _claims!.recoverClaim(shopId));
     return result.flatMap(
       (v) => v == null || v.shopId == shopId
           ? Right(v)
@@ -116,11 +151,11 @@ class MerchantQrRepository implements QrSessionRepository, QrClaimRepository {
     String token, {
     required bool confirm,
   }) async {
-    if (!await _authorized()) return const Left(merchantAccessDenied);
-    final result = confirm
-        ? await delegate.confirmQrVerification(sessionToken: token)
-        : await delegate.getQrVerification(sessionToken: token);
-    if (!await _authorized()) return const Left(merchantSessionChanged);
+    final result = await _scoped(
+      () => confirm
+          ? delegate.confirmQrVerification(sessionToken: token)
+          : delegate.getQrVerification(sessionToken: token),
+    );
     return result.flatMap(
       (value) =>
           value.shopId == access.shop?.id && value.sessionToken == token.trim()

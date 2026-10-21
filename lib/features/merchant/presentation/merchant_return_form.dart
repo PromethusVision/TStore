@@ -13,11 +13,13 @@ class MerchantReturnForm extends StatefulWidget {
     required this.purchase,
     required this.userId,
     this.store,
+    this.originIsCurrent,
   });
   final PurchaseEvidenceRepository repository;
   final PurchaseEvidence purchase;
   final String userId;
   final PendingPurchaseReturnStore? store;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantReturnForm> createState() => _MerchantReturnFormState();
 }
@@ -38,6 +40,7 @@ class _MerchantReturnFormState extends State<MerchantReturnForm> {
     _controller = MerchantReturnController(
       repository: widget.repository,
       purchase: widget.purchase,
+      originIsCurrent: widget.originIsCurrent,
       store:
           widget.store ??
           LocalPendingPurchaseReturnStore(

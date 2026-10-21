@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
@@ -11,10 +12,19 @@ import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dar
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 
 class QrSessionRepositoryImpl
-    implements QrSessionRepository, QrClaimRepository, QrSessionIdentity {
+    implements
+        QrSessionRepository,
+        QrClaimRepository,
+        QrSessionIdentity,
+        AuthenticatedSessionEvents {
   final SupabaseService supabaseService;
   @override
   String? get currentQrSessionIdentity => _protocol.sessionIdentity();
+
+  @override
+  String? get currentSessionKey => currentQrSessionIdentity;
+  @override
+  Stream<String?> get sessionKeyChanges => _protocol.sessionKeys;
 
   QrSessionRepositoryImpl({
     required this.supabaseService,
@@ -68,7 +78,9 @@ class QrSessionRepositoryImpl
     required String cartId,
   }) async {
     if (claimsEnabled) return _protocol.create(cartId.trim());
+    final scope = _protocol.openScope();
     try {
+      scope.check();
       final user = supabaseService.currentUser;
       if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
@@ -83,7 +95,7 @@ class QrSessionRepositoryImpl
         'create_qr_session',
         params: {'p_cart_id': normalizedCartId},
       );
-      if (!_isSameAuthenticatedUser(user.id)) {
+      if (!scope.current) {
         return const Left(
           'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
         );
@@ -107,7 +119,7 @@ class QrSessionRepositoryImpl
           'create_qr_session',
           params: {'p_cart_id': normalizedCartId},
         );
-        if (!_isSameAuthenticatedUser(user.id)) {
+        if (!scope.current) {
           return const Left(
             'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
           );
@@ -136,12 +148,19 @@ class QrSessionRepositoryImpl
 
       return Right(session);
     } catch (e) {
+      if (!scope.current) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
       return Left(
         _friendlyError(
           e,
           fallback: 'QR kodu oluşturulamadı. Lütfen tekrar deneyin.',
         ),
       );
+    } finally {
+      await scope.close();
     }
   }
 
@@ -149,7 +168,9 @@ class QrSessionRepositoryImpl
   Future<Either<String, String>> getQrSessionStatus({
     required String sessionId,
   }) async {
+    final scope = _protocol.openScope();
     try {
+      scope.check();
       final user = supabaseService.currentUser;
       if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
@@ -167,7 +188,7 @@ class QrSessionRepositoryImpl
           .eq('user_id', user.id)
           .maybeSingle();
 
-      if (!_isSameAuthenticatedUser(user.id)) {
+      if (!scope.current) {
         return const Left(
           'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
         );
@@ -180,7 +201,14 @@ class QrSessionRepositoryImpl
       final status = QrSessionStatusModel.fromJson(response);
       return Right(status.resolveAt(DateTime.now()));
     } catch (e) {
+      if (!scope.current) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
       return Left(_friendlyError(e, fallback: 'QR durumu kontrol edilemedi.'));
+    } finally {
+      await scope.close();
     }
   }
 
@@ -188,7 +216,9 @@ class QrSessionRepositoryImpl
   Future<Either<String, QrVerificationEntity>> getQrVerification({
     required String sessionToken,
   }) async {
+    final scope = _protocol.openScope();
     try {
+      scope.check();
       final user = supabaseService.currentUser;
       if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
@@ -203,7 +233,7 @@ class QrSessionRepositoryImpl
         'get_qr_session_for_verification',
         params: {'p_session_token': normalizedToken},
       );
-      if (!_isSameAuthenticatedUser(user.id)) {
+      if (!scope.current) {
         return const Left(
           'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
         );
@@ -223,12 +253,19 @@ class QrSessionRepositoryImpl
 
       return Right(verification);
     } catch (e) {
+      if (!scope.current) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
       return Left(
         _friendlyError(
           e,
           fallback: 'QR bilgileri alınamadı. Lütfen tekrar deneyin.',
         ),
       );
+    } finally {
+      await scope.close();
     }
   }
 
@@ -236,7 +273,9 @@ class QrSessionRepositoryImpl
   Future<Either<String, QrVerificationEntity>> confirmQrVerification({
     required String sessionToken,
   }) async {
+    final scope = _protocol.openScope();
     try {
+      scope.check();
       final user = supabaseService.currentUser;
       if (user == null) {
         return const Left('Devam etmek için giriş yapın.');
@@ -251,7 +290,7 @@ class QrSessionRepositoryImpl
         'confirm_qr_session',
         params: {'p_session_token': normalizedToken},
       );
-      if (!_isSameAuthenticatedUser(user.id)) {
+      if (!scope.current) {
         return const Left(
           'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
         );
@@ -273,12 +312,19 @@ class QrSessionRepositoryImpl
 
       return Right(verification);
     } catch (e) {
+      if (!scope.current) {
+        return const Left(
+          'Oturumunuz değişti. Güvenliğiniz için yeniden giriş yapın.',
+        );
+      }
       return Left(
         _friendlyError(
           e,
           fallback: 'Alışveriş onaylanamadı. Lütfen tekrar deneyin.',
         ),
       );
+    } finally {
+      await scope.close();
     }
   }
 
@@ -292,9 +338,6 @@ class QrSessionRepositoryImpl
     }
     return null;
   }
-
-  bool _isSameAuthenticatedUser(String expectedUserId) =>
-      supabaseService.currentUser?.id == expectedUserId;
 
   static String _friendlyError(Object error, {required String fallback}) {
     final message = error.toString().toLowerCase();

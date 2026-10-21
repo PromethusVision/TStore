@@ -12,9 +12,11 @@ class MerchantPurchasesView extends StatefulWidget {
     required this.repository,
     required this.shopId,
     required this.userId,
+    this.originIsCurrent,
   });
   final PurchaseEvidenceRepository repository;
   final String shopId, userId;
+  final bool Function()? originIsCurrent;
   @override
   State<MerchantPurchasesView> createState() => _MerchantPurchasesViewState();
 }
@@ -31,7 +33,11 @@ class _MerchantPurchasesViewState extends State<MerchantPurchasesView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _scope = MerchantPurchaseScope(widget.repository);
+    _scope = MerchantPurchaseScope(
+      widget.repository,
+      onRetired: _retire,
+      originIsCurrent: widget.originIsCurrent,
+    );
     _load();
   }
 
@@ -42,7 +48,11 @@ class _MerchantPurchasesViewState extends State<MerchantPurchasesView>
         oldWidget.userId != widget.userId ||
         oldWidget.shopId != widget.shopId) {
       _scope.close();
-      _scope = MerchantPurchaseScope(widget.repository);
+      _scope = MerchantPurchaseScope(
+        widget.repository,
+        onRetired: _retire,
+        originIsCurrent: widget.originIsCurrent,
+      );
       _load(refresh: true);
     }
   }
@@ -58,6 +68,16 @@ class _MerchantPurchasesViewState extends State<MerchantPurchasesView>
     _epoch++;
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _retire() {
+    if (!mounted) return;
+    setState(() {
+      _epoch++;
+      _rows.clear();
+      _error = null;
+      _loading = false;
+    });
   }
 
   Future<void> _load({bool refresh = false}) async {
@@ -111,13 +131,17 @@ class _MerchantPurchasesViewState extends State<MerchantPurchasesView>
     if (_opening || !_scope.current || _loading) return;
     _opening = true;
     final scope = _scope;
+    final repository = widget.repository,
+        shopId = widget.shopId,
+        userId = widget.userId;
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => _PurchaseDetail(
-          repository: widget.repository,
+          repository: repository,
           purchaseId: value.id,
-          userId: widget.userId,
-          shopId: widget.shopId,
+          userId: userId,
+          shopId: shopId,
+          originIsCurrent: () => scope.current,
         ),
       ),
     );
@@ -181,9 +205,11 @@ class _PurchaseDetail extends StatefulWidget {
     required this.purchaseId,
     required this.userId,
     required this.shopId,
+    required this.originIsCurrent,
   });
   final PurchaseEvidenceRepository repository;
   final String purchaseId, userId, shopId;
+  final bool Function() originIsCurrent;
   @override
   State<_PurchaseDetail> createState() => _PurchaseDetailState();
 }
@@ -195,7 +221,21 @@ class _PurchaseDetailState extends State<_PurchaseDetail>
   bool _loading = false;
   bool _opening = false;
   int _epoch = 0;
-  late final _scope = MerchantPurchaseScope(widget.repository);
+  late final _scope = MerchantPurchaseScope(
+    widget.repository,
+    originIsCurrent: widget.originIsCurrent,
+    onRetired: _retire,
+  );
+  void _retire() {
+    if (!mounted) return;
+    setState(() {
+      _epoch++;
+      _purchase = null;
+      _error = null;
+      _loading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -236,12 +276,14 @@ class _PurchaseDetailState extends State<_PurchaseDetail>
       return;
     }
     _opening = true;
+    final purchase = _purchase!;
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => MerchantReturnForm(
           repository: widget.repository,
-          purchase: _purchase!,
+          purchase: purchase,
           userId: widget.userId,
+          originIsCurrent: () => _scope.current,
         ),
       ),
     );

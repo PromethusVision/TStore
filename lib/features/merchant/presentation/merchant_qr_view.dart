@@ -90,7 +90,8 @@ class _MerchantQrViewState extends State<MerchantQrView>
 
   bool _confirmingSale = false;
   Future<void> _history() async {
-    if (_openingHistory ||
+    if (!_cubit.isSessionCurrent ||
+        _openingHistory ||
         widget.purchaseEvidence == null ||
         widget.shopId == null ||
         widget.userId == null) {
@@ -104,6 +105,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
             repository: widget.purchaseEvidence!,
             shopId: widget.shopId!,
             userId: widget.userId!,
+            originIsCurrent: () => mounted && _cubit.isSessionCurrent,
           ),
         ),
       );
@@ -113,7 +115,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
   }
 
   Future<void> _confirm(QrVerificationEntity verification) async {
-    if (_confirmingSale) return;
+    if (!_cubit.isSessionCurrent || _confirmingSale) return;
     if (!verification.rewardConfirmationRequired) {
       await _cubit.confirmVerification();
       return;
@@ -122,24 +124,37 @@ class _MerchantQrViewState extends State<MerchantQrView>
     try {
       final approved = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          scrollable: true,
-          title: const Text('Gerçek satış tutarını doğrula'),
-          content: Text(
-            verification.couponCheckout == null
-                ? '${rewardMoney(LedgerMinorUnits.fromWire(verification.rewardSaleMinor))} tutarında fiziksel alışveriş tamamlandığını ve bu satışta EV kuponu kullanılmadığını onaylıyor musunuz?\n\nFarklı bir tutar veya mağaza indirimi varsa bu işlemi iptal edin. Yanlış tutarla ödül kazandırmayın.'
-                : 'Satış: ${rewardMoney(verification.couponCheckout!.sale)}\nMüşterinin onayladığı EV kuponu: ${rewardMoney(verification.couponCheckout!.coupon)}\nMüşteriden alınacak: ${rewardMoney(verification.couponCheckout!.payment)}\n\nFiziksel alışveriş ve kalan ödeme tamamlandı mı? Tutarlar farklıysa iptal edin ve müşteriden yeni onay isteyin.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Vazgeç'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Satışı doğrula'),
-            ),
-          ],
+        builder: (context) => BlocBuilder<QrVerificationCubit, QrVerificationState>(
+          bloc: _cubit,
+          builder: (context, _) => !_cubit.isSessionCurrent
+              ? AlertDialog(
+                  content: const Text('Oturum değişti. Bu ekranı kapatın.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Kapat'),
+                    ),
+                  ],
+                )
+              : AlertDialog(
+                  scrollable: true,
+                  title: const Text('Gerçek satış tutarını doğrula'),
+                  content: Text(
+                    verification.couponCheckout == null
+                        ? '${rewardMoney(LedgerMinorUnits.fromWire(verification.rewardSaleMinor))} tutarında fiziksel alışveriş tamamlandığını ve bu satışta EV kuponu kullanılmadığını onaylıyor musunuz?\n\nFarklı bir tutar veya mağaza indirimi varsa bu işlemi iptal edin. Yanlış tutarla ödül kazandırmayın.'
+                        : 'Satış: ${rewardMoney(verification.couponCheckout!.sale)}\nMüşterinin onayladığı EV kuponu: ${rewardMoney(verification.couponCheckout!.coupon)}\nMüşteriden alınacak: ${rewardMoney(verification.couponCheckout!.payment)}\n\nFiziksel alışveriş ve kalan ödeme tamamlandı mı? Tutarlar farklıysa iptal edin ve müşteriden yeni onay isteyin.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Vazgeç'),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Satışı doğrula'),
+                    ),
+                  ],
+                ),
         ),
       );
       final current = _cubit.state;
@@ -166,6 +181,7 @@ class _MerchantQrViewState extends State<MerchantQrView>
     bloc: _cubit,
     listener: (context, state) {
       _expiry?.cancel();
+      if (!_cubit.isSessionCurrent) _token.clear();
       if (state is QrVerificationLoaded) {
         final delay = state.verification.confirmationDeadline.difference(
           DateTime.now(),
@@ -176,6 +192,16 @@ class _MerchantQrViewState extends State<MerchantQrView>
       }
     },
     builder: (context, state) {
+      if (!_cubit.isSessionCurrent) {
+        return const MerchantPage(
+          title: 'QR doğrula',
+          children: [
+            MerchantNotice(
+              'Oturumunuz değişti. Bu ekranı kapatıp yeniden açın.',
+            ),
+          ],
+        );
+      }
       final busy =
           state is QrVerificationLoading || state is QrVerificationConfirming;
       final verification = switch (state) {

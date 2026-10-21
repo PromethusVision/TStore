@@ -1,6 +1,7 @@
-import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/core/supabase/authenticated_session_key.dart';
 import 'package:t_store/features/cart/data/models/qr_session_model.dart';
 import 'package:t_store/features/cart/data/models/qr_verification_model.dart';
 import 'package:t_store/features/cart/data/qr_installation.dart';
@@ -13,78 +14,81 @@ class QrProtocolV2 {
     this.client, {
     Future<String> Function()? installation,
     String? Function()? sessionIdentity,
+    Stream<String?>? sessionKeys,
     this.rewardEarningEnabled = false,
     this.couponCheckoutEnabled = false,
   }) : installation = installation ?? QrInstallation.load,
        sessionIdentity =
-           sessionIdentity ?? (() => authenticatedSessionIdentity(client));
+           sessionIdentity ?? (() => authenticatedSessionIdentity(client)),
+       sessionKeys =
+           sessionKeys ??
+           client.auth.onAuthStateChange.map(
+             (event) => authenticatedSessionKeyFromSession(event.session),
+           );
   final SupabaseClient client;
   final bool rewardEarningEnabled;
   final bool couponCheckoutEnabled;
   final Future<String> Function() installation;
   final String? Function() sessionIdentity;
+  final Stream<String?> sessionKeys;
 
-  static String? authenticatedSessionIdentity(SupabaseClient client) {
-    try {
-      final session = client.auth.currentSession;
-      if (session == null) return null;
-      final payload =
-          jsonDecode(
-                utf8.decode(
-                  base64Url.decode(
-                    base64Url.normalize(session.accessToken.split('.')[1]),
-                  ),
-                ),
-              )
-              as Map;
-      final id = payload['session_id'];
-      if (id is! String || id.isEmpty) return null;
-      // Used only to discard responses after local logout/switch; not server authority.
-      return '${session.user.id}:$id';
-    } catch (_) {
-      return null;
-    }
+  static String? authenticatedSessionIdentity(SupabaseClient client) =>
+      authenticatedSessionKey(client);
+
+  AuthenticatedRequestScope openScope() {
+    final identity = sessionIdentity();
+    return AuthenticatedRequestScope(
+      user: identity,
+      session: identity,
+      currentUser: sessionIdentity,
+      currentSession: sessionIdentity,
+      changes: sessionKeys,
+    );
   }
 
   Future<Either<String, T>> run<T>(
     Future<T> Function() operation, {
     void Function(PostgrestException)? onServerError,
+  }) => runScoped((_) => operation(), onServerError: onServerError);
+
+  Future<Either<String, T>> runScoped<T>(
+    Future<T> Function(AuthenticatedRequestScope) operation, {
+    void Function(PostgrestException)? onServerError,
   }) async {
-    final identity = sessionIdentity();
-    if (identity == null) {
+    if (sessionIdentity() == null) {
       return const Left('Giriş oturumunuz doğrulanamadı. Yeniden giriş yapın.');
     }
+    final scope = openScope();
     try {
-      final result = await operation();
-      if (sessionIdentity() != identity) {
-        return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
-      }
+      final result = await scope.run(() => operation(scope));
       return Right(result);
     } on PostgrestException catch (e) {
-      if (sessionIdentity() != identity) {
+      if (!scope.current) {
         return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
       }
       onServerError?.call(e);
       return Left(friendlyError(e.message));
     } on FormatException catch (_) {
-      if (sessionIdentity() != identity) {
+      if (!scope.current) {
         return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
       }
       return const Left(
         'Sunucunun işlem bilgisi doğrulanamadı. Durumu yeniden kontrol edin.',
       );
     } on QrProtocolFailure catch (e) {
-      if (sessionIdentity() != identity) {
+      if (!scope.current) {
         return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
       }
       return Left(friendlyError(e.code));
     } catch (_) {
-      if (sessionIdentity() != identity) {
+      if (!scope.current) {
         return const Left('Oturumunuz değişti. Yeniden giriş yapın.');
       }
       return const Left(
         'Bağlantı kurulamadı. İşlemin sonucunu yeniden kontrol edin.',
       );
+    } finally {
+      await scope.close();
     }
   }
 
@@ -98,8 +102,7 @@ class QrProtocolV2 {
   }
 
   Future<Either<String, QrSessionEntity>> create(String cartId) =>
-      run(() async {
-        final identity = sessionIdentity();
+      runScoped((scope) async {
         var earning = false;
         if (rewardEarningEnabled) {
           final caps = row(await client.rpc('reward_capabilities_v1'));
@@ -110,9 +113,7 @@ class QrProtocolV2 {
           }
           earning = caps['enabled'] as bool;
         }
-        if (identity != sessionIdentity()) {
-          throw const QrProtocolFailure('SESSION_CHANGED');
-        }
+        scope.check();
         final value = QrSessionModel.fromJson(
           row(
             await client.rpc(
@@ -161,12 +162,9 @@ class QrProtocolV2 {
     required String requestId,
     String? sessionToken,
     String? manualCode,
-  }) => run(() async {
-    final identity = sessionIdentity();
+  }) => runScoped((scope) async {
     final device = await installation();
-    if (identity != sessionIdentity()) {
-      throw const QrProtocolFailure('SESSION_CHANGED');
-    }
+    scope.check();
     final value = QrVerificationModel.fromJson(
       row(
         await client.rpc(
@@ -192,12 +190,9 @@ class QrProtocolV2 {
   Future<Either<String, QrVerificationEntity>> operation(
     String rpc,
     String claimId,
-  ) => run(() async {
-    final identity = sessionIdentity();
+  ) => runScoped((scope) async {
     final device = await installation();
-    if (identity != sessionIdentity()) {
-      throw const QrProtocolFailure('SESSION_CHANGED');
-    }
+    scope.check();
     var endpoint = rpc;
     final parameters = <String, dynamic>{
       'p_claim_id': claimId,
@@ -208,9 +203,8 @@ class QrProtocolV2 {
       final current = QrVerificationModel.fromJson(
         row(await client.rpc('reconcile_claim_v2', params: parameters)),
       );
-      if (current.claimId != claimId ||
-          current.protocolVersion != 2 ||
-          identity != sessionIdentity()) {
+      scope.check();
+      if (current.claimId != claimId || current.protocolVersion != 2) {
         throw const FormatException('Mismatched earning claim');
       }
       if (current.couponCheckout != null) {
@@ -239,12 +233,9 @@ class QrProtocolV2 {
   });
 
   Future<Either<String, QrVerificationEntity?>> recover(String shopId) =>
-      run(() async {
-        final identity = sessionIdentity();
+      runScoped((scope) async {
         final device = await installation();
-        if (identity != sessionIdentity()) {
-          throw const QrProtocolFailure('SESSION_CHANGED');
-        }
+        scope.check();
         final result = await client.rpc(
           'recover_merchant_claim_v2',
           params: {'p_shop_id': shopId, 'p_installation_id': device},
