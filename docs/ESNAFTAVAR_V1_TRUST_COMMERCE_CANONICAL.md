@@ -1796,6 +1796,34 @@ Local transport, widget, real database/API and build evidence remain separate
 from physical-device J and Production rollout. Full G, settlement and provider
 activation remain gated. See [delivery](MERCHANT_MANAGEMENT_RECOVERY_HANDOFF.md).
 
+### 11.3 G draft session and uncertain-command continuity — 2026-10-21
+
+After integrated reward recovery (`d1805677`), harden the existing Tanıtım Merkezi
+under §§4.2 and 11.1–11.2. No FROZEN commercial rule changes or full-G activation.
+
+- Observe the session identity captured in each Auth event. A queued replacement
+  and return to the original key still retire old reads, previews, image signing,
+  history, errors and mutations. Ordinary token renewal preserves valid work.
+- Bind the dashboard entry, first route frame and discard dialog to their opener.
+  Coalesce repeated navigation; obsolete dialog answers cannot change a replacement
+  workspace. Broken session observation fails closed. Preserve the current layout.
+- Keep one in-flight command per shop in the existing repository. Identical calls
+  join that transport; a different command is refused while it is unresolved.
+  Mutation deadlines are not introduced and authority loss is not cancellation.
+- A lost/malformed acknowledgement retains only the original immutable command
+  in app memory. Reopening the view exposes explicit same-command checking instead
+  of inventing a new draft request. It does not automatically replay, persist an
+  offline queue or treat a fresh read as a success receipt. The existing server
+  idempotency/revision/ownership rules remain authoritative. Successful or definite
+  rejected outcomes release the command; another session cannot inherit it.
+- This memory continuity lasts only for the repository/app lifetime. Process loss
+  is not a durable request journal or a server cancellation guarantee. Pending
+  transport can remain blocked until it settles; no timeout authorizes a replacement.
+
+Reuse current RPCs and shared Auth primitives. No SQL, historical migration,
+Customer UI, provider, paid placement or production/test-server change is needed.
+Local evidence and remaining gates: [promotion recovery handoff](MERCHANT_PROMOTION_SESSION_RECOVERY_HANDOFF.md).
+
 ## 12. Sponsored push entitlement and shared transport
 
 **FROZEN:** each 7-day package creates one push entitlement valid **30 days from
