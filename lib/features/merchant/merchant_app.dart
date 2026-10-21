@@ -239,7 +239,7 @@ class _MerchantLoginState extends State<_MerchantLogin> {
   }
 
   void _submit() {
-    if (!widget.state.busy && _form.currentState!.validate()) {
+    if (!widget.state.busy && merchantValidateForm(_form)) {
       context.read<MerchantSessionCubit>().signIn(_email.text, _password.text);
     }
   }

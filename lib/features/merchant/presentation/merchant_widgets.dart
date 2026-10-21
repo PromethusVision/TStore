@@ -17,6 +17,7 @@ class MerchantPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget body = LayoutBuilder(
       builder: (context, constraints) => ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: EdgeInsets.symmetric(
           horizontal: constraints.maxWidth > 760
               ? (constraints.maxWidth - 720) / 2
@@ -33,11 +34,96 @@ class MerchantPage extends StatelessWidget {
     if (onRefresh != null) {
       body = RefreshIndicator(onRefresh: onRefresh!, child: body);
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(title), actions: actions),
-      body: SafeArea(child: body),
+    final theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+          errorMaxLines: 8,
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(title: Text(title), actions: actions),
+        body: SafeArea(child: body),
+      ),
     );
   }
+}
+
+/// Large text needs a full-width label instead of a clipped floating caption.
+/// Keep the established compact decoration at ordinary text sizes.
+class MerchantInput extends StatelessWidget {
+  const MerchantInput({
+    super.key,
+    required this.labelText,
+    required this.builder,
+    this.hintText,
+    this.suffixIcon,
+  });
+  final String labelText;
+  final String? hintText;
+  final Widget? suffixIcon;
+  final Widget Function(InputDecoration decoration) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    final large = MediaQuery.textScalerOf(context).scale(16) > 16 * 1.3;
+    if (!large) {
+      return builder(
+        InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          suffixIcon: suffixIcon,
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ExcludeSemantics(child: Text(labelText)),
+        const SizedBox(height: 8),
+        Semantics(
+          label: labelText,
+          child: builder(
+            InputDecoration(hintText: hintText, suffixIcon: suffixIcon),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Validate without sending anything; bring the first invalid field into view
+/// after its error has been laid out. This callback never resumes a save.
+bool merchantValidateForm(GlobalKey<FormState> key) {
+  final form = key.currentState;
+  if (form == null) return false;
+  final invalid = form.validateGranularly();
+  if (invalid.isEmpty) return true;
+  FocusScope.of(form.context).unfocus();
+  final field = invalid.first;
+  final route = ModalRoute.of(field.context);
+  BuildContext target = field.context;
+  field.context.visitAncestorElements((element) {
+    if (element.widget is MerchantInput) {
+      target = element;
+      return false;
+    }
+    return element.widget is! Form;
+  });
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!field.mounted ||
+        !target.mounted ||
+        !field.hasError ||
+        (route != null && !route.isCurrent)) {
+      return;
+    }
+    Scrollable.ensureVisible(
+      target,
+      duration: const Duration(milliseconds: 200),
+      alignment: 0.1,
+    );
+  });
+  return false;
 }
 
 class MerchantNotice extends StatelessWidget {

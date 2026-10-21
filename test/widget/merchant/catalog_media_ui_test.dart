@@ -114,6 +114,8 @@ void main() {
   Future<void> category(WidgetTester tester) async {
     final f = find.byType(DropdownButtonFormField<String>);
     await tester.ensureVisible(f);
+    await tester.pumpAndSettle();
+    expect(f.hitTestable(), findsOneWidget);
     await tester.tap(f);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Kategori').last);

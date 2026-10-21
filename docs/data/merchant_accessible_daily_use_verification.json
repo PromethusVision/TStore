@@ -1,0 +1,143 @@
+{
+  "kind": "merchant-accessible-daily-use-verification-v1",
+  "date": "2026-10-22",
+  "status": "LOCAL_PASS_INTEGRATION_PENDING",
+  "branch": "agent/merchant-accessible-daily-use",
+  "base_commit": "c5ceb548c96cdfe7cb435d58e68703b4c8f4f0cc",
+  "reproduced_before_corresponding_fixes": {
+    "failures": 9,
+    "logs": [
+      "accessibility-baseline.log",
+      "labels-baseline.log",
+      "category-baseline.log",
+      "search-labels-baseline.log"
+    ]
+  },
+  "targeted": {
+    "passed": 833,
+    "failed": 0,
+    "skipped": 0,
+    "skip_names": [],
+    "log_sha256": "5266071e7a7ab7df27c4ac6e3e6173166ed90db8590a9eb911bfac0d687bd18e",
+    "source": "Final full Flutter run; Merchant unit/widget suites"
+  },
+  "full_flutter": {
+    "passed": 3626,
+    "failed": 0,
+    "skipped": 6,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "log_sha256": "5266071e7a7ab7df27c4ac6e3e6173166ed90db8590a9eb911bfac0d687bd18e"
+  },
+  "new_widget_tests": 22,
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log_sha256": "6a3dacc63b27ba02a488c1990191a4a184cd9fa7eb8bbd43de9027a1d36381c1"
+  },
+  "visuals": {
+    "new_inspected_goldens": 2,
+    "existing_goldens_unchanged": true,
+    "small_screen_dp": [
+      320,
+      640
+    ],
+    "text_scale": 2,
+    "semantics_names_and_values": "PASS",
+    "labeled_android_touch_targets": "PASS",
+    "whole_app_accessibility_certification": false
+  },
+  "fixture_adjustment": "Catalog dropdown helper waits for layout and asserts hit-testability; original assertions preserved.",
+  "source_sha256": "116381f2b3f5406e73fab0a39edc2081c4b704a438ad6154f791687c30f92c39",
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "sha256": "4f971232d4cd39003503a2eae9f113c7fd6141c3ae714a52e82e4c6e69a31831",
+      "bytes": 119482971,
+      "callback_verified": true,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "artifact_directory": "C:\\Users\\Mustafa\\AppData\\Local\\Temp\\esnaftavar-accessible-daily-use-artifacts-20261022",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      "C:\\Users\\Mustafa\\AppData\\Local\\Temp\\esnaftavar-accessible-daily-use-artifacts-20261022\\customer.build.log"
+    ]
+  },
+  "protected_artifacts": [
+    {
+      "kind": "delivered-development",
+      "file": "customer.apk",
+      "sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "unchanged": true
+    },
+    {
+      "kind": "delivered-development",
+      "file": "merchant.apk",
+      "sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "customer.apk",
+      "sha256": "87ca5e27a66b95e6e7e8a346e6084cb0d134b832837e3508cc02b85784234bc7",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "merchant.apk",
+      "sha256": "332fecc1b417836d2a51d0114fda1bcc5c330111ce20be95f03817b59e6d812c",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "merchant-development.apk",
+      "sha256": "0884cf05209c606504761deb7fa6f410f8d5fd067f34d6b6d8757c23ecf8bde8",
+      "unchanged": true
+    }
+  ],
+  "integrated_readiness": {
+    "guard_tests": 20,
+    "current_source_refused": true,
+    "old_records_unchanged": true,
+    "current_local_qualification": "STALE_REQUIRES_NEW_REVIEWED_QUALIFICATION"
+  },
+  "database_validation": "N/A_NO_SQL_CHANGE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "pilot_ready": false,
+  "checks": {
+    "diff": "PASS",
+    "secret_pii_scan": "PASS",
+    "scope": "PASS"
+  }
+}

@@ -166,7 +166,7 @@ class _MerchantShopFormState extends State<MerchantShopForm>
   }
 
   Future<void> _save() async {
-    if (!workspaceCurrent || _locked || !_form.currentState!.validate()) return;
+    if (!workspaceCurrent || _locked || !merchantValidateForm(_form)) return;
     final draft = _draft;
     if (draft.error != null) {
       setState(() => _error = draft.error);
@@ -194,15 +194,18 @@ class _MerchantShopFormState extends State<MerchantShopForm>
     TextInputType? keyboard,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: TextFormField(
-      controller: controller,
-      enabled: !_locked,
-      maxLines: lines,
-      keyboardType: keyboard,
-      maxLength: max,
-      decoration: InputDecoration(labelText: label),
-      validator: (v) =>
-          required && (v ?? '').trim().isEmpty ? 'Bu alanı doldurun.' : null,
+    child: MerchantInput(
+      labelText: label,
+      builder: (decoration) => TextFormField(
+        controller: controller,
+        enabled: !_locked,
+        maxLines: lines,
+        keyboardType: keyboard,
+        maxLength: max,
+        decoration: decoration,
+        validator: (v) =>
+            required && (v ?? '').trim().isEmpty ? 'Bu alanı doldurun.' : null,
+      ),
     ),
   );
   @override

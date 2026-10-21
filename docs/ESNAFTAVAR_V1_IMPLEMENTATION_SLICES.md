@@ -78,6 +78,22 @@ existing contracts. Distinguish local database tests, real Storage HTTP and devi
 acceptance. Any new summary endpoint is owner-scoped and read-only. This does not
 change the A–J dependency order or grant Production/remote migration authority.
 
+### A follow-through — Accessible Merchant daily use (2026-10-22)
+
+After integrated `c5ceb548`, implement canonical §4.19 in existing Merchant
+onboarding/profile, listing, catalog submission and login/recovery forms.
+Reproduce clipped error/field/category text and hidden invalid fields; preserve
+text scaling, make the first invalid field visible, and retain drafts when
+dismissing the keyboard. Keep ordinary-size layouts and five-tab navigation.
+
+Validate the existing uncertain-write and session boundaries alongside small
+screens, large text, accessible names/touch targets and normal-size goldens.
+Run Merchant regressions, analyzer, full Flutter and both Android clients'
+development builds. Preserve delivered APKs and default-OFF capabilities.
+There is no server or economic change. J16's exact-source records become stale
+and must remain fail-closed; this is not a new J qualification or pilot opening.
+See [daily-use handoff](MERCHANT_ACCESSIBLE_DAILY_USE_HANDOFF.md).
+
 ### Cross-slice Merchant session resilience — 2026-10-17
 
 After G preparation integration (`0c79dca1`), harden the existing Merchant host
