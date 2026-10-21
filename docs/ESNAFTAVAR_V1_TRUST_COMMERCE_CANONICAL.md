@@ -892,6 +892,32 @@ Real cohort/product selection, hosted observations/approvals, compatible device
 distribution, physical two-device QR, provider and pilot opening remain open.
 No app feature, Customer layout, migration or delivered APK changes in this package.
 
+### 4.19 Accessible Merchant daily use — 2026-10-22
+
+After integrated `c5ceb548`, this bounded implementation follows §4.1 without
+changing its FROZEN scope, five tabs or the Customer layouts.
+
+- Preserve device text scaling. At large text sizes, put Merchant shop/listing/
+  submission field names above the input, with the full accessible input name.
+  Keep the existing compact decoration at ordinary sizes. Category menu items
+  and the selected category may grow to show the complete name.
+- Merchant validation messages may wrap. An invalid login, recovery, shop,
+  listing or submission brings its first invalid field into view after layout;
+  validation itself never sends a request, repeats a write or resumes a save.
+  A removed form or a form covered by another route cannot later scroll it.
+- Dragging an existing Merchant page dismisses the keyboard and retains the
+  current in-memory draft. Existing owner/session retirement, uncertain-write
+  reconciliation, submission identity and server rules remain authoritative.
+- Qualify 320dp/200% text, keyboard, errors, recovery choices, accessible names
+  and touch targets with widget/render tests. Preserve normal-size goldens.
+  This is bounded daily-use coverage, not a whole-app accessibility certification.
+
+No SQL, dependency, shared Auth/notification foundation, remote operation or
+business capability is introduced. Runtime changes make §4.18's pinned J16
+evidence stale; preserve that evidence and its refusal of changed sources rather
+than relabeling it as current. Device, cohort, provider and pilot-opening gates
+remain separate. See [daily-use handoff](MERCHANT_ACCESSIBLE_DAILY_USE_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

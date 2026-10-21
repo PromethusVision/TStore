@@ -111,20 +111,21 @@ class _MerchantProductsState extends State<MerchantProducts>
             ),
           ],
           children: [
-            TextField(
-              controller: _search,
-              maxLength: 100,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                labelText: 'Ürünlerinde ara',
-                suffixIcon: IconButton(
-                  tooltip: 'Ara',
-                  icon: const Icon(Icons.search),
-                  onPressed: () =>
-                      _cubit.load(refresh: true, query: _search.text),
-                ),
+            MerchantInput(
+              labelText: 'Ürünlerinde ara',
+              suffixIcon: IconButton(
+                tooltip: 'Ara',
+                icon: const Icon(Icons.search),
+                onPressed: () =>
+                    _cubit.load(refresh: true, query: _search.text),
               ),
-              onSubmitted: (q) => _cubit.load(refresh: true, query: q),
+              builder: (decoration) => TextField(
+                controller: _search,
+                maxLength: 100,
+                textInputAction: TextInputAction.search,
+                decoration: decoration,
+                onSubmitted: (q) => _cubit.load(refresh: true, query: q),
+              ),
             ),
             if (state.error != null)
               MerchantNotice(
@@ -300,20 +301,21 @@ class _MerchantCatalogPickerState extends State<MerchantCatalogPicker>
       const Text(
         'Ortak katalogdan ürünü seç; mağazana ait fiyat ve bulunabilirliği ekle.',
       ),
-      TextField(
-        controller: _search,
-        maxLength: 100,
-        decoration: InputDecoration(
-          labelText: widget.catalogMedia == null
-              ? 'Ürün adıyla ara'
-              : 'Ürün adı veya barkodla ara',
-          suffixIcon: IconButton(
-            tooltip: 'Ara',
-            onPressed: () => _load(refresh: true),
-            icon: const Icon(Icons.search),
-          ),
+      MerchantInput(
+        labelText: widget.catalogMedia == null
+            ? 'Ürün adıyla ara'
+            : 'Ürün adı veya barkodla ara',
+        suffixIcon: IconButton(
+          tooltip: 'Ara',
+          onPressed: () => _load(refresh: true),
+          icon: const Icon(Icons.search),
         ),
-        onSubmitted: (_) => _load(refresh: true),
+        builder: (decoration) => TextField(
+          controller: _search,
+          maxLength: 100,
+          decoration: decoration,
+          onSubmitted: (_) => _load(refresh: true),
+        ),
       ),
       if (_error != null) MerchantNotice(_error!, error: true, onRetry: _load),
       for (final item in _items)
@@ -477,7 +479,7 @@ class _MerchantListingFormState extends State<MerchantListingForm>
   }
 
   Future<void> _save() async {
-    if (!workspaceCurrent || _locked || !_form.currentState!.validate()) return;
+    if (!workspaceCurrent || _locked || !merchantValidateForm(_form)) return;
     final draft = MerchantListingDraft(
       productId: widget.existing?.productId ?? widget.product?.id ?? '',
       priceMinor: MerchantListingDraft.parsePrice(_price.text)!,
@@ -556,29 +558,31 @@ class _MerchantListingFormState extends State<MerchantListingForm>
           key: _form,
           child: Column(
             children: [
-              TextFormField(
-                controller: _price,
-                enabled: !_locked,
-                decoration: const InputDecoration(
-                  labelText: 'Mağaza fiyatı (TL)',
-                  hintText: '0,00',
+              MerchantInput(
+                labelText: 'Mağaza fiyatı (TL)',
+                hintText: '0,00',
+                builder: (decoration) => TextFormField(
+                  controller: _price,
+                  enabled: !_locked,
+                  decoration: decoration,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) =>
+                      MerchantListingDraft.parsePrice(v ?? '') == null
+                      ? 'En fazla iki ondalık basamaklı, negatif olmayan fiyat girin.'
+                      : null,
                 ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                validator: (v) =>
-                    MerchantListingDraft.parsePrice(v ?? '') == null
-                    ? 'En fazla iki ondalık basamaklı, negatif olmayan fiyat girin.'
-                    : null,
               ),
               const SizedBox(height: 20),
-              TextFormField(
-                controller: _description,
-                enabled: !_locked,
-                maxLength: 2000,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Mağazana özel açıklama',
+              MerchantInput(
+                labelText: 'Mağazana özel açıklama',
+                builder: (decoration) => TextFormField(
+                  controller: _description,
+                  enabled: !_locked,
+                  maxLength: 2000,
+                  maxLines: 4,
+                  decoration: decoration,
                 ),
               ),
             ],

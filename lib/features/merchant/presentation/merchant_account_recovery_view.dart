@@ -102,7 +102,7 @@ class _RecoveryViewState extends State<MerchantAccountRecoveryView> {
                       obscureText: _obscure,
                       enableSuggestions: false,
                       autocorrect: false,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Yeni şifre tekrar',
                       ),
                       validator: (v) =>
@@ -112,7 +112,7 @@ class _RecoveryViewState extends State<MerchantAccountRecoveryView> {
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: () {
-                      if (!_form.currentState!.validate()) return;
+                      if (!merchantValidateForm(_form)) return;
                       if (request) {
                         recovery.send(_email.text);
                       } else {
