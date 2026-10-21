@@ -1,11 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 import 'package:t_store/features/cart/data/qr_protocol_v2.dart';
 import 'package:t_store/features/cart/domain/repositories/qr_claim_repository.dart';
 import 'package:t_store/features/purchases/domain/repositories/purchase_evidence_repository.dart';
 
 class SupabasePurchaseEvidenceRepository
-    implements PurchaseEvidenceRepository, QrSessionIdentity {
+    implements
+        PurchaseEvidenceRepository,
+        QrSessionIdentity,
+        AuthenticatedSessionEvents {
   SupabasePurchaseEvidenceRepository(
     SupabaseClient client, {
     QrProtocolV2? transport,
@@ -13,6 +17,10 @@ class SupabasePurchaseEvidenceRepository
   final QrProtocolV2 _transport;
   @override
   String? get currentQrSessionIdentity => _transport.sessionIdentity();
+  @override
+  String? get currentSessionKey => currentQrSessionIdentity;
+  @override
+  Stream<String?> get sessionKeyChanges => _transport.sessionKeys;
   @override
   Future<Either<String, List<PurchaseEvidence>>> list(
     String shopId, {
@@ -56,13 +64,10 @@ class SupabasePurchaseEvidenceRepository
     required String reason,
   }) async {
     var rejected = false;
-    final result = await _transport.run(
-      () async {
-        final identity = _transport.sessionIdentity();
+    final result = await _transport.runScoped(
+      (scope) async {
         final device = await _transport.installation();
-        if (identity != _transport.sessionIdentity()) {
-          throw const QrProtocolFailure('SESSION_CHANGED');
-        }
+        scope.check();
         final value = PurchaseEvidence.fromJson(
           _transport.row(
             await _transport.client.rpc(

@@ -12,10 +12,17 @@ class MerchantReturnController extends ChangeNotifier {
     required this.repository,
     required this.store,
     required this.purchase,
-  }) : _scope = MerchantPurchaseScope(repository);
+    bool Function()? originIsCurrent,
+  }) {
+    _scope = MerchantPurchaseScope(
+      repository,
+      onRetired: _notify,
+      originIsCurrent: originIsCurrent,
+    );
+  }
   final PurchaseEvidenceRepository repository;
   final PendingPurchaseReturnStore store;
-  final MerchantPurchaseScope _scope;
+  late final MerchantPurchaseScope _scope;
   PurchaseEvidence purchase;
   PendingPurchaseReturn? pending;
   bool busy = false, ready = false, confirmed = false, cleanupRequired = false;

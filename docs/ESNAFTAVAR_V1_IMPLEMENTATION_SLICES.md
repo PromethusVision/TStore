@@ -173,6 +173,22 @@ debug artifacts and real local Auth/PostgREST/PostgreSQL including checkout
 regressions. Physical J and remote rollout remain OPEN.
 See [handoff](MERCHANT_COMMERCE_RECOVERY_HANDOFF.md).
 
+### B/E transaction session continuity follow-through — 2026-10-21
+
+After `a886dfdd`, implement canonical §5.4 on
+`agent/merchant-transaction-session-recovery`. Exercise actual SDK session-event
+snapshots with delayed HTTP responses across legacy QR, v2, coupon approval and
+purchase evidence. Fence inter-step dispatch, preserve durable uncertain returns,
+retire old screen/dialog lifetimes and preserve ordinary renewal. Serialize
+in-flight coupon authorization without timing out or replaying writes.
+
+This is existing-contract client reliability, with no SQL, dependency, economic
+activation, Customer layout redesign or hosted operation. Reproduce failures on
+the integrated baseline, retain control cases, run neighboring and full Flutter
+regressions, analyzer and Customer/Merchant debug compilation. Preserve delivered
+APKs. See [handoff](MERCHANT_TRANSACTION_SESSION_RECOVERY_HANDOFF.md).
+Integration and physical J remain separate gates.
+
 ## C — Review entitlements, three service criteria, audit and moderation
 
 **Authorized locally on 2026-10-15.** Execute as one complete engineering package

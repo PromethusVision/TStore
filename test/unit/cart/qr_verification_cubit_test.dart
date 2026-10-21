@@ -4,6 +4,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
 import 'package:t_store/features/cart/domain/entities/qr_verification_entity.dart';
 import 'package:t_store/features/cart/domain/usecases/confirm_qr_verification_usecase.dart';
 import 'package:t_store/features/cart/domain/usecases/get_qr_verification_usecase.dart';
@@ -12,6 +13,8 @@ import 'package:t_store/features/cart/presentation/cubit/qr_verification_state.d
 
 class MockGetQrVerificationUsecase extends Mock
     implements GetQrVerificationUsecase {}
+
+class MockQrRepository extends Mock implements QrSessionRepository {}
 
 class MockConfirmQrVerificationUsecase extends Mock
     implements ConfirmQrVerificationUsecase {}
@@ -68,6 +71,9 @@ void main() {
 
   setUp(() {
     mockGetQrVerificationUsecase = MockGetQrVerificationUsecase();
+    when(
+      () => mockGetQrVerificationUsecase.repository,
+    ).thenReturn(MockQrRepository());
     mockConfirmQrVerificationUsecase = MockConfirmQrVerificationUsecase();
     qrVerificationCubit = QrVerificationCubit(
       getQrVerificationUsecase: mockGetQrVerificationUsecase,

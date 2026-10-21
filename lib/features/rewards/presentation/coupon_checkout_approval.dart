@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:t_store/core/supabase/authenticated_request_scope.dart';
+import 'package:t_store/features/cart/domain/qr_session_guard.dart';
 import 'package:t_store/features/cart/data/qr_installation.dart';
 import 'package:t_store/features/cart/domain/entities/qr_session_entity.dart';
 import 'package:t_store/features/commerce_ledger/domain/commerce_ledger.dart';
@@ -26,6 +28,8 @@ class CouponCheckoutApproval extends StatefulWidget {
 class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
   final _amount = TextEditingController();
   StreamSubscription<void>? _auth;
+  QrSessionGuard? _sessionGuard;
+  bool _retired = false;
   CouponCheckoutPreview? _preview;
   String? _error;
   bool _loading = true, _busy = false, _attempted = false;
@@ -39,6 +43,8 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
   }
 
   void _listen() {
+    _sessionGuard = QrSessionGuard(widget.repository, onRetired: _retire);
+    if (widget.repository is AuthenticatedSessionEvents) return;
     _auth = widget.repository.sessionChanges.listen(
       (_) {
         _load();
@@ -54,20 +60,42 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
           });
         }
       },
+      onDone: _retire,
     );
   }
+
+  void _retire() {
+    if (!mounted || _retired) return;
+    setState(() {
+      _retired = true;
+      _generation++;
+      _preview = null;
+      _amount.clear();
+      _busy = false;
+      _loading = false;
+      _error = 'Oturum değişti. Bu ekranı kapatıp yeniden açın.';
+    });
+  }
+
+  bool get _current => !_retired && (_sessionGuard?.current ?? false);
 
   @override
   void didUpdateWidget(CouponCheckoutApproval old) {
     super.didUpdateWidget(old);
     if (old.cartId != widget.cartId || old.repository != widget.repository) {
       _auth?.cancel();
+      _sessionGuard?.close();
+      _retired = false;
       _listen();
       _load();
     }
   }
 
   Future<void> _load() async {
+    if (!_current) {
+      _retire();
+      return;
+    }
     final ticket = ++_generation;
     setState(() {
       _loading = true;
@@ -79,7 +107,7 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
       _amount.clear();
     });
     final result = await widget.repository.preview(widget.cartId);
-    if (!mounted || ticket != _generation) return;
+    if (!mounted || !_current || ticket != _generation) return;
     result.fold(
       (error) => setState(() {
         _loading = false;
@@ -124,7 +152,7 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
   }
 
   Future<void> _approve() async {
-    if (_busy || _preview == null || _selected == null) return;
+    if (!_current || _busy || _preview == null || _selected == null) return;
     final selected = _selected!, preview = _preview!, ticket = _generation;
     setState(() {
       _busy = true;
@@ -132,7 +160,7 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
       _error = null;
     });
     final result = await widget.repository.approve(preview, _request, selected);
-    if (!mounted || ticket != _generation) return;
+    if (!mounted || !_current || ticket != _generation) return;
     result.fold(
       (error) => setState(() {
         _busy = false;
@@ -146,12 +174,16 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
   void dispose() {
     _generation++;
     _auth?.cancel();
+    _sessionGuard?.close();
     _amount.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_current) {
+      return const Text('Oturum değişti. Bu ekranı kapatıp yeniden açın.');
+    }
     if (_loading) {
       return const Padding(
         padding: EdgeInsets.all(32),
@@ -218,7 +250,7 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(_error!, semanticsLabel: _error),
           ),
-        if (!_attempted) ...[
+        if (!_retired && !_attempted) ...[
           if (_error != null)
             TextButton(
               onPressed: _busy ? null : _load,
@@ -229,7 +261,7 @@ class _CouponCheckoutApprovalState extends State<CouponCheckoutApproval> {
               onPressed: _busy ? null : widget.onWithoutCoupon,
               child: const Text('Kuponsuz devam et'),
             ),
-        ] else
+        ] else if (!_retired)
           const Text(
             'Sonuç belirsizse aynı onayı kontrol edin. Tutarı değiştirmek için açık QR işlemini sepetten iptal edin.',
           ),

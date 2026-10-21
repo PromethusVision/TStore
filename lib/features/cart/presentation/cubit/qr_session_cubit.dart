@@ -1,3 +1,4 @@
+import 'package:t_store/features/cart/domain/qr_session_guard.dart';
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,10 +23,29 @@ class QrSessionCubit extends Cubit<QrSessionState> {
     required this.createQrSessionUsecase,
     required this.getQrSessionStatusUsecase,
     this.statusCheckInterval = const Duration(seconds: 3),
-  }) : super(QrSessionInitial());
+  }) : super(QrSessionInitial()) {
+    _sessionGuard = QrSessionGuard(
+      createQrSessionUsecase.repository,
+      onRetired: _retireSession,
+    );
+  }
+
+  late final QrSessionGuard _sessionGuard;
+  bool get _current => !isClosed && _sessionGuard.current;
+  void _retireSession() {
+    if (isClosed) return;
+    _operationId++;
+    _activeSession = null;
+    _stopStatusPolling();
+    emit(
+      const QrSessionFailure(
+        'Oturumunuz değişti. Bu ekranı kapatıp yeniden açın.',
+      ),
+    );
+  }
 
   Future<void> createQrSession(String cartId) async {
-    if (_isCreatingSession || isClosed) return;
+    if (_isCreatingSession || !_current) return;
 
     _isCreatingSession = true;
     final operationId = ++_operationId;
@@ -38,7 +58,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
         CreateQrSessionParams(cartId: cartId),
       );
 
-      if (isClosed || operationId != _operationId) return;
+      if (!_current || operationId != _operationId) return;
 
       result.fold((error) => emit(QrSessionFailure(error)), (session) {
         _activeSession = session;
@@ -57,7 +77,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
 
   /// A customer-approved checkout uses the same polling and terminal states.
   void useApprovedSession(QrSessionEntity session) {
-    if (isClosed ||
+    if (!_current ||
         _isCreatingSession ||
         session.protocolVersion != 2 ||
         session.couponCheckout == null) {
@@ -86,7 +106,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
     if (targetSessionId == null ||
         targetSessionId.isEmpty ||
         _isCheckingStatus ||
-        isClosed) {
+        !_current) {
       return;
     }
 
@@ -100,7 +120,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
           repository is QrClaimRepository) {
         final result = await (repository as QrClaimRepository)
             .readCustomerSession(targetSessionId);
-        if (isClosed ||
+        if (!_current ||
             operation != _operationId ||
             _activeSession?.id != targetSessionId) {
           return;
@@ -138,7 +158,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
         GetQrSessionStatusParams(sessionId: targetSessionId),
       );
 
-      if (isClosed ||
+      if (!_current ||
           operation != _operationId ||
           _activeSession?.id != targetSessionId) {
         return;
@@ -217,6 +237,7 @@ class QrSessionCubit extends Cubit<QrSessionState> {
 
   @override
   Future<void> close() {
+    _sessionGuard.close();
     _operationId++;
     _stopStatusPolling();
     return super.close();
