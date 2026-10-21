@@ -1,3 +1,4 @@
+import {restoreHistoricalTestSources} from './historical_test_fixture.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,copyFile,mkdir,mkdtemp,realpath,access,rm,symlink} from 'node:fs/promises';
@@ -23,6 +24,7 @@ async function fixture(t){
     await mkdir(dirname(resolve(base,source.path)),{recursive:true});
     await copyFile(resolve(root,source.path),resolve(base,source.path));
   }
+  await restoreHistoricalTestSources(root,base,installedProofPath,'0c1ad8d5d5615e34e590e86656abc4e593394925',{'lib/features/merchant/runtime/merchant_runtime.dart':'8e98dd26dfad99b46072547b771dd5f0ef76cdbe40bb70a6f537f3461f0bcafa'});
   await records(base);
   return base;
 }
@@ -79,8 +81,8 @@ test('missing or incomplete repository pass cannot be replaced by screen pass',a
   await writeFile(path,JSON.stringify(record));await assert.rejects(verifyCurrentReadiness(base));
   await rm(path);await assert.rejects(verifyCurrentReadiness(base));
 });
-test('repository result must bind this process and all original checkpoints',async()=>{
-  const h=await readHistoricalContracts(root),nonce='a'.repeat(48);
+test('repository result must bind this process and all original checkpoints',async t=>{
+  const h=await readHistoricalContracts(await fixture(t)),nonce='a'.repeat(48);
   const result={result:'PASS',nonce,checks:h.proof.client_checks};
   assert.equal(validateRepositoryResult(result,nonce,h.proof.client_checks).length,18);
   assert.throws(()=>validateRepositoryResult(result,'b'.repeat(48),h.proof.client_checks));

@@ -1,5 +1,32 @@
 # Merchant local acceptance — A+B and optional C
 
+## Integrated pilot qualification (J16)
+
+`pilot_integrated.mjs <fresh-owned-run> <Flutter-SDK> [repositories]` runs the
+current base-core app against the unchanged installed-profile fixture. Use two
+distinct fresh stacks: one for the complete 18 repository checkpoints and one for
+18 screen checkpoints, including actual Auth refresh/new-session draft behavior.
+Stop each owned stack afterward; retain its data. Do not reuse populated runs.
+
+This separate profile pins the integrated client deltas and records all current
+runtime, acceptance-tool and SQL source hashes. Historical J7/J9/J12 proofs and
+preparers retain their original restrictions. Integrated records cannot be
+overwritten; an incomplete or stale pair cannot authorize review preparation.
+These unsigned local records establish reproducible test scope, not remote
+authorization, physical-device acceptance, provider delivery or release approval.
+
+`prepare_integrated_pilot.mjs cohort <new-name>` and
+`prepare_integrated_pilot.mjs publication <new-name>` create incomplete local
+review bundles by default, with no mutation SQL. Optional private intake uses the
+existing `pilot-installed-input` directories and unchanged review SQL contracts.
+No remote connection, apply flag, credentials, account creation or email sending.
+
+Run `node --test tool/merchant_acceptance/*.test.mjs` before starting services
+(the HTTP safety test owns the API port). Historical positive tests reconstruct
+their exact proof-bound inputs from immutable local Git commits; assertions and
+old rejection behavior are preserved. This requires repository history, not
+network access. See [J16 handoff](../../docs/MERCHANT_PILOT_INTEGRATED_ACCEPTANCE_HANDOFF.md).
+
 ## Guarded pilot preparation (J2)
 
 `pilot_preparation.mjs <new-owned-run> <Flutter-SDK>` rehearses a populated

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {readFile,writeFile,realpath,unlink,mkdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {randomUUID,randomBytes} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
 import {readRun,credentials,runtimeEvidence,root,command} from './local.mjs';
 import {connect,migrate} from './fixture.mjs';
 import {localUrl,requestJson} from './safety.mjs';
@@ -18,17 +19,21 @@ import {verifiedInstalledProfile,mirrorInstalledPublicationProfile,installedSche
 import {installedCohortPlans,installedPublicationPlan} from './pilot_installed_contract.mjs';
 import {validateUiResult,captureUiSources,verifyUiProof,uiProofPath,fixtureBaselineCommit,databaseChecks} from './pilot_ui_contract.mjs';
 import {readHistoricalContracts,validateRepositoryResult,repositoryProofPath,historicalReadinessSha} from './pilot_current_contract.mjs';
+import {readIntegratedContracts,captureIntegratedSources,validateIntegratedResult,verifyIntegratedProof,integratedProofs,integratedBaseline} from './pilot_integrated_contract.mjs';
 
+export async function runPilotUi({directory,flutterPath,repositories=false,integrated=false}){
 let run,db,credentialFile,stage='arguments';
 try {
-  assert(process.argv.length===4||(process.argv.length===5&&process.argv[4]==='repositories'));
-  const repositories=process.argv[4]==='repositories';
-  run=await readRun(process.argv[2]);
-  const flutter=await realpath(process.argv[3]);
+  run=await readRun(directory);
+  const flutter=await realpath(flutterPath);
   const dart=await realpath(resolve(flutter,'bin/cache/dart-sdk/bin',process.platform==='win32'?'dart.exe':'dart'));
   const snapshot=await realpath(resolve(flutter,'bin/cache/flutter_tools.snapshot'));
-  const sources=await captureUiSources(root);
-  const historicalContracts=await readHistoricalContracts(root);
+  const capture=integrated?captureIntegratedSources:captureUiSources;
+  const sources=await capture(root);
+  const historicalContracts=await (integrated?readIntegratedContracts:readHistoricalContracts)(root);
+  const proofPath=integrated?integratedProofs[repositories?'repositories':'ui']:(repositories?repositoryProofPath:uiProofPath);
+  // This new profile never replaces a previously delivered evidence record.
+  if(integrated)await assert.rejects(readFile(resolve(root,proofPath)),{code:'ENOENT'});
   const status=await credentials(run),services=await runtimeEvidence(run);
   const url=localUrl(status.DB_URL,'db');
   db=await connect({host:'127.0.0.1',port:Number(url.port),database:'postgres',user:'postgres',password:decodeURIComponent(url.password),ssl:false});
@@ -109,7 +114,7 @@ try {
   credentialFile=resolve(run.dir,repositories?'pilot-client-fixture.json':'pilot-ui-fixture.json');
   await writeFile(credentialFile,JSON.stringify({kind:repositories?'merchant-pilot-base-core-local':'merchant-pilot-ui-local-v1',project:run.project,nonce,url:status.API_URL,key:status.ANON_KEY,
     merchant:merchant.login,customer:customer.login,other:other.login,product,product_name:productName,category,foreign_shop:foreignShop,notification,foreign_notification:foreignNotification,
-    submission_request_id:randomUUID(),cart_id:randomUUID()}),{flag:'wx',mode:0o600});
+    submission_request_id:randomUUID(),cart_id:randomUUID(),...(integrated?{integrated:true}:{})}),{flag:'wx',mode:0o600});
   console.log('PASS synthetic local identities, physical catalog and private inbox fixture');
 
   stage=repositories?'actual current repositories':'actual Merchant screens';
@@ -119,7 +124,8 @@ try {
     {[variable]:credentialFile,FLUTTER_ROOT:flutter});
   await writeFile(resolve(run.dir,repositories?'pilot-current-repositories.log':'pilot-ui-flutter.log'),output,{mode:0o600});
   const result=JSON.parse(await readFile(resolve(run.dir,repositories?'pilot-client-result.json':'pilot-ui-result.json'),'utf8'));
-  const checks=repositories?validateRepositoryResult(result,nonce,historicalContracts.proof.client_checks):validateUiResult(result,nonce);
+  const checks=integrated?validateIntegratedResult(result,nonce,repositories?'repositories':'ui',historicalContracts.proof.client_checks):
+    repositories?validateRepositoryResult(result,nonce,historicalContracts.proof.client_checks):validateUiResult(result,nonce);
   stage='independent final database checks';
   assert.equal(digest(await schema(),'md5'),installedSchemaMd5);
   assert.equal(await scalar('SELECT decisions_enabled value FROM public.catalog_media_config'),false);
@@ -130,7 +136,7 @@ try {
   assert.equal(await scalar('SELECT count(*)::int value FROM public.verified_transactions'),repositories?1:0);
   assert.equal((await db.query('SELECT is_read FROM public.notifications WHERE id=$1',[foreignNotification])).rows[0].is_read,false);
   assert.equal((await db.query('SELECT name FROM public.shops WHERE id=$1',[foreignShop])).rows[0].name,'Sentetik hazırlık mağazası');
-  assert.deepEqual(await captureUiSources(root),sources,'Sources changed during screen rehearsal');
+  assert.deepEqual(await capture(root),sources,'Sources changed during screen rehearsal');
   const evidence={kind:repositories?'merchant-pilot-current-repositories-local-v1':'merchant-pilot-ui-local-only-v1',result:'PASS',captured_at:new Date().toISOString(),installed_schema_md5:installedSchemaMd5,
     fixture_baseline_commit:fixtureBaselineCommit,remote_access:'NONE',production_writes:'NONE',input_scope:'Synthetic identities and one physical product in owned loopback services',
     hardware_seams:repositories?['No widgets or hardware; actual current repositories and SDK over guarded loopback HTTP']:['Gallery picker supplies one local PNG; real camera/gallery permissions are not accepted',
@@ -138,10 +144,13 @@ try {
       'Widget Image.network retains test binding; Storage bytes and Customer signed URL are independently downloaded through guarded HTTP'],
     fault_injection:repositories?'NONE':'Two successful local PATCH responses are consumed then intentionally withheld; database state and one-write counts are verified',
     physical_two_device:'OPEN',distribution_ready:false,services,migrations,sources,checks,
-    ...(repositories?{historical_readiness_sha256_lf:historicalReadinessSha,renewed_sources:historicalContracts.renewed}:{}),
+    ...(repositories||integrated?{historical_readiness_sha256_lf:historicalReadinessSha,renewed_sources:historicalContracts.renewed}:{}),
+    ...(integrated?{kind:'merchant-pilot-integrated-'+(repositories?'repositories':'ui')+'-local-v1',
+      integrated_baseline_commit:integratedBaseline,run_id:run.project,nonce_sha256:digest(nonce)}:{}),
     database_postchecks:repositories?databaseChecks.map(x=>x==='no verified sale invented'?'one synthetic legacy QR purchase; physical acceptance OPEN':x):databaseChecks};
-  await writeFile(resolve(root,repositories?repositoryProofPath:uiProofPath),JSON.stringify(evidence,null,2)+'\n');
-  if(!repositories)await verifyUiProof(root);
+  await writeFile(resolve(root,proofPath),JSON.stringify(evidence,null,2)+'\n',integrated?{flag:'wx'}:{});
+  if(integrated)await verifyIntegratedProof(root,repositories?'repositories':'ui');
+  else if(!repositories)await verifyUiProof(root);
   console.log((repositories?'PILOT_CURRENT_REPOSITORIES_PASS: ':'PILOT_UI_LOCAL_PASS: ')+checks.length+' client checkpoints + 6 independent database checks.');
 } catch(error) {
   console.error('PILOT_UI_LOCAL_FAILED at '+stage+'; no remote fallback.');
@@ -150,4 +159,10 @@ try {
 } finally {
   if(credentialFile)await unlink(credentialFile).catch(()=>{});
   if(db)await db.end().catch(()=>{});
+}
+}
+
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+  assert(process.argv.length===4||(process.argv.length===5&&process.argv[4]==='repositories'));
+  await runPilotUi({directory:process.argv[2],flutterPath:process.argv[3],repositories:process.argv[4]==='repositories'});
 }

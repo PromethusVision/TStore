@@ -992,6 +992,27 @@ limited to the existing Development client UI and one read-only Auth settings
 request. No mutation or Production access. See
 [J15 candidate delivery](MERCHANT_PILOT_DEVELOPMENT_CANDIDATES_HANDOFF.md).
 
+### J16 — Integrated pilot local qualification (2026-10-21)
+
+After `50f750f2`, execute canonical §4.18: preserve historical J7/J9/J12 evidence
+and old source refusals; add a separate exact integrated profile and fresh records.
+Reconstruct the unchanged installed database from pinned historical inputs, then
+run current application code through the complete 18 repository checks and 18
+screen checks (the original 15 plus three actual Auth/session draft checks).
+Use distinct owned fixtures and matching full source manifests; no hosted fallback.
+
+Correct historical positive-test fixtures without weakening assertions or changing
+proof hashes. Verify current-source rejection, incomplete/stale/mixed evidence,
+source additions/removals, path/reparse safety and review-only preparation. Reuse
+the original installed-profile SQL and private-intake paths. Default cohort and
+publication output stays incomplete and contains no write SQL.
+
+This package changes local verification/preparation tooling only. All runtime,
+capability flags, migrations and APKs remain unchanged. Full Flutter regression
+and analyzer are required; app rebuilds are unnecessary without runtime changes.
+Physical devices, real participants/products, provider acceptance and full J stay
+OPEN. Main integration remains Integration Agent's responsibility.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

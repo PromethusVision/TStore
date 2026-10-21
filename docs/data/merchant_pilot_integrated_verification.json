@@ -1,0 +1,121 @@
+{
+  "kind": "merchant-pilot-integrated-qualification-verification-v1",
+  "status": "LOCAL_PASS_INTEGRATION_PENDING",
+  "date": "2026-10-21",
+  "branch": "agent/merchant-pilot-current-acceptance",
+  "base_commit": "50f750f2e18debab64e38315f8a66ba097b6b87b",
+  "baseline_node": {
+    "passed": 128,
+    "failed": 14,
+    "reason": "Historical positive tests used current files despite pinned historical proof; no runtime defect inferred",
+    "log_sha256": "d73fa61b404d1893094a8793bf2222b47529084fec4e96f339937bd7532e907b"
+  },
+  "node": {
+    "passed": 162,
+    "failed": 0,
+    "skipped": 0,
+    "new_tests": 20,
+    "log_sha256": "f5c12cf8b87c951b1b3b41ffb326e185690eac5758947ae920bc87932346636c"
+  },
+  "full_flutter": {
+    "passed": 3604,
+    "failed": 0,
+    "existing_conditional_skips": 6,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "concurrency": 2,
+    "log_sha256": "253e6c594809b05c0d2479641525ba1820f69799596da1c39e9e68e078703548"
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log_sha256": "b21c8f979ad6e77b422ce48a7740fef7e247195d49ce1b180a58b09d089737df"
+  },
+  "local_services": {
+    "repository_checkpoints": 18,
+    "ui_checkpoints": 18,
+    "database_postchecks_per_fixture": 6,
+    "source_files": 710,
+    "fixture_count": 2,
+    "installed_schema_md5": "d9607df877e9115eb811d984e561b4e7",
+    "proofs": {
+      "historical_sha256_lf": "512887661f9cc4579344e5d9e3981ec0ecb80ac842f210fc7a901e711e8acf79",
+      "ui_sha256_lf": "74f84e7689404e0e31235e1fc6c3f6a15f58dd5712e34ffafa13c06bb8647b4e",
+      "repository_sha256_lf": "2e223d39eb859735641c1a8f0a792e556c5fc877d4a7c5ae763cc3d403deb97e",
+      "sources_sha256": "dc66cc7d667b107c9a9ca26314b4ad0dc3fa041e8c2b9c07f3418bb34ff3b529"
+    },
+    "repository_record": "merchant_pilot_integrated_repository_acceptance.json",
+    "ui_record": "merchant_pilot_integrated_ui_acceptance.json"
+  },
+  "protected_artifacts": [
+    {
+      "kind": "delivered-development",
+      "file": "customer.apk",
+      "sha256": "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "unchanged": true
+    },
+    {
+      "kind": "delivered-development",
+      "file": "merchant.apk",
+      "sha256": "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "customer.apk",
+      "sha256": "87ca5e27a66b95e6e7e8a346e6084cb0d134b832837e3508cc02b85784234bc7",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "merchant.apk",
+      "sha256": "332fecc1b417836d2a51d0114fda1bcc5c330111ce20be95f03817b59e6d812c",
+      "unchanged": true
+    },
+    {
+      "kind": "previous-compile-rehearsal",
+      "file": "merchant-development.apk",
+      "sha256": "0884cf05209c606504761deb7fa6f410f8d5fd067f34d6b6d8757c23ecf8bde8",
+      "unchanged": true
+    }
+  ],
+  "empty_preparation": "PASS",
+  "old_profile_refusal": "PASS",
+  "integrated_overwrite_refusal": "PASS",
+  "local_services_stopped": true,
+  "owned_empty_networks_removed": true,
+  "local_volumes_retained": true,
+  "fixture_credentials_removed": true,
+  "proofs": {
+    "historical_sha256_lf": "512887661f9cc4579344e5d9e3981ec0ecb80ac842f210fc7a901e711e8acf79",
+    "ui_sha256_lf": "74f84e7689404e0e31235e1fc6c3f6a15f58dd5712e34ffafa13c06bb8647b4e",
+    "repository_sha256_lf": "2e223d39eb859735641c1a8f0a792e556c5fc877d4a7c5ae763cc3d403deb97e",
+    "sources_sha256": "dc66cc7d667b107c9a9ca26314b4ad0dc3fa041e8c2b9c07f3418bb34ff3b529"
+  },
+  "runtime_changes": "NONE",
+  "dependency_changes": "NONE",
+  "sql_changes": "NONE",
+  "historical_evidence_changed": false,
+  "builds": "NOT_RUN_RUNTIME_UNCHANGED",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "remote_migration_applied": false,
+  "local_fixture_migrations": "Existing exact baseline and approved profile mirrors on two new owned local databases only",
+  "provider_sends": "NONE",
+  "physical_two_device": "OPEN",
+  "real_cohort_and_products": "OPEN",
+  "pilot_ready": false,
+  "delivery_audit": {
+    "scope_files": 19,
+    "secret_pii_scan": "PASS_ADDED_LINES_AND_NEW_FILES",
+    "diff_check": "PASS",
+    "existing_test_changes": "Four historical test fixtures corrected to pinned immutable sources; original assertions retained"
+  }
+}
