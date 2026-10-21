@@ -1029,6 +1029,34 @@ and analyzer are required; app rebuilds are unnecessary without runtime changes.
 Physical devices, real participants/products, provider acceptance and full J stay
 OPEN. Main integration remains Integration Agent's responsibility.
 
+### J17 — MVP physical pilot acceptance (2026-10-22)
+
+After integrated `d037c739`, follow canonical §4.20 and the owner's explicit MVP
+priority. The owner reports two Android phones and the earlier installed
+Development candidates. Produce a distinct current Customer/Merchant pair using
+the existing public client input and paired build/inspection path. Preserve old
+APKs, historical proof and all feature defaults.
+
+Inspect the named Development project's readiness read-only, identify the actual
+phone screen and existing account/catalog facts, and prepare only the concrete
+hosted changes needed for the first journey for separate approval. Start with
+access/shop, then selected product/listing and Customer visibility, then physical
+QR. Report partial or blocked observations honestly. No new general refinement,
+business capability, Customer redesign or speculative migration is included.
+
+Compatibility tests, artifact/source/signature checks and appropriate static
+checks qualify the candidate. New runtime fixes require focused regression and
+Integration review before replacing the candidate. Physical reporting does not
+activate features or authorize pilot distribution. Real participant selection,
+signed distribution, support and final launch approval retain their gates.
+
+J17 first-product prerequisite: the owner approved a single Powerbank L3 leaf
+under the unchanged Elektronik / Güç, Şarj & Bağlantı branch. Prepare an additive,
+Development-only category review with a stable new opaque identity, exact
+observation guards and local database/client acceptance. Preserve the immutable
+1,563-node historical bootstrap, existing category IDs and old J7/J9/J16 evidence.
+Neither this local approval nor the test-product intake authorizes hosted writes.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required
