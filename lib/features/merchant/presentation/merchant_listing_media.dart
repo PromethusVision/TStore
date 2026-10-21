@@ -1,3 +1,4 @@
+import 'package:t_store/features/merchant/presentation/merchant_workspace_continuation.dart';
 import 'package:flutter/material.dart';
 import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:dartz/dartz.dart' hide State;
@@ -22,7 +23,8 @@ class MerchantListingMedia extends StatefulWidget {
   State<MerchantListingMedia> createState() => _MerchantListingMediaState();
 }
 
-class _MerchantListingMediaState extends State<MerchantListingMedia> {
+class _MerchantListingMediaState extends State<MerchantListingMedia>
+    with MerchantWorkspaceContinuation<MerchantListingMedia> {
   ListingMedia? _media;
   String? _error;
   bool _loading = false, _writing = false, _picking = false;
@@ -35,13 +37,13 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
   }
 
   Future<void> _load({bool afterMutation = false}) async {
-    if (_busy && !afterMutation) return;
+    if (!workspaceCurrent || (_busy && !afterMutation)) return;
     final epoch = ++_epoch;
     setState(() => _loading = true);
     final r = await merchantRead(
       () => widget.repository.media(widget.access, widget.listingId),
     );
-    if (!mounted || epoch != _epoch) return;
+    if (!workspaceCurrent || epoch != _epoch) return;
     setState(() {
       _loading = false;
       r.fold(
@@ -59,27 +61,27 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
   }
 
   Future<void> _mutate(Future<Either<String, void>> Function() fn) async {
-    if (_busy) return;
+    if (!workspaceCurrent || _busy) return;
     setState(() {
       _writing = true;
       _error = null;
     });
     try {
       final r = await fn();
-      if (!mounted) return;
+      if (!workspaceCurrent) return;
       String? error;
       r.fold((e) => error = e, (_) => null);
       await _load(afterMutation: true);
-      if (mounted && error != null) {
+      if (workspaceCurrent && error != null) {
         setState(
           () => _error =
               '$error\nSonuç belirsiz olabilir. Güncel fotoğraf durumunu kontrol et; aynı fotoğrafı yeniden yükleme.',
         );
       }
     } catch (_) {
-      if (mounted) {
+      if (workspaceCurrent) {
         await _load(afterMutation: true);
-        if (mounted) {
+        if (workspaceCurrent) {
           setState(
             () => _error =
                 'İşlem sonucu doğrulanamadı. Güncel fotoğraf durumunu kontrol et; aynı fotoğrafı yeniden yükleme.',
@@ -87,24 +89,24 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
         }
       }
     } finally {
-      if (mounted) setState(() => _writing = false);
+      if (workspaceCurrent) setState(() => _writing = false);
     }
   }
 
   Future<void> _upload() async {
-    if (_busy || _media == null) return;
+    if (!workspaceCurrent || _busy || _media == null) return;
     setState(() => _picking = true);
     try {
       final image =
           await (widget.pickImage?.call() ??
               ImagePicker().pickImage(source: ImageSource.gallery));
-      if (!mounted) return;
+      if (!workspaceCurrent) return;
       if (image == null) {
         setState(() => _picking = false);
         return;
       }
       final size = await image.length();
-      if (!mounted) return;
+      if (!workspaceCurrent) return;
       if (size > _media!.maxBytes) {
         setState(() {
           _picking = false;
@@ -114,7 +116,7 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
         return;
       }
       final bytes = await image.readAsBytes();
-      if (!mounted) return;
+      if (!workspaceCurrent) return;
       if (bytes.length > _media!.maxBytes) {
         setState(() => _error = 'Fotoğraf izin verilen boyuttan büyük.');
         return;
@@ -124,14 +126,14 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
         () => widget.repository.upload(widget.access, widget.listingId, bytes),
       );
     } catch (_) {
-      if (mounted) {
+      if (workspaceCurrent) {
         setState(() {
           _picking = false;
           _error = 'Fotoğraf seçilemedi. Yeniden dene.';
         });
       }
     } finally {
-      if (mounted) setState(() => _picking = false);
+      if (workspaceCurrent) setState(() => _picking = false);
     }
   }
 
@@ -144,6 +146,7 @@ class _MerchantListingMediaState extends State<MerchantListingMedia> {
     ),
   );
   Future<void> _move(int index, int delta) async {
+    if (!workspaceCurrent || _busy || _media == null) return;
     final ids = _media!.images.map((i) => i.id).toList();
     final id = ids.removeAt(index);
     ids.insert(index + delta, id);

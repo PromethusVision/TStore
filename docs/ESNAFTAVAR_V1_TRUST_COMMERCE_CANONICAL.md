@@ -829,6 +829,37 @@ Eleven native checkpoints and seven independent server observations passed.
 The runtime required no change. See [native operational handoff](MERCHANT_PILOT_NATIVE_OPERATIONS_HANDOFF.md).
 Full J and real pilot opening remain OPEN.
 
+### 4.17 Daily catalog and media session continuity — 2026-10-21
+
+After integrated `05bd42b7`, the next local package completes the existing
+§§4.2–4.3 boundary for profile/onboarding, owned listings, catalog submissions,
+daily operations and owned photography. No FROZEN product rule changes.
+
+- Adapt the existing Merchant request fence to the shared authenticated request
+  scope. Observe the user and stable key captured in each Auth event. A replaced
+  session, intervening logout or lost observation permanently retires that request,
+  even if the live getter subsequently returns its original value. Reject both
+  late success and late failure before legacy fallback, another private image URL,
+  upload/publication or other continuation. Preserve ordinary token renewal.
+- Retain the existing 15-second read limits and unbounded mutation acknowledgement
+  waits. Closing an abandoned read releases its listeners and prevents subsequent
+  dispatch; it does not cancel a request already sent to the server.
+- A still-mounted form may belong to an invalid workspace until the next frame.
+  Bind catalog/profile/media continuations to the existing host revision and Auth
+  identity. Check after gallery selection, file-size/byte reads, lookup, save and
+  editor return. An old callback cannot initiate a new mutation, refresh another
+  workspace or publish a success. The existing host still owns private route and
+  overlay removal; unchanged-session refresh keeps drafts and active work.
+- Preserve optimistic listing/shop revisions, exact submission retries and owned
+  upload intents. Do not retire uncertain uploads automatically, replay writes,
+  infer a receipt from matching values or persist private drafts/photo bytes.
+
+This client-only follow-through introduces no SQL, dependency, shared Auth system,
+Customer layout change, capability activation or hosted operation. Delivered
+APKs remain protected. Compilation rehearsals and automated tests do not close
+physical QR, participant selection, provider/distribution or final pilot gates.
+See [catalog continuity handoff](MERCHANT_CATALOG_SESSION_CONTINUITY_HANDOFF.md).
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

@@ -1,3 +1,4 @@
+import 'package:t_store/features/merchant/presentation/merchant_workspace_continuation.dart';
 import 'package:flutter/material.dart';
 import 'package:t_store/features/merchant/presentation/merchant_read.dart';
 import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
@@ -27,7 +28,8 @@ class MerchantProductSubmission extends StatefulWidget {
       _MerchantProductSubmissionState();
 }
 
-class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
+class _MerchantProductSubmissionState extends State<MerchantProductSubmission>
+    with MerchantWorkspaceContinuation<MerchantProductSubmission> {
   final _form = GlobalKey<FormState>();
   late final TextEditingController _name;
   final _brand = TextEditingController(),
@@ -61,7 +63,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
     _gtin.text = widget.initialGtin;
     for (final c in [_name, _brand, _model, _variant, _gtin]) {
       c.addListener(() {
-        if (mounted) {
+        if (workspaceCurrent) {
           setState(() => _suggestions = null);
         }
       });
@@ -78,12 +80,13 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
   }
 
   Future<void> _load() async {
+    if (!mounted || !workspaceCurrent) return;
     final epoch = ++_readEpoch;
     setState(() => _categoriesLoading = true);
     final result = await merchantRead(
       () => widget.catalog.categories(widget.access),
     );
-    if (!mounted || epoch != _readEpoch) return;
+    if (!workspaceCurrent || epoch != _readEpoch) return;
     setState(() {
       _categoriesLoading = false;
       result.fold(
@@ -110,7 +113,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
     uniqueToShop: _unique,
   );
   Future<void> _existing(ProductEntity product) async {
-    if (_opening) return;
+    if (!workspaceCurrent || _opening) return;
     _opening = true;
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
@@ -123,11 +126,13 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
       ),
     );
     _opening = false;
-    if (mounted && saved == true) Navigator.pop(context, true);
+    if (mounted && workspaceCurrent && saved == true) {
+      Navigator.pop(context, true);
+    }
   }
 
   Future<void> _send({bool continueNew = false}) async {
-    if (_busy || !_form.currentState!.validate()) return;
+    if (!workspaceCurrent || _busy || !_form.currentState!.validate()) return;
     final draft = _sentDraft ?? _draft;
     if (draft.error != null) {
       setState(() => _error = draft.error);
@@ -143,7 +148,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
         final lookup = await merchantRead(
           () => widget.catalog.lookup(widget.access, draft.name, draft.gtin),
         );
-        if (!mounted) return;
+        if (!mounted || !workspaceCurrent) return;
         final value = lookup.fold((e) {
           _error = e;
           return null;
@@ -160,7 +165,7 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
         _requestId,
         draft,
       );
-      if (!mounted) return;
+      if (!mounted || !workspaceCurrent) return;
       final saved = result.fold((e) {
         _error = e;
         return null;
@@ -173,11 +178,11 @@ class _MerchantProductSubmissionState extends State<MerchantProductSubmission> {
         Navigator.pop(context, true);
       }
     } catch (_) {
-      if (mounted) {
+      if (workspaceCurrent) {
         setState(() => _error = 'Başvuru gönderilemedi. Yeniden dene.');
       }
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (workspaceCurrent) setState(() => _busy = false);
     }
   }
 
@@ -360,7 +365,8 @@ class MerchantSubmissions extends StatefulWidget {
   State<MerchantSubmissions> createState() => _MerchantSubmissionsState();
 }
 
-class _MerchantSubmissionsState extends State<MerchantSubmissions> {
+class _MerchantSubmissionsState extends State<MerchantSubmissions>
+    with MerchantWorkspaceContinuation<MerchantSubmissions> {
   List<ProductSubmission> _items = [];
   String? _error;
   bool _loading = false, _more = false;
@@ -373,7 +379,7 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
   }
 
   Future<void> _load({bool refresh = true}) async {
-    if (_loading) return;
+    if (!workspaceCurrent || _loading) return;
     final epoch = ++_epoch;
     setState(() {
       _loading = true;
@@ -389,7 +395,7 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
             ? widget.catalog.submissions(widget.access)
             : widget.catalog.submissions(widget.access, page: _page),
       );
-      if (!mounted || epoch != _epoch) return;
+      if (!workspaceCurrent || epoch != _epoch) return;
       setState(() {
         _loading = false;
         r.fold((e) => _error = e, (v) {
@@ -402,7 +408,7 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
         });
       });
     } catch (_) {
-      if (mounted && epoch == _epoch) {
+      if (workspaceCurrent && epoch == _epoch) {
         setState(() {
           _loading = false;
           _error = 'Başvurular yüklenemedi. Yeniden dene.';
@@ -412,12 +418,12 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
   }
 
   Future<void> _add(ProductSubmission s) async {
-    if (_loading || s.productId == null) return;
+    if (!workspaceCurrent || _loading || s.productId == null) return;
     setState(() => _loading = true);
     final r = await merchantRead(
       () => widget.catalog.approvedProduct(widget.access, s.productId!),
     );
-    if (!mounted) return;
+    if (!mounted || !workspaceCurrent) return;
     setState(() => _loading = false);
     final p = r.fold((e) {
       setState(() => _error = e);
@@ -437,7 +443,9 @@ class _MerchantSubmissionsState extends State<MerchantSubmissions> {
         ),
       ),
     );
-    if (mounted && saved == true) Navigator.pop(context, true);
+    if (mounted && workspaceCurrent && saved == true) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override

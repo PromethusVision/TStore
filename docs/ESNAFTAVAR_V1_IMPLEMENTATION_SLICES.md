@@ -109,6 +109,23 @@ Auth/Storage contracts, full Flutter regressions and both debug artifacts.
 Full G/H1/I/J and remote rollout gates stay open.
 See [delivery and verification](MERCHANT_CATALOG_RECOVERY_HANDOFF.md).
 
+### A catalog/media session continuity follow-through — 2026-10-21
+
+After `05bd42b7`, implement canonical §4.17 on
+`agent/merchant-catalog-session-continuity`. Reproduce queued Auth replacement /
+logout-return races in the actual SDK adapters, then reuse the common request
+scope for Merchant listings/profile, catalog/media and daily-operation reads.
+Fence screen continuations before the host's next frame, including native gallery
+and file reads, lookup-to-submission, editor saves and return refreshes. Preserve
+valid renewal, draft recovery, same-request retry and existing server contracts.
+
+Validate success/error controls, read deadlines, subscription disposal, multi-step
+upload/signing/fallback behavior, host widgets, adjacent and full Flutter tests,
+analyzer and Customer/Merchant Android compilation. No server or migration change,
+hosted access, feature activation or replacement of delivered APKs. Integration
+and physical J remain separate gates.
+See [handoff](MERCHANT_CATALOG_SESSION_CONTINUITY_HANDOFF.md).
+
 ## B — Existing QR, immutable purchase terms, claim, returns and invalidation
 
 - **DB:** extend existing qr_sessions through claim/manual-code companions, device

@@ -1,3 +1,4 @@
+import 'package:t_store/features/merchant/presentation/merchant_workspace_continuation.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:t_store/features/merchant/presentation/merchant_edit_recovery.dart';
@@ -21,7 +22,8 @@ class MerchantShopForm extends StatefulWidget {
   State<MerchantShopForm> createState() => _MerchantShopFormState();
 }
 
-class _MerchantShopFormState extends State<MerchantShopForm> {
+class _MerchantShopFormState extends State<MerchantShopForm>
+    with MerchantWorkspaceContinuation<MerchantShopForm> {
   final _form = GlobalKey<FormState>();
   late final TextEditingController _name,
       _description,
@@ -56,6 +58,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
     _sunday = TextEditingController(text: h['sun']?.toString());
     _baseline = _draft.toPayload();
     _recovery = MerchantEditRecovery(
+      isCurrent: () => workspaceCurrent,
       read: () async {
         final result = await widget.repository.loadAccess();
         return result.flatMap((fresh) {
@@ -85,7 +88,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
   }
 
   void _changed() {
-    if (mounted) setState(() {});
+    if (workspaceCurrent) setState(() {});
   }
 
   Map<String, dynamic> _payload(ShopEntity s) => MerchantShopDraft(
@@ -101,6 +104,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
       merchantValuesEqual(_submitted!.toPayload(), _payload(current));
 
   void _review(ShopEntity? current, {required bool keepDraft}) {
+    if (!mounted || !workspaceCurrent) return;
     if (current == null && _access.shop != null) return;
     _access = MerchantAccess(user: widget.access.user, shop: current);
     _baseline = current == null
@@ -162,7 +166,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
   }
 
   Future<void> _save() async {
-    if (_locked || !_form.currentState!.validate()) return;
+    if (!workspaceCurrent || _locked || !_form.currentState!.validate()) return;
     final draft = _draft;
     if (draft.error != null) {
       setState(() => _error = draft.error);
@@ -174,7 +178,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
     final saved = await _recovery.save(
       () => widget.repository.saveShop(_access, draft),
     );
-    if (!mounted) return;
+    if (!mounted || !workspaceCurrent) return;
     if (saved != null) {
       merchantSaved(context, 'Mağaza bilgileri kaydedildi.');
       widget.onSaved();
@@ -236,6 +240,7 @@ class _MerchantShopFormState extends State<MerchantShopForm> {
             onUseCurrent: _recovery.current == null
                 ? null
                 : () {
+                    if (!mounted || !workspaceCurrent) return;
                     if (_matches(_recovery.current!)) {
                       widget.onSaved();
                     } else {

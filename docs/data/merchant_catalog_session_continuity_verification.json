@@ -1,0 +1,138 @@
+{
+  "kind": "esnaftavar-catalog-session-continuity-verification-v1",
+  "date": "2026-10-21",
+  "status": "LOCAL_PASS_INTEGRATION_PENDING",
+  "branch": "agent/merchant-catalog-session-continuity",
+  "base_commit": "05bd42b705369aa5653c2e4a7e449e01b9ebba22",
+  "build_parent_commit": "05bd42b705369aa5653c2e4a7e449e01b9ebba22",
+  "uncommitted_build_sources": true,
+  "source_sha256": "e534d5dfad615052509a09296c66046ae7c157539e390192cfa2c0037e1dc501",
+  "source_fingerprint_matches_built_pair": true,
+  "reproduced": {
+    "transport": {
+      "success": false,
+      "passed": 16,
+      "failed": 36,
+      "skip_names": [],
+      "log": ".buildlog/catalog-baseline-final.jsonl",
+      "log_sha256": "121fa49bc1fa9ad696d78f2cb6afa400c4e974f47e6ac2b7e7014b1fa0b75e48"
+    },
+    "workspace": {
+      "success": false,
+      "passed": 3,
+      "failed": 6,
+      "skip_names": [],
+      "log": ".buildlog/workspace-baseline-final.jsonl",
+      "log_sha256": "33e1cdd8210308cabae1a91b6ffe16178d8a489b0c7c9ab0e8e1f4c09267bb73"
+    }
+  },
+  "targeted": {
+    "success": true,
+    "passed": 1124,
+    "failed": 0,
+    "skip_names": [],
+    "log": ".buildlog/catalog-targeted-verified.jsonl",
+    "log_sha256": "dcffd36c3acefcea3c3a47fccfad2bd5123c2f80c19caaf4314340677b1e03f6"
+  },
+  "final_new_regressions": {
+    "success": true,
+    "passed": 88,
+    "failed": 0,
+    "skip_names": [],
+    "log": ".buildlog/catalog-new-final.jsonl",
+    "log_sha256": "9de667f55b0cfe898ee1e99d120b19072eae98a75fd22b070c2f0dc77de7a358"
+  },
+  "fixture_corrections": "Initial harness corrected local logout endpoint recursion and ambiguous Scrollable selection before final baseline evidence. Post-fix assertion restricted body decoding to JSON REST requests instead of binary Storage. No production behavior inferred from those fixture errors. Initial targeted command included a nonexistent test path; final corrected command passed.",
+  "full_flutter": {
+    "success": true,
+    "passed": 3604,
+    "failed": 0,
+    "skip_names": [
+      "Wave 4 Development Realtime integration chat Realtime preserves participant RLS and lifecycle semantics",
+      "Wave 4 Development Realtime integration notification trigger Realtime isolates recipients and lifecycle",
+      "anonymous Production client initializes and sees canonical demo reads",
+      "anonymous Production client sees the complete Esenler demo customer flow",
+      "normal Auth clients enforce live development customer ownership and RLS",
+      "normal Auth clients verified lifecycle ve unverified rejection görür"
+    ],
+    "log": ".buildlog/catalog-full.jsonl",
+    "log_sha256": "4e498bc49d52689d5aa07820eecf9915397fe2bc1525bee41d02c2dee79c728f",
+    "existing_conditional_skips": 6,
+    "skip_identities_unchanged": true,
+    "integrated_main_baseline": 3516,
+    "new_tests": 88,
+    "concurrency": 2
+  },
+  "analyzer": {
+    "result": "PASS",
+    "issues": 0,
+    "log": ".buildlog/catalog-analyze-pass.log"
+  },
+  "builds": {
+    "customer_development_debug": "PASS",
+    "merchant_pilot_debug": "PASS",
+    "merchant_development_debug": {
+      "result": "PASS",
+      "application_id": "com.esnaftavar.app.merchant.dev",
+      "callback": "com.esnaftavar.app.merchant.dev://login-callback/",
+      "callback_verified": true,
+      "file": ".buildlog/pilot-device/catalog-session-continuity-20261021/merchant-development.apk",
+      "sha256": "0884cf05209c606504761deb7fa6f410f8d5fd067f34d6b6d8757c23ecf8bde8",
+      "bytes": 119478819,
+      "signature_verified": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "log": ".buildlog/catalog-merchant-development-build.log"
+    },
+    "pair_compatibility": {
+      "result": "PASS",
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "paths": [
+        "test/widget/shop/catalog_price_compatibility_test.dart",
+        "test/unit/merchant/merchant_pilot_config_test.dart",
+        "test/unit/auth/auth_callback_contract_test.dart",
+        "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+        "test/unit/merchant/merchant_account_recovery_test.dart",
+        "test/widget/merchant/merchant_pilot_auth_test.dart",
+        "tool/pilot_device/preflight_test.dart"
+      ]
+    },
+    "pair_evidence": "merchant_catalog_session_continuity_build_pair.json",
+    "configuration": "SYNTHETIC_COMPILE_REHEARSAL_NOT_DISTRIBUTABLE",
+    "nonfatal_kotlin_incremental_cache_diagnostics": [
+      ".buildlog/pilot-device/catalog-session-continuity-20261021/customer.build.log"
+    ]
+  },
+  "build_cache_handling": {
+    "tracked_runner_unchanged": true,
+    "task_owned_generated_build_directory_on_temp_drive": true,
+    "global_flutter_configuration_changed": false,
+    "task_owned_cache_removed_after_verified_artifact_copy": true
+  },
+  "delivered_apks_unchanged": {
+    "sha256": [
+      "d4b89751f0c1ae2ce28e28af09ae8eaefdcb4f46a1f2e38b967108cc0fcce0a7",
+      "d90881a7fc9dea13f113dc594790ca1c59e54319411dbf39fb1d84895ad527d5"
+    ]
+  },
+  "previous_transaction_promotion_reward_trust_statement_artifacts_unchanged": true,
+  "database_validation": "N/A_NO_SQL_CHANGE",
+  "economic_rule_changes": "NONE",
+  "production_access": "NONE",
+  "hosted_development_access": "NONE",
+  "remote_writes": "NONE",
+  "migration_applied": false,
+  "provider_configuration_or_sends": "NONE",
+  "features_default_off": true,
+  "physical_two_device": "OPEN",
+  "provider_delivery": "OPEN",
+  "pilot_ready": false,
+  "delivery_audit": {
+    "scope_files": 20,
+    "source_fingerprint": "PASS",
+    "diff_check": "PASS",
+    "secret_pii_scan": "PASS_ADDED_LINES_AND_NEW_FILES",
+    "existing_tests_changed": false
+  }
+}
