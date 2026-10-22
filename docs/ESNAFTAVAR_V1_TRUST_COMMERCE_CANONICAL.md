@@ -918,6 +918,66 @@ evidence stale; preserve that evidence and its refusal of changed sources rather
 than relabeling it as current. Device, cohort, provider and pilot-opening gates
 remain separate. See [daily-use handoff](MERCHANT_ACCESSIBLE_DAILY_USE_HANDOFF.md).
 
+### 4.20 MVP priority and physical pilot acceptance — 2026-10-22
+
+After integration of accessible daily use (`d037c739`), the Product Owner
+explicitly prioritizes reaching the MVP and opening the first pilot over further
+general refinement. The owner is available for physical checks and reports two
+Android phones. This is a work-priority decision, not a change to FROZEN product
+rules or permission to declare unobserved acceptance complete.
+
+- Select work that removes a demonstrated blocker in the first merchant journey:
+  access, shop setup, a small selected physical-product catalog, listing price/
+  availability/photo, Customer visibility and the existing two-device QR flow.
+  Defer optional polish, speculative hardening and new business capabilities.
+- Reuse the existing Development project, account/provider architecture, paired
+  build tooling and field checklist. Preserve the installed older APK pair as
+  historical evidence; produce a separate current pair from reviewed main.
+- Use physical observations to decide necessary fixes. A phone installation,
+  login screen or technical test PASS does not prove merchant authority, a usable
+  catalog or completed purchase. Keep user reports separate from server counts.
+- Prepare the smallest concrete account/catalog/field-operation proposal from
+  current facts. Existing hosted approval boundaries apply; no invented real
+  merchant, product, role grant, publication or purchase is implied by this scope.
+  Any explicitly proposed Development-only rehearsal data must be distinguished
+  from a selected real pilot participant before approval.
+- Existing owner isolation, accurate prices, purchase uniqueness and recovery
+  protection remain required. Optional business features stay OFF. A narrower
+  final launch feature set, if needed, must be an explicit Product Owner decision;
+  this priority change does not silently waive a FROZEN requirement.
+
+Production and main integration remain outside the Merchant Agent's scope.
+Customer layouts and historical qualification records are preserved. Record
+actual device results and the remaining launch blockers in one bounded handoff;
+do not create another general hardening package without a pilot-blocking finding.
+
+Explicit Development follow-up: the owner separately authorized changing only
+the existing owner-controlled, email-confirmed test account from `customer` to
+`merchant` in `tnipyxnvhgelwdpykyez`. A guarded single-row transaction was
+executed and the role was independently read back. This supersedes that account's
+earlier no-merchant-authority state; it grants no general provisioning authority.
+No shop, product, publication, purchase, feature flag or Production change is
+covered by that approval. The actual role-denied phone observation preceded this
+grant and belongs to the older installed candidate, not the new paired artifacts.
+
+First-product follow-up (2026-10-22): the owner replaced a medicine candidate,
+which remains excluded by the existing taxonomy baseline, with a barcode-less
+10,000 mAh Baseus EnerFill FM11 powerbank at an owner-selected Development test
+listing price of TRY 990. Manufacturer evidence identifies Baseus as the brand;
+MagSafe describes compatibility, not the brand. No barcode, color, purchase or
+real pilot qualification is inferred.
+
+The owner explicitly approved completing **Elektronik → Güç, Şarj & Bağlantı →
+Powerbank** as one assignable L3 product-type leaf. This fills the previously
+unresolved lower branch without changing the owner-final L1/L2 placement or
+reinstating the superseded phone-accessories path. Capacity, brand, model and
+compatibility remain attributes. The existing L2 stays non-assignable; unrelated
+nodes, historical manifests, aliases and migration sources remain unchanged.
+Authority covers local additive preparation and validation only. Hosted category
+creation/activation, submission publication and listing writes require their own
+concrete reviewed approval; Production is outside this task. No old qualification
+record may be relabeled current to prepare the change.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

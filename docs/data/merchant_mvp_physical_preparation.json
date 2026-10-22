@@ -1,0 +1,186 @@
+{
+  "kind": "merchant-mvp-physical-preparation-v1",
+  "recorded_at_utc": "2026-10-21T23:07:20.430Z",
+  "result": "CURRENT_ARTIFACTS_VERIFIED_ACCOUNT_GRANTED_PHYSICAL_ACCEPTANCE_OPEN",
+  "source_commit": "d037c7397208c2f9c94b4b910c583a7d6b245fbb",
+  "source_sha256": "116381f2b3f5406e73fab0a39edc2081c4b704a438ad6154f791687c30f92c39",
+  "bundle_id": "5e5f642cab8e69ce8b4f2eb48beba8fdcd0d258a6ae8f18e3c840ebdd710bfe5",
+  "project_ref": "tnipyxnvhgelwdpykyez",
+  "purpose": "device-candidate",
+  "mode": "debug",
+  "capabilities": {
+    "QR_CLAIMS_V2_ENABLED": false,
+    "REWARD_EARNING_V1_ENABLED": false,
+    "COUPON_CHECKOUT_V1_ENABLED": false,
+    "TRUST_COMMERCE_V1_ENABLED": false,
+    "REVIEWS_V2_ENABLED": false,
+    "MERCHANT_STATEMENT_V1_ENABLED": false,
+    "MERCHANT_PROMOTION_V1_ENABLED": false,
+    "MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED": false
+  },
+  "canonical_taxonomy": false,
+  "tests": {
+    "result": "PASS",
+    "passed": 135,
+    "failed": 0,
+    "skipped": 0,
+    "paths": [
+      "test/widget/shop/catalog_price_compatibility_test.dart",
+      "test/unit/merchant/merchant_pilot_config_test.dart",
+      "test/unit/auth/auth_callback_contract_test.dart",
+      "test/unit/merchant/merchant_recovery_sdk_race_test.dart",
+      "test/unit/merchant/merchant_account_recovery_test.dart",
+      "test/widget/merchant/merchant_pilot_auth_test.dart",
+      "tool/pilot_device/preflight_test.dart"
+    ]
+  },
+  "analyzer": {
+    "elapsed_seconds": 63.7,
+    "issues": 0,
+    "result": "PASS"
+  },
+  "artifacts": [
+    {
+      "role": "customer",
+      "application_id": "com.esnaftavar.app.dev",
+      "label": "EsnaftaVar Dev",
+      "callback": "io.supabase.tstore://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "40ce6602d7321243320224363a66bf6f24c281411a8cccf368a9599972bcdcae",
+      "bytes": 154847511,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "customer.apk",
+      "flavor": "development",
+      "target": "lib/main_development.dart"
+    },
+    {
+      "role": "merchant",
+      "application_id": "com.esnaftavar.app.merchant.pilot",
+      "label": "EsnaftaVar Esnaf Pilot",
+      "callback": "com.esnaftavar.app.merchant.pilot://login-callback/",
+      "version_code": 5,
+      "version_name": "1.0.0",
+      "debuggable": true,
+      "certificate_sha256": "2e938b2733f51283c2c300974ec2aee9409d1799ec423eab1a51512e26e17a95",
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "sha256": "fc0a5656f15daefc14e4516d99045393c82e63c3a9219bcd27b8d77fe299304c",
+      "bytes": 119493887,
+      "payload_scan": {
+        "backend_url_present": true,
+        "supplied_client_key_present": true,
+        "catalog_price_marker_present": true,
+        "scan_scope": "REQUIRED_LITERALS_ONLY_NOT_BEHAVIOR_OR_SECRET_PROOF",
+        "payload": "assets/flutter_assets/kernel_blob.bin"
+      },
+      "file": "merchant.apk",
+      "flavor": "merchantPilot",
+      "target": "lib/main_merchant_pilot.dart"
+    }
+  ],
+  "toolchain": {
+    "flutter": "3.41.9",
+    "framework_revision": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "dart": "3.11.5",
+    "android_build_tools": "35.0.0"
+  },
+  "local_delivery": {
+    "old_bundle_id": "0494b23da3307969c1c76a8634aacfd870de829ae1e59e8c3a22390c663eae6e",
+    "old_download_pair": "UNCHANGED",
+    "identity_and_certificate_match_previous": "PASS",
+    "hash_verification": "PASS",
+    "folder_name": "EsnaftaVar-MVP-d037c739"
+  },
+  "development_observation_before": {
+    "approved_test_account_email_confirmed": true,
+    "catalog_products": 0,
+    "merchant_accounts": 0,
+    "shop_listings": 0,
+    "shops": 0,
+    "approved_test_account_role": "customer",
+    "source": "Official project SQL panel; read-only transaction"
+  },
+  "authorized_role_change": {
+    "postcheck": "Independent SELECT: approved account merchant, total merchant accounts 1, shops 0",
+    "expected_rows": 1,
+    "scope": "One existing owner-controlled Development test account",
+    "authorization": "Explicit owner reply in this task",
+    "concurrency": "Profile and Auth row locks in one transaction",
+    "personal_information_committed": false,
+    "preconditions": "Exact existing account; matching profile/Auth email; confirmed email; old customer role",
+    "account_identifiers_committed": false,
+    "replay_allowed": false,
+    "to": "merchant",
+    "from": "customer"
+  },
+  "phone_observations": {
+    "two_device_qr": "OPEN",
+    "current_pair_installation": "MERCHANT_OWNER_REPORTED_PASS_CUSTOMER_UNCONFIRMED",
+    "current_merchant_installation": "OWNER_REPORTED_PASS",
+    "current_customer_installation": "AWAITING_OWNER",
+    "source": "Owner report; no independent phone inspection",
+    "pre_grant_login": "SUCCESS_FOLLOWED_BY_EXPECTED_NO_MERCHANT_AUTHORITY",
+    "current_pair_onboarding": "OWNER_REPORTED_PASS_SHOP_CREATION_SERVER_CONFIRMED",
+    "current_merchant_screen": "DASHBOARD_AND_EMPTY_PRODUCTS_LIST_OWNER_REPORTED",
+    "previous_current_merchant_screen": "Mağazanı oluştur",
+    "shop_creation": "OWNER_REPORTED_COMPLETED_WITH_OWNER_CHOSEN_NAME",
+    "merchant_dashboard_and_empty_list": "OWNER_REPORTED_PASS",
+    "observed_installed_artifact_hash": "NOT_INDEPENDENTLY_VERIFIED",
+    "initial_screen_identified": "LOGIN_SCREEN_NOT_DASHBOARD",
+    "legacy_merchant_label": "EsnaftaVar Esnaf Pilot",
+    "reported_android_devices": 2
+  },
+  "development_observation_after_owner_shop_creation": {
+    "source": "Official Development SQL panel; read-only transaction",
+    "selected_account_owned_shop_count": 1,
+    "shop_name_matches_owner_report": true,
+    "shop_active": true,
+    "location_present": false,
+    "shop_listings": 0,
+    "catalog_products": 0,
+    "shop_created_by": "OWNER_THROUGH_PHONE_FLOW",
+    "agent_shop_write": false,
+    "proposed_demo_name_applied": false,
+    "real_pilot_participant_qualification": "NOT_ESTABLISHED"
+  },
+  "mutations": {
+    "production_writes": "NONE",
+    "development": "ONE_EXPLICITLY_APPROVED_PROFILE_ROLE_TRANSITION",
+    "production_access": "NONE",
+    "provider_sent": false,
+    "migration_applied": false,
+    "purchase_created": false,
+    "catalog_published": false,
+    "shop_created": true,
+    "shop_creation_actor": "OWNER; AGENT_ONLY_READ_BACK_THE_RECORD"
+  },
+  "powerbank_preparation": {
+    "owner_authority": "LOCAL_CATEGORY_PREPARATION_AND_TEST_ONLY",
+    "path": ["Elektronik", "Güç, Şarj & Bağlantı", "Powerbank"],
+    "product_intake": {"brand": "Baseus", "model": "EnerFill FM11", "capacity_mah": 10000, "barcode": null, "listing_price_try": 990},
+    "manifest": "docs/data/merchant_pilot_powerbank_category.json",
+    "local_proof": "docs/data/merchant_pilot_powerbank_acceptance.json",
+    "local_database_groups": 14,
+    "local_current_client_checkpoints": 7,
+    "adjacent_node_tests": {"pass": 80, "fail": 0, "skip": 0},
+    "analyzer": {"result": "PASS", "issues": 0, "elapsed_seconds": 41.6},
+    "hosted_observation": "READ_ONLY_EXACT_INSTALLED_SCHEMA_1563_STAGED_NODES_EMPTY_CATALOG",
+    "hosted_category_write": false,
+    "hosted_product_publication": false,
+    "new_apk_required": false,
+    "historical_proofs": "PRESERVED_NOT_REQUALIFIED"
+  },
+  "distribution_ready": false,
+  "pilot_ready": false
+}

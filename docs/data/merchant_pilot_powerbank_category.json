@@ -1,0 +1,21 @@
+{
+  "kind": "merchant-pilot-powerbank-category-v1",
+  "owner_decision_date": "2026-10-22",
+  "authority": "LOCAL_PREPARATION_AND_TEST_ONLY",
+  "path": ["Elektronik", "Güç, Şarj & Bağlantı", "Powerbank"],
+  "root_id": "dae0270c-90ac-4248-919b-05531cf7c0e8",
+  "parent_id": "1bd43c2b-adb9-42a9-9a8e-f179e11739e8",
+  "node": {
+    "id": "e704d61e-72ca-4609-ba79-e431c780881d",
+    "name": "Powerbank",
+    "source_key": "CANONICAL-001564",
+    "slug": "powerbank-001564",
+    "level": 3,
+    "sort_order": 1,
+    "policy_class": "NORMAL",
+    "professional_review_status": "not_required",
+    "taxonomy_version": "canonical-v1.0.0"
+  },
+  "identity_note": "One newly allocated UUIDv4 for this Development proposal; preserve it on retry. No production allocation or historical manifest rewrite.",
+  "remote_authorized": false
+}
