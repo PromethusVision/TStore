@@ -1,0 +1,173 @@
+{
+  "result": "PASS",
+  "captured_at": "2026-10-23T15:54:32.832Z",
+  "profile": "shop-profile-local-only",
+  "migrations": [
+    {
+      "file": "20260812000100_0001_core_auth_catalog.sql",
+      "sha256": "243274d0122f663396ec1a4b9ce52f79a7356fd85ce8f8d1e51316b62f62fb67"
+    },
+    {
+      "file": "20260812000200_0002_shops.sql",
+      "sha256": "cc312e902b0c373c4541208e2794a8d68c4339b1150cd12ac77be683161973dd"
+    },
+    {
+      "file": "20260812000300_0003_carts_v2.sql",
+      "sha256": "938e68ed4fa960c678f66d926c8fd483ed9f95717fd4b73a585cee86a29f7056"
+    },
+    {
+      "file": "20260812000400_0004_qr_verified_purchases.sql",
+      "sha256": "ca955261ca1a1b9a1851a4dfc241be7236985590c14e1916ce026928710993b0"
+    },
+    {
+      "file": "20260812000500_0005_verified_shop_ratings.sql",
+      "sha256": "76c71f6a8f58bc2258ed1ce3228e39208a6fdb571fc16f6ee023c79b30910b26"
+    },
+    {
+      "file": "20260812000600_0006_chat_notifications_account.sql",
+      "sha256": "0b77451d1c0eca987a8b5e69986c2490c983a112520710d2e093e8b9490d2fd7"
+    },
+    {
+      "file": "20260812000700_0007_storage_realtime.sql",
+      "sha256": "44643411998cae333f8196cbcb99a7a00799cfd0d6b7a1cb72e0d536c07b119e"
+    },
+    {
+      "file": "20260814000800_0008_fix_profile_role_guard.sql",
+      "sha256": "126b650f72c20682dca4f2de0d762221933159910a0e4f7df8cbc5c132021c73"
+    },
+    {
+      "file": "20260815000900_0009_verified_product_reviews_storage.sql",
+      "sha256": "c7f7ac5ef91777ca2ec33e3a9faa642207dbf7ace05f03b5fafbfa227c936bdc"
+    },
+    {
+      "file": "20260829001000_0010_canonical_taxonomy_v1_staged_bootstrap.sql",
+      "sha256": "60a3d773fbc79b5f4a3bc3c9e1725421a5dc2d1db28617393cf46fd42ccf8b04"
+    },
+    {
+      "file": "20260830001100_0011_canonical_taxonomy_contract_v2.sql",
+      "sha256": "a963f953abb0f1534d35fc8d4e108d383966ac16a2957b8629093aec3d197550"
+    },
+    {
+      "file": "20261013001600_0016_catalog_listing_media.sql",
+      "sha256": "759b0876eb2bf2b8028fec2bc61a4ae010931a4df1be6457c4c9bdaefc59985c"
+    },
+    {
+      "file": "20261014001700_0017_merchant_daily_operations.sql",
+      "sha256": "9b8bc69bfaa6c78d878a134a936e5c6ab89fd08cc913306fca4ab74b9d5da0e1"
+    },
+    {
+      "file": "20261023003200_0032_shop_profile.sql",
+      "sha256": "4fd3bcff1d7e8467cf7906711a4c10bdd9c689019cbc9348e652471b3fb6ba26"
+    }
+  ],
+  "services": [
+    {
+      "service": "db",
+      "image": "public.ecr.aws/supabase/postgres:17.11.0.004",
+      "image_id": "sha256:6058a6759ab9268cff8ee70641d61f1bd75953316281b76427cf5a6b4db2eafc",
+      "bindings": [
+        {
+          "container_port": "5432/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55432"
+        }
+      ]
+    },
+    {
+      "service": "kong",
+      "image": "public.ecr.aws/supabase/kong:2.8.1",
+      "image_id": "sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+      "bindings": [
+        {
+          "container_port": "8000/tcp",
+          "host_ip": "127.0.0.1",
+          "host_port": "55431"
+        }
+      ]
+    },
+    {
+      "service": "auth",
+      "image": "public.ecr.aws/supabase/gotrue:v2.197.0",
+      "image_id": "sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b",
+      "bindings": []
+    },
+    {
+      "service": "rest",
+      "image": "public.ecr.aws/supabase/postgrest:v16.4",
+      "image_id": "sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df",
+      "bindings": []
+    },
+    {
+      "service": "storage",
+      "image": "public.ecr.aws/supabase/storage-api:v1.82.1",
+      "image_id": "sha256:ec2ad41411eac8fc2b769b4bb00d1af32ae37eca3745c15bdb329db27d218934",
+      "bindings": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "additive upgrade preserves all existing shop fields",
+      "result": "PASS"
+    },
+    {
+      "name": "new bucket private, size limited and supported image types only",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign merchant, customer and anonymous cannot upload",
+      "result": "PASS"
+    },
+    {
+      "name": "malformed, unsupported and oversize uploads denied",
+      "result": "PASS"
+    },
+    {
+      "name": "owner can stage photo without publishing it",
+      "result": "PASS"
+    },
+    {
+      "name": "staged bytes cannot be overwritten",
+      "result": "PASS"
+    },
+    {
+      "name": "missing and arbitrary external photo references rejected atomically",
+      "result": "PASS"
+    },
+    {
+      "name": "invalid coordinate pairs/ranges rejected; valid pair and hours saved",
+      "result": "PASS"
+    },
+    {
+      "name": "version-checked publication makes only current photo readable",
+      "result": "PASS"
+    },
+    {
+      "name": "foreign and customer writes leave shop unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "owner cannot reference another shops uploaded image",
+      "result": "PASS"
+    },
+    {
+      "name": "revoked merchant role blocks uploads",
+      "result": "PASS"
+    },
+    {
+      "name": "deactivated shop hides photo and blocks staging",
+      "result": "PASS"
+    },
+    {
+      "name": "explicit removal clears pair and photo; old objects stay private",
+      "result": "PASS"
+    },
+    {
+      "name": "optional catalog decisions remain off",
+      "result": "PASS"
+    }
+  ],
+  "production_access": "NONE",
+  "hosted_access": "NONE",
+  "physical_photo_gps": "OPEN",
+  "old_apks": "PRESERVED"
+}

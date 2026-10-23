@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:t_store/features/shop/domain/entities/shop_opening_hours.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
@@ -962,9 +963,7 @@ class _NearbyShopCard extends StatelessWidget {
   }
 
   static String _formatOpeningHours(Map<String, dynamic> openingHours) {
-    return openingHours.entries
-        .map((entry) => '${entry.key}: ${entry.value}')
-        .join('\n');
+    return ShopOpeningHours.format(openingHours);
   }
 }
 

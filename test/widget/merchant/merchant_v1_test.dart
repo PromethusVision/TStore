@@ -47,7 +47,10 @@ void main() {
       'Yeni mağazam',
     );
     final save = find.widgetWithText(FilledButton, 'Mağazayı kaydet');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
     await tester.tap(save);
     await tester.pumpAndSettle();
     expect(find.text('Mağaza özeti'), findsOneWidget);

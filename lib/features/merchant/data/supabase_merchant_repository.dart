@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:t_store/features/merchant/domain/catalog_media_repository.dart'
+    show listingImageMime;
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:t_store/core/supabase/authenticated_session_key.dart';
@@ -16,7 +20,10 @@ import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 /// Reuses owner RLS and the Slice A publication gate when installed. The
 /// pre-Slice-A catalog read remains compatible until the reviewed migration.
 class SupabaseMerchantRepository
-    implements MerchantRepository, MerchantRecoveryRepository {
+    implements
+        MerchantRepository,
+        MerchantRecoveryRepository,
+        MerchantShopPhotoRepository {
   SupabaseMerchantRepository({
     required this.client,
     String? Function()? currentUserId,
@@ -124,6 +131,42 @@ class SupabaseMerchantRepository
     }
     return fresh;
   }
+
+  @override
+  Future<Either<String, String>> stageShopPhoto(
+    MerchantAccess access,
+    Uint8List bytes,
+  ) => _safe((scope) async {
+    final mime = listingImageMime(bytes);
+    if (mime == null || bytes.isEmpty || bytes.length > shopPhotoMaxBytes) {
+      throw const _MerchantFailure(
+        'En fazla 5 MB boyutunda JPEG, PNG veya WebP fotoğraf seçin.',
+      );
+    }
+    final fresh = await _authorize(scope, access);
+    final random = Random.secure();
+    final nonce = List.generate(
+      16,
+      (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+    ).join();
+    final ext = mime == 'image/jpeg'
+        ? 'jpg'
+        : mime == 'image/png'
+        ? 'png'
+        : 'webp';
+    final path = 'shops/${fresh.shop!.id}/$nonce.$ext';
+    await scope.run(
+      () => client.storage
+          .from(shopPhotoBucket)
+          .uploadBinary(
+            path,
+            bytes,
+            fileOptions: FileOptions(contentType: mime, upsert: false),
+          )
+          .timeout(const Duration(seconds: 40)),
+    );
+    return path;
+  }, read: false);
 
   @override
   Future<Either<String, MerchantAccess?>> loadAccess() =>

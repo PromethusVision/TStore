@@ -9,6 +9,7 @@ class ShopEntity extends Equatable {
   final double? latitude;
   final double? longitude;
   final String? phone;
+  final String? photoPath;
   final Map<String, dynamic> openingHours;
   final bool isActive;
   final double rating;
@@ -25,6 +26,7 @@ class ShopEntity extends Equatable {
     this.latitude,
     this.longitude,
     this.phone,
+    this.photoPath,
     this.openingHours = const {},
     this.isActive = true,
     this.rating = 0.0,
@@ -43,6 +45,7 @@ class ShopEntity extends Equatable {
     latitude,
     longitude,
     phone,
+    photoPath,
     openingHours,
     isActive,
     rating,
@@ -60,6 +63,9 @@ class ShopEntity extends Equatable {
     double? latitude,
     double? longitude,
     String? phone,
+    String? photoPath,
+    bool clearPhoto = false,
+    bool clearLocation = false,
     Map<String, dynamic>? openingHours,
     bool? isActive,
     double? rating,
@@ -73,9 +79,10 @@ class ShopEntity extends Equatable {
       name: name ?? this.name,
       description: description ?? this.description,
       address: address ?? this.address,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
+      latitude: clearLocation ? null : latitude ?? this.latitude,
+      longitude: clearLocation ? null : longitude ?? this.longitude,
       phone: phone ?? this.phone,
+      photoPath: clearPhoto ? null : photoPath ?? this.photoPath,
       openingHours: openingHours ?? this.openingHours,
       isActive: isActive ?? this.isActive,
       rating: rating ?? this.rating,

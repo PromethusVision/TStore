@@ -198,7 +198,8 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pump();
-    expect(launched?.queryParameters['query'], _shop.address);
+    expect(launched?.path, '/maps/dir/');
+    expect(launched?.queryParameters['destination'], _shop.address);
     await tester.tap(
       find.byKey(const Key('shop-profile-product-link-fixture-listing')),
     );

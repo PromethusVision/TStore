@@ -126,8 +126,11 @@ void main() {
     existing: creating ? null : listing,
   );
   Future<void> tap(WidgetTester t, String label) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    await t.pumpAndSettle();
     final finder = find.text(label);
     await t.ensureVisible(finder);
+    await t.pumpAndSettle();
     await t.tap(finder);
     await t.pumpAndSettle();
   }

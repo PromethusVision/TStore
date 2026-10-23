@@ -978,6 +978,45 @@ creation/activation, submission publication and listing writes require their own
 concrete reviewed approval; Production is outside this task. No old qualification
 record may be relabeled current to prepare the change.
 
+### 4.21 Shop profile completion for the first pilot — 2026-10-23
+
+The Product Owner approved one continuous implementation package for three
+observed Merchant gaps: shop photo, selectable opening hours and shop location.
+This implements the existing shop-management scope and does not reopen FROZEN
+economic, role, catalog or Customer layout decisions.
+
+- One optional shop photo, added/replaced/removed by its authorized owner. Reuse
+  Supabase Storage and the existing Auth/ownership boundary. Stage immutable
+  uploads, then publish the reference with the version-checked shop save. A lost
+  save response uses the existing authoritative recovery flow. A failed upload
+  never replaces the current image. New shops are saved before adding a photo.
+  Private objects use short-lived display URLs; removal revokes new public reads,
+  while the app requests five-minute signed URL expiry. This is not a guarantee
+  of recalling previously issued links or cached/downloaded copies. Unpublished
+  files remain private and are retained for separately reviewed cleanup. Maximum
+  input size is 5 MB; the app resizes to 1,024 pixels and re-encodes to remove
+  camera/location metadata. No arbitrary external photo URL input.
+- Opening hours use per-day time selection, an explicit Closed choice and a
+  separate Unspecified state, plus a Monday-to-weekdays shortcut. Pilot editing
+  supports one interval per day. Earlier closing times are visibly next-day;
+  equal times are rejected rather than silently claiming 24-hour opening.
+  Existing grouped/free-text hours are preserved until explicitly edited. Daily
+  values remain strings in existing JSON; Customer receives readable labels.
+  No automatic open/closed business logic or holiday scheduling is introduced.
+- Location is explicitly requested only while at the shop, never continuously
+  tracked or inferred from the address. Use a fresh phone position, show its
+  accuracy and a map-preview action, and require owner confirmation before the
+  coordinates enter the save draft. Failed/denied/inaccurate acquisition retains
+  existing coordinates. Removing coordinates is explicit. External map directions
+  use the saved coordinate pair; legacy address-only shops retain an address
+  fallback without claiming it is an exact verified point. No paid map/geocoding
+  service, embedded map SDK or new account is required for this package.
+
+Local additive migration and real local Auth/Storage validation are authorized;
+hosted Development application requires a separate concrete approval. Production
+is excluded. Integration Agent owns main merge. Preserve delivered APK pairs;
+new device photo/location checks remain open while the owner is away.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

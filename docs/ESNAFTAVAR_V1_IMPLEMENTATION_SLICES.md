@@ -1057,6 +1057,27 @@ observation guards and local database/client acceptance. Preserve the immutable
 1,563-node historical bootstrap, existing category IDs and old J7/J9/J16 evidence.
 Neither this local approval nor the test-product intake authorizes hosted writes.
 
+### J18 — Shop profile completion (2026-10-23)
+
+Implement canonical §4.21 as one bounded Merchant package: optional owned shop
+photo, daily time pickers/closed/unspecified and explicit shop-position capture.
+Reuse existing shop version checks, session continuation, uncertain-save recovery,
+Storage, geolocator and external URL launcher. Preserve old grouped/free-text
+hours and Customer layouts; adapt existing Customer avatar, hours and directions.
+Do not activate any optional business feature or revisit deferred email behavior.
+
+Prepare additive 0032 with a private photo bucket, immutable owned uploads,
+publication-reference validation and complete coordinate-pair validation on new
+edits. Rehearse against a fresh local base-core Auth/PostgREST/Storage stack;
+historical qualification fingerprints must continue to reject changed sources.
+Cover unauthorized/foreign uploads, unpublished reads, invalid references,
+replacement/removal, optimistic conflicts and lost replies. Add unit/widget
+tests for hours compatibility, no confirmation/no location write, location errors,
+image failures, session changes, narrow screens and recoverable saves. Run
+analyzer, full Flutter regression and both development Android builds. Preserve
+earlier distributed APKs and evidence. Hosted apply, physical image/GPS acceptance
+and pilot launch remain separate gates; main merge belongs to Integration Agent.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

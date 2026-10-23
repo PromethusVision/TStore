@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -407,17 +408,19 @@ void main() {
   );
 
   testWidgets(
-    'shop opening-hour label is fully readable before and during typing',
+    'shop opening-hour choice is fully readable before and after selection',
     (tester) async {
       await compact(tester, MerchantPreview(hasShop: false));
-      final field = input('Cumartesi çalışma saatleri');
+      final field = find.byKey(const ValueKey('hours-sat'));
       await reveal(tester, field);
-      readable(tester, 'Cumartesi çalışma saatleri');
-      await tester.enterText(field, '09:00–18:00');
+      readable(tester, 'Cumartesi');
+      await tester.tap(field);
       await tester.pumpAndSettle();
-      readable(tester, 'Cumartesi çalışma saatleri');
+      await tester.tap(find.text('Kapalı').last);
+      await tester.pumpAndSettle();
+      readable(tester, 'Cumartesi');
       expect(tester.takeException(), isNull);
-      await tester.ensureVisible(find.text('Cumartesi çalışma saatleri'));
+      await tester.ensureVisible(find.text('Cumartesi'));
       await tester.pumpAndSettle();
       await expectLater(
         find.byKey(const Key('merchant-screen')),
@@ -426,24 +429,22 @@ void main() {
     },
   );
 
-  testWidgets('wrapped input retains an editable accessible name and value', (
+  testWidgets('daily hours retain an actionable accessible name and value', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
 
     await compact(tester, MerchantPreview(hasShop: false));
-    final field = input('Cumartesi çalışma saatleri');
+    final field = find.byKey(const ValueKey('hours-sat'));
     await reveal(tester, field);
-    await tester.enterText(field, '09:00–18:00');
+    await tester.tap(field);
     await tester.pumpAndSettle();
-    final node = tester.getSemantics(
-      find.descendant(of: field, matching: find.byType(EditableText)),
-    );
-    expect(
-      node.getSemanticsData().label,
-      contains('Cumartesi çalışma saatleri'),
-    );
-    expect(node.getSemanticsData().value, '09:00–18:00');
+    await tester.tap(find.text('Kapalı').last);
+    await tester.pumpAndSettle();
+    final node = tester.getSemantics(field);
+    expect(node.getSemanticsData().label, contains('Cumartesi'));
+    expect(node.getSemanticsData().label, contains('Kapalı'));
+    expect(node.getSemanticsData().hasAction(ui.SemanticsAction.tap), isTrue);
     semantics.dispose();
   });
 

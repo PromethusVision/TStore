@@ -158,6 +158,9 @@ class PreviewMerchantRepository
       address: draft.address.trim(),
       phone: draft.phone.trim(),
       openingHours: draft.openingHours,
+      latitude: draft.profileDetails ? draft.latitude : shop?.latitude,
+      longitude: draft.profileDetails ? draft.longitude : shop?.longitude,
+      photoPath: draft.profileDetails ? draft.photoPath : shop?.photoPath,
       updatedAt: DateTime.now().toUtc(),
     );
     return Right(shop!);
