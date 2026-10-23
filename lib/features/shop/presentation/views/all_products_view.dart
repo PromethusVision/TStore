@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +27,7 @@ import 'package:t_store/features/shop/presentation/views/product_details_view.da
 import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart';
 import 'package:t_store/features/shop/presentation/views/sub_category_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 typedef CustomerCategoryDestinationBuilder =
     Widget Function(CategoryEntity category);
@@ -923,6 +923,14 @@ class _SearchResultProductGridState extends State<_SearchResultProductGrid> {
             final product = widget.products[index];
             return _AllProductsProductCard(
               product: product,
+              listings: isPriceLoading
+                  ? const []
+                  : snapshot.data?.fold(
+                          (_) => <ShopProductEntity>[],
+                          (rows) => rows,
+                        ) ??
+                        const [],
+              photoRefreshKey: _shopProductsFuture,
               currentUserIdProvider: widget.currentUserIdProvider,
               priceLabel: _sellerPriceLabel(
                 product.id,
@@ -1053,11 +1061,15 @@ class _CatalogGridLayout {
 class _AllProductsProductCard extends StatelessWidget {
   const _AllProductsProductCard({
     required this.product,
+    required this.listings,
+    required this.photoRefreshKey,
     required this.priceLabel,
     required this.currentUserIdProvider,
     required this.onTap,
   });
   final ProductEntity product;
+  final List<ShopProductEntity> listings;
+  final Object photoRefreshKey;
   final String priceLabel;
   final String? Function()? currentUserIdProvider;
   final VoidCallback? onTap;
@@ -1096,7 +1108,11 @@ class _AllProductsProductCard extends StatelessWidget {
                       ExcludeSemantics(
                         child: Padding(
                           padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
-                          child: _AllProductsProductImage(product: product),
+                          child: _AllProductsProductImage(
+                            product: product,
+                            listings: listings,
+                            refreshKey: photoRefreshKey,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -1186,41 +1202,21 @@ class _AllProductsProductCard extends StatelessWidget {
 }
 
 class _AllProductsProductImage extends StatelessWidget {
-  const _AllProductsProductImage({required this.product});
-
+  const _AllProductsProductImage({
+    required this.product,
+    this.listings,
+    this.refreshKey,
+  });
   final ProductEntity product;
-
+  final List<ShopProductEntity>? listings;
+  final Object? refreshKey;
   @override
-  Widget build(BuildContext context) {
-    final imageUrl = _imageUrl;
-    if (imageUrl == null) return const _AllProductsProductImageFallback();
-
-    final uri = Uri.tryParse(imageUrl);
-    final isNetwork =
-        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-    if (!isNetwork) {
-      return Image.asset(
-        imageUrl,
-        fit: BoxFit.contain,
-        errorBuilder: (_, _, _) => const _AllProductsProductImageFallback(),
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.contain,
-      placeholder: (_, _) => const _AllProductsProductImageFallback(),
-      errorWidget: (_, _, _) => const _AllProductsProductImageFallback(),
-    );
-  }
-
-  String? get _imageUrl {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-    final thumbnail = product.thumbnail?.trim() ?? '';
-    return thumbnail.isEmpty ? null : thumbnail;
-  }
+  Widget build(BuildContext context) => ProductCardImage(
+    productId: product.id,
+    listings: listings,
+    refreshKey: refreshKey,
+    fallback: const _AllProductsProductImageFallback(),
+  );
 }
 
 class _AllProductsProductImageFallback extends StatelessWidget {
@@ -1608,6 +1604,7 @@ class _ProductsScrollView extends StatefulWidget {
 
 class _ProductsScrollViewState extends State<_ProductsScrollView> {
   final Map<String, double> _minimumPrices = <String, double>{};
+  final Map<String, List<ShopProductEntity>> _photoListings = {};
   final Set<String> _requestedProductIds = <String>{};
   final Set<String> _loadingProductIds = <String>{};
   final Set<String> _openingProductIds = <String>{};
@@ -1635,6 +1632,7 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
         !isAppend) {
       _requestGeneration++;
       _minimumPrices.clear();
+      _photoListings.clear();
       _requestedProductIds.clear();
       _loadingProductIds.clear();
     }
@@ -1669,6 +1667,8 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
             final product = widget.products[index];
             return _AllProductsProductCard(
               product: product,
+              listings: _photoListings[product.id] ?? const [],
+              photoRefreshKey: _requestGeneration,
               currentUserIdProvider: widget.currentUserIdProvider,
               priceLabel: _sellerPriceLabel(
                 product.id,
@@ -1759,6 +1759,10 @@ class _ProductsScrollViewState extends State<_ProductsScrollView> {
     );
     setState(() {
       _loadingProductIds.removeAll(productIds);
+      final rows = result.fold((_) => <ShopProductEntity>[], (rows) => rows);
+      for (final id in requestedIds) {
+        _photoListings[id] = rows.where((row) => row.productId == id).toList();
+      }
       for (final entry in loadedPrices.entries) {
         if (requestedIds.contains(entry.key)) {
           _minimumPrices[entry.key] = entry.value;

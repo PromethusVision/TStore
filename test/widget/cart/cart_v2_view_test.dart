@@ -21,6 +21,7 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_entity.dart';
 import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
 import 'package:t_store/features/shop/presentation/views/cart_v2_view.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 class MockCartV2Cubit extends MockCubit<CartV2State> implements CartV2Cubit {}
 
@@ -337,6 +338,28 @@ void main() {
       findsOneWidget,
     );
   });
+
+  for (final currentLayout in [true, false]) {
+    testWidgets(
+      'cart photo stays bound to the selected listing ($currentLayout)',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: BlocProvider<CartV2Cubit>.value(
+              value: cartV2Cubit,
+              child: CartV2View(visualPrototype: currentLayout),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final image = tester.widget<ProductCardImage>(
+          find.byType(ProductCardImage),
+        );
+        expect(image.productId, cartItem.shopProduct!.productId);
+        expect(image.listings!.map((s) => s.id), [cartItem.shopProductId]);
+      },
+    );
+  }
 
   testWidgets('satın alınabilir ürünlerde normal sepet toplamını gösterir', (
     tester,

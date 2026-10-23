@@ -12,6 +12,7 @@ import 'package:t_store/features/shop/presentation/views/wishlist_view.dart';
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
 import 'w48_fixture.dart';
+import '../../fixtures/product_card_media_fixture.dart';
 
 // Real runtime views, synthetic entities and existing assets; no W3B imports.
 final _products = [
@@ -87,6 +88,7 @@ void main() {
         ]),
       );
       final opened = <ProductEntity>[];
+      installCardPhotos({for (final p in _products) p.id: p.images.single});
       await tester.pumpWidget(
         fixture.host(
           WishlistView(
@@ -135,6 +137,7 @@ void main() {
     final fixture = W48Fixture(
       history: RecentlyViewedProductsLoaded(_products),
     );
+    installCardPhotos({for (final p in _products) p.id: p.images.single});
     await tester.pumpWidget(
       fixture.host(
         RecentlyViewedProductsView(

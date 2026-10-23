@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:t_store/features/shop/domain/entities/shop_product_entity.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 import 'package:flutter/material.dart';
 import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
 import 'package:t_store/features/rewards/presentation/reward_reservation_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
-import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
 import 'package:t_store/core/ui/foundation/esnaftavar_design_tokens.dart';
@@ -887,9 +886,6 @@ class _CartV2ItemCard extends StatelessWidget {
     final product = shopProduct?.product;
     final shopPrice = shopProduct?.price ?? 0;
     final isUnavailable = !item.isPurchaseVerifiable;
-    final imageUrl = product?.images.isNotEmpty == true
-        ? product!.images.first.trim()
-        : '';
 
     return Container(
       key: Key('customer-cart-item-${item.id}'),
@@ -998,7 +994,7 @@ class _CartV2ItemCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _CartProductThumbnail(imageUrl: imageUrl),
+              _CartProductThumbnail(listing: shopProduct),
               const SizedBox(width: CustomerHomeV1Tokens.space12),
               Expanded(
                 child: Column(
@@ -1067,9 +1063,9 @@ class _CartV2ItemCard extends StatelessWidget {
 }
 
 class _CartProductThumbnail extends StatelessWidget {
-  const _CartProductThumbnail({required this.imageUrl});
+  const _CartProductThumbnail({required this.listing});
 
-  final String imageUrl;
+  final ShopProductEntity? listing;
 
   @override
   Widget build(BuildContext context) {
@@ -1080,23 +1076,12 @@ class _CartProductThumbnail extends StatelessWidget {
         width: 88,
         height: 88,
         color: CustomerHomeV1Tokens.mint,
-        child: imageUrl.isEmpty
-            ? const _CartProductImagePlaceholder()
-            : CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => const Center(
-                  child: SizedBox.square(
-                    dimension: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: CustomerHomeV1Tokens.petrol,
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) =>
-                    const _CartProductImagePlaceholder(),
-              ),
+        child: ProductCardImage(
+          productId: listing?.productId ?? '',
+          listings: [if (listing != null) listing!],
+          fit: BoxFit.cover,
+          fallback: const _CartProductImagePlaceholder(),
+        ),
       ),
     );
   }

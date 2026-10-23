@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +17,7 @@ import 'package:t_store/features/shop/presentation/cubit/products_cubit.dart';
 import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 typedef CategoryShopProductsLoader =
     Future<Either<String, List<ShopProductEntity>>> Function(
@@ -463,6 +463,14 @@ class _CategoryProductsListState extends State<_CategoryProductsList> {
                   final product = widget.products[index];
                   return _CategoryProductCard(
                     product: product,
+                    listings: isPriceLoading
+                        ? const []
+                        : snapshot.data?.fold(
+                                (_) => <ShopProductEntity>[],
+                                (rows) => rows,
+                              ) ??
+                              const [],
+                    photoRefreshKey: _shopProductsFuture,
                     currentUserIdProvider: widget.currentUserIdProvider,
                     priceLabel: _priceLabel(
                       product.id,
@@ -858,6 +866,8 @@ class _CategorySummary extends StatelessWidget {
 class _CategoryProductCard extends StatelessWidget {
   const _CategoryProductCard({
     required this.product,
+    required this.listings,
+    required this.photoRefreshKey,
     required this.priceLabel,
     required this.merchantContextLabel,
     required this.currentUserIdProvider,
@@ -867,6 +877,8 @@ class _CategoryProductCard extends StatelessWidget {
   });
 
   final ProductEntity product;
+  final List<ShopProductEntity> listings;
+  final Object photoRefreshKey;
   final String priceLabel;
   final String merchantContextLabel;
   final String? Function()? currentUserIdProvider;
@@ -904,7 +916,11 @@ class _CategoryProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    _CategoryProductImage(product: product),
+                    _CategoryProductImage(
+                      product: product,
+                      listings: listings,
+                      refreshKey: photoRefreshKey,
+                    ),
                     Positioned(
                       right: 8,
                       top: 8,
@@ -1007,7 +1023,11 @@ class _CategoryProductCard extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
-                          child: _CategoryProductImageStage(product: product),
+                          child: _CategoryProductImageStage(
+                            product: product,
+                            listings: listings,
+                            refreshKey: photoRefreshKey,
+                          ),
                         ),
                         Positioned(
                           right: 6,
@@ -1158,57 +1178,36 @@ class _CategoryProductImage extends StatelessWidget {
     required this.product,
     this.fit = BoxFit.cover,
     this.useCanonicalFallback = false,
+    this.listings,
+    this.refreshKey,
   });
-
   final ProductEntity product;
   final BoxFit fit;
   final bool useCanonicalFallback;
-
+  final List<ShopProductEntity>? listings;
+  final Object? refreshKey;
   @override
-  Widget build(BuildContext context) {
-    final imageUrl = _imageUrl;
-    if (imageUrl == null) {
-      return _CategoryProductImageFallback(
-        visualPrototype: useCanonicalFallback,
-      );
-    }
-
-    final uri = Uri.tryParse(imageUrl);
-    final isNetwork =
-        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-    if (!isNetwork) {
-      return Image.asset(
-        imageUrl,
-        fit: fit,
-        errorBuilder: (_, _, _) => _CategoryProductImageFallback(
-          visualPrototype: useCanonicalFallback,
-        ),
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: fit,
-      placeholder: (_, _) =>
-          _CategoryProductImageFallback(visualPrototype: useCanonicalFallback),
-      errorWidget: (_, _, _) =>
-          _CategoryProductImageFallback(visualPrototype: useCanonicalFallback),
-    );
-  }
-
-  String? get _imageUrl {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-    final thumbnail = product.thumbnail?.trim() ?? '';
-    return thumbnail.isEmpty ? null : thumbnail;
-  }
+  Widget build(BuildContext context) => ProductCardImage(
+    productId: product.id,
+    listings: listings,
+    refreshKey: refreshKey,
+    fit: fit,
+    fallback: _CategoryProductImageFallback(
+      visualPrototype: useCanonicalFallback,
+    ),
+  );
 }
 
 class _CategoryProductImageStage extends StatelessWidget {
-  const _CategoryProductImageStage({required this.product});
+  const _CategoryProductImageStage({
+    required this.product,
+    this.listings,
+    this.refreshKey,
+  });
 
   final ProductEntity product;
+  final List<ShopProductEntity>? listings;
+  final Object? refreshKey;
 
   @override
   Widget build(BuildContext context) {
@@ -1225,6 +1224,8 @@ class _CategoryProductImageStage extends StatelessWidget {
           child: Center(
             child: _CategoryProductImage(
               product: product,
+              listings: listings,
+              refreshKey: refreshKey,
               fit: BoxFit.contain,
               useCanonicalFallback: true,
             ),

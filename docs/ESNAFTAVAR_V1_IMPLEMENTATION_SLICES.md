@@ -1078,6 +1078,22 @@ analyzer, full Flutter regression and both development Android builds. Preserve
 earlier distributed APKs and evidence. Hosted apply, physical image/GPS acceptance
 and pilot launch remain separate gates; main merge belongs to Integration Agent.
 
+### A/J18 follow-through — Product card media consistency (2026-10-23)
+
+Repair the reported Merchant upload → Customer thumbnail gap under canonical
+§4.22. Reuse the existing listing media port on Home, catalog/search/category,
+wishlist/history, shared cards, shop and cart thumbnails. Preserve card geometry
+and actions. Exact shop/cart listing identity restricts fallback; public general
+cards use eligible default seller ranking. Batch reads; reject stale responses
+and retired/failed media without reviving stock catalog photos. Verify the active
+shop composition also binds the already implemented shop-photo field.
+
+Reproduce the card failure first; cover actual screen bindings, media ordering,
+eligibility, batch size, placeholder/error, refresh and late completions. Run
+shared Customer/Merchant regressions, analyzer, image/golden inspection and paired
+Android compile rehearsals. No migration or remote apply is required by this fix;
+the earlier 0032 approval/deployment and physical gates remain separate.
+
 ## Definition of readiness per slice
 
 Every slice supplies a bounded diff, compatible capability contract, required

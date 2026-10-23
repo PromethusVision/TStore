@@ -4,7 +4,6 @@ import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/common/widgets/progress_indicator.dart';
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/utils/constants/iconsax_compat.dart';
@@ -15,6 +14,7 @@ import 'package:t_store/features/shop/presentation/views/product_details_view.da
 import 'package:t_store/features/wishlist/domain/entities/wishlist_item_entity.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_cubit.dart';
 import 'package:t_store/features/wishlist/presentation/cubit/wishlist_state.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 typedef WishlistProductDestinationBuilder =
     Widget Function(ProductEntity product);
@@ -446,40 +446,13 @@ class _FavoriteRemoveButton extends StatelessWidget {
 
 class _WishlistProductImage extends StatelessWidget {
   const _WishlistProductImage({required this.product});
-
   final ProductEntity product;
 
   @override
-  Widget build(BuildContext context) {
-    final imageUrl = _imageUrl;
-    if (imageUrl == null) return const _WishlistProductImageFallback();
-
-    final uri = Uri.tryParse(imageUrl);
-    final isNetwork =
-        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-    if (!isNetwork) {
-      return Image.asset(
-        imageUrl,
-        fit: BoxFit.contain,
-        errorBuilder: (_, _, _) => const _WishlistProductImageFallback(),
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.contain,
-      placeholder: (_, _) => const _WishlistProductImageFallback(),
-      errorWidget: (_, _, _) => const _WishlistProductImageFallback(),
-    );
-  }
-
-  String? get _imageUrl {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-    final thumbnail = product.thumbnail?.trim() ?? '';
-    return thumbnail.isEmpty ? null : thumbnail;
-  }
+  Widget build(BuildContext context) => ProductCardImage(
+    productId: product.id,
+    fallback: const _WishlistProductImageFallback(),
+  );
 }
 
 class _WishlistProductImageFallback extends StatelessWidget {

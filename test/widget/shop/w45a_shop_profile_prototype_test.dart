@@ -46,6 +46,7 @@ const _listing = ShopProductEntity(
   price: 28999,
   shop: _shop,
   product: _product,
+  images: [_image],
 );
 
 void main() {

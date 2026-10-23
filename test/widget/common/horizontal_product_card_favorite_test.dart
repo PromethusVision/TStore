@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../fixtures/product_card_media_fixture.dart';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -212,6 +213,7 @@ void main() {
   testWidgets('bozuk ürün görselinde güvenli ürün yedeğini kullanır', (
     tester,
   ) async {
+    installCardPhoto(product.id, 'https://example.com/missing-product.jpg');
     final brokenProduct = product.copyWith(
       images: const ['https://example.com/missing-product.jpg'],
     );
@@ -224,6 +226,7 @@ void main() {
     );
     await tester.pump();
 
+    await tester.pumpAndSettle();
     final imageFinder = find.byType(CachedNetworkImage);
     final image = tester.widget<CachedNetworkImage>(imageFinder);
     final fallback = image.errorWidget!(

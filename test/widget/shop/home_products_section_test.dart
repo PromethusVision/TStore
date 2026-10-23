@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
@@ -82,11 +83,96 @@ void main() {
     expect(find.byKey(const Key('home-products-loaded')), findsNothing);
   });
 
+  testWidgets(
+    'home card uses its eligible merchant photo instead of catalog stock',
+    (tester) async {
+      const product = ProductEntity(
+        id: 'photo-product',
+        name: 'Powerbank',
+        price: 990,
+        categoryId: 'electronics',
+        stock: 1,
+        images: ['assets/images/products/product-shirt.png'],
+      );
+      const listing = ShopProductEntity(
+        id: 'photo-listing',
+        shopId: 'photo-shop',
+        productId: 'photo-product',
+        price: 990,
+        images: ['https://example.invalid/merchant-photo.png'],
+        shop: ShopEntity(
+          id: 'photo-shop',
+          ownerUserId: 'owner',
+          name: 'Test shop',
+        ),
+      );
+      await tester.pumpWidget(
+        buildSubject(
+          const ProductsLoaded(products: [product]),
+          shopProductsLoader: (_) async => const Right([listing]),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is CachedNetworkImage &&
+              w.imageUrl == 'https://example.invalid/merchant-photo.png',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('boş durumu açıkça gösterir', (tester) async {
     await tester.pumpWidget(buildSubject(const ProductsLoaded(products: [])));
 
     expect(find.byKey(const Key('home-products-empty')), findsOneWidget);
     expect(find.text('Şu anda gösterilecek ürün bulunamadı'), findsOneWidget);
+  });
+
+  testWidgets('same product reload ignores an older listing-photo response', (
+    tester,
+  ) async {
+    const product = ProductEntity(
+      id: 'refresh-product',
+      name: 'Test product',
+      price: 10,
+      categoryId: 'category',
+      stock: 1,
+      images: [],
+    );
+    ShopProductEntity listing(String photo) => ShopProductEntity(
+      id: 'refresh-listing',
+      shopId: 'refresh-shop',
+      productId: product.id,
+      price: 10,
+      images: ['https://example.invalid/$photo.png'],
+      shop: const ShopEntity(id: 'refresh-shop', name: 'Test shop'),
+    );
+    final old = Completer<Either<String, List<ShopProductEntity>>>();
+    await tester.pumpWidget(
+      buildSubject(
+        const ProductsLoaded(products: [product]),
+        shopProductsLoader: (_) => old.future,
+      ),
+    );
+    await tester.pump();
+    await tester.pumpWidget(
+      buildSubject(
+        const ProductsLoaded(products: [product]),
+        shopProductsLoader: (_) async => Right([listing('current')]),
+      ),
+    );
+    await tester.pumpAndSettle();
+    old.complete(Right([listing('old')]));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<CachedNetworkImage>(find.byType(CachedNetworkImage))
+          .imageUrl,
+      'https://example.invalid/current.png',
+    );
   });
 
   testWidgets('hata durumunda gerçek sorguyu yeniden dener', (tester) async {
