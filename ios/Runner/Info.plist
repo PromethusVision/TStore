@@ -38,7 +38,9 @@
 		<key>NSCameraUsageDescription</key>
 		<string>QR kodunu okutarak mağaza alışverişini doğrulayabilmeniz için kamera erişimi gereklidir.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Yakınınızdaki mağazaları gösterebilmek için konum erişimi gereklidir.</string>
+		<string>Yakınınızdaki mağazaları göstermek ve isteğinizle mağazanızın konumunu belirlemek için konum erişimi kullanılır.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Seçtiğiniz mağaza veya ürün fotoğrafını ekleyebilmeniz için fotoğraf erişimi kullanılır.</string>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:dartz/dartz.dart';
 import 'package:t_store/features/auth/domain/entities/user_entity.dart';
 import 'package:t_store/features/shop/domain/entities/product_entity.dart';
@@ -21,9 +22,17 @@ class MerchantShopDraft {
     this.phone = '',
     this.address = '',
     this.openingHours = const {},
+    this.latitude,
+    this.longitude,
+    this.photoPath,
+    this.profileDetails = false,
   });
   final String name, description, phone, address;
   final Map<String, dynamic> openingHours;
+  final double? latitude, longitude;
+  final String? photoPath;
+  // Legacy callers preserve fields they do not edit.
+  final bool profileDetails;
   String? get error {
     if (name.trim().isEmpty || name.trim().length > 120) {
       return 'Mağaza adı 1–120 karakter olmalı.';
@@ -32,6 +41,17 @@ class MerchantShopDraft {
         address.length > 500 ||
         phone.length > 30) {
       return 'Açıklama veya iletişim bilgisi çok uzun.';
+    }
+    if (profileDetails &&
+        ((latitude == null) != (longitude == null) ||
+            (latitude != null &&
+                (!latitude!.isFinite ||
+                    !longitude!.isFinite ||
+                    latitude! < -90 ||
+                    latitude! > 90 ||
+                    longitude! < -180 ||
+                    longitude! > 180)))) {
+      return 'Geçerli bir mağaza konumu seçin.';
     }
     return null;
   }
@@ -42,9 +62,24 @@ class MerchantShopDraft {
     'phone': _nullable(phone),
     'address': _nullable(address),
     'opening_hours': openingHours,
+    if (profileDetails) 'latitude': latitude,
+    if (profileDetails) 'longitude': longitude,
+    if (profileDetails) 'photo_path': photoPath,
   };
   static String? _nullable(String value) =>
       value.trim().isEmpty ? null : value.trim();
+}
+
+const shopPhotoMaxBytes = 5 * 1024 * 1024;
+const shopPhotoBucket = 'shop-profile-media';
+
+/// Stages an immutable image; only saveShop publishes it. Lost upload responses
+/// cannot change the visible photo. Existing shop authority is required.
+abstract interface class MerchantShopPhotoRepository {
+  Future<Either<String, String>> stageShopPhoto(
+    MerchantAccess access,
+    Uint8List bytes,
+  );
 }
 
 class MerchantListingDraft {

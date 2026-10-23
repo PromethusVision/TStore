@@ -122,12 +122,28 @@ class _MyShopFormViewState extends State<MyShopFormView> {
     final saturday = _saturdayHoursController.text.trim();
     final sunday = _sundayHoursController.text.trim();
 
-    if (weekday.isEmpty && saturday.isEmpty && sunday.isEmpty) {
+    const weekdays = ['mon', 'tue', 'wed', 'thu', 'fri'];
+    final hasDailyHours = weekdays.any(_originalOpeningHours.containsKey);
+    if (!hasDailyHours &&
+        weekday.isEmpty &&
+        saturday.isEmpty &&
+        sunday.isEmpty) {
       return <String, dynamic>{};
     }
 
     final openingHours = Map<String, dynamic>.from(_originalOpeningHours)
       ..remove('mon_sat');
+
+    // The frozen grouped editor must not erase Merchant's daily values when
+    // saving unrelated fields. An explicit weekday edit replaces that group.
+    final originalWeekday = _openingHourText(
+      _originalOpeningHours['mon_fri'] ?? _originalOpeningHours['mon_sat'],
+    ).trim();
+    if (hasDailyHours && weekday != originalWeekday) {
+      for (final day in weekdays) {
+        openingHours.remove(day);
+      }
+    }
 
     _setOrRemove(openingHours, 'mon_fri', weekday);
     _setOrRemove(openingHours, 'sat', saturday);

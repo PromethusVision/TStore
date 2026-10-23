@@ -4,6 +4,8 @@ import 'package:t_store/features/trust_commerce/presentation/trust_views.dart';
 
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:t_store/features/shop/domain/entities/shop_opening_hours.dart';
+import 'package:t_store/features/shop/presentation/widgets/shop_profile_photo.dart';
 import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
@@ -290,7 +292,10 @@ class _ShopInfoSection extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        _ShopAvatar(shopName: shop.name),
+                        ShopProfilePhoto(
+                          path: shop.photoPath,
+                          fallback: _ShopAvatar(shopName: shop.name),
+                        ),
                         const SizedBox(width: CustomerHomeV1Tokens.space12),
                         Expanded(
                           child: Column(
@@ -490,11 +495,7 @@ class _ShopInfoSection extends StatelessWidget {
     return rawPhone.startsWith('+') ? '+$digits' : digits;
   }
 
-  String _formatOpeningHours() {
-    return shop.openingHours.entries
-        .map((entry) => '${entry.key}: ${entry.value}')
-        .join('\n');
-  }
+  String _formatOpeningHours() => ShopOpeningHours.format(shop.openingHours);
 
   bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 
@@ -502,9 +503,9 @@ class _ShopInfoSection extends StatelessWidget {
     final query = _directionsQuery;
     if (query == null) return;
 
-    final uri = Uri.https('www.google.com', '/maps/search/', {
+    final uri = Uri.https('www.google.com', '/maps/dir/', {
       'api': '1',
-      'query': query,
+      'destination': query,
     });
 
     try {

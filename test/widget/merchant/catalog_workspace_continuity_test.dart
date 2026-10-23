@@ -209,6 +209,7 @@ void main() {
           300,
           scrollable: find.byType(Scrollable).first,
         );
+        await t.pumpAndSettle();
         await t.tap(find.text(label));
         await t.pump();
         if (journey == 'gallery-size' || journey == 'gallery-bytes') {

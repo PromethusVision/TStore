@@ -160,7 +160,8 @@ void main() {
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pump();
     expect(launchedUris.last.host, 'www.google.com');
-    expect(launchedUris.last.queryParameters['query'], '41.001,29.002');
+    expect(launchedUris.last.path, '/maps/dir/');
+    expect(launchedUris.last.queryParameters['destination'], '41.001,29.002');
     expect(launchModes.last, LaunchMode.externalApplication);
   });
 
@@ -335,7 +336,11 @@ void main() {
     await tester.tap(find.byKey(const Key('shop-profile-directions-action')));
     await tester.pump();
 
-    expect(launchedUris.single.queryParameters['query'], 'Bağcılar, İstanbul');
+    expect(launchedUris.single.path, '/maps/dir/');
+    expect(
+      launchedUris.single.queryParameters['destination'],
+      'Bağcılar, İstanbul',
+    );
   });
 
   testWidgets('kullanılamayan iletişim bilgileri için hatalı eylem göstermez', (

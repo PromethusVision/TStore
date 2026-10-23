@@ -108,7 +108,10 @@ void main() {
         find.widgetWithText(TextFormField, 'Mağaza adı'),
         'Yeni mağaza adı',
       );
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Mağazayı kaydet'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Mağazayı kaydet'));
       await tester.pumpAndSettle();
       expect(find.text('Kayıt durumunu kontrol et'), findsOneWidget);
