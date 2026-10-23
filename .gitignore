@@ -7,6 +7,9 @@
 /tool/production_release_config.json
 /tool/production_mobile_release_config.json
 /tool/merchant_pilot_config.json
+**/google-services.json
+**/GoogleService-Info.plist
+**/*firebase-adminsdk*.json
 **/*.keystore
 **/*.jks
 

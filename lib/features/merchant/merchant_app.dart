@@ -47,6 +47,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
         _notificationRequests.value = null;
         _push?.invalidate();
       }
+      if (state.status == MerchantSessionStatus.ready) _push?.observeOpens();
     });
     widget.services.recovery?.addListener(_recoveryChanged);
     _session.setRecoveryActive(

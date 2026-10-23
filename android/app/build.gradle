@@ -9,6 +9,9 @@ plugins {
 // stay outside the checkout, including ignored files inside the checkout.
 apply from: rootProject.file("release-signing.gradle")
 apply from: rootProject.file("merchant-pilot.gradle")
+apply from: rootProject.file("development-push.gradle")
+def customerFirebase = readDevelopmentFirebase(System.getenv("ESNAFTAVAR_FIREBASE_CUSTOMER_CONFIG"), "com.esnaftavar.app.dev")
+def merchantFirebase = readDevelopmentFirebase(System.getenv("ESNAFTAVAR_FIREBASE_MERCHANT_CONFIG"), "com.esnaftavar.app.merchant.pilot")
 def releaseInputs = resolveExternalReleaseSigning(System.getenv("ESNAFTAVAR_SIGNING_PROPERTIES"))
 def keystoreProperties = releaseInputs.properties
 def releaseStoreFile = releaseInputs.storeFile
@@ -156,6 +159,7 @@ android {
             applicationIdSuffix ".merchant.pilot"
             resValue "string", "app_name", "EsnaftaVar Esnaf Pilot"
             manifestPlaceholders = [authCallbackScheme: "com.esnaftavar.app.merchant.pilot"]
+            merchantFirebase?.each { key, value -> resValue "string", key, value }
         }
         merchantDevelopment {
             dimension "default"
@@ -174,6 +178,7 @@ android {
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "EsnaftaVar Dev"
             manifestPlaceholders = [authCallbackScheme: "io.supabase.tstore"]
+            customerFirebase?.each { key, value -> resValue "string", key, value }
         }
     }
 

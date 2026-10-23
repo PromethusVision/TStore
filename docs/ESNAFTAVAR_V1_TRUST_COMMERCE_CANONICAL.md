@@ -2307,6 +2307,43 @@ server credentials and hosted schema/worker apply require their own concrete sco
 Keep default-OFF capabilities, generic lock-screen copy and secret boundaries from
 §§12.1–12.4. Showing raw message content on the lock screen is not approved here.
 
+### 12.6 Development Android push preparation — 2026-10-24
+
+Following integrated messaging `d8aa9099`, the owner authorized real Android push
+preparation and explicitly approved creating Firebase `esnaftavar-development`,
+accepting its terms and registering only Customer Development and Merchant Pilot.
+Those two app records are now created. This approval excludes Analytics, Gemini,
+billing/paid plan, Production and privileged service-account/key creation.
+
+- Reuse the I0 transport, I1 coordinator, existing consent controls and current
+  authenticated inbox/chat destinations. Add the stable FlutterFire adapter and
+  Android generic foreground presentation; never put chat text on the lock screen.
+  Permission/enrollment remains explicit. Cold-start taps may be observed without
+  requesting permission or registering a device. Authenticated lookup and route
+  authority checks remain mandatory, including tap-to-first-frame replacement.
+- Enable only with `ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED=true`, exact Development
+  backend and approved Android flavor/project. Default remains OFF. Public client
+  configuration stays outside checkouts and is bound to exact registered app IDs.
+  No privileged credential is placed in Flutter, Git or build evidence.
+- Read-only hosted inspection found the base notification table and live Auth
+  sessions, but none of the push transport tables or the later QR session helper.
+  Prepare `development_push_transport_v1.sql` separately, derived from unchanged
+  0016/0029 and the existing live-session guard under a transport-owned name.
+  Do not deploy commerce or modify banners merely to obtain push dependencies.
+  Add a service-only four-field notification metadata RPC; do not widen direct
+  notification table access. The transport activation gate is initially OFF.
+- The proposed Development worker accepts an authenticated trigger for one
+  existing notification UUID, rereads metadata, restricts to an explicit small
+  test cohort and fresh chat rows after a cutover time, and uses unchanged durable
+  claim/begin/finish. HTTP v1 acceptance is distinct from OS display. Unknown
+  outcomes are never retried automatically. Marketing stays excluded.
+
+Hosted SQL, worker/webhook/secret deployment, service-account permissions and
+outbound test sends remain **unapproved and unapplied** in this increment. Exact
+reviewable scope is in [the setup handoff](MERCHANT_FIREBASE_DEVELOPMENT_HANDOFF.md).
+Physical foreground/background/terminated delivery, SDK deletion evidence and
+retention review remain OPEN. No FROZEN product or economic rule changes.
+
 ## 13. RLS, privacy and migration safety
 
 Server entrypoints derive auth.uid/profile role and exact shop owner; client-supplied

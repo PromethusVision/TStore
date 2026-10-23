@@ -47,6 +47,7 @@ class PushCoordinator extends ChangeNotifier {
   bool get busy => _enrollment != null || _disabling != null;
   StreamSubscription<String>? _tokens;
   StreamSubscription<PushOpenEvent>? _opens;
+  int? _opensEpoch;
   Future<PushRegistrationResult>? _enrollment;
   Future<void>? _disabling;
   Future<void> _writes = Future.value();
@@ -69,6 +70,28 @@ class PushCoordinator extends ChangeNotifier {
       identity.matches(currentIdentity()) &&
       (currentSessionKey == null ||
           (session != null && session == currentSessionKey!()));
+
+  /// Host starts this only after its authenticated workspace is ready. Taps do
+  /// not enroll the device or ask permission; every tap still re-reads the row.
+  void observeOpens() {
+    if (_disposed ||
+        !available ||
+        _status == PushClientStatus.cleanupRequired ||
+        (_opens != null && _opensEpoch == _epoch)) {
+      return;
+    }
+    unawaited(_opens?.cancel());
+    final revision = _epoch;
+    final identity = currentIdentity();
+    final session = currentSessionKey?.call();
+    if (identity == null) return;
+    _opensEpoch = revision;
+    _opens = provider.opened.listen((event) {
+      if (_valid(revision, identity, session)) {
+        unawaited(open(event, epoch: revision));
+      }
+    }, onError: (Object _) => invalidate());
+  }
 
   Future<PushRegistrationResult> enable() {
     if (_disposed || busy || _bound != null || _dirty) {
@@ -157,11 +180,7 @@ class PushCoordinator extends ChangeNotifier {
         onError: (Object _) => invalidate(),
         onDone: invalidate,
       );
-      _opens = provider.opened.listen((event) {
-        if (_valid(epoch, identity, session)) {
-          unawaited(open(event, epoch: epoch));
-        }
-      }, onError: (Object _) => invalidate());
+      observeOpens();
       final fetched = await provider.getToken();
       if (!_valid(epoch, identity, session)) {
         return PushRegistrationResult.denied;

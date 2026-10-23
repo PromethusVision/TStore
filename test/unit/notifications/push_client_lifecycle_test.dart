@@ -73,6 +73,37 @@ void main() {
     },
   );
   test(
+    'authenticated cold-start tap does not enroll or request permission',
+    () async {
+      coordinator.observeOpens();
+      coordinator.observeOpens();
+      provider.taps.add(event);
+      await flush();
+      expect(opened, [notice]);
+      expect([provider.permissions, provider.fetched, store.reads], [0, 0, 0]);
+      expect(registry.registrations, isEmpty);
+    },
+  );
+  test(
+    'cold-start lookup cannot cross a same-user replacement login',
+    () async {
+      final pending = Completer<NotificationEntity?>();
+      lookup = (_) => pending.future;
+      coordinator.observeOpens();
+      provider.taps.add(event);
+      session = 'replacement';
+      coordinator.invalidate();
+      pending.complete(notice);
+      await flush();
+      expect(opened, isEmpty);
+      lookup = (_) async => notice;
+      coordinator.observeOpens();
+      provider.taps.add(event);
+      await flush();
+      expect(opened, [notice]);
+    },
+  );
+  test(
     'synchronous status observer can request logout without overlapping SDK work',
     () async {
       final permission = Completer<PushPermission>();

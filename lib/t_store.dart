@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'features/notifications/presentation/customer_push_host.dart';
+import 'features/notifications/runtime/customer_push_binding.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/cubits/banner_carousel_slider_cubit_cubit/banner_carousel_slider_cubit.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -27,7 +29,8 @@ final tStoreNavigatorKey = GlobalKey<NavigatorState>();
 final tStoreScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class TStore extends StatelessWidget {
-  const TStore({super.key});
+  const TStore({super.key, this.pushBinding});
+  final CustomerPushBinding? pushBinding;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -64,43 +67,47 @@ class TStore extends StatelessWidget {
           create: (_) => BannerCarouselSliderCubit(),
         ),
       ],
-      child: PasswordRecoveryListener(
-        authStateChanges: SupabaseService.instance.authStateChanges,
+      child: CustomerPushHost(
+        binding: pushBinding,
         navigatorKey: tStoreNavigatorKey,
-        initialPasswordRecoveryStatus:
-            SupabaseService.instance.initialPasswordRecoveryStatus,
-        initialRecoveryIdentity: _initialRecoveryIdentity(),
-        child: EmailConfirmationListener(
-          callbacks: SupabaseService.instance.emailConfirmationCallbacks,
-          initialCallback:
-              SupabaseService.instance.latestEmailConfirmationCallback,
+        child: PasswordRecoveryListener(
+          authStateChanges: SupabaseService.instance.authStateChanges,
           navigatorKey: tStoreNavigatorKey,
-          scaffoldMessengerKey: tStoreScaffoldMessengerKey,
-          authenticatedDestinationBuilder: (_) => const NavigationMenu(),
-          unauthenticatedDestinationBuilder: (_) => const LoginView(),
-          child: CustomerSessionListener(
-            authStateChanges: SupabaseService.instance.authStateChanges,
+          initialPasswordRecoveryStatus:
+              SupabaseService.instance.initialPasswordRecoveryStatus,
+          initialRecoveryIdentity: _initialRecoveryIdentity(),
+          child: EmailConfirmationListener(
+            callbacks: SupabaseService.instance.emailConfirmationCallbacks,
+            initialCallback:
+                SupabaseService.instance.latestEmailConfirmationCallback,
             navigatorKey: tStoreNavigatorKey,
             scaffoldMessengerKey: tStoreScaffoldMessengerKey,
-            initiallyAuthenticated:
-                SupabaseService.instance.currentUser != null,
-            initialUserId: SupabaseService.instance.currentUser?.id,
-            signedOutDestinationBuilder: (_) => const NavigationMenu(),
-            child: PendingProductChatListener(
+            authenticatedDestinationBuilder: (_) => const NavigationMenu(),
+            unauthenticatedDestinationBuilder: (_) => const LoginView(),
+            child: CustomerSessionListener(
+              authStateChanges: SupabaseService.instance.authStateChanges,
               navigatorKey: tStoreNavigatorKey,
               scaffoldMessengerKey: tStoreScaffoldMessengerKey,
-              enabled:
-                  SupabaseService.instance.initialPasswordRecoveryStatus ==
-                  PasswordRecoveryLaunchStatus.none,
-              child: MaterialApp(
+              initiallyAuthenticated:
+                  SupabaseService.instance.currentUser != null,
+              initialUserId: SupabaseService.instance.currentUser?.id,
+              signedOutDestinationBuilder: (_) => const NavigationMenu(),
+              child: PendingProductChatListener(
                 navigatorKey: tStoreNavigatorKey,
                 scaffoldMessengerKey: tStoreScaffoldMessengerKey,
-                title: TTexts.appName,
-                // The customer pilot is light-only, regardless of OS settings.
-                themeMode: ThemeMode.light,
-                theme: TAppTheme.lightTheme,
-                debugShowCheckedModeBanner: false,
-                home: const CustomerLaunchGate(),
+                enabled:
+                    SupabaseService.instance.initialPasswordRecoveryStatus ==
+                    PasswordRecoveryLaunchStatus.none,
+                child: MaterialApp(
+                  navigatorKey: tStoreNavigatorKey,
+                  scaffoldMessengerKey: tStoreScaffoldMessengerKey,
+                  title: TTexts.appName,
+                  // The customer pilot is light-only, regardless of OS settings.
+                  themeMode: ThemeMode.light,
+                  theme: TAppTheme.lightTheme,
+                  debugShowCheckedModeBanner: false,
+                  home: const CustomerLaunchGate(),
+                ),
               ),
             ),
           ),

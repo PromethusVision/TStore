@@ -24,6 +24,9 @@ gradle.projectsEvaluated {
             }
             accepted(encode(valid))
             accepted(encode(valid + [FLUTTER_VERSION:'test']))
+            accepted(encode(valid + [ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED:'true']))
+            accepted(encode(valid + [ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED:'false']))
+            denied(encode(valid + [ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED:'yes']))
             denied(''); denied('not-base64'); denied(encode(valid) + ',' + encode([MERCHANT_PILOT_ENABLED:'true']))
             valid.keySet().each { key -> def copy = valid.clone(); copy.remove(key); denied(encode(copy)) }
             ['https://mefhfvrgkwciubeajjeb.supabase.co','http://localhost:54321',

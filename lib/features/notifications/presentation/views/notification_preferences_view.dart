@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../customer_push_host.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:t_store/features/auth/presentation/cubit/auth_state.dart';
@@ -20,6 +21,9 @@ class NotificationPreferencesView extends StatelessWidget {
                 .where((r) => r.name == state.user.role)
                 .firstOrNull
           : null;
+      final pushBinding = role == NotificationAppRole.customer
+          ? CustomerPushScope.of(context)
+          : null;
       return Scaffold(
         appBar: AppBar(title: const Text('Bildirim tercihleri')),
         body: state is AuthAuthenticated && role != null
@@ -27,7 +31,10 @@ class NotificationPreferencesView extends StatelessWidget {
                 key: ValueKey('${state.user.id}:${role.name}'),
                 identity: PushIdentity(state.user.id, role),
                 repository:
-                    repository ?? LocalNotificationPreferencesRepository(),
+                    repository ??
+                    pushBinding?.preferences ??
+                    LocalNotificationPreferencesRepository(),
+                push: pushBinding?.coordinator,
               )
             : const Center(child: Text('Tercihler için hesabına giriş yap.')),
       );

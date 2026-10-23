@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -211,6 +212,37 @@ void main() {
     setUp(() {
       usecase = SignOutUsecase(mockRepository);
     });
+
+    test('waits for push cleanup before signing out', () async {
+      final cleanup = Completer<void>();
+      when(
+        () => mockRepository.signOut(),
+      ).thenAnswer((_) async => const Right(null));
+      final result = SignOutUsecase(
+        mockRepository,
+        beforeSignOut: () => cleanup.future,
+      )(const NoParams());
+      await pumpEventQueue();
+      verifyNever(() => mockRepository.signOut());
+      cleanup.complete();
+      expect((await result).isRight(), true);
+      verify(() => mockRepository.signOut()).called(1);
+    });
+
+    test(
+      'failed cleanup never signs out a replacement account or leaks errors',
+      () async {
+        final result = await SignOutUsecase(
+          mockRepository,
+          beforeSignOut: () async {
+            throw StateError('sensitive-session-fixture');
+          },
+        )(const NoParams());
+        expect(result.isLeft(), true);
+        expect(result.toString(), isNot(contains('sensitive-session-fixture')));
+        verifyNever(() => mockRepository.signOut());
+      },
+    );
 
     test('should return void when sign out is successful', () async {
       // Arrange
