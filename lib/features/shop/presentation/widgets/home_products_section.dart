@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart' hide State;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -17,6 +16,7 @@ import 'package:t_store/features/shop/presentation/cubit/products_state.dart';
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 typedef HomeProductDestinationBuilder = Widget Function(ProductEntity product);
 typedef HomeShopProductsLoader =
@@ -136,7 +136,8 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
   @override
   void didUpdateWidget(covariant _HomeProductCards oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_productIdsKey(oldWidget.products) != _productIdsKey(widget.products)) {
+    if (_productIdsKey(oldWidget.products) != _productIdsKey(widget.products) ||
+        oldWidget.shopProductsLoader != widget.shopProductsLoader) {
       _shopProductsFuture = _loadShopProducts();
     }
   }
@@ -180,6 +181,14 @@ class _HomeProductCardsState extends State<_HomeProductCards> {
                   final product = widget.products[index];
                   final card = HomeProductCard(
                     product: product,
+                    listings: isPriceLoading
+                        ? const []
+                        : snapshot.data?.fold(
+                                (_) => <ShopProductEntity>[],
+                                (rows) => rows,
+                              ) ??
+                              const [],
+                    photoRefreshKey: _shopProductsFuture,
                     minimumShopPrice: minimumPrices[product.id],
                     isPriceLoading: isPriceLoading,
                     currentUserIdProvider: widget.currentUserIdProvider,
@@ -264,6 +273,8 @@ class HomeProductCard extends StatelessWidget {
     required this.product,
     required this.onTap,
     this.minimumShopPrice,
+    this.listings,
+    this.photoRefreshKey,
     this.isPriceLoading = false,
     this.currentUserIdProvider,
     this.visualPrototype = false,
@@ -272,6 +283,8 @@ class HomeProductCard extends StatelessWidget {
   final ProductEntity product;
   final VoidCallback? onTap;
   final double? minimumShopPrice;
+  final List<ShopProductEntity>? listings;
+  final Object? photoRefreshKey;
   final bool isPriceLoading;
   final ProductFavoriteCurrentUserIdProvider? currentUserIdProvider;
   final bool visualPrototype;
@@ -307,7 +320,11 @@ class HomeProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    _ProductImage(product: product),
+                    _ProductImage(
+                      product: product,
+                      listings: listings,
+                      refreshKey: photoRefreshKey,
+                    ),
                     Positioned(
                       right: 5,
                       top: 5,
@@ -401,6 +418,8 @@ class HomeProductCard extends StatelessWidget {
                       ),
                       child: _ProductImage(
                         product: product,
+                        listings: listings,
+                        refreshKey: photoRefreshKey,
                         visualPrototype: true,
                       ),
                     ),
@@ -504,50 +523,33 @@ class HomeProductCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({required this.product, this.visualPrototype = false});
-
+  const _ProductImage({
+    required this.product,
+    this.visualPrototype = false,
+    this.listings,
+    this.refreshKey,
+  });
   final ProductEntity product;
   final bool visualPrototype;
-
+  final List<ShopProductEntity>? listings;
+  final Object? refreshKey;
   @override
-  Widget build(BuildContext context) {
-    final imageUrl = _imageUrl;
-    if (imageUrl == null) return const _ProductImageFallback();
-
-    final uri = Uri.tryParse(imageUrl);
-    final isNetwork =
-        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-    if (!isNetwork) {
-      final assetImage = Image.asset(
-        imageUrl,
-        fit: visualPrototype ? BoxFit.contain : BoxFit.cover,
-        errorBuilder: (_, _, _) => const _ProductImageFallback(),
-      );
-      if (!visualPrototype) return assetImage;
-      return ColoredBox(
-        color: CustomerHomeV1Tokens.mint,
-        child: Padding(
-          padding: const EdgeInsets.all(CustomerHomeV1Tokens.space8),
-          child: assetImage,
-        ),
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.cover,
-      placeholder: (_, _) => const _ProductImageFallback(),
-      errorWidget: (_, _, _) => const _ProductImageFallback(),
-    );
-  }
-
-  String? get _imageUrl {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-    final thumbnail = product.thumbnail?.trim() ?? '';
-    return thumbnail.isEmpty ? null : thumbnail;
-  }
+  Widget build(BuildContext context) => ProductCardImage(
+    productId: product.id,
+    listings: listings,
+    refreshKey: refreshKey,
+    fit: visualPrototype ? BoxFit.contain : BoxFit.cover,
+    imageFrame: !visualPrototype
+        ? null
+        : (image) => ColoredBox(
+            color: CustomerHomeV1Tokens.mint,
+            child: Padding(
+              padding: const EdgeInsets.all(CustomerHomeV1Tokens.space8),
+              child: image,
+            ),
+          ),
+    fallback: const _ProductImageFallback(),
+  );
 }
 
 class _ProductImageFallback extends StatelessWidget {

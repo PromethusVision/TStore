@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../fixtures/product_card_media_fixture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t_store/core/common/widgets/vertical_product_card.dart';
@@ -77,6 +78,7 @@ void main() {
   testWidgets('dikey ürün kartındaki bozuk görsel güvenli yedeği kullanır', (
     tester,
   ) async {
+    installCardPhoto(product.id, brokenImageUrl);
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
@@ -89,6 +91,7 @@ void main() {
       ),
     );
 
+    await tester.pumpAndSettle();
     final fallback = errorFallback(tester);
 
     expect(fallback, isA<ProductImageFallback>());

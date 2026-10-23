@@ -236,10 +236,6 @@ class _CartPrototypeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
     final product = item.shopProduct?.product;
-    // Preserve the cart's existing product-image precedence.
-    final image = product?.images.isNotEmpty == true
-        ? product!.images.first.trim()
-        : '';
     return Container(
       key: Key('customer-cart-item-${item.id}'),
       padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
@@ -253,25 +249,22 @@ class _CartPrototypeItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (image.isNotEmpty)
-                RoundedImage(
-                  roundedImageModel: RoundedImageModel(
-                    image: image,
-                    width: 64,
-                    height: 72,
-                    padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
-                    fit: BoxFit.contain,
-                    backgroundColor: EsnaftaVarColors.surfaceAlt,
-                    isNetworkImage: image.startsWith('http'),
-                    errorWidget: const _CartProductImagePlaceholder(),
+              SizedBox(
+                width: 64,
+                height: 72,
+                child: ProductCardImage(
+                  productId: item.shopProduct?.productId ?? '',
+                  imageFrame: (image) => DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: EsnaftaVarColors.surfaceAlt,
+                      borderRadius: BorderRadius.circular(TSizes.md),
+                    ),
+                    child: image,
                   ),
-                )
-              else
-                const SizedBox(
-                  width: 64,
-                  height: 72,
-                  child: _CartProductImagePlaceholder(),
+                  listings: [if (item.shopProduct != null) item.shopProduct!],
+                  fallback: const _CartProductImagePlaceholder(),
                 ),
+              ),
               const SizedBox(width: EsnaftaVarSpacing.sm),
               Expanded(
                 child: Column(

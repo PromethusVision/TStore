@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:t_store/features/shop/presentation/helpers/product_card_media_loader.dart';
 import 'package:t_store/features/trust_commerce/data/supabase_trust_commerce_repository.dart';
 import 'package:t_store/features/trust_commerce/domain/trust_commerce.dart';
 import 'package:t_store/features/reviews/domain/repositories/purchase_evaluation_repository.dart';
@@ -228,6 +229,15 @@ Future<void> setupServiceLocator({
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
   sl.registerLazySingleton<ListingHeroMediaRepository>(
     () => SupabaseListingHeroMediaRepository(sl<SupabaseService>().client),
+  );
+  sl.registerLazySingleton<ProductCardMediaLoader>(
+    () => ProductCardMediaLoader(
+      media: sl<ListingHeroMediaRepository>(),
+      location: sl<CustomerLocationService>(),
+      loadListings: (ids) => sl<GetShopProductsByProductIdsUsecase>()(
+        GetShopProductsByProductIdsParams(productIds: ids),
+      ),
+    ),
   );
   if (const bool.fromEnvironment('COUPON_CHECKOUT_V1_ENABLED')) {
     sl.registerLazySingleton<CouponCheckoutRepository>(

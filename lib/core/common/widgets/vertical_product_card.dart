@@ -5,16 +5,13 @@ import 'package:t_store/core/common/view_models/circular_container_view_model.da
 import 'package:t_store/core/common/view_models/circular_icon_view_model.dart';
 import 'package:t_store/core/common/view_models/product_price_text_view_model.dart';
 import 'package:t_store/core/common/view_models/product_title_text_view_model.dart';
-import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
 import 'package:t_store/core/common/widgets/brand_title_with_verification.dart';
 import 'package:t_store/core/common/widgets/circular_container.dart';
 import 'package:t_store/core/common/widgets/circular_icon.dart';
 import 'package:t_store/core/common/widgets/product_price_text.dart';
 import 'package:t_store/core/common/widgets/product_title_text.dart';
-import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/common/widgets/sale_tag.dart';
 import 'package:t_store/core/utils/constants/colors.dart';
-import 'package:t_store/core/utils/constants/image_strings.dart';
 import 'package:t_store/core/utils/constants/shadow_styles.dart';
 import 'package:t_store/core/utils/constants/sizes.dart';
 import 'package:t_store/core/utils/helpers/helper_functions.dart';
@@ -22,6 +19,7 @@ import 'package:t_store/features/shop/domain/entities/product_entity.dart';
 import 'package:t_store/features/shop/presentation/widgets/product_image_fallback.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 class VerticalProductCard extends StatelessWidget {
   const VerticalProductCard({
@@ -46,8 +44,6 @@ class VerticalProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
-    final displayImage = _displayImage;
-    final isNetworkImage = _isNetworkImage(displayImage);
 
     return GestureDetector(
       onTap: () {
@@ -79,16 +75,17 @@ class VerticalProductCard extends StatelessWidget {
                 color: dark ? TColors.dark : TColors.light,
                 child: Stack(
                   children: [
-                    RoundedImage(
-                      roundedImageModel: RoundedImageModel(
-                        isNetworkImage: isNetworkImage,
-                        backgroundColor: dark ? TColors.dark : TColors.light,
-                        image: displayImage,
-                        onTap: () {},
-                        applyImageRadius: true,
-                        errorWidget: ProductImageFallback(
-                          key: Key(
-                            'vertical-product-image-fallback-${product.id}',
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          TSizes.productImageRadius,
+                        ),
+                        child: ProductCardImage(
+                          productId: product.id,
+                          fallback: ProductImageFallback(
+                            key: Key(
+                              'vertical-product-image-fallback-${product.id}',
+                            ),
                           ),
                         ),
                       ),
@@ -216,23 +213,6 @@ class VerticalProductCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String get _displayImage {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-
-    final thumbnail = product.thumbnail;
-    if (thumbnail != null && thumbnail.trim().isNotEmpty) {
-      return thumbnail.trim();
-    }
-
-    return TImages.productImage13;
-  }
-
-  bool _isNetworkImage(String image) {
-    return image.startsWith('http://') || image.startsWith('https://');
   }
 }
 

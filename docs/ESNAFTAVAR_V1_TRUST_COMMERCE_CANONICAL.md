@@ -1017,6 +1017,26 @@ hosted Development application requires a separate concrete approval. Production
 is excluded. Integration Agent owns main merge. Preserve delivered APK pairs;
 new device photo/location checks remain open while the owner is away.
 
+### 4.22 Product card photo consistency — repair 2026-10-23
+
+The owner reported that an uploaded Merchant product photo appears in Details
+but not on Customer cards. Apply the existing §4 listing-media rule to card
+thumbnails without changing layouts, product identity, prices or publication.
+General discovery cards use eligible seller media in the existing default order
+(known preferred/cached location uses nearest). Shop and cart cards are restricted
+to their own listing; they must not borrow another merchant's photograph.
+Use the existing published-media resolver and its primary/remaining-photo order.
+Failed images advance through the permitted candidates, then the existing empty
+image. Central catalog photos and stock sample assets are not a production fallback.
+No image is copied into the central product, wishlist or history records.
+
+Reuse already loaded listing batches and coalesce other visible card reads;
+keep short-lived display URLs in widget state, with no retained lookup cache.
+Refresh/product changes discard stale completions and clear the previous image.
+No new Storage/Auth service, dependency, migration, hosted write or business flag.
+The default Customer shop avatar also binds the existing §4.21 shop-photo field;
+its original dimensions remain. Integration and device delivery stay separate.
+
 ## 5. Existing purchase evidence, QR claim and returns
 
 **FROZEN:** one QR system. `verified_purchase_items` in product language means

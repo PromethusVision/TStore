@@ -69,10 +69,13 @@ Widget _buildShopVisualPrototype(
                     color: EsnaftaVarColors.primarySoft,
                     borderRadius: BorderRadius.circular(EsnaftaVarRadii.large),
                   ),
-                  child: const Icon(
-                    Icons.storefront_rounded,
-                    color: EsnaftaVarColors.primary,
-                    size: 32,
+                  child: ShopProfilePhoto(
+                    path: shop.photoPath,
+                    fallback: const Icon(
+                      Icons.storefront_rounded,
+                      color: EsnaftaVarColors.primary,
+                      size: 32,
+                    ),
                   ),
                 ),
                 const SizedBox(width: EsnaftaVarSpacing.sm),
@@ -293,10 +296,6 @@ class _ShopPrototypeProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = listing.product;
-    final images = listing.images.isNotEmpty
-        ? listing.images
-        : product?.images ?? <String>[];
-    final image = images.isNotEmpty ? images.first : product?.thumbnail ?? '';
     final theme = Theme.of(context).textTheme;
     return Material(
       color: EsnaftaVarColors.surface,
@@ -316,25 +315,22 @@ class _ShopPrototypeProduct extends StatelessWidget {
             padding: const EdgeInsets.all(EsnaftaVarSpacing.sm),
             child: Row(
               children: [
-                if (image.isNotEmpty)
-                  RoundedImage(
-                    roundedImageModel: RoundedImageModel(
-                      image: image,
-                      width: 76,
-                      height: 84,
-                      padding: const EdgeInsets.all(EsnaftaVarSpacing.xs),
-                      fit: BoxFit.contain,
-                      backgroundColor: EsnaftaVarColors.surfaceAlt,
-                      isNetworkImage: image.startsWith('http'),
-                      errorWidget: const _ShopProductFallback(),
+                SizedBox(
+                  width: 76,
+                  height: 84,
+                  child: ProductCardImage(
+                    productId: listing.productId,
+                    imageFrame: (image) => DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: EsnaftaVarColors.surfaceAlt,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: image,
                     ),
-                  )
-                else
-                  const SizedBox(
-                    width: 76,
-                    height: 84,
-                    child: _ShopProductFallback(),
+                    listings: [listing],
+                    fallback: const _ShopProductFallback(),
                   ),
+                ),
                 const SizedBox(width: EsnaftaVarSpacing.sm),
                 Expanded(
                   child: Column(

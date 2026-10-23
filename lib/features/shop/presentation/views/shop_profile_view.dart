@@ -6,8 +6,6 @@ import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:t_store/features/shop/domain/entities/shop_opening_hours.dart';
 import 'package:t_store/features/shop/presentation/widgets/shop_profile_photo.dart';
-import 'package:t_store/core/common/view_models/rounded_image_view_model.dart';
-import 'package:t_store/core/common/widgets/rounded_image.dart';
 import 'package:t_store/core/ui/components/esnaftavar_scaffold.dart';
 import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
@@ -26,6 +24,7 @@ import 'package:t_store/features/shop/domain/usecases/get_shop_products_by_shop_
 import 'package:t_store/features/shop/presentation/helpers/customer_proximity_helper.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 part 'shop_profile_visual_prototype.dart';
 
@@ -1097,15 +1096,6 @@ class _ShopProductVisual extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = shopProduct.product;
-    final imageUrl = shopProduct.images.isNotEmpty
-        ? shopProduct.images.first
-        : product?.thumbnail?.trim().isNotEmpty == true
-        ? product!.thumbnail!.trim()
-        : product?.images.isNotEmpty == true
-        ? product!.images.first
-        : null;
-
     return Container(
       width: 82,
       height: 82,
@@ -1114,13 +1104,12 @@ class _ShopProductVisual extends StatelessWidget {
         color: CustomerHomeV1Tokens.mint,
         borderRadius: BorderRadius.circular(CustomerHomeV1Tokens.radius16),
       ),
-      child: imageUrl == null
-          ? const _ShopProductFallback()
-          : Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => const _ShopProductFallback(),
-            ),
+      child: ProductCardImage(
+        productId: shopProduct.productId,
+        listings: [shopProduct],
+        fit: BoxFit.cover,
+        fallback: const _ShopProductFallback(),
+      ),
     );
   }
 }

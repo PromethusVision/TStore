@@ -1,4 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:t_store/features/shop/domain/repositories/listing_hero_media_repository.dart';
+import 'package:t_store/features/shop/presentation/widgets/shop_profile_photo.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +21,20 @@ import 'package:t_store/features/shop/presentation/views/shop_profile_view.dart'
 import 'package:url_launcher/url_launcher.dart';
 
 class MockShopRepository extends Mock implements ShopRepository {}
+
+class PublishedPhotoRepository implements ListingHeroMediaRepository {
+  @override
+  Future<List<ListingHeroPhoto>> photos(
+    List<ShopProductEntity> listings,
+  ) async => [
+    for (final listing in listings)
+      ListingHeroPhoto(
+        listingId: listing.id,
+        shopName: 'Test shop',
+        source: 'https://example.invalid/published-${listing.id}.png',
+      ),
+  ];
+}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -132,6 +149,35 @@ void main() {
     );
   }
 
+  testWidgets(
+    'shop card resolves published merchant media when legacy images are empty',
+    (tester) async {
+      sl.registerSingleton<ListingHeroMediaRepository>(
+        PublishedPhotoRepository(),
+      );
+      when(
+        () => shopRepository.getShopProductsByShop(any()),
+      ).thenAnswer((_) async => const Right([sampleShopProduct]));
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('shop-profile-product-link-shop-product-1')),
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is CachedNetworkImage &&
+              w.imageUrl ==
+                  'https://example.invalid/published-shop-product-1.png',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('geçerli bilgilerde yazma arama ve yol tarifi sunar', (
     tester,
   ) async {
@@ -164,6 +210,26 @@ void main() {
     expect(launchedUris.last.queryParameters['destination'], '41.001,29.002');
     expect(launchModes.last, LaunchMode.externalApplication);
   });
+
+  testWidgets(
+    'default shop profile binds the saved shop photo as well as legacy layout',
+    (tester) async {
+      const path = 'shops/fixture/photo.png';
+      for (final currentLayout in [true, false]) {
+        await tester.pumpWidget(
+          buildSubject(
+            shop: completeShop.copyWith(photoPath: path),
+            visualPrototype: currentLayout,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<ShopProfilePhoto>(find.byType(ShopProfilePhoto)).path,
+          path,
+        );
+      }
+    },
+  );
 
   testWidgets('müşteri UI kabuğunu ve marka kartlarını kullanır', (
     tester,

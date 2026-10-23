@@ -43,6 +43,7 @@ const _shirt = CartItemV2Entity(
     shopId: 'fixture-shop',
     productId: 'fixture-product-shirt',
     price: 399.90,
+    images: [_shirtImage],
     shop: _shop,
     product: ProductEntity(
       id: 'fixture-product-shirt',
@@ -64,6 +65,7 @@ const _slippers = CartItemV2Entity(
     shopId: 'fixture-shop',
     productId: 'fixture-product-slippers',
     price: 219.90,
+    images: [_slippersImage],
     shop: _shop,
     product: ProductEntity(
       id: 'fixture-product-slippers',

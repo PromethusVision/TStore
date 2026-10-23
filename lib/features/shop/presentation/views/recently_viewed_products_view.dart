@@ -3,7 +3,6 @@ import 'package:t_store/core/ui/components/esnaftavar_section_header.dart';
 import 'package:t_store/core/ui/components/esnaftavar_state_card.dart';
 import 'package:t_store/core/ui/components/esnaftavar_surface_icon_button.dart';
 import 'package:t_store/core/common/widgets/progress_indicator.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/core/dependency_injection/service_locator.dart';
@@ -14,6 +13,7 @@ import 'package:t_store/features/shop/presentation/cubit/recently_viewed_product
 import 'package:t_store/features/shop/presentation/views/all_products_view.dart';
 import 'package:t_store/features/shop/presentation/views/product_details_view.dart';
 import 'package:t_store/features/wishlist/presentation/widgets/product_favorite_button.dart';
+import 'package:t_store/features/shop/presentation/widgets/product_card_image.dart';
 
 typedef RecentlyViewedProductDestinationBuilder =
     Widget Function(ProductEntity product);
@@ -624,7 +624,6 @@ class _ProductThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imagePath = _imagePath;
     const fallback = ColoredBox(
       color: EsnaftaVarColors.primarySoft,
       child: Center(
@@ -641,32 +640,13 @@ class _ProductThumbnail extends StatelessWidget {
       child: SizedBox(
         width: width,
         height: 108,
-        child: imagePath == null
-            ? fallback
-            : imagePath.startsWith('http://') ||
-                  imagePath.startsWith('https://')
-            ? CachedNetworkImage(
-                imageUrl: imagePath,
-                fit: BoxFit.cover,
-                placeholder: (_, _) => fallback,
-                errorWidget: (_, _, _) => fallback,
-              )
-            : Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => fallback,
-              ),
+        child: ProductCardImage(
+          productId: product.id,
+          fit: BoxFit.cover,
+          fallback: fallback,
+        ),
       ),
     );
-  }
-
-  String? get _imagePath {
-    for (final image in product.images) {
-      if (image.trim().isNotEmpty) return image.trim();
-    }
-
-    final thumbnail = product.thumbnail?.trim();
-    return thumbnail == null || thumbnail.isEmpty ? null : thumbnail;
   }
 }
 
