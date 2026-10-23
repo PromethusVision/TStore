@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../chat/data/repositories/chat_repository_impl.dart';
 import '../../../core/supabase/authenticated_session_key.dart';
 import '../../../core/supabase/supabase_service.dart';
 import '../../auth/data/repositories/auth_repository_impl.dart';
@@ -58,6 +59,7 @@ MerchantServices createMerchantServices(
       AuthRepositoryImpl(supabaseService: service),
     ),
     recovery: recovery,
+    chatRepositoryFactory: () => ChatRepositoryImpl(supabaseService: service),
     notifications: NotificationRepositoryImpl(supabaseService: service),
     qr: QrSessionRepositoryImpl(
       supabaseService: service,

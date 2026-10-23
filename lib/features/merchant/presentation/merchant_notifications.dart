@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_store/features/merchant/presentation/merchant_widgets.dart';
 import 'package:t_store/features/notifications/domain/push_contract.dart';
@@ -14,11 +15,13 @@ class MerchantNotifications extends StatefulWidget {
     required this.identity,
     required this.currentUserId,
     this.cubit,
+    this.onChat,
   });
   final NotificationRepository repository;
   final PushIdentity identity;
   final String? Function() currentUserId;
   final NotificationsCubit? cubit;
+  final ValueChanged<NotificationEntity>? onChat;
   @override
   State<MerchantNotifications> createState() => _MerchantNotificationsState();
 }
@@ -105,7 +108,18 @@ class _MerchantNotificationsState extends State<MerchantNotifications> {
                       ? null
                       : const Icon(Icons.circle, size: 10),
                   onTap:
-                      item.isRead || loaded!.markingAsReadIds.contains(item.id)
+                      item.type == NotificationType.chat &&
+                          widget.onChat != null
+                      ? () {
+                          if (!_current) return;
+                          if (!item.isRead &&
+                              !loaded!.markingAsReadIds.contains(item.id)) {
+                            _cubit.markAsRead(item.id);
+                          }
+                          widget.onChat!(item);
+                        }
+                      : item.isRead ||
+                            loaded!.markingAsReadIds.contains(item.id)
                       ? null
                       : () {
                           if (_current) _cubit.markAsRead(item.id);

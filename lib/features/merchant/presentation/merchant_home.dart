@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:t_store/features/merchant/presentation/merchant_messages.dart';
+import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,11 +29,13 @@ class MerchantHome extends StatefulWidget {
     required this.access,
     this.push,
     this.inboxRequests,
+    this.notificationRequests,
   });
   final MerchantServices services;
   final MerchantAccess access;
   final PushCoordinator? push;
   final ValueListenable<int>? inboxRequests;
+  final ValueListenable<NotificationEntity?>? notificationRequests;
   @override
   State<MerchantHome> createState() => _MerchantHomeState();
 }
@@ -39,12 +44,30 @@ class _MerchantHomeState extends State<MerchantHome>
     with WidgetsBindingObserver {
   int _index = 0, _overviewRevision = 0, _productsRevision = 0;
   bool _opening = false;
+  Future<Object?>? _openRoute;
+  int _notificationGeneration = 0;
+  late final int _scopeRevision;
+  late final String? _sessionKey;
+  bool get _currentWorkspace {
+    if (!mounted) return false;
+    final session = context.read<MerchantSessionCubit>();
+    return mounted &&
+        !session.isClosed &&
+        session.state.status == MerchantSessionStatus.ready &&
+        session.state.scopeRevision == _scopeRevision &&
+        widget.services.currentUserId() == widget.access.user.id &&
+        widget.services.currentSessionKey?.call() == _sessionKey;
+  }
+
   late final NotificationsCubit _notifications;
   @override
   void initState() {
     super.initState();
+    _scopeRevision = context.read<MerchantSessionCubit>().state.scopeRevision;
+    _sessionKey = widget.services.currentSessionKey?.call();
     WidgetsBinding.instance.addObserver(this);
     widget.inboxRequests?.addListener(_openInbox);
+    widget.notificationRequests?.addListener(_notificationRequested);
     _notifications =
         NotificationsCubit(repository: widget.services.notifications)
           ..startListening()
@@ -58,12 +81,17 @@ class _MerchantHomeState extends State<MerchantHome>
       oldWidget.inboxRequests?.removeListener(_openInbox);
       widget.inboxRequests?.addListener(_openInbox);
     }
+    if (oldWidget.notificationRequests != widget.notificationRequests) {
+      oldWidget.notificationRequests?.removeListener(_notificationRequested);
+      widget.notificationRequests?.addListener(_notificationRequested);
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     widget.inboxRequests?.removeListener(_openInbox);
+    widget.notificationRequests?.removeListener(_notificationRequested);
     _notifications.close();
     super.dispose();
   }
@@ -74,6 +102,52 @@ class _MerchantHomeState extends State<MerchantHome>
     }
     Navigator.of(context).popUntil((route) => route.isFirst);
     _navigate(3);
+  }
+
+  bool _chatNotification(NotificationEntity item) =>
+      item.type == NotificationType.chat &&
+      item.userId == widget.access.user.id &&
+      (item.data?['app_role'] == null || item.data?['app_role'] == 'merchant');
+
+  void _messages([NotificationEntity? item]) {
+    if (!_currentWorkspace || widget.services.chatRepositoryFactory == null) {
+      return;
+    }
+    if (item != null && !_chatNotification(item)) return;
+    _open(
+      MerchantMessages(
+        services: widget.services,
+        access: widget.access,
+        peerId: item?.actionType == 'chat_detail' ? item?.actionId : null,
+      ),
+    );
+  }
+
+  void _notificationRequested() {
+    unawaited(_openRequestedNotification());
+  }
+
+  Future<void> _openRequestedNotification() async {
+    final item = widget.notificationRequests?.value;
+    if (!_currentWorkspace ||
+        item == null ||
+        item.userId != widget.access.user.id ||
+        (item.data?['app_role'] != null &&
+            item.data?['app_role'] != 'merchant')) {
+      return;
+    }
+    final generation = ++_notificationGeneration;
+    final closing = _openRoute;
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    _navigate(3);
+    if (closing != null) await closing;
+    await Future<void>.value();
+    if (!mounted ||
+        !_currentWorkspace ||
+        generation != _notificationGeneration) {
+      return;
+    }
+    if (_chatNotification(item)) _messages(item);
   }
 
   @override
@@ -104,10 +178,13 @@ class _MerchantHomeState extends State<MerchantHome>
     _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     try {
-      await Navigator.of(
+      final route = Navigator.of(
         context,
       ).push<Object?>(MaterialPageRoute(builder: (_) => page));
+      _openRoute = route;
+      await route;
     } finally {
+      _openRoute = null;
       _opening = false;
       if (mounted) {
         setState(() {
@@ -123,7 +200,7 @@ class _MerchantHomeState extends State<MerchantHome>
     _opening = true;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     try {
-      await Navigator.of(context).push<bool>(
+      final route = Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (pageContext) => MerchantShopForm(
             repository: widget.services.merchants,
@@ -132,7 +209,10 @@ class _MerchantHomeState extends State<MerchantHome>
           ),
         ),
       );
+      _openRoute = route;
+      await route;
     } finally {
+      _openRoute = null;
       _opening = false;
       if (mounted) {
         // Returning after an uncertain save also needs the authoritative shop.
@@ -170,6 +250,14 @@ class _MerchantHomeState extends State<MerchantHome>
                   services: s,
                   access: access,
                   notifications: _notifications,
+                  messagesEntry: s.chatRepositoryFactory == null
+                      ? null
+                      : MerchantMessagesEntry(
+                          services: s,
+                          access: access,
+                          onOpen: _messages,
+                          notifications: _notifications,
+                        ),
                   onProducts: () => _navigate(1),
                   onAddProduct: () => _open(
                     MerchantCatalogPicker(
@@ -238,6 +326,7 @@ class _MerchantHomeState extends State<MerchantHome>
                   repository: s.notifications,
                   identity: identity,
                   currentUserId: s.currentUserId,
+                  onChat: s.chatRepositoryFactory == null ? null : _messages,
                 ),
                 MerchantPage(
                   title: 'Hesabım',
@@ -258,6 +347,12 @@ class _MerchantHomeState extends State<MerchantHome>
                       icon: const Icon(Icons.storefront_outlined),
                       label: const Text('Mağaza profilini düzenle'),
                     ),
+                    if (s.chatRepositoryFactory != null)
+                      OutlinedButton.icon(
+                        onPressed: _messages,
+                        icon: const Icon(Icons.chat_bubble_outline),
+                        label: const Text('Müşteri mesajları'),
+                      ),
                     OutlinedButton.icon(
                       icon: const Icon(Icons.notifications_outlined),
                       label: const Text('Bildirim tercihleri'),

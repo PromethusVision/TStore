@@ -1,4 +1,5 @@
 import 'package:t_store/features/cart/domain/repositories/qr_session_repository.dart';
+import 'package:t_store/features/chat/domain/repositories/chat_repository.dart';
 import 'package:t_store/features/merchant_promotions/domain/merchant_promotion.dart';
 import 'package:t_store/features/commerce_ledger/domain/merchant_statement.dart';
 import 'package:t_store/features/rewards/domain/reward_program.dart';
@@ -41,6 +42,7 @@ class MerchantServices {
     this.statement,
     this.promotions,
     this.recovery,
+    this.chatRepositoryFactory,
   });
   final MerchantRepository merchants;
   final MerchantCredentials credentials;
@@ -65,4 +67,6 @@ class MerchantServices {
   final MerchantStatementRepository? statement;
   final MerchantPromotionRepository? promotions;
   final MerchantAccountRecovery? recovery;
+  // Each reader owns its subscription; the shared adapter has one live stream.
+  final ChatRepository Function()? chatRepositoryFactory;
 }

@@ -23,6 +23,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
   late final PushCoordinator? _push;
   StreamSubscription<MerchantSessionState>? _scopeChanges;
   final _inboxRequests = ValueNotifier<int>(0);
+  final _notificationRequests = ValueNotifier<NotificationEntity?>(null);
   int _lastScope = 0;
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
     _scopeChanges = _session.stream.listen((state) {
       if (_lastScope != state.scopeRevision) {
         _lastScope = state.scopeRevision;
+        _notificationRequests.value = null;
         _push?.invalidate();
       }
     });
@@ -66,7 +68,10 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
         notification.userId != _session.state.access?.user.id) {
       return;
     }
-    _inboxRequests.value++;
+    // This is a validated event, not persistent selection. The coordinator owns
+    // deduplication; a later enrollment can legitimately open the same record.
+    _notificationRequests.value = null;
+    _notificationRequests.value = notification;
   }
 
   @override
@@ -83,6 +88,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
     _push?.invalidate();
     if (widget.services.pushFactory != null) _push?.dispose();
     _inboxRequests.dispose();
+    _notificationRequests.dispose();
     _session.close();
     super.dispose();
   }
@@ -184,6 +190,7 @@ class _MerchantAppState extends State<MerchantApp> with WidgetsBindingObserver {
                   access: access,
                   push: _push,
                   inboxRequests: _inboxRequests,
+                  notificationRequests: _notificationRequests,
                 ),
               ),
             };
