@@ -1,8 +1,9 @@
 part of 'chat_view.dart';
 
 class _ChatFinalHeader extends StatelessWidget {
-  const _ChatFinalHeader({required this.receiverName});
+  const _ChatFinalHeader({required this.receiverName, required this.merchant});
   final String receiverName;
+  final bool merchant;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -24,8 +25,8 @@ class _ChatFinalHeader extends StatelessWidget {
             color: EsnaftaVarColors.primarySoft,
             borderRadius: BorderRadius.circular(EsnaftaVarRadii.medium),
           ),
-          child: const Icon(
-            Icons.storefront_outlined,
+          child: Icon(
+            merchant ? Icons.person_outline : Icons.storefront_outlined,
             color: EsnaftaVarColors.primary,
             size: 22,
           ),
@@ -43,7 +44,7 @@ class _ChatFinalHeader extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Mağaza ile görüşme',
+                merchant ? 'Müşteri ile görüşme' : 'Mağaza ile görüşme',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: EsnaftaVarColors.textSecondary,
                 ),

@@ -29,10 +29,12 @@ class MerchantDashboard extends StatefulWidget {
     required this.onPendingUploads,
     required this.onMedia,
     required this.onNotifications,
+    this.messagesEntry,
   });
   final MerchantServices services;
   final MerchantAccess access;
   final NotificationsCubit notifications;
+  final Widget? messagesEntry;
   final VoidCallback onProducts,
       onAddProduct,
       onQr,
@@ -97,6 +99,7 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const Text('Mağazanın güncel durumunu kontrol et.'),
+        if (widget.messagesEntry != null) widget.messagesEntry!,
         if (widget.services.promotions case final promotions?)
           MerchantPromotionEntry(
             repository: promotions,

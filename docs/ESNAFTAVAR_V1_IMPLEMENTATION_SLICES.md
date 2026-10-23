@@ -638,6 +638,23 @@ send, hosted access, SQL or remote migration. Synthetic HTTP, method-channel
 and widget evidence does not close physical-device/provider gates.
 See [handoff](MERCHANT_PREFERENCE_RECOVERY_HANDOFF.md). Full I and J remain OPEN.
 
+### I2 local Merchant messaging access (2026-10-23)
+
+On integrated `33374066`, apply canonical §12.5: wire the existing shared chat
+repository and views explicitly into Merchant without Customer locator setup.
+Expose dashboard unread/messages and account access, existing-history-validated
+chat notification destinations, and route-owned session/authority fences.
+Preserve Customer defaults, five tabs, generic lock-screen copy and default-OFF
+provider/business capabilities. No schema or profile-read grant expansion.
+
+Test actual Merchant list/reply flows, read notifications, safe push destinations,
+double taps, read failures/deadlines, same-account replacement, unchanged-session
+drafts, narrow layouts and shared Customer regressions. Run analyzer/full Flutter
+and paired Android compile rehearsals. The real provider/worker connection is a
+separate pending activation package, not a claimed outcome of local fake events.
+See [messaging handoff](MERCHANT_CHAT_ENTRY_HANDOFF.md) and
+[Development push setup scope](MERCHANT_CHAT_PUSH_SETUP_SCOPE.md).
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

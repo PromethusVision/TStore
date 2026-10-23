@@ -6,13 +6,11 @@ import 'package:t_store/features/shop/domain/repositories/shop_repository.dart';
 
 class ChatConversationsCubit extends Cubit<ChatConversationsState> {
   final ChatRepository repository;
-  final ShopRepository shopRepository;
+  final ShopRepository? shopRepository;
   bool _isLoading = false;
 
-  ChatConversationsCubit({
-    required this.repository,
-    required this.shopRepository,
-  }) : super(ChatConversationsInitial());
+  ChatConversationsCubit({required this.repository, this.shopRepository})
+    : super(ChatConversationsInitial());
 
   Future<void> loadConversations() async {
     await _loadConversations(showLoading: true, preserveLoadedState: false);
@@ -63,7 +61,8 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
   Future<List<ChatThreadEntity>> _enrichWithShopNames(
     List<ChatThreadEntity> threads,
   ) async {
-    if (threads.isEmpty) return threads;
+    final shops = shopRepository;
+    if (threads.isEmpty || shops == null) return threads;
 
     final ownerUserIds = threads
         .map((thread) => thread.otherUserId.trim())
@@ -72,9 +71,7 @@ class ChatConversationsCubit extends Cubit<ChatConversationsState> {
         .toList(growable: false);
     if (ownerUserIds.isEmpty) return threads;
 
-    final shopsResult = await shopRepository.getShopsByOwnerUserIds(
-      ownerUserIds,
-    );
+    final shopsResult = await shops.getShopsByOwnerUserIds(ownerUserIds);
 
     return shopsResult.fold((_) => threads, (shops) {
       final shopNameByOwnerId = <String, String>{};

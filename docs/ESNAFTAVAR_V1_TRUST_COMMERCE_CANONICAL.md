@@ -2269,6 +2269,44 @@ No new provider, Auth/notification store, SQL, dependency, remote access or
 Customer layout replacement. Full I, physical J and pilot-opening gates remain
 OPEN. See [preference recovery handoff](MERCHANT_PREFERENCE_RECOVERY_HANDOFF.md).
 
+### 12.5 Merchant messaging access and safe chat destinations — 2026-10-23
+
+The owner reported that the Merchant application exposes no customer messaging
+entry and requested repair plus an assessment of OS notification delivery.
+Complete the local messaging path using existing account-to-account chat tables,
+summary/unread RPCs, Realtime, ChatCubit and composer. No second messenger/inbox,
+new profile-read grants, schema change or remote write is required for this path.
+
+- Preserve the five Merchant tabs. Add an explicit dashboard Messages entry with
+  actual unread count and an account-page entry. Counts refresh through the shared
+  notification events and foreground reconciliation; they do not imply OS push.
+- Reuse conversation/thread layouts with Merchant wording and person icon. Keep
+  Customer defaults unchanged. The Merchant replies to an existing conversation;
+  no customer-directory search or arbitrary outbound recipient entry is added.
+- Existing summaries do not return customer profile names. Use a truthful generic
+  customer-conversation label and existing latest-message preview when no trusted
+  name exists; never invent names, display raw account IDs or widen profile access.
+- Open chat notifications even after they are read. A notification identifies only
+  a candidate peer: re-read current participant-owned conversation history before
+  creating the composer. Missing/inaccessible peers get a recoverable explanation.
+  Authenticated push lookup may now route validated chat to this same path; other
+  events retain the existing inbox destination. Payload never grants authority.
+- Bind each Merchant reader/route to the current host authority revision and stable
+  Auth session. Discard obsolete replies/events and prevent stale dispatch; normal
+  token renewal preserves the composer. Reuse send locks and server acknowledgements;
+  no offline send queue, automatic resend or new delivery guarantee. Bound reads,
+  preserve pending writes and distinguish transport failure from cancellation.
+
+OS push remains **PENDING**, not completed by this UI package. The repository has
+an unconfigured mobile provider and local service-dispatch preparation, not a
+deployed Firebase adapter/worker. The owner reports no known Firebase setup.
+Before pilot enrollment, prepare/review the existing project's Development-only
+FCM app bindings, shared mobile adapter, trusted server dispatch, consent and
+physical foreground/background/terminated acceptance. Firebase/APNs configuration,
+server credentials and hosted schema/worker apply require their own concrete scope.
+Keep default-OFF capabilities, generic lock-screen copy and secret boundaries from
+§§12.1–12.4. Showing raw message content on the lock screen is not approved here.
+
 ## 13. RLS, privacy and migration safety
 
 Server entrypoints derive auth.uid/profile role and exact shop owner; client-supplied

@@ -26,6 +26,7 @@ class ChatView extends StatelessWidget {
     this.chatCubit,
     this.currentUserIdProvider,
     this.autoRefreshInterval = const Duration(seconds: 15),
+    this.merchant = false,
   });
 
   final String receiverId;
@@ -34,6 +35,7 @@ class ChatView extends StatelessWidget {
   final ChatCubit? chatCubit;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
   final Duration autoRefreshInterval;
+  final bool merchant;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class ChatView extends StatelessWidget {
         initialDraft: initialDraft,
         currentUserIdProvider: currentUserIdProvider,
         autoRefreshInterval: autoRefreshInterval,
+        merchant: merchant,
       ),
     );
   }
@@ -60,6 +63,7 @@ class _ChatViewBody extends StatefulWidget {
     required this.initialDraft,
     required this.currentUserIdProvider,
     required this.autoRefreshInterval,
+    required this.merchant,
   });
 
   final String receiverId;
@@ -67,6 +71,7 @@ class _ChatViewBody extends StatefulWidget {
   final String? initialDraft;
   final ChatCurrentUserIdProvider? currentUserIdProvider;
   final Duration autoRefreshInterval;
+  final bool merchant;
 
   @override
   State<_ChatViewBody> createState() => _ChatViewBodyState();
@@ -137,7 +142,10 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                     EsnaftaVarSpacing.md,
                     0,
                   ),
-                  child: _ChatFinalHeader(receiverName: widget.receiverName),
+                  child: _ChatFinalHeader(
+                    receiverName: widget.receiverName,
+                    merchant: widget.merchant,
+                  ),
                 ),
                 const SizedBox(height: EsnaftaVarSpacing.xs),
                 Expanded(
@@ -210,6 +218,7 @@ class _ChatViewBodyState extends State<_ChatViewBody>
                                     ),
                                   )
                                 : _MessageList(
+                                    merchant: widget.merchant,
                                     messages: _messages,
                                     currentUserId: currentUserId,
                                     scrollController: _scrollController,
@@ -407,6 +416,7 @@ class _ChatLoadErrorState extends StatelessWidget {
 
 class _MessageList extends StatelessWidget {
   const _MessageList({
+    required this.merchant,
     required this.messages,
     required this.currentUserId,
     required this.scrollController,
@@ -417,11 +427,12 @@ class _MessageList extends StatelessWidget {
   final String? currentUserId;
   final ScrollController scrollController;
   final bool isLoadingMore;
+  final bool merchant;
 
   @override
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
-      return const _EmptyConversationState();
+      return _EmptyConversationState(merchant: merchant);
     }
 
     return Stack(
@@ -510,17 +521,20 @@ class _MessageList extends StatelessWidget {
 }
 
 class _EmptyConversationState extends StatelessWidget {
-  const _EmptyConversationState();
+  const _EmptyConversationState({required this.merchant});
+  final bool merchant;
 
   @override
   Widget build(BuildContext context) => Center(
     child: SingleChildScrollView(
       padding: const EdgeInsets.all(EsnaftaVarSpacing.md),
-      child: const EsnaftaVarStateCard(
-        key: Key('customer-chat-empty-state'),
+      child: EsnaftaVarStateCard(
+        key: const Key('customer-chat-empty-state'),
         icon: Icons.chat_bubble_outline_rounded,
         title: 'Henüz mesaj yok.',
-        message: 'Mağazaya ilk mesajını aşağıdaki alandan gönderebilirsin.',
+        message: merchant
+            ? 'Müşteriye yanıtını aşağıdaki alandan gönderebilirsin.'
+            : 'Mağazaya ilk mesajını aşağıdaki alandan gönderebilirsin.',
       ),
     ),
   );

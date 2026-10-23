@@ -22,12 +22,14 @@ class ConversationsView extends StatelessWidget {
     this.autoRefreshInterval = const Duration(seconds: 15),
     this.destinationBuilder,
     this.nowProvider,
+    this.merchant = false,
   });
 
   final ChatConversationsCubit? conversationsCubit;
   final Duration autoRefreshInterval;
   final ConversationDestinationBuilder? destinationBuilder;
   final DateTime Function()? nowProvider;
+  final bool merchant;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class ConversationsView extends StatelessWidget {
         autoRefreshInterval: autoRefreshInterval,
         destinationBuilder: destinationBuilder,
         nowProvider: nowProvider ?? DateTime.now,
+        merchant: merchant,
       ),
     );
   }
@@ -49,11 +52,13 @@ class _ConversationsViewBody extends StatefulWidget {
     required this.autoRefreshInterval,
     required this.destinationBuilder,
     required this.nowProvider,
+    required this.merchant,
   });
 
   final Duration autoRefreshInterval;
   final ConversationDestinationBuilder? destinationBuilder;
   final DateTime Function() nowProvider;
+  final bool merchant;
 
   @override
   State<_ConversationsViewBody> createState() => _ConversationsViewBodyState();
@@ -100,93 +105,98 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
             constraints: const BoxConstraints(maxWidth: 430),
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
                     EsnaftaVarSpacing.md,
                     EsnaftaVarSpacing.xs,
                     EsnaftaVarSpacing.md,
                     0,
                   ),
-                  child: _ConversationsHeader(),
+                  child: _ConversationsHeader(merchant: widget.merchant),
                 ),
                 const SizedBox(height: EsnaftaVarSpacing.sm),
                 Expanded(
-                  child:
-                      BlocBuilder<
-                        ChatConversationsCubit,
-                        ChatConversationsState
-                      >(
-                        builder: (context, state) {
-                          if (state is ChatConversationsInitial ||
-                              state is ChatConversationsLoading) {
-                            return const _ConversationsLoadingState();
-                          }
+                  child: BlocBuilder<ChatConversationsCubit, ChatConversationsState>(
+                    builder: (context, state) {
+                      if (state is ChatConversationsInitial ||
+                          state is ChatConversationsLoading) {
+                        return const _ConversationsLoadingState();
+                      }
 
-                          if (state is ChatConversationsError) {
-                            return _ConversationStatus(
-                              icon: Icons.chat_bubble_outline_rounded,
-                              title: 'Mesajların yüklenemedi',
-                              description: state.message,
-                              actionLabel: 'Tekrar Dene',
-                              actionIcon: Icons.refresh_rounded,
-                              onAction: () => context
-                                  .read<ChatConversationsCubit>()
-                                  .refreshConversations(),
-                              onRefresh: () => context
-                                  .read<ChatConversationsCubit>()
-                                  .refreshConversations(),
-                            );
-                          }
+                      if (state is ChatConversationsError) {
+                        return _ConversationStatus(
+                          icon: Icons.chat_bubble_outline_rounded,
+                          title: 'Mesajların yüklenemedi',
+                          description: state.message,
+                          actionLabel: 'Tekrar Dene',
+                          actionIcon: Icons.refresh_rounded,
+                          onAction: () => context
+                              .read<ChatConversationsCubit>()
+                              .refreshConversations(),
+                          onRefresh: () => context
+                              .read<ChatConversationsCubit>()
+                              .refreshConversations(),
+                        );
+                      }
 
-                          if (state is ChatConversationsLoaded) {
-                            if (state.threads.isEmpty) {
-                              return _ConversationStatus(
-                                icon: Icons.forum_outlined,
-                                title: 'Henüz mesajın yok',
-                                description:
-                                    'Bir ürün hakkında mağazaya yazdığında konuşmaların burada görünecek.',
-                                actionLabel: 'Ürünleri Keşfet',
-                                actionIcon: Icons.search_rounded,
-                                onAction: _openProductDiscovery,
-                                onRefresh: () => context
-                                    .read<ChatConversationsCubit>()
-                                    .refreshConversations(),
+                      if (state is ChatConversationsLoaded) {
+                        if (state.threads.isEmpty) {
+                          return _ConversationStatus(
+                            icon: Icons.forum_outlined,
+                            title: 'Henüz mesajın yok',
+                            description: widget.merchant
+                                ? 'Müşteriler mağazana veya ürünlerine mesaj gönderdiğinde görüşmeler burada görünecek.'
+                                : 'Bir ürün hakkında mağazaya yazdığında konuşmaların burada görünecek.',
+                            actionLabel: widget.merchant
+                                ? 'Yenile'
+                                : 'Ürünleri Keşfet',
+                            actionIcon: widget.merchant
+                                ? Icons.refresh
+                                : Icons.search_rounded,
+                            onAction: widget.merchant
+                                ? () => context
+                                      .read<ChatConversationsCubit>()
+                                      .refreshConversations()
+                                : _openProductDiscovery,
+                            onRefresh: () => context
+                                .read<ChatConversationsCubit>()
+                                .refreshConversations(),
+                          );
+                        }
+
+                        return RefreshIndicator(
+                          color: EsnaftaVarColors.primary,
+                          onRefresh: () => context
+                              .read<ChatConversationsCubit>()
+                              .refreshConversations(),
+                          child: ListView.separated(
+                            key: const Key('customer-conversations-list'),
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(
+                              EsnaftaVarSpacing.md,
+                              EsnaftaVarSpacing.xxs,
+                              EsnaftaVarSpacing.md,
+                              EsnaftaVarSpacing.xl,
+                            ),
+                            itemCount: state.threads.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: EsnaftaVarSpacing.sm),
+                            itemBuilder: (context, index) {
+                              final thread = state.threads[index];
+                              return _ConversationCard(
+                                merchant: widget.merchant,
+                                thread: thread,
+                                now: widget.nowProvider(),
+                                onTap: () => _openConversation(thread),
                               );
-                            }
+                            },
+                          ),
+                        );
+                      }
 
-                            return RefreshIndicator(
-                              color: EsnaftaVarColors.primary,
-                              onRefresh: () => context
-                                  .read<ChatConversationsCubit>()
-                                  .refreshConversations(),
-                              child: ListView.separated(
-                                key: const Key('customer-conversations-list'),
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: const EdgeInsets.fromLTRB(
-                                  EsnaftaVarSpacing.md,
-                                  EsnaftaVarSpacing.xxs,
-                                  EsnaftaVarSpacing.md,
-                                  EsnaftaVarSpacing.xl,
-                                ),
-                                itemCount: state.threads.length,
-                                separatorBuilder: (_, _) => const SizedBox(
-                                  height: EsnaftaVarSpacing.sm,
-                                ),
-                                itemBuilder: (context, index) {
-                                  final thread = state.threads[index];
-                                  return _ConversationCard(
-                                    thread: thread,
-                                    now: widget.nowProvider(),
-                                    onTap: () => _openConversation(thread),
-                                  );
-                                },
-                              ),
-                            );
-                          }
-
-                          return const _ConversationsLoadingState();
-                        },
-                      ),
+                      return const _ConversationsLoadingState();
+                    },
+                  ),
                 ),
               ],
             ),
@@ -262,7 +272,8 @@ class _ConversationsViewBodyState extends State<_ConversationsViewBody>
 }
 
 class _ConversationsHeader extends StatelessWidget {
-  const _ConversationsHeader();
+  const _ConversationsHeader({required this.merchant});
+  final bool merchant;
   @override
   Widget build(BuildContext context) => Row(
     key: const Key('customer-conversations-header'),
@@ -281,7 +292,9 @@ class _ConversationsHeader extends StatelessWidget {
             Text('Mesajlarım', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(
-              'Mağazalarla görüşmelerin.',
+              merchant
+                  ? 'Müşterilerinle görüşmelerin.'
+                  : 'Mağazalarla görüşmelerin.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: EsnaftaVarColors.textSecondary,
               ),
@@ -343,12 +356,14 @@ class _ConversationsLoadingState extends StatelessWidget {
 
 class _ConversationCard extends StatelessWidget {
   const _ConversationCard({
+    required this.merchant,
     required this.thread,
     required this.now,
     required this.onTap,
   });
 
   final ChatThreadEntity thread;
+  final bool merchant;
   final DateTime now;
   final VoidCallback onTap;
 
@@ -386,8 +401,10 @@ class _ConversationCard extends StatelessWidget {
                           EsnaftaVarRadii.medium,
                         ),
                       ),
-                      child: const Icon(
-                        Icons.storefront_outlined,
+                      child: Icon(
+                        merchant
+                            ? Icons.person_outline
+                            : Icons.storefront_outlined,
                         color: EsnaftaVarColors.primary,
                       ),
                     ),

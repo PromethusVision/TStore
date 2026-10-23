@@ -8,15 +8,19 @@ import 'package:t_store/features/notifications/domain/push_contract.dart';
 import 'package:t_store/features/notifications/domain/push_coordinator.dart';
 import 'package:t_store/features/notifications/domain/entities/notification_entity.dart';
 import '../../support/push_client_fakes.dart';
+import '../../support/merchant_chat_fakes.dart';
+import 'package:t_store/features/chat/presentation/views/chat_view.dart';
 
 void main() {
   late MerchantPreview preview;
   late FakePushProvider provider;
   late FakePushRegistry registry;
-  Future<void> host(WidgetTester tester) async {
+  late MerchantChatFake chat;
+  Future<void> host(WidgetTester tester, {bool chatTarget = false}) async {
     preview = MerchantPreview();
     provider = FakePushProvider();
     registry = FakePushRegistry();
+    chat = MerchantChatFake();
     final base = preview.services;
     await tester.pumpWidget(
       MerchantApp(
@@ -30,6 +34,7 @@ void main() {
           currentUserId: base.currentUserId,
           preview: true,
           pushProvider: provider,
+          chatRepositoryFactory: chatTarget ? () => chat : null,
           pushFactory: (onOpen) => PushCoordinator(
             provider: provider,
             registry: registry,
@@ -44,8 +49,16 @@ void main() {
               userId: MerchantPreview.userId,
               title: 'Fixture',
               body: 'Fixture',
-              type: NotificationType.system,
-              data: const {'app_role': 'merchant', 'target_type': 'admin'},
+              type: chatTarget
+                  ? NotificationType.chat
+                  : NotificationType.system,
+              data: chatTarget
+                  ? const {
+                      'app_role': 'merchant',
+                      'action_type': 'chat_detail',
+                      'action_id': chatPeer,
+                    }
+                  : const {'app_role': 'merchant', 'target_type': 'admin'},
             ),
             onOpen: onOpen,
             installationId: 'fixture-install',
@@ -61,6 +74,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.runAsync(() async {
       await provider.close();
+      await chat.events.close();
       await preview.dispose();
     });
   }
@@ -72,6 +86,72 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets(
+    'validated chat tap closes nested route and opens confirmed conversation once',
+    (tester) async {
+      await host(tester, chatTarget: true);
+      await settings(tester);
+      await tester.tap(find.byKey(const Key('push-device-action')));
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Müşteri mesajları'));
+      await tester.pumpAndSettle();
+      const event = PushOpenEvent(
+        notificationId: 'chat-push',
+        identity: PushIdentity(
+          MerchantPreview.userId,
+          NotificationAppRole.merchant,
+        ),
+      );
+      provider.taps.add(event);
+      provider.taps.add(event);
+      await tester.pumpAndSettle();
+      expect(find.byType(ChatView), findsOneWidget);
+      expect(find.text('Deneme müşterisi'), findsOneWidget);
+      expect(chat.reads, 1);
+      expect(find.text('Müşterilerinle görüşmelerin.'), findsNothing);
+      await cleanup(tester);
+    },
+  );
+  testWidgets(
+    'same notification can open after a fresh session and explicit reconnection',
+    (tester) async {
+      await host(tester, chatTarget: true);
+      addTearDown(() => cleanup(tester));
+      await settings(tester);
+      await tester.tap(find.byKey(const Key('push-device-action')));
+      await tester.pumpAndSettle();
+      const event = PushOpenEvent(
+        notificationId: 'chat-reconnected',
+        identity: PushIdentity(
+          MerchantPreview.userId,
+          NotificationAppRole.merchant,
+        ),
+      );
+      provider.taps.add(event);
+      await tester.pumpAndSettle();
+      expect(find.byType(ChatView), findsOneWidget);
+      preview.currentId = null;
+      preview.changes.add(null);
+      preview.currentId = MerchantPreview.userId;
+      preview.changes.add(preview.currentId);
+      await tester.pumpAndSettle();
+      expect(find.byType(ChatView), findsNothing);
+      await settings(tester);
+      // Existing connection cleanup precedes explicit re-enrollment.
+      await tester.tap(find.byKey(const Key('push-device-action')));
+      await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('push-device-action')));
+      await tester.pumpAndSettle();
+      expect(registry.registrations, hasLength(2));
+      provider.taps.add(event);
+      await tester.pumpAndSettle();
+      expect(find.byType(ChatView), findsOneWidget);
+      expect(chat.reads, 2);
+    },
+  );
   testWidgets(
     'host starts silently and validated tap returns nested editor to shared inbox',
     (tester) async {
