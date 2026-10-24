@@ -1,0 +1,41 @@
+import groovy.json.JsonOutput
+
+// Synthetic public client records only; temporary inputs remain outside checkout.
+gradle.projectsEvaluated {
+    def app = gradle.rootProject.findProject(':app')
+    if (app == null) return
+    app.tasks.register('testDevelopmentPushConfig') {
+        doLast {
+            def input = File.createTempFile('esnaftavar-firebase-fixture-', '.json')
+            try {
+                def parse = app.ext.readDevelopmentFirebase
+                int passed = 0
+                def record = { pkg, id -> [project_info:[project_id:'esnaftavar-development',project_number:'1003286439273'],
+                    client:[[client_info:[mobilesdk_app_id:id,android_client_info:[package_name:pkg]],
+                        api_key:[[current_key:'synthetic_public_client_fixture_12345']]]]] }
+                def check = { value, pkg, accepted ->
+                    input.text = JsonOutput.toJson(value)
+                    boolean success = false
+                    try { def result = parse(input.absolutePath,pkg); success = result.project_id == 'esnaftavar-development' }
+                    catch (GradleException e) { assert !e.message.contains('synthetic_public') }
+                    assert success == accepted; passed++
+                }
+                def customer = 'com.esnaftavar.app.dev'
+                def valid = record(customer,'1:1003286439273:android:9c71a17085ffd1ada2c9f8')
+                check(valid,customer,true)
+                check(record('com.esnaftavar.app.merchant.pilot','1:1003286439273:android:012b10fb018d88e1a2c9f8'),
+                    'com.esnaftavar.app.merchant.pilot',true)
+                check(valid, 'com.esnaftavar.app',false)
+                check(valid + [type:'service_account',private_key:'synthetic'],customer,false)
+                check(valid + [project_info:[project_id:'other',project_number:'1003286439273']],customer,false)
+                check(record(customer,'1:1003286439273:android:aaaa'),customer,false)
+                check(valid + [client:valid.client + valid.client],customer,false)
+                assert parse(null,customer) == null; passed++
+                boolean rejected=false
+                try { parse('../inside-checkout.json',customer) } catch (GradleException ignored) { rejected=true }
+                assert rejected;passed++
+                println("Development Firebase external config: ${passed} PASS")
+            } finally { assert input.delete() }
+        }
+    }
+}

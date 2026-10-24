@@ -6,6 +6,9 @@ import 'package:t_store/core/supabase/supabase_service.dart';
 import 'package:t_store/features/shop/data/services/supabase_canonical_taxonomy_rpc_adapter.dart';
 import 'package:t_store/features/shop/domain/taxonomy/taxonomy_runtime_capability.dart';
 import 'package:t_store/t_store.dart';
+import 'features/notifications/runtime/development_push.dart';
+import 'features/notifications/runtime/customer_push_binding.dart';
+import 'features/notifications/domain/push_contract.dart';
 
 const appEnvironment = AppEnvironment.development;
 const supabaseUrlDartDefine = SupabaseConfig.developmentUrlDartDefine;
@@ -54,9 +57,18 @@ Future<void> main() async {
 
   final supabaseConfig = createSupabaseConfig();
   await SupabaseService.initialize(config: supabaseConfig);
+  final provider = await createDevelopmentPush(
+    service: SupabaseService.instance,
+    backendUrl: supabaseConfig.supabaseUrl,
+    role: NotificationAppRole.customer,
+  );
+  final push = provider.configured
+      ? CustomerPushBinding(SupabaseService.instance, provider)
+      : null;
   await setupServiceLocator(
+    beforeSignOut: push?.beforeSignOut,
     taxonomyConfiguration: await createDevelopmentTaxonomyConfiguration(),
   );
 
-  runApp(const TStore());
+  runApp(TStore(pushBinding: push));
 }

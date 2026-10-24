@@ -37,13 +37,14 @@ MerchantServices createMerchantServices(
   bool reviews = false,
   bool promotions = false,
   bool pushSchema = false,
+  MobilePushProvider pushProvider = const UnconfiguredMobilePushProvider(),
 }) {
   final client = service.client;
   final claims = qrClaims || rewardEarning || couponCheckout;
   final rewards = rewardEarning || couponCheckout;
   final pushBackend = SupabasePushBackend(client, deployed: pushSchema);
-  const pushProvider = UnconfiguredMobilePushProvider();
   return MerchantServices(
+    pushProvider: pushProvider,
     merchants: SupabaseMerchantRepository(client: client),
     catalogMedia: SupabaseCatalogMediaRepository(client),
     operations: SupabaseMerchantOperationsRepository(client),

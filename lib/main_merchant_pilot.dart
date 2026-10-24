@@ -13,6 +13,8 @@ import 'features/merchant/domain/merchant_account_recovery.dart';
 import 'features/merchant/merchant_app.dart';
 import 'features/merchant/runtime/merchant_pilot_config.dart';
 import 'features/merchant/runtime/merchant_runtime.dart';
+import 'features/notifications/runtime/development_push.dart';
+import 'features/notifications/domain/push_contract.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +76,11 @@ Future<void> main() async {
       pkceAsyncStorage: pkce,
     );
     final service = SupabaseService.instance;
+    final pushProvider = await createDevelopmentPush(
+      service: service,
+      backendUrl: config.backend.supabaseUrl,
+      role: NotificationAppRole.merchant,
+    );
     final backend = SupabaseMerchantRecoveryBackend(
       service.client,
       contract,
@@ -103,7 +110,12 @@ Future<void> main() async {
     if (initial != null) unawaited(controller.receive(initial));
     runApp(
       MerchantApp(
-        services: createMerchantServices(service, recovery: controller),
+        services: createMerchantServices(
+          service,
+          recovery: controller,
+          pushSchema: pushProvider.configured,
+          pushProvider: pushProvider,
+        ),
       ),
     );
   } catch (_) {

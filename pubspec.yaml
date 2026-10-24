@@ -37,6 +37,10 @@ dependencies:
   supabase_flutter: ^2.8.3
   app_links: ^6.4.1
 
+  # Development Android push; stable token transport, no Analytics dependency.
+  firebase_core: 4.15.2
+  firebase_messaging: 16.7.0
+
   # Network & Data
   dartz: ^0.10.1
   dio: ^5.9.0

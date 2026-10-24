@@ -655,6 +655,32 @@ separate pending activation package, not a claimed outcome of local fake events.
 See [messaging handoff](MERCHANT_CHAT_ENTRY_HANDOFF.md) and
 [Development push setup scope](MERCHANT_CHAT_PUSH_SETUP_SCOPE.md).
 
+### I3 Development Android provider preparation (2026-10-24)
+
+Canonical §12.6 records the owner's narrow Firebase project/app approval. Register
+Customer Development and Merchant Pilot only, and prepare the shared provider,
+Customer/Merchant host bindings, explicit consent/enrollment, generic Android
+foreground display and authenticated tap destinations. SDK auto-init stays OFF.
+
+Derive a separate Development transport proposal from unchanged historical
+sources, with live-session semantics but no commerce/banner activation. Prepare
+the service-only metadata RPC, exact-project HTTP v1 provider and authenticated
+fresh-chat/test-cohort worker. Prove unknown outcomes cannot be blindly resent.
+No hosted SQL, worker/webhook, privileged credential or actual send in this stage.
+
+Validate Flutter lifecycle/route/permission regressions, full Flutter suite,
+analyzer, paired Android compilation, external client-config identity checks,
+server adapter tests and native local PostgreSQL transport/RLS/concurrency checks.
+Do not replace delivered APKs. See [handoff and next approval scope](MERCHANT_FIREBASE_DEVELOPMENT_HANDOFF.md).
+Full I/physical J/Production remain OPEN.
+
+Integration follow-up: source `7f2e2c49` failed the independent same-user session
+replacement regression. CustomerPushHost now follows binding authority changes
+as well as profile events, schedules its own idle rebind frame, and discards
+obsolete queued rebinds. Keep cleanup/enrollment gates and old-response fencing.
+Permanent host/coordinator tests cover recovery, late replies, normal renewal,
+logout and listener disposal/replacement. No hosted/provider/SQL change is added.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

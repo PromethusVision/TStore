@@ -174,6 +174,7 @@ import 'package:t_store/core/supabase/authenticated_request_scope.dart';
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator({
+  Future<void> Function()? beforeSignOut,
   TaxonomyDependencyConfiguration taxonomyConfiguration =
       const TaxonomyDependencyConfiguration(
         environment: AppEnvironment.production,
@@ -302,7 +303,9 @@ Future<void> setupServiceLocator({
   // Use Cases
   sl.registerLazySingleton(() => SignInUsecase(sl()));
   sl.registerLazySingleton(() => SignUpUsecase(sl()));
-  sl.registerLazySingleton(() => SignOutUsecase(sl()));
+  sl.registerLazySingleton(
+    () => SignOutUsecase(sl(), beforeSignOut: beforeSignOut),
+  );
   sl.registerLazySingleton(() => DeleteCustomerAccountUsecase(sl()));
   sl.registerLazySingleton(() => ResetPasswordUsecase(sl()));
   sl.registerLazySingleton(() => ResendConfirmationUsecase(sl()));

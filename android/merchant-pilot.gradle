@@ -18,8 +18,11 @@ ext.validateMerchantPilotDefines = { String encoded ->
             'COUPON_CHECKOUT_V1_ENABLED', 'TRUST_COMMERCE_V1_ENABLED', 'REVIEWS_V2_ENABLED',
             'MERCHANT_STATEMENT_V1_ENABLED', 'MERCHANT_PROMOTION_V1_ENABLED',
             'MERCHANT_PUSH_SCHEMA_LOCAL_ENABLED']
-        def allowed = ['MERCHANT_PILOT_ENABLED', 'MERCHANT_PILOT_URL', 'MERCHANT_PILOT_ANON_KEY'] + capabilities
+        def allowed = ['MERCHANT_PILOT_ENABLED', 'MERCHANT_PILOT_URL', 'MERCHANT_PILOT_ANON_KEY',
+            'ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED'] + capabilities
         if (values.any { k, v -> !allowed.contains(k) && !k.startsWith('FLUTTER_') }) reject()
+        if (values.containsKey('ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED') &&
+            !['true','false'].contains(values.ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED)) reject()
         if (values.MERCHANT_PILOT_ENABLED != 'true' ||
             values.MERCHANT_PILOT_URL != 'https://tnipyxnvhgelwdpykyez.supabase.co') reject()
         if (capabilities.any { values.containsKey(it) && values[it] != 'false' }) reject()

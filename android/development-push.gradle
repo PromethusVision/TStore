@@ -1,0 +1,38 @@
+import groovy.json.JsonSlurper
+
+// Public Android Firebase configuration stays outside every checkout. This is
+// not a service-account credential and never grants server sending authority.
+ext.readDevelopmentFirebase = { String path, String packageName ->
+    if (!path) return null
+    File input = new File(path)
+    if (!input.isAbsolute() || !input.isFile() || input.length() > 65536) {
+        throw new GradleException('External Development Firebase client file is invalid.')
+    }
+    File checkout = rootProject.projectDir.parentFile.canonicalFile
+    if (input.canonicalFile.toPath().startsWith(checkout.toPath())) {
+        throw new GradleException('Firebase configuration must stay outside the checkout.')
+    }
+    def config
+    try { config = new JsonSlurper().parse(input) }
+    catch (Exception ignored) { throw new GradleException('Firebase client JSON is invalid.') }
+    if (config.type || config.private_key || config.client_email ||
+        config.project_info?.project_id != 'esnaftavar-development' ||
+        config.project_info?.project_number?.toString() != '1003286439273') {
+        throw new GradleException('Only the approved Development public client file is accepted.')
+    }
+    def clients = config.client?.findAll {
+        it.client_info?.android_client_info?.package_name == packageName
+    }
+    if (clients?.size() != 1) throw new GradleException('Firebase package identity mismatch.')
+    def client = clients[0]
+    String appId = client.client_info?.mobilesdk_app_id
+    String apiKey = client.api_key?.find { it.current_key }?.current_key
+    def approved = ['com.esnaftavar.app.dev':'1:1003286439273:android:9c71a17085ffd1ada2c9f8',
+        'com.esnaftavar.app.merchant.pilot':'1:1003286439273:android:012b10fb018d88e1a2c9f8']
+    if (!approved.containsKey(packageName) || appId != approved[packageName] ||
+        !(apiKey ==~ /[A-Za-z0-9_-]{30,80}/)) {
+        throw new GradleException('Firebase public client fields are incomplete.')
+    }
+    return [google_app_id: appId, google_api_key: apiKey,
+            gcm_defaultSenderId: '1003286439273', project_id: 'esnaftavar-development']
+}
