@@ -674,6 +674,13 @@ server adapter tests and native local PostgreSQL transport/RLS/concurrency check
 Do not replace delivered APKs. See [handoff and next approval scope](MERCHANT_FIREBASE_DEVELOPMENT_HANDOFF.md).
 Full I/physical J/Production remain OPEN.
 
+Integration follow-up: source `7f2e2c49` failed the independent same-user session
+replacement regression. CustomerPushHost now follows binding authority changes
+as well as profile events, schedules its own idle rebind frame, and discards
+obsolete queued rebinds. Keep cleanup/enrollment gates and old-response fencing.
+Permanent host/coordinator tests cover recovery, late replies, normal renewal,
+logout and listener disposal/replacement. No hosted/provider/SQL change is added.
+
 ## J — Physical two-device E2E and release validation
 
 - **DB:** no speculative migration; compare approved schema/grant/manifest and

@@ -64,7 +64,7 @@ girdi olarak okunur, yeniden yazılmaz. Hosted uygulama **onay bekliyor**.
 
 ## Doğrulama
 
-- Tam Flutter: **3713 PASS / 0 FAIL / mevcut 6 SKIP**. Yeni atlama yok.
+- Düzeltme sonrası tam Flutter: **3720 PASS / 0 FAIL / mevcut 6 SKIP**. Yeni atlama yok.
 - `flutter analyze --no-pub`: **PASS**, sorun yok.
 - Sağlayıcı/worker/dispatcher/SQL renderer: **44 PASS**; gerçek Edge entry smoke:
   **1 PASS**; Deno 2.5.6 `check --no-config`: **PASS**.
@@ -79,6 +79,35 @@ girdi olarak okunur, yeniden yazılmaz. Hosted uygulama **onay bekliyor**.
 - Kanıtlar görev worktree'sinde `.buildlog/firebase-*`,
   `.buildlog/pilot-device/firebase-development-sdk` ve `firebase-enabled-final`.
   Önceden teslim edilen APK'lar ve Downloads dosyaları korunmuştur.
+
+## Entegrasyon düzeltmesi — aynı hesabın yeni oturumu
+
+`7f2e2c49` paketinde Integration Agent'ın bulduğu regresyon kaynak commit üzerinde
+aynen tekrarlandı: bağımsız dosya **3 PASS / 1 FAIL**. Aynı hesabın yeni oturumu
+coordinator'ı geçersizleştiriyor, fakat AuthCubit yeni profil yayımlamayınca Customer
+host yeniden dinlemeye başlamıyordu. Eski cevap korunması vardı; geçerli yeni
+bildirim tıklaması hiç okunmuyordu.
+
+Düzeltme yalnız CustomerPushHost yaşam döngüsündedir. Host binding authority'yi
+de izler, boşta duran ekran için frame ister ve yeni doğrulanmış oturumda yalnız
+tıklama dinleyicisini bağlar. Kuyruktaki callback oturum/revision/binding değişmişse
+çalışmaz. Listener binding değişiminde veya dispose'da kaldırılır. Paylaşılan
+PushCoordinator, eski yanıt koruması ve cleanupRequired engeli değiştirilmedi.
+Otomatik izin isteme, token edinme veya cihaz kaydı eklenmedi.
+
+Bağımsız dosya değiştirilmeden tekrar çalıştırıldı: **4 PASS**. Kalıcı widget
+testlerine aynı hesapta yeni oturum, gecikmiş eski okuma + geçerli yeni okuma,
+cleanupRequired, bekleyen rebind sırasında çıkış, aynı oturum yenilemesi ve host
+dispose/binding değişimi eklendi. Eski dört host testi de korundu. Bu tur SQL,
+sunucu kodu, bağımlılıklar veya hosted ayarlara dokunmaz; önceki SQL/Node kanıtları
+geçerlidir. Yeni yerel kanıtlar `.buildlog/firebase-repair/` altında tutulur.
+
+Düzeltme kabulü: bağımsız dört kontrol + kalıcı on bir host/oturum testi **15 PASS**;
+tam Flutter **3720 PASS / 0 FAIL / mevcut 6 SKIP**. Customer Development ve Merchant
+Pilot, push bayrağı açık sentetik Firebase kaynaklarıyla yeniden derlendi: **PASS**.
+İki APK'nın kaynak özeti mevcut runtime ile birebir eşleşir; kanıt
+`.buildlog/pilot-device/firebase-session-recovery/result.json` dosyasındadır.
+Bu APK'lar yalnız derleme provasıdır; eski teslim APK'ları değiştirilmedi.
 
 ## Sonraki somut onay — henüz uygulanmadı
 

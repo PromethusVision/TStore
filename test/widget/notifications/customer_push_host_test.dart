@@ -22,6 +22,11 @@ class Binding extends Mock implements CustomerPushBinding {}
 
 class Coordinator extends Mock implements PushCoordinator {}
 
+class AuthorityRevision extends ValueNotifier<int> {
+  AuthorityRevision() : super(0);
+  bool get hasAttachedListeners => hasListeners;
+}
+
 void main() {
   const id = '11111111-1111-4111-8111-111111111111';
   const notice = NotificationEntity(
@@ -36,7 +41,7 @@ void main() {
   late Binding binding;
   late Coordinator coordinator;
   late StreamController<NotificationEntity> opens;
-  late ValueNotifier<int> revision;
+  late AuthorityRevision revision;
   late String session;
   late AuthState state;
   int builds = 0;
@@ -46,7 +51,7 @@ void main() {
     binding = Binding();
     coordinator = Coordinator();
     opens = StreamController.broadcast(sync: true);
-    revision = ValueNotifier(0);
+    revision = AuthorityRevision();
     session = 'first';
     state = const AuthAuthenticated(
       UserEntity(id: id, email: 'fixture@example.invalid'),
@@ -145,4 +150,35 @@ void main() {
     expect(builds, 0);
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets(
+    'replacing the host binding detaches its previous authority listener',
+    (tester) async {
+      final oldBinding = binding;
+      final oldRevision = revision;
+      await host(tester);
+      verify(() => coordinator.observeOpens()).called(1);
+      final replacement = Binding();
+      final nextRevision = AuthorityRevision();
+      when(() => replacement.service).thenReturn(service);
+      when(() => replacement.coordinator).thenReturn(coordinator);
+      when(() => replacement.opens).thenAnswer((_) => opens.stream);
+      when(() => replacement.authority).thenReturn(nextRevision);
+      when(() => replacement.session).thenReturn('replacement');
+      binding = replacement;
+      await host(tester);
+      verify(() => coordinator.observeOpens()).called(1);
+      expect(oldRevision.hasAttachedListeners, false);
+      oldRevision.value++;
+      await tester.pumpAndSettle();
+      verifyNever(() => coordinator.observeOpens());
+      nextRevision.value++;
+      await tester.pumpAndSettle();
+      verify(() => coordinator.observeOpens()).called(1);
+      await tester.pumpWidget(const SizedBox());
+      expect(nextRevision.hasAttachedListeners, false);
+      nextRevision.dispose();
+      binding = oldBinding;
+    },
+  );
 }

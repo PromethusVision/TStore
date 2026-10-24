@@ -44,8 +44,21 @@ class _CustomerPushHostState extends State<CustomerPushHost> {
   void initState() {
     super.initState();
     _opens = widget.binding?.opens.listen(_open);
+    widget.binding?.authority.addListener(_ready);
     _auth = context.read<AuthCubit>().stream.listen((_) => _ready());
     _ready();
+  }
+
+  @override
+  void didUpdateWidget(CustomerPushHost oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.binding != widget.binding) {
+      oldWidget.binding?.authority.removeListener(_ready);
+      _opens?.cancel();
+      _opens = widget.binding?.opens.listen(_open);
+      widget.binding?.authority.addListener(_ready);
+      _ready();
+    }
   }
 
   bool _authorized(String user) {
@@ -59,13 +72,25 @@ class _CustomerPushHostState extends State<CustomerPushHost> {
   }
 
   void _ready() {
-    final user = widget.binding?.service.currentUser?.id;
-    if (user != null && _authorized(user)) {
+    final binding = widget.binding;
+    final user = binding?.service.currentUser?.id;
+    if (binding != null && user != null && _authorized(user)) {
+      final revision = binding.authority.value;
+      final session = binding.session;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _authorized(user)) {
-          widget.binding?.coordinator.observeOpens();
+        if (mounted &&
+            identical(binding, widget.binding) &&
+            binding.authority.value == revision &&
+            binding.session == session &&
+            _authorized(user)) {
+          // A replacement session need not emit a new AuthCubit profile. Only
+          // observe taps here; coordinator cleanup/enrollment gates still apply.
+          binding.coordinator.observeOpens();
         }
       });
+      // Authority changes can arrive while the unchanged home screen is idle.
+      // A post-frame callback alone would wait for an unrelated UI interaction.
+      WidgetsBinding.instance.ensureVisualUpdate();
     }
   }
 
@@ -99,6 +124,7 @@ class _CustomerPushHostState extends State<CustomerPushHost> {
 
   @override
   void dispose() {
+    widget.binding?.authority.removeListener(_ready);
     _opens?.cancel();
     _auth?.cancel();
     super.dispose();

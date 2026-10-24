@@ -2321,6 +2321,10 @@ billing/paid plan, Production and privileged service-account/key creation.
   Permission/enrollment remains explicit. Cold-start taps may be observed without
   requesting permission or registering a device. Authenticated lookup and route
   authority checks remain mandatory, including tap-to-first-frame replacement.
+  After a same-user replacement session, the Customer host observes the new
+  verified authority even if AuthCubit emits no profile change. Rebinding tap
+  observation does not bypass cleanupRequired, request permission or enroll a
+  device; old replies stay fenced and same-session renewal preserves valid work.
 - Enable only with `ESNAFTAVAR_DEVELOPMENT_PUSH_ENABLED=true`, exact Development
   backend and approved Android flavor/project. Default remains OFF. Public client
   configuration stays outside checkouts and is bound to exact registered app IDs.
